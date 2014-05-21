@@ -340,11 +340,19 @@ public class SystemStorageWrapper extends StorageWrapper {
         boolean isUserFormat;
         if (DROPPED_ITEM_TYPE.equals(type.getName())) {
             isUserFormat = false;
-            // head.Product.Product.0-
-            uniqueID = uniqueID.substring(0, uniqueID.length() - 1);
+            // head.Product.Product.0-   (but DM1.Bird.bid3)
+            if (uniqueID.endsWith("-")) { //$NON-NLS-1$
+                uniqueID = uniqueID.substring(0, uniqueID.length() - 1);
+            }
             // TODO Filter by revision
             // String revisionId = StringUtils.substringBefore(uniqueID, ".");
-            String documentUniqueId = StringUtils.substringAfter(uniqueID, "."); //$NON-NLS-1$
+            // TODO Code may not correctly handle composite id (but no system objects use this)
+            String documentUniqueId;
+            if (StringUtils.countMatches(uniqueID, ".") >= 3) { //$NON-NLS-1$
+                documentUniqueId = StringUtils.substringAfter(uniqueID, "."); //$NON-NLS-1$
+            } else {
+                documentUniqueId = uniqueID;
+            }
             qb = from(type).where(eq(type.getKeyFields().iterator().next(), documentUniqueId));
         } else if (COMPLETED_ROUTING_ORDER.equals(type.getName()) || FAILED_ROUTING_ORDER.equals(type.getName())
                 || ACTIVE_ROUTING_ORDER.equals(type.getName())) {

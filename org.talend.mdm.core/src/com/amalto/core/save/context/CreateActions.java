@@ -153,7 +153,11 @@ class CreateActions extends DefaultMetadataVisitor<List<Action>> {
             }
         } else {
             path.push(new PathElement(containedField, null));
-            super.visit(containedField);
+            if (!(containedField.getContainingType().getContainer() != null
+                    && containedField.getContainedType().getName()
+                    .equals(containedField.getContainingType().getContainer().getDeclaringType().getName()))) {
+                super.visit(containedField);
+            }
             path.pop();
         }
         return actions;

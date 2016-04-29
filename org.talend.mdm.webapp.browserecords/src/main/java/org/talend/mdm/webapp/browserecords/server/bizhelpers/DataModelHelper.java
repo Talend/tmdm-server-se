@@ -188,23 +188,28 @@ public class DataModelHelper {
                 parentTypeModel.addSubType(typeModel);
             }
 
-            if (typeModel instanceof ComplexTypeModel) {
-                parentTypeModel = (ComplexTypeModel) typeModel;
-            }
-
             // add to entityModel
             if (typeModel != null) {
                 entityModel.getMetaDataTypes().put(currentXPath, typeModel);
             }
 
-            // recursion travel
-            if (e.getType().isComplexType()) {
-                XSModelGroup group = e.getType().asComplexType().getContentType().asParticle().getTerm().asModelGroup();
-                if (group != null) {
-                    XSParticle[] subParticles = group.getChildren();
-                    if (subParticles != null) {
-                        for (XSParticle xsParticle : subParticles) {
-                            travelParticle(xsParticle, currentXPath, entityModel, parentTypeModel, roles);
+            if (e.getType() != null && e.getType().getName() != null && parentTypeModel != null
+                    && e.getType().getName().equals(parentTypeModel.getName())) {
+
+            } else {
+                if (typeModel instanceof ComplexTypeModel) {
+                    parentTypeModel = (ComplexTypeModel) typeModel;
+                }
+
+                // recursion travel
+                if (e.getType().isComplexType()) {
+                    XSModelGroup group = e.getType().asComplexType().getContentType().asParticle().getTerm().asModelGroup();
+                    if (group != null) {
+                        XSParticle[] subParticles = group.getChildren();
+                        if (subParticles != null) {
+                            for (XSParticle xsParticle : subParticles) {
+                                travelParticle(xsParticle, currentXPath, entityModel, parentTypeModel, roles);
+                            }
                         }
                     }
                 }

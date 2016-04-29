@@ -220,7 +220,9 @@ public class CommonUtil {
                 }
                 List<ItemNodeModel> list = new ArrayList<ItemNodeModel>();
                 for (TypeModel typeModel : children) {
-                    list.addAll(getDefaultTreeModel(typeModel, language, defaultValue, isCreate, isCallByServerSide));
+                    if (!typeModel.equals(complexModel)) {
+                        list.addAll(getDefaultTreeModel(typeModel, language, defaultValue, isCreate, isCallByServerSide));
+                    }
                 }
                 node.setChildNodes(list);
             }

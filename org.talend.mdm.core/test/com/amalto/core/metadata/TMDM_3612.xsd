@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">  
+  <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/>  
+  <xsd:complexType name="TType"> 
+    <xsd:all> 
+      <xsd:element name="subelement" type="TType"> 
+        <xsd:annotation> 
+          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo> 
+        </xsd:annotation> 
+      </xsd:element> 
+    </xsd:all> 
+  </xsd:complexType>  
+  <xsd:element name="aa"> 
+    <xsd:annotation> 
+      <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo> 
+    </xsd:annotation>  
+    <xsd:complexType> 
+      <xsd:all> 
+        <xsd:element maxOccurs="1" minOccurs="1" name="Id" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element>  
+        <xsd:element maxOccurs="1" minOccurs="0" name="TColumn" type="TType"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element> 
+      </xsd:all> 
+    </xsd:complexType>  
+    <xsd:unique name="aa"> 
+      <xsd:selector xpath="."/>  
+      <xsd:field xpath="Id"/> 
+    </xsd:unique> 
+  </xsd:element> 
+</xsd:schema>

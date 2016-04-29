@@ -36,6 +36,7 @@ import org.talend.mdm.webapp.browserecords.client.model.ColumnTreeModel;
 import org.talend.mdm.webapp.browserecords.client.model.ItemBean;
 import org.talend.mdm.webapp.browserecords.client.model.ItemNodeModel;
 import org.talend.mdm.webapp.browserecords.client.util.CommonUtil;
+import org.talend.mdm.webapp.browserecords.client.util.LabelUtil;
 import org.talend.mdm.webapp.browserecords.client.util.Locale;
 import org.talend.mdm.webapp.browserecords.client.util.MultiOccurrenceManager;
 import org.talend.mdm.webapp.browserecords.client.util.ViewUtil;
@@ -343,6 +344,44 @@ public class TreeDetail extends ContentPanel {
                     });
                 }
             }
+        } else if (typeModel instanceof ComplexTypeModel && typeModel.getParentTypeModel() != null
+                && typeModel.getType().getTypeName().equals(typeModel.getParentTypeModel().getType().getTypeName())) {
+            item.addItem(new GhostTreeItem());
+            final DynamicTreeItem parentItem = item;
+            final TypeModel finalTypeModel = typeModel;
+            item.setAutoExpandHandler(new AutoExpandHandler() {
+
+                @Override
+                public void autoExpand() {
+                    ItemNodeModel model = null;
+
+                    List<ItemNodeModel> modelList = CommonUtil.getDefaultTreeModel(finalTypeModel.getParentTypeModel(),
+                            Locale.getLanguage(), false, false, false);
+                    if (modelList.size() > 0) {
+                        model = modelList.get(0);
+                    }
+
+                    int i = 0;
+                    ItemNodeModel parentModel = (ItemNodeModel) parentItem.getItemNodeModel();
+                    while (model.getChildCount() > 0) {
+                        ItemNodeModel child = (ItemNodeModel) model.getChild(0);
+                        child.setDynamicLabel(LabelUtil.getNormalLabel(child.getLabel()));
+                        child.setMandatory(parentItem.getItemNodeModel().isMandatory());
+                        parentModel.insert(child, i);
+                        // if it has default value
+                        if (finalTypeModel.getParentTypeModel().getDefaultValue() != null) {
+                            child.setObjectValue(finalTypeModel.getDefaultValue());
+                        }
+                        DynamicTreeItem treeItem = buildGWTTree(child, null, true, null);
+                        ViewUtil.copyStyleToTreeItem(parentItem, treeItem);
+
+                        parentItem.insertItem(treeItem, i);
+                        adjustFieldWidget(treeItem);
+                        i++;
+                    }
+                    parentModel.setChangeValue(true);
+                }
+            });
         }
         item.setUserObject(itemNode);
         item.setVisible(itemNode.isVisible());

@@ -21,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -164,6 +165,7 @@ import com.extjs.gxt.ui.client.Style.SortDir;
 import com.sun.xml.xsom.XSAnnotation;
 import com.sun.xml.xsom.XSComplexType;
 import com.sun.xml.xsom.XSElementDecl;
+import com.sun.xml.xsom.XSModelGroup;
 import com.sun.xml.xsom.XSParticle;
 import com.sun.xml.xsom.XSSchemaSet;
 import com.sun.xml.xsom.parser.XSOMParser;
@@ -1659,6 +1661,21 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             } else {
                 if (!model.isAbstract()) {
                     childModels = ((ComplexTypeModel) model).getSubTypes();
+                    if (childModels.size() == 0 && children.item(0) != null
+                            && model.getType().getTypeName().equals(model.getParentTypeModel().getType().getTypeName())) {
+
+                        /*List<TypeModel> types = ((ComplexTypeModel) model.getParentTypeModel()).getSubTypes();
+                        String parentPath = model.getTypePath();
+
+                        for (int i = 0; i < types.size(); i++) {
+                            String element = types.get(i).getTypePath();
+                            String path = parentPath + element.substring(element.lastIndexOf('/'));
+                            types.get(i).setXpath(path);
+                            types.get(i).setTypePath(path);
+                            childModels.add(types.get(i));
+                            metaDataTypes.put(path, types.get(i));
+                        }*/
+                    }
                 } else {
                     childModels = org.talend.mdm.webapp.browserecords.shared.ReusableType.getDefaultReusableTypeChildren(
                             (ComplexTypeModel) model, nodeModel);

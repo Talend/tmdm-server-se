@@ -252,7 +252,9 @@ public class BusinessConcept {
                     if (subParticles != null) {
                         for (int i = 0; i < subParticles.length; i++) {
                             XSParticle xsParticle = subParticles[i];
-                            travelParticle(xsParticle, currentXPath);
+                            if (!xsParticle.getTerm().asElementDecl().getType().equals(e.getType())) {
+                                travelParticle(xsParticle, currentXPath);
+                            }
                         }
                     }
                 }

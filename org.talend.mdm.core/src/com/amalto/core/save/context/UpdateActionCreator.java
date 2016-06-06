@@ -403,7 +403,7 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
                 }
             }
             Action before = actions.isEmpty() ? null : actions.getLast();
-            if (!type.getName().equals(type.getContainer().getDeclaringType().getName())) {
+            if (rightAccessor.exist()) {
                 type.accept(UpdateActionCreator.this);
             }
 

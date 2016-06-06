@@ -4,9 +4,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.talend.mdm.webapp.base.shared.EntityModel;
+import org.talend.mdm.webapp.base.shared.TypeModel;
 
 import com.extjs.gxt.ui.client.data.BaseTreeModel;
 import com.extjs.gxt.ui.client.data.ModelData;
@@ -50,6 +53,8 @@ public class ItemNodeModel extends BaseTreeModel implements IsSerializable {
     private boolean mandatory;
 
     private String typeName;
+
+    private LinkedHashMap<String, TypeModel> metaDataTypes;
 
     public String getTypeName() {
         return typeName;
@@ -282,6 +287,14 @@ public class ItemNodeModel extends BaseTreeModel implements IsSerializable {
 
     public void setCloned(boolean isCloned) {
         this.isCloned = isCloned;
+    }
+
+    public LinkedHashMap<String, TypeModel> getMetaDataTypes() {
+        return metaDataTypes;
+    }
+
+    public void setMetaDataTypes(LinkedHashMap<String, TypeModel> metaDataTypes) {
+        this.metaDataTypes = metaDataTypes;
     }
 
     public ItemNodeModel clone(boolean withValue) {

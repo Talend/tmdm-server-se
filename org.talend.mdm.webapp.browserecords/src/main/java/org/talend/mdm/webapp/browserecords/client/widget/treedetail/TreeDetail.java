@@ -216,6 +216,10 @@ public class TreeDetail extends ContentPanel {
 
                         @Override
                         public void onSuccess(final ItemNodeModel node) {
+                            if (node.getMetaDataTypes() != null) {
+                                viewBean.getBindingEntityModel().setMetaDataTypes(node.getMetaDataTypes());
+                                TreeDetail.this.viewBean.getBindingEntityModel().setMetaDataTypes(node.getMetaDataTypes());
+                            }
 
                             itemService.executeVisibleRule(viewBean, (new ItemTreeHandler(node, TreeDetail.this.viewBean,
                                     ItemTreeHandlingStatus.InUse)).serializeItem(),

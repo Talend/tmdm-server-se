@@ -21,7 +21,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -62,6 +61,7 @@ import org.talend.mdm.webapp.base.shared.ComplexTypeModel;
 import org.talend.mdm.webapp.base.shared.EntityModel;
 import org.talend.mdm.webapp.base.shared.SimpleTypeModel;
 import org.talend.mdm.webapp.base.shared.TypeModel;
+import org.talend.mdm.webapp.base.shared.TypePath;
 import org.talend.mdm.webapp.browserecords.client.BrowseRecordsService;
 import org.talend.mdm.webapp.browserecords.client.model.ColumnTreeLayoutModel;
 import org.talend.mdm.webapp.browserecords.client.model.ForeignKeyDrawer;
@@ -165,7 +165,6 @@ import com.extjs.gxt.ui.client.Style.SortDir;
 import com.sun.xml.xsom.XSAnnotation;
 import com.sun.xml.xsom.XSComplexType;
 import com.sun.xml.xsom.XSElementDecl;
-import com.sun.xml.xsom.XSModelGroup;
 import com.sun.xml.xsom.XSParticle;
 import com.sun.xml.xsom.XSSchemaSet;
 import com.sun.xml.xsom.parser.XSOMParser;
@@ -199,6 +198,8 @@ public class BrowseRecordsAction implements BrowseRecordsService {
     public static final String INFO_KEYWORD = "INFO";//$NON-NLS-1$
 
     public static final String FAIL_KEYWORD = "FAIL";//$NON-NLS-1$
+
+    boolean isModelUpdated = false;
 
     @Override
     public List<ItemResult> deleteItemBeans(List<ItemBean> items, boolean override, String language) throws ServiceException {
@@ -1462,11 +1463,15 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             Map<String, TypeModel> metaDataTypes = entity.getMetaDataTypes();
             Map<String, Integer> multiNodeIndex = new HashMap<String, Integer>();
             StringBuffer foreignKeyDeleteMessage = new StringBuffer();
+            isModelUpdated = false;
             ItemNodeModel itemModel = builderNode(multiNodeIndex, root, entity,
                     "", "", true, foreignKeyDeleteMessage, false, isStaging, language); //$NON-NLS-1$ //$NON-NLS-2$
             DynamicLabelUtil.getDynamicLabel(XmlUtil.parseDocument(doc), "", itemModel, metaDataTypes, language); //$NON-NLS-1$
             itemModel.set("time", item.get("time")); //$NON-NLS-1$ //$NON-NLS-2$
             itemModel.set("foreignKeyDeleteMessage", foreignKeyDeleteMessage.toString()); //$NON-NLS-1$
+            if (isModelUpdated) {
+                itemModel.setMetaDataTypes((LinkedHashMap<String, TypeModel>) metaDataTypes);
+            }
             return itemModel;
         } catch (ServiceException e) {
             LOG.error(e.getMessage(), e);
@@ -1664,17 +1669,29 @@ public class BrowseRecordsAction implements BrowseRecordsService {
                     if (childModels.size() == 0 && children.item(0) != null
                             && model.getType().getTypeName().equals(model.getParentTypeModel().getType().getTypeName())) {
 
-                        /*List<TypeModel> types = ((ComplexTypeModel) model.getParentTypeModel()).getSubTypes();
+                        List<TypeModel> types = ((ComplexTypeModel) model.getParentTypeModel()).getSubTypes();
                         String parentPath = model.getTypePath();
 
-                        for (int i = 0; i < types.size(); i++) {
-                            String element = types.get(i).getTypePath();
-                            String path = parentPath + element.substring(element.lastIndexOf('/'));
-                            types.get(i).setXpath(path);
-                            types.get(i).setTypePath(path);
-                            childModels.add(types.get(i));
-                            metaDataTypes.put(path, types.get(i));
-                        }*/
+                        for (TypeModel typeModel : types) {
+                            String path = parentPath + "/" + typeModel.getName();
+                            TypeModel childModel = null;
+                            if (typeModel.isSimpleType()) {
+                                childModel = new SimpleTypeModel(typeModel.getName(), typeModel.getType());
+                            } else {
+                                childModel = new ComplexTypeModel(typeModel.getName(), typeModel.getType());
+                            }
+                            childModel.setAbstract(typeModel.isAbstract());
+                            childModel.setXpath(path);
+                            childModel.setTypePath(path);
+                            childModel.setTypePathObject(new TypePath(path, new HashMap<String, List<String>>()));
+                            childModel.setNillable(typeModel.isNillable());
+                            childModel.setMinOccurs(typeModel.getMinOccurs());
+                            childModel.setMaxOccurs(typeModel.getMaxOccurs());
+                            childModel.setParentTypeModel(model);
+                            childModels.add(childModel);
+                            metaDataTypes.put(path, childModel);
+                        }
+                        isModelUpdated = true;
                     }
                 } else {
                     childModels = org.talend.mdm.webapp.browserecords.shared.ReusableType.getDefaultReusableTypeChildren(

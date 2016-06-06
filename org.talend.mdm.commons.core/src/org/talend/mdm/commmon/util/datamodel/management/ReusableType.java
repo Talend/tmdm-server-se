@@ -101,7 +101,8 @@ public class ReusableType {
                         toPutReusableType.load();// parse it
                     }
                     xPathReusableTypeMap.put(xpath, toPutReusableType);
-                    if (!toPutReusableType.getName().equals(currentXPath.substring(1))) {
+                    if (toPutReusableType.getName() != null
+                            && !toPutReusableType.getName().equals(currentXPath.substring(1))) {
                         traverseXSType(el.getType().asComplexType().getContentType().asParticle(), xpath, reusableTypeMap);
                     }
                 }

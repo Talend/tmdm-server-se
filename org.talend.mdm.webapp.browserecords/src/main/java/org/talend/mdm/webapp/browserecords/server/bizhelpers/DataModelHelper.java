@@ -194,7 +194,7 @@ public class DataModelHelper {
             }
 
             if (e.getType() != null && e.getType().getName() != null && parentTypeModel != null
-                    && e.getType().getName().equals(parentTypeModel.getName())) {
+                    && e.getType().getName().equals(parentTypeModel.getType().getTypeName())) {
 
             } else {
                 if (typeModel instanceof ComplexTypeModel) {

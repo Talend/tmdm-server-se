@@ -526,6 +526,38 @@ public class BrowseRecordsActionTest extends TestCase {
         assertEquals("Contract/enumEle", fourthNode.getTypePath());
     }
     
+    // TMDM-3612 You can define a type T with a field T, save, deploy, and this causes the server to enter an infinite
+    // loop, eventually ending in StackOverflowError
+    public void test_getItemNodeModel_3612() throws Exception {
+        String language = "en";
+        String concept = "aa";
+        String ids = "1";
+        ViewBean viewBean = getViewBean(concept, "TMDM_3612.xsd");
+        ItemBean item = new ItemBean(concept, ids, getXml("TMDM_3612.xml"));
+        // call getItemNodeModel
+        ItemNodeModel root = action.getItemNodeModel(item, viewBean.getBindingEntityModel(), false, language);
+        int i = root.getChildCount();
+        ItemNodeModel T = (ItemNodeModel) root.getChild(1);
+
+        ItemNodeModel sub1 = (ItemNodeModel) T.getChild(0);
+        assertEquals("aa/T/subelement", sub1.getTypePath());
+        assertEquals(2, sub1.getChildCount());
+        ItemNodeModel n1 = (ItemNodeModel) T.getChild(1);
+        assertEquals("aa/T/name", n1.getTypePath());
+
+        ItemNodeModel sub2 = (ItemNodeModel) sub1.getChild(0);
+        assertEquals("aa/T/subelement/subelement", sub2.getTypePath());
+        assertEquals(2, sub2.getChildCount());
+        ItemNodeModel n2 = (ItemNodeModel) sub1.getChild(1);
+        assertEquals("aa/T/subelement/name", n2.getTypePath());
+
+        ItemNodeModel sub3 = (ItemNodeModel) sub2.getChild(0);
+        assertEquals("aa/T/subelement/subelement/subelement", sub3.getTypePath());
+        assertEquals(0, sub3.getChildCount());
+        ItemNodeModel n3 = (ItemNodeModel) sub2.getChild(1);
+        assertEquals("aa/T/subelement/subelement/name", n3.getTypePath());
+    }
+
  // TMDM-9501: Display Format applied onto numeric fields is not correct
     public void testGetItemForNumberFormate() throws Exception {
         String language = "en";

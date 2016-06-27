@@ -11,6 +11,7 @@
 package com.amalto.core.storage.adapt;
 
 import java.io.File;
+import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -18,13 +19,17 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import junit.framework.TestCase;
 
 import org.h2.jdbc.JdbcSQLException;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
+import org.talend.mdm.commmon.metadata.MetadataUtils;
+import org.talend.mdm.commmon.metadata.MetadataUtils.SortType;
 
 import com.amalto.core.server.MockServerLifecycle;
 import com.amalto.core.server.ServerContext;
@@ -405,6 +410,43 @@ public class StorageAdaptTest extends TestCase {
 
         MetadataRepository repository = storage.getMetadataRepository();
         assertEquals(repository2, repository);
+        storage.close(true);
+    }
+
+    // TMDM-9644 Recreate tables of entity dose not delete the FK values dependency to it and the journal records are deleted.
+    public void testFindTablesToDrop() throws Exception {
+        // Test preparation
+        DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
+        Storage storage = new HibernateStorage(STORAGE_NAME, StorageType.MASTER);
+        storage.init(dataSource);
+
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(StorageAdaptTest.class.getResourceAsStream("AOP.xsd"));
+        storage.prepare(repository, true);
+        // Drop Type Composition
+        ComplexTypeMetadata composition = repository.getComplexType("Composition");
+        Set<ComplexTypeMetadata> typesToDrop = new HashSet<ComplexTypeMetadata>();
+        typesToDrop.add(composition);
+        // Find all dependencies of Composition
+        Set<ComplexTypeMetadata> allDependencies = new HashSet<ComplexTypeMetadata>();
+        allDependencies.addAll(typesToDrop);
+        Method findDependentTypesToDelete = storage.getClass().getDeclaredMethod("findDependentTypesToDelete",
+                new Class[] { MetadataRepository.class, Set.class, Set.class });
+        findDependentTypesToDelete.setAccessible(true);
+        Object[] args = { repository, typesToDrop, allDependencies };
+        Set<ComplexTypeMetadata> dependentTypesToDrop = (Set<ComplexTypeMetadata>) findDependentTypesToDelete.invoke(storage,
+                args);
+        typesToDrop.addAll(dependentTypesToDrop);
+        // Sort types
+        List<ComplexTypeMetadata> sortedTypesToDrop = new ArrayList<ComplexTypeMetadata>(typesToDrop);
+        sortedTypesToDrop = MetadataUtils.sortTypes(repository, sortedTypesToDrop, SortType.LENIENT);
+        // Find tables to drop
+        Method findTablesToDrop = storage.getClass().getDeclaredMethod("findTablesToDrop", new Class[] { List.class });
+        findTablesToDrop.setAccessible(true);
+        Object[] args1 = { sortedTypesToDrop };
+        Set<String> tables = (Set<String>) findTablesToDrop.invoke(storage, args1);
+        assertTrue(tables.contains("X_CompatibilityType"));
         storage.close(true);
     }
 

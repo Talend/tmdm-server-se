@@ -1,0 +1,621 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">  
+  <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/>  
+  <xsd:element name="Component"> 
+    <xsd:annotation> 
+      <xsd:appinfo source="X_Description_EN">Component</xsd:appinfo>  
+      <xsd:appinfo source="X_Label_EN">Component</xsd:appinfo>  
+      <xsd:appinfo source="X_Write">Administrator</xsd:appinfo> 
+    </xsd:annotation>  
+    <xsd:complexType> 
+      <xsd:sequence> 
+        <xsd:element name="ComponentId" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_Label_EN">Code</xsd:appinfo>  
+            <xsd:appinfo source="X_Write">Administrator</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element>  
+        <xsd:element maxOccurs="unbounded" minOccurs="0" name="MultimediaContent_Fk" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_ForeignKey">MultimediaContent/MultimediaContentId</xsd:appinfo>  
+            <xsd:appinfo source="X_Label_EN">Multimedia Contents</xsd:appinfo>  
+            <xsd:appinfo source="X_Write">Administrator</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element>  
+        <xsd:element maxOccurs="1" minOccurs="0" name="DefaultAirbag_Fk" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_ForeignKey">Component/ComponentId</xsd:appinfo>  
+            <xsd:appinfo source="X_Label_EN">Default Airbag</xsd:appinfo>   
+            <xsd:appinfo source="X_Write">Administrator</xsd:appinfo>  
+            <xsd:appinfo source="X_ForeignKeyInfo">Component/ComponentId</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element>  
+        <xsd:element maxOccurs="unbounded" minOccurs="0" name="AssociatedComponent_Fk" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_ForeignKey">Component/ComponentId</xsd:appinfo>  
+            <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>  
+            <xsd:appinfo source="X_Label_EN">Associated components</xsd:appinfo>  
+            <xsd:appinfo source="X_Write">Administrator</xsd:appinfo>  
+            <xsd:appinfo source="X_ForeignKeyInfo">Component/ComponentId</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element>  
+        <xsd:element maxOccurs="unbounded" minOccurs="0" name="Compatibility_Fk" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_ForeignKey">Compatibility/CompatibilityId</xsd:appinfo>  
+            <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>  
+            <xsd:appinfo source="X_Label_EN">Compatibility</xsd:appinfo>  
+            <xsd:appinfo source="X_Write">Administrator</xsd:appinfo>  
+            <xsd:appinfo source="X_ForeignKeyInfo">Compatibility/CompatibilityId</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element>  
+        <xsd:element maxOccurs="1" minOccurs="1" name="ComponentType" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_Label_EN">Component Type</xsd:appinfo>  
+            <xsd:appinfo source="X_Write">Administrator</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element>  
+        <xsd:element maxOccurs="1" minOccurs="0" name="CapacityVersion" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_Label_EN">Capacity Version</xsd:appinfo>   
+            <xsd:appinfo source="X_Write">Administrator</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element>
+        <xsd:element maxOccurs="1" minOccurs="0" name="YieldConformityData" type="YieldConformityDataListType"> 
+          <xsd:annotation>
+            <xsd:appinfo source="X_Label_EN">Yield Conformity Data List</xsd:appinfo>  
+            <xsd:appinfo source="X_Write">Administrator</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element> 
+      </xsd:sequence> 
+    </xsd:complexType>  
+    <xsd:unique name="Component"> 
+      <xsd:selector xpath="."/>  
+      <xsd:field xpath="ComponentId"/> 
+    </xsd:unique> 
+  </xsd:element>
+  <xsd:element name="MultimediaContent"> 
+    <xsd:annotation> 
+      <xsd:appinfo source="X_Label_EN">Multimedia Content</xsd:appinfo>  
+      <xsd:appinfo source="X_Write">Administrator</xsd:appinfo> 
+    </xsd:annotation>  
+    <xsd:complexType> 
+      <xsd:all> 
+        <xsd:element name="MultimediaContentId" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_Write">Administrator</xsd:appinfo>  
+            <xsd:appinfo source="X_Label_EN">Id</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element> 
+      </xsd:all> 
+    </xsd:complexType>  
+    <xsd:unique name="MultimediaContent"> 
+      <xsd:selector xpath="."/>  
+      <xsd:field xpath="MultimediaContentId"/> 
+    </xsd:unique> 
+  </xsd:element>  
+  <xsd:complexType name="YieldConformityDataType"> 
+    <xsd:all> 
+      <xsd:element maxOccurs="1" minOccurs="0" name="YieldConformity" type="xsd:string"> 
+        <xsd:annotation> 
+          <xsd:appinfo source="X_Label_EN">Yield Conformity</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Administrator</xsd:appinfo> 
+        </xsd:annotation> 
+      </xsd:element>  
+      <xsd:element maxOccurs="1" minOccurs="0" name="DoNotCommunicateYieldConformityFl" type="xsd:boolean"> 
+        <xsd:annotation> 
+          <xsd:appinfo source="X_Label_EN">Do Not Communicate Yield Conformity</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Administrator</xsd:appinfo> 
+        </xsd:annotation> 
+      </xsd:element> 
+    </xsd:all> 
+  </xsd:complexType>  
+  <xsd:element name="OEMCode"> 
+    <xsd:annotation> 
+      <xsd:appinfo source="X_Label_EN">OEM Code</xsd:appinfo>  
+      <xsd:appinfo source="X_Write">Administrator</xsd:appinfo> 
+    </xsd:annotation>  
+    <xsd:complexType> 
+      <xsd:sequence> 
+        <xsd:element maxOccurs="1" minOccurs="1" name="OEMCodeId" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_Write">Administrator</xsd:appinfo>  
+            <xsd:appinfo source="X_Label_EN">Id</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element>  
+        <xsd:element maxOccurs="unbounded" minOccurs="0" name="Compatibility_Fk" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_ForeignKey">Compatibility/CompatibilityId</xsd:appinfo>  
+            <xsd:appinfo source="X_Label_EN">Compatibility</xsd:appinfo>  
+            <xsd:appinfo source="X_Write">Administrator</xsd:appinfo>  
+            <xsd:appinfo source="X_ForeignKeyInfo">Compatibility/CompatibilityId</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element> 
+      </xsd:sequence> 
+    </xsd:complexType>  
+    <xsd:unique name="OEMCode"> 
+      <xsd:selector xpath="."/>  
+      <xsd:field xpath="OEMCodeId"/> 
+    </xsd:unique> 
+  </xsd:element>  
+  <xsd:element name="Printer"> 
+    <xsd:annotation> 
+      <xsd:appinfo source="X_Label_EN">Printer</xsd:appinfo>  
+      <xsd:appinfo source="X_Write">Administrator</xsd:appinfo> 
+    </xsd:annotation>  
+    <xsd:complexType> 
+      <xsd:sequence> 
+        <xsd:element name="PrinterId" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_Write">Administrator</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element>  
+        <xsd:element maxOccurs="unbounded" minOccurs="0" name="Compatibility_Fk" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_Label_EN">Compatibility</xsd:appinfo>  
+            <xsd:appinfo source="X_ForeignKey">Compatibility/CompatibilityId</xsd:appinfo>  
+            <xsd:appinfo source="X_Write">Administrator</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element> 
+      </xsd:sequence> 
+    </xsd:complexType>  
+    <xsd:unique name="Printer"> 
+      <xsd:selector xpath="."/>  
+      <xsd:field xpath="PrinterId"/> 
+    </xsd:unique> 
+  </xsd:element>  
+  <xsd:element name="Compatibility"> 
+    <xsd:annotation> 
+      <xsd:appinfo source="X_Label_EN">Compatibility</xsd:appinfo>  
+      <xsd:appinfo source="X_Write">Administrator</xsd:appinfo> 
+    </xsd:annotation>  
+    <xsd:complexType> 
+      <xsd:all> 
+        <xsd:element name="CompatibilityId" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_Write">Administrator</xsd:appinfo>  
+            <xsd:appinfo source="X_Label_EN">Id</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element>  
+        <xsd:element maxOccurs="1" minOccurs="0" name="FinishedProduct_Fk" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_ForeignKey">FinishedProduct/FinishedProductId</xsd:appinfo>  
+            <xsd:appinfo source="X_Label_EN">Finished Product</xsd:appinfo>  
+            <xsd:appinfo source="X_Write">Administrator</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element>  
+        <xsd:element maxOccurs="1" minOccurs="0" name="Component_Fk" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_ForeignKey">Component/ComponentId</xsd:appinfo>  
+            <xsd:appinfo source="X_Label_EN">Component</xsd:appinfo>  
+            <xsd:appinfo source="X_Write">Administrator</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element>  
+        <xsd:element maxOccurs="1" minOccurs="1" name="OEMCode_Fk" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_ForeignKey">OEMCode/OEMCodeId</xsd:appinfo>  
+            <xsd:appinfo source="X_Label_EN">OEM Code</xsd:appinfo>  
+            <xsd:appinfo source="X_Write">Administrator</xsd:appinfo>  
+            <xsd:appinfo source="X_ForeignKeyInfo">OEMCode/OEMCodeId</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element>  
+        <xsd:element maxOccurs="1" minOccurs="0" name="Printer_Fk" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_ForeignKey">Printer/PrinterId</xsd:appinfo>  
+            <xsd:appinfo source="X_Label_EN">Printer</xsd:appinfo>  
+            <xsd:appinfo source="X_Write">Administrator</xsd:appinfo>  
+            <xsd:appinfo source="X_ForeignKeyInfo">Printer/PrinterId</xsd:appinfo>
+          </xsd:annotation> 
+        </xsd:element> 
+      </xsd:all> 
+    </xsd:complexType>  
+    <xsd:unique name="Compatibility"> 
+      <xsd:selector xpath="."/>  
+      <xsd:field xpath="CompatibilityId"/> 
+    </xsd:unique> 
+  </xsd:element>  
+  <xsd:complexType name="CompatibilityType"> 
+    <xsd:sequence> 
+      <xsd:element maxOccurs="1" minOccurs="0" name="CompatibilityId" type="xsd:string"> 
+        <xsd:annotation> 
+          <xsd:appinfo source="X_ForeignKey">Compatibility/CompatibilityId</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Administrator</xsd:appinfo> 
+        </xsd:annotation> 
+      </xsd:element>  
+      <xsd:element maxOccurs="1" minOccurs="0" name="OEMCode_Fk" type="xsd:string"> 
+        <xsd:annotation> 
+          <xsd:appinfo source="X_ForeignKey">OEMCode/OEMCodeId</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Administrator</xsd:appinfo> 
+        </xsd:annotation> 
+      </xsd:element>  
+      <xsd:element maxOccurs="1" minOccurs="0" name="Printer_Fk" type="xsd:string"> 
+        <xsd:annotation> 
+          <xsd:appinfo source="X_ForeignKey">Printer/PrinterId</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Administrator</xsd:appinfo> 
+        </xsd:annotation> 
+      </xsd:element>  
+      <xsd:element maxOccurs="1" minOccurs="0" name="Ranking" type="xsd:string"> 
+        <xsd:annotation> 
+          <xsd:appinfo source="X_Write">Administrator</xsd:appinfo> 
+        </xsd:annotation> 
+      </xsd:element> 
+    </xsd:sequence> 
+  </xsd:complexType>  
+  <xsd:element name="FinishedProduct"> 
+    <xsd:annotation> 
+      <xsd:appinfo source="X_Label_EN">Finished Product</xsd:appinfo>  
+      <xsd:appinfo source="X_Write">Administrator</xsd:appinfo> 
+    </xsd:annotation>  
+    <xsd:complexType> 
+      <xsd:sequence> 
+        <xsd:element name="FinishedProductId" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_Label_EN">Product Code</xsd:appinfo>  
+            <xsd:appinfo source="X_Write">Administrator</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element>  
+        <xsd:element maxOccurs="unbounded" minOccurs="0" name="MultimediaContent_Fk" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_ForeignKey">MultimediaContent/MultimediaContentId</xsd:appinfo>  
+            <xsd:appinfo source="X_Label_EN">Multimedia Contents</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element>
+        <xsd:element maxOccurs="unbounded" minOccurs="0" name="Composition_Fk" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_Label_EN">Composition</xsd:appinfo>  
+            <xsd:appinfo source="X_ForeignKey">Composition/CompositionId</xsd:appinfo>  
+            <xsd:appinfo source="X_Write">Administrator</xsd:appinfo>  
+            <xsd:appinfo source="X_ForeignKeyInfo">Composition/CompositionId</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element>  
+        <xsd:element maxOccurs="unbounded" minOccurs="0" name="FPCommunicationChannel_Fk" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_Label_EN">Communication Channel</xsd:appinfo>  
+            <xsd:appinfo source="X_ForeignKey">FinishedProductCommunicationChannel/FinishedProductCommunicationChannelId</xsd:appinfo>  
+            <xsd:appinfo source="X_Write">Administrator</xsd:appinfo>  
+            <xsd:appinfo source="X_ForeignKeyInfo">FinishedProductCommunicationChannel/CommunicationChannel_Fk</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element>  
+        <xsd:element maxOccurs="unbounded" minOccurs="0" name="FPPartner_Fk" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_Label_EN">Partner</xsd:appinfo>  
+            <xsd:appinfo source="X_ForeignKey">FinishedProductPartner/FinishedProductPartnerId</xsd:appinfo>  
+            <xsd:appinfo source="X_Write">Administrator</xsd:appinfo>  
+            <xsd:appinfo source="X_ForeignKeyInfo">FinishedProductPartner/FinishedProductPartnerId</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element>  
+        <xsd:element maxOccurs="unbounded" minOccurs="0" name="FPPlant_Fk" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_Label_EN">Plant</xsd:appinfo>  
+            <xsd:appinfo source="X_ForeignKey">FinishedProductPlant/FinishedProductPlantId</xsd:appinfo>  
+            <xsd:appinfo source="X_Write">Administrator</xsd:appinfo>  
+          </xsd:annotation> 
+        </xsd:element>  
+        <xsd:element maxOccurs="unbounded" minOccurs="0" name="FPPrices_Fk" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_Label_EN">Prices</xsd:appinfo>  
+            <xsd:appinfo source="X_ForeignKey">FinishedProductPrices/FinishedProductPricesId</xsd:appinfo>  
+            <xsd:appinfo source="X_Write">Administrator</xsd:appinfo>  
+          </xsd:annotation> 
+        </xsd:element>  
+        <xsd:element maxOccurs="unbounded" minOccurs="0" name="FPSalesOrganization_Fk" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_Label_EN">Sales Organization</xsd:appinfo>  
+            <xsd:appinfo source="X_ForeignKey">FinishedProductSalesOrganization/FinishedProductSalesOrganizationId</xsd:appinfo>  
+            <xsd:appinfo source="X_Write">Administrator</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element>  
+        <xsd:element maxOccurs="unbounded" minOccurs="0" name="Compatibility_Fk" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_Label_EN">Compatibility</xsd:appinfo>  
+            <xsd:appinfo source="X_ForeignKey">Compatibility/CompatibilityId</xsd:appinfo>  
+            <xsd:appinfo source="X_Write">Administrator</xsd:appinfo>  
+            <xsd:appinfo source="X_ForeignKeyInfo">Compatibility/CompatibilityId</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element>  
+        <xsd:element maxOccurs="1" minOccurs="0" name="Equivalences" type="EquivalenceListType"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_Label_EN">Equivalences List</xsd:appinfo>  
+            <xsd:appinfo source="X_Write">Administrator</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element> 
+      </xsd:sequence> 
+    </xsd:complexType>  
+    <xsd:unique name="FinishedProduct"> 
+      <xsd:selector xpath="."/>  
+      <xsd:field xpath="FinishedProductId"/> 
+    </xsd:unique> 
+  </xsd:element>  
+  <xsd:element name="ComponentVersion"> 
+    <xsd:annotation> 
+      <xsd:appinfo source="X_Label_EN">Component Version</xsd:appinfo>  
+      <xsd:appinfo source="X_Write">Administrator</xsd:appinfo> 
+    </xsd:annotation>  
+    <xsd:complexType> 
+      <xsd:sequence> 
+        <xsd:element maxOccurs="1" minOccurs="1" name="ComponentVersionId" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_Label_EN">Component Version Code</xsd:appinfo>  
+            <xsd:appinfo source="X_Write">Administrator</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element>  
+        <xsd:element maxOccurs="1" minOccurs="1" name="Component_Fk" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_ForeignKey">Component/ComponentId</xsd:appinfo>  
+            <xsd:appinfo source="X_Label_EN">Component</xsd:appinfo>  
+            <xsd:appinfo source="X_ForeignKeyInfo">Component/ComponentId</xsd:appinfo>  
+            <xsd:appinfo source="X_Write">Administrator</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element>
+        <xsd:element maxOccurs="unbounded" minOccurs="0" name="Incompatibility_Fk" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_ForeignKey">Printer/PrinterId</xsd:appinfo>  
+            <xsd:appinfo source="X_Label_EN">Incompatibility</xsd:appinfo>  
+            <xsd:appinfo source="X_Write">Administrator</xsd:appinfo>  
+            <xsd:appinfo source="X_ForeignKeyInfo">Printer/PrinterId</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element>  
+        <xsd:element maxOccurs="unbounded" minOccurs="0" name="AssociatedComponent_Fk" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_ForeignKey">Component/ComponentId</xsd:appinfo>  
+            <xsd:appinfo source="X_Label_EN">Associated components</xsd:appinfo>  
+            <xsd:appinfo source="X_Write">Administrator</xsd:appinfo>  
+            <xsd:appinfo source="X_ForeignKeyInfo">Component/ComponentId</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element>
+        <xsd:element maxOccurs="unbounded" minOccurs="0" name="Compatibility" type="CompatibilityType"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_Write">Administrator</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element> 
+      </xsd:sequence> 
+    </xsd:complexType>  
+    <xsd:unique name="ComponentVersion"> 
+      <xsd:selector xpath="."/>  
+      <xsd:field xpath="ComponentVersionId"/> 
+    </xsd:unique> 
+  </xsd:element>  
+  <xsd:element name="Composition"> 
+    <xsd:annotation> 
+      <xsd:appinfo source="X_Label_EN">Composition</xsd:appinfo>  
+      <xsd:appinfo source="X_Write">Administrator</xsd:appinfo> 
+    </xsd:annotation>  
+    <xsd:complexType> 
+      <xsd:all> 
+        <xsd:element name="CompositionId" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_Write">Administrator</xsd:appinfo>  
+            <xsd:appinfo source="X_Label_EN">Id</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element>  
+        <xsd:element maxOccurs="1" minOccurs="0" name="FinishedProduct_Fk" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_ForeignKey">FinishedProduct/FinishedProductId</xsd:appinfo>  
+            <xsd:appinfo source="X_Label_EN">Finished Product</xsd:appinfo>  
+            <xsd:appinfo source="X_Write">Administrator</xsd:appinfo>  
+            <xsd:appinfo source="X_ForeignKeyInfo">FinishedProduct/FinishedProductId</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element>  
+        <xsd:element maxOccurs="1" minOccurs="1" name="ComponentVersion_Fk" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_Label_EN">Component Version</xsd:appinfo>  
+            <xsd:appinfo source="X_ForeignKey">ComponentVersion/ComponentVersionId</xsd:appinfo>  
+            <xsd:appinfo source="X_Write">Administrator</xsd:appinfo>  
+            <xsd:appinfo source="X_ForeignKeyInfo">ComponentVersion/ComponentVersionId</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element> 
+      </xsd:all> 
+    </xsd:complexType>  
+    <xsd:unique name="Composition"> 
+      <xsd:selector xpath="."/>  
+      <xsd:field xpath="CompositionId"/> 
+    </xsd:unique> 
+  </xsd:element>  
+  <xsd:element name="FinishedProductCommunicationChannel"> 
+    <xsd:annotation> 
+      <xsd:appinfo source="X_Label_EN">Product Communication Channel</xsd:appinfo>  
+      <xsd:appinfo source="X_Write">Administrator</xsd:appinfo> 
+    </xsd:annotation>  
+    <xsd:complexType> 
+      <xsd:sequence> 
+        <xsd:element name="FinishedProductCommunicationChannelId" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_Write">Administrator</xsd:appinfo>  
+            <xsd:appinfo source="X_Label_EN">Id</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element>  
+        <xsd:element maxOccurs="1" minOccurs="0" name="FinishedProduct_Fk" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_ForeignKey">FinishedProduct/FinishedProductId</xsd:appinfo>  
+            <xsd:appinfo source="X_Label_EN">Finished Product</xsd:appinfo>  
+            <xsd:appinfo source="X_Write">Administrator</xsd:appinfo>  
+            <xsd:appinfo source="X_ForeignKeyInfo">FinishedProduct/FinishedProductId</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element>  
+        <xsd:element maxOccurs="1" minOccurs="1" name="CommunicationChannel_Fk" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_ForeignKey">CommunicationChannel/CommunicationChannelId</xsd:appinfo>  
+            <xsd:appinfo source="X_Label_EN">Communication Channel</xsd:appinfo>  
+            <xsd:appinfo source="X_Write">Administrator</xsd:appinfo>  
+            <xsd:appinfo source="X_ForeignKeyInfo">CommunicationChannel/CommunicationChannelId</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element>  
+        <xsd:element maxOccurs="unbounded" minOccurs="0" name="MultimediaContent_Fk" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_ForeignKey">MultimediaContent/MultimediaContentId</xsd:appinfo>  
+            <xsd:appinfo source="X_Label_EN">Multimedia Contents</xsd:appinfo>  
+            <xsd:appinfo source="X_Write">Administrator</xsd:appinfo>  
+            <xsd:appinfo source="X_ForeignKeyInfo">MultimediaContent/MultimediaContentId</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element> 
+      </xsd:sequence> 
+    </xsd:complexType>  
+    <xsd:unique name="FinishedProductCommunicationChannel"> 
+      <xsd:selector xpath="."/>  
+      <xsd:field xpath="FinishedProductCommunicationChannelId"/> 
+    </xsd:unique> 
+  </xsd:element>  
+  <xsd:element name="CommunicationChannel"> 
+    <xsd:annotation> 
+      <xsd:appinfo source="X_Label_EN">Communication Channel</xsd:appinfo>  
+      <xsd:appinfo source="X_Write">Administrator</xsd:appinfo> 
+    </xsd:annotation>  
+    <xsd:complexType> 
+      <xsd:all> 
+        <xsd:element name="CommunicationChannelId" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_Label_EN">Code</xsd:appinfo>  
+            <xsd:appinfo source="X_Write">Administrator</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element> 
+      </xsd:all> 
+    </xsd:complexType>  
+    <xsd:unique name="CommunicationChannel"> 
+      <xsd:selector xpath="."/>  
+      <xsd:field xpath="CommunicationChannelId"/> 
+    </xsd:unique> 
+  </xsd:element>  
+  <xsd:element name="FinishedProductPartner"> 
+    <xsd:annotation> 
+      <xsd:appinfo source="X_Label_EN">Product Partner</xsd:appinfo>  
+      <xsd:appinfo source="X_Write">Administrator</xsd:appinfo> 
+    </xsd:annotation>  
+    <xsd:complexType> 
+      <xsd:sequence> 
+        <xsd:element name="FinishedProductPartnerId" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_Write">Administrator</xsd:appinfo>  
+            <xsd:appinfo source="X_Label_EN">Id</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element>  
+        <xsd:element maxOccurs="1" minOccurs="0" name="FinishedProduct_Fk" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_ForeignKey">FinishedProduct/FinishedProductId</xsd:appinfo>  
+            <xsd:appinfo source="X_Label_EN">Finished Product</xsd:appinfo>  
+            <xsd:appinfo source="X_Write">Administrator</xsd:appinfo>  
+            <xsd:appinfo source="X_ForeignKeyInfo">FinishedProduct/FinishedProductId</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element>
+      </xsd:sequence> 
+    </xsd:complexType>  
+    <xsd:unique name="FinishedProductPartner"> 
+      <xsd:selector xpath="."/>  
+      <xsd:field xpath="FinishedProductPartnerId"/> 
+    </xsd:unique> 
+  </xsd:element>  
+  <xsd:element name="FinishedProductPlant"> 
+    <xsd:annotation> 
+      <xsd:appinfo source="X_Label_EN">Product Plant</xsd:appinfo>  
+      <xsd:appinfo source="X_Write">Administrator</xsd:appinfo> 
+    </xsd:annotation>  
+    <xsd:complexType> 
+      <xsd:all> 
+        <xsd:element name="FinishedProductPlantId" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_Write">Administrator</xsd:appinfo>  
+            <xsd:appinfo source="X_Label_EN">Id</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element>  
+        <xsd:element maxOccurs="1" minOccurs="0" name="FinishedProduct_Fk" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_ForeignKey">FinishedProduct/FinishedProductId</xsd:appinfo>  
+            <xsd:appinfo source="X_Label_EN">Finished Product</xsd:appinfo>  
+            <xsd:appinfo source="X_Write">Administrator</xsd:appinfo>  
+            <xsd:appinfo source="X_ForeignKeyInfo">FinishedProduct/FinishedProductId</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element>
+      </xsd:all> 
+    </xsd:complexType>  
+    <xsd:unique name="FinishedProductPlant"> 
+      <xsd:selector xpath="."/>  
+      <xsd:field xpath="FinishedProductPlantId"/> 
+    </xsd:unique> 
+  </xsd:element>  
+  <xsd:element name="FinishedProductPrices"> 
+    <xsd:annotation> 
+      <xsd:appinfo source="X_Label_EN">Product Prices</xsd:appinfo>  
+      <xsd:appinfo source="X_Write">Administrator</xsd:appinfo> 
+    </xsd:annotation>  
+    <xsd:complexType> 
+      <xsd:all> 
+        <xsd:element name="FinishedProductPricesId" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_Write">Administrator</xsd:appinfo>  
+            <xsd:appinfo source="X_Label_EN">Id</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element>  
+        <xsd:element maxOccurs="1" minOccurs="0" name="FinishedProduct_Fk" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_ForeignKey">FinishedProduct/FinishedProductId</xsd:appinfo>  
+            <xsd:appinfo source="X_Label_EN">Finished Product</xsd:appinfo>  
+            <xsd:appinfo source="X_Write">Administrator</xsd:appinfo>  
+            <xsd:appinfo source="X_ForeignKeyInfo">FinishedProduct/FinishedProductId</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element>
+      </xsd:all> 
+    </xsd:complexType>  
+    <xsd:unique name="FinishedProductPrices"> 
+      <xsd:selector xpath="."/>  
+      <xsd:field xpath="FinishedProductPricesId"/> 
+    </xsd:unique> 
+  </xsd:element>  
+  <xsd:element name="FinishedProductSalesOrganization"> 
+    <xsd:annotation> 
+      <xsd:appinfo source="X_Label_EN">Product Sales Organization</xsd:appinfo>  
+      <xsd:appinfo source="X_Write">Administrator</xsd:appinfo> 
+    </xsd:annotation>  
+    <xsd:complexType> 
+      <xsd:all> 
+        <xsd:element name="FinishedProductSalesOrganizationId" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_Write">Administrator</xsd:appinfo>  
+            <xsd:appinfo source="X_Label_EN">Id</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element>  
+        <xsd:element maxOccurs="1" minOccurs="0" name="FinishedProduct_Fk" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_ForeignKey">FinishedProduct/FinishedProductId</xsd:appinfo>  
+            <xsd:appinfo source="X_Label_EN">Finished Product</xsd:appinfo>  
+            <xsd:appinfo source="X_Write">Administrator</xsd:appinfo>  
+            <xsd:appinfo source="X_ForeignKeyInfo">FinishedProduct/FinishedProductId</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element>
+      </xsd:all> 
+    </xsd:complexType>  
+    <xsd:unique name="FinishedProductSalesOrganization"> 
+      <xsd:selector xpath="."/>  
+      <xsd:field xpath="FinishedProductSalesOrganizationId"/> 
+    </xsd:unique> 
+  </xsd:element>  
+  <xsd:complexType name="EquivalenceType"> 
+    <xsd:all> 
+      <xsd:element maxOccurs="1" minOccurs="1" name="Equivalence" type="xsd:string"> 
+        <xsd:annotation> 
+          <xsd:appinfo source="X_Write">Administrator</xsd:appinfo> 
+        </xsd:annotation> 
+      </xsd:element>  
+      <xsd:element maxOccurs="1" minOccurs="1" name="Type" type="xsd:string"> 
+        <xsd:annotation> 
+          <xsd:appinfo source="X_Write">Administrator</xsd:appinfo> 
+        </xsd:annotation> 
+      </xsd:element> 
+    </xsd:all> 
+  </xsd:complexType>  
+  <xsd:complexType name="YieldConformityDataListType"> 
+    <xsd:sequence> 
+      <xsd:element maxOccurs="unbounded" minOccurs="1" name="YieldConformityDataType" type="YieldConformityDataType"> 
+        <xsd:annotation> 
+          <xsd:appinfo source="X_Write">Administrator</xsd:appinfo> 
+        </xsd:annotation> 
+      </xsd:element> 
+    </xsd:sequence> 
+  </xsd:complexType>  
+  <xsd:complexType name="EquivalenceListType"> 
+    <xsd:sequence> 
+      <xsd:element maxOccurs="unbounded" minOccurs="1" name="EquivalenceType" type="EquivalenceType"> 
+        <xsd:annotation> 
+          <xsd:appinfo source="X_Write">Administrator</xsd:appinfo> 
+        </xsd:annotation> 
+      </xsd:element> 
+    </xsd:sequence> 
+  </xsd:complexType>
+</xsd:schema>

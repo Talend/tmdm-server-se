@@ -117,6 +117,11 @@
             <groupId>org.restlet.gwt</groupId>
             <artifactId>org.restlet.ext.xml</artifactId>
         </dependency>
+        <dependency>
+            <groupId>net.sf.json-lib</groupId>
+            <artifactId>json-lib</artifactId>
+            <classifier>jdk15</classifier>
+        </dependency>
         <!-- MDM dependencies -->
         <dependency>
             <groupId>org.talend.mdm</groupId>

@@ -35,6 +35,9 @@ import java.util.TreeMap;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.dom4j.DocumentHelper;
@@ -161,6 +164,7 @@ import com.amalto.webapp.core.util.Util;
 import com.amalto.webapp.core.util.Webapp;
 import com.amalto.webapp.core.util.XmlUtil;
 import com.extjs.gxt.ui.client.Style.SortDir;
+import com.google.gson.JsonObject;
 import com.sun.xml.xsom.XSAnnotation;
 import com.sun.xml.xsom.XSComplexType;
 import com.sun.xml.xsom.XSElementDecl;
@@ -356,6 +360,22 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             throw new ServiceException(e.getLocalizedMessage());
         }
     }
+    
+    @Override
+    public String handleNavigatorNodeLabel(String jsonString,String language) throws ServiceException {
+        String navigator_node_ids = "navigator_node_ids"; //$NON-NLS-1$
+        String navigator_node_concept = "navigator_node_concept"; //$NON-NLS-1$
+        String navigator_node_label = "navigator_node_label"; //$NON-NLS-1$
+        JSONArray jsonArray = JSONArray.fromObject(jsonString);
+        for (int i = 0; i < jsonArray.size(); i++) {
+            JSONObject jsonObject = (JSONObject)jsonArray.get(i);
+            String ids = (String)jsonObject.get(navigator_node_ids);
+            String concept = (String)jsonObject.get(navigator_node_concept);
+            ItemBean itemBean = getItemBeanById(concept, ids, language);
+            jsonObject.put(navigator_node_label, itemBean.getDisplayPKInfo());
+        }
+        return jsonArray.toString();
+    }
 
     @Override
     public List<Restriction> getForeignKeyPolymTypeList(String xpathForeignKey, String language) throws ServiceException {
@@ -493,7 +513,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
                                 try {
                                     NumberFormat nf = NumberFormat.getInstance();
                                     Number num = nf.parse(dataText.trim());
-                                    String formatValue = "";
+                                    String formatValue = ""; //$NON-NLS-1$
                                     if (tm.getType().getBaseTypeName().equals(DataTypeConstants.DOUBLE.getBaseTypeName())) {
                                         formatValue = String.format(value[0], num.doubleValue()).trim();
                                     } else if (tm.getType().getBaseTypeName().equals(DataTypeConstants.FLOAT.getBaseTypeName())) {
@@ -959,7 +979,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
                             try {
                                 NumberFormat nf = NumberFormat.getInstance();
                                 Number num = nf.parse(dataText.trim());
-                                String formatValue = "";
+                                String formatValue = ""; //$NON-NLS-1$
                                 if (tm.getType().getBaseTypeName().equals(DataTypeConstants.DOUBLE.getBaseTypeName())) {
                                     formatValue = String.format(value[0], num.doubleValue()).trim();
                                 } else if (tm.getType().getBaseTypeName().equals(DataTypeConstants.FLOAT.getBaseTypeName())) {
@@ -975,7 +995,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
                                 com.amalto.core.util.Util
                                         .getNodeList(doc.getDocumentElement(), key.replaceFirst(concept + "/", "./")).item(0).setTextContent(formatValue); //$NON-NLS-1$ //$NON-NLS-2$
                             } catch (Exception e) {
-                                Log.info("format has error 111");
+                                Log.info("format has error 111"); //$NON-NLS-1$
                                 originalMap.remove(key);
                                 formateValueMap.remove(key);
                             }

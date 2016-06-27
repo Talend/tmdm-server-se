@@ -158,4 +158,6 @@ public interface BrowseRecordsService extends RemoteService {
 
     List<ForeignKeyBean> getForeignKeySuggestion(BasePagingLoadConfigImpl config, TypeModel model, String foreignKeyFilterValue,
             String dataClusterPK, String language) throws ServiceException;
+    
+    String handleNavigatorNodeLabel(String jsonString,String language) throws ServiceException;
 }

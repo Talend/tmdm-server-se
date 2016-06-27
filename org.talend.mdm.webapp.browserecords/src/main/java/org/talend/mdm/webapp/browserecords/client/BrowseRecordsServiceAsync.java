@@ -123,6 +123,8 @@ public interface BrowseRecordsServiceAsync {
     void getSmartViewList(String regex, AsyncCallback<List<ItemBaseModel>> callback);
 
     void getItemBeanById(String concept, String ids, String language, AsyncCallback<ItemBean> callback);
+    
+    void handleNavigatorNodeLabel(String jsonString, String language, AsyncCallback<String> callback);
 
     void getItemBeanById(String concept, String[] ids, String language, AsyncCallback<ItemBean> callback);
 

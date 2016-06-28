@@ -1294,5 +1294,12 @@ public class TreeDetailGWTTest extends GWTTestCase {
         @Override
         public void getExsitedViewName(String concept, AsyncCallback<String> callback) {
         }
+
+
+        @Override
+        public void handleNavigatorNodeLabel(String jsonString, String language, AsyncCallback<String> callback) {
+            // TODO Auto-generated method stub
+            
+        }
     }
 }

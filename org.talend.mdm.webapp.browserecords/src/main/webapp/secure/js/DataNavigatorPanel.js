@@ -334,7 +334,7 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 						+ '/inBoundTypes/'
 						+ selectNode.navigator_node_concept
 						+ '/'
-						+ selectNode.navigator_node_ids,
+						+ encodeURIComponent(selectNode.navigator_node_ids),
 					method : 'GET',
 					params : {
 						language : language
@@ -365,7 +365,7 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 									+ '/outBoundTypes/'
 									+ selectNode.navigator_node_concept
 									+ '/'
-									+ selectNode.navigator_node_ids,
+									+ encodeURIComponent(selectNode.navigator_node_ids),
 							method : 'GET',
 							params : {
 								language : language
@@ -417,7 +417,7 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 							params : {
 								foreignKeyConcept : selectNode.navigator_node_concept,
 								foreignKeyPath : d.navigator_node_foreignkey_path,
-								foreignKeyValue : d.navigator_node_foreignkey_value,
+								foreignKeyValue : encodeURIComponent(d.navigator_node_foreignkey_value),
 								filterValue : filterValue,
 								start : selectNode.page[d.navigator_node_concept].start,
 								limit : amalto.navigator.Navigator.getPageSize(),
@@ -1003,10 +1003,11 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 	function handleFailure(response) {
 		if (sessionExpired(response)) {
 			amalto.navigator.Navigator.sessionExpired();
+		} else if (response.status == 0){
+			Ext.MessageBox.alert('Error', message.getMsg("server_error"));
 		} else {
 			Ext.MessageBox.alert('Error', response.responseText);
 		}
-		
 	}
 	
 	function sessionExpired(response) {

@@ -25,6 +25,7 @@ import junit.framework.TestCase;
 import org.h2.jdbc.JdbcSQLException;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
+import org.talend.mdm.commmon.metadata.compare.Compare;
 
 import com.amalto.core.server.MockServerLifecycle;
 import com.amalto.core.server.ServerContext;
@@ -38,6 +39,7 @@ import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.record.DataRecordReader;
 import com.amalto.core.storage.record.XmlStringDataRecordReader;
 
+@SuppressWarnings("nls")
 public class StorageAdaptTest extends TestCase {
 
     protected static final String STORAGE_NAME = "Test";
@@ -380,6 +382,15 @@ public class StorageAdaptTest extends TestCase {
 
         MetadataRepository repository2 = new MetadataRepository();
         repository2.load(StorageAdaptTest.class.getResourceAsStream("schema6_2.xsd"));
+
+        // TMDM-9469 Impact analysis: list entities that will be dropped
+        Compare.DiffResults diffResults = Compare.compare(repository1, repository2);
+        List<ComplexTypeMetadata> sortedTypesToDrop = storage.findSortedTypesToDrop(diffResults, true);
+        assertEquals(3, sortedTypesToDrop.size());
+        assertEquals("OrganisationType", sortedTypesToDrop.get(0).getName());
+        assertEquals("MST_Organisation", sortedTypesToDrop.get(1).getName());
+        assertEquals("MST_Notice", sortedTypesToDrop.get(2).getName());
+
         storage.adapt(repository2, true);
 
         MetadataRepository repository = storage.getMetadataRepository();
@@ -401,6 +412,15 @@ public class StorageAdaptTest extends TestCase {
 
         MetadataRepository repository2 = new MetadataRepository();
         repository2.load(StorageAdaptTest.class.getResourceAsStream("schema7_2.xsd"));
+
+        // TMDM-9469 Impact analysis: list entities that will be dropped
+        Compare.DiffResults diffResults = Compare.compare(repository1, repository2);
+        List<ComplexTypeMetadata> sortedTypesToDrop = storage.findSortedTypesToDrop(diffResults, true);
+        assertEquals(5, sortedTypesToDrop.size());
+        assertEquals("TypeComptes", sortedTypesToDrop.get(0).getName());
+        assertEquals("TypeEtablissements", sortedTypesToDrop.get(1).getName());
+        assertEquals("TieTiers", sortedTypesToDrop.get(2).getName());
+
         storage.adapt(repository2, true);
 
         MetadataRepository repository = storage.getMetadataRepository();

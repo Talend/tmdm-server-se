@@ -994,7 +994,7 @@ public class HibernateStorage implements Storage {
         }
     }
 
-    private Set<ComplexTypeMetadata> findTypesToDelete(boolean force, Compare.DiffResults diffResults) {
+    public Set<ComplexTypeMetadata> findTypesToDelete(boolean force, Compare.DiffResults diffResults) {
         ImpactAnalyzer analyzer = getImpactAnalyzer();
         Map<ImpactAnalyzer.Impact, List<Change>> impacts = analyzer.analyzeImpacts(diffResults);
         Set<ComplexTypeMetadata> typesToDrop = new HashSet<ComplexTypeMetadata>();
@@ -1197,38 +1197,16 @@ public class HibernateStorage implements Storage {
         if (newRepository == null) {
             throw new IllegalArgumentException("New data model can not be null."); //$NON-NLS-1$
         }
-        // Compute diff between current data model and new one.
         MetadataRepository previousRepository = getMetadataRepository();
         Compare.DiffResults diffResults = Compare.compare(previousRepository, newRepository);
-        if (diffResults.getActions().isEmpty()) {
-            LOGGER.info("No change detected, no database schema update to perform."); //$NON-NLS-1$
-            return;
-        }
-        // Analyze impact to find types to delete
-        Set<ComplexTypeMetadata> typesToDrop = findTypesToDelete(force, diffResults);
-        if (!typesToDrop.isEmpty()) { // If types to drop, drop them
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug(typesToDrop.size() + " type(s) scheduled for deletion: " + Arrays.toString(typesToDrop.toArray()) //$NON-NLS-1$
-                        + "."); //$NON-NLS-1$
-            }
-            // Find dependent types to delete
-            Set<ComplexTypeMetadata> allDependencies = new HashSet<ComplexTypeMetadata>(); 
-            allDependencies.addAll(typesToDrop);
-            Set<ComplexTypeMetadata> dependentTypesToDrop = findDependentTypesToDelete(previousRepository, typesToDrop, allDependencies);
-            typesToDrop.addAll(dependentTypesToDrop);
-            // Sort in dependency order
-            List<ComplexTypeMetadata> sortedTypesToDrop = new ArrayList<ComplexTypeMetadata>(typesToDrop);
-            if(sortedTypesToDrop.size() > 1) {
-                sortedTypesToDrop = MetadataUtils.sortTypes(previousRepository, sortedTypesToDrop, SortType.LENIENT);
-            }
+        List<ComplexTypeMetadata> sortedTypesToDrop = findSortedTypesToDrop(diffResults, force);
+        if (sortedTypesToDrop.size() > 0) {
             // Clean full text index
             cleanFullTextIndex(sortedTypesToDrop);
             // Clean update reports
             cleanUpdateReports(sortedTypesToDrop);
             // Clean impacted tables
             cleanImpactedTables(sortedTypesToDrop);
-        } else {
-            LOGGER.info("Schema changes do no require to drop any database schema element."); //$NON-NLS-1$
         }
         // Reinitialize Hibernate
         LOGGER.info("Completing database schema update..."); //$NON-NLS-1$
@@ -1240,6 +1218,39 @@ public class HibernateStorage implements Storage {
         } catch (Exception e) {
             throw new RuntimeException("Unable to complete database schema update.", e); //$NON-NLS-1$
         }
+    }
+
+    @Override
+    public List<ComplexTypeMetadata> findSortedTypesToDrop(Compare.DiffResults diffResults, boolean force) {
+        List<ComplexTypeMetadata> sortedTypesToDrop = new ArrayList<ComplexTypeMetadata>();
+        MetadataRepository previousRepository = getMetadataRepository();
+        if (diffResults.getActions().isEmpty()) {
+            LOGGER.info("No change detected, no database schema update to perform."); //$NON-NLS-1$
+        } else {
+            // Analyze impact to find types to delete
+            Set<ComplexTypeMetadata> typesToDrop = findTypesToDelete(force, diffResults);
+            if (!typesToDrop.isEmpty()) {
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug(typesToDrop.size()
+                            + " type(s) scheduled for deletion: " + Arrays.toString(typesToDrop.toArray()) //$NON-NLS-1$
+                            + "."); //$NON-NLS-1$
+                }
+                // Find dependent types to delete
+                Set<ComplexTypeMetadata> allDependencies = new HashSet<ComplexTypeMetadata>();
+                allDependencies.addAll(typesToDrop);
+                Set<ComplexTypeMetadata> dependentTypesToDrop = findDependentTypesToDelete(previousRepository, typesToDrop,
+                        allDependencies);
+                typesToDrop.addAll(dependentTypesToDrop);
+                // Sort in dependency order
+                sortedTypesToDrop = new ArrayList<ComplexTypeMetadata>(typesToDrop);
+                if (sortedTypesToDrop.size() > 1) {
+                    sortedTypesToDrop = MetadataUtils.sortTypes(previousRepository, sortedTypesToDrop, SortType.LENIENT);
+                }
+            } else {
+                LOGGER.info("Schema changes do no require to drop any database schema element."); //$NON-NLS-1$
+            }
+        }
+        return sortedTypesToDrop;
     }
 
     @Override

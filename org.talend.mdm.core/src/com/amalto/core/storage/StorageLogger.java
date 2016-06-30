@@ -17,10 +17,13 @@ import com.amalto.core.storage.datasource.DataSourceDefinition;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.transaction.StorageTransaction;
 import org.apache.log4j.Logger;
+import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ConsoleDumpMetadataVisitor;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.metadata.compare.ImpactAnalyzer;
+import org.talend.mdm.commmon.metadata.compare.Compare.DiffResults;
 
+import java.util.List;
 import java.util.Set;
 
 public class StorageLogger implements Storage {
@@ -195,5 +198,10 @@ public class StorageLogger implements Storage {
     @Override
     public boolean isClosed() {
         return delegate.isClosed();
+    }
+
+    @Override
+    public List<ComplexTypeMetadata> findSortedTypesToDrop(DiffResults diffResults, boolean force) {
+        return delegate.findSortedTypesToDrop(diffResults, force);
     }
 }

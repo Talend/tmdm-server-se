@@ -17,12 +17,16 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -225,6 +229,7 @@ public class SystemModels {
             @ApiParam("Optional language to get localized result") @QueryParam("lang") String locale, 
             InputStream dataModel) {
         Map<ImpactAnalyzer.Impact, List<Change>> impacts;
+        List<ComplexTypeMetadata> typesToDrop = new ArrayList<ComplexTypeMetadata>();
         if (!isSystemStorageAvailable()) {
             impacts = new EnumMap<>(ImpactAnalyzer.Impact.class);
             for (ImpactAnalyzer.Impact impact : impacts.keySet()) {
@@ -249,6 +254,7 @@ public class SystemModels {
             Compare.DiffResults diffResults = Compare.compare(previousRepository, newRepository);
             // Analyzes impacts on the select storage
             impacts = storage.getImpactAnalyzer().analyzeImpacts(diffResults);
+            typesToDrop = storage.findSortedTypesToDrop(diffResults, true);
         }
         // Serialize results to XML
         StringWriter resultAsXml = new StringWriter();
@@ -279,6 +285,13 @@ public class SystemModels {
                     }
                     writer.writeEndElement();
                 }
+                writer.writeStartElement("entitiesToDrop"); //$NON-NLS-1$
+                for (ComplexTypeMetadata type : typesToDrop) {
+                    writer.writeStartElement("entity"); //$NON-NLS-1$
+                    writer.writeCharacters(type.getName());
+                    writer.writeEndElement();
+                }
+                writer.writeEndElement();
             }
             writer.writeEndElement();
         } catch (XMLStreamException e) {

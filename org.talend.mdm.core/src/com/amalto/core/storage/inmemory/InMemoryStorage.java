@@ -10,6 +10,7 @@ import org.talend.mdm.commmon.metadata.*;
 import org.talend.mdm.commmon.metadata.compare.Change;
 import org.talend.mdm.commmon.metadata.compare.Compare;
 import org.talend.mdm.commmon.metadata.compare.ImpactAnalyzer;
+import org.talend.mdm.commmon.metadata.compare.Compare.DiffResults;
 
 import com.amalto.core.query.user.*;
 import com.amalto.core.query.user.metadata.StagingBlockKey;
@@ -189,6 +190,11 @@ public class InMemoryStorage implements Storage {
     @Override
     public boolean isClosed() {
         return isClosed;
+    }
+
+    @Override
+    public List<ComplexTypeMetadata> findSortedTypesToDrop(DiffResults diffResults, boolean force) {
+        return new ArrayList<ComplexTypeMetadata>();
     }
 
     private static interface ValueBuilder {

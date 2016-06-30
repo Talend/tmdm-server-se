@@ -251,18 +251,14 @@ public class MultiLanguageField extends TextField<String> {
         if("*".equals(v)){ //$NON-NLS-1$
             return v;
         }        
-        if (OperatorValueConstants.CONTAINS.equals(operator)) {
-            return "*" + v + "*"; //$NON-NLS-1$ //$NON-NLS-2$
-        } else if (OperatorValueConstants.STARTSWITH.equals(operator)) {
+        if (OperatorValueConstants.STARTSWITH.equals(operator)) {
             return "%:" + v; //$NON-NLS-1$
         }
         return v;
     }
     
     public String getInputValue(String operator, String value) {
-        if (OperatorValueConstants.CONTAINS.equals(operator)) {
-            return value.substring(1, value.length() - 1);
-        } else if (OperatorValueConstants.STARTSWITH.equals(operator)) {
+        if (OperatorValueConstants.STARTSWITH.equals(operator)) {
             return value.substring(2, value.length());
         }
         return value;

@@ -24,6 +24,7 @@ import org.talend.mdm.webapp.base.client.model.ItemBasePageLoadResult;
 import org.talend.mdm.webapp.base.client.model.MultiLanguageModel;
 import org.talend.mdm.webapp.base.client.util.MultilanguageMessageParser;
 import org.talend.mdm.webapp.base.client.widget.PagingToolBarEx;
+import org.talend.mdm.webapp.base.shared.Constants;
 import org.talend.mdm.webapp.base.shared.EntityModel;
 import org.talend.mdm.webapp.base.shared.TypeModel;
 import org.talend.mdm.webapp.browserecords.client.BrowseRecords;
@@ -77,6 +78,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowData;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
@@ -105,8 +107,6 @@ public class ForeignKeyListWindow extends Window {
 
     private PagingLoader<PagingLoadResult<ModelData>> loader;
 
-    private int pageSize = 20;
-
     private String previousFilterText;
 
     private TextField<String> filter = new TextField<String>();
@@ -120,6 +120,8 @@ public class ForeignKeyListWindow extends Window {
     private String dataCluster;
 
     private ForeignKeyField sourceField;
+    
+    private PagingToolBarEx pageToolBar;
 
     public ForeignKeyListWindow(String foreignKeyPath, List<String> foreignKeyInfo, String dataCluster, EntityModel entityModel,
             ForeignKeyField foreignKeyField) {
@@ -155,6 +157,9 @@ public class ForeignKeyListWindow extends Window {
             @Override
             public void load(final Object loadConfig, final AsyncCallback<PagingLoadResult<ForeignKeyBean>> callback) {
                 PagingLoadConfig config = (PagingLoadConfig) loadConfig;
+                if (pageToolBar != null) {
+                    config.setLimit(pageToolBar.getPageSize());
+                }
                 BasePagingLoadConfigImpl baseConfig = BasePagingLoadConfigImpl.copyPagingLoad(config);
                 final String currentFilterText = getFilterValue();
 
@@ -224,6 +229,22 @@ public class ForeignKeyListWindow extends Window {
         loader = new BasePagingLoader<PagingLoadResult<ModelData>>(proxy);
         loader.setRemoteSort(true);
         final ListStore<ForeignKeyBean> store = new ListStore<ForeignKeyBean>(loader);
+        
+        int usePageSize = Constants.PAGE_SIZE;
+        if (Cookies.getCookie(PagingToolBarEx.BROWSERECORD_FOREIGNKEY_PAGESIZE) != null) {
+            usePageSize = Integer.parseInt(Cookies.getCookie(PagingToolBarEx.BROWSERECORD_FOREIGNKEY_PAGESIZE));
+        }
+        pageToolBar = new PagingToolBarEx(usePageSize,PagingToolBarEx.BROWSERECORD_FOREIGNKEY_PAGESIZE) {
+            @Override
+            protected void onLoad(LoadEvent event) {
+                String of_word = MessagesFactory.getMessages().of_word();
+                msgs.setDisplayMsg("{0} - {1} " + of_word + " " + (isPagingAccurate ? "" : "~") + "{2}"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+                super.onLoad(event);
+            }
+        };
+        pageToolBar.setBrowseRecordsGridCall(true);
+        pageToolBar.bind(loader);
+        pageToolBar.setEnabled(true);
 
         FormPanel panel = new FormPanel();
         panel.setFrame(false);
@@ -265,7 +286,7 @@ public class ForeignKeyListWindow extends Window {
                         closeOrHideWindow();
                     } else {
                         previousFilterText = filter.getRawValue();
-                        loader.load(0, pageSize);
+                        loader.load(0, pageToolBar.getPageSize());
                     }
 
                 }
@@ -311,7 +332,7 @@ public class ForeignKeyListWindow extends Window {
                     }
                 }
                 ForeignKeyListWindow.this.foreignKeyInfo = fkinfo;
-                loader.load(0, pageSize);
+                loader.load(0, pageToolBar.getPageSize());
                 if (entityModel != null && targetEntity != null && !targetEntity.equals(entityModel.getConceptName())) {
                     fkDrawer = CommonUtil.switchForeignKeyEntityType(entityModel.getConceptName(),
                             ForeignKeyListWindow.this.foreignKeyPath, fkInfo);
@@ -328,7 +349,7 @@ public class ForeignKeyListWindow extends Window {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
-                loader.load(0, pageSize);
+                loader.load(0, pageToolBar.getPageSize());
             }
         });
         filter.setWidth(200);
@@ -339,17 +360,6 @@ public class ForeignKeyListWindow extends Window {
 
         List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
         // build columns by specify store
-        final PagingToolBarEx pageToolBar = new PagingToolBarEx(pageSize) {
-
-            @Override
-            protected void onLoad(LoadEvent event) {
-                String of_word = MessagesFactory.getMessages().of_word();
-                msgs.setDisplayMsg("{0} - {1} " + of_word + " " + (isPagingAccurate ? "" : "~") + "{2}"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-                super.onLoad(event);
-            }
-        };
-        pageToolBar.bind(loader);
-        pageToolBar.setEnabled(true);
 
         // change label display
         // boolean retrieveFKinfos = typeModel.isRetrieveFKinfos();
@@ -433,7 +443,7 @@ public class ForeignKeyListWindow extends Window {
             @Override
             public void handleEvent(GridEvent<ForeignKeyBean> be) {
                 config.setOffset(0);
-                config.setLimit(pageSize);
+                config.setLimit(pageToolBar.getPageSize());
                 loader.load(config);
             }
         });

@@ -631,6 +631,7 @@ class StandardQueryHandler extends AbstractQueryHandler {
         }
         // If select is not a projection, selecting root type is enough, otherwise add projection for selected fields.
         if (select.isProjection()) {
+            boolean toDistinct = true;
             projectionList = Projections.projectionList();
             {
                 List<TypedExpression> queryFields = select.getSelectedFields();
@@ -645,6 +646,9 @@ class StandardQueryHandler extends AbstractQueryHandler {
                         Alias alias = (Alias) selectedField;
                         if (alias.getTypedExpression() instanceof Count) {
                             isCountQuery = true;
+                        }
+                        if (alias.getTypedExpression() instanceof Distinct) {
+                            toDistinct = false;
                         }
                     }
                 }
@@ -665,7 +669,18 @@ class StandardQueryHandler extends AbstractQueryHandler {
                     selectedFields.add(countTypedExpression);
                 }
             }
-            criteria.setProjection(projectionList);
+            // Can't distinct if OrderBy Field doesn't exist in result list.
+            for (OrderBy current : select.getOrderBy()) {
+                if ((current.getExpression() instanceof Field && !select.getSelectedFields().contains(current.getExpression()))
+                        || current.getExpression() instanceof Type || current.getExpression() instanceof Alias) {
+                    toDistinct = false;
+                }
+            }
+            if (toDistinct) {
+                criteria.setProjection(Projections.distinct(projectionList));
+            } else {
+                criteria.setProjection(projectionList);
+            }
         } else {
             // TMDM-5388: Hibernate sometimes returns duplicate results (like for User stored in System storage), this
             // line avoids this situation.

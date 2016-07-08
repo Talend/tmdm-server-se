@@ -674,9 +674,10 @@ class StandardQueryHandler extends AbstractQueryHandler {
                 if ((current.getExpression() instanceof Field && !select.getSelectedFields().contains(current.getExpression()))
                         || current.getExpression() instanceof Type || current.getExpression() instanceof Alias) {
                     toDistinct = false;
+                    break;
                 }
             }
-            if (toDistinct) {
+            if (select.getOrderBy().size() > 0 && toDistinct) {
                 criteria.setProjection(Projections.distinct(projectionList));
             } else {
                 criteria.setProjection(projectionList);

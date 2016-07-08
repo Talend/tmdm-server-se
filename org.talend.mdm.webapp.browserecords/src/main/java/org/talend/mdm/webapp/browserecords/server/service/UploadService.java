@@ -15,6 +15,7 @@ package org.talend.mdm.webapp.browserecords.server.service;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -49,10 +50,14 @@ import com.amalto.core.util.Messages;
 import com.amalto.core.util.MessagesFactory;
 import com.amalto.core.webservice.WSDataClusterPK;
 import com.amalto.core.webservice.WSDataModelPK;
+import com.amalto.core.webservice.WSGetItem;
+import com.amalto.core.webservice.WSItem;
+import com.amalto.core.webservice.WSItemPK;
 import com.amalto.core.webservice.WSPutItem;
 import com.amalto.core.webservice.WSPutItemWithReport;
 import com.amalto.webapp.core.util.Util;
 import com.amalto.webapp.core.util.XmlUtil;
+import com.amalto.webapp.core.util.XtentisWebappException;
 
 public class UploadService {
 
@@ -71,6 +76,8 @@ public class UploadService {
 
     private String fileType = null;
 
+    private boolean isPartialUpdate = false;
+    
     private boolean headersOnFirstLine = false;
 
     private Map<String, Boolean> headerVisibleMap = null;
@@ -99,11 +106,12 @@ public class UploadService {
 
     private Map<String, List<Element>> multiNodeMap;
 
-    public UploadService(EntityModel entityModel, String fileType, boolean headersOnFirstLine,
+    public UploadService(EntityModel entityModel, String fileType, boolean isPartialUpdate, boolean headersOnFirstLine,
             Map<String, Boolean> headerVisibleMap, List<String> inheritanceNodePathList, String multipleValueSeparator,
             String seperator, String encoding, char textDelimiter, String language) {
         this.entityModel = entityModel;
         this.fileType = fileType;
+        this.isPartialUpdate = isPartialUpdate;
         this.headersOnFirstLine = headersOnFirstLine;
         this.headerVisibleMap = headerVisibleMap;
         this.inheritanceNodePathList = inheritanceNodePathList;
@@ -162,58 +170,34 @@ public class UploadService {
             Row row = rowIterator.next();
             if (rowNumber == 1) {
                 importHeader = readHeader(row, null);
+                if (importHeader != null && importHeader.length > 0 && entityModel != null) {
+                    validateKeyFieldExist(importHeader);
+                }
                 if (headersOnFirstLine) {
                     continue;
                 }
             }
             multiNodeMap = new HashMap<String, List<Element>>();
             if (importHeader != null) {
-                Document document = XmlUtil.parseDocument(org.talend.mdm.webapp.browserecords.server.util.CommonUtil.getSubXML(
-                        typeModel, null, null, language));
+                Document document;
+                if(isPartialUpdate){
+                    String[] keys = new String[entityModel.getKeys().length];
+                    for (int k=0; k < entityModel.getKeys().length; k++) {
+                        for(String header : importHeader) {
+                            if(header.equals(entityModel.getKeys()[k])){
+                                keys[k] = getExcelFieldValue(row.getCell(k));
+                            }
+                        }
+                    }
+                    document = getItemForPartialUpdate(entityModel, keys);
+                } else {
+                    document = XmlUtil.parseDocument(org.talend.mdm.webapp.browserecords.server.util.CommonUtil.getSubXML(
+                            typeModel, null, null, language));
+                }
                 Element currentElement = document.getRootElement();
                 for (int i = 0; i < importHeader.length; i++) {
-                    String fieldValue = null;
-                    Cell tmpCell = row.getCell(i);
-                    if (tmpCell != null) {
-                        int cellType = tmpCell.getCellType();
-                        switch (cellType) {
-                        case Cell.CELL_TYPE_NUMERIC: {
-                            double tmp = tmpCell.getNumericCellValue();
-                            fieldValue = getStringRepresentation(tmp);
-                            break;
-                        }
-                        case Cell.CELL_TYPE_STRING: {
-                            fieldValue = tmpCell.getRichStringCellValue().getString();
-                            int result = org.talend.mdm.webapp.browserecords.server.util.CommonUtil.getFKFormatType(fieldValue,
-                                    multipleValueSeparator);
-                            if (result > 0) {
-                                fieldValue = org.talend.mdm.webapp.browserecords.server.util.CommonUtil.getForeignKeyId(
-                                        fieldValue, result, multipleValueSeparator);
-                            }
-                            break;
-                        }
-                        case Cell.CELL_TYPE_BOOLEAN: {
-                            boolean tmp = tmpCell.getBooleanCellValue();
-                            if (tmp) {
-                                fieldValue = "true"; //$NON-NLS-1$
-                            } else {
-                                fieldValue = "false";//$NON-NLS-1$
-                            }
-                            break;
-                        }
-                        case Cell.CELL_TYPE_FORMULA: {
-                            fieldValue = tmpCell.getCellFormula();
-                            break;
-                        }
-                        case Cell.CELL_TYPE_ERROR: {
-                            break;
-                        }
-                        case Cell.CELL_TYPE_BLANK: {
-                            fieldValue = ""; //$NON-NLS-1$
-                        }
-                        default: {
-                        }
-                        }
+                    String fieldValue = getExcelFieldValue(row.getCell(i));
+                    if (row.getCell(i) != null) {
                         if (fieldValue != null && !fieldValue.isEmpty()) {
                             dataLine = true;
                             fillFieldValue(currentElement, importHeader[i], fieldValue, row, null);
@@ -240,14 +224,30 @@ public class UploadService {
             dataLine = false;
             if (i == 0) {
                 importHeader = readHeader(null, record);
+                if (importHeader != null && importHeader.length > 0 && entityModel != null) {
+                    validateKeyFieldExist(importHeader);
+                }
                 if (headersOnFirstLine) {
                     continue;
                 }
             }
             multiNodeMap = new HashMap<String, List<Element>>();
             if (importHeader != null) {
-                Document document = XmlUtil.parseDocument(org.talend.mdm.webapp.browserecords.server.util.CommonUtil.getSubXML(
-                        typeModel, null, null, language));
+                Document document;
+                if(isPartialUpdate){
+                    String[] keys = new String[entityModel.getKeys().length];
+                    for (int k=0; k < entityModel.getKeys().length; k++) {
+                        for(String header : importHeader) {
+                            if(header.equals(entityModel.getKeys()[k])){
+                                keys[k] = record[k];
+                            }
+                        }
+                    }
+                    document = getItemForPartialUpdate(entityModel, keys);
+                } else {
+                    document = XmlUtil.parseDocument(org.talend.mdm.webapp.browserecords.server.util.CommonUtil.getSubXML(
+                            typeModel, null, null, language));
+                }
                 Element currentElement = document.getRootElement();
                 if (record.length > 0) {
                     for (int j = 0; j < importHeader.length; j++) {
@@ -354,6 +354,22 @@ public class UploadService {
         }
         return headers.toArray(new String[headers.size()]);
     }
+    
+    protected void validateKeyFieldExist(String[] importHeaders) throws UploadException {
+        String[] keys = entityModel.getKeys();
+        for(String key : keys){
+            Boolean exist = false;
+            for(String header : importHeaders){
+                if (key.equals(header)) {
+                    exist = true;
+                    break;
+                }
+            }
+            if(!exist){
+                throw new UploadException(MESSAGES.getMessage(new Locale(language), "error_missing_key_field")); //$NON-NLS-1$
+            }
+        }
+    }
 
     protected String handleHeader(String headerName, int index) throws UploadException {
         String concept = entityModel.getConceptName();
@@ -438,7 +454,11 @@ public class UploadService {
                         currentElement = valueNodeList.get(valueNodeList.size() - 1);
                     }
                 } else {
-                    currentElement = currentElement.element(xpathPartArray[i]);
+                    if (currentElement.element(xpathPartArray[i]) != null) {
+                        currentElement = currentElement.element(xpathPartArray[i]);
+                    } else {
+                        currentElement = currentElement.addElement(xpathPartArray[i]);
+                    }
                 }
                 if (i == xpathPartArray.length - 1) {
                     if (isAttribute) {
@@ -479,9 +499,59 @@ public class UploadService {
             }
         }
     }
+    
+    private Document getItemForPartialUpdate(EntityModel model, String[] keys) throws RemoteException, XtentisWebappException, Exception {
+        WSItem wsItem = CommonUtil.getPort().getItem(new WSGetItem(new WSItemPK(new WSDataClusterPK(org.talend.mdm.webapp.browserecords.server.util.CommonUtil.getCurrentDataModel()), model.getConceptName(), keys)));
+        return org.talend.mdm.webapp.base.server.util.XmlUtil.parseText(wsItem.getContent());
+    }
+    
+
+    protected String getExcelFieldValue(Cell cell) throws Exception {
+        String fieldValue = null;
+        int cellType = cell.getCellType();
+        switch (cellType) {
+            case Cell.CELL_TYPE_NUMERIC: {
+                double tmp = cell.getNumericCellValue();
+                fieldValue = getStringRepresentation(tmp);
+                break;
+            }
+            case Cell.CELL_TYPE_STRING: {
+                fieldValue = cell.getRichStringCellValue().getString();
+                int result = org.talend.mdm.webapp.browserecords.server.util.CommonUtil.getFKFormatType(fieldValue,
+                        multipleValueSeparator);
+                if (result > 0) {
+                    fieldValue = org.talend.mdm.webapp.browserecords.server.util.CommonUtil.getForeignKeyId(
+                            fieldValue, result, multipleValueSeparator);
+                }
+                break;
+            }
+            case Cell.CELL_TYPE_BOOLEAN: {
+                boolean tmp = cell.getBooleanCellValue();
+                if (tmp) {
+                    fieldValue = "true"; //$NON-NLS-1$
+                } else {
+                    fieldValue = "false";//$NON-NLS-1$
+                }
+                break;
+            }
+            case Cell.CELL_TYPE_FORMULA: {
+                fieldValue = cell.getCellFormula();
+                break;
+            }
+            case Cell.CELL_TYPE_ERROR: {
+                break;
+            }
+            case Cell.CELL_TYPE_BLANK: {
+                fieldValue = ""; //$NON-NLS-1$
+            }
+            default: {
+            }
+        }
+        return fieldValue;
+    }
 
     private void setFieldValue(Element currentElement, String value) throws Exception {
-        if (currentElement.elements().size() > 0) {
+        if (currentElement.elements() != null && currentElement.elements().size() > 0) {
             Element complexeElement = XmlUtil.parseDocument(Util.parse(StringEscapeUtils.unescapeXml(value))).getRootElement();
             List<Element> contentList = currentElement.getParent().content();
             int index = contentList.indexOf(currentElement);

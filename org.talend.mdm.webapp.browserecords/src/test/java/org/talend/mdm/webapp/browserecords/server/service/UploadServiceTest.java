@@ -14,11 +14,15 @@ package org.talend.mdm.webapp.browserecords.server.service;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.rmi.RemoteException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -27,17 +31,40 @@ import java.util.regex.Pattern;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit3.PowerMockSuite;
 import org.talend.mdm.commmon.util.datamodel.management.DataModelID;
+import org.talend.mdm.webapp.base.server.util.CommonUtil;
 import org.talend.mdm.webapp.base.shared.EntityModel;
 import org.talend.mdm.webapp.browserecords.server.bizhelpers.DataModelHelper;
 import org.talend.mdm.webapp.browserecords.server.bizhelpers.SchemaMockAgent;
 
+import com.amalto.core.delegator.BeanDelegatorContainer;
+import com.amalto.core.delegator.IXtentisWSDelegator;
+import com.amalto.core.objects.ItemPOJO;
+import com.amalto.core.objects.ItemPOJOPK;
+import com.amalto.core.objects.datacluster.DataClusterPOJOPK;
+import com.amalto.core.util.CoreException;
+import com.amalto.core.util.EntityNotFoundException;
 import com.amalto.core.util.Util;
+import com.amalto.core.util.WhereConditionForcePivotFilter;
+import com.amalto.core.util.XConverter;
+import com.amalto.core.webservice.WSDataClusterPK;
+import com.amalto.core.webservice.WSGetItem;
+import com.amalto.core.webservice.WSGetItems;
+import com.amalto.core.webservice.WSItem;
+import com.amalto.core.webservice.WSItemPK;
 import com.amalto.core.webservice.WSPutItemWithReport;
+import com.amalto.core.webservice.WSStringArray;
+import com.amalto.core.webservice.XtentisPort;
 
 /**
  * created by talend2 on 2013-12-18 Detailled comment
@@ -60,6 +87,8 @@ public class UploadServiceTest extends TestCase {
 
     protected String fileType = null;
 
+    protected boolean isPartialUpdate = false;
+    
     protected boolean headersOnFirstLine = false;
 
     protected Map<String, Boolean> headerVisibleMap = null;
@@ -81,6 +110,7 @@ public class UploadServiceTest extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
+        isPartialUpdate = false;
         headersOnFirstLine = true;
     }
 
@@ -107,7 +137,7 @@ public class UploadServiceTest extends TestCase {
         // test upload excel file
         fileType = "xls"; //$NON-NLS-1$
         file = new File(this.getClass().getResource("UploadTestModel_Polymorphism.xls").getFile()); //$NON-NLS-1$
-        UploadService service = new TestUploadService(entityModel, fileType, headersOnFirstLine, headerVisibleMap,
+        UploadService service = new TestUploadService(entityModel, fileType, isPartialUpdate, headersOnFirstLine, headerVisibleMap,
                 inheritanceNodePathList, multipleValueSeparator, seperator, encoding, textDelimiter, language);
 
         List<WSPutItemWithReport> wsPutItemWithReportList = service.readUploadFile(file);
@@ -120,7 +150,7 @@ public class UploadServiceTest extends TestCase {
         // test upload csv file
         fileType = "csv"; //$NON-NLS-1$
         file = new File(this.getClass().getResource("UploadTestModel_Polymorphism.csv").getFile()); //$NON-NLS-1$
-        service = new TestUploadService(entityModel, fileType, headersOnFirstLine, headerVisibleMap, inheritanceNodePathList,
+        service = new TestUploadService(entityModel, fileType, isPartialUpdate, headersOnFirstLine, headerVisibleMap, inheritanceNodePathList,
                 multipleValueSeparator, seperator, encoding, textDelimiter, language);
         wsPutItemWithReportList = service.readUploadFile(file);
         assertEquals(record1, wsPutItemWithReportList.get(0).getWsPutItem().getXmlString());
@@ -143,7 +173,7 @@ public class UploadServiceTest extends TestCase {
         file = new File(this.getClass().getResource("UploadTestModel_MultiNode1.xls").getFile()); //$NON-NLS-1$
         String[] keys = { "Entity/field1" }; //$NON-NLS-1$
         entityModel = getEntityModel("UploadTestModel_MultiNode1.xsd", "Entity", "Entity", keys); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        UploadService service = new TestUploadService(entityModel, fileType, headersOnFirstLine, headerVisibleMap,
+        UploadService service = new TestUploadService(entityModel, fileType, isPartialUpdate, headersOnFirstLine, headerVisibleMap,
                 inheritanceNodePathList, multipleValueSeparator, seperator, encoding, textDelimiter, language);
         List<WSPutItemWithReport> wsPutItemWithReportList = service.readUploadFile(file);
         assertEquals(expectedResult, removeFormatPattern.matcher(wsPutItemWithReportList.get(0).getWsPutItem().getXmlString())
@@ -173,7 +203,7 @@ public class UploadServiceTest extends TestCase {
         file = new File(this.getClass().getResource("Product.xls").getFile()); //$NON-NLS-1$
         String[] keys = { "Product/Id" }; //$NON-NLS-1$
         entityModel = getEntityModel("Product.xsd", "Product", "Product", keys); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        UploadService service = new TestUploadService(entityModel, fileType, headersOnFirstLine, headerVisibleMap,
+        UploadService service = new TestUploadService(entityModel, fileType, isPartialUpdate, headersOnFirstLine, headerVisibleMap,
                 inheritanceNodePathList, multipleValueSeparator, seperator, encoding, textDelimiter, language);
         List<WSPutItemWithReport> wsPutItemWithReportList = service.readUploadFile(file);
         assertEquals(expectedResult, removeFormatPattern.matcher(wsPutItemWithReportList.get(0).getWsPutItem().getXmlString())
@@ -188,13 +218,63 @@ public class UploadServiceTest extends TestCase {
         headerVisibleMap.put("Product/Availability", true); //$NON-NLS-1$
         headerVisibleMap.put("Product/Family", true); //$NON-NLS-1$"
         file = new File(this.getClass().getResource("Product2.xls").getFile()); //$NON-NLS-1$
-        service = new TestUploadService(entityModel, fileType, headersOnFirstLine, headerVisibleMap, inheritanceNodePathList,
+        service = new TestUploadService(entityModel, fileType, isPartialUpdate, headersOnFirstLine, headerVisibleMap, inheritanceNodePathList,
                 multipleValueSeparator, seperator, encoding, textDelimiter, language);
         wsPutItemWithReportList = service.readUploadFile(file);
         assertEquals(expectedResult, removeFormatPattern.matcher(wsPutItemWithReportList.get(0).getWsPutItem().getXmlString())
                 .replaceAll("")); //$NON-NLS-1$
     }
 
+    public void testGetExcelFieldValue() throws Exception {
+        boolean partialUpdateFlag = true;
+        String[] keys = { "EntityA/EntityAId" }; //$NON-NLS-1$
+        headerVisibleMap = new HashMap<String, Boolean>();
+        headerVisibleMap.put("EntityA/EntityAId", true); //$NON-NLS-1$
+        headerVisibleMap.put("EntityA/Name", true); //$NON-NLS-1$
+        headerVisibleMap.put("EntityA/Age", true); //$NON-NLS-1$
+        multipleValueSeparator = "|"; //$NON-NLS-1$
+        EntityModel em = getEntityModel("PartialUpdateModel.xsd", "PartialUpdateModel", "EntityA", keys); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        UploadService service = new TestUploadService(em, fileType, partialUpdateFlag, headersOnFirstLine, headerVisibleMap,
+                inheritanceNodePathList, multipleValueSeparator, seperator, encoding, textDelimiter, language);
+        String[] importHeader = new String[]{"EntityA/EntityAId"}; //$NON-NLS-1$
+        try {
+            service.validateKeyFieldExist(importHeader);
+        } catch(Exception e) {
+            fail("Key Field is not Exist"); //$NON-NLS-1$
+        }
+        
+        file = new File(this.getClass().getResource("UploadTestModel_PartialUpdate.xls").getFile()); //$NON-NLS-1$
+        try {
+            FileInputStream fileInputStream = new FileInputStream(file);
+            POIFSFileSystem poiFSFile = new POIFSFileSystem(fileInputStream);
+            Workbook workBook = new HSSFWorkbook(poiFSFile);
+            Sheet sheet = workBook.getSheetAt(0);
+            Iterator<Row> rowIterator = sheet.rowIterator();
+            int rowNumber = 0;
+            while (rowIterator.hasNext()) {
+                rowNumber++;
+                Row row = rowIterator.next();
+                if (rowNumber == 1) {
+                    continue;
+                } else if (rowNumber == 2) {
+                    assertEquals("22", service.getExcelFieldValue(row.getCell(0))); //$NON-NLS-1$
+                    assertEquals("updatedName2", service.getExcelFieldValue(row.getCell(1))); //$NON-NLS-1$
+                    assertEquals("2222", service.getExcelFieldValue(row.getCell(2))); //$NON-NLS-1$
+                } else if (rowNumber == 3) {
+                    assertEquals("33", service.getExcelFieldValue(row.getCell(0))); //$NON-NLS-1$
+                    assertEquals("updatedName3", service.getExcelFieldValue(row.getCell(1))); //$NON-NLS-1$
+                    assertEquals("3333", service.getExcelFieldValue(row.getCell(2))); //$NON-NLS-1$
+                } else if (rowNumber == 4) {
+                    assertEquals("44", service.getExcelFieldValue(row.getCell(0))); //$NON-NLS-1$
+                    assertEquals("updatedName4", service.getExcelFieldValue(row.getCell(1))); //$NON-NLS-1$
+                    assertEquals("4444", service.getExcelFieldValue(row.getCell(2))); //$NON-NLS-1$
+                }
+            }
+        } catch (Exception exception) {
+            fail("get excel file field value failed."); //$NON-NLS-1$
+        } 
+    }
+    
     protected EntityModel getEntityModel(String xsdFileName, String dataModel, String concept, String[] keys) throws Exception {
         String xsd = getFileContent(xsdFileName);
         String[] roles = { "System_Admin", "administration" }; //$NON-NLS-1$//$NON-NLS-2$
@@ -220,10 +300,10 @@ public class UploadServiceTest extends TestCase {
 
     public class TestUploadService extends UploadService {
 
-        public TestUploadService(EntityModel entityModel, String fileType, boolean headersOnFirstLine,
+        public TestUploadService(EntityModel entityModel, String fileType, boolean isPartialUpdate, boolean headersOnFirstLine,
                 Map<String, Boolean> headerVisibleMap, List<String> inheritanceNodePathList, String multipleValueSeparator,
                 String seperator, String encoding, char textDelimiter, String language) {
-            super(entityModel, fileType, headersOnFirstLine, headerVisibleMap, inheritanceNodePathList, multipleValueSeparator,
+            super(entityModel, fileType, isPartialUpdate, headersOnFirstLine, headerVisibleMap, inheritanceNodePathList, multipleValueSeparator,
                     seperator, encoding, textDelimiter, language);
         }
 

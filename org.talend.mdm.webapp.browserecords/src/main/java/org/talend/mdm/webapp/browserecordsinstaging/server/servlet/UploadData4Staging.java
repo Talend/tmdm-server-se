@@ -24,10 +24,10 @@ public class UploadData4Staging extends UploadData {
     private static final long serialVersionUID = -4815767737453028749L;
 
     @Override
-    protected UploadService generateUploadService(String concept, String fileType, boolean headersOnFirstLine,
+    protected UploadService generateUploadService(String concept, String fileType, boolean isPartialUpdate, boolean headersOnFirstLine,
             Map<String, Boolean> headerVisibleMap, List<String> inheritanceNodePathList, String multipleValueSeparator,
             String seperator, String encoding, char textDelimiter, String language) throws Exception {
-        return new UploadService4Staging(getEntityModel(concept), fileType, headersOnFirstLine, headerVisibleMap,
+        return new UploadService4Staging(getEntityModel(concept), fileType, isPartialUpdate, headersOnFirstLine, headerVisibleMap,
                 inheritanceNodePathList, multipleValueSeparator, seperator, encoding, textDelimiter, language);
     }
 

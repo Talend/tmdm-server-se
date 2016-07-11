@@ -102,10 +102,6 @@ public class FormatDateField extends DateField {
         }
 
         try {
-            Date d = propertyEditor.convertStringValue(rawValue);
-            if (d != null) {
-                return rawValue;
-            }
             return value == null ? "" : propertyEditor.getStringValue(value); //$NON-NLS-1$
         } catch (Exception e) {
             if (!super.validateValue(rawValue)) {
@@ -177,7 +173,11 @@ public class FormatDateField extends DateField {
 
     @Override
     public boolean validateValue(String value) {
-        return super.validateValue(value);
+        if (this.value == null) {
+            return super.validateValue(value);
+        } else {
+            return super.validateValue(propertyEditor.getStringValue(this.value));
+        }
     }
 
     public void setValidateFlag(boolean validateFlag) {

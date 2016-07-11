@@ -14,9 +14,7 @@ package org.talend.mdm.webapp.browserecords.client.widget.inputfield;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Formatter;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import org.talend.mdm.webapp.base.client.model.BasePagingLoadConfigImpl;

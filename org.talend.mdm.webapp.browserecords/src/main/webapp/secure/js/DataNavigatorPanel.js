@@ -3,10 +3,11 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 	var NAVIGATOR_NODE_IN_ENTITY_TYPE = 1;
 	var NAVIGATOR_NODE_OUT_ENTITY_TYPE = 2;
 	var NAVIGATOR_NODE_VALUE_TYPE = 3;
-	var NAVIGATOR_NOD_COLOR_SELECTED = "rgb(255, 2, 42)";
-	var NAVIGATOR_NOD_COLOR_INBOUND = "rgb(24, 2, 255)";
-	var NAVIGATOR_NOD_COLOR_OUTBOUND = "rgb(2, 255, 145)";
-	var NAVIGATOR_NOD_COLOR_DATA = "rgb(231, 253, 6)";
+	var NAVIGATOR_MENU_DETAIL_COLOR = "rgb(214, 39, 40)";
+	var NAVIGATOR_MENU_IN_COLOR = "rgb(44, 160, 44)";
+	var NAVIGATOR_MENU_OUT_COLOR = "rgb(31, 119, 180)";
+	var NAVIGATOR_MENU_SETTINGS_COLOR = "rgb(255, 127, 14)";
+	var NAVIGATOR_MENU_DISABLE_COLOR = "#A9A9A9";
 	var NAVIGATOR_NODE_IMAGE_INBOUND = "secure/img/navigator_relation_in.png";
 	var NAVIGATOR_NODE_IMAGE_OUTBOUND = "secure/img/navigator_relation_out.png";
 	var NAVIGATOR_NODE_IMAGE_DATA = "secure/img/navigator_data.png";
@@ -38,7 +39,6 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 	var outerRadius = 48;
 	var innerRadius = 25;
 	var arc;
-	var color = d3.scale.category10();
 	
 	// Type Cluster
 	var typeCluster;
@@ -326,7 +326,7 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 				showNode = selectNode;
 			}
 		} else if ('in' === arc.data.name) {
-			if (NAVIGATOR_NODE_VALUE_TYPE == selectNode.navigator_node_type) {
+			if (selectNode.expanded == undefined || selectNode.expanded) {
 				Ext.Ajax.request({
 					url : restServiceUrl
 						+ '/data/'
@@ -354,9 +354,11 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 						handleFailure(response);
 					}
 				});
+			} else {
+				svg.select("#menu_group").remove();
 			}
 		} else if ('out' === arc.data.name) {
-			if (NAVIGATOR_NODE_VALUE_TYPE == selectNode.navigator_node_type) {
+			if (selectNode.expanded == undefined || selectNode.expanded) {
 				Ext.Ajax
 						.request({
 							url : restServiceUrl
@@ -385,6 +387,8 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 								handleFailure(response);
 							}
 						});
+			} else {
+				svg.select("#menu_group").remove();
 			}
 		} else if ('settings' === arc.data.name) {
 			hiddenTypeCluster();
@@ -576,6 +580,7 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 			 expandNode(d);
 		}
 		paint();
+		svg.select("#menu_group").remove();
 	}
 	
 	var expandNode = function(d) {
@@ -618,6 +623,7 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 	}
 
 	function showMenu(d, i) {
+		selectNode = d;
 		if (d3.event.defaultPrevented) return;
 		hiddenTypeCluster();
 		var elementId = "menu_group";
@@ -625,12 +631,8 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 				.selectAll("g").data(piedata).enter().append("g")
 				.attr("transform",
 						"translate(" + (d.x) + "," + (d.y) + ")");
-
-		var backgroundPath = arcs.append("path").attr("fill",
-				"#ddd").attr("d", arc);
-
 		var path = arcs.append("path").attr("fill", function(d, i) {
-			return color(i);
+			return getMenuColor(d);
 		}).transition().ease("elastic").duration(750).attrTween(
 				"d", arcTween);
 		arcs.append("text").attr("transform", function(d) {
@@ -640,7 +642,6 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 		});
 		arcs.on("click", menuClick);
 		// arcs.on("mouseout", menuMouseout);
-		selectNode = d;
 	}
 
 	function arcTween(d) {
@@ -853,16 +854,6 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 				});
 	}
 
-	function getColor(o) {
-		if (NAVIGATOR_NODE_IN_ENTITY_TYPE == o.navigator_node_type) {
-			return NAVIGATOR_NOD_COLOR_INBOUND;
-		} else if (NAVIGATOR_NODE_OUT_ENTITY_TYPE == o.navigator_node_type) {
-			return NAVIGATOR_NOD_COLOR_OUTBOUND;
-		} else {
-			return NAVIGATOR_NOD_COLOR_DATA;
-		}
-	}
-
 	function getImage(o) {
 		if (NAVIGATOR_NODE_IN_ENTITY_TYPE == o.navigator_node_type) {
 			return NAVIGATOR_NODE_IMAGE_INBOUND;
@@ -1014,6 +1005,26 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 			return true;
 		} else {
 			return false;
+		}
+	}
+	
+	function getMenuColor(d) {
+		if ('detail' === d.data.name) {
+			return NAVIGATOR_MENU_DETAIL_COLOR;
+		} else if ('in' === d.data.name) {
+			if (selectNode.expanded == undefined || selectNode.expanded) {
+				return NAVIGATOR_MENU_IN_COLOR;
+			} else {
+				return NAVIGATOR_MENU_DISABLE_COLOR;
+			}
+		} else if ('out' === d.data.name) {
+			if (selectNode.expanded == undefined || selectNode.expanded) {
+				return NAVIGATOR_MENU_OUT_COLOR;
+			} else {
+				return NAVIGATOR_MENU_DISABLE_COLOR;
+			}
+		} else if ('settings' === d.data.name) {
+			return NAVIGATOR_MENU_SETTINGS_COLOR;
 		}
 	}
 	

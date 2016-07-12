@@ -420,6 +420,8 @@ public class StorageAdaptTest extends TestCase {
         assertEquals("TypeComptes", sortedTypesToDrop.get(0).getName());
         assertEquals("TypeEtablissements", sortedTypesToDrop.get(1).getName());
         assertEquals("TieTiers", sortedTypesToDrop.get(2).getName());
+        assertEquals("TieEtablissements", sortedTypesToDrop.get(3).getName());
+        assertEquals("TieComptes", sortedTypesToDrop.get(4).getName());
 
         storage.adapt(repository2, true);
 

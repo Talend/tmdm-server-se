@@ -669,7 +669,7 @@ class StandardQueryHandler extends AbstractQueryHandler {
                     selectedFields.add(countTypedExpression);
                 }
             }
-            // Can't distinct if OrderBy Field doesn't exist in result list.
+            // for SELECT DISTINCT, ORDER BY expressions must appear in select list. Or it will throw exception in H2, postgres...
             for (OrderBy current : select.getOrderBy()) {
                 if ((current.getExpression() instanceof Field && !select.getSelectedFields().contains(current.getExpression()))
                         || current.getExpression() instanceof Type || current.getExpression() instanceof Alias) {

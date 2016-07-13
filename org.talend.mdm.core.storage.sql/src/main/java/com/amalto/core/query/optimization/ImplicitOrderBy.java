@@ -48,7 +48,7 @@ public class ImplicitOrderBy implements Optimizer {
                 Set<TypedExpression> missingOrderByExpressions = getMissingOrderByExpressions(select);
                 if (!missingOrderByExpressions.isEmpty()) {
                     if (LOGGER.isDebugEnabled()) {
-                        LOGGER.debug("Adding implicit order by id to keep consistent order trough pages."); //$NON-NLS-1$
+                        LOGGER.debug("Adding implicit order by id to keep consistent order through pages."); //$NON-NLS-1$
                     }
                     // Check if projection allow use of implicit order by.
                     boolean enableAddOrder = true;

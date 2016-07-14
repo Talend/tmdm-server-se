@@ -48,9 +48,9 @@ import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.Widget;
 
 public class PagingToolBarEx extends PagingToolBar {
-    
+
     public static String BROWSERECORD_PAGESIZE = "browseRecord_pagesize"; //$NON-NLS-1$
-    
+
     public static String BROWSERECORD_FOREIGNKEY_PAGESIZE = "browseRecord_foreignkey_pagesize"; //$NON-NLS-1$
 
     private El inputEl;
@@ -60,9 +60,9 @@ public class PagingToolBarEx extends PagingToolBar {
     boolean isFireKeyEnter;
 
     boolean isBrowseRecordsGridCall;
-    
+
     private String name;
-    
+
     public PagingToolBarEx(int pageSize) {
         super(pageSize);
         if (!validatePageSize(pageSize)) {
@@ -91,7 +91,8 @@ public class PagingToolBarEx extends PagingToolBar {
                     blur(inputEl.dom);
                     if (!sizeField.isFireChangeEventOnSetValue()) {
                         if (isBrowseRecordsGridCall && sizeField.isValid()) {
-                            Cookies.setCookie(name != null ? name : BROWSERECORD_PAGESIZE, String.valueOf(sizeField.getValue().intValue()));
+                            Cookies.setCookie(name != null ? name : BROWSERECORD_PAGESIZE,
+                                    String.valueOf(sizeField.getValue().intValue()));
                         }
                         refreshData();
                     }
@@ -109,8 +110,8 @@ public class PagingToolBarEx extends PagingToolBar {
         this.insert(sizeComp, this.getItemCount() - 2);
         removeButtonToolTip();
     }
-    
-    public PagingToolBarEx(int pageSize,String name) {
+
+    public PagingToolBarEx(int pageSize, String name) {
         this(pageSize);
         this.name = name;
     }

@@ -115,12 +115,10 @@ public class ForeignKeyListWindow extends Window {
 
     private EntityModel entityModel;
 
-    private boolean isPagingAccurate;
-
     private String dataCluster;
 
     private ForeignKeyField sourceField;
-    
+
     private PagingToolBarEx pageToolBar;
 
     public ForeignKeyListWindow(String foreignKeyPath, List<String> foreignKeyInfo, String dataCluster, EntityModel entityModel,
@@ -186,7 +184,6 @@ public class ForeignKeyListWindow extends Window {
 
                             @Override
                             public void onSuccess(ItemBasePageLoadResult<ForeignKeyBean> result) {
-                                isPagingAccurate = result.isPagingAccurate();
                                 if (currentFilterText.equals(getFilterValue())) {
                                     callback.onSuccess(new BasePagingLoadResult<ForeignKeyBean>(result.getData(), result
                                             .getOffset(), result.getTotalLength()));
@@ -229,16 +226,17 @@ public class ForeignKeyListWindow extends Window {
         loader = new BasePagingLoader<PagingLoadResult<ModelData>>(proxy);
         loader.setRemoteSort(true);
         final ListStore<ForeignKeyBean> store = new ListStore<ForeignKeyBean>(loader);
-        
+
         int usePageSize = Constants.PAGE_SIZE;
         if (Cookies.getCookie(PagingToolBarEx.BROWSERECORD_FOREIGNKEY_PAGESIZE) != null) {
             usePageSize = Integer.parseInt(Cookies.getCookie(PagingToolBarEx.BROWSERECORD_FOREIGNKEY_PAGESIZE));
         }
-        pageToolBar = new PagingToolBarEx(usePageSize,PagingToolBarEx.BROWSERECORD_FOREIGNKEY_PAGESIZE) {
+        pageToolBar = new PagingToolBarEx(usePageSize, PagingToolBarEx.BROWSERECORD_FOREIGNKEY_PAGESIZE) {
+
             @Override
             protected void onLoad(LoadEvent event) {
                 String of_word = MessagesFactory.getMessages().of_word();
-                msgs.setDisplayMsg("{0} - {1} " + of_word + " " + (isPagingAccurate ? "" : "~") + "{2}"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+                msgs.setDisplayMsg("{0} - {1} " + of_word + " " + "{2}"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ 
                 super.onLoad(event);
             }
         };

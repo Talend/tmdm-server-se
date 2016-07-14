@@ -172,6 +172,9 @@ public class MultiLanguageField extends TextField<String> {
 
             @Override
             public void onClick(ClickEvent arg0) {
+                if(value != null && !"".equals(value.trim())){
+                    multiLanguageModel.setValueByLanguage(currentLanguage, value);
+                }
                 if (LanguageUtil.getInstance().getLanguages().isEmpty()) {
                     service.getLanguageModels(new SessionAwareAsyncCallback<List<ItemBaseModel>>() {
 
@@ -231,10 +234,10 @@ public class MultiLanguageField extends TextField<String> {
     public void setMultiLanguageStringValue(String multiLanguageString) {
         this.multiLanguageModel = new MultiLanguageModel(multiLanguageString);
         this.value = multiLanguageModel.getValueByLanguage(currentLanguage);
+        this.setRawValue(value);
     }
 
     public String getMultiLanguageStringValue() {
-        multiLanguageModel.setValueByLanguage(currentLanguage, value);
         return multiLanguageModel.toString();
     }
 
@@ -385,13 +388,12 @@ public class MultiLanguageField extends TextField<String> {
             public void componentSelected(ButtonEvent ce) {
                 List<ItemBaseModel> selectedModelList = selectionModel.getSelectedItems();
                 if (selectedModelList != null && selectedModelList.size() > 0) {
-                    boolean allSelected = (store.getCount() == selectedModelList.size());
-                    int endIndex = allSelected ? 1 : 0;
-                    for (int i = selectedModelList.size() - 1; i >= endIndex; i--) {
+                    for (int i = selectedModelList.size() - 1; i >= 0; i--) {
                         ItemBaseModel model = selectedModelList.get(i);
                         multiLanguageModel.setValueByLanguage(model.get("language").toString(), null); //$NON-NLS-1$
                         store.remove(model);
                     }
+                    setMultiLanguageStringValue(getMultiLanguageStringValue());
                     MultiLanguageField.this.fireEvent(Events.Change);
                 }
             }
@@ -409,6 +411,7 @@ public class MultiLanguageField extends TextField<String> {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
+                setMultiLanguageStringValue(getMultiLanguageStringValue());
                 window.hide();
             }
         });

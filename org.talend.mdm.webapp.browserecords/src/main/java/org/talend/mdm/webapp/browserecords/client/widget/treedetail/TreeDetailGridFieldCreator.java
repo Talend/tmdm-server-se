@@ -527,6 +527,18 @@ public class TreeDetailGridFieldCreator {
     }
 
     private static void validate(Field<?> field, ItemNodeModel node) {
+        boolean isEmpty = field.getRawValue().isEmpty();
+        if (field instanceof NumberField) {
+            node.setBlankValid(((NumberField) field).getAllowBlank() || !isEmpty);
+        } else if (field instanceof BooleanField) {
+            node.setBlankValid(((BooleanField) field).getAllowBlank() || !isEmpty);
+        } else if (field instanceof DateField) {
+            node.setBlankValid(((DateField) field).getAllowBlank() || !isEmpty);
+        } else if (field instanceof TextField) {
+            node.setBlankValid(((TextField) field).getAllowBlank() || !isEmpty);
+        } else if (field instanceof UrlField) {
+            node.setBlankValid(((UrlField) field).isAllowBlank() || !isEmpty);
+        }
         node.setValid(field.isValid());
     }
 }

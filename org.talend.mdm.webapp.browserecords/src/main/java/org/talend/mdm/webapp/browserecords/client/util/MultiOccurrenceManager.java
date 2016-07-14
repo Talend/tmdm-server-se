@@ -201,9 +201,11 @@ public class MultiOccurrenceManager {
             DynamicTreeItem childItem = brothersGroup.get(i);
             MultiOccurrenceChangeItem multiItem = (MultiOccurrenceChangeItem) childItem.getWidget();
             ItemNodeModel nodeModel = childItem.getItemNodeModel();
-            multiItem.clearWarning();
-            childItem.getElement().setTitle(null);
-            nodeModel.setValid(true);
+            if (!node.isBlankValid()) {
+                multiItem.clearWarning();
+                childItem.getElement().setTitle(null);
+                nodeModel.setValid(true);
+            }
             if (mandatory != null) {
                 multiItem.warnMandatory();
                 childItem.setTitle(mandatory);

@@ -40,6 +40,8 @@ public class ItemNodeModel extends BaseTreeModel implements IsSerializable {
     private boolean visible = true;
 
     private boolean valid = false;
+    
+    private boolean blankValid = false;
 
     private boolean rendered = false;
 
@@ -101,6 +103,14 @@ public class ItemNodeModel extends BaseTreeModel implements IsSerializable {
 
     public void setValid(boolean valid) {
         this.valid = valid;
+    }
+    
+    public boolean isBlankValid() {
+        return this.blankValid;
+    }
+
+    public void setBlankValid(boolean blankValid) {
+        this.blankValid = blankValid;
     }
 
     public boolean isRendered() {

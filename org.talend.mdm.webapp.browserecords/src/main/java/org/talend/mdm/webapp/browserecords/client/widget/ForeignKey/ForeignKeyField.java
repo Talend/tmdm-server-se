@@ -164,7 +164,7 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
                     foreignKeyListWindow = new ForeignKeyListWindow(foreignKeyPath, foreignKeyInfo, getDataCluster(),
                             entityModel, ForeignKeyField.this);
                     foreignKeyListWindow.setSize(550, 350);
-                    foreignKeyListWindow.setResizable(false);
+                    foreignKeyListWindow.setResizable(true);
                     foreignKeyListWindow.setModal(true);
                     foreignKeyListWindow.setBlinkModal(true);
                     foreignKeyListWindow.setHeading(MessagesFactory.getMessages().fk_RelatedRecord());

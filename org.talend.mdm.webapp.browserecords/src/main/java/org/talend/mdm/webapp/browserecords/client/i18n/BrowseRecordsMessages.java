@@ -181,6 +181,8 @@ public interface BrowseRecordsMessages extends Messages {
 
     String criteria_BOOLEQUALSFALSE();
 
+    String criteria_EMPTY_NULL () ;
+
     String bookmark_heading();
 
     String bookmarkmanagement_heading();

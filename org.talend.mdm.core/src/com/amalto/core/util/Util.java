@@ -170,6 +170,8 @@ public class Util {
 
     private static com.amalto.core.server.api.Transformer defaultTransformer;
 
+    public static final String EMPTY_NULL = "Is Empty Or Null"; //$NON-NLS-1$
+
     private static synchronized DocumentBuilderFactory getDocumentBuilderFactory() {
         if (nonValidatingDocumentBuilderFactory == null) {
             nonValidatingDocumentBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -1007,8 +1009,9 @@ public class Util {
                 }
             }
 
-            whereItem = "*".equals(condition.getRightValueOrPath()) 
-                    || ".*".equals(condition.getRightValueOrPath()) ? null : whereItem; //$NON-NLS-1$
+            if (!condition.getOperator().equals(EMPTY_NULL)) {//$NON-NLS-1$
+                whereItem = "*".equals(condition.getRightValueOrPath()) || ".*".equals(condition.getRightValueOrPath()) ? null : whereItem; //$NON-NLS-1$
+            }
         } else {
             throw new XmlServerException("Unknown Where Type : " + whereItem.getClass().getName());
         }

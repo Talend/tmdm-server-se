@@ -10,7 +10,7 @@ public class OperatorValueConstants {
     public static List<String> groupOperatorValues = Arrays.asList("AND", "OR"); //$NON-NLS-1$ //$NON-NLS-2$
 
     public static List<String> fullOperatorValues = Arrays.asList("CONTAINS", "CONTAINS_SENTENCE", "EQUALS", "NOT_EQUALS", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-            "GREATER_THAN", "GREATER_THAN_OR_EQUAL", "LOWER_THAN", "LOWER_THAN_OR_EQUAL", "STARTSWITH"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ 
+            "GREATER_THAN", "GREATER_THAN_OR_EQUAL", "LOWER_THAN", "LOWER_THAN_OR_EQUAL", "STARTSWITH", "EMPTY_NULL"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ 
 
     public static List<String> fulltextOperatorValues = Arrays.asList("FULLTEXTSEARCH"); //$NON-NLS-1$
 

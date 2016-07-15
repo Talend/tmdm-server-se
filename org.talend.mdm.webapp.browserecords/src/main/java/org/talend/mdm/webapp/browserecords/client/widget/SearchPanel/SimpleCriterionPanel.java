@@ -267,6 +267,11 @@ public class SimpleCriterionPanel<T> extends HorizontalPanel implements ReturnCr
     private String getValue() {
 
         if (field != null) {
+
+            if (field.getValue() == null) {
+                return "";
+            }
+
             if (field instanceof ForeignKeyField) {
                 return ((ForeignKeyField) field).getValue().getId();
             } else if (field instanceof DateField) {
@@ -286,7 +291,7 @@ public class SimpleCriterionPanel<T> extends HorizontalPanel implements ReturnCr
 
     private String getInfo() {
         String info = getValue();
-        if (field != null && field instanceof ForeignKeyField) {
+        if (field != null && field instanceof ForeignKeyField && field.getValue() != null) {
             ForeignKeyBean fkField = ((ForeignKeyField) field).getValue();
             return fkField.getDisplayInfo() != null ? fkField.getDisplayInfo() : fkField.getId();
         }

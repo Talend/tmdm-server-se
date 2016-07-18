@@ -515,11 +515,11 @@ public class CommonUtil {
         int index = 2;
 
         String value = "";
-        while (index <= ts.length - 1) {
-            value = value.concat(ts[index++] + " "); //$NON-NLS-1$
-        }
-        if (value.endsWith(" ")) { //$NON-NLS-1$
-            value = value.substring(0, value.length() - 1);
+        if (ts.length > index) {
+            value = ts[index++];
+            while (index < ts.length) {
+                value = value.concat(" " + ts[index++]); //$NON-NLS-1$
+            }
         }
         return new CriteriaAndC(new SimpleCriterion(ts[0], ts[1], value), ce);
     }

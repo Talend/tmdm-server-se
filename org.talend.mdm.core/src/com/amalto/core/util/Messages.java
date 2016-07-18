@@ -33,13 +33,19 @@ public class Messages {
 
     public String getMessage(Locale locale, String key, Object... args) {
         try {
-            String pattern = MessagesFactory.getLocator().getBundle(baseName, locale, loader).getString(key);
-            MessageFormat formatter = new MessageFormat(pattern);
+            StringBuffer pattern = new StringBuffer(MessagesFactory.getLocator().getBundle(baseName, locale, loader).getString(key));
+            ModifyPatternAccordingToArgs(pattern, args);
+            MessageFormat formatter = new MessageFormat(pattern.toString());
             return formatter.format(args);
         } catch (MissingResourceException e) {
             return '!' + key + '!';
         }
     }
 
-
+    public void ModifyPatternAccordingToArgs(StringBuffer pattern, Object... args) {
+        if(args != null && args.length > 0){
+            pattern.append("{0}");  //$NON-NLS-1$
+        }
+    }
+    
 }

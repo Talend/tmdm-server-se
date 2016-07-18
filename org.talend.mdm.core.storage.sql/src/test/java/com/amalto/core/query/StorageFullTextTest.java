@@ -871,7 +871,7 @@ public class StorageFullTextTest extends StorageTestCase {
                 storage.fetch(qb.getSelect());
                 fail("Full text is not enabled");
             } catch (Exception e) {
-                assertEquals("Storage 'noFullText' is not configured to support full text queries.", e.getCause().getMessage());
+                assertEquals("Storage 'noFullText(MASTER)' is not configured to support full text queries.", e.getCause().getMessage());
             }
         } finally {
             storage.close();

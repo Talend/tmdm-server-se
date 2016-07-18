@@ -37,6 +37,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -365,4 +366,14 @@ public class UtilTestCase extends TestCase {
         assertEquals("<User><username>A</username><id>B</id><properties><property><name>x</name><value>y</value></property></properties></User>", result);
     }
     
+    public void testMessagesModifyPatternAccordingToArgs() throws Exception {
+        Messages messages = new Messages("org.talend.mdm.webapp.browserecords.client.i18n.BrowseRecordsMessages", new TestClassLoader());
+        StringBuffer pattern = new StringBuffer("An error occurred.");
+        Object[] args = new Object[]{"error message one", "error message two"};
+        messages.ModifyPatternAccordingToArgs(pattern, args);
+        MessageFormat formatter = new MessageFormat(pattern.toString());
+        assertEquals("An error occurred.error message one", formatter.format(args));
+    }
+    
+    private class TestClassLoader extends ClassLoader {}
 }

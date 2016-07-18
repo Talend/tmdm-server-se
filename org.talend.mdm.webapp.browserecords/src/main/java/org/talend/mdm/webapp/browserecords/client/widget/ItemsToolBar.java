@@ -619,7 +619,13 @@ public class ItemsToolBar extends ToolBar {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
-                if (simplePanel.getCriteria() != null) {
+                boolean isEmptyValue = false;
+                if (!simplePanel.getOperator().equals("EMPTY_NULL") //$NON-NLS-1$
+                        && (simplePanel.getValue() == null || simplePanel.getValue().equals(""))) { //$NON-NLS-1$
+                    isEmptyValue = true;
+                }
+
+                if (simplePanel.getCriteria() != null && !isEmptyValue) {
                     isSimple = true;
                     String viewPk = entityCombo.getValue().get("value");//$NON-NLS-1$
                     AppEvent event = new AppEvent(BrowseRecordsEvents.SearchView, viewPk);

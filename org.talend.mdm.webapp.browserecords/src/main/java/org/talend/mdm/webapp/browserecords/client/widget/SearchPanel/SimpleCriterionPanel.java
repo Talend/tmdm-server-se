@@ -260,11 +260,11 @@ public class SimpleCriterionPanel<T> extends HorizontalPanel implements ReturnCr
         return keyComboBox.getValue().get("value"); //$NON-NLS-1$
     }
 
-    private String getOperator() {
+    public String getOperator() {
         return operatorComboBox.getValue().get("value"); //$NON-NLS-1$
     }
 
-    private String getValue() {
+    public String getValue() {
 
         if (field != null) {
 

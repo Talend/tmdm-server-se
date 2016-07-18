@@ -301,7 +301,7 @@ public class SimpleCriterionPanel<T> extends HorizontalPanel implements ReturnCr
     public SimpleCriterion getCriteria() {
         try {
             SimpleCriterion simpleCriterion = new SimpleCriterion(getKey(), getOperator(), getValue(), getInfo());
-            if (field != null && field instanceof MultiLanguageField) {
+            if (field != null && field instanceof MultiLanguageField && field.getValue() != null) {
                 simpleCriterion.setInputValue(field.getValue().toString());
             }
             return simpleCriterion;

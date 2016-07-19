@@ -1007,7 +1007,7 @@ public class Util {
                 }
             }
 
-            if (!condition.getOperator().equals(WhereCondition.EMPTY_NULL)) {//$NON-NLS-1$
+            if (!condition.getOperator().equals(WhereCondition.EMPTY_NULL)) {
                 whereItem = "*".equals(condition.getRightValueOrPath()) || ".*".equals(condition.getRightValueOrPath()) ? null : whereItem; //$NON-NLS-1$
             }
         } else {

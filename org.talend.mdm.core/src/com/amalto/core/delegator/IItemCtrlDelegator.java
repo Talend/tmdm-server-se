@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -421,6 +422,34 @@ public abstract class IItemCtrlDelegator implements IBeanDelegator, IItemCtrlDel
     @Override
     public ILocalUser getLocalUser() throws XtentisException {
         return LocalUser.getLocalUser();
+    }
+
+    public void allowDelete(String clusterName, String concept, ComplexTypeMetadata.DeleteType deleteType) throws XtentisException {
+        HashSet<String> roles;
+        try {
+            roles = getLocalUser().getRoles();
+        } catch (XtentisException e) {
+            String message = "Unable to access user current roles."; //$NON-NLS-1$
+            LOGGER.error(message, e);
+            throw new RuntimeException(message, e);
+        }
+
+        Server server = ServerContext.INSTANCE.get();
+        StorageAdmin storageAdmin = server.getStorageAdmin();
+        Storage storage = storageAdmin.get(clusterName, storageAdmin.getType(clusterName));
+        MetadataRepository repository = storage.getMetadataRepository();
+        ComplexTypeMetadata complexTypeMetadata = repository.getComplexType(concept);
+        if (roles != null && roles.size() > 0) {
+            if (ComplexTypeMetadata.DeleteType.LOGICAL.equals(deleteType)) {
+                if (!Collections.disjoint(complexTypeMetadata.getDenyDelete(ComplexTypeMetadata.DeleteType.LOGICAL), roles)) {
+                    throw new XtentisException("Unauthorized. User '" + LocalUser.getLocalUser().getUsername() + "' has no logical delete permission on '" + clusterName + "." + concept + "'");   //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$
+                }
+            } else if (ComplexTypeMetadata.DeleteType.PHYSICAL.equals(deleteType)) {
+                if (!Collections.disjoint(complexTypeMetadata.getDenyDelete(ComplexTypeMetadata.DeleteType.PHYSICAL), roles)) {
+                    throw new XtentisException("Unauthorized. User '" + LocalUser.getLocalUser().getUsername() + "' has no physical delete permission on '" + clusterName + "." + concept + "'");   //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$
+                }
+            }
+        }
     }
 
     public void isExistDataCluster(DataClusterPOJOPK dataClusterPOJOPK) throws XtentisException {

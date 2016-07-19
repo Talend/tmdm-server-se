@@ -20,10 +20,10 @@ import org.talend.mdm.webapp.browserecords.server.service.UploadService;
 
 public class UploadService4Staging extends UploadService {
 
-    public UploadService4Staging(EntityModel entityModel, String fileType, boolean headersOnFirstLine,
+    public UploadService4Staging(EntityModel entityModel, String fileType, boolean isPartialUpdate, boolean headersOnFirstLine,
             Map<String, Boolean> headerVisibleMap, List<String> inheritanceNodePathList, String multipleValueSeparator,
             String seperator, String encoding, char textDelimiter, String language) {
-        super(entityModel, fileType, headersOnFirstLine, headerVisibleMap, inheritanceNodePathList, multipleValueSeparator,
+        super(entityModel, fileType, isPartialUpdate, headersOnFirstLine, headerVisibleMap, inheritanceNodePathList, multipleValueSeparator,
                 seperator, encoding, textDelimiter, language);
     }
 

@@ -473,7 +473,7 @@ public class ItemsToolBar extends ToolBar {
             @Override
             public void componentSelected(MenuEvent ce) {
                 final Window window = new Window();
-                window.setSize(480, 260);
+                window.setSize(480, 280);
                 window.setPlain(true);
                 window.setModal(true);
                 window.setBlinkModal(true);

@@ -65,6 +65,8 @@ public class UploadFileFormPanel extends FormPanel implements Listener<FormEvent
 
     private TextField<String> multipleValueSeparatorField;
 
+    private CheckBox isPartialUpdate;
+    
     private CheckBox headerLine;
 
     private HiddenField<String> conceptField;
@@ -241,6 +243,16 @@ public class UploadFileFormPanel extends FormPanel implements Listener<FormEvent
         ListStore<ItemBaseModel> typeList = new ListStore<ItemBaseModel>();
         typeList.add(list);
 
+        isPartialUpdate = new CheckBox();
+        isPartialUpdate.setId("isPartialUpdate"); //$NON-NLS-1$
+        isPartialUpdate.setName("isPartialUpdate"); //$NON-NLS-1$
+        isPartialUpdate.setValueAttribute("on"); //$NON-NLS-1$
+        isPartialUpdate.setFieldLabel(MessagesFactory.getMessages().label_field_partial_update());
+        isPartialUpdate.setValue(true);
+        isPartialUpdate.setInputStyleAttribute("left", "10px"); //$NON-NLS-1$ //$NON-NLS-2$
+        isPartialUpdate.setInputStyleAttribute("position", "absolute"); //$NON-NLS-1$ //$NON-NLS-2$
+        this.add(isPartialUpdate);
+        
         headerLine = new CheckBox();
         headerLine.setId("headersOnFirstLine");//$NON-NLS-1$
         headerLine.setName("headersOnFirstLine");//$NON-NLS-1$

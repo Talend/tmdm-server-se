@@ -96,6 +96,7 @@ public class UploadData extends HttpServlet {
             String mandatoryField = null;
             List<String> inheritanceNodePathList = null;
             boolean headersOnFirstLine = false;
+            boolean isPartialUpdate = false;
             String multipleValueSeparator = null;
             String fileType = null;
             File file = null;
@@ -139,6 +140,8 @@ public class UploadData extends HttpServlet {
                         headersOnFirstLine = "on".equals(item.getString()); //$NON-NLS-1$
                     } else if (name.equals("multipleValueSeparator")) { //$NON-NLS-1$
                         multipleValueSeparator = item.getString();
+                    } else if (name.equals("isPartialUpdate")) { //$NON-NLS-1$
+                        isPartialUpdate = "on".equals(item.getString()); //$NON-NLS-1$
                     }
                 } else {
                     fileType = FileUtil.getFileType(item.getName());
@@ -156,7 +159,7 @@ public class UploadData extends HttpServlet {
             if (mandatorySet.size() > 0) {
                 throw new UploadException(MESSAGES.getMessage(locale, "error_missing_mandatory_field")); //$NON-NLS-1$
             }
-            UploadService service = generateUploadService(concept, fileType, headersOnFirstLine, headerVisibleMap,
+            UploadService service = generateUploadService(concept, fileType, isPartialUpdate, headersOnFirstLine, headerVisibleMap,
                     inheritanceNodePathList, multipleValueSeparator, seperator, encoding, textDelimiter.charAt(0), language);
 
             List<WSPutItemWithReport> wsPutItemWithReportList = service.readUploadFile(file);
@@ -193,10 +196,10 @@ public class UploadData extends HttpServlet {
         return entityModel;
     }
 
-    protected UploadService generateUploadService(String concept, String fileType, boolean headersOnFirstLine,
+    protected UploadService generateUploadService(String concept, String fileType, boolean isPartialUpdate, boolean headersOnFirstLine,
             Map<String, Boolean> headerVisibleMap, List<String> inheritanceNodePathList, String multipleValueSeparator,
             String seperator, String encoding, char textDelimiter, String language) throws Exception {
-        return new UploadService(getEntityModel(concept), fileType, headersOnFirstLine, headerVisibleMap,
+        return new UploadService(getEntityModel(concept), fileType, isPartialUpdate, headersOnFirstLine, headerVisibleMap,
                 inheritanceNodePathList, multipleValueSeparator, seperator, encoding, textDelimiter, language);
     }
 

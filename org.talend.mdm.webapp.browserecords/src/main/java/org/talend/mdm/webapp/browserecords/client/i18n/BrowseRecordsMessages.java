@@ -315,6 +315,8 @@ public interface BrowseRecordsMessages extends Messages {
 
     String label_field_delimiter();
 
+    String label_field_partial_update();
+    
     String label_field_header_first();
 
     String label_field_encoding();

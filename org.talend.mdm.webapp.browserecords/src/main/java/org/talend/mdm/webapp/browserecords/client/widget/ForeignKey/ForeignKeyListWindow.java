@@ -122,6 +122,10 @@ public class ForeignKeyListWindow extends Window {
 
     private PagingToolBarEx pageToolBar;
 
+    private static final int MARGIN_WIDTH = 20;
+
+    private static final int MARGIN_HEIGHT = 40;
+
     public ForeignKeyListWindow(String foreignKeyPath, List<String> foreignKeyInfo, String dataCluster, EntityModel entityModel,
             ForeignKeyField foreignKeyField) {
         this.foreignKeyPath = foreignKeyPath;
@@ -491,8 +495,8 @@ public class ForeignKeyListWindow extends Window {
     }
 
     private void recalculate(int height, int width) {
-        this.getWidget(0).setHeight(height - 40 + "px"); //$NON-NLS-1$
-        this.getWidget(0).setWidth(width - 20 + "px"); //$NON-NLS-1$
+        this.getWidget(0).setHeight(height - MARGIN_HEIGHT + "px"); //$NON-NLS-1$
+        this.getWidget(0).setWidth(width - MARGIN_WIDTH + "px"); //$NON-NLS-1$
     }
 
 }

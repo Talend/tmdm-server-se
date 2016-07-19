@@ -8,8 +8,8 @@ http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/ac
 	<!-- Connection Factory definition -->
 	<bean id="jmsConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
 		<property name="brokerURL" value="${mdm.routing.engine.broker.url}"/>
-		<property name="userName" value="${mdm.routing.engine.broker.userName:#{null}}"/>
-		<property name="password" value="${mdm.routing.engine.broker.password:#{null}}"/>
+		<property name="userName" value="${mdm.routing.engine.broker.userName}"/>
+		<property name="password" value="${mdm.routing.engine.broker.password}"/>
 	</bean>
 
 	<!-- Destinations definition -->

@@ -102,11 +102,12 @@ public class FormatDateField extends DateField {
         }
 
         try {
-            return value == null ? "" : propertyEditor.getStringValue(value); //$NON-NLS-1$
-        } catch (Exception e) {
-            if (!super.validateValue(rawValue)) {
+            Date d = propertyEditor.convertStringValue(rawValue);
+            if (d != null) {
                 return rawValue;
             }
+            return value == null ? "" : propertyEditor.getStringValue(value); //$NON-NLS-1$
+        } catch (Exception e) {
             return value == null ? "" : propertyEditor.getStringValue(value); //$NON-NLS-1$
         }
     }

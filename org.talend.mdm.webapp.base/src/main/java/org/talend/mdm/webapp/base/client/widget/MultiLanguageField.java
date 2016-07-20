@@ -34,6 +34,8 @@ import com.extjs.gxt.ui.client.core.El;
 import com.extjs.gxt.ui.client.core.XDOM;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.FieldEvent;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
@@ -88,6 +90,7 @@ public class MultiLanguageField extends TextField<String> {
 
     public MultiLanguageField(boolean isFormInput) {
         this.isFormInput = isFormInput;
+        addListener();
     }
 
     public MultiLanguageField(MultiLanguageModel _multiLanguageModel) {
@@ -142,7 +145,6 @@ public class MultiLanguageField extends TextField<String> {
             displayMultiLanguageBtn.getElement().getStyle().setCursor(Cursor.POINTER);
             updateCtrlButton();
 
-            addListener();
             this.setAutoWidth(true);
             this.setStyleAttribute("margin-left", "-2px"); //$NON-NLS-1$ //$NON-NLS-2$
 
@@ -167,6 +169,13 @@ public class MultiLanguageField extends TextField<String> {
     }
 
     private void addListener() {
+        addListener(Events.Change, new Listener<FieldEvent>() {
+            @Override
+            public void handleEvent(FieldEvent be) {
+                multiLanguageModel.setValueByLanguage(currentLanguage, value);
+            }
+        });
+        
         displayMultiLanguageBtn.setTitle(BaseMessagesFactory.getMessages().open_mls_title());
         displayMultiLanguageBtn.addClickHandler(new ClickHandler() {
 
@@ -201,6 +210,14 @@ public class MultiLanguageField extends TextField<String> {
             }
             
         });
+    }
+    
+    @Override
+    public boolean validateValue(String value) {
+        if (value != null && !"".equals(value.trim())) { //$NON-NLS-1$
+            return super.validateValue(value);
+        }
+        return super.validateValue(getMultiLanguageStringValue());
     }
 
     @Override

@@ -22,11 +22,15 @@ import com.amalto.core.storage.transaction.StorageTransaction;
 import com.amalto.core.storage.transaction.Transaction;
 import com.amalto.core.storage.transaction.TransactionManager;
 import junit.framework.TestCase;
+
+import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
+import org.talend.mdm.commmon.metadata.compare.Compare.DiffResults;
 import org.talend.mdm.commmon.metadata.compare.HibernateStorageImpactAnalyzer;
 import org.talend.mdm.commmon.metadata.compare.ImpactAnalyzer;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 public class TransactionTest extends TestCase {
@@ -330,6 +334,11 @@ public class TransactionTest extends TestCase {
             public boolean hasFailed() {
                 return false;
             }
+        }
+
+        @Override
+        public List<ComplexTypeMetadata> findSortedTypesToDrop(DiffResults diffResults, boolean force) {
+            return null;
         }
     }
 }

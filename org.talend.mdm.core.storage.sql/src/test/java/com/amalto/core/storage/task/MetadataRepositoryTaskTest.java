@@ -13,6 +13,7 @@
 package com.amalto.core.storage.task;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -25,6 +26,7 @@ import junit.framework.TestCase;
 import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
+import org.talend.mdm.commmon.metadata.compare.Compare.DiffResults;
 import org.talend.mdm.commmon.metadata.compare.HibernateStorageImpactAnalyzer;
 import org.talend.mdm.commmon.metadata.compare.ImpactAnalyzer;
 import org.w3c.dom.Document;
@@ -318,6 +320,11 @@ public class MetadataRepositoryTaskTest extends TestCase {
         @Override
         public Storage asInternal() {
             return this;
+        }
+
+        @Override
+        public List<ComplexTypeMetadata> findSortedTypesToDrop(DiffResults diffResults, boolean force) {
+            return null;
         }
     }
 

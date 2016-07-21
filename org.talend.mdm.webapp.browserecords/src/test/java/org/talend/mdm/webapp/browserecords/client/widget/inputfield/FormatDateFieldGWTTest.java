@@ -123,8 +123,7 @@ public class FormatDateFieldGWTTest extends GWTTestCase{
         dateField.setPropertyEditor(new DateTimePropertyEditor(DateUtil.formatDateTimePattern));
         dateField.setFormatPattern(DateUtil.formatDateTimePattern);
         Date date = DateUtil.convertStringToDate(DateUtil.formatDateTimePattern, value);
-        assertEquals("", dateField.getRawValue());
-        dateField.render(DOM.createElement("Product"));
+        dateField.render(DOM.createElement("createDate"));
         assertEquals("", dateField.getRawValue());
         dateField.setValue(date);
         assertEquals("2012-05-09T00:00:00", dateField.getRawValue());
@@ -134,8 +133,7 @@ public class FormatDateFieldGWTTest extends GWTTestCase{
         dateField.setPropertyEditor(new DateTimePropertyEditor(DateUtil.datePattern));
         dateField.setFormatPattern(DateUtil.datePattern);
         date = DateUtil.convertStringToDate(DateUtil.datePattern, value);
-        assertEquals("", dateField.getRawValue());
-        dateField.render(DOM.createElement("Product"));
+        dateField.render(DOM.createElement("createDate"));
         assertEquals("", dateField.getRawValue());
         dateField.setValue(date);
         assertEquals("2012-05-09", dateField.getRawValue());

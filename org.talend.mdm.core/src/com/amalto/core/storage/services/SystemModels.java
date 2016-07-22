@@ -284,9 +284,11 @@ public class SystemModels {
                 }
                 writer.writeStartElement("entitiesToDrop"); //$NON-NLS-1$
                 for (ComplexTypeMetadata type : typesToDrop) {
-                    writer.writeStartElement("entity"); //$NON-NLS-1$
-                    writer.writeCharacters(type.getName());
-                    writer.writeEndElement();
+                    if (type.isInstantiable()) {
+                        writer.writeStartElement("entity"); //$NON-NLS-1$
+                        writer.writeCharacters(type.getName());
+                        writer.writeEndElement();
+                    }
                 }
                 writer.writeEndElement();
             }

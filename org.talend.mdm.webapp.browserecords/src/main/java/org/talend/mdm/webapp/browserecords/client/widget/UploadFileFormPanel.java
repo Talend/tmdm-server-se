@@ -248,7 +248,7 @@ public class UploadFileFormPanel extends FormPanel implements Listener<FormEvent
         isPartialUpdate.setName("isPartialUpdate"); //$NON-NLS-1$
         isPartialUpdate.setValueAttribute("on"); //$NON-NLS-1$
         isPartialUpdate.setFieldLabel(MessagesFactory.getMessages().label_field_partial_update());
-        isPartialUpdate.setValue(true);
+        isPartialUpdate.setValue(false);
         isPartialUpdate.setInputStyleAttribute("left", "10px"); //$NON-NLS-1$ //$NON-NLS-2$
         isPartialUpdate.setInputStyleAttribute("position", "absolute"); //$NON-NLS-1$ //$NON-NLS-2$
         this.add(isPartialUpdate);

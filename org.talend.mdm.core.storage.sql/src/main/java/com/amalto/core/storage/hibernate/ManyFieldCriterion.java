@@ -1,24 +1,31 @@
 /*
  * Copyright (C) 2006-2016 Talend Inc. - www.talend.com
- *
+ * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
- *
- * You should have received a copy of the agreement
- * along with this program; if not, write to Talend SA
- * 9 rue Pages 92150 Suresnes, France
+ * 
+ * You should have received a copy of the agreement along with this program; if not, write to Talend SA 9 rue Pages
+ * 92150 Suresnes, France
  */
 
 package com.amalto.core.storage.hibernate;
 
-import com.amalto.core.storage.datasource.RDBMSDataSource;
-import org.talend.mdm.commmon.metadata.*;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.criterion.CriteriaQuery;
 import org.hibernate.criterion.SQLCriterion;
 import org.hibernate.type.Type;
+import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.DefaultMetadataVisitor;
+import org.talend.mdm.commmon.metadata.EnumerationFieldMetadata;
+import org.talend.mdm.commmon.metadata.FieldMetadata;
+import org.talend.mdm.commmon.metadata.MetadataUtils;
+import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
+import org.talend.mdm.commmon.metadata.SimpleTypeFieldMetadata;
+import org.talend.mdm.commmon.metadata.Types;
+
+import com.amalto.core.storage.datasource.RDBMSDataSource;
 
 class ManyFieldCriterion extends SQLCriterion {
 
@@ -34,11 +41,13 @@ class ManyFieldCriterion extends SQLCriterion {
 
     private final TableResolver resolver;
 
-    ManyFieldCriterion(RDBMSDataSource dataSource, Criteria typeSelectionCriteria, TableResolver resolver, FieldMetadata field, Object value) {
+    ManyFieldCriterion(RDBMSDataSource dataSource, Criteria typeSelectionCriteria, TableResolver resolver, FieldMetadata field,
+            Object value) {
         this(dataSource, typeSelectionCriteria, resolver, field, value, -1);
     }
 
-    ManyFieldCriterion(RDBMSDataSource dataSource, Criteria typeSelectionCriteria, TableResolver resolver, FieldMetadata field, Object value, int position) {
+    ManyFieldCriterion(RDBMSDataSource dataSource, Criteria typeSelectionCriteria, TableResolver resolver, FieldMetadata field,
+            Object value, int position) {
         super(StringUtils.EMPTY, new Object[0], new Type[0]);
         this.dataSource = dataSource;
         this.typeCriteria = typeSelectionCriteria;
@@ -54,11 +63,11 @@ class ManyFieldCriterion extends SQLCriterion {
             return field.accept(new ForeignKeySQLGenerator(criteriaQuery, value));
         } else {
             if (value instanceof Object[]) {
-                throw new UnsupportedOperationException("Do not support collection search criteria with multiple values.");
+                throw new UnsupportedOperationException("Do not support collection search criteria with multiple values."); //$NON-NLS-1$
             }
             ComplexTypeMetadata type = field.getContainingType();
             if (type.getKeyFields().size() > 1) {
-                throw new UnsupportedOperationException("Do not support collection search if main type has a composite key.");
+                throw new UnsupportedOperationException("Do not support collection search if main type has a composite key."); //$NON-NLS-1$
             }
             String containingTypeAlias = criteriaQuery.getSQLAlias(typeCriteria);
             String containingType = resolver.get(type);
@@ -71,40 +80,25 @@ class ManyFieldCriterion extends SQLCriterion {
                 // (referenced field name).
                 columnName = field.getName() + '_' + ((ReferenceFieldMetadata) field).getReferencedField().getName();
             } else {
-                columnName = "value";
+                columnName = "value"; //$NON-NLS-1$
             }
             builder.append("(SELECT COUNT(1) FROM ") //$NON-NLS-1$
-                    .append(containingType)
-                    .append(" INNER JOIN ") //$NON-NLS-1$
-                    .append(joinedTableName)
-                    .append(" ON ") //$NON-NLS-1$
-                    .append(containingType)
-                    .append(".") //$NON-NLS-1$
-                    .append(containingTypeKey)
-                    .append(" = ") //$NON-NLS-1$
-                    .append(joinedTableName)
-                    .append(".") //$NON-NLS-1$
-                    .append(containingTypeKey)
-                    .append(" WHERE ") //$NON-NLS-1$
-                    .append(joinedTableName)
-                    .append("." + columnName + " = '") //$NON-NLS-1$
-                    .append(value)
-                    .append("'");
+                    .append(containingType).append(" INNER JOIN ") //$NON-NLS-1$
+                    .append(joinedTableName).append(" ON ") //$NON-NLS-1$
+                    .append(containingType).append(".") //$NON-NLS-1$
+                    .append(containingTypeKey).append(" = ") //$NON-NLS-1$
+                    .append(joinedTableName).append(".") //$NON-NLS-1$
+                    .append(containingTypeKey).append(" WHERE ") //$NON-NLS-1$
+                    .append(joinedTableName).append("." + columnName + " = '") //$NON-NLS-1$ //$NON-NLS-2$
+                    .append(value).append("'"); //$NON-NLS-1$
             if (position >= 0) {
-                builder.append(" AND ")
-                        .append(joinedTableName)
-                        .append(".pos = ")
-                        .append(position);
+                builder.append(" AND ").append(joinedTableName).append(".pos = ").append(position); //$NON-NLS-1$ //$NON-NLS-2$
             }
             builder.append(" AND ") //$NON-NLS-1$
-                    .append(containingType)
-                    .append(".") //$NON-NLS-1$
-                    .append(containingTypeKey)
-                    .append(" = ") //$NON-NLS-1$
-                    .append(containingTypeAlias)
-                    .append(".") //$NON-NLS-1$
-                    .append(containingTypeKey)
-                    .append(") > 0"); //$NON-NLS-1$
+                    .append(containingType).append(".") //$NON-NLS-1$
+                    .append(containingTypeKey).append(" = ") //$NON-NLS-1$
+                    .append(containingTypeAlias).append(".") //$NON-NLS-1$
+                    .append(containingTypeKey).append(") > 0"); //$NON-NLS-1$
             return builder.toString();
         }
     }
@@ -128,6 +122,9 @@ class ManyFieldCriterion extends SQLCriterion {
             Object o = value;
             if (value instanceof Object[]) {
                 o = ((Object[]) value)[currentIndex++];
+            }
+            if (value instanceof String) {
+                o = ((String) value).replace("'", "\\'"); //$NON-NLS-1$ //$NON-NLS-2$
             }
             // DB2 does not like receiving a Boolean for boolean comparison (Hibernate uses a TINYINT)
             if (dataSource.getDialectName() == RDBMSDataSource.DataSourceDialect.DB2 && o instanceof Boolean) {
@@ -162,10 +159,8 @@ class ManyFieldCriterion extends SQLCriterion {
                 query.append(" AND "); //$NON-NLS-1$
             }
             query.append("(") //$NON-NLS-1$
-                    .append(criteriaQuery.getSQLAlias(typeCriteria))
-                    .append(".") //$NON-NLS-1$
-                    .append(resolver.get(simpleField))
-                    .append(" = "); //$NON-NLS-1$
+                    .append(criteriaQuery.getSQLAlias(typeCriteria)).append(".") //$NON-NLS-1$
+                    .append(resolver.get(simpleField)).append(" = "); //$NON-NLS-1$
 
             String name = MetadataUtils.getSuperConcreteType(simpleField.getType()).getName();
             boolean isStringType = Types.STRING.equals(name);
@@ -178,14 +173,14 @@ class ManyFieldCriterion extends SQLCriterion {
                     }
                 }
             }
-            if (isStringType) { //$NON-NLS-1$
+            if (isStringType) {
                 query.append("'"); //$NON-NLS-1$
             }
             query.append(String.valueOf(getValue()));
-            if (isStringType) { //$NON-NLS-1$
-                query.append("'");
+            if (isStringType) {
+                query.append("'"); //$NON-NLS-1$
             }
-            query.append(")");
+            query.append(")"); //$NON-NLS-1$
             return query.toString();
         }
     }

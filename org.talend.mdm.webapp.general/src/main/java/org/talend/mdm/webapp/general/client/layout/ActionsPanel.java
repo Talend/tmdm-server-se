@@ -1,7 +1,6 @@
 package org.talend.mdm.webapp.general.client.layout;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.talend.mdm.webapp.base.client.util.MultilanguageMessageParser;
@@ -193,9 +192,6 @@ public class ActionsPanel extends FormPanel {
         List<ComboBoxModel> modelList = getDataModelListForTransferToCurrentLanguageValue(action.getModels());
         List<ComboBoxModel> clusterList = getClusterListCopyModelDescription(action.getClusters(), modelList);
 
-        action.setClusters(clusterList);
-        action.setModels(modelList);
-
         dataStore.add(modelList);
         containerStore.add(clusterList);
 
@@ -230,7 +226,6 @@ public class ActionsPanel extends FormPanel {
 
     protected List<ComboBoxModel> getDataModelListForTransferToCurrentLanguageValue(List<ComboBoxModel> oldModelList) {
         List<ComboBoxModel> modelList = new ArrayList<ComboBoxModel>(oldModelList);
-        Collections.copy(modelList, oldModelList);
 
         for (ComboBoxModel model : modelList) {
             String transferValue = MultilanguageMessageParser.getValueByLanguage(model.getText(), UserContextUtil.getLanguage());
@@ -244,7 +239,6 @@ public class ActionsPanel extends FormPanel {
     protected List<ComboBoxModel> getClusterListCopyModelDescription(List<ComboBoxModel> oldClusterList,
             List<ComboBoxModel> modelList) {
         List<ComboBoxModel> clusters = new ArrayList<ComboBoxModel>(oldClusterList);
-        Collections.copy(clusters, oldClusterList);
 
         for (int i = 0; i < clusters.size(); i++) {
             ComboBoxModel cluster = clusters.get(i);

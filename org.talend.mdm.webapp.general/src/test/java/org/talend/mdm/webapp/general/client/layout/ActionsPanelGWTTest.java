@@ -31,7 +31,7 @@ import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 @SuppressWarnings("nls")
-public class ActionPanelGWTTest extends GWTTestCase {
+public class ActionsPanelGWTTest extends GWTTestCase {
 
     @Override
     protected void gwtSetUp() throws Exception {
@@ -260,14 +260,14 @@ public class ActionPanelGWTTest extends GWTTestCase {
     }
 
     private List<ComboBoxModel> getModels() {
-        List<ComboBoxModel> clusterList = new ArrayList<ComboBoxModel>();
-        clusterList.add(new ComboBoxModel("[FR:aac-french][EN:aac-english][ZH:aac-中文]", "aac"));
-        clusterList.add(new ComboBoxModel("[FR:Produit-french][EN:Product-english]", "Product"));
-        clusterList.add(new ComboBoxModel("[FR:ReadOnly-french][EN:ReadOnly-english][ZH:ReadOnly-中文]", "ReadOnly"));
-        clusterList.add(new ComboBoxModel("[FR:sort-french][EN:sort-english][ZH:sort-中文]", "sort"));
-        clusterList.add(new ComboBoxModel("[FR:testType-french][EN:testType-english]", "testType"));
-        clusterList.add(new ComboBoxModel("FKBug", "FKBug"));
-        return clusterList;
+        List<ComboBoxModel> modelList = new ArrayList<ComboBoxModel>();
+        modelList.add(new ComboBoxModel("[FR:aac-french][EN:aac-english][ZH:aac-中文]", "aac"));
+        modelList.add(new ComboBoxModel("[FR:Produit-french][EN:Product-english]", "Product"));
+        modelList.add(new ComboBoxModel("[FR:ReadOnly-french][EN:ReadOnly-english][ZH:ReadOnly-中文]", "ReadOnly"));
+        modelList.add(new ComboBoxModel("[FR:sort-french][EN:sort-english][ZH:sort-中文]", "sort"));
+        modelList.add(new ComboBoxModel("[FR:testType-french][EN:testType-english]", "testType"));
+        modelList.add(new ComboBoxModel("FKBug", "FKBug"));
+        return modelList;
     }
 
     @Override

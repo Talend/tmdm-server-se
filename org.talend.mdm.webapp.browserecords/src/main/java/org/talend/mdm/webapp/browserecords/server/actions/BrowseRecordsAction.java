@@ -164,7 +164,6 @@ import com.amalto.webapp.core.util.Util;
 import com.amalto.webapp.core.util.Webapp;
 import com.amalto.webapp.core.util.XmlUtil;
 import com.extjs.gxt.ui.client.Style.SortDir;
-import com.google.gson.JsonObject;
 import com.sun.xml.xsom.XSAnnotation;
 import com.sun.xml.xsom.XSComplexType;
 import com.sun.xml.xsom.XSElementDecl;
@@ -185,16 +184,13 @@ public class BrowseRecordsAction implements BrowseRecordsService {
     protected final Messages MESSAGES = MessagesFactory.getMessages(
             "org.talend.mdm.webapp.browserecords.client.i18n.BrowseRecordsMessages", this.getClass().getClassLoader()); //$NON-NLS-1$
 
-    private final List<String>  dateTypeNames   = Arrays.asList(DataTypeConstants.DATE.getBaseTypeName(),
-                                                        DataTypeConstants.DATETIME.getBaseTypeName());
+    private final List<String> dateTypeNames = Arrays.asList(DataTypeConstants.DATE.getBaseTypeName(),
+            DataTypeConstants.DATETIME.getBaseTypeName());
 
-    private final List<String>  numberTypeNames = Arrays.asList(DataTypeConstants.DOUBLE.getBaseTypeName(),
-                                                        DataTypeConstants.FLOAT.getBaseTypeName(),
-                                                        DataTypeConstants.DECIMAL.getBaseTypeName(),
-                                                        DataTypeConstants.INT.getBaseTypeName(),
-                                                        DataTypeConstants.INTEGER.getBaseTypeName(),
-                                                        DataTypeConstants.LONG.getBaseTypeName(),
-                                                        DataTypeConstants.SHORT.getBaseTypeName());
+    private final List<String> numberTypeNames = Arrays.asList(DataTypeConstants.DOUBLE.getBaseTypeName(),
+            DataTypeConstants.FLOAT.getBaseTypeName(), DataTypeConstants.DECIMAL.getBaseTypeName(),
+            DataTypeConstants.INT.getBaseTypeName(), DataTypeConstants.INTEGER.getBaseTypeName(),
+            DataTypeConstants.LONG.getBaseTypeName(), DataTypeConstants.SHORT.getBaseTypeName());
 
     public static final String ERROR_KEYWORD = "ERROR";//$NON-NLS-1$
 
@@ -360,17 +356,17 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             throw new ServiceException(e.getLocalizedMessage());
         }
     }
-    
+
     @Override
-    public String handleNavigatorNodeLabel(String jsonString,String language) throws ServiceException {
+    public String handleNavigatorNodeLabel(String jsonString, String language) throws ServiceException {
         String navigator_node_ids = "navigator_node_ids"; //$NON-NLS-1$
         String navigator_node_concept = "navigator_node_concept"; //$NON-NLS-1$
         String navigator_node_label = "navigator_node_label"; //$NON-NLS-1$
         JSONArray jsonArray = JSONArray.fromObject(jsonString);
         for (int i = 0; i < jsonArray.size(); i++) {
-            JSONObject jsonObject = (JSONObject)jsonArray.get(i);
-            String ids = (String)jsonObject.get(navigator_node_ids);
-            String concept = (String)jsonObject.get(navigator_node_concept);
+            JSONObject jsonObject = (JSONObject) jsonArray.get(i);
+            String ids = (String) jsonObject.get(navigator_node_ids);
+            String concept = (String) jsonObject.get(navigator_node_concept);
             ItemBean itemBean = getItemBeanById(concept, ids, language);
             jsonObject.put(navigator_node_label, itemBean.getDisplayPKInfo());
         }
@@ -1613,8 +1609,8 @@ public class BrowseRecordsAction implements BrowseRecordsService {
         TypeModel model = findTypeModelByTypePath(metaDataTypes, typePath, language);
         nodeModel.setTypePath(model.getTypePath());
         nodeModel.setHasVisiblueRule(model.isHasVisibleRule());
-        nodeModel.setHide(model.isHide()) ;
-        nodeModel.setVisible(!model.isHide()) ;
+        nodeModel.setHide(model.isHide());
+        nodeModel.setVisible(!model.isHide());
         String realXPath = xpath;
         if (isPolyType) {
             realXPath = realXPath.replaceAll(":\\w+", ""); //$NON-NLS-1$//$NON-NLS-2$
@@ -1861,7 +1857,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
                 doc = org.talend.mdm.webapp.base.server.util.XmlUtil.parseText(xml);
             }
 
-            if(changedNodes != null && changedNodes.size() > 0){
+            if (changedNodes != null && changedNodes.size() > 0) {
                 for (String xpath : changedNodes.keySet()) {
                     String value = changedNodes.get(xpath);
                     if (doc.selectSingleNode(xpath) == null) {
@@ -2473,8 +2469,8 @@ public class BrowseRecordsAction implements BrowseRecordsService {
         }
         String errorMessage = MESSAGES.getMessage(locale, coreException.getTitle(), concept
                 + ((ids != null && !"".equals(ids)) ? "." + ids : ""), localizedMessage); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        if(StringUtils.isEmpty(concept) || StringUtils.isEmpty(ids)) {
-            errorMessage = MESSAGES.getMessage(locale, coreException.getTitle(), localizedMessage); 
+        if (StringUtils.isEmpty(concept) || StringUtils.isEmpty(ids)) {
+            errorMessage = MESSAGES.getMessage(locale, coreException.getTitle(), concept, localizedMessage);
         }
         return errorMessage;
     }
@@ -2533,5 +2529,5 @@ public class BrowseRecordsAction implements BrowseRecordsService {
         }
         typeModel.setForeignKeyInfo(newFKInfoList);
     }
-    
+
 }

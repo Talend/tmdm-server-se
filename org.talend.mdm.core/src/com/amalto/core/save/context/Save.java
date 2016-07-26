@@ -1,12 +1,11 @@
 /*
  * Copyright (C) 2006-2016 Talend Inc. - www.talend.com
- *
+ * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
- *
- * You should have received a copy of the agreement
- * along with this program; if not, write to Talend SA
- * 9 rue Pages 92150 Suresnes, France
+ * 
+ * You should have received a copy of the agreement along with this program; if not, write to Talend SA 9 rue Pages
+ * 92150 Suresnes, France
  */
 
 package com.amalto.core.save.context;
@@ -27,11 +26,21 @@ class Save implements DocumentSaver {
 
     private String[] savedId = new String[0];
 
+    private String[] invalidIdCharacters = { "'", "\"", "*" }; //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+
+    @Override
     public void save(SaverSession session, DocumentSaverContext context) {
         String typeName = context.getUserDocument().getType().getName();
         savedId = context.getId();
         if (savedId.length == 0) {
             throw new IllegalStateException("No ID information to save instance of '" + typeName + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+        for (String id : savedId) {
+            for (String character : invalidIdCharacters) {
+                if (id.contains(character)) {
+                    throw new IllegalStateException("ID " + id + " contains valid character " + character + " in entity "); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                }
+            }
         }
         MutableDocument databaseDocument = context.getDatabaseDocument();
         if (!StringUtils.EMPTY.equals(context.getTaskId())) {
@@ -79,15 +88,17 @@ class Save implements DocumentSaver {
         session.save(UpdateReport.UPDATE_REPORT_DATA_MODEL, updateReportDocument);
     }
 
-
+    @Override
     public String[] getSavedId() {
         return savedId;
     }
 
+    @Override
     public String getSavedConceptName() {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public String getBeforeSavingMessage() {
         return StringUtils.EMPTY;
     }

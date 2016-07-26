@@ -222,7 +222,7 @@ public class ActionPanelGWTTest extends GWTTestCase {
                 assertEquals("aac-中文", model.getText());
             }
             if (model.getValue().equals("Product")) {
-                assertEquals(null, model.getText());
+                assertEquals("", model.getText());
             }
             if (model.getValue().equals("ReadOnly")) {
                 assertEquals("ReadOnly-中文", model.getText());
@@ -231,7 +231,7 @@ public class ActionPanelGWTTest extends GWTTestCase {
                 assertEquals("sort-中文", model.getText());
             }
             if (model.getValue().equals("testType")) {
-                assertEquals(null, model.getText());
+                assertEquals("", model.getText());
             }
             if (model.getValue().equals("FKBug")) {
                 assertEquals("FKBug", model.getText());

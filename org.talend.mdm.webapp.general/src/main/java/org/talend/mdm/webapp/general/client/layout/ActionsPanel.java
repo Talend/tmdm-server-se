@@ -233,7 +233,9 @@ public class ActionsPanel extends FormPanel {
         Collections.copy(modelList, oldModelList);
 
         for (ComboBoxModel model : modelList) {
-            model.setText(MultilanguageMessageParser.getValueByLanguage(model.getText(), UserContextUtil.getLanguage()));
+            String transferValue = MultilanguageMessageParser.getValueByLanguage(model.getText(), UserContextUtil.getLanguage());
+            transferValue = transferValue == null ? "" : transferValue ;
+            model.setText(transferValue);
         }
 
         return modelList;

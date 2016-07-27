@@ -243,9 +243,13 @@ public class ItemPOJO implements Serializable {
      * @return the {@link ItemPOJO}
      */
     public static ItemPOJO load(ItemPOJOPK itemPOJOPK) throws XtentisException {
+        checkAccess(LocalUser.getLocalUser(), itemPOJOPK, false, "read"); //$NON-NLS-1$
+        return loadItem(itemPOJOPK);
+    }
+    
+    public static ItemPOJO loadItem(ItemPOJOPK itemPOJOPK) throws XtentisException {
         XmlServer server = Util.getXmlServerCtrlLocal();
         ILocalUser user = LocalUser.getLocalUser();
-        checkAccess(user, itemPOJOPK, true, "read"); //$NON-NLS-1$
         try {
             // retrieve the item
             String id = itemPOJOPK.getUniqueID();
@@ -307,6 +311,7 @@ public class ItemPOJO implements Serializable {
             LOG.error(err, e);
             throw new RuntimeException(err, e);
         }
+    
     }
 
     /**
@@ -659,7 +664,7 @@ public class ItemPOJO implements Serializable {
         } else if (XSystemObjects.isExist(XObjectType.DATA_CLUSTER, itemPOJOPK.getDataClusterPOJOPK().getUniqueId())) {
             authorizedAccess = true;
         } else {
-            ItemPOJO itemPOJO = load(itemPOJOPK);
+            ItemPOJO itemPOJO = loadItem(itemPOJOPK);
             if(mutableAccess) {
                 authorizedAccess = user.userItemCanWrite(itemPOJO, itemPOJOPK.getDataClusterPOJOPK().getUniqueId(), itemPOJOPK.getConceptName());
             } else {
@@ -673,7 +678,7 @@ public class ItemPOJO implements Serializable {
         }
     }
     
-    public static void isExistDataCluster(DataClusterPOJOPK dataClusterPOJOPK) throws XtentisException {
+    public static boolean isExistDataCluster(DataClusterPOJOPK dataClusterPOJOPK) throws XtentisException {
         try {
             if (Util.getDataClusterCtrlLocal().existsDataCluster(dataClusterPOJOPK) == null) {
                 throw new IllegalArgumentException("Data Cluster '" + dataClusterPOJOPK.getUniqueId() + "' does not exist."); //$NON-NLS-1$//$NON-NLS-2$
@@ -681,6 +686,7 @@ public class ItemPOJO implements Serializable {
         } catch (Exception e) {
             throw new XtentisException("Unable to get the Data Cluster '" + dataClusterPOJOPK.getUniqueId() + "'", e); //$NON-NLS-1$ //$NON-NLS-2$
         }
+        return true;
     }
 
 }

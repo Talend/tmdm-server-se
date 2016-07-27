@@ -3314,21 +3314,19 @@ public class DocumentSaveTest extends TestCase {
         repository.load(DocumentSaveTest.class.getResourceAsStream("metadata1.xsd"));
         MockMetadataRepositoryAdmin.INSTANCE.register("DStar", repository);
 
-        SaverSource source = new TestSaverSource(repository, false, "", "metadata1.xsd");
+        SaverSource source = new TestSaverSource(repository, true, "test57_original.xml", "metadata1.xsd");
 
         SaverSession session = SaverSession.newSession(source);
         InputStream recordXml = DocumentSaveTest.class.getResourceAsStream("InvalidCharacterId.xml");
         DocumentSaverContext context = session.getContextFactory().create("MDM", "DStar", "workflow", recordXml, false, true,
                 true, true, false);
         DocumentSaver saver = context.createSaver();
-        saver.save(session, context);
-        MockCommitter committer = new MockCommitter();
-        session.end(committer);
-
-        assertTrue(committer.hasSaved());
-        Element committedElement = committer.getCommittedElement();
-        assertEquals("Chicago", evaluate(committedElement, "/Agency/Name"));
-        assertEquals("Chicago", evaluate(committedElement, "/Agency/City"));
+        try {
+            saver.save(session, context);
+            fail();
+        } catch (SaveException e) {
+        	assertFalse(e.getCause().getLocalizedMessage().isEmpty());
+        }
     }
 
     private static class MockCommitter implements SaverSession.Committer {

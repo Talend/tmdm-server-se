@@ -76,6 +76,7 @@ import com.amalto.core.storage.hibernate.HibernateStorage;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.record.DataRecordReader;
 import com.amalto.core.storage.record.XmlStringDataRecordReader;
+import com.amalto.core.storage.transaction.TransactionManager;
 import com.amalto.core.util.OutputReport;
 import com.amalto.core.util.Util;
 import com.amalto.core.util.ValidateException;
@@ -1741,6 +1742,36 @@ public class DocumentSaveTest extends TestCase {
         MockCommitter committer = new MockCommitter();
         session.end(committer);
         
+        assertTrue(AutoIncrementGenerator.get().isInitialized());
+        assertTrue(source.hasSavedAutoIncrement());
+        assertTrue(committer.hasSaved());
+        Element committedElement = committer.getCommittedElement();
+        assertEquals("Product Family #1", evaluate(committedElement, "/ProductFamily/Name"));
+    }
+
+    public void testUpdateAutoIncrementRecordForLongTransactionInCluster() throws Exception {
+
+        MDMConfiguration.getConfiguration().setProperty("system.cluster", Boolean.TRUE.toString());
+        createBeanDelegatorContainer();
+        BeanDelegatorContainer.getInstance().setDelegatorInstancePool(
+                Collections.<String, Object> singletonMap("LocalUser", new MockILocalUser()));
+        Util.getDataClusterCtrlLocal().putDataCluster(new DataClusterPOJO("CONF"));
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(DocumentSaveTest.class.getResourceAsStream("metadata1.xsd"));
+        MockMetadataRepositoryAdmin.INSTANCE.register("DStar", repository);
+        TestSaverSource source = new TestSaverSource(repository, false, "", "metadata1.xsd");
+        TransactionManager manager = ServerContext.INSTANCE.get().getTransactionManager();
+        manager.create(com.amalto.core.storage.transaction.Transaction.Lifetime.LONG);
+        manager.currentTransaction().begin();
+        SaverSession session = SaverSession.newSession(source);
+        InputStream recordXml = DocumentSaveTest.class.getResourceAsStream("autoIncrementPK.xml");
+        DocumentSaverContext context = session.getContextFactory().create("MDM", "DStar", "Source", recordXml, true, true, true,
+                true, false);
+        DocumentSaver saver = context.createSaver();
+        saver.save(session, context);
+        MockCommitter committer = new MockCommitter();
+        session.end(committer);
+        manager.currentTransaction().commit();
         assertTrue(AutoIncrementGenerator.get().isInitialized());
         assertTrue(source.hasSavedAutoIncrement());
         assertTrue(committer.hasSaved());

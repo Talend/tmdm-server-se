@@ -1749,6 +1749,9 @@ public class DocumentSaveTest extends TestCase {
         assertEquals("Product Family #1", evaluate(committedElement, "/ProductFamily/Name"));
     }
 
+    /**
+     * test for TMDM-9804 AUTO_INCREMENT issue in cluster enviroment
+     */
     public void testUpdateAutoIncrementRecordForLongTransactionInCluster() throws Exception {
 
         MDMConfiguration.getConfiguration().setProperty("system.cluster", Boolean.TRUE.toString());

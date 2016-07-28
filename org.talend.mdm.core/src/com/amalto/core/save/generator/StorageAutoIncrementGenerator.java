@@ -66,6 +66,7 @@ public class StorageAutoIncrementGenerator implements AutoIdGenerator {
         ComplexTypeMetadata autoIncrementType = repository.getComplexType(AUTO_INCREMENT);
         UserQueryBuilder qb = from(autoIncrementType).forUpdate();
 
+        // Initialization of AutoIncrement should be AD-HOC, when embedded within a Long Transaction.
         TransactionManager manager = ServerContext.INSTANCE.get().getTransactionManager();
         manager.associate(manager.create(Transaction.Lifetime.AD_HOC));
 

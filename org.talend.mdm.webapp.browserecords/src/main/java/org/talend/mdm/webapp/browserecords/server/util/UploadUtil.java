@@ -19,6 +19,8 @@ import java.util.Set;
 
 import org.talend.mdm.webapp.browserecords.shared.Constants;
 
+import com.amalto.core.util.CoreException;
+
 @SuppressWarnings("nls")
 public class UploadUtil {
     
@@ -57,9 +59,14 @@ public class UploadUtil {
     public static String getRootCause(Throwable throwable) {
         String message = ""; //$NON-NLS-1$
         Throwable currentCause = throwable;
-        while (currentCause != null) {           
-            message = currentCause.getMessage();
-            currentCause = currentCause.getCause();
+        if (currentCause != null) {
+            while (currentCause.getCause() != null) {
+                if (CoreException.class.isInstance(currentCause.getCause())) {
+                    return currentCause.getCause().getMessage();
+                }
+                message = currentCause.getCause().getMessage();
+                currentCause = currentCause.getCause();
+            }
         }
         return message;
     }

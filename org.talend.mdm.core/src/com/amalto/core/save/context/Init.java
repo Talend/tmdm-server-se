@@ -11,6 +11,7 @@
 
 package com.amalto.core.save.context;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.util.webapp.XObjectType;
 import org.talend.mdm.commmon.util.webapp.XSystemObjects;
@@ -54,6 +55,9 @@ class Init implements DocumentSaver {
             if (e instanceof ValidateException) {
                 // In case of validation issue, don't include a potential before saving message in exception.
                 throw new com.amalto.core.save.SaveException(e);
+            }
+            if (StringUtils.isEmpty(getBeforeSavingMessage())) {
+                throw new com.amalto.core.save.SaveException(e.getMessage(), e);
             }
             throw new com.amalto.core.save.SaveException(getBeforeSavingMessage(), e);
         }

@@ -19,6 +19,9 @@ import java.util.Set;
 
 import javax.servlet.ServletException;
 
+import com.amalto.core.save.SaveException;
+import com.amalto.core.util.CoreException;
+
 import junit.framework.TestCase;
 
 @SuppressWarnings("nls")
@@ -59,10 +62,12 @@ public class UploadUtilTest  extends TestCase {
     }
     
     public void testGetRootCause(){
-        RemoteException romoteException = new RemoteException("RemoteException Cause");
-        ServletException servletException = new ServletException("ServletException Cause",romoteException);
-        Exception exception = new Exception("Exception Cause",servletException);
-        assertEquals(UploadUtil.getRootCause(exception),"RemoteException Cause");
+        RuntimeException runtimeException = new RuntimeException("RuntimeException Cause");
+        SaveException saveException = new SaveException("SaveException Cause", runtimeException);
+        CoreException coreException = new CoreException("CoreException Cause", saveException);
+        RemoteException remoteException = new RemoteException("RemoteException Cause", coreException);
+        Exception exception = new Exception("Exception Cause",remoteException);
+        assertEquals(UploadUtil.getRootCause(exception),"com.amalto.core.save.SaveException: Exception occurred during save: SaveException Cause");
     }
         
     public void testIsViewableXpathValid(){

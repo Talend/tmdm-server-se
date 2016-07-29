@@ -438,7 +438,7 @@ public class DocumentSaveTest extends TestCase {
             saver.save(session, context);
             fail();
         } catch (SaveException e) {
-            assertTrue(e.getBeforeSavingMessage().isEmpty());
+            assertEquals("Expected id 'Id' to be set.", e.getBeforeSavingMessage());
         }
     }
 

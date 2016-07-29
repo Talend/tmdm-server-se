@@ -183,7 +183,7 @@ public class UploadData extends HttpServlet {
         try {
             CommonUtil.getPort().putItemWithReportArray(wSPutItemWithReportArray);
         } catch (RemoteException exception) {
-            throw new UploadException(MESSAGES.getMessage("save_fail", concept, UploadUtil.getRootCause(exception))); //$NON-NLS-1$
+            throw new UploadException(UploadUtil.getRootCause(exception));
         } catch (Exception exception) {
             throw new ServletException(exception.getLocalizedMessage());
         }
@@ -207,7 +207,7 @@ public class UploadData extends HttpServlet {
         String saveExceptionString = "com.amalto.core.save.SaveException: Exception occurred during save: "; //$NON-NLS-1$
         int saveExceptionIndex = errorMsg.indexOf(saveExceptionString);
         if (saveExceptionIndex > -1) {
-            errorMsg = errorMsg.substring(saveExceptionIndex + saveExceptionString.length());
+            errorMsg = MESSAGES.getMessage("save_error") + errorMsg.substring(saveExceptionIndex + saveExceptionString.length()); //$NON-NLS-1$
         }
 
         return errorMsg;

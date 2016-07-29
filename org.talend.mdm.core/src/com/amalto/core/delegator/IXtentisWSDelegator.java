@@ -2588,6 +2588,8 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
             coreException = new CoreException(ROUTING_ERROR_MESSAGE, throwable);
         } else if (FullTextQueryCompositeKeyException.class.isInstance(throwable)) {
             coreException = new CoreException(FULLTEXT_QUERY_COMPOSITE_KEY_EXCEPTION_MESSAGE, throwable);
+        } else if (SaveException.class.isInstance(throwable)) {
+            coreException = new CoreException(SAVE_EXCEPTION_MESSAGE, throwable);
         } else {
             if (throwable.getCause() != null) {
                 return handleException(throwable.getCause(), errorMessage);

@@ -15,18 +15,18 @@ import org.apache.commons.lang.StringUtils;
 
 public class SaveException extends RuntimeException {
 
-    private final String beforeSavingMessage;
+    private final String Message;
 
     public SaveException(Throwable cause) {
         this(StringUtils.EMPTY, cause);
     }
 
-    public SaveException(String beforeSavingMessage, Throwable cause) {
-        super("Exception occurred during save: " + beforeSavingMessage, cause);
-        this.beforeSavingMessage = beforeSavingMessage;
+    public SaveException(String Message, Throwable cause) {
+        super("Exception occurred during save: " + Message, cause); //$NON-NLS-1$
+        this.Message = Message;
     }
 
     public String getBeforeSavingMessage() {
-        return beforeSavingMessage;
+        return Message;
     }
 }

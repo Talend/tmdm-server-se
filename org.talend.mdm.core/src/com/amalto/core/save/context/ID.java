@@ -11,20 +11,23 @@
 
 package com.amalto.core.save.context;
 
-import com.amalto.core.history.MutableDocument;
-import com.amalto.core.history.accessor.Accessor;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
+import org.talend.mdm.commmon.util.core.EUUIDCustomType;
+
+import com.amalto.core.history.MutableDocument;
+import com.amalto.core.history.accessor.Accessor;
 import com.amalto.core.save.DOMDocument;
 import com.amalto.core.save.DocumentSaverContext;
 import com.amalto.core.save.SaverSession;
 import com.amalto.core.save.UserAction;
-import org.talend.mdm.commmon.util.core.EUUIDCustomType;
-
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
+import com.amalto.core.storage.exception.MissingPrimaryKeyException;
+import com.amalto.core.storage.exception.RecordNotExistedException;
 
 class ID implements DocumentSaver {
 
@@ -68,14 +71,14 @@ class ID implements DocumentSaver {
             } else {
                 // Not a value to generate, first ensure value is correctly set.
                 if (!userAccessor.exist()) {
-                    throw new IllegalArgumentException("Expected id '" + keyField.getName() + "' to be set.");
+                    throw new MissingPrimaryKeyException("Expected id '" + keyField.getName() + "' to be set.");
                 }
                 currentIdValue = userAccessor.get();
             }
             if (currentIdValue != null && !StringUtils.EMPTY.equals(currentIdValue)) {
                 ids.add(currentIdValue);
             } else if(!isServerProvidedValue(keyFieldTypeName)){
-                throw new IllegalArgumentException("Expected id '" + keyField.getName() + "' to be set.");
+                throw new MissingPrimaryKeyException("Expected id '" + keyField.getName() + "' to be set.");
             }
         }
         // now has an id, so load database document
@@ -101,7 +104,7 @@ class ID implements DocumentSaver {
                     for (String idElement : xmlDocumentId) {
                         builder.append('[').append(idElement).append(']');
                     }
-                    throw new IllegalStateException("Can not update document '" + type.getName() + "' with id '" + builder.toString() + "' because it does not exist.");
+                    throw new RecordNotExistedException("Can not update document '" + type.getName() + "' with id '" + builder.toString() + "' because it does not exist.");
             }
             // Creation... so mark context
             switch (context.getUserAction()) {

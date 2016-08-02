@@ -26,7 +26,7 @@ class Save implements DocumentSaver {
 
     private String[] savedId = new String[0];
 
-    private String[] invalidIdCharacters = { "'", "\"", "*" }; //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+    private String[] invalidIdCharacters = { "'", "\"", "*", "[", "]" }; //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$//$NON-NLS-4$//$NON-NLS-5$
 
     @Override
     public void save(SaverSession session, DocumentSaverContext context) {

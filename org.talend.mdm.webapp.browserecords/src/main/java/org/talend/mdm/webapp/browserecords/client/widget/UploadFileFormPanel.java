@@ -385,8 +385,8 @@ public class UploadFileFormPanel extends FormPanel implements Listener<FormEvent
     @Override
     public void handleEvent(final FormEvent formEvent) {
         waitBar.close();
-        if (formEvent.getResultHtml().contains(MessagesFactory.getMessages().import_success_label())) {
-            MessageBox.alert(MessagesFactory.getMessages().info_title(), filterFormatTag(formEvent.getResultHtml()),
+        if (formEvent.getResultHtml().contains(Constants.IMPORT_SUCCESS)) {
+            MessageBox.alert(MessagesFactory.getMessages().info_title(), MessagesFactory.getMessages().import_success_label(),
                     new Listener<MessageBoxEvent>() {
 
                         @Override

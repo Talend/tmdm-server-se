@@ -63,7 +63,7 @@ public class UploadData extends HttpServlet {
             "org.talend.mdm.webapp.browserecords.client.i18n.BrowseRecordsMessages", UploadData.class.getClassLoader()); //$NON-NLS-1$
 
     private boolean cusExceptionFlag = false;
-
+    
     @Override
     protected void doGet(HttpServletRequest arg0, HttpServletResponse arg1) throws ServletException, IOException {
         doPost(arg0, arg1);
@@ -169,7 +169,7 @@ public class UploadData extends HttpServlet {
                                 wsPutItemWithReportList.toArray(new WSPutItemWithReport[wsPutItemWithReportList.size()])),
                         concept);
             }
-            writer.print(MESSAGES.getMessage("import_success_label")); //$NON-NLS-1$
+            writer.print(Constants.IMPORT_SUCCESS);
         } catch (Exception exception) {
             LOG.error(exception.getMessage(), exception);
             writer.print(extractErrorMessage(exception.getMessage()));

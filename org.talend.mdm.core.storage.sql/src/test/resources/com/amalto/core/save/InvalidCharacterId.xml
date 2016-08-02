@@ -10,7 +10,7 @@
   -->
 
 <Agency>
-    <Id>Test'Standalone*Process</Id>
+    <Id>Test'Standalone*Process[]</Id>
     <Name>Chicago</Name>
     <City>Chicago</City>
     <State/>

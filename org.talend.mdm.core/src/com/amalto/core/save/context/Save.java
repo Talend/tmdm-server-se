@@ -38,7 +38,7 @@ class Save implements DocumentSaver {
         for (String id : savedId) {
             for (String character : invalidIdCharacters) {
                 if (id.contains(character)) {
-                    throw new IllegalStateException("ID " + id + " contains valid character " + character + " in entity "); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    throw new IllegalStateException("ID " + id + " contains invalid character " + character + " in entity "); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 }
             }
         }

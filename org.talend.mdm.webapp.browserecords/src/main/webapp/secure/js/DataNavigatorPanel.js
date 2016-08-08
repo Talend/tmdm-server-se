@@ -529,7 +529,11 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 								}
 								selectNode.page[d.navigator_node_concept].start = selectNode.page[d.navigator_node_concept].start
 								+ amalto.navigator.Navigator.getPageSize();
-								amalto.navigator.Navigator.handleNodeLabel(Ext.encode(resultObject.result),NAVIGATOR_NODE_IN_ENTITY_TYPE);
+								if (d.navigator_node_hasPrimaryKeyInfo) {
+									amalto.navigator.Navigator.handleNodeLabel(Ext.encode(resultObject.result),NAVIGATOR_NODE_IN_ENTITY_TYPE);
+								} else {
+									paintDataNode(data,NAVIGATOR_NODE_IN_ENTITY_TYPE);
+								}
 							},
 							failure : function(response, options) {
 								handleFailure(response);
@@ -565,7 +569,11 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 							},
 							success : function(response, options) {
 								selectNode.expanded = true;
-								amalto.navigator.Navigator.handleNodeLabel(response.responseText,NAVIGATOR_NODE_OUT_ENTITY_TYPE);
+								if (d.navigator_node_hasPrimaryKeyInfo) {
+									amalto.navigator.Navigator.handleNodeLabel(response.responseText,NAVIGATOR_NODE_OUT_ENTITY_TYPE);
+								} else {
+									paintDataNode(data,NAVIGATOR_NODE_OUT_ENTITY_TYPE);
+								}
 							},
 							failure : function(response, options) {
 								handleFailure(response);
@@ -973,7 +981,7 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 	}
 	
 	return {
-		initUI : function(restServiceUrlParameter, idParameter, conceptParameter,clusterParameter, languageParameter) {
+		initUI : function(restServiceUrlParameter, idParameter, conceptParameter,clusterParameter, hasPrimaryKeyInfo,languageParameter) {
 			selectNode = undefined;
 			showNode = undefined;
 			restServiceUrl = restServiceUrlParameter;
@@ -1048,7 +1056,11 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 						language : language
 					},
 					success : function(response, options) {
-						amalto.navigator.Navigator.handleNodeLabel(response.responseText,0);
+						if (hasPrimaryKeyInfo) {
+							amalto.navigator.Navigator.handleNodeLabel(response.responseText,0);
+						} else {
+							initDataNode(response.responseText);
+						}
 					},
 					failure : function(response, options) {
 						handleFailure(response);

@@ -305,7 +305,7 @@ public class NavigatorPanel extends ContentPanel {
         });
     }
 
-    public static void renderPanel(String baseUrl, String ids, String concept, String cluster, ContentPanel contentPanel) {
+    public static void renderPanel(String baseUrl, String ids, String concept, String cluster,boolean hasPrimaryKeyInfo, ContentPanel contentPanel) {
         if (GWT.isScript()) {
             String itemId = concept + "_" + ids; //$NON-NLS-1$
             renderGwtPanel(itemId, contentPanel);
@@ -313,7 +313,7 @@ public class NavigatorPanel extends ContentPanel {
             renderDebugPanel(contentPanel);
         }
         String restServiceUrl = baseUrl + "services/rest"; //$NON-NLS-1$
-        paintNavigator(restServiceUrl, ids, concept, cluster, Locale.getLanguage());
+        paintNavigator(restServiceUrl, ids, concept, cluster,hasPrimaryKeyInfo, Locale.getLanguage());
     }
 
     private static void renderDebugPanel(ContentPanel contentPanel) {
@@ -351,9 +351,9 @@ public class NavigatorPanel extends ContentPanel {
         }        
     }-*/;
 
-    public native static void paintNavigator(String restServiceUrl, String ids, String concept, String cluster, String language)/*-{
+    public native static void paintNavigator(String restServiceUrl, String ids, String concept, String cluster,boolean hasPrimaryKeyInfo, String language)/*-{
         $wnd.amalto.itemsbrowser.NavigatorPanel.initUI(restServiceUrl, ids, concept,
-                cluster, language);
+                cluster,hasPrimaryKeyInfo, language);
     }-*/;
     
     public native static void initDataNode(String data)/*-{

@@ -31,6 +31,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.amalto.core.delegator.IBeanDelegator;
 import com.amalto.core.delegator.ILocalUser;
 import com.amalto.core.objects.datacluster.DataClusterPOJO;
 import com.amalto.core.objects.datacluster.DataClusterPOJOPK;
@@ -654,7 +655,7 @@ public class ItemPOJO implements Serializable {
         assert user != null;
         boolean authorizedAccess;
         String username = user.getUsername();
-        if(itemPOJOPK.getDataClusterPOJOPK() != null && !StorageAdmin.SYSTEM_STORAGE.equals(itemPOJOPK.getDataClusterPOJOPK().getUniqueId())){
+        if(itemPOJOPK.getDataClusterPOJOPK() != null && !StorageAdmin.SYSTEM_STORAGE.equals(itemPOJOPK.getDataClusterPOJOPK().getUniqueId()) && IBeanDelegator.EE_USER.equals(user.getUserType())){
             isExistDataCluster(itemPOJOPK.getDataClusterPOJOPK());
         }
         if(user.isAdmin(ItemPOJO.class)) {

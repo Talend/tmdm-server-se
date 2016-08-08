@@ -644,7 +644,7 @@ public class ItemDetailToolBar extends ToolBar {
                         public void componentSelected(MenuEvent menuEvent) {
                             String ids = itemBean.getIds();
                             String concept = itemBean.getConcept();
-                            boolean hasPrimaryKeyInfo = viewBean.getBindingEntityModel().getMetaDataTypes().get(itemBean.getConcept()).getPrimaryKeyInfo().isEmpty();
+                            boolean hasPrimaryKeyInfo = !viewBean.getBindingEntityModel().getMetaDataTypes().get(itemBean.getConcept()).getPrimaryKeyInfo().isEmpty();
                             NavigatorPanel panel = new NavigatorPanel();
                             panel.updateDetailPanel(ids, concept);
                             NavigatorPanel.renderPanel(GWT.getHostPageBaseURL(), ids, concept, BrowseRecords.getSession()

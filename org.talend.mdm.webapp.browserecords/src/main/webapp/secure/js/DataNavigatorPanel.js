@@ -229,9 +229,7 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 		paint();
 	}
 	
-	function paintDataNode(data,navigator_node_relation) {
-		var newNodes = eval('(' + data
-				+ ')');
+	function paintDataNode(newNodes,navigator_node_relation) {
 		for ( var i = 0; i < newNodes.length; i++) {
 			var node = newNodes[i];
 			var newNode = {
@@ -532,7 +530,7 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 								if (d.navigator_node_hasPrimaryKeyInfo) {
 									amalto.navigator.Navigator.handleNodeLabel(Ext.encode(resultObject.result),NAVIGATOR_NODE_IN_ENTITY_TYPE);
 								} else {
-									paintDataNode(data,NAVIGATOR_NODE_IN_ENTITY_TYPE);
+									paintDataNode(resultObject.result,NAVIGATOR_NODE_IN_ENTITY_TYPE);
 								}
 							},
 							failure : function(response, options) {
@@ -572,7 +570,7 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 								if (d.navigator_node_hasPrimaryKeyInfo) {
 									amalto.navigator.Navigator.handleNodeLabel(response.responseText,NAVIGATOR_NODE_OUT_ENTITY_TYPE);
 								} else {
-									paintDataNode(data,NAVIGATOR_NODE_OUT_ENTITY_TYPE);
+									paintDataNode(eval('(' + response.responseText + ')'),NAVIGATOR_NODE_OUT_ENTITY_TYPE);
 								}
 							},
 							failure : function(response, options) {
@@ -839,7 +837,7 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 		if (o.navigator_node_concept !== undefined) {
 			identifier = 'navigator_' + o.navigator_node_concept;
 		}
-		if (o.navigator_node_ids !== undefined) {
+		if (o.navigator_node_type == NAVIGATOR_NODE_VALUE_TYPE && o.navigator_node_ids !== undefined) {
 			identifier = identifier + '_' + o.navigator_node_ids;
 		}
 		return identifier;
@@ -1081,11 +1079,11 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 		},
 		
 		paintInDataNode : function(data) {
-			paintDataNode(data,NAVIGATOR_NODE_IN_ENTITY_TYPE);
+			paintDataNode(eval('(' + data + ')'),NAVIGATOR_NODE_IN_ENTITY_TYPE);
 		},
 		
 		paintOutDataNode : function(data) {
-			paintDataNode(data,NAVIGATOR_NODE_OUT_ENTITY_TYPE);
+			paintDataNode(eval('(' + data + ')'),NAVIGATOR_NODE_OUT_ENTITY_TYPE);
 		}
 	}
 }();

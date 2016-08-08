@@ -75,6 +75,10 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
         this.showInput = true;
         this.showSelectButton = !dataType.isReadOnly();
         this.setFireChangeEventOnSetValue(true);
+        String[] foreignKeyPathArray = foreignKeyPath.split("/"); //$NON-NLS-1$
+        if (foreignKeyPathArray.length > 0) {
+            foreignConceptName = foreignKeyPathArray[0];
+        }
     }
 
     @Override
@@ -238,9 +242,7 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
 
             @Override
             public void onClick(ClickEvent ce) {
-                String[] foreignKeyPathArray = foreignKeyPath.split("/"); //$NON-NLS-1$
-                if (foreignKeyPathArray.length > 0) {
-                    foreignConceptName = foreignKeyPathArray[0];
+                if (foreignConceptName != null) {
                     service.getEntityModel(foreignConceptName, Locale.getLanguage(),
                             new SessionAwareAsyncCallback<EntityModel>() {
 

@@ -138,9 +138,5 @@ public abstract class ILocalUser implements IBeanDelegator {
     public boolean userItemCanWrite(ItemPOJO item, String datacluster, String concept) throws XtentisException {
         return true;
     }
-    
-    public String getUserType() throws XtentisException {
-        return CE_USER;
-    }
 
 }

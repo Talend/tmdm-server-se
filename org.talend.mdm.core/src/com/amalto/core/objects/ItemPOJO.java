@@ -655,7 +655,7 @@ public class ItemPOJO implements Serializable {
         assert user != null;
         boolean authorizedAccess;
         String username = user.getUsername();
-        if(itemPOJOPK.getDataClusterPOJOPK() != null && !StorageAdmin.SYSTEM_STORAGE.equals(itemPOJOPK.getDataClusterPOJOPK().getUniqueId()) && IBeanDelegator.EE_USER.equals(user.getUserType())){
+        if(itemPOJOPK.getDataClusterPOJOPK() != null && !StorageAdmin.SYSTEM_STORAGE.equals(itemPOJOPK.getDataClusterPOJOPK().getUniqueId()) && Util.isEnterprise()){
             isExistDataCluster(itemPOJOPK.getDataClusterPOJOPK());
         }
         if(user.isAdmin(ItemPOJO.class)) {

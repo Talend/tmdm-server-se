@@ -90,6 +90,18 @@
                             <goal>jar</goal>
                         </goals>
                     </execution>
+                    <execution>
+                        <id>jar-core-test</id>
+                        <configuration>
+                            <classifier>test</classifier>
+                            <includes>
+                                <include>com/amalto/core/server/ServerAccessImpl*.class</include>
+                            </includes>
+                        </configuration>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>

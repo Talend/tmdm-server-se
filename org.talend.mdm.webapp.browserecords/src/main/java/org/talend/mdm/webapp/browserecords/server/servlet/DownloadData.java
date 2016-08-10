@@ -229,7 +229,7 @@ public class DownloadData extends HttpServlet {
         String[] result = CommonUtil
                 .getPort()
                 .viewSearch(
-                        new WSViewSearch(new WSDataClusterPK(getCurrentDataCluster()), wsViewPK, wi, -1, 0, 20, null,
+                        new WSViewSearch(new WSDataClusterPK(getCurrentDataCluster()), wsViewPK, wi, -1, 0, maxCount, null,
                                 null)).getStrings();
         if (result.length > 1) {
             results = Arrays.asList(Arrays.copyOfRange(result, 1, result.length));

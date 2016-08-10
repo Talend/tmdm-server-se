@@ -67,7 +67,7 @@ public class DownloadData extends HttpServlet {
 
     protected String concept = ""; //$NON-NLS-1$
 
-    private String tableName;
+    private String viewPk;
 
     private boolean fkResovled = false;
 
@@ -125,7 +125,7 @@ public class DownloadData extends HttpServlet {
     }
 
     private void setParameter(HttpServletRequest request) throws Exception {
-        tableName = request.getParameter("tableName"); //$NON-NLS-1$
+        viewPk = request.getParameter("tableName"); //$NON-NLS-1$
         generateFileName(new String(request.getParameter("fileName").getBytes("iso-8859-1"), "UTF-8")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         String header = new String(request.getParameter("header").getBytes("iso-8859-1"), "UTF-8"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$        
         String xpath = request.getParameter("xpath"); //$NON-NLS-1$
@@ -137,7 +137,7 @@ public class DownloadData extends HttpServlet {
             String fkInfo = request.getParameter("fkInfo"); //$NON-NLS-1$
             DownloadUtil.assembleFkMap(colFkMap, fkMap, fkColXPath, fkInfo);
         }
-        concept = ViewHelper.getConceptFromDefaultViewName(tableName);
+        concept = ViewHelper.getConceptFromDefaultViewName(viewPk);
         headerArray = DownloadUtil.convertXml2Array(header, "item"); //$NON-NLS-1$
         xpathArray = DownloadUtil.convertXml2Array(xpath, "item"); //$NON-NLS-1$
         criteria = request.getParameter("criteria"); //$NON-NLS-1$
@@ -166,7 +166,7 @@ public class DownloadData extends HttpServlet {
         entity = org.talend.mdm.webapp.browserecords.server.util.CommonUtil.getEntityModel(concept, language);
         List<String> results = new LinkedList<String>();
 
-        WSViewPK wsViewPK = new WSViewPK(tableName);
+        WSViewPK wsViewPK = new WSViewPK(viewPk);
         WSView wsView = CommonUtil.getPort().getView(new WSGetView(wsViewPK));
 
         WSWhereCondition[] conditions = wsView.getWhereConditions();

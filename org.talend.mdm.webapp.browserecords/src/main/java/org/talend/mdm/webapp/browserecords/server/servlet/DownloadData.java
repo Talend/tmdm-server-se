@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -25,6 +26,7 @@ import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.XPath;
+import org.talend.mdm.commmon.util.core.MDMConfiguration;
 import org.talend.mdm.webapp.base.server.util.CommonUtil;
 import org.talend.mdm.webapp.base.server.util.XmlUtil;
 import org.talend.mdm.webapp.base.shared.EntityModel;
@@ -55,7 +57,7 @@ public class DownloadData extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
-    protected final Integer maxCount = 1000;
+    protected Integer maxCount = 1000;
 
     private final String SHEET_LABEL = "Talend MDM"; //$NON-NLS-1$
 
@@ -164,6 +166,13 @@ public class DownloadData extends HttpServlet {
 
     protected void fillSheet(HSSFSheet sheet) throws Exception {
         entity = org.talend.mdm.webapp.browserecords.server.util.CommonUtil.getEntityModel(concept, language);
+
+        Properties mdmConfig = MDMConfiguration.getConfiguration();
+        Object value = mdmConfig.get("max.export.browserecord"); //$NON-NLS-1$
+        if (value != null) {
+            maxCount = Integer.parseInt(value.toString());
+        }
+
         List<String> results = new LinkedList<String>();
 
         WSViewPK wsViewPK = new WSViewPK(viewPk);

@@ -49,7 +49,7 @@ import com.amalto.core.webservice.WSWhereOperator;
 import com.amalto.core.webservice.WSWhereOr;
 import com.amalto.webapp.core.util.Util;
 
-public class DownloadData extends HttpServlet implements AddWhereItem {
+public class DownloadData extends HttpServlet {
 
     private static final Logger LOG = Logger.getLogger(DownloadData.class);
 

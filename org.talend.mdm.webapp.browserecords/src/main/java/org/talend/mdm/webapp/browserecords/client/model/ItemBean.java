@@ -13,6 +13,7 @@
 package org.talend.mdm.webapp.browserecords.client.model;
 
 import java.util.List;
+import java.util.Map;
 
 import org.talend.mdm.webapp.base.client.model.ItemResult;
 
@@ -35,6 +36,8 @@ public class ItemBean extends org.talend.mdm.webapp.base.client.model.ItemBean {
     private String taskId;
 
     private String label;
+    
+    private Map<String,String> originalLookupFieldMap;
     
     public String getLabel() {
         if (label == null) {
@@ -129,7 +132,15 @@ public class ItemBean extends org.talend.mdm.webapp.base.client.model.ItemBean {
         }
     }
     
-    @Override
+	public Map<String, String> getOriginalLookupFieldMap() {
+		return originalLookupFieldMap;
+	}
+
+	public void setOriginalLookupFieldMap(Map<String, String> originalLookupFieldMap) {
+		this.originalLookupFieldMap = originalLookupFieldMap;
+	}
+
+	@Override
     public void copy(org.talend.mdm.webapp.base.client.model.ItemBean itemBean) {
         super.copy(itemBean);
         if (itemBean instanceof ItemBean){

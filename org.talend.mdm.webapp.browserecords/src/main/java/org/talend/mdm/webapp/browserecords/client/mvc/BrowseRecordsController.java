@@ -143,7 +143,7 @@ public class BrowseRecordsController extends Controller {
         } else {
             browseRecordsService = ServiceFactory.getInstance().getMasterService();
         }
-        browseRecordsService.saveItem(viewBean, itemBean.getIds(), (new ItemTreeHandler(model, viewBean,
+        browseRecordsService.saveItem(viewBean, itemBean.getIds(), (new ItemTreeHandler(model, viewBean,itemBean,
                 ItemTreeHandlingStatus.ToSave)).serializeItem(), isCreate, Locale.getLanguage(),
                 new SessionAwareAsyncCallback<ItemResult>() {
 

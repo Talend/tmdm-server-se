@@ -449,8 +449,8 @@ public class BrowseRecordsAction implements BrowseRecordsService {
 
             WSItem wsItem = CommonUtil.getPort()
                     .getItem(new WSGetItem(new WSItemPK(wsDataClusterPK, itemBean.getConcept(), ids)));
-            extractUsingTransformerThroughView(concept, viewPK, ids, dataModel, dataCluster, DataModelHelper.getEleDecl(), wsItem);
             itemBean.setItemXml(wsItem.getContent());
+            extractUsingTransformerThroughView(concept, viewPK, ids, dataModel, dataCluster, DataModelHelper.getEleDecl(), itemBean);
             itemBean.set("time", wsItem.getInsertionTime()); //$NON-NLS-1$
             if (wsItem.getTaskId() != null && !"".equals(wsItem.getTaskId()) && !"null".equals(wsItem.getTaskId())) { //$NON-NLS-1$ //$NON-NLS-2$
                 itemBean.setTaskId(wsItem.getTaskId());
@@ -2154,7 +2154,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
      * first. 6.add properties into ViewPOJO. 7.add properties into webservice parameter.
      */
     private void extractUsingTransformerThroughView(String concept, String viewName, String[] ids, String dataModelPK,
-            String dataClusterPK, XSElementDecl elementDecl, WSItem wsItem) throws Exception {
+            String dataClusterPK, XSElementDecl elementDecl, ItemBean itemBean) throws Exception {
         if (viewName == null || viewName.length() == 0) {
             return;
         }
@@ -2164,7 +2164,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
         if ((null != view.getTransformerPK() && view.getTransformerPK().length() != 0) && view.getIsTransformerActive().is_true()) {
             String transformerPK = view.getTransformerPK();
             // FIXME: consider about revision
-            String passToProcessContent = wsItem.getContent();
+            String passToProcessContent = itemBean.getItemXml();
 
             WSTypedContent typedContent = new WSTypedContent(null, new WSByteArray(passToProcessContent.getBytes("UTF-8")), //$NON-NLS-1$
                     "text/xml; charset=UTF-8"); //$NON-NLS-1$
@@ -2219,7 +2219,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             }
 
             if (null != xmlStringFromProcess && xmlStringFromProcess.length() != 0) {
-                Document wsItemDoc = Util.parse(wsItem.getContent());
+                Document wsItemDoc = Util.parse(itemBean.getItemXml());
                 Document jobDoc = null;
                 try {
                     jobDoc = Util.parse(xmlStringFromProcess);
@@ -2260,18 +2260,22 @@ public class BrowseRecordsAction implements BrowseRecordsService {
                     searchPrefix = ""; //$NON-NLS-1$
                 }
 
+                if (lookupFieldsForWSItemDoc.size() > 0) {
+                	itemBean.setOriginalLookupFieldMap(new HashMap<String,String>());
+                }
                 for (String xpath : lookupFieldsForWSItemDoc) {
                     String[] values = com.amalto.core.util.Util.getTextNodes(jobDoc, searchPrefix + xpath);
                     int i = 0;
                     for (String value : values) {
                         NodeList list = com.amalto.core.util.Util.getNodeList(wsItemDoc, "/" + xpath); //$NON-NLS-1$
                         if (list != null && list.getLength() > 0 && list.item(i) != null) {
+                        	itemBean.getOriginalLookupFieldMap().put(xpath, list.item(i).getTextContent());
                             list.item(i).setTextContent(value);
                             ++i;
                         }
                     }
                 }
-                wsItem.setContent(Util.nodeToString(wsItemDoc));
+                itemBean.setItemXml(Util.nodeToString(wsItemDoc));
             }
         }
     }

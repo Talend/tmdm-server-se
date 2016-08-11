@@ -12,7 +12,10 @@
 // ============================================================================
 package org.talend.mdm.webapp.browserecords.client.handler;
 
+import java.util.HashMap;
+
 import org.talend.mdm.webapp.base.shared.EntityModel;
+import org.talend.mdm.webapp.browserecords.client.model.ItemBean;
 import org.talend.mdm.webapp.browserecords.client.model.ItemNodeModel;
 import org.talend.mdm.webapp.browserecords.client.util.ClientResourceData;
 import org.talend.mdm.webapp.browserecords.client.util.CommonUtilTestData;
@@ -84,6 +87,68 @@ public class ItemTreeHandlerGWTTest extends GWTTestCase {
         String actualXml = itemHandler.serializeItem();
 
         String expectedXml = "<Product xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><Id>1</Id><Name>Test product 1</Name><Features><Colors><Color>White</Color></Colors></Features><Availability>false</Availability><Price>150</Price><OnlineStore>@@http://</OnlineStore><Picture/></Product>";
+        assertEquals(expectedXml, actualXml);
+
+    }
+    
+    public void testSerializeItemContainsLookupField() {
+    	ItemBean itemBean = new ItemBean();
+    	itemBean.set("Product/Name", "lookupValue");
+    	itemBean.setOriginalLookupFieldMap(new HashMap<String, String>());
+    	itemBean.getOriginalLookupFieldMap().put("Product/Name", "originalValue");
+        ViewBean viewBean = new ViewBean();
+        EntityModel entity = CommonUtilTestData.getEntityModel(ClientResourceData.getModelProduct());
+        viewBean.setBindingEntityModel(entity);
+
+        ItemNodeModel nodeModel = CommonUtilTestData.getItemNodeModel(ClientResourceData.getRecordProduct1(), entity);
+
+        assertNotNull(nodeModel);
+        assertTrue(nodeModel.getChildren().size() > 0);
+
+        for (ModelData eachNodeModel : nodeModel.getChildren()) {
+            ItemNodeModel myNodeModel = (ItemNodeModel) eachNodeModel;
+            if (myNodeModel.getTypePath().equals("Product/Price")) {
+                myNodeModel.setObjectValue("150");// update
+            } else if (myNodeModel.getTypePath().equals("Product/Picture")) {
+                myNodeModel.setObjectValue(null);// delete
+            } else if (myNodeModel.getTypePath().equals("Product/Name")) {
+            	myNodeModel.setObjectValue("lookupValue");
+            }
+        }
+
+        // add
+        ItemNodeModel featuresNodeModel = new ItemNodeModel("Features");
+        featuresNodeModel.setTypePath("Product/Features");
+
+        ItemNodeModel colorsNodeModel = new ItemNodeModel("Colors");
+        colorsNodeModel.setTypePath("Product/Features/Colors");
+
+        ItemNodeModel colorNodeModel = new ItemNodeModel("Color");
+        colorNodeModel.setTypePath("Product/Features/Colors/Color");
+        colorNodeModel.setObjectValue("White");
+
+        featuresNodeModel.add(colorsNodeModel);
+        colorsNodeModel.add(colorNodeModel);
+
+        nodeModel.add(featuresNodeModel);
+
+        ItemTreeHandler itemHandler = new ItemTreeHandler(nodeModel, viewBean,itemBean, ItemTreeHandlingStatus.InUse);
+        String actualXml = itemHandler.serializeItem();
+
+        String expectedXml = "<Product xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><Id>1</Id><Name>originalValue</Name><Features><Colors><Color>White</Color></Colors></Features><Availability>false</Availability><Price>150</Price><OnlineStore>@@http://</OnlineStore><Picture/></Product>";
+        assertEquals(expectedXml, actualXml);
+        
+        for (ModelData eachNodeModel : nodeModel.getChildren()) {
+            ItemNodeModel myNodeModel = (ItemNodeModel) eachNodeModel;
+            if (myNodeModel.getTypePath().equals("Product/Name")) {
+            	myNodeModel.setObjectValue("newValue");
+            }
+        }
+        
+        itemHandler = new ItemTreeHandler(nodeModel, viewBean,itemBean, ItemTreeHandlingStatus.InUse);
+        actualXml = itemHandler.serializeItem();
+
+        expectedXml = "<Product xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><Id>1</Id><Name>newValue</Name><Features><Colors><Color>White</Color></Colors></Features><Availability>false</Availability><Price>150</Price><OnlineStore>@@http://</OnlineStore><Picture/></Product>";
         assertEquals(expectedXml, actualXml);
 
     }

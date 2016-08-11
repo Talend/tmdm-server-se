@@ -20,6 +20,7 @@ import org.talend.mdm.webapp.base.client.model.DataTypeConstants;
 import org.talend.mdm.webapp.base.client.model.ForeignKeyBean;
 import org.talend.mdm.webapp.base.shared.EntityModel;
 import org.talend.mdm.webapp.base.shared.TypeModel;
+import org.talend.mdm.webapp.browserecords.client.model.ItemBean;
 import org.talend.mdm.webapp.browserecords.client.model.ItemNodeModel;
 import org.talend.mdm.webapp.browserecords.shared.ViewBean;
 
@@ -40,7 +41,9 @@ public class ItemTreeHandler implements IsSerializable {
     private EntityModel entityModel;
 
     private ItemNodeModel nodeModel;
-
+    
+    private ItemBean itemBean;
+    
     private ItemTreeHandlingStatus status;
 
     private boolean simpleTypeOnly = true;
@@ -67,6 +70,11 @@ public class ItemTreeHandler implements IsSerializable {
         }
 
         initConfig();
+    }
+    
+    public ItemTreeHandler(ItemNodeModel nodeModel, ViewBean viewBean,ItemBean itemBean, ItemTreeHandlingStatus status) {
+        this(nodeModel,viewBean,status);
+        this.itemBean = itemBean;
     }
 
     public ItemTreeHandler(ItemNodeModel nodeModel, EntityModel entityModel, ItemTreeHandlingStatus status) {
@@ -181,10 +189,10 @@ public class ItemTreeHandler implements IsSerializable {
             if (value != null && currentNodeModel.getParent() != null) {
                 String elValue = null;
                 if (value instanceof ForeignKeyBean) {
-                    elValue = ((ForeignKeyBean) value).getId();
+                    elValue = getLookUpFieldValue(itemBean, currentNodeModel.getTypePath(), ((ForeignKeyBean) value).getId());
                     currentNodeModel.setTypeName(((ForeignKeyBean) value).getConceptName());
                 } else {
-                    elValue = value.toString();
+                	elValue = getLookUpFieldValue(itemBean, currentNodeModel.getTypePath(), value.toString());
                 }
                 root.appendChild(doc.createTextNode(elValue));
 
@@ -292,5 +300,14 @@ public class ItemTreeHandler implements IsSerializable {
             }
         }
         return els;
+    }
+    
+    protected String getLookUpFieldValue(ItemBean itemBean,String path, String elValue) {
+    	if (itemBean != null && itemBean.getOriginalLookupFieldMap() != null && itemBean.getOriginalLookupFieldMap().keySet().contains(path)) {
+        	if (elValue.equals(itemBean.get(path))) {
+        		return itemBean.getOriginalLookupFieldMap().get(path);
+        	}
+        }
+    	return elValue;
     }
 }

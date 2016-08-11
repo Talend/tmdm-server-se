@@ -61,10 +61,6 @@ public class DownloadData extends HttpServlet {
 
     protected final String DOWNLOADFILE_EXTEND_NAME = ".xls"; //$NON-NLS-1$
 
-    protected final String JOIN_OPERATE_AND = "AND"; //$NON-NLS-1$
-
-    protected final String JOIN_OPERATE_OR = "OR"; //$NON-NLS-1$
-
     protected String fileName = ""; //$NON-NLS-1$
 
     private String multipleValueSeparator = null;
@@ -222,16 +218,9 @@ public class DownloadData extends HttpServlet {
             whereAnd.setWhereItems((WSWhereItem[]) itemArray.toArray(new WSWhereItem[itemArray.size()]));
             wi.setWhereAnd(whereAnd);
         } else {
-            if (criteria != null && isAdvanceSearch(criteria)) {
-                String criteriaStr = removeBracket(criteria);
-                String joinOperate = getAdvanceSearchOperate(criteriaStr);
-                String[] criteriaArray = criteriaStr.split(joinOperate);
-
-                for (String criteriaTemp : criteriaArray) {
-                    addWhereItem(itemArray, criteriaTemp);
-                }
-            } else {
-                addWhereItem(itemArray, criteria);
+            WSWhereItem criteriaWhereItem = criteria != null ? CommonUtil.buildWhereItems(criteria) : null;
+            if (criteriaWhereItem != null) {
+                itemArray.add(criteriaWhereItem);
             }
             whereAnd.setWhereItems((WSWhereItem[]) itemArray.toArray(new WSWhereItem[itemArray.size()]));
             wi.setWhereAnd(whereAnd);
@@ -355,37 +344,5 @@ public class DownloadData extends HttpServlet {
 
     protected String getCurrentDataCluster() throws Exception {
         return org.talend.mdm.webapp.browserecords.server.util.CommonUtil.getCurrentDataCluster(false);
-    }
-
-    private boolean isAdvanceSearch(String criteria) {
-        return criteria.contains("AND") || criteria.contains("OR");
-    }
-
-    private String getAdvanceSearchOperate(String criteria) {
-        if (criteria.contains(JOIN_OPERATE_AND)) {
-            return JOIN_OPERATE_AND;
-        } else if (criteria.contains(JOIN_OPERATE_OR)) {
-            return JOIN_OPERATE_OR;
-        }
-        return "";
-    }
-
-    private String removeBracket(String criteria) {
-        if (criteria == null) {
-            return null;
-        }
-        String str = criteria.trim();
-        if (str.startsWith("(") && str.endsWith("")) {
-            return str.substring(1, str.length() - 1);
-        } else {
-            return str;
-        }
-    }
-
-    private void addWhereItem(List<WSWhereItem> itemArray, String criteriaTemp) throws Exception {
-        WSWhereItem criteriaWhereItem = CommonUtil.buildWhereItem(removeBracket(criteriaTemp));
-        if (criteriaWhereItem != null) {
-            itemArray.add(criteriaWhereItem);
-        }
     }
 }

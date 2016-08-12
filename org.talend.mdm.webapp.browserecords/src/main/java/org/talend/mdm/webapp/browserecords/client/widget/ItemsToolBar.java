@@ -259,12 +259,10 @@ public class ItemsToolBar extends ToolBar {
 
         createButton.setEnabled(false);
         uploadButton.setEnabled(true);
-        uploadButton.getMenu().getItemByItemId("importRecords").setEnabled(false); //$NON-NLS-1$
         deleteButton.setEnabled(false);
         String concept = ViewUtil.getConceptFromBrowseItemView(entityCombo.getValue().get("value").toString());//$NON-NLS-1$
         if (!viewBean.getBindingEntityModel().getMetaDataTypes().get(concept).isDenyCreatable()) {
             createButton.setEnabled(true);
-            uploadButton.getMenu().getItemByItemId("importRecords").setEnabled(true); //$NON-NLS-1$
             if (simulateMatchButton != null) {
                 simulateMatchButton.setEnabled(true);
             }

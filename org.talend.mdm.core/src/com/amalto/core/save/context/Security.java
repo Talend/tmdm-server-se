@@ -81,7 +81,8 @@ class Security implements DocumentSaver {
             // Then check security on all actions (updates...)
             Set<Action> failedActions = new HashSet<Action>();
             for (Action action : actions) {
-                if (!action.isAllowed(currentUserRoles)) {
+                // do not check replace action as it's an update.
+                if (!(action instanceof OverrideReplaceAction) && !action.isAllowed(currentUserRoles)) {
                     failedActions.add(action);
                 }
             }

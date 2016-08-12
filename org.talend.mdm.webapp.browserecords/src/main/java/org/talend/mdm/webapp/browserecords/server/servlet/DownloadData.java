@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -25,6 +26,7 @@ import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.XPath;
+import org.talend.mdm.commmon.util.core.MDMConfiguration;
 import org.talend.mdm.webapp.base.server.util.CommonUtil;
 import org.talend.mdm.webapp.base.server.util.XmlUtil;
 import org.talend.mdm.webapp.base.shared.EntityModel;
@@ -35,9 +37,18 @@ import org.talend.mdm.webapp.browserecords.shared.Constants;
 
 import com.amalto.core.webservice.WSDataClusterPK;
 import com.amalto.core.webservice.WSGetItem;
-import com.amalto.core.webservice.WSGetItems;
+import com.amalto.core.webservice.WSGetView;
 import com.amalto.core.webservice.WSItem;
 import com.amalto.core.webservice.WSItemPK;
+import com.amalto.core.webservice.WSStringPredicate;
+import com.amalto.core.webservice.WSView;
+import com.amalto.core.webservice.WSViewPK;
+import com.amalto.core.webservice.WSViewSearch;
+import com.amalto.core.webservice.WSWhereAnd;
+import com.amalto.core.webservice.WSWhereCondition;
+import com.amalto.core.webservice.WSWhereItem;
+import com.amalto.core.webservice.WSWhereOperator;
+import com.amalto.core.webservice.WSWhereOr;
 import com.amalto.webapp.core.util.Util;
 
 public class DownloadData extends HttpServlet {
@@ -46,7 +57,7 @@ public class DownloadData extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
-    protected final Integer maxCount = 1000;
+    protected Integer maxCount = 1000;
 
     private final String SHEET_LABEL = "Talend MDM"; //$NON-NLS-1$
 
@@ -57,6 +68,8 @@ public class DownloadData extends HttpServlet {
     private String multipleValueSeparator = null;
 
     protected String concept = ""; //$NON-NLS-1$
+
+    private String viewPk;
 
     private boolean fkResovled = false;
 
@@ -114,7 +127,7 @@ public class DownloadData extends HttpServlet {
     }
 
     private void setParameter(HttpServletRequest request) throws Exception {
-        String tableName = request.getParameter("tableName"); //$NON-NLS-1$
+        viewPk = request.getParameter("tableName"); //$NON-NLS-1$
         generateFileName(new String(request.getParameter("fileName").getBytes("iso-8859-1"), "UTF-8")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         String header = new String(request.getParameter("header").getBytes("iso-8859-1"), "UTF-8"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$        
         String xpath = request.getParameter("xpath"); //$NON-NLS-1$
@@ -126,7 +139,7 @@ public class DownloadData extends HttpServlet {
             String fkInfo = request.getParameter("fkInfo"); //$NON-NLS-1$
             DownloadUtil.assembleFkMap(colFkMap, fkMap, fkColXPath, fkInfo);
         }
-        concept = ViewHelper.getConceptFromDefaultViewName(tableName);
+        concept = ViewHelper.getConceptFromDefaultViewName(viewPk);
         headerArray = DownloadUtil.convertXml2Array(header, "item"); //$NON-NLS-1$
         xpathArray = DownloadUtil.convertXml2Array(xpath, "item"); //$NON-NLS-1$
         criteria = request.getParameter("criteria"); //$NON-NLS-1$
@@ -153,22 +166,82 @@ public class DownloadData extends HttpServlet {
 
     protected void fillSheet(HSSFSheet sheet) throws Exception {
         entity = org.talend.mdm.webapp.browserecords.server.util.CommonUtil.getEntityModel(concept, language);
+
+        Properties mdmConfig = MDMConfiguration.getConfiguration();
+        Object value = mdmConfig.get("max.export.browserecord"); //$NON-NLS-1$
+        if (value != null) {
+            maxCount = Integer.parseInt(value.toString());
+        }
+
         List<String> results = new LinkedList<String>();
+
+        WSViewPK wsViewPK = new WSViewPK(viewPk);
+        WSView wsView = CommonUtil.getPort().getView(new WSGetView(wsViewPK));
+
+        WSWhereCondition[] conditions = wsView.getWhereConditions();
+        WSWhereItem wi = new WSWhereItem();
+        WSWhereAnd whereAnd = new WSWhereAnd();
+        List<WSWhereItem> itemArray = new ArrayList<WSWhereItem>();
+        for (WSWhereCondition whereCondition : conditions) {
+            WSWhereItem andWhereItem = new WSWhereItem();
+            andWhereItem.setWhereCondition(whereCondition);
+            itemArray.add(andWhereItem);
+        }
+
         // This blank line is for excel file header
         if (idsList != null) {
+            WSWhereItem idsWhereItem = new WSWhereItem();
+            WSWhereOr idWhereOr = new WSWhereOr();
+            List<WSWhereItem> idWhereItemArray = new ArrayList<WSWhereItem>();
             for (String ids : idsList) {
-                results.add(CommonUtil
-                        .getPort()
-                        .getItem(
-                                new WSGetItem(new WSItemPK(new WSDataClusterPK(getCurrentDataCluster()), concept, CommonUtil
-                                        .extractIdWithDots(entity.getKeys(), ids)))).getContent());
+                WSWhereItem idWhereItem = new WSWhereItem();
+
+                //if the composite primary key
+                if (entity.getKeys().length > 1) {
+                    WSWhereItem compositeIdWhereItems = new WSWhereItem();
+                    WSWhereAnd compositeIdWhereand = new WSWhereAnd();
+                    List<WSWhereItem> compositeIdWhereItemArray = new ArrayList<WSWhereItem>();
+                    int i = 0;
+                    for (String primaryKey : entity.getKeys()) {
+                        WSWhereItem compositeIdWhereItem = new WSWhereItem();
+                        compositeIdWhereItem.setWhereCondition(new WSWhereCondition(primaryKey, WSWhereOperator.EQUALS, ids
+                                .split("\\.")[i++], WSStringPredicate.NONE, false));
+                        compositeIdWhereItemArray.add(compositeIdWhereItem);
+                    }
+                    compositeIdWhereand.setWhereItems((WSWhereItem[]) compositeIdWhereItemArray
+                            .toArray(new WSWhereItem[compositeIdWhereItemArray.size()]));
+                    compositeIdWhereItems.setWhereAnd(compositeIdWhereand);
+
+                    idWhereItemArray.add(compositeIdWhereItems);
+                } else {
+                    idWhereItem.setWhereCondition(new WSWhereCondition(entity.getKeys()[0], WSWhereOperator.EQUALS, ids,
+                            WSStringPredicate.NONE, false));
+                    idWhereItemArray.add(idWhereItem);
+                }
+
             }
+            idWhereOr.setWhereItems((WSWhereItem[]) idWhereItemArray.toArray(new WSWhereItem[idWhereItemArray.size()]));
+            idsWhereItem.setWhereOr(idWhereOr);
+
+            itemArray.add(idsWhereItem);
+            whereAnd.setWhereItems((WSWhereItem[]) itemArray.toArray(new WSWhereItem[itemArray.size()]));
+            wi.setWhereAnd(whereAnd);
         } else {
-            results = Arrays.asList(CommonUtil
-                    .getPort()
-                    .getItems(
-                            new WSGetItems(new WSDataClusterPK(getCurrentDataCluster()), concept, (criteria != null ? CommonUtil
-                                    .buildWhereItem(criteria) : null), -1, new Integer(0), maxCount, false)).getStrings());
+
+            WSWhereItem criteriaWhereItem = criteria != null ? CommonUtil.buildWhereItem(criteria) : null;
+            if (criteriaWhereItem != null) {
+                itemArray.add(criteriaWhereItem);
+            }
+            whereAnd.setWhereItems((WSWhereItem[]) itemArray.toArray(new WSWhereItem[itemArray.size()]));
+            wi.setWhereAnd(whereAnd);
+        }
+        String[] result = CommonUtil
+                .getPort()
+                .viewSearch(
+                        new WSViewSearch(new WSDataClusterPK(getCurrentDataCluster()), wsViewPK, wi, -1, 0, maxCount, null,
+                                null)).getStrings();
+        if (result.length > 1) {
+            results = Arrays.asList(Arrays.copyOfRange(result, 1, result.length));
         }
         for (int i = 0; i < results.size(); i++) {
             Document document = XmlUtil.parseText(results.get(i));
@@ -227,6 +300,11 @@ public class DownloadData extends HttpServlet {
             selectNodes = x.selectNodes(document);
         } else {
             selectNodes = document.selectNodes(xpath);
+        }
+
+        if(selectNodes == null || selectNodes.isEmpty()){
+            String str = xpath.substring(xpath.indexOf("/") + 1, xpath.length()); //$NON-NLS-1$
+            selectNodes = document.getRootElement().selectNodes(str);
         }
         if (selectNodes != null) {
             valueList = new LinkedList<String>();

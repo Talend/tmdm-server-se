@@ -988,19 +988,21 @@ public class BrowseRecordsActionTest extends TestCase {
         WSTransformerContextPipeline line = new WSTransformerContextPipeline(entries);
         WSTransformerContext context = new WSTransformerContext(null, line, null);
         Mockito.when(port.executeTransformerV2(Mockito.any(WSExecuteTransformerV2.class))).thenReturn(context);
+        ItemBean itemBean = new ItemBean();
+        itemBean.setItemXml(content);
 
         for (Method method : methods) {
             if ("extractUsingTransformerThroughView".equals(method.getName())) {
                 method.setAccessible(true);
                 Object para[] = { "Agency", "Browse_items_Agency", ids, "ModelTest", "ModelTest", DataModelHelper.getEleDecl(),
-                        wsItem };
+                		itemBean };
                 method.invoke(action, para);
                 String expectedMsg = "<Agency><AgencyId>1</AgencyId><Name>1</Name>"
                         + "<Etablissement><IdEtablissement>1</IdEtablissement><Adresse>Paris</Adresse></Etablissement>"
                         + "<Etablissement><IdEtablissement>2</IdEtablissement><Adresse>Ville1</Adresse></Etablissement>"
                         + "<Etablissement><IdEtablissement>3</IdEtablissement><Adresse>3</Adresse></Etablissement>"
                         + "<Region>Lausanne</Region></Agency>";
-                assertEquals(expectedMsg, wsItem.getContent().replaceAll("\r", "").replaceAll("\n", ""));
+                assertEquals(expectedMsg, itemBean.getItemXml().replaceAll("\r", "").replaceAll("\n", ""));
                 break;
             }
         }

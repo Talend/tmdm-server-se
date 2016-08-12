@@ -284,32 +284,23 @@ public class DownloadData extends HttpServlet {
         Map<String, String> namespaceMap = new HashMap<String, String>();
         namespaceMap.put(Constants.XSI_PREFIX, Constants.XSI_URI);
         List<String> valueList = null;
-        boolean isAttribute = xpath.endsWith(Constants.XSI_TYPE_QUALIFIED_NAME) ? true : false;
-        if (isAttribute) {
-            XPath x = document.createXPath(xpath);
-            x.setNamespaceURIs(namespaceMap);
-            selectNodes = x.selectNodes(document);
-        } else {
-            selectNodes = document.selectNodes(xpath);
-        }
+        selectNodes = document.selectNodes(xpath);
 
         if(selectNodes == null || selectNodes.isEmpty()){
-            String str = xpath.substring(xpath.indexOf("/") + 1, xpath.length()); //$NON-NLS-1$
+            String str = xpath.substring(xpath.lastIndexOf("/") + 1, xpath.length()); //$NON-NLS-1$
+            if(str.startsWith(Constants.FILE_EXPORT_IMPORT_SEPARATOR)){
+                str = str.replace(Constants.FILE_EXPORT_IMPORT_SEPARATOR, ""); //$NON-NLS-1$
+            }
             selectNodes = document.getRootElement().selectNodes(str);
         }
         if (selectNodes != null) {
             valueList = new LinkedList<String>();
             for (Object object : selectNodes) {
-                if (isAttribute) {
-                    Attribute attribute = (Attribute) object;
-                    valueList.add(attribute.getValue());
+                Element element = (Element) object;
+                if (element.elements().size() > 0) {
+                    valueList.add(element.asXML());
                 } else {
-                    Element element = (Element) object;
-                    if (element.elements().size() > 0) {
-                        valueList.add(element.asXML());
-                    } else {
-                        valueList.add(element.getText());
-                    }
+                    valueList.add(element.getText());
                 }
             }
         }

@@ -8,7 +8,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +27,7 @@ import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.XPath;
+import org.talend.mdm.commmon.util.core.MDMConfiguration;
 import org.talend.mdm.webapp.base.server.util.CommonUtil;
 import org.talend.mdm.webapp.base.server.util.XmlUtil;
 import org.talend.mdm.webapp.base.shared.EntityModel;
@@ -55,7 +58,7 @@ public class DownloadData extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
-    protected final Integer maxCount = 1000;
+    protected Integer maxCount = 1000;
 
     private final String SHEET_LABEL = "Talend MDM"; //$NON-NLS-1$
 
@@ -92,6 +95,17 @@ public class DownloadData extends HttpServlet {
     protected int columnIndex = 0;
 
     protected HSSFCellStyle cs = null;
+
+    @Override
+    public void init() throws ServletException {
+        super.init();
+
+        Properties mdmConfig = MDMConfiguration.getConfiguration();
+        Object value = mdmConfig.get("max.export.browserecord"); //$NON-NLS-1$
+        if (value != null) {
+            maxCount = Integer.parseInt(value.toString());
+        }
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

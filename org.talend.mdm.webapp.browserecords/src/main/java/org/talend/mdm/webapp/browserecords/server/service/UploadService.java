@@ -184,7 +184,7 @@ public class UploadService {
                     String[] keys = new String[entityModel.getKeys().length];
                     for (int k=0; k < entityModel.getKeys().length; k++) {
                         for(String header : importHeader) {
-                            if(header.equals(entityModel.getKeys()[k])){
+                            if(header.equals(entityModel.getKeys()[k]) && row.getCell(k) != null){
                                 keys[k] = getExcelFieldValue(row.getCell(k));
                             }
                         }
@@ -196,11 +196,15 @@ public class UploadService {
                 }
                 Element currentElement = document.getRootElement();
                 for (int i = 0; i < importHeader.length; i++) {
-                    String fieldValue = getExcelFieldValue(row.getCell(i));
                     if (row.getCell(i) != null) {
+                        String fieldValue = getExcelFieldValue(row.getCell(i));
                         if (fieldValue != null && !fieldValue.isEmpty()) {
                             dataLine = true;
                             fillFieldValue(currentElement, importHeader[i], fieldValue, row, null);
+                        }
+                    } else {
+                        if(isPartialUpdate){
+                            fillFieldValue(currentElement, importHeader[i], "", row, null); //$NON-NLS-1$
                         }
                     }
                 }

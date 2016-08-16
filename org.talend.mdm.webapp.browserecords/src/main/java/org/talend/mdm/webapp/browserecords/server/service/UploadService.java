@@ -181,13 +181,23 @@ public class UploadService {
             if (importHeader != null) {
                 Document document;
                 if(isPartialUpdate){
+                    Boolean keyContainsEmpty = false;
                     String[] keys = new String[entityModel.getKeys().length];
                     for (int k=0; k < entityModel.getKeys().length; k++) {
                         for(String header : importHeader) {
                             if(header.equals(entityModel.getKeys()[k]) && row.getCell(k) != null){
                                 keys[k] = getExcelFieldValue(row.getCell(k));
+                                if (keys[k].isEmpty()) {
+                                    keyContainsEmpty = true;
+                                }
                             }
                         }
+                    }
+                    if (keyContainsEmpty) {
+                        if (isEmptyRecordInExcel(row, importHeader)) {
+                            continue;
+                        }
+                        throw new UploadException(MESSAGES.getMessage(new Locale(language), "error_missing_key_field")); //$NON-NLS-1$
                     }
                     document = getItemForPartialUpdate(entityModel, keys);
                 } else {
@@ -239,13 +249,23 @@ public class UploadService {
             if (importHeader != null) {
                 Document document;
                 if(isPartialUpdate){
+                    Boolean keyContainsEmpty = false;
                     String[] keys = new String[entityModel.getKeys().length];
                     for (int k=0; k < entityModel.getKeys().length; k++) {
                         for(String header : importHeader) {
                             if(header.equals(entityModel.getKeys()[k])){
                                 keys[k] = record[k];
+                                if (keys[k].isEmpty()) {
+                                    keyContainsEmpty = true;
+                                }
                             }
                         }
+                    }
+                    if (keyContainsEmpty) {
+                        if (isEmptyRecordInCSV(record, importHeader)) {
+                            continue;
+                        }
+                        throw new UploadException(MESSAGES.getMessage(new Locale(language), "error_missing_key_field")); //$NON-NLS-1$
                     }
                     document = getItemForPartialUpdate(entityModel, keys);
                 } else {
@@ -373,6 +393,31 @@ public class UploadService {
                 throw new UploadException(MESSAGES.getMessage(new Locale(language), "error_missing_key_field")); //$NON-NLS-1$
             }
         }
+    }
+    
+    protected Boolean isEmptyRecordInExcel(Row row, String[] importHeader) throws Exception  {
+        if (row != null && importHeader != null && importHeader.length > 0) {
+            for (int i = 0; i < importHeader.length; i++) {
+                if (row.getCell(i) != null) {
+                    String fieldValue = getExcelFieldValue(row.getCell(i));
+                    if (fieldValue != null && !fieldValue.isEmpty()) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+    
+    protected Boolean isEmptyRecordInCSV(String[] record, String[] importHeader) throws Exception  {
+        if (record != null && importHeader != null && importHeader.length > 0) {
+            for (int i = 0; i < importHeader.length; i++) {
+                if (record[i] != null && !record[i].isEmpty()) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     protected String handleHeader(String headerName, int index) throws UploadException {

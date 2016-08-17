@@ -440,6 +440,40 @@ public class CompareTest extends TestCase {
         assertEquals(0, sort.get(ImpactAnalyzer.Impact.LOW).size());
     }
 
+    // TMDM-9909 Increase the length of a string element should be low impact
+    public void test20() {
+        MetadataRepository original = new MetadataRepository();
+        original.load(CompareTest.class.getResourceAsStream("schema20_1.xsd")); //$NON-NLS-1$
+        original = original.copy();
+        MetadataRepository updated1 = new MetadataRepository();
+        updated1.load(CompareTest.class.getResourceAsStream("schema20_2.xsd")); //$NON-NLS-1$
+        Compare.DiffResults diffResults = Compare.compare(original, updated1);
+        assertEquals(1, diffResults.getActions().size());
+        assertEquals(1, diffResults.getModifyChanges().size());
+        assertEquals(0, diffResults.getRemoveChanges().size());
+        assertEquals(0, diffResults.getAddChanges().size());
+
+        ImpactAnalyzer analyzer = new HibernateStorageImpactAnalyzer();
+        Map<ImpactAnalyzer.Impact, List<Change>> sort = analyzer.analyzeImpacts(diffResults);
+        assertEquals(0, sort.get(ImpactAnalyzer.Impact.HIGH).size());
+        assertEquals(0, sort.get(ImpactAnalyzer.Impact.MEDIUM).size());
+        assertEquals(1, sort.get(ImpactAnalyzer.Impact.LOW).size());
+
+        MetadataRepository updated2 = new MetadataRepository();
+        updated2.load(CompareTest.class.getResourceAsStream("schema20_3.xsd")); //$NON-NLS-1$
+        diffResults = Compare.compare(updated1, updated2);
+        assertEquals(1, diffResults.getActions().size());
+        assertEquals(1, diffResults.getModifyChanges().size());
+        assertEquals(0, diffResults.getRemoveChanges().size());
+        assertEquals(0, diffResults.getAddChanges().size());
+
+        analyzer = new HibernateStorageImpactAnalyzer();
+        sort = analyzer.analyzeImpacts(diffResults);
+        assertEquals(0, sort.get(ImpactAnalyzer.Impact.HIGH).size());
+        assertEquals(1, sort.get(ImpactAnalyzer.Impact.MEDIUM).size());
+        assertEquals(0, sort.get(ImpactAnalyzer.Impact.LOW).size());
+    }
+
     @SuppressWarnings("rawtypes")
     private ClassRepository buildRepository() {
         ClassRepository repository = new ClassRepository();

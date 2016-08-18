@@ -2472,7 +2472,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             localizedMessage = coreException.getLocalizedMessage();
         }
         String errorMessage = MESSAGES.getMessage(locale, coreException.getTitle(), concept
-                + ((ids != null && !"".equals(ids)) ? "." + ids : ""), localizedMessage); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + ((ids != null && !"".equals(ids)) ? "." + ids : "") + "," + localizedMessage); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         if (StringUtils.isEmpty(concept) || StringUtils.isEmpty(ids)) {
             errorMessage = MESSAGES.getMessage(locale, coreException.getTitle(), localizedMessage);
         }

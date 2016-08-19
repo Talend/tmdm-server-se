@@ -211,9 +211,15 @@ public class UploadService {
                         if (fieldValue != null && !fieldValue.isEmpty()) {
                             dataLine = true;
                             fillFieldValue(currentElement, importHeader[i], fieldValue, row, null);
+                        } else {
+                            if(isPartialUpdate){
+                                dataLine = true;
+                                fillFieldValue(currentElement, importHeader[i], "", row, null); //$NON-NLS-1$
+                            }
                         }
                     } else {
                         if(isPartialUpdate){
+                            dataLine = true;
                             fillFieldValue(currentElement, importHeader[i], "", row, null); //$NON-NLS-1$
                         }
                     }
@@ -449,6 +455,19 @@ public class UploadService {
             }
         }
     }
+    
+    private List<String> splitString(String valueString, String separator) {
+        List<String> valueList = new ArrayList<String>();
+        if (valueString == null || valueString.isEmpty()) {
+            valueList.add(""); //$NON-NLS-1$
+        } else {
+            String[] valueArray = valueString.split(separator, -1);
+            for (String value : valueArray) {
+                valueList.add(value);
+            }
+        }
+        return valueList;
+    }
 
     protected void fillFieldValue(Element currentElement, String fieldPath, String fieldValue, Row row, String[] record)
             throws Exception {
@@ -465,7 +484,7 @@ public class UploadService {
         String xpath = xpathPartArray[0];
         if (!isAttribute) {
             if (multipleValueSeparator != null && !multipleValueSeparator.isEmpty()) {
-                valueList = CommonUtil.splitString(fieldValue, multipleValueSeparator.charAt(0));
+                valueList = splitString(fieldValue, "\\" + String.valueOf(multipleValueSeparator.charAt(0))); //$NON-NLS-1$
             }
         }
         for (int i = 1; i < xpathPartArray.length; i++) {

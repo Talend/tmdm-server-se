@@ -335,6 +335,20 @@ public class CompareTest extends TestCase {
 
         ImpactAnalyzer analyzer = new HibernateStorageImpactAnalyzer();
         Map<ImpactAnalyzer.Impact, List<Change>> sort = analyzer.analyzeImpacts(diffResults);
+        assertEquals(0, sort.get(ImpactAnalyzer.Impact.HIGH).size());
+        assertEquals(0, sort.get(ImpactAnalyzer.Impact.MEDIUM).size());
+        assertEquals(1, sort.get(ImpactAnalyzer.Impact.LOW).size());
+
+        updated = new MetadataRepository();
+        updated.load(CompareTest.class.getResourceAsStream("schema15_3.xsd")); //$NON-NLS-1$
+        diffResults = Compare.compare(original, updated);
+        assertEquals(1, diffResults.getActions().size());
+        assertEquals(1, diffResults.getModifyChanges().size());
+        assertEquals(0, diffResults.getRemoveChanges().size());
+        assertEquals(0, diffResults.getAddChanges().size());
+
+        analyzer = new HibernateStorageImpactAnalyzer();
+        sort = analyzer.analyzeImpacts(diffResults);
         assertEquals(1, sort.get(ImpactAnalyzer.Impact.HIGH).size());
         assertEquals(0, sort.get(ImpactAnalyzer.Impact.MEDIUM).size());
         assertEquals(0, sort.get(ImpactAnalyzer.Impact.LOW).size());
@@ -461,7 +475,7 @@ public class CompareTest extends TestCase {
 
         MetadataRepository updated2 = new MetadataRepository();
         updated2.load(CompareTest.class.getResourceAsStream("schema20_3.xsd")); //$NON-NLS-1$
-        diffResults = Compare.compare(updated1, updated2);
+        diffResults = Compare.compare(original, updated2);
         assertEquals(1, diffResults.getActions().size());
         assertEquals(1, diffResults.getModifyChanges().size());
         assertEquals(0, diffResults.getRemoveChanges().size());
@@ -472,6 +486,81 @@ public class CompareTest extends TestCase {
         assertEquals(1, sort.get(ImpactAnalyzer.Impact.HIGH).size());
         assertEquals(0, sort.get(ImpactAnalyzer.Impact.MEDIUM).size());
         assertEquals(0, sort.get(ImpactAnalyzer.Impact.LOW).size());
+
+        // for the inherit, child has no maxlengh
+        MetadataRepository updated3 = new MetadataRepository();
+        updated3.load(CompareTest.class.getResourceAsStream("schema20_4.xsd")); //$NON-NLS-1$
+        diffResults = Compare.compare(original, updated3);
+        assertEquals(1, diffResults.getActions().size());
+        assertEquals(1, diffResults.getModifyChanges().size());
+        assertEquals(0, diffResults.getRemoveChanges().size());
+        assertEquals(0, diffResults.getAddChanges().size());
+
+        analyzer = new HibernateStorageImpactAnalyzer();
+        sort = analyzer.analyzeImpacts(diffResults);
+        assertEquals(0, sort.get(ImpactAnalyzer.Impact.HIGH).size());
+        assertEquals(0, sort.get(ImpactAnalyzer.Impact.MEDIUM).size());
+        assertEquals(1, sort.get(ImpactAnalyzer.Impact.LOW).size());
+
+        // for the inherit, child has maxlengh
+        MetadataRepository updated4 = new MetadataRepository();
+        updated4.load(CompareTest.class.getResourceAsStream("schema20_5.xsd")); //$NON-NLS-1$
+        diffResults = Compare.compare(original, updated4);
+        assertEquals(1, diffResults.getActions().size());
+        assertEquals(1, diffResults.getModifyChanges().size());
+        assertEquals(0, diffResults.getRemoveChanges().size());
+        assertEquals(0, diffResults.getAddChanges().size());
+
+        analyzer = new HibernateStorageImpactAnalyzer();
+        sort = analyzer.analyzeImpacts(diffResults);
+        assertEquals(1, sort.get(ImpactAnalyzer.Impact.HIGH).size());
+        assertEquals(0, sort.get(ImpactAnalyzer.Impact.MEDIUM).size());
+        assertEquals(0, sort.get(ImpactAnalyzer.Impact.LOW).size());
+
+        // for the inherit, child has maxlength
+        MetadataRepository updated5 = new MetadataRepository();
+        updated5.load(CompareTest.class.getResourceAsStream("schema20_6.xsd")); //$NON-NLS-1$
+        diffResults = Compare.compare(original, updated5);
+        assertEquals(1, diffResults.getActions().size());
+        assertEquals(1, diffResults.getModifyChanges().size());
+        assertEquals(0, diffResults.getRemoveChanges().size());
+        assertEquals(0, diffResults.getAddChanges().size());
+
+        analyzer = new HibernateStorageImpactAnalyzer();
+        sort = analyzer.analyzeImpacts(diffResults);
+        assertEquals(0, sort.get(ImpactAnalyzer.Impact.HIGH).size());
+        assertEquals(0, sort.get(ImpactAnalyzer.Impact.MEDIUM).size());
+        assertEquals(1, sort.get(ImpactAnalyzer.Impact.LOW).size());
+
+        // for multiple the inherit
+        MetadataRepository updated6 = new MetadataRepository();
+        updated6.load(CompareTest.class.getResourceAsStream("schema20_7.xsd")); //$NON-NLS-1$
+        diffResults = Compare.compare(original, updated6);
+        assertEquals(1, diffResults.getActions().size());
+        assertEquals(1, diffResults.getModifyChanges().size());
+        assertEquals(0, diffResults.getRemoveChanges().size());
+        assertEquals(0, diffResults.getAddChanges().size());
+
+        analyzer = new HibernateStorageImpactAnalyzer();
+        sort = analyzer.analyzeImpacts(diffResults);
+        assertEquals(1, sort.get(ImpactAnalyzer.Impact.HIGH).size());
+        assertEquals(0, sort.get(ImpactAnalyzer.Impact.MEDIUM).size());
+        assertEquals(0, sort.get(ImpactAnalyzer.Impact.LOW).size());
+
+        // for multiple the inherit
+        MetadataRepository updated7 = new MetadataRepository();
+        updated7.load(CompareTest.class.getResourceAsStream("schema20_8.xsd")); //$NON-NLS-1$
+        diffResults = Compare.compare(original, updated7);
+        assertEquals(1, diffResults.getActions().size());
+        assertEquals(1, diffResults.getModifyChanges().size());
+        assertEquals(0, diffResults.getRemoveChanges().size());
+        assertEquals(0, diffResults.getAddChanges().size());
+
+        analyzer = new HibernateStorageImpactAnalyzer();
+        sort = analyzer.analyzeImpacts(diffResults);
+        assertEquals(0, sort.get(ImpactAnalyzer.Impact.HIGH).size());
+        assertEquals(0, sort.get(ImpactAnalyzer.Impact.MEDIUM).size());
+        assertEquals(1, sort.get(ImpactAnalyzer.Impact.LOW).size());
     }
 
     @SuppressWarnings("rawtypes")

@@ -28,7 +28,7 @@ public class ItemBean extends org.talend.mdm.webapp.base.client.model.ItemBean {
     private String displayPKInfo;
 
     private String smartViewMode = TREEMODE;
-    
+
     private List<String> pkInfoList;
 
     private boolean readOnly;
@@ -36,9 +36,11 @@ public class ItemBean extends org.talend.mdm.webapp.base.client.model.ItemBean {
     private String taskId;
 
     private String label;
-    
-    private Map<String,String> originalLookupFieldMap;
-    
+
+    private Map<String, List<String>> originalLookupFieldDisplayValueMap;
+
+    private Map<String, List<String>> originalLookupFieldValueMap;
+
     public String getLabel() {
         if (label == null) {
             return getConcept();
@@ -67,7 +69,7 @@ public class ItemBean extends org.talend.mdm.webapp.base.client.model.ItemBean {
         super(concept, ids, itemXml);
         this.allowNestedValues = false;
     }
-    
+
     public ItemBean(String concept, String ids, String itemXml, String description, List<String> pkInfoList) {
         this(concept, ids, itemXml);
         this.description = description;
@@ -97,7 +99,7 @@ public class ItemBean extends org.talend.mdm.webapp.base.client.model.ItemBean {
     public void setSmartViewMode(String smartViewMode) {
         this.smartViewMode = smartViewMode;
     }
-    
+
     public List<String> getPkInfoList() {
         return pkInfoList;
     }
@@ -119,31 +121,37 @@ public class ItemBean extends org.talend.mdm.webapp.base.client.model.ItemBean {
     }
 
     public void setLastUpdateTime(ItemNodeModel itemNodeModel) {
-        if (itemNodeModel != null)
-         {
+        if (itemNodeModel != null) {
             this.set("time", itemNodeModel.get("time")); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 
     public void setLastUpdateTime(ItemResult result) {
-        if (result != null && result.getInsertionTime() > 0)
-         {
+        if (result != null && result.getInsertionTime() > 0) {
             this.set("time", result.getInsertionTime()); //$NON-NLS-1$
         }
     }
-    
-	public Map<String, String> getOriginalLookupFieldMap() {
-		return originalLookupFieldMap;
-	}
 
-	public void setOriginalLookupFieldMap(Map<String, String> originalLookupFieldMap) {
-		this.originalLookupFieldMap = originalLookupFieldMap;
-	}
+    public Map<String, List<String>> getOriginalLookupFieldDisplayValueMap() {
+        return originalLookupFieldDisplayValueMap;
+    }
 
-	@Override
+    public void setOriginalLookupFieldDisplayValueMap(Map<String, List<String>> originalLookupFieldDisplayValueMap) {
+        this.originalLookupFieldDisplayValueMap = originalLookupFieldDisplayValueMap;
+    }
+
+    public Map<String, List<String>> getOriginalLookupFieldValueMap() {
+        return originalLookupFieldValueMap;
+    }
+
+    public void setOriginalLookupFieldValueMap(Map<String, List<String>> originalLookupFieldValueMap) {
+        this.originalLookupFieldValueMap = originalLookupFieldValueMap;
+    }
+
+    @Override
     public void copy(org.talend.mdm.webapp.base.client.model.ItemBean itemBean) {
         super.copy(itemBean);
-        if (itemBean instanceof ItemBean){
+        if (itemBean instanceof ItemBean) {
             ItemBean item = (ItemBean) itemBean;
             this.description = item.getDescription();
             this.displayPKInfo = item.getDisplayPKInfo();

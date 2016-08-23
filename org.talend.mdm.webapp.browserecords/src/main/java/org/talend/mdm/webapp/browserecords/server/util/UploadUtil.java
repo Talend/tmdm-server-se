@@ -17,9 +17,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import org.talend.mdm.webapp.browserecords.server.actions.BrowseRecordsAction;
 import org.talend.mdm.webapp.browserecords.shared.Constants;
 
+import com.amalto.core.save.MultiRecordsSaveException;
 import com.amalto.core.util.CoreException;
+import com.amalto.core.util.Messages;
+import com.amalto.core.util.MessagesFactory;
 
 @SuppressWarnings("nls")
 public class UploadUtil {
@@ -27,13 +31,15 @@ public class UploadUtil {
     public static Set<String> chechMandatoryField(String mandatoryField, Set<String> fields) {
         String[] mandatoryFields = mandatoryField.split(Constants.FILE_EXPORT_IMPORT_SEPARATOR);
         Set<String> mandatorySet = new HashSet<String>();
-        for (String field : mandatoryFields)
+        for (String field : mandatoryFields) {
             mandatorySet.add(field);
+        }
 
         for (String fieldValue : fields) {
             String fieldName = getFieldName(fieldValue);
-            if (mandatorySet.contains(fieldName))
+            if (mandatorySet.contains(fieldName)) {
                 mandatorySet.remove(fieldName);
+            }
         }
 
         return mandatorySet;
@@ -50,32 +56,33 @@ public class UploadUtil {
     public static String[] getDefaultHeader(String headerString){
         List<String> headers = new LinkedList<String>();  
         String fields[] = headerString.split(Constants.FILE_EXPORT_IMPORT_SEPARATOR);
-        for (int i=0;i<fields.length;i++){
-            headers.add(getFieldName(fields[i]));  
+        for (String field : fields) {
+            headers.add(getFieldName(field));  
         }
         return headers.toArray(new String[headers.size()]);
     }
     
-    public static String getRootCause(Throwable throwable) {
-        String message = ""; //$NON-NLS-1$
-        Throwable currentCause = throwable;
+    public static Throwable getRootCause(Throwable currentCause) {
         if (currentCause != null) {
+            if (CoreException.class.isInstance(currentCause)) {
+                return currentCause;
+            }
             while (currentCause.getCause() != null) {
-                if (CoreException.class.isInstance(currentCause.getCause())) {
-                    return currentCause.getCause().getMessage();
-                }
-                message = currentCause.getCause().getMessage();
                 currentCause = currentCause.getCause();
+                if (CoreException.class.isInstance(currentCause)) {
+                    return currentCause;
+                }
             }
         }
-        return message;
+        return currentCause;
     }
     
     public static boolean isViewableXpathValid(Set<String> viewableXpathSet, String concept){
         for(String path : viewableXpathSet){
             String str = path.substring(0, path.indexOf("/"));
-            if(!str.equalsIgnoreCase(concept))
+            if(!str.equalsIgnoreCase(concept)) {
                 return false;
+            }
         }
         return true;
     }

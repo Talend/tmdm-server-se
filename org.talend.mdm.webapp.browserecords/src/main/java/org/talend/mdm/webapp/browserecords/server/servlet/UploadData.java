@@ -28,7 +28,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.amalto.core.util.LocalUser;
 import org.apache.commons.fileupload.DiskFileUpload;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadBase;
@@ -42,6 +41,9 @@ import org.talend.mdm.webapp.browserecords.server.service.UploadService;
 import org.talend.mdm.webapp.browserecords.server.util.UploadUtil;
 import org.talend.mdm.webapp.browserecords.shared.Constants;
 
+import com.amalto.core.save.MultiRecordsSaveException;
+import com.amalto.core.util.CoreException;
+import com.amalto.core.util.LocalUser;
 import com.amalto.core.util.Messages;
 import com.amalto.core.util.MessagesFactory;
 import com.amalto.core.webservice.WSPutItemWithReport;
@@ -183,7 +185,14 @@ public class UploadData extends HttpServlet {
         try {
             CommonUtil.getPort().putItemWithReportArray(wSPutItemWithReportArray);
         } catch (RemoteException exception) {
-            throw new UploadException(UploadUtil.getRootCause(exception));
+            Throwable cause = UploadUtil.getRootCause(exception);
+            if (CoreException.class.isInstance(cause) && cause.getCause() != null) {
+                if (MultiRecordsSaveException.class.isInstance(cause.getCause())) {
+                    throw new UploadException(MESSAGES.getMessage("save_error") + MESSAGES.getMessage("save_row_count", ((MultiRecordsSaveException)cause.getCause()).getRowCount() + 1) + cause.getCause().getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
+                }
+                throw new UploadException(cause.getCause().getMessage());
+            }
+            throw new UploadException(cause.getMessage());
         } catch (Exception exception) {
             throw new ServletException(exception.getLocalizedMessage());
         }

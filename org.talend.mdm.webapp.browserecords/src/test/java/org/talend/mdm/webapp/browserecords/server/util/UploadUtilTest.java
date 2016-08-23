@@ -17,8 +17,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.servlet.ServletException;
-
+import com.amalto.core.save.MultiRecordsSaveException;
 import com.amalto.core.save.SaveException;
 import com.amalto.core.util.CoreException;
 
@@ -67,7 +66,24 @@ public class UploadUtilTest  extends TestCase {
         CoreException coreException = new CoreException("CoreException Cause", saveException);
         RemoteException remoteException = new RemoteException("RemoteException Cause", coreException);
         Exception exception = new Exception("Exception Cause",remoteException);
-        assertEquals(UploadUtil.getRootCause(exception),"com.amalto.core.save.SaveException: Exception occurred during save: SaveException Cause");
+        assertEquals("com.amalto.core.save.SaveException: Exception occurred during save: SaveException Cause", UploadUtil.getRootCause(exception).getMessage());
+    }
+    
+    public void testGetMultiRecordsSaveException(){
+        int errorRowCount = 101;
+        RuntimeException runtimeException = new RuntimeException("RuntimeException Cause");
+        SaveException saveException = new SaveException("SaveException Cause", runtimeException);
+        MultiRecordsSaveException multiRecordsSaveException = new MultiRecordsSaveException(saveException.getCause().getMessage(), saveException.getCause(), errorRowCount);
+        CoreException coreException = new CoreException("CoreException Cause", multiRecordsSaveException);
+        RemoteException remoteException = new RemoteException("RemoteException Cause", coreException);
+        Exception exception = new Exception("Exception Cause",remoteException);
+        assertEquals("com.amalto.core.save.MultiRecordsSaveException: RuntimeException Cause", UploadUtil.getRootCause(exception).getMessage());
+        
+        if (UploadUtil.getRootCause(exception) != null && CoreException.class.isInstance(UploadUtil.getRootCause(exception))) {
+            Throwable cause = UploadUtil.getRootCause(exception);
+            assertTrue(MultiRecordsSaveException.class.isInstance(cause.getCause()));
+            assertEquals(101, ((MultiRecordsSaveException)cause.getCause()).getRowCount());
+        }
     }
         
     public void testIsViewableXpathValid(){

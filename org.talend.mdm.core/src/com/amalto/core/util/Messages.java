@@ -44,7 +44,9 @@ public class Messages {
 
     public void ModifyPatternAccordingToArgs(StringBuffer pattern, Object... args) {
         if(args != null && args.length > 0){
-            pattern.append("{0}");  //$NON-NLS-1$
+            if (pattern != null && pattern.toString().indexOf("{0}") < 0) { //$NON-NLS-1$
+                pattern.append("{0}");  //$NON-NLS-1$
+            }
         }
     }
     

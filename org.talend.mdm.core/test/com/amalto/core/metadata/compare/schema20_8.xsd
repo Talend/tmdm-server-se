@@ -30,13 +30,13 @@
     </xsd:element>
     <xsd:simpleType name="MyStrChild">
         <xsd:restriction base="MyStr">
-            <xsd:maxLength value="5" />
+            <xsd:maxLength value="25" />
         </xsd:restriction>
     </xsd:simpleType>
     
     <xsd:simpleType name="MyStrChild_1">
         <xsd:restriction base="MyStrChild">
-        <xsd:maxLength value="50" />
+        <xsd:maxLength value="20" />
         </xsd:restriction>
     </xsd:simpleType>
     

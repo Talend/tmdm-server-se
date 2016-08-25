@@ -3362,6 +3362,17 @@ public class DocumentSaveTest extends TestCase {
         	assertFalse(e.getCause().getLocalizedMessage().isEmpty());
         }
     }
+    
+    public void testGetCauseMessage() throws Exception {
+        MetadataRepository repository = new MetadataRepository();
+        SaverSource source = new TestSaverSource(repository, true, "", "");
+        SaverSession session = SaverSession.newSession(source);
+        
+        RuntimeException runtimeException = new RuntimeException("RuntimeException Cause");
+        IllegalArgumentException illegalArgumentException = new IllegalArgumentException("SaveException Cause", runtimeException);
+        Exception exception = new Exception("Exception Cause", illegalArgumentException);
+        assertEquals("RuntimeException Cause", session.getCauseMessage(exception));
+    }
 
     private static class MockCommitter implements SaverSession.Committer {
 

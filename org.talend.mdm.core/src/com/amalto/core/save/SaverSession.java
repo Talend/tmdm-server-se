@@ -175,10 +175,12 @@ public class SaverSession {
             boolean needResetAutoIncrement = false;
             for (Map.Entry<String, List<Document>> currentTransaction : itemsToUpdate.entrySet()) {
                 String dataCluster = currentTransaction.getKey();
+                int itemCounter = 0;
                 try {
                     committer.begin(dataCluster);
                     Iterator<Document> iterator = currentTransaction.getValue().iterator();
                     while (iterator.hasNext()) {
+                        itemCounter++;
                         Document currentItemToCommit = iterator.next();
                         if (!needResetAutoIncrement) {
                             needResetAutoIncrement = isAutoIncrementItem(currentItemToCommit);
@@ -193,6 +195,9 @@ public class SaverSession {
                     committer.commit(dataCluster);
                 } catch (Exception e) {
                     committer.rollback(dataCluster);
+                    if (e.getCause() != null) {
+                        throw new MultiRecordsSaveException(getCauseMessage(e), e.getCause(), itemCounter);
+                    }
                     throw e;
                 }
             }
@@ -240,6 +245,21 @@ public class SaverSession {
                 }
             }
         }
+    }
+    
+    /**
+     * Get cause message.
+     * @param throwable exception.
+     */
+    public String getCauseMessage(Throwable throwable) {
+        if (throwable != null) {
+            if (throwable.getCause() == null) {
+                return throwable.getMessage();
+            } else {
+                return getCauseMessage(throwable.getCause());
+            }
+        }
+        return ""; //$NON-NLS-1$
     }
 
     /**

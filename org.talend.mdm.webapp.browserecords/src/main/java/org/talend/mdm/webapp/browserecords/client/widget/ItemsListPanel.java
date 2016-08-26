@@ -495,9 +495,9 @@ public class ItemsListPanel extends ContentPanel {
                     } else {
                         if (originalMap.containsKey(path)) {
                             Object data = originalMap.get(path);
-                            if (DataTypeConstants.DATE.getBaseTypeName().equals(tm.getType().getBaseTypeName())) {
+                            if (DataTypeConstants.DATE.getTypeName().equals(tm.getType().getBaseTypeName())) {
                                 value = DateUtil.getDate((Date) data);
-                            } else if (DataTypeConstants.DATETIME.getBaseTypeName().equals(tm.getType().getBaseTypeName())) {
+                            } else if (DataTypeConstants.DATETIME.getTypeName().equals(tm.getType().getBaseTypeName())) {
                                 value = DateUtil.getDateTime((Date) data);
                             } else {
                                 value = String.valueOf(data);

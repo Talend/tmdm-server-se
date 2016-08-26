@@ -87,9 +87,18 @@ public class DateTimeTypeFieldFactoryGWTTest extends GWTTestCase{
 		RootPanel.get().add(field);
 		assertTrue(field instanceof FormatDateField);
 		dateField = (FormatDateField) field;
-		assertNull(dateField.getValue());
+        assertNull(dateField.getValue());
         assertEquals(true, dateField.isValid());
-		
+
+        // 5. customer type
+        DataTypeConstants.UNKNOW.setBaseTypeName("date");
+        typeModel = new SimpleTypeModel("date", DataTypeConstants.UNKNOW);
+        assertEquals("unknow", typeModel.getType().getTypeName());
+        assertEquals("date", typeModel.getType().getBaseTypeName());
+        context.setNode(getItemNodeModel("date", "2012/06/13", "date"));
+        dateTimeTypeFieldFactory = new DateTimeTypeFieldFactory(new TypeFieldSource(TypeFieldSource.FORM_INPUT), context);
+        field = dateTimeTypeFieldFactory.createField();
+        assertNotNull(field);
 	}
 	
 	private ItemNodeModel getItemNodeModel(String name, String value, String label){

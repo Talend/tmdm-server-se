@@ -66,7 +66,7 @@ public class UploadUtilTest  extends TestCase {
         CoreException coreException = new CoreException("CoreException Cause", saveException);
         RemoteException remoteException = new RemoteException("RemoteException Cause", coreException);
         Exception exception = new Exception("Exception Cause",remoteException);
-        assertEquals("com.amalto.core.save.SaveException: Exception occurred during save: SaveException Cause", UploadUtil.getRootCause(exception).getMessage());
+        assertEquals("com.amalto.core.save.SaveException: SaveException Cause", UploadUtil.getRootCause(exception).getMessage());
     }
     
     public void testGetMultiRecordsSaveException(){

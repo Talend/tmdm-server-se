@@ -397,8 +397,12 @@ public class UploadFileFormPanel extends FormPanel implements Listener<FormEvent
                         }
                     });
         } else {
-            MessageBox.alert(MessagesFactory.getMessages().error_title(),
-                    MultilanguageMessageParser.pickOutISOMessage(filterFormatTag(formEvent.getResultHtml())), null);
+            String returnMessage = filterFormatTag(formEvent.getResultHtml());
+            String displayMessage = MultilanguageMessageParser.pickOutISOMessage(returnMessage);
+            if (!MultilanguageMessageParser.getLanguageValueMap(returnMessage).isEmpty()) {
+                displayMessage = returnMessage.substring(0, returnMessage.indexOf("[")) + MultilanguageMessageParser.pickOutISOMessage(returnMessage); //$NON-NLS-1$
+            }
+            MessageBox.alert(MessagesFactory.getMessages().error_title(), displayMessage, null);
         }
     }
 

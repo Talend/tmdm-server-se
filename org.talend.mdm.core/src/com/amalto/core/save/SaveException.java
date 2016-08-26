@@ -22,7 +22,7 @@ public class SaveException extends RuntimeException {
     }
 
     public SaveException(String Message, Throwable cause) {
-        super("Exception occurred during save: " + Message, cause); //$NON-NLS-1$
+        super(Message, cause);
         this.Message = Message;
     }
 

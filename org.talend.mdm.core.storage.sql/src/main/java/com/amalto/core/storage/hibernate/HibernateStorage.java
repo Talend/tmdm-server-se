@@ -61,13 +61,14 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
 import org.hibernate.cfg.Mappings;
+import org.hibernate.engine.spi.Mapping;
 import org.hibernate.exception.ConstraintViolationException;
 import org.hibernate.internal.util.config.ConfigurationHelper;
 import org.hibernate.mapping.Any;
 import org.hibernate.mapping.Array;
 import org.hibernate.mapping.Bag;
+import org.hibernate.mapping.Column;
 import org.hibernate.mapping.Component;
-import org.hibernate.mapping.DenormalizedTable;
 import org.hibernate.mapping.DependantValue;
 import org.hibernate.mapping.IdentifierBag;
 import org.hibernate.mapping.Index;
@@ -91,6 +92,7 @@ import org.hibernate.search.FullTextSession;
 import org.hibernate.search.MassIndexer;
 import org.hibernate.search.Search;
 import org.hibernate.service.ServiceRegistry;
+import org.hibernate.tool.hbm2ddl.ColumnMetadata;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.hibernate.tool.hbm2ddl.SchemaUpdate;
 import org.hibernate.tool.hbm2ddl.SchemaValidator;
@@ -144,6 +146,8 @@ import com.amalto.core.storage.StorageType;
 import com.amalto.core.storage.datasource.DataSource;
 import com.amalto.core.storage.datasource.DataSourceDefinition;
 import com.amalto.core.storage.datasource.RDBMSDataSource;
+import com.amalto.core.storage.hibernate.mapping.MDMDenormalizedTable;
+import com.amalto.core.storage.hibernate.mapping.MDMTable;
 import com.amalto.core.storage.prepare.FullTextIndexCleaner;
 import com.amalto.core.storage.prepare.JDBCStorageCleaner;
 import com.amalto.core.storage.prepare.JDBCStorageInitializer;
@@ -293,12 +297,46 @@ public class HibernateStorage implements Storage {
         }
         configuration = new Configuration() {
 
+            protected transient Mapping mapping = buildMapping();
+
             @Override
             public Mappings createMappings() {
                 return new MDMMappingsImpl();
             }
 
             class MDMMappingsImpl extends MappingsImpl {
+
+                @Override
+                public Table addTable(
+                        String schema,
+                        String catalog,
+                        String name,
+                        String subselect,
+                        boolean isAbstract) {
+                    name = getObjectNameNormalizer().normalizeIdentifierQuoting( name );
+                    schema = getObjectNameNormalizer().normalizeIdentifierQuoting( schema );
+                    catalog = getObjectNameNormalizer().normalizeIdentifierQuoting( catalog );
+
+                    String key = subselect == null ? Table.qualify( catalog, schema, name ) : subselect;
+                    Table table = tables.get( key );
+
+                    if ( table == null ) {
+                        table = new MDMTable();
+                        table.setAbstract( isAbstract );
+                        table.setName( name );
+                        table.setSchema( schema );
+                        table.setCatalog( catalog );
+                        table.setSubselect( subselect );
+                        tables.put( key, table );
+                    }
+                    else {
+                        if ( !isAbstract ) {
+                            table.setAbstract( false );
+                        }
+                    }
+
+                    return table;
+                }
 
                 @Override
                 public Table addDenormalizedTable(String schema, String catalog, String name, boolean isAbstract,
@@ -311,7 +349,7 @@ public class HibernateStorage implements Storage {
                         throw new DuplicateMappingException(
                                 "Table " + key + " is duplicated.", DuplicateMappingException.Type.TABLE, name); //$NON-NLS-1$ //$NON-NLS-2$
                     }
-                    Table table = new DenormalizedTable(includedTable) {
+                    Table table = new MDMDenormalizedTable(includedTable) {
 
                         @SuppressWarnings({ "rawtypes", "unchecked" })
                         @Override

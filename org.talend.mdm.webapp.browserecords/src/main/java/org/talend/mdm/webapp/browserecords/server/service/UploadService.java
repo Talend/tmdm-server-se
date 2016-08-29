@@ -180,7 +180,7 @@ public class UploadService {
             multiNodeMap = new HashMap<String, List<Element>>();
             if (importHeader != null) {
                 Document document;
-                if(isPartialUpdate){
+                if (isPartialUpdate) {
                     Boolean keyContainsEmpty = false;
                     String[] keys = new String[entityModel.getKeys().length];
                     for (int k=0; k < entityModel.getKeys().length; k++) {
@@ -211,9 +211,15 @@ public class UploadService {
                         if (fieldValue != null && !fieldValue.isEmpty()) {
                             dataLine = true;
                             fillFieldValue(currentElement, importHeader[i], fieldValue, row, null);
+                        } else {
+                            if(isPartialUpdate){
+                                dataLine = true;
+                                fillFieldValue(currentElement, importHeader[i], "", row, null); //$NON-NLS-1$
+                            }
                         }
                     } else {
                         if(isPartialUpdate){
+                            dataLine = true;
                             fillFieldValue(currentElement, importHeader[i], "", row, null); //$NON-NLS-1$
                         }
                     }
@@ -449,6 +455,19 @@ public class UploadService {
             }
         }
     }
+    
+    private List<String> splitString(String valueString, String separator) {
+        List<String> valueList = new ArrayList<String>();
+        if (valueString == null || valueString.isEmpty()) {
+            valueList.add(""); //$NON-NLS-1$
+        } else {
+            String[] valueArray = valueString.split(separator, -1);
+            for (String value : valueArray) {
+                valueList.add(value);
+            }
+        }
+        return valueList;
+    }
 
     protected void fillFieldValue(Element currentElement, String fieldPath, String fieldValue, Row row, String[] record)
             throws Exception {
@@ -465,7 +484,7 @@ public class UploadService {
         String xpath = xpathPartArray[0];
         if (!isAttribute) {
             if (multipleValueSeparator != null && !multipleValueSeparator.isEmpty()) {
-                valueList = CommonUtil.splitString(fieldValue, multipleValueSeparator.charAt(0));
+                valueList = splitString(fieldValue, "\\" + String.valueOf(multipleValueSeparator.charAt(0))); //$NON-NLS-1$
             }
         }
         for (int i = 1; i < xpathPartArray.length; i++) {
@@ -475,16 +494,32 @@ public class UploadService {
                 if (entityModel.getTypeModel(xpath).isMultiOccurrence() && multiNodeMap.get(xpath) == null) {
                     List<Element> multiNodeList = new ArrayList<Element>();
                     if (valueList != null) {
-                        for (int j = 0; j < valueList.size(); j++) {
-                            Element element = currentElement.element(xpathPartArray[i]);
-                            int index = currentElement.content().indexOf(element);
-                            if (index + j >= currentElement.content().size()
-                                    || currentElement.content().get(currentElement.content().indexOf(element) + j) != element) {
-                                Element createCopy = element.createCopy();
-                                currentElement.content().add(createCopy);
-                                multiNodeList.add(createCopy);
-                            } else {
-                                multiNodeList.add(element);
+                        if (isPartialUpdate) {
+                            if (currentElement.element(xpathPartArray[i]) == null) {
+                                currentElement.addElement(xpathPartArray[i]);
+                            }
+                            List<Element> elementList = currentElement.elements(xpathPartArray[i]);
+                            for (Element e : elementList) {
+                                multiNodeList.add(e);
+                            }
+                            if (elementList.size() < valueList.size()) {
+                                for (int j = 1; j <= valueList.size() - elementList.size(); j++) {
+                                    currentElement.addElement(xpathPartArray[i]);
+                                    multiNodeList.add((Element)currentElement.content().get(currentElement.content().size() - 1));
+                                }
+                            }
+                        } else {
+                            for (int j = 0; j < valueList.size(); j++) {
+                                Element element = currentElement.element(xpathPartArray[i]);
+                                int index = currentElement.content().indexOf(element);
+                                if (index + j >= currentElement.content().size()
+                                        || currentElement.content().get(currentElement.content().indexOf(element) + j) != element) {
+                                    Element createCopy = element.createCopy();
+                                    currentElement.content().add(createCopy);
+                                    multiNodeList.add(createCopy);
+                                } else {
+                                    multiNodeList.add(element);
+                                }
                             }
                         }
                     }
@@ -497,6 +532,9 @@ public class UploadService {
                     for (int j = 0; j < parentlist.size(); j++) {
                         Element parentElement = parentlist.get(j);
                         Element element = parentElement.element(xpathPartArray[i]);
+                        if (element == null) {
+                            element = parentElement.addElement(xpathPartArray[i]);
+                        }
                         valueNodeList.add(element);
                     }
                     if (valueNodeList.size() > 0) {

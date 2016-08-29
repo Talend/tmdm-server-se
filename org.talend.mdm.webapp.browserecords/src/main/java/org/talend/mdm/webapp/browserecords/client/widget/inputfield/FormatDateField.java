@@ -177,10 +177,10 @@ public class FormatDateField extends DateField {
 
     @Override
     public boolean validateValue(String value) {
-        if (this.value == null) {
-            return super.validateValue(value);
-        } else {
+        if (formatPattern != null && formatPattern.trim().length() > 0 && this.value != null) {
             return super.validateValue(propertyEditor.getStringValue(this.value));
+        } else {
+            return super.validateValue(value);
         }
     }
 

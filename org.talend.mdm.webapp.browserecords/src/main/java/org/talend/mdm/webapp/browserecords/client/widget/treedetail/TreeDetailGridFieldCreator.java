@@ -332,9 +332,11 @@ public class TreeDetailGridFieldCreator {
                     }
                 } else {
                     if (fe.getField() instanceof FormatDateField) {
-                        if("".equals(((FormatDateField) fe.getField()).getOjbectValue().toString())){ //$NON-NLS-1$
-                            validate(fe.getField(), node);
+                        if(node.getObjectValue() != null && !node.getObjectValue().equals(((FormatDateField) fe.getField()).getRawValue())){
+                            node.setObjectValue(((FormatDateField) fe.getField()).getOjbectValue());
+                            node.setChangeValue(true);
                         }
+                        validate(fe.getField(), node);
                     }
                 }
             }

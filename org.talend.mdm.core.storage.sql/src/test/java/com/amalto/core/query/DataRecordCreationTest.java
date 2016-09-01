@@ -356,6 +356,9 @@ public class DataRecordCreationTest extends StorageTestCase {
     }
 
     private static void performCreationFromSAXWithReusableTypeFieldUnregisteredAsserts(DataRecord dataRecord) {
+        Storage storage = new HibernateStorage("H2-Default"); //$NON-NLS-1$
+        storage.init(ServerContext.INSTANCE.get().getDefinition("H2-Default", "MDM")); //$NON-NLS-1$//$NON-NLS-2$
+        storage.prepare(repository, true);
         assertNotNull(dataRecord);
         assertEquals("Company", dataRecord.getType().getName());
         assertEquals("1", dataRecord.get("subelement"));
@@ -379,6 +382,9 @@ public class DataRecordCreationTest extends StorageTestCase {
     }
 
     private void performCreationFromSAXWithReusableTypeNoMappingAsserts(DataRecord dataRecord) {
+        Storage storage = new HibernateStorage("H2-Default"); //$NON-NLS-1$
+        storage.init(ServerContext.INSTANCE.get().getDefinition("H2-Default", "MDM")); //$NON-NLS-1$//$NON-NLS-2$
+        storage.prepare(repository, true);
         assertNotNull(dataRecord);
         assertEquals("Company", dataRecord.getType().getName());
         assertEquals("1", dataRecord.get("subelement"));

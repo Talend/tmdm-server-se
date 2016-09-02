@@ -1728,7 +1728,6 @@ public class DocumentSaveTest extends TestCase {
         createBeanDelegatorContainer();
         BeanDelegatorContainer.getInstance().setDelegatorInstancePool(
                 Collections.<String, Object> singletonMap("LocalUser", new MockILocalUser()));
-        Util.getDataClusterCtrlLocal().putDataCluster(new DataClusterPOJO("CONF"));
         MetadataRepository repository = new MetadataRepository();
         repository.load(DocumentSaveTest.class.getResourceAsStream("metadata1.xsd"));
         MockMetadataRepositoryAdmin.INSTANCE.register("DStar", repository);
@@ -1759,7 +1758,6 @@ public class DocumentSaveTest extends TestCase {
         createBeanDelegatorContainer();
         BeanDelegatorContainer.getInstance().setDelegatorInstancePool(
                 Collections.<String, Object> singletonMap("LocalUser", new MockILocalUser()));
-        Util.getDataClusterCtrlLocal().putDataCluster(new DataClusterPOJO("CONF"));
         MetadataRepository repository = new MetadataRepository();
         repository.load(DocumentSaveTest.class.getResourceAsStream("metadata1.xsd"));
         MockMetadataRepositoryAdmin.INSTANCE.register("DStar", repository);
@@ -3321,8 +3319,6 @@ public class DocumentSaveTest extends TestCase {
         createBeanDelegatorContainer();
         BeanDelegatorContainer.getInstance().setDelegatorInstancePool(
                 Collections.<String, Object> singletonMap("LocalUser", new MockILocalUser()));
-        // Util.getDataClusterCtrlLocal().putDataCluster(new DataClusterPOJO("UpdateReport"));
-        // Util.getDataClusterCtrlLocal().putDataCluster(new DataClusterPOJO("DStar"));
         session.end(new DefaultCommitter());
 
         UserQueryBuilder qb = from(test1).where(eq(test1.getField("id"), "a"));

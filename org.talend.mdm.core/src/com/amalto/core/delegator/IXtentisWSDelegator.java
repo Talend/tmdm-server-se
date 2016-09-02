@@ -962,7 +962,10 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
                     // Expected (legacy) behavior: set the before saving message as source.
                     item.setSource(e.getBeforeSavingMessage());
                     if (e.getCause() != null) {
-                        throw new RemoteException("Could not save record.", new MultiRecordsSaveException(e.getMessage(), e.getCause(), itemCounter)); //$NON-NLS-1$ //$NON-NLS-2$
+                        if (StringUtils.isEmpty(e.getMessage()) && e.getCause() != null) {
+                            throw new RemoteException("Could not save record.", new MultiRecordsSaveException(e.getCause().getMessage(), e.getCause(), itemCounter)); //$NON-NLS-1$
+                        }
+                        throw new RemoteException("Could not save record.", new MultiRecordsSaveException(e.getMessage(), e.getCause(), itemCounter)); //$NON-NLS-1$
                     }
                     throw new RemoteException("Could not save record.", e); //$NON-NLS-1$
                 }

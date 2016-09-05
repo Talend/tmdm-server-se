@@ -413,4 +413,123 @@ public class ItemTreeHandlerGWTTest extends GWTTestCase {
         String actualXml = itemHandler.serializeItem();
         assertEquals(expectedXml, actualXml);
     }
+
+    public void testSerializeItemWithMassUpdate() {
+        List<String> idsList = new ArrayList<String>();
+        idsList.add("1");
+        idsList.add("2");
+        ViewBean viewBean = new ViewBean();
+        EntityModel entity = CommonUtilTestData.getEntityModel(ClientResourceData.getModelProduct());
+        viewBean.setBindingEntityModel(entity);
+        ItemNodeModel nodeModel = CommonUtilTestData.getItemNodeModel(ClientResourceData.getRecordProduct1(), entity);
+        assertNotNull(nodeModel);
+        assertTrue(nodeModel.getChildren().size() > 0);
+        nodeModel.setMassUpdate(true);
+        nodeModel.setEdited(true);
+        for (ModelData eachNodeModel : nodeModel.getChildren()) {
+            ItemNodeModel myNodeModel = (ItemNodeModel) eachNodeModel;
+            myNodeModel.setMassUpdate(true);
+            myNodeModel.setEdited(false);
+            if (myNodeModel.getTypePath().equals("Product/Id")) {
+                myNodeModel.setEdited(true);
+            } else if (myNodeModel.getTypePath().equals("Product/Price")) {
+                myNodeModel.setObjectValue("999");
+                myNodeModel.setEdited(true);
+            }
+        }
+        ItemTreeHandler itemHandler = new ItemTreeHandler(nodeModel, viewBean, idsList, ItemTreeHandlingStatus.BulkUpdate);
+        String actualXml = itemHandler.serializeItem();
+        String expectedXml = "<records xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><Product><Id>1</Id><Price>999</Price></Product><Product><Id>2</Id><Price>999</Price></Product></records>";
+        assertEquals(expectedXml, actualXml);
+
+        nodeModel = CommonUtilTestData.getItemNodeModel(ClientResourceData.getRecordProduct1(), entity);
+        assertNotNull(nodeModel);
+        assertTrue(nodeModel.getChildren().size() > 0);
+        nodeModel.setMassUpdate(true);
+        nodeModel.setEdited(true);
+        for (ModelData eachNodeModel : nodeModel.getChildren()) {
+            ItemNodeModel myNodeModel = (ItemNodeModel) eachNodeModel;
+            myNodeModel.setMassUpdate(true);
+            myNodeModel.setEdited(false);
+            if (myNodeModel.getTypePath().equals("Product/Id")) {
+                myNodeModel.setEdited(true);
+            }
+        }
+        ItemNodeModel featuresNodeModel = new ItemNodeModel("Features");
+        featuresNodeModel.setTypePath("Product/Features");
+        featuresNodeModel.setMassUpdate(true);
+        featuresNodeModel.setEdited(true);
+        ItemNodeModel sizesNodeModel = new ItemNodeModel("Sizes");
+        sizesNodeModel.setTypePath("Product/Features/Sizes");
+        sizesNodeModel.setMassUpdate(true);
+        sizesNodeModel.setEdited(true);
+        ItemNodeModel sizeNodeModel = new ItemNodeModel("Size");
+        sizeNodeModel.setTypePath("Product/Features/Sizes/Size");
+        sizeNodeModel.setObjectValue("Small");
+        sizeNodeModel.setMassUpdate(true);
+        sizeNodeModel.setEdited(true);
+        ItemNodeModel sizeNodeModel2 = new ItemNodeModel("Size");
+        sizeNodeModel2.setTypePath("Product/Features/Sizes/Size");
+        sizeNodeModel2.setObjectValue("Middle");
+        sizeNodeModel2.setMassUpdate(true);
+        sizeNodeModel2.setEdited(true);
+        featuresNodeModel.add(sizesNodeModel);
+        sizesNodeModel.add(sizeNodeModel);
+        sizesNodeModel.add(sizeNodeModel2);
+        ItemNodeModel colorsNodeModel = new ItemNodeModel("Colors");
+        colorsNodeModel.setTypePath("Product/Features/Colors");
+        colorsNodeModel.setMassUpdate(true);
+        colorsNodeModel.setEdited(true);
+        ItemNodeModel colorNodeModel = new ItemNodeModel("Color");
+        colorNodeModel.setTypePath("Product/Features/Colors/Color");
+        colorNodeModel.setObjectValue("Red");
+        colorNodeModel.setMassUpdate(true);
+        colorNodeModel.setEdited(true);
+        ItemNodeModel colorNodeModel2 = new ItemNodeModel("Color");
+        colorNodeModel2.setTypePath("Product/Features/Colors/Color");
+        colorNodeModel2.setObjectValue("Blue");
+        colorNodeModel2.setMassUpdate(true);
+        colorNodeModel2.setEdited(true);
+        colorsNodeModel.add(colorNodeModel);
+        colorsNodeModel.add(colorNodeModel2);
+        featuresNodeModel.add(colorsNodeModel);
+        nodeModel.add(featuresNodeModel);
+        itemHandler = new ItemTreeHandler(nodeModel, viewBean, idsList, ItemTreeHandlingStatus.BulkUpdate);
+        actualXml = itemHandler.serializeItem();
+        expectedXml = "<records xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><Product><Id>1</Id><Features><Sizes><Size>Small</Size><Size>Middle</Size></Sizes><Colors><Color>Red</Color><Color>Blue</Color></Colors></Features></Product><Product><Id>2</Id><Features><Sizes><Size>Small</Size><Size>Middle</Size></Sizes><Colors><Color>Red</Color><Color>Blue</Color></Colors></Features></Product></records>";
+        assertEquals(expectedXml, actualXml);
+
+        idsList.add("3");
+        idsList.add("4");
+        nodeModel = CommonUtilTestData.getItemNodeModel(ClientResourceData.getRecordProduct1(), entity);
+        assertNotNull(nodeModel);
+        assertTrue(nodeModel.getChildren().size() > 0);
+        nodeModel.setMassUpdate(true);
+        nodeModel.setEdited(true);
+        for (ModelData eachNodeModel : nodeModel.getChildren()) {
+            ItemNodeModel myNodeModel = (ItemNodeModel) eachNodeModel;
+            myNodeModel.setMassUpdate(true);
+            myNodeModel.setEdited(false);
+            if (myNodeModel.getTypePath().equals("Product/Id")) {
+                myNodeModel.setEdited(true);
+            } else if (myNodeModel.getTypePath().equals("Product/Name")) {
+                myNodeModel.setObjectValue("newName");
+                myNodeModel.setEdited(true);
+            } else if (myNodeModel.getTypePath().equals("Product/Description")) {
+                myNodeModel.setObjectValue("newDescription");
+                myNodeModel.setEdited(true);
+            } else if (myNodeModel.getTypePath().equals("Product/Price")) {
+                myNodeModel.setObjectValue("999");
+                myNodeModel.setEdited(true);
+            } else if (myNodeModel.getTypePath().equals("Product/OnlineStore")) {
+                myNodeModel.setObjectValue("Talend@@Wangfujing");
+                myNodeModel.setEdited(true);
+            }
+        }
+        nodeModel.add(featuresNodeModel);
+        itemHandler = new ItemTreeHandler(nodeModel, viewBean, idsList, ItemTreeHandlingStatus.BulkUpdate);
+        actualXml = itemHandler.serializeItem();
+        expectedXml = "<records xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><Product><Id>1</Id><Name>newName</Name><Features><Sizes><Size>Small</Size><Size>Middle</Size></Sizes><Colors><Color>Red</Color><Color>Blue</Color></Colors></Features><Price>999</Price><OnlineStore>Talend@@Wangfujing</OnlineStore></Product><Product><Id>2</Id><Name>newName</Name><Features><Sizes><Size>Small</Size><Size>Middle</Size></Sizes><Colors><Color>Red</Color><Color>Blue</Color></Colors></Features><Price>999</Price><OnlineStore>Talend@@Wangfujing</OnlineStore></Product><Product><Id>3</Id><Name>newName</Name><Features><Sizes><Size>Small</Size><Size>Middle</Size></Sizes><Colors><Color>Red</Color><Color>Blue</Color></Colors></Features><Price>999</Price><OnlineStore>Talend@@Wangfujing</OnlineStore></Product><Product><Id>4</Id><Name>newName</Name><Features><Sizes><Size>Small</Size><Size>Middle</Size></Sizes><Colors><Color>Red</Color><Color>Blue</Color></Colors></Features><Price>999</Price><OnlineStore>Talend@@Wangfujing</OnlineStore></Product></records>";
+        assertEquals(expectedXml, actualXml);
+    }
 }

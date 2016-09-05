@@ -47,6 +47,8 @@ public class MultiOccurrenceChangeItem extends HorizontalPanel {
         void removedNode(DynamicTreeItem selectedItem);
 
         void clearNodeValue(DynamicTreeItem selectedItem);
+
+        void removeAllNode(DynamicTreeItem item);
     }
 
     private AddRemoveHandler addRemoveHandler;
@@ -140,7 +142,7 @@ public class MultiOccurrenceChangeItem extends HorizontalPanel {
                 if (!itemNode.isKey() && !typeModel.isReadOnly()) {
                     editNodeImg = new Image("secure/img/genericUI/bulkupdate.png"); //$NON-NLS-1$
                     editNodeImg.getElement().setId("Edit"); //$NON-NLS-1$
-                    editNodeImg.setTitle(MessagesFactory.getMessages().clone_title());
+                    editNodeImg.setTitle(MessagesFactory.getMessages().bulkUpdate_title());
                     editNodeImg.getElement().getStyle().setMarginLeft(20D, Unit.PX);
                     editNodeImg.getElement().getStyle().setMarginTop(5D, Unit.PX);
                     editNodeImg.addClickHandler(new ClickHandler() {
@@ -154,6 +156,7 @@ public class MultiOccurrenceChangeItem extends HorizontalPanel {
                                 updateMultiOccurrenceButtonStatus(false);
                                 itemNode.setValid(true);
                                 itemNode.setEdited(false);
+                                addRemoveHandler.removeAllNode(treeDetail.getSelectedItem());
                             } else {
                                 field.setReadOnly(false);
                                 field.removeStyleName(disabledStyle);

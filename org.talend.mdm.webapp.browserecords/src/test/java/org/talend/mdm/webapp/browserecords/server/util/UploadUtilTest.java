@@ -71,9 +71,10 @@ public class UploadUtilTest  extends TestCase {
     
     public void testGetMultiRecordsSaveException(){
         int errorRowCount = 101;
+        String recordKey = "[12][34]";
         RuntimeException runtimeException = new RuntimeException("RuntimeException Cause");
         SaveException saveException = new SaveException("SaveException Cause", runtimeException);
-        MultiRecordsSaveException multiRecordsSaveException = new MultiRecordsSaveException(saveException.getCause().getMessage(), saveException.getCause(), errorRowCount);
+        MultiRecordsSaveException multiRecordsSaveException = new MultiRecordsSaveException(saveException.getCause().getMessage(), saveException.getCause(), recordKey, errorRowCount);
         CoreException coreException = new CoreException("CoreException Cause", multiRecordsSaveException);
         RemoteException remoteException = new RemoteException("RemoteException Cause", coreException);
         Exception exception = new Exception("Exception Cause",remoteException);
@@ -83,6 +84,7 @@ public class UploadUtilTest  extends TestCase {
             Throwable cause = UploadUtil.getRootCause(exception);
             assertTrue(MultiRecordsSaveException.class.isInstance(cause.getCause()));
             assertEquals(101, ((MultiRecordsSaveException)cause.getCause()).getRowCount());
+            assertEquals(recordKey, ((MultiRecordsSaveException)cause.getCause()).getKeyInfo());
         }
     }
         

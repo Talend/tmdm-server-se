@@ -241,6 +241,8 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 								15),
 				navigator_node_ids : node.navigator_node_ids,
 				navigator_node_concept : selectTypeNode.navigator_node_concept,
+				navigator_node_foreignkey_path : node.navigator_node_foreignkey_path,
+				navigator_node_field_foreignkey_path : node.navigator_node_field_foreignkey_path,
 				navigator_node_concept_label : node.navigator_node_concept_label,
 				navigator_node_type : node.navigator_node_type,
 				navigator_node_relation : navigator_node_relation,
@@ -258,6 +260,8 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 				navigator_node_type : node.navigator_node_type,
 				navigator_line_label : selectTypeNode.navigator_line_label,
 				navigator_node_concept : node.navigator_node_concept,
+				navigator_node_foreignkey_path : node.navigator_node_foreignkey_path,
+				navigator_node_field_foreignkey_path : node.navigator_node_field_foreignkey_path,
 				navigator_line_display : true
 			};
 			selectNode.linkChildren.push(newLink);
@@ -521,6 +525,7 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 								var resultObject = eval('('
 										+ response.responseText
 										+ ')');
+								resultObject.result[0].navigator_node_field_foreignkey_path = d.navigator_node_foreignkey_path;
 								selectNode.expanded = true;
 								if (selectNode.page[d.navigator_node_foreignkey_path].start == 0) {
 									selectNode.page[d.navigator_node_foreignkey_path].total = resultObject.totalCount;
@@ -570,7 +575,11 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 								if (d.navigator_node_hasPrimaryKeyInfo) {
 									amalto.navigator.Navigator.handleNodeLabel(response.responseText,NAVIGATOR_NODE_OUT_ENTITY_TYPE);
 								} else {
-									paintDataNode(eval('(' + response.responseText + ')'),NAVIGATOR_NODE_OUT_ENTITY_TYPE);
+									var responseValue = eval('('
+											+ response.responseText
+											+ ')');
+									responseValue[0].navigator_node_foreignkey_path = d.navigator_node_foreignkey_path;
+									paintDataNode(responseValue,NAVIGATOR_NODE_OUT_ENTITY_TYPE);
 								}
 							},
 							failure : function(response, options) {
@@ -834,11 +843,14 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 
 	function getIdentifier(o) {
 		var identifier;
-		if (o.navigator_node_concept !== undefined) {
-			identifier = 'navigator_' + o.navigator_node_concept;
+		if (o.navigator_node_foreignkey_path !== undefined) {
+			identifier = 'navigator_' + o.navigator_node_foreignkey_path;
 		}
 		if (o.navigator_node_type == NAVIGATOR_NODE_VALUE_TYPE && o.navigator_node_ids !== undefined) {
 			identifier = identifier + '_' + o.navigator_node_ids;
+		}
+		if(o.navigator_node_type == NAVIGATOR_NODE_VALUE_TYPE && o.navigator_node_field_foreignkey_path !== undefined){
+			identifier = identifier + '_' + o.navigator_node_field_foreignkey_path;
 		}
 		return identifier;
 	}

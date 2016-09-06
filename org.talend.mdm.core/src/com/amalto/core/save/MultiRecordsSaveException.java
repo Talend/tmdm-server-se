@@ -15,14 +15,25 @@ package com.amalto.core.save;
 
 public class MultiRecordsSaveException extends RuntimeException {
     
+    private String keyInfo;
     private final int rowCount;
     
     public MultiRecordsSaveException(String message, Throwable cause, int count) {
         super(message, cause);
         rowCount = count;
     }
+    
+    public MultiRecordsSaveException(String message, Throwable cause, String keys, int count) {
+        super(message, cause);
+        rowCount = count;
+        keyInfo = keys;
+    }
 
     public int getRowCount() {
         return rowCount;
+    }
+    
+    public String getKeyInfo() {
+        return keyInfo;
     }
 }

@@ -188,7 +188,7 @@ public class UploadData extends HttpServlet {
             Throwable cause = UploadUtil.getRootCause(exception);
             if (CoreException.class.isInstance(cause) && cause.getCause() != null) {
                 if (MultiRecordsSaveException.class.isInstance(cause.getCause())) {
-                    throw new UploadException(MESSAGES.getMessage("save_error") + MESSAGES.getMessage("save_row_count", ((MultiRecordsSaveException)cause.getCause()).getRowCount() + 1) + cause.getCause().getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
+                    throw new UploadException(MESSAGES.getMessage("save_error") + " " + MESSAGES.getMessage("save_row_count", ((MultiRecordsSaveException)cause.getCause()).getRowCount() + 1) + cause.getCause().getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 }
                 throw new UploadException(cause.getCause().getMessage());
             }

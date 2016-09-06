@@ -200,7 +200,7 @@ public class UploadService {
                             continue;
                         }
                         throw new UploadException(
-                                MESSAGES.getMessage(new Locale(language), "save_error")  //$NON-NLS-1$
+                                MESSAGES.getMessage(new Locale(language), "save_error") + " " //$NON-NLS-1$ //$NON-NLS-2$
                                 + MESSAGES.getMessage(new Locale(language), "save_row_count", rowNumber)  //$NON-NLS-1$
                                 + MESSAGES.getMessage(new Locale(language), "error_missing_key_field")); //$NON-NLS-1$
                     }
@@ -277,7 +277,7 @@ public class UploadService {
                             continue;
                         }
                         throw new UploadException(
-                                MESSAGES.getMessage(new Locale(language), "save_error")  //$NON-NLS-1$
+                                MESSAGES.getMessage(new Locale(language), "save_error") + " " //$NON-NLS-1$ //$NON-NLS-2$
                                 + MESSAGES.getMessage(new Locale(language), "save_row_count", i + 1)  //$NON-NLS-1$
                                 + MESSAGES.getMessage(new Locale(language), "error_missing_key_field")); //$NON-NLS-1$
                     }
@@ -605,7 +605,7 @@ public class UploadService {
             WSItem wsItem = CommonUtil.getPort().getItem(new WSGetItem(new WSItemPK(new WSDataClusterPK(org.talend.mdm.webapp.browserecords.server.util.CommonUtil.getCurrentDataModel()), model.getConceptName(), keys)));
             return org.talend.mdm.webapp.base.server.util.XmlUtil.parseText(wsItem.getContent());
         } catch (Exception e) {
-            throw new UploadException(MESSAGES.getMessage("save_error") + MESSAGES.getMessage("save_row_count", rowNumber) + e.getCause().getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
+            throw new UploadException(MESSAGES.getMessage("save_error") + " " + MESSAGES.getMessage("save_row_count", rowNumber) + e.getCause().getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
     }
     

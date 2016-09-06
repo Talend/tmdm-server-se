@@ -124,17 +124,18 @@ public class MultiOccurrenceChangeItemGWTTest extends GWTTestCase {
         Map<String, Field<?>> fieldMap = new HashMap<String, Field<?>>();
         MultiOccurrenceChangeItem multiOccurrenceChangeItem = new MultiOccurrenceChangeItem(itemNodeModel, viewBean, fieldMap,
                 ItemDetailToolBar.MASS_UPDATE_OPERATION, null);
-        assertEquals(
-                "<img src=\"secure/img/genericUI/bulkupdate.png\" style=\"margin-left: 20px; margin-top: 5px;\" id=\"Edit\" title=\"Bulk Update\" class=\"gwt-Image\"></img>", //$NON-NLS-1$
-                multiOccurrenceChangeItem.getWidget(4).toString());
+        String result = multiOccurrenceChangeItem.getWidget(4).toString();
+        assertTrue(result.contains("src=\"secure/img/genericUI/bulkupdate.png\""));
+        assertTrue(result.contains("id=\"Edit\""));
+        assertTrue(result.contains("title=\"Bulk Update\""));
         assertEquals(true, itemNodeModel.isMassUpdate());
         assertEquals(false, itemNodeModel.isEdited());
 
         itemNodeModel.setKey(true);
         multiOccurrenceChangeItem = new MultiOccurrenceChangeItem(itemNodeModel, viewBean, fieldMap,
                 ItemDetailToolBar.MASS_UPDATE_OPERATION, null);
-        assertFalse("<img src=\"secure/img/genericUI/bulkupdate.png\" style=\"margin-left: 20px; margin-top: 5px;\" id=\"Edit\" title=\"Bulk Update\" class=\"gwt-Image\"></img>"
-                .equals(multiOccurrenceChangeItem.getWidget(4).toString()));
+        result = multiOccurrenceChangeItem.getWidget(4).toString();
+        assertFalse(result.contains("src=\"secure/img/genericUI/bulkupdate.png\""));
         assertEquals(true, itemNodeModel.isMassUpdate());
         assertEquals(true, itemNodeModel.isEdited());
 
@@ -142,8 +143,8 @@ public class MultiOccurrenceChangeItemGWTTest extends GWTTestCase {
         typeModel.setReadOnly(true);
         multiOccurrenceChangeItem = new MultiOccurrenceChangeItem(itemNodeModel, viewBean, fieldMap,
                 ItemDetailToolBar.MASS_UPDATE_OPERATION, null);
-        assertFalse("<img src=\"secure/img/genericUI/bulkupdate.png\" style=\"margin-left: 20px; margin-top: 5px;\" id=\"Edit\" title=\"Bulk Update\" class=\"gwt-Image\"></img>"
-                .equals(multiOccurrenceChangeItem.getWidget(4).toString()));
+        result = multiOccurrenceChangeItem.getWidget(4).toString();
+        assertFalse(result.contains("src=\"secure/img/genericUI/bulkupdate.png\""));
         assertEquals(true, itemNodeModel.isMassUpdate());
         assertEquals(false, itemNodeModel.isEdited());
     }

@@ -43,6 +43,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
@@ -57,6 +58,7 @@ import org.dom4j.QName;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
+import org.talend.mdm.commmon.util.core.MDMConfiguration;
 import org.talend.mdm.commmon.util.datamodel.management.BusinessConcept;
 import org.talend.mdm.commmon.util.datamodel.management.ReusableType;
 import org.talend.mdm.commmon.util.webapp.XSystemObjects;
@@ -2548,6 +2550,14 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             LOG.error(e.getMessage(), e);
             throw new ServiceException(e.getLocalizedMessage());
         }
+    }
+
+    public int getMaxExportRecordsCount() throws ServiceException{
+        return Integer.valueOf(MDMConfiguration.getConfiguration().getProperty("max.export.browserecord", NumberUtils.INTEGER_ZERO.toString()));
+    }
+
+    public int getImportRecordsCount() throws ServiceException{
+        return Integer.valueOf(MDMConfiguration.getConfiguration().getProperty("max.import.browserecord", NumberUtils.INTEGER_ZERO.toString()));
     }
 
     private EntityModel getForeignKeyEntityModel(String foregnKey, String entityName, String language) throws ServiceException {

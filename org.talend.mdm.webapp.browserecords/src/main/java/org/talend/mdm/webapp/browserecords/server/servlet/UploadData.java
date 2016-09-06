@@ -31,7 +31,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.fileupload.DiskFileUpload;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadBase;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.log4j.Logger;
+import org.talend.mdm.commmon.util.core.MDMConfiguration;
 import org.talend.mdm.webapp.base.server.util.CommonUtil;
 import org.talend.mdm.webapp.base.shared.EntityModel;
 import org.talend.mdm.webapp.base.shared.FileUtil;
@@ -66,6 +68,17 @@ public class UploadData extends HttpServlet {
 
     private boolean cusExceptionFlag = false;
     
+    private Integer defaultMaxImportCount = 1000;
+
+    private boolean checkedFileRecordCount;
+
+    @Override
+    public void init() throws ServletException {
+        super.init();
+        defaultMaxImportCount = Integer.parseInt(
+                MDMConfiguration.getConfiguration().getProperty("max.import.browserecord", NumberUtils.INTEGER_ZERO.toString()).toString());
+    }
+
     @Override
     protected void doGet(HttpServletRequest arg0, HttpServletResponse arg1) throws ServletException, IOException {
         doPost(arg0, arg1);
@@ -144,6 +157,8 @@ public class UploadData extends HttpServlet {
                         multipleValueSeparator = item.getString();
                     } else if (name.equals("isPartialUpdate")) { //$NON-NLS-1$
                         isPartialUpdate = "on".equals(item.getString()); //$NON-NLS-1$
+                    } else if(name.equals("checkedFileRecordCount")){
+                        checkedFileRecordCount = "on".equals(item.getString()); //$NON-NLS-1$
                     }
                 } else {
                     fileType = FileUtil.getFileType(item.getName());
@@ -161,17 +176,26 @@ public class UploadData extends HttpServlet {
             if (mandatorySet.size() > 0) {
                 throw new UploadException(MESSAGES.getMessage(locale, "error_missing_mandatory_field")); //$NON-NLS-1$
             }
-            UploadService service = generateUploadService(concept, fileType, isPartialUpdate, headersOnFirstLine, headerVisibleMap,
-                    inheritanceNodePathList, multipleValueSeparator, seperator, encoding, textDelimiter.charAt(0), language);
+            UploadService service = generateUploadService(concept, fileType, isPartialUpdate, headersOnFirstLine,
+                    headerVisibleMap, inheritanceNodePathList, multipleValueSeparator, seperator, encoding,
+                    textDelimiter.charAt(0), language);
 
             List<WSPutItemWithReport> wsPutItemWithReportList = service.readUploadFile(file);
-            if (wsPutItemWithReportList.size() > 0) {
+
+            if (wsPutItemWithReportList.size() > defaultMaxImportCount && !checkedFileRecordCount) {
+                writer.print(Constants.IMPORT_ITEMS_GREATER_THAN_DEFAULT + "," + defaultMaxImportCount);
+            } else if (wsPutItemWithReportList.size() <= defaultMaxImportCount || checkedFileRecordCount) {
+                if (wsPutItemWithReportList.size() > defaultMaxImportCount) {
+                    wsPutItemWithReportList = wsPutItemWithReportList.subList(0, defaultMaxImportCount);
+                }
                 putDocument(
                         new WSPutItemWithReportArray(
                                 wsPutItemWithReportList.toArray(new WSPutItemWithReport[wsPutItemWithReportList.size()])),
                         concept);
+                writer.print(Constants.IMPORT_SUCCESS);
+                checkedFileRecordCount = false ;
             }
-            writer.print(Constants.IMPORT_SUCCESS);
+
         } catch (Exception exception) {
             LOG.error(exception.getMessage(), exception);
             writer.print(extractErrorMessage(exception.getMessage()));

@@ -2,6 +2,7 @@ package org.talend.mdm.webapp.browserecords.server.servlet;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -25,6 +27,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.dom4j.Attribute;
 import org.dom4j.Document;
+import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.XPath;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
@@ -51,6 +54,11 @@ import com.amalto.core.webservice.WSWhereItem;
 import com.amalto.core.webservice.WSWhereOperator;
 import com.amalto.core.webservice.WSWhereOr;
 import com.amalto.webapp.core.util.Util;
+import com.amalto.webapp.core.util.XtentisWebappException;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MessageBoxEvent;
+import com.extjs.gxt.ui.client.widget.Dialog;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 
 public class DownloadData extends HttpServlet {
 
@@ -58,7 +66,7 @@ public class DownloadData extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
-    protected Integer maxCount = 1000;
+    protected Integer defaultMaxExportCount = 1000;
 
     private final String SHEET_LABEL = "Talend MDM"; //$NON-NLS-1$
 
@@ -99,12 +107,8 @@ public class DownloadData extends HttpServlet {
     @Override
     public void init() throws ServletException {
         super.init();
-
-        Properties mdmConfig = MDMConfiguration.getConfiguration();
-        Object value = mdmConfig.get("max.export.browserecord"); //$NON-NLS-1$
-        if (value != null) {
-            maxCount = Integer.parseInt(value.toString());
-        }
+        defaultMaxExportCount = Integer.parseInt(
+                MDMConfiguration.getConfiguration().getProperty("max.export.browserecord", NumberUtils.INTEGER_ZERO.toString()).toString());
     }
 
     @Override
@@ -193,6 +197,7 @@ public class DownloadData extends HttpServlet {
             itemArray.add(andWhereItem);
         }
 
+        int maxExportCount = Integer.MAX_VALUE ;
         // This blank line is for excel file header
         if (idsList != null) {
             WSWhereItem idsWhereItem = new WSWhereItem();
@@ -231,6 +236,7 @@ public class DownloadData extends HttpServlet {
             itemArray.add(idsWhereItem);
             whereAnd.setWhereItems((WSWhereItem[]) itemArray.toArray(new WSWhereItem[itemArray.size()]));
             wi.setWhereAnd(whereAnd);
+            maxExportCount = idsList.size();
         } else {
             WSWhereItem criteriaWhereItem = criteria != null ? CommonUtil.buildWhereItems(criteria) : null;
             if (criteriaWhereItem != null) {
@@ -238,12 +244,13 @@ public class DownloadData extends HttpServlet {
             }
             whereAnd.setWhereItems((WSWhereItem[]) itemArray.toArray(new WSWhereItem[itemArray.size()]));
             wi.setWhereAnd(whereAnd);
+            maxExportCount = defaultMaxExportCount ;
         }
 
         String[] result = CommonUtil
                 .getPort()
                 .viewSearch(
-                        new WSViewSearch(new WSDataClusterPK(getCurrentDataCluster()), wsViewPK, wi, -1, 0, maxCount, null,
+                        new WSViewSearch(new WSDataClusterPK(getCurrentDataCluster()), wsViewPK, wi, -1, 0, maxExportCount, null,
                                 null)).getStrings();
         if (result.length > 1) {
             results = Arrays.asList(Arrays.copyOfRange(result, 1, result.length));
@@ -254,6 +261,7 @@ public class DownloadData extends HttpServlet {
             fillRow(row, document);
         }
     }
+
 
     protected void fillRow(HSSFRow row, Document document) throws Exception {
         columnIndex = 0;

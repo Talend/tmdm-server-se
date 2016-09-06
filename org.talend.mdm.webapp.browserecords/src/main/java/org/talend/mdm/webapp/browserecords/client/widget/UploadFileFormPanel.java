@@ -35,6 +35,7 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -88,6 +89,8 @@ public class UploadFileFormPanel extends FormPanel implements Listener<FormEvent
     private ViewBean viewBean;
 
     private Window window;
+
+    private CheckBox checkedFileRecordCountBox;
 
     public UploadFileFormPanel(ViewBean viewBean, Window window) {
         this.viewBean = viewBean;
@@ -263,6 +266,17 @@ public class UploadFileFormPanel extends FormPanel implements Listener<FormEvent
         headerLine.setInputStyleAttribute("position", "absolute"); //$NON-NLS-1$ //$NON-NLS-2$
         this.add(headerLine);
 
+        checkedFileRecordCountBox = new CheckBox();
+        checkedFileRecordCountBox.setId("checkedFileRecordCount");//$NON-NLS-1$
+        checkedFileRecordCountBox.setName("checkedFileRecordCount");//$NON-NLS-1$
+        checkedFileRecordCountBox.setValueAttribute("on"); //$NON-NLS-1$
+        checkedFileRecordCountBox.setFieldLabel("checkedFileRecordCount"); //$NON-NLS-1$
+        checkedFileRecordCountBox.setValue(false);
+        checkedFileRecordCountBox.setInputStyleAttribute("left", "10px"); //$NON-NLS-1$ //$NON-NLS-2$
+        checkedFileRecordCountBox.setInputStyleAttribute("position", "absolute"); //$NON-NLS-1$ //$NON-NLS-2$
+        checkedFileRecordCountBox.setVisible(false);
+        this.add(checkedFileRecordCountBox);
+
         List<ItemBaseModel> separatorList = new ArrayList<ItemBaseModel>();
         ItemBaseModel comma = new ItemBaseModel();
         comma.set("label", "comma"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -391,11 +405,30 @@ public class UploadFileFormPanel extends FormPanel implements Listener<FormEvent
 
                         @Override
                         public void handleEvent(MessageBoxEvent be) {
+                            checkedFileRecordCountBox.setValue(false);
                             window.hide();
                             ButtonEvent buttonEvent = new ButtonEvent(ItemsToolBar.getInstance().searchButton);
                             ItemsToolBar.getInstance().searchButton.fireEvent(Events.Select, buttonEvent);
                         }
                     });
+        } else if (formEvent.getResultHtml().contains(Constants.IMPORT_ITEMS_GREATER_THAN_DEFAULT)) {
+            String[] result = formEvent.getResultHtml().split(",");
+
+            MessageBox.confirm(MessagesFactory.getMessages().confirm_title(), MessagesFactory.getMessages()
+                    .import_items_greater_than_default(result[1]), new Listener<MessageBoxEvent>() {
+
+                @Override
+                public void handleEvent(MessageBoxEvent be) {
+                    if (be.getButtonClicked().getItemId().equals(Dialog.YES)) {
+                        checkedFileRecordCountBox.setValue(true);
+
+                        UploadFileFormPanel.this.submit();
+                        waitBar = MessageBox.wait(MessagesFactory.getMessages().import_progress_bar_title(), MessagesFactory
+                                .getMessages().import_progress_bar_message(), MessagesFactory.getMessages()
+                                .import_progress_bar_laod());
+                    }
+                }
+            });
         } else {
             String returnMessage = filterFormatTag(formEvent.getResultHtml());
             String displayMessage = MultilanguageMessageParser.pickOutISOMessage(returnMessage);

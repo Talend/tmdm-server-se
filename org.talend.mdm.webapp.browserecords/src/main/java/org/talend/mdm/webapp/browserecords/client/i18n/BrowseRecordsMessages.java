@@ -415,6 +415,10 @@ public interface BrowseRecordsMessages extends Messages {
 
     String import_success_label();
 
+    String import_items_greater_than_default(String defaultNumber);
+
+    String export_items_greater_than_defalut(String defaultNumber);
+
     String fk_edit_failure();
 
     String fk_save_validate(String name, int value);

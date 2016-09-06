@@ -162,4 +162,8 @@ public interface BrowseRecordsService extends RemoteService {
             String dataClusterPK, String language) throws ServiceException;
 
     String handleNavigatorNodeLabel(String jsonString, String language) throws ServiceException;
+
+    int getMaxExportRecordsCount() throws ServiceException;
+
+    int getImportRecordsCount() throws ServiceException;
 }

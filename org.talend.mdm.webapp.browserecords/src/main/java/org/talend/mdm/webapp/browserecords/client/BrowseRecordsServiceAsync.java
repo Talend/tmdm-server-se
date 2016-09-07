@@ -162,8 +162,4 @@ public interface BrowseRecordsServiceAsync {
 
     void getForeignKeySuggestion(BasePagingLoadConfigImpl config, TypeModel model, String foreignKeyFilterValue,
             String dataClusterPK, String language, AsyncCallback<List<ForeignKeyBean>> callback);
-
-    void getMaxExportRecordsCount(AsyncCallback<Integer> callback);
-
-    void getImportRecordsCount(AsyncCallback<Integer> callback);
 }

@@ -431,13 +431,5 @@ public class FormatDateFieldGWTTest extends GWTTestCase {
         @Override
         public void bulkUpdateItem(String baseUrl, String concept, String xml, String language, AsyncCallback<String> callback) {
         }
-
-        @Override
-        public void getMaxExportRecordsCount(AsyncCallback<Integer> callback) {
-        }
-
-        @Override
-        public void getImportRecordsCount(AsyncCallback<Integer> callback) {
-        }
     }
 }

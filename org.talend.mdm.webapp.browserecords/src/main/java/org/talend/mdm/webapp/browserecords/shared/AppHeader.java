@@ -39,6 +39,10 @@ public class AppHeader implements IsSerializable {
     
     private HashMap<String,String> userProperties;
 
+    private int importRecordsDefaultCount;
+
+    private int exportRecordsDefaultCount;
+
     public AppHeader() {
 
     }
@@ -126,5 +130,21 @@ public class AppHeader implements IsSerializable {
 
     public void setUserProperties(Map<String, String> map) {
         this.userProperties = (HashMap<String, String>) map;
+    }
+
+    public int getImportRecordsDefaultCount() {
+        return importRecordsDefaultCount;
+    }
+
+    public void setImportRecordsDefaultCount(int importRecordsDefaultCount) {
+        this.importRecordsDefaultCount = importRecordsDefaultCount;
+    }
+
+    public int getExportRecordsDefaultCount() {
+        return exportRecordsDefaultCount;
+    }
+
+    public void setExportRecordsDefaultCount(int exportRecordsDefaultCount) {
+        this.exportRecordsDefaultCount = exportRecordsDefaultCount;
     }
 }

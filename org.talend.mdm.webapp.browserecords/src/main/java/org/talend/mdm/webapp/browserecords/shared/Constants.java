@@ -29,9 +29,4 @@ public class Constants {
     public static final String BROWSE_STAGING_SUFFIX_MARK = "_S"; //$NON-NLS-1$
     
     public static final String IMPORT_SUCCESS = "import_success"; //$NON-NLS-1$
-
-    public static final String IMPORT_ITEMS_GREATER_THAN_DEFAULT = "import_count_larger_than_default";//$NON-NLS-1$
-
-    public static final String EXPORT_ITEMS_GREATER_THAN_DEFAULT = "export_count_greater_than_defalut";//$NON-NLS-1$
-
 }

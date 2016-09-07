@@ -20,25 +20,20 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.talend.mdm.webapp.base.client.SessionAwareAsyncCallback;
 import org.talend.mdm.webapp.base.client.model.DataTypeConstants;
 import org.talend.mdm.webapp.base.client.model.ItemBaseModel;
-import org.talend.mdm.webapp.base.client.model.ItemBasePageLoadResult;
 import org.talend.mdm.webapp.base.client.util.PostDataUtil;
 import org.talend.mdm.webapp.base.shared.EntityModel;
 import org.talend.mdm.webapp.base.shared.TypeModel;
 import org.talend.mdm.webapp.browserecords.client.BrowseRecords;
-import org.talend.mdm.webapp.browserecords.client.BrowseRecordsServiceAsync;
 import org.talend.mdm.webapp.browserecords.client.i18n.MessagesFactory;
 import org.talend.mdm.webapp.browserecords.client.model.ItemBean;
 import org.talend.mdm.webapp.browserecords.client.model.QueryModel;
 import org.talend.mdm.webapp.browserecords.client.model.RecordsPagingConfig;
 import org.talend.mdm.webapp.browserecords.client.util.CommonUtil;
-import org.talend.mdm.webapp.browserecords.client.util.Locale;
 import org.talend.mdm.webapp.browserecords.shared.Constants;
 import org.talend.mdm.webapp.browserecords.shared.ViewBean;
 
-import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -65,8 +60,6 @@ import com.google.gwt.core.client.GWT;
  */
 public class DownloadFilePanel extends FormPanel {
 
-    BrowseRecordsServiceAsync service = (BrowseRecordsServiceAsync) Registry.get(BrowseRecords.BROWSERECORDS_SERVICE);
-
     private TextField<String> fileName;
 
     private TextField<String> multipleValueSeparatorField;
@@ -88,19 +81,7 @@ public class DownloadFilePanel extends FormPanel {
     private int defaultMaxExportRecordsCount;
 
     public DownloadFilePanel(ViewBean viewBean, QueryModel queryModel, Window window) {
-
-        service.getMaxExportRecordsCount(new SessionAwareAsyncCallback<Integer>() {
-
-            @Override
-            protected void doOnFailure(Throwable caught) {
-                super.doOnFailure(caught);
-            }
-
-            @Override
-            public void onSuccess(Integer result) {
-                defaultMaxExportRecordsCount = result;
-            }
-        });
+        defaultMaxExportRecordsCount =  BrowseRecords.getSession().getAppHeader().getExportRecordsDefaultCount();
 
         this.viewBean = viewBean;
         this.queryModel = queryModel;
@@ -178,8 +159,6 @@ public class DownloadFilePanel extends FormPanel {
 
                 try {
                     final Map<String, String> param = buildExportParameter();
-                    final QueryModel qm = copyQueryModel();
-
                     if (inheritanceNodeMap.keySet().size() > 0) {
                         StringBuilder errorMessage = new StringBuilder();
                         Set<Entry<String, List<String>>> entrySet = inheritanceNodeMap.entrySet();
@@ -197,26 +176,17 @@ public class DownloadFilePanel extends FormPanel {
 
                             @Override
                             public void handleEvent(MessageBoxEvent be) {
-                                if(!param.get("itemIdsListString").equals("")){
-                                    checkFileSizeWithConfiguation(qm, param);
-                                }else{
-                                    PostDataUtil.postData(getActionUrl(), param);
-                                    DownloadFilePanel.this.window.hide();
-                                }
+                                downloadWarning(param);
                             }
                         });
                     } else {
-                        if(param.get("itemIdsListString").equals("")){
-                            checkFileSizeWithConfiguation(qm, param);
-                        }else{
-                            PostDataUtil.postData(getActionUrl(), param);
-                            DownloadFilePanel.this.window.hide();
-                        }
+                        downloadWarning(param);
                     }
                 } catch (Exception e) {
                     MessageBox.alert(MessagesFactory.getMessages().error_title(), MessagesFactory.getMessages().export_error(),
                             null);
                 }
+                DownloadFilePanel.this.window.hide();
             }
         });
         this.add(exportBtn);
@@ -341,51 +311,18 @@ public class DownloadFilePanel extends FormPanel {
         return param;
     }
 
-    private QueryModel copyQueryModel() {
-        QueryModel qm = new QueryModel();
-        qm.setAllowNestedValues(queryModel.isAllowNestedValues());
-        qm.setCriteria(queryModel.getCriteria());
-        qm.setDataClusterPK(queryModel.getDataClusterPK());
-        qm.setErrorValue(queryModel.getErrorValue());
-        qm.setLanguage(queryModel.getLanguage());
-        qm.setModel(queryModel.getModel());
-        qm.setPagingLoadConfig(queryModel.getPagingLoadConfig());
-        qm.setSilent(queryModel.isSilent());
-        qm.setView(queryModel.getView());
-        qm.getPagingLoadConfig().setLimit(Integer.MAX_VALUE);
-        return qm;
-    }
+    private void downloadWarning(final Map<String, String> param) {
+        MessageBox.confirm(MessagesFactory.getMessages().confirm_title(), MessagesFactory.getMessages()
+                .export_items_greater_than_defalut(String.valueOf(defaultMaxExportRecordsCount)),
+                new Listener<MessageBoxEvent>() {
 
-    private void checkFileSizeWithConfiguation(final QueryModel qm, final Map<String, String> param) {
-        service.queryItemBeans(qm, Locale.getLanguage(), new SessionAwareAsyncCallback<ItemBasePageLoadResult<ItemBean>>() {
-
-            @Override
-            public void onSuccess(ItemBasePageLoadResult<ItemBean> result) {
-                if (result.getTotalLength() > defaultMaxExportRecordsCount) {
-                    MessageBox.confirm(MessagesFactory.getMessages().confirm_title(), MessagesFactory.getMessages()
-                            .export_items_greater_than_defalut(String.valueOf(defaultMaxExportRecordsCount)),
-                            new Listener<MessageBoxEvent>() {
-
-                                @Override
-                                public void handleEvent(MessageBoxEvent be) {
-                                    if (be.getButtonClicked().getItemId().equals(Dialog.YES)) {
-                                        PostDataUtil.postData(getActionUrl(), param);
-                                        DownloadFilePanel.this.window.hide();
-                                    }
-                                }
-                            });
-                } else {
-                    PostDataUtil.postData(getActionUrl(), param);
-                    DownloadFilePanel.this.window.hide();
-                }
-            }
-
-            @Override
-            protected void doOnFailure(Throwable caught) {
-                super.doOnFailure(caught);
-                MessageBox.alert(MessagesFactory.getMessages().error_title(), MessagesFactory.getMessages().export_error(), null);
-            }
-        });
+                    @Override
+                    public void handleEvent(MessageBoxEvent be) {
+                        if (be.getButtonClicked().getItemId().equals(Dialog.YES)) {
+                            PostDataUtil.postData(getActionUrl(), param);
+                        }
+                    }
+                });
     }
 
     protected String getActionUrl() {

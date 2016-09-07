@@ -475,15 +475,5 @@ public class ItemsToolBarGWTTest extends GWTTestCase {
         @Override
         public void bulkUpdateItem(String baseUrl, String concept, String xml, String language, AsyncCallback<String> callback) {
         }
-
-        @Override
-        public void getMaxExportRecordsCount(AsyncCallback<Integer> callback) {
-            callback.onSuccess(0);
-        }
-
-        @Override
-        public void getImportRecordsCount(AsyncCallback<Integer> callback) {
-            callback.onSuccess(0);
-        }
     }
 }

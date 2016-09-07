@@ -70,13 +70,11 @@ public class UploadData extends HttpServlet {
     
     private Integer defaultMaxImportCount = 1000;
 
-    private boolean checkedFileRecordCount;
-
     @Override
     public void init() throws ServletException {
         super.init();
         defaultMaxImportCount = Integer.parseInt(
-                MDMConfiguration.getConfiguration().getProperty("max.import.browserecord", NumberUtils.INTEGER_ZERO.toString()).toString());
+                MDMConfiguration.getConfiguration().getProperty("max.import.browserecord", MDMConfiguration.EXPORT_INPORT_DEFAULT_COUNT));
     }
 
     @Override
@@ -157,8 +155,6 @@ public class UploadData extends HttpServlet {
                         multipleValueSeparator = item.getString();
                     } else if (name.equals("isPartialUpdate")) { //$NON-NLS-1$
                         isPartialUpdate = "on".equals(item.getString()); //$NON-NLS-1$
-                    } else if(name.equals("checkedFileRecordCount")){
-                        checkedFileRecordCount = "on".equals(item.getString()); //$NON-NLS-1$
                     }
                 } else {
                     fileType = FileUtil.getFileType(item.getName());
@@ -182,20 +178,13 @@ public class UploadData extends HttpServlet {
 
             List<WSPutItemWithReport> wsPutItemWithReportList = service.readUploadFile(file);
 
-            if (wsPutItemWithReportList.size() > defaultMaxImportCount && !checkedFileRecordCount) {
-                writer.print(Constants.IMPORT_ITEMS_GREATER_THAN_DEFAULT + "," + defaultMaxImportCount);
-            } else if (wsPutItemWithReportList.size() <= defaultMaxImportCount || checkedFileRecordCount) {
-                if (wsPutItemWithReportList.size() > defaultMaxImportCount) {
-                    wsPutItemWithReportList = wsPutItemWithReportList.subList(0, defaultMaxImportCount);
-                }
-                putDocument(
-                        new WSPutItemWithReportArray(
-                                wsPutItemWithReportList.toArray(new WSPutItemWithReport[wsPutItemWithReportList.size()])),
-                        concept);
-                writer.print(Constants.IMPORT_SUCCESS);
-                checkedFileRecordCount = false ;
+            if (wsPutItemWithReportList.size() > defaultMaxImportCount) {
+                wsPutItemWithReportList = wsPutItemWithReportList.subList(0, defaultMaxImportCount);
             }
-
+            putDocument(
+                    new WSPutItemWithReportArray(wsPutItemWithReportList.toArray(new WSPutItemWithReport[wsPutItemWithReportList
+                            .size()])), concept);
+            writer.print(Constants.IMPORT_SUCCESS);
         } catch (Exception exception) {
             LOG.error(exception.getMessage(), exception);
             writer.print(extractErrorMessage(exception.getMessage()));

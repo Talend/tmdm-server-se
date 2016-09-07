@@ -198,38 +198,15 @@ public class ItemsToolBar extends ToolBar {
     protected ItemsToolBar() {
         // init user saved model
         userCluster = BrowseRecords.getSession().getAppHeader().getDatacluster();
+
+        maxExportRecordsCount = BrowseRecords.getSession().getAppHeader().getExportRecordsDefaultCount();
+        maxImportRecordsCount = BrowseRecords.getSession().getAppHeader().getImportRecordsDefaultCount();
+
         this.setBorders(false);
         this.setId("ItemsToolBar"); //$NON-NLS-1$
         this.setLayout(new ToolBarLayoutEx());
 
         initToolBar();
-
-        service.getMaxExportRecordsCount(new SessionAwareAsyncCallback<Integer>() {
-
-            @Override
-            protected void doOnFailure(Throwable caught) {
-                super.doOnFailure(caught);
-            }
-
-            @Override
-            public void onSuccess(Integer result) {
-                maxExportRecordsCount = result;
-                setUploadButtonVisible();
-            }
-        });
-        service.getImportRecordsCount(new SessionAwareAsyncCallback<Integer>() {
-
-            @Override
-            protected void doOnFailure(Throwable caught) {
-                super.doOnFailure(caught);
-            }
-
-            @Override
-            public void onSuccess(Integer result) {
-                maxImportRecordsCount = result;
-                setUploadButtonVisible();
-            }
-        });
     }
 
     public void setQueryModel(QueryModel qm) {
@@ -357,6 +334,7 @@ public class ItemsToolBar extends ToolBar {
         addManageBookButton();
         addBookMarkButton();
         initAdvancedPanel();
+        setUploadButtonVisible();
     }
 
     protected void addCreateButton() {

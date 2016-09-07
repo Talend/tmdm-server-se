@@ -1308,6 +1308,8 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             header.setUseRelations(BrowseRecordsConfiguration.IsUseRelations());
             header.setEnterprise(Webapp.INSTANCE.isEnterpriseVersion());
             header.setUserProperties(LocalUser.getLocalUser().getUser().getProperties());
+            header.setExportRecordsDefaultCount(Integer.parseInt(MDMConfiguration.getConfiguration().getProperty("max.export.browserecord", MDMConfiguration.EXPORT_INPORT_DEFAULT_COUNT)));
+            header.setImportRecordsDefaultCount(Integer.parseInt(MDMConfiguration.getConfiguration().getProperty("max.import.browserecord", MDMConfiguration.EXPORT_INPORT_DEFAULT_COUNT)));
             return header;
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
@@ -2550,14 +2552,6 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             LOG.error(e.getMessage(), e);
             throw new ServiceException(e.getLocalizedMessage());
         }
-    }
-
-    public int getMaxExportRecordsCount() throws ServiceException{
-        return Integer.valueOf(MDMConfiguration.getConfiguration().getProperty("max.export.browserecord", NumberUtils.INTEGER_ZERO.toString()));
-    }
-
-    public int getImportRecordsCount() throws ServiceException{
-        return Integer.valueOf(MDMConfiguration.getConfiguration().getProperty("max.import.browserecord", NumberUtils.INTEGER_ZERO.toString()));
     }
 
     private EntityModel getForeignKeyEntityModel(String foregnKey, String entityName, String language) throws ServiceException {

@@ -115,7 +115,7 @@ public class ItemDetailToolBar extends ToolBar {
 
     public final static String DUPLICATE_OPERATION = "DUPLICATE_OPERATION"; //$NON-NLS-1$
 
-    public final static String MASS_UPDATE_OPERATION = "MASS_UPDATE_OPERATION"; //$NON-NLS-1$
+    public final static String BULK_UPDATE_OPERATION = "BULK_UPDATE_OPERATION"; //$NON-NLS-1$
 
     public final static int TYPE_DEFAULT = 0;
 
@@ -299,7 +299,7 @@ public class ItemDetailToolBar extends ToolBar {
             initSmartViewToolBar();
         } else if (operation.equalsIgnoreCase(ItemDetailToolBar.DUPLICATE_OPERATION)) {
             initCreateToolBar();
-        } else if (operation.equalsIgnoreCase(ItemDetailToolBar.MASS_UPDATE_OPERATION)) {
+        } else if (operation.equalsIgnoreCase(ItemDetailToolBar.BULK_UPDATE_OPERATION)) {
             initMassUpdateToolBar();
         }
     }
@@ -656,11 +656,12 @@ public class ItemDetailToolBar extends ToolBar {
                         public void componentSelected(MenuEvent menuEvent) {
                             String ids = itemBean.getIds();
                             String concept = itemBean.getConcept();
-                            boolean hasPrimaryKeyInfo = !viewBean.getBindingEntityModel().getMetaDataTypes().get(itemBean.getConcept()).getPrimaryKeyInfo().isEmpty();
+                            boolean hasPrimaryKeyInfo = !viewBean.getBindingEntityModel().getMetaDataTypes()
+                                    .get(itemBean.getConcept()).getPrimaryKeyInfo().isEmpty();
                             NavigatorPanel panel = new NavigatorPanel();
                             panel.updateDetailPanel(ids, concept);
                             NavigatorPanel.renderPanel(GWT.getHostPageBaseURL(), ids, concept, BrowseRecords.getSession()
-                                    .getAppHeader().getMasterDataCluster(),hasPrimaryKeyInfo, panel);
+                                    .getAppHeader().getMasterDataCluster(), hasPrimaryKeyInfo, panel);
                         }
 
                     });

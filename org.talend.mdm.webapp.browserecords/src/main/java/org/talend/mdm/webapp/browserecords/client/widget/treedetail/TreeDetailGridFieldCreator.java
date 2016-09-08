@@ -223,7 +223,7 @@ public class TreeDetailGridFieldCreator {
 
         }
         fieldMap.put(node.getId().toString(), field);
-        if (!ItemDetailToolBar.MASS_UPDATE_OPERATION.equalsIgnoreCase(operation)) {
+        if (!ItemDetailToolBar.BULK_UPDATE_OPERATION.equalsIgnoreCase(operation)) {
             updateMandatory(field, node, fieldMap);
         }
         addFieldListener(dataType, field, node, fieldMap);

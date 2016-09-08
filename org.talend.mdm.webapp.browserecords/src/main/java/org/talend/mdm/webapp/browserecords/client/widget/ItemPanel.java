@@ -159,7 +159,7 @@ public class ItemPanel extends ContentPanel {
         if (!isForeignKeyPanel) {
             tree.setToolBar(toolBar);
             if (ItemDetailToolBar.CREATE_OPERATION.equals(operation)
-                    || operation.equalsIgnoreCase(ItemDetailToolBar.MASS_UPDATE_OPERATION)) {
+                    || operation.equalsIgnoreCase(ItemDetailToolBar.BULK_UPDATE_OPERATION)) {
                 tree.initTree(viewBean, null, initDataMap, operation, isStaging);
             } else if (ItemDetailToolBar.VIEW_OPERATION.equals(operation)) {
                 tree.initTree(viewBean, item, isStaging);

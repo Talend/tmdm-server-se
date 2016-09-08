@@ -123,7 +123,7 @@ public class MultiOccurrenceChangeItemGWTTest extends GWTTestCase {
         viewBean.setBindingEntityModel(entityModel);
         Map<String, Field<?>> fieldMap = new HashMap<String, Field<?>>();
         MultiOccurrenceChangeItem multiOccurrenceChangeItem = new MultiOccurrenceChangeItem(itemNodeModel, viewBean, fieldMap,
-                ItemDetailToolBar.MASS_UPDATE_OPERATION, null);
+                ItemDetailToolBar.BULK_UPDATE_OPERATION, null);
         String result = multiOccurrenceChangeItem.getWidget(4).toString();
         assertTrue(result.contains("src=\"secure/img/genericUI/bulkupdate.png\""));
         assertTrue(result.contains("id=\"Edit\""));
@@ -133,7 +133,7 @@ public class MultiOccurrenceChangeItemGWTTest extends GWTTestCase {
 
         itemNodeModel.setKey(true);
         multiOccurrenceChangeItem = new MultiOccurrenceChangeItem(itemNodeModel, viewBean, fieldMap,
-                ItemDetailToolBar.MASS_UPDATE_OPERATION, null);
+                ItemDetailToolBar.BULK_UPDATE_OPERATION, null);
         result = multiOccurrenceChangeItem.getWidget(4).toString();
         assertFalse(result.contains("src=\"secure/img/genericUI/bulkupdate.png\""));
         assertEquals(true, itemNodeModel.isMassUpdate());
@@ -142,7 +142,7 @@ public class MultiOccurrenceChangeItemGWTTest extends GWTTestCase {
         itemNodeModel.setKey(false);
         typeModel.setReadOnly(true);
         multiOccurrenceChangeItem = new MultiOccurrenceChangeItem(itemNodeModel, viewBean, fieldMap,
-                ItemDetailToolBar.MASS_UPDATE_OPERATION, null);
+                ItemDetailToolBar.BULK_UPDATE_OPERATION, null);
         result = multiOccurrenceChangeItem.getWidget(4).toString();
         assertFalse(result.contains("src=\"secure/img/genericUI/bulkupdate.png\""));
         assertEquals(true, itemNodeModel.isMassUpdate());

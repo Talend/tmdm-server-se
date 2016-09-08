@@ -125,7 +125,16 @@ public class MultiOccurrenceManager {
         String xpath = CommonUtil.getRealXpathWithoutLastIndex(nodeModel);
         List<DynamicTreeItem> brothersGroup = getBrothersGroup(xpath);
         if (brothersGroup != null) {
+            MultiOccurrenceChangeItem multiOccurrenceChangeItem = (MultiOccurrenceChangeItem) item.getWidget();
             brothersGroup.remove(item);
+            if (multiOccurrenceChangeItem.isEditNodeButtonVisible()) {
+                if (brothersGroup.get(0) != null) {
+                    MultiOccurrenceChangeItem firstMultiOccurrenceChangeItem = (MultiOccurrenceChangeItem) brothersGroup.get(0)
+                            .getWidget();
+                    firstMultiOccurrenceChangeItem.setEditNodeButtonVisible(true);
+                }
+            }
+
             if (brothersGroup.size() == 0) {
                 brothersGroups.remove(brothersGroup);
             }
@@ -344,9 +353,10 @@ public class MultiOccurrenceManager {
             if (typeModel.getDefaultValue() != null) {
                 model.setObjectValue(typeModel.getDefaultValue());
             }
+            model.setMassUpdate(selectedModel.isMassUpdate());
             DynamicTreeItem treeItem = treeDetail.buildGWTTree(model, null, true, null);
-            treeItem.getItemNodeModel().setMassUpdate(selectedItem.getItemNodeModel().isMassUpdate());
-            treeItem.getItemNodeModel().setEdited(selectedItem.getItemNodeModel().isEdited());
+            model.setEdited(selectedModel.isEdited());
+            ((MultiOccurrenceChangeItem) treeItem.getWidget()).setEditNodeButtonVisible(false);
             ViewUtil.copyStyleToTreeItem(selectedItem, treeItem);
 
             DynamicTreeItem parentItem = (DynamicTreeItem) selectedItem.getParentItem();

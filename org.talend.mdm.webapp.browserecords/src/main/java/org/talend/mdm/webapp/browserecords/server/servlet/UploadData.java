@@ -68,13 +68,13 @@ public class UploadData extends HttpServlet {
 
     private boolean cusExceptionFlag = false;
     
-    private Integer defaultMaxImportCount = 1000;
+    private int defaultMaxImportCount;
 
     @Override
     public void init() throws ServletException {
         super.init();
         defaultMaxImportCount = Integer.parseInt(
-                MDMConfiguration.getConfiguration().getProperty("max.import.browserecord", MDMConfiguration.EXPORT_INPORT_DEFAULT_COUNT));
+                MDMConfiguration.getConfiguration().getProperty("max.import.browserecord", MDMConfiguration.MAX_IMPORT_COUNT));
     }
 
     @Override

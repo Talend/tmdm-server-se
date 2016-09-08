@@ -54,7 +54,7 @@ public class DownloadData extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
-    protected Integer defaultMaxExportCount = 1000;
+    private int defaultMaxExportCount;
 
     private final String SHEET_LABEL = "Talend MDM"; //$NON-NLS-1$
 
@@ -96,7 +96,7 @@ public class DownloadData extends HttpServlet {
     public void init() throws ServletException {
         super.init();
         defaultMaxExportCount = Integer.parseInt(MDMConfiguration.getConfiguration().getProperty("max.export.browserecord",
-                MDMConfiguration.EXPORT_INPORT_DEFAULT_COUNT));
+                MDMConfiguration.MAX_EXPORT_COUNT));
     }
 
     @Override
@@ -190,6 +190,10 @@ public class DownloadData extends HttpServlet {
             WSWhereItem idsWhereItem = new WSWhereItem();
             WSWhereOr idWhereOr = new WSWhereOr();
             List<WSWhereItem> idWhereItemArray = new ArrayList<WSWhereItem>();
+            if (idsList.size() > defaultMaxExportCount) {
+                idsList.subList(0, defaultMaxExportCount);
+            }
+
             for (String ids : idsList) {
                 WSWhereItem idWhereItem = new WSWhereItem();
 
@@ -223,7 +227,6 @@ public class DownloadData extends HttpServlet {
             itemArray.add(idsWhereItem);
             whereAnd.setWhereItems((WSWhereItem[]) itemArray.toArray(new WSWhereItem[itemArray.size()]));
             wi.setWhereAnd(whereAnd);
-            defaultMaxExportCount = idsList.size();
         } else {
             WSWhereItem criteriaWhereItem = criteria != null ? CommonUtil.buildWhereItems(criteria) : null;
             if (criteriaWhereItem != null) {

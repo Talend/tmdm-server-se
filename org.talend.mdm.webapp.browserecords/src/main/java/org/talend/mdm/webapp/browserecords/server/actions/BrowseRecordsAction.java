@@ -1308,8 +1308,8 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             header.setUseRelations(BrowseRecordsConfiguration.IsUseRelations());
             header.setEnterprise(Webapp.INSTANCE.isEnterpriseVersion());
             header.setUserProperties(LocalUser.getLocalUser().getUser().getProperties());
-            header.setExportRecordsDefaultCount(Integer.parseInt(MDMConfiguration.getConfiguration().getProperty("max.export.browserecord", MDMConfiguration.EXPORT_INPORT_DEFAULT_COUNT)));
-            header.setImportRecordsDefaultCount(Integer.parseInt(MDMConfiguration.getConfiguration().getProperty("max.import.browserecord", MDMConfiguration.EXPORT_INPORT_DEFAULT_COUNT)));
+            header.setExportRecordsDefaultCount(Integer.parseInt(MDMConfiguration.getConfiguration().getProperty("max.export.browserecord", MDMConfiguration.MAX_EXPORT_COUNT)));
+            header.setImportRecordsDefaultCount(Integer.parseInt(MDMConfiguration.getConfiguration().getProperty("max.import.browserecord", MDMConfiguration.MAX_IMPORT_COUNT)));
             return header;
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);

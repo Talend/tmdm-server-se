@@ -407,6 +407,8 @@ public interface BrowseRecordsMessages extends Messages {
 
     String remove_btn();
 
+    String edit_btn();
+
     String abstract_type();
 
     String fk_validate_min_occurence(String name, int value);

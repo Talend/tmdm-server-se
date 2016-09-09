@@ -18,6 +18,7 @@ import org.talend.mdm.webapp.base.shared.EntityModel;
 import org.talend.mdm.webapp.browserecords.client.BrowseRecords;
 import org.talend.mdm.webapp.browserecords.client.BrowseRecordsEvents;
 import org.talend.mdm.webapp.browserecords.client.i18n.MessagesFactory;
+import org.talend.mdm.webapp.browserecords.client.mvc.BrowseRecordsView;
 import org.talend.mdm.webapp.browserecords.shared.ViewBean;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
@@ -75,6 +76,7 @@ public class BulkUpdatePanel extends ContentPanel {
     public void initDetailPanel(EntityModel entityModel, ViewBean viewBean, List<String> idsList) {
         this.idsList = idsList;
         AppEvent event = new AppEvent(BrowseRecordsEvents.ViewBulkUpdateItem);
+        event.setData(BrowseRecordsView.IS_STAGING, false);
         event.setData(BrowseRecords.ENTITY_MODEL, entityModel);
         event.setData(BrowseRecords.VIEW_BEAN, viewBean);
         Dispatcher.forwardEvent(event);

@@ -509,12 +509,13 @@ public class BrowseRecordsView extends View {
     }
 
     private void onViewBulkUpdateItem(final AppEvent event) {
+        Boolean isStaging = event.getData(BrowseRecordsView.IS_STAGING);
         ViewBean viewBean = event.getData(BrowseRecords.VIEW_BEAN);
         EntityModel entityModel = viewBean.getBindingEntityModel();
         ItemBean itemBean = ItemCreator.createDefaultItemBean(viewBean.getBindingEntityModel().getConceptName(), entityModel);
 
         ItemsDetailPanel bulkUpdateDetailPanel = ItemsDetailPanel.newInstance();
-        ItemPanel itemPanel = new ItemPanel(true, viewBean, itemBean, ItemDetailToolBar.BULK_UPDATE_OPERATION,
+        ItemPanel itemPanel = new ItemPanel(isStaging, viewBean, itemBean, ItemDetailToolBar.BULK_UPDATE_OPERATION,
                 bulkUpdateDetailPanel, true);
         itemPanel.getToolBar().setOutMost(false);
         itemPanel.getToolBar().setFkToolBar(false);

@@ -54,7 +54,7 @@ public class ForeignKeyRenderImpl implements ForeignKeyRender {
 
     HashMap<ItemNodeModel, ItemPanel> relationFKItems = new HashMap<ItemNodeModel, ItemPanel>();
 
-    HashMap<ItemPanel, Object[]> tabPanelParameters = new HashMap<ItemPanel,  Object[]>();
+    HashMap<ItemPanel, Object[]> tabPanelParameters = new HashMap<ItemPanel, Object[]>();
 
     BrowseRecordsServiceAsync service = (BrowseRecordsServiceAsync) Registry.get(BrowseRecords.BROWSERECORDS_SERVICE);
 
@@ -77,7 +77,8 @@ public class ForeignKeyRenderImpl implements ForeignKeyRender {
                 ForeignKeyTreeDetail fkTreeDetail = (ForeignKeyTreeDetail) cp;
                 root = (DynamicTreeItem) fkTreeDetail.getRoot();
             }
-            final ForeignKeyTablePanel fkPanel = new ForeignKeyTablePanel(concept + "_ForeignKeyTablePanel", toolBar.isStaging()); //$NON-NLS-1$
+            final ForeignKeyTablePanel fkPanel = new ForeignKeyTablePanel(
+                    concept + "_ForeignKeyTablePanel", toolBar.isStaging(), parentModel.isMassUpdate()); //$NON-NLS-1$
 
             final ItemPanel itemPanel = new ItemPanel(toolBar.isStaging(), pkViewBean, toolBar.getItemBean(),
                     toolBar.getOperation(), fkPanel, root, detailPanel, toolBar.isOpenTab());
@@ -163,7 +164,8 @@ public class ForeignKeyRenderImpl implements ForeignKeyRender {
         HashMap<String, ItemPanel> cachedEntityMap = BrowseRecords.getSession().getCurrentCachedEntity();
         String ids = toolBar.getItemBean().getIds() != null ? toolBar.getItemBean().getIds() : ""; //$NON-NLS-1$
         String key = toolBar.getItemBean().getConcept() + ids + detailPanel.isOutMost();
-        String panelKey = ((toolBar.getViewCode() == BrowseRecordsView.LINEAGE_VIEW_CODE) ? BrowseRecordsView.LINEAGE_ITEMVIEW : "") + key; //$NON-NLS-1$
+        String panelKey = ((toolBar.getViewCode() == BrowseRecordsView.LINEAGE_VIEW_CODE) ? BrowseRecordsView.LINEAGE_ITEMVIEW
+                : "") + key; //$NON-NLS-1$
 
         if (cachedEntityMap != null && cachedEntityMap.containsKey(panelKey)) {
             ForeignKeyTabModel fkTabModel = new ForeignKeyTabModel(parentModel, xpathLabel, itemPanel, handler);

@@ -131,7 +131,7 @@ public class JournalDBServiceTest extends TestCase {
 
     public void testGetComparisionTreeModel() throws NoSuchMethodException, InvocationTargetException, IllegalArgumentException,
             IllegalAccessException {
-        String xmlString = "<result><Update><UserName>Jennifer</UserName><Source>genericUI</Source><TimeInMillis>1360032633336</TimeInMillis><OperationType>UPDATE</OperationType><DataCluster>DStar</DataCluster><DataModel>DStar</DataModel><Concept>Agency</Concept><Key>2</Key><Item><path>Name</path><oldValue>23456</oldValue><newValue>34567</newValue></Item></Update></result>";
+        String xmlString = "<result label=\"result\"><Update label=\"Update\"><UserName label=\"UserName\">Jennifer</UserName><Source label=\"Source\">genericUI</Source><TimeInMillis label=\"TimeInMillis\">1360032633336</TimeInMillis><OperationType label=\"OperationType\">UPDATE</OperationType><DataCluster label=\"DataCluster\">DStar</DataCluster><DataModel label=\"DataModel\">DStar</DataModel><Concept label=\"Concept\">Agency</Concept><Key label=\"Key\">2</Key><Item label=\"Item\"><path label=\"path\">Name</path><oldValue label=\"oldValue\">23456</oldValue><newValue label=\"newValue\">34567</newValue></Item></Update></result>";
         JournalTreeModel returnValue = journalDBService.getComparisionTreeModel(xmlString);
         assertEquals("root", returnValue.getId());
         assertEquals("Document", returnValue.getName());
@@ -169,6 +169,7 @@ public class JournalDBServiceTest extends TestCase {
         element.addAttribute("id", "18-Product-1");
         element.addAttribute("cls", "tree-node-update");
         element.setText("text_value");
+        element.addAttribute("label", "Product");
 
         Object returnValue = method.invoke(journalDBService, new Object[] { element });
         method.setAccessible(false);

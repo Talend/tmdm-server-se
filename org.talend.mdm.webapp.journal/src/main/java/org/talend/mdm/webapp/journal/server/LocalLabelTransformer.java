@@ -1,0 +1,92 @@
+package org.talend.mdm.webapp.journal.server;
+
+import java.io.StringReader;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Locale;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+
+
+import org.apache.cxf.helpers.XMLUtils;
+import org.dom4j.DocumentHelper;
+import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.ContainedComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
+import org.talend.mdm.commmon.metadata.FieldMetadata;
+import org.xml.sax.InputSource;
+
+import com.amalto.core.history.Document;
+import com.amalto.core.history.DocumentTransformer;
+import com.amalto.core.history.MutableDocument;
+import com.amalto.core.save.DOMDocument;
+import com.amalto.core.util.LocaleUtil;
+
+
+public class LocalLabelTransformer implements DocumentTransformer {
+
+    
+    private Locale locale;
+    ComplexTypeMetadata typeMetadata;
+    
+    public LocalLabelTransformer() {
+        locale = new Locale(LocaleUtil.getLocale().getLanguage());
+    }
+
+    @Override
+    public Document transform(MutableDocument document) {
+
+        try {
+            ComplexTypeMetadata typeMetadata = document.getType();
+            org.dom4j.Document newDcoument = DocumentHelper.parseText(document.exportToString());
+
+            org.dom4j.Element rootElement = newDcoument.getRootElement();
+            String localLabel = typeMetadata.getName(locale);
+            rootElement.addAttribute("label", localLabel);
+
+            Collection<FieldMetadata> fieldMetadataCollection = typeMetadata.getFields();
+            for (FieldMetadata fieldMetadata : fieldMetadataCollection) {
+                Iterator<org.dom4j.Element> it = rootElement.elementIterator(fieldMetadata.getName());
+                while (it.hasNext()) {
+                    org.dom4j.Element element = (org.dom4j.Element) it.next();
+                    if (element != null) {
+                        localLabel = fieldMetadata.getContainingType().getField(element.getName()).getName(locale);
+                        element.addAttribute("label", localLabel);
+                    }
+                    if (fieldMetadata instanceof ContainedTypeFieldMetadata) {
+                        setContainedTypeFieldMetadata(
+                                ((ContainedComplexTypeMetadata) fieldMetadata.getType()).getContainedType(), element);
+                    }
+                }
+            }
+            DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+            documentBuilderFactory.setNamespaceAware(true);
+            documentBuilderFactory.setValidating(false);
+            org.w3c.dom.Document newW3cDocument = documentBuilderFactory.newDocumentBuilder().parse(
+                    new InputSource(new StringReader(newDcoument.asXML())));
+            MutableDocument newDocument = new DOMDocument(newW3cDocument, typeMetadata, document.getDataCluster(),
+                    document.getDataModel());
+            return newDocument;
+        } catch (Exception e) {
+            return document;
+        }
+    }
+
+    private void setContainedTypeFieldMetadata(ComplexTypeMetadata containedTypeFieldMetadata, org.dom4j.Element rootElement) {
+        Collection<FieldMetadata> list = containedTypeFieldMetadata.getFields();
+        for (FieldMetadata fieldMetadata : list) {
+            Iterator<org.dom4j.Element> it = rootElement.elementIterator(fieldMetadata.getName());
+            while (it.hasNext()) {
+                org.dom4j.Element element = (org.dom4j.Element) it.next();
+                if (element != null) {
+                    String localLabel = fieldMetadata.getContainingType().getField(element.getName()).getName(locale);
+                    element.addAttribute("label", localLabel);
+                }
+                if (fieldMetadata instanceof ContainedTypeFieldMetadata) {
+                    setContainedTypeFieldMetadata(((ContainedComplexTypeMetadata) fieldMetadata.getType()).getContainedType(),
+                            element);
+                }
+            }
+        }
+    }
+}

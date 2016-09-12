@@ -204,9 +204,9 @@ public class JournalDBService {
         }
 
         if (cls == null) {
-            model = new JournalTreeModel(id, element.getName() + value, element.getUniquePath());
+            model = new JournalTreeModel(id, element.attributeValue("label") + value, element.getUniquePath());
         } else {
-            model = new JournalTreeModel(id, element.getName() + value, element.getUniquePath(), cls);
+            model = new JournalTreeModel(id, element.attributeValue("label") + value, element.getUniquePath(), cls);
         }
         return model;
     }

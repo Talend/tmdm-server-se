@@ -1,3 +1,12 @@
+/*
+ * Copyright (C) 2006-2016 Talend Inc. - www.talend.com
+ * 
+ * This source code is available under agreement available at
+ * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
+ * 
+ * You should have received a copy of the agreement along with this program; if not, write to Talend SA 9 rue Pages
+ * 92150 Suresnes, France
+ */
 package org.talend.mdm.webapp.journal.server;
 
 import java.io.StringReader;
@@ -7,8 +16,6 @@ import java.util.Locale;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
-
-import org.apache.cxf.helpers.XMLUtils;
 import org.dom4j.DocumentHelper;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedComplexTypeMetadata;
@@ -22,13 +29,14 @@ import com.amalto.core.history.MutableDocument;
 import com.amalto.core.save.DOMDocument;
 import com.amalto.core.util.LocaleUtil;
 
-
 public class LocalLabelTransformer implements DocumentTransformer {
 
-    
+    public static final String LABEL = "label";
+
     private Locale locale;
+
     ComplexTypeMetadata typeMetadata;
-    
+
     public LocalLabelTransformer() {
         locale = new Locale(LocaleUtil.getLocale().getLanguage());
     }
@@ -42,7 +50,7 @@ public class LocalLabelTransformer implements DocumentTransformer {
 
             org.dom4j.Element rootElement = newDcoument.getRootElement();
             String localLabel = typeMetadata.getName(locale);
-            rootElement.addAttribute("label", localLabel);
+            rootElement.addAttribute(LABEL, localLabel);
 
             Collection<FieldMetadata> fieldMetadataCollection = typeMetadata.getFields();
             for (FieldMetadata fieldMetadata : fieldMetadataCollection) {
@@ -51,7 +59,7 @@ public class LocalLabelTransformer implements DocumentTransformer {
                     org.dom4j.Element element = (org.dom4j.Element) it.next();
                     if (element != null) {
                         localLabel = fieldMetadata.getContainingType().getField(element.getName()).getName(locale);
-                        element.addAttribute("label", localLabel);
+                        element.addAttribute(LABEL, localLabel);
                     }
                     if (fieldMetadata instanceof ContainedTypeFieldMetadata) {
                         setContainedTypeFieldMetadata(
@@ -80,7 +88,7 @@ public class LocalLabelTransformer implements DocumentTransformer {
                 org.dom4j.Element element = (org.dom4j.Element) it.next();
                 if (element != null) {
                     String localLabel = fieldMetadata.getContainingType().getField(element.getName()).getName(locale);
-                    element.addAttribute("label", localLabel);
+                    element.addAttribute(LABEL, localLabel);
                 }
                 if (fieldMetadata instanceof ContainedTypeFieldMetadata) {
                     setContainedTypeFieldMetadata(((ContainedComplexTypeMetadata) fieldMetadata.getType()).getContainedType(),

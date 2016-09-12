@@ -190,6 +190,8 @@ public class UploadService {
                                 if (keys[k].isEmpty()) {
                                     keyContainsEmpty = true;
                                 }
+                            } else if (header.equals(entityModel.getKeys()[k]) && row.getCell(k) == null) {
+                                keyContainsEmpty = true;
                             }
                         }
                     }
@@ -197,9 +199,12 @@ public class UploadService {
                         if (isEmptyRecordInExcel(row, importHeader)) {
                             continue;
                         }
-                        throw new UploadException(MESSAGES.getMessage(new Locale(language), "error_missing_key_field")); //$NON-NLS-1$
+                        throw new UploadException(
+                                MESSAGES.getMessage(new Locale(language), "save_error") + " " //$NON-NLS-1$ //$NON-NLS-2$
+                                + MESSAGES.getMessage(new Locale(language), "save_row_count", rowNumber)  //$NON-NLS-1$
+                                + MESSAGES.getMessage(new Locale(language), "error_missing_key_field")); //$NON-NLS-1$
                     }
-                    document = getItemForPartialUpdate(entityModel, keys);
+                    document = getItemForPartialUpdate(entityModel, keys, rowNumber);
                 } else {
                     document = XmlUtil.parseDocument(org.talend.mdm.webapp.browserecords.server.util.CommonUtil.getSubXML(
                             typeModel, null, null, language));
@@ -271,9 +276,12 @@ public class UploadService {
                         if (isEmptyRecordInCSV(record, importHeader)) {
                             continue;
                         }
-                        throw new UploadException(MESSAGES.getMessage(new Locale(language), "error_missing_key_field")); //$NON-NLS-1$
+                        throw new UploadException(
+                                MESSAGES.getMessage(new Locale(language), "save_error") + " " //$NON-NLS-1$ //$NON-NLS-2$
+                                + MESSAGES.getMessage(new Locale(language), "save_row_count", i + 1)  //$NON-NLS-1$
+                                + MESSAGES.getMessage(new Locale(language), "error_missing_key_field")); //$NON-NLS-1$
                     }
-                    document = getItemForPartialUpdate(entityModel, keys);
+                    document = getItemForPartialUpdate(entityModel, keys, i + 1);
                 } else {
                     document = XmlUtil.parseDocument(org.talend.mdm.webapp.browserecords.server.util.CommonUtil.getSubXML(
                             typeModel, null, null, language));
@@ -285,6 +293,11 @@ public class UploadService {
                         if (fieldValue != null && !fieldValue.isEmpty()) {
                             dataLine = true;
                             fillFieldValue(currentElement, importHeader[j], fieldValue, null, record);
+                        } else {
+                            if(isPartialUpdate){
+                                dataLine = true;
+                                fillFieldValue(currentElement, importHeader[j], "", null, record); //$NON-NLS-1$
+                            }
                         }
                     }
                 }
@@ -298,7 +311,7 @@ public class UploadService {
 
     protected WSPutItemWithReport buildWSPutItemWithReport(Document document) throws Exception {
         return new WSPutItemWithReport(new WSPutItem(new WSDataClusterPK(getCurrentDataCluster()), document.asXML(),
-                new WSDataModelPK(getCurrentDataModel()), false), UpdateReportPOJO.GENERIC_UI_SOURCE, true); //$NON-NLS-1$
+                new WSDataModelPK(getCurrentDataModel()), false), UpdateReportPOJO.GENERIC_UI_SOURCE, true); 
     }
 
     /*
@@ -587,9 +600,13 @@ public class UploadService {
         }
     }
     
-    private Document getItemForPartialUpdate(EntityModel model, String[] keys) throws RemoteException, XtentisWebappException, Exception {
-        WSItem wsItem = CommonUtil.getPort().getItem(new WSGetItem(new WSItemPK(new WSDataClusterPK(org.talend.mdm.webapp.browserecords.server.util.CommonUtil.getCurrentDataModel()), model.getConceptName(), keys)));
-        return org.talend.mdm.webapp.base.server.util.XmlUtil.parseText(wsItem.getContent());
+    private Document getItemForPartialUpdate(EntityModel model, String[] keys, int rowNumber) throws RemoteException, XtentisWebappException, Exception {
+        try {
+            WSItem wsItem = CommonUtil.getPort().getItem(new WSGetItem(new WSItemPK(new WSDataClusterPK(org.talend.mdm.webapp.browserecords.server.util.CommonUtil.getCurrentDataModel()), model.getConceptName(), keys)));
+            return org.talend.mdm.webapp.base.server.util.XmlUtil.parseText(wsItem.getContent());
+        } catch (Exception e) {
+            throw new UploadException(MESSAGES.getMessage("save_error") + " " + MESSAGES.getMessage("save_row_count", rowNumber) + e.getCause().getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        }
     }
     
 

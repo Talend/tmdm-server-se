@@ -31,7 +31,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.fileupload.DiskFileUpload;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadBase;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.log4j.Logger;
+import org.talend.mdm.commmon.util.core.MDMConfiguration;
 import org.talend.mdm.webapp.base.server.util.CommonUtil;
 import org.talend.mdm.webapp.base.shared.EntityModel;
 import org.talend.mdm.webapp.base.shared.FileUtil;
@@ -66,6 +68,15 @@ public class UploadData extends HttpServlet {
 
     private boolean cusExceptionFlag = false;
     
+    private int defaultMaxImportCount;
+
+    @Override
+    public void init() throws ServletException {
+        super.init();
+        defaultMaxImportCount = Integer.parseInt(
+                MDMConfiguration.getConfiguration().getProperty("max.import.browserecord", MDMConfiguration.MAX_IMPORT_COUNT));
+    }
+
     @Override
     protected void doGet(HttpServletRequest arg0, HttpServletResponse arg1) throws ServletException, IOException {
         doPost(arg0, arg1);
@@ -161,16 +172,18 @@ public class UploadData extends HttpServlet {
             if (mandatorySet.size() > 0) {
                 throw new UploadException(MESSAGES.getMessage(locale, "error_missing_mandatory_field")); //$NON-NLS-1$
             }
-            UploadService service = generateUploadService(concept, fileType, isPartialUpdate, headersOnFirstLine, headerVisibleMap,
-                    inheritanceNodePathList, multipleValueSeparator, seperator, encoding, textDelimiter.charAt(0), language);
+            UploadService service = generateUploadService(concept, fileType, isPartialUpdate, headersOnFirstLine,
+                    headerVisibleMap, inheritanceNodePathList, multipleValueSeparator, seperator, encoding,
+                    textDelimiter.charAt(0), language);
 
             List<WSPutItemWithReport> wsPutItemWithReportList = service.readUploadFile(file);
-            if (wsPutItemWithReportList.size() > 0) {
-                putDocument(
-                        new WSPutItemWithReportArray(
-                                wsPutItemWithReportList.toArray(new WSPutItemWithReport[wsPutItemWithReportList.size()])),
-                        concept);
+
+            if (wsPutItemWithReportList.size() > defaultMaxImportCount) {
+                wsPutItemWithReportList = wsPutItemWithReportList.subList(0, defaultMaxImportCount);
             }
+            putDocument(
+                    new WSPutItemWithReportArray(wsPutItemWithReportList.toArray(new WSPutItemWithReport[wsPutItemWithReportList
+                            .size()])), concept);
             writer.print(Constants.IMPORT_SUCCESS);
         } catch (Exception exception) {
             LOG.error(exception.getMessage(), exception);
@@ -188,7 +201,7 @@ public class UploadData extends HttpServlet {
             Throwable cause = UploadUtil.getRootCause(exception);
             if (CoreException.class.isInstance(cause) && cause.getCause() != null) {
                 if (MultiRecordsSaveException.class.isInstance(cause.getCause())) {
-                    throw new UploadException(MESSAGES.getMessage("save_error") + MESSAGES.getMessage("save_row_count", ((MultiRecordsSaveException)cause.getCause()).getRowCount() + 1) + cause.getCause().getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
+                    throw new UploadException(MESSAGES.getMessage("save_error") + " " + MESSAGES.getMessage("save_row_count", ((MultiRecordsSaveException)cause.getCause()).getRowCount() + 1) + cause.getCause().getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 }
                 throw new UploadException(cause.getCause().getMessage());
             }

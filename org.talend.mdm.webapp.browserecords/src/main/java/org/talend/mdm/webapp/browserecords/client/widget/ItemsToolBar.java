@@ -121,6 +121,10 @@ public class ItemsToolBar extends ToolBar {
 
     protected Button uploadButton;
 
+    protected MenuItem importMenu ;
+
+    protected MenuItem exportMenu ;
+
     protected Button bulkUpdateButton;
 
     public final Button searchButton = new Button(MessagesFactory.getMessages().search_btn());
@@ -154,6 +158,10 @@ public class ItemsToolBar extends ToolBar {
     private String bookmarkName = null;
 
     private ItemBaseModel currentModel = null;
+
+    private int maxExportRecordsCount = -1;
+
+    private int maxImportRecordsCount = -1;
 
     /*************************************/
 
@@ -190,6 +198,10 @@ public class ItemsToolBar extends ToolBar {
     protected ItemsToolBar() {
         // init user saved model
         userCluster = BrowseRecords.getSession().getAppHeader().getDatacluster();
+
+        maxExportRecordsCount = BrowseRecords.getSession().getAppHeader().getExportRecordsDefaultCount();
+        maxImportRecordsCount = BrowseRecords.getSession().getAppHeader().getImportRecordsDefaultCount();
+
         this.setBorders(false);
         this.setId("ItemsToolBar"); //$NON-NLS-1$
         this.setLayout(new ToolBarLayoutEx());
@@ -322,6 +334,7 @@ public class ItemsToolBar extends ToolBar {
         addManageBookButton();
         addBookMarkButton();
         initAdvancedPanel();
+        setUploadButtonVisible();
     }
 
     protected void addCreateButton() {
@@ -467,7 +480,7 @@ public class ItemsToolBar extends ToolBar {
         uploadButton.setIcon(AbstractImagePrototype.create(Icons.INSTANCE.Save()));
         uploadButton.setEnabled(false);
         Menu uploadMenu = new Menu();
-        MenuItem importMenu = new MenuItem(MessagesFactory.getMessages().import_btn());
+        importMenu = new MenuItem(MessagesFactory.getMessages().import_btn());
         importMenu.setId("importRecords"); //$NON-NLS-1$
         importMenu.setIcon(AbstractImagePrototype.create(Icons.INSTANCE.Save()));
         uploadMenu.add(importMenu);
@@ -491,7 +504,7 @@ public class ItemsToolBar extends ToolBar {
             }
         });
 
-        MenuItem exportMenu = new MenuItem(MessagesFactory.getMessages().export_btn());
+        exportMenu = new MenuItem(MessagesFactory.getMessages().export_btn());
         exportMenu.setIcon(AbstractImagePrototype.create(Icons.INSTANCE.Save()));
         uploadMenu.add(exportMenu);
 
@@ -1294,6 +1307,31 @@ public class ItemsToolBar extends ToolBar {
         return entityCombo;
     }
 
+    protected void setUploadButtonVisible() {
+        if (maxImportRecordsCount == 0 && maxExportRecordsCount == 0) {
+            uploadButton.setVisible(false);
+        }
+
+        if (maxImportRecordsCount == 0) {
+            importMenu.setVisible(false);
+        }
+        if (maxExportRecordsCount == 0) {
+            exportMenu.setVisible(false);
+        }
+    }
+
+    public Button getUploadButton() {
+        return uploadButton;
+    }
+
+    public MenuItem getImportMenu() {
+        return importMenu;
+    }
+
+    public MenuItem getExportMenu() {
+        return exportMenu;
+    }
+
     protected void openDebugBulkUpdatePanel(BulkUpdatePanel panel) {
         Window window = new Window();
         window.setLayout(new FitLayout());
@@ -1346,5 +1384,4 @@ public class ItemsToolBar extends ToolBar {
 		};
 		return panel;
     }-*/;
-
 }

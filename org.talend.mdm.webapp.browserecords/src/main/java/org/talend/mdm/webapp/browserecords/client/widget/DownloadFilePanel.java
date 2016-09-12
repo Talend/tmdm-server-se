@@ -25,6 +25,7 @@ import org.talend.mdm.webapp.base.client.model.ItemBaseModel;
 import org.talend.mdm.webapp.base.client.util.PostDataUtil;
 import org.talend.mdm.webapp.base.shared.EntityModel;
 import org.talend.mdm.webapp.base.shared.TypeModel;
+import org.talend.mdm.webapp.browserecords.client.BrowseRecords;
 import org.talend.mdm.webapp.browserecords.client.i18n.MessagesFactory;
 import org.talend.mdm.webapp.browserecords.client.model.ItemBean;
 import org.talend.mdm.webapp.browserecords.client.model.QueryModel;
@@ -41,6 +42,7 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -76,7 +78,11 @@ public class DownloadFilePanel extends FormPanel {
 
     private Map<String, List<String>> inheritanceNodeMap = null;
 
+    private int defaultMaxExportRecordsCount;
+
     public DownloadFilePanel(ViewBean viewBean, QueryModel queryModel, Window window) {
+        defaultMaxExportRecordsCount =  BrowseRecords.getSession().getAppHeader().getExportRecordsDefaultCount();
+
         this.viewBean = viewBean;
         this.queryModel = queryModel;
         this.window = window;
@@ -170,11 +176,11 @@ public class DownloadFilePanel extends FormPanel {
 
                             @Override
                             public void handleEvent(MessageBoxEvent be) {
-                                PostDataUtil.postData(getActionUrl(), param);
+                                downloadWarning(param);
                             }
                         });
                     } else {
-                        PostDataUtil.postData(getActionUrl(), param);
+                        downloadWarning(param);
                     }
                 } catch (Exception e) {
                     MessageBox.alert(MessagesFactory.getMessages().error_title(), MessagesFactory.getMessages().export_error(),
@@ -303,6 +309,20 @@ public class DownloadFilePanel extends FormPanel {
         param.put("offset", Integer.toString(pagingLoad.getOffset())); //$NON-NLS-1$
         param.put("limit", Integer.toString(pagingLoad.getLimit())); //$NON-NLS-1$
         return param;
+    }
+
+    private void downloadWarning(final Map<String, String> param) {
+        MessageBox.confirm(MessagesFactory.getMessages().confirm_title(), MessagesFactory.getMessages()
+                .export_items_greater_than_defalut(String.valueOf(defaultMaxExportRecordsCount)),
+                new Listener<MessageBoxEvent>() {
+
+                    @Override
+                    public void handleEvent(MessageBoxEvent be) {
+                        if (be.getButtonClicked().getItemId().equals(Dialog.YES)) {
+                            PostDataUtil.postData(getActionUrl(), param);
+                        }
+                    }
+                });
     }
 
     protected String getActionUrl() {

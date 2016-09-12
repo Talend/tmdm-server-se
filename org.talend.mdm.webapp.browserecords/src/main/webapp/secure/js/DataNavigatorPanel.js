@@ -843,8 +843,8 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 
 	function getIdentifier(o) {
 		var identifier;
-		if (o.navigator_node_foreignkey_path !== undefined) {
-			identifier = 'navigator_' + o.navigator_node_foreignkey_path;
+		if (o.navigator_node_concept !== undefined) {
+			identifier = 'navigator_' + o.navigator_node_concept;
 		}
 		if (o.navigator_node_type == NAVIGATOR_NODE_VALUE_TYPE && o.navigator_node_ids !== undefined) {
 			identifier = identifier + '_' + o.navigator_node_ids;

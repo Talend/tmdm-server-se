@@ -22,6 +22,7 @@ import org.talend.mdm.webapp.base.client.util.UrlUtil;
 import org.talend.mdm.webapp.base.shared.EntityModel;
 import org.talend.mdm.webapp.base.shared.FileUtil;
 import org.talend.mdm.webapp.base.shared.TypeModel;
+import org.talend.mdm.webapp.browserecords.client.BrowseRecords;
 import org.talend.mdm.webapp.browserecords.client.i18n.MessagesFactory;
 import org.talend.mdm.webapp.browserecords.shared.Constants;
 import org.talend.mdm.webapp.browserecords.shared.ViewBean;
@@ -35,6 +36,7 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -89,6 +91,8 @@ public class UploadFileFormPanel extends FormPanel implements Listener<FormEvent
 
     private Window window;
 
+    private int importRecordsDefaultCount;
+
     public UploadFileFormPanel(ViewBean viewBean, Window window) {
         this.viewBean = viewBean;
         this.window = window;
@@ -99,6 +103,7 @@ public class UploadFileFormPanel extends FormPanel implements Listener<FormEvent
         this.setWidth("100%"); //$NON-NLS-1$
         this.setAction(getActionUrl());
         this.renderForm();
+        importRecordsDefaultCount = BrowseRecords.getSession().getAppHeader().getImportRecordsDefaultCount();
     }
 
     protected String getHeaderString() {
@@ -366,9 +371,20 @@ public class UploadFileFormPanel extends FormPanel implements Listener<FormEvent
                     return;
                 }
 
-                UploadFileFormPanel.this.submit();
-                waitBar = MessageBox.wait(MessagesFactory.getMessages().import_progress_bar_title(), MessagesFactory
-                        .getMessages().import_progress_bar_message(), MessagesFactory.getMessages().import_progress_bar_laod());
+                MessageBox.confirm(MessagesFactory.getMessages().confirm_title(), MessagesFactory.getMessages()
+                        .import_items_greater_than_default(String.valueOf(importRecordsDefaultCount)), new Listener<MessageBoxEvent>() {
+
+                    @Override
+                    public void handleEvent(MessageBoxEvent be) {
+                        if (be.getButtonClicked().getItemId().equals(Dialog.YES)) {
+
+                            UploadFileFormPanel.this.submit();
+                            waitBar = MessageBox.wait(MessagesFactory.getMessages().import_progress_bar_title(), MessagesFactory
+                                    .getMessages().import_progress_bar_message(), MessagesFactory.getMessages()
+                                    .import_progress_bar_laod());
+                        }
+                    }
+                });
             }
         });
         this.addButton(submit);

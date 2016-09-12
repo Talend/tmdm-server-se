@@ -8,9 +8,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -23,10 +21,8 @@ import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.Element;
-import org.dom4j.XPath;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
 import org.talend.mdm.webapp.base.server.util.CommonUtil;
 import org.talend.mdm.webapp.base.server.util.XmlUtil;
@@ -58,7 +54,7 @@ public class DownloadData extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
-    protected Integer maxCount = 1000;
+    private int defaultMaxExportCount;
 
     private final String SHEET_LABEL = "Talend MDM"; //$NON-NLS-1$
 
@@ -99,12 +95,8 @@ public class DownloadData extends HttpServlet {
     @Override
     public void init() throws ServletException {
         super.init();
-
-        Properties mdmConfig = MDMConfiguration.getConfiguration();
-        Object value = mdmConfig.get("max.export.browserecord"); //$NON-NLS-1$
-        if (value != null) {
-            maxCount = Integer.parseInt(value.toString());
-        }
+        defaultMaxExportCount = Integer.parseInt(MDMConfiguration.getConfiguration().getProperty("max.export.browserecord",
+                MDMConfiguration.MAX_EXPORT_COUNT));
     }
 
     @Override
@@ -198,6 +190,10 @@ public class DownloadData extends HttpServlet {
             WSWhereItem idsWhereItem = new WSWhereItem();
             WSWhereOr idWhereOr = new WSWhereOr();
             List<WSWhereItem> idWhereItemArray = new ArrayList<WSWhereItem>();
+            if (idsList.size() > defaultMaxExportCount) {
+                idsList.subList(0, defaultMaxExportCount);
+            }
+
             for (String ids : idsList) {
                 WSWhereItem idWhereItem = new WSWhereItem();
 
@@ -243,7 +239,7 @@ public class DownloadData extends HttpServlet {
         String[] result = CommonUtil
                 .getPort()
                 .viewSearch(
-                        new WSViewSearch(new WSDataClusterPK(getCurrentDataCluster()), wsViewPK, wi, -1, 0, maxCount, null,
+                        new WSViewSearch(new WSDataClusterPK(getCurrentDataCluster()), wsViewPK, wi, -1, 0, defaultMaxExportCount, null,
                                 null)).getStrings();
         if (result.length > 1) {
             results = Arrays.asList(Arrays.copyOfRange(result, 1, result.length));
@@ -254,6 +250,7 @@ public class DownloadData extends HttpServlet {
             fillRow(row, document);
         }
     }
+
 
     protected void fillRow(HSSFRow row, Document document) throws Exception {
         columnIndex = 0;

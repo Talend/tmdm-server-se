@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.talend.mdm.webapp.base.client.model.ForeignKeyBean;
 import org.talend.mdm.webapp.base.shared.EntityModel;
 import org.talend.mdm.webapp.browserecords.client.model.ItemBean;
 import org.talend.mdm.webapp.browserecords.client.model.ItemNodeModel;
@@ -197,7 +198,6 @@ public class ItemTreeHandlerGWTTest extends GWTTestCase {
         itemHandler = new ItemTreeHandler(nodeModel, viewBean, itemBean, ItemTreeHandlingStatus.ToSave);
         actualXml = itemHandler.serializeItem();
         expectedXml = "<Product xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><Id>1</Id><Name>Talend</Name><Features><Colors><Color>Yellow</Color><Color>Yellow</Color></Colors></Features><Availability>false</Availability><Price>150</Price><OnlineStore>@@http://</OnlineStore><Picture/></Product>";
-        System.out.println(actualXml);
         assertEquals(expectedXml, actualXml);
 
         itemBean = new ItemBean();
@@ -530,6 +530,44 @@ public class ItemTreeHandlerGWTTest extends GWTTestCase {
         itemHandler = new ItemTreeHandler(nodeModel, viewBean, idsList, ItemTreeHandlingStatus.BulkUpdate);
         actualXml = itemHandler.serializeItem();
         expectedXml = "<records xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><Product><Id>1</Id><Name>newName</Name><Features><Sizes><Size>Small</Size><Size>Middle</Size></Sizes><Colors><Color>Red</Color><Color>Blue</Color></Colors></Features><Price>999</Price><OnlineStore>Talend@@Wangfujing</OnlineStore></Product><Product><Id>2</Id><Name>newName</Name><Features><Sizes><Size>Small</Size><Size>Middle</Size></Sizes><Colors><Color>Red</Color><Color>Blue</Color></Colors></Features><Price>999</Price><OnlineStore>Talend@@Wangfujing</OnlineStore></Product><Product><Id>3</Id><Name>newName</Name><Features><Sizes><Size>Small</Size><Size>Middle</Size></Sizes><Colors><Color>Red</Color><Color>Blue</Color></Colors></Features><Price>999</Price><OnlineStore>Talend@@Wangfujing</OnlineStore></Product><Product><Id>4</Id><Name>newName</Name><Features><Sizes><Size>Small</Size><Size>Middle</Size></Sizes><Colors><Color>Red</Color><Color>Blue</Color></Colors></Features><Price>999</Price><OnlineStore>Talend@@Wangfujing</OnlineStore></Product></records>";
+        assertEquals(expectedXml, actualXml);
+
+        ForeignKeyBean foreignKeyBean = new ForeignKeyBean();
+        foreignKeyBean.setId("1");
+        idsList = new ArrayList<String>();
+        idsList.add("1");
+        idsList.add("2");
+        nodeModel = CommonUtilTestData.getItemNodeModel(ClientResourceData.getRecordProduct1(), entity);
+        assertNotNull(nodeModel);
+        assertTrue(nodeModel.getChildren().size() > 0);
+        nodeModel.setMassUpdate(true);
+        nodeModel.setEdited(true);
+        for (ModelData eachNodeModel : nodeModel.getChildren()) {
+            ItemNodeModel myNodeModel = (ItemNodeModel) eachNodeModel;
+            myNodeModel.setMassUpdate(true);
+            myNodeModel.setEdited(false);
+            if (myNodeModel.getTypePath().equals("Product/Id")) {
+                myNodeModel.setEdited(true);
+            } else if (myNodeModel.getTypePath().equals("Product/Name")) {
+                myNodeModel.setObjectValue("newName");
+                myNodeModel.setEdited(true);
+            }
+        }
+        ItemNodeModel familyNodeModel = new ItemNodeModel("Family");
+        familyNodeModel.setTypePath("Product/Family");
+        familyNodeModel.setObjectValue(foreignKeyBean);
+        familyNodeModel.setMassUpdate(true);
+        familyNodeModel.setEdited(true);
+        nodeModel.add(familyNodeModel);
+        itemHandler = new ItemTreeHandler(nodeModel, viewBean, idsList, ItemTreeHandlingStatus.BulkUpdate);
+        actualXml = itemHandler.serializeItem();
+        expectedXml = "<records xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><Product><Id>1</Id><Name>newName</Name><Family>1</Family></Product><Product><Id>2</Id><Name>newName</Name><Family>1</Family></Product></records>";
+        assertEquals(expectedXml, actualXml);
+
+        familyNodeModel.setEdited(false);
+        itemHandler = new ItemTreeHandler(nodeModel, viewBean, idsList, ItemTreeHandlingStatus.BulkUpdate);
+        actualXml = itemHandler.serializeItem();
+        expectedXml = "<records xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><Product><Id>1</Id><Name>newName</Name></Product><Product><Id>2</Id><Name>newName</Name></Product></records>";
         assertEquals(expectedXml, actualXml);
     }
 }

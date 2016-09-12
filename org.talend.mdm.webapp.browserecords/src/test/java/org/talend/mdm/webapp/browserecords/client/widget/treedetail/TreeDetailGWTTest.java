@@ -296,7 +296,7 @@ public class TreeDetailGWTTest extends GWTTestCase {
         // add FK tabPanel (FK lazy render)
         ItemPanel fkTabPanel = new ItemPanel(itemsDetailPanel);
         // add ForeignKeyTablePanel
-        final ForeignKeyTablePanel fkPanel = new ForeignKeyTablePanel("FK Lazy render", false);
+        final ForeignKeyTablePanel fkPanel = new ForeignKeyTablePanel("FK Lazy render", false, false);
         fkTabPanel.add(fkPanel, new RowData(1, 1));
         itemsDetailPanel.addTabItem("FKTab", fkTabPanel, ItemsDetailPanel.MULTIPLE, "FK");
         // lazy render FK

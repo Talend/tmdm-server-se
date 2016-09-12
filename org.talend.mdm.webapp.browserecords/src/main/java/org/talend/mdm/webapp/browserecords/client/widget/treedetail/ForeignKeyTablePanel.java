@@ -143,18 +143,6 @@ public class ForeignKeyTablePanel extends ContentPanel implements ReturnCriteria
 
     private boolean enable = false;
 
-    public ForeignKeyTablePanel(String panelName, boolean staging) {
-        super();
-        this.setHeaderVisible(false);
-        this.setLayout(new FitLayout());
-        this.setAutoWidth(true);
-        this.setBodyBorder(false);
-        this.panelName = panelName;
-        this.staging = staging;
-        initBaseComponent();
-        // fkWindow.setStaging(staging);
-    }
-
     public ForeignKeyTablePanel(String panelName, boolean staging, boolean isBulkUpdate) {
         super();
         this.setHeaderVisible(false);
@@ -188,9 +176,6 @@ public class ForeignKeyTablePanel extends ContentPanel implements ReturnCriteria
             removeFkButton.setEnabled(false);
             toolBar.add(removeFkButton);
             toolBar.add(new SeparatorToolItem());
-            if (foreignKeySelector.parseForeignKeyFilter() != null) {
-                editFkButton.setEnabled(false);
-            }
             toolBar.add(editFkButton);
             toolBar.add(new SeparatorToolItem());
         } else {
@@ -233,6 +218,9 @@ public class ForeignKeyTablePanel extends ContentPanel implements ReturnCriteria
             for (int i = 0; i < fkModels.size(); i++) {
                 fkModels.get(i).setMassUpdate(isBulkUpdate);
             }
+        }
+        if (fkTypeModel.getForeignKeyFilter() != null) {
+            editFkButton.setEnabled(false);
         }
         proxy = new PagingModelMemoryProxy(this.fkModels);
         loader = new BasePagingLoader<PagingLoadResult<ModelData>>(proxy);

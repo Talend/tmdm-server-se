@@ -147,6 +147,16 @@ public class MultiOccurrenceChangeItemGWTTest extends GWTTestCase {
         assertFalse(result.contains("src=\"secure/img/genericUI/bulkupdate.png\""));
         assertEquals(true, itemNodeModel.isMassUpdate());
         assertEquals(false, itemNodeModel.isEdited());
+
+        itemNodeModel.setKey(false);
+        typeModel.setForeignKeyFilter("Product/Name='5'");
+        multiOccurrenceChangeItem = new MultiOccurrenceChangeItem(itemNodeModel, viewBean, fieldMap,
+                ItemDetailToolBar.BULK_UPDATE_OPERATION, null);
+        result = multiOccurrenceChangeItem.getWidget(4).toString();
+        assertFalse(result.contains("src=\"secure/img/genericUI/bulkupdate.png\""));
+        assertEquals(true, itemNodeModel.isMassUpdate());
+        assertEquals(false, itemNodeModel.isEdited());
+
     }
 
     @Override

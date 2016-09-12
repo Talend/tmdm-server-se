@@ -35,10 +35,8 @@ public class LocalLabelTransformer implements DocumentTransformer {
 
     private Locale locale;
 
-    ComplexTypeMetadata typeMetadata;
-
-    public LocalLabelTransformer() {
-        locale = new Locale(LocaleUtil.getLocale().getLanguage());
+    public LocalLabelTransformer(String language) {
+        locale = new Locale(language);
     }
 
     @Override

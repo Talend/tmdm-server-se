@@ -14,7 +14,6 @@ package org.talend.mdm.webapp.journal.server;
 
 import java.io.InputStream;
 import java.util.Iterator;
-import java.util.Locale;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -22,8 +21,6 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.dom4j.DocumentHelper;
-import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit3.PowerMockSuite;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
@@ -81,10 +78,7 @@ public class LocalLabelTransformerTest extends TestCase{
             fail("failed to create document");
         }
 
-        PowerMockito.mockStatic(com.amalto.core.util.LocaleUtil.class);
-        Mockito.when(com.amalto.core.util.LocaleUtil.getLocale()).thenReturn(new Locale("fr"));
-
-        LocalLabelTransformer multipleLanguageLabel = new LocalLabelTransformer();
+        LocalLabelTransformer multipleLanguageLabel = new LocalLabelTransformer("fr");
 
         transformedDocument = document.transform(multipleLanguageLabel);
         org.dom4j.Document newDcoument = null;
@@ -142,10 +136,7 @@ public class LocalLabelTransformerTest extends TestCase{
             fail("failed to create document");
         }
 
-        PowerMockito.mockStatic(com.amalto.core.util.LocaleUtil.class);
-        Mockito.when(com.amalto.core.util.LocaleUtil.getLocale()).thenReturn(new Locale("en"));
-
-        LocalLabelTransformer multipleLanguageLabel = new LocalLabelTransformer();
+        LocalLabelTransformer multipleLanguageLabel = new LocalLabelTransformer("en");
 
         transformedDocument = document.transform(multipleLanguageLabel);
         org.dom4j.Document newDcoument = null;

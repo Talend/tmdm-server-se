@@ -111,7 +111,7 @@ public class JournalHistoryService {
         foreignKeyInfoTransformer.setMetadataRepository(metadataRepository);
         ModificationMarker modificationMarker = new ModificationMarker(modificationMarkersAction);
         UniqueIdTransformer idTransformer = new UniqueIdTransformer();
-        LocalLabelTransformer multipleLanguageLabel = new LocalLabelTransformer();
+        LocalLabelTransformer multipleLanguageLabel = new LocalLabelTransformer(com.amalto.core.util.LocaleUtil.getLocale().getLanguage());
         List<DocumentTransformer> transformers = Arrays.asList(foreignKeyInfoTransformer, idTransformer, modificationMarker,multipleLanguageLabel);
         com.amalto.core.history.Document transformedDocument = document;
         for (DocumentTransformer transformer : transformers) {

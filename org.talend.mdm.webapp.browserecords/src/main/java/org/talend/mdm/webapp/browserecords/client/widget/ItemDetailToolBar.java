@@ -338,7 +338,7 @@ public class ItemDetailToolBar extends ToolBar {
     }
 
     protected void initMassUpdateToolBar() {
-        this.addSaveButtonOfBulkUpdate();
+        this.addSaveAndCloseButtonOfBulkUpdate();
         this.addSeparator();
         this.addCanelButtonOfMassUpdate();
     }
@@ -1131,13 +1131,13 @@ public class ItemDetailToolBar extends ToolBar {
         add(generatedviewButton);
     }
 
-    protected void addSaveButtonOfBulkUpdate() {
-        if (saveButton == null) {
-            saveButton = new Button(MessagesFactory.getMessages().save_btn());
-            saveButton.setId("saveAndCloseButtonOfMassUpdate"); //$NON-NLS-1$
-            saveButton.setIcon(AbstractImagePrototype.create(Icons.INSTANCE.Save()));
-            saveButton.setToolTip(MessagesFactory.getMessages().save_close_tip());
-            saveButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+    protected void addSaveAndCloseButtonOfBulkUpdate() {
+        if (saveAndCloseButton == null) {
+            saveAndCloseButton = new Button(MessagesFactory.getMessages().save_close_btn());
+            saveAndCloseButton.setId("saveAndCloseButtonOfMassUpdate"); //$NON-NLS-1$
+            saveAndCloseButton.setIcon(AbstractImagePrototype.create(Icons.INSTANCE.save_and_close()));
+            saveAndCloseButton.setToolTip(MessagesFactory.getMessages().save_close_tip());
+            saveAndCloseButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
                 @Override
                 public void componentSelected(ButtonEvent ce) {
@@ -1187,7 +1187,7 @@ public class ItemDetailToolBar extends ToolBar {
 
             });
         }
-        add(saveButton);
+        add(saveAndCloseButton);
     }
 
     protected void addCanelButtonOfMassUpdate() {

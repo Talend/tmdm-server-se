@@ -85,6 +85,8 @@ public interface BrowseRecordsMessages extends Messages {
 
     String bulkUpdate_progress_bar_message();
 
+    String bulkUpdate_foreignkey_warning();
+
     String page_size_field_label();
 
     String page_size_label();

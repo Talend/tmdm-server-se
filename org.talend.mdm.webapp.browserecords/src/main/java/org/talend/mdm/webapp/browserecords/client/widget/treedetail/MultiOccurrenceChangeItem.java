@@ -27,6 +27,7 @@ import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.mvc.AppEvent;
 import com.extjs.gxt.ui.client.mvc.Dispatcher;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -173,6 +174,10 @@ public class MultiOccurrenceChangeItem extends HorizontalPanel {
                     });
                     this.add(editNodeImg);
                     this.setCellVerticalAlignment(editNodeImg, VerticalPanel.ALIGN_BOTTOM);
+                }
+                if (typeModel.getForeignkey() != null && typeModel.getForeignKeyFilter() != null) {
+                    MessageBox.alert(MessagesFactory.getMessages().warning_title(),
+                            MessagesFactory.getMessages().bulkUpdate_foreignkey_warning(), null).setIcon(MessageBox.WARNING);
                 }
                 if (itemNode.isKey()) {
                     itemNode.setEdited(true);

@@ -221,6 +221,11 @@ public class ForeignKeyTablePanel extends ContentPanel implements ReturnCriteria
         }
         if (fkTypeModel.getForeignKeyFilter() != null) {
             editFkButton.setEnabled(false);
+            MessageBox.alert(MessagesFactory.getMessages().warning_title(),
+                    MessagesFactory.getMessages().bulkUpdate_foreignkey_warning(), null).setIcon(MessageBox.WARNING);
+        }
+        if (fkTypeModel.isReadOnly()) {
+            editFkButton.setEnabled(false);
         }
         proxy = new PagingModelMemoryProxy(this.fkModels);
         loader = new BasePagingLoader<PagingLoadResult<ModelData>>(proxy);

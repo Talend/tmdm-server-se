@@ -849,8 +849,8 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 		if (o.navigator_node_type == NAVIGATOR_NODE_VALUE_TYPE && o.navigator_node_ids !== undefined) {
 			identifier = identifier + '_' + o.navigator_node_ids;
 		}
-		if(o.navigator_node_type == NAVIGATOR_NODE_VALUE_TYPE && o.navigator_node_field_foreignkey_path !== undefined){
-			identifier = identifier + '_' + o.navigator_node_field_foreignkey_path;
+		if(o.navigator_node_type == NAVIGATOR_NODE_IN_ENTITY_TYPE){
+			identifier = identifier + '_' + o.navigator_line_label;
 		}
 		return identifier;
 	}

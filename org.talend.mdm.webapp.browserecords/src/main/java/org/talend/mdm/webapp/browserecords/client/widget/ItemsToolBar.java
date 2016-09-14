@@ -121,9 +121,9 @@ public class ItemsToolBar extends ToolBar {
 
     protected Button uploadButton;
 
-    protected MenuItem importMenu ;
+    protected MenuItem importMenu;
 
-    protected MenuItem exportMenu ;
+    protected MenuItem exportMenu;
 
     protected Button bulkUpdateButton;
 
@@ -551,7 +551,7 @@ public class ItemsToolBar extends ToolBar {
                         }
                         BulkUpdatePanel bulkUpdatePanel = BulkUpdatePanel.getInstance();
                         bulkUpdatePanel.initDetailPanel(BrowseRecords.getSession().getCurrentEntityModel(), BrowseRecords
-                                .getSession().getCurrentView(), idsList);
+                                .getSession().getCurrentView(), idsList, isStaging());
                         bulkUpdatePanel.renderPanel();
                     } else {
                         MessageBox.alert(MessagesFactory.getMessages().warning_title(), MessagesFactory.getMessages()

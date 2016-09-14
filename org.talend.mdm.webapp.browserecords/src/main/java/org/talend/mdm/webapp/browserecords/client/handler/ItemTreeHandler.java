@@ -153,7 +153,6 @@ public class ItemTreeHandler implements IsSerializable {
         Element root;
         if (status.equals(ItemTreeHandlingStatus.BulkUpdate)) {
             root = doc.createElement("records");
-            root.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance"); //$NON-NLS-1$//$NON-NLS-2$
             for (int i = 0; i < idsList.size(); i++) {
                 String ids = idsList.get(i);
                 root.appendChild(buildXML(doc, nodeModel, ids));
@@ -174,10 +173,8 @@ public class ItemTreeHandler implements IsSerializable {
         if (status.equals(ItemTreeHandlingStatus.BulkUpdate) && currentNodeModel.isKey()) {
             currentNodeModel.setObjectValue(ids);
         }
-
         Element root = doc.createElement(currentNodeModel.getName());
         TypeModel currentTypeModel = entityModel.getMetaDataTypes().get(currentNodeModel.getTypePath());
-
         if (status.equals(ItemTreeHandlingStatus.ToSave) || status.equals(ItemTreeHandlingStatus.BulkUpdate)) {
             if (currentNodeModel.getParent() != null) {
                 if (!currentNodeModel.isKey()) {
@@ -204,9 +201,7 @@ public class ItemTreeHandler implements IsSerializable {
                 }
             }
         }
-
         Serializable value = currentNodeModel.getObjectValue();
-
         if (!currentNodeModel.isMassUpdate() || (currentNodeModel.isMassUpdate() && currentNodeModel.isEdited())) {
             if (currentTypeModel.isSimpleType()) {
                 if (value != null && currentNodeModel.getParent() != null) {
@@ -221,16 +216,13 @@ public class ItemTreeHandler implements IsSerializable {
 
                 }
             }
-
             if (currentNodeModel.getRealType() != null) {
                 root.setAttribute("xsi:type", currentNodeModel.getRealType()); //$NON-NLS-1$
             }
-
             if (currentNodeModel.getTypeName() != null) {
                 root.setAttribute("tmdm:type", currentNodeModel.getTypeName()); //$NON-NLS-1$
                 nodeModel.set(XMLNS_TMDM, XMLNS_TMDM_VALUE);
             }
-
             List<ModelData> children = currentNodeModel.getChildren();
             if (children != null && children.size() > 0) {
                 for (ModelData child : children) {

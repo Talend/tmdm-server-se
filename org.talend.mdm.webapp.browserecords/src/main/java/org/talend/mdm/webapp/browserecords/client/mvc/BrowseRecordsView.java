@@ -515,9 +515,10 @@ public class BrowseRecordsView extends View {
         ItemBean itemBean = ItemCreator.createDefaultItemBean(viewBean.getBindingEntityModel().getConceptName(), entityModel);
 
         ItemsDetailPanel bulkUpdateDetailPanel = ItemsDetailPanel.newInstance();
+        bulkUpdateDetailPanel.setOutMost(true);
         ItemPanel itemPanel = new ItemPanel(isStaging, viewBean, itemBean, ItemDetailToolBar.BULK_UPDATE_OPERATION,
                 bulkUpdateDetailPanel, true);
-        itemPanel.getToolBar().setOutMost(false);
+        itemPanel.getToolBar().setOutMost(true);
         itemPanel.getToolBar().setFkToolBar(false);
         itemPanel.getToolBar().setHierarchyCall(false);
 

@@ -73,10 +73,10 @@ public class BulkUpdatePanel extends ContentPanel {
         add(detailPanel, centerData);
     }
 
-    public void initDetailPanel(EntityModel entityModel, ViewBean viewBean, List<String> idsList) {
+    public void initDetailPanel(EntityModel entityModel, ViewBean viewBean, List<String> idsList, boolean isStaging) {
         this.idsList = idsList;
         AppEvent event = new AppEvent(BrowseRecordsEvents.ViewBulkUpdateItem);
-        event.setData(BrowseRecordsView.IS_STAGING, false);
+        event.setData(BrowseRecordsView.IS_STAGING, isStaging);
         event.setData(BrowseRecords.ENTITY_MODEL, entityModel);
         event.setData(BrowseRecords.VIEW_BEAN, viewBean);
         Dispatcher.forwardEvent(event);

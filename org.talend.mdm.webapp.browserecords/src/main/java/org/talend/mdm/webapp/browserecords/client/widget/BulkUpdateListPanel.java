@@ -36,7 +36,6 @@ import org.talend.mdm.webapp.base.shared.EntityModel;
 import org.talend.mdm.webapp.base.shared.SimpleTypeModel;
 import org.talend.mdm.webapp.base.shared.TypeModel;
 import org.talend.mdm.webapp.browserecords.client.BrowseRecords;
-import org.talend.mdm.webapp.browserecords.client.BrowseRecordsEvents;
 import org.talend.mdm.webapp.browserecords.client.BrowseRecordsServiceAsync;
 import org.talend.mdm.webapp.browserecords.client.ServiceFactory;
 import org.talend.mdm.webapp.browserecords.client.creator.CellEditorCreator;
@@ -72,8 +71,6 @@ import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.event.LoadListener;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
-import com.extjs.gxt.ui.client.mvc.AppEvent;
-import com.extjs.gxt.ui.client.mvc.Dispatcher;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.MessageBox;
@@ -385,22 +382,6 @@ public class BulkUpdateListPanel extends ContentPanel {
             }
         } else {
             criteria = new SimpleCriterion(keys[0], OperatorConstants.EQUALS_OPERATOR, ids[0]);
-            // if (ids.length == 1) {
-            // MultipleCriteria multipleCriteria = new MultipleCriteria();
-            // multipleCriteria.setOperator(OperatorConstants.AND_OPERATOR);
-            // for (int i = 0; i < keys.length; i++) {
-            // multipleCriteria.getChildren()
-            // .add(new SimpleCriterion(keys[0], OperatorConstants.EQUALS_OPERATOR, ids[0][i]));
-            // }
-            // criteria = new SimpleCriterion(keys[0], OperatorConstants.EQUALS_OPERATOR, ids[0]);
-            // } else {
-            // MultipleCriteria multipleCriteria = new MultipleCriteria();
-            // multipleCriteria.setOperator(OperatorConstants.OR_OPERATOR);
-            // for (int i = 0; i < ids.length; i++) {
-            // multipleCriteria.getChildren().add(new SimpleCriterion(keys[0], OperatorConstants.EQUALS_OPERATOR,
-            // ids[i]));
-            // }
-            // }
         }
         QueryModel queryModel = new QueryModel();
         queryModel.setDataClusterPK(cluster);
@@ -447,10 +428,6 @@ public class BulkUpdateListPanel extends ContentPanel {
 
                 @Override
                 public void execute() {
-                    AppEvent event = new AppEvent(BrowseRecordsEvents.ViewBulkUpdateItem, item);
-                    event.setData(BrowseRecords.ENTITY_MODEL, entityModel);
-                    event.setData(BrowseRecords.VIEW_BEAN, viewBean);
-                    Dispatcher.forwardEvent(event);
                 }
             });
         }

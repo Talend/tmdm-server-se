@@ -302,7 +302,9 @@ public class ItemsToolBar extends ToolBar {
                 }
             }
         }
-        bulkUpdateButton.setEnabled(true);
+        if (bulkUpdateButton != null) {
+            bulkUpdateButton.setEnabled(true);
+        }
         updateUserCriteriasList();
         this.layout(true);
     }
@@ -320,7 +322,7 @@ public class ItemsToolBar extends ToolBar {
             addSimulateMatchButton();
         }
         addImportAndExportButton();
-        if (((AppHeader) BrowseRecords.getSession().get(UserSession.APP_HEADER)).isEnterprise()) {
+        if (((AppHeader) BrowseRecords.getSession().get(UserSession.APP_HEADER)).isEnterprise() && !isStaging()) {
             addBulkUpdateButton();
         }
         add(new FillToolItem());

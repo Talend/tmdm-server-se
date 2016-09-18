@@ -76,7 +76,6 @@ public class BrowseRecordsController extends Controller {
         registerEventTypes(BrowseRecordsEvents.ExecuteVisibleRule);
         registerEventTypes(BrowseRecordsEvents.ViewLineageItem);
         registerEventTypes(BrowseRecordsEvents.DefaultView);
-        registerEventTypes(BrowseRecordsEvents.ViewBulkUpdateItem);
         registerEventTypes(BrowseRecordsEvents.BulkUpdateItem);
     }
 
@@ -126,9 +125,6 @@ public class BrowseRecordsController extends Controller {
         case BrowseRecordsEvents.DefaultViewCode:
             forwardToView(view, event);
             break;
-        case BrowseRecordsEvents.ViewBulkUpdateItemCode:
-            forwardToView(view, event);
-            break;
         case BrowseRecordsEvents.BulkUpdateItemCode:
             onBulkUpdateItem(event);
             break;
@@ -155,7 +151,7 @@ public class BrowseRecordsController extends Controller {
         } else {
             browseRecordsService = ServiceFactory.getInstance().getMasterService();
         }
-        browseRecordsService.saveItem(viewBean, itemBean.getIds(), (new ItemTreeHandler(model, viewBean,itemBean,
+        browseRecordsService.saveItem(viewBean, itemBean.getIds(), (new ItemTreeHandler(model, viewBean, itemBean,
                 ItemTreeHandlingStatus.ToSave)).serializeItem(), isCreate, Locale.getLanguage(),
                 new SessionAwareAsyncCallback<ItemResult>() {
 

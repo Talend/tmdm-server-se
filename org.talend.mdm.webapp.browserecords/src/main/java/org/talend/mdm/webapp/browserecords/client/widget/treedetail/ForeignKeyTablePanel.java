@@ -222,7 +222,7 @@ public class ForeignKeyTablePanel extends ContentPanel implements ReturnCriteria
                 fkModels.get(i).setMassUpdate(isBulkUpdate);
             }
         }
-        if (fkTypeModel.getForeignKeyFilter() != null) {
+        if (fkTypeModel.getForeignKeyFilter() != null && isBulkUpdate) {
             editFkButton.setEnabled(false);
             MessageBox.alert(MessagesFactory.getMessages().warning_title(),
                     MessagesFactory.getMessages().bulkUpdate_foreignkey_warning(), null).setIcon(MessageBox.WARNING);

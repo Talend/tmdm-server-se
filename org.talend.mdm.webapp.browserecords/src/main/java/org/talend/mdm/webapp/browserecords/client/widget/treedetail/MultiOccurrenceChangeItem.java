@@ -175,7 +175,7 @@ public class MultiOccurrenceChangeItem extends HorizontalPanel {
                     this.add(editNodeImg);
                     this.setCellVerticalAlignment(editNodeImg, VerticalPanel.ALIGN_BOTTOM);
                 }
-                if (typeModel.getForeignkey() != null && typeModel.getForeignKeyFilter() != null) {
+                if (typeModel.getForeignkey() != null && typeModel.getForeignKeyFilter() != null && itemNode.isMassUpdate()) {
                     MessageBox.alert(MessagesFactory.getMessages().warning_title(),
                             MessagesFactory.getMessages().bulkUpdate_foreignkey_warning(), null).setIcon(MessageBox.WARNING);
                 }

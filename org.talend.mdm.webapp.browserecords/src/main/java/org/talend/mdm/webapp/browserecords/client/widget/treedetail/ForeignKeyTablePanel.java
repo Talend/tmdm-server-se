@@ -549,6 +549,42 @@ public class ForeignKeyTablePanel extends ContentPanel implements ReturnCriteria
             removeFkButton.setEnabled(false);
             editFkButton.setEnabled(false);
         }
+
+        editFkButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                enable = !enable;
+                if (enable) {
+                    addFkButton.setEnabled(true);
+                    removeFkButton.setEnabled(true);
+                    grid.setEnabled(true);
+                    for (int i = 0; i < fkModels.size(); i++) {
+                        fkModels.get(i).setEdited(enable);
+                    }
+                } else {
+                    addFkButton.setEnabled(false);
+                    removeFkButton.setEnabled(false);
+                    foreignKeySelector.setEnabled(false);
+                    grid.setEnabled(false);
+
+                    if (fkModels.size() > 1) {
+                        for (int i = fkModels.size() - 1; i >= 1; i--) {
+                            delFk(fkModels.get(i));
+                        }
+                    }
+                    ItemNodeModel itemNodeModel = grid.getStore().getAt(0);
+                    if (itemNodeModel != null) {
+                        itemNodeModel.setObjectValue(null);
+                        itemNodeModel.setChangeValue(false);
+                        itemNodeModel.setEdited(enable);
+                    }
+                    updateMandatory();
+                    grid.getView().layout();
+                    pagingBar.refresh();
+                }
+            }
+        });
     }
 
     private boolean addFk() {

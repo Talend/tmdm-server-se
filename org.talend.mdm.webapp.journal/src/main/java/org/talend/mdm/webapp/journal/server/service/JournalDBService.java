@@ -29,6 +29,7 @@ import org.dom4j.DocumentException;
 import org.dom4j.io.SAXReader;
 import org.talend.mdm.commmon.util.webapp.XSystemObjects;
 import org.talend.mdm.webapp.base.server.util.Constants;
+import org.talend.mdm.webapp.journal.server.LocalLabelTransformer;
 import org.talend.mdm.webapp.journal.shared.JournalGridModel;
 import org.talend.mdm.webapp.journal.shared.JournalSearchCriteria;
 import org.talend.mdm.webapp.journal.shared.JournalTreeModel;
@@ -204,9 +205,9 @@ public class JournalDBService {
         }
 
         if (cls == null) {
-            model = new JournalTreeModel(id, element.getName() + value, element.getUniquePath());
+            model = new JournalTreeModel(id, element.attributeValue(LocalLabelTransformer.LABEL) + value, element.getUniquePath());
         } else {
-            model = new JournalTreeModel(id, element.getName() + value, element.getUniquePath(), cls);
+            model = new JournalTreeModel(id, element.attributeValue(LocalLabelTransformer.LABEL) + value, element.getUniquePath(), cls);
         }
         return model;
     }

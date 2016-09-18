@@ -24,6 +24,7 @@ import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.metadata.TypeMetadata;
 import org.talend.mdm.webapp.base.client.exception.ServiceException;
 import org.talend.mdm.webapp.journal.server.ForeignKeyInfoTransformer;
+import org.talend.mdm.webapp.journal.server.LocalLabelTransformer;
 import org.talend.mdm.webapp.journal.shared.JournalParameters;
 
 import com.amalto.core.objects.DroppedItemPOJO;
@@ -110,7 +111,8 @@ public class JournalHistoryService {
         foreignKeyInfoTransformer.setMetadataRepository(metadataRepository);
         ModificationMarker modificationMarker = new ModificationMarker(modificationMarkersAction);
         UniqueIdTransformer idTransformer = new UniqueIdTransformer();
-        List<DocumentTransformer> transformers = Arrays.asList(foreignKeyInfoTransformer, idTransformer, modificationMarker);
+        LocalLabelTransformer multipleLanguageLabel = new LocalLabelTransformer(com.amalto.core.util.LocaleUtil.getLocale().getLanguage());
+        List<DocumentTransformer> transformers = Arrays.asList(foreignKeyInfoTransformer, idTransformer, modificationMarker,multipleLanguageLabel);
         com.amalto.core.history.Document transformedDocument = document;
         for (DocumentTransformer transformer : transformers) {
             transformedDocument = document.transform(transformer);

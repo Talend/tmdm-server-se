@@ -11,14 +11,27 @@
 
 package com.amalto.core.storage.record;
 
+import static com.amalto.core.query.user.UserQueryBuilder.*;
+
 import com.amalto.core.load.io.ResettableStringWriter;
 import com.amalto.core.metadata.ClassRepository;
+import com.amalto.core.query.user.UserQueryBuilder;
+import com.amalto.core.query.user.UserQueryHelper;
+import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.StorageMetadataUtils;
+import com.amalto.core.storage.StorageResults;
+import com.amalto.core.storage.StorageType;
 import com.amalto.core.schema.validation.SkipAttributeDocumentBuilder;
+import com.amalto.core.server.ServerContext;
+import com.amalto.core.server.StorageAdmin;
 import com.amalto.core.storage.record.metadata.DataRecordMetadata;
 import com.amalto.core.storage.record.metadata.DataRecordMetadataHelper;
 import com.amalto.core.storage.record.metadata.DataRecordMetadataImpl;
 import com.amalto.core.storage.record.metadata.UnsupportedDataRecordMetadata;
+import com.amalto.xmlserver.interfaces.IWhereItem;
+import com.amalto.xmlserver.interfaces.WhereAnd;
+import com.amalto.xmlserver.interfaces.WhereCondition;
+
 import org.talend.mdm.commmon.metadata.*;
 
 import javax.xml.XMLConstants;
@@ -27,11 +40,15 @@ import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.events.*;
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 public class XmlStringDataRecordReader implements DataRecordReader<String> {
 
     private static final XMLInputFactory xmlInputFactory;
+    
+    private String storageName;
 
     static {
         /*
@@ -46,11 +63,15 @@ public class XmlStringDataRecordReader implements DataRecordReader<String> {
     }
 
     public DataRecord read(MetadataRepository repository, ComplexTypeMetadata type, String input) {
+        return read(repository, type, input, false);
+    }
+    
+    public DataRecord read(MetadataRepository repository, ComplexTypeMetadata type, String input, boolean includeFK) {
         if (type == null) {
-            throw new IllegalArgumentException("Type can not be null");
+            throw new IllegalArgumentException("Type can not be null"); //$NON-NLS-1$
         }
         if (input == null) {
-            throw new IllegalArgumentException("Input can not be null");
+            throw new IllegalArgumentException("Input can not be null"); //$NON-NLS-1$
         }
 
         FieldMetadata field = null;
@@ -129,7 +150,7 @@ public class XmlStringDataRecordReader implements DataRecordReader<String> {
                         }
                         TypeMetadata typeMetadata = currentType.peek();
                         if (!(typeMetadata instanceof ComplexTypeMetadata)) {
-                            throw new IllegalStateException("Expected a complex type but got a " + typeMetadata.getClass().getName());
+                            throw new IllegalStateException("Expected a complex type but got a " + typeMetadata.getClass().getName()); //$NON-NLS-1$
                         }
                         if (level < skipLevel) {
                             if (!((ComplexTypeMetadata) typeMetadata).hasField(currentElementName)) {
@@ -141,7 +162,7 @@ public class XmlStringDataRecordReader implements DataRecordReader<String> {
                             }
                             field = ((ComplexTypeMetadata) typeMetadata).getField(currentElementName);
                             if (field == null) {
-                                throw new IllegalArgumentException("Type '" + typeMetadata.getName() + "' does not own field '" + currentElementName + "'.");
+                                throw new IllegalArgumentException("Type '" + typeMetadata.getName() + "' does not own field '" + currentElementName + "'."); //$NON-NLS-2$ //$NON-NLS-3$
                             }
                             TypeMetadata fieldType = field.getType();
                             if (ClassRepository.EMBEDDED_XML.equals(fieldType.getName())) {
@@ -188,8 +209,11 @@ public class XmlStringDataRecordReader implements DataRecordReader<String> {
                             String data = xmlEvent.asCharacters().getData();
                             try {
                                 value = StorageMetadataUtils.convert(data, field, currentType.peek());
+                                if (includeFK && field instanceof ReferenceFieldMetadata && value != null && this.storageName != null) {
+                                    value = getReferenceFieldData(this.storageName, repository, (ReferenceFieldMetadata)field, data);
+                                }
                             } catch (Exception e) {
-                                throw new IllegalArgumentException("Field '" + field.getName() + "' of type '" + field.getType().getName() + "' can not receive value '" + data + "'.", e);
+                                throw new IllegalArgumentException("Field '" + field.getName() + "' of type '" + field.getType().getName() + "' can not receive value '" + data + "'.", e);  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                             }
                             if (value != null) {
                                 dataRecords.peek().set(field, value);
@@ -242,5 +266,33 @@ public class XmlStringDataRecordReader implements DataRecordReader<String> {
             }
             throw new RuntimeException(e);
         }
+    }
+
+    public void setStorageName(String storageName) {
+        this.storageName = storageName;
+    }
+    
+    public DataRecord getReferenceFieldData(String storageName, MetadataRepository repository, ReferenceFieldMetadata refField, String key) {
+        List<String> ids = StorageMetadataUtils.getIds(key);
+        if (ids.isEmpty() || ids.size() != refField.getReferencedType().getKeyFields().size()) {
+            throw new IllegalArgumentException("Id '" + key + "' not matched with " + refField.getReferencedType().getName() + " key fields."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        }
+        List<IWhereItem> whereItemList = new ArrayList<IWhereItem>();
+        int i = 0;
+        for (FieldMetadata fm : refField.getReferencedType().getKeyFields()) {
+            whereItemList.add(new WhereCondition(refField.getReferencedType().getName() + "/" + fm.getName(), WhereCondition.EQUALS, ids.get(i), WhereCondition.NO_OPERATOR)); //$NON-NLS-1$
+            i++;
+        }
+        StorageAdmin storageAdmin = ServerContext.INSTANCE.get().getStorageAdmin();
+        Storage storage = storageAdmin.get(storageName, StorageType.STAGING);
+        if (storage == null) {
+            throw new IllegalArgumentException("Container '" + storageName + "' does not exist."); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+        
+        IWhereItem whereItems = new WhereAnd(whereItemList);
+        UserQueryBuilder userQuery = from(refField.getReferencedType());
+        userQuery = userQuery.where(UserQueryHelper.buildCondition(userQuery, whereItems, repository));
+        StorageResults records = storage.fetch(userQuery.getSelect());
+        return records.iterator().next();
     }
 }

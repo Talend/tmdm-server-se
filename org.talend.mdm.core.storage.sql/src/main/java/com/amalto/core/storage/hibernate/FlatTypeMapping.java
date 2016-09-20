@@ -302,7 +302,7 @@ class FlatTypeMapping extends TypeMapping {
 	                        valueList.add(valueObject);
 	                    }
 						for (Object value : valueList) {
-	                        if (fieldMetadata instanceof ReferenceFieldMetadata) {
+	                        if (fieldMetadata instanceof ReferenceFieldMetadata || fieldMetadata instanceof ContainedTypeFieldMetadata) {
 								dataRecord.set(fieldMetadata, getDataRecordFromWrapper(contextClassLoader, (Wrapper) value, proceedWrappers));
 	                        } else {
 	                            dataRecord.set(fieldMetadata, value);

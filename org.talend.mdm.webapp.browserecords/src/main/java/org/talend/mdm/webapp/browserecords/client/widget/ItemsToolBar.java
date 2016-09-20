@@ -121,9 +121,9 @@ public class ItemsToolBar extends ToolBar {
 
     protected Button uploadButton;
 
-    protected MenuItem importMenu ;
+    protected MenuItem importMenu;
 
-    protected MenuItem exportMenu ;
+    protected MenuItem exportMenu;
 
     protected Button bulkUpdateButton;
 
@@ -302,7 +302,9 @@ public class ItemsToolBar extends ToolBar {
                 }
             }
         }
-        bulkUpdateButton.setEnabled(true);
+        if (bulkUpdateButton != null) {
+            bulkUpdateButton.setEnabled(true);
+        }
         updateUserCriteriasList();
         this.layout(true);
     }
@@ -320,7 +322,7 @@ public class ItemsToolBar extends ToolBar {
             addSimulateMatchButton();
         }
         addImportAndExportButton();
-        if (((AppHeader) BrowseRecords.getSession().get(UserSession.APP_HEADER)).isEnterprise()) {
+        if (((AppHeader) BrowseRecords.getSession().get(UserSession.APP_HEADER)).isEnterprise() && !isStaging()) {
             addBulkUpdateButton();
         }
         add(new FillToolItem());
@@ -551,7 +553,7 @@ public class ItemsToolBar extends ToolBar {
                         }
                         BulkUpdatePanel bulkUpdatePanel = BulkUpdatePanel.getInstance();
                         bulkUpdatePanel.initDetailPanel(BrowseRecords.getSession().getCurrentEntityModel(), BrowseRecords
-                                .getSession().getCurrentView(), idsList);
+                                .getSession().getCurrentView(), idsList, isStaging());
                         bulkUpdatePanel.renderPanel();
                     } else {
                         MessageBox.alert(MessagesFactory.getMessages().warning_title(), MessagesFactory.getMessages()

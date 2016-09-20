@@ -176,6 +176,9 @@ public class ForeignKeyTablePanel extends ContentPanel implements ReturnCriteria
             removeFkButton.setEnabled(false);
             toolBar.add(removeFkButton);
             toolBar.add(new SeparatorToolItem());
+            createFkButton.setEnabled(false);
+            toolBar.add(createFkButton);
+            toolBar.add(new SeparatorToolItem());
             toolBar.add(editFkButton);
             toolBar.add(new SeparatorToolItem());
         } else {
@@ -219,14 +222,12 @@ public class ForeignKeyTablePanel extends ContentPanel implements ReturnCriteria
                 fkModels.get(i).setMassUpdate(isBulkUpdate);
             }
         }
-        if (fkTypeModel.getForeignKeyFilter() != null) {
+        if (fkTypeModel.getForeignKeyFilter() != null && isBulkUpdate) {
             editFkButton.setEnabled(false);
             MessageBox.alert(MessagesFactory.getMessages().warning_title(),
                     MessagesFactory.getMessages().bulkUpdate_foreignkey_warning(), null).setIcon(MessageBox.WARNING);
         }
-        if (fkTypeModel.isReadOnly()) {
-            editFkButton.setEnabled(false);
-        }
+
         proxy = new PagingModelMemoryProxy(this.fkModels);
         loader = new BasePagingLoader<PagingLoadResult<ModelData>>(proxy);
         store = new ListStore<ItemNodeModel>(loader);
@@ -503,11 +504,7 @@ public class ForeignKeyTablePanel extends ContentPanel implements ReturnCriteria
             }
         });
 
-        createFkButton.setEnabled(!entityModel.getTypeModel(entityModel.getConceptName()).isDenyCreatable());
-        if (fkTypeModel.isReadOnly()) {
-            addFkButton.setEnabled(false);
-            removeFkButton.setEnabled(false);
-        }
+        createFkButton.setEnabled(!entityModel.getTypeModel(entityModel.getConceptName()).isDenyCreatable() && !isBulkUpdate);
 
         editFkButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
@@ -517,6 +514,7 @@ public class ForeignKeyTablePanel extends ContentPanel implements ReturnCriteria
                 if (enable) {
                     addFkButton.setEnabled(true);
                     removeFkButton.setEnabled(true);
+                    createFkButton.setEnabled(!entityModel.getTypeModel(entityModel.getConceptName()).isDenyCreatable());
                     grid.setEnabled(true);
                     for (int i = 0; i < fkModels.size(); i++) {
                         fkModels.get(i).setEdited(enable);
@@ -524,6 +522,7 @@ public class ForeignKeyTablePanel extends ContentPanel implements ReturnCriteria
                 } else {
                     addFkButton.setEnabled(false);
                     removeFkButton.setEnabled(false);
+                    createFkButton.setEnabled(false);
                     foreignKeySelector.setEnabled(false);
                     grid.setEnabled(false);
 
@@ -544,6 +543,12 @@ public class ForeignKeyTablePanel extends ContentPanel implements ReturnCriteria
                 }
             }
         });
+
+        if (fkTypeModel.isReadOnly()) {
+            addFkButton.setEnabled(false);
+            removeFkButton.setEnabled(false);
+            editFkButton.setEnabled(false);
+        }
     }
 
     private boolean addFk() {

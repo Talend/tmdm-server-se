@@ -75,10 +75,6 @@ public class BrowseRecordsEvents {
 
     public static final EventType DefaultView = new EventType(DefaultViewCode);
 
-    public static final int ViewBulkUpdateItemCode = 30014;
-
-    public static final EventType ViewBulkUpdateItem = new EventType(ViewBulkUpdateItemCode);
-
     public static final int BulkUpdateItemCode = 30015;
 
     public static final EventType BulkUpdateItem = new EventType(BulkUpdateItemCode);

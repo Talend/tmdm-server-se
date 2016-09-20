@@ -12,18 +12,17 @@
 // ============================================================================
 package org.talend.mdm.webapp.browserecords.client.widget;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.talend.mdm.webapp.base.shared.EntityModel;
-import org.talend.mdm.webapp.browserecords.client.BrowseRecords;
-import org.talend.mdm.webapp.browserecords.client.BrowseRecordsEvents;
+import org.talend.mdm.webapp.browserecords.client.creator.ItemCreator;
 import org.talend.mdm.webapp.browserecords.client.i18n.MessagesFactory;
-import org.talend.mdm.webapp.browserecords.client.mvc.BrowseRecordsView;
+import org.talend.mdm.webapp.browserecords.client.model.BreadCrumbModel;
+import org.talend.mdm.webapp.browserecords.client.model.ItemBean;
 import org.talend.mdm.webapp.browserecords.shared.ViewBean;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
-import com.extjs.gxt.ui.client.mvc.AppEvent;
-import com.extjs.gxt.ui.client.mvc.Dispatcher;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
@@ -73,18 +72,29 @@ public class BulkUpdatePanel extends ContentPanel {
         add(detailPanel, centerData);
     }
 
-    public void initDetailPanel(EntityModel entityModel, ViewBean viewBean, List<String> idsList) {
+    public void initDetailPanel(EntityModel entityModel, ViewBean viewBean, List<String> idsList, boolean isStaging) {
         this.idsList = idsList;
-        AppEvent event = new AppEvent(BrowseRecordsEvents.ViewBulkUpdateItem);
-        event.setData(BrowseRecordsView.IS_STAGING, false);
-        event.setData(BrowseRecords.ENTITY_MODEL, entityModel);
-        event.setData(BrowseRecords.VIEW_BEAN, viewBean);
-        Dispatcher.forwardEvent(event);
-    }
+        ItemBean itemBean = ItemCreator.createDefaultItemBean(viewBean.getBindingEntityModel().getConceptName(), entityModel);
 
-    public void updateDetailPanel(ItemsDetailPanel itemsDetailPanel) {
-        detailPanel.removeAll();
-        detailPanel.add(itemsDetailPanel);
+        ItemsDetailPanel bulkUpdateDetailPanel = ItemsDetailPanel.newInstance();
+        bulkUpdateDetailPanel.clearAll();
+        bulkUpdateDetailPanel.setOutMost(true);
+        ItemPanel itemPanel = new ItemPanel(isStaging, viewBean, itemBean, ItemDetailToolBar.BULK_UPDATE_OPERATION,
+                bulkUpdateDetailPanel, true);
+        itemPanel.getToolBar().setFkToolBar(false);
+        itemPanel.getToolBar().setHierarchyCall(false);
+
+        List<BreadCrumbModel> breads = new ArrayList<BreadCrumbModel>();
+        if (itemBean != null) {
+            breads.add(new BreadCrumbModel("", BreadCrumb.DEFAULTNAME, null, null, false)); //$NON-NLS-1$
+            breads.add(new BreadCrumbModel(itemBean.getConcept(), itemBean.getLabel(), null, null, true));
+        }
+        List<String> pkInfoList = new ArrayList<String>();
+        pkInfoList.add(itemBean.getLabel());
+        bulkUpdateDetailPanel.initBanner(pkInfoList, itemBean.getDescription());
+        bulkUpdateDetailPanel.addTabItem(itemBean.getLabel(), itemPanel, ItemsDetailPanel.SINGLETON, itemBean.getConcept());
+        bulkUpdateDetailPanel.initBreadCrumb(new BreadCrumb(breads, bulkUpdateDetailPanel));
+        detailPanel.add(bulkUpdateDetailPanel);
         detailPanel.layout();
     }
 

@@ -35,7 +35,6 @@ import org.talend.mdm.webapp.browserecords.client.util.Locale;
 import org.talend.mdm.webapp.browserecords.client.util.UserSession;
 import org.talend.mdm.webapp.browserecords.client.util.ViewUtil;
 import org.talend.mdm.webapp.browserecords.client.widget.BreadCrumb;
-import org.talend.mdm.webapp.browserecords.client.widget.BulkUpdatePanel;
 import org.talend.mdm.webapp.browserecords.client.widget.GenerateContainer;
 import org.talend.mdm.webapp.browserecords.client.widget.ItemDetailToolBar;
 import org.talend.mdm.webapp.browserecords.client.widget.ItemPanel;
@@ -133,9 +132,6 @@ public class BrowseRecordsView extends View {
             break;
         case BrowseRecordsEvents.DefaultViewCode:
             setDefaultView(event);
-            break;
-        case BrowseRecordsEvents.ViewBulkUpdateItemCode:
-            onViewBulkUpdateItem(event);
             break;
         default:
             break;
@@ -506,28 +502,5 @@ public class BrowseRecordsView extends View {
 
     protected void setDefaultView(final AppEvent event) {
         ItemsToolBar.getInstance().updateEntityCombo();
-    }
-
-    private void onViewBulkUpdateItem(final AppEvent event) {
-        Boolean isStaging = event.getData(BrowseRecordsView.IS_STAGING);
-        ViewBean viewBean = event.getData(BrowseRecords.VIEW_BEAN);
-        EntityModel entityModel = viewBean.getBindingEntityModel();
-        ItemBean itemBean = ItemCreator.createDefaultItemBean(viewBean.getBindingEntityModel().getConceptName(), entityModel);
-
-        ItemsDetailPanel bulkUpdateDetailPanel = ItemsDetailPanel.newInstance();
-        ItemPanel itemPanel = new ItemPanel(isStaging, viewBean, itemBean, ItemDetailToolBar.BULK_UPDATE_OPERATION,
-                bulkUpdateDetailPanel, true);
-        itemPanel.getToolBar().setOutMost(false);
-        itemPanel.getToolBar().setFkToolBar(false);
-        itemPanel.getToolBar().setHierarchyCall(false);
-
-        List<BreadCrumbModel> breads = new ArrayList<BreadCrumbModel>();
-        if (itemBean != null) {
-            breads.add(new BreadCrumbModel("", BreadCrumb.DEFAULTNAME, null, null, false)); //$NON-NLS-1$
-            breads.add(new BreadCrumbModel(itemBean.getConcept(), itemBean.getLabel(), null, null, true));
-        }
-        bulkUpdateDetailPanel.addTabItem(itemBean.getLabel(), itemPanel, ItemsDetailPanel.SINGLETON, itemBean.getConcept());
-        bulkUpdateDetailPanel.initBreadCrumb(new BreadCrumb(breads, bulkUpdateDetailPanel));
-        BulkUpdatePanel.getInstance().updateDetailPanel(bulkUpdateDetailPanel);
     }
 }

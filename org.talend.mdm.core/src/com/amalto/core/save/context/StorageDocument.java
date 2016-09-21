@@ -174,7 +174,7 @@ public class StorageDocument implements MutableDocument {
                 }
             }
         }
-        if (dataRecord.getSetFields().isEmpty()) {
+        if (dataRecord.getSetFields().isEmpty() && dataRecord.getType() == null) {
             return null;
         } else {
             return dataRecord;

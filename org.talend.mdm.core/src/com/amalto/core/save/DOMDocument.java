@@ -18,6 +18,8 @@ import com.amalto.core.history.accessor.Accessor;
 import com.amalto.core.history.accessor.DOMAccessorFactory;
 import com.amalto.core.save.context.SaverContextFactory;
 import com.amalto.core.schema.validation.SkipAttributeDocumentBuilder;
+
+import org.apache.commons.lang.StringUtils;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.w3c.dom.*;
 
@@ -137,7 +139,26 @@ public class DOMDocument implements DOMMutableDocument {
         static final Cleaner INSTANCE = new EmptyElementCleaner();
 
         public boolean clean(Element element) {
-            return element == null || !element.hasChildNodes();
+            if (element == null) {
+                return true;
+            }
+            if (element.getAttributes() != null && element.getAttributes().getLength() > 0) {
+                boolean isAllEmpty = false;
+                for (int i = 0; i < element.getAttributes().getLength(); i++) {
+                    if (StringUtils.isBlank(element.getAttributes().item(i).getNodeValue())) {
+                        isAllEmpty = true;
+                    }
+                }
+                if (isAllEmpty) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            if (!element.hasChildNodes()) {
+                return true;
+            }
+            return false;
         }
     }
 

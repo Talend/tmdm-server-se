@@ -67,14 +67,8 @@ class TypeComparison extends DefaultMetadataVisitor<Set<String>> {
         String currentPath = getCurrentPath(containedField);
         pathPrefix.push(containedField.getName());
         {
-            if (type.hasField(containedField.getName())) {
-                type = containedField.getContainedType();
-                super.visit(containedField);
-                type = containedField.getContainingType();
-            } else {
-                paths.add(currentPath);
-                containedField.getContainedType().accept(this);
-            }
+            paths.add(currentPath);
+            containedField.getContainedType().accept(this);
         }
         pathPrefix.pop();
         return paths;

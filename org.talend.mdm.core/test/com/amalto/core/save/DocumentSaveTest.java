@@ -2958,6 +2958,75 @@ public class DocumentSaveTest extends TestCase {
                 StorageMetadataUtils.toString(result.get("UG_EOR"), result.getType().getField("UG_EOR")));
     }
 
+    public void testCreateRTEContrat_DetailContratIsNotEmpty() throws Exception {
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(DocumentSaveTest.class.getResourceAsStream("RTE_RAP.xsd"));
+        MockMetadataRepositoryAdmin.INSTANCE.register("RTE-RAP", repository);
+
+        SaverSource source = new TestSaverSource(repository, false, "contrat_original.xml", "RTE_RAP.xsd");
+        ((TestSaverSource) source).setUserName("System_Admin");
+
+        SaverSession session = SaverSession.newSession(source);
+
+        InputStream recordXml = DocumentSaveTest.class.getResourceAsStream("contrat.xml");
+        DocumentSaverContext context = session.getContextFactory().create("MDM", "RTE-RAP", "Source", recordXml, true, true,
+                true, true, false);
+        DocumentSaver saver = context.createSaver();
+        saver.save(session, context);
+        MockCommitter committer = new MockCommitter();
+        session.end(committer);
+
+        assertTrue(committer.hasSaved());
+        Element committedElement = committer.getCommittedElement();
+        assertEquals("8", evaluate(committedElement, "/Contrat/numeroContrat"));
+        assertEquals("2016-09-14", evaluate(committedElement, "/Contrat/dateSignatureContrat"));
+        assertEquals("2016-09-14", evaluate(committedElement, "/Contrat/dateDebutPrevueContrat"));
+        assertEquals("2016-09-14", evaluate(committedElement, "/Contrat/dateDebutEffectiveContrat"));
+        assertEquals("234", evaluate(committedElement, "/Contrat/detailContrat/Caracteristiques/codeSapAcheteur"));
+        NodeList child = committedElement.getChildNodes();
+        for (int i = 0; i < child.getLength(); i++) {
+            Node node = child.item(i);
+            if (node.getNodeName().equals("detailContrat")) {
+                assertEquals(1, node.getAttributes().getLength());
+                assertEquals("AP-AA", node.getAttributes().getNamedItem("xsi:type").getNodeValue());
+            }
+        }
+    }
+
+    public void testCreateRTEContrat_DetailContratIsEmpty() throws Exception {
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(DocumentSaveTest.class.getResourceAsStream("RTE_RAP.xsd"));
+        MockMetadataRepositoryAdmin.INSTANCE.register("RTE-RAP", repository);
+
+        SaverSource source = new TestSaverSource(repository, false, "contrat_original.xml", "RTE_RAP.xsd");
+        ((TestSaverSource) source).setUserName("System_Admin");
+
+        SaverSession session = SaverSession.newSession(source);
+
+        InputStream recordXml = DocumentSaveTest.class.getResourceAsStream("contrat_2.xml");
+        DocumentSaverContext context = session.getContextFactory().create("MDM", "RTE-RAP", "Source", recordXml, true, true,
+                true, true, false);
+        DocumentSaver saver = context.createSaver();
+        saver.save(session, context);
+        MockCommitter committer = new MockCommitter();
+        session.end(committer);
+
+        assertTrue(committer.hasSaved());
+        Element committedElement = committer.getCommittedElement();
+        assertEquals("8", evaluate(committedElement, "/Contrat/numeroContrat"));
+        assertEquals("2016-09-14", evaluate(committedElement, "/Contrat/dateSignatureContrat"));
+        assertEquals("2016-09-14", evaluate(committedElement, "/Contrat/dateDebutPrevueContrat"));
+        assertEquals("2016-09-14", evaluate(committedElement, "/Contrat/dateDebutEffectiveContrat"));
+        NodeList child = committedElement.getChildNodes();
+        for (int i = 0; i < child.getLength(); i++) {
+            Node node = child.item(i);
+            if (node.getNodeName().equals("detailContrat")) {
+                assertEquals(1, node.getAttributes().getLength());
+                assertEquals("AP-AA", node.getAttributes().getNamedItem("xsi:type").getNodeValue());
+            }
+        }
+    }
+
     private static class MockCommitter implements SaverSession.Committer {
 
         private MutableDocument lastSaved;

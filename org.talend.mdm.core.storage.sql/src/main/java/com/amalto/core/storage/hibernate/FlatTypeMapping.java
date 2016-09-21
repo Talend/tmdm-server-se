@@ -318,7 +318,7 @@ class FlatTypeMapping extends TypeMapping {
                                                     newValueObject = ((Wrapper) value).get(newMapping.getDatabase(fm).getName());
                                                     if (newValueObject != null) {
                                                         List<Object> newValueList = new ArrayList<Object>();
-                                                        if(mappingFieldMetadata.isMany()){
+                                                        if(fm.isMany()){
                                                             newValueList.addAll((List<Object>) newValueObject);
                                                         } else {
                                                             newValueList.add(newValueObject);
@@ -343,10 +343,10 @@ class FlatTypeMapping extends TypeMapping {
                                                     newValueList.add(newValueObject);
                                                 }
                                                 for (Object newValue : newValueList) {
-                                                    if (mappingField instanceof ReferenceFieldMetadata) {
-                                                        dataRecord.set(mappingField, getDataRecordFromWrapper(contextClassLoader, (Wrapper) newValue, proceedWrappers));
+                                                    if (mappingFieldMetadata instanceof ReferenceFieldMetadata) {
+                                                        dataRecord.set(mappingFieldMetadata, getDataRecordFromWrapper(contextClassLoader, (Wrapper) newValue, proceedWrappers));
                                                     } else {
-                                                        dataRecord.set(mappingField, newValue);
+                                                        dataRecord.set(mappingFieldMetadata, newValue);
                                                     }
                                                 }
                                             }

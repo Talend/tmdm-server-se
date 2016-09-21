@@ -302,11 +302,60 @@ class FlatTypeMapping extends TypeMapping {
 	                        valueList.add(valueObject);
 	                    }
 						for (Object value : valueList) {
-	                        if (fieldMetadata instanceof ReferenceFieldMetadata || fieldMetadata instanceof ContainedTypeFieldMetadata) {
+                            if (fieldMetadata instanceof ReferenceFieldMetadata) {
 								dataRecord.set(fieldMetadata, getDataRecordFromWrapper(contextClassLoader, (Wrapper) value, proceedWrappers));
+                            } else if (fieldMetadata instanceof ContainedTypeFieldMetadata) {
+                                TypeMapping newMapping = mappings.getMappingFromUser(contextClassLoader.getTypeFromClass(((Wrapper) value).getClass()));
+                                DataRecord newdataRecord = new DataRecord(newMapping.getUser(), UnsupportedDataRecordMetadata.INSTANCE);
+                                proceedWrappers.put((Wrapper) value, newdataRecord);
+                                for (FieldMetadata mappingField : newMapping.getDatabase().getFields()) {
+                                    FieldMetadata mappingFieldMetadata = newMapping.getUser(mappingField);
+                                    if (mappingFieldMetadata != null) {
+                                        Object newValueObject;
+                                        if (mappingFieldMetadata instanceof ContainedTypeFieldMetadata) {
+                                            for (FieldMetadata fm : ((ContainedTypeFieldMetadata)mappingFieldMetadata).getContainedType().getFields()) {
+                                                if (newMapping.getDatabase(fm) != null) {
+                                                    newValueObject = ((Wrapper) value).get(newMapping.getDatabase(fm).getName());
+                                                    if (newValueObject != null) {
+                                                        List<Object> newValueList = new ArrayList<Object>();
+                                                        if(mappingFieldMetadata.isMany()){
+                                                            newValueList.addAll((List<Object>) newValueObject);
+                                                        } else {
+                                                            newValueList.add(newValueObject);
+                                                        }
+                                                        for (Object newValue : newValueList) {
+                                                            if (fm instanceof ReferenceFieldMetadata) {
+                                                                dataRecord.set(fm, getDataRecordFromWrapper(contextClassLoader, (Wrapper) newValue, proceedWrappers));
+                                                            } else {
+                                                                dataRecord.set(fm, newValue);
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        } else {
+                                            newValueObject = ((Wrapper) value).get(mappingFieldMetadata.getName());
+                                            if (newValueObject != null) {
+                                                List<Object> newValueList = new ArrayList<Object>();
+                                                if(mappingFieldMetadata.isMany()){
+                                                    newValueList.addAll((List<Object>) newValueObject);
+                                                } else {
+                                                    newValueList.add(newValueObject);
+                                                }
+                                                for (Object newValue : newValueList) {
+                                                    if (mappingField instanceof ReferenceFieldMetadata) {
+                                                        dataRecord.set(mappingField, getDataRecordFromWrapper(contextClassLoader, (Wrapper) newValue, proceedWrappers));
+                                                    } else {
+                                                        dataRecord.set(mappingField, newValue);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
 	                        } else {
-	                            dataRecord.set(fieldMetadata, value);
-	                        }
+                                dataRecord.set(fieldMetadata, value);
+                            }
 	                    }
 	                }
 	            }

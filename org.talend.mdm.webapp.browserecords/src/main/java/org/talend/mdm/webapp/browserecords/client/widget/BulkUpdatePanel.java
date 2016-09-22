@@ -94,6 +94,7 @@ public class BulkUpdatePanel extends ContentPanel {
         bulkUpdateDetailPanel.initBanner(pkInfoList, itemBean.getDescription());
         bulkUpdateDetailPanel.addTabItem(itemBean.getLabel(), itemPanel, ItemsDetailPanel.SINGLETON, itemBean.getConcept());
         bulkUpdateDetailPanel.initBreadCrumb(new BreadCrumb(breads, bulkUpdateDetailPanel));
+        detailPanel.removeAll();
         detailPanel.add(bulkUpdateDetailPanel);
         detailPanel.layout();
     }

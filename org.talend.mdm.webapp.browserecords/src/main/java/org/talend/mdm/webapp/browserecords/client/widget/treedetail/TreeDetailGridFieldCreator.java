@@ -223,9 +223,7 @@ public class TreeDetailGridFieldCreator {
 
         }
         fieldMap.put(node.getId().toString(), field);
-        if (!ItemDetailToolBar.BULK_UPDATE_OPERATION.equalsIgnoreCase(operation)) {
-            updateMandatory(field, node, fieldMap);
-        }
+        updateMandatory(field, node, fieldMap);
         addFieldListener(dataType, field, node, fieldMap);
         return field;
     }
@@ -445,8 +443,8 @@ public class TreeDetailGridFieldCreator {
     }
 
     public static void updateMandatory(Field<?> field, ItemNodeModel node, Map<String, Field<?>> fieldMap) {
-
         boolean flag = false;
+        boolean noBulkUpdateFlag = node.isMassUpdate() && !node.isEdited();
         ItemNodeModel parent = (ItemNodeModel) node.getParent();
         if (parent != null && parent.getParent() != null && !parent.isMandatory()) {
             List<ModelData> childs = parent.getChildren();
@@ -459,18 +457,20 @@ public class TreeDetailGridFieldCreator {
             }
 
             autoFillValue4MandatoryBooleanField(flag, childs, fieldMap);
-
             for (int i = 0; i < childs.size(); i++) {
                 ItemNodeModel mandatoryNode = (ItemNodeModel) childs.get(i);
                 Field<?> updateField = fieldMap.get(mandatoryNode.getId().toString());
                 if (updateField != null && mandatoryNode.isMandatory()) {
-                    setMandatory(updateField, flag ? mandatoryNode.isMandatory() : !mandatoryNode.isMandatory());
+                    boolean noBulkUpdateChildFlag = mandatoryNode.isMassUpdate() && !mandatoryNode.isEdited();
+                    boolean isFieldMandatory = flag ? mandatoryNode.isMandatory() : !mandatoryNode.isMandatory();
+                    mandatoryNode.setFieldMandatory(isFieldMandatory);
+                    setMandatory(updateField, noBulkUpdateChildFlag ? false : isFieldMandatory);
                     mandatoryNode.setValid(updateField.validate());
                 }
             }
-
         } else {
-            setMandatory(field, node.isMandatory());
+            node.setFieldMandatory(node.isMandatory());
+            setMandatory(field, noBulkUpdateFlag ? false : node.isMandatory());
         }
     }
 
@@ -514,7 +514,7 @@ public class TreeDetailGridFieldCreator {
     }
 
     @SuppressWarnings("rawtypes")
-    private static void setMandatory(Field<?> field, boolean mandatory) {
+    public static void setMandatory(Field<?> field, boolean mandatory) {
         if (!BrowseRecords.getSession().getAppHeader().isAutoValidate()) {
             return;
         }
@@ -531,7 +531,7 @@ public class TreeDetailGridFieldCreator {
         }
     }
 
-    private static void validate(Field<?> field, ItemNodeModel node) {
+    public static void validate(Field<?> field, ItemNodeModel node) {
         boolean isEmpty = field.getRawValue().isEmpty();
         if (field instanceof NumberField) {
             node.setBlankValid(((NumberField) field).getAllowBlank() || !isEmpty);

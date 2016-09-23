@@ -161,6 +161,8 @@ public class MultiOccurrenceChangeItem extends HorizontalPanel {
                                 updateMultiOccurrenceButtonStatus(true);
                                 treeDetail.getMultiManager().handleOptIcons();
                                 itemNode.setEdited(true);
+                                TreeDetailGridFieldCreator.setMandatory(field, itemNode.isFieldMandatory());
+                                TreeDetailGridFieldCreator.validate(field, itemNode);
                             } else {
                                 field.clear();
                                 field.setReadOnly(true);
@@ -169,6 +171,8 @@ public class MultiOccurrenceChangeItem extends HorizontalPanel {
                                 updateMultiOccurrenceButtonStatus(false);
                                 itemNode.setValid(true);
                                 itemNode.setEdited(false);
+                                TreeDetailGridFieldCreator.setMandatory(field, false);
+                                TreeDetailGridFieldCreator.validate(field, itemNode);
                             }
                         }
                     });

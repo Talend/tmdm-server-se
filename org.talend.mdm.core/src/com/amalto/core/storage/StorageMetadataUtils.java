@@ -402,30 +402,53 @@ public class StorageMetadataUtils {
         if (actualType == null) {
             // Use field's declared type if no actual type (TMDM-6898)
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Type is null, replacing type with field's declared type"); //$NON-NLS-1$
+                LOGGER.debug("Type is null, replacing type with field's declared type");
             }
             actualType = field.getType();
             if (actualType == null) {
-                throw new IllegalArgumentException("Actual type for field '" + field.getName() + "' cannot be null."); //$NON-NLS-1$ //$NON-NLS-2$
+                throw new IllegalArgumentException("Actual type for field '" + field.getName() + "' cannot be null.");
             }
         }
         if (field instanceof ReferenceFieldMetadata) {
             if (dataAsString == null || dataAsString.trim().isEmpty()) {
                 return null;
             }
-            List<String> ids = getIds(dataAsString);
+            List<String> ids = new LinkedList<String>();
+            if (dataAsString.startsWith("[")) { //$NON-NLS-1$
+                char[] chars = dataAsString.toCharArray();
+                StringBuilder builder = null;
+                for (char currentChar : chars) {
+                    switch (currentChar) {
+                    case '[':
+                        builder = new StringBuilder();
+                        break;
+                    case ']':
+                        if (builder != null) {
+                            ids.add(builder.toString());
+                        }
+                        break;
+                    default:
+                        if (builder != null) {
+                            builder.append(currentChar);
+                        }
+                        break;
+                    }
+                }
+            } else {
+                ids.add(dataAsString);
+            }
             if (ids.isEmpty()) {
-                throw new IllegalArgumentException("Id '" + dataAsString + "' does not match expected format (no id found).");  //$NON-NLS-1$//$NON-NLS-2$
+                throw new IllegalArgumentException("Id '" + dataAsString + "' does not match expected format (no id found).");
             }
             if (!(actualType instanceof ComplexTypeMetadata)) {
-                throw new IllegalArgumentException("Type '" + actualType.getName() + "' was expected to be an entity type.");  //$NON-NLS-1$//$NON-NLS-2$
+                throw new IllegalArgumentException("Type '" + actualType.getName() + "' was expected to be an entity type.");
             }
             ComplexTypeMetadata actualComplexType = (ComplexTypeMetadata) actualType;
             DataRecord referencedRecord = new DataRecord(actualComplexType, UnsupportedDataRecordMetadata.INSTANCE);
             Collection<FieldMetadata> keyFields = actualComplexType.getKeyFields();
             if (ids.size() != keyFields.size()) {
-                throw new IllegalStateException("Type '" + actualType.getName() + "' expects " + keyFields.size()  //$NON-NLS-1$//$NON-NLS-2$
-                        + " keys values, but got " + ids.size() + ".");  //$NON-NLS-1$//$NON-NLS-2$
+                throw new IllegalStateException("Type '" + actualType.getName() + "' expects " + keyFields.size()
+                        + " keys values, but got " + ids.size() + ".");
             }
             Iterator<FieldMetadata> keyIterator = keyFields.iterator();
             for (String id : ids) {
@@ -606,33 +629,5 @@ public class StorageMetadataUtils {
         } else {
             return String.valueOf(o);
         }
-    }
-    
-    public static List<String> getIds(String dataAsString) {
-        List<String> ids = new LinkedList<String>();
-        if (dataAsString.startsWith("[")) { //$NON-NLS-1$
-            char[] chars = dataAsString.toCharArray();
-            StringBuilder builder = null;
-            for (char currentChar : chars) {
-                switch (currentChar) {
-                case '[':
-                    builder = new StringBuilder();
-                    break;
-                case ']':
-                    if (builder != null) {
-                        ids.add(builder.toString());
-                    }
-                    break;
-                default:
-                    if (builder != null) {
-                        builder.append(currentChar);
-                    }
-                    break;
-                }
-            }
-        } else {
-            ids.add(dataAsString);
-        }
-        return ids;
     }
 }

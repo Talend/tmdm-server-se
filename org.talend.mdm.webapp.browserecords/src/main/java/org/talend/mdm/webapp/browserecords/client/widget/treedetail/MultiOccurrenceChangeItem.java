@@ -167,12 +167,14 @@ public class MultiOccurrenceChangeItem extends HorizontalPanel {
                                 field.clear();
                                 field.setReadOnly(true);
                                 field.addStyleName(disabledStyle);
-                                addRemoveHandler.removeAllNode(treeDetail.getSelectedItem());
                                 updateMultiOccurrenceButtonStatus(false);
                                 itemNode.setValid(true);
                                 itemNode.setEdited(false);
                                 TreeDetailGridFieldCreator.setMandatory(field, false);
                                 TreeDetailGridFieldCreator.validate(field, itemNode);
+                                if (!isAddRemoveHandlerNull()) {
+                                    addRemoveHandler.removeAllNode(treeDetail.getSelectedItem());
+                                }
                             }
                         }
                     });

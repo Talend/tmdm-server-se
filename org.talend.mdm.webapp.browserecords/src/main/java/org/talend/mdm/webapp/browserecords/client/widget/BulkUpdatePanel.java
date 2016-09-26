@@ -22,11 +22,8 @@ import org.talend.mdm.webapp.browserecords.client.model.BreadCrumbModel;
 import org.talend.mdm.webapp.browserecords.client.model.ItemBean;
 import org.talend.mdm.webapp.browserecords.shared.ViewBean;
 
-import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Window;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -51,8 +48,8 @@ public class BulkUpdatePanel extends ContentPanel {
     private BulkUpdatePanel() {
         setHeading(MessagesFactory.getMessages().bulkUpdate_title());
         setHeaderVisible(false);
-        setLayout(new BorderLayout());
-        setBorders(false);
+        setLayout(new FitLayout());
+        // setBorders(false);
 
         // BorderLayoutData westData = new BorderLayoutData(LayoutRegion.WEST, 470);
         // westData.setSplit(true);
@@ -63,13 +60,12 @@ public class BulkUpdatePanel extends ContentPanel {
         // bulkUpdateListPanel = BulkUpdateListPanel.getInstance();
         // add(BulkUpdateListPanel.getInstance(), westData);
 
-        BorderLayoutData centerData = new BorderLayoutData(LayoutRegion.CENTER);
-        detailPanel = new ContentPanel();
-        detailPanel.setFrame(false);
-        detailPanel.setHeaderVisible(false);
-        detailPanel.setLayout(new FitLayout());
-        detailPanel.setBodyBorder(false);
-        add(detailPanel, centerData);
+        // BorderLayoutData centerData = new BorderLayoutData(LayoutRegion.CENTER);
+        // detailPanel = new ContentPanel();
+        // detailPanel.setHeaderVisible(false);
+        // detailPanel.setLayout(new FitLayout());
+        // detailPanel.setBodyBorder(false);
+        // add(detailPanel);
     }
 
     public void initDetailPanel(EntityModel entityModel, ViewBean viewBean, List<String> idsList, boolean isStaging) {
@@ -94,8 +90,9 @@ public class BulkUpdatePanel extends ContentPanel {
         bulkUpdateDetailPanel.initBanner(pkInfoList, itemBean.getDescription());
         bulkUpdateDetailPanel.addTabItem(itemBean.getLabel(), itemPanel, ItemsDetailPanel.SINGLETON, itemBean.getConcept());
         bulkUpdateDetailPanel.initBreadCrumb(new BreadCrumb(breads, bulkUpdateDetailPanel));
-        detailPanel.add(bulkUpdateDetailPanel);
-        detailPanel.layout();
+        this.removeAll();
+        this.add(bulkUpdateDetailPanel);
+        this.layout();
     }
 
     public BulkUpdateListPanel getBulkUpdateListPanel() {

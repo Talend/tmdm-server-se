@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:simpleType name="MyStr">
+        <xsd:restriction base="xsd:string">
+            <xsd:length value="30" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:element name="MyStr">
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1" name="Id" type="xsd:string" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="MyStr" type="MyStr" />
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="MyStr">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="Id" />
+        </xsd:unique>
+    </xsd:element>
+</xsd:schema>

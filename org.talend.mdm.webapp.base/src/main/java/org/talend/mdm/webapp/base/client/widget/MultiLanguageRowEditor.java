@@ -82,10 +82,10 @@ public class MultiLanguageRowEditor extends RowEditor<BaseModel> {
                 grid.getStore().remove(this.rowIndex);
                 return;
             }
-            List<String> values = new ArrayList<String>(languageValueMap.values());
+            List<String> languages = new ArrayList<String>(languageValueMap.keySet());
             // check language exist
             if (languageValueMap.containsKey(selectedRowLanguage)
-                    && this.rowIndex != values.indexOf(languageValueMap.get(selectedRowLanguage))) {
+                    && this.rowIndex != languages.indexOf(selectedRowLanguage)) {
                 MessageBox.alert(BaseMessagesFactory.getMessages().message_fail(), BaseMessagesFactory.getMessages()
                         .multiLangauge_language_duplicate(), null);
                 grid.getStore().remove(this.rowIndex);

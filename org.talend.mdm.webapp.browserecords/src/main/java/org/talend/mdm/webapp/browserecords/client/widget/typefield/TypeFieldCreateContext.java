@@ -60,6 +60,8 @@ public class TypeFieldCreateContext implements IsSerializable {
     
     private int autoTextAreaLength;
 
+    private boolean isBulkUpdate = false;
+
 
     public TypeModel getDataType() {
         return dataType;
@@ -129,5 +131,12 @@ public class TypeFieldCreateContext implements IsSerializable {
     public void setAutoTextAreaLength(int autoTextAreaLength) {
         this.autoTextAreaLength = autoTextAreaLength;
     }
-    
+
+    public boolean isBulkUpdate() {
+        return isBulkUpdate;
+    }
+
+    public void setBulkUpdate(boolean isBulkUpdate) {
+        this.isBulkUpdate = isBulkUpdate;
+    }
 }

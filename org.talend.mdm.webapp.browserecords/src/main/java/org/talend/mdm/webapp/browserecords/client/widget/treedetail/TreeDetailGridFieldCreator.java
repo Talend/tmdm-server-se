@@ -42,6 +42,7 @@ import org.talend.mdm.webapp.browserecords.client.widget.inputfield.ComboBoxFiel
 import org.talend.mdm.webapp.browserecords.client.widget.inputfield.FormatDateField;
 import org.talend.mdm.webapp.browserecords.client.widget.inputfield.FormatNumberField;
 import org.talend.mdm.webapp.browserecords.client.widget.inputfield.FormatTextField;
+import org.talend.mdm.webapp.browserecords.client.widget.inputfield.PictureField;
 import org.talend.mdm.webapp.browserecords.client.widget.inputfield.SimpleComboBoxField;
 import org.talend.mdm.webapp.browserecords.client.widget.inputfield.UrlField;
 import org.talend.mdm.webapp.browserecords.client.widget.inputfield.validator.TextFieldValidator;
@@ -176,6 +177,7 @@ public class TreeDetailGridFieldCreator {
             TypeFieldCreateContext context = new TypeFieldCreateContext(dataType);
             context.setLanguage(language);
             context.setMandatory(node.isMandatory());
+            context.setBulkUpdate(node.isMassUpdate());
             TypeFieldCreator typeFieldCreator = new TypeFieldCreator(new TypeFieldSource(TypeFieldSource.FORM_INPUT), context);
             Map<String, TypeFieldStyle> sytles = new HashMap<String, TypeFieldStyle>();
             sytles.put(TypeFieldStyle.ATTRI_WIDTH, new TypeFieldStyle(TypeFieldStyle.ATTRI_WIDTH,
@@ -524,6 +526,9 @@ public class TreeDetailGridFieldCreator {
             ((BooleanField) field).setAllowBlank(!mandatory);
         } else if (field instanceof DateField) {
             ((DateField) field).setAllowBlank(!mandatory);
+        } else if (field instanceof PictureField) {
+            ((PictureField) field).setMandatory(mandatory);
+            ((PictureField) field).setAllowBlank(!mandatory);
         } else if (field instanceof TextField) {
             ((TextField) field).setAllowBlank(!mandatory);
         } else if (field instanceof UrlField) {

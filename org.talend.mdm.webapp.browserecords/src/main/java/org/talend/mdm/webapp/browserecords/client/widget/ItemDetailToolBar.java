@@ -1137,6 +1137,7 @@ public class ItemDetailToolBar extends ToolBar {
             saveAndCloseButton.setId("saveAndCloseButtonOfMassUpdate"); //$NON-NLS-1$
             saveAndCloseButton.setIcon(AbstractImagePrototype.create(Icons.INSTANCE.save_and_close()));
             saveAndCloseButton.setToolTip(MessagesFactory.getMessages().save_close_tip());
+            saveAndCloseButton.setWidth("105px");
             saveAndCloseButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
                 @Override
@@ -1196,7 +1197,7 @@ public class ItemDetailToolBar extends ToolBar {
             cancelButton.setId("cancelButtonOfMassUpdate"); //$NON-NLS-1$
             cancelButton.setIcon(AbstractImagePrototype.create(Icons.INSTANCE.Delete()));
             cancelButton.setToolTip(MessagesFactory.getMessages().save_close_tip());
-
+            cancelButton.setWidth("61px");
             cancelButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
                 @Override

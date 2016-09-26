@@ -58,7 +58,7 @@ public class CustomTypeFieldFactory extends TypeFieldFactory {
             }
             field = autoIncrementField;
         } else if (context.getDataType().getType().equals(DataTypeConstants.PICTURE)) {
-            PictureField pictureField = new PictureField(context.isMandatory());
+            PictureField pictureField = new PictureField(context.isBulkUpdate() ? false : context.isMandatory());
             if (context.isWithValue()) {
                 pictureField.setValue(hasValue() ? getValue().toString() : ""); //$NON-NLS-1$
             }

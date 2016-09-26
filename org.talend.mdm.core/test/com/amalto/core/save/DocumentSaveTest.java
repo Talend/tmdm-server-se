@@ -237,7 +237,7 @@ public class DocumentSaveTest extends TestCase {
 
         assertTrue(committer.hasSaved());
         Element committedElement = committer.getCommittedElement();
-        assertEquals("", evaluate(committedElement, "/Contract/detail[1]/@xsi:type"));
+        assertEquals("ContractDetailType", evaluate(committedElement, "/Contract/detail[1]/@xsi:type"));
         assertEquals("", evaluate(committedElement, "/Contract/detail[1]/code"));
     }
 

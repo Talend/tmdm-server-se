@@ -174,7 +174,7 @@ public class StorageDocument implements MutableDocument {
                 }
             }
         }
-        if (dataRecord.getSetFields().isEmpty() && dataRecord.getType() == null) {
+        if (dataRecord.getSetFields().isEmpty() && dataRecord.getType() != null && dataRecord.getType().getName().startsWith(MetadataRepository.ANONYMOUS_PREFIX)) {
             return null;
         } else {
             return dataRecord;

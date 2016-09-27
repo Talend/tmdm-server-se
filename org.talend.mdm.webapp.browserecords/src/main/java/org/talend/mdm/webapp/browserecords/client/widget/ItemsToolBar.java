@@ -551,10 +551,11 @@ public class ItemsToolBar extends ToolBar {
                         for (int i = 0; i < selectedItems.size(); i++) {
                             idsList.add(selectedItems.get(i).getIds());
                         }
-                        BulkUpdatePanel bulkUpdatePanel = BulkUpdatePanel.getInstance();
-                        bulkUpdatePanel.initDetailPanel(BrowseRecords.getSession().getCurrentEntityModel(), BrowseRecords
+                        BulkUpdatePanel bulkUpdatePanel = new BulkUpdatePanel(BrowseRecords.getSession().getCurrentEntityModel(),
+                                BrowseRecords
                                 .getSession().getCurrentView(), idsList, isStaging());
                         bulkUpdatePanel.renderPanel();
+                        Registry.register(BrowseRecords.BULK_UPDATE_PANEL, bulkUpdatePanel);
                     } else {
                         MessageBox.alert(MessagesFactory.getMessages().warning_title(), MessagesFactory.getMessages()
                                 .mass_update_choose_warning_message(), null);

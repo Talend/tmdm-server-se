@@ -294,8 +294,9 @@ public class BrowseRecordsController extends Controller {
         final MessageBox progressBar = MessageBox.wait(MessagesFactory.getMessages().save_progress_bar_title(), MessagesFactory
                 .getMessages().save_progress_bar_message(), MessagesFactory.getMessages().please_wait());
         final BrowseRecordsServiceAsync browseRecordsService = ServiceFactory.getInstance().getMasterService();
+        final BulkUpdatePanel bulkUpdatePanel = Registry.get(BrowseRecords.BULK_UPDATE_PANEL);
         browseRecordsService.bulkUpdateItem(GWT.getHostPageBaseURL(), concept, (new ItemTreeHandler(model, viewBean,
-                BulkUpdatePanel.getInstance().getIdsList(), ItemTreeHandlingStatus.BulkUpdate)).serializeItem(), Locale
+                bulkUpdatePanel.getIdsList(), ItemTreeHandlingStatus.BulkUpdate)).serializeItem(), Locale
                 .getLanguage(), new SessionAwareAsyncCallback<String>() {
 
             @Override
@@ -320,7 +321,7 @@ public class BrowseRecordsController extends Controller {
 
                                 @Override
                                 public void handleEvent(MessageBoxEvent be) {
-                                    BulkUpdatePanel.getInstance().closePanel();
+                                    bulkUpdatePanel.closePanel();
                                 }
                             });
                 } else {

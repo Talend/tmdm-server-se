@@ -30,48 +30,28 @@ import com.google.gwt.core.client.JavaScriptObject;
 
 public class BulkUpdatePanel extends ContentPanel {
 
-    private static BulkUpdatePanel instance;
-
-    private BulkUpdateListPanel bulkUpdateListPanel;
-
-    private ContentPanel detailPanel;
-
     private List<String> idsList;
 
-    public static BulkUpdatePanel getInstance() {
-        if (instance == null) {
-            instance = new BulkUpdatePanel();
-        }
-        return instance;
-    }
+    private EntityModel entityModel;
 
-    private BulkUpdatePanel() {
+    private ViewBean viewBean;
+
+    private boolean isStaging;
+
+    public BulkUpdatePanel(EntityModel entityModel, ViewBean viewBean, List<String> idsList, boolean isStaging) {
+        this.entityModel = entityModel;
+        this.viewBean = viewBean;
+        this.idsList = idsList;
+        this.isStaging = isStaging;
+        initPanel();
+    }
+    
+    private void initPanel() {
         setHeading(MessagesFactory.getMessages().bulkUpdate_title());
         setHeaderVisible(false);
         setLayout(new FitLayout());
-        // setBorders(false);
 
-        // BorderLayoutData westData = new BorderLayoutData(LayoutRegion.WEST, 470);
-        // westData.setSplit(true);
-        // westData.setMargins(new Margins(0, 5, 0, 0));
-        // westData.setFloatable(true);
-        // westData.setMinSize(0);
-        // westData.setMaxSize(7000);
-        // bulkUpdateListPanel = BulkUpdateListPanel.getInstance();
-        // add(BulkUpdateListPanel.getInstance(), westData);
-
-        // BorderLayoutData centerData = new BorderLayoutData(LayoutRegion.CENTER);
-        // detailPanel = new ContentPanel();
-        // detailPanel.setHeaderVisible(false);
-        // detailPanel.setLayout(new FitLayout());
-        // detailPanel.setBodyBorder(false);
-        // add(detailPanel);
-    }
-
-    public void initDetailPanel(EntityModel entityModel, ViewBean viewBean, List<String> idsList, boolean isStaging) {
-        this.idsList = idsList;
         ItemBean itemBean = ItemCreator.createDefaultItemBean(viewBean.getBindingEntityModel().getConceptName(), entityModel);
-
         ItemsDetailPanel bulkUpdateDetailPanel = ItemsDetailPanel.newInstance();
         bulkUpdateDetailPanel.clearAll();
         bulkUpdateDetailPanel.setOutMost(true);
@@ -79,7 +59,6 @@ public class BulkUpdatePanel extends ContentPanel {
                 bulkUpdateDetailPanel, true);
         itemPanel.getToolBar().setFkToolBar(false);
         itemPanel.getToolBar().setHierarchyCall(false);
-
         List<BreadCrumbModel> breads = new ArrayList<BreadCrumbModel>();
         if (itemBean != null) {
             breads.add(new BreadCrumbModel("", BreadCrumb.DEFAULTNAME, null, null, false)); //$NON-NLS-1$
@@ -90,13 +69,8 @@ public class BulkUpdatePanel extends ContentPanel {
         bulkUpdateDetailPanel.initBanner(pkInfoList, itemBean.getDescription());
         bulkUpdateDetailPanel.addTabItem(itemBean.getLabel(), itemPanel, ItemsDetailPanel.SINGLETON, itemBean.getConcept());
         bulkUpdateDetailPanel.initBreadCrumb(new BreadCrumb(breads, bulkUpdateDetailPanel));
-        this.removeAll();
-        this.add(bulkUpdateDetailPanel);
-        this.layout();
-    }
-
-    public BulkUpdateListPanel getBulkUpdateListPanel() {
-        return bulkUpdateListPanel;
+        add(bulkUpdateDetailPanel);
+        layout();
     }
 
     public List<String> getIdsList() {

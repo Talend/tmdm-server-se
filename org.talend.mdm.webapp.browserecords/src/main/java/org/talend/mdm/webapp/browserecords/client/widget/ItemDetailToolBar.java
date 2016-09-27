@@ -56,6 +56,7 @@ import org.talend.mdm.webapp.browserecords.client.widget.treedetail.TreeDetailUt
 import org.talend.mdm.webapp.browserecords.shared.ViewBean;
 
 import com.extjs.gxt.ui.client.GXT;
+import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.core.El;
@@ -1202,7 +1203,8 @@ public class ItemDetailToolBar extends ToolBar {
 
                 @Override
                 public void componentSelected(ButtonEvent ce) {
-                    BulkUpdatePanel.getInstance().closePanel();
+                    BulkUpdatePanel bulkUpdatePanel = Registry.get(BrowseRecords.BULK_UPDATE_PANEL);
+                    bulkUpdatePanel.closePanel();
                 }
             });
         }

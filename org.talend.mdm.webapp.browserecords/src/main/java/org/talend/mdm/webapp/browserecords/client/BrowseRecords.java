@@ -67,6 +67,8 @@ public class BrowseRecords implements EntryPoint {
 
     public static final String VIEW_BEAN = "ViewBean"; //$NON-NLS-1$
 
+    public static final String BULK_UPDATE_PANEL = "BulkUpdatePanel";
+
     private static JavaScriptObject stagingArea;
 
     public static JavaScriptObject getStagingArea() {

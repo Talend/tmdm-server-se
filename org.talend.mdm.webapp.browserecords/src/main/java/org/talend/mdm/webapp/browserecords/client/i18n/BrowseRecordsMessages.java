@@ -87,6 +87,8 @@ public interface BrowseRecordsMessages extends Messages {
 
     String bulkUpdate_foreignkey_warning();
 
+    String bulkUpdate_no_edit_info();
+
     String page_size_field_label();
 
     String page_size_label();

@@ -20,6 +20,7 @@ import java.util.Set;
 import org.talend.mdm.webapp.base.shared.TypeModel;
 import org.talend.mdm.webapp.browserecords.client.i18n.MessagesFactory;
 import org.talend.mdm.webapp.browserecords.client.model.ItemNodeModel;
+import org.talend.mdm.webapp.browserecords.client.widget.ItemDetailToolBar;
 import org.talend.mdm.webapp.browserecords.client.widget.treedetail.ForeignKeyUtil;
 import org.talend.mdm.webapp.browserecords.client.widget.treedetail.MultiOccurrenceChangeItem;
 import org.talend.mdm.webapp.browserecords.client.widget.treedetail.MultiOccurrenceChangeItem.AddRemoveHandler;
@@ -353,8 +354,8 @@ public class MultiOccurrenceManager {
             if (typeModel.getDefaultValue() != null) {
                 model.setObjectValue(typeModel.getDefaultValue());
             }
-            model.setMassUpdate(selectedModel.isMassUpdate());
-            DynamicTreeItem treeItem = treeDetail.buildGWTTree(model, null, true, null);
+            DynamicTreeItem treeItem = treeDetail.buildGWTTree(model, null, true,
+                    selectedModel.isMassUpdate() ? ItemDetailToolBar.BULK_UPDATE_OPERATION : null);
             model.setEdited(selectedModel.isEdited());
             ((MultiOccurrenceChangeItem) treeItem.getWidget()).setEditNodeButtonVisible(false);
             ViewUtil.copyStyleToTreeItem(selectedItem, treeItem);

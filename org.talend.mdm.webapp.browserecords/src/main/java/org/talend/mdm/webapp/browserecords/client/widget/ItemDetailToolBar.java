@@ -1149,44 +1149,48 @@ public class ItemDetailToolBar extends ToolBar {
                         treeDetail.makeWarning(treeDetail.getRoot());
                     }
                     ItemNodeModel root = treeDetail.getRootModel();
-                    String invalidNodeName = TreeDetailUtil.checkInvalidNode(root);
-                    if (invalidNodeName.isEmpty()) {
-                        MessageBox.confirm(MessagesFactory.getMessages().confirm_title(), MessagesFactory.getMessages()
-                                .bulkUpdate_confirm(), new Listener<MessageBoxEvent>() {
+                    if (TreeDetailUtil.isEditValue(viewBean.getBindingEntityModel(), root)) {
+                        String invalidNodeName = TreeDetailUtil.checkInvalidNode(root);
+                        if (invalidNodeName.isEmpty()) {
+                            MessageBox.confirm(MessagesFactory.getMessages().confirm_title(), MessagesFactory.getMessages()
+                                    .bulkUpdate_confirm(), new Listener<MessageBoxEvent>() {
 
-                            @Override
-                            public void handleEvent(MessageBoxEvent be) {
-                                if (be.getButtonClicked().getItemId().equals(Dialog.YES)) {
-                                    Widget widget = itemsDetailPanel.getFirstTabWidget();
-                                    Dispatcher dispatch = Dispatcher.get();
-                                    AppEvent app = new AppEvent(BrowseRecordsEvents.BulkUpdateItem);
-                                    ItemNodeModel model = null;
-                                    if (widget instanceof ItemPanel) {// save primary key
-                                        ItemPanel itemPanel = (ItemPanel) widget;
-                                        model = itemPanel.getTree().getRootModel();
-                                        app.setData("ItemBean", itemPanel.getItem()); //$NON-NLS-1$
-                                        app.setData(
-                                                "isCreate", itemPanel.getOperation().equals(ItemDetailToolBar.CREATE_OPERATION) //$NON-NLS-1$
-                                                        || itemPanel.getOperation().equals(ItemDetailToolBar.DUPLICATE_OPERATION) ? true
-                                                        : false);
+                                @Override
+                                public void handleEvent(MessageBoxEvent be) {
+                                    if (be.getButtonClicked().getItemId().equals(Dialog.YES)) {
+                                        Widget widget = itemsDetailPanel.getFirstTabWidget();
+                                        Dispatcher dispatch = Dispatcher.get();
+                                        AppEvent app = new AppEvent(BrowseRecordsEvents.BulkUpdateItem);
+                                        ItemNodeModel model = null;
+                                        if (widget instanceof ItemPanel) {// save primary key
+                                            ItemPanel itemPanel = (ItemPanel) widget;
+                                            model = itemPanel.getTree().getRootModel();
+                                            app.setData("ItemBean", itemPanel.getItem()); //$NON-NLS-1$
+                                            app.setData(
+                                                    "isCreate", itemPanel.getOperation().equals(ItemDetailToolBar.CREATE_OPERATION) //$NON-NLS-1$
+                                                            || itemPanel.getOperation().equals(
+                                                                    ItemDetailToolBar.DUPLICATE_OPERATION) ? true : false);
+                                        }
+                                        app.setData("viewBean", viewBean); //$NON-NLS-1$
+                                        app.setData("concept", itemBean.getConcept()); //$NON-NLS-1$
+                                        app.setData(model);
+                                        app.setData("isClose", true); //$NON-NLS-1$
+                                        app.setData("itemDetailToolBar", this); //$NON-NLS-1$
+                                        app.setData("isStaging", isStaging); //$NON-NLS-1$
+                                        app.setData(BrowseRecordsView.ITEMS_DETAIL_PANEL, itemsDetailPanel);
+                                        dispatch.dispatch(app);
                                     }
-                                    app.setData("viewBean", viewBean); //$NON-NLS-1$
-                                    app.setData("concept", itemBean.getConcept()); //$NON-NLS-1$
-                                    app.setData(model);
-                                    app.setData("isClose", true); //$NON-NLS-1$
-                                    app.setData("itemDetailToolBar", this); //$NON-NLS-1$
-                                    app.setData("isStaging", isStaging); //$NON-NLS-1$
-                                    app.setData(BrowseRecordsView.ITEMS_DETAIL_PANEL, itemsDetailPanel);
-                                    dispatch.dispatch(app);
                                 }
-                            }
-                        });
+                            });
+                        } else {
+                            MessageBox.alert(MessagesFactory.getMessages().error_title(), MessagesFactory.getMessages()
+                                    .validation_error(invalidNodeName), null);
+                        }
                     } else {
-                        MessageBox.alert(MessagesFactory.getMessages().error_title(), MessagesFactory.getMessages()
-                                .validation_error(invalidNodeName), null);
+                        MessageBox.alert(MessagesFactory.getMessages().warning_title(), MessagesFactory.getMessages()
+                                    .bulkUpdate_no_edit_info(), null);
                     }
                 }
-
             });
         }
         add(saveAndCloseButton);

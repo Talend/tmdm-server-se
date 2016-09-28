@@ -233,9 +233,7 @@ public class MultiOccurrenceChangeItem extends HorizontalPanel {
                 this.setCellVerticalAlignment(cloneNodeImg, VerticalPanel.ALIGN_BOTTOM);
             }
         }
-        if (ItemDetailToolBar.BULK_UPDATE_OPERATION.equalsIgnoreCase(operation)) {
-            updateMultiOccurrenceButtonStatus(false);
-        } else {
+        if (!ItemDetailToolBar.BULK_UPDATE_OPERATION.equalsIgnoreCase(operation)) {
             editable = true;
         }
         if (editNodeImg != null) {

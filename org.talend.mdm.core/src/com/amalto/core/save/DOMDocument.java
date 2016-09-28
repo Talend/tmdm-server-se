@@ -142,18 +142,14 @@ public class DOMDocument implements DOMMutableDocument {
             if (element == null) {
                 return true;
             }
-            if (element.getAttributes() != null && element.getAttributes().getLength() > 0) {
-                boolean isAllEmpty = false;
-                for (int i = 0; i < element.getAttributes().getLength(); i++) {
-                    if (StringUtils.isBlank(element.getAttributes().item(i).getNodeValue())) {
-                        isAllEmpty = true;
+            NamedNodeMap attributes = element.getAttributes();
+            if (attributes != null && attributes.getLength() > 0) {
+                for (int i = 0; i < attributes.getLength(); i++) {
+                    if (StringUtils.isBlank(attributes.item(i).getNodeValue())) {
+                        return true;
                     }
                 }
-                if (isAllEmpty) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return false;
             }
             if (!element.hasChildNodes()) {
                 return true;

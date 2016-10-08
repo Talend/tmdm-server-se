@@ -154,7 +154,7 @@ public class ForeignKeyListWindow extends Window {
         super.onRender(parent, pos);
         final PagingLoadConfig config = new BasePagingLoadConfig();
         final TypeModel typeModel = sourceField.getDataType();
-
+        final String originalForeignkey = typeModel.getForeignkey();
         RpcProxy<PagingLoadResult<ForeignKeyBean>> proxy = new RpcProxy<PagingLoadResult<ForeignKeyBean>>() {
 
             @Override
@@ -185,6 +185,7 @@ public class ForeignKeyListWindow extends Window {
                                 } else {
                                     callback.onFailure(caught);
                                 }
+                                typeModel.setForeignkey(originalForeignkey);
                             }
 
                             @Override
@@ -193,10 +194,10 @@ public class ForeignKeyListWindow extends Window {
                                     callback.onSuccess(new BasePagingLoadResult<ForeignKeyBean>(result.getData(), result
                                             .getOffset(), result.getTotalLength()));
                                 }
+                                typeModel.setForeignkey(originalForeignkey);
                             }
 
                         });
-
             }
         };
 

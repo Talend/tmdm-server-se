@@ -140,7 +140,7 @@
     <dependencies>
         <!-- 3rd party dependencies -->
 	 <dependency>
-            <groupId>com.wordnik</groupId>
+            <groupId>io.swagger</groupId>
             <artifactId>swagger-jaxrs</artifactId>
         </dependency>
         <dependency>

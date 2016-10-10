@@ -30,9 +30,9 @@ import com.amalto.core.storage.SQLWrapper;
 import com.amalto.core.storage.StorageType;
 import com.amalto.core.util.XtentisException;
 import com.amalto.xmlserver.interfaces.XmlServerException;
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
-import com.wordnik.swagger.annotations.ApiParam;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 @Path("/system/containers")
 @Api(value="Containers management", tags="Administration")

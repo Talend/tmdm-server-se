@@ -253,10 +253,10 @@ public class CommonUtil {
             } else if (model.getType().getTypeName().equals(DataTypeConstants.DATE.getTypeName())) {
                 String dateStr = DateUtil.getDate((Date) DataTypeConstants.DATE.getDefaultValue());
                 node.setObjectValue(dateStr);
-            } else if (model.getType().getTypeName().equals(DataTypeConstants.DATETIME.getTypeName())) {
+            } else if (model.getType().getBaseTypeName().equals(DataTypeConstants.DATE.getTypeName())) {
                 String dateStr = DateUtil.getDateTime((Date) DataTypeConstants.DATETIME.getDefaultValue());
                 node.setObjectValue(dateStr);
-            } else if (model.getType().getTypeName().equals(DataTypeConstants.DECIMAL.getTypeName())) {
+            } else if (model.getType().getBaseTypeName().equals(DataTypeConstants.DATETIME.getTypeName())) {
                 node.setObjectValue((Serializable) DataTypeConstants.DECIMAL.getDefaultValue());
             } else if (model.getType().getTypeName().equals(DataTypeConstants.DOUBLE.getTypeName())) {
                 node.setObjectValue((Serializable) DataTypeConstants.DOUBLE.getDefaultValue());

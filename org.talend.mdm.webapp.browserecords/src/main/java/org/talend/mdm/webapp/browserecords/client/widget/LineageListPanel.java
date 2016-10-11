@@ -544,6 +544,9 @@ public class LineageListPanel extends ContentPanel {
             filter = new BooleanFilter(xpath);
         } else if (DataTypeConstants.DURATION.equals(type) || DataTypeConstants.DATETIME.equals(type)
                 || DataTypeConstants.TIME.equals(type) || DataTypeConstants.DATE.equals(type)
+                || DataTypeConstants.TIME.getTypeName().equals(type.getBaseTypeName())
+                || DataTypeConstants.DATE.getTypeName().equals(type.getBaseTypeName())
+                || DataTypeConstants.DATETIME.getTypeName().equals(type.getBaseTypeName())
                 || DataTypeConstants.GYEARMONTH.equals(type) || DataTypeConstants.GYEAR.equals(type)
                 || DataTypeConstants.GDAY.equals(type) || DataTypeConstants.GMONTH.equals(type)) {
             filter = new DateFilter(xpath);

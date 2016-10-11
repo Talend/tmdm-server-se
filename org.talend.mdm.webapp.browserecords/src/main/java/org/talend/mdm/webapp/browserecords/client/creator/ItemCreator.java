@@ -52,7 +52,7 @@ public class ItemCreator {
 
             if (typeModel.isSimpleType()) {
 
-                if (typeModel.getType().equals(DataTypeConstants.DATE)) {
+                if (typeModel.getType().getBaseTypeName().equals(DataTypeConstants.DATE.getTypeName())) {
                     itemBean.set(path, new Date());
                 } else if (typeModel.isMultiOccurrence()) {
                     List<Serializable> list = new ArrayList<Serializable>();

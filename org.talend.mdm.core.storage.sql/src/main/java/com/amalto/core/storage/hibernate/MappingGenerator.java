@@ -203,68 +203,80 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
                 generateConstrains = wasGeneratingConstraints;
             }
             // Sub types
-            if (!complexType.getSubTypes().isEmpty()) {
-                if (complexType.isInstantiable()) {
-                    /*
-                        <union-subclass name="CreditCardPayment" table="CREDIT_PAYMENT">
-                               <property name="creditCardType" column=""/>
-                               ...
-                           </union-subclass>
-                        */
-                    for (ComplexTypeMetadata subType : complexType.getSubTypes()) {
-                        Element unionSubclass = document.createElement("union-subclass"); //$NON-NLS-1$
-                        Attr name = document.createAttribute("name"); //$NON-NLS-1$
-                        name.setValue(ClassCreator.getClassName(subType.getName()));
-                        unionSubclass.setAttributeNode(name);
-
-                        Attr tableName = document.createAttribute("table"); //$NON-NLS-1$
-                        tableName.setValue(resolver.get(subType));
-                        unionSubclass.setAttributeNode(tableName);
-
-                        Collection<FieldMetadata> subTypeFields = subType.getFields();
-                        for (FieldMetadata subTypeField : subTypeFields) {
-                            if (!complexType.hasField(subTypeField.getName()) && !subTypeField.isKey()) {
-                                unionSubclass.appendChild(subTypeField.accept(this));
-                            }
-                        }
-                        classElement.appendChild(unionSubclass);
-                    }
-                } else {
-                    /*
-                    <subclass name="CreditCardPayment" discriminator-value="CREDIT">
-                            <property name="creditCardType" column="CCTYPE"/>
-                            ...
-                        </subclass>
-                     */
-                    wasGeneratingConstraints = generateConstrains;
-                    generateConstrains = false;
-                    try {
-                        for (ComplexTypeMetadata subType : complexType.getSubTypes()) {
-                            Element subclass = document.createElement("subclass"); //$NON-NLS-1$
-                            Attr name = document.createAttribute("name"); //$NON-NLS-1$
-                            name.setValue(ClassCreator.getClassName(subType.getName()));
-                            subclass.setAttributeNode(name);
-                            Attr discriminator = document.createAttribute("discriminator-value"); //$NON-NLS-1$
-                            discriminator.setValue(ClassCreator.PACKAGE_PREFIX + subType.getName());
-                            subclass.setAttributeNode(discriminator);
-
-                            Collection<FieldMetadata> subTypeFields = subType.getFields();
-                            for (FieldMetadata subTypeField : subTypeFields) {
-                                if (!complexType.hasField(subTypeField.getName()) && !subTypeField.isKey()) {
-                                    subclass.appendChild(subTypeField.accept(this));
-                                }
-                            }
-                            classElement.appendChild(subclass);
-                        }
-                    } finally {
-                        generateConstrains = wasGeneratingConstraints;
-                    }
-                }
-            }
+            generatorSubType(complexType, classElement);
         }
         tableNames.pop();
 
         return classElement;
+    }
+
+    private void generatorSubType(ComplexTypeMetadata parentComplexType, Element classElement) {
+        boolean wasGeneratingConstraints;
+        // Sub types
+        if (!parentComplexType.getDirectSubTypes().isEmpty()) {
+            if (parentComplexType.isInstantiable()) {
+                /*
+                    <union-subclass name="CreditCardPayment" table="CREDIT_PAYMENT">
+                           <property name="creditCardType" column=""/>
+                           ...
+                       </union-subclass>
+                    */
+                for (ComplexTypeMetadata subType : parentComplexType.getDirectSubTypes()) {
+                    Element unionSubclass = document.createElement("union-subclass"); //$NON-NLS-1$
+                    Attr name = document.createAttribute("name"); //$NON-NLS-1$
+                    name.setValue(ClassCreator.getClassName(subType.getName()));
+                    unionSubclass.setAttributeNode(name);
+
+                    Attr tableName = document.createAttribute("table"); //$NON-NLS-1$
+                    tableName.setValue(resolver.get(subType));
+                    unionSubclass.setAttributeNode(tableName);
+
+                    Collection<FieldMetadata> subTypeFields = subType.getFields();
+                    for (FieldMetadata subTypeField : subTypeFields) {
+                        if (!parentComplexType.hasField(subTypeField.getName()) && !subTypeField.isKey()) {
+                            unionSubclass.appendChild(subTypeField.accept(this));
+                        }
+                    }
+                    if(!subType.getDirectSubTypes().isEmpty()){
+                        generatorSubType(subType, unionSubclass);
+                    }
+                    classElement.appendChild(unionSubclass);
+                }
+            } else {
+                /*
+                <subclass name="CreditCardPayment" discriminator-value="CREDIT">
+                        <property name="creditCardType" column="CCTYPE"/>
+                        ...
+                    </subclass>
+                 */
+                wasGeneratingConstraints = generateConstrains;
+                generateConstrains = false;
+                try {
+                    for (ComplexTypeMetadata subType : parentComplexType.getDirectSubTypes()) {
+                        Element subclass = document.createElement("subclass"); //$NON-NLS-1$
+                        Attr name = document.createAttribute("name"); //$NON-NLS-1$
+                        name.setValue(ClassCreator.getClassName(subType.getName()));
+                        subclass.setAttributeNode(name);
+                        Attr discriminator = document.createAttribute("discriminator-value"); //$NON-NLS-1$
+                        discriminator.setValue(ClassCreator.PACKAGE_PREFIX + subType.getName());
+                        subclass.setAttributeNode(discriminator);
+
+                        Collection<FieldMetadata> subTypeFields = subType.getFields();
+                        for (FieldMetadata subTypeField : subTypeFields) {
+                            if (!parentComplexType.hasField(subTypeField.getName()) && !subTypeField.isKey()) {
+                                subclass.appendChild(subTypeField.accept(this));
+                            }
+                        }
+                        if(!subType.getDirectSubTypes().isEmpty()){
+                            generatorSubType(subType, subclass);
+                        }
+                        classElement.appendChild(subclass);
+                    }
+                } finally {
+                    generateConstrains = wasGeneratingConstraints;
+                }
+            }
+        }
     }
 
     @Override

@@ -260,6 +260,84 @@ public class InheritanceTest extends StorageTestCase {
         }
     }
 
+    public void testIsAForInheritance() throws Exception {
+        // SuperType Query (Persons exist subtype)
+        UserQueryBuilder qb = UserQueryBuilder.from(persons);
+        qb.isa(persons);
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+            int actualCount = 0;
+            for (DataRecord result : results) {
+                actualCount++;
+            }
+            assertEquals(1, actualCount);
+        } finally {
+            results.close();
+        }
+
+        qb = UserQueryBuilder.from(persons);
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(4, results.getCount());
+            int actualCount = 0;
+            for (DataRecord result : results) {
+                actualCount++;
+            }
+            assertEquals(4, actualCount);
+        } finally {
+            results.close();
+        }
+
+        // SubType Query (employee exist super type and subtype)
+        qb = UserQueryBuilder.from(employee);
+        qb.select(employee.getField("name"));
+        qb.isa(employee);
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(2, results.getCount());
+            int actualCount = 0;
+            for (DataRecord result : results) {
+                actualCount++;
+            }
+            assertEquals(2, actualCount);
+        } finally {
+            results.close();
+        }
+
+        qb = UserQueryBuilder.from(employee);
+        qb.select(employee.getField("name"));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(3, results.getCount());
+            int actualCount = 0;
+            for (DataRecord result : results) {
+                actualCount++;
+            }
+            assertEquals(3, actualCount);
+        } finally {
+            results.close();
+        }
+
+        // SubType Query (manager exist super type, no subtype)
+        qb = UserQueryBuilder.from(manager);
+        qb.isa(manager);
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        qb = UserQueryBuilder.from(manager);
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+        } finally {
+            results.close();
+        }
+    }
+
     public void testNonAssignableIsa() throws Exception {
         UserQueryBuilder qb = UserQueryBuilder.from(a);
         try {

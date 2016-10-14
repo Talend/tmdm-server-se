@@ -436,7 +436,7 @@ public class StorageFullTextTest extends StorageTestCase {
      */
     public void testFullSearchCountry() throws Exception {
         UserQueryBuilder qb = from(country).where(fullText("F"));
-        qb.limit(2);
+        //qb.limit(2);
         StorageResults results = storage.fetch(qb.getSelect());
         try {
             for(DataRecord dataRecord: results){

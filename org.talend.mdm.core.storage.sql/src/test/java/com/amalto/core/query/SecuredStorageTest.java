@@ -218,9 +218,8 @@ public class SecuredStorageTest extends StorageTestCase {
             int i = 0;
             for (DataRecord result : results) {
                 assertNotNull(result.get("id"));
-                assertNotNull(result.get("firstname"));
                 LOG.debug("DESC order result: id=" + result.get("id"));
-                firstNames[i++] = String.valueOf(result.get("firstname"));
+                firstNames[i++] = String.valueOf(result.get("id"));
             }
         } finally {
             results.close();
@@ -240,9 +239,8 @@ public class SecuredStorageTest extends StorageTestCase {
             boolean hasOrderChanged = false;
             for (DataRecord result : results) {
                 assertNotNull(result.get("id"));
-                assertNotNull(result.get("firstname"));
                 LOG.debug("ASC order result: id=" + result.get("id"));
-                hasOrderChanged |= !firstNames[i++].equals(result.get("firstname"));
+                hasOrderChanged |= !firstNames[i++].equals(result.get("id"));
             }
             assertTrue(hasOrderChanged);
         } finally {

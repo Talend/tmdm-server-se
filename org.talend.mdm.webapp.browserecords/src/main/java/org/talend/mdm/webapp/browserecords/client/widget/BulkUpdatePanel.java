@@ -47,6 +47,7 @@ public class BulkUpdatePanel extends ContentPanel {
     }
     
     private void initPanel() {
+    	setId("BulkUpdatePanel");
         setHeading(MessagesFactory.getMessages().bulkUpdate_title());
         setHeaderVisible(false);
         setLayout(new FitLayout());

@@ -87,6 +87,7 @@ public class MultiOccurrenceChangeItem extends HorizontalPanel {
         String dynamicLabel = typeModel.getLabel(Locale.getLanguage());
         HTML label = new HTML();
         String html = itemNode.getLabel();
+        editable = itemNode.isEdited();
 
         if (LabelUtil.isDynamicLabel(dynamicLabel)) {
             if (itemNode.getDynamicLabel() != null && !"".equals(itemNode.getDynamicLabel())) { //$NON-NLS-1$
@@ -231,6 +232,9 @@ public class MultiOccurrenceChangeItem extends HorizontalPanel {
                 }
                 this.add(cloneNodeImg);
                 this.setCellVerticalAlignment(cloneNodeImg, VerticalPanel.ALIGN_BOTTOM);
+            }
+            if (!editable) {
+            	updateMultiOccurrenceButtonStatus(false);
             }
         }
         if (!ItemDetailToolBar.BULK_UPDATE_OPERATION.equalsIgnoreCase(operation)) {

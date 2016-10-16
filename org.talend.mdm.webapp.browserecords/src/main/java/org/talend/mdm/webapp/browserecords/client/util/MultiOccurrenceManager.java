@@ -364,6 +364,7 @@ public class MultiOccurrenceManager {
             parentItem.insertItem(treeItem, parentItem.getChildIndex(selectedItem) + 1);
             treeDetail.adjustFieldWidget(treeItem);
 
+            treeItem.getItemNodeModel().setEdited(selectedItem.getItemNodeModel().isEdited());
             MultiOccurrenceManager multiManager = treeDetail.getMultiManager();
             multiManager.addMultiOccurrenceNode(treeItem);
 

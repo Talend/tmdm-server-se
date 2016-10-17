@@ -354,9 +354,9 @@ public class MultiOccurrenceManager {
             if (typeModel.getDefaultValue() != null) {
                 model.setObjectValue(typeModel.getDefaultValue());
             }
+            model.setEdited(selectedModel.isEdited());
             DynamicTreeItem treeItem = treeDetail.buildGWTTree(model, null, true,
                     selectedModel.isMassUpdate() ? ItemDetailToolBar.BULK_UPDATE_OPERATION : null);
-            model.setEdited(selectedModel.isEdited());
             ((MultiOccurrenceChangeItem) treeItem.getWidget()).setEditNodeButtonVisible(false);
             ViewUtil.copyStyleToTreeItem(selectedItem, treeItem);
 
@@ -364,7 +364,6 @@ public class MultiOccurrenceManager {
             parentItem.insertItem(treeItem, parentItem.getChildIndex(selectedItem) + 1);
             treeDetail.adjustFieldWidget(treeItem);
 
-            treeItem.getItemNodeModel().setEdited(selectedItem.getItemNodeModel().isEdited());
             MultiOccurrenceManager multiManager = treeDetail.getMultiManager();
             multiManager.addMultiOccurrenceNode(treeItem);
 

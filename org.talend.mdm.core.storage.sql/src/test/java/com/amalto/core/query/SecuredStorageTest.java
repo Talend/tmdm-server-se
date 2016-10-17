@@ -207,8 +207,9 @@ public class SecuredStorageTest extends StorageTestCase {
 
         // With security active
         assertTrue(userSecurity.isActive);
-        UserQueryBuilder qb = from(person)
-                .orderBy(person.getField("Status"), OrderBy.Direction.DESC);
+        UserQueryBuilder qb = from(person).selectId(person).select(person.getField("firstname"))
+                .orderBy(person.getField("Status"), OrderBy.Direction.DESC)
+                .orderBy(person.getField("id"), OrderBy.Direction.DESC);
 
         String[] firstNames = new String[3];
         storage.begin();
@@ -218,8 +219,9 @@ public class SecuredStorageTest extends StorageTestCase {
             int i = 0;
             for (DataRecord result : results) {
                 assertNotNull(result.get("id"));
-                LOG.debug("DESC order result: id=" + result.get("id"));
-                firstNames[i++] = String.valueOf(result.get("id"));
+                assertNotNull(result.get("firstname"));
+                LOG.error("DESC order result: id=" + result.get("id"));
+                firstNames[i++] = String.valueOf(result.get("firstname"));
             }
         } finally {
             results.close();
@@ -229,8 +231,9 @@ public class SecuredStorageTest extends StorageTestCase {
         // With security active
         userSecurity.setActive(false);
         assertFalse(userSecurity.isActive);
-        qb = from(person).selectId(person)
-                .orderBy(person.getField("Status"), OrderBy.Direction.ASC);
+        qb = from(person).selectId(person).selectId(person).select(person.getField("firstname"))
+                .orderBy(person.getField("Status"), OrderBy.Direction.DESC)
+                .orderBy(person.getField("id"), OrderBy.Direction.DESC);
         storage.begin();
         results = storage.fetch(qb.getSelect());
         try {
@@ -239,8 +242,9 @@ public class SecuredStorageTest extends StorageTestCase {
             boolean hasOrderChanged = false;
             for (DataRecord result : results) {
                 assertNotNull(result.get("id"));
-                LOG.debug("ASC order result: id=" + result.get("id"));
-                hasOrderChanged |= !firstNames[i++].equals(result.get("id"));
+                assertNotNull(result.get("firstname"));
+                LOG.error("ASC order result: id=" + result.get("id"));
+                hasOrderChanged |= !firstNames[i++].equals(result.get("firstname"));
             }
             assertTrue(hasOrderChanged);
         } finally {

@@ -327,8 +327,11 @@ public class DataRecordCreationTest extends StorageTestCase {
     public void testCreationFromSAXWithReusableTypeFieldUnregistered() throws Exception {
         try {
             List<DataRecord> records = getDataRecords("DataRecordCreationTest_4.xml", company);
+            Storage storage = new HibernateStorage("H2-Default"); //$NON-NLS-1$
+            storage.init(ServerContext.INSTANCE.get().getDefinition("H2-Default", "MDM")); //$NON-NLS-1$//$NON-NLS-2$
+            storage.prepare(repository, true);
             for (DataRecord record : records) {
-                performCreationFromSAXWithReusableTypeFieldUnregisteredAsserts(record);
+                performCreationFromSAXWithReusableTypeFieldUnregisteredAsserts(storage, record);
             }
         } finally {
             storage.end();
@@ -355,10 +358,7 @@ public class DataRecordCreationTest extends StorageTestCase {
         return records;
     }
 
-    private static void performCreationFromSAXWithReusableTypeFieldUnregisteredAsserts(DataRecord dataRecord) {
-        Storage storage = new HibernateStorage("H2-Default"); //$NON-NLS-1$
-        storage.init(ServerContext.INSTANCE.get().getDefinition("H2-Default", "MDM")); //$NON-NLS-1$//$NON-NLS-2$
-        storage.prepare(repository, true);
+    private static void performCreationFromSAXWithReusableTypeFieldUnregisteredAsserts(Storage storage, DataRecord dataRecord) {
         assertNotNull(dataRecord);
         assertEquals("Company", dataRecord.getType().getName());
         assertEquals("1", dataRecord.get("subelement"));
@@ -375,16 +375,16 @@ public class DataRecordCreationTest extends StorageTestCase {
     }
 
     public void testCreationFromSAXWithReusableTypeNoMapping() throws Exception {
-        List<DataRecord> records = getDataRecords("DataRecordCreationTest_5.xml", company);
-        for (DataRecord record : records) {
-            performCreationFromSAXWithReusableTypeNoMappingAsserts(record);
-        }
-    }
-
-    private void performCreationFromSAXWithReusableTypeNoMappingAsserts(DataRecord dataRecord) {
         Storage storage = new HibernateStorage("H2-Default"); //$NON-NLS-1$
         storage.init(ServerContext.INSTANCE.get().getDefinition("H2-Default", "MDM")); //$NON-NLS-1$//$NON-NLS-2$
         storage.prepare(repository, true);
+        List<DataRecord> records = getDataRecords("DataRecordCreationTest_5.xml", company);
+        for (DataRecord record : records) {
+            performCreationFromSAXWithReusableTypeNoMappingAsserts(storage, record);
+        }
+    }
+
+    private void performCreationFromSAXWithReusableTypeNoMappingAsserts(Storage storage, DataRecord dataRecord) {
         assertNotNull(dataRecord);
         assertEquals("Company", dataRecord.getType().getName());
         assertEquals("1", dataRecord.get("subelement"));

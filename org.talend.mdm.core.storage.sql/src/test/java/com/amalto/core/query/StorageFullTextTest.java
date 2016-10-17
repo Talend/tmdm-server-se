@@ -269,11 +269,19 @@ public class StorageFullTextTest extends StorageTestCase {
             qb = from(supplier);
             storage.delete(qb.getSelect());
 
-            // makes unit test unstable
-            // qb = from(country);
-            // storage.delete(qb.getSelect());
+            qb = from(country);
+            storage.delete(qb.getSelect());
+
+            qb = from(countryLong);
+            storage.delete(qb.getSelect());
+
+            qb = from(countryShort);
+            storage.delete(qb.getSelect());
 
             qb = from(person);
+            storage.delete(qb.getSelect());
+
+            qb = from(fullTextSearchEntityA);
             storage.delete(qb.getSelect());
         }
         storage.commit();
@@ -439,6 +447,7 @@ public class StorageFullTextTest extends StorageTestCase {
         //qb.limit(2);
         StorageResults results = storage.fetch(qb.getSelect());
         try {
+            // debug code for unstable case
             for(DataRecord dataRecord: results){
                 LOG.error("id="+ dataRecord.get("id"));
             }

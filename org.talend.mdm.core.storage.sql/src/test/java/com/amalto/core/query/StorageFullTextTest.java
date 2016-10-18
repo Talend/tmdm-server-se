@@ -464,14 +464,14 @@ public class StorageFullTextTest extends StorageTestCase {
      * @throws Exception
      */
     public void testFullSearchCountry() throws Exception {
-        UserQueryBuilder qb = from(country).where(fullText("F"));
+        UserQueryBuilder qb = from(country).where(fullText("France"));
         StorageResults results = storage.fetch(qb.getSelect());
         try {
             // debug code for unstable case
             for(DataRecord dataRecord: results){
-                LOG.error("id="+ dataRecord.get("id"));
                 assertTrue(String.valueOf(dataRecord.get("name")).startsWith("France"));
             }
+            assertEquals(11, results.getCount());
         } finally {
             results.close();
         }

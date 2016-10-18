@@ -252,7 +252,6 @@ public class DefaultRoutingEngine implements RoutingEngine {
         }
         // The cached ItemPOJO - will only be retrieved if needed: we have expressions on the routing rules
         String type = itemPOJOPK.getConceptName();
-        // Get the item
         ItemPOJO itemPOJO = null;
         // Rules that matched
         ArrayList<RoutingRulePOJO> routingRulesThatSyncMatched = new ArrayList<>();
@@ -281,6 +280,7 @@ public class DefaultRoutingEngine implements RoutingEngine {
                 if (routingExpressions != null) {
                     for (RoutingRuleExpressionPOJO routingExpression : routingExpressions) {
                         if (itemPOJO == null) {
+                            // Get the item
                             itemPOJO = item.getItem(itemPOJOPK);
                             if (itemPOJO == null) { // Item does not exist, no rule can apply.
                                 return new RoutingRulePOJOPK[0];
@@ -306,6 +306,7 @@ public class DefaultRoutingEngine implements RoutingEngine {
                             Matcher m1 = p1.matcher(condition);
                             while (m1.find()) {
                                 if (itemPOJO == null) {
+                                    // Get the item
                                     itemPOJO = item.getItem(itemPOJOPK);
                                     if (itemPOJO == null) { // Item does not exist, no rule can apply.
                                         return new RoutingRulePOJOPK[0];

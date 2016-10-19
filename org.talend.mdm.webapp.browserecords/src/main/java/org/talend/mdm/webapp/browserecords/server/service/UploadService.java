@@ -208,6 +208,7 @@ public class UploadService {
                     }
                     if (keyContainsEmpty) {
                         if (isEmptyRecordInExcel(row, importHeader)) {
+                            rowNumber--;
                             continue;
                         }
                         throw new UploadException(
@@ -255,8 +256,10 @@ public class UploadService {
         csvReader = new CSVReader(new InputStreamReader(fileInputStream, encoding), separator, textDelimiter);
         List<String[]> records = csvReader.readAll();
         boolean dataLine;
+        int rowNumber = 0;
         for (int i = 0; i < records.size(); i++) {
-            if ((i-1) >= defaultMaxImportCount) {
+            rowNumber++;
+            if ((rowNumber - 1) > defaultMaxImportCount) {
                 break;
             }
             String[] record = records.get(i);
@@ -288,6 +291,7 @@ public class UploadService {
                     }
                     if (keyContainsEmpty) {
                         if (isEmptyRecordInCSV(record, importHeader)) {
+                            rowNumber--;
                             continue;
                         }
                         throw new UploadException(

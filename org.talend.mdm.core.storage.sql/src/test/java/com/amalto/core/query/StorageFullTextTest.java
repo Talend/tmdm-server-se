@@ -254,6 +254,12 @@ public class StorageFullTextTest extends StorageTestCase {
         allRecords
                 .add(factory
                         .read(repository,
+                                person,
+                                "<Person><id>1234</id><firstname>quan</firstname><middlename>kevin</middlename><lastname>cui</lastname><resume>[EN:Hello [World:]][FR:bonjour :le][ZH:ni Hao]</resume><age>22</age><score>100</score><Available></Available><Status>Customer</Status></Person>"));
+
+        allRecords
+                .add(factory
+                        .read(repository,
                                 fullTextSearchEntityA,
                                 "<FullTextSearchEntityA><Id>id1</Id><Name>name1</Name><Address><AddressName>address1</AddressName><City><CityName>city1</CityName></City></Address></FullTextSearchEntityA>"));
         allRecords.add(factory.read(repository, a2,
@@ -263,6 +269,8 @@ public class StorageFullTextTest extends StorageTestCase {
         allRecords.add(factory.read(repository, a2,
                 "<a2><subelement>1</subelement><subelement1>2</subelement1><b3>String b3</b3><b4>String b4</b4></a2>"));
         allRecords.add(factory.read(repository, a3, "<a3><id>3</id><name>hamdi</name><a2>[1][2]</a2></a3>"));
+        allRecords.add(factory.read(repository, store, "<Store><Id>Upper Case Id</Id><Name>name1</Name></Store>"));
+        allRecords.add(factory.read(repository, store, "<Store><Id>lower case id</Id><Name>name2</Name></Store>"));
 
         try {
             storage.begin();
@@ -1050,15 +1058,6 @@ public class StorageFullTextTest extends StorageTestCase {
     }
 
     public void testIdFieldContainUpperCaseKeyWordSearch() throws Exception {
-        DataRecordReader<String> factory = new XmlStringDataRecordReader();
-        List<DataRecord> allRecords = new LinkedList<DataRecord>();
-        allRecords.add(factory.read(repository, store, "<Store><Id>Upper Case Id</Id><Name>name1</Name></Store>"));
-        allRecords.add(factory.read(repository, store, "<Store><Id>lower case id</Id><Name>name2</Name></Store>"));
-
-        storage.begin();
-        storage.update(allRecords);
-        storage.commit();
-
         UserQueryBuilder qb = from(store).selectId(store).where(contains(store.getField("Id"), "case"));
         storage.begin();
         StorageResults results = storage.fetch(qb.getSelect());
@@ -1148,18 +1147,6 @@ public class StorageFullTextTest extends StorageTestCase {
     }
 
     public void testSearchOnMultiLingualType() throws Exception {
-        DataRecordReader<String> factory = new XmlStringDataRecordReader();
-        List<DataRecord> allRecords = new LinkedList<DataRecord>();
-        allRecords
-                .add(factory
-                        .read(repository,
-                                person,
-                                "<Person><id>1234</id><firstname>quan</firstname><middlename>kevin</middlename><lastname>cui</lastname><resume>[EN:Hello [World:]][FR:bonjour :le][ZH:ni Hao]</resume><age>22</age><score>100</score><Available></Available><Status>Customer</Status></Person>"));
-
-        storage.begin();
-        storage.update(allRecords);
-        storage.commit();
-
         UserQueryBuilder qb = from(person).select(person.getField("id")).where(contains(person.getField("resume"), " world "));
         storage.begin();
         StorageResults results = storage.fetch(qb.getSelect());
@@ -1222,7 +1209,7 @@ public class StorageFullTextTest extends StorageTestCase {
         }
     }
 
-    public void testFullText() {
+    public void testFullText() throws Exception {
         UserQueryBuilder qb = UserQueryBuilder.from(country).where(fullText("note"));
         StorageResults results = storage.fetch(qb.getSelect());
         for (DataRecord result : results) {

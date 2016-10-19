@@ -4326,7 +4326,6 @@ public class StorageQueryTest extends StorageTestCase {
         try {
             try {
                 for (DataRecord record : records) {
-                    LOG.error("DESC ID="+record.get("Id"));
                     assertEquals("T3", record.get("Id"));
                     break;
                 }
@@ -4344,7 +4343,6 @@ public class StorageQueryTest extends StorageTestCase {
         try {
             try {
                 for (DataRecord record : records) {
-                    LOG.error("DESC ID="+record.get("Id"));
                     assertEquals("T1", record.get("Id"));
                     break;
                 }

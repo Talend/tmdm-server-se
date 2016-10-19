@@ -68,13 +68,10 @@ public class UploadData extends HttpServlet {
 
     private boolean cusExceptionFlag = false;
     
-    private int defaultMaxImportCount;
 
     @Override
     public void init() throws ServletException {
         super.init();
-        defaultMaxImportCount = Integer.parseInt(
-                MDMConfiguration.getConfiguration().getProperty("max.import.browserecord", MDMConfiguration.MAX_IMPORT_COUNT));
     }
 
     @Override
@@ -178,9 +175,6 @@ public class UploadData extends HttpServlet {
 
             List<WSPutItemWithReport> wsPutItemWithReportList = service.readUploadFile(file);
 
-            if (wsPutItemWithReportList.size() > defaultMaxImportCount) {
-                wsPutItemWithReportList = wsPutItemWithReportList.subList(0, defaultMaxImportCount);
-            }
             putDocument(
                     new WSPutItemWithReportArray(wsPutItemWithReportList.toArray(new WSPutItemWithReport[wsPutItemWithReportList
                             .size()])), concept);

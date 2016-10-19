@@ -37,6 +37,7 @@ import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
 import org.dom4j.QName;
+import org.talend.mdm.commmon.util.core.MDMConfiguration;
 import org.talend.mdm.webapp.base.client.exception.ServiceException;
 import org.talend.mdm.webapp.base.server.util.CommonUtil;
 import org.talend.mdm.webapp.base.shared.EntityModel;
@@ -74,6 +75,8 @@ public class UploadService {
 
     private final String File_CSV_SEPARATOR_SEMICOLON = "semicolon"; //$NON-NLS-1$
 
+    private static int defaultMaxImportCount;
+
     private String fileType = null;
 
     private boolean isPartialUpdate = false;
@@ -106,6 +109,11 @@ public class UploadService {
 
     private Map<String, List<Element>> multiNodeMap;
 
+    static{
+        defaultMaxImportCount = Integer.parseInt(
+                MDMConfiguration.getConfiguration().getProperty("max.import.browserecord", MDMConfiguration.MAX_IMPORT_COUNT));
+    }
+
     public UploadService(EntityModel entityModel, String fileType, boolean isPartialUpdate, boolean headersOnFirstLine,
             Map<String, Boolean> headerVisibleMap, List<String> inheritanceNodePathList, String multipleValueSeparator,
             String seperator, String encoding, char textDelimiter, String language) {
@@ -132,9 +140,9 @@ public class UploadService {
 
             if (FILE_TYPE_EXCEL_SUFFIX.equals(fileType.toLowerCase())
                     || FILE_TYPE_EXCEL2010_SUFFIX.equals(fileType.toLowerCase())) {
-                wsPutItemWithReportList = readExcelFile(fileInputStream);
+                wsPutItemWithReportList = readExcelFile(fileInputStream, defaultMaxImportCount);
             } else if (FILE_TYPE_CSV_SUFFIX.equals(fileType.toLowerCase())) {
-                wsPutItemWithReportList = readCsvFile(fileInputStream);
+                wsPutItemWithReportList = readCsvFile(fileInputStream, defaultMaxImportCount);
             }
             return wsPutItemWithReportList;
         } catch (Exception exception) {
@@ -150,7 +158,7 @@ public class UploadService {
         }
     }
 
-    private List<WSPutItemWithReport> readExcelFile(FileInputStream fileInputStream) throws ServiceException, Exception {
+    private List<WSPutItemWithReport> readExcelFile(FileInputStream fileInputStream, int defaultMaxImportCount) throws ServiceException, Exception {
         List<WSPutItemWithReport> wSPutItemWithReportList = new LinkedList<WSPutItemWithReport>();
         String[] importHeader = null;
         Workbook workBook = null;
@@ -167,6 +175,9 @@ public class UploadService {
         while (rowIterator.hasNext()) {
             dataLine = false;
             rowNumber++;
+            if ((rowNumber - 1) > defaultMaxImportCount) {
+                break;
+            }
             Row row = rowIterator.next();
             if (rowNumber == 1) {
                 importHeader = readHeader(row, null);
@@ -237,7 +248,7 @@ public class UploadService {
         return wSPutItemWithReportList;
     }
 
-    private List<WSPutItemWithReport> readCsvFile(FileInputStream fileInputStream) throws ServiceException, Exception {
+    private List<WSPutItemWithReport> readCsvFile(FileInputStream fileInputStream, int defaultMaxImportCount) throws ServiceException, Exception {
         List<WSPutItemWithReport> wSPutItemWithReportList = new LinkedList<WSPutItemWithReport>();
         String[] importHeader = null;
         char separator = File_CSV_SEPARATOR_SEMICOLON.equals(seperator) ? ';' : ',';
@@ -245,6 +256,9 @@ public class UploadService {
         List<String[]> records = csvReader.readAll();
         boolean dataLine;
         for (int i = 0; i < records.size(); i++) {
+            if ((i-1) >= defaultMaxImportCount) {
+                break;
+            }
             String[] record = records.get(i);
             dataLine = false;
             if (i == 0) {

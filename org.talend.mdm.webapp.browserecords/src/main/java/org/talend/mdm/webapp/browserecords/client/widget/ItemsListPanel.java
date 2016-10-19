@@ -706,6 +706,7 @@ public class ItemsListPanel extends ContentPanel {
                     } else {
                         String ids = grid.getSelectionModel().getSelectedItem().getIds();
                         refresh(ids, true);
+                        pagingBar.refresh();
                     }
 
                 } else {

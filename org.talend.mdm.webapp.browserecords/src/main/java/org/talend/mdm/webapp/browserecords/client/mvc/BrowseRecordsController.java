@@ -322,6 +322,7 @@ public class BrowseRecordsController extends Controller {
                                 @Override
                                 public void handleEvent(MessageBoxEvent be) {
                                     bulkUpdatePanel.closePanel();
+                                    ItemsListPanel.getInstance().refreshGrid();
                                 }
                             });
                 } else {

@@ -314,6 +314,18 @@ public class StorageFullTextTest extends StorageTestCase {
 
             qb = from(fullTextSearchEntityA);
             storage.delete(qb.getSelect());
+
+            qb = from(a1);
+            storage.delete(qb.getSelect());
+
+            qb = from(a2);
+            storage.delete(qb.getSelect());
+
+            qb = from(a3);
+            storage.delete(qb.getSelect());
+
+            qb = from(store);
+            storage.delete(qb.getSelect());
         }
         storage.commit();
         storage.end();

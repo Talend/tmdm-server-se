@@ -39,7 +39,6 @@ import java.util.Set;
 import org.apache.commons.io.output.NullOutputStream;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
@@ -47,7 +46,6 @@ import org.talend.mdm.commmon.metadata.FieldMetadata;
 import com.amalto.core.delegator.BeanDelegatorContainer;
 import com.amalto.core.delegator.ILocalUser;
 import com.amalto.core.objects.UpdateReportPOJO;
-import com.amalto.core.query.SystemStorageTest.MockUser;
 import com.amalto.core.query.optimization.RangeOptimizer;
 import com.amalto.core.query.optimization.UpdateReportOptimizer;
 import com.amalto.core.query.user.Alias;
@@ -95,8 +93,6 @@ import com.amalto.xmlserver.interfaces.XmlServerException;
 
 @SuppressWarnings("nls")
 public class StorageQueryTest extends StorageTestCase {
-
-    private static Logger LOG = Logger.getLogger(StorageQueryTest.class);
 
     private final String E1_Record1 = "<E1><subelement>aaa</subelement><subelement1>bbb</subelement1><name>asdf</name></E1>";
 

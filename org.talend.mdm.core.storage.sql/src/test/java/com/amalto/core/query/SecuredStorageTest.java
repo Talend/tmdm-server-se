@@ -15,8 +15,6 @@ import static com.amalto.core.query.user.UserQueryBuilder.*;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-
 import com.amalto.core.query.user.OrderBy;
 import com.amalto.core.query.user.UserQueryBuilder;
 import com.amalto.core.storage.SecuredStorage;
@@ -27,8 +25,6 @@ import com.amalto.core.storage.record.XmlStringDataRecordReader;
 
 @SuppressWarnings("nls")
 public class SecuredStorageTest extends StorageTestCase {
-
-    private static Logger LOG = Logger.getLogger(SecuredStorageTest.class);
 
     private void populateData() {
         DataRecordReader<String> factory = new XmlStringDataRecordReader();
@@ -220,7 +216,6 @@ public class SecuredStorageTest extends StorageTestCase {
             for (DataRecord result : results) {
                 assertNotNull(result.get("id"));
                 assertNotNull(result.get("firstname"));
-                LOG.error("DESC order result: id=" + result.get("id"));
                 firstNames[i++] = String.valueOf(result.get("firstname"));
             }
         } finally {
@@ -243,7 +238,6 @@ public class SecuredStorageTest extends StorageTestCase {
             for (DataRecord result : results) {
                 assertNotNull(result.get("id"));
                 assertNotNull(result.get("firstname"));
-                LOG.error("ASC order result: id=" + result.get("id"));
                 hasOrderChanged |= !firstNames[i++].equals(result.get("firstname"));
             }
             assertTrue(hasOrderChanged);

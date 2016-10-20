@@ -20,7 +20,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.rmi.RemoteException;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -31,40 +30,26 @@ import java.util.regex.Pattern;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit3.PowerMockSuite;
+import org.talend.mdm.commmon.util.core.MDMConfiguration;
 import org.talend.mdm.commmon.util.datamodel.management.DataModelID;
-import org.talend.mdm.webapp.base.server.util.CommonUtil;
 import org.talend.mdm.webapp.base.shared.EntityModel;
 import org.talend.mdm.webapp.browserecords.server.bizhelpers.DataModelHelper;
 import org.talend.mdm.webapp.browserecords.server.bizhelpers.SchemaMockAgent;
 
-import com.amalto.core.delegator.BeanDelegatorContainer;
-import com.amalto.core.delegator.IXtentisWSDelegator;
-import com.amalto.core.objects.ItemPOJO;
-import com.amalto.core.objects.ItemPOJOPK;
-import com.amalto.core.objects.datacluster.DataClusterPOJOPK;
-import com.amalto.core.util.CoreException;
-import com.amalto.core.util.EntityNotFoundException;
 import com.amalto.core.util.Util;
-import com.amalto.core.util.WhereConditionForcePivotFilter;
-import com.amalto.core.util.XConverter;
-import com.amalto.core.webservice.WSDataClusterPK;
-import com.amalto.core.webservice.WSGetItem;
-import com.amalto.core.webservice.WSGetItems;
-import com.amalto.core.webservice.WSItem;
-import com.amalto.core.webservice.WSItemPK;
 import com.amalto.core.webservice.WSPutItemWithReport;
-import com.amalto.core.webservice.WSStringArray;
-import com.amalto.core.webservice.XtentisPort;
+import com.amalto.webapp.core.util.XtentisWebappException;
 
 /**
  * created by talend2 on 2013-12-18 Detailled comment
@@ -75,6 +60,8 @@ public class UploadServiceTest extends TestCase {
 
     static {
         new UploadServiceTest();
+        MDMConfiguration.createConfiguration("", true);
+        MDMConfiguration.getConfiguration().setProperty("max.import.browserecord", String.valueOf(10)); //$NON-NLS-1$
     }
 
     protected String clusterName = null;
@@ -274,7 +261,65 @@ public class UploadServiceTest extends TestCase {
             fail("get excel file field value failed."); //$NON-NLS-1$
         } 
     }
-    
+
+    public void testImportWithDefaultImportCount() throws Exception {
+        fileType = "xls"; //$NON-NLS-1$
+        multipleValueSeparator = "|"; //$NON-NLS-1$
+        file = new File(this.getClass().getResource("Product_defalutImportCount.xls").getFile()); //$NON-NLS-1$
+        String[] keys = { "Product/Id" }; //$NON-NLS-1$
+        entityModel = getEntityModel("Product.xsd", "Product", "Product", keys); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        UploadService service = new TestUploadService(entityModel, fileType, isPartialUpdate, headersOnFirstLine,
+                headerVisibleMap, inheritanceNodePathList, multipleValueSeparator, seperator, encoding, textDelimiter, language);
+        List<WSPutItemWithReport> wsPutItemWithReportList = service.readUploadFile(file);
+
+        FileInputStream fileInputStream = new FileInputStream(file);
+        POIFSFileSystem poiFSFile = new POIFSFileSystem(fileInputStream);
+        Workbook workBook = new HSSFWorkbook(poiFSFile);
+        Sheet sheet = workBook.getSheetAt(0);
+
+        assertEquals(15, sheet.getLastRowNum());
+        assertEquals(10, wsPutItemWithReportList.size());
+
+        fileType = "csv"; //$NON-NLS-1$
+        file = new File(this.getClass().getResource("Product_defalutImportCount.csv").getFile()); //$NON-NLS-1$
+        service = new TestUploadService(entityModel, fileType, isPartialUpdate, headersOnFirstLine, headerVisibleMap,
+                inheritanceNodePathList, multipleValueSeparator, seperator, encoding, textDelimiter, language);
+        wsPutItemWithReportList = service.readUploadFile(file);
+
+        assertEquals(10, wsPutItemWithReportList.size());
+    }
+
+    public void testImportForPartial() throws Exception {
+        fileType = "xls"; //$NON-NLS-1$
+        multipleValueSeparator = "|"; //$NON-NLS-1$
+        file = new File(this.getClass().getResource("Product_defalutImportCount_ForPartial.xls").getFile()); //$NON-NLS-1$
+        String[] keys = { "Product/Id" }; //$NON-NLS-1$
+        entityModel = getEntityModel("Product.xsd", "Product", "Product", keys); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        UploadService service = new TestUploadService(entityModel, fileType, true, headersOnFirstLine, headerVisibleMap,
+                inheritanceNodePathList, multipleValueSeparator, seperator, encoding, textDelimiter, language);
+        List<WSPutItemWithReport> wsPutItemWithReportList = service.readUploadFile(file);
+
+        assertEquals(10, wsPutItemWithReportList.size());
+
+        String exceptResult = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Product xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><Picture/><Id>11.0</Id><Name>1</Name><Description>11</Description><Features><Sizes><Size>Medium</Size><Size>Small</Size></Sizes><Colors><Color>White</Color><Color>Light Blue</Color><Color>Lemon</Color></Colors></Features><Availability></Availability><Price>1.10</Price><Family></Family><OnlineStore/><Stores><Store/></Stores></Product>";
+        assertEquals(exceptResult, removeFormatPattern.matcher(wsPutItemWithReportList.get(9).getWsPutItem().getXmlString())
+                .replaceAll(""));
+
+        fileType = "csv"; //$NON-NLS-1$
+        multipleValueSeparator = "|"; //$NON-NLS-1$
+        file = new File(this.getClass().getResource("Product_defalutImportCount_ForPartial.csv").getFile()); //$NON-NLS-1$
+        entityModel = getEntityModel("Product.xsd", "Product", "Product", keys); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        service = new TestUploadService(entityModel, fileType, true, headersOnFirstLine, headerVisibleMap,
+                inheritanceNodePathList, multipleValueSeparator, seperator, encoding, textDelimiter, language);
+        wsPutItemWithReportList = service.readUploadFile(file);
+
+        assertEquals(10, wsPutItemWithReportList.size());
+
+        exceptResult = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Product xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><Picture/><Id>11</Id><Name>1</Name><Description>11</Description><Features><Sizes><Size>Medium</Size><Size>Small</Size></Sizes><Colors><Color>White</Color><Color>Light Blue</Color><Color>Lemon</Color></Colors></Features><Availability></Availability><Price>1.10</Price><Family></Family><OnlineStore/><Stores><Store/></Stores></Product>";
+        assertEquals(exceptResult, removeFormatPattern.matcher(wsPutItemWithReportList.get(9).getWsPutItem().getXmlString())
+                .replaceAll(""));
+    }
+
     protected EntityModel getEntityModel(String xsdFileName, String dataModel, String concept, String[] keys) throws Exception {
         String xsd = getFileContent(xsdFileName);
         String[] roles = { "System_Admin", "administration" }; //$NON-NLS-1$//$NON-NLS-2$
@@ -315,6 +360,13 @@ public class UploadServiceTest extends TestCase {
         @Override
         protected String getCurrentDataModel() throws Exception {
             return "UploadTestModel"; //$NON-NLS-1$
+        }
+
+        @Override
+        protected Document getItemForPartialUpdate(EntityModel model, String[] keys, int rowNumber) throws RemoteException, XtentisWebappException, Exception {
+            String expectedResult = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Product xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><Picture/><Id>i</Id><Name>1</Name><Description>1</Description><Features><Sizes><Size>Medium</Size><Size>Small</Size></Sizes><Colors><Color>White</Color><Color>Light Blue</Color><Color>Lemon</Color></Colors></Features><Availability/><Price>1.00</Price><Family/><OnlineStore/><Stores><Store/></Stores></Product>"; //$NON-NLS-1$
+            Document document = DocumentHelper.parseText(expectedResult);
+            return document;
         }
 
     }

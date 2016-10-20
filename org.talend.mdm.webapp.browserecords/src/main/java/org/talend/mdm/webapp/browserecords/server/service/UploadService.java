@@ -140,9 +140,9 @@ public class UploadService {
 
             if (FILE_TYPE_EXCEL_SUFFIX.equals(fileType.toLowerCase())
                     || FILE_TYPE_EXCEL2010_SUFFIX.equals(fileType.toLowerCase())) {
-                wsPutItemWithReportList = readExcelFile(fileInputStream, defaultMaxImportCount);
+                wsPutItemWithReportList = readExcelFile(fileInputStream);
             } else if (FILE_TYPE_CSV_SUFFIX.equals(fileType.toLowerCase())) {
-                wsPutItemWithReportList = readCsvFile(fileInputStream, defaultMaxImportCount);
+                wsPutItemWithReportList = readCsvFile(fileInputStream);
             }
             return wsPutItemWithReportList;
         } catch (Exception exception) {
@@ -158,7 +158,7 @@ public class UploadService {
         }
     }
 
-    private List<WSPutItemWithReport> readExcelFile(FileInputStream fileInputStream, int defaultMaxImportCount) throws ServiceException, Exception {
+    private List<WSPutItemWithReport> readExcelFile(FileInputStream fileInputStream) throws ServiceException, Exception {
         List<WSPutItemWithReport> wSPutItemWithReportList = new LinkedList<WSPutItemWithReport>();
         String[] importHeader = null;
         Workbook workBook = null;
@@ -218,6 +218,10 @@ public class UploadService {
                     }
                     document = getItemForPartialUpdate(entityModel, keys, rowNumber);
                 } else {
+                    if (isEmptyRecordInExcel(row, importHeader)) {
+                        rowNumber--;
+                        continue;
+                    }
                     document = XmlUtil.parseDocument(org.talend.mdm.webapp.browserecords.server.util.CommonUtil.getSubXML(
                             typeModel, null, null, language));
                 }
@@ -249,7 +253,7 @@ public class UploadService {
         return wSPutItemWithReportList;
     }
 
-    private List<WSPutItemWithReport> readCsvFile(FileInputStream fileInputStream, int defaultMaxImportCount) throws ServiceException, Exception {
+    private List<WSPutItemWithReport> readCsvFile(FileInputStream fileInputStream) throws ServiceException, Exception {
         List<WSPutItemWithReport> wSPutItemWithReportList = new LinkedList<WSPutItemWithReport>();
         String[] importHeader = null;
         char separator = File_CSV_SEPARATOR_SEMICOLON.equals(seperator) ? ';' : ',';
@@ -301,6 +305,10 @@ public class UploadService {
                     }
                     document = getItemForPartialUpdate(entityModel, keys, i + 1);
                 } else {
+                    if (isEmptyRecordInCSV(record, importHeader)) {
+                        rowNumber--;
+                        continue;
+                    }
                     document = XmlUtil.parseDocument(org.talend.mdm.webapp.browserecords.server.util.CommonUtil.getSubXML(
                             typeModel, null, null, language));
                 }
@@ -618,7 +626,7 @@ public class UploadService {
         }
     }
     
-    private Document getItemForPartialUpdate(EntityModel model, String[] keys, int rowNumber) throws RemoteException, XtentisWebappException, Exception {
+    protected Document getItemForPartialUpdate(EntityModel model, String[] keys, int rowNumber) throws RemoteException, XtentisWebappException, Exception {
         try {
             WSItem wsItem = CommonUtil.getPort().getItem(new WSGetItem(new WSItemPK(new WSDataClusterPK(org.talend.mdm.webapp.browserecords.server.util.CommonUtil.getCurrentDataModel()), model.getConceptName(), keys)));
             return org.talend.mdm.webapp.base.server.util.XmlUtil.parseText(wsItem.getContent());

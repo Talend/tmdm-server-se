@@ -155,6 +155,43 @@ public class ForeignKeySelectorGWTTest extends GWTTestCase {
         assertEquals("Addr/AddrId$$=$$123$$#", foreignKeySelector.parseForeignKeyFilter()); //$NON-NLS-1$
     }
 
+    public void testFindTarget() {
+
+        ItemsDetailPanel itemsDetailPanel = ItemsDetailPanel.newInstance();
+        String targetPath = "Caracteristique/Format_Caracteristique/IdTypeValeur"; //$NON-NLS-1$
+        ItemNodeModel itemNodeModel = new ItemNodeModel();
+        itemNodeModel.setLabel("Format_Caracteristique"); //$NON-NLS-1$
+        itemNodeModel.setRealType("Caracteristique"); //$NON-NLS-1$
+        itemNodeModel.setTypePath("Caracteristique/Format_Caracteristique"); //$NON-NLS-1$
+
+        ItemNodeModel itemNodeModel1 = new ItemNodeModel();
+        itemNodeModel1.setLabel("IdTypeValeur"); //$NON-NLS-1$
+        itemNodeModel1.setTypePath("Caracteristique/Format_Caracteristique:Caracteristique_Liste/IdTypeValeur"); //$NON-NLS-1$
+        ItemNodeModel itemNodeModel2 = new ItemNodeModel();
+        itemNodeModel2.setLabel("Multiple"); //$NON-NLS-1$
+        itemNodeModel2.setTypePath("Caracteristique/Format_Caracteristique:Caracteristique_Liste/Multiple"); //$NON-NLS-1$
+        ItemNodeModel itemNodeModel3 = new ItemNodeModel();
+        itemNodeModel3.setLabel("ValeursCaracteristique"); //$NON-NLS-1$
+        itemNodeModel3.setTypePath("Caracteristique/Format_Caracteristique:Caracteristique_Liste/ValeursCaracteristique"); //$NON-NLS-1$
+        itemNodeModel.getChildren().add(itemNodeModel1);
+        itemNodeModel.getChildren().add(itemNodeModel2);
+        itemNodeModel.getChildren().add(itemNodeModel3);
+
+        ForeignKeySelector foreignKeySelector = new ForeignKeySelector(
+                "Caracteristique/Format_Caracteristique:Caracteristique_Liste/IdTypeValeur", new ArrayList<String>(), //$NON-NLS-1$
+                "Caracteristique/Format_Caracteristique", "Caracteristique/Format_Caracteristique/IdTypeValeur/Name$$=$$Caracteristique/Format_Caracteristique/IdTypeValeur$$#", itemsDetailPanel, itemNodeModel1); //$NON-NLS-1$//$NON-NLS-2$
+        ItemNodeModel targetNodeModel = foreignKeySelector.findTarget(targetPath, itemNodeModel);
+        assertNotNull(targetNodeModel);
+        assertEquals("IdTypeValeur", targetNodeModel.getLabel()); //$NON-NLS-1$
+        assertEquals("Caracteristique/Format_Caracteristique:Caracteristique_Liste/IdTypeValeur", targetNodeModel.getTypePath()); //$NON-NLS-1$
+
+        targetPath = "Caracteristique/Format_Caracteristique[@xsi:type=\"Caracteristique_Liste\"]/IdTypeValeur"; //$NON-NLS-1$
+        targetNodeModel = foreignKeySelector.findTarget(targetPath, itemNodeModel);
+        assertNotNull(targetNodeModel);
+        assertEquals("IdTypeValeur", targetNodeModel.getLabel()); //$NON-NLS-1$
+        assertEquals("Caracteristique/Format_Caracteristique:Caracteristique_Liste/IdTypeValeur", targetNodeModel.getTypePath()); //$NON-NLS-1$
+    }
+
     private EntityModel getCurrentEntityModel() {
         EntityModel productEntityModel = CommonUtilTestData.getEntityModel(ClientResourceData.getModelProduct());
         return productEntityModel;

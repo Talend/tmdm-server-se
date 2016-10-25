@@ -13,6 +13,7 @@
 package org.talend.mdm.webapp.browserecords.client.widget.foreignkey;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.talend.mdm.webapp.base.client.ServiceEnhancer;
 import org.talend.mdm.webapp.base.client.model.ForeignKeyBean;
@@ -23,6 +24,7 @@ import org.talend.mdm.webapp.browserecords.client.model.ItemNodeModel;
 import org.talend.mdm.webapp.browserecords.client.util.ClientResourceData;
 import org.talend.mdm.webapp.browserecords.client.util.CommonUtilTestData;
 import org.talend.mdm.webapp.browserecords.client.util.UserSession;
+import org.talend.mdm.webapp.browserecords.client.widget.ForeignKeyFieldList;
 import org.talend.mdm.webapp.browserecords.client.widget.ItemsDetailPanel;
 import org.talend.mdm.webapp.browserecords.client.widget.ForeignKey.ForeignKeySelector;
 
@@ -78,23 +80,23 @@ public class ForeignKeySelectorGWTTest extends GWTTestCase {
         family.setObjectValue(foreignKeyBean);
         family.setParent(product);
         product.add(family);
-        ForeignKeySelector foreignKeySelector = new ForeignKeySelector("ProductFamily/Id", new ArrayList<String>(), //$NON-NLS-1$
+        ForeignKeySelectorTest foreignKeySelector = new ForeignKeySelectorTest("ProductFamily/Id", new ArrayList<String>(), //$NON-NLS-1$
                 "Product/Family", "ProductFamily/Name$$=$$Product/Name$$#", itemsDetailPanel, family); //$NON-NLS-1$//$NON-NLS-2$
         assertEquals("ProductFamily/Name$$=$$talend$$#", foreignKeySelector.parseForeignKeyFilter()); //$NON-NLS-1$
 
-        foreignKeySelector = new ForeignKeySelector("ProductFamily/Id", new ArrayList<String>(), "Product/Family", //$NON-NLS-1$ //$NON-NLS-2$
+        foreignKeySelector = new ForeignKeySelectorTest("ProductFamily/Id", new ArrayList<String>(), "Product/Family", //$NON-NLS-1$ //$NON-NLS-2$
                 "ProductFamily/Name$$=$$../Name$$#", itemsDetailPanel, family); //$NON-NLS-1$
         assertEquals("ProductFamily/Name$$=$$../Name$$#", foreignKeySelector.parseForeignKeyFilter()); //$NON-NLS-1$
 
-        foreignKeySelector = new ForeignKeySelector("ProductFamily/Id", new ArrayList<String>(), "Product/Family", //$NON-NLS-1$ //$NON-NLS-2$
+        foreignKeySelector = new ForeignKeySelectorTest("ProductFamily/Id", new ArrayList<String>(), "Product/Family", //$NON-NLS-1$ //$NON-NLS-2$
                 "ProductFamily/Name$$=$$ProductFamily/Id$$#", itemsDetailPanel, family); //$NON-NLS-1$
         assertEquals("ProductFamily/Name$$=$$ProductFamily/Id$$#", foreignKeySelector.parseForeignKeyFilter()); //$NON-NLS-1$
 
-        foreignKeySelector = new ForeignKeySelector("ProductFamily/Id", new ArrayList<String>(), "Product/Family", //$NON-NLS-1$ //$NON-NLS-2$
+        foreignKeySelector = new ForeignKeySelectorTest("ProductFamily/Id", new ArrayList<String>(), "Product/Family", //$NON-NLS-1$ //$NON-NLS-2$
                 "ProductFamily/Name$$=$$\"talend\"$$#", itemsDetailPanel, family); //$NON-NLS-1$
         assertEquals("ProductFamily/Name$$=$$talend$$#", foreignKeySelector.parseForeignKeyFilter()); //$NON-NLS-1$
 
-        foreignKeySelector = new ForeignKeySelector("ProductFamily/Id", new ArrayList<String>(), "Product/Family", //$NON-NLS-1$ //$NON-NLS-2$
+        foreignKeySelector = new ForeignKeySelectorTest("ProductFamily/Id", new ArrayList<String>(), "Product/Family", //$NON-NLS-1$ //$NON-NLS-2$
                 "ProductFamily/Name$$=$$\'talend\'$$#", itemsDetailPanel, family); //$NON-NLS-1$
         assertEquals("ProductFamily/Name$$=$$talend$$#", foreignKeySelector.parseForeignKeyFilter()); //$NON-NLS-1$
 
@@ -142,15 +144,15 @@ public class ForeignKeySelectorGWTTest extends GWTTestCase {
         abc.setObjectValue("abc"); //$NON-NLS-1$
         abc.setParent(addrs);
         addrs.add(abc);
-        foreignKeySelector = new ForeignKeySelector("Person/addrs/add_code", new ArrayList<String>(), "Person/addrs/abc", //$NON-NLS-1$ //$NON-NLS-2$
+        foreignKeySelector = new ForeignKeySelectorTest("Person/addrs/add_code", new ArrayList<String>(), "Person/addrs/abc", //$NON-NLS-1$ //$NON-NLS-2$
                 "Addr/AddrId$$=$$Person/addrs/add_code$$#", itemsDetailPanel, abc); //$NON-NLS-1$
         assertEquals("Addr/AddrId$$=$$123$$#", foreignKeySelector.parseForeignKeyFilter()); //$NON-NLS-1$
 
-        foreignKeySelector = new ForeignKeySelector("Person/addrs/add_code", new ArrayList<String>(), "Person/addrs/abc", //$NON-NLS-1$ //$NON-NLS-2$
+        foreignKeySelector = new ForeignKeySelectorTest("Person/addrs/add_code", new ArrayList<String>(), "Person/addrs/abc", //$NON-NLS-1$ //$NON-NLS-2$
                 "Addr/AddrId$$=$$\"123\"$$#", itemsDetailPanel, abc); //$NON-NLS-1$
         assertEquals("Addr/AddrId$$=$$123$$#", foreignKeySelector.parseForeignKeyFilter()); //$NON-NLS-1$
 
-        foreignKeySelector = new ForeignKeySelector("Person/addrs/add_code", new ArrayList<String>(), "Person/addrs/abc", //$NON-NLS-1$ //$NON-NLS-2$
+        foreignKeySelector = new ForeignKeySelectorTest("Person/addrs/add_code", new ArrayList<String>(), "Person/addrs/abc", //$NON-NLS-1$ //$NON-NLS-2$
                 "Addr/AddrId$$=$$\'123\'$$#", itemsDetailPanel, abc); //$NON-NLS-1$
         assertEquals("Addr/AddrId$$=$$123$$#", foreignKeySelector.parseForeignKeyFilter()); //$NON-NLS-1$
     }
@@ -177,7 +179,7 @@ public class ForeignKeySelectorGWTTest extends GWTTestCase {
         itemNodeModel.getChildren().add(itemNodeModel2);
         itemNodeModel.getChildren().add(itemNodeModel3);
 
-        ForeignKeySelector foreignKeySelector = new ForeignKeySelector(
+        ForeignKeySelectorTest foreignKeySelector = new ForeignKeySelectorTest(
                 "Caracteristique/Format_Caracteristique:Caracteristique_Liste/IdTypeValeur", new ArrayList<String>(), //$NON-NLS-1$
                 "Caracteristique/Format_Caracteristique", "Caracteristique/Format_Caracteristique/IdTypeValeur/Name$$=$$Caracteristique/Format_Caracteristique/IdTypeValeur$$#", itemsDetailPanel, itemNodeModel1); //$NON-NLS-1$//$NON-NLS-2$
         ItemNodeModel targetNodeModel = foreignKeySelector.findTarget(targetPath, itemNodeModel);
@@ -200,6 +202,25 @@ public class ForeignKeySelectorGWTTest extends GWTTestCase {
     @Override
     public String getModuleName() {
         return "org.talend.mdm.webapp.browserecords.TestBrowseRecords"; //$NON-NLS-1$
+    }
+
+    public class ForeignKeySelectorTest extends ForeignKeySelector {
+
+        public ForeignKeySelectorTest(String foreignKeyPath, List<String> foreignKeyInfo, String currentPath,
+                String foreignKeyFilter, ForeignKeyFieldList fkFieldList, ItemsDetailPanel itemsDetailPanel,
+                ItemNodeModel itemNode) {
+            super(foreignKeyPath, foreignKeyInfo, currentPath, foreignKeyFilter, fkFieldList, itemsDetailPanel, itemNode);
+        }
+
+        public ForeignKeySelectorTest(String foreignKeyPath, List<String> foreignKeyInfo, String currentPath,
+                String foreignKeyFilter, ItemsDetailPanel itemsDetailPanel, ItemNodeModel itemNode) {
+            super(foreignKeyPath, foreignKeyInfo, currentPath, foreignKeyFilter, itemsDetailPanel, itemNode);
+        }
+
+        public ItemNodeModel findTarget(String targetPath, ItemNodeModel node) {
+            return super.findTarget(targetPath, node);
+        }
+
     }
 
 }

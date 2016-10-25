@@ -304,7 +304,7 @@ public class ForeignKeySelector extends ForeignKeyField implements ReturnCriteri
         }
     }
 
-    public ItemNodeModel findTarget(String targetPath, ItemNodeModel node) {
+    protected ItemNodeModel findTarget(String targetPath, ItemNodeModel node) {
         List<ModelData> childrenList = node.getChildren();
         if (childrenList != null && childrenList.size() > 0) {
             for (int i = 0; i < childrenList.size(); i++) {

@@ -68,7 +68,10 @@ public class PartialUpdateActionCreator extends UpdateActionCreator {
                                       String source,
                                       String userName,
                                       boolean generateTouchActions,
-                                      MetadataRepository repository) {
+                                      MetadataRepository repository,
+                                      String dataCluster,
+                                      String dataModel,
+                                      SaverSource saverSource) {
         super(originalDocument,
                 newDocument,
                 date,
@@ -77,7 +80,10 @@ public class PartialUpdateActionCreator extends UpdateActionCreator {
                 source,
                 userName,
                 generateTouchActions,
-                repository);
+                repository,
+                dataCluster,
+                dataModel,
+                saverSource);
         this.preserveCollectionOldValues = preserveCollectionOldValues;
         if (!pivot.isEmpty()) {
             // Pivot MUST NOT end with '/' and key MUST start with '/' (see TMDM-4381).

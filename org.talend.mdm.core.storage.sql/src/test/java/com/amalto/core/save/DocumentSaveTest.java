@@ -421,6 +421,54 @@ public class DocumentSaveTest extends TestCase {
         assertNotSame("100", evaluate(committedElement, "/ProductFamily/Id"));
     }
 
+    public void testUpdateWithAutoIncrement() throws Exception {
+        final MetadataRepository repository = new MetadataRepository();
+        repository.load(DocumentSaveTest.class.getResourceAsStream("personWithAddress.xsd"));
+        MockMetadataRepositoryAdmin.INSTANCE.register("Vinci", repository);
+
+        SaverSource source = new TestSaverSource(repository, false, "", "personWithAddress.xsd");
+        ((TestSaverSource) source).setUserName("System_Admin");
+
+        SaverSession session = SaverSession.newSession(source);
+        InputStream recordXml = DocumentSaveTest.class.getResourceAsStream("personWithAddress_1.xml");
+        DocumentSaverContext context = session.getContextFactory().create("MDM", "Vinci", "Source", recordXml, true, true, true,
+                true, false);
+        DocumentSaver saver = context.createSaver();
+        saver.save(session, context);
+        MockCommitter committer = new MockCommitter();
+        session.end(committer);
+
+        assertTrue(committer.hasSaved());
+        Element committedElement = committer.getCommittedElement();
+        assertNotNull(Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[1]/type"));
+        assertNotNull(Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[1]/idAddress"));
+        assertEquals("swissMailAddress", evaluate(committedElement, "/person/dwellingAddresses[1]/address/type"));
+        String idAddress = Util.getFirstTextNode(committedElement, "/person/dwellingAddresses[1]/address/idAddress");
+        assertTrue(Integer.valueOf(idAddress).intValue() > 0);
+
+        session = SaverSession.newSession(source);
+        recordXml = DocumentSaveTest.class.getResourceAsStream("personWithAddress_2.xml");
+        context = session.getContextFactory().create("MDM", "Vinci", "Source", recordXml, true, true, true, true, false);
+        saver = context.createSaver();
+        saver.save(session, context);
+        committer = new MockCommitter();
+        session.end(committer);
+
+        assertTrue(committer.hasSaved());
+        committedElement = committer.getCommittedElement();
+        assertNotNull(Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[1]/type"));
+        assertNotNull(Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[1]/idAddress"));
+        assertNotNull(Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[2]/type"));
+        assertNotNull(Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[2]/idAddress"));
+        assertEquals("swissMailAddress", Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[1]/type"));
+        assertEquals("foreignHQAddress", Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[2]/type"));
+        idAddress = Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[1]/idAddress");
+        assertTrue(Integer.valueOf(idAddress).intValue() > 0);
+        String idAddressTwo = Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[2]/idAddress");
+        assertTrue(Integer.valueOf(idAddressTwo).intValue() > 0);
+        assertEquals(Integer.valueOf(idAddress).intValue() - 1, Integer.valueOf(idAddressTwo).intValue());
+    }
+
     public void testCreateFailure() throws Exception {
         final MetadataRepository repository = new MetadataRepository();
         repository.load(DocumentSaveTest.class.getResourceAsStream("metadata1.xsd"));

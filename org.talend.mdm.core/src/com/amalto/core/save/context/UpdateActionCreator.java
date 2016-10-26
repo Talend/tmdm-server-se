@@ -34,10 +34,13 @@ import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
 import org.talend.mdm.commmon.metadata.SimpleTypeFieldMetadata;
 import org.talend.mdm.commmon.metadata.TypeMetadata;
 import org.talend.mdm.commmon.metadata.Types;
+import org.talend.mdm.commmon.util.core.EUUIDCustomType;
+import org.w3c.dom.Node;
 
 import com.amalto.core.history.Action;
 import com.amalto.core.history.MutableDocument;
 import com.amalto.core.history.accessor.Accessor;
+import com.amalto.core.history.accessor.DOMAccessor;
 import com.amalto.core.history.action.FieldInsertAction;
 import com.amalto.core.history.action.FieldUpdateAction;
 import com.amalto.core.storage.StorageMetadataUtils;
@@ -82,13 +85,24 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
 
     private List<String> visitedOneToManyPath = new ArrayList<String>();
 
+    private String rootTypeName = null;
+
+    private final SaverSource saverSource;
+
+    private final String dataCluster;
+
+    private final String dataModel;
+
     public UpdateActionCreator(MutableDocument originalDocument,
                                MutableDocument newDocument,
                                Date date,
                                String source,
                                String userName,
                                boolean generateTouchActions,
-                               MetadataRepository repository) {
+                               MetadataRepository repository,
+                               String dataCluster,
+                               String dataModel,
+                               SaverSource saverSource) {
         this(originalDocument,
                 newDocument,
                 date,
@@ -97,7 +111,10 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
                 source,
                 userName,
                 generateTouchActions,
-                repository);
+                repository,
+                dataCluster,
+                dataModel,
+                saverSource);
     }
 
     public UpdateActionCreator(MutableDocument originalDocument,
@@ -107,7 +124,10 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
                                String source,
                                String userName,
                                boolean generateTouchActions,
-                               MetadataRepository repository) {
+                               MetadataRepository repository,
+                               String dataCluster,
+                               String dataModel,
+                               SaverSource saverSource) {
         this(originalDocument,
                 newDocument,
                 date,
@@ -116,7 +136,10 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
                 source,
                 userName,
                 generateTouchActions,
-                repository);
+                repository,
+                dataCluster,
+                dataModel,
+                saverSource);
     }
 
     public UpdateActionCreator(MutableDocument originalDocument,
@@ -127,7 +150,10 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
                                String source,
                                String userName,
                                boolean generateTouchActions,
-                               MetadataRepository repository) {
+                               MetadataRepository repository,
+                               String dataCluster,
+                               String dataModel,
+                               SaverSource saverSource) {
         this.preserveCollectionOldValues = preserveCollectionOldValues;
         this.originalDocument = originalDocument;
         this.newDocument = newDocument;
@@ -137,10 +163,16 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
         this.date = date;
         this.source = source;
         this.userName = userName;
+        this.dataCluster = dataCluster;
+        this.dataModel = dataModel;
+        this.saverSource = saverSource;
     }
 
     @Override
     public List<Action> visit(ComplexTypeMetadata complexType) {
+        if (rootTypeName == null) {
+            rootTypeName = complexType.getName();
+        }
         // This is an update, so both original and new document have a "entity root" element (TMDM-3883).
         generateNoOp("/"); //$NON-NLS-1$
         super.visit(complexType);
@@ -274,6 +306,12 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
                 if (newAccessor.get() != null && !newAccessor.get().isEmpty()) { // Empty accessor means no op to ensure legacy behavior
                     generateNoOp(lastMatchPath);
                     actions.add(new FieldUpdateAction(date, source, userName, path, StringUtils.EMPTY, newAccessor.get(), comparedField));
+                    generateNoOp(path);
+                }else if(EUUIDCustomType.AUTO_INCREMENT.getName().equalsIgnoreCase(comparedField.getType().getName())){
+                    generateNoOp(lastMatchPath);
+                    String conceptName = rootTypeName + "." + comparedField.getName().replaceAll("/", "."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    String autoIncrementValue = saverSource.nextAutoIncrementId(dataCluster, dataModel, conceptName);
+                    actions.add(new FieldUpdateAction(date, source, userName, path, StringUtils.EMPTY, autoIncrementValue, comparedField));
                     generateNoOp(path);
                 }
             }

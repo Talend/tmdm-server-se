@@ -1046,6 +1046,41 @@ public class TreeDetailGWTTest extends GWTTestCase {
         assertEquals("A_Name", child.getItemNodeModel().getName());
     }
 
+    /**
+     * Test Model Structure: <br>
+     * Root<br>
+     * |_id<br>
+     * |_name<br>
+     * |_cp(autoExpand=false)<br>
+     * |_title<br>
+     * |_content<br>
+     */
+    public void testBulkUpdate() {
+        ViewBean viewBean = getViewBean();
+        TreeDetail treeDetail = new TreeDetail(ItemsDetailPanel.newInstance());
+        treeDetail.setViewBean(viewBean);
+        ItemNodeModel rootNode = builderItemNode();
+        DynamicTreeItem item = treeDetail.buildGWTTree(rootNode, null, false, ItemDetailToolBar.BULK_UPDATE_OPERATION);
+        // validate result
+        assertNotNull(item);
+        assertEquals(3, item.getChildCount());
+        assertTrue(((ItemNodeModel) item.getChild(0).getUserObject()).isMassUpdate());
+        assertTrue(((ItemNodeModel) item.getChild(1).getUserObject()).isMassUpdate());
+        assertTrue(((ItemNodeModel) item.getChild(2).getUserObject()).isMassUpdate());
+        // cp node lazy loading
+        DynamicTreeItem cpItem = (DynamicTreeItem) item.getChild(2);
+        assertNotNull(cpItem);
+        assertEquals(1, cpItem.getChildCount());
+        assertTrue(cpItem.getChild(0) instanceof GhostTreeItem);
+        // render cp node
+        cpItem.setState(true);
+        assertEquals(2, cpItem.getChildCount());
+        assertTrue(((ItemNodeModel) cpItem.getChild(0).getUserObject()).isMassUpdate());
+        assertFalse(((ItemNodeModel) cpItem.getChild(0).getUserObject()).isEdited());
+        assertTrue(((ItemNodeModel) cpItem.getChild(0).getUserObject()).isMassUpdate());
+        assertFalse(((ItemNodeModel) cpItem.getChild(0).getUserObject()).isEdited());
+    }
+
     @Override
     public String getModuleName() {
         return "org.talend.mdm.webapp.browserecords.TestBrowseRecords";

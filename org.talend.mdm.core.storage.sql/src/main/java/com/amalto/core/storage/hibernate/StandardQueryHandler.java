@@ -400,8 +400,8 @@ class StandardQueryHandler extends AbstractQueryHandler {
     @Override
     public StorageResults visit(GroupSize groupSize) {
         Projection groupSizeProjection = Projections.sqlGroupProjection(
-                "count(" + Storage.METADATA_TASK_ID.toUpperCase() + ") as talend_group_size", //$NON-NLS-1$ //$NON-NLS-2$ 
-                Storage.METADATA_TASK_ID, new String[] { "talend_group_size" }, //$NON-NLS-1$
+                "count(this_." + Storage.METADATA_TASK_ID + ") as talend_group_size", //$NON-NLS-1$ //$NON-NLS-2$ 
+                "this_." + Storage.METADATA_TASK_ID, new String[] { "talend_group_size" }, //$NON-NLS-1$ //$NON-NLS-2$ 
                 new org.hibernate.type.Type[] { new IntegerType() });
         projectionList.add(groupSizeProjection);
         return null;

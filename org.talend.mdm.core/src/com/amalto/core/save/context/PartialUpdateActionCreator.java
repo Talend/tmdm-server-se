@@ -127,6 +127,13 @@ public class PartialUpdateActionCreator extends UpdateActionCreator {
         }
     }
 
+    public PartialUpdateActionCreator(MutableDocument originalDocument, MutableDocument newDocument, Date date,
+            boolean preserveCollectionOldValues, int insertIndex, String pivot, String key, String source, String userName,
+            boolean generateTouchActions, MetadataRepository repository) {
+        this(originalDocument, newDocument, date, preserveCollectionOldValues, insertIndex, pivot, key, source, userName,
+                generateTouchActions, repository, null, null, null);
+    }
+
     @Override
     public List<Action> visit(ComplexTypeMetadata complexType) {
         if (mainType == null) {

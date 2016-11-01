@@ -43,7 +43,49 @@
         </address>
         <address>
             <idAddress></idAddress>
+            <type>swissHQAddress</type>
+            <line1></line1>
+            <line2></line2>
+            <street></street>
+            <houseNumber></houseNumber>
+            <swissZipCodeId></swissZipCodeId>
+            <zip></zip>
+            <town></town>
+            <country></country>
+            <egid></egid>
+            <reeid></reeid>
+        </address>
+        <address>
+            <idAddress></idAddress>
+            <type>foreignMailAddress</type>
+            <line1></line1>
+            <line2></line2>
+            <street></street>
+            <houseNumber></houseNumber>
+            <swissZipCodeId></swissZipCodeId>
+            <zip></zip>
+            <town></town>
+            <country></country>
+            <egid></egid>
+            <reeid></reeid>
+        </address>
+        <address>
+            <idAddress></idAddress>
             <type>foreignHQAddress</type>
+            <line1></line1>
+            <line2></line2>
+            <street></street>
+            <houseNumber></houseNumber>
+            <swissZipCodeId></swissZipCodeId>
+            <zip></zip>
+            <town></town>
+            <country></country>
+            <egid></egid>
+            <reeid></reeid>
+        </address>
+        <address>
+            <idAddress></idAddress>
+            <type>pccSignBoard</type>
             <line1></line1>
             <line2></line2>
             <street></street>

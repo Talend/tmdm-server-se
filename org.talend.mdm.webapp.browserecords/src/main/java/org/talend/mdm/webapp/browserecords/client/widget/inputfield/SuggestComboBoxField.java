@@ -149,12 +149,15 @@ public class SuggestComboBoxField extends ComboBoxEx<ForeignKeyBean> {
                 String inputValue = getInputValue();
                 if (!keyCodeList.contains(e.getKeyCode())) {
 
-                    if (e.getKeyCode() == KeyCodes.KEY_BACKSPACE) {
+                    if (e.getKeyCode() == KeyCodes.KEY_BACKSPACE || e.getKeyCode() == KeyCodes.KEY_DELETE) {
                         if (inputValue.contains("[") || inputValue.contains("]")) { //$NON-NLS-1$ //$NON-NLS-2$
                             setInputValue(""); //$NON-NLS-1$
+                        } else if (inputValue == null || inputValue.trim().length() == 0 ){
+                            foreignKeyField.setSuggestBoxValue(null);
+                            clear();
                         }
                     }
-
+                    
                     if (inputValue != null && !"".equals(inputValue.trim()) && !"[".equals(inputValue.trim())) { //$NON-NLS-1$ //$NON-NLS-2$
                         task.delay(getListDelay);
                     }
@@ -255,12 +258,12 @@ public class SuggestComboBoxField extends ComboBoxEx<ForeignKeyBean> {
                     }
                 }
             }
-            foreignKeyField.setValue(selectedBean);
+            foreignKeyField.setSuggestBoxValue(selectedBean);
         }
     }
 
     public void setFieldValue() {
-        foreignKeyField.setValue(getValue());
+        foreignKeyField.setSuggestBoxValue(getValue());
     }
 
     public String getInputValue() {

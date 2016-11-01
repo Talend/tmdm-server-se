@@ -275,7 +275,7 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
             // Proceed in "reverse" order (highest index to lowest) so there won't be issues when deleting elements in
             // a sequence (if element #2 is deleted before element #3, element #3 becomes #2...).
             int max = Math.max(leftAccessor.size(), rightAccessor.size());
-            for (int i = max; i > 0; i--) {
+            for (int i = 1; i <=max; i++) {
                 // XPath indexes are 1-based (not 0-based).
                 path.add(field.getName() + '[' + i + ']');
                 closure.execute(field);
@@ -307,11 +307,12 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
                     generateNoOp(lastMatchPath);
                     actions.add(new FieldUpdateAction(date, source, userName, path, StringUtils.EMPTY, newAccessor.get(), comparedField));
                     generateNoOp(path);
-                }else if(EUUIDCustomType.AUTO_INCREMENT.getName().equalsIgnoreCase(comparedField.getType().getName())){
+                } else if (EUUIDCustomType.AUTO_INCREMENT.getName().equalsIgnoreCase(comparedField.getType().getName())) {
                     generateNoOp(lastMatchPath);
                     String conceptName = rootTypeName + "." + comparedField.getName().replaceAll("/", "."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                     String autoIncrementValue = saverSource.nextAutoIncrementId(dataCluster, dataModel, conceptName);
-                    actions.add(new FieldUpdateAction(date, source, userName, path, StringUtils.EMPTY, autoIncrementValue, comparedField));
+                    actions.add(new FieldUpdateAction(date, source, userName, path, StringUtils.EMPTY, autoIncrementValue,
+                            comparedField));
                     generateNoOp(path);
                 }
             }

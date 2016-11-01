@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
+import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -314,6 +315,9 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
                     actions.add(new FieldUpdateAction(date, source, userName, path, StringUtils.EMPTY, autoIncrementValue,
                             comparedField));
                     generateNoOp(path);
+                } else if (EUUIDCustomType.UUID.getName().equalsIgnoreCase(comparedField.getType().getName())) {
+                    String uuidValue = UUID.randomUUID().toString();
+                    actions.add(new FieldUpdateAction(date, source, userName, path, StringUtils.EMPTY, uuidValue, comparedField));
                 }
             }
         } else { // original accessor exist

@@ -33,6 +33,7 @@ import org.talend.mdm.webapp.browserecords.client.creator.ItemCreator;
 import org.talend.mdm.webapp.browserecords.client.i18n.MessagesFactory;
 import org.talend.mdm.webapp.browserecords.client.model.BreadCrumbModel;
 import org.talend.mdm.webapp.browserecords.client.model.ItemBean;
+import org.talend.mdm.webapp.browserecords.client.model.ItemNodeModel;
 import org.talend.mdm.webapp.browserecords.client.model.QueryModel;
 import org.talend.mdm.webapp.browserecords.client.mvc.BrowseRecordsView;
 import org.talend.mdm.webapp.browserecords.client.resources.icon.Icons;
@@ -51,6 +52,7 @@ import org.talend.mdm.webapp.browserecords.client.widget.integrity.ListRefresh;
 import org.talend.mdm.webapp.browserecords.client.widget.integrity.LogicalDeleteAction;
 import org.talend.mdm.webapp.browserecords.client.widget.integrity.NoOpPostDeleteAction;
 import org.talend.mdm.webapp.browserecords.client.widget.integrity.PostDeleteAction;
+import org.talend.mdm.webapp.browserecords.client.widget.treedetail.TreeDetailUtil;
 import org.talend.mdm.webapp.browserecords.shared.AppHeader;
 import org.talend.mdm.webapp.browserecords.shared.ViewBean;
 
@@ -83,6 +85,7 @@ import com.extjs.gxt.ui.client.mvc.Dispatcher;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ToggleButton;
@@ -348,34 +351,42 @@ public class ItemsToolBar extends ToolBar {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
-                ItemsMainTabPanel.getInstance().removeAll();
-                ItemsListPanel.getInstance().setCreate(true);
-                String concept = ViewUtil.getConceptFromBrowseItemView(entityCombo.getValue().get("value").toString());//$NON-NLS-1$
-
-                EntityModel entityModel = BrowseRecords.getSession().getCurrentEntityModel();
-                ItemBean itemBean = ItemCreator.createDefaultItemBean(concept, entityModel);
-
-                if (ItemsListPanel.getInstance().getGrid() != null) {
-                    ItemsListPanel.getInstance().getGrid().getSelectionModel().deselectAll();
+                List<TabItem> tabItemList = ItemsMainTabPanel.getInstance().getItems();
+                boolean isChangeCurrentRecord = false;
+                String label = "";
+                for (int i = 0; i < tabItemList.size(); i++) {
+                    TabItem tabItem = tabItemList.get(i);
+                    ItemsDetailPanel itemsDetailPanel = (ItemsDetailPanel) tabItem.getWidget(0);
+                    if (itemsDetailPanel != null && itemsDetailPanel.getPrimaryKeyTabWidget() != null) {
+                        // get tree root node from the primary key tab
+                        ItemPanel itemPanel = (ItemPanel) itemsDetailPanel.getPrimaryKeyTabWidget();
+                        ItemNodeModel root = itemPanel.getTree().getRootModel();
+                        label = root != null ? root.getLabel() : "";
+                        isChangeCurrentRecord = root != null ? TreeDetailUtil.isChangeValue(root) : false;
+                        if (isChangeCurrentRecord) {
+                            ItemsMainTabPanel.getInstance().setSelection(tabItem);
+                            break;
+                        }
+                    }
                 }
+                if (isChangeCurrentRecord) {
+                    MessageBox msgBox = MessageBox.confirm(MessagesFactory.getMessages().confirm_title(), MessagesFactory
+                            .getMessages().msg_confirm_save_tree_detail(label), new Listener<MessageBoxEvent>() {
 
-                ItemsDetailPanel panel = ItemsDetailPanel.newInstance();
-                panel.setStaging(isStaging());
-                List<String> pkInfoList = new ArrayList<String>();
-                pkInfoList.add(itemBean.getLabel());
-                panel.initBanner(pkInfoList, itemBean.getDescription());
-                List<BreadCrumbModel> breads = new ArrayList<BreadCrumbModel>();
-                if (itemBean != null) {
-                    breads.add(new BreadCrumbModel("", BreadCrumb.DEFAULTNAME, null, null, false)); //$NON-NLS-1$
-                    breads.add(new BreadCrumbModel(itemBean.getConcept(), itemBean.getLabel(), null, null, true));
+                        @Override
+                        public void handleEvent(MessageBoxEvent be) {
+                            if (Dialog.YES.equals(be.getButtonClicked().getItemId())) {
+                                displayCreatePanel();
+                            } else {
+                                return;
+                            }
+                        }
+                    });
+                    msgBox.getDialog().setWidth(550);
+                    return;
+                } else {
+                    displayCreatePanel();
                 }
-                panel.initBreadCrumb(new BreadCrumb(breads, panel));
-                ViewBean viewBean = (ViewBean) BrowseRecords.getSession().get(UserSession.CURRENT_VIEW);
-                ItemPanel itemPanel = new ItemPanel(panel);
-                panel.addTabItem(itemBean.getLabel(), itemPanel, ItemsDetailPanel.SINGLETON, itemBean.getConcept());
-                itemPanel.initTreeDetail(viewBean, itemBean, ItemDetailToolBar.CREATE_OPERATION, isStaging());
-                ItemsMainTabPanel.getInstance().addMainTabItem(itemBean.getLabel(), panel, itemBean.getConcept());
-                CommonUtil.setCurrentCachedEntity(itemBean.getConcept() + panel.isOutMost(), itemPanel);
             }
 
         });
@@ -1260,6 +1271,37 @@ public class ItemsToolBar extends ToolBar {
         simulateTable.buildTree(root);
         explainWindow.add(simulateTable);
         explainWindow.show();
+    }
+
+    private void displayCreatePanel() {
+        ItemsMainTabPanel.getInstance().removeAll();
+        ItemsListPanel.getInstance().setCreate(true);
+        String concept = ViewUtil.getConceptFromBrowseItemView(entityCombo.getValue().get("value").toString());//$NON-NLS-1$
+
+        EntityModel entityModel = BrowseRecords.getSession().getCurrentEntityModel();
+        ItemBean itemBean = ItemCreator.createDefaultItemBean(concept, entityModel);
+
+        if (ItemsListPanel.getInstance().getGrid() != null) {
+            ItemsListPanel.getInstance().getGrid().getSelectionModel().deselectAll();
+        }
+
+        ItemsDetailPanel panel = ItemsDetailPanel.newInstance();
+        panel.setStaging(isStaging());
+        List<String> pkInfoList = new ArrayList<String>();
+        pkInfoList.add(itemBean.getLabel());
+        panel.initBanner(pkInfoList, itemBean.getDescription());
+        List<BreadCrumbModel> breads = new ArrayList<BreadCrumbModel>();
+        if (itemBean != null) {
+            breads.add(new BreadCrumbModel("", BreadCrumb.DEFAULTNAME, null, null, false)); //$NON-NLS-1$
+            breads.add(new BreadCrumbModel(itemBean.getConcept(), itemBean.getLabel(), null, null, true));
+        }
+        panel.initBreadCrumb(new BreadCrumb(breads, panel));
+        ViewBean viewBean = (ViewBean) BrowseRecords.getSession().get(UserSession.CURRENT_VIEW);
+        ItemPanel itemPanel = new ItemPanel(panel);
+        panel.addTabItem(itemBean.getLabel(), itemPanel, ItemsDetailPanel.SINGLETON, itemBean.getConcept());
+        itemPanel.initTreeDetail(viewBean, itemBean, ItemDetailToolBar.CREATE_OPERATION, isStaging());
+        ItemsMainTabPanel.getInstance().addMainTabItem(itemBean.getLabel(), panel, itemBean.getConcept());
+        CommonUtil.setCurrentCachedEntity(itemBean.getConcept() + panel.isOutMost(), itemPanel);
     }
 
     public ItemBaseModel getCurrentModel() {

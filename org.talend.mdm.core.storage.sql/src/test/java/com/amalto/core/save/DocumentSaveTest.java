@@ -50,7 +50,6 @@ import com.amalto.core.delegator.ILocalUser;
 import com.amalto.core.history.DeleteType;
 import com.amalto.core.history.MutableDocument;
 import com.amalto.core.objects.UpdateReportPOJO;
-import com.amalto.core.objects.datacluster.DataClusterPOJO;
 import com.amalto.core.query.user.UserQueryBuilder;
 import com.amalto.core.save.context.DocumentSaver;
 import com.amalto.core.save.context.SaverContextFactory;
@@ -459,8 +458,8 @@ public class DocumentSaveTest extends TestCase {
         assertTrue(Integer.valueOf(idAddressTwo).intValue() > 0);
         assertTrue(Integer.valueOf(idAddressThree).intValue() > 0);
 
-        assertEquals(Integer.valueOf(idAddressTwo).intValue() - 1, Integer.valueOf(idAddress).intValue());
-        assertEquals(Integer.valueOf(idAddressThree).intValue() - 1, Integer.valueOf(idAddressTwo).intValue());
+        assertEquals(Integer.valueOf(idAddressTwo).intValue() + 1, Integer.valueOf(idAddress).intValue());
+        assertEquals(Integer.valueOf(idAddressThree).intValue() + 1, Integer.valueOf(idAddressTwo).intValue());
 
         session = SaverSession.newSession(source);
         recordXml = DocumentSaveTest.class.getResourceAsStream("personWithAddressOfAutoIncrement_2.xml");
@@ -498,10 +497,10 @@ public class DocumentSaveTest extends TestCase {
         assertTrue(Integer.valueOf(idAddressFour).intValue() > 0);
         assertTrue(Integer.valueOf(idAddressFive).intValue() > 0);
 
-        assertEquals(Integer.valueOf(idAddressTwo).intValue() - 1, Integer.valueOf(idAddress).intValue());
-        assertEquals(Integer.valueOf(idAddressThree).intValue() - 1, Integer.valueOf(idAddressTwo).intValue());
-        assertEquals(Integer.valueOf(idAddressFour).intValue() - 1, Integer.valueOf(idAddressThree).intValue());
-        assertEquals(Integer.valueOf(idAddressFive).intValue() - 1, Integer.valueOf(idAddressFour).intValue());
+        assertEquals(Integer.valueOf(idAddressTwo).intValue() + 1, Integer.valueOf(idAddress).intValue());
+        assertEquals(Integer.valueOf(idAddressThree).intValue() + 1, Integer.valueOf(idAddressTwo).intValue());
+        assertEquals(Integer.valueOf(idAddressFour).intValue() + 1, Integer.valueOf(idAddressThree).intValue());
+        assertEquals(Integer.valueOf(idAddressFive).intValue() + 1, Integer.valueOf(idAddressFour).intValue());
     }
 
     public void testUpdateWithUUID() throws Exception {

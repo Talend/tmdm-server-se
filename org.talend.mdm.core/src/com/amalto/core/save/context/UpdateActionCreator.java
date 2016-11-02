@@ -276,7 +276,7 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
             // Proceed in "reverse" order (highest index to lowest) so there won't be issues when deleting elements in
             // a sequence (if element #2 is deleted before element #3, element #3 becomes #2...).
             int max = Math.max(leftAccessor.size(), rightAccessor.size());
-            for (int i = 1; i <=max; i++) {
+            for (int i = max; i > 0; i--) {
                 // XPath indexes are 1-based (not 0-based).
                 path.add(field.getName() + '[' + i + ']');
                 closure.execute(field);

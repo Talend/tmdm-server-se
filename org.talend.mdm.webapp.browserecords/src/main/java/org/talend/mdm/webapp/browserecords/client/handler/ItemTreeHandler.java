@@ -155,17 +155,15 @@ public class ItemTreeHandler implements IsSerializable {
             root = doc.createElement("records");
             for (int i = 0; i < idsList.size(); i++) {
                 String ids = idsList.get(i);
-                Element recordElement = buildXML(doc, nodeModel, ids);
-                recordElement.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance"); //$NON-NLS-1$//$NON-NLS-2$
-                root.appendChild(recordElement);
+                root.appendChild(buildXML(doc, nodeModel, ids));
             }
         } else {
             root = buildXML(doc, nodeModel, "");
-            root.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance"); //$NON-NLS-1$//$NON-NLS-2$
             if (nodeModel.get(XMLNS_TMDM) != null) {
                 root.setAttribute(XMLNS_TMDM, XMLNS_TMDM_VALUE);
             }
         }
+        root.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance"); //$NON-NLS-1$//$NON-NLS-2$
         doc.appendChild(root);
         return doc.toString();
 

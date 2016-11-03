@@ -13,18 +13,24 @@
 
 package com.amalto.core.load.io;
 
-import org.apache.commons.lang.StringUtils;
-
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.*;
+import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.Namespace;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
  * A implementation of {@link Enumeration} that allows one to separately return XML fragments at a given level.
@@ -57,6 +63,8 @@ public class XMLStreamUnwrapper implements Enumeration<String> {
     private final ResettableStringWriter stringWriter = new ResettableStringWriter();
 
     private final XMLOutputFactory xmlOutputFactory;
+    
+    private List<Namespace> rootNamespaceList = new ArrayList<Namespace>();
 
     private int level = 0;
 
@@ -67,6 +75,12 @@ public class XMLStreamUnwrapper implements Enumeration<String> {
             while (reader.hasNext() && level < RECORD_LEVEL) {
                 final XMLEvent event = reader.nextEvent();
                 if (event.isStartElement()) {
+                    // Declare root element namespaces (if any)
+                    final StartElement startElement = event.asStartElement();
+                    Iterator namespaces = startElement.getNamespaces();
+                    while (namespaces.hasNext()) {
+                        rootNamespaceList.add((Namespace) namespaces.next());
+                    }
                     level++;
                 }
             }
@@ -115,11 +129,33 @@ public class XMLStreamUnwrapper implements Enumeration<String> {
                         final StartElement startElement = event.asStartElement();
                         final QName name = startElement.getName();
                         writer.writeStartElement(name.getNamespaceURI(), name.getLocalPart());
+                        boolean isRecordRootElement = (RECORD_LEVEL == level - 1);
+                        if (isRecordRootElement) {
+                            for (int i = 0; i < rootNamespaceList.size(); i++) {
+                                Namespace namespace = rootNamespaceList.get(i);
+                                writer.writeNamespace(namespace.getPrefix(), namespace.getNamespaceURI());
+                            }
+                        }
                         // Declare namespaces (if any)
-                        final Iterator namespaces = startElement.getNamespaces();
-                        while (namespaces.hasNext()) {
-                            Namespace namespace = (Namespace) namespaces.next();
-                            writer.writeNamespace(namespace.getPrefix(), namespace.getNamespaceURI());
+                        final Iterator elementNamespaces = startElement.getNamespaces();
+                        while (elementNamespaces.hasNext()) {
+                            Namespace elementNamespace = (Namespace) elementNamespaces.next();
+                            if (isRecordRootElement) {
+                                if (rootNamespaceList.size() > 0) {
+                                    for (int i = 0; i < rootNamespaceList.size(); i++) {
+                                        Namespace namespace = rootNamespaceList.get(i);
+                                        if (!namespace.getPrefix().equals(elementNamespace.getPrefix())
+                                                || !namespace.getNamespaceURI().equals(elementNamespace.getNamespaceURI())) {
+                                            writer.writeNamespace(elementNamespace.getPrefix(),
+                                                    elementNamespace.getNamespaceURI());
+                                        }
+                                    }
+                                } else {
+                                    writer.writeNamespace(elementNamespace.getPrefix(), elementNamespace.getNamespaceURI());
+                                }
+                            } else {
+                                writer.writeNamespace(elementNamespace.getPrefix(), elementNamespace.getNamespaceURI());
+                            }
                         }
                         // Write attributes
                         final Iterator attributes = startElement.getAttributes();

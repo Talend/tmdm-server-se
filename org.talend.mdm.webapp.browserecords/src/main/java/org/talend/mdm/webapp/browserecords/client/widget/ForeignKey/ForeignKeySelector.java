@@ -317,7 +317,12 @@ public class ForeignKeySelector extends ForeignKeyField implements ReturnCriteri
                     for (int j = 0; j < pathArray.length; j++) {
                         String nodePath = pathArray[j];
                         if (nodePath.contains(":")) { //$NON-NLS-1$
-                            pathArray[j] = nodePath.split(":")[0]; //$NON-NLS-1$
+                            String[] nodePathArray = nodePath.split(":");
+                            if (targetPath.contains("xsi:type")) {
+                                pathArray[j] = nodePathArray[0] + "[@xsi:type=\"" + nodePathArray[1] + "\"]"; //$NON-NLS-1$  //$NON-NLS-2$ 
+                            } else {
+                                pathArray[j] = nodePathArray[0];
+                            }
                         }
                     }
                     typePath = transformPath(pathArray);
@@ -326,7 +331,7 @@ public class ForeignKeySelector extends ForeignKeyField implements ReturnCriteri
                     if (targetPath.equals(typePath)) {
                         return child;
                     } else {
-                        findTarget(targetPath, child);
+                        return findTarget(targetPath, child);
                     }
                 }
             }

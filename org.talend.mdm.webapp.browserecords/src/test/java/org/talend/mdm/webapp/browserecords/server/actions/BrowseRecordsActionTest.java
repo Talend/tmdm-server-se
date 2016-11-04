@@ -40,11 +40,15 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit3.PowerMockSuite;
 import org.powermock.reflect.Whitebox;
+import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.ComplexTypeMetadataImpl;
+import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.util.datamodel.management.DataModelID;
 import org.talend.mdm.webapp.base.client.exception.ServiceException;
 import org.talend.mdm.webapp.base.client.model.ForeignKeyBean;
 import org.talend.mdm.webapp.base.client.model.ItemBaseModel;
 import org.talend.mdm.webapp.base.client.model.ItemBasePageLoadResult;
+import org.talend.mdm.webapp.base.client.model.ItemResult;
 import org.talend.mdm.webapp.base.shared.ComplexTypeModel;
 import org.talend.mdm.webapp.base.shared.EntityModel;
 import org.talend.mdm.webapp.base.shared.TypeModel;
@@ -82,6 +86,7 @@ import com.amalto.core.util.XtentisException;
 import com.amalto.core.webservice.WSBoolean;
 import com.amalto.core.webservice.WSByteArray;
 import com.amalto.core.webservice.WSDataClusterPK;
+import com.amalto.core.webservice.WSDeleteItemWithReport;
 import com.amalto.core.webservice.WSExecuteTransformerV2;
 import com.amalto.core.webservice.WSGetItem;
 import com.amalto.core.webservice.WSGetTransformerV2PKs;
@@ -89,6 +94,7 @@ import com.amalto.core.webservice.WSGetView;
 import com.amalto.core.webservice.WSGetViewPKs;
 import com.amalto.core.webservice.WSInt;
 import com.amalto.core.webservice.WSItem;
+import com.amalto.core.webservice.WSString;
 import com.amalto.core.webservice.WSStringArray;
 import com.amalto.core.webservice.WSTransformerContext;
 import com.amalto.core.webservice.WSTransformerContextPipeline;
@@ -582,6 +588,61 @@ public class BrowseRecordsActionTest extends TestCase {
         assertEquals("1.5", originalMap.get("Goods/decimalValue").toString());
         assertEquals("4.5", originalMap.get("Goods/simpleDecimalValue").toString());
         assertEquals("2", originalMap.get("Goods/floatValue").toString());
+    }
+
+    public void testDeleteItemBeans() throws Exception {
+        List<ItemBean> items = new ArrayList<ItemBean>();
+        ItemBean itemBean1 = new ItemBean();
+        itemBean1.setConcept("Test1");
+        itemBean1.setIds("1");
+        items.add(itemBean1);
+        ItemBean itemBean2 = new ItemBean();
+        itemBean2.setConcept("Test1");
+        itemBean1.setIds("1");
+        items.add(itemBean2);
+        ItemBean itemBean3 = new ItemBean();
+        itemBean1.setConcept("Test1");
+        itemBean1.setIds("1");
+        items.add(itemBean3);
+        ItemBean itemBean4 = new ItemBean();
+        itemBean1.setConcept("Test1");
+        itemBean1.setIds("2");
+        items.add(itemBean1);
+        ItemBean itemBean5 = new ItemBean();
+        itemBean1.setConcept("Test1");
+        itemBean1.setIds("2");
+        items.add(itemBean1);
+        ItemBean itemBean6 = new ItemBean();
+        itemBean1.setConcept("Test1");
+        itemBean1.setIds("2");
+        items.add(itemBean1);
+        ItemBean itemBean7 = new ItemBean();
+        itemBean1.setConcept("Test1");
+        itemBean1.setIds("3");
+        items.add(itemBean1);
+        ItemBean itemBean8 = new ItemBean();
+        itemBean1.setConcept("Test1");
+        itemBean1.setIds("3");
+        items.add(itemBean1);
+        ItemBean itemBean9 = new ItemBean();
+        itemBean1.setConcept("Test1");
+        itemBean1.setIds("3");
+        items.add(itemBean1);
+
+        MetadataRepository repository = PowerMockito.mock(MetadataRepository.class);
+        ComplexTypeMetadata complexTypeMetadata = new ComplexTypeMetadataImpl("Test", "Test1", true);
+        Mockito.when(repository.getComplexType(Mockito.any(String.class))).thenReturn(complexTypeMetadata);
+        PowerMockito.mockStatic(org.talend.mdm.webapp.base.server.util.CommonUtil.class);
+        Mockito.when(org.talend.mdm.webapp.base.server.util.CommonUtil.getCurrentRepository()).thenReturn(repository);
+        PowerMockito.mockStatic(org.talend.mdm.webapp.base.server.util.CommonUtil.class);
+        XtentisPort port = PowerMockito.mock(XtentisPort.class);
+        Mockito.when(org.talend.mdm.webapp.base.server.util.CommonUtil.getPort()).thenReturn(port);
+        WSDeleteItemWithReport wsDeleteItemWithReport = PowerMockito.mock(WSDeleteItemWithReport.class);
+        Mockito.when(wsDeleteItemWithReport.getSource()).thenReturn(BrowseRecordsAction.INFO_KEYWORD);
+        WSString deleteMessage = new WSString();
+        Mockito.when(port.deleteItemWithReport(Mockito.any(WSDeleteItemWithReport.class))).thenReturn(deleteMessage);
+        List<ItemResult> resut = action.deleteItemBeans(items, true, "en");
+        assertEquals(3, resut.size());
     }
 
     private String[] getMockResultsFromServer() throws IOException {
@@ -1271,4 +1332,5 @@ public class BrowseRecordsActionTest extends TestCase {
             return true;
         }
     }
+
 }

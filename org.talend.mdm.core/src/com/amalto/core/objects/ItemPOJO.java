@@ -14,6 +14,8 @@ package com.amalto.core.objects;
 
 import java.io.Serializable;
 import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -55,6 +57,8 @@ public class ItemPOJO implements Serializable {
 
     private static Pattern pLoad = Pattern.compile(".*?(<c>.*?</taskId>|<c>.*?</t>).*?(<p>(.*)</p>|<p/>).*", Pattern.DOTALL); //$NON-NLS-1$
 
+    private static Map<String, XSystemObjects> xDataClusterSystemObjects = new HashMap<String, XSystemObjects>();
+
     public static Logger LOG = Logger.getLogger(ItemPOJO.class);
 
     public static Pattern pathWithoutConditions = Pattern.compile("(.*?)[\\[|/].*");
@@ -72,6 +76,10 @@ public class ItemPOJO implements Serializable {
     private Element projection;
 
     private String taskId;
+
+    static {
+        xDataClusterSystemObjects = XSystemObjects.getXSystemObjects(XObjectType.DATA_CLUSTER);
+    }
 
     public ItemPOJO() {
     }
@@ -244,10 +252,14 @@ public class ItemPOJO implements Serializable {
      * @return the {@link ItemPOJO}
      */
     public static ItemPOJO load(ItemPOJOPK itemPOJOPK) throws XtentisException {
-        checkAccess(LocalUser.getLocalUser(), itemPOJOPK, false, "read"); //$NON-NLS-1$
+        boolean isSystemObject = XSystemObjects.isXSystemObject(xDataClusterSystemObjects, itemPOJOPK.getDataClusterPOJOPK().getIds()[0]);
+
+        if(itemPOJOPK.getDataClusterPOJOPK() != null && !StorageAdmin.SYSTEM_STORAGE.equals(itemPOJOPK.getDataClusterPOJOPK().getUniqueId()) && Util.isEnterprise() && !isSystemObject){
+            isExistDataCluster(itemPOJOPK.getDataClusterPOJOPK());
+        }
         return loadItem(itemPOJOPK);
     }
-    
+
     public static ItemPOJO loadItem(ItemPOJOPK itemPOJOPK) throws XtentisException {
         XmlServer server = Util.getXmlServerCtrlLocal();
         ILocalUser user = LocalUser.getLocalUser();
@@ -655,9 +667,16 @@ public class ItemPOJO implements Serializable {
         assert user != null;
         boolean authorizedAccess;
         String username = user.getUsername();
-        if(itemPOJOPK.getDataClusterPOJOPK() != null && !StorageAdmin.SYSTEM_STORAGE.equals(itemPOJOPK.getDataClusterPOJOPK().getUniqueId()) && Util.isEnterprise()){
+
+        if(MDMConfiguration.getAdminUser().equals(user.getUsername())){
+            return ;
+        }
+        boolean isSystemObject = XSystemObjects.isXSystemObject(xDataClusterSystemObjects, itemPOJOPK.getDataClusterPOJOPK().getIds()[0]);
+
+        if(itemPOJOPK.getDataClusterPOJOPK() != null && !StorageAdmin.SYSTEM_STORAGE.equals(itemPOJOPK.getDataClusterPOJOPK().getUniqueId()) && Util.isEnterprise() && !isSystemObject){
             isExistDataCluster(itemPOJOPK.getDataClusterPOJOPK());
         }
+
         if(user.isAdmin(ItemPOJO.class)) {
             authorizedAccess = true;
         } else if (MDMConfiguration.getAdminUser().equals(username)) {
@@ -689,5 +708,4 @@ public class ItemPOJO implements Serializable {
         }
         return true;
     }
-
 }

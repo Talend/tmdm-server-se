@@ -387,6 +387,13 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
                                     return;
                                 }
                             }
+                            if (EUUIDCustomType.AUTO_INCREMENT.getName().equalsIgnoreCase(
+                                            comparedField.getType().getName())) {
+                                String conceptName = rootTypeName + "." + comparedField.getName().replaceAll("/", "."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                                newValue = saverSource.nextAutoIncrementId(dataCluster, dataModel, conceptName);
+                            } else if (EUUIDCustomType.UUID.getName().equalsIgnoreCase(comparedField.getType().getName())) {
+                                newValue = UUID.randomUUID().toString();
+                            }
                         }
                         actions.add(new FieldUpdateAction(date, source, userName, path, oldValue, newValue.isEmpty() ? null : newValue, comparedField));
                     } else if (oldValue != null && oldValue.equals(newValue)) {

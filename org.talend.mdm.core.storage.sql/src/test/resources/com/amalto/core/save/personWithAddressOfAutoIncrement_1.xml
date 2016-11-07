@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <person xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <personId></personId>
+    <personId>1</personId>
     <idReglis>1</idReglis>
     <identifiers>
         <identifier>

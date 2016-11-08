@@ -112,7 +112,8 @@ import com.amalto.webapp.core.bean.Configuration;
 import com.amalto.webapp.core.util.XmlUtil;
 import com.extjs.gxt.ui.client.data.ModelData;
 
-@PrepareForTest({ Util.class, org.talend.mdm.webapp.base.server.util.CommonUtil.class, XtentisPort.class, WSViewSearch.class,
+@PrepareForTest({ Util.class, org.talend.mdm.webapp.base.server.util.CommonUtil.class, MetadataRepository.class,
+        org.talend.mdm.webapp.browserecords.server.util.CommonUtil.class, XtentisPort.class, WSViewSearch.class,
         BrowseRecordsAction.class, SmartViewProvider.class, SmartViewUtil.class, SmartViewDescriptions.class,
         com.amalto.webapp.core.util.Util.class, LocalUser.class, ILocalUser.class, BeanDelegatorContainer.class,
         BrowseRecordsAction.class, Configuration.class })
@@ -607,37 +608,48 @@ public class BrowseRecordsActionTest extends TestCase {
         ItemBean itemBean4 = new ItemBean();
         itemBean1.setConcept("Test1");
         itemBean1.setIds("2");
-        items.add(itemBean1);
+        items.add(itemBean4);
         ItemBean itemBean5 = new ItemBean();
         itemBean1.setConcept("Test1");
         itemBean1.setIds("2");
-        items.add(itemBean1);
+        items.add(itemBean5);
         ItemBean itemBean6 = new ItemBean();
         itemBean1.setConcept("Test1");
         itemBean1.setIds("2");
-        items.add(itemBean1);
+        items.add(itemBean6);
         ItemBean itemBean7 = new ItemBean();
         itemBean1.setConcept("Test1");
         itemBean1.setIds("3");
-        items.add(itemBean1);
+        items.add(itemBean7);
         ItemBean itemBean8 = new ItemBean();
         itemBean1.setConcept("Test1");
         itemBean1.setIds("3");
-        items.add(itemBean1);
+        items.add(itemBean8);
         ItemBean itemBean9 = new ItemBean();
         itemBean1.setConcept("Test1");
         itemBean1.setIds("3");
-        items.add(itemBean1);
-
-        MetadataRepository repository = PowerMockito.mock(MetadataRepository.class);
+        items.add(itemBean9);
+        
+        String cluster = "Test";
+        PowerMockito.mockStatic(org.talend.mdm.webapp.browserecords.server.util.CommonUtil.class);
+        Mockito.when(org.talend.mdm.webapp.browserecords.server.util.CommonUtil.getCurrentDataCluster()).thenReturn(cluster);
         ComplexTypeMetadata complexTypeMetadata = new ComplexTypeMetadataImpl("Test", "Test1", true);
+        MetadataRepository repository = PowerMockito.mock(MetadataRepository.class);
         Mockito.when(repository.getComplexType(Mockito.any(String.class))).thenReturn(complexTypeMetadata);
         PowerMockito.mockStatic(org.talend.mdm.webapp.base.server.util.CommonUtil.class);
         Mockito.when(org.talend.mdm.webapp.base.server.util.CommonUtil.getCurrentRepository()).thenReturn(repository);
-        PowerMockito.mockStatic(org.talend.mdm.webapp.base.server.util.CommonUtil.class);
+        Mockito.when(
+                org.talend.mdm.webapp.base.server.util.CommonUtil.extractIdWithDots(Mockito.any(String[].class),
+                        Mockito.any(String.class))).thenReturn(new String[0]);
         XtentisPort port = PowerMockito.mock(XtentisPort.class);
         Mockito.when(org.talend.mdm.webapp.base.server.util.CommonUtil.getPort()).thenReturn(port);
         WSDeleteItemWithReport wsDeleteItemWithReport = PowerMockito.mock(WSDeleteItemWithReport.class);
+        PowerMockito
+                .whenNew(WSDeleteItemWithReport.class)
+                .withArguments(Mockito.any(com.amalto.core.webservice.WSItemPK.class), Mockito.any(String.class),
+                        Mockito.any(String.class), Mockito.any(String.class), Mockito.any(String.class),
+                        Mockito.any(Boolean.class), Mockito.any(Boolean.class), Mockito.any(Boolean.class))
+                .thenReturn(wsDeleteItemWithReport);
         Mockito.when(wsDeleteItemWithReport.getSource()).thenReturn(BrowseRecordsAction.INFO_KEYWORD);
         WSString deleteMessage = new WSString();
         Mockito.when(port.deleteItemWithReport(Mockito.any(WSDeleteItemWithReport.class))).thenReturn(deleteMessage);

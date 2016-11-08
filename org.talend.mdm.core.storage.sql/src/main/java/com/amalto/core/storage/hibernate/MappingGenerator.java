@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Stack;
 
 import org.apache.commons.lang.NotImplementedException;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedComplexTypeMetadata;
@@ -562,6 +563,21 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
                     notNull.setValue(Boolean.FALSE.toString());
                 }
                 propertyElement.getAttributes().setNamedItem(notNull);
+                //default value
+                String defaultValueRule = field.getData(MetadataRepository.DEFAULT_VALUE_RULE);
+                if(field.isMandatory() && StringUtils.isNotEmpty(defaultValueRule)){
+                    Attr defaultValueAttr = document.createAttribute("default"); //$NON-NLS-1$
+                    String covertValue = defaultValueRule;
+                    if(defaultValueRule.equals("fn:false()")){                
+                        covertValue = Boolean.FALSE.toString();
+                    }else if(defaultValueRule.equals("fn:true()")){
+                        covertValue = Boolean.TRUE.toString();
+                    }else if(defaultValueRule.startsWith("\"") && defaultValueRule.endsWith("\"")){
+                        covertValue = defaultValueRule.substring(1, defaultValueRule.length()-1);
+                    }
+                    defaultValueAttr.setValue(covertValue);
+                    propertyElement.getAttributes().setNamedItem(defaultValueAttr);
+                }
                 
                 addFieldTypeAttribute(field, propertyElement, dataSource.getDialectName());
                 propertyElement.getAttributes().setNamedItem(propertyName);

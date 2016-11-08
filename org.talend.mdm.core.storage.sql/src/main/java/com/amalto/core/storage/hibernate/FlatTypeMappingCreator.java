@@ -150,6 +150,11 @@ class FlatTypeMappingCreator extends DefaultMetadataVisitor<TypeMapping> {
                 newFlattenField.setData(MetadataRepository.DATA_ZIPPED, Boolean.FALSE);
             }
         }
+        
+        String defaultValueRule = field.<String> getData(MetadataRepository.DEFAULT_VALUE_RULE);
+        if (defaultValueRule != null) {
+            newFlattenField.setData(MetadataRepository.DEFAULT_VALUE_RULE, defaultValueRule);
+        }
         typeMapping.map(field, newFlattenField);
         return typeMapping;
     }

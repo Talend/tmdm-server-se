@@ -371,7 +371,7 @@ public class ItemsToolBar extends ToolBar {
                 }
                 if (isChangeCurrentRecord) {
                     MessageBox msgBox = MessageBox.confirm(MessagesFactory.getMessages().confirm_title(), MessagesFactory
-                            .getMessages().msg_confirm_save_tree_detail(label), new Listener<MessageBoxEvent>() {
+                            .getMessages().msg_confirm_close_tab(label), new Listener<MessageBoxEvent>() {
 
                         @Override
                         public void handleEvent(MessageBoxEvent be) {

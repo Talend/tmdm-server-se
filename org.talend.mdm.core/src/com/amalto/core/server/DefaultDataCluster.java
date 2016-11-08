@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
@@ -25,6 +27,8 @@ import com.amalto.core.util.XtentisException;
 public class DefaultDataCluster implements DataCluster {
 
     private static final Logger LOGGER = Logger.getLogger(DefaultDataCluster.class);
+
+    private static Map<String,DataClusterPOJO> existDataCluster = new HashMap<String, DataClusterPOJO>();
 
     /**
      * Creates or updates a data cluster
@@ -62,6 +66,7 @@ public class DefaultDataCluster implements DataCluster {
                 }
                 throw new XtentisException(err, e);
             }
+            existDataCluster.put(pk.getUniqueId(), dataCluster);
             return new DataClusterPOJOPK(pk);
         } catch (XtentisException e) {
             throw (e);
@@ -85,12 +90,16 @@ public class DefaultDataCluster implements DataCluster {
             if (pk.getUniqueId().endsWith(StorageAdmin.STAGING_SUFFIX)) {
                 pk = new DataClusterPOJOPK(StringUtils.substringBeforeLast(pk.getUniqueId(), "#"));
             }
+            if(existDataCluster.containsKey(pk.getUniqueId())){
+                return existDataCluster.get(pk.getUniqueId());
+            }
             DataClusterPOJO dataCluster = ObjectPOJO.load(DataClusterPOJO.class, pk);
             if (dataCluster == null) {
                 String err = "The Data Cluster " + pk.getUniqueId() + " does not exist.";
                 LOGGER.error(err);
                 throw new XtentisException(err);
             }
+            existDataCluster.put(pk.getUniqueId(), dataCluster);
             return dataCluster;
         } catch (XtentisException e) {
             throw (e);
@@ -129,7 +138,12 @@ public class DefaultDataCluster implements DataCluster {
                 LOGGER.error(err);
                 throw new XtentisException(err);
             }
-            return ObjectPOJO.load(DataClusterPOJO.class, pk);
+            if (existDataCluster.containsKey(pk.getUniqueId())) {
+                return existDataCluster.get(pk.getUniqueId());
+            }
+            DataClusterPOJO dataCluster = ObjectPOJO.load(DataClusterPOJO.class, pk);
+            existDataCluster.put(pk.getUniqueId(), dataCluster);
+            return dataCluster;
         } catch (XtentisException e) {
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Exist data cluster check exception.", e);
@@ -154,6 +168,9 @@ public class DefaultDataCluster implements DataCluster {
             // get the xml server wrapper
             XmlServer server = Util.getXmlServerCtrlLocal();
             server.deleteCluster(dataClusterName);
+            if(existDataCluster.containsKey(pk.getUniqueId())){
+                existDataCluster.remove(pk.getUniqueId());
+            }
         } catch (Exception e) {
             String err = "Unable to physically delete the data cluster " + pk.getUniqueId() + ": " + e.getClass().getName()
                     + ": " + e.getLocalizedMessage();

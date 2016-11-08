@@ -24,6 +24,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.log4j.Logger;
+import org.talend.mdm.commmon.util.core.ICoreConstants;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
 import org.talend.mdm.commmon.util.webapp.XObjectType;
 import org.talend.mdm.commmon.util.webapp.XSystemObjects;
@@ -252,11 +253,7 @@ public class ItemPOJO implements Serializable {
      * @return the {@link ItemPOJO}
      */
     public static ItemPOJO load(ItemPOJOPK itemPOJOPK) throws XtentisException {
-        boolean isSystemObject = XSystemObjects.isXSystemObject(xDataClusterSystemObjects, itemPOJOPK.getDataClusterPOJOPK().getIds()[0]);
-
-        if(itemPOJOPK.getDataClusterPOJOPK() != null && !StorageAdmin.SYSTEM_STORAGE.equals(itemPOJOPK.getDataClusterPOJOPK().getUniqueId()) && Util.isEnterprise() && !isSystemObject){
-            isExistDataCluster(itemPOJOPK.getDataClusterPOJOPK());
-        }
+        checkAccess(LocalUser.getLocalUser(), itemPOJOPK, false, "read"); //$NON-NLS-1$
         return loadItem(itemPOJOPK);
     }
 
@@ -668,20 +665,21 @@ public class ItemPOJO implements Serializable {
         boolean authorizedAccess;
         String username = user.getUsername();
 
-        if(MDMConfiguration.getAdminUser().equals(user.getUsername())){
-            return ;
-        }
         boolean isSystemObject = XSystemObjects.isXSystemObject(xDataClusterSystemObjects, itemPOJOPK.getDataClusterPOJOPK().getIds()[0]);
 
-        if(itemPOJOPK.getDataClusterPOJOPK() != null && !StorageAdmin.SYSTEM_STORAGE.equals(itemPOJOPK.getDataClusterPOJOPK().getUniqueId()) && Util.isEnterprise() && !isSystemObject){
+        boolean isAdmin = MDMConfiguration.getAdminUser().equals(user.getUsername()) || user.getRoles().contains(ICoreConstants.ADMIN_PERMISSION) || isSystemObject;
+
+        if (isAdmin) {
+            return;
+        }
+
+        if(itemPOJOPK.getDataClusterPOJOPK() != null && !StorageAdmin.SYSTEM_STORAGE.equals(itemPOJOPK.getDataClusterPOJOPK().getUniqueId()) && Util.isEnterprise()){
             isExistDataCluster(itemPOJOPK.getDataClusterPOJOPK());
         }
 
         if(user.isAdmin(ItemPOJO.class)) {
             authorizedAccess = true;
         } else if (MDMConfiguration.getAdminUser().equals(username)) {
-            authorizedAccess = true;
-        } else if (XSystemObjects.isExist(XObjectType.DATA_CLUSTER, itemPOJOPK.getDataClusterPOJOPK().getUniqueId())) {
             authorizedAccess = true;
         } else {
             ItemPOJO itemPOJO = loadItem(itemPOJOPK);

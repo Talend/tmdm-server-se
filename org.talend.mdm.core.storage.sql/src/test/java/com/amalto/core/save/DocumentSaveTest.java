@@ -890,7 +890,7 @@ public class DocumentSaveTest extends TestCase {
                 String path = (String) evaluate(doc.getDocumentElement(), "Item[" + (i + 1) + "]/path");
                 String oldValue = (String) evaluate(doc.getDocumentElement(), "Item[" + (i + 1) + "]/oldValue");
                 String newValue = (String) evaluate(doc.getDocumentElement(), "Item[" + (i + 1) + "]/newValue");
-                //assertEquals(value[0], path);
+                assertEquals(value[0], path);
                 assertEquals(value[1], oldValue);
                 assertEquals(value[2], newValue);
             }

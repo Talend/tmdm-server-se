@@ -482,16 +482,24 @@ public class ItemsListPanel extends ContentPanel {
                 while (iterator.hasNext()) {
                     String path = iterator.next();
                     TypeModel tm = entityModel.getMetaDataTypes().get(path);
-                    if (changes.get(path) == null) {
-                        continue;
-                    }
-                    String value = changes.get(path).toString();
+                    String value;
                     if (tm.getForeignkey() != null) {
+                        if (changes.get(path) == null) {
+                            value = ""; //$NON-NLS-1$
+                        } else {
+                            value = changes.get(path).toString();
+                        }
                         ForeignKeyBean fkBean = itemBean.getForeignkeyDesc(value);
                         if (fkBean != null) {
                             changedField.put(path, fkBean.getId());
+                        } else {
+                            changedField.put(path, ""); //$NON-NLS-1$
                         }
                     } else {
+                        if (changes.get(path) == null) {
+                            continue;
+                        }
+                        value = changes.get(path).toString();
                         if (originalMap.containsKey(path)) {
                             Object data = originalMap.get(path);
                             if (DataTypeConstants.DATE.getTypeName().equals(tm.getType().getBaseTypeName())) {

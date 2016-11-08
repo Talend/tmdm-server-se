@@ -200,6 +200,20 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
             foreignKeyBean.setShowInfo(foreignKeyInfo.size() > 0);
         }
         if (suggestBox != null) {
+            if (foreignKeyBean == null) {
+                suggestBox.setRawValue(""); //$NON-NLS-1$
+            } else {
+                suggestBox.setValue(foreignKeyBean);
+            }
+        }
+        super.setValue(foreignKeyBean);
+    }
+    
+    public void setSuggestBoxValue(ForeignKeyBean foreignKeyBean) {
+        if (foreignKeyBean != null) {
+            foreignKeyBean.setShowInfo(foreignKeyInfo.size() > 0);
+        }
+        if (suggestBox != null) {
             suggestBox.setValue(foreignKeyBean);
         }
         super.setValue(foreignKeyBean);

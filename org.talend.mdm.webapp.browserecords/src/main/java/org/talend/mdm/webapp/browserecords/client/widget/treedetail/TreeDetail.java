@@ -395,7 +395,7 @@ public class TreeDetail extends ContentPanel {
         return false;
     }
 
-    public void onUpdatePolymorphism(final ComplexTypeModel typeModel) {
+    public void onUpdatePolymorphism(final ComplexTypeModel typeModel, final String operation) {
         // DynamicTreeItem item = (DynamicTreeItem) tree.getSelectedItem();
         if (selectedItem == null) {
             return;
@@ -428,7 +428,7 @@ public class TreeDetail extends ContentPanel {
                         for (ModelData child : children) {
                             treeNode.add(child);
                         }
-                        buildGWTTree(treeNode, selectedItem, false, null);
+                        buildGWTTree(treeNode, selectedItem, false, operation);
                         if (typeModel.isAutoExpand()) {
                             renderCompleteCallBackList.add(new RenderCompleteCallBack() {
 

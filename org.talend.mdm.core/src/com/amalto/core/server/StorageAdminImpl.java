@@ -26,6 +26,7 @@ import org.apache.commons.io.IOUtils;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 
 import com.amalto.core.objects.datacluster.DataClusterPOJO;
+import com.amalto.core.objects.datacluster.DataClusterPOJOPK;
 import com.amalto.core.objects.datamodel.DataModelPOJO;
 import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.StorageType;
@@ -97,7 +98,8 @@ public class StorageAdminImpl implements StorageAdmin {
             //so we can delete the cluster from it
             if (getRegisteredStorage(SYSTEM_STORAGE, StorageType.SYSTEM) != null) {
                 DataClusterPOJO dataClusterPOJO = new DataClusterPOJO(storageName);
-                ObjectPOJO.remove(DataClusterPOJO.class, dataClusterPOJO.getPK());
+                DefaultDataCluster dataCluster = new DefaultDataCluster();
+                dataCluster.removeDataCluster(new DataClusterPOJOPK(dataClusterPOJO.getPK()));
             }
             
         } catch (Exception e) {

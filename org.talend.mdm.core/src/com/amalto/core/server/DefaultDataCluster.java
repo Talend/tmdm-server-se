@@ -168,9 +168,6 @@ public class DefaultDataCluster implements DataCluster {
             // get the xml server wrapper
             XmlServer server = Util.getXmlServerCtrlLocal();
             server.deleteCluster(dataClusterName);
-            if(existDataCluster.containsKey(pk.getUniqueId())){
-                existDataCluster.remove(pk.getUniqueId());
-            }
         } catch (Exception e) {
             String err = "Unable to physically delete the data cluster " + pk.getUniqueId() + ": " + e.getClass().getName()
                     + ": " + e.getLocalizedMessage();
@@ -182,7 +179,11 @@ public class DefaultDataCluster implements DataCluster {
             LOGGER.error(err);
             throw new XtentisException(err, e);
         }
-        return new DataClusterPOJOPK(ObjectPOJO.remove(DataClusterPOJO.class, pk));
+        ObjectPOJOPK objectPOJOPK = ObjectPOJO.remove(DataClusterPOJO.class, pk);
+        if(existDataCluster.containsKey(pk.getUniqueId())){
+            existDataCluster.remove(pk.getUniqueId());
+        }
+        return new DataClusterPOJOPK(objectPOJOPK);
     }
 
     /**

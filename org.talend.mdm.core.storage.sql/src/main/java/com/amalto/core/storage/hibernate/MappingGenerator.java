@@ -19,6 +19,7 @@ import java.util.Stack;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.hibernate.dialect.Dialect;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
@@ -541,8 +542,13 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
                 Element propertyElement = document.createElement("property"); //$NON-NLS-1$
                 Attr propertyName = document.createAttribute("name"); //$NON-NLS-1$
                 propertyName.setValue(field.getName());
-                Attr columnName = document.createAttribute("column"); //$NON-NLS-1$
-                columnName.setValue(resolver.get(field));
+                Element columnElement = document.createElement("column"); //$NON-NLS-1$
+                Attr columnName = document.createAttribute("name"); //$NON-NLS-1$
+                columnName.setValue(field.getName());
+                
+                
+                //Attr columnName = document.createAttribute("column"); //$NON-NLS-1$
+                //columnName.setValue(resolver.get(field));
                 if (resolver.isIndexed(field)) { // Create indexes for fields that should be indexed.
                     if (LOGGER.isDebugEnabled()) {
                         LOGGER.debug("Creating index for field '" + field.getName() + "'."); //$NON-NLS-1$ //$NON-NLS-2$
@@ -573,15 +579,20 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
                     }else if(defaultValueRule.equals("fn:true()")){
                         covertValue = Boolean.TRUE.toString();
                     }else if(defaultValueRule.startsWith("\"") && defaultValueRule.endsWith("\"")){
-                        covertValue = defaultValueRule.substring(1, defaultValueRule.length()-1);
+                        if(dataSource.getDialectName() == RDBMSDataSource.DataSourceDialect.H2){
+                            covertValue = defaultValueRule.replace("\"", "'");
+                        }
+                        //covertValue = defaultValueRule.substring(1, defaultValueRule.length()-1);
                     }
                     defaultValueAttr.setValue(covertValue);
-                    propertyElement.getAttributes().setNamedItem(defaultValueAttr);
+                    columnElement.getAttributes().setNamedItem(defaultValueAttr);
                 }
                 
                 addFieldTypeAttribute(field, propertyElement, dataSource.getDialectName());
                 propertyElement.getAttributes().setNamedItem(propertyName);
-                propertyElement.getAttributes().setNamedItem(columnName);
+                columnElement.getAttributes().setNamedItem(columnName);
+                //propertyElement.getAttributes().setNamedItem(columnName);
+                propertyElement.appendChild(columnElement);
                 return propertyElement;
             } else {
                 Element listElement = document.createElement("list"); //$NON-NLS-1$

@@ -246,7 +246,7 @@ public class BrowseRecordsController extends Controller {
                         }
 
                         // TMDM-4814, TMDM-4815 (reload data to refresh ui)
-                        if ((detailToolBar.isFkToolBar() || detailToolBar.isOutMost()) && !isSameConcept && !isClose) {
+                        if ((detailToolBar.isFkToolBar() || detailToolBar.isOutMost()) && !isClose) {
                             detailToolBar.refresh(result.getReturnValue());
                         }
 

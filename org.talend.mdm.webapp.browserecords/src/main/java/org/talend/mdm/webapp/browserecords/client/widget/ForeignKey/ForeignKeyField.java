@@ -307,4 +307,8 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
     public void setEditable(Boolean editable) {
         this.editable = editable;
     }
+
+    public SuggestComboBoxField getSuggestBox() {
+        return this.suggestBox;
+    }
 }

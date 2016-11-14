@@ -569,26 +569,26 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
                     notNull.setValue(Boolean.FALSE.toString());
                 }
                 propertyElement.getAttributes().setNamedItem(notNull);
-                //default value
+                // default value
                 String defaultValueRule = field.getData(MetadataRepository.DEFAULT_VALUE_RULE);
-                if(field.isMandatory() && StringUtils.isNotEmpty(defaultValueRule)){
+                if (field.isMandatory() && StringUtils.isNotEmpty(defaultValueRule)) {
                     Attr defaultValueAttr = document.createAttribute("default"); //$NON-NLS-1$
                     String covertValue = defaultValueRule;
-                    if(defaultValueRule.equals("fn:false()")){                
+                    if (defaultValueRule.equals("fn:false()")) {
                         covertValue = Boolean.FALSE.toString();
-                    }else if(defaultValueRule.equals("fn:true()")){
+                    } else if (defaultValueRule.equals("fn:true()")) {
                         covertValue = Boolean.TRUE.toString();
-                    }else if(defaultValueRule.startsWith("\"") && defaultValueRule.endsWith("\"")){
-                        if(dataSource.getDialectName() == RDBMSDataSource.DataSourceDialect.H2){
+                    } else if (defaultValueRule.startsWith("\"") && defaultValueRule.endsWith("\"")) {
+                        if (dataSource.getDialectName() == RDBMSDataSource.DataSourceDialect.H2) {
                             covertValue = defaultValueRule.replace("\"", "'");
                         }
-                        //covertValue = defaultValueRule.substring(1, defaultValueRule.length()-1);
+                        // covertValue = defaultValueRule.substring(1, defaultValueRule.length()-1);
                     }
                     defaultValueAttr.setValue(covertValue);
                     columnElement.getAttributes().setNamedItem(defaultValueAttr);
                 }
                 
-                addFieldTypeAttribute(field, propertyElement, dataSource.getDialectName());
+                addFieldTypeAttribute(field, columnElement, dataSource.getDialectName(), propertyElement);
                 propertyElement.getAttributes().setNamedItem(propertyName);
                 columnElement.getAttributes().setNamedItem(columnName);
                 //propertyElement.getAttributes().setNamedItem(columnName);
@@ -651,7 +651,7 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
                 Attr elementColumn = document.createAttribute("column"); //$NON-NLS-1$
                 elementColumn.setValue("value"); //$NON-NLS-1$
                 element.getAttributes().setNamedItem(elementColumn);
-                addFieldTypeAttribute(field, element, dataSource.getDialectName());
+                addFieldTypeAttribute(field, element, dataSource.getDialectName(), element);
                 // Not null warning
                 if (field.isMandatory()) {
                     LOGGER.warn("Field '" + field.getName() + "' is mandatory and a collection. Constraint can not be expressed in database schema."); //$NON-NLS-1$ //$NON-NLS-2$
@@ -679,10 +679,11 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
     }
 
     private static void addFieldTypeAttribute(FieldMetadata field,
-                                              Element propertyElement,
-                                              RDBMSDataSource.DataSourceDialect dialect) {
-        Document document = propertyElement.getOwnerDocument();
-        Attr elementType = document.createAttribute("type"); //$NON-NLS-1$
+                                              Element columnElement,
+                                              RDBMSDataSource.DataSourceDialect dialect, Element propertyElement) {
+        Document document = columnElement.getOwnerDocument();
+        Document propertyDocument = propertyElement.getOwnerDocument();
+        Attr elementType = propertyDocument.createAttribute("type"); //$NON-NLS-1$
         TypeMetadata fieldType = field.getType();
         String elementTypeName;
         
@@ -699,7 +700,7 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
                 if (dialect == RDBMSDataSource.DataSourceDialect.DB2) {
                     Attr length = document.createAttribute("length"); //$NON-NLS-1$
                     length.setValue("1048576"); //$NON-NLS-1$ 1MB CLOB limit for DB2
-                    propertyElement.getAttributes().setNamedItem(length);
+                    columnElement.getAttributes().setNamedItem(length);
                 }
             } else if (maxLength != null) {
                 String maxLengthValue = String.valueOf(maxLength);
@@ -709,7 +710,7 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
                 } else {
                     Attr length = document.createAttribute("length"); //$NON-NLS-1$
                     length.setValue(maxLengthValue);
-                    propertyElement.getAttributes().setNamedItem(length);
+                    columnElement.getAttributes().setNamedItem(length);
                     elementTypeName = HibernateMetadataUtils.getJavaType(fieldType);
                 }
             } else if (fieldType.getData(MetadataRepository.DATA_TOTAL_DIGITS) != null
@@ -726,7 +727,7 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
                     String totalDigitsValue = String.valueOf(totalDigitsInt);
                     Attr length = document.createAttribute("precision"); //$NON-NLS-1$
                     length.setValue(totalDigitsValue);
-                    propertyElement.getAttributes().setNamedItem(length);
+                    columnElement.getAttributes().setNamedItem(length);
                 }
 
                 if (fractionDigits != null) {
@@ -737,7 +738,7 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
                     String fractionDigitsValue = String.valueOf(fractionDigitsInt);
                     Attr length = document.createAttribute("scale"); //$NON-NLS-1$
                     length.setValue(fractionDigitsValue);
-                    propertyElement.getAttributes().setNamedItem(length);
+                    columnElement.getAttributes().setNamedItem(length);
                 }
                 elementTypeName = HibernateMetadataUtils.getJavaType(fieldType);
             } else {
@@ -753,7 +754,7 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
                 elementTypeName = "string"; //$NON-NLS-1$
                 Attr length = document.createAttribute("length"); //$NON-NLS-1$
                 length.setValue("4000"); //$NON-NLS-1$
-                propertyElement.getAttributes().setNamedItem(length);
+                columnElement.getAttributes().setNamedItem(length);
             }
         }
         elementType.setValue(elementTypeName);

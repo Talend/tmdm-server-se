@@ -685,7 +685,7 @@ public class CompareTest extends TestCase {
 
     }
 
-    // TMDM-9806 test for add mandatory field with default value
+    // TMDM-9086 test for add mandatory field with default value
     public void test22() throws Exception {
         MetadataRepository original = new MetadataRepository();
         original.load(CompareTest.class.getResourceAsStream("schema22_1.xsd")); //$NON-NLS-1$
@@ -693,16 +693,16 @@ public class CompareTest extends TestCase {
         MetadataRepository updated2 = new MetadataRepository();
         updated2.load(CompareTest.class.getResourceAsStream("schema22_2.xsd")); //$NON-NLS-1$
         Compare.DiffResults diffResults = Compare.compare(original, updated2);
-        assertEquals(1, diffResults.getActions().size());
+        assertEquals(4, diffResults.getActions().size());
         assertEquals(0, diffResults.getModifyChanges().size());
         assertEquals(0, diffResults.getRemoveChanges().size());
-        assertEquals(1, diffResults.getAddChanges().size());
+        assertEquals(4, diffResults.getAddChanges().size());
 
         ImpactAnalyzer analyzer = new HibernateStorageImpactAnalyzer();
         Map<ImpactAnalyzer.Impact, List<Change>> sort = analyzer.analyzeImpacts(diffResults);
         assertEquals(0, sort.get(ImpactAnalyzer.Impact.HIGH).size());
         assertEquals(0, sort.get(ImpactAnalyzer.Impact.MEDIUM).size());
-        assertEquals(1, sort.get(ImpactAnalyzer.Impact.LOW).size());
+        assertEquals(4, sort.get(ImpactAnalyzer.Impact.LOW).size());
 
         // if the defalutValueRule=fn:name(), will be high
         MetadataRepository updated3 = new MetadataRepository();

@@ -663,11 +663,11 @@ public class StorageAdaptTest extends TestCase {
     }
 
     public void test11_addMandatoryFiledWithDefaultValue() throws Exception {
-        DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
-        Storage storage = new HibernateStorage("Object", StorageType.MASTER);
+        DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("MySQL-Default", STORAGE_NAME);
+        Storage storage = new HibernateStorage("Person", StorageType.MASTER);
         storage.init(dataSource);
-        String[] typeNames = { "Object" };
-        String[] tables = { "x_object" };
+        String[] typeNames = { "Person" };
+        String[] tables = { "Person" };
         String[] columns = { "X_ID", "X_NAME", "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" };
         DataRecordReader<String> factory = new XmlStringDataRecordReader();
         MetadataRepository repository1 = new MetadataRepository();
@@ -679,12 +679,12 @@ public class StorageAdaptTest extends TestCase {
             assertNull(e);
         }
 
-        String input1 = "<Object><Id>id-1</Id><name>name-1</name></Object>";
-        String input2 = "<Object><Id>id-2</Id><name>name-2</name></Object>";
+        String input1 = "<Person><Id>id-1</Id><name>name-1</name></Person>";
+        String input2 = "<Person><Id>id-2</Id><name>name-2</name></Person>";
         createRecord(storage, factory, repository1, typeNames, new String[] { input1 });
 
         storage.begin();
-        ComplexTypeMetadata objectType = repository1.getComplexType("Object");//$NON-NLS-1$
+        ComplexTypeMetadata objectType = repository1.getComplexType("Person");//$NON-NLS-1$
         UserQueryBuilder qb = from(objectType);
         StorageResults results = storage.fetch(qb.getSelect());
         try {
@@ -697,42 +697,49 @@ public class StorageAdaptTest extends TestCase {
             results.close();
         }
         storage.end();
+
         MetadataRepository repository2 = new MetadataRepository();
         repository2.load(StorageAdaptTest.class.getResourceAsStream("schema11_2.xsd"));
         storage.adapt(repository2, true);
         
-        String[] updatedColumns = { "X_ID", "X_NAME", "X_LASTNAME", "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" };
+        String[] updatedColumns = { "X_ID", "X_NAME", "X_LASTNAME", "X_AGE", "X_WEIGHT", "X_SEX", "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" };
         try {
             assertDatabaseChange(dataSource, tables, updatedColumns, new boolean[] { true });
         } catch (SQLException e) {
             assertNull(e);
         }
 
+        objectType = repository2.getComplexType("Person");//$NON-NLS-1$
+        qb = from(objectType);
+        results = storage.fetch(qb.getSelect());
         try {
-            assertColumnLengthChange(dataSource, "Object", "X_MYSTR", 30);
-        } catch (SQLException e) {
-            assertNull(e);
+            assertEquals(1, results.getCount());
+            for (DataRecord result : results) {
+                assertEquals("id-1", result.get("Id"));
+                assertEquals("name-1", result.get("name"));
+                assertEquals("Jason", result.get("lastname"));
+                assertEquals(6, result.get("age"));
+                assertEquals(12.6, result.get("weight"));
+                assertEquals(Boolean.TRUE, result.get("sex"));
+            }
+        } finally {
+            results.close();
         }
+        storage.end();
 
         createRecord(storage, factory, repository2, typeNames, new String[] { input2 });
 
         storage.begin();
-        objectType = repository2.getComplexType("Object");//$NON-NLS-1$
+        objectType = repository2.getComplexType("Person");//$NON-NLS-1$
         qb = from(objectType);
         results = storage.fetch(qb.getSelect());
         try {
             assertEquals(2, results.getCount());
             for (DataRecord result : results) {
-                int i = 0;
-                if(i == 0){
-                    assertEquals("id-1", result.get("Id"));
-                    assertEquals("name-1", result.get("name"));
-                    assertEquals("Jason", result.get("lastname"));
-                }else if(i ==1){
-                    assertEquals("id-2", result.get("Id"));
-                    assertEquals("name-2", result.get("name"));
-                    assertEquals("Jason", result.get("lastname"));
-                }
+                assertEquals("Jason", result.get("lastname"));
+                assertEquals(6, result.get("age"));
+                assertEquals(12.6, result.get("weight"));
+                assertEquals(Boolean.TRUE, result.get("sex"));
             }
         } finally {
             results.close();

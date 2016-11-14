@@ -1,0 +1,24 @@
+<ii>
+	<c>person</c>
+	<n>person</n>
+	<dmn>person</dmn>
+	<i>1</i>
+	<t>1</t>
+	<p>
+		<person>
+			<personId>1</personId>
+			<dwellingAddresses>
+				<address>
+					<type>swissMailAddress</type>
+				</address>
+				<address>
+					<type>foreignHQAddress</type>
+				</address>
+				<address>
+					<type>pccSignBoard</type>
+				</address>
+			</dwellingAddresses>
+			<active>true</active>
+		</person>
+	</p>
+</ii>

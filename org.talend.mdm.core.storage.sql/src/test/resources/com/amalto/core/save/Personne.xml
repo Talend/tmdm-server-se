@@ -15,26 +15,6 @@
  <DateEntreeGroupe></DateEntreeGroupe>
  <Titre></Titre>
  <Contextes>
-  <Contexte>
-   <IdContexte></IdContexte>
-   <SourceFk />
-   <TypeContexteFk />
-   <StatutContexteFk />
-   <DateDebutContexte></DateDebutContexte>
-   <DateFinContexte></DateFinContexte>
-   <OrganisationFk />
-   <SocieteFk />
-   <Fonction></Fonction>
-   <Service></Service>
-   <SocieteExterneFk />
-   <DomaineFk />
-   <NiveauResponsabiliteFk />
-   <Contacts>
-    <Contact>
-     <StatutContactFk />
-     <SpecialisationContactType />
-    </Contact>
-   </Contacts>
-  </Contexte>
+  <Contexte />
  </Contextes>
 </Personne>

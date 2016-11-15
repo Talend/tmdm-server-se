@@ -98,8 +98,10 @@ public class StorageAdminImpl implements StorageAdmin {
             //so we can delete the cluster from it
             if (getRegisteredStorage(SYSTEM_STORAGE, StorageType.SYSTEM) != null) {
                 DataClusterPOJO dataClusterPOJO = new DataClusterPOJO(storageName);
-                DefaultDataCluster dataCluster = new DefaultDataCluster();
-                dataCluster.removeDataCluster(new DataClusterPOJOPK(dataClusterPOJO.getPK()));
+                ObjectPOJO.remove(DataClusterPOJO.class, dataClusterPOJO.getPK());
+                if (DefaultDataCluster.EXISTED_DATA_CLUSTER.containsKey(dataClusterPOJO.getPK().getUniqueId())) {
+                    DefaultDataCluster.EXISTED_DATA_CLUSTER.remove(dataClusterPOJO.getPK().getUniqueId());
+                }
             }
             
         } catch (Exception e) {

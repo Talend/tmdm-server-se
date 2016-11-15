@@ -28,7 +28,7 @@ public class DefaultDataCluster implements DataCluster {
 
     private static final Logger LOGGER = Logger.getLogger(DefaultDataCluster.class);
 
-    private static Map<String,DataClusterPOJO> existDataCluster = new HashMap<String, DataClusterPOJO>();
+    public static Map<String, DataClusterPOJO> EXISTED_DATA_CLUSTER = new HashMap<String, DataClusterPOJO>();
 
     /**
      * Creates or updates a data cluster
@@ -66,7 +66,7 @@ public class DefaultDataCluster implements DataCluster {
                 }
                 throw new XtentisException(err, e);
             }
-            existDataCluster.put(pk.getUniqueId(), dataCluster);
+            EXISTED_DATA_CLUSTER.put(pk.getUniqueId(), dataCluster);
             return new DataClusterPOJOPK(pk);
         } catch (XtentisException e) {
             throw (e);
@@ -90,8 +90,8 @@ public class DefaultDataCluster implements DataCluster {
             if (pk.getUniqueId().endsWith(StorageAdmin.STAGING_SUFFIX)) {
                 pk = new DataClusterPOJOPK(StringUtils.substringBeforeLast(pk.getUniqueId(), "#"));
             }
-            if(existDataCluster.containsKey(pk.getUniqueId())){
-                return existDataCluster.get(pk.getUniqueId());
+            if (EXISTED_DATA_CLUSTER.containsKey(pk.getUniqueId())) {
+                return EXISTED_DATA_CLUSTER.get(pk.getUniqueId());
             }
             DataClusterPOJO dataCluster = ObjectPOJO.load(DataClusterPOJO.class, pk);
             if (dataCluster == null) {
@@ -99,7 +99,7 @@ public class DefaultDataCluster implements DataCluster {
                 LOGGER.error(err);
                 throw new XtentisException(err);
             }
-            existDataCluster.put(pk.getUniqueId(), dataCluster);
+            EXISTED_DATA_CLUSTER.put(pk.getUniqueId(), dataCluster);
             return dataCluster;
         } catch (XtentisException e) {
             throw (e);
@@ -138,11 +138,11 @@ public class DefaultDataCluster implements DataCluster {
                 LOGGER.error(err);
                 throw new XtentisException(err);
             }
-            if (existDataCluster.containsKey(pk.getUniqueId())) {
-                return existDataCluster.get(pk.getUniqueId());
+            if (EXISTED_DATA_CLUSTER.containsKey(pk.getUniqueId())) {
+                return EXISTED_DATA_CLUSTER.get(pk.getUniqueId());
             }
             DataClusterPOJO dataCluster = ObjectPOJO.load(DataClusterPOJO.class, pk);
-            existDataCluster.put(pk.getUniqueId(), dataCluster);
+            EXISTED_DATA_CLUSTER.put(pk.getUniqueId(), dataCluster);
             return dataCluster;
         } catch (XtentisException e) {
             if (LOGGER.isDebugEnabled()) {
@@ -180,8 +180,8 @@ public class DefaultDataCluster implements DataCluster {
             throw new XtentisException(err, e);
         }
         ObjectPOJOPK objectPOJOPK = ObjectPOJO.remove(DataClusterPOJO.class, pk);
-        if(existDataCluster.containsKey(pk.getUniqueId())){
-            existDataCluster.remove(pk.getUniqueId());
+        if (EXISTED_DATA_CLUSTER.containsKey(pk.getUniqueId())) {
+            EXISTED_DATA_CLUSTER.remove(pk.getUniqueId());
         }
         return new DataClusterPOJOPK(objectPOJOPK);
     }

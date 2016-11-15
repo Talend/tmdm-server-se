@@ -58,7 +58,7 @@ public class ItemPOJO implements Serializable {
 
     private static Pattern pLoad = Pattern.compile(".*?(<c>.*?</taskId>|<c>.*?</t>).*?(<p>(.*)</p>|<p/>).*", Pattern.DOTALL); //$NON-NLS-1$
 
-    private static Map<String, XSystemObjects> xDataClusterSystemObjects = new HashMap<String, XSystemObjects>();
+    private static Map<String, XSystemObjects> DATA_CLUSTER_SYSTEM_OBJECTS = new HashMap<String, XSystemObjects>();
 
     public static Logger LOG = Logger.getLogger(ItemPOJO.class);
 
@@ -79,7 +79,7 @@ public class ItemPOJO implements Serializable {
     private String taskId;
 
     static {
-        xDataClusterSystemObjects = XSystemObjects.getXSystemObjects(XObjectType.DATA_CLUSTER);
+        DATA_CLUSTER_SYSTEM_OBJECTS = XSystemObjects.getXSystemObjects(XObjectType.DATA_CLUSTER);
     }
 
     public ItemPOJO() {
@@ -665,11 +665,13 @@ public class ItemPOJO implements Serializable {
         boolean authorizedAccess;
         String username = user.getUsername();
 
-        boolean isSystemObject = XSystemObjects.isXSystemObject(xDataClusterSystemObjects, itemPOJOPK.getDataClusterPOJOPK().getIds()[0]);
+        boolean isSystemObject = XSystemObjects.isXSystemObject(DATA_CLUSTER_SYSTEM_OBJECTS, itemPOJOPK.getDataClusterPOJOPK().getIds()[0]);
 
-        boolean isAdmin = MDMConfiguration.getAdminUser().equals(user.getUsername()) || user.getRoles().contains(ICoreConstants.ADMIN_PERMISSION) || isSystemObject;
+        // admin has all rights, so bypass security checks
+        boolean bypassCheckAccess = MDMConfiguration.getAdminUser().equals(username)
+                || user.getRoles().contains(ICoreConstants.ADMIN_PERMISSION) || isSystemObject;
 
-        if (isAdmin) {
+        if (bypassCheckAccess) {
             return;
         }
 
@@ -678,8 +680,6 @@ public class ItemPOJO implements Serializable {
         }
 
         if(user.isAdmin(ItemPOJO.class)) {
-            authorizedAccess = true;
-        } else if (MDMConfiguration.getAdminUser().equals(username)) {
             authorizedAccess = true;
         } else {
             ItemPOJO itemPOJO = loadItem(itemPOJOPK);

@@ -3577,6 +3577,27 @@ public class DocumentSaveTest extends TestCase {
         assertEquals("RuntimeException Cause", session.getCauseMessage(exception));
     }
 
+    // TMDM-8400 Can't save a record with datamodel has composite key,and one is auto increament 
+    public void testSaveCompositeAutoPK() throws Exception {
+        final MetadataRepository repository = new MetadataRepository();
+        repository.load(DocumentSaveTest.class.getResourceAsStream("TMDM-8400.xsd"));
+        MockMetadataRepositoryAdmin.INSTANCE.register("COMP_AUTO_PK", repository);
+        SaverSource source = new TestSaverSource(repository, false, "", "TMDM-8400.xsd");
+        SaverSession session = SaverSession.newSession(source);
+        String xmlString = "<Compte><Level>Compte SF</Level><Code></Code><Label></Label></Compte>";
+        InputStream recordXml = new ByteArrayInputStream(xmlString.getBytes("UTF-8"));
+        DocumentSaverContext context = session.getContextFactory().create("MDM", "COMP_AUTO_PK", "Source", recordXml, true, true,
+                true, true, false);
+        DocumentSaver saver = context.createSaver();
+        saver.save(session, context);
+        MockCommitter committer = new MockCommitter();
+        session.end(committer);
+
+        assertTrue(committer.hasSaved());
+        Element committedElement = committer.getCommittedElement();
+        assertEquals("Compte SF", evaluate(committedElement, "/Compte/Level"));
+    }
+
     private static class MockCommitter implements SaverSession.Committer {
 
         private MutableDocument lastSaved;

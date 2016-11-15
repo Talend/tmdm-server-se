@@ -1,0 +1,48 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<xsd:import namespace="http://www.w3.org/2001/XMLSchema"/>
+	<xsd:element name="Compte">
+		<xsd:annotation>
+			<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+			<xsd:appinfo source="X_Write">User</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:all>
+				<xsd:element maxOccurs="1" minOccurs="1" name="Level">
+				<xsd:annotation>
+					<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+					<xsd:appinfo source="X_Write">User</xsd:appinfo>
+				</xsd:annotation>
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="Compte SF"/>
+						<xsd:enumeration value="Nature Comptable SF"/>
+						<xsd:enumeration value="Compte Procofiev"/>
+						<xsd:enumeration value="Nature Comptable SIUS"/>
+						<xsd:enumeration value="Nature Comptable SIUSMCA"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+				</xsd:element>
+				<xsd:element maxOccurs="1" minOccurs="1" name="Code" type="AUTO_INCREMENT">
+					<xsd:annotation>
+						<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+						<xsd:appinfo source="X_Write">User</xsd:appinfo>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element maxOccurs="1" minOccurs="0" name="Label" type="xsd:string">
+					<xsd:annotation>
+						<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+						<xsd:appinfo source="X_Write">User</xsd:appinfo>
+					</xsd:annotation>
+				</xsd:element>
+			</xsd:all>
+		</xsd:complexType>
+		<xsd:unique name="Compte">
+			<xsd:selector xpath="."/>
+			<xsd:field xpath="Level"/>
+			<xsd:field xpath="Code"/>
+		</xsd:unique>
+	</xsd:element>
+	<xsd:simpleType name="AUTO_INCREMENT">
+		<xsd:restriction base="xsd:string"/>
+	</xsd:simpleType>
+</xsd:schema>

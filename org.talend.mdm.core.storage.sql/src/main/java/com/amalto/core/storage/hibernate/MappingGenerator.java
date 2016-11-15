@@ -545,10 +545,7 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
                 Element columnElement = document.createElement("column"); //$NON-NLS-1$
                 Attr columnName = document.createAttribute("name"); //$NON-NLS-1$
                 columnName.setValue(field.getName());
-                
-                
-                //Attr columnName = document.createAttribute("column"); //$NON-NLS-1$
-                //columnName.setValue(resolver.get(field));
+
                 if (resolver.isIndexed(field)) { // Create indexes for fields that should be indexed.
                     if (LOGGER.isDebugEnabled()) {
                         LOGGER.debug("Creating index for field '" + field.getName() + "'."); //$NON-NLS-1$ //$NON-NLS-2$
@@ -568,21 +565,26 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
                 } else {
                     notNull.setValue(Boolean.FALSE.toString());
                 }
-                propertyElement.getAttributes().setNamedItem(notNull);
+                columnElement.getAttributes().setNamedItem(notNull);
                 // default value
                 String defaultValueRule = field.getData(MetadataRepository.DEFAULT_VALUE_RULE);
-                if (field.isMandatory() && StringUtils.isNotEmpty(defaultValueRule)) {
+                if (StringUtils.isNotEmpty(defaultValueRule)) {
                     Attr defaultValueAttr = document.createAttribute("default"); //$NON-NLS-1$
                     String covertValue = defaultValueRule;
                     if (defaultValueRule.equals("fn:false()")) {
-                        covertValue = Boolean.FALSE.toString();
-                    } else if (defaultValueRule.equals("fn:true()")) {
-                        covertValue = Boolean.TRUE.toString();
-                    } else if (defaultValueRule.startsWith("\"") && defaultValueRule.endsWith("\"")) {
-                        if (dataSource.getDialectName() == RDBMSDataSource.DataSourceDialect.H2) {
-                            covertValue = defaultValueRule.replace("\"", "'");
+                        if (dataSource.getDialectName() == RDBMSDataSource.DataSourceDialect.SQL_SERVER) {
+                            covertValue = "0";
+                        } else {
+                            covertValue = Boolean.FALSE.toString();
                         }
-                        // covertValue = defaultValueRule.substring(1, defaultValueRule.length()-1);
+                    } else if (defaultValueRule.equals("fn:true()")) {
+                        if (dataSource.getDialectName() == RDBMSDataSource.DataSourceDialect.SQL_SERVER) {
+                            covertValue = "1";
+                        } else {
+                            covertValue = Boolean.TRUE.toString();
+                        }
+                    } else if (defaultValueRule.startsWith("\"") && defaultValueRule.endsWith("\"")) {
+                        covertValue = defaultValueRule.replace("\"", "'");
                     }
                     defaultValueAttr.setValue(covertValue);
                     columnElement.getAttributes().setNamedItem(defaultValueAttr);

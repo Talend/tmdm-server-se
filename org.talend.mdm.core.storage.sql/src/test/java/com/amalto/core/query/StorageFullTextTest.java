@@ -271,7 +271,13 @@ public class StorageFullTextTest extends StorageTestCase {
         allRecords.add(factory.read(repository, a3, "<a3><id>3</id><name>hamdi</name><a2>[1][2]</a2></a3>"));
         allRecords.add(factory.read(repository, store, "<Store><Id>Upper Case Id</Id><Name>name1</Name></Store>"));
         allRecords.add(factory.read(repository, store, "<Store><Id>lower case id</Id><Name>name2</Name></Store>"));
-
+        allRecords.add(factory.read(repository, employee, "<Employee><name>11 e</name><age>11</age><jobTitle>jobTitle 11</jobTitle></Employee>"));
+        allRecords.add(factory.read(repository, employee, "<Employee><name>22 11 e</name><age>22</age><jobTitle>jobTitle 22</jobTitle></Employee>"));
+        allRecords.add(factory.read(repository, employee, "<Employee><name>33 11 e</name><age>33</age><jobTitle>jobTitle 33</jobTitle></Employee>"));
+        allRecords.add(factory.read(repository, persons, "<Persons><name>11 p</name><age>11</age></Persons>"));
+        allRecords.add(factory.read(repository, persons, "<Persons><name>22 p</name><age>22</age></Persons>"));
+        allRecords.add(factory.read(repository, persons, "<Persons><name>33 p</name><age>33</age></Persons>"));
+        
         try {
             storage.begin();
             storage.update(allRecords);
@@ -507,7 +513,7 @@ public class StorageFullTextTest extends StorageTestCase {
         qb.limit(2);
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(3, results.getCount());
+            assertEquals(2, results.getCount());
         } finally {
             results.close();
         }
@@ -523,7 +529,7 @@ public class StorageFullTextTest extends StorageTestCase {
         qb.limit(2);
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(4, results.getCount());
+            assertEquals(2, results.getCount());
         } finally {
             results.close();
         }
@@ -1253,7 +1259,7 @@ public class StorageFullTextTest extends StorageTestCase {
 
     public void testTypeSplitWithPaging() throws Exception {
         // Build expected results
-        UserQueryBuilder qb = UserQueryBuilder.from(person).and(product).where(fullText("Julien")).start(1).limit(20);
+        UserQueryBuilder qb = UserQueryBuilder.from(person).and(product).where(fullText("Julien"));
         List<String> expected = new LinkedList<String>();
         StorageResults records = storage.fetch(qb.getSelect());
         int count = records.getCount();
@@ -1495,6 +1501,21 @@ public class StorageFullTextTest extends StorageTestCase {
             assertTrue(results.getSize() == 1);
             for (DataRecord result : results) {
                 assertEquals("A car", result.get("ShortDescription"));
+            }
+        } finally {
+            results.close();
+        }
+    }
+    
+    public void testFullTextSearchOnComplexType() throws Exception {
+        UserQueryBuilder qb = from(persons).where(fullText("11"));
+        qb.limit(5);
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            for (DataRecord result : results) {
+                if (result != null) {
+                    assertEquals("11 p", result.get("name"));
+                }
             }
         } finally {
             results.close();

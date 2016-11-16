@@ -89,6 +89,7 @@ class GenerateActions implements DocumentSaver {
             if (context.getId().length <= 0) {
                 actions.addAll(type.accept(createActions));
             }
+            updateActions.setCreateAction(true);
             actions.addAll(type.accept(updateActions));
 
             // in case of beforesaving, don't re-generate id as it might have been used for reference
@@ -118,6 +119,7 @@ class GenerateActions implements DocumentSaver {
             break;
         case UPDATE:
             // get updated paths
+            updateActions.setCreateAction(false);
             actions = type.accept(updateActions);
             break;
         case REPLACE:

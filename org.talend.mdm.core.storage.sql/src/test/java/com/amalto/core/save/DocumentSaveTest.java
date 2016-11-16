@@ -1920,8 +1920,8 @@ public class DocumentSaveTest extends TestCase {
         assertTrue(source.hasSavedAutoIncrement());
         assertTrue(committer.hasSaved());
         Element committedElement = committer.getCommittedElement();
-        assertEquals("1", evaluate(committedElement, "/ProductFamily/Id"));
-        assertEquals("0", context.getId()[0]);
+        assertEquals("0", evaluate(committedElement, "/ProductFamily/Id"));
+        assertEquals("1", context.getId()[0]);
         assertEquals("testAutoIncrementPK", evaluate(committedElement, "/ProductFamily/Name"));
     }
 

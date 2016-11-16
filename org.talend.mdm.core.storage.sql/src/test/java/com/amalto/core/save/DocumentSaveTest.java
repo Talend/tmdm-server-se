@@ -3577,7 +3577,7 @@ public class DocumentSaveTest extends TestCase {
         assertEquals("RuntimeException Cause", session.getCauseMessage(exception));
     }
 
-    // TMDM-8400 Can't save a record with datamodel has composite key,and one is auto increament 
+    // TMDM-8400 Can't save a record with datamodel has composite key,and one is auto increament
     public void testSaveCompositeAutoPK() throws Exception {
         final MetadataRepository repository = new MetadataRepository();
         repository.load(DocumentSaveTest.class.getResourceAsStream("TMDM-8400.xsd"));

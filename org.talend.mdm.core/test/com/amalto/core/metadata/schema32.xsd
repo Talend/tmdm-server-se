@@ -11,11 +11,28 @@
                         <xsd:appinfo source="X_Default_Value_Rule">"Jason"</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="age" type="xsd:int">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Default_Value_Rule">6</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="weight" type="xsd:double">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Default_Value_Rule">12.6</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="1" name="sex" type="xsd:boolean">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Default_Value_Rule">fn:true()</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+
+                <xsd:element maxOccurs="1" minOccurs="1" name="name_1" type="xsd:boolean">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Default_Value_Rule">fn:name()</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
+
             </xsd:all>
         </xsd:complexType>
         <xsd:unique name="Object">

@@ -682,6 +682,9 @@ public class MetadataRepositoryTest extends TestCase {
         assertTrue(entityType.hasField("sex"));
 
         assertEquals("\"Jason\"", entityType.getField("lastname").getData(MetadataRepository.DEFAULT_VALUE_RULE));
-        assertEquals(null, entityType.getField("sex").getData(MetadataRepository.DEFAULT_VALUE_RULE));
+        assertEquals("6", entityType.getField("age").getData(MetadataRepository.DEFAULT_VALUE_RULE));
+        assertEquals("12.6", entityType.getField("weight").getData(MetadataRepository.DEFAULT_VALUE_RULE));
+        assertEquals("fn:true()", entityType.getField("sex").getData(MetadataRepository.DEFAULT_VALUE_RULE));
+        assertEquals(null, entityType.getField("name_1").getData(MetadataRepository.DEFAULT_VALUE_RULE));
     }
 }

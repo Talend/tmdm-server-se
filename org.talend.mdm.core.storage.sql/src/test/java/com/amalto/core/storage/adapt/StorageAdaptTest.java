@@ -663,7 +663,7 @@ public class StorageAdaptTest extends TestCase {
     }
 
     public void test11_addMandatoryFiledWithDefaultValue() throws Exception {
-        DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("MySQL-Default", STORAGE_NAME);
+        DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
         Storage storage = new HibernateStorage("Person", StorageType.MASTER);
         storage.init(dataSource);
         String[] typeNames = { "Person" };
@@ -680,7 +680,7 @@ public class StorageAdaptTest extends TestCase {
         }
 
         String input1 = "<Person><Id>id-1</Id><name>name-1</name></Person>";
-        String input2 = "<Person><Id>id-2</Id><name>name-2</name></Person>";
+        String input2 = "<Person><Id>id-2</Id><name>name-2</name><lastname>Jason</lastname><age>6</age><weight>12.6</weight><sex>true</sex></Person>";
         createRecord(storage, factory, repository1, typeNames, new String[] { input1 });
 
         storage.begin();

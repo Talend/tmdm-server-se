@@ -544,7 +544,7 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
                 propertyName.setValue(field.getName());
                 Element columnElement = document.createElement("column"); //$NON-NLS-1$
                 Attr columnName = document.createAttribute("name"); //$NON-NLS-1$
-                columnName.setValue(field.getName());
+                columnName.setValue(resolver.get(field));
 
                 if (resolver.isIndexed(field)) { // Create indexes for fields that should be indexed.
                     if (LOGGER.isDebugEnabled()) {
@@ -572,13 +572,15 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
                     Attr defaultValueAttr = document.createAttribute("default"); //$NON-NLS-1$
                     String covertValue = defaultValueRule;
                     if (defaultValueRule.equals("fn:false()")) {
-                        if (dataSource.getDialectName() == RDBMSDataSource.DataSourceDialect.SQL_SERVER) {
+                        if (dataSource.getDialectName() == RDBMSDataSource.DataSourceDialect.SQL_SERVER
+                                || dataSource.getDialectName() == RDBMSDataSource.DataSourceDialect.ORACLE_10G) {
                             covertValue = "0";
                         } else {
                             covertValue = Boolean.FALSE.toString();
                         }
                     } else if (defaultValueRule.equals("fn:true()")) {
-                        if (dataSource.getDialectName() == RDBMSDataSource.DataSourceDialect.SQL_SERVER) {
+                        if (dataSource.getDialectName() == RDBMSDataSource.DataSourceDialect.SQL_SERVER
+                                || dataSource.getDialectName() == RDBMSDataSource.DataSourceDialect.ORACLE_10G) {
                             covertValue = "1";
                         } else {
                             covertValue = Boolean.TRUE.toString();
@@ -593,7 +595,6 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
                 addFieldTypeAttribute(field, columnElement, dataSource.getDialectName(), propertyElement);
                 propertyElement.getAttributes().setNamedItem(propertyName);
                 columnElement.getAttributes().setNamedItem(columnName);
-                //propertyElement.getAttributes().setNamedItem(columnName);
                 propertyElement.appendChild(columnElement);
                 return propertyElement;
             } else {

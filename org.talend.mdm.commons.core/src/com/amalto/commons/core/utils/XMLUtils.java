@@ -236,7 +236,8 @@ public final class XMLUtils {
 	 */
 	public static String nodeToString(Node n, boolean omitXMLDeclaration) throws TransformerException{
        	StringWriter sw = new StringWriter();
-       	Transformer transformer = TransformerFactory.newInstance().newTransformer();
+        Transformer transformer = TransformerFactory.newInstance("org.apache.xalan.processor.TransformerFactoryImpl",
+                Thread.currentThread().getContextClassLoader()).newTransformer();
        	if (omitXMLDeclaration)
        		transformer.setOutputProperty("omit-xml-declaration","yes");
        	else

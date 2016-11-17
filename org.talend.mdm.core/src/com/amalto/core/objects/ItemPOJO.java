@@ -14,6 +14,8 @@ package com.amalto.core.objects;
 
 import java.io.Serializable;
 import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,6 +24,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.log4j.Logger;
+import org.talend.mdm.commmon.util.core.ICoreConstants;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
 import org.talend.mdm.commmon.util.webapp.XObjectType;
 import org.talend.mdm.commmon.util.webapp.XSystemObjects;
@@ -55,6 +58,8 @@ public class ItemPOJO implements Serializable {
 
     private static Pattern pLoad = Pattern.compile(".*?(<c>.*?</taskId>|<c>.*?</t>).*?(<p>(.*)</p>|<p/>).*", Pattern.DOTALL); //$NON-NLS-1$
 
+    private static Map<String, XSystemObjects> DATA_CLUSTER_SYSTEM_OBJECTS = new HashMap<String, XSystemObjects>();
+
     public static Logger LOG = Logger.getLogger(ItemPOJO.class);
 
     public static Pattern pathWithoutConditions = Pattern.compile("(.*?)[\\[|/].*");
@@ -72,6 +77,10 @@ public class ItemPOJO implements Serializable {
     private Element projection;
 
     private String taskId;
+
+    static {
+        DATA_CLUSTER_SYSTEM_OBJECTS = XSystemObjects.getXSystemObjects(XObjectType.DATA_CLUSTER);
+    }
 
     public ItemPOJO() {
     }
@@ -247,7 +256,7 @@ public class ItemPOJO implements Serializable {
         checkAccess(LocalUser.getLocalUser(), itemPOJOPK, false, "read"); //$NON-NLS-1$
         return loadItem(itemPOJOPK);
     }
-    
+
     public static ItemPOJO loadItem(ItemPOJOPK itemPOJOPK) throws XtentisException {
         XmlServer server = Util.getXmlServerCtrlLocal();
         ILocalUser user = LocalUser.getLocalUser();
@@ -655,14 +664,22 @@ public class ItemPOJO implements Serializable {
         assert user != null;
         boolean authorizedAccess;
         String username = user.getUsername();
+
+        boolean isSystemObject = XSystemObjects.isXSystemObject(DATA_CLUSTER_SYSTEM_OBJECTS, itemPOJOPK.getDataClusterPOJOPK().getIds()[0]);
+
+        // admin has all rights, so bypass security checks
+        boolean bypassCheckAccess = MDMConfiguration.getAdminUser().equals(username)
+                || user.getRoles().contains(ICoreConstants.ADMIN_PERMISSION) || isSystemObject;
+
+        if (bypassCheckAccess) {
+            return;
+        }
+
         if(itemPOJOPK.getDataClusterPOJOPK() != null && !StorageAdmin.SYSTEM_STORAGE.equals(itemPOJOPK.getDataClusterPOJOPK().getUniqueId()) && Util.isEnterprise()){
             isExistDataCluster(itemPOJOPK.getDataClusterPOJOPK());
         }
+
         if(user.isAdmin(ItemPOJO.class)) {
-            authorizedAccess = true;
-        } else if (MDMConfiguration.getAdminUser().equals(username)) {
-            authorizedAccess = true;
-        } else if (XSystemObjects.isExist(XObjectType.DATA_CLUSTER, itemPOJOPK.getDataClusterPOJOPK().getUniqueId())) {
             authorizedAccess = true;
         } else {
             ItemPOJO itemPOJO = loadItem(itemPOJOPK);
@@ -689,5 +706,4 @@ public class ItemPOJO implements Serializable {
         }
         return true;
     }
-
 }

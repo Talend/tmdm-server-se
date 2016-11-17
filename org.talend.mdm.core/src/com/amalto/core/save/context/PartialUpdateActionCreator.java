@@ -68,7 +68,10 @@ public class PartialUpdateActionCreator extends UpdateActionCreator {
                                       String source,
                                       String userName,
                                       boolean generateTouchActions,
-                                      MetadataRepository repository) {
+                                      MetadataRepository repository,
+                                      String dataCluster,
+                                      String dataModel,
+                                      SaverSource saverSource) {
         super(originalDocument,
                 newDocument,
                 date,
@@ -77,7 +80,10 @@ public class PartialUpdateActionCreator extends UpdateActionCreator {
                 source,
                 userName,
                 generateTouchActions,
-                repository);
+                repository,
+                dataCluster,
+                dataModel,
+                saverSource);
         this.preserveCollectionOldValues = preserveCollectionOldValues;
         if (!pivot.isEmpty()) {
             // Pivot MUST NOT end with '/' and key MUST start with '/' (see TMDM-4381).
@@ -119,6 +125,13 @@ public class PartialUpdateActionCreator extends UpdateActionCreator {
                 LOGGER.debug("Key value at '" + path + "' has no value (was null). Ignoring it."); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
+    }
+
+    public PartialUpdateActionCreator(MutableDocument originalDocument, MutableDocument newDocument, Date date,
+            boolean preserveCollectionOldValues, int insertIndex, String pivot, String key, String source, String userName,
+            boolean generateTouchActions, MetadataRepository repository) {
+        this(originalDocument, newDocument, date, preserveCollectionOldValues, insertIndex, pivot, key, source, userName,
+                generateTouchActions, repository, null, null, null);
     }
 
     @Override

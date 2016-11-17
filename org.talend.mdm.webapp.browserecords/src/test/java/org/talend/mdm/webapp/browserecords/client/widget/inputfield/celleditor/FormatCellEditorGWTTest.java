@@ -16,15 +16,19 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.talend.mdm.webapp.base.client.model.DataTypeConstants;
+import org.talend.mdm.webapp.base.client.model.ForeignKeyBean;
+import org.talend.mdm.webapp.base.shared.SimpleTypeModel;
 import org.talend.mdm.webapp.browserecords.client.BrowseRecords;
 import org.talend.mdm.webapp.browserecords.client.model.ItemBean;
 import org.talend.mdm.webapp.browserecords.client.util.DateUtil;
 import org.talend.mdm.webapp.browserecords.client.util.UserSession;
 import org.talend.mdm.webapp.browserecords.client.widget.ItemsListPanel;
+import org.talend.mdm.webapp.browserecords.client.widget.ForeignKey.ForeignKeyField;
 import org.talend.mdm.webapp.browserecords.client.widget.inputfield.FormatDateField;
 import org.talend.mdm.webapp.browserecords.shared.AppHeader;
 
@@ -43,6 +47,8 @@ import com.google.gwt.junit.client.GWTTestCase;
 public class FormatCellEditorGWTTest extends GWTTestCase {
 
     Field<?> field;
+    
+    ForeignKeyField foreignKeyField;
 
     CellEditor cellEditor;
 
@@ -166,6 +172,35 @@ public class FormatCellEditorGWTTest extends GWTTestCase {
         dateStr = (String) cellEditor.postProcessValue(DateUtil.tryConvertStringToDate("2012-12-03T12:30:55"));
         assertEquals("2012-12-03T12:30:55", dateStr);
         assertEquals(DateUtil.tryConvertStringToDate("2012-12-03T12:30:55"), selectedItem.getOriginalMap().get(field.getName()));
+    }
+    
+    public void testFKCellEditor() {
+        UserSession session = new UserSession();
+        AppHeader appHeader = new AppHeader();
+        appHeader.setAutoValidate(false);
+        session.put(UserSession.APP_HEADER, appHeader);
+        Registry.register(BrowseRecords.USER_SESSION, session);
+        
+        List<String> foreignKeyInfo = new ArrayList<String>();
+        foreignKeyInfo.add("ProductFamily/name");
+        SimpleTypeModel simpleTypeModel = new SimpleTypeModel();
+        simpleTypeModel.setAutoExpand(false);
+        simpleTypeModel.setMaxOccurs(-1);
+        simpleTypeModel.setForeignkey("ProductFamily/Id");
+        simpleTypeModel.setForeignKeyInfo(foreignKeyInfo);
+        
+        Map<String, String> fkInfo = new LinkedHashMap<String, String>();
+        fkInfo.put("ProductFamily/Name", "f3");
+        
+        foreignKeyField = new ForeignKeyField(simpleTypeModel);
+        ForeignKeyBean fkBean = new ForeignKeyBean();
+        fkBean.setForeignKeyInfo(fkInfo);
+        
+        foreignKeyField.setValue(fkBean);
+        FKCellEditor cellEditor = new FKCellEditor(foreignKeyField);
+        cellEditor.preProcessValue("any string");
+        
+        assertNull(foreignKeyField.getSuggestBox().getValue());
     }
 
     private void mockGrid() {

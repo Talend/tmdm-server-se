@@ -271,13 +271,15 @@ public class StorageFullTextTest extends StorageTestCase {
         allRecords.add(factory.read(repository, a3, "<a3><id>3</id><name>hamdi</name><a2>[1][2]</a2></a3>"));
         allRecords.add(factory.read(repository, store, "<Store><Id>Upper Case Id</Id><Name>name1</Name></Store>"));
         allRecords.add(factory.read(repository, store, "<Store><Id>lower case id</Id><Name>name2</Name></Store>"));
+        allRecords.add(factory.read(repository, store, "<Store><Id>a</Id><Name>name3</Name></Store>"));
+        allRecords.add(factory.read(repository, store, "<Store><Id>a&amp;b</Id><Name>name3</Name></Store>"));
         allRecords.add(factory.read(repository, employee, "<Employee><name>11 e</name><age>11</age><jobTitle>jobTitle 11</jobTitle></Employee>"));
         allRecords.add(factory.read(repository, employee, "<Employee><name>22 11 e</name><age>22</age><jobTitle>jobTitle 22</jobTitle></Employee>"));
         allRecords.add(factory.read(repository, employee, "<Employee><name>33 11 e</name><age>33</age><jobTitle>jobTitle 33</jobTitle></Employee>"));
         allRecords.add(factory.read(repository, persons, "<Persons><name>11 p</name><age>11</age></Persons>"));
         allRecords.add(factory.read(repository, persons, "<Persons><name>22 p</name><age>22</age></Persons>"));
         allRecords.add(factory.read(repository, persons, "<Persons><name>33 p</name><age>33</age></Persons>"));
-        
+
         try {
             storage.begin();
             storage.update(allRecords);
@@ -1086,6 +1088,45 @@ public class StorageFullTextTest extends StorageTestCase {
         }
 
         qb = from(store).selectId(store).where(fullText("case"));
+        storage.begin();
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(2, results.getCount());
+        } finally {
+            results.close();
+        }
+    }
+
+    // TMDM-8798 FK constraint warning when creating a fk on the fly with special character
+    public void testIdFieldContainSpecialCharacter() throws Exception {
+        UserQueryBuilder qb = from(store).selectId(store).where(contains(store.getField("Id"), "a&b"));
+        storage.begin();
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        qb = from(store).selectId(store).where(contains(store.getField("Id"), "a"));
+        storage.begin();
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(2, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        qb = from(store).selectId(store).where(fullText("a&b"));
+        storage.begin();
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        qb = from(store).selectId(store).where(fullText("a"));
         storage.begin();
         results = storage.fetch(qb.getSelect());
         try {

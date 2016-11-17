@@ -353,9 +353,9 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
             Map.Entry<String, Boolean> next = fieldsIterator.next();
             if (next.getValue()) {
                 queryBuffer.append(next.getKey()).append(ToLowerCaseFieldBridge.ID_POSTFIX + ':').append(fullTextValue);
-            } else {
-                queryBuffer.append(next.getKey()).append(':').append(fullTextValue);
+                queryBuffer.append(" OR "); //$NON-NLS-1$
             }
+            queryBuffer.append(next.getKey()).append(':').append(fullTextValue);
             if (fieldsIterator.hasNext()) {
                 queryBuffer.append(" OR "); //$NON-NLS-1$
             }
@@ -369,9 +369,15 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
     public Query visit(FieldFullText fieldFullText) {
         String fieldName = fieldFullText.getField().getFieldMetadata().getName();
         String[] fieldsAsArray = new String[] { fieldName };
-        String fullTextQuery = fieldName + ':' + getFullTextValue(fieldFullText);
+        String fullTextValue = getFullTextValue(fieldFullText);
+        String fullTextQuery = fieldName + ':' + fullTextValue;
         if (fieldFullText.getField().getFieldMetadata().isKey()) {
-            fullTextQuery = fieldName + ToLowerCaseFieldBridge.ID_POSTFIX + ":" + getFullTextValue(fieldFullText); //$NON-NLS-1$
+            BooleanQuery query = new BooleanQuery();
+            query.add(parseQuery(fieldsAsArray, fullTextQuery, fieldFullText.getValue()), BooleanClause.Occur.SHOULD);
+            fieldsAsArray = new String[] { fieldName + ToLowerCaseFieldBridge.ID_POSTFIX };
+            fullTextQuery = fieldName + ToLowerCaseFieldBridge.ID_POSTFIX + ":" + fullTextValue; //$NON-NLS-1$
+            query.add(parseQuery(fieldsAsArray, fullTextQuery, fieldFullText.getValue()), BooleanClause.Occur.SHOULD);
+            return query;
         }
         return parseQuery(fieldsAsArray, fullTextQuery, fieldFullText.getValue());
     }
@@ -421,7 +427,6 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
         return value;
     }
 
-    @SuppressWarnings("unused")
     private static String getMultiKeywords(String value) {
         List<String> blocks = new ArrayList<String>(Arrays.asList(value.split(" "))); //$NON-NLS-1$
         StringBuffer sb = new StringBuffer();

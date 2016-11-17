@@ -1,0 +1,1404 @@
+<?xml version="1.0"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:element name="SSP_EMS">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Label_EN">SSP - medical and social institutions</xsd:appinfo>
+            <xsd:appinfo source="X_Label_FR">SSP - établissements medico-sociaux</xsd:appinfo>
+            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">HEALTH_INSTITUTION</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element maxOccurs="1" minOccurs="1" name="emsId" type="AUTO_INCREMENT">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">HEALTH_INSTITUTION</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="identifiers" type="SSP_EMS_identifiersType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_AutoExpand">true</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_EN">Identifiers</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Identifiants</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">HEALTH_INSTITUTION</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="organisationId" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey">organisation/organisationId</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_EN">Organisation in relation</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Organisation en relation</xsd:appinfo>
+                        <xsd:appinfo source="X_Description_EN">related organisation</xsd:appinfo>
+                        <xsd:appinfo source="X_Description_FR">organisation en relation</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKeyInfo">organisation/idReglis</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKeyInfo">organisation/commonName</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">HEALTH_INSTITUTION</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="name" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Label_EN">Name</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Nom de l'établissement</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">HEALTH_INSTITUTION</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="alternativeName" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Label_EN">Alternative name</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Nom (secondaire)</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">HEALTH_INSTITUTION</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="category" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Label_EN">Category</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Categorie</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">HEALTH_INSTITUTION</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="address" type="address">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Label_EN">Address</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Adresse</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">HEALTH_INSTITUTION</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="price" type="SSP_EMS_priceList">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Label_EN">Price list</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Liste des tarifs</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">HEALTH_INSTITUTION</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="active" type="xsd:boolean">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Default_Value_Rule">fn:true()</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_EN">Active</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Actif</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">HEALTH_INSTITUTION</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+        <xsd:unique name="SSP_EMS">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="emsId" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="organisation">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Description_EN">Organisation entity</xsd:appinfo>
+            <xsd:appinfo source="X_Description_FR">Personne morale</xsd:appinfo>
+            <xsd:appinfo source="X_Label_EN">Organisation</xsd:appinfo>
+            <xsd:appinfo source="X_Label_FR">Organisation</xsd:appinfo>
+            <xsd:appinfo source="X_AutoExpand">true</xsd:appinfo>
+            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">X_ORG_WRITE</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element maxOccurs="1" minOccurs="1" name="organisationId" type="AUTO_INCREMENT">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Visible_Rule">fn:false()</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_ORG_WRITE</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="idReglis" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Label_EN">ID REGLIS</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">ID REGLIS</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_ORG_WRITE</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="identifiers" type="identifiersType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_AutoExpand">true</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_EN">Identifiers</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Identifiants</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_ORG_WRITE</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="commonName" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">champs calculé - nom complet de l'organisation</xsd:appinfo>
+                        <xsd:appinfo source="X_Description_EN">calculated field - full organisation name</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_EN">Common name</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Nom courant</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_ORG_WRITE</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="status" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">statut de l'enregistrement</xsd:appinfo>
+                        <xsd:appinfo source="X_Description_EN">record status</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey">REF_MasterStatus/REF_MasterStatusId</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKeyInfo">REF_MasterStatus/REF_MasterStatusId</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKeyInfo">REF_MasterStatus/label</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_EN">Status</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Status</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_ORG_WRITE</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="organisationLegalName" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">raison social de l'organisation</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_ORG_WRITE</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="organisationAdditionnalName" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">nom alternatif ou commun de l'organisation</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_ORG_WRITE</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="legalForm" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_ForeignKey">REF_LegalForm/REF_LegalFormId</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKeyInfo">REF_LegalForm/label</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_EN">Legal form</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Forme légale</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_ORG_WRITE</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="branchOf" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_EN">branch of parent organisation</xsd:appinfo>
+                        <xsd:appinfo source="X_Description_FR">filiale de l'organisation parente</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey">organisation/organisationId</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKeyInfo">organisation/idReglis</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKeyInfo">organisation/commonName</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_EN">Branch of</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Filliale de</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_ORG_WRITE</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="locations" type="addresses">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_AutoExpand">false</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_EN">Locations</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Etablissements</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_ORG_WRITE</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="contacts" type="contacts">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_EN">available contacts</xsd:appinfo>
+                        <xsd:appinfo source="X_Description_FR">contacts disponibles</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_EN">Contacts</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Contacts</xsd:appinfo>
+                        <xsd:appinfo source="X_AutoExpand">false</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_ORG_WRITE</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="preferedContactOrder" type="preferedContactOrderTypeOrganisation">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_EN">perfered contact order</xsd:appinfo>
+                        <xsd:appinfo source="X_Description_FR">ordre de préférence de contact</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_EN">Prefered contact order</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Ordre de préférence des contacts</xsd:appinfo>
+                        <xsd:appinfo source="X_AutoExpand">false</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_ORG_WRITE</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="fundationDate" type="xsd:date">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Label_EN">Fundation date</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Date de fondation</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_ORG_WRITE</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="liquidationDate" type="xsd:date">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Label_EN">Liquidation date</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Date de liquidation</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_ORG_WRITE</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="liquidationReason" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Label_EN">Liquidation reason</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Raison de liquidation</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_ORG_WRITE</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="board_Roles" type="boardRoles">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Label_EN">Board roles</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Role et signataires</xsd:appinfo>
+                        <xsd:appinfo source="X_AutoExpand">false</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_ORG_WRITE</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="category" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey">REF_Category/REF_CategoryId</xsd:appinfo>
+                        <xsd:appinfo source="X_Description_EN">Organisation's Category</xsd:appinfo>
+                        <xsd:appinfo source="X_Description_FR">Catégorie de l'organisation, utilise principalement pour les organisations paraétatiques</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_EN">Category</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Catégorie</xsd:appinfo>
+                        <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKeyInfo">REF_Category/REF_CategoryId</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKeyInfo">REF_Category/label</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_ORG_WRITE</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="active" type="xsd:boolean">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Default_Value_Rule">fn:true()</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_EN">Active</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Actif</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_ORG_WRITE</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+        <xsd:unique name="organisation">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="organisationId" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="person">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Description_EN">Person entity</xsd:appinfo>
+            <xsd:appinfo source="X_Description_FR">Person physique</xsd:appinfo>
+            <xsd:appinfo source="X_Label_EN">Person</xsd:appinfo>
+            <xsd:appinfo source="X_Label_FR">Personne</xsd:appinfo>
+            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">X_PERS_WRITE</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="personId" type="AUTO_INCREMENT">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Visible_Rule">fn:false()</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_PERS_WRITE</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="idReglis" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Label_EN">ID REGLIS</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">ID REGLIS</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_PERS_WRITE</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="identifiers" type="identifiersType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_AutoExpand">true</xsd:appinfo>
+                        <xsd:appinfo source="X_Description_FR">type d'identifiant. L'identifiant CT.REGLIS etant obligatoire</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_EN">Identifiants</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Identifiants</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_PERS_WRITE</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="commonName" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_EN">calculated field used for search purpose</xsd:appinfo>
+                        <xsd:appinfo source="X_Description_FR">champs calculé utilisé a fin de recherche</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_EN">Common name</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Nom courant</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_PERS_WRITE</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="status" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">statut de l'enregistrement, défini quel est la source "maitre" de l'entité</xsd:appinfo>
+                        <xsd:appinfo source="X_Description_EN">record status, defines who is the "master" source of this entity</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey">REF_MasterStatus/REF_MasterStatusId</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKeyInfo">REF_MasterStatus/REF_MasterStatusId</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKeyInfo">REF_MasterStatus/label</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_EN">Entity status</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Status du tiers</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_PERS_WRITE</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="firstName" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Label_EN">First name</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Prénom</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_PERS_WRITE</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="lastName" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Label_EN">Last name</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Nom de famille</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_PERS_WRITE</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="callName" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_EN">call name or additional name or maiden name</xsd:appinfo>
+                        <xsd:appinfo source="X_Description_FR">nom d'appel ou nom additionnel ou nom de jeune fille</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_EN">Maiden name / old name</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Nom de naissance / ancien nom</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_PERS_WRITE</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="sex" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_EN">sex</xsd:appinfo>
+                        <xsd:appinfo source="X_Description_FR">sexe</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey">REF_Sex/REF_SexId</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKeyInfo">REF_Sex/REF_SexId</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKeyInfo">REF_Sex/label</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_EN">Sex</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Genre</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_PERS_WRITE</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="maritalStatus" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey">REF_MaritalStatus/REF_MaritalStatusId</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKeyInfo">REF_MaritalStatus/REF_MaritalStatusId</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKeyInfo">REF_MaritalStatus/label</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_EN">Marial status</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Etat civil</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_PERS_WRITE</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="placeOfOrigin" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_EN">place of birth - in switzerland the municipality - abroad the locality and the country</xsd:appinfo>
+                        <xsd:appinfo source="X_Description_FR">lieu de naissance - en suisse la commune - à l'étranger la ville suivit du pays</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_EN">Place of origin</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Lieu d'origine</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_PERS_WRITE</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="dateOfBirth" type="xsd:date">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_EN">birth date</xsd:appinfo>
+                        <xsd:appinfo source="X_Description_FR">date de naissance</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_EN">Birth date</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Date de naissance</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_PERS_WRITE</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="dateOfDeath" type="xsd:date">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_EN">death date - when set the person is officially dead</xsd:appinfo>
+                        <xsd:appinfo source="X_Description_FR">date de décès - quand la date est définie la personne est officiellement décédée</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_EN">Death date</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Date de déces</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_PERS_WRITE</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="relationship" type="relationship">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_EN">relationship</xsd:appinfo>
+                        <xsd:appinfo source="X_Description_FR">relations</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_EN">Relationship</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Relations</xsd:appinfo>
+                        <xsd:appinfo source="X_AutoExpand">false</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_PERS_WRITE</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="dwellingAddresses" type="addresses">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_AutoExpand">false</xsd:appinfo>
+                        <xsd:appinfo source="X_Description_FR">Adresse de domicile(Officiel)</xsd:appinfo>
+                        <xsd:appinfo source="X_Description_EN">dwelling addresse (official)</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_EN">Dwelling addresses</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Adresses de domicile</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_PERS_WRITE</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="contacts" type="contacts">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_AutoExpand">false</xsd:appinfo>
+                        <xsd:appinfo source="X_Description_EN">available contacts</xsd:appinfo>
+                        <xsd:appinfo source="X_Description_FR">contacts disponibles</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_EN">Contacts</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Contacts</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_PERS_WRITE</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="preferedContactOrder" type="preferedContactOrderTypePerson">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_AutoExpand">false</xsd:appinfo>
+                        <xsd:appinfo source="X_Description_EN">perfered contact order</xsd:appinfo>
+                        <xsd:appinfo source="X_Description_FR">ordre de préférence de contact</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_EN">Prefered contact order</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Ordre de préférence de contact</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_PERS_WRITE</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="vdArrivalDate" type="xsd:date">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Label_EN">Arrival date in canton VD</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Date d'arrivée canton VD</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_PERS_WRITE</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="beacon" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Label_EN">Instructions</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Instructions</xsd:appinfo>
+                        <xsd:appinfo source="X_Description_EN">Special communication instruction with this person</xsd:appinfo>
+                        <xsd:appinfo source="X_Description_FR">Instructions spéciales de communication avec la personne</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_PERS_WRITE</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="active" type="xsd:boolean">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Default_Value_Rule">fn:true()</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_EN">Active</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Actif</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_PERS_WRITE</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+        <xsd:unique name="person">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="personId" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:complexType name="address">
+        <xsd:annotation />
+        <xsd:all>
+            <xsd:element maxOccurs="1" minOccurs="0" name="idAddress" type="AUTO_INCREMENT">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">HEALTH_INSTITUTION</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="type" type="addressTypeType">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Description_FR">type de l'établissement</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_EN">Type</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_FR">Type</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">HEALTH_INSTITUTION</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="line1" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Label_EN">Line 1</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_FR">Ligne 1</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">HEALTH_INSTITUTION</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="line2" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Label_EN">Line 2</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_FR">Ligne 2</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">HEALTH_INSTITUTION</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="street" type="addressTypeStreet">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Description_FR">Nom de la rue exact</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_EN">Street</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_FR">Rue</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">HEALTH_INSTITUTION</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="houseNumber" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Label_EN">House number</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_FR">Numéro</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">HEALTH_INSTITUTION</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="swissZipCodeId" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Description_EN">ordrePosteId - swiss post identifier</xsd:appinfo>
+                    <xsd:appinfo source="X_Description_FR">ordrePosteId - identifiant de la poste suisse</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_EN">SwissZIPcodeId</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_FR">SwissZIPcodeId</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">HEALTH_INSTITUTION</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="zip" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Label_EN">ZIP</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_FR">NPA</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">HEALTH_INSTITUTION</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="town" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Label_EN">Town</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_FR">Localité</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">HEALTH_INSTITUTION</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="country" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Description_FR">code de pays ISO2</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_EN">Country</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_FR">Pays</xsd:appinfo>
+                    <xsd:appinfo source="X_Description_EN">country ISO2</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">HEALTH_INSTITUTION</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="egid" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Label_EN">Federal Building ID</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_FR">EGID</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">HEALTH_INSTITUTION</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="reeid" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Label_EN">REE id</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_FR">id du registre REE</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">HEALTH_INSTITUTION</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:all>
+    </xsd:complexType>
+    <xsd:complexType name="addresses">
+        <xsd:sequence>
+            <xsd:element maxOccurs="unbounded" minOccurs="0" name="address" type="address">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_AutoExpand">true</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_EN">Address</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_FR">Adresse</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">X_PERS_WRITE</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:simpleType name="identifierClassesType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="VD.RDU" />
+            <xsd:enumeration value="CT.VD" />
+            <xsd:enumeration value="CH.AVS" />
+            <xsd:enumeration value="CH.IDE" />
+            <xsd:enumeration value="CH.RC" />
+            <xsd:enumeration value="CH.TVA" />
+            <xsd:enumeration value="CH.REE" />
+            <xsd:enumeration value="WW.GLN" />
+            <xsd:enumeration value="CH.SEDEX" />
+            <xsd:enumeration value="VD.SAP" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="SSP_EMS_identifierClassesType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="VD.PROGRES" />
+            <xsd:enumeration value="WW.EAN" />
+            <xsd:enumeration value="CT.UA" />
+            <xsd:enumeration value="CT.AVS" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:complexType abstract="false" name="SSP_EMS_priceList">
+        <xsd:all>
+            <xsd:element maxOccurs="1" minOccurs="1" name="type" type="SSP_EMS_priceType">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Label_EN">Price type</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_FR">Tarif type</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">HEALTH_INSTITUTION</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="1" name="amount" type="xsd:decimal">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Label_EN">Amount (CHF)</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_FR">Montant (CHF)</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">HEALTH_INSTITUTION</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="1" name="year" type="xsd:int">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Label_EN">Year</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_FR">Année</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">HEALTH_INSTITUTION</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:all>
+    </xsd:complexType>
+    <xsd:simpleType name="SSP_EMS_priceType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="C" />
+            <xsd:enumeration value="HNM" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:complexType abstract="false" name="SSP_EMS_identifierType">
+        <xsd:all>
+            <xsd:element maxOccurs="1" minOccurs="0" name="type" type="SSP_EMS_identifierClassesType">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Label_EN">identifier class</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_FR">classe d'identifiant</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">HEALTH_INSTITUTION</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="ident" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Label_EN">value</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_FR">valeur</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">HEALTH_INSTITUTION</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:all>
+    </xsd:complexType>
+    <xsd:complexType abstract="false" name="identifierType">
+        <xsd:all>
+            <xsd:element maxOccurs="1" minOccurs="0" name="type" type="identifierClassesType">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Label_EN">identifier class</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_FR">classe d'identifiant</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">X_PERS_WRITE</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="ident" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Label_EN">value</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_FR">valeur</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">X_PERS_WRITE</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:all>
+    </xsd:complexType>
+    <xsd:simpleType name="addressTypeType">
+        <xsd:restriction base="xsd:string">
+            <xsd:whiteSpace value="collapse" />
+            <xsd:enumeration value="swissMailAddress" />
+            <xsd:enumeration value="swissHQAddress" />
+            <xsd:enumeration value="foreignMailAddress" />
+            <xsd:enumeration value="foreignHQAddress" />
+            <xsd:enumeration value="pccSignBoard" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="addressTypeStreet">
+        <xsd:restriction base="xsd:string" />
+    </xsd:simpleType>
+    <xsd:simpleType name="AUTO_INCREMENT">
+        <xsd:restriction base="xsd:int" />
+    </xsd:simpleType>
+    <xsd:simpleType name="addressTypeHouseNumber">
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="12" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="contactType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="email" />
+            <xsd:enumeration value="sms" />
+            <xsd:enumeration value="fax" />
+            <xsd:enumeration value="phone" />
+            <xsd:enumeration value="mailing" />
+            <xsd:enumeration value="www" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:complexType name="contact">
+        <xsd:all>
+            <xsd:element maxOccurs="1" minOccurs="0" name="idContact" type="AUTO_INCREMENT">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Label_EN">ContactID</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_FR">ContactID</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">X_PERS_WRITE</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="type" type="contactType">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Label_EN">Contact type</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_FR">Type de contact</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">X_PERS_WRITE</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="email" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Label_EN">Email address</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_FR">Adresse email</xsd:appinfo>
+                    <xsd:appinfo source="X_Visible_Rule">fn:codepoint-equal(../type,"email")</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">X_PERS_WRITE</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="tel" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Label_EN">Telephon</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_FR">Téléphone</xsd:appinfo>
+                    <xsd:appinfo source="X_Visible_Rule">fn:codepoint-equal(../type,"phone")</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">X_PERS_WRITE</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="mailing" type="address">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Label_EN">Mailing address</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_FR">Adresse de correspondance</xsd:appinfo>
+                    <xsd:appinfo source="X_AutoExpand">true</xsd:appinfo>
+                    <xsd:appinfo source="X_Visible_Rule">fn:codepoint-equal(../type,"mailing")</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">X_PERS_WRITE</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="sms" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Label_EN">SMS</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_FR">SMS</xsd:appinfo>
+                    <xsd:appinfo source="X_Visible_Rule">fn:codepoint-equal(../type,"sms")</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">X_PERS_WRITE</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="url" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Label_EN">Website</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_FR">Site internet</xsd:appinfo>
+                    <xsd:appinfo source="X_Visible_Rule">fn:codepoint-equal(../type,"www")</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">X_PERS_WRITE</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:all>
+    </xsd:complexType>
+    <xsd:complexType name="entryPerson">
+        <xsd:all>
+            <xsd:element maxOccurs="1" minOccurs="0" name="rank" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Description_FR">Ordre de priorite de 1 à n</xsd:appinfo>
+                    <xsd:appinfo source="X_Description_EN">priority order starting 1 to n</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_EN">priority</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_FR">priorité</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">X_PERS_WRITE</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="idContact" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_ForeignKey">person/contacts/contact/idContact</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_EN">contact</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_FR">contact</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">X_PERS_WRITE</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:all>
+    </xsd:complexType>
+    <xsd:complexType name="entryOrganisation">
+        <xsd:all>
+            <xsd:element maxOccurs="1" minOccurs="0" name="rank" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Description_FR">Ordre de priorite de 1 à n</xsd:appinfo>
+                    <xsd:appinfo source="X_Description_EN">priority order starting 1 to n</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">X_ORG_WRITE</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="idContact" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_ForeignKey">organisation/contacts/contact/idContact</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">X_ORG_WRITE</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:all>
+    </xsd:complexType>
+    <xsd:complexType name="SSP_EMS_identifiersType">
+        <xsd:sequence>
+            <xsd:element maxOccurs="unbounded" minOccurs="0" name="emsIdentifierType" type="SSP_EMS_identifierType">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Label_EN">Identifier</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_FR">Identifiant</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">HEALTH_INSTITUTION</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="identifiersType">
+        <xsd:sequence>
+            <xsd:element maxOccurs="unbounded" minOccurs="0" name="identifier" type="identifierType">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_AutoExpand">true</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_EN">Identifier</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_FR">Identifiant</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">X_PERS_WRITE</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="relationType">
+        <xsd:sequence>
+            <xsd:element maxOccurs="1" minOccurs="1" name="role" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_ForeignKey">REF_BoardRoles/REF_BoardRolesId</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKeyInfo">REF_BoardRoles/label</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_EN">Role</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_FR">Rôle</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">X_ORG_WRITE</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="1" name="type" type="RelationTypes">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Label_EN">Type of entity</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_FR">Type d'entité</xsd:appinfo>
+                    <xsd:appinfo source="X_Description_EN">entity type</xsd:appinfo>
+                    <xsd:appinfo source="X_Description_FR">type d'entité</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">X_ORG_WRITE</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="personId" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey">person/personId</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKeyInfo">person/idReglis</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKeyInfo">person/commonName</xsd:appinfo>
+                    <xsd:appinfo source="X_Visible_Rule">fn:codepoint-equal(../type,"Person")</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_EN">Person in relation</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_FR">Personne en relation</xsd:appinfo>
+                    <xsd:appinfo source="X_Description_EN">related person</xsd:appinfo>
+                    <xsd:appinfo source="X_Description_FR">personne en relation</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">X_ORG_WRITE</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="organisationId" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey">organisation/organisationId</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKeyInfo">organisation/idReglis</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKeyInfo">organisation/commonName</xsd:appinfo>
+                    <xsd:appinfo source="X_Visible_Rule">fn:codepoint-equal(../type,"Organisation")</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_EN">Organisation in relation</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_FR">Organisation en relation</xsd:appinfo>
+                    <xsd:appinfo source="X_Description_EN">related organisation</xsd:appinfo>
+                    <xsd:appinfo source="X_Description_FR">organisation en relation</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">X_ORG_WRITE</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="contacts">
+        <xsd:sequence>
+            <xsd:element maxOccurs="unbounded" minOccurs="0" name="contact" type="contact">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_AutoExpand">true</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_EN">Contact</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_FR">Contact</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">X_PERS_WRITE</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="preferedContactOrderTypePerson">
+        <xsd:sequence>
+            <xsd:element maxOccurs="unbounded" minOccurs="0" name="entry" type="entryPerson">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_AutoExpand">false</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_EN">contact reference</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_FR">référence de contact</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">X_PERS_WRITE</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="preferedContactOrderTypeOrganisation">
+        <xsd:sequence>
+            <xsd:element maxOccurs="unbounded" minOccurs="0" name="entry" type="entryOrganisation">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_AutoExpand">false</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">X_ORG_WRITE</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:simpleType name="addressTypeLineType">
+        <xsd:restriction base="xsd:string" />
+    </xsd:simpleType>
+    <xsd:simpleType name="addressTypedwellingNumber">
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="10" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="addressTypeSwissZipCode">
+        <xsd:restriction base="xsd:unsignedInt">
+            <xsd:minInclusive value="1000" />
+            <xsd:maxInclusive value="9999" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="addressTypeSwissZipCodeId">
+        <xsd:restriction base="xsd:int" />
+    </xsd:simpleType>
+    <!--   
+  <xsd:complexType name="role"> 
+    <xsd:all> 
+      <xsd:element maxOccurs="1" minOccurs="0" name="type" type="xsd:string"> 
+        <xsd:annotation> 
+          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo> 
+        </xsd:annotation> 
+      </xsd:element>  
+      <xsd:element maxOccurs="1" minOccurs="0" name="partyRef" type="xsd:string"> 
+        <xsd:annotation> 
+          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo> 
+        </xsd:annotation> 
+      </xsd:element> 
+    </xsd:all> 
+  </xsd:complexType>
+   -->
+    <!-- 
+  <xsd:complexType name="roles"> 
+    <xsd:sequence> 
+      <xsd:element maxOccurs="unbounded" minOccurs="0" name="roles" type="relationship"> 
+        <xsd:annotation> 
+          <xsd:appinfo source="X_AutoExpand">false</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo> 
+        </xsd:annotation> 
+      </xsd:element> 
+    </xsd:sequence> 
+  </xsd:complexType>
+   -->
+    <xsd:simpleType name="UUID">
+        <xsd:restriction base="xsd:string" />
+    </xsd:simpleType>
+    <xsd:element name="REF_MaritalStatus">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">X_ADMIN</xsd:appinfo>
+            <xsd:appinfo source="X_Hide">X_PUBLIC</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element name="REF_MaritalStatusId" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_ADMIN</xsd:appinfo>
+                        <xsd:appinfo source="X_Hide">X_PUBLIC</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="label" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Label_EN">Description</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Description</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_ADMIN</xsd:appinfo>
+                        <xsd:appinfo source="X_Hide">X_PUBLIC</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="actif" type="xsd:boolean">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Default_Value_Rule">fn:true()</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_ADMIN</xsd:appinfo>
+                        <xsd:appinfo source="X_Hide">X_PUBLIC</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="REF_MaritalStatus">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="REF_MaritalStatusId" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="REF_TypeRelation">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">X_ADMIN</xsd:appinfo>
+            <xsd:appinfo source="X_Hide">X_PUBLIC</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element name="REF_TypeRelationId" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_ADMIN</xsd:appinfo>
+                        <xsd:appinfo source="X_Hide">X_PUBLIC</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="label" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Label_EN">Label</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Description</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_ADMIN</xsd:appinfo>
+                        <xsd:appinfo source="X_Hide">X_PUBLIC</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="actif" type="xsd:boolean">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Default_Value_Rule">fn:true()</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_ADMIN</xsd:appinfo>
+                        <xsd:appinfo source="X_Hide">X_PUBLIC</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="REF_TypeRelation">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="REF_TypeRelationId" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="REF_Sex">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">X_ADMIN</xsd:appinfo>
+            <xsd:appinfo source="X_Hide">X_PUBLIC</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element name="REF_SexId" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_ADMIN</xsd:appinfo>
+                        <xsd:appinfo source="X_Hide">X_PUBLIC</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="label" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Label_FR">Description</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_EN">Label</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_ADMIN</xsd:appinfo>
+                        <xsd:appinfo source="X_Hide">X_PUBLIC</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="actif" type="xsd:boolean">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Default_Value_Rule">fn:true()</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_ADMIN</xsd:appinfo>
+                        <xsd:appinfo source="X_Hide">X_PUBLIC</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="REF_Sex">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="REF_SexId" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="REF_MasterStatus">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">X_ADMIN</xsd:appinfo>
+            <xsd:appinfo source="X_Hide">X_PUBLIC</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element name="REF_MasterStatusId" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_ADMIN</xsd:appinfo>
+                        <xsd:appinfo source="X_Hide">X_PUBLIC</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="label" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Label_EN">Label</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Description</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_ADMIN</xsd:appinfo>
+                        <xsd:appinfo source="X_Hide">X_PUBLIC</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="actif" type="xsd:boolean">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Default_Value_Rule">fn:true()</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_ADMIN</xsd:appinfo>
+                        <xsd:appinfo source="X_Hide">X_PUBLIC</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="REF_MasterStatus">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="REF_MasterStatusId" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="REF_LegalForm">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">X_ADMIN</xsd:appinfo>
+            <xsd:appinfo source="X_Hide">X_PUBLIC</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element name="REF_LegalFormId" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_ADMIN</xsd:appinfo>
+                        <xsd:appinfo source="X_Hide">X_PUBLIC</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="label" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Label_EN">Label</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Description</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_ADMIN</xsd:appinfo>
+                        <xsd:appinfo source="X_Hide">X_PUBLIC</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="actif" type="xsd:boolean">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Default_Value_Rule">fn:true()</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_ADMIN</xsd:appinfo>
+                        <xsd:appinfo source="X_Hide">X_PUBLIC</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="REF_LegalForm">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="REF_LegalFormId" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:simpleType name="relationShipType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="Organisation" />
+            <xsd:enumeration value="Person" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="RelationTypes">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="Organisation" />
+            <xsd:enumeration value="Person" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="relationShipTypes">
+        <xsd:restriction base="xsd:string" />
+    </xsd:simpleType>
+    <xsd:simpleType name="typeRelation">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="PERE" />
+            <xsd:enumeration value="MERE" />
+            <xsd:enumeration value="CURATEUR" />
+            <xsd:enumeration value="TUTEUR" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:complexType name="relationship">
+        <xsd:sequence>
+            <xsd:element maxOccurs="unbounded" minOccurs="0" name="relation" type="relation">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Label_EN">Relation</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_FR">Relation</xsd:appinfo>
+                    <xsd:appinfo source="X_AutoExpand">false</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">X_PERS_WRITE</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="boardRoles">
+        <xsd:sequence>
+            <xsd:element maxOccurs="unbounded" minOccurs="0" name="relation" type="relationType">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Label_EN">Relation</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_FR">Relation</xsd:appinfo>
+                    <xsd:appinfo source="X_AutoExpand">false</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">X_ORG_WRITE</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="relation">
+        <xsd:sequence>
+            <xsd:element maxOccurs="1" minOccurs="1" name="typeRelation" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey">REF_TypeRelation/REF_TypeRelationId</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey_Filter">REF_TypeRelation/actif$$=$$true$$#</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKeyInfo">REF_TypeRelation/label</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_EN">Type of relation</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_FR">Type de relation</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">X_PERS_WRITE</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="1" name="type" type="RelationTypes">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Label_EN">Type of entity</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_FR">Type d'entité</xsd:appinfo>
+                    <xsd:appinfo source="X_Description_EN">entity type</xsd:appinfo>
+                    <xsd:appinfo source="X_Description_FR">type d'entité</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">X_PERS_WRITE</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="personId" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey">person/personId</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKeyInfo">person/idReglis</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKeyInfo">person/commonName</xsd:appinfo>
+                    <xsd:appinfo source="X_Visible_Rule">fn:codepoint-equal(../type,"Person")</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_EN">Person in relation</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_FR">Personne en relation</xsd:appinfo>
+                    <xsd:appinfo source="X_Description_EN">related person</xsd:appinfo>
+                    <xsd:appinfo source="X_Description_FR">personne en relation</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">X_PERS_WRITE</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="organisationId" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey">organisation/organisationId</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKeyInfo">organisation/idReglis</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKeyInfo">organisation/commonName</xsd:appinfo>
+                    <xsd:appinfo source="X_Visible_Rule">fn:codepoint-equal(../type,"Organisation")</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_EN">Organisation in relation</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_FR">Organisation en relation</xsd:appinfo>
+                    <xsd:appinfo source="X_Description_EN">related organisation</xsd:appinfo>
+                    <xsd:appinfo source="X_Description_FR">organisation en relation</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">X_PERS_WRITE</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:element name="REF_BoardRoles">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Hide">X_PUBLIC</xsd:appinfo>
+            <xsd:appinfo source="X_Write">X_ADMIN</xsd:appinfo>
+            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element name="REF_BoardRolesId" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Hide">X_PUBLIC</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_ADMIN</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="label" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Label_EN">Label</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Description</xsd:appinfo>
+                        <xsd:appinfo source="X_Hide">X_PUBLIC</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_ADMIN</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="actif" type="xsd:boolean">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Default_Value_Rule">fn:true()</xsd:appinfo>
+                        <xsd:appinfo source="X_Hide">X_PUBLIC</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_ADMIN</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="REF_BoardRoles">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="REF_BoardRolesId" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="REF_Category">
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element name="REF_CategoryId" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_ADMIN</xsd:appinfo>
+                        <xsd:appinfo source="X_Hide">X_PUBLIC</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="label" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_ADMIN</xsd:appinfo>
+                        <xsd:appinfo source="X_Hide">X_PUBLIC</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_EN">Label</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Description</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="actif" type="xsd:boolean">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">X_ADMIN</xsd:appinfo>
+                        <xsd:appinfo source="X_Hide">X_PUBLIC</xsd:appinfo>
+                        <xsd:appinfo source="X_Default_Value_Rule">fn:true()</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="REF_Category">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="REF_CategoryId" />
+        </xsd:unique>
+    </xsd:element>
+</xsd:schema>

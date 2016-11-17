@@ -194,7 +194,7 @@ public class ItemPanel extends ContentPanel {
     }
 
     public void onUpdatePolymorphism(ComplexTypeModel typeModel) {
-        tree.onUpdatePolymorphism(typeModel);
+        tree.onUpdatePolymorphism(typeModel, operation);
     }
 
     public void onExecuteVisibleRule(List<VisibleRuleResult> visibleResults) {

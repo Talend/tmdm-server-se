@@ -108,6 +108,7 @@ import com.amalto.core.storage.StorageResults;
 import com.amalto.core.storage.StorageType;
 import com.amalto.core.storage.exception.ConstraintViolationException;
 import com.amalto.core.storage.exception.FullTextQueryCompositeKeyException;
+import com.amalto.core.storage.exception.UnsupportedFullTextQueryException;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.util.BeforeDeletingErrorException;
 import com.amalto.core.util.BeforeSavingErrorException;
@@ -182,6 +183,9 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
     // full text query entity include composite key
     public static final String FULLTEXT_QUERY_COMPOSITE_KEY_EXCEPTION_MESSAGE = "fulltext_query_compositekey_fail"; //$NON-NLS-1$
 
+    // Unsupported keywords in generated lucene query error
+    public static final String UNSUPPORTED_FULLTEXT_QUERY_EXCEPTION_MESSAGE = "unsupported_fulltext_query_error"; //$NON-NLS-1$
+    
     // default remote error
     public static final String DEFAULT_REMOTE_ERROR_MESSAGE = "default_remote_error_message"; //$NON-NLS-1$
 
@@ -2604,6 +2608,8 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
             coreException = new CoreException(SAVE_EXCEPTION_MESSAGE, throwable);
         } else if (MultiRecordsSaveException.class.isInstance(throwable)) {
             coreException = new CoreException(MULTI_RECORDS_SAVE_EXCEPTION_MESSAGE, throwable);
+        } else if (UnsupportedFullTextQueryException.class.isInstance(throwable)) {
+            coreException = new CoreException(UNSUPPORTED_FULLTEXT_QUERY_EXCEPTION_MESSAGE, throwable);
         } else {
             if (throwable.getCause() != null) {
                 return handleException(throwable.getCause(), errorMessage);

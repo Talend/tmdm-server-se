@@ -43,7 +43,6 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
@@ -214,58 +213,69 @@ public class BrowseRecordsAction implements BrowseRecordsService {
     @Override
     public List<ItemResult> deleteItemBeans(List<ItemBean> items, boolean override, String language) throws ServiceException {
         List<ItemResult> itemResults = new ArrayList<ItemResult>();
-        MetadataRepository repository = ServerContext.INSTANCE.get().getMetadataRepositoryAdmin().get(getCurrentDataModel());
+        Map<String, List<String>> deleteRecordMap = new HashMap<String, List<String>>();
+        String concept;
+        List<String> records;
         for (ItemBean item : items) {
-            Locale locale = new Locale(language);
-            ItemResult messageBean = new ItemResult();
-            try {
-                String dataClusterPK = getCurrentDataCluster();
-                String concept = item.getConcept();
-                String[] ids = getItemId(repository, item.getIds(), concept);
+            concept = item.getConcept();
+            if (deleteRecordMap.get(concept) == null) {
+                deleteRecordMap.put(concept, new ArrayList<String>());
+            }
+            records = deleteRecordMap.get(concept);
+            if (!records.contains(item.getIds())) {
+                Locale locale = new Locale(language);
+                ItemResult messageBean = new ItemResult();
+                try {
+                    MetadataRepository repository = CommonUtil.getCurrentRepository();
+                    String dataClusterPK = getCurrentDataCluster();
+                    String[] ids = getItemId(repository, item.getIds(), concept);
 
-                WSDeleteItemWithReport wsDeleteItem = new WSDeleteItemWithReport(new WSItemPK(new WSDataClusterPK(dataClusterPK),
-                        concept, ids), UpdateReportPOJO.GENERIC_UI_SOURCE, UpdateReportPOJO.OPERATION_TYPE_PHYSICAL_DELETE, "/", //$NON-NLS-1$
-                        LocalUser.getLocalUser().getUsername(), true, true, override);
+                    WSDeleteItemWithReport wsDeleteItem = new WSDeleteItemWithReport(new WSItemPK(new WSDataClusterPK(
+                            dataClusterPK), concept, ids), UpdateReportPOJO.GENERIC_UI_SOURCE,
+                            UpdateReportPOJO.OPERATION_TYPE_PHYSICAL_DELETE, "/", //$NON-NLS-1$
+                            LocalUser.getLocalUser().getUsername(), true, true, override);
 
-                WSString deleteMessage = CommonUtil.getPort().deleteItemWithReport(wsDeleteItem);
+                    WSString deleteMessage = CommonUtil.getPort().deleteItemWithReport(wsDeleteItem);
 
-                if (deleteMessage == null) {
-                    throw new ServiceException(MESSAGES.getMessage("delete_record_failure", locale)); //$NON-NLS-1$
-                } else {
-                    String message = deleteMessage.getValue();
-                    String messageType = wsDeleteItem.getSource();
-                    if (messageType != null && INFO_KEYWORD.equals(messageType)) {
-                        messageBean.setKey(item.getIds());
-                        messageBean.setStatus(getMessageTypeStatus(INFO_KEYWORD));
-                        messageBean.setMessage(message);
-                        itemResults.add(messageBean);
-                    } else if (messageType != null && FAIL_KEYWORD.equals(messageType)) {
-                        messageBean.setKey(item.getIds());
-                        messageBean.setStatus(getMessageTypeStatus(FAIL_KEYWORD));
-                        messageBean.setMessage(MESSAGES.getMessage("message_fail", locale)); //$NON-NLS-1$
-                        itemResults.add(messageBean);
-                    } else if (messageType != null && ERROR_KEYWORD.equals(messageType)) {
-                        messageBean.setKey(item.getIds());
-                        messageBean.setStatus(getMessageTypeStatus(ERROR_KEYWORD));
-                        messageBean.setMessage(message);
-                        itemResults.add(messageBean);
+                    if (deleteMessage == null) {
+                        throw new ServiceException(MESSAGES.getMessage("delete_record_failure", locale)); //$NON-NLS-1$
+                    } else {
+                        String message = deleteMessage.getValue();
+                        String messageType = wsDeleteItem.getSource();
+                        if (messageType != null && INFO_KEYWORD.equals(messageType)) {
+                            messageBean.setKey(item.getIds());
+                            messageBean.setStatus(getMessageTypeStatus(INFO_KEYWORD));
+                            messageBean.setMessage(message);
+                            itemResults.add(messageBean);
+                        } else if (messageType != null && FAIL_KEYWORD.equals(messageType)) {
+                            messageBean.setKey(item.getIds());
+                            messageBean.setStatus(getMessageTypeStatus(FAIL_KEYWORD));
+                            messageBean.setMessage(MESSAGES.getMessage("message_fail", locale)); //$NON-NLS-1$
+                            itemResults.add(messageBean);
+                        } else if (messageType != null && ERROR_KEYWORD.equals(messageType)) {
+                            messageBean.setKey(item.getIds());
+                            messageBean.setStatus(getMessageTypeStatus(ERROR_KEYWORD));
+                            messageBean.setMessage(message);
+                            itemResults.add(messageBean);
+                        }
                     }
+                } catch (ServiceException e) {
+                    LOG.error(e.getMessage(), e);
+                    throw e;
+                } catch (WebBaseException e) {
+                    throw new ServiceException(BASEMESSAGE.getMessage(locale, e.getMessage(), e.getArgs()));
+                } catch (Exception exception) {
+                    String errorMessage;
+                    if (CoreException.class.isInstance(exception.getCause())) {
+                        errorMessage = getErrorMessageFromWebCoreException(((CoreException) exception.getCause()),
+                                item.getConcept(), item.getIds(), locale);
+                    } else {
+                        errorMessage = exception.getMessage();
+                    }
+                    LOG.error(errorMessage, exception);
+                    throw new ServiceException(errorMessage);
                 }
-            } catch (ServiceException e) {
-                LOG.error(e.getMessage(), e);
-                throw e;
-            } catch (WebBaseException e) {
-                throw new ServiceException(BASEMESSAGE.getMessage(locale, e.getMessage(), e.getArgs()));
-            } catch (Exception exception) {
-                String errorMessage;
-                if (CoreException.class.isInstance(exception.getCause())) {
-                    errorMessage = getErrorMessageFromWebCoreException(((CoreException) exception.getCause()), item.getConcept(),
-                            item.getIds(), locale);
-                } else {
-                    errorMessage = exception.getMessage();
-                }
-                LOG.error(errorMessage, exception);
-                throw new ServiceException(errorMessage);
+                records.add(item.getIds());
             }
         }
         return itemResults;

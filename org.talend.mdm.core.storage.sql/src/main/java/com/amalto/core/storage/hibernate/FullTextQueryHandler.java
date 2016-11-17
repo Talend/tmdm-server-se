@@ -128,7 +128,7 @@ class FullTextQueryHandler extends AbstractQueryHandler {
         // Very important to leave this null (would disable ability to search across different types)
         fullTextQuery.setCriteriaQuery(null);
         fullTextQuery.setSort(Sort.RELEVANCE); // Default sort (if no order by specified).
-        query = EntityFinder.wrap(fullTextQuery, (HibernateStorage) storage, session); // ensures only MDM entity objects are returned.
+        query = EntityFinder.wrap(fullTextQuery, (HibernateStorage) storage, session, select.getTypes()); // ensures only MDM entity objects are returned.
         // Order by
         for (OrderBy current : select.getOrderBy()) {
             current.accept(this);
@@ -286,7 +286,7 @@ class FullTextQueryHandler extends AbstractQueryHandler {
                 }
             };
         }
-        return new FullTextStorageResults(pageSize, query.getResultSize(), iterator);
+        return new FullTextStorageResults(pageSize, list.size(), iterator);
     }
 
     private StorageResults createResults(ScrollableResults scrollableResults) {

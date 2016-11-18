@@ -94,6 +94,8 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
 
     private final String dataModel;
 
+    private boolean isCreateAction;
+
     public UpdateActionCreator(MutableDocument originalDocument,
                                MutableDocument newDocument,
                                Date date,
@@ -308,14 +310,15 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
                     generateNoOp(lastMatchPath);
                     actions.add(new FieldUpdateAction(date, source, userName, path, StringUtils.EMPTY, newAccessor.get(), comparedField));
                     generateNoOp(path);
-                } else if (EUUIDCustomType.AUTO_INCREMENT.getName().equalsIgnoreCase(comparedField.getType().getName())) {
+                } else if (EUUIDCustomType.AUTO_INCREMENT.getName().equalsIgnoreCase(comparedField.getType().getName())
+                        && isCreateAction == false) {
                     generateNoOp(lastMatchPath);
                     String conceptName = rootTypeName + "." + comparedField.getName().replaceAll("/", "."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                     String autoIncrementValue = saverSource.nextAutoIncrementId(dataCluster, dataModel, conceptName);
-                    actions.add(new FieldUpdateAction(date, source, userName, path, StringUtils.EMPTY, autoIncrementValue,
-                            comparedField));
+                    actions.add(new FieldUpdateAction(date, source, userName, path, StringUtils.EMPTY, autoIncrementValue, comparedField));
                     generateNoOp(path);
-                } else if (EUUIDCustomType.UUID.getName().equalsIgnoreCase(comparedField.getType().getName())) {
+                } else if (EUUIDCustomType.UUID.getName().equalsIgnoreCase(comparedField.getType().getName())
+                        && isCreateAction == false) {
                     String uuidValue = UUID.randomUUID().toString();
                     actions.add(new FieldUpdateAction(date, source, userName, path, StringUtils.EMPTY, uuidValue, comparedField));
                 }
@@ -387,11 +390,12 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
                                     return;
                                 }
                             }
-                            if (EUUIDCustomType.AUTO_INCREMENT.getName().equalsIgnoreCase(
-                                            comparedField.getType().getName())) {
+                            if (EUUIDCustomType.AUTO_INCREMENT.getName().equalsIgnoreCase(comparedField.getType().getName())
+                                    && isCreateAction == false && newObject == null) {
                                 String conceptName = rootTypeName + "." + comparedField.getName().replaceAll("/", "."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                                 newValue = saverSource.nextAutoIncrementId(dataCluster, dataModel, conceptName);
-                            } else if (EUUIDCustomType.UUID.getName().equalsIgnoreCase(comparedField.getType().getName())) {
+                            } else if (EUUIDCustomType.UUID.getName().equalsIgnoreCase(comparedField.getType().getName())
+                                    && isCreateAction == false && newObject == null) {
                                 newValue = UUID.randomUUID().toString();
                             }
                         }
@@ -423,6 +427,14 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
                 actions.add(new TouchAction(path, date, source, userName));
             }
         }
+    }
+
+    public boolean isCreateAction() {
+        return isCreateAction;
+    }
+
+    public void setCreateAction(boolean isCreateAction) {
+        this.isCreateAction = isCreateAction;
     }
 
     private class ContainedTypeClosure implements Closure {

@@ -9,13 +9,16 @@
 			<personId>1</personId>
 			<dwellingAddresses>
 				<address>
+					<idAddress>1</idAddress>
 					<type>swissMailAddress</type>
 				</address>
 				<address>
-					<type>foreignHQAddress</type>
+					<idAddress>2</idAddress>
+					<type>swissHQAddress</type>
 				</address>
 				<address>
-					<type>pccSignBoard</type>
+					<idAddress>3</idAddress>
+					<type>foreignMailAddress</type>
 				</address>
 			</dwellingAddresses>
 			<active>true</active>

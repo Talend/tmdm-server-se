@@ -446,55 +446,12 @@ public class DocumentSaveTest extends TestCase {
         String idAddressTwo = Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[2]/idAddress");
         String idAddressThree = Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[3]/idAddress");
 
-        assertTrue(Integer.valueOf(idAddress).intValue() > 0);
-        assertTrue(Integer.valueOf(idAddressTwo).intValue() > 0);
-        assertTrue(Integer.valueOf(idAddressThree).intValue() > 0);
+        assertEquals(1, Integer.valueOf(idAddress).intValue());
+        assertEquals(2, Integer.valueOf(idAddressTwo).intValue());
+        assertEquals(3, Integer.valueOf(idAddressThree).intValue());
 
-        assertEquals(Integer.valueOf(idAddressTwo).intValue() + 1, Integer.valueOf(idAddress).intValue());
-        assertEquals(Integer.valueOf(idAddressThree).intValue() + 1, Integer.valueOf(idAddressTwo).intValue());
-
-        session = SaverSession.newSession(source);
-        recordXml = DocumentSaveTest.class.getResourceAsStream("personWithAddressOfAutoIncrement_2.xml");
-        context = session.getContextFactory().create("MDM", "Vinci", "Source", recordXml, true, true, true, true, false);
-        saver = context.createSaver();
-        saver.save(session, context);
-        committer = new MockCommitter();
-        session.end(committer);
-
-        assertTrue(committer.hasSaved());
-        committedElement = committer.getCommittedElement();
-        assertNotNull(Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[1]/type"));
-        assertNotNull(Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[1]/idAddress"));
-        assertNotNull(Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[2]/type"));
-        assertNotNull(Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[2]/idAddress"));
-        assertNotNull(Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[3]/type"));
-        assertNotNull(Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[3]/idAddress"));
-        assertNotNull(Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[4]/type"));
-        assertNotNull(Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[4]/idAddress"));
-        assertNotNull(Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[5]/type"));
-        assertNotNull(Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[5]/idAddress"));
-        assertEquals("swissMailAddress", Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[1]/type"));
-        assertEquals("swissHQAddress", Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[2]/type"));
-        assertEquals("foreignMailAddress", Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[3]/type"));
-        assertEquals("foreignHQAddress", Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[4]/type"));
-        assertEquals("pccSignBoard", Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[5]/type"));
-        idAddress = Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[1]/idAddress");
-        idAddressTwo = Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[2]/idAddress");
-        idAddressThree = Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[3]/idAddress");
-        String idAddressFour = Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[4]/idAddress");
-        String idAddressFive = Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[5]/idAddress");
-        assertTrue(Integer.valueOf(idAddress).intValue() > 0);
-        assertTrue(Integer.valueOf(idAddressTwo).intValue() > 0);
-        assertTrue(Integer.valueOf(idAddressThree).intValue() > 0);
-        assertTrue(Integer.valueOf(idAddressFour).intValue() > 0);
-        assertTrue(Integer.valueOf(idAddressFive).intValue() > 0);
-
-        assertEquals(Integer.valueOf(idAddressTwo).intValue() + 1, Integer.valueOf(idAddress).intValue());
-        assertEquals(Integer.valueOf(idAddressThree).intValue() + 1, Integer.valueOf(idAddressTwo).intValue());
-        assertEquals(Integer.valueOf(idAddressFour).intValue() + 1, Integer.valueOf(idAddressThree).intValue());
-        assertEquals(Integer.valueOf(idAddressFive).intValue() + 1, Integer.valueOf(idAddressFour).intValue());
-
-        source = new TestSaverSource(repository, true, "personWithAddressOfAutoIncrement_origin.xml", "personWithAddressOfAutoIncrement.xsd");
+        source = new TestSaverSource(repository, true, "personWithAddressOfAutoIncrement_origin.xml",
+                "personWithAddressOfAutoIncrement.xsd");
         ((TestSaverSource) source).setUserName("System_Admin");
 
         session = SaverSession.newSession(source);
@@ -525,19 +482,56 @@ public class DocumentSaveTest extends TestCase {
         idAddress = Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[1]/idAddress");
         idAddressTwo = Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[2]/idAddress");
         idAddressThree = Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[3]/idAddress");
+        String idAddressFour = Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[4]/idAddress");
+        String idAddressFive = Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[5]/idAddress");
+
+        // these from the record file
+        assertEquals(1, Integer.valueOf(idAddress).intValue());
+        assertEquals(2, Integer.valueOf(idAddressTwo).intValue());
+        assertEquals(3, Integer.valueOf(idAddressThree).intValue());
+        // these two from the mock TestSaverSource
+        assertEquals(2, Integer.valueOf(idAddressFour).intValue());
+        assertEquals(1, Integer.valueOf(idAddressFive).intValue());
+
+        source = new TestSaverSource(repository, true, "personWithAddressOfAutoIncrement_origin.xml",
+                "personWithAddressOfAutoIncrement.xsd");
+        ((TestSaverSource) source).setUserName("System_Admin");
+
+        session = SaverSession.newSession(source);
+        recordXml = DocumentSaveTest.class.getResourceAsStream("personWithAddressOfAutoIncrement_3.xml");
+        context = session.getContextFactory().create("MDM", "Vinci", "Source", recordXml, false, false, true, true, false);
+        saver = context.createSaver();
+        saver.save(session, context);
+        committer = new MockCommitter();
+        session.end(committer);
+
+        assertTrue(committer.hasSaved());
+        committedElement = committer.getCommittedElement();
+        assertNotNull(Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[1]/type"));
+        assertNotNull(Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[1]/idAddress"));
+        assertNotNull(Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[2]/type"));
+        assertNotNull(Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[2]/idAddress"));
+        assertNotNull(Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[3]/type"));
+        assertNotNull(Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[3]/idAddress"));
+        assertNotNull(Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[4]/type"));
+        assertNotNull(Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[4]/idAddress"));
+        assertEquals("swissMailAddress", Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[1]/type"));
+        assertEquals("pccSignBoard", Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[2]/type"));
+        assertEquals("swissHQAddress", Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[3]/type"));
+        assertEquals("foreignMailAddress", Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[4]/type"));
+        idAddress = Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[1]/idAddress");
+        idAddressTwo = Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[2]/idAddress");
+        idAddressThree = Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[3]/idAddress");
         idAddressFour = Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[4]/idAddress");
-        idAddressFive = Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[5]/idAddress");
 
-        assertTrue(Integer.valueOf(idAddress).intValue() >= 0);
-        assertTrue(Integer.valueOf(idAddressTwo).intValue() >= 0);
-        assertTrue(Integer.valueOf(idAddressThree).intValue() >= 0);
-        assertTrue(Integer.valueOf(idAddressFour).intValue() >= 0);
-        assertTrue(Integer.valueOf(idAddressFive).intValue() >= 0);
+        // these from the record file
+        assertEquals(1, Integer.valueOf(idAddress).intValue());
+        // these two from the mock TestSaverSource
+        assertEquals(1, Integer.valueOf(idAddressTwo).intValue());
 
-        assertEquals(Integer.valueOf(idAddressTwo).intValue() + 1, Integer.valueOf(idAddress).intValue());
-        assertEquals(Integer.valueOf(idAddressThree).intValue() + 1, Integer.valueOf(idAddressTwo).intValue());
-        assertEquals(Integer.valueOf(idAddressFour).intValue() + 1, Integer.valueOf(idAddressThree).intValue());
-        assertEquals(Integer.valueOf(idAddressFive).intValue() + 1, Integer.valueOf(idAddressFour).intValue());
+        assertEquals(2, Integer.valueOf(idAddressThree).intValue());
+        // these two from the mock TestSaverSource
+        assertEquals(3, Integer.valueOf(idAddressFour).intValue());
     }
 
     public void testUpdateWithUUID() throws Exception {
@@ -1918,7 +1912,7 @@ public class DocumentSaveTest extends TestCase {
         assertTrue(committer.hasSaved());
         Element committedElement = committer.getCommittedElement();
         assertEquals("0", evaluate(committedElement, "/ProductFamily/Id"));
-        assertEquals("0", context.getId()[0]);
+        assertEquals("1", context.getId()[0]);
         assertEquals("testAutoIncrementPK", evaluate(committedElement, "/ProductFamily/Name"));
     }
     
@@ -3243,7 +3237,7 @@ public class DocumentSaveTest extends TestCase {
 
         assertTrue(committer.hasSaved());
         Element committedElement = committer.getCommittedElement();
-        assertEquals("0", evaluate(committedElement, "/Individual/PartyPK"));
+        assertEquals("1", evaluate(committedElement, "/Individual/PartyPK"));
 
         recordXml = DocumentSaveTest.class.getResourceAsStream("test61_2.xml");
         context = session.getContextFactory().create("MDM", "test61", "Source", recordXml, true, true, true, false, false);
@@ -3674,6 +3668,8 @@ public class DocumentSaveTest extends TestCase {
         private boolean hasCalledInitAutoIncrement;
 
         private final Map<String, String> schemasAsString = new HashMap<String, String>();
+        
+        private final Map<String, Integer> AUTO_INCREMENT_ID_MAP = new HashMap<String, Integer>();
 
         private int currentId = 0;
 
@@ -3805,7 +3801,13 @@ public class DocumentSaveTest extends TestCase {
 
         @Override
         public String nextAutoIncrementId(String dataCluster, String dataModel, String conceptName) {
-            return String.valueOf(currentId++);
+            int id = 0;
+            if (AUTO_INCREMENT_ID_MAP.containsKey(conceptName)) {
+                id = AUTO_INCREMENT_ID_MAP.get(conceptName);
+            }
+            id++;
+            AUTO_INCREMENT_ID_MAP.put(conceptName, id);
+            return String.valueOf(id);
         }
 
         public boolean hasSavedAutoIncrement() {

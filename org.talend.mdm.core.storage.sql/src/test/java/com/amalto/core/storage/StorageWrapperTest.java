@@ -269,11 +269,11 @@ public class StorageWrapperTest extends TestCase {
         
         
         ItemPKCriteria criteria = new ItemPKCriteria();
-        criteria.setClusterName("InheritFKTest");
-        criteria.setConceptName("Feature");
-        criteria.setContentKeywords("");
-        criteria.setKeysKeywords("$Feature/Value/EnumFK,EnumValueType/EnumFK$[1]");
-        criteria.setKeys("");
+        criteria.setClusterName("InheritFKTest"); //$NON-NLS-1$
+        criteria.setConceptName("Feature"); //$NON-NLS-1$
+        criteria.setContentKeywords(""); //$NON-NLS-1$
+        criteria.setKeysKeywords("$Feature/Value/EnumFK,EnumValueType/EnumFK$[1]"); //$NON-NLS-1$
+        criteria.setKeys(""); //$NON-NLS-1$
         criteria.setCompoundKeyKeywords(false);
         criteria.setFromDate(-1L);
         criteria.setToDate(-1L);
@@ -290,8 +290,8 @@ public class StorageWrapperTest extends TestCase {
 
         };
         List<String> result = wrapper.getItemPKsByCriteria(criteria);
-        assertEquals("<totalCount>1</totalCount>", result.get(0));
-        assertTrue(result.get(1).contains("<n>Feature</n><ids><i>1111</i>"));
+        assertEquals("<totalCount>1</totalCount>", result.get(0)); //$NON-NLS-1$
+        assertTrue(result.get(1).contains("<n>Feature</n><ids><i>1111</i>")); //$NON-NLS-1$
     }
 
     private MetadataRepository prepareMetadata(String xsd) {

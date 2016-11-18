@@ -170,14 +170,9 @@ public class ExportingServlet extends HttpServlet {
             }
 
             Map<String, String> inheritanceForeignKeyMap = businessConcept.getInheritanceForeignKeyMap();
-            if (inheritanceForeignKeyMap.size() > 0) {
-                Set<String> keySet = inheritanceForeignKeyMap.keySet();
-                String dataObjectPath = null;
-                for (String path : keySet) {
-                    dataObjectPath = inheritanceForeignKeyMap.get(path);
-                    if (dataObjectPath.indexOf(dataObject) != -1) {
-                        xpathes.add(path.substring(1));
-                    }
+            for (Map.Entry<String, String> entry : inheritanceForeignKeyMap.entrySet()) {
+                if (entry.getValue().indexOf(dataObject) != -1) {
+                    xpathes.add(entry.getKey().substring(1));
                 }
             }
 

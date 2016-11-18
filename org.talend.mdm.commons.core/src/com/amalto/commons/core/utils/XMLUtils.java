@@ -9,7 +9,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
@@ -236,8 +235,7 @@ public final class XMLUtils {
 	 */
 	public static String nodeToString(Node n, boolean omitXMLDeclaration) throws TransformerException{
        	StringWriter sw = new StringWriter();
-        Transformer transformer = TransformerFactory.newInstance("org.apache.xalan.processor.TransformerFactoryImpl",
-                Thread.currentThread().getContextClassLoader()).newTransformer();
+        Transformer transformer = new org.apache.xalan.processor.TransformerFactoryImpl().newTransformer();
        	if (omitXMLDeclaration)
        		transformer.setOutputProperty("omit-xml-declaration","yes");
        	else

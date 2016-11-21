@@ -314,15 +314,30 @@ public class UploadService {
                 }
                 Element currentElement = document.getRootElement();
                 if (record.length > 0) {
-                    for (int j = 0; j < importHeader.length; j++) {
-                        String fieldValue = record[j];
-                        if (fieldValue != null && !fieldValue.isEmpty()) {
-                            dataLine = true;
-                            fillFieldValue(currentElement, importHeader[j], fieldValue, null, record);
-                        } else {
-                            if(isPartialUpdate){
+                    if (record.length > importHeader.length) {
+                        for (int j = 0; j < importHeader.length; j++) {
+                            String fieldValue = record[j];
+                            if (fieldValue != null && !fieldValue.isEmpty()) {
                                 dataLine = true;
-                                fillFieldValue(currentElement, importHeader[j], "", null, record); //$NON-NLS-1$
+                                fillFieldValue(currentElement, importHeader[j], fieldValue, null, record);
+                            } else {
+                                if(isPartialUpdate){
+                                    dataLine = true;
+                                    fillFieldValue(currentElement, importHeader[j], "", null, record); //$NON-NLS-1$
+                                }
+                            }
+                        }
+                    } else {
+                        for (int j = 0; j < record.length; j++) {
+                            String fieldValue = record[j];
+                            if (fieldValue != null && !fieldValue.isEmpty()) {
+                                dataLine = true;
+                                fillFieldValue(currentElement, importHeader[j], fieldValue, null, record);
+                            } else {
+                                if(isPartialUpdate){
+                                    dataLine = true;
+                                    fillFieldValue(currentElement, importHeader[j], "", null, record); //$NON-NLS-1$
+                                }
                             }
                         }
                     }

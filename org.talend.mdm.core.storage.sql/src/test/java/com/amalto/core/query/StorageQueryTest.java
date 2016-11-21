@@ -4633,7 +4633,7 @@ public class StorageQueryTest extends StorageTestCase {
 
         for (int i = 100; i < 3100; i++) {
 
-            DataRecord record = factory.read(repository, product, "<Product>\n" + "    <Id>" + i + "</Id>\n"
+            DataRecord record = factory.read(repository, product, "<Product>\n" + "    <Id>P-" + i + "</Id>\n"
                     + "    <Name>Product name</Name>\n" + "    <ShortDescription>Short description word</ShortDescription>\n"
                     + "    <LongDescription>Long description</LongDescription>\n" + "    <Price>10</Price>\n"
                     + "    <Features>\n" + "        <Sizes>\n" + "            <Size>Small</Size>\n"
@@ -4654,7 +4654,7 @@ public class StorageQueryTest extends StorageTestCase {
         int start = 0;
         int limit = 50;
 
-        UserQueryBuilder qb = UserQueryBuilder.from(product);
+        UserQueryBuilder qb = UserQueryBuilder.from(product).where(startsWith(product.getField("Id"), "P-"));
         // Condition and paging
         qb.where(UserQueryHelper.buildCondition(qb, null, repository));
         qb.start(start < 0 ? 0 : start); // UI can send negative start index
@@ -4662,6 +4662,7 @@ public class StorageQueryTest extends StorageTestCase {
 
         StorageResults results = storage.fetch(qb.getSelect());
 
+        assertEquals(3000, results.getCount());
         assertEquals(50, results.getSize());
         int i = 0;
         for (DataRecord result : results) {

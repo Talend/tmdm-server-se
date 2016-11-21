@@ -14,13 +14,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFFont;
@@ -291,8 +287,16 @@ public class DownloadData extends HttpServlet {
             } else {
                 tmp = ""; //$NON-NLS-1$
             }
-            row.createCell((short) columnIndex).setCellValue(tmp);
-            columnIndex++;
+            if (entity != null && entity.getTypeModel(xpath) != null) {
+                if (entity.getTypeModel(xpath).getMaxOccurs() != 1 && StringUtils.isNotEmpty(tmp) && multipleValueSeparator != null) {
+                    row.createCell((short) columnIndex).setCellValue(tmp.replace(",", multipleValueSeparator)); //$NON-NLS-1$
+                } else {
+                    row.createCell((short) columnIndex).setCellValue(tmp);
+                }
+                columnIndex++;
+            } else {
+                continue;
+            }
         }
     }
 

@@ -12,16 +12,8 @@
 // ============================================================================
 package com.amalto.webapp.core.util;
 
-import java.io.StringReader;
-
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamSource;
-
 import org.apache.commons.lang.StringEscapeUtils;
 import org.dom4j.Document;
-import org.dom4j.io.DocumentResult;
-import org.dom4j.io.DocumentSource;
 
 
 public class XmlUtil {
@@ -34,18 +26,6 @@ public class XmlUtil {
         return (xmlReader.read(doc));
     }
     
-    public static Document styleDocument(Document document, String stylesheet) throws Exception {
-        TransformerFactory factory = TransformerFactory.newInstance(
-                "net.sf.saxon.TransformerFactoryImpl", Thread.currentThread().getContextClassLoader()); //$NON-NLS-1$
-        Transformer transformer = factory.newTransformer(new StreamSource(new StringReader(stylesheet)));
-        // now lets style the given document
-        DocumentSource source = new DocumentSource(document);
-        DocumentResult result = new DocumentResult();
-        transformer.transform(source, result);
-        // return the transformed document
-        return result.getDocument();
-    }
-
     public static String escapeXml(String value) {
         if (value == null)
             return null;

@@ -1025,7 +1025,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             }
 
             ItemBean itemBean = new ItemBean(concept,
-                    CommonUtil.joinStrings(idsArray, "."), Util.nodeToString(doc.getDocumentElement()));//$NON-NLS-1$
+                    CommonUtil.joinStrings(idsArray, "."), org.talend.mdm.commmon.util.core.XmlUtil.nodeToString(doc.getDocumentElement(), true, true));//$NON-NLS-1$
             itemBean.setOriginalMap(originalMap);
             itemBean.setFormateMap(formateValueMap);
             if (checkSmartViewExistsByLang(concept, language)) {
@@ -2326,7 +2326,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
                         }
                     }
                 }
-                itemBean.setItemXml(Util.nodeToString(wsItemDoc));
+                itemBean.setItemXml(org.talend.mdm.commmon.util.core.XmlUtil.nodeToString(wsItemDoc, true, true));
             }
         }
     }

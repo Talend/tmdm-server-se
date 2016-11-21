@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -129,7 +128,7 @@ public class DynamicLabelUtilTest extends TestCase {
             String stylesheet = org.talend.mdm.webapp.base.server.util.DynamicLabelUtil.genStyle(fullxpath,
                     com.amalto.webapp.core.util.XmlUtil.escapeXml(label));
             String dynamicLB = org.talend.mdm.webapp.base.server.util.DynamicLabelUtil
-                    .getParsedLabel(org.talend.mdm.webapp.base.server.util.XmlUtil.styleDocument(parsedDocument, stylesheet));
+                    .getParsedLabel(org.talend.mdm.commmon.util.core.XmlUtil.styleDocument(parsedDocument, stylesheet));
             itemModel.setDynamicLabel(dynamicLB);
         }
 

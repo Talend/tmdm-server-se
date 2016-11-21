@@ -16,7 +16,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
 import java.util.ArrayList;
@@ -27,9 +26,6 @@ import java.util.regex.Pattern;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamSource;
 
 import org.apache.log4j.Logger;
 import org.dom4j.Attribute;
@@ -39,8 +35,6 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.Node;
 import org.dom4j.VisitorSupport;
-import org.dom4j.io.DocumentResult;
-import org.dom4j.io.DocumentSource;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.SAXValidator;
@@ -299,25 +293,6 @@ public final class XmlUtil {
     public static void print(Document document) {
         String text = toXml(document);
         logger.info(text);
-    }
-
-    public static Document styleDocument(Document document, String stylesheet) throws Exception {
-        // load the transformer using JAXP
-        TransformerFactory factory = TransformerFactory.newInstance();
-        Transformer transformer = factory.newTransformer(new StreamSource(new StringReader(stylesheet)));
-
-        // now lets style the given document
-        DocumentSource source = new DocumentSource(document);
-        DocumentResult result = new DocumentResult();
-        transformer.transform(source, result);
-
-        // return the transformed document
-        Document transformedDoc = result.getDocument();
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("The xml file style transformed successfully "); //$NON-NLS-1$
-        }
-        return transformedDoc;
     }
 
     public static String format(Document document, OutputFormat format, String encoding) {

@@ -21,6 +21,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import junit.framework.TestCase;
 
+import org.talend.mdm.commmon.util.core.XmlUtil;
 import org.w3c.dom.Document;
 
 
@@ -55,7 +56,7 @@ public class DataModelAccessorTest extends TestCase {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
         Document doc = builder.parse(is);
-        return Util.nodeToString(doc);
+        return XmlUtil.nodeToString(doc, true, true);
     }
 
 }

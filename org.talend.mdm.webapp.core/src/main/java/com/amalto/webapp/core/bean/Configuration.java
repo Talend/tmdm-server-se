@@ -16,6 +16,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.talend.mdm.commmon.util.core.XmlUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -125,11 +126,12 @@ public class Configuration {
         
         if (com.amalto.core.util.Util.isEnterprise()) {
             Util.getPort().putItem(
-                    new WSPutItem(new WSDataClusterPK("PROVISIONING"), Util.nodeToString(d.getDocumentElement()).replaceAll( //$NON-NLS-1$
+                            new WSPutItem(
+                                    new WSDataClusterPK("PROVISIONING"), XmlUtil.nodeToString(d.getDocumentElement(), true, true).replaceAll( //$NON-NLS-1$
                             "<\\?xml.*?\\?>", ""), new WSDataModelPK("PROVISIONING"), false)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         } else {
             Util.storeProvisioning(LocalUser.getLocalUser().getUsername(),
-                    Util.nodeToString(d.getDocumentElement()).replaceAll("<\\?xml.*?\\?>", "")); //$NON-NLS-1$ //$NON-NLS-2$
+                    XmlUtil.nodeToString(d.getDocumentElement(), true, true).replaceAll("<\\?xml.*?\\?>", "")); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 

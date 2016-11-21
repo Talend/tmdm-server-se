@@ -274,47 +274,42 @@ public final class XMLUtils {
 	 * @throws IOException
 	 * @throws TransformerException
 	 */
-    public static Document validate(Element element, String schema)
-    	throws SAXException,ParserConfigurationException,IOException,TransformerException{
+    public static Document validate(Element element, String schema) throws SAXException, ParserConfigurationException,
+            IOException, TransformerException {
 
-    	org.apache.log4j.Logger.getLogger(XMLUtils.class).trace("validate() "+element.getLocalName());
+        org.apache.log4j.Logger.getLogger(XMLUtils.class).trace("validate() " + element.getLocalName());
 
-		//parse
-		Document d=null;
-		SAXErrorHandler seh = new SAXErrorHandler();
+        // parse
+        Document d = null;
+        SAXErrorHandler seh = new SAXErrorHandler();
 
-        //initialize the sax parser which uses Xerces
-		System.setProperty("javax.xml.parsers.DocumentBuilderFactory",
-				"org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		//Schema validation based on schemaURL
-		factory.setNamespaceAware(true);
-		factory.setValidating((schema!=null));
-		factory.setAttribute(
-				"http://java.sun.com/xml/jaxp/properties/schemaLanguage",
-				"http://www.w3.org/2001/XMLSchema");
-		if (schema != null) {
-		    factory.setAttribute(
-				"http://java.sun.com/xml/jaxp/properties/schemaSource",
-				new InputSource(new StringReader(schema))
-				);
-		}
-		DocumentBuilder builder;
-		builder = factory.newDocumentBuilder();
-		builder.setErrorHandler(seh);
+        // initialize the sax parser which uses Xerces
+        System.setProperty("javax.xml.parsers.DocumentBuilderFactory", "org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        // Schema validation based on schemaURL
+        factory.setNamespaceAware(true);
+        factory.setValidating((schema != null));
+        factory.setAttribute("http://java.sun.com/xml/jaxp/properties/schemaLanguage", "http://www.w3.org/2001/XMLSchema");
+        if (schema != null) {
+            factory.setAttribute("http://java.sun.com/xml/jaxp/properties/schemaSource",
+                    new InputSource(new StringReader(schema)));
+        }
+        DocumentBuilder builder;
+        builder = factory.newDocumentBuilder();
+        builder.setErrorHandler(seh);
         d = builder.parse(new InputSource(new StringReader(XmlUtil.nodeToString(element))));
 
-		//check if dcument parsed correctly against the schema
-		if (schema != null) {
-			String errors = seh.getErrors();
-			if (!errors.equals("")) {
+        // check if dcument parsed correctly against the schema
+        if (schema != null) {
+            String errors = seh.getErrors();
+            if (!errors.equals("")) {
                 String xmlString = XmlUtil.nodeToString(element);
-				String err = "The item "+element.getLocalName()+" did not validate against the model: \n" + errors+"\n"
-					+xmlString;	//.substring(0, Math.min(100, xmlString.length()));
-				throw new SAXException(err);
-			}
-		}
-		return d;
+                String err = "The item " + element.getLocalName() + " did not validate against the model: \n" + errors + "\n"
+                        + xmlString; // .substring(0, Math.min(100, xmlString.length()));
+                throw new SAXException(err);
+            }
+        }
+        return d;
     }
 
 

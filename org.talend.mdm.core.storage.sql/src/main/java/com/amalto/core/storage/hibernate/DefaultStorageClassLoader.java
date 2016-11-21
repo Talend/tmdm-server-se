@@ -277,11 +277,11 @@ public class DefaultStorageClassLoader extends StorageClassLoader {
         StringWriter buffer = new StringWriter();
         Transformer transformer = XmlUtil.generateTransformer();
         DocumentType doctype = document.getDoctype();
-        if(doctype != null) {
-            if(doctype.getPublicId() != null){
+        if (doctype != null) {
+            if (doctype.getPublicId() != null) {
                 transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, doctype.getPublicId());
             }
-            if(doctype.getSystemId() != null){
+            if (doctype.getSystemId() != null) {
                 transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, doctype.getSystemId());
             }
         }

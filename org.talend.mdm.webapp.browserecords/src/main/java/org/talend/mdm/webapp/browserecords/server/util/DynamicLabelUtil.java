@@ -56,8 +56,7 @@ public class DynamicLabelUtil {
      * @return
      */
     public static void getDynamicLabel(Document parsedDocument, String baseXpath, ItemNodeModel itemModel,
-            Map<String, TypeModel> metaDataTypes,
-            String language) {
+            Map<String, TypeModel> metaDataTypes, String language) {
         try {
             String typePath = itemModel.getTypePath();
             TypeModel typeModel = metaDataTypes.get(typePath);
@@ -70,10 +69,10 @@ public class DynamicLabelUtil {
             String label = typeModel.getLabel(language);
             if (org.talend.mdm.webapp.base.server.util.DynamicLabelUtil.isDynamicLabel(label)) {
                 label = replaceForeignPath(fullxpath, label, parsedDocument);
-                String stylesheet = org.talend.mdm.webapp.base.server.util.DynamicLabelUtil.genStyle(fullxpath, XmlUtil.escapeXml(label));
+                String stylesheet = org.talend.mdm.webapp.base.server.util.DynamicLabelUtil.genStyle(fullxpath,
+                        XmlUtil.escapeXml(label));
                 String dynamicLB = org.talend.mdm.webapp.base.server.util.DynamicLabelUtil
-                        .getParsedLabel(org.talend.mdm.commmon.util.core.XmlUtil.styleDocument(
-                        parsedDocument, stylesheet));
+                        .getParsedLabel(org.talend.mdm.commmon.util.core.XmlUtil.styleDocument(parsedDocument, stylesheet));
                 // @temp yguo, set the properties to itemmodel
                 itemModel.setDynamicLabel(dynamicLB);
             }

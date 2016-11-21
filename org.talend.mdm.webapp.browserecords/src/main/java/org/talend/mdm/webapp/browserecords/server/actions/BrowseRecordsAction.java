@@ -1024,7 +1024,8 @@ public class BrowseRecordsAction implements BrowseRecordsService {
                 }
             }
 
-            ItemBean itemBean = new ItemBean(concept,
+            ItemBean itemBean = new ItemBean(
+                    concept,
                     CommonUtil.joinStrings(idsArray, "."), org.talend.mdm.commmon.util.core.XmlUtil.nodeToString(doc.getDocumentElement(), true, true));//$NON-NLS-1$
             itemBean.setOriginalMap(originalMap);
             itemBean.setFormateMap(formateValueMap);

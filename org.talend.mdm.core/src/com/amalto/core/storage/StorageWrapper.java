@@ -617,18 +617,30 @@ public class StorageWrapper implements IXmlServerSLWrapper {
                     Condition globalCondition = UserQueryHelper.FALSE;
                     for (String path : paths) {
                         Condition pathCondition = UserQueryHelper.FALSE;
-                        Set<FieldMetadata> candidateFields = Collections.singleton(type.getField(path));
-                        for (FieldMetadata candidateField : candidateFields) {
-                            if (candidateField instanceof ReferenceFieldMetadata
-                                    && ((ReferenceFieldMetadata) candidateField).getReferencedField() instanceof CompoundFieldMetadata) {
-                                // composite key: fkValue of the form '[value1.value2.value3...]'
-                                pathCondition = or(
-                                        eq(candidateField, StringUtils.replace(idForLookup.toString(), ".", "][")), pathCondition); //$NON-NLS-1$ //$NON-NLS-2$
-                            } else {
-                                pathCondition = or(eq(candidateField, idForLookup.toString()), pathCondition);
+                        // TMDM-10201, if FK point to a inheritance type, like: keysKeywords = $Feature/Value/EnumFK,EnumValueType/EnumFK$[1]
+                        // Only need to query "Feature" by "Value/EnumFK=1"
+                        FieldMetadata field = null;
+                        try {
+                            field = type.getField(path);
+                        } catch (IllegalArgumentException e) {
+                            if (LOGGER.isDebugEnabled()) {
+                                LOGGER.debug("Ignoring field '" + path + "'", e); //$NON-NLS-1$ //$NON-NLS-2$
                             }
                         }
-                        globalCondition = or(globalCondition, pathCondition);
+                        if (field != null) {
+                            Set<FieldMetadata> candidateFields = Collections.singleton(type.getField(path));
+                            for (FieldMetadata candidateField : candidateFields) {
+                                if (candidateField instanceof ReferenceFieldMetadata
+                                        && ((ReferenceFieldMetadata) candidateField).getReferencedField() instanceof CompoundFieldMetadata) {
+                                    // composite key: fkValue of the form '[value1.value2.value3...]'
+                                    pathCondition = or(
+                                            eq(candidateField, StringUtils.replace(idForLookup.toString(), ".", "][")), pathCondition); //$NON-NLS-1$ //$NON-NLS-2$
+                                } else {
+                                    pathCondition = or(eq(candidateField, idForLookup.toString()), pathCondition);
+                                }
+                            }
+                            globalCondition = or(globalCondition, pathCondition);
+                        }
                     }
                     qb.where(globalCondition);
                 }

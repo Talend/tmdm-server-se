@@ -4656,7 +4656,6 @@ public class StorageQueryTest extends StorageTestCase {
 
         UserQueryBuilder qb = UserQueryBuilder.from(product).where(startsWith(product.getField("Id"), "P-"));
         // Condition and paging
-        qb.where(UserQueryHelper.buildCondition(qb, null, repository));
         qb.start(start < 0 ? 0 : start); // UI can send negative start index
         qb.limit(limit);
 
@@ -4671,6 +4670,8 @@ public class StorageQueryTest extends StorageTestCase {
             }
         }
         assertEquals(50, i);
+
+        qb = UserQueryBuilder.from(product).where(startsWith(product.getField("Id"), "P-"));
         try {
             storage.begin();
             storage.delete(qb.getSelect());
@@ -4678,6 +4679,11 @@ public class StorageQueryTest extends StorageTestCase {
         } finally {
             storage.end();
         }
+
+        qb = UserQueryBuilder.from(product);
+
+        results = storage.fetch(qb.getSelect());
+        assertEquals(2, results.getCount());
     }
 
     private static class TestUserDelegator implements SecuredStorage.UserDelegator {

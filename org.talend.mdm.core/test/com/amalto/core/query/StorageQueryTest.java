@@ -4104,7 +4104,60 @@ public class StorageQueryTest extends StorageTestCase {
             ex_2.printStackTrace();
         assertNull(ex_2);
     }
-    
+
+    public void test_largeVolumeData() throws Exception {
+        List<DataRecord> allRecords = new LinkedList<DataRecord>();
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+
+        for (int i = 100; i < 3100; i++) {
+
+            DataRecord record = factory.read("1", repository, product, "<Product>\n" + "    <Id>P-" + i + "</Id>\n"
+                    + "    <Name>Product name</Name>\n" + "    <ShortDescription>Short description word</ShortDescription>\n"
+                    + "    <LongDescription>Long description</LongDescription>\n" + "    <Price>10</Price>\n"
+                    + "    <Features>\n" + "        <Sizes>\n" + "            <Size>Small</Size>\n"
+                    + "            <Size>Medium</Size>\n" + "            <Size>Large</Size>\n" + "        </Sizes>\n"
+                    + "        <Colors>\n" + "            <Color>Blue</Color>\n" + "            <Color>Red</Color>\n"
+                    + "        </Colors>\n" + "    </Features>\n" + "    <Status>Pending</Status>\n"
+                    + "    <Family>[2]</Family>\n" + "    <Supplier>[1]</Supplier>\n" + "</Product>");
+            allRecords.add(record);
+        }
+
+        try {
+            storage.begin();
+            storage.update(allRecords);
+            storage.commit();
+        } finally {
+            storage.end();
+        }
+        int start = 0;
+        int limit = 50;
+
+        UserQueryBuilder qb = UserQueryBuilder.from(product).where(startsWith(product.getField("Id"), "P-"));
+        // Condition and paging
+        //qb.where(UserQueryHelper.buildCondition(qb, null, repository));
+        qb.start(start < 0 ? 0 : start); // UI can send negative start index
+        qb.limit(limit);
+
+        StorageResults results = storage.fetch(qb.getSelect());
+
+        assertEquals(3000, results.getCount());
+        assertEquals(50, results.getSize());
+        int i = 0;
+        for (DataRecord result : results) {
+            if(result.get("Id") != null){
+                i++;
+            }
+        }
+        assertEquals(50, i);
+        try {
+            storage.begin();
+            storage.delete(qb.getSelect());
+            storage.commit();
+        } finally {
+            storage.end();
+        }
+    }
+
     private static class TestRDBMSDataSource extends RDBMSDataSource {
 
         private ContainsOptimization optimization;

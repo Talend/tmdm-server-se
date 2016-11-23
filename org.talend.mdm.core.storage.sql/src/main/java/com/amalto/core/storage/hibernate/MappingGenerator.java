@@ -567,13 +567,8 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
                 }
                 columnElement.getAttributes().setNamedItem(notNull);
                 // default value
-                String defaultValueRule = field.getData(MetadataRepository.DEFAULT_VALUE_RULE);
-                if (StringUtils.isNotEmpty(defaultValueRule)) {
-                    Attr defaultValueAttr = document.createAttribute("default"); //$NON-NLS-1$
-                    defaultValueAttr.setValue(convertedDefaultValue(defaultValueRule));
-                    columnElement.getAttributes().setNamedItem(defaultValueAttr);
-                }
-                
+                addDefaultValueAttribute(field, columnElement);
+
                 addFieldTypeAttribute(field, columnElement, propertyElement, dataSource.getDialectName());
                 propertyElement.getAttributes().setNamedItem(propertyName);
                 columnElement.getAttributes().setNamedItem(columnName);
@@ -638,12 +633,7 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
                 columnNameAttr.setValue("value");
 
                 // default value
-                String defaultValueRule = field.getData(MetadataRepository.DEFAULT_VALUE_RULE);
-                if (StringUtils.isNotEmpty(defaultValueRule)) {
-                    Attr defaultValueAttr = document.createAttribute("default"); //$NON-NLS-1$
-                    defaultValueAttr.setValue(convertedDefaultValue(defaultValueRule));
-                    columnElement.getAttributes().setNamedItem(defaultValueAttr);
-                }
+                addDefaultValueAttribute(field, columnElement);
 
                 columnElement.getAttributes().setNamedItem(columnNameAttr);
                 addFieldTypeAttribute(field, columnElement, element, dataSource.getDialectName());
@@ -663,6 +653,16 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
                 listElement.appendChild(element);
                 return listElement;
             }
+        }
+    }
+
+    private void addDefaultValueAttribute(FieldMetadata field, Element columnElement) {
+        // default value
+        String defaultValueRule = field.getData(MetadataRepository.DEFAULT_VALUE_RULE);
+        if (StringUtils.isNotBlank(defaultValueRule)) {
+            Attr defaultValueAttr = document.createAttribute("default"); //$NON-NLS-1$
+            defaultValueAttr.setValue(convertedDefaultValue(defaultValueRule));
+            columnElement.getAttributes().setNamedItem(defaultValueAttr);
         }
     }
 

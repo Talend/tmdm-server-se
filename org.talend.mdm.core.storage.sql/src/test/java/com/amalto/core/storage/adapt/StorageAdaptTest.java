@@ -663,6 +663,7 @@ public class StorageAdaptTest extends TestCase {
         }
     }
 
+    // TMDM-9086 test for add mandatory field with default value
     public void test11_addMandatoryFiledWithDefaultValue() throws Exception {
         DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
         Storage storage = new HibernateStorage("Person", StorageType.MASTER);

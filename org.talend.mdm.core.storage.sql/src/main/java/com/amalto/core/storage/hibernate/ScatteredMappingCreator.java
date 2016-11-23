@@ -80,7 +80,7 @@ class ScatteredMappingCreator extends DefaultMetadataVisitor<TypeMapping> {
         }
 
         String defaultValueRule = field.<String> getData(MetadataRepository.DEFAULT_VALUE_RULE);
-        if (defaultValueRule != null) {
+        if (StringUtils.isNotBlank(defaultValueRule)) {
             newFlattenField.setData(MetadataRepository.DEFAULT_VALUE_RULE, defaultValueRule);
         }
 

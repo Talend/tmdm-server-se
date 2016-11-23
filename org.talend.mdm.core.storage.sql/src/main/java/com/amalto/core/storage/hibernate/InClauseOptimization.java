@@ -95,9 +95,9 @@ public class InClauseOptimization extends StandardQueryHandler {
             StorageResults records = storage.fetch(qb.getSelect()); // Expects an active transaction here
             // TMDM-7124. Oracle doesn't like > 1000 number of values in 'IN (...)' clause,
             // and too many values in 'IN (...)' clause hurt database performance
-            if (records.getCount() >= IN_CLAUSE_MAX) {
+            if (records.getSize() >= IN_CLAUSE_MAX) {
                 if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("Too many ids in 'IN()' clause, abort this optimization. Total ids = " + records.getCount()); //$NON-NLS-1$
+                    LOGGER.debug("Too many ids in 'IN()' clause, abort this optimization. Total ids = " + records.getSize()); //$NON-NLS-1$
                 }
                 results = super.visit(select);
             } else {

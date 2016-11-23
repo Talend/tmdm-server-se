@@ -97,7 +97,7 @@ public class InClauseOptimization extends StandardQueryHandler {
             // and too many values in 'IN (...)' clause hurt database performance
             if (records.getSize() >= IN_CLAUSE_MAX) {
                 if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("Too many ids in 'IN()' clause, abort this optimization. Total ids = " + records.getCount());
+                    LOGGER.debug("Too many ids in 'IN()' clause, abort this optimization. Total ids = " + records.getSize());
                 }
                 results = super.visit(select);
             } else {

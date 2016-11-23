@@ -243,6 +243,12 @@ public class StorageFullTextTest extends StorageTestCase {
                     .read(repository,
                             fullTextSearchEntityA,
                             "<FullTextSearchEntityA><Id>id1</Id><Name>name1</Name><Address><AddressName>address1</AddressName><City><CityName>city1</CityName></City></Address></FullTextSearchEntityA>"));
+        allRecords.add(factory.read(repository, employee, "<Employee><name>11 e</name><age>11</age><jobTitle>jobTitle 11</jobTitle></Employee>"));
+        allRecords.add(factory.read(repository, employee, "<Employee><name>22 11 e</name><age>22</age><jobTitle>jobTitle 22</jobTitle></Employee>"));
+        allRecords.add(factory.read(repository, employee, "<Employee><name>33 11 e</name><age>33</age><jobTitle>jobTitle 33</jobTitle></Employee>"));
+        allRecords.add(factory.read(repository, persons, "<Persons><name>11 p</name><age>11</age></Persons>"));
+        allRecords.add(factory.read(repository, persons, "<Persons><name>22 p</name><age>22</age></Persons>"));
+        allRecords.add(factory.read(repository, persons, "<Persons><name>33 p</name><age>33</age></Persons>"));
         
         try {
             storage.begin();
@@ -456,7 +462,7 @@ public class StorageFullTextTest extends StorageTestCase {
         qb.limit(2);
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(3, results.getCount());
+            assertEquals(2, results.getCount());
         } finally {
             results.close();
         }
@@ -473,7 +479,7 @@ public class StorageFullTextTest extends StorageTestCase {
         qb.limit(2);
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(4, results.getCount());
+            assertEquals(2, results.getCount());
         } finally {
             results.close();
         }
@@ -1171,7 +1177,7 @@ public class StorageFullTextTest extends StorageTestCase {
     
     public void testTypeSplitWithPaging() throws Exception {
         // Build expected results
-        UserQueryBuilder qb = UserQueryBuilder.from(person).and(product).where(fullText("Julien")).start(1).limit(20);
+        UserQueryBuilder qb = UserQueryBuilder.from(person).and(product).where(fullText("Julien"));
         List<String> expected = new LinkedList<String>();
         int count;
         int size;
@@ -1427,6 +1433,21 @@ public class StorageFullTextTest extends StorageTestCase {
         assertTrue(((Compare) select.getCondition()).getPredicate() == Predicate.CONTAINS);
     }
     
+    public void testFullTextSearchOnComplexType() throws Exception {
+        UserQueryBuilder qb = from(persons).where(fullText("11"));
+        qb.limit(5);
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            for (DataRecord result : results) {
+                if (result != null) {
+                    assertEquals("11 p", result.get("name"));
+                }
+            }
+        } finally {
+            results.close();
+        }
+    }
+
     private static class TestRDBMSDataSource extends RDBMSDataSource {
 
         private ContainsOptimization optimization;

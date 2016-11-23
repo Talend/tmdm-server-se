@@ -18,6 +18,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.servlet.ServletException;
+import com.amalto.core.storage.exception.FullTextQueryCompositeKeyException;
+import com.amalto.core.util.CoreException;
+import com.amalto.core.util.XtentisException;
+import com.amalto.xmlserver.interfaces.XmlServerException;
 
 import junit.framework.TestCase;
 
@@ -59,10 +63,19 @@ public class UploadUtilTest  extends TestCase {
     }
     
     public void testGetRootCause(){
-        RemoteException romoteException = new RemoteException("RemoteException Cause");
-        ServletException servletException = new ServletException("ServletException Cause",romoteException);
+        RemoteException remoteException = new RemoteException("RemoteException Cause");
+        ServletException servletException = new ServletException("ServletException Cause",remoteException);
         Exception exception = new Exception("Exception Cause",servletException);
         assertEquals(UploadUtil.getRootCause(exception),"RemoteException Cause");
+        
+        FullTextQueryCompositeKeyException fullTextQueryCompositeKeyException = new FullTextQueryCompositeKeyException("FullTextQueryCompositeKeyException Cause");
+        RuntimeException runtimeException = new RuntimeException("RuntimeException Cause", fullTextQueryCompositeKeyException);
+        XmlServerException xmlServerException = new XmlServerException("XmlServerException Cause", runtimeException);
+        XtentisException xtentisException = new XtentisException("XtentisException Cause", xmlServerException);
+        CoreException coreException = new CoreException("CoreException Cause", xtentisException);
+        remoteException = new RemoteException("RemoteException Cause", coreException);
+        exception = new Exception("Exception Cause",remoteException);
+        assertEquals("FullTextQueryCompositeKeyException Cause", UploadUtil.getRootCause(exception));
     }
         
     public void testIsViewableXpathValid(){

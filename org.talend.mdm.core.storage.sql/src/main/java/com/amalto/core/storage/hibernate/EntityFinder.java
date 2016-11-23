@@ -125,8 +125,8 @@ public class EntityFinder {
      * @param session A open, read for immediate usage Hibernate {@link Session}.
      * @return A wrapper that implements and supports all methods of {@link FullTextQuery}.
      */
-    public static FullTextQuery wrap(FullTextQuery query, HibernateStorage storage, Session session) {
-        return new QueryWrapper(query, storage, session);
+    public static FullTextQuery wrap(FullTextQuery query, HibernateStorage storage, Session session, List<ComplexTypeMetadata> types) {
+        return new QueryWrapper(query, storage, session, types);
     }
 
     private static class ScrollableResultsWrapper implements ScrollableResults {
@@ -355,11 +355,18 @@ public class EntityFinder {
         private final HibernateStorage storage;
 
         private final Session session;
+        
+        private List<String> entityClassName = new ArrayList<String>();
 
-        public QueryWrapper(FullTextQuery query, HibernateStorage storage, Session session) {
+        public QueryWrapper(FullTextQuery query, HibernateStorage storage, Session session, List<ComplexTypeMetadata> types) {
             this.query = query;
             this.storage = storage;
             this.session = session;
+            if (types != null && types.size() > 0) {
+                for (ComplexTypeMetadata ctm : types) {
+                    entityClassName.add(ClassCreator.getClassName(ctm.getName()));
+                }
+            }
         }
 
         @Override
@@ -412,7 +419,13 @@ public class EntityFinder {
             for (Object item : list) {
                 Wrapper element = EntityFinder.findEntity((Wrapper) item, storage, session);
                 if (element != null) {
-                    newSet.add(element);
+                    if (entityClassName.size() > 0) {
+                        if (this.entityClassName.contains(element.getClass().getName())) {
+                            newSet.add(element);
+                        }
+                    } else {
+                        newSet.add(element);
+                    }
                 }
             }
             return new ArrayList<Wrapper>(newSet);

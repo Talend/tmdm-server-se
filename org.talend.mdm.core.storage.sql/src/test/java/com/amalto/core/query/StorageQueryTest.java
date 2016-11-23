@@ -4627,11 +4627,12 @@ public class StorageQueryTest extends StorageTestCase {
         }
     }
 
+    //TMDM-9703 tMDMInput with one filter return different records size by different batch size
     public void test_largeVolumeData() throws Exception {
         List<DataRecord> allRecords = new LinkedList<DataRecord>();
         DataRecordReader<String> factory = new XmlStringDataRecordReader();
 
-        for (int i = 100; i < 3100; i++) {
+        for (int i = 1; i <= 1500; i++) {
 
             DataRecord record = factory.read(repository, product, "<Product>\n" + "    <Id>P-" + i + "</Id>\n"
                     + "    <Name>Product name</Name>\n" + "    <ShortDescription>Short description word</ShortDescription>\n"
@@ -4661,7 +4662,7 @@ public class StorageQueryTest extends StorageTestCase {
 
         StorageResults results = storage.fetch(qb.getSelect());
 
-        assertEquals(3000, results.getCount());
+        assertEquals(1500, results.getCount());
         assertEquals(50, results.getSize());
         int i = 0;
         for (DataRecord result : results) {

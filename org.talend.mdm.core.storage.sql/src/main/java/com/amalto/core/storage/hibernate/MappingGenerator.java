@@ -570,29 +570,11 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
                 String defaultValueRule = field.getData(MetadataRepository.DEFAULT_VALUE_RULE);
                 if (StringUtils.isNotEmpty(defaultValueRule)) {
                     Attr defaultValueAttr = document.createAttribute("default"); //$NON-NLS-1$
-                    String covertValue = defaultValueRule;
-                    if (defaultValueRule.equals("fn:false()")) {
-                        if (dataSource.getDialectName() == RDBMSDataSource.DataSourceDialect.SQL_SERVER
-                                || dataSource.getDialectName() == RDBMSDataSource.DataSourceDialect.ORACLE_10G) {
-                            covertValue = "0";
-                        } else {
-                            covertValue = Boolean.FALSE.toString();
-                        }
-                    } else if (defaultValueRule.equals("fn:true()")) {
-                        if (dataSource.getDialectName() == RDBMSDataSource.DataSourceDialect.SQL_SERVER
-                                || dataSource.getDialectName() == RDBMSDataSource.DataSourceDialect.ORACLE_10G) {
-                            covertValue = "1";
-                        } else {
-                            covertValue = Boolean.TRUE.toString();
-                        }
-                    } else if (defaultValueRule.startsWith("\"") && defaultValueRule.endsWith("\"")) {
-                        covertValue = defaultValueRule.replace("\"", "'");
-                    }
-                    defaultValueAttr.setValue(covertValue);
+                    defaultValueAttr.setValue(convertedDefaultValue(defaultValueRule));
                     columnElement.getAttributes().setNamedItem(defaultValueAttr);
                 }
                 
-                addFieldTypeAttribute(field, columnElement, dataSource.getDialectName(), propertyElement);
+                addFieldTypeAttribute(field, columnElement, propertyElement, dataSource.getDialectName());
                 propertyElement.getAttributes().setNamedItem(propertyName);
                 columnElement.getAttributes().setNamedItem(columnName);
                 propertyElement.appendChild(columnElement);
@@ -651,10 +633,21 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
                 }
                 // <element column="name" type="string"/>
                 Element element = document.createElement("element"); //$NON-NLS-1$
-                Attr elementColumn = document.createAttribute("column"); //$NON-NLS-1$
-                elementColumn.setValue("value"); //$NON-NLS-1$
-                element.getAttributes().setNamedItem(elementColumn);
-                addFieldTypeAttribute(field, element, dataSource.getDialectName(), element);
+                Element columnElement = document.createElement("column"); //$NON-NLS-1$
+                Attr columnNameAttr = document.createAttribute("name"); //$NON-NLS-1$
+                columnNameAttr.setValue("value");
+
+                // default value
+                String defaultValueRule = field.getData(MetadataRepository.DEFAULT_VALUE_RULE);
+                if (StringUtils.isNotEmpty(defaultValueRule)) {
+                    Attr defaultValueAttr = document.createAttribute("default"); //$NON-NLS-1$
+                    defaultValueAttr.setValue(convertedDefaultValue(defaultValueRule));
+                    columnElement.getAttributes().setNamedItem(defaultValueAttr);
+                }
+
+                columnElement.getAttributes().setNamedItem(columnNameAttr);
+                addFieldTypeAttribute(field, columnElement, element, dataSource.getDialectName());
+                element.appendChild(columnElement);
                 // Not null warning
                 if (field.isMandatory()) {
                     LOGGER.warn("Field '" + field.getName() + "' is mandatory and a collection. Constraint can not be expressed in database schema."); //$NON-NLS-1$ //$NON-NLS-2$
@@ -673,6 +666,28 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
         }
     }
 
+    private String convertedDefaultValue(String defaultValueRule) {
+        String covertValue = defaultValueRule;
+        if (defaultValueRule.equals(MetadataRepository.FN_FALSE)) {
+            if (dataSource.getDialectName() == RDBMSDataSource.DataSourceDialect.SQL_SERVER
+                    || dataSource.getDialectName() == RDBMSDataSource.DataSourceDialect.ORACLE_10G) {
+                covertValue = "0"; //$NON-NLS-1$
+            } else {
+                covertValue = Boolean.FALSE.toString();
+            }
+        } else if (defaultValueRule.equals(MetadataRepository.FN_TRUE)) {
+            if (dataSource.getDialectName() == RDBMSDataSource.DataSourceDialect.SQL_SERVER
+                    || dataSource.getDialectName() == RDBMSDataSource.DataSourceDialect.ORACLE_10G) {
+                covertValue = "1"; //$NON-NLS-1$
+            } else {
+                covertValue = Boolean.TRUE.toString();
+            }
+        } else if (defaultValueRule.startsWith("\"") && defaultValueRule.endsWith("\"")) { //$NON-NLS-1$ //$NON-NLS-2$
+            covertValue = defaultValueRule.replace("\"", "'"); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+        return covertValue;
+    }
+
     private void setIndexName(FieldMetadata field, String fieldName, Attr indexName) {
         String prefix = field.getContainingType().getName();
         if (!tableNames.isEmpty() && field.getContainingType().getSuperTypes().isEmpty()) {
@@ -681,9 +696,8 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
         indexName.setValue(resolver.getIndex(fieldName, prefix)); //
     }
 
-    private static void addFieldTypeAttribute(FieldMetadata field,
-                                              Element columnElement,
-                                              RDBMSDataSource.DataSourceDialect dialect, Element propertyElement) {
+    private static void addFieldTypeAttribute(FieldMetadata field, Element columnElement, Element propertyElement,
+            RDBMSDataSource.DataSourceDialect dialect) {
         Document document = columnElement.getOwnerDocument();
         Document propertyDocument = propertyElement.getOwnerDocument();
         Attr elementType = propertyDocument.createAttribute("type"); //$NON-NLS-1$

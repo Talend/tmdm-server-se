@@ -10,6 +10,7 @@
 
 package com.amalto.core.storage.adapt;
 
+import static com.amalto.core.query.user.UserQueryBuilder.eq;
 import static com.amalto.core.query.user.UserQueryBuilder.from;
 
 import java.io.File;
@@ -680,7 +681,7 @@ public class StorageAdaptTest extends TestCase {
         }
 
         String input1 = "<Person><Id>id-1</Id><name>name-1</name></Person>";
-        String input2 = "<Person><Id>id-2</Id><name>name-2</name><lastname>Jason</lastname><age>6</age><weight>12.6</weight><sex>true</sex></Person>";
+        String input2 = "<Person><Id>id-2</Id><name>name-2</name><lastname>Alice</lastname><age>20</age><weight>81.1</weight><sex>false</sex><name_2>abbc</name_2></Person>";
         createRecord(storage, factory, repository1, typeNames, new String[] { input1 });
 
         storage.begin();
@@ -691,7 +692,6 @@ public class StorageAdaptTest extends TestCase {
             assertEquals(1, results.getCount());
             for (DataRecord result : results) {
                 assertEquals("id-1", result.get("Id"));
-                assertEquals("name-1", result.get("name"));
             }
         } finally {
             results.close();
@@ -705,6 +705,10 @@ public class StorageAdaptTest extends TestCase {
         String[] updatedColumns = { "X_ID", "X_NAME", "X_LASTNAME", "X_AGE", "X_WEIGHT", "X_SEX", "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" };
         try {
             assertDatabaseChange(dataSource, tables, updatedColumns, new boolean[] { true });
+            String[] name2Table = { "PERSON_X_NAME_2" };
+            assertExistTables(dataSource, name2Table, new boolean[] { true });
+            String[] updatedColumnsForName2 = { "X_ID", "VALUE", "POS"};
+            assertDatabaseChange(dataSource, name2Table, updatedColumnsForName2, new boolean[] { true });
         } catch (SQLException e) {
             assertNull(e);
         }
@@ -717,7 +721,6 @@ public class StorageAdaptTest extends TestCase {
             for (DataRecord result : results) {
                 assertEquals("id-1", result.get("Id"));
                 assertEquals("name-1", result.get("name"));
-                assertEquals("Jason", result.get("lastname"));
                 assertEquals(6, result.get("age"));
                 assertEquals(12.6, result.get("weight"));
                 assertEquals(Boolean.TRUE, result.get("sex"));
@@ -731,15 +734,17 @@ public class StorageAdaptTest extends TestCase {
 
         storage.begin();
         objectType = repository2.getComplexType("Person");//$NON-NLS-1$
-        qb = from(objectType);
+        qb = from(objectType).where(eq(objectType.getField("Id"), "id-2")); //$NON-NLS-1$ //$NON-NLS-2$
         results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(2, results.getCount());
+            assertEquals(1, results.getCount());
             for (DataRecord result : results) {
-                assertEquals("Jason", result.get("lastname"));
-                assertEquals(6, result.get("age"));
-                assertEquals(12.6, result.get("weight"));
-                assertEquals(Boolean.TRUE, result.get("sex"));
+                assertEquals("Alice", result.get("lastname"));
+                assertEquals(20, result.get("age"));
+                assertEquals(81.1, result.get("weight"));
+                assertEquals(Boolean.FALSE, result.get("sex"));
+                assertEquals(1, ((List)result.get("name_2")).size());
+                assertEquals("abbc", ((List)result.get("name_2")).get(0));
             }
         } finally {
             results.close();

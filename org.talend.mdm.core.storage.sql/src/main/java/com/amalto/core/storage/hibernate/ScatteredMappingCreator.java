@@ -78,6 +78,12 @@ class ScatteredMappingCreator extends DefaultMetadataVisitor<TypeMapping> {
                 newFlattenField.setData(MetadataRepository.DATA_ZIPPED, Boolean.FALSE);
             }
         }
+
+        String defaultValueRule = field.<String> getData(MetadataRepository.DEFAULT_VALUE_RULE);
+        if (StringUtils.isNotBlank(defaultValueRule)) {
+            newFlattenField.setData(MetadataRepository.DEFAULT_VALUE_RULE, defaultValueRule);
+        }
+
         currentType.peek().addField(newFlattenField);
         entityMapping.map(field, newFlattenField);
         currentMapping.peek().map(field, newFlattenField);

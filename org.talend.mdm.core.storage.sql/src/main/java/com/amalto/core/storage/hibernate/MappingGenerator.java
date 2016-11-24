@@ -668,14 +668,14 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
 
     private String convertedDefaultValue(String defaultValueRule) {
         String covertValue = defaultValueRule;
-        if (defaultValueRule.equals(MetadataRepository.FN_FALSE)) {
+        if (defaultValueRule.equalsIgnoreCase(MetadataRepository.FN_FALSE)) {
             if (dataSource.getDialectName() == RDBMSDataSource.DataSourceDialect.SQL_SERVER
                     || dataSource.getDialectName() == RDBMSDataSource.DataSourceDialect.ORACLE_10G) {
                 covertValue = "0"; //$NON-NLS-1$
             } else {
                 covertValue = Boolean.FALSE.toString();
             }
-        } else if (defaultValueRule.equals(MetadataRepository.FN_TRUE)) {
+        } else if (defaultValueRule.equalsIgnoreCase(MetadataRepository.FN_TRUE)) {
             if (dataSource.getDialectName() == RDBMSDataSource.DataSourceDialect.SQL_SERVER
                     || dataSource.getDialectName() == RDBMSDataSource.DataSourceDialect.ORACLE_10G) {
                 covertValue = "1"; //$NON-NLS-1$

@@ -63,8 +63,13 @@
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-xjc</artifactId>
         </dependency>
+        <!-- MDM dependencies -->
+        <dependency>
+            <groupId>org.talend.mdm</groupId>
+            <artifactId>org.talend.mdm.common</artifactId>
+        </dependency>
     </dependencies>
-    
+        
     <profiles>
     	<profile>
             <id>dev-build</id>

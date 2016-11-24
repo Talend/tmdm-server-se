@@ -22,7 +22,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPath;
@@ -34,6 +33,7 @@ import javax.xml.xpath.XPathFactory;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
+import org.talend.mdm.commmon.util.core.XmlUtil;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentType;
@@ -275,18 +275,17 @@ public class DefaultStorageClassLoader extends StorageClassLoader {
     
     protected InputStream toInputStream(Document document) throws Exception {
         StringWriter buffer = new StringWriter();
-        TransformerFactory tf = TransformerFactory.newInstance();
-        Transformer t = tf.newTransformer();
+        Transformer transformer = XmlUtil.generateTransformer();
         DocumentType doctype = document.getDoctype();
-        if(doctype != null) {
-            if(doctype.getPublicId() != null){
-                t.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, doctype.getPublicId());
+        if (doctype != null) {
+            if (doctype.getPublicId() != null) {
+                transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, doctype.getPublicId());
             }
-            if(doctype.getSystemId() != null){
-                t.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, doctype.getSystemId());
+            if (doctype.getSystemId() != null) {
+                transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, doctype.getSystemId());
             }
         }
-        t.transform(new DOMSource(document), new StreamResult(buffer));
+        transformer.transform(new DOMSource(document), new StreamResult(buffer));
         String cnt = buffer.toString();
         return new ByteArrayInputStream(cnt.getBytes("UTF-8")); //$NON-NLS-1$
     }

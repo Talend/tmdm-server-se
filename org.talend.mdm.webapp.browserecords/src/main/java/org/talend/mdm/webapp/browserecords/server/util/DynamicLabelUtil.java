@@ -29,15 +29,15 @@ import org.talend.mdm.webapp.browserecords.client.util.CommonUtil;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.amalto.webapp.core.bean.Configuration;
-import com.amalto.webapp.core.util.Util;
-import com.amalto.webapp.core.util.XmlUtil;
 import com.amalto.core.webservice.WSDataClusterPK;
 import com.amalto.core.webservice.WSDataModelPK;
 import com.amalto.core.webservice.WSGetDataModel;
 import com.amalto.core.webservice.WSGetItem;
 import com.amalto.core.webservice.WSItem;
 import com.amalto.core.webservice.WSItemPK;
+import com.amalto.webapp.core.bean.Configuration;
+import com.amalto.webapp.core.util.Util;
+import com.amalto.webapp.core.util.XmlUtil;
 import com.sun.xml.xsom.XSAnnotation;
 import com.sun.xml.xsom.XSComplexType;
 import com.sun.xml.xsom.XSElementDecl;
@@ -56,8 +56,7 @@ public class DynamicLabelUtil {
      * @return
      */
     public static void getDynamicLabel(Document parsedDocument, String baseXpath, ItemNodeModel itemModel,
-            Map<String, TypeModel> metaDataTypes,
-            String language) {
+            Map<String, TypeModel> metaDataTypes, String language) {
         try {
             String typePath = itemModel.getTypePath();
             TypeModel typeModel = metaDataTypes.get(typePath);
@@ -70,9 +69,10 @@ public class DynamicLabelUtil {
             String label = typeModel.getLabel(language);
             if (org.talend.mdm.webapp.base.server.util.DynamicLabelUtil.isDynamicLabel(label)) {
                 label = replaceForeignPath(fullxpath, label, parsedDocument);
-                String stylesheet = org.talend.mdm.webapp.base.server.util.DynamicLabelUtil.genStyle(fullxpath, XmlUtil.escapeXml(label));
+                String stylesheet = org.talend.mdm.webapp.base.server.util.DynamicLabelUtil.genStyle(fullxpath,
+                        XmlUtil.escapeXml(label));
                 String dynamicLB = org.talend.mdm.webapp.base.server.util.DynamicLabelUtil
-                        .getParsedLabel(org.talend.mdm.webapp.base.server.util.XmlUtil.styleDocument(parsedDocument, stylesheet));
+                        .getParsedLabel(org.talend.mdm.commmon.util.core.XmlUtil.styleDocument(parsedDocument, stylesheet));
                 // @temp yguo, set the properties to itemmodel
                 itemModel.setDynamicLabel(dynamicLB);
             }

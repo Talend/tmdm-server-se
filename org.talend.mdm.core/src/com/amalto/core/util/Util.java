@@ -20,7 +20,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
-import java.io.StringWriter;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -45,11 +44,7 @@ import javax.xml.namespace.NamespaceContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
@@ -61,6 +56,7 @@ import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.util.core.ITransformerConstants;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
+import org.talend.mdm.commmon.util.core.XmlUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -75,7 +71,6 @@ import com.amalto.core.objects.DroppedItemPOJO;
 import com.amalto.core.objects.DroppedItemPOJOPK;
 import com.amalto.core.objects.ItemPOJO;
 import com.amalto.core.objects.ItemPOJOPK;
-import com.amalto.core.objects.Service;
 import com.amalto.core.objects.UpdateReportPOJO;
 import com.amalto.core.objects.datacluster.DataClusterPOJOPK;
 import com.amalto.core.objects.transformers.TransformerV2POJOPK;
@@ -129,8 +124,6 @@ import com.sun.xml.xsom.util.DomAnnotationParserFactory;
 public class Util {
 
     private static final Logger LOGGER = Logger.getLogger(Util.class);
-
-    private static final TransformerFactory transformerFactory = TransformerFactory.newInstance();
 
     private static final String USER_PROPERTY_PREFIX = "${user_context"; //$NON-NLS-1$
 
@@ -345,22 +338,7 @@ public class Util {
      * @throws TransformerException
      */
     public static String nodeToString(Node n) throws TransformerException {
-        return nodeToString(n, true, LOGGER.isDebugEnabled());
-    }
-
-    public static String nodeToString(Node n, boolean omitXMLDeclaration, boolean indent) throws TransformerException {
-        StringWriter sw = new StringWriter();
-        Transformer transformer = transformerFactory.newTransformer();
-        if (omitXMLDeclaration) {
-            transformer.setOutputProperty("omit-xml-declaration", "yes");
-        } else {
-            transformer.setOutputProperty("omit-xml-declaration", "no");
-        }
-        if (indent) {
-            transformer.setOutputProperty("indent", "yes");
-        }
-        transformer.transform(new DOMSource(n), new StreamResult(sw));
-        return sw.toString().replaceAll("\r\n", "\n");
+        return XmlUtil.nodeToString(n, true, LOGGER.isDebugEnabled()).replaceAll("\r\n", "\n");
     }
 
     /**

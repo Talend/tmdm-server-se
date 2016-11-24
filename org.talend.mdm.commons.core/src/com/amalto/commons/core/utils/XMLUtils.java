@@ -2,17 +2,13 @@ package com.amalto.commons.core.utils;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.io.StringWriter;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
+import org.talend.mdm.commmon.util.core.XmlUtil;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -218,39 +214,6 @@ public final class XMLUtils {
 	}
 
 	/**
-	 * Generates an xml string from a node
-	 * (not pretty formatted)
-	 * @param n the node
-	 * @return the xml string
-	 * @throws TransformerException
-	 */
-	public static String nodeToString(Node n) throws TransformerException{
-		return nodeToString(n,true);
-	}
-	/**
-	 * Generates an xml string from a node with or without the xml declaration
-	 * (not pretty formatted)
-	 * @param n the node
-	 * @return the xml string
-	 * @throws TransformerException
-	 */
-	public static String nodeToString(Node n, boolean omitXMLDeclaration) throws TransformerException{
-       	StringWriter sw = new StringWriter();
-       	Transformer transformer = TransformerFactory.newInstance().newTransformer();
-       	if (omitXMLDeclaration)
-       		transformer.setOutputProperty("omit-xml-declaration","yes");
-       	else
-       		transformer.setOutputProperty("omit-xml-declaration","no");
-       	transformer.setOutputProperty("indent","yes");
-       	transformer.transform(
-				new DOMSource(n),
-				new StreamResult(sw)
-				);
-       	if (sw==null) return null;
-		return sw.toString();
-	}
-
-	/**
 	 * Get a nodelist from an xPath
 	 * @throws TransformerException
 	 */
@@ -311,47 +274,42 @@ public final class XMLUtils {
 	 * @throws IOException
 	 * @throws TransformerException
 	 */
-    public static Document validate(Element element, String schema)
-    	throws SAXException,ParserConfigurationException,IOException,TransformerException{
+    public static Document validate(Element element, String schema) throws SAXException, ParserConfigurationException,
+            IOException, TransformerException {
 
-    	org.apache.log4j.Logger.getLogger(XMLUtils.class).trace("validate() "+element.getLocalName());
+        org.apache.log4j.Logger.getLogger(XMLUtils.class).trace("validate() " + element.getLocalName());
 
-		//parse
-		Document d=null;
-		SAXErrorHandler seh = new SAXErrorHandler();
+        // parse
+        Document d = null;
+        SAXErrorHandler seh = new SAXErrorHandler();
 
-        //initialize the sax parser which uses Xerces
-		System.setProperty("javax.xml.parsers.DocumentBuilderFactory",
-				"org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		//Schema validation based on schemaURL
-		factory.setNamespaceAware(true);
-		factory.setValidating((schema!=null));
-		factory.setAttribute(
-				"http://java.sun.com/xml/jaxp/properties/schemaLanguage",
-				"http://www.w3.org/2001/XMLSchema");
-		if (schema != null) {
-		    factory.setAttribute(
-				"http://java.sun.com/xml/jaxp/properties/schemaSource",
-				new InputSource(new StringReader(schema))
-				);
-		}
-		DocumentBuilder builder;
-		builder = factory.newDocumentBuilder();
-		builder.setErrorHandler(seh);
-		d = builder.parse(new InputSource(new StringReader(XMLUtils.nodeToString(element))));
+        // initialize the sax parser which uses Xerces
+        System.setProperty("javax.xml.parsers.DocumentBuilderFactory", "org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        // Schema validation based on schemaURL
+        factory.setNamespaceAware(true);
+        factory.setValidating((schema != null));
+        factory.setAttribute("http://java.sun.com/xml/jaxp/properties/schemaLanguage", "http://www.w3.org/2001/XMLSchema");
+        if (schema != null) {
+            factory.setAttribute("http://java.sun.com/xml/jaxp/properties/schemaSource",
+                    new InputSource(new StringReader(schema)));
+        }
+        DocumentBuilder builder;
+        builder = factory.newDocumentBuilder();
+        builder.setErrorHandler(seh);
+        d = builder.parse(new InputSource(new StringReader(XmlUtil.nodeToString(element))));
 
-		//check if dcument parsed correctly against the schema
-		if (schema != null) {
-			String errors = seh.getErrors();
-			if (!errors.equals("")) {
-				String xmlString = XMLUtils.nodeToString(element);
-				String err = "The item "+element.getLocalName()+" did not validate against the model: \n" + errors+"\n"
-					+xmlString;	//.substring(0, Math.min(100, xmlString.length()));
-				throw new SAXException(err);
-			}
-		}
-		return d;
+        // check if dcument parsed correctly against the schema
+        if (schema != null) {
+            String errors = seh.getErrors();
+            if (!errors.equals("")) {
+                String xmlString = XmlUtil.nodeToString(element);
+                String err = "The item " + element.getLocalName() + " did not validate against the model: \n" + errors + "\n"
+                        + xmlString; // .substring(0, Math.min(100, xmlString.length()));
+                throw new SAXException(err);
+            }
+        }
+        return d;
     }
 
 

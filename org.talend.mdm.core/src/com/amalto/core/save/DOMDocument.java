@@ -15,10 +15,10 @@ import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
-import org.talend.mdm.commmon.util.core.XmlUtil;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import com.amalto.commons.core.utils.XMLUtils;
 import com.amalto.core.history.DOMMutableDocument;
 import com.amalto.core.history.DeleteType;
 import com.amalto.core.history.Document;
@@ -146,7 +146,7 @@ public class DOMDocument implements DOMMutableDocument {
             // TMDM-6900 Ensure the xsi prefix is declared in exported document when save uses a DOM document.
             documentElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI,
                     "xmlns:xsi", XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI); //$NON-NLS-1$
-            return XmlUtil.nodeToString(documentElement);
+            return XMLUtils.nodeToString(documentElement);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

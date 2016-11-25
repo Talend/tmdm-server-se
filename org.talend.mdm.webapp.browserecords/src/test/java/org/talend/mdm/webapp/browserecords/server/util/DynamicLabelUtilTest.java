@@ -42,6 +42,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.amalto.commons.core.utils.XMLUtils;
 import com.amalto.core.util.Util;
 import com.extjs.gxt.ui.client.data.ModelData;
 
@@ -128,8 +129,8 @@ public class DynamicLabelUtilTest extends TestCase {
             label = mock_replaceForeignPath(fullxpath, label, parsedDocument);
             String stylesheet = org.talend.mdm.webapp.base.server.util.DynamicLabelUtil.genStyle(fullxpath,
                     com.amalto.webapp.core.util.XmlUtil.escapeXml(label));
-            String dynamicLB = org.talend.mdm.webapp.base.server.util.DynamicLabelUtil
-                    .getParsedLabel(org.talend.mdm.commmon.util.core.XmlUtil.styleDocument(parsedDocument, stylesheet));
+            String dynamicLB = org.talend.mdm.webapp.base.server.util.DynamicLabelUtil.getParsedLabel(XMLUtils.styleDocument(
+                    parsedDocument, stylesheet));
             itemModel.setDynamicLabel(dynamicLB);
         }
 

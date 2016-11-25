@@ -30,6 +30,7 @@ import org.talend.mdm.webapp.base.shared.TypeModel;
 import org.talend.mdm.webapp.browserecords.client.util.CommonUtil;
 import org.talend.mdm.webapp.browserecords.shared.VisibleRuleResult;
 
+import com.amalto.commons.core.utils.XMLUtils;
 import com.amalto.webapp.core.util.XmlUtil;
 
 public class DisplayRuleEngine {
@@ -131,7 +132,7 @@ public class DisplayRuleEngine {
                             Element el = (Element) node;
                             String preciseXPath = getRealXPath(el);
                             String style = genDefaultValueStyle(concept, preciseXPath, model.getDefaultValueExpression(), model);
-                            org.dom4j.Document transformedDocumentValue = org.talend.mdm.commmon.util.core.XmlUtil.styleDocument(
+                            org.dom4j.Document transformedDocumentValue = XMLUtils.styleDocument(
                                     dom4jDoc, style);
 
                             int beginIndex = preciseXPath.lastIndexOf("/"); //$NON-NLS-1$
@@ -166,7 +167,7 @@ public class DisplayRuleEngine {
                             String preciseXPath = getRealXPath(el);
                             String style = genVisibleRuleStyle(concept, preciseXPath, model.getVisibleExpression(),
                                     isMultiOccurence);
-                            org.dom4j.Document transformedDocumentValue = org.talend.mdm.commmon.util.core.XmlUtil.styleDocument(
+                            org.dom4j.Document transformedDocumentValue = XMLUtils.styleDocument(
                                     dom4jDoc, style);
                             int beginIndex = preciseXPath.lastIndexOf("/"); //$NON-NLS-1$
                             String matchPath = beginIndex != -1 ? preciseXPath.substring(beginIndex + 1) : preciseXPath;

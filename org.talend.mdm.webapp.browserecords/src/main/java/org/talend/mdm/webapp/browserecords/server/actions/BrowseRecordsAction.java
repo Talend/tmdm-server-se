@@ -112,6 +112,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.amalto.commons.core.utils.XMLUtils;
 import com.amalto.core.integrity.FKIntegrityCheckResult;
 import com.amalto.core.objects.ItemPOJOPK;
 import com.amalto.core.objects.UpdateReportPOJO;
@@ -1026,7 +1027,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
 
             ItemBean itemBean = new ItemBean(
                     concept,
-                    CommonUtil.joinStrings(idsArray, "."), org.talend.mdm.commmon.util.core.XmlUtil.nodeToString(doc.getDocumentElement(), true, true));//$NON-NLS-1$
+                    CommonUtil.joinStrings(idsArray, "."), XMLUtils.nodeToString(doc.getDocumentElement(), true, true));//$NON-NLS-1$
             itemBean.setOriginalMap(originalMap);
             itemBean.setFormateMap(formateValueMap);
             if (checkSmartViewExistsByLang(concept, language)) {
@@ -2327,7 +2328,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
                         }
                     }
                 }
-                itemBean.setItemXml(org.talend.mdm.commmon.util.core.XmlUtil.nodeToString(wsItemDoc, true, true));
+                itemBean.setItemXml(XMLUtils.nodeToString(wsItemDoc, true, true));
             }
         }
     }

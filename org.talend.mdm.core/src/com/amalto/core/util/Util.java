@@ -56,7 +56,6 @@ import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.util.core.ITransformerConstants;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
-import org.talend.mdm.commmon.util.core.XmlUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -65,6 +64,7 @@ import org.w3c.dom.Text;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import com.amalto.commons.core.utils.XMLUtils;
 import com.amalto.core.delegator.BeanDelegatorContainer;
 import com.amalto.core.jobox.JobContainer;
 import com.amalto.core.objects.DroppedItemPOJO;
@@ -338,7 +338,7 @@ public class Util {
      * @throws TransformerException
      */
     public static String nodeToString(Node n) throws TransformerException {
-        return XmlUtil.nodeToString(n, true, LOGGER.isDebugEnabled()).replaceAll("\r\n", "\n");
+        return XMLUtils.nodeToString(n, true, LOGGER.isDebugEnabled()).replaceAll("\r\n", "\n");
     }
 
     /**

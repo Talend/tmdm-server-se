@@ -33,7 +33,6 @@ import javax.xml.xpath.XPathFactory;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
-import org.talend.mdm.commmon.util.core.XmlUtil;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentType;
@@ -41,6 +40,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
+import com.amalto.commons.core.utils.XMLUtils;
 import com.amalto.core.storage.StorageType;
 import com.amalto.core.storage.datasource.RDBMSDataSource;
 import com.amalto.core.storage.datasource.RDBMSDataSourceBuilder;
@@ -275,7 +275,7 @@ public class DefaultStorageClassLoader extends StorageClassLoader {
     
     protected InputStream toInputStream(Document document) throws Exception {
         StringWriter buffer = new StringWriter();
-        Transformer transformer = XmlUtil.generateTransformer();
+        Transformer transformer = XMLUtils.generateTransformer();
         DocumentType doctype = document.getDoctype();
         if (doctype != null) {
             if (doctype.getPublicId() != null) {

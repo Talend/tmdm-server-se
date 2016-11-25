@@ -29,6 +29,7 @@ import org.talend.mdm.webapp.browserecords.client.util.CommonUtil;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.amalto.commons.core.utils.XMLUtils;
 import com.amalto.core.webservice.WSDataClusterPK;
 import com.amalto.core.webservice.WSDataModelPK;
 import com.amalto.core.webservice.WSGetDataModel;
@@ -71,8 +72,8 @@ public class DynamicLabelUtil {
                 label = replaceForeignPath(fullxpath, label, parsedDocument);
                 String stylesheet = org.talend.mdm.webapp.base.server.util.DynamicLabelUtil.genStyle(fullxpath,
                         XmlUtil.escapeXml(label));
-                String dynamicLB = org.talend.mdm.webapp.base.server.util.DynamicLabelUtil
-                        .getParsedLabel(org.talend.mdm.commmon.util.core.XmlUtil.styleDocument(parsedDocument, stylesheet));
+                String dynamicLB = org.talend.mdm.webapp.base.server.util.DynamicLabelUtil.getParsedLabel(XMLUtils.styleDocument(
+                        parsedDocument, stylesheet));
                 // @temp yguo, set the properties to itemmodel
                 itemModel.setDynamicLabel(dynamicLB);
             }

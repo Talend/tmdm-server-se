@@ -668,4 +668,23 @@ public class MetadataRepositoryTest extends TestCase {
             assertEquals(SimpleTypeFieldMetadata.class, referFieldMetadata.getForeignKeyInfoFields().get(0) .getClass()) ;
         }
     }
+
+    //TMDM-9086 if the default value is string, number, and the fn:true(), fn:false(), filed's data contains DEFAULT_VALUE_RULE value 
+    public void test_32() throws Exception {
+        MetadataRepository repository = new MetadataRepository();
+        InputStream stream = getClass().getResourceAsStream("schema32.xsd");
+        repository.load(stream);
+
+        ComplexTypeMetadata entityType = repository.getComplexType("Object");
+        assertNotNull(entityType);
+        assertTrue(entityType.hasField("name"));
+        assertTrue(entityType.hasField("lastname"));
+        assertTrue(entityType.hasField("sex"));
+
+        assertEquals("\"Jason\"", entityType.getField("lastname").getData(MetadataRepository.DEFAULT_VALUE_RULE));
+        assertEquals("6", entityType.getField("age").getData(MetadataRepository.DEFAULT_VALUE_RULE));
+        assertEquals("12.6", entityType.getField("weight").getData(MetadataRepository.DEFAULT_VALUE_RULE));
+        assertEquals("fn:true()", entityType.getField("sex").getData(MetadataRepository.DEFAULT_VALUE_RULE));
+        assertEquals(null, entityType.getField("name_1").getData(MetadataRepository.DEFAULT_VALUE_RULE));
+    }
 }

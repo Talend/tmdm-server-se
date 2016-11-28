@@ -21,6 +21,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.amalto.commons.core.utils.XMLUtils;
 import com.amalto.core.delegator.ILocalUser;
 import com.amalto.core.util.LocalUser;
 import com.amalto.core.webservice.WSBoolean;
@@ -106,30 +107,30 @@ public class Configuration {
         }
 
         ILocalUser user = LocalUser.getLocalUser();
-        if(!Util.userCanWrite(user)) {
+        if (!Util.userCanWrite(user)) {
             return;
         }
-        
+
         String xml = Util
                 .getPort()
                 .getItem(
-                        new WSGetItem(
-                                new WSItemPK(
-                                        new WSDataClusterPK("PROVISIONING"), "User", new String[] { user.getUsername() }))) //$NON-NLS-1$//$NON-NLS-2$
+                        new WSGetItem(new WSItemPK(
+                                new WSDataClusterPK("PROVISIONING"), "User", new String[] { user.getUsername() }))) //$NON-NLS-1$//$NON-NLS-2$
                 .getContent();
         Document d = Util.parse(xml);
-        
+
         com.amalto.core.util.Util.setUserProperty(d, "cluster", cluster); //$NON-NLS-1$
         com.amalto.core.util.Util.setUserProperty(d, "model", model); //$NON-NLS-1$
-        
-        
+
         if (com.amalto.core.util.Util.isEnterprise()) {
-            Util.getPort().putItem(
-                    new WSPutItem(new WSDataClusterPK("PROVISIONING"), Util.nodeToString(d.getDocumentElement()).replaceAll( //$NON-NLS-1$
-                            "<\\?xml.*?\\?>", ""), new WSDataModelPK("PROVISIONING"), false)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            Util.getPort()
+                    .putItem(
+                            new WSPutItem(
+                                    new WSDataClusterPK("PROVISIONING"), XMLUtils.nodeToString(d.getDocumentElement(), true, true).replaceAll( //$NON-NLS-1$
+                                                    "<\\?xml.*?\\?>", ""), new WSDataModelPK("PROVISIONING"), false)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         } else {
             Util.storeProvisioning(LocalUser.getLocalUser().getUsername(),
-                    Util.nodeToString(d.getDocumentElement()).replaceAll("<\\?xml.*?\\?>", "")); //$NON-NLS-1$ //$NON-NLS-2$
+                    XMLUtils.nodeToString(d.getDocumentElement(), true, true).replaceAll("<\\?xml.*?\\?>", "")); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 

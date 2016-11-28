@@ -57,6 +57,7 @@ import com.amalto.core.storage.record.DataRecordXmlWriter;
 import com.amalto.core.storage.record.ViewSearchResultsWriter;
 import com.amalto.core.storage.record.XmlStringDataRecordReader;
 import com.amalto.core.util.XtentisException;
+import com.amalto.xmlserver.interfaces.ItemPKCriteria;
 import com.amalto.xmlserver.interfaces.XmlServerException;
 
 public class StorageWrapperTest extends TestCase {
@@ -249,6 +250,48 @@ public class StorageWrapperTest extends TestCase {
 
         storage2.commit();
 
+    }
+    
+    // TMDM-10201 Exported file of related entity is empty when entity is inheritance type
+    public void testGetItemPKsByCriteria() throws XmlServerException {
+        final MetadataRepository repository = prepareMetadata("InheritFKTest.xsd"); //$NON-NLS-1$
+        final Storage storage = prepareStorage("InheritFKTest", repository); //$NON-NLS-1$
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+
+        List<DataRecord> records = new LinkedList<DataRecord>();
+        records.add(factory.read(repository, repository.getComplexType("EnumValue"), //$NON-NLS-1$
+                "<EnumValue><EnumValID>1</EnumValID><EnumType>aaaa</EnumType><Value>bbbb</Value></EnumValue>")); //$NON-NLS-1$
+        records.add(factory.read(repository, repository.getComplexType("Feature"), //$NON-NLS-1$
+                "<Feature><FeatureCode>1111</FeatureCode><Name>cccc</Name><Value xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"EnumValueType\"><EnumType>aaaa</EnumType><EnumFK>[1]</EnumFK></Value></Feature>")); //$NON-NLS-1$
+        storage.begin();
+        storage.update(records);
+        storage.commit();
+        
+        
+        ItemPKCriteria criteria = new ItemPKCriteria();
+        criteria.setClusterName("InheritFKTest"); //$NON-NLS-1$
+        criteria.setConceptName("Feature"); //$NON-NLS-1$
+        criteria.setContentKeywords(""); //$NON-NLS-1$
+        criteria.setKeysKeywords("$Feature/Value/EnumFK,EnumValueType/EnumFK$[1]"); //$NON-NLS-1$
+        criteria.setKeys(""); //$NON-NLS-1$
+        criteria.setCompoundKeyKeywords(false);
+        criteria.setFromDate(-1L);
+        criteria.setToDate(-1L);
+        criteria.setMaxItems(Integer.MAX_VALUE);
+        criteria.setSkip(0);
+        criteria.setUseFTSearch(false);
+        
+        StorageWrapper wrapper = new StorageWrapper() {
+
+            @Override
+            protected Storage getStorage(String dataClusterName) {
+                return storage;
+            }
+
+        };
+        List<String> result = wrapper.getItemPKsByCriteria(criteria);
+        assertEquals("<totalCount>1</totalCount>", result.get(0)); //$NON-NLS-1$
+        assertTrue(result.get(1).contains("<n>Feature</n><ids><i>1111</i>")); //$NON-NLS-1$
     }
 
     private MetadataRepository prepareMetadata(String xsd) {

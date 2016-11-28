@@ -11,18 +11,23 @@
 
 package com.amalto.core.save;
 
+import javax.xml.XMLConstants;
+import javax.xml.parsers.DocumentBuilder;
+
+import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+
 import com.amalto.commons.core.utils.XMLUtils;
-import com.amalto.core.history.*;
+import com.amalto.core.history.DOMMutableDocument;
+import com.amalto.core.history.DeleteType;
 import com.amalto.core.history.Document;
+import com.amalto.core.history.DocumentTransformer;
+import com.amalto.core.history.MutableDocument;
 import com.amalto.core.history.accessor.Accessor;
 import com.amalto.core.history.accessor.DOMAccessorFactory;
 import com.amalto.core.save.context.SaverContextFactory;
 import com.amalto.core.schema.validation.SkipAttributeDocumentBuilder;
-import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
-import org.w3c.dom.*;
-
-import javax.xml.XMLConstants;
-import javax.xml.parsers.DocumentBuilder;
 
 public class DOMDocument implements DOMMutableDocument {
 

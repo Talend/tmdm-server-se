@@ -10,6 +10,7 @@
 
 package com.amalto.core.storage.adapt;
 
+import static com.amalto.core.query.user.UserQueryBuilder.eq;
 import static com.amalto.core.query.user.UserQueryBuilder.from;
 
 import java.io.File;
@@ -662,6 +663,96 @@ public class StorageAdaptTest extends TestCase {
         }
     }
 
+    // TMDM-9086 test for add mandatory field with default value
+    public void test11_addMandatoryFiledWithDefaultValue() throws Exception {
+        DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
+        Storage storage = new HibernateStorage("Person", StorageType.MASTER);
+        storage.init(dataSource);
+        String[] typeNames = { "Person" };
+        String[] tables = { "Person" };
+        String[] columns = { "X_ID", "X_NAME", "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" };
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+        MetadataRepository repository1 = new MetadataRepository();
+        repository1.load(StorageAdaptTest.class.getResourceAsStream("schema11_1.xsd"));
+        storage.prepare(repository1, true);
+        try {
+            assertDatabaseChange(dataSource, tables, columns, new boolean[] { true });
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+
+        String input1 = "<Person><Id>id-1</Id><name>name-1</name></Person>";
+        String input2 = "<Person><Id>id-2</Id><name>name-2</name><lastname>Alice</lastname><age>20</age><weight>81.1</weight><sex>false</sex><name_2>abbc</name_2></Person>";
+        createRecord(storage, factory, repository1, typeNames, new String[] { input1 });
+
+        storage.begin();
+        ComplexTypeMetadata objectType = repository1.getComplexType("Person");//$NON-NLS-1$
+        UserQueryBuilder qb = from(objectType);
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+            for (DataRecord result : results) {
+                assertEquals("id-1", result.get("Id"));
+            }
+        } finally {
+            results.close();
+        }
+        storage.end();
+
+        MetadataRepository repository2 = new MetadataRepository();
+        repository2.load(StorageAdaptTest.class.getResourceAsStream("schema11_2.xsd"));
+        storage.adapt(repository2, true);
+        
+        String[] updatedColumns = { "X_ID", "X_NAME", "X_LASTNAME", "X_AGE", "X_WEIGHT", "X_SEX", "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" };
+        try {
+            assertDatabaseChange(dataSource, tables, updatedColumns, new boolean[] { true });
+            String[] name2Table = { "PERSON_X_NAME_2" };
+            assertExistTables(dataSource, name2Table, new boolean[] { true });
+            String[] updatedColumnsForName2 = { "X_ID", "VALUE", "POS"};
+            assertDatabaseChange(dataSource, name2Table, updatedColumnsForName2, new boolean[] { true });
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+
+        objectType = repository2.getComplexType("Person");//$NON-NLS-1$
+        qb = from(objectType);
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+            for (DataRecord result : results) {
+                assertEquals("id-1", result.get("Id"));
+                assertEquals("name-1", result.get("name"));
+                assertEquals(6, result.get("age"));
+                assertEquals(12.6, result.get("weight"));
+                assertEquals(Boolean.TRUE, result.get("sex"));
+            }
+        } finally {
+            results.close();
+        }
+        storage.end();
+
+        createRecord(storage, factory, repository2, typeNames, new String[] { input2 });
+
+        storage.begin();
+        objectType = repository2.getComplexType("Person");//$NON-NLS-1$
+        qb = from(objectType).where(eq(objectType.getField("Id"), "id-2")); //$NON-NLS-1$ //$NON-NLS-2$
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+            for (DataRecord result : results) {
+                assertEquals("Alice", result.get("lastname"));
+                assertEquals(20, result.get("age"));
+                assertEquals(81.1, result.get("weight"));
+                assertEquals(Boolean.FALSE, result.get("sex"));
+                assertEquals(1, ((List)result.get("name_2")).size());
+                assertEquals("abbc", ((List)result.get("name_2")).get(0));
+            }
+        } finally {
+            results.close();
+        }
+        storage.end();
+    }
+    
     private void assertColumnLengthChange(DataSourceDefinition dataSource, String tables, String columns, int expectedLength)
             throws SQLException {
         DataSource master = dataSource.getMaster();

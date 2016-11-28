@@ -12,18 +12,6 @@
     <artifactId>org.talend.mdm.core.plugin.base</artifactId>
     <name>org.talend.mdm.core.plugin.base</name>
 
-    <properties>
-        <saxon.version>9.0.0.8</saxon.version>
-    </properties>
-
-    <repositories>
-        <repository>
-            <id>saxon</id>
-            <name>Open Geospatial Consortium</name>
-            <url>https://svn.opengeospatial.org/ogc-projects/cite/maven</url>
-        </repository>
-    </repositories>
-    
     <build>
         <sourceDirectory>src</sourceDirectory>
         <resources>
@@ -69,7 +57,6 @@
         <dependency>
             <groupId>net.sourceforge.saxon</groupId>
             <artifactId>saxon9-dom</artifactId>
-            <version>${saxon.version}</version>
         </dependency>
 
     </dependencies>

@@ -273,6 +273,7 @@ public class StorageFullTextTest extends StorageTestCase {
         allRecords.add(factory.read(repository, store, "<Store><Id>lower case id</Id><Name>name2</Name></Store>"));
         allRecords.add(factory.read(repository, store, "<Store><Id>a</Id><Name>name3</Name></Store>"));
         allRecords.add(factory.read(repository, store, "<Store><Id>a&amp;b</Id><Name>name3</Name></Store>"));
+        allRecords.add(factory.read(repository, store, "<Store><Id>A&amp;B</Id><Name>name3</Name></Store>"));
         allRecords.add(factory.read(repository, employee, "<Employee><name>11 e</name><age>11</age><jobTitle>jobTitle 11</jobTitle></Employee>"));
         allRecords.add(factory.read(repository, employee, "<Employee><name>22 11 e</name><age>22</age><jobTitle>jobTitle 22</jobTitle></Employee>"));
         allRecords.add(factory.read(repository, employee, "<Employee><name>33 11 e</name><age>33</age><jobTitle>jobTitle 33</jobTitle></Employee>"));
@@ -1117,6 +1118,15 @@ public class StorageFullTextTest extends StorageTestCase {
             results.close();
         }
 
+        qb = from(store).selectId(store).where(contains(store.getField("Id"), "A&B"));
+        storage.begin();
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+        } finally {
+            results.close();
+        }
+
         qb = from(store).selectId(store).where(fullText("a&b"));
         storage.begin();
         results = storage.fetch(qb.getSelect());
@@ -1131,6 +1141,15 @@ public class StorageFullTextTest extends StorageTestCase {
         results = storage.fetch(qb.getSelect());
         try {
             assertEquals(2, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        qb = from(store).selectId(store).where(fullText("A&B"));
+        storage.begin();
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
         } finally {
             results.close();
         }

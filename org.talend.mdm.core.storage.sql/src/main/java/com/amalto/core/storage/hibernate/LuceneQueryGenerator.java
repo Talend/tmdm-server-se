@@ -28,6 +28,7 @@ import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.NumericRangeQuery;
 import org.apache.lucene.search.PhraseQuery;
+import org.apache.lucene.search.PrefixQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
@@ -349,20 +350,27 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
         StringBuilder queryBuffer = new StringBuilder();
         Iterator<Map.Entry<String, Boolean>> fieldsIterator = fieldsMap.entrySet().iterator();
         String fullTextValue = getFullTextValue(fullText);
+        BooleanQuery query = new BooleanQuery();
+        Query idQuery = null;
         while (fieldsIterator.hasNext()) {
             Map.Entry<String, Boolean> next = fieldsIterator.next();
             if (next.getValue()) {
                 queryBuffer.append(next.getKey()).append(ToLowerCaseFieldBridge.ID_POSTFIX + ':').append(fullTextValue);
-                queryBuffer.append(" OR "); //$NON-NLS-1$
+                idQuery = new PrefixQuery(new Term(next.getKey(), fullText.getValue()));
+            } else {
+                queryBuffer.append(next.getKey()).append(':').append(fullTextValue);
             }
-            queryBuffer.append(next.getKey()).append(':').append(fullTextValue);
             if (fieldsIterator.hasNext()) {
                 queryBuffer.append(" OR "); //$NON-NLS-1$
             }
         }
 
         String fullTextQuery = queryBuffer.toString();
-        return parseQuery(fieldsAsArray, fullTextQuery, fullText.getValue());
+        if (idQuery != null) {
+            query.add(idQuery, BooleanClause.Occur.SHOULD);
+        }
+        query.add(parseQuery(fieldsAsArray, fullTextQuery, fullText.getValue()), BooleanClause.Occur.SHOULD);
+        return query;
     }
 
     @Override
@@ -373,7 +381,7 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
         String fullTextQuery = fieldName + ':' + fullTextValue;
         if (fieldFullText.getField().getFieldMetadata().isKey()) {
             BooleanQuery query = new BooleanQuery();
-            query.add(parseQuery(fieldsAsArray, fullTextQuery, fieldFullText.getValue()), BooleanClause.Occur.SHOULD);
+            query.add(new PrefixQuery(new Term(fieldName, fieldFullText.getValue())), BooleanClause.Occur.SHOULD);
             fieldsAsArray = new String[] { fieldName + ToLowerCaseFieldBridge.ID_POSTFIX };
             fullTextQuery = fieldName + ToLowerCaseFieldBridge.ID_POSTFIX + ":" + fullTextValue; //$NON-NLS-1$
             query.add(parseQuery(fieldsAsArray, fullTextQuery, fieldFullText.getValue()), BooleanClause.Occur.SHOULD);
@@ -408,7 +416,7 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
         if (index > 0) {
             value = value.substring(index);
         }
-        char[] removes = new char[] { '[', ']', '+', '!', '(', ')', '^', '\"', '~', ':', '\\', '-'}; // Removes reserved
+        char[] removes = new char[] { '[', ']', '+', '!', '(', ')', '^', '\"', '~', ':', '\\', '-' }; // Removes reserved
                                                                                                  // characters
         for (char remove : removes) {
             value = value.replace(remove, ' ');

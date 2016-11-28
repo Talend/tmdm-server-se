@@ -4,6 +4,8 @@
     <defaultCache eternal="true" maxElementsInMemory="100" overflowToDisk="false" />
     <cache name="localUsers" maxBytesLocalHeap="100M" eternal="false" timeToIdleSeconds="300" overflowToDisk="false"
         memoryStoreEvictionPolicy="LRU" />
+    <cache name="routingRules" maxBytesLocalHeap="50M" eternal="false" timeToIdleSeconds="3000" overflowToDisk="false"
+        memoryStoreEvictionPolicy="LRU" />
     <cache name="datasources" maxBytesLocalHeap="100M" eternal="false" timeToIdleSeconds="300" overflowToDisk="false"
            memoryStoreEvictionPolicy="LRU" />
 </ehcache>

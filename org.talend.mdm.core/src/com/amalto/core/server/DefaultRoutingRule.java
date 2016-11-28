@@ -6,10 +6,15 @@ import com.amalto.core.objects.routing.RoutingRulePOJO;
 import com.amalto.core.objects.routing.RoutingRulePOJOPK;
 import com.amalto.core.util.XtentisException;
 import org.apache.log4j.Logger;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+
 import com.amalto.core.server.api.RoutingRule;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class DefaultRoutingRule implements RoutingRule {
@@ -19,6 +24,7 @@ public class DefaultRoutingRule implements RoutingRule {
     /**
      * Creates or updates a menu
      */
+    @CacheEvict(cacheManager = "mdmCacheManager", value = "routingRules", allEntries = true)
     public RoutingRulePOJOPK putRoutingRule(RoutingRulePOJO routingRule) throws XtentisException {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("createRoutingRule() ");
@@ -84,6 +90,7 @@ public class DefaultRoutingRule implements RoutingRule {
     /**
      * Remove a RoutingRule
      */
+    @CacheEvict(cacheManager = "mdmCacheManager", value = "routingRules", allEntries = true)
     public RoutingRulePOJOPK removeRoutingRule(RoutingRulePOJOPK pk) throws XtentisException {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Removing " + pk.getUniqueId());
@@ -103,14 +110,16 @@ public class DefaultRoutingRule implements RoutingRule {
     /**
      * Retrieve all RoutingRule PKs
      */
+    @Cacheable(cacheManager = "mdmCacheManager", value = "routingRules",  key = "#regex")
     public Collection<RoutingRulePOJOPK> getRoutingRulePKs(String regex) throws XtentisException {
+
         Collection<ObjectPOJOPK> routingRules = ObjectPOJO.findAllPKs(RoutingRulePOJO.class, regex);
         ArrayList<RoutingRulePOJOPK> l = new ArrayList<RoutingRulePOJOPK>();
         for (ObjectPOJOPK currentRule : routingRules) {
             l.add(new RoutingRulePOJOPK(currentRule));
         }
+
         return l;
     }
-
 
 }

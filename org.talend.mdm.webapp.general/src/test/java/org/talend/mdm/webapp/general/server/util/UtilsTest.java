@@ -26,7 +26,6 @@ import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit3.PowerMockSuite;
-import org.talend.mdm.commmon.util.core.XmlUtil;
 import org.talend.mdm.webapp.general.model.LanguageBean;
 import org.talend.mdm.webapp.general.server.actions.GeneralAction;
 import org.w3c.dom.DOMException;
@@ -60,7 +59,7 @@ public class UtilsTest extends TestCase {
         Element node = doc.createElement("language");
         node.setTextContent("en");
         doc.getDocumentElement().appendChild(node);
-        String newXml = XmlUtil.nodeToString(doc);
+        String newXml = XMLUtils.nodeToString(doc);
         assertEquals("en", XMLUtils.parse(newXml).getElementsByTagName("language").item(0).getTextContent());
     }
 

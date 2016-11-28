@@ -28,11 +28,11 @@ import javax.xml.xpath.XPathFactory;
 import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
-import org.talend.mdm.commmon.util.core.XmlUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
+import com.amalto.commons.core.utils.XMLUtils;
 import com.amalto.core.objects.ObjectPOJO;
 import com.amalto.core.objects.ObjectPOJOPK;
 import com.amalto.core.objects.datamodel.DataModelPOJO;
@@ -173,7 +173,7 @@ public class DefaultDataModel implements DataModel {
                 existingNode.getParentNode().removeChild(existingNode);
             }
             schemaAsDOM.getDocumentElement().appendChild(schemaAsDOM.importNode(newConceptAsDOM.getDocumentElement(), true));
-            dataModel.setSchema(XmlUtil.nodeToString(schemaAsDOM, true, false).replaceAll("\r\n", "\n"));
+            dataModel.setSchema(XMLUtils.nodeToString(schemaAsDOM, true, false).replaceAll("\r\n", "\n"));
             dataModel.store();
             invalidateConceptSession(dataModel.getName());
             return conceptName;
@@ -205,7 +205,7 @@ public class DefaultDataModel implements DataModel {
             if (existingNode != null) {
                 existingNode.getParentNode().removeChild(existingNode);
             }
-            dataModel.setSchema(XmlUtil.nodeToString(schemaAsDOM, true, false).replaceAll("\r\n", "\n"));
+            dataModel.setSchema(XMLUtils.nodeToString(schemaAsDOM, true, false).replaceAll("\r\n", "\n"));
             dataModel.store();
             invalidateConceptSession(dataModel.getName());
             return businessConceptName;

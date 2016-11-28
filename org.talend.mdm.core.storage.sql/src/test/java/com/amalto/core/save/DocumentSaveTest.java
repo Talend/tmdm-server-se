@@ -41,12 +41,12 @@ import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
-import org.talend.mdm.commmon.util.core.XmlUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.amalto.commons.core.utils.XMLUtils;
 import com.amalto.core.delegator.BeanDelegatorContainer;
 import com.amalto.core.delegator.ILocalUser;
 import com.amalto.core.history.DeleteType;
@@ -1094,7 +1094,7 @@ public class DocumentSaveTest extends TestCase {
                 + "<key>[HEAD].CoreTestsContainer.auto_increment.auto_increment</key>" + "<value>1</value>" + "</entry>"
                 + "<entry>" + "<key>[HEAD].Product.ProductFamily.Id</key>" + "<value>30</value>" + "</entry>" + "<entry>"
                 + "<key>[HEAD].CoreTestsContainer.auto_increment1.auto_increment1</key>" + "<value>1</value>" + "</entry>"
-                + "</AutoIncrement>", XmlUtil.nodeToString(committedElement, true, false).replaceAll("\r\n", "\n"));
+                + "</AutoIncrement>", XMLUtils.nodeToString(committedElement, true, false).replaceAll("\r\n", "\n"));
         assertTrue(source.hasCalledInitAutoIncrement);
 
     }

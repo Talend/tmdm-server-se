@@ -63,10 +63,13 @@
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-xjc</artifactId>
         </dependency>
-        <!-- MDM dependencies -->
         <dependency>
-            <groupId>org.talend.mdm</groupId>
-            <artifactId>org.talend.mdm.common</artifactId>
+            <groupId>net.sourceforge.saxon</groupId>
+            <artifactId>saxon9-dom</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>dom4j</groupId>
+            <artifactId>dom4j</artifactId>
         </dependency>
     </dependencies>
         

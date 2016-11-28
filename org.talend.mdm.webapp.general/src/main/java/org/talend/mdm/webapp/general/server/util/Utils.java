@@ -24,7 +24,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.log4j.Logger;
-import org.talend.mdm.commmon.util.core.XmlUtil;
 import org.talend.mdm.webapp.base.client.exception.ServiceException;
 import org.talend.mdm.webapp.general.model.GroupItem;
 import org.talend.mdm.webapp.general.model.LanguageBean;
@@ -313,12 +312,12 @@ public class Utils {
         if (doc.hasChildNodes()) {
             if (doc.getElementsByTagName("language").item(0) != null) { //$NON-NLS-1$
                 doc.getElementsByTagName("language").item(0).setTextContent(language); //$NON-NLS-1$
-                return XmlUtil.nodeToString(doc);
+                return XMLUtils.nodeToString(doc);
             } else {
                 Element node = doc.createElement("language"); //$NON-NLS-1$
                 node.setTextContent(language);
                 doc.getDocumentElement().appendChild(node);
-                return XmlUtil.nodeToString(doc);
+                return XMLUtils.nodeToString(doc);
             }
         }
         return xml;

@@ -2,13 +2,22 @@ package com.amalto.commons.core.utils;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.io.StringWriter;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
-import org.talend.mdm.commmon.util.core.XmlUtil;
+import org.apache.log4j.Logger;
+import org.dom4j.io.DocumentResult;
+import org.dom4j.io.DocumentSource;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -27,6 +36,11 @@ import com.sun.org.apache.xpath.internal.objects.XObject;
  */
 public final class XMLUtils {
 
+    private static final Logger logger = Logger.getLogger(XMLUtils.class);
+
+    private static final TransformerFactory transformerFactory = TransformerFactory.newInstance();
+
+    private static final TransformerFactory saxonTransformerFactory = new net.sf.saxon.TransformerFactoryImpl();
 
 	/**
 	 * Parsed an XML String into a {@link Document} without schema vaildation
@@ -297,13 +311,13 @@ public final class XMLUtils {
         DocumentBuilder builder;
         builder = factory.newDocumentBuilder();
         builder.setErrorHandler(seh);
-        d = builder.parse(new InputSource(new StringReader(XmlUtil.nodeToString(element))));
+        d = builder.parse(new InputSource(new StringReader(nodeToString(element))));
 
         // check if dcument parsed correctly against the schema
         if (schema != null) {
             String errors = seh.getErrors();
             if (!errors.equals("")) {
-                String xmlString = XmlUtil.nodeToString(element);
+                String xmlString = nodeToString(element);
                 String err = "The item " + element.getLocalName() + " did not validate against the model: \n" + errors + "\n"
                         + xmlString; // .substring(0, Math.min(100, xmlString.length()));
                 throw new SAXException(err);
@@ -346,7 +360,57 @@ public final class XMLUtils {
 		return results;
     }
 
+    public static Transformer generateTransformer() throws TransformerConfigurationException {
+        return transformerFactory.newTransformer();
+    }
 
+    public static Transformer generateTransformer(boolean isOmitXmlDeclaration) throws TransformerConfigurationException {
+        Transformer transformer = generateTransformer();
+        if (isOmitXmlDeclaration) {
+            transformer.setOutputProperty("omit-xml-declaration", "yes");
+        } else {
+            transformer.setOutputProperty("omit-xml-declaration", "no");
+        }
+        return transformer;
+    }
 
+    public static Transformer generateTransformer(boolean isOmitXmlDeclaration, boolean isIndent)
+            throws TransformerConfigurationException {
+        Transformer transformer = generateTransformer(isOmitXmlDeclaration);
+        if (isIndent) {
+            transformer.setOutputProperty("indent", "yes");
+        } else {
+            transformer.setOutputProperty("indent", "no");
+        }
+        return transformer;
+    }
 
+    public static String nodeToString(Node n, boolean isOmitXmlDeclaration, boolean isIndent) throws TransformerException {
+        StringWriter sw = new StringWriter();
+        Transformer transformer = generateTransformer(isOmitXmlDeclaration, isIndent);
+        transformer.transform(new DOMSource(n), new StreamResult(sw));
+        return sw.toString();
+    }
+
+    public static String nodeToString(Node n) throws TransformerException {
+        return nodeToString(n, true, true);
+    }
+
+    public static org.dom4j.Document styleDocument(org.dom4j.Document document, String stylesheet) throws Exception {
+        // load the transformer using JAXP
+        Transformer transformer = saxonTransformerFactory.newTransformer(new StreamSource(new StringReader(stylesheet)));
+
+        // now lets style the given document
+        DocumentSource source = new DocumentSource(document);
+        DocumentResult result = new DocumentResult();
+        transformer.transform(source, result);
+
+        // return the transformed document
+        org.dom4j.Document transformedDoc = result.getDocument();
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("The xml file style transformed successfully ");
+        }
+        return transformedDoc;
+    }
  }

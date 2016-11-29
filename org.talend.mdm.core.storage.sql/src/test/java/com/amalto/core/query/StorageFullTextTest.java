@@ -271,12 +271,15 @@ public class StorageFullTextTest extends StorageTestCase {
         allRecords.add(factory.read(repository, a3, "<a3><id>3</id><name>hamdi</name><a2>[1][2]</a2></a3>"));
         allRecords.add(factory.read(repository, store, "<Store><Id>Upper Case Id</Id><Name>name1</Name></Store>"));
         allRecords.add(factory.read(repository, store, "<Store><Id>lower case id</Id><Name>name2</Name></Store>"));
-        allRecords.add(factory.read(repository, employee, "<Employee><name>11 e</name><age>11</age><jobTitle>jobTitle 11</jobTitle></Employee>"));
-        allRecords.add(factory.read(repository, employee, "<Employee><name>22 11 e</name><age>22</age><jobTitle>jobTitle 22</jobTitle></Employee>"));
-        allRecords.add(factory.read(repository, employee, "<Employee><name>33 11 e</name><age>33</age><jobTitle>jobTitle 33</jobTitle></Employee>"));
-        allRecords.add(factory.read(repository, persons, "<Persons><name>11 p</name><age>11</age></Persons>"));
-        allRecords.add(factory.read(repository, persons, "<Persons><name>22 p</name><age>22</age></Persons>"));
-        allRecords.add(factory.read(repository, persons, "<Persons><name>33 p</name><age>33</age></Persons>"));
+        allRecords.add(factory.read(repository, employee, "<Employee><name>employee 1</name><age>11</age><jobTitle>jobTitle 11</jobTitle></Employee>"));
+        allRecords.add(factory.read(repository, employee, "<Employee><name>employee 2</name><age>22</age><jobTitle>jobTitle 22</jobTitle></Employee>"));
+        allRecords.add(factory.read(repository, employee, "<Employee><name>employee 3</name><age>33</age><jobTitle>jobTitle 33</jobTitle></Employee>"));
+        allRecords.add(factory.read(repository, persons, "<Persons><name>person 1</name><age>11</age></Persons>"));
+        allRecords.add(factory.read(repository, persons, "<Persons><name>person 2</name><age>22</age></Persons>"));
+        allRecords.add(factory.read(repository, persons, "<Persons><name>person 3</name><age>33</age></Persons>"));
+        allRecords.add(factory.read(repository, manager, "<Manager><name>manager 1</name><age>11</age><jobTitle>jobTitle 11</jobTitle><dept>dept 1</dept></Manager>"));
+        allRecords.add(factory.read(repository, manager, "<Manager><name>manager 2</name><age>22</age><jobTitle>jobTitle 22</jobTitle><dept>dept 2</dept></Manager>"));
+        allRecords.add(factory.read(repository, manager, "<Manager><name>manager 3</name><age>33</age><jobTitle>jobTitle 33</jobTitle><dept>dept 3</dept></Manager>"));
         
         try {
             storage.begin();
@@ -1508,15 +1511,54 @@ public class StorageFullTextTest extends StorageTestCase {
     }
     
     public void testFullTextSearchOnComplexType() throws Exception {
-        UserQueryBuilder qb = from(persons).where(fullText("11"));
+        UserQueryBuilder qb = from(persons).where(fullText("1"));
         qb.limit(5);
         StorageResults results = storage.fetch(qb.getSelect());
         try {
+            int recordCount = 0;
+            assertEquals(3, results.getCount());
             for (DataRecord result : results) {
                 if (result != null) {
-                    assertEquals("11 p", result.get("name"));
+                    if ("person 1".equals(result.get("name")) || "employee 1".equals(result.get("name")) || "manager 1".equals(result.get("name"))) {
+                        recordCount++;
+                    }
                 }
             }
+            assertEquals(3, recordCount);
+        } finally {
+            results.close();
+        }
+        
+        qb = from(employee).where(fullText("1"));
+        results = storage.fetch(qb.getSelect());
+        try {
+            int recordCount = 0;
+            assertEquals(2, results.getCount());
+            for (DataRecord result : results) {
+                if (result != null) {
+                    if ("employee 1".equals(result.get("name")) || "manager 1".equals(result.get("name"))) {
+                        recordCount++;
+                    }
+                }
+            }
+            assertEquals(2, recordCount);
+        } finally {
+            results.close();
+        }
+        
+        qb = from(manager).where(fullText("1"));
+        results = storage.fetch(qb.getSelect());
+        try {
+            int recordCount = 0;
+            assertEquals(1, results.getCount());
+            for (DataRecord result : results) {
+                if (result != null) {
+                    if ("manager 1".equals(result.get("name"))) {
+                        recordCount++;
+                    }
+                }
+            }
+            assertEquals(1, recordCount);
         } finally {
             results.close();
         }

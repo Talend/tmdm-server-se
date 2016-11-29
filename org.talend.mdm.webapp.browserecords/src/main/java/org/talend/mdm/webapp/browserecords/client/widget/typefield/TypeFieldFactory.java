@@ -17,6 +17,7 @@ import java.util.Map;
 
 import org.talend.mdm.webapp.base.client.model.DataTypeConstants;
 import org.talend.mdm.webapp.base.client.widget.MultiLanguageField;
+import org.talend.mdm.webapp.browserecords.client.BrowseRecords;
 import org.talend.mdm.webapp.browserecords.client.model.OperatorConstants;
 import org.talend.mdm.webapp.browserecords.client.util.Locale;
 import org.talend.mdm.webapp.browserecords.client.widget.inputfield.FormatTextAreaField;
@@ -129,7 +130,7 @@ public abstract class TypeFieldFactory implements IsSerializable {
         Field<?> field;
         TextField<String> textField = new TextField<String>();
         if (context.getDataType().getType().equals(DataTypeConstants.MLS)) {
-            textField = new MultiLanguageField(false);
+            textField = new MultiLanguageField(false, BrowseRecords.getSession().getAppHeader().getUserProperties());
             source.setOperatorMap(OperatorConstants.multiLanguageOperators);
         } else {
             // TODO Text should use stringOperators

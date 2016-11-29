@@ -14,6 +14,7 @@ package org.talend.mdm.webapp.browserecords.client.widget;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.talend.mdm.webapp.base.shared.EntityModel;
 import org.talend.mdm.webapp.browserecords.client.creator.ItemCreator;
@@ -30,7 +31,7 @@ import com.google.gwt.core.client.JavaScriptObject;
 
 public class BulkUpdatePanel extends ContentPanel {
 
-    private List<String> idsList;
+    private List<Map<String, Object>> keyMapList;
 
     private EntityModel entityModel;
 
@@ -38,10 +39,10 @@ public class BulkUpdatePanel extends ContentPanel {
 
     private boolean isStaging;
 
-    public BulkUpdatePanel(EntityModel entityModel, ViewBean viewBean, List<String> idsList, boolean isStaging) {
+    public BulkUpdatePanel(EntityModel entityModel, ViewBean viewBean, List<Map<String, Object>> keyMapList, boolean isStaging) {
         this.entityModel = entityModel;
         this.viewBean = viewBean;
-        this.idsList = idsList;
+        this.keyMapList = keyMapList;
         this.isStaging = isStaging;
         initPanel();
     }
@@ -74,8 +75,8 @@ public class BulkUpdatePanel extends ContentPanel {
         layout();
     }
 
-    public List<String> getIdsList() {
-        return idsList;
+    public List<Map<String, Object>> getKeyMapList() {
+        return keyMapList;
     }
 
     public void renderPanel() {

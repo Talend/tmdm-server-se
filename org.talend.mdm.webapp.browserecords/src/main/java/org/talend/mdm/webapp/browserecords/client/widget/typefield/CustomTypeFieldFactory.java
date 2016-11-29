@@ -14,6 +14,8 @@ package org.talend.mdm.webapp.browserecords.client.widget.typefield;
 
 import org.talend.mdm.webapp.base.client.model.DataTypeConstants;
 import org.talend.mdm.webapp.base.client.widget.MultiLanguageField;
+import org.talend.mdm.webapp.base.client.widget.MultiLanguageTextAreaField;
+import org.talend.mdm.webapp.browserecords.client.BrowseRecords;
 import org.talend.mdm.webapp.browserecords.client.i18n.MessagesFactory;
 import org.talend.mdm.webapp.browserecords.client.widget.inputfield.FormatTextField;
 import org.talend.mdm.webapp.browserecords.client.widget.inputfield.PictureField;
@@ -72,10 +74,22 @@ public class CustomTypeFieldFactory extends TypeFieldFactory {
             field = urlField;
         } else if (context.getDataType().getType().equals(DataTypeConstants.MLS)) {
             boolean isFormInput = this.source != null && this.source.getName().equals(TypeFieldSource.FORM_INPUT);
-            MultiLanguageField mlsField = new MultiLanguageField(isFormInput ? true : false);
+            MultiLanguageField mlsField = new MultiLanguageField(isFormInput ? true : false, BrowseRecords.getSession().getAppHeader().getUserProperties());
             if (context.isWithValue()) {
                 mlsField.setMultiLanguageStringValue(hasValue() ? getValue().toString() : ""); //$NON-NLS-1$
             }
+            
+            // auto switch text area
+            if (source != null && source.getName().equals(TypeFieldSource.FORM_INPUT)) {
+                if (hasValue() && mlsField.getMultiLanguageModel().getValueByLanguage(mlsField.getCurrentLanguage()).length() > context.getAutoTextAreaLength()) {
+                    mlsField = new MultiLanguageTextAreaField(isFormInput ? true : false, BrowseRecords.getSession().getAppHeader().getUserProperties());
+                    
+                    if (context.isWithValue()) {
+                        mlsField.setMultiLanguageStringValue(getValue().toString());
+                    }
+                }
+            }
+            
             field = mlsField;
         }
         return field;

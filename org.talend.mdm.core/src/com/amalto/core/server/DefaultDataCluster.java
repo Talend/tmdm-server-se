@@ -1,34 +1,19 @@
 package com.amalto.core.server;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Pattern;
 
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Element;
-import net.sf.ehcache.config.CacheConfiguration;
-import net.sf.ehcache.config.PersistenceConfiguration;
-import net.sf.ehcache.config.PersistenceConfiguration.Strategy;
-import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.talend.mdm.commmon.util.webapp.XSystemObjects;
 
 import com.amalto.core.delegator.ILocalUser;
 import com.amalto.core.objects.ObjectPOJO;
 import com.amalto.core.objects.ObjectPOJOPK;
 import com.amalto.core.objects.datacluster.DataClusterPOJO;
 import com.amalto.core.objects.datacluster.DataClusterPOJOPK;
-import com.amalto.core.objects.routing.RoutingRulePOJO;
 import com.amalto.core.server.api.DataCluster;
 import com.amalto.core.server.api.XmlServer;
 import com.amalto.core.util.LocalUser;

@@ -5,9 +5,19 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
+
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Element;
+import net.sf.ehcache.config.CacheConfiguration;
+import net.sf.ehcache.config.PersistenceConfiguration;
+import net.sf.ehcache.config.PersistenceConfiguration.Strategy;
+import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -18,6 +28,7 @@ import com.amalto.core.objects.ObjectPOJO;
 import com.amalto.core.objects.ObjectPOJOPK;
 import com.amalto.core.objects.datacluster.DataClusterPOJO;
 import com.amalto.core.objects.datacluster.DataClusterPOJOPK;
+import com.amalto.core.objects.routing.RoutingRulePOJO;
 import com.amalto.core.server.api.DataCluster;
 import com.amalto.core.server.api.XmlServer;
 import com.amalto.core.util.LocalUser;
@@ -28,7 +39,13 @@ public class DefaultDataCluster implements DataCluster {
 
     private static final Logger LOGGER = Logger.getLogger(DefaultDataCluster.class);
 
-    public static Map<String, DataClusterPOJO> EXISTED_DATA_CLUSTERS = new HashMap<String, DataClusterPOJO>();
+    public static final String DATA_CLUSTER_CACHE_NAME = "dataCluster";
+
+    private static MDMEhCacheUtil mdmhCacheUtil ;
+
+    static {
+        mdmhCacheUtil = MDMEhCacheUtil.getInstance();
+    }
 
     /**
      * Creates or updates a data cluster
@@ -66,7 +83,9 @@ public class DefaultDataCluster implements DataCluster {
                 }
                 throw new XtentisException(err, e);
             }
-            EXISTED_DATA_CLUSTERS.put(pk.getUniqueId(), dataCluster);
+
+            mdmhCacheUtil.clearCache(DATA_CLUSTER_CACHE_NAME);
+
             return new DataClusterPOJOPK(pk);
         } catch (XtentisException e) {
             throw (e);
@@ -90,16 +109,22 @@ public class DefaultDataCluster implements DataCluster {
             if (pk.getUniqueId().endsWith(StorageAdmin.STAGING_SUFFIX)) {
                 pk = new DataClusterPOJOPK(StringUtils.substringBeforeLast(pk.getUniqueId(), "#"));
             }
-            if (EXISTED_DATA_CLUSTERS.containsKey(pk.getUniqueId())) {
-                return EXISTED_DATA_CLUSTERS.get(pk.getUniqueId());
+
+            Object value = mdmhCacheUtil.getCache(DATA_CLUSTER_CACHE_NAME, pk.getUniqueId());
+
+            if (value != null) {
+                return (DataClusterPOJO) value;
             }
+
             DataClusterPOJO dataCluster = ObjectPOJO.load(DataClusterPOJO.class, pk);
             if (dataCluster == null) {
                 String err = "The Data Cluster " + pk.getUniqueId() + " does not exist.";
                 LOGGER.error(err);
                 throw new XtentisException(err);
             }
-            EXISTED_DATA_CLUSTERS.put(pk.getUniqueId(), dataCluster);
+
+            mdmhCacheUtil.addCache(DATA_CLUSTER_CACHE_NAME, pk.getUniqueId(), dataCluster);
+
             return dataCluster;
         } catch (XtentisException e) {
             throw (e);
@@ -138,11 +163,17 @@ public class DefaultDataCluster implements DataCluster {
                 LOGGER.error(err);
                 throw new XtentisException(err);
             }
-            if (EXISTED_DATA_CLUSTERS.containsKey(pk.getUniqueId())) {
-                return EXISTED_DATA_CLUSTERS.get(pk.getUniqueId());
+
+            Object value = mdmhCacheUtil.getCache(DATA_CLUSTER_CACHE_NAME, pk.getUniqueId());
+
+            if (value != null) {
+                return (DataClusterPOJO) value;
             }
+
             DataClusterPOJO dataCluster = ObjectPOJO.load(DataClusterPOJO.class, pk);
-            EXISTED_DATA_CLUSTERS.put(pk.getUniqueId(), dataCluster);
+
+            mdmhCacheUtil.addCache(DATA_CLUSTER_CACHE_NAME, pk.getUniqueId(), dataCluster);
+
             return dataCluster;
         } catch (XtentisException e) {
             if (LOGGER.isDebugEnabled()) {
@@ -180,9 +211,9 @@ public class DefaultDataCluster implements DataCluster {
             throw new XtentisException(err, e);
         }
         ObjectPOJOPK objectPOJOPK = ObjectPOJO.remove(DataClusterPOJO.class, pk);
-        if (EXISTED_DATA_CLUSTERS.containsKey(pk.getUniqueId())) {
-            EXISTED_DATA_CLUSTERS.remove(pk.getUniqueId());
-        }
+
+        mdmhCacheUtil.clearCache(DATA_CLUSTER_CACHE_NAME);
+
         return new DataClusterPOJOPK(objectPOJOPK);
     }
 

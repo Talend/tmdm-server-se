@@ -99,9 +99,7 @@ public class StorageAdminImpl implements StorageAdmin {
             if (getRegisteredStorage(SYSTEM_STORAGE, StorageType.SYSTEM) != null) {
                 DataClusterPOJO dataClusterPOJO = new DataClusterPOJO(storageName);
                 ObjectPOJO.remove(DataClusterPOJO.class, dataClusterPOJO.getPK());
-                if (DefaultDataCluster.EXISTED_DATA_CLUSTERS.containsKey(dataClusterPOJO.getPK().getUniqueId())) {
-                    DefaultDataCluster.EXISTED_DATA_CLUSTERS.remove(dataClusterPOJO.getPK().getUniqueId());
-                }
+                MDMEhCacheUtil.getInstance().clearCache(DefaultDataCluster.DATA_CLUSTER_CACHE_NAME);
             }
             
         } catch (Exception e) {

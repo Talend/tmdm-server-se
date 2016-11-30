@@ -31,12 +31,6 @@ public class DefaultRoutingRule implements RoutingRule {
 
     private static final String ROUTING_RULE_PK_CACHE_NAME = "routingRulePKs";
 
-    private static MDMEhCacheUtil mdmhCacheUtil ;
-
-    static {
-        mdmhCacheUtil = MDMEhCacheUtil.getInstance();
-    }
-
     /**
      * Creates or updates a menu
      */
@@ -52,8 +46,8 @@ public class DefaultRoutingRule implements RoutingRule {
             if (pk == null) {
                 throw new XtentisException("Unable to create the Routing Rule. Please check the XML Server logs");
             }
-            mdmhCacheUtil.clearCache(ROUTING_RULE_CACHE_NAME);
-            mdmhCacheUtil.clearCache(ROUTING_RULE_PK_CACHE_NAME);
+            MDMEhCacheUtil.clearCache(ROUTING_RULE_CACHE_NAME);
+            MDMEhCacheUtil.clearCache(ROUTING_RULE_PK_CACHE_NAME);
             return new RoutingRulePOJOPK(pk);
         } catch (Exception e) {
             String err = "Unable to create/update the menu " + routingRule.getName()
@@ -71,7 +65,7 @@ public class DefaultRoutingRule implements RoutingRule {
             LOGGER.debug("getRoutingRule() ");
         }
         try {
-            Object value = mdmhCacheUtil.getCache(ROUTING_RULE_CACHE_NAME, pk.getUniqueId());
+            Object value = MDMEhCacheUtil.getCache(ROUTING_RULE_CACHE_NAME, pk.getUniqueId());
 
             if (value != null) {
                 return (RoutingRulePOJO) value;
@@ -84,7 +78,7 @@ public class DefaultRoutingRule implements RoutingRule {
                 throw new XtentisException(err);
             }
 
-            mdmhCacheUtil.addCache(ROUTING_RULE_CACHE_NAME, pk.getUniqueId(), rule);
+            MDMEhCacheUtil.addCache(ROUTING_RULE_CACHE_NAME, pk.getUniqueId(), rule);
             return rule;
         } catch (Exception e) {
             String err = "Unable to get the Routing Rule " + pk.toString()
@@ -123,8 +117,8 @@ public class DefaultRoutingRule implements RoutingRule {
         try {
             RoutingRulePOJOPK routingRulePOJOPK = new RoutingRulePOJOPK(ObjectPOJO.remove(RoutingRulePOJO.class, pk));
 
-            mdmhCacheUtil.clearCache(ROUTING_RULE_CACHE_NAME);
-            mdmhCacheUtil.clearCache(ROUTING_RULE_PK_CACHE_NAME);
+            MDMEhCacheUtil.clearCache(ROUTING_RULE_CACHE_NAME);
+            MDMEhCacheUtil.clearCache(ROUTING_RULE_PK_CACHE_NAME);
 
             return routingRulePOJOPK;
         } catch (XtentisException e) {
@@ -142,7 +136,7 @@ public class DefaultRoutingRule implements RoutingRule {
      */
     public Collection<RoutingRulePOJOPK> getRoutingRulePKs(String regex) throws XtentisException {
 
-        Object value = mdmhCacheUtil.getCache(ROUTING_RULE_PK_CACHE_NAME, regex);
+        Object value = MDMEhCacheUtil.getCache(ROUTING_RULE_PK_CACHE_NAME, regex);
 
         if (value != null && !((Collection<RoutingRulePOJOPK>) value).isEmpty()) {
             return (Collection<RoutingRulePOJOPK>) value;
@@ -153,7 +147,7 @@ public class DefaultRoutingRule implements RoutingRule {
         for (ObjectPOJOPK currentRule : routingRules) {
             l.add(new RoutingRulePOJOPK(currentRule));
         }
-        mdmhCacheUtil.addCache(ROUTING_RULE_PK_CACHE_NAME, regex, l);
+        MDMEhCacheUtil.addCache(ROUTING_RULE_PK_CACHE_NAME, regex, l);
 
         return l;
     }

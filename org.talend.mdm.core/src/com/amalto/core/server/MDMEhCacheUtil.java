@@ -13,11 +13,9 @@
 
 package com.amalto.core.server;
 
-import org.springframework.beans.BeansException;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
 
 import net.sf.ehcache.Cache;
-import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.config.CacheConfiguration;
 import net.sf.ehcache.config.PersistenceConfiguration;
@@ -34,40 +32,25 @@ public class MDMEhCacheUtil {
 
     private static final int MAX_ENTRIES_LOCAL_HEAP = 10000;
     
-    private static MDMEhCacheUtil instance;
-    
-    private MDMEhCacheUtil() {
-    }
-
-    public static MDMEhCacheUtil getInstance() {
-        if (instance == null) {
-            instance = new MDMEhCacheUtil();
-        }
-        return instance;
-    }
-
-    private void doRegisitCache(String cacheName) {
+    public static void regisitCache(String cacheName) {
         EhCacheCacheManager mdmEhcache = MDMContextAccessor.getApplicationContext().getBean(MDM_CACHE_MANAGER,
                 EhCacheCacheManager.class);
 
-        // Create a Cache specifying its configuration.
-        Cache cache = new Cache(new CacheConfiguration(cacheName, MAX_ENTRIES_LOCAL_HEAP)
-                .memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LFU).eternal(false)
-                .timeToLiveSeconds(DEFAULT_WAIT_TIME_TO_LIVE_SECONDS).timeToIdleSeconds(DEFAULT_WAIT_TIME_TO_IDLE_SECONDS)
-                .diskExpiryThreadIntervalSeconds(0).persistence(new PersistenceConfiguration().strategy(Strategy.LOCALTEMPSWAP)));
-        mdmEhcache.getCacheManager().addCache(cache);
-    }
-
-    private void decideRegistCache(String cacheName, EhCacheCacheManager mdmEhcache) {
         if (mdmEhcache.getCache(cacheName) == null) {
-            doRegisitCache(cacheName);
+            // Create a Cache specifying its configuration.
+            Cache cache = new Cache(new CacheConfiguration(cacheName, MAX_ENTRIES_LOCAL_HEAP)
+                    .memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LFU).eternal(false)
+                    .timeToLiveSeconds(DEFAULT_WAIT_TIME_TO_LIVE_SECONDS).timeToIdleSeconds(DEFAULT_WAIT_TIME_TO_IDLE_SECONDS)
+                    .diskExpiryThreadIntervalSeconds(0)
+                    .persistence(new PersistenceConfiguration().strategy(Strategy.LOCALTEMPSWAP)));
+            mdmEhcache.getCacheManager().addCache(cache);
         }
     }
 
-    public Object getCache(String cacheName, Object key) {
+    public static Object getCache(String cacheName, Object key) {
         EhCacheCacheManager mdmEhcache = MDMContextAccessor.getApplicationContext().getBean(MDM_CACHE_MANAGER,
                 EhCacheCacheManager.class);
-        decideRegistCache(cacheName, mdmEhcache);
+        regisitCache(cacheName);
         Element element = mdmEhcache.getCacheManager().getCache(cacheName).get(key);
         if (element == null) {
             return null;
@@ -75,17 +58,17 @@ public class MDMEhCacheUtil {
         return element.getObjectValue();
     }
 
-    public void clearCache(String cacheName) {
+    public static void clearCache(String cacheName) {
         EhCacheCacheManager mdmEhcache = MDMContextAccessor.getApplicationContext().getBean(MDM_CACHE_MANAGER,
                 EhCacheCacheManager.class);
-        decideRegistCache(cacheName, mdmEhcache);
+        regisitCache(cacheName);
         mdmEhcache.getCache(cacheName).clear();
     }
 
-    public void addCache(String cacheName, Object key, Object value) {
+    public static void addCache(String cacheName, Object key, Object value) {
         EhCacheCacheManager mdmEhcache = MDMContextAccessor.getApplicationContext().getBean(MDM_CACHE_MANAGER,
                 EhCacheCacheManager.class);
-        decideRegistCache(cacheName, mdmEhcache);
+        regisitCache(cacheName);
         mdmEhcache.getCache(cacheName).put(key, value);
     }
 }

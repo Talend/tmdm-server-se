@@ -1,10 +1,19 @@
+/*
+ * Copyright (C) 2006-2016 Talend Inc. - www.talend.com
+ * 
+ * This source code is available under agreement available at
+ * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
+ * 
+ * You should have received a copy of the agreement along with this program; if not, write to Talend SA 9 rue Pages
+ * 92150 Suresnes, France
+ */
+
 package com.amalto.core.server;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -25,12 +34,6 @@ public class DefaultDataCluster implements DataCluster {
     private static final Logger LOGGER = Logger.getLogger(DefaultDataCluster.class);
 
     public static final String DATA_CLUSTER_CACHE_NAME = "dataCluster";
-
-    private static MDMEhCacheUtil mdmhCacheUtil ;
-
-    static {
-        mdmhCacheUtil = MDMEhCacheUtil.getInstance();
-    }
 
     /**
      * Creates or updates a data cluster
@@ -69,7 +72,7 @@ public class DefaultDataCluster implements DataCluster {
                 throw new XtentisException(err, e);
             }
 
-            mdmhCacheUtil.clearCache(DATA_CLUSTER_CACHE_NAME);
+            MDMEhCacheUtil.clearCache(DATA_CLUSTER_CACHE_NAME);
 
             return new DataClusterPOJOPK(pk);
         } catch (XtentisException e) {
@@ -95,7 +98,7 @@ public class DefaultDataCluster implements DataCluster {
                 pk = new DataClusterPOJOPK(StringUtils.substringBeforeLast(pk.getUniqueId(), "#"));
             }
 
-            Object value = mdmhCacheUtil.getCache(DATA_CLUSTER_CACHE_NAME, pk.getUniqueId());
+            Object value = MDMEhCacheUtil.getCache(DATA_CLUSTER_CACHE_NAME, pk.getUniqueId());
 
             if (value != null) {
                 return (DataClusterPOJO) value;
@@ -108,7 +111,7 @@ public class DefaultDataCluster implements DataCluster {
                 throw new XtentisException(err);
             }
 
-            mdmhCacheUtil.addCache(DATA_CLUSTER_CACHE_NAME, pk.getUniqueId(), dataCluster);
+            MDMEhCacheUtil.addCache(DATA_CLUSTER_CACHE_NAME, pk.getUniqueId(), dataCluster);
 
             return dataCluster;
         } catch (XtentisException e) {
@@ -149,7 +152,7 @@ public class DefaultDataCluster implements DataCluster {
                 throw new XtentisException(err);
             }
 
-            Object value = mdmhCacheUtil.getCache(DATA_CLUSTER_CACHE_NAME, pk.getUniqueId());
+            Object value = MDMEhCacheUtil.getCache(DATA_CLUSTER_CACHE_NAME, pk.getUniqueId());
 
             if (value != null) {
                 return (DataClusterPOJO) value;
@@ -157,7 +160,7 @@ public class DefaultDataCluster implements DataCluster {
 
             DataClusterPOJO dataCluster = ObjectPOJO.load(DataClusterPOJO.class, pk);
 
-            mdmhCacheUtil.addCache(DATA_CLUSTER_CACHE_NAME, pk.getUniqueId(), dataCluster);
+            MDMEhCacheUtil.addCache(DATA_CLUSTER_CACHE_NAME, pk.getUniqueId(), dataCluster);
 
             return dataCluster;
         } catch (XtentisException e) {
@@ -197,7 +200,7 @@ public class DefaultDataCluster implements DataCluster {
         }
         ObjectPOJOPK objectPOJOPK = ObjectPOJO.remove(DataClusterPOJO.class, pk);
 
-        mdmhCacheUtil.clearCache(DATA_CLUSTER_CACHE_NAME);
+        MDMEhCacheUtil.clearCache(DATA_CLUSTER_CACHE_NAME);
 
         return new DataClusterPOJOPK(objectPOJOPK);
     }

@@ -46,7 +46,7 @@ public class MDMEhCacheUtil {
         return instance;
     }
 
-    private void regisitCache(String cacheName) {
+    private void doRegisitCache(String cacheName) {
         EhCacheCacheManager mdmEhcache = MDMContextAccessor.getApplicationContext().getBean(MDM_CACHE_MANAGER,
                 EhCacheCacheManager.class);
 
@@ -58,10 +58,16 @@ public class MDMEhCacheUtil {
         mdmEhcache.getCacheManager().addCache(cache);
     }
 
+    private void decideRegistCache(String cacheName, EhCacheCacheManager mdmEhcache) {
+        if (mdmEhcache.getCache(cacheName) == null) {
+            doRegisitCache(cacheName);
+        }
+    }
+
     public Object getCache(String cacheName, Object key) {
         EhCacheCacheManager mdmEhcache = MDMContextAccessor.getApplicationContext().getBean(MDM_CACHE_MANAGER,
                 EhCacheCacheManager.class);
-        toRegistCache(cacheName, mdmEhcache);
+        decideRegistCache(cacheName, mdmEhcache);
         Element element = mdmEhcache.getCacheManager().getCache(cacheName).get(key);
         if (element == null) {
             return null;
@@ -69,23 +75,17 @@ public class MDMEhCacheUtil {
         return element.getObjectValue();
     }
 
-    private void toRegistCache(String cacheName, EhCacheCacheManager mdmEhcache) {
-        if (mdmEhcache.getCache(cacheName) == null) {
-            regisitCache(cacheName);
-        }
-    }
-
     public void clearCache(String cacheName) {
         EhCacheCacheManager mdmEhcache = MDMContextAccessor.getApplicationContext().getBean(MDM_CACHE_MANAGER,
                 EhCacheCacheManager.class);
-        toRegistCache(cacheName, mdmEhcache);
+        decideRegistCache(cacheName, mdmEhcache);
         mdmEhcache.getCache(cacheName).clear();
     }
 
     public void addCache(String cacheName, Object key, Object value) {
         EhCacheCacheManager mdmEhcache = MDMContextAccessor.getApplicationContext().getBean(MDM_CACHE_MANAGER,
                 EhCacheCacheManager.class);
-        toRegistCache(cacheName, mdmEhcache);
+        decideRegistCache(cacheName, mdmEhcache);
         mdmEhcache.getCache(cacheName).put(key, value);
     }
 }

@@ -163,17 +163,6 @@ public class ForeignKeyInfoTransformer implements DocumentTransformer {
         }
     }
 
-    private String getPath(List<PathItem> items) {
-        String path = ""; //$NON-NLS-1$
-        for (int i = 0; i < items.size(); i++) {
-            path += items.get(i).getPath();
-            if (i < items.size() - 1) {
-                path += "/"; //$NON-NLS-1$
-            }
-        }
-        return path;
-    }
-
     private String getPath(List<PathItem> items, int currentBranchIndex) {
         String path = ""; //$NON-NLS-1$
         for (int i = 0; i < items.size(); i++) {
@@ -194,11 +183,11 @@ public class ForeignKeyInfoTransformer implements DocumentTransformer {
         if (leafItem.isMany) {
             boolean pathExists = true;
             while (pathExists) {
-                pathExists = setForeignKeyValue(document, getPath(pathItems), referenceFieldMetadata);
+                pathExists = setForeignKeyValue(document, getPath(pathItems, pathItems.size() - 1), referenceFieldMetadata);
                 leafItem.next();
             }
         } else {
-            setForeignKeyValue(document, getPath(pathItems), referenceFieldMetadata);
+            setForeignKeyValue(document, getPath(pathItems, pathItems.size() - 1), referenceFieldMetadata);
         }
     }
 

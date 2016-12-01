@@ -144,13 +144,18 @@ public class DataRecordXmlWriter implements DataRecordWriter {
             }
             try {
                 Object value = record.get(referenceField);
-                if (value != null) {
-                    if (!referenceField.isMany()) {
-                        DataRecord referencedRecord = (DataRecord) record.get(referenceField);
+
+                if (!referenceField.isMany()) {
+                    DataRecord referencedRecord = (DataRecord) record.get(referenceField);
+                    if (value != null) {
                         writeReferenceElement(referenceField, referencedRecord);
-                        out.write(StorageMetadataUtils.toString(referencedRecord));
-                        out.write("</" + referenceField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
                     } else {
+                        out.write("<" + referenceField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$  
+                    }
+                    out.write(StorageMetadataUtils.toString(referencedRecord));
+                    out.write("</" + referenceField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
+                } else {
+                    if (value != null) {
                         List<DataRecord> valueAsList = (List<DataRecord>) value;
                         for (DataRecord currentValue : valueAsList) {
                             if (currentValue != null) {
@@ -159,8 +164,12 @@ public class DataRecordXmlWriter implements DataRecordWriter {
                                 out.write("</" + referenceField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
                             }
                         }
+                    } else {
+                        out.write("<" + referenceField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$  
+                        out.write("</" + referenceField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
                     }
                 }
+
                 return null;
             } catch (IOException e) {
                 throw new RuntimeException("Could not serialize XML for reference field '" + referenceField.getName()
@@ -194,6 +203,9 @@ public class DataRecordXmlWriter implements DataRecordWriter {
                             field.accept(fieldPrinter);
                         }
                         out.write("</" + containedField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
+                    } else {
+                        out.write("<" + containedField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$  
+                        out.write("</" + containedField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
                     }
                 } else {
                     List<DataRecord> recordList = (List<DataRecord>) record.get(containedField);
@@ -210,6 +222,9 @@ public class DataRecordXmlWriter implements DataRecordWriter {
                                 out.write("</" + containedField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
                             }
                         }
+                    } else {
+                        out.write("<" + containedField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$  
+                        out.write("</" + containedField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
                     }
                 }
                 return null;
@@ -234,22 +249,32 @@ public class DataRecordXmlWriter implements DataRecordWriter {
             }
             try {
                 Object value = record.get(simpleField);
-                if (value != null) {
-                    if (!simpleField.isMany()) {
-                        out.write("<" + simpleField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
+
+                if (!simpleField.isMany()) {
+                    out.write("<" + simpleField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
+                    if (value != null) {
                         handleSimpleValue(simpleField, value);
-                        out.write("</" + simpleField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
-                    } else {
+                    }
+                    out.write("</" + simpleField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
+                } else {
+                    if (value != null) {
                         List valueAsList = (List) value;
                         for (Object currentValue : valueAsList) {
                             if (currentValue != null) {
                                 out.write("<" + simpleField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
                                 handleSimpleValue(simpleField, currentValue);
                                 out.write("</" + simpleField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
+                            } else {
+                                out.write("<" + simpleField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
+                                out.write("</" + simpleField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
                             }
                         }
+                    } else {
+                        out.write("<" + simpleField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
+                        out.write("</" + simpleField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
                     }
                 }
+
                 return null;
             } catch (IOException e) {
                 throw new RuntimeException("Could not serialize XML for simple field '" + simpleField.getName() + "' of type '"
@@ -264,20 +289,29 @@ public class DataRecordXmlWriter implements DataRecordWriter {
             }
             try {
                 Object value = record.get(enumField);
-                if (value != null) {
-                    if (!enumField.isMany()) {
-                        out.write("<" + enumField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
+
+                if (!enumField.isMany()) {
+                    out.write("<" + enumField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
+                    if (value != null) {
                         handleSimpleValue(enumField, value);
-                        out.write("</" + enumField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
-                    } else {
+                    }
+                    out.write("</" + enumField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
+                } else {
+                    if (value != null) {
                         List valueAsList = (List) value;
                         for (Object currentValue : valueAsList) {
                             if (currentValue != null) {
                                 out.write("<" + enumField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
                                 handleSimpleValue(enumField, currentValue);
                                 out.write("</" + enumField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
+                            } else {
+                                out.write("<" + enumField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
+                                out.write("</" + enumField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
                             }
                         }
+                    } else {
+                        out.write("<" + enumField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
+                        out.write("</" + enumField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
                     }
                 }
                 return null;

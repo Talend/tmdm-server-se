@@ -45,6 +45,7 @@ import org.talend.mdm.commmon.metadata.FieldMetadata;
 
 import com.amalto.core.delegator.BeanDelegatorContainer;
 import com.amalto.core.delegator.ILocalUser;
+import com.amalto.core.load.io.ResettableStringWriter;
 import com.amalto.core.objects.UpdateReportPOJO;
 import com.amalto.core.query.optimization.RangeOptimizer;
 import com.amalto.core.query.optimization.UpdateReportOptimizer;
@@ -4685,6 +4686,36 @@ public class StorageQueryTest extends StorageTestCase {
 
         results = storage.fetch(qb.getSelect());
         assertEquals(2, results.getCount());
+    }
+
+    public void test_DataRecordToXmlString() throws Exception {
+        UserQueryBuilder qb = UserQueryBuilder.from(product).where(eq(product.getField("Id"), "1"));
+        StorageResults results = storage.fetch(qb.getSelect());
+
+        ResettableStringWriter w = new ResettableStringWriter();
+        DataRecordXmlWriter writer = new DataRecordXmlWriter();
+        writer.setSecurityDelegator(new TestUserDelegator());
+
+        assertEquals(1, results.getCount());
+        String result = "";
+        for (DataRecord record : results) {
+            writer.write(record, w);
+            result = w.toString();
+        }
+        String expectedResult = "<Product><Id>1</Id><Name>Product name</Name><ShortDescription>Short description word</ShortDescription><LongDescription>Long description</LongDescription><Features><Sizes><Size>Small</Size><Size>Medium</Size><Size>Large</Size></Sizes><Colors><Color>Blue</Color><Color>Red</Color></Colors></Features><Product></Product><Availability></Availability><Price>10.00</Price><Family>[2]</Family><Supplier>[1]</Supplier><CreationDate></CreationDate><RemovalDate></RemovalDate><Status>Pending</Status><Stores><Store></Store></Stores></Product>";
+        assertEquals(expectedResult, result);
+
+        qb = UserQueryBuilder.from("select from Product where x_id = '1' ");
+        results = storage.fetch(qb.getExpression());
+
+        assertEquals(1, results.getCount());
+        w = new ResettableStringWriter();
+        for (DataRecord record : results) {
+            writer.write(record, w);
+            result = w.toString();
+        }
+        //result = result.substring(0, result.indexOf("<col11>")).concat(result.substring(result.indexOf("</col11>"), result.length()));
+        assertEquals("<$ExplicitProjection$><col0>1</col0><col1>Product name</col1><col2>Short description word</col2><col3>Long description</col3><col4></col4><col5></col5><col6>10.00</col6><col7>2</col7><col8></col8><col9></col9><col10>Pending</col10><col11>1480581414644</col11><col12></col12></$ExplicitProjection$>", result);
     }
 
     private static class TestUserDelegator implements SecuredStorage.UserDelegator {

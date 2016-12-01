@@ -296,7 +296,7 @@ public class BrowseRecordsController extends Controller {
         final BrowseRecordsServiceAsync browseRecordsService = ServiceFactory.getInstance().getMasterService();
         final BulkUpdatePanel bulkUpdatePanel = Registry.get(BrowseRecords.BULK_UPDATE_PANEL);
         browseRecordsService.bulkUpdateItem(GWT.getHostPageBaseURL(), concept, (new ItemTreeHandler(model, viewBean,
-                bulkUpdatePanel.getIdsList(), ItemTreeHandlingStatus.BulkUpdate)).serializeItem(), Locale
+                bulkUpdatePanel.getKeyMapList(), ItemTreeHandlingStatus.BulkUpdate)).serializeItem(), Locale
                 .getLanguage(), new SessionAwareAsyncCallback<String>() {
 
             @Override

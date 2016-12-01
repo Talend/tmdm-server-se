@@ -15,6 +15,7 @@ package org.talend.mdm.webapp.browserecords.client.handler;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.talend.mdm.webapp.base.client.model.DataTypeConstants;
 import org.talend.mdm.webapp.base.client.model.ForeignKeyBean;
@@ -46,7 +47,7 @@ public class ItemTreeHandler implements IsSerializable {
 
     private ItemTreeHandlingStatus status;
 
-    private List<String> idsList;
+    private List<Map<String, Object>> keyMapList;
 
     private boolean simpleTypeOnly = true;
 
@@ -86,14 +87,15 @@ public class ItemTreeHandler implements IsSerializable {
         initConfig();
     }
 
-    public ItemTreeHandler(ItemNodeModel nodeModel, ViewBean viewBean, List<String> idsList, ItemTreeHandlingStatus status) {
+    public ItemTreeHandler(ItemNodeModel nodeModel, ViewBean viewBean, List<Map<String, Object>> keyMapList,
+            ItemTreeHandlingStatus status) {
         super();
         this.nodeModel = nodeModel;
         if (viewBean != null) {
             this.entityModel = viewBean.getBindingEntityModel();
         }
         this.status = status;
-        this.idsList = idsList;
+        this.keyMapList = keyMapList;
         initConfig();
     }
 
@@ -153,12 +155,12 @@ public class ItemTreeHandler implements IsSerializable {
         Element root;
         if (status.equals(ItemTreeHandlingStatus.BulkUpdate)) {
             root = doc.createElement("records");
-            for (int i = 0; i < idsList.size(); i++) {
-                String ids = idsList.get(i);
-                root.appendChild(buildXML(doc, nodeModel, ids));
+            for (int i = 0; i < keyMapList.size(); i++) {
+                Map<String, Object> keyMap = keyMapList.get(i);
+                root.appendChild(buildXML(doc, nodeModel, keyMap));
             }
         } else {
-            root = buildXML(doc, nodeModel, "");
+            root = buildXML(doc, nodeModel, null);
             if (nodeModel.get(XMLNS_TMDM) != null) {
                 root.setAttribute(XMLNS_TMDM, XMLNS_TMDM_VALUE);
             }
@@ -169,9 +171,9 @@ public class ItemTreeHandler implements IsSerializable {
 
     }
 
-    private Element buildXML(Document doc, ItemNodeModel currentNodeModel, String ids) {
+    private Element buildXML(Document doc, ItemNodeModel currentNodeModel, Map<String, Object> keyMap) {
         if (status.equals(ItemTreeHandlingStatus.BulkUpdate) && currentNodeModel.isKey()) {
-            currentNodeModel.setObjectValue(ids);
+            currentNodeModel.setObjectValue((Serializable) keyMap.get(currentNodeModel.getTypePath()));
         }
         Element root = doc.createElement(currentNodeModel.getName());
         TypeModel currentTypeModel = entityModel.getMetaDataTypes().get(currentNodeModel.getTypePath());
@@ -228,7 +230,7 @@ public class ItemTreeHandler implements IsSerializable {
                 for (ModelData child : children) {
                     ItemNodeModel childNode = (ItemNodeModel) child;
                     if (currentNodeModel.isMassUpdate() == childNode.isMassUpdate()) {
-                        Element el = buildXML(doc, childNode, ids);
+                        Element el = buildXML(doc, childNode, keyMap);
                         if (el != null) {
                             if (status.equals(ItemTreeHandlingStatus.ToSave) || status.equals(ItemTreeHandlingStatus.BulkUpdate)) {
                                 if (isRepeatingEl(childNode)) {

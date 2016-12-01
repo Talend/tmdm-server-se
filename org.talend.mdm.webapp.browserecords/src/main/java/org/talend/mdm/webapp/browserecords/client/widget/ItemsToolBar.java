@@ -13,8 +13,10 @@
 package org.talend.mdm.webapp.browserecords.client.widget;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.talend.mdm.webapp.base.client.SessionAwareAsyncCallback;
 import org.talend.mdm.webapp.base.client.model.BasePagingLoadConfigImpl;
@@ -556,15 +558,21 @@ public class ItemsToolBar extends ToolBar {
             public void componentSelected(ButtonEvent ce) {
                 ItemsListPanel list = ItemsListPanel.getInstance();
                 if (list.getGrid() != null) {
-                    List<String> idsList = new ArrayList<String>();
+                    List<Map<String, Object>> keyMapList = new ArrayList<Map<String, Object>>();
                     List<ItemBean> selectedItems = list.getGrid().getSelectionModel().getSelectedItems();
                     if (selectedItems.size() > 0) {
+                        UserSession userSession = BrowseRecords.getSession();
+                        EntityModel entityModel = (EntityModel) userSession.get(UserSession.CURRENT_ENTITY_MODEL);
+                        String[] keys = entityModel.getKeys();
                         for (int i = 0; i < selectedItems.size(); i++) {
-                            idsList.add(selectedItems.get(i).getIds());
+                            Map<String, Object> keyMap = new HashMap<String, Object>();
+                            for (int j = 0; j < keys.length; j++) {
+                                keyMap.put(keys[j], selectedItems.get(i).get(keys[j]));
+                            }
+                            keyMapList.add(keyMap);
                         }
                         BulkUpdatePanel bulkUpdatePanel = new BulkUpdatePanel(BrowseRecords.getSession().getCurrentEntityModel(),
-                                BrowseRecords
-                                .getSession().getCurrentView(), idsList, isStaging());
+                                BrowseRecords.getSession().getCurrentView(), keyMapList, isStaging());
                         bulkUpdatePanel.renderPanel();
                         Registry.register(BrowseRecords.BULK_UPDATE_PANEL, bulkUpdatePanel);
                     } else {

@@ -46,8 +46,7 @@ public class MDMEhCacheUtil {
             Cache cache = new Cache(new CacheConfiguration(cacheName, MAX_ENTRIES_LOCAL_HEAP)
                     .memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LFU).eternal(false)
                     .timeToLiveSeconds(DEFAULT_WAIT_TIME_TO_LIVE_SECONDS).timeToIdleSeconds(DEFAULT_WAIT_TIME_TO_IDLE_SECONDS)
-                    .diskExpiryThreadIntervalSeconds(0)
-                    .persistence(new PersistenceConfiguration().strategy(Strategy.LOCALTEMPSWAP)));
+                    .diskExpiryThreadIntervalSeconds(0));
             mdmEhcache.getCacheManager().addCache(cache);
         }
     }

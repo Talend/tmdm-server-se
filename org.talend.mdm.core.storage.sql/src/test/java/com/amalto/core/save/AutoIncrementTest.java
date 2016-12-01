@@ -25,6 +25,7 @@ import junit.framework.TestCase;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.springframework.context.support.FileSystemXmlApplicationContext;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
@@ -42,6 +43,7 @@ import com.amalto.core.save.RecordValidationTest.MockUserDelegator;
 import com.amalto.core.save.context.DocumentSaver;
 import com.amalto.core.save.generator.AutoIncrementGenerator;
 import com.amalto.core.save.generator.StorageAutoIncrementGenerator;
+import com.amalto.core.server.MDMContextAccessor;
 import com.amalto.core.server.MockMetadataRepositoryAdmin;
 import com.amalto.core.server.MockServerLifecycle;
 import com.amalto.core.server.MockStorageAdmin;
@@ -110,6 +112,14 @@ public class AutoIncrementTest extends TestCase {
         BeanDelegatorContainer.createInstance();
     }
     
+    @Override
+    protected void setUp() throws Exception {
+        MDMContextAccessor context = new MDMContextAccessor();
+        FileSystemXmlApplicationContext fileContext = new FileSystemXmlApplicationContext(this.getClass().getResource("/com/amalto/core/save/mdm-context.xml").getPath());
+        context.setApplicationContext(fileContext);
+        fileContext.refresh();
+    }
+
     @SuppressWarnings("rawtypes")
     private static ClassRepository buildSystemRepository() {
         ClassRepository repository = new ClassRepository();

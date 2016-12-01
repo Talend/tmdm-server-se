@@ -48,6 +48,7 @@ import com.amalto.core.objects.transformers.util.TypedContent_Use_Default;
 import com.amalto.core.query.user.DateTimeConstant;
 import com.amalto.core.server.api.Transformer;
 import com.amalto.core.util.JobActionInfo;
+import com.amalto.core.util.MDMEhCacheUtil;
 import com.amalto.core.util.PluginRegistry;
 import com.amalto.core.util.Util;
 import com.amalto.core.util.XtentisException;

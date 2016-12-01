@@ -11,9 +11,11 @@
 //
 // ============================================================================
 
-package com.amalto.core.server;
+package com.amalto.core.util;
 
 import org.springframework.cache.ehcache.EhCacheCacheManager;
+
+import com.amalto.core.server.MDMContextAccessor;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
@@ -26,8 +28,11 @@ public class MDMEhCacheUtil {
     
     private static final String MDM_CACHE_MANAGER = "mdmCacheManager";
 
+    // Sets the time to idle for an element before it expires.
     private static final int DEFAULT_WAIT_TIME_TO_IDLE_SECONDS = 60;
     
+    // Sets the time to live since cache creation before it expires, if have clustered MDM, when data changes, both
+    // servers will expire these caches & sync with db in maximum 120s
     private static final int DEFAULT_WAIT_TIME_TO_LIVE_SECONDS = 120;
 
     private static final int MAX_ENTRIES_LOCAL_HEAP = 10000;

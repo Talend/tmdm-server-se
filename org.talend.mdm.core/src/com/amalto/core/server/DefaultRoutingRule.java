@@ -14,6 +14,7 @@ import com.amalto.core.objects.ObjectPOJO;
 import com.amalto.core.objects.ObjectPOJOPK;
 import com.amalto.core.objects.routing.RoutingRulePOJO;
 import com.amalto.core.objects.routing.RoutingRulePOJOPK;
+import com.amalto.core.util.MDMEhCacheUtil;
 import com.amalto.core.util.XtentisException;
 
 import org.apache.log4j.Logger;

@@ -26,6 +26,7 @@ import junit.framework.TestCase;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.springframework.context.support.FileSystemXmlApplicationContext;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
@@ -45,6 +46,7 @@ import com.amalto.core.query.user.UserQueryBuilder;
 import com.amalto.core.save.SaverSession.Committer;
 import com.amalto.core.save.context.DocumentSaver;
 import com.amalto.core.save.context.StorageSaverSource;
+import com.amalto.core.server.MDMContextAccessor;
 import com.amalto.core.server.MockMetadataRepositoryAdmin;
 import com.amalto.core.server.MockServerLifecycle;
 import com.amalto.core.server.MockStorageAdmin;
@@ -125,6 +127,11 @@ public class RecordValidationTest extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
+        MDMContextAccessor context = new MDMContextAccessor();
+        FileSystemXmlApplicationContext fileContext = new FileSystemXmlApplicationContext(this.getClass().getResource("/com/amalto/core/save/mdm-context.xml").getPath());
+        context.setApplicationContext(fileContext);
+        fileContext.refresh();
+
         String xmlStore = "<Store><Id>1</Id><Address>Address</Address><Lat>1.0</Lat><Long>1.0</Long></Store>";
         String xmlProduct = "<Product><Id>1</Id><Name>Product</Name><Description>Product Description</Description><Features><Sizes/><Colors/></Features><Price>2.00</Price><Stores><Store>[1]</Store></Stores></Product>";
         createData("Product", false, xmlStore);

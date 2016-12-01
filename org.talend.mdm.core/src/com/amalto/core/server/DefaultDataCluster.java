@@ -26,6 +26,7 @@ import com.amalto.core.objects.datacluster.DataClusterPOJOPK;
 import com.amalto.core.server.api.DataCluster;
 import com.amalto.core.server.api.XmlServer;
 import com.amalto.core.util.LocalUser;
+import com.amalto.core.util.MDMEhCacheUtil;
 import com.amalto.core.util.Util;
 import com.amalto.core.util.XtentisException;
 

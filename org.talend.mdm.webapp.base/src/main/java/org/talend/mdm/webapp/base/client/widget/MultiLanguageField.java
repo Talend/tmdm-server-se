@@ -13,6 +13,7 @@
 package org.talend.mdm.webapp.base.client.widget;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -70,19 +71,29 @@ import com.google.gwt.user.client.ui.Image;
 
 public class MultiLanguageField extends TextField<String> {
 
-    private Image displayMultiLanguageBtn = new Image(Icons.INSTANCE.world_edit());
+    public Image displayMultiLanguageBtn = new Image(Icons.INSTANCE.world_edit());
 
+    public static final String KEY_MDM_READ_ONLY_FIELD_STYLE = "MDM_READ_ONLY_FIELD_STYLE"; //$NON-NLS-1$
+    
+    private HashMap<String,String> userProperties;
+    
     private MultiLanguageModel multiLanguageModel;
 
     private String currentLanguage = UrlUtil.getUpperLanguage();
 
     private LinkedHashMap<String, ItemBaseModel> languageColumnMap = new LinkedHashMap<String, ItemBaseModel>();
 
-    private boolean isFormInput;
+    public boolean isFormInput;
     
     private boolean isAdding;
 
     private BaseRemoteServiceAsync service = GWT.create(BaseRemoteService.class);
+    
+    private Boolean editable = true;
+    
+    private Element textFieldDisable;
+    
+    private Boolean selfRender = true;
 
     public MultiLanguageField() {
         super();
@@ -90,6 +101,12 @@ public class MultiLanguageField extends TextField<String> {
 
     public MultiLanguageField(boolean isFormInput) {
         this.isFormInput = isFormInput;
+        addListener();
+    }
+    
+    public MultiLanguageField(boolean isFormInput, HashMap<String,String> userProperties) {
+        this.isFormInput = isFormInput;
+        setUserProperties(userProperties);
         addListener();
     }
 
@@ -105,51 +122,111 @@ public class MultiLanguageField extends TextField<String> {
     public void setAdding(boolean isAdding) {
         this.isAdding = isAdding;
     }
+    
+    @Override
+    public void setRawValue(String value) {
+        if (rendered) {
+            if (super.isReadOnly()) {
+                getInputEl().dom.setInnerText(value == null ? "" : value); //$NON-NLS-1$
+            } else {
+                getInputEl().setValue(value == null ? "" : value); //$NON-NLS-1$
+            }
+        }
+    }
+
+    @Override
+    public String getRawValue() {
+        String v = rendered ? getInputEl().getValue() : ""; //$NON-NLS-1$
+        if (super.isReadOnly()) {
+            v = rendered ? getInputEl().dom.getInnerText() : ""; //$NON-NLS-1$
+        }
+        if (v == null || v.equals(emptyText)) {
+            return ""; //$NON-NLS-1$
+        }
+        return v;
+    }
 
     @Override
     protected void onRender(Element target, int index) {
-        if (isFormInput) {
-            El wrap = new El(DOM.createTable());
-            Element tbody = DOM.createTBody();
-            Element mlstr = DOM.createTR();
-            tbody.appendChild(mlstr);
-            Element tdInput = DOM.createTD();
-            Element tdIcon = DOM.createTD();
-            mlstr.appendChild(tdInput);
-            mlstr.appendChild(tdIcon);
+        if (isEditable()) {
+            if (isFormInput & selfRender) {
+                El wrap = new El(DOM.createTable());
+                Element tbody = DOM.createTBody();
+                Element mlstr = DOM.createTR();
+                tbody.appendChild(mlstr);
+                Element tdInput = DOM.createTD();
+                Element tdIcon = DOM.createTD();
+                mlstr.appendChild(tdInput);
+                mlstr.appendChild(tdIcon);
 
-            wrap.appendChild(tbody);
-            wrap.addStyleName("x-form-field-wrap"); //$NON-NLS-1$
-            wrap.addStyleName("x-form-file-wrap"); //$NON-NLS-1$
+                wrap.appendChild(tbody);
+                wrap.addStyleName("x-form-field-wrap"); //$NON-NLS-1$
+                wrap.addStyleName("x-form-file-wrap"); //$NON-NLS-1$
 
-            input = new El(DOM.createInputText());
-            input.addStyleName(fieldStyle);
-            input.setId(XDOM.getUniqueId());
-            input.setEnabled(true);
+                input = new El(DOM.createInputText());
+                input.addStyleName(fieldStyle);
+                input.setId(XDOM.getUniqueId());
+                input.setEnabled(true);
 
-            tdInput.appendChild(input.dom);
-            Element buttonDiv = DOM.createTable();
-            Element tr = DOM.createTR();
-            Element body = DOM.createTBody();
+                tdInput.appendChild(input.dom);
+                Element buttonDiv = DOM.createTable();
+                Element tr = DOM.createTR();
+                Element body = DOM.createTBody();
 
-            Element displayTD = DOM.createTD();
+                Element displayTD = DOM.createTD();
 
-            buttonDiv.appendChild(body);
-            body.appendChild(tr);
-            tr.appendChild(displayTD);
+                buttonDiv.appendChild(body);
+                body.appendChild(tr);
+                tr.appendChild(displayTD);
 
-            tdIcon.appendChild(buttonDiv);
-            setElement(wrap.dom, target, index);
+                tdIcon.appendChild(buttonDiv);
+                setElement(wrap.dom, target, index);
 
-            displayTD.appendChild(displayMultiLanguageBtn.getElement());
-            displayMultiLanguageBtn.getElement().getStyle().setCursor(Cursor.POINTER);
-            updateCtrlButton();
+                displayTD.appendChild(displayMultiLanguageBtn.getElement());
+                displayMultiLanguageBtn.getElement().getStyle().setCursor(Cursor.POINTER);
+                updateCtrlButton();
 
-            this.setAutoWidth(true);
-            this.setStyleAttribute("margin-left", "-2px"); //$NON-NLS-1$ //$NON-NLS-2$
+                this.setAutoWidth(true);
+                this.setStyleAttribute("margin-left", "-2px"); //$NON-NLS-1$ //$NON-NLS-2$
 
+            }
+            super.onRender(target, index);
+        } else {
+            if (el() == null) {
+                setElement(DOM.createDiv(), target, index);
+                getElement().setAttribute("role", "presentation"); //$NON-NLS-1$//$NON-NLS-2$
+
+                textFieldDisable = DOM.createDiv();
+                DOM.setElementAttribute(textFieldDisable, "type", "text"); //$NON-NLS-1$//$NON-NLS-2$
+                DOM.setElementAttribute(textFieldDisable, "contenteditable", "false"); //$NON-NLS-1$//$NON-NLS-2$
+                String elementStyle = "overflow: hidden; whiteSpace: nowrap;"; //$NON-NLS-1$
+                if (getUserProperties() != null && getUserProperties().size() > 0) {
+                    if (getUserProperties().containsKey(KEY_MDM_READ_ONLY_FIELD_STYLE)) {
+                        elementStyle = elementStyle + getUserProperties().get(KEY_MDM_READ_ONLY_FIELD_STYLE);
+                    }
+                }
+                DOM.setElementAttribute(textFieldDisable, "style", elementStyle); //$NON-NLS-1$
+                getElement().appendChild(textFieldDisable);
+                input = el().firstChild();
+            }
+
+            addStyleName("x-form-field-wrap"); //$NON-NLS-1$
+            getInputEl().addStyleName(fieldStyle);
+
+            getInputEl().setId(getId() + "-input"); //$NON-NLS-1$
+
+            super.onRender(target, index);
+            removeStyleName(fieldStyle);
+
+            if (GXT.isAriaEnabled()) {
+                if (!getAllowBlank()) {
+                    setAriaState("aria-required", "true"); //$NON-NLS-1$//$NON-NLS-2$
+                }
+            }
+
+            applyEmptyText();
+            input.dom.removeAttribute("tabIndex"); //$NON-NLS-1$
         }
-        super.onRender(target, index);
     }
 
     @Override
@@ -164,7 +241,7 @@ public class MultiLanguageField extends TextField<String> {
         updateCtrlButton();
     }
 
-    private void updateCtrlButton() {
+    public void updateCtrlButton() {
         displayMultiLanguageBtn.setVisible(!readOnly);
     }
 
@@ -455,5 +532,70 @@ public class MultiLanguageField extends TextField<String> {
         grid.setContextMenu(contextMenu);
 
     }
+    
+    @Override
+    public void disable() {
+        super.disable();
+        setEditable(false);
+        if (input != null) {
+            input.dom.setAttribute("contenteditable", "false"); //$NON-NLS-1$//$NON-NLS-2$
+            input.dom.removeAttribute("tabIndex"); //$NON-NLS-1$
+        }
+    }
 
+    @Override
+    public void enable() {
+        super.enable();
+        setEditable(true);
+        if (input != null) {
+            input.dom.setAttribute("contenteditable", "true"); //$NON-NLS-1$//$NON-NLS-2$
+            input.dom.removeAttribute("tabIndex"); //$NON-NLS-1$
+        }
+    }
+
+    @Override
+    protected void onKeyDown(FieldEvent fe) {
+        if (fe.getKeyCode() == 13 && !isEditable()) {
+            fe.stopEvent();
+            return;
+        }
+        super.onKeyDown(fe);
+    }
+
+    @Override
+    public void onDisable() {
+        addStyleName(disabledStyle);
+    }
+
+    public Boolean isEditable() {
+        return this.editable;
+    }
+
+    public void setEditable(Boolean editable) {
+        this.editable = editable;
+    }
+    
+    public Boolean getSelfRender() {
+        return this.selfRender;
+    }
+
+    public void setSelfRender(Boolean selfRender) {
+        this.selfRender = selfRender;
+    }
+    
+    public HashMap<String, String> getUserProperties() {
+        return this.userProperties;
+    }
+
+    public void setUserProperties(HashMap<String, String> userProperties) {
+        this.userProperties = userProperties;
+    }
+
+    public String getCurrentLanguage() {
+        return this.currentLanguage;
+    }
+
+    public void setCurrentLanguage(String currentLanguage) {
+        this.currentLanguage = currentLanguage;
+    }
 }

@@ -64,6 +64,10 @@
             <artifactId>jaxb-xjc</artifactId>
         </dependency>
         <dependency>
+            <groupId>xalan</groupId>
+            <artifactId>xalan</artifactId>
+        </dependency>
+        <dependency>
             <groupId>net.sourceforge.saxon</groupId>
             <artifactId>saxon9-dom</artifactId>
         </dependency>

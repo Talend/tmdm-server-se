@@ -54,7 +54,7 @@ public class ServerTest extends TestCase {
     public void setUp() throws Exception {
         ServerContext.INSTANCE.get(new MockServerLifecycle());
         MDMContextAccessor context = new MDMContextAccessor();
-        FileSystemXmlApplicationContext fileContext = new FileSystemXmlApplicationContext(ServerTest.class.getResource("mdm-context.xml").getPath());
+        FileSystemXmlApplicationContext fileContext = new FileSystemXmlApplicationContext(ServerTest.class.getClassLoader().getResource("mdm-context.xml").getPath());
         context.setApplicationContext(fileContext);
         fileContext.refresh();
     }

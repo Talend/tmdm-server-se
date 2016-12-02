@@ -125,7 +125,7 @@ public class RecordValidationTest extends TestCase {
         BeanDelegatorContainer.createInstance();
 
         MDMContextAccessor context = new MDMContextAccessor();
-        FileSystemXmlApplicationContext fileContext = new FileSystemXmlApplicationContext(RecordValidationTest.class.getResource("../server/mdm-context.xml").getPath());
+        FileSystemXmlApplicationContext fileContext = new FileSystemXmlApplicationContext(RecordValidationTest.class..getClassLoader().getResource("../server/mdm-context.xml").getPath());
         context.setApplicationContext(fileContext);
         fileContext.refresh();
     }

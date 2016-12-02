@@ -23,6 +23,7 @@ import com.amalto.core.storage.StorageType;
 
 import junit.framework.TestCase;
 
+import org.springframework.context.support.FileSystemXmlApplicationContext;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -54,6 +55,10 @@ public class ServerTest extends TestCase {
     @Override
     public void setUp() throws Exception {
         ServerContext.INSTANCE.get(new MockServerLifecycle());
+        MDMContextAccessor context = new MDMContextAccessor();
+        FileSystemXmlApplicationContext fileContext = new FileSystemXmlApplicationContext(ServerTest.class.getResource("/com/amalto/core/server/mdm-context.xml").getPath());
+        context.setApplicationContext(fileContext);
+        fileContext.refresh();
     }
 
     public void testStorageInitialization() throws Exception {

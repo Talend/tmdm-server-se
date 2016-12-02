@@ -123,15 +123,18 @@ public class RecordValidationTest extends TestCase {
         LOG.info("Staging storage prepared");
 
         BeanDelegatorContainer.createInstance();
+
+        MDMContextAccessor context = new MDMContextAccessor();
+        FileSystemXmlApplicationContext fileContext = new FileSystemXmlApplicationContext(RecordValidationTest.class.getResource("/com/amalto/core/server/mdm-context.xml").getPath());
+        context.setApplicationContext(fileContext);
+        fileContext.refresh();
+        LOG.error("============================================================================");
+        LOG.error("path="+RecordValidationTest.class.getResource("/com/amalto/core/server/mdm-context.xml").getPath());
+        LOG.error("============================================================================");
     }
 
     @Override
     protected void setUp() throws Exception {
-        MDMContextAccessor context = new MDMContextAccessor();
-        FileSystemXmlApplicationContext fileContext = new FileSystemXmlApplicationContext(this.getClass().getResource("/com/amalto/core/save/mdm-context.xml").getPath());
-        context.setApplicationContext(fileContext);
-        fileContext.refresh();
-
         String xmlStore = "<Store><Id>1</Id><Address>Address</Address><Lat>1.0</Lat><Long>1.0</Long></Store>";
         String xmlProduct = "<Product><Id>1</Id><Name>Product</Name><Description>Product Description</Description><Features><Sizes/><Colors/></Features><Price>2.00</Price><Stores><Store>[1]</Store></Stores></Product>";
         createData("Product", false, xmlStore);

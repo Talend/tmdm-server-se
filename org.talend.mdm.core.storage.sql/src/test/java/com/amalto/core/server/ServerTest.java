@@ -15,7 +15,6 @@ package com.amalto.core.server;
 
 import java.io.File;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 
 import com.amalto.core.server.api.DataCluster;
@@ -28,7 +27,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
@@ -56,7 +54,7 @@ public class ServerTest extends TestCase {
     public void setUp() throws Exception {
         ServerContext.INSTANCE.get(new MockServerLifecycle());
         MDMContextAccessor context = new MDMContextAccessor();
-        FileSystemXmlApplicationContext fileContext = new FileSystemXmlApplicationContext(ServerTest.class.getResource("/com/amalto/core/server/mdm-context.xml").getPath());
+        FileSystemXmlApplicationContext fileContext = new FileSystemXmlApplicationContext(ServerTest.class.getResource("mdm-context.xml").getPath());
         context.setApplicationContext(fileContext);
         fileContext.refresh();
     }

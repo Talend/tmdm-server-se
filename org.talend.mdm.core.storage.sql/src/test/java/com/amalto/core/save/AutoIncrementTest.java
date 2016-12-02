@@ -112,12 +112,9 @@ public class AutoIncrementTest extends TestCase {
         BeanDelegatorContainer.createInstance();
 
         MDMContextAccessor context = new MDMContextAccessor();
-        FileSystemXmlApplicationContext fileContext = new FileSystemXmlApplicationContext(AutoIncrementTest.class.getResource("/com/amalto/core/server/mdm-context.xml").getPath());
+        FileSystemXmlApplicationContext fileContext = new FileSystemXmlApplicationContext(AutoIncrementTest.class.getResource("../server/mdm-context.xml").getPath());
         context.setApplicationContext(fileContext);
         fileContext.refresh();
-        LOG.error("============================================================================");
-        LOG.error("path="+AutoIncrementTest.class.getResource("/com/amalto/core/server/mdm-context.xml").getPath());
-        LOG.error("============================================================================");
     }
 
     @SuppressWarnings("rawtypes")

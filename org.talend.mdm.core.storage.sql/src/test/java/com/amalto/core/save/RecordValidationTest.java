@@ -26,7 +26,8 @@ import junit.framework.TestCase;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.springframework.context.support.FileSystemXmlApplicationContext;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
@@ -124,10 +125,9 @@ public class RecordValidationTest extends TestCase {
 
         BeanDelegatorContainer.createInstance();
 
-        MDMContextAccessor context = new MDMContextAccessor();
-        FileSystemXmlApplicationContext fileContext = new FileSystemXmlApplicationContext(RecordValidationTest.class.getClassLoader().getResource("../server/mdm-context.xml").getPath());
-        context.setApplicationContext(fileContext);
-        fileContext.refresh();
+        MDMContextAccessor contextAccessor = new MDMContextAccessor();
+        ApplicationContext context=new ClassPathXmlApplicationContext("classpath:com/amalto/core/server/mdm-context.xml");
+        contextAccessor.setApplicationContext(context);
     }
 
     @Override

@@ -77,6 +77,7 @@ public class MultiOccurrenceChangeItem extends HorizontalPanel {
         this.addRemoveHandler = addRemoveHandler;
     }
 
+
     public MultiOccurrenceChangeItem(final ItemNodeModel itemNode, final ViewBean viewBean, Map<String, Field<?>> fieldMap,
             String operation, final ItemsDetailPanel itemsDetailPanel) {
         this.viewBean = viewBean;
@@ -203,6 +204,10 @@ public class MultiOccurrenceChangeItem extends HorizontalPanel {
             }
             this.add(field);
         } else {
+            itemNode.setEdited(true);
+        }
+
+        if (!itemNode.isEdited() && itemNode.isMassUpdate() && typeModel.getParentTypeModel() == null) {
             itemNode.setEdited(true);
         }
 

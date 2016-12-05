@@ -118,6 +118,7 @@ public class AutoIncrementTest extends TestCase {
 
         ApplicationContext context=new ClassPathXmlApplicationContext("classpath:com/amalto/core/server/mdm-context.xml");
         EhCacheCacheManager mdmEhcache = MDMContextAccessor.getApplicationContext().getBean(MDMEhCacheUtil.MDM_CACHE_MANAGER,EhCacheCacheManager.class);
+        // CacheManager use the single instance, need reset the CacheManger
         mdmEhcache.setCacheManager(CacheManager.newInstance(AutoIncrementTest.class.getResourceAsStream("../server/mdm-ehcache.xml")));
     }
 

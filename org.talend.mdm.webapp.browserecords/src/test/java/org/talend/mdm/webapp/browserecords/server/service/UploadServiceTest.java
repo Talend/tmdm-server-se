@@ -319,6 +319,34 @@ public class UploadServiceTest extends TestCase {
         assertEquals(exceptResult, removeFormatPattern.matcher(wsPutItemWithReportList.get(9).getWsPutItem().getXmlString())
                 .replaceAll(""));
     }
+    
+    public void testUploadCSVFileWithoutHeader() throws Exception {
+        headerVisibleMap = new HashMap<String, Boolean>();
+        headerVisibleMap.put("Contact/ContactId", true); //$NON-NLS-1$
+        headerVisibleMap.put("Contact/name", true); //$NON-NLS-1$
+        headerVisibleMap.put("Contact/firstname", true); //$NON-NLS-1$
+        inheritanceNodePathList = new LinkedList<String>();
+        
+        String[] keys = { "Contact/ContactId" }; //$NON-NLS-1$
+        entityModel = getEntityModel("UploadContactTestModel.xsd", "Contact", "Contact", keys); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        
+        // test upload csv file
+        fileType = "csv"; //$NON-NLS-1$
+        multipleValueSeparator = "|"; //$NON-NLS-1$
+        UploadService service = new TestUploadService(entityModel, fileType, isPartialUpdate, false, headerVisibleMap, inheritanceNodePathList,
+                multipleValueSeparator, seperator, encoding, textDelimiter, language);
+        
+        file = new File(this.getClass().getResource("UploadContactWithoutHeader.csv").getFile()); //$NON-NLS-1$
+        List<WSPutItemWithReport> wsPutItemWithReportList = service.readUploadFile(file);
+        
+        wsPutItemWithReportList = service.readUploadFile(file);
+        assertEquals(2, wsPutItemWithReportList.size());
+        
+        String exceptResult1 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Contact xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><ContactId/><name>id1</name><firstname>name1</firstname><emailsList><email><adress/><adresscategory/></email></emailsList></Contact>"; //$NON-NLS-1$
+        String exceptResult2 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Contact xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><ContactId/><name>id2</name><firstname>name2</firstname><emailsList><email><adress/><adresscategory/></email></emailsList></Contact>"; //$NON-NLS-1$
+        assertEquals(exceptResult1, removeFormatPattern.matcher(wsPutItemWithReportList.get(0).getWsPutItem().getXmlString()).replaceAll("")); //$NON-NLS-1$
+        assertEquals(exceptResult2, removeFormatPattern.matcher(wsPutItemWithReportList.get(1).getWsPutItem().getXmlString()).replaceAll("")); //$NON-NLS-1$
+    }
 
     protected EntityModel getEntityModel(String xsdFileName, String dataModel, String concept, String[] keys) throws Exception {
         String xsd = getFileContent(xsdFileName);

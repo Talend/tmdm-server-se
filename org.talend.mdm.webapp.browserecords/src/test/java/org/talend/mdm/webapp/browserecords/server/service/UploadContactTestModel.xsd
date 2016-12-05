@@ -1,0 +1,68 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<xsd:element name="Contact">
+<xsd:annotation>
+<xsd:appinfo source="X_Write">ABOwner</xsd:appinfo>
+</xsd:annotation>
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element name="ContactId" type="xsd:string">
+<xsd:annotation>
+<xsd:appinfo source="X_Write">ABOwner</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element maxOccurs="1" minOccurs="1" name="name" type="xsd:string">
+<xsd:annotation>
+<xsd:appinfo source="X_Write">ABOwner</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element maxOccurs="unbounded" minOccurs="0" name="firstname" type="xsd:string">
+<xsd:annotation>
+<xsd:appinfo source="X_Write">ABOwner</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element maxOccurs="1" minOccurs="0" name="emailsList">
+<xsd:annotation>
+<xsd:appinfo source="X_AutoExpand">false</xsd:appinfo>
+<xsd:appinfo source="X_Write">ABOwner</xsd:appinfo>
+</xsd:annotation>
+<xsd:complexType>
+<xsd:sequence>
+<xsd:element maxOccurs="unbounded" minOccurs="0" name="email" type="emailType">
+<xsd:annotation>
+<xsd:appinfo source="X_AutoExpand">false</xsd:appinfo>
+<xsd:appinfo source="X_Write">ABOwner</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:unique name="Contact">
+<xsd:selector xpath="."/>
+<xsd:field xpath="ContactId"/>
+</xsd:unique>
+</xsd:element>
+<xsd:complexType abstract="false" name="emailType">
+<xsd:all>
+<xsd:element maxOccurs="1" minOccurs="1" name="adress" type="xsd:string">
+<xsd:annotation>
+<xsd:appinfo source="X_Write">ABOwner</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element maxOccurs="1" minOccurs="0" name="adresscategory" type="adresscategoryType">
+<xsd:annotation>
+<xsd:appinfo source="X_Write">ABOwner</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:all>
+</xsd:complexType>
+<xsd:simpleType name="adresscategoryType">
+<xsd:restriction base="xsd:string">
+<xsd:enumeration value="home"/>
+<xsd:enumeration value="work"/>
+<xsd:enumeration value="professional"/>
+<xsd:enumeration value="personal"/>
+</xsd:restriction>
+</xsd:simpleType>
+</xsd:schema>

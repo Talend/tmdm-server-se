@@ -22,6 +22,9 @@ import com.amalto.core.storage.StorageType;
 
 import junit.framework.TestCase;
 
+import net.sf.ehcache.CacheManager;
+
+import org.springframework.cache.ehcache.EhCacheCacheManager;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -41,6 +44,7 @@ import com.amalto.core.query.user.Expression;
 import com.amalto.core.query.user.UserQueryBuilder;
 import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.StorageResults;
+import com.amalto.core.util.MDMEhCacheUtil;
 import com.amalto.core.util.XtentisException;
 
 @SuppressWarnings("nls")
@@ -54,9 +58,10 @@ public class ServerTest extends TestCase {
     @Override
     public void setUp() throws Exception {
         ServerContext.INSTANCE.get(new MockServerLifecycle());
-        MDMContextAccessor contextAccessor = new MDMContextAccessor();
         ApplicationContext context=new ClassPathXmlApplicationContext("classpath:com/amalto/core/server/mdm-context.xml");
-        contextAccessor.setApplicationContext(context);
+        EhCacheCacheManager mdmEhcache = MDMContextAccessor.getApplicationContext().getBean(MDMEhCacheUtil.MDM_CACHE_MANAGER,EhCacheCacheManager.class);
+        // CacheManager use the single install, need reset the CacheManger
+        mdmEhcache.setCacheManager(CacheManager.newInstance(ServerTest.class.getResourceAsStream("mdm-ehcache.xml")));
     }
 
     public void testStorageInitialization() throws Exception {

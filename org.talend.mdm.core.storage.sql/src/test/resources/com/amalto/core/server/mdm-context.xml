@@ -18,7 +18,7 @@ http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/ac
     <cache:annotation-driven cache-manager="mdmCacheManager" />
     <aop:aspectj-autoproxy expose-proxy="true" /> <!-- Expose proxy to allow AopUtils#currentProxy() method -->
     <bean id="mdmCacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager" p:cacheManager-ref="mdmEhcache" />
-    <bean id="mdmEhcache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean" p:configLocation="classpath:META-INF/mdm-ehcache.xml"
+    <bean id="mdmEhcache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean" p:configLocation="classpath:com/amalto/core/server/mdm-ehcache.xml"
         p:shared="true" p:cacheManagerName="mdmCacheManager" />
         
     <!-- ApplicationContext accessor -->

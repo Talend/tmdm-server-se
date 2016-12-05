@@ -22,9 +22,12 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
+import net.sf.ehcache.CacheManager;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.springframework.cache.ehcache.EhCacheCacheManager;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
@@ -55,6 +58,7 @@ import com.amalto.core.storage.StorageResults;
 import com.amalto.core.storage.StorageType;
 import com.amalto.core.storage.hibernate.HibernateStorage;
 import com.amalto.core.storage.record.DataRecord;
+import com.amalto.core.util.MDMEhCacheUtil;
 import com.amalto.core.util.Util;
 
 @SuppressWarnings("nls")
@@ -112,9 +116,9 @@ public class AutoIncrementTest extends TestCase {
         
         BeanDelegatorContainer.createInstance();
 
-        MDMContextAccessor contextAccessor = new MDMContextAccessor();
         ApplicationContext context=new ClassPathXmlApplicationContext("classpath:com/amalto/core/server/mdm-context.xml");
-        contextAccessor.setApplicationContext(context);
+        EhCacheCacheManager mdmEhcache = MDMContextAccessor.getApplicationContext().getBean(MDMEhCacheUtil.MDM_CACHE_MANAGER,EhCacheCacheManager.class);
+        mdmEhcache.setCacheManager(CacheManager.newInstance(AutoIncrementTest.class.getResourceAsStream("../server/mdm-ehcache.xml")));
     }
 
     @SuppressWarnings("rawtypes")

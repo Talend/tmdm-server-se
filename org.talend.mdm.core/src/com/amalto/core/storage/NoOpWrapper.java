@@ -115,6 +115,10 @@ class NoOpWrapper implements IXmlServerSLWrapper{
         return null;  
     }
 
+    public ArrayList<String> runQuery(String clusterName, String query, String[] parameters, boolean includeNullValue) throws XmlServerException {
+        return null;
+    }
+
     public ArrayList<String> runQuery(String clusterName, String query, String[] parameters, int start, int limit, boolean withTotalCount) throws XmlServerException {
         return null;  
     }

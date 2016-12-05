@@ -80,6 +80,7 @@ import com.amalto.core.storage.hibernate.HibernateStorage;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.record.DataRecordReader;
 import com.amalto.core.storage.record.DataRecordWriter;
+import com.amalto.core.storage.record.DataRecordIncludeNullValueXmlWriter;
 import com.amalto.core.storage.record.DataRecordXmlWriter;
 import com.amalto.core.storage.record.ViewSearchResultsWriter;
 import com.amalto.core.storage.record.XmlStringDataRecordReader;
@@ -4695,6 +4696,7 @@ public class StorageQueryTest extends StorageTestCase {
 
         ResettableStringWriter w = new ResettableStringWriter();
         DataRecordXmlWriter writer = new DataRecordXmlWriter();
+        DataRecordIncludeNullValueXmlWriter includeNullValueWriter = new DataRecordIncludeNullValueXmlWriter();
         writer.setSecurityDelegator(new TestUserDelegator());
 
         assertEquals(1, results.getCount());
@@ -4703,7 +4705,7 @@ public class StorageQueryTest extends StorageTestCase {
             writer.write(record, w);
             result = w.toString();
         }
-        String expectedResult = "<Product><Id>1</Id><Name>Product name</Name><ShortDescription>Short description word</ShortDescription><LongDescription>Long description</LongDescription><Features><Sizes><Size>Small</Size><Size>Medium</Size><Size>Large</Size></Sizes><Colors><Color>Blue</Color><Color>Red</Color></Colors></Features><Product></Product><Availability></Availability><Price>10.00</Price><Family>[2]</Family><Supplier>[1]</Supplier><CreationDate></CreationDate><RemovalDate></RemovalDate><Status>Pending</Status><Stores><Store></Store></Stores></Product>";
+        String expectedResult = "<Product><Id>1</Id><Name>Product name</Name><ShortDescription>Short description word</ShortDescription><LongDescription>Long description</LongDescription><Features><Sizes><Size>Small</Size><Size>Medium</Size><Size>Large</Size></Sizes><Colors><Color>Blue</Color><Color>Red</Color></Colors></Features><Price>10.00</Price><Family>[2]</Family><Supplier>[1]</Supplier><Status>Pending</Status><Stores></Stores></Product>";
         assertEquals(expectedResult, result);
 
         qb = UserQueryBuilder.from("select * from Product where x_id = '1' ");
@@ -4712,7 +4714,7 @@ public class StorageQueryTest extends StorageTestCase {
         assertEquals(1, results.getCount());
         w = new ResettableStringWriter();
         for (DataRecord record : results) {
-            writer.write(record, w);
+            includeNullValueWriter.write(record, w);
             result = w.toString();
         }
 

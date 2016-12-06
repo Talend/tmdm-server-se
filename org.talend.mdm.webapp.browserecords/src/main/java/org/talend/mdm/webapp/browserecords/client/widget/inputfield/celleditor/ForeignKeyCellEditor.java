@@ -7,6 +7,7 @@ import org.talend.mdm.webapp.base.client.widget.MultiLanguageField;
 import org.talend.mdm.webapp.base.shared.TypeModel;
 import org.talend.mdm.webapp.browserecords.client.util.DateUtil;
 import org.talend.mdm.webapp.browserecords.client.util.Locale;
+import org.talend.mdm.webapp.browserecords.client.widget.ForeignKey.ForeignKeyField;
 import org.talend.mdm.webapp.browserecords.client.widget.inputfield.BooleanField;
 
 import com.extjs.gxt.ui.client.widget.form.DateField;
@@ -65,6 +66,11 @@ public class ForeignKeyCellEditor extends CellEditor {
             ((MultiLanguageField) field).setMultiLanguageModel(multiLanguageModel);
             return multiLanguageModel.getValueByLanguage(Locale.getLanguage().toUpperCase());
         }
+
+        if (field instanceof ForeignKeyField) {
+            return null;
+        }
+
         if (field instanceof Field) {
             return v;
         }

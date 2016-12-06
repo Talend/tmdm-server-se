@@ -4723,6 +4723,18 @@ public class StorageQueryTest extends StorageTestCase {
         assertEquals(
                 "<$ExplicitProjection$><col0>1</col0><col1>Product name</col1><col2>Short description word</col2><col3>Long description</col3><col4></col4><col5></col5><col6>10.00</col6><col7>2</col7><col8></col8><col9></col9><col10>Pending</col10><col12></col12></$ExplicitProjection$>",
                 value);
+
+        qb = UserQueryBuilder.from("select x_product from Product where x_id = '1' ");
+        results = storage.fetch(qb.getExpression());
+
+        assertEquals(1, results.getCount());
+        w = new ResettableStringWriter();
+        for (DataRecord record : results) {
+            includeNullValueWriter.write(record, w);
+            result = w.toString();
+        }
+
+        assertEquals("<$ExplicitProjection$><col0></col0></$ExplicitProjection$>", result);
     }
 
     private static class TestUserDelegator implements SecuredStorage.UserDelegator {

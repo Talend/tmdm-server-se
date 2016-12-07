@@ -1,5 +1,8 @@
 package org.talend.mdm.webapp.browserecords.client.widget.inputfield.celleditor;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.talend.mdm.webapp.base.client.model.DataTypeConstants;
 import org.talend.mdm.webapp.base.client.model.ForeignKeyBean;
 import org.talend.mdm.webapp.base.client.model.MultiLanguageModel;
@@ -68,7 +71,12 @@ public class ForeignKeyCellEditor extends CellEditor {
         }
 
         if (field instanceof ForeignKeyField) {
-            return null;
+            Map<String, String> foreignKeyInfo = new LinkedHashMap<String, String>();
+            foreignKeyInfo.put(typeModel.getXpath(), v);
+            ForeignKeyBean foreignKeyBean = new ForeignKeyBean();
+            foreignKeyBean.setForeignKeyInfo(foreignKeyInfo);
+            foreignKeyBean.setDisplayInfo(v);
+            return foreignKeyBean;
         }
 
         if (field instanceof Field) {

@@ -211,7 +211,7 @@ public class FormatCellEditorGWTTest extends GWTTestCase {
         Registry.register(BrowseRecords.USER_SESSION, session);
 
         List<String> foreignKeyInfo = new ArrayList<String>();
-        foreignKeyInfo.add("ProductFamily/name");
+        foreignKeyInfo.add("ProductFamily/Name");
         SimpleTypeModel simpleTypeModel = new SimpleTypeModel();
         simpleTypeModel.setAutoExpand(false);
         simpleTypeModel.setMaxOccurs(-1);
@@ -226,7 +226,11 @@ public class FormatCellEditorGWTTest extends GWTTestCase {
         fkBean.setForeignKeyInfo(fkInfo);
 
         ForeignKeyCellEditor foreignKeyCellEditor = new ForeignKeyCellEditor(foreignKeyField, simpleTypeModel);
-        assertNull(foreignKeyCellEditor.preProcessValue(fkBean));
+        Object result = foreignKeyCellEditor.preProcessValue(fkBean);
+        assertTrue(result instanceof ForeignKeyBean);
+        ForeignKeyBean foreignKeyBean = (ForeignKeyBean) result;
+        assertEquals(1, foreignKeyBean.getForeignKeyInfo().size());
+        assertEquals("TestFamily", foreignKeyBean.getDisplayInfo());
     }
 
     private void mockGrid() {

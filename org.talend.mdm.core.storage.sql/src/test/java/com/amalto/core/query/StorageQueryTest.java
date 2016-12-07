@@ -4560,6 +4560,66 @@ public class StorageQueryTest extends StorageTestCase {
         }
     }
 
+    //TMDM-9703 tMDMInput with one filter return different records size by different batch size
+    public void test_largeVolumeData() throws Exception {
+        List<DataRecord> allRecords = new LinkedList<DataRecord>();
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+
+        for (int i = 1; i <= 1500; i++) {
+
+            DataRecord record = factory.read(repository, product, "<Product>\n" + "    <Id>P-" + i + "</Id>\n"
+                    + "    <Name>Product name</Name>\n" + "    <ShortDescription>Short description word</ShortDescription>\n"
+                    + "    <LongDescription>Long description</LongDescription>\n" + "    <Price>10</Price>\n"
+                    + "    <Features>\n" + "        <Sizes>\n" + "            <Size>Small</Size>\n"
+                    + "            <Size>Medium</Size>\n" + "            <Size>Large</Size>\n" + "        </Sizes>\n"
+                    + "        <Colors>\n" + "            <Color>Blue</Color>\n" + "            <Color>Red</Color>\n"
+                    + "        </Colors>\n" + "    </Features>\n" + "    <Status>Pending</Status>\n"
+                    + "    <Family>[2]</Family>\n" + "    <Supplier>[1]</Supplier>\n" + "</Product>");
+            allRecords.add(record);
+        }
+
+        try {
+            storage.begin();
+            storage.update(allRecords);
+            storage.commit();
+        } finally {
+            storage.end();
+        }
+        int start = 0;
+        int limit = 50;
+
+        UserQueryBuilder qb = UserQueryBuilder.from(product).where(startsWith(product.getField("Id"), "P-"));
+        // Condition and paging
+        qb.start(start < 0 ? 0 : start); // UI can send negative start index
+        qb.limit(limit);
+
+        StorageResults results = storage.fetch(qb.getSelect());
+
+        assertEquals(1500, results.getCount());
+        assertEquals(50, results.getSize());
+        int i = 0;
+        for (DataRecord result : results) {
+            if(result.get("Id") != null){
+                i++;
+            }
+        }
+        assertEquals(50, i);
+
+        qb = UserQueryBuilder.from(product).where(startsWith(product.getField("Id"), "P-"));
+        try {
+            storage.begin();
+            storage.delete(qb.getSelect());
+            storage.commit();
+        } finally {
+            storage.end();
+        }
+
+        qb = UserQueryBuilder.from(product);
+
+        results = storage.fetch(qb.getSelect());
+        assertEquals(2, results.getCount());
+    }
+
     private static class TestUserDelegator implements SecuredStorage.UserDelegator {
 
         boolean isActive = true;

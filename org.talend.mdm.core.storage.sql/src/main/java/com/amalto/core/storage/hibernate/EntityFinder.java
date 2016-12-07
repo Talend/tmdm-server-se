@@ -365,6 +365,11 @@ public class EntityFinder {
             if (types != null && types.size() > 0) {
                 for (ComplexTypeMetadata ctm : types) {
                     entityClassName.add(ClassCreator.getClassName(ctm.getName()));
+                    if (ctm.getSubTypes() != null) {
+                        for (ComplexTypeMetadata subType : ctm.getSubTypes()) {
+                            entityClassName.add(ClassCreator.getClassName(subType.getName()));
+                        }
+                    }
                 }
             }
         }

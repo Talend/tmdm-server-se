@@ -313,6 +313,7 @@ public interface IXmlServerSLWrapper {
                               String query, String[] parameters, final int start, final int limit, final boolean withTotalCount)
     throws XmlServerException ;
 
+    public ArrayList<String> runQuery(String clusterName, String query, String[] parameters, boolean includeNullValue) throws XmlServerException;
     /**
      * 
      * Retrieves a list of PKs using provided criteria

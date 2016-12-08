@@ -161,16 +161,24 @@ class NativeQueryHandler extends AbstractQueryHandler {
                 int i = 0;
                 Object[] objectArray = (Object[]) next;
                 for (Object o : objectArray) {
+                    SimpleTypeMetadata fieldType = null ;
                     if (o != null) {
-                        SimpleTypeMetadata fieldType = new SimpleTypeMetadata(XMLConstants.W3C_XML_SCHEMA_NS_URI, MetadataUtils.getType(o.getClass().getName()));
-                        String name = "col" + i++; //$NON-NLS-1$
-                        SimpleTypeFieldMetadata colField = new SimpleTypeFieldMetadata(explicitProjectionType, false, false, false, name, fieldType, Collections.<String>emptyList(), Collections.<String>emptyList(), Collections.<String>emptyList(), StringUtils.EMPTY);
-                        explicitProjectionType.addField(colField);
-                        nativeResult.set(colField, o);
+                        fieldType = new SimpleTypeMetadata(XMLConstants.W3C_XML_SCHEMA_NS_URI, MetadataUtils.getType(o.getClass().getName()));
+                    } else {
+                        fieldType = new SimpleTypeMetadata(XMLConstants.W3C_XML_SCHEMA_NS_URI, MetadataUtils.getType(String.class.getName()));
                     }
+                    String name = "col" + i++; //$NON-NLS-1$
+                    SimpleTypeFieldMetadata colField = new SimpleTypeFieldMetadata(explicitProjectionType, false, false, false, name, fieldType, Collections.<String>emptyList(), Collections.<String>emptyList(), Collections.<String>emptyList(), StringUtils.EMPTY);
+                    explicitProjectionType.addField(colField);
+                    nativeResult.set(colField, o);
                 }
             } else {
-                SimpleTypeMetadata fieldType = new SimpleTypeMetadata(XMLConstants.W3C_XML_SCHEMA_NS_URI, MetadataUtils.getType(next.getClass().getName()));
+                SimpleTypeMetadata fieldType = null ;
+                if (next != null) {
+                    fieldType = new SimpleTypeMetadata(XMLConstants.W3C_XML_SCHEMA_NS_URI, MetadataUtils.getType(next.getClass().getName()));
+                } else {
+                    fieldType = new SimpleTypeMetadata(XMLConstants.W3C_XML_SCHEMA_NS_URI, MetadataUtils.getType(String.class.getName()));
+                }
                 String name = "col0"; //$NON-NLS-1$
                 SimpleTypeFieldMetadata colField = new SimpleTypeFieldMetadata(explicitProjectionType, false, false, false, name, fieldType, Collections.<String>emptyList(), Collections.<String>emptyList(), Collections.<String>emptyList(), StringUtils.EMPTY);
                 explicitProjectionType.addField(colField);

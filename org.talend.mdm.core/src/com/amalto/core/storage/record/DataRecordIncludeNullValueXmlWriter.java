@@ -10,10 +10,7 @@
 
 package com.amalto.core.storage.record;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.Collection;
 import java.util.List;
@@ -21,9 +18,6 @@ import java.util.Map;
 
 import javax.xml.XMLConstants;
 
-import com.amalto.core.query.user.metadata.*;
-import com.amalto.core.storage.SecuredStorage;
-import com.amalto.core.storage.StagingStorage;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
@@ -39,45 +33,30 @@ import org.talend.mdm.commmon.metadata.Types;
 import com.amalto.core.query.user.DateConstant;
 import com.amalto.core.query.user.DateTimeConstant;
 import com.amalto.core.query.user.TimeConstant;
+import com.amalto.core.query.user.metadata.StagingBlockKey;
+import com.amalto.core.query.user.metadata.TaskId;
+import com.amalto.core.query.user.metadata.Timestamp;
 import com.amalto.core.schema.validation.SkipAttributeDocumentBuilder;
+import com.amalto.core.storage.StagingStorage;
 import com.amalto.core.storage.StorageMetadataUtils;
 import com.amalto.core.storage.record.metadata.DataRecordMetadata;
 
-public class DataRecordIncludeNullValueXmlWriter implements DataRecordWriter {
-
-    private final String rootElementName;
-
-    private final boolean includeMetadata;
-
-    private ComplexTypeMetadata type;
-
-    private SecuredStorage.UserDelegator delegator = SecuredStorage.UNSECURED;
+public class DataRecordIncludeNullValueXmlWriter extends DataRecordXmlWriter {
 
     public DataRecordIncludeNullValueXmlWriter() {
-        rootElementName = null;
-        includeMetadata = false;
+        super();
     }
 
     public DataRecordIncludeNullValueXmlWriter(boolean includeMetadata) {
-        rootElementName = null;
-        this.includeMetadata = includeMetadata;
+        super(includeMetadata);
     }
 
     public DataRecordIncludeNullValueXmlWriter(String rootElementName) {
-        this.rootElementName = rootElementName;
-        includeMetadata = false;
+       super(rootElementName);
     }
 
     public DataRecordIncludeNullValueXmlWriter(ComplexTypeMetadata type) {
-        this.type = type;
-        this.rootElementName = type.getName();
-        includeMetadata = false;
-    }
-
-    @Override
-    public void write(DataRecord record, OutputStream output) throws IOException {
-        Writer out = new BufferedWriter(new OutputStreamWriter(output, "UTF-8")); //$NON-NLS-1$
-        write(record, out);
+        super(type);
     }
 
     @Override
@@ -105,25 +84,6 @@ public class DataRecordIncludeNullValueXmlWriter implements DataRecordWriter {
         }
         writer.write("</" + getRootElementName(record) + ">"); //$NON-NLS-1$ //$NON-NLS-2$
         writer.flush();
-    }
-
-    @Override
-    public void setSecurityDelegator(SecuredStorage.UserDelegator delegator) {
-        if(delegator == null) {
-            throw new IllegalArgumentException("Delegator cannot be null.");
-        }
-        this.delegator = delegator;
-    }
-
-    private static void writeMetadataField(Writer writer, MetadataField metadataField, Object value) throws IOException {
-        String fieldName = metadataField.getFieldName();
-        if (value != null) { // TMDM-7521: Don't serialize null values to XML (prevent "null" string in result).
-            writer.write("<" + fieldName + ">" + String.valueOf(value) + "</" + fieldName + ">"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-        }
-    }
-
-    private String getRootElementName(DataRecord record) {
-        return rootElementName == null ? record.getType().getName() : rootElementName;
     }
 
     private class FieldPrinter extends DefaultMetadataVisitor<Void> {

@@ -184,4 +184,65 @@ public class LocalLabelTransformerTest extends TestCase{
         }
         assertEquals(2, i);
     }
+
+    // TMDM-10363 The inheritance entity field name show "null" in journal
+    public void testMultipleLanguageLabel_ForExtendedModel() {
+        String concept = "Contract";
+        String clusterName = "Contract";
+        String modelName = "Contract";
+
+        metadataRepository = new MetadataRepository();
+        InputStream dataModelStream = this.getClass().getResourceAsStream("/Contract.xsd");
+        metadataRepository.load(dataModelStream);
+
+        documentBuilderFactory = DocumentBuilderFactory.newInstance();
+        documentBuilderFactory.setNamespaceAware(true);
+        documentBuilderFactory.setValidating(false);
+
+        typeMetadata = (ComplexTypeMetadata) metadataRepository.getType(concept);
+
+        String content = "<Contract><id>3</id><comment>3</comment><detail xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"ContractDetailType\"><code>3</code></detail><detail xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"ContractDetailSubType\"><code>3</code><features><actor>3</actor><vendor>3</vendor><boolValue>true</boolValue></features><ReadOnlyEle>3</ReadOnlyEle></detail></Contract>";
+
+        try {
+            document = new DOMDocument(XMLUtils.parse(content), typeMetadata, clusterName, modelName);
+        } catch (Exception e) {
+            fail("failed to create document");
+        }
+
+        LocalLabelTransformer multipleLanguageLabel = new LocalLabelTransformer("en");
+
+        transformedDocument = document.transform(multipleLanguageLabel);
+        org.dom4j.Document newDcoument = null;
+        try {
+
+            newDcoument = DocumentHelper.parseText(transformedDocument.exportToString());
+        } catch (Exception e) {
+            fail("failed to test.");
+        }
+        org.dom4j.Element rootElement = newDcoument.getRootElement();
+        assertEquals("Contract", rootElement.attributeValue("label"));
+        assertEquals(4, rootElement.elements().size());
+        assertEquals("id", rootElement.element("id").attributeValue("label"));
+        assertEquals("comment", rootElement.element("comment").attributeValue("label"));
+
+        Iterator it = rootElement.elementIterator("detail");
+        int i = 0;
+        while (it.hasNext()) {
+            org.dom4j.Element identityElement = (org.dom4j.Element) it.next();
+            assertEquals("detail", identityElement.attributeValue("label"));
+            assertEquals("code", identityElement.element("code").attributeValue("label"));
+            i++;
+            if (i == 2) {
+                assertEquals("features", identityElement.element("features").attributeValue("label"));
+                Iterator featuresIterator = identityElement.elementIterator("detail");
+                while (featuresIterator.hasNext()) {
+                    assertEquals("actor", identityElement.element("actor").attributeValue("label"));
+                    assertEquals("vendor", identityElement.element("vendor").attributeValue("label"));
+                    assertEquals("boolValue", identityElement.element("boolValue").attributeValue("label"));
+                }
+                assertEquals("ReadOnlyEle", identityElement.element("ReadOnlyEle").attributeValue("label"));
+            }
+        }
+        assertEquals(2, i);
+    }
 }

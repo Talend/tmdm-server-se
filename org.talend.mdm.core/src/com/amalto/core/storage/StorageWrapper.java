@@ -53,6 +53,7 @@ import com.amalto.core.server.StorageAdmin;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.record.DataRecordReader;
 import com.amalto.core.storage.record.DataRecordWriter;
+import com.amalto.core.storage.record.DataRecordIncludeNullValueXmlWriter;
 import com.amalto.core.storage.record.DataRecordXmlWriter;
 import com.amalto.core.storage.record.SystemDataRecordXmlWriter;
 import com.amalto.core.storage.record.XmlDOMDataRecordReader;
@@ -444,7 +445,16 @@ public class StorageWrapper implements IXmlServerSLWrapper {
     }
 
     @Override
+    public ArrayList<String> runQuery(String clusterName, String query, String[] parameters, boolean includeNullValue) throws XmlServerException {
+        return runQuery(clusterName, query, parameters, 0, 0, false, true);
+    }
+
+    @Override
     public ArrayList<String> runQuery(String clusterName, String query, String[] parameters, int start, int limit, boolean withTotalCount) throws XmlServerException {
+        return runQuery(clusterName, query, parameters, 0, 0, false, false);
+    }
+
+    public ArrayList<String> runQuery(String clusterName, String query, String[] parameters, int start, int limit, boolean withTotalCount, boolean includeNullValue) throws XmlServerException {
         Storage storage = getStorage(clusterName);
         // replace parameters in the procedure
         if (parameters != null) {
@@ -458,7 +468,12 @@ public class StorageWrapper implements IXmlServerSLWrapper {
             storage.begin();
             results = storage.fetch(from(query).getExpression());
             ResettableStringWriter writer = new ResettableStringWriter();
-            DataRecordWriter xmlWriter = new DataRecordXmlWriter("result"); //$NON-NLS-1$  
+            DataRecordWriter xmlWriter ;
+            if(includeNullValue == false){
+                xmlWriter = new DataRecordXmlWriter("result"); //$NON-NLS-1$
+            } else {
+                xmlWriter = new DataRecordIncludeNullValueXmlWriter("result"); //$NON-NLS-1$
+            }
             ArrayList<String> resultsAsString = new ArrayList<String>(results.getCount());
             for (DataRecord result : results) {
                 xmlWriter.write(result, writer);
@@ -474,7 +489,7 @@ public class StorageWrapper implements IXmlServerSLWrapper {
             if(results != null) {
                 results.close();
             }
-        }        
+        }
     }
 
     @Override

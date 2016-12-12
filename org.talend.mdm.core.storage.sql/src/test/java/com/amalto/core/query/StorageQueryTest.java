@@ -68,6 +68,7 @@ import org.talend.mdm.commmon.metadata.MetadataRepository;
 
 import com.amalto.core.delegator.BeanDelegatorContainer;
 import com.amalto.core.delegator.ILocalUser;
+import com.amalto.core.load.io.ResettableStringWriter;
 import com.amalto.core.objects.UpdateReportPOJO;
 import com.amalto.core.query.optimization.RangeOptimizer;
 import com.amalto.core.query.optimization.UpdateReportOptimizer;
@@ -102,6 +103,7 @@ import com.amalto.core.storage.hibernate.HibernateStorage;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.record.DataRecordReader;
 import com.amalto.core.storage.record.DataRecordWriter;
+import com.amalto.core.storage.record.DataRecordIncludeNullValueXmlWriter;
 import com.amalto.core.storage.record.DataRecordXmlWriter;
 import com.amalto.core.storage.record.ViewSearchResultsWriter;
 import com.amalto.core.storage.record.XmlStringDataRecordReader;
@@ -4758,6 +4760,54 @@ public class StorageQueryTest extends StorageTestCase {
         qb.limit(1);
         results = storage.fetch(qb.getSelect());
         assertEquals(9, results.getCount());
+    }
+
+    // TMDM-10244
+    public void test_DataRecordToXmlString() throws Exception {
+        UserQueryBuilder qb = UserQueryBuilder.from(product).where(eq(product.getField("Id"), "1"));
+        StorageResults results = storage.fetch(qb.getSelect());
+
+        ResettableStringWriter w = new ResettableStringWriter();
+        DataRecordXmlWriter writer = new DataRecordXmlWriter();
+        DataRecordIncludeNullValueXmlWriter includeNullValueWriter = new DataRecordIncludeNullValueXmlWriter();
+        writer.setSecurityDelegator(new TestUserDelegator());
+
+        assertEquals(1, results.getCount());
+        String result = "";
+        for (DataRecord record : results) {
+            writer.write(record, w);
+            result = w.toString();
+        }
+        String expectedResult = "<Product><Id>1</Id><Name>Product name</Name><ShortDescription>Short description word</ShortDescription><LongDescription>Long description</LongDescription><Features><Sizes><Size>Small</Size><Size>Medium</Size><Size>Large</Size></Sizes><Colors><Color>Blue</Color><Color>Red</Color></Colors></Features><Price>10.00</Price><Family>[2]</Family><Supplier>[1]</Supplier><Status>Pending</Status><Stores></Stores></Product>";
+        assertEquals(expectedResult, result);
+
+        qb = UserQueryBuilder.from("select * from Product where x_id = '1' ");
+        results = storage.fetch(qb.getExpression());
+
+        assertEquals(1, results.getCount());
+        w = new ResettableStringWriter();
+        for (DataRecord record : results) {
+            includeNullValueWriter.write(record, w);
+            result = w.toString();
+        }
+
+        String value = result.substring(0, result.indexOf("<col11>"))
+                .concat(result.substring(result.indexOf("</col11>") + 8, result.length()));
+        assertEquals(
+                "<$ExplicitProjection$><col0>1</col0><col1>Product name</col1><col2>Short description word</col2><col3>Long description</col3><col4></col4><col5></col5><col6>10.00</col6><col7>2</col7><col8></col8><col9></col9><col10>Pending</col10><col12></col12></$ExplicitProjection$>",
+                value);
+
+        qb = UserQueryBuilder.from("select x_product from Product where x_id = '1' ");
+        results = storage.fetch(qb.getExpression());
+
+        assertEquals(1, results.getCount());
+        w = new ResettableStringWriter();
+        for (DataRecord record : results) {
+            includeNullValueWriter.write(record, w);
+            result = w.toString();
+        }
+
+        assertEquals("<$ExplicitProjection$><col0></col0></$ExplicitProjection$>", result);
     }
 
     private static class TestUserDelegator implements SecuredStorage.UserDelegator {

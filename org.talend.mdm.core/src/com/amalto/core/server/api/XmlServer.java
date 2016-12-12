@@ -211,6 +211,8 @@ public interface XmlServer {
      */
     ArrayList runQuery(String clusterName, String query, String[] parameters) throws XtentisException;
 
+    ArrayList runQuery(String clusterName, String query, String[] parameters, boolean includeNullValue) throws XtentisException;
+
     List<String> getItemPKsByCriteria(ItemPKCriteria criteria) throws XtentisException;
 
     boolean supportTransaction();

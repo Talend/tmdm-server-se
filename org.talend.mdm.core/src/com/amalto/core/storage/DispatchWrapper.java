@@ -319,7 +319,17 @@ public class DispatchWrapper implements IXmlServerSLWrapper {
         }
     }
 
-    public ArrayList<String> runQuery(String clusterName, String query, String[] parameters, int start, int limit, boolean withTotalCount) throws XmlServerException {
+    public ArrayList<String> runQuery(String clusterName, String query, String[] parameters, boolean includeNullValue)
+            throws XmlServerException {
+        if (isMDMInternal(clusterName)) {
+            return mdmInternalWrapper.runQuery(clusterName, query, parameters, includeNullValue);
+        } else {
+            return userStorageWrapper.runQuery(clusterName, query, parameters, includeNullValue);
+        }
+    }
+
+    public ArrayList<String> runQuery(String clusterName, String query, String[] parameters, int start, int limit,
+            boolean withTotalCount) throws XmlServerException {
         if (isMDMInternal(clusterName)) {
             return mdmInternalWrapper.runQuery(clusterName, query, parameters, start, limit, withTotalCount);
         } else {

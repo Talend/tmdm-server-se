@@ -21,7 +21,7 @@ import net.sf.ehcache.Element;
 
 public class MDMEhCacheUtil {
 
-    public static final String MDM_CACHE_MANAGER = "mdmCacheManager";
+    public static final String MDM_CACHE_MANAGER = "mdmCacheManager"; //$NON-NLS-1$
 
     public static Object getCache(String cacheName, Object key) {
         EhCacheCacheManager mdmEhcache = MDMContextAccessor.getApplicationContext().getBean(MDM_CACHE_MANAGER,

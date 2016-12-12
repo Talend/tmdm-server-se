@@ -103,7 +103,7 @@ public class CellRendererCreator {
                         ListStore<ModelData> store, Grid<ModelData> grid) {
                     ItemBean itemBean = (ItemBean) model;
                     ForeignKeyBean fkBean = itemBean.getForeignkeyDesc((String) model.get(property));
-                    if (fkBean == null) {
+                    if (fkBean == null || fkBean.getDisplayInfo() == null || "null".equals(fkBean.getDisplayInfo())) { //$NON-NLS-1$
                         return ""; //$NON-NLS-1$
                     }
                     fkBean.setShowInfo(true);

@@ -17,12 +17,7 @@ import org.springframework.cache.ehcache.EhCacheCacheManager;
 
 import com.amalto.core.server.MDMContextAccessor;
 
-import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
-import net.sf.ehcache.config.CacheConfiguration;
-import net.sf.ehcache.config.PersistenceConfiguration;
-import net.sf.ehcache.config.PersistenceConfiguration.Strategy;
-import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
 
 public class MDMEhCacheUtil {
 

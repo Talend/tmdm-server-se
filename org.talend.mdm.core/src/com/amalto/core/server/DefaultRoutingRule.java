@@ -66,10 +66,10 @@ public class DefaultRoutingRule implements RoutingRule {
             LOGGER.debug("getRoutingRule() ");
         }
         try {
-            Object value = MDMEhCacheUtil.getCache(ROUTING_RULE_CACHE_NAME, pk.getUniqueId());
+            RoutingRulePOJO value = MDMEhCacheUtil.getCache(ROUTING_RULE_CACHE_NAME, pk.getUniqueId());
 
             if (value != null) {
-                return (RoutingRulePOJO) value;
+                return value;
             }
 
             RoutingRulePOJO rule = ObjectPOJO.load(RoutingRulePOJO.class, pk);
@@ -137,10 +137,10 @@ public class DefaultRoutingRule implements RoutingRule {
      */
     public Collection<RoutingRulePOJOPK> getRoutingRulePKs(String regex) throws XtentisException {
 
-        Object value = MDMEhCacheUtil.getCache(ROUTING_RULE_PK_CACHE_NAME, regex);
+        Collection<RoutingRulePOJOPK> value = MDMEhCacheUtil.getCache(ROUTING_RULE_PK_CACHE_NAME, regex);
 
-        if (value != null && !((Collection<RoutingRulePOJOPK>) value).isEmpty()) {
-            return (Collection<RoutingRulePOJOPK>) value;
+        if (value != null && !value.isEmpty()) {
+            return value;
         }
 
         Collection<ObjectPOJOPK> routingRules = ObjectPOJO.findAllPKs(RoutingRulePOJO.class, regex);

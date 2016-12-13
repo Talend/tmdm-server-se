@@ -23,14 +23,15 @@ public class MDMEhCacheUtil {
 
     public static final String MDM_CACHE_MANAGER = "mdmCacheManager"; //$NON-NLS-1$
 
-    public static Object getCache(String cacheName, Object key) {
+    @SuppressWarnings("unchecked")
+    public static <K, V> V getCache(String cacheName, K key) {
         EhCacheCacheManager mdmEhcache = MDMContextAccessor.getApplicationContext().getBean(MDM_CACHE_MANAGER,
                 EhCacheCacheManager.class);
         Element element = mdmEhcache.getCacheManager().getCache(cacheName).get(key);
         if (element == null) {
             return null;
         }
-        return element.getObjectValue();
+        return (V) element.getObjectValue();
     }
 
     public static void clearCache(String cacheName) {
@@ -39,7 +40,7 @@ public class MDMEhCacheUtil {
         mdmEhcache.getCache(cacheName).clear();
     }
 
-    public static void addCache(String cacheName, Object key, Object value) {
+    public static <K, V> void addCache(String cacheName, K key, V value) {
         EhCacheCacheManager mdmEhcache = MDMContextAccessor.getApplicationContext().getBean(MDM_CACHE_MANAGER,
                 EhCacheCacheManager.class);
         mdmEhcache.getCache(cacheName).put(key, value);

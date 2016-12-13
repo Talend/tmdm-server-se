@@ -99,10 +99,10 @@ public class DefaultDataCluster implements DataCluster {
                 pk = new DataClusterPOJOPK(StringUtils.substringBeforeLast(pk.getUniqueId(), "#"));
             }
 
-            Object value = MDMEhCacheUtil.getCache(DATA_CLUSTER_CACHE_NAME, pk.getUniqueId());
+            DataClusterPOJO value = MDMEhCacheUtil.getCache(DATA_CLUSTER_CACHE_NAME, pk.getUniqueId());
 
             if (value != null) {
-                return (DataClusterPOJO) value;
+                return value;
             }
 
             DataClusterPOJO dataCluster = ObjectPOJO.load(DataClusterPOJO.class, pk);
@@ -153,10 +153,10 @@ public class DefaultDataCluster implements DataCluster {
                 throw new XtentisException(err);
             }
 
-            Object value = MDMEhCacheUtil.getCache(DATA_CLUSTER_CACHE_NAME, pk.getUniqueId());
+            DataClusterPOJO value = MDMEhCacheUtil.getCache(DATA_CLUSTER_CACHE_NAME, pk.getUniqueId());
 
             if (value != null) {
-                return (DataClusterPOJO) value;
+                return value;
             }
 
             DataClusterPOJO dataCluster = ObjectPOJO.load(DataClusterPOJO.class, pk);

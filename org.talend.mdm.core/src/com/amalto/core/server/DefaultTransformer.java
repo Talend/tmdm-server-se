@@ -99,10 +99,10 @@ public class DefaultTransformer implements TransformerPluginCallBack, com.amalto
     @Override
     public TransformerV2POJO getTransformer(TransformerV2POJOPK pk) throws XtentisException {
         try {
-            Object value = MDMEhCacheUtil.getCache(TRANSFORMER_CACHE_NAME, pk.getUniqueId());
+            TransformerV2POJO value = MDMEhCacheUtil.getCache(TRANSFORMER_CACHE_NAME, pk.getUniqueId());
 
             if (value != null) {
-                return (TransformerV2POJO) value;
+                return value;
             }
 
             TransformerV2POJO transformer = ObjectPOJO.load(TransformerV2POJO.class, pk);
@@ -164,10 +164,10 @@ public class DefaultTransformer implements TransformerPluginCallBack, com.amalto
     @Override
     public Collection<TransformerV2POJOPK> getTransformerPKs(String regex) throws XtentisException {
 
-        Object value = MDMEhCacheUtil.getCache(TRANSFORMER_PKS_CACHE_NAME, regex);
+        Collection<TransformerV2POJOPK> value = MDMEhCacheUtil.getCache(TRANSFORMER_PKS_CACHE_NAME, regex);
 
-        if (value != null && !((Collection<TransformerV2POJOPK>) value).isEmpty()) {
-            return (Collection<TransformerV2POJOPK>) value;
+        if (value != null && !value.isEmpty()) {
+            return value;
         }
 
         Collection<ObjectPOJOPK> c = ObjectPOJO.findAllPKs(TransformerV2POJO.class, regex);

@@ -10,7 +10,17 @@
 
 package com.amalto.core.storage.hibernate;
 
-import static org.hibernate.criterion.Restrictions.*;
+import static org.hibernate.criterion.Restrictions.and;
+import static org.hibernate.criterion.Restrictions.eq;
+import static org.hibernate.criterion.Restrictions.ge;
+import static org.hibernate.criterion.Restrictions.gt;
+import static org.hibernate.criterion.Restrictions.ilike;
+import static org.hibernate.criterion.Restrictions.isNull;
+import static org.hibernate.criterion.Restrictions.le;
+import static org.hibernate.criterion.Restrictions.like;
+import static org.hibernate.criterion.Restrictions.lt;
+import static org.hibernate.criterion.Restrictions.not;
+import static org.hibernate.criterion.Restrictions.or;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,6 +28,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -30,12 +41,15 @@ import org.hibernate.Hibernate;
 import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
+import org.hibernate.criterion.AggregateProjection;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projection;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.PropertyProjection;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.SQLProjection;
 import org.hibernate.internal.CriteriaImpl;
 import org.hibernate.sql.JoinType;
 import org.hibernate.transform.DistinctRootEntityResultTransformer;
@@ -655,10 +669,7 @@ class StandardQueryHandler extends AbstractQueryHandler {
                 // TMDM-9502, If selected fields including "GroupSize", should GROUP BY "All Key Fields" too
                 // like: "GROUP BY x_talend_task_id, x_id"
                 if (hasGroupSize) {
-                    for (FieldMetadata keyField : mainType.getKeyFields()) {
-                        Projection projection = Projections.groupProperty(keyField.getName());
-                        projectionList.add(projection);
-                    }
+                    projectionList = optimizeProjectionList(mainType, projectionList);
                 }
                 if (isCountQuery && queryFields.size() > 1) {
                     Projection projection = projectionList.getProjection(projectionList.getLength() - 1);
@@ -710,6 +721,49 @@ class StandardQueryHandler extends AbstractQueryHandler {
             current.accept(this);
         }
         return criteria;
+    }
+
+    private ProjectionList optimizeProjectionList(ComplexTypeMetadata mainType, ProjectionList oldProjectionList) {
+        ProjectionList newProjectionList = null;
+        RDBMSDataSource dataSource = (RDBMSDataSource) storage.getDataSource();
+        if (dataSource.getDialectName() != RDBMSDataSource.DataSourceDialect.ORACLE_10G) {
+            newProjectionList = oldProjectionList;
+            for (FieldMetadata keyField : mainType.getKeyFields()) {
+                newProjectionList.add(Projections.groupProperty(keyField.getName()));
+            }
+        } else { // ORACLE need to GROUP BY all selected fields
+            newProjectionList = Projections.projectionList();
+            Set<String> groupBys = new LinkedHashSet<String>();// GROUP BY fields
+            ProjectionList extraProjectionList = Projections.projectionList();
+            for (int i = 0; i < oldProjectionList.getLength(); i++) {
+                String propertyName = null;
+                Projection oldProjection = oldProjectionList.getProjection(i);
+                if (oldProjection instanceof SQLProjection) { // Group Size
+                    newProjectionList.add(oldProjection);
+                } else if (oldProjection instanceof PropertyProjection) {// normal fields
+                    propertyName = ((PropertyProjection) oldProjection).getPropertyName();
+                    newProjectionList.add(Projections.groupProperty(propertyName));
+                } else if (oldProjection instanceof AggregateProjection) {// Max, Min
+                    propertyName = ((AggregateProjection) oldProjection).getPropertyName();
+                    newProjectionList.add(oldProjection);
+                    extraProjectionList.add(Projections.groupProperty(propertyName));
+                }
+                if (propertyName != null) {
+                    groupBys.add(propertyName);
+                }
+            }
+            // Add key fields to GROUP BY
+            for (FieldMetadata keyField : mainType.getKeyFields()) {
+                String keyFieldName = mainType.getName() + '.' + keyField.getName();
+                if (!groupBys.contains(keyFieldName)) {
+                    extraProjectionList.add(Projections.groupProperty(keyFieldName));
+                }
+            }
+            for (int i = 0; i < extraProjectionList.getLength(); i++) {
+                newProjectionList.add(extraProjectionList.getProjection(i));
+            }
+        }
+        return newProjectionList;
     }
 
     @Override

@@ -376,6 +376,10 @@ public class ItemDetailToolBar extends ToolBar {
                             // refresh tree
                             ItemPanel itemPanel = (ItemPanel) itemsDetailPanel.getFirstTabWidget();
                             itemPanel.setItem(itemBean);
+                            ItemDetailToolBar firstTabToolBar = itemPanel.getTree().getToolBar();
+                            if (!ItemDetailToolBar.this.equals(firstTabToolBar)) {
+                                firstTabToolBar.setItemBean(itemBean);
+                            }
                             itemPanel.refreshTree();
                             // refresh itemsDetailPanel(include tab title, banner, breadCrumb)
                             TypeModel typeModel = viewBean.getBindingEntityModel().getMetaDataTypes().get(itemBean.getConcept());
@@ -1536,6 +1540,10 @@ public class ItemDetailToolBar extends ToolBar {
 
     public String getOperation() {
         return operation;
+    }
+
+    public void setItemBean(ItemBean itemBean) {
+        this.itemBean = itemBean;
     }
 
     public ItemBean getItemBean() {

@@ -176,12 +176,23 @@ class ManyFieldAccessor implements DOMAccessor {
             }
             node.getParentNode().removeChild(node);
         }
+
+        // if the parent is exist and have no the child, will remove.
+        if (parent.exist() && isEmptyChild()) {
+            Node parentNode = parent.getNode();
+            parentNode.getParentNode().removeChild(parentNode);
+        }
     }
 
     public boolean exist() {
         return parent.exist() && getCollectionItemNode() != null;
     }
 
+    public boolean isEmptyChild() {
+        Node parentNode = parent.getNode();
+        NodeList childs = parentNode.getChildNodes();
+        return childs.getLength() == 0;
+    }
 
     public void markModified(Marker marker) {
         Document domDocument = document.asDOM();

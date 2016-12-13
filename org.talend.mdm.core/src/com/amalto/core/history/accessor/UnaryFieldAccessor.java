@@ -19,6 +19,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
 import com.amalto.core.history.action.FieldUpdateAction;
@@ -135,11 +136,23 @@ class UnaryFieldAccessor implements DOMAccessor {
             Element element = getElement();
             element.getParentNode().removeChild(element);
         }
+
+        // if the parent is exist and have no the child, will remove.
+        if (parent.exist() && isEmptyChild()) {
+            Node parentNode = parent.getNode();
+            parentNode.getParentNode().removeChild(parentNode);
+        }
     }
 
     @Override
     public boolean exist() {
         return parent.exist() && getElement() != null;
+    }
+
+    public boolean isEmptyChild() {
+        Node parentNode = parent.getNode();
+        NodeList childs = parentNode.getChildNodes();
+        return childs.getLength() == 0;
     }
 
     @Override

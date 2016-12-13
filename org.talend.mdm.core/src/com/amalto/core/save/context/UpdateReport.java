@@ -18,8 +18,12 @@ import com.amalto.core.objects.UpdateReportPOJO;
 import com.amalto.core.save.DocumentSaverContext;
 import com.amalto.core.save.SaverSession;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.TypeMetadata;
 import org.w3c.dom.Document;
 
+import com.amalto.core.history.action.FieldUpdateAction;
+
+import java.util.Collection;
 import java.util.List;
 
 class UpdateReport implements DocumentSaver {
@@ -69,8 +73,11 @@ class UpdateReport implements DocumentSaver {
                 hasHeader = true;
                 updateReportDocument.enableRecordFieldChange();
             }
-            action.perform(updateReportDocument);
-            action.undo(updateReportDocument);
+
+            if (!(action instanceof ChangeTypeAction) && !isInherit(action)) {
+                action.perform(updateReportDocument);
+                action.undo(updateReportDocument);
+            }
         }
         if (!updateReportDocument.isCreated()) {
             updateReportDocument.setOperationType(UpdateReportPOJO.OPERATION_TYPE_UPDATE);
@@ -79,6 +86,21 @@ class UpdateReport implements DocumentSaver {
 
         context.setUpdateReportDocument(updateReportDocument);
         next.save(session, context);
+    }
+
+    private boolean isInherit(Action action) {
+        if (!(action instanceof FieldUpdateAction)) {
+            return false;
+        }
+        FieldUpdateAction filedUpdateAction = (FieldUpdateAction) action;
+
+        Collection<TypeMetadata> superTypeList = filedUpdateAction.getField().getDeclaringType().getSuperTypes();
+
+        if (superTypeList == null || superTypeList.size() == 0) {
+            return false;
+        }
+
+        return true;
     }
 
     private void setHeader(MutableDocument updateReportDocument, String fieldName, String value) {

@@ -94,5 +94,9 @@ public class LocalLabelTransformer implements DocumentTransformer {
                 }
             }
         }
+        Collection<ComplexTypeMetadata> subTypeList = containedTypeFieldMetadata.getSubTypes();
+        for (ComplexTypeMetadata fieldMetadata : subTypeList) {
+            setContainedTypeFieldMetadata(fieldMetadata,rootElement);
+        }
     }
 }

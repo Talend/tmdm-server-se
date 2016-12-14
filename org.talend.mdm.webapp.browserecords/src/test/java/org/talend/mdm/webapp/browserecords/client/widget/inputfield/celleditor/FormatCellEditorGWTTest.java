@@ -203,6 +203,36 @@ public class FormatCellEditorGWTTest extends GWTTestCase {
         assertNull(foreignKeyField.getSuggestBox().getValue());
     }
 
+    public void testForeignKeyCellEditor() {
+        UserSession session = new UserSession();
+        AppHeader appHeader = new AppHeader();
+        appHeader.setAutoValidate(false);
+        session.put(UserSession.APP_HEADER, appHeader);
+        Registry.register(BrowseRecords.USER_SESSION, session);
+
+        List<String> foreignKeyInfo = new ArrayList<String>();
+        foreignKeyInfo.add("ProductFamily/Name");
+        SimpleTypeModel simpleTypeModel = new SimpleTypeModel();
+        simpleTypeModel.setAutoExpand(false);
+        simpleTypeModel.setMaxOccurs(-1);
+        simpleTypeModel.setXpath("ProductFamily/Name");
+        simpleTypeModel.setForeignkey("ProductFamily/Id");
+        simpleTypeModel.setForeignKeyInfo(foreignKeyInfo);
+
+        Map<String, String> fkInfo = new LinkedHashMap<String, String>();
+        fkInfo.put("ProductFamily/Name", "TestFamily");
+        foreignKeyField = new ForeignKeyField(simpleTypeModel);
+        ForeignKeyBean fkBean = new ForeignKeyBean();
+        fkBean.setForeignKeyInfo(fkInfo);
+
+        ForeignKeyCellEditor foreignKeyCellEditor = new ForeignKeyCellEditor(foreignKeyField, simpleTypeModel);
+        Object result = foreignKeyCellEditor.preProcessValue(fkBean);
+        assertTrue(result instanceof ForeignKeyBean);
+        ForeignKeyBean foreignKeyBean = (ForeignKeyBean) result;
+        assertEquals(1, foreignKeyBean.getForeignKeyInfo().size());
+        assertEquals("TestFamily", foreignKeyBean.getDisplayInfo());
+    }
+
     private void mockGrid() {
         selectedItem = new ItemBean("FormatTest", "111", xml);
         Map<String, Object> originalMap = new HashMap<String, Object>();

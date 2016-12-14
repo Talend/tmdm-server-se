@@ -75,7 +75,7 @@ public class StoredProcedurePOJO extends ObjectPOJO {
             if (dataClusterPOJOPK != null) {
                 cluster = dataClusterPOJOPK.getUniqueId();
             }
-            return server.runQuery(cluster, getProcedure(), parameters);
+            return server.runQuery(cluster, getProcedure(), parameters, true);
         } catch (Exception e) {
             String err = "Unable to execute the Stored Procedure " + getPK().getUniqueId()
                     + ": " + e.getLocalizedMessage();

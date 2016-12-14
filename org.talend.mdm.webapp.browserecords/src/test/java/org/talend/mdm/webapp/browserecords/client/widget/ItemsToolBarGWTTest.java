@@ -102,6 +102,20 @@ public class ItemsToolBarGWTTest extends GWTTestCase {
         assertNull(bar3.getEntityCombo().getValue());
     }
 
+    public void testUploadButtonVislable() {
+        MockBrowseRecordsServiceAsync mockService = new MockBrowseRecordsServiceAsync();
+        Registry.register(BrowseRecords.BROWSERECORDS_SERVICE, mockService);
+        Registry.register(BrowseRecords.USER_SESSION, new UserSession());
+        AppHeader appHeader = new AppHeader();
+        appHeader.setUseRelations(false);
+        BrowseRecords.getSession().put(UserSession.APP_HEADER, appHeader);
+
+        ItemsToolBar bar1 = new ItemsToolBar();
+        assertEquals(false, bar1.getUploadButton().isVisible());
+        assertEquals(false, bar1.getImportMenu().isVisible());
+        assertEquals(false, bar1.getExportMenu().isVisible());
+    }
+
     /*
      * public static TestSuite suite() throws Exception { return new PowerMockSuite(ItemsToolBarTest.class); }
      * 
@@ -200,7 +214,6 @@ public class ItemsToolBarGWTTest extends GWTTestCase {
     }
 
     class MockBrowseRecordsServiceAsync implements BrowseRecordsServiceAsync {
-
         @Override
         public void saveItem(ViewBean viewBean, String ids, String xml, boolean isCreate, String language,
                 AsyncCallback<ItemResult> callback) {
@@ -451,6 +464,16 @@ public class ItemsToolBarGWTTest extends GWTTestCase {
 
         @Override
         public void getExsitedViewName(String concept, AsyncCallback<String> callback) {
+        }
+
+        @Override
+        public void handleNavigatorNodeLabel(String jsonString, String language, AsyncCallback<String> callback) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void bulkUpdateItem(String baseUrl, String concept, String xml, String language, AsyncCallback<String> callback) {
         }
     }
 }

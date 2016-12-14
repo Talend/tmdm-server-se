@@ -40,11 +40,15 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit3.PowerMockSuite;
 import org.powermock.reflect.Whitebox;
+import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.ComplexTypeMetadataImpl;
+import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.util.datamodel.management.DataModelID;
 import org.talend.mdm.webapp.base.client.exception.ServiceException;
 import org.talend.mdm.webapp.base.client.model.ForeignKeyBean;
 import org.talend.mdm.webapp.base.client.model.ItemBaseModel;
 import org.talend.mdm.webapp.base.client.model.ItemBasePageLoadResult;
+import org.talend.mdm.webapp.base.client.model.ItemResult;
 import org.talend.mdm.webapp.base.shared.ComplexTypeModel;
 import org.talend.mdm.webapp.base.shared.EntityModel;
 import org.talend.mdm.webapp.base.shared.TypeModel;
@@ -82,6 +86,7 @@ import com.amalto.core.util.XtentisException;
 import com.amalto.core.webservice.WSBoolean;
 import com.amalto.core.webservice.WSByteArray;
 import com.amalto.core.webservice.WSDataClusterPK;
+import com.amalto.core.webservice.WSDeleteItemWithReport;
 import com.amalto.core.webservice.WSExecuteTransformerV2;
 import com.amalto.core.webservice.WSGetItem;
 import com.amalto.core.webservice.WSGetTransformerV2PKs;
@@ -89,6 +94,7 @@ import com.amalto.core.webservice.WSGetView;
 import com.amalto.core.webservice.WSGetViewPKs;
 import com.amalto.core.webservice.WSInt;
 import com.amalto.core.webservice.WSItem;
+import com.amalto.core.webservice.WSString;
 import com.amalto.core.webservice.WSStringArray;
 import com.amalto.core.webservice.WSTransformerContext;
 import com.amalto.core.webservice.WSTransformerContextPipeline;
@@ -106,7 +112,8 @@ import com.amalto.webapp.core.bean.Configuration;
 import com.amalto.webapp.core.util.XmlUtil;
 import com.extjs.gxt.ui.client.data.ModelData;
 
-@PrepareForTest({ Util.class, org.talend.mdm.webapp.base.server.util.CommonUtil.class, XtentisPort.class, WSViewSearch.class,
+@PrepareForTest({ Util.class, org.talend.mdm.webapp.base.server.util.CommonUtil.class, MetadataRepository.class,
+        org.talend.mdm.webapp.browserecords.server.util.CommonUtil.class, XtentisPort.class, WSViewSearch.class,
         BrowseRecordsAction.class, SmartViewProvider.class, SmartViewUtil.class, SmartViewDescriptions.class,
         com.amalto.webapp.core.util.Util.class, LocalUser.class, ILocalUser.class, BeanDelegatorContainer.class,
         BrowseRecordsAction.class, Configuration.class })
@@ -616,6 +623,72 @@ public class BrowseRecordsActionTest extends TestCase {
         assertEquals("2", originalMap.get("Goods/floatValue").toString());
     }
 
+    public void testDeleteItemBeans() throws Exception {
+        List<ItemBean> items = new ArrayList<ItemBean>();
+        ItemBean itemBean1 = new ItemBean();
+        itemBean1.setConcept("Test1");
+        itemBean1.setIds("1");
+        items.add(itemBean1);
+        ItemBean itemBean2 = new ItemBean();
+        itemBean2.setConcept("Test1");
+        itemBean1.setIds("1");
+        items.add(itemBean2);
+        ItemBean itemBean3 = new ItemBean();
+        itemBean1.setConcept("Test1");
+        itemBean1.setIds("1");
+        items.add(itemBean3);
+        ItemBean itemBean4 = new ItemBean();
+        itemBean1.setConcept("Test1");
+        itemBean1.setIds("2");
+        items.add(itemBean4);
+        ItemBean itemBean5 = new ItemBean();
+        itemBean1.setConcept("Test1");
+        itemBean1.setIds("2");
+        items.add(itemBean5);
+        ItemBean itemBean6 = new ItemBean();
+        itemBean1.setConcept("Test1");
+        itemBean1.setIds("2");
+        items.add(itemBean6);
+        ItemBean itemBean7 = new ItemBean();
+        itemBean1.setConcept("Test1");
+        itemBean1.setIds("3");
+        items.add(itemBean7);
+        ItemBean itemBean8 = new ItemBean();
+        itemBean1.setConcept("Test1");
+        itemBean1.setIds("3");
+        items.add(itemBean8);
+        ItemBean itemBean9 = new ItemBean();
+        itemBean1.setConcept("Test1");
+        itemBean1.setIds("3");
+        items.add(itemBean9);
+        
+        String cluster = "Test";
+        PowerMockito.mockStatic(org.talend.mdm.webapp.browserecords.server.util.CommonUtil.class);
+        Mockito.when(org.talend.mdm.webapp.browserecords.server.util.CommonUtil.getCurrentDataCluster()).thenReturn(cluster);
+        ComplexTypeMetadata complexTypeMetadata = new ComplexTypeMetadataImpl("Test", "Test1", true);
+        MetadataRepository repository = PowerMockito.mock(MetadataRepository.class);
+        Mockito.when(repository.getComplexType(Mockito.any(String.class))).thenReturn(complexTypeMetadata);
+        PowerMockito.mockStatic(org.talend.mdm.webapp.base.server.util.CommonUtil.class);
+        Mockito.when(org.talend.mdm.webapp.base.server.util.CommonUtil.getCurrentRepository()).thenReturn(repository);
+        Mockito.when(
+                org.talend.mdm.webapp.base.server.util.CommonUtil.extractIdWithDots(Mockito.any(String[].class),
+                        Mockito.any(String.class))).thenReturn(new String[0]);
+        XtentisPort port = PowerMockito.mock(XtentisPort.class);
+        Mockito.when(org.talend.mdm.webapp.base.server.util.CommonUtil.getPort()).thenReturn(port);
+        WSDeleteItemWithReport wsDeleteItemWithReport = PowerMockito.mock(WSDeleteItemWithReport.class);
+        PowerMockito
+                .whenNew(WSDeleteItemWithReport.class)
+                .withArguments(Mockito.any(com.amalto.core.webservice.WSItemPK.class), Mockito.any(String.class),
+                        Mockito.any(String.class), Mockito.any(String.class), Mockito.any(String.class),
+                        Mockito.any(Boolean.class), Mockito.any(Boolean.class), Mockito.any(Boolean.class))
+                .thenReturn(wsDeleteItemWithReport);
+        Mockito.when(wsDeleteItemWithReport.getSource()).thenReturn(BrowseRecordsAction.INFO_KEYWORD);
+        WSString deleteMessage = new WSString();
+        Mockito.when(port.deleteItemWithReport(Mockito.any(WSDeleteItemWithReport.class))).thenReturn(deleteMessage);
+        List<ItemResult> resut = action.deleteItemBeans(items, true, "en");
+        assertEquals(3, resut.size());
+    }
+
     private String[] getMockResultsFromServer() throws IOException {
         List<String> results = new ArrayList<String>();
         InputStream is = BrowseRecordsActionTest.class.getResourceAsStream("../../ProductQueryResult.properties");
@@ -819,16 +892,31 @@ public class BrowseRecordsActionTest extends TestCase {
     }
 
     public void testGetErrorMessageFromWebCoreException() throws Exception {
-        RuntimeException runtimeException = new RuntimeException("throw a runtimeException");
-        CoreException coreException = new CoreException("delete_failure_constraint_violation", runtimeException);
+        RuntimeException runtimeException = new RuntimeException("RuntimeException");
+        CoreException coreException = new CoreException("default_remote_error_message", runtimeException);
         Method[] methods = BrowseRecordsAction.class.getDeclaredMethods();
         for (Method method : methods) {
             if ("getErrorMessageFromWebCoreException".equals(method.getName())) {
                 method.setAccessible(true);
-                Object para[] = { coreException, "TestModel", "1", new Locale("en") };
-                Object result = method.invoke(action, para);
-                String expectedMsg = MESSAGES.getMessage(new Locale("en"), "delete_failure_constraint_violation", "TestModel.1");
-                assertEquals(expectedMsg, result);
+                Object para1[] = { coreException, "TestModel", "1", new Locale("en") };
+                Object result1 = method.invoke(action, para1);
+                String expectedMsg = "An error occurred.TestModel.1,RuntimeException";
+                assertEquals(expectedMsg, result1);
+                
+                Object para2[] = { coreException, "", "1", new Locale("en") };
+                Object result2 = method.invoke(action, para2);
+                expectedMsg = "An error occurred.RuntimeException";
+                assertEquals(expectedMsg, result2);
+                
+                Object para3[] = { coreException, "TestModel", "", new Locale("en") };
+                Object result3 = method.invoke(action, para3);
+                expectedMsg = "An error occurred.RuntimeException";
+                assertEquals(expectedMsg, result3);
+                
+                Object para4[] = { coreException, "", "", new Locale("en") };
+                Object result4 = method.invoke(action, para4);
+                expectedMsg = "An error occurred.RuntimeException";
+                assertEquals(expectedMsg, result4);
                 break;
             }
         }
@@ -1020,19 +1108,21 @@ public class BrowseRecordsActionTest extends TestCase {
         WSTransformerContextPipeline line = new WSTransformerContextPipeline(entries);
         WSTransformerContext context = new WSTransformerContext(null, line, null);
         Mockito.when(port.executeTransformerV2(Mockito.any(WSExecuteTransformerV2.class))).thenReturn(context);
+        ItemBean itemBean = new ItemBean();
+        itemBean.setItemXml(content);
 
         for (Method method : methods) {
             if ("extractUsingTransformerThroughView".equals(method.getName())) {
                 method.setAccessible(true);
                 Object para[] = { "Agency", "Browse_items_Agency", ids, "ModelTest", "ModelTest", DataModelHelper.getEleDecl(),
-                        wsItem };
+                		itemBean };
                 method.invoke(action, para);
                 String expectedMsg = "<Agency><AgencyId>1</AgencyId><Name>1</Name>"
                         + "<Etablissement><IdEtablissement>1</IdEtablissement><Adresse>Paris</Adresse></Etablissement>"
                         + "<Etablissement><IdEtablissement>2</IdEtablissement><Adresse>Ville1</Adresse></Etablissement>"
                         + "<Etablissement><IdEtablissement>3</IdEtablissement><Adresse>3</Adresse></Etablissement>"
                         + "<Region>Lausanne</Region></Agency>";
-                assertEquals(expectedMsg, wsItem.getContent().replaceAll("\r", "").replaceAll("\n", ""));
+                assertEquals(expectedMsg, itemBean.getItemXml().replaceAll("\r", "").replaceAll("\n", ""));
                 break;
             }
         }
@@ -1286,4 +1376,5 @@ public class BrowseRecordsActionTest extends TestCase {
             return true;
         }
     }
+
 }

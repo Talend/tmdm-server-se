@@ -124,7 +124,7 @@ class SelectAnalyzer extends VisitorAdapter<Visitor<StorageResults>> {
                 }
                 return new FullTextQueryHandler(storage, mappings, storageClassLoader, session, select, this.selectedFields, callbacks);
             } else {
-                throw new IllegalArgumentException("Storage '" + storage.getName() + "' is not configured to support full text queries.");
+                throw new IllegalArgumentException("Storage '" + storage.getName() + "(" + storage.getType().name() + ")' is not configured to support full text queries.");
             }
         }
         // Condition optimizations

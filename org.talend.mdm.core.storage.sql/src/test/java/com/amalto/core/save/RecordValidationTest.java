@@ -37,6 +37,7 @@ import com.amalto.core.delegator.ILocalUser;
 import com.amalto.core.history.MutableDocument;
 import com.amalto.core.metadata.ClassRepository;
 import com.amalto.core.objects.ObjectPOJO;
+import com.amalto.core.objects.datacluster.DataClusterPOJO;
 import com.amalto.core.objects.datamodel.DataModelPOJO;
 import com.amalto.core.query.user.Expression;
 import com.amalto.core.query.user.OrderBy;
@@ -56,6 +57,7 @@ import com.amalto.core.storage.datasource.DataSourceDefinition;
 import com.amalto.core.storage.hibernate.HibernateStorage;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.util.OutputReport;
+import com.amalto.core.util.Util;
 import com.amalto.core.util.XtentisException;
 
 @SuppressWarnings("nls")
@@ -382,6 +384,10 @@ public class RecordValidationTest extends TestCase {
     // Create test data
     protected static void createData(String storageName, boolean isStaging, String documentXml) throws Exception {
         BeanDelegatorContainer.getInstance().setDelegatorInstancePool(Collections.<String, Object> singletonMap("LocalUser", new MockAdmin()));
+        Util.getDataClusterCtrlLocal().putDataCluster(new DataClusterPOJO("UpdateReport"));
+        Util.getDataClusterCtrlLocal().putDataCluster(new DataClusterPOJO("CONF"));
+        Util.getDataClusterCtrlLocal().putDataCluster(new DataClusterPOJO("Product"));
+        
         String dataCluster = isStaging ? storageName + "#STAGING" : storageName;
         SaverSession session = SaverSession.newSession(new MockSaverSource(productRepository, true));
         DocumentSaverContext context = session.getContextFactory().createValidation(dataCluster, storageName, false, new ByteArrayInputStream(documentXml.getBytes("UTF-8")));

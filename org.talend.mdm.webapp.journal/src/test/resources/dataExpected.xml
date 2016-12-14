@@ -14,4 +14,13 @@
     <A><A_Id>a9</A_Id><A_Name>aname1</A_Name><E1><FK_to_C>cname1-ctitle1-csubname1-csubtitle1-csubsubname1-csubsubtitle1</FK_to_C></E1></A>
     <A><A_Id>a10</A_Id><A_Name>aname1</A_Name><E2><FK_to_C>cname1-ctitle1-csubname1-csubtitle1-csubsubname1-csubsubtitle1</FK_to_C></E2></A>
     <G><G_Id>g1</G_Id><G_Name>gName1</G_Name><FK_to_F>fname1-ftitle1-fsubname1-fsubtitle1-fsubsubname1-fsubsubtitle1</FK_to_F></G>
+    <A>
+	    <A_Id>a13</A_Id><A_Name>aname1</A_Name>
+	    <BCollection2><FK_to_B>bname1-btitle1-bsubname1-bsubtitle1-bsubsubname1-bsubsubtitle1</FK_to_B><FK_to_B>bname2-btitle2-bsubname2-bsubtitle2-bsubsubname2-bsubsubtitle2</FK_to_B></BCollection2>
+	    <BCollection2>
+	    	<FK_to_B>bname1-btitle1-bsubname1-bsubtitle1-bsubsubname1-bsubsubtitle1</FK_to_B><FK_to_B>bname2-btitle2-bsubname2-bsubtitle2-bsubsubname2-bsubsubtitle2</FK_to_B>
+	    	<SubBColleciton><FK_to_C>cname1-ctitle1-csubname1-csubtitle1-csubsubname1-csubsubtitle1</FK_to_C><FK_to_C>cname2-ctitle2-csubname2-csubtitle2-csubsubname2-csubsubtitle2</FK_to_C></SubBColleciton>
+	    </BCollection2>
+	    <BCollection2><FK_to_B>bname1-btitle1-bsubname1-bsubtitle1-bsubsubname1-bsubsubtitle1</FK_to_B><FK_to_B>bname2-btitle2-bsubname2-bsubtitle2-bsubsubname2-bsubsubtitle2</FK_to_B></BCollection2>
+    </A>
 </DataExpected>

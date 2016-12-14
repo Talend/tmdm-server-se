@@ -10,7 +10,11 @@
 
 package com.amalto.core.storage.adapt;
 
+import static com.amalto.core.query.user.UserQueryBuilder.eq;
+import static com.amalto.core.query.user.UserQueryBuilder.from;
+
 import java.io.File;
+import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -18,17 +22,24 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import junit.framework.TestCase;
 
 import org.h2.jdbc.JdbcSQLException;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
+import org.talend.mdm.commmon.metadata.MetadataUtils;
+import org.talend.mdm.commmon.metadata.MetadataUtils.SortType;
+import org.talend.mdm.commmon.metadata.compare.Compare;
 
+import com.amalto.core.query.user.UserQueryBuilder;
 import com.amalto.core.server.MockServerLifecycle;
 import com.amalto.core.server.ServerContext;
 import com.amalto.core.storage.Storage;
+import com.amalto.core.storage.StorageResults;
 import com.amalto.core.storage.StorageType;
 import com.amalto.core.storage.datasource.DataSource;
 import com.amalto.core.storage.datasource.DataSourceDefinition;
@@ -38,6 +49,7 @@ import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.record.DataRecordReader;
 import com.amalto.core.storage.record.XmlStringDataRecordReader;
 
+@SuppressWarnings("nls")
 public class StorageAdaptTest extends TestCase {
 
     protected static final String STORAGE_NAME = "Test";
@@ -380,6 +392,15 @@ public class StorageAdaptTest extends TestCase {
 
         MetadataRepository repository2 = new MetadataRepository();
         repository2.load(StorageAdaptTest.class.getResourceAsStream("schema6_2.xsd"));
+
+        // TMDM-9469 Impact analysis: list entities that will be dropped
+        Compare.DiffResults diffResults = Compare.compare(repository1, repository2);
+        List<ComplexTypeMetadata> sortedTypesToDrop = storage.findSortedTypesToDrop(diffResults, true);
+        assertEquals(3, sortedTypesToDrop.size());
+        assertEquals("OrganisationType", sortedTypesToDrop.get(0).getName());
+        assertEquals("MST_Organisation", sortedTypesToDrop.get(1).getName());
+        assertEquals("MST_Notice", sortedTypesToDrop.get(2).getName());
+
         storage.adapt(repository2, true);
 
         MetadataRepository repository = storage.getMetadataRepository();
@@ -401,11 +422,360 @@ public class StorageAdaptTest extends TestCase {
 
         MetadataRepository repository2 = new MetadataRepository();
         repository2.load(StorageAdaptTest.class.getResourceAsStream("schema7_2.xsd"));
+
+        // TMDM-9469 Impact analysis: list entities that will be dropped
+        Compare.DiffResults diffResults = Compare.compare(repository1, repository2);
+        List<ComplexTypeMetadata> sortedTypesToDrop = storage.findSortedTypesToDrop(diffResults, true);
+        assertEquals(5, sortedTypesToDrop.size());
+        assertEquals("TypeComptes", sortedTypesToDrop.get(0).getName());
+        assertEquals("TypeEtablissements", sortedTypesToDrop.get(1).getName());
+        assertEquals("TieTiers", sortedTypesToDrop.get(2).getName());
+        assertEquals("TieEtablissements", sortedTypesToDrop.get(3).getName());
+        assertEquals("TieComptes", sortedTypesToDrop.get(4).getName());
+
         storage.adapt(repository2, true);
 
         MetadataRepository repository = storage.getMetadataRepository();
         assertEquals(repository2, repository);
         storage.close(true);
+    }
+
+    // TMDM-9644 Recreate tables of entity dose not delete the FK values dependency to it and the journal records are deleted.
+    public void testFindTablesToDrop() throws Exception {
+        // Test preparation
+        DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
+        Storage storage = new HibernateStorage(STORAGE_NAME, StorageType.MASTER);
+        storage.init(dataSource);
+
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(StorageAdaptTest.class.getResourceAsStream("AOP.xsd"));
+        storage.prepare(repository, true);
+        // Drop Type Composition
+        ComplexTypeMetadata composition = repository.getComplexType("Composition");
+        Set<ComplexTypeMetadata> typesToDrop = new HashSet<ComplexTypeMetadata>();
+        typesToDrop.add(composition);
+        // Find all dependencies of Composition
+        Set<ComplexTypeMetadata> allDependencies = new HashSet<ComplexTypeMetadata>();
+        allDependencies.addAll(typesToDrop);
+        Method findDependentTypesToDelete = storage.getClass().getDeclaredMethod("findDependentTypesToDelete",
+                new Class[] { MetadataRepository.class, Set.class, Set.class });
+        findDependentTypesToDelete.setAccessible(true);
+        Object[] args = { repository, typesToDrop, allDependencies };
+        Set<ComplexTypeMetadata> dependentTypesToDrop = (Set<ComplexTypeMetadata>) findDependentTypesToDelete.invoke(storage,
+                args);
+        typesToDrop.addAll(dependentTypesToDrop);
+        // Sort types
+        List<ComplexTypeMetadata> sortedTypesToDrop = new ArrayList<ComplexTypeMetadata>(typesToDrop);
+        sortedTypesToDrop = MetadataUtils.sortTypes(repository, sortedTypesToDrop, SortType.LENIENT);
+        // Find tables to drop
+        Method findTablesToDrop = storage.getClass().getDeclaredMethod("findTablesToDrop", new Class[] { List.class });
+        findTablesToDrop.setAccessible(true);
+        Object[] args1 = { sortedTypesToDrop };
+        Set<String> tables = (Set<String>) findTablesToDrop.invoke(storage, args1);
+        assertTrue(tables.contains("X_CompatibilityType"));
+        storage.close(true);
+    }
+
+    // TMDM-9099 Increase the length of a string element should be low impact
+    public void test9_IncreaseStringFieldLength() {
+        DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
+        Storage storage = new HibernateStorage("MyStr", StorageType.MASTER);
+        storage.init(dataSource);
+        String[] typeNames = { "MyStr" };
+        String[] tables = { "MyStr" };
+        String[] columns = { "X_ID", "X_MYSTR", "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" };
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+        MetadataRepository repository1 = new MetadataRepository();
+        repository1.load(StorageAdaptTest.class.getResourceAsStream("schema9_1.xsd"));
+        storage.prepare(repository1, true);
+        try {
+            assertDatabaseChange(dataSource, tables, columns, new boolean[] { true });
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+
+        try {
+            assertColumnLengthChange(dataSource, "MyStr", "X_MYSTR", 10);
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+
+        String input1 = "<MyStr><Id>id-1</Id><MyStr>str-1</MyStr></MyStr>";
+        String input2 = "<MyStr><Id>id-2</Id><MyStr>str-1-1-1-1-1-1-1-1-1-1-1</MyStr></MyStr>";
+        String input3 = "<MyStr><Id>id-3</Id><MyStr>str123456789123456789123456789123</MyStr></MyStr>";
+        createRecord(storage, factory, repository1, typeNames, new String[] { input1 });
+
+        storage.begin();
+        ComplexTypeMetadata MyStr = repository1.getComplexType("MyStr");//$NON-NLS-1$
+        UserQueryBuilder qb = from(MyStr);
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+            for (DataRecord result : results) {
+                assertEquals("id-1", result.get("Id"));
+                assertEquals("str-1", result.get("MyStr"));
+            }
+        } finally {
+            results.close();
+        }
+        storage.end();
+
+        try {
+            createRecord(storage, factory, repository1, typeNames, new String[] { input2 });
+            fail("could not insert into the input2 data");
+        } catch (Exception e1) {
+            assertTrue(e1 instanceof RuntimeException);
+        }
+        storage.begin();
+        MyStr = repository1.getComplexType("MyStr");//$NON-NLS-1$
+        qb = from(MyStr);
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+            for (DataRecord result : results) {
+                assertEquals("id-1", result.get("Id"));
+                assertEquals("str-1", result.get("MyStr"));
+            }
+        } finally {
+            results.close();
+        }
+        storage.end();
+
+        MetadataRepository repository2 = new MetadataRepository();
+        repository2.load(StorageAdaptTest.class.getResourceAsStream("schema9_2.xsd"));
+        storage.adapt(repository2, true);
+        try {
+            assertDatabaseChange(dataSource, tables, columns, new boolean[] { true });
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+
+        try {
+            assertColumnLengthChange(dataSource, "MyStr", "X_MYSTR", 30);
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+
+        createRecord(storage, factory, repository2, typeNames, new String[] { input2 });
+
+        storage.begin();
+        MyStr = repository2.getComplexType("MyStr");//$NON-NLS-1$
+        qb = from(MyStr);
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(2, results.getCount());
+            for (DataRecord result : results) {
+                if (result.get("Id").equals("id-1")) {
+                    assertEquals("str-1", result.get("MyStr"));
+                }
+                if (result.get("Id").equals("id-2")) {
+                    assertEquals("str-1-1-1-1-1-1-1-1-1-1-1", result.get("MyStr"));
+                }
+
+            }
+        } finally {
+            results.close();
+        }
+        storage.end();
+
+        MetadataRepository repository3 = new MetadataRepository();
+        repository3.load(StorageAdaptTest.class.getResourceAsStream("schema10_1.xsd"));
+        storage.adapt(repository3, true);
+        try {
+            assertDatabaseChange(dataSource, tables, columns, new boolean[] { true });
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+
+        try {
+            assertColumnLengthChange(dataSource, "MyStr", "X_MYSTR", 35);
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+
+        createRecord(storage, factory, repository3, typeNames, new String[] { input3 });
+
+        storage.begin();
+        MyStr = repository3.getComplexType("MyStr");//$NON-NLS-1$
+        qb = from(MyStr);
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(3, results.getCount());
+            for (DataRecord result : results) {
+                if (result.get("Id").equals("id-1")) {
+                    assertEquals("str-1", result.get("MyStr"));
+                }
+                if (result.get("Id").equals("id-2")) {
+                    assertEquals("str-1-1-1-1-1-1-1-1-1-1-1", result.get("MyStr"));
+                }
+                if (result.get("Id").equals("id-3")) {
+                    assertEquals("str123456789123456789123456789123", result.get("MyStr"));
+                }
+
+            }
+        } finally {
+            results.close();
+        }
+        storage.end();
+
+        MetadataRepository repository4 = new MetadataRepository();
+        repository4.load(StorageAdaptTest.class.getResourceAsStream("schema9_3.xsd"));
+        storage.adapt(repository4, true);
+        try {
+            assertDatabaseChange(dataSource, tables, columns, new boolean[] { true });
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+
+        try {
+            assertColumnLengthChange(dataSource, "MyStr", "X_MYSTR", 5);
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+
+        storage.begin();
+        MyStr = repository4.getComplexType("MyStr");//$NON-NLS-1$
+        qb = from(MyStr);
+        results = storage.fetch(qb.getSelect());
+        assertEquals(0, results.getCount());
+    }
+
+    public void test10_UseSuperTypeMaxLengthForInherit() {
+        DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
+        Storage storage = new HibernateStorage("MyStr", StorageType.MASTER);
+        storage.init(dataSource);
+        String[] tables = { "MyStr" };
+        String[] columns = { "X_ID", "X_MYSTR", "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" };
+        MetadataRepository repository1 = new MetadataRepository();
+        repository1.load(StorageAdaptTest.class.getResourceAsStream("schema10_1.xsd"));
+        storage.prepare(repository1, true);
+        try {
+            assertDatabaseChange(dataSource, tables, columns, new boolean[] { true });
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+
+        try {
+            assertColumnLengthChange(dataSource, "MyStr", "X_MYSTR", 35);
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+    }
+
+    // TMDM-9086 test for add mandatory field with default value
+    public void test11_addMandatoryFiledWithDefaultValue() throws Exception {
+        DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
+        Storage storage = new HibernateStorage("Person", StorageType.MASTER);
+        storage.init(dataSource);
+        String[] typeNames = { "Person" };
+        String[] tables = { "Person" };
+        String[] columns = { "X_ID", "X_NAME", "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" };
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+        MetadataRepository repository1 = new MetadataRepository();
+        repository1.load(StorageAdaptTest.class.getResourceAsStream("schema11_1.xsd"));
+        storage.prepare(repository1, true);
+        try {
+            assertDatabaseChange(dataSource, tables, columns, new boolean[] { true });
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+
+        String input1 = "<Person><Id>id-1</Id><name>name-1</name></Person>";
+        String input2 = "<Person><Id>id-2</Id><name>name-2</name><lastname>Alice</lastname><age>20</age><weight>81.1</weight><sex>false</sex><name_2>abbc</name_2></Person>";
+        createRecord(storage, factory, repository1, typeNames, new String[] { input1 });
+
+        storage.begin();
+        ComplexTypeMetadata objectType = repository1.getComplexType("Person");//$NON-NLS-1$
+        UserQueryBuilder qb = from(objectType);
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+            for (DataRecord result : results) {
+                assertEquals("id-1", result.get("Id"));
+            }
+        } finally {
+            results.close();
+        }
+        storage.end();
+
+        MetadataRepository repository2 = new MetadataRepository();
+        repository2.load(StorageAdaptTest.class.getResourceAsStream("schema11_2.xsd"));
+        storage.adapt(repository2, true);
+        
+        String[] updatedColumns = { "X_ID", "X_NAME", "X_LASTNAME", "X_AGE", "X_WEIGHT", "X_SEX", "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" };
+        try {
+            assertDatabaseChange(dataSource, tables, updatedColumns, new boolean[] { true });
+            String[] name2Table = { "PERSON_X_NAME_2" };
+            assertExistTables(dataSource, name2Table, new boolean[] { true });
+            String[] updatedColumnsForName2 = { "X_ID", "VALUE", "POS"};
+            assertDatabaseChange(dataSource, name2Table, updatedColumnsForName2, new boolean[] { true });
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+
+        objectType = repository2.getComplexType("Person");//$NON-NLS-1$
+        qb = from(objectType);
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+            for (DataRecord result : results) {
+                assertEquals("id-1", result.get("Id"));
+                assertEquals("name-1", result.get("name"));
+                assertEquals(6, result.get("age"));
+                assertEquals(12.6, result.get("weight"));
+                assertEquals(Boolean.TRUE, result.get("sex"));
+            }
+        } finally {
+            results.close();
+        }
+        storage.end();
+
+        createRecord(storage, factory, repository2, typeNames, new String[] { input2 });
+
+        storage.begin();
+        objectType = repository2.getComplexType("Person");//$NON-NLS-1$
+        qb = from(objectType).where(eq(objectType.getField("Id"), "id-2")); //$NON-NLS-1$ //$NON-NLS-2$
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+            for (DataRecord result : results) {
+                assertEquals("Alice", result.get("lastname"));
+                assertEquals(20, result.get("age"));
+                assertEquals(81.1, result.get("weight"));
+                assertEquals(Boolean.FALSE, result.get("sex"));
+                assertEquals(1, ((List)result.get("name_2")).size());
+                assertEquals("abbc", ((List)result.get("name_2")).get(0));
+            }
+        } finally {
+            results.close();
+        }
+        storage.end();
+    }
+    
+    private void assertColumnLengthChange(DataSourceDefinition dataSource, String tables, String columns, int expectedLength)
+            throws SQLException {
+        DataSource master = dataSource.getMaster();
+        assertTrue(master instanceof RDBMSDataSource);
+        RDBMSDataSource rdbmsDataSource = (RDBMSDataSource) master;
+        assertEquals(RDBMSDataSource.DataSourceDialect.H2, rdbmsDataSource.getDialectName());
+        Connection connection = DriverManager.getConnection(rdbmsDataSource.getConnectionURL());
+        Statement statement = connection.createStatement();
+        try {
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM " + tables);
+            ResultSetMetaData metaData = resultSet.getMetaData();
+            boolean hasField = false;
+            for (int j = 1; j <= metaData.getColumnCount(); j++) {
+                if (columns.equals(metaData.getColumnName(j))) {
+                    assertEquals(expectedLength, metaData.getColumnDisplaySize(j));
+                    hasField = true;
+                }
+            }
+            assertTrue(hasField);
+        } finally {
+            statement.close();
+            connection.close();
+        }
     }
 
     private void assertDatabaseChange(DataSourceDefinition dataSource, String[] tables, String[] columns, boolean[] exists)

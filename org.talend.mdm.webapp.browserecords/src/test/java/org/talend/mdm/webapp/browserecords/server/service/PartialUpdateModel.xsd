@@ -1,0 +1,48 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<xsd:import namespace="http://www.w3.org/2001/XMLSchema"/>
+<xsd:complexType name="SuperInfoType">
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="0" name="name" type="xsd:string">
+<xsd:annotation>
+<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+<xsd:complexType name="SubInfoType">
+<xsd:complexContent>
+<xsd:extension base="SuperInfoType">
+<xsd:sequence>
+<xsd:element maxOccurs="1" minOccurs="0" name="address" type="xsd:string">
+<xsd:annotation>
+<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:extension>
+</xsd:complexContent>
+</xsd:complexType>
+<xsd:element name="UploadTestModel_Polymorphism">
+<xsd:annotation>
+<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+</xsd:annotation>
+<xsd:complexType>
+<xsd:all>
+<xsd:element maxOccurs="1" minOccurs="1" name="id" type="xsd:string">
+<xsd:annotation>
+<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element maxOccurs="1" minOccurs="0" name="info" type="SuperInfoType">
+<xsd:annotation>
+<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:all>
+</xsd:complexType>
+<xsd:unique name="UploadTestModel_Polymorphism">
+<xsd:selector xpath="."/>
+<xsd:field xpath="id"/>
+</xsd:unique>
+</xsd:element>
+</xsd:schema>

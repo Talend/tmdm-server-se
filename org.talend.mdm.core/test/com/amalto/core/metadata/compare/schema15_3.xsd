@@ -1,0 +1,27 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/>
+    <xsd:element name="Entity">
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1" name="ID" type="xsd:string"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Name" type="xsd:string"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Parent" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_ForeignKey">Entity</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="string1" type="string100"/>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="Entity">
+            <xsd:selector xpath="."/>
+            <xsd:field xpath="ID"/>
+        </xsd:unique>
+    </xsd:element>
+    <xsd:simpleType name="string100"> <!-- Intentionally did not change type name, only restriction -->
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="100"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+</xsd:schema>

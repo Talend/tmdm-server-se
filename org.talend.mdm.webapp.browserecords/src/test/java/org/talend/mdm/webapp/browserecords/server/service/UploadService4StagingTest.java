@@ -53,7 +53,7 @@ public class UploadService4StagingTest extends UploadServiceTest {
         // test upload excel file
         fileType = "xls"; //$NON-NLS-1$
         file = new File(this.getClass().getResource("UploadTestModel_Polymorphism-Staging.xls").getFile()); //$NON-NLS-1$
-        UploadService service = new TestUploadService4Staging(entityModel, fileType, headersOnFirstLine, headerVisibleMap,
+        UploadService service = new TestUploadService4Staging(entityModel, fileType, isPartialUpdate, headersOnFirstLine, headerVisibleMap,
                 inheritanceNodePathList, multipleValueSeparator, seperator, encoding, textDelimiter, language);
         List<WSPutItemWithReport> wsPutItemWithReportList = service.readUploadFile(file);
         assertEquals(record1, wsPutItemWithReportList.get(0).getWsPutItem().getXmlString());
@@ -65,7 +65,7 @@ public class UploadService4StagingTest extends UploadServiceTest {
         // test upload csv file
         fileType = "csv"; //$NON-NLS-1$
         file = new File(this.getClass().getResource("UploadTestModel_Polymorphism-Staging.csv").getFile()); //$NON-NLS-1$
-        service = new TestUploadService4Staging(entityModel, fileType, headersOnFirstLine, headerVisibleMap,
+        service = new TestUploadService4Staging(entityModel, fileType, isPartialUpdate, headersOnFirstLine, headerVisibleMap,
                 inheritanceNodePathList, multipleValueSeparator, seperator, encoding, textDelimiter, language);
         wsPutItemWithReportList = service.readUploadFile(file);
         assertEquals(record1, wsPutItemWithReportList.get(0).getWsPutItem().getXmlString());
@@ -77,10 +77,10 @@ public class UploadService4StagingTest extends UploadServiceTest {
 
     public class TestUploadService4Staging extends UploadService4Staging {
 
-        public TestUploadService4Staging(EntityModel entityModel, String fileType, boolean headersOnFirstLine,
+        public TestUploadService4Staging(EntityModel entityModel, String fileType, boolean isPartialUpdate, boolean headersOnFirstLine,
                 Map<String, Boolean> headerVisibleMap, List<String> inheritanceNodePathList, String multipleValueSeparator,
                 String seperator, String encoding, char textDelimiter, String language) {
-            super(entityModel, fileType, headersOnFirstLine, headerVisibleMap, inheritanceNodePathList, multipleValueSeparator,
+            super(entityModel, fileType, isPartialUpdate, headersOnFirstLine, headerVisibleMap, inheritanceNodePathList, multipleValueSeparator,
                     seperator, encoding, textDelimiter, language);
         }
 

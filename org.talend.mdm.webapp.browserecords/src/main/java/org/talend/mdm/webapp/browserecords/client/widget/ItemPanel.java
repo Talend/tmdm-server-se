@@ -158,7 +158,8 @@ public class ItemPanel extends ContentPanel {
         this.setLayout(new RowLayout(Orientation.VERTICAL));
         if (!isForeignKeyPanel) {
             tree.setToolBar(toolBar);
-            if (ItemDetailToolBar.CREATE_OPERATION.equals(operation)) {
+            if (ItemDetailToolBar.CREATE_OPERATION.equals(operation)
+                    || operation.equalsIgnoreCase(ItemDetailToolBar.BULK_UPDATE_OPERATION)) {
                 tree.initTree(viewBean, null, initDataMap, operation, isStaging);
             } else if (ItemDetailToolBar.VIEW_OPERATION.equals(operation)) {
                 tree.initTree(viewBean, item, isStaging);
@@ -193,7 +194,7 @@ public class ItemPanel extends ContentPanel {
     }
 
     public void onUpdatePolymorphism(ComplexTypeModel typeModel) {
-        tree.onUpdatePolymorphism(typeModel);
+        tree.onUpdatePolymorphism(typeModel, operation);
     }
 
     public void onExecuteVisibleRule(List<VisibleRuleResult> visibleResults) {

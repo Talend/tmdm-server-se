@@ -1,0 +1,112 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<xsd:import namespace="http://www.w3.org/2001/XMLSchema"/>
+	<xsd:complexType name="PartyType">
+		<xsd:sequence>
+			<xsd:element maxOccurs="1" minOccurs="1" name="code" type="xsd:string">
+				<xsd:annotation>					
+					<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="CompanyType">
+		<xsd:complexContent>
+			<xsd:extension base="PartyType">
+				<xsd:sequence>
+					<xsd:element maxOccurs="1" minOccurs="1" name="name" type="xsd:string">
+						<xsd:annotation>							
+						<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+						</xsd:annotation>
+					</xsd:element>
+                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="codes">
+						<xsd:complexType>
+							<xsd:all>
+								<xsd:element maxOccurs="1" minOccurs="0" name="test" type="xsd:string">
+									<xsd:annotation>
+										<xsd:appinfo source="X_ForeignKey">Test/TestId</xsd:appinfo>
+										<xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
+									</xsd:annotation>
+								</xsd:element>
+							</xsd:all>
+						</xsd:complexType>
+					</xsd:element>
+	             </xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:element name="PartyCompany" type="CompanyType">
+		<xsd:annotation>
+			<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+			<xsd:appinfo source="X_PrimaryKeyInfo">PartyCompany/name</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:unique name="PartyCompany">
+			<xsd:selector xpath="."/>
+			<xsd:field xpath="code"/>
+		</xsd:unique>
+	</xsd:element>
+	<xsd:element name="PartyProduct">
+		<xsd:annotation>				
+			<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexType>
+            <xsd:sequence>
+				<xsd:element maxOccurs="1" minOccurs="1" name="id" type="xsd:string">
+					<xsd:annotation>							
+						<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element maxOccurs="1" minOccurs="1" name="name" type="xsd:string">
+					<xsd:annotation>							
+						<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element maxOccurs="1" minOccurs="0" name="supplier" type="xsd:string">
+					<xsd:annotation>
+						<xsd:appinfo source="X_ForeignKey">Party/code</xsd:appinfo>							
+						<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+					</xsd:annotation>
+				</xsd:element>
+                <xsd:element maxOccurs="unbounded" minOccurs="0" name="suppliers">
+					<xsd:annotation>
+					<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+				</xsd:annotation>
+					<xsd:complexType>
+						<xsd:all>
+							<xsd:element maxOccurs="1" minOccurs="0" name="code" type="xsd:string">
+								<xsd:annotation>
+									<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+									<xsd:appinfo source="X_ForeignKey">PartyCompany/code</xsd:appinfo>
+									<xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
+								</xsd:annotation>
+							</xsd:element>
+						</xsd:all>
+					</xsd:complexType>
+				</xsd:element>
+            </xsd:sequence>
+		</xsd:complexType>
+		<xsd:unique name="PartyProduct">
+			<xsd:selector xpath="."/>
+			<xsd:field xpath="id"/>
+		</xsd:unique>
+	</xsd:element>
+	<xsd:element name="Party" type="PartyType">
+		<xsd:annotation>				
+			<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:unique name="Party">
+			<xsd:selector xpath="."/>
+			<xsd:field xpath="code"/>
+		</xsd:unique>
+	</xsd:element>
+    <xsd:element name="Test">
+		<xsd:complexType>
+			<xsd:all>
+				<xsd:element name="TestId" type="xsd:string"/>
+			</xsd:all>
+		</xsd:complexType>
+		<xsd:unique name="Test">
+			<xsd:selector xpath="."/>
+			<xsd:field xpath="TestId"/>
+		</xsd:unique>
+	</xsd:element>
+</xsd:schema>

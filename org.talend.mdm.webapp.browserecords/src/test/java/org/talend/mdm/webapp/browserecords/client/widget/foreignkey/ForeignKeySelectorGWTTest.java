@@ -226,6 +226,12 @@ public class ForeignKeySelectorGWTTest extends GWTTestCase {
         assertNotNull(targetNodeModel);
         assertEquals("IdTypeValeur", targetNodeModel.getLabel()); //$NON-NLS-1$
         assertEquals("Caracteristique/Format_Caracteristique:Caracteristique_Liste/IdTypeValeur", targetNodeModel.getTypePath()); //$NON-NLS-1$
+
+        targetPath = "Caracteristique/Format_Caracteristique[@xsi:type=\"Caracteristique_Liste\"]/IdTypeValeur"; //$NON-NLS-1$
+        targetNodeModel = foreignKeySelectorForTest.findTarget(targetPath, itemNodeModel);
+        assertNotNull(targetNodeModel);
+        assertEquals("IdTypeValeur", targetNodeModel.getLabel()); //$NON-NLS-1$
+        assertEquals("Caracteristique/Format_Caracteristique:Caracteristique_Liste/IdTypeValeur", targetNodeModel.getTypePath()); //$NON-NLS-1$
     }
 
     public void testTransformPath() {

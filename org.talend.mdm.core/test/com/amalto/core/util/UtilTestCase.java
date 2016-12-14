@@ -12,6 +12,26 @@
 // ============================================================================
 package com.amalto.core.util;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
+
+import junit.framework.TestCase;
+
+import org.apache.log4j.Logger;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+import com.amalto.commons.core.utils.XMLUtils;
 import com.amalto.core.delegator.IValidation;
 import com.amalto.core.objects.DroppedItemPOJO;
 import com.amalto.core.objects.ItemPOJO;
@@ -24,21 +44,6 @@ import com.amalto.xmlserver.interfaces.IWhereItem;
 import com.amalto.xmlserver.interfaces.WhereAnd;
 import com.amalto.xmlserver.interfaces.WhereCondition;
 import com.amalto.xmlserver.interfaces.WhereLogicOperator;
-import junit.framework.TestCase;
-import org.apache.log4j.Logger;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathFactory;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * DOC achen class global comment. Detailled comment
@@ -334,7 +339,7 @@ public class UtilTestCase extends TestCase {
         Document user = Util.parse(xml);
         Util.setUserProperty(user, "newprop", "newvalue");
         
-        String result = Util.nodeToString(user, true, false);
+        String result = XMLUtils.nodeToString(user, true, false).replaceAll("\r\n", "\n");
         assertEquals("<User><username>A</username><id>B</id><properties><property><name>x</name><value>y</value></property><property><name>newprop</name><value>newvalue</value></property></properties></User>", result);
     }
     
@@ -343,7 +348,7 @@ public class UtilTestCase extends TestCase {
         Document user = Util.parse(xml);
         Util.setUserProperty(user, "newprop", "newvalue");
         
-        String result = Util.nodeToString(user, true, false);
+        String result = XMLUtils.nodeToString(user, true, false).replaceAll("\r\n", "\n");
         assertEquals("<User><username>A</username><id>B</id><properties><property><name>newprop</name><value>newvalue</value></property></properties></User>", result);
     }
     
@@ -352,7 +357,7 @@ public class UtilTestCase extends TestCase {
         Document user = Util.parse(xml);
         Util.setUserProperty(user, "x", "z");
         
-        String result = Util.nodeToString(user, true, false);
+        String result = XMLUtils.nodeToString(user, true, false).replaceAll("\r\n", "\n");
         assertEquals("<User><username>A</username><id>B</id><properties><property><name>x</name><value>z</value></property></properties></User>", result);
     }
     
@@ -361,8 +366,18 @@ public class UtilTestCase extends TestCase {
         Document user = Util.parse(xml);
         Util.setUserProperty(user, null, "z");
         
-        String result = Util.nodeToString(user, true, false);
+        String result = XMLUtils.nodeToString(user, true, false).replaceAll("\r\n", "\n");
         assertEquals("<User><username>A</username><id>B</id><properties><property><name>x</name><value>y</value></property></properties></User>", result);
     }
     
+    public void testMessagesModifyPatternAccordingToArgs() throws Exception {
+        Messages messages = new Messages("org.talend.mdm.webapp.browserecords.client.i18n.BrowseRecordsMessages", new TestClassLoader());
+        StringBuffer pattern = new StringBuffer("An error occurred.");
+        Object[] args = new Object[]{"error message one", "error message two"};
+        messages.ModifyPatternAccordingToArgs(pattern, args);
+        MessageFormat formatter = new MessageFormat(pattern.toString());
+        assertEquals("An error occurred.error message one", formatter.format(args));
+    }
+    
+    private class TestClassLoader extends ClassLoader {}
 }

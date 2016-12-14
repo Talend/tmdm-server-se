@@ -82,6 +82,8 @@ public class BrowseRecordsView extends View {
 
     public static final String LINEAGE_ITEMVIEW = "lineageItemView"; //$NON-NLS-1$
 
+    public static final String BULKUPDATE_ITEMVIEW = "bulkUpdateItemView"; //$NON-NLS-1$
+
     public static final String ITEMS_DETAIL_PANEL = "itemsDetailPanel"; //$NON-NLS-1$
 
     public static final String FK_SOURCE_WIDGET = "foreignKeySourceWidget"; //$NON-NLS-1$

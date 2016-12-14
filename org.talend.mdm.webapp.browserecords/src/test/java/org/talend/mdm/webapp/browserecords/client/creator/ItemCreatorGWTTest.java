@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.mdm.webapp.browserecords.client.creator;
 
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -83,12 +84,18 @@ public class ItemCreatorGWTTest extends GWTTestCase {
         priceType.addLabel("en", "price");
         priceType.addDescription("en", "price");
         types.put("Product/Price", priceType);
-        
+
+        DataTypeConstants.UNKNOW.setBaseTypeName("date");
+        SimpleTypeModel myDateType = new SimpleTypeModel("date", DataTypeConstants.UNKNOW);
+        myDateType.addLabel("en", "CreateDate");
+        myDateType.addDescription("en", "CreateDate");
+        types.put("Product/date", myDateType);
+
         EntityModel em = new EntityModel();
         em.setMetaDataTypes(types);
-        
+
         ItemBean item = ItemCreator.createDefaultItemBean("Product", em);
-        
+
         assertNotNull(item);
 
         assertEquals("product info", item.getLabel());
@@ -98,7 +105,7 @@ public class ItemCreatorGWTTest extends GWTTestCase {
         assertEquals("", item.get("Product/Name"));
         assertEquals("", item.get("Product/NamedProduct"));
         assertEquals("", item.get("Product/Price"));
-
+        assertTrue(item.get("Product/date").toString().length() >= 10);
 
         Object sizes = item.get("Product/Features/Sizes/Size");
         assertTrue(sizes instanceof List);

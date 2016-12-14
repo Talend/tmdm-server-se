@@ -29,6 +29,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -42,6 +43,9 @@ import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 
+import com.amalto.core.delegator.BeanDelegatorContainer;
+import com.amalto.core.delegator.ILocalUser;
+import com.amalto.core.load.io.ResettableStringWriter;
 import com.amalto.core.objects.UpdateReportPOJO;
 import com.amalto.core.query.optimization.RangeOptimizer;
 import com.amalto.core.query.optimization.UpdateReportOptimizer;
@@ -76,10 +80,12 @@ import com.amalto.core.storage.hibernate.HibernateStorage;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.record.DataRecordReader;
 import com.amalto.core.storage.record.DataRecordWriter;
+import com.amalto.core.storage.record.DataRecordIncludeNullValueXmlWriter;
 import com.amalto.core.storage.record.DataRecordXmlWriter;
 import com.amalto.core.storage.record.ViewSearchResultsWriter;
 import com.amalto.core.storage.record.XmlStringDataRecordReader;
 import com.amalto.core.storage.record.metadata.DataRecordMetadata;
+import com.amalto.core.util.XtentisException;
 import com.amalto.xmlserver.interfaces.IWhereItem;
 import com.amalto.xmlserver.interfaces.ItemPKCriteria;
 import com.amalto.xmlserver.interfaces.WhereAnd;
@@ -127,6 +133,15 @@ public class StorageQueryTest extends StorageTestCase {
     private final String COMPTE_Record1 = "<Compte><Level>Compte SF</Level><Code>1</Code><Label>1</Label></Compte>";
 
     private final String COMPTE_Record2 = "<Compte><Level>Nature Comptable SF</Level><Code>11</Code><Label>11</Label><childOf>[Compte SF][1]</childOf></Compte>";
+    
+    private static boolean beanDelegatorContainerFlag = false;
+    
+    private static void createBeanDelegatorContainer(){
+        if(!beanDelegatorContainerFlag){
+            BeanDelegatorContainer.createInstance();
+            beanDelegatorContainerFlag = true;
+        }
+    }
     
     private void populateData() {
         DataRecordReader<String> factory = new XmlStringDataRecordReader();
@@ -371,28 +386,59 @@ public class StorageQueryTest extends StorageTestCase {
         try {
             storage.begin();
             {
-                UserQueryBuilder qb = from(person);
+                UserQueryBuilder qb = from(address);
                 storage.delete(qb.getSelect());
-
-                qb = from(address);
-                storage.delete(qb.getSelect());
-
                 qb = from(country);
                 storage.delete(qb.getSelect());
-
-                qb = from(e2);
+                qb = from(person);
                 storage.delete(qb.getSelect());
-
+                qb = from(b);
+                storage.delete(qb.getSelect());
+                qb = from(d);
+                storage.delete(qb.getSelect());
+                qb = from(a);
+                storage.delete(qb.getSelect());
+                qb = from(supplier);
+                storage.delete(qb.getSelect());
+                qb = from(productFamily);
+                storage.delete(qb.getSelect());
+                qb = from(store);
+                storage.delete(qb.getSelect());
+                qb = from(product);
+                storage.delete(qb.getSelect());
                 qb = from(e1);
                 storage.delete(qb.getSelect());
-
-                qb = from(employee1);
+                qb = from(e2);
                 storage.delete(qb.getSelect());
-
                 qb = from(manager1);
                 storage.delete(qb.getSelect());
-
-                qb = from(product);
+                qb = from(entityA);
+                storage.delete(qb.getSelect());
+                qb = from(ContainedEntityB);
+                storage.delete(qb.getSelect());
+                qb = from(city);
+                storage.delete(qb.getSelect());
+                qb = from(organization);
+                storage.delete(qb.getSelect());
+                qb = from(repeatableElementsEntity);
+                storage.delete(qb.getSelect());
+                qb = from(rr);
+                storage.delete(qb.getSelect());
+                qb = from(compte);
+                storage.delete(qb.getSelect());
+                qb = from(contexte);
+                storage.delete(qb.getSelect());
+                qb = from(personne);
+                storage.delete(qb.getSelect());
+                qb = from(cpo_service);
+                storage.delete(qb.getSelect());
+                qb = from(location);
+                storage.delete(qb.getSelect());
+                qb = from(organisation);
+                storage.delete(qb.getSelect());
+                qb = from(e_entity);
+                storage.delete(qb.getSelect());
+                qb = from(t_entity);
                 storage.delete(qb.getSelect());
             }
             storage.commit();
@@ -629,6 +675,8 @@ public class StorageQueryTest extends StorageTestCase {
     }
 
     public void testSelectByIdIncludingDots() throws Exception {
+        createBeanDelegatorContainer();
+        BeanDelegatorContainer.getInstance().setDelegatorInstancePool(Collections.<String, Object> singletonMap("LocalUser", new MockUser())); //$NON-NLS-1$
         Collection<FieldMetadata> keyFields = supplier.getKeyFields();
         assertEquals(1, keyFields.size());
         FieldMetadata keyField = keyFields.iterator().next();
@@ -674,6 +722,8 @@ public class StorageQueryTest extends StorageTestCase {
     }
 
     public void testSelectByIdIncludingDots2() throws Exception {
+        createBeanDelegatorContainer();
+        BeanDelegatorContainer.getInstance().setDelegatorInstancePool(Collections.<String, Object> singletonMap("LocalUser", new MockUser())); //$NON-NLS-1$
         Collection<FieldMetadata> keyFields = supplier.getKeyFields();
         assertEquals(1, keyFields.size());
         FieldMetadata keyField = keyFields.iterator().next();
@@ -719,6 +769,8 @@ public class StorageQueryTest extends StorageTestCase {
     }
 
     public void testSelectByIdIncludingDots3() throws Exception {
+        createBeanDelegatorContainer();
+        BeanDelegatorContainer.getInstance().setDelegatorInstancePool(Collections.<String, Object> singletonMap("LocalUser", new MockUser())); //$NON-NLS-1$
         Collection<FieldMetadata> keyFields = supplier.getKeyFields();
         assertEquals(1, keyFields.size());
         FieldMetadata keyField = keyFields.iterator().next();
@@ -4577,6 +4629,114 @@ public class StorageQueryTest extends StorageTestCase {
         }
     }
 
+    //TMDM-9703 tMDMInput with one filter return different records size by different batch size
+    public void test_largeVolumeData() throws Exception {
+        List<DataRecord> allRecords = new LinkedList<DataRecord>();
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+
+        for (int i = 1; i <= 1500; i++) {
+
+            DataRecord record = factory.read(repository, product, "<Product>\n" + "    <Id>P-" + i + "</Id>\n"
+                    + "    <Name>Product name</Name>\n" + "    <ShortDescription>Short description word</ShortDescription>\n"
+                    + "    <LongDescription>Long description</LongDescription>\n" + "    <Price>10</Price>\n"
+                    + "    <Features>\n" + "        <Sizes>\n" + "            <Size>Small</Size>\n"
+                    + "            <Size>Medium</Size>\n" + "            <Size>Large</Size>\n" + "        </Sizes>\n"
+                    + "        <Colors>\n" + "            <Color>Blue</Color>\n" + "            <Color>Red</Color>\n"
+                    + "        </Colors>\n" + "    </Features>\n" + "    <Status>Pending</Status>\n"
+                    + "    <Family>[2]</Family>\n" + "    <Supplier>[1]</Supplier>\n" + "</Product>");
+            allRecords.add(record);
+        }
+
+        try {
+            storage.begin();
+            storage.update(allRecords);
+            storage.commit();
+        } finally {
+            storage.end();
+        }
+        int start = 0;
+        int limit = 50;
+
+        UserQueryBuilder qb = UserQueryBuilder.from(product).where(startsWith(product.getField("Id"), "P-"));
+        // Condition and paging
+        qb.start(start < 0 ? 0 : start); // UI can send negative start index
+        qb.limit(limit);
+
+        StorageResults results = storage.fetch(qb.getSelect());
+
+        assertEquals(1500, results.getCount());
+        assertEquals(50, results.getSize());
+        int i = 0;
+        for (DataRecord result : results) {
+            if(result.get("Id") != null){
+                i++;
+            }
+        }
+        assertEquals(50, i);
+
+        qb = UserQueryBuilder.from(product).where(startsWith(product.getField("Id"), "P-"));
+        try {
+            storage.begin();
+            storage.delete(qb.getSelect());
+            storage.commit();
+        } finally {
+            storage.end();
+        }
+
+        qb = UserQueryBuilder.from(product);
+
+        results = storage.fetch(qb.getSelect());
+        assertEquals(2, results.getCount());
+    }
+
+    // TMDM-10244
+    public void test_DataRecordToXmlString() throws Exception {
+        UserQueryBuilder qb = UserQueryBuilder.from(product).where(eq(product.getField("Id"), "1"));
+        StorageResults results = storage.fetch(qb.getSelect());
+
+        ResettableStringWriter w = new ResettableStringWriter();
+        DataRecordXmlWriter writer = new DataRecordXmlWriter();
+        DataRecordIncludeNullValueXmlWriter includeNullValueWriter = new DataRecordIncludeNullValueXmlWriter();
+        writer.setSecurityDelegator(new TestUserDelegator());
+
+        assertEquals(1, results.getCount());
+        String result = "";
+        for (DataRecord record : results) {
+            writer.write(record, w);
+            result = w.toString();
+        }
+        String expectedResult = "<Product><Id>1</Id><Name>Product name</Name><ShortDescription>Short description word</ShortDescription><LongDescription>Long description</LongDescription><Features><Sizes><Size>Small</Size><Size>Medium</Size><Size>Large</Size></Sizes><Colors><Color>Blue</Color><Color>Red</Color></Colors></Features><Price>10.00</Price><Family>[2]</Family><Supplier>[1]</Supplier><Status>Pending</Status><Stores></Stores></Product>";
+        assertEquals(expectedResult, result);
+
+        qb = UserQueryBuilder.from("select * from Product where x_id = '1' ");
+        results = storage.fetch(qb.getExpression());
+
+        assertEquals(1, results.getCount());
+        w = new ResettableStringWriter();
+        for (DataRecord record : results) {
+            includeNullValueWriter.write(record, w);
+            result = w.toString();
+        }
+
+        String value = result.substring(0, result.indexOf("<col11>")).concat(
+                result.substring(result.indexOf("</col11>") + 8, result.length()));
+        assertEquals(
+                "<$ExplicitProjection$><col0>1</col0><col1>Product name</col1><col2>Short description word</col2><col3>Long description</col3><col4></col4><col5></col5><col6>10.00</col6><col7>2</col7><col8></col8><col9></col9><col10>Pending</col10><col12></col12></$ExplicitProjection$>",
+                value);
+
+        qb = UserQueryBuilder.from("select x_product from Product where x_id = '1' ");
+        results = storage.fetch(qb.getExpression());
+
+        assertEquals(1, results.getCount());
+        w = new ResettableStringWriter();
+        for (DataRecord record : results) {
+            includeNullValueWriter.write(record, w);
+            result = w.toString();
+        }
+
+        assertEquals("<$ExplicitProjection$><col0></col0></$ExplicitProjection$>", result);
+    }
+
     private static class TestUserDelegator implements SecuredStorage.UserDelegator {
 
         boolean isActive = true;
@@ -4593,6 +4753,21 @@ public class StorageQueryTest extends StorageTestCase {
         @Override
         public boolean hide(ComplexTypeMetadata type) {
             return isActive && type.getHideUsers().contains("System_Users");
+        }
+    }
+    
+    protected static class MockUser extends ILocalUser {
+
+        @Override
+        public ILocalUser getILocalUser() throws XtentisException {
+            return this;
+        }
+
+        @Override
+        public HashSet<String> getRoles() {
+            HashSet<String> roleSet = new HashSet<String>();
+            roleSet.add("Demo_User");
+            return roleSet;
         }
     }
 

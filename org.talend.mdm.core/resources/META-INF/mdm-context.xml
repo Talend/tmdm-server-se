@@ -117,7 +117,7 @@ http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/ac
         <property name="eraseCredentialsAfterAuthentication" value="false" />
     </bean>
 
-    <security:http auto-config="false" pattern="\A/services.*\Z" create-session="never" entry-point-ref="basicAuthenticationEntryPoint"
+    <security:http auto-config="false" pattern="\A/services.*\Z" create-session="ifRequired" entry-point-ref="basicAuthenticationEntryPoint"
         authentication-manager-ref="authenticationManager" use-expressions="true" path-type="regex">
         <security:intercept-url pattern="\A/services/rest\?_wadl" requires-channel="any" access="permitAll"
             method="GET" />

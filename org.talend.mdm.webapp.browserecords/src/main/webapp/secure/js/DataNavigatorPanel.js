@@ -3,21 +3,23 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 	var NAVIGATOR_NODE_IN_ENTITY_TYPE = 1;
 	var NAVIGATOR_NODE_OUT_ENTITY_TYPE = 2;
 	var NAVIGATOR_NODE_VALUE_TYPE = 3;
-	var NAVIGATOR_NOD_COLOR_SELECTED = "rgb(255, 2, 42)";
-	var NAVIGATOR_NOD_COLOR_INBOUND = "rgb(24, 2, 255)";
-	var NAVIGATOR_NOD_COLOR_OUTBOUND = "rgb(2, 255, 145)";
-	var NAVIGATOR_NOD_COLOR_DATA = "rgb(231, 253, 6)";
+	var NAVIGATOR_MENU_DETAIL_COLOR = "rgb(214, 39, 40)";
+	var NAVIGATOR_MENU_IN_COLOR = "rgb(44, 160, 44)";
+	var NAVIGATOR_MENU_OUT_COLOR = "rgb(31, 119, 180)";
+	var NAVIGATOR_MENU_SETTINGS_COLOR = "rgb(255, 127, 14)";
+	var NAVIGATOR_MENU_DISABLE_COLOR = "#A9A9A9";
 	var NAVIGATOR_NODE_IMAGE_INBOUND = "secure/img/navigator_relation_in.png";
 	var NAVIGATOR_NODE_IMAGE_OUTBOUND = "secure/img/navigator_relation_out.png";
 	var NAVIGATOR_NODE_IMAGE_DATA = "secure/img/navigator_data.png";
 	var NAVIGATOR_NODE_IMAGE_SELECTED_DATA = "secure/img/navigator_selected_data.png";
 	var NAVIGATOR_NODE_IMAGE_COLLAPSED_DATA = "secure/img/navigator_collapsed_data.png";
-	var pageSize = 5;
 	var filterValue = '';
 	var nodeLabelLength=20;
 	var image_diameter = 16;
 	var image_offset = image_diameter / 2;
 	var image_padding = image_diameter / 4;
+	var class_index;
+	var class_array;
 	
 	var svg;
 	var rect;
@@ -37,7 +39,6 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 	var outerRadius = 48;
 	var innerRadius = 25;
 	var arc;
-	var color = d3.scale.category10();
 	
 	// Type Cluster
 	var typeCluster;
@@ -65,6 +66,7 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 	var node_concept_text;
 	var drag;
 	var selectNode;
+	var selectTypeNode;
 	var showNode;
 	
 	function paint() {
@@ -114,7 +116,7 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 		node.enter()
 		.append("image")
 		.attr("class", function(d) {
-			return "image_" + getIdentifier(d);
+			return "image_" + getClassIndex(d);
 		}).attr("width", image_diameter)
 		.attr("height",image_diameter)
 		.attr("identifier", function(d) {
@@ -184,6 +186,92 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 			return d.navigator_node_concept_label;
 		});
 		force.start();
+	}
+	
+	function initDataNode(data) {
+		nodes = eval('(' + data
+				+ ')');
+		nodes[0].navigator_node_short_label = generateNodeLabel(nodes[0].navigator_node_label);
+		nodes[0].children = new Array();
+		nodes[0].navigator_node_expand = true;
+		nodes[0].navigator_node_display = true;
+		links = [];
+		force = d3.layout.force().nodes(nodes)
+				.links(links).size(
+						[ width, height ])
+				.linkDistance(120).charge([ -400 ]);
+		drag = force.drag().origin(function(d) {
+			d.fixed = true;
+			hiddenTypeCluster();
+			return d;
+		}).on("dragstart", dragstarted)
+        .on("drag", dragged)
+        .on("dragend", dragended);
+
+		links = force.links();
+		nodes = force.nodes();
+		link = container.append("g").attr("id",
+				"navigator_data_link_group")
+				.selectAll(".link");
+		node = container.append("g").attr("id",
+				"navigator_data_node_group")
+				.selectAll("image");
+		link_text = container.append("g").attr(
+				"id", "navigator_text_link_group")
+				.selectAll(".linetext");
+		node_text = container.append("g").attr(
+				"id", "navigator_text_node_group")
+				.selectAll(".nodetext");
+		node_concept_text = container.append("g").attr(
+				"id", "navigator_concept_text_node_group")
+				.selectAll(".nodetext");
+		force.on("tick", tick);
+		paint();
+	}
+	
+	function paintDataNode(newNodes,navigator_node_relation) {
+		for ( var i = 0; i < newNodes.length; i++) {
+			var node = newNodes[i];
+			var newNode = {
+				x : selectNode.x
+						+ getRandomInt(-15,
+								15),
+				y : selectNode.y
+						+ getRandomInt(-15,
+								15),
+				navigator_node_ids : node.navigator_node_ids,
+				navigator_node_concept : selectTypeNode.navigator_node_concept,
+				navigator_node_foreignkey_path : node.navigator_node_foreignkey_path,
+				navigator_node_field_foreignkey_path : node.navigator_node_field_foreignkey_path,
+				navigator_node_concept_label : node.navigator_node_concept_label,
+				navigator_node_type : node.navigator_node_type,
+				navigator_node_relation : navigator_node_relation,
+				navigator_node_label : node.navigator_node_label,
+				navigator_node_short_label : generateNodeLabel(node.navigator_node_label),
+				navigator_node_expand : false,
+				navigator_node_display : true
+			};
+			selectNode.nodeChildren.push(newNode);
+			newNode.parentNode = selectNode;
+			nodes.push(newNode);
+			var newLink = {
+				source : selectNode,
+				target : newNode,
+				navigator_node_type : node.navigator_node_type,
+				navigator_line_label : selectTypeNode.navigator_line_label,
+				navigator_node_concept : node.navigator_node_concept,
+				navigator_node_foreignkey_path : node.navigator_node_foreignkey_path,
+				navigator_node_field_foreignkey_path : node.navigator_node_field_foreignkey_path,
+				navigator_line_display : true
+			};
+			selectNode.linkChildren.push(newLink);
+			links.push(newLink);
+			if (navigator_node_relation == NAVIGATOR_NODE_OUT_ENTITY_TYPE) {
+				selectNode.page[selectTypeNode.navigator_node_foreignkey_path].ids
+				.shift();
+			}
+		}
+		paint();
 	}
 
 	function paintTypeCluster(root) {
@@ -305,7 +393,7 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 						selectNode.navigator_node_ids,
 						selectNode.navigator_node_concept);
 				if (showNode !== undefined) {
-					svg.selectAll(".image_" + getIdentifier(showNode))
+					svg.selectAll(".image_" + getClassIndex(showNode))
 					.attr("xlink:href",function(node) {
 						if (node.expanded != undefined && !node.expanded) {
 							return NAVIGATOR_NODE_IMAGE_COLLAPSED_DATA;
@@ -314,7 +402,7 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 						}
 					});
 				}
-				svg.selectAll(".image_" + getIdentifier(selectNode))
+				svg.selectAll(".image_" + getClassIndex(selectNode))
 				.attr("xlink:href",function(node) {
 					if (node.expanded != undefined && !node.expanded) {
 						return NAVIGATOR_NODE_IMAGE_COLLAPSED_DATA;
@@ -325,7 +413,7 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 				showNode = selectNode;
 			}
 		} else if ('in' === arc.data.name) {
-			if (NAVIGATOR_NODE_VALUE_TYPE == selectNode.navigator_node_type) {
+			if (selectNode.expanded == undefined || selectNode.expanded) {
 				Ext.Ajax.request({
 					url : restServiceUrl
 						+ '/data/'
@@ -333,9 +421,11 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 						+ '/inBoundTypes/'
 						+ selectNode.navigator_node_concept
 						+ '/'
-						+ selectNode.navigator_node_ids,
+						+ encodeURIComponent(selectNode.navigator_node_ids),
 					method : 'GET',
 					params : {
+						parentType : selectNode.parentNode != null ? selectNode.parentNode.navigator_node_concept : "",
+						parentIds : selectNode.parentNode != null ? selectNode.parentNode.navigator_node_ids : "",
 						language : language
 					},
 					success : function(response, options) {
@@ -350,12 +440,14 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 						paintTypeCluster(root);
 					},
 					failure : function(response, options) {
-						Ext.MessageBox.alert('Error', response.responseText);
+						handleFailure(response);
 					}
 				});
+			} else {
+				svg.select("#menu_group").remove();
 			}
 		} else if ('out' === arc.data.name) {
-			if (NAVIGATOR_NODE_VALUE_TYPE == selectNode.navigator_node_type) {
+			if (selectNode.expanded == undefined || selectNode.expanded) {
 				Ext.Ajax
 						.request({
 							url : restServiceUrl
@@ -364,9 +456,11 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 									+ '/outBoundTypes/'
 									+ selectNode.navigator_node_concept
 									+ '/'
-									+ selectNode.navigator_node_ids,
+									+ encodeURIComponent(selectNode.navigator_node_ids),
 							method : 'GET',
 							params : {
+								parentType : selectNode.parentNode != null ? selectNode.parentNode.navigator_node_concept : "",
+								parentIds : selectNode.parentNode != null ? selectNode.parentNode.navigator_node_ids : "",
 								language : language
 							},
 							success : function(response, options) {
@@ -381,86 +475,35 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 								paintTypeCluster(root);
 							},
 							failure : function(response, options) {
-								Ext.MessageBox.alert('Error', response.responseText);
+								handleFailure(response);
 							}
 						});
+			} else {
+				svg.select("#menu_group").remove();
 			}
 		} else if ('settings' === arc.data.name) {
 			hiddenTypeCluster();
 			if (NAVIGATOR_NODE_VALUE_TYPE == selectNode.navigator_node_type) {
-				var settingWindow = new Ext.Window(
-						{
-							id : 'settingWindow',
-							title : message
-									.getMsg("setting_window_title"),
-							width : 300,
-							height : 131,
-							modal : true,
-							layout : 'form',
-							bodyStyle : "padding:10px",
-							draggable:false,
-							resizable : false,
-							layout : 'fit',
-							items : [ {
-								id : 'settingForm',
-								xtype : 'form',
-								labelWidth : 60,
-								labelAlign : 'right',
-								buttonAlign : 'center',
-								items : [ {
-									xtype : 'numberfield',
-									id : 'pageSize',
-									fieldLabel : message
-											.getMsg("setting_window_page_label"),
-									width : 'auto',
-									value : pageSize
-								} ],
-								buttons : [
-										{
-											xtype : 'button',
-											text : message
-													.getMsg("setting_window_button_ok"),
-											handler : function() {
-												pageSize = Number(Ext
-														.getCmp('pageSize').value);
-												Ext
-														.getCmp(
-																'settingWindow')
-														.close();
-											}
-										},
-										{
-											xtype : 'button',
-											text : message
-													.getMsg("setting_window_button_cancel"),
-											handler : function() {
-												Ext
-														.getCmp(
-																'settingWindow')
-														.close();
-											}
-										} ]
-							} ]
-						});
-				Ext.getCmp('settingWindow').show();
+				amalto.navigator.Navigator.showSettingWindow();
 			}
 		}
 	}
 
 	function click(d, i) {
 		hiddenTypeCluster();
+		selectTypeNode = d;
 		if (NAVIGATOR_NODE_IN_ENTITY_TYPE == d.navigator_node_type) {
 			if (selectNode.page === undefined) {
 				selectNode.page = new Object();
 				selectNode.nodeChildren = new Array();
 				selectNode.linkChildren = new Array();
 			}
-			if (selectNode.page[d.navigator_node_concept] === undefined) {
+			if (selectNode.page[d.navigator_node_foreignkey_path] === undefined) {
 				var pageObject = new Object();
 				pageObject.start = 0
-				selectNode.page[d.navigator_node_concept] = pageObject;
+				selectNode.page[d.navigator_node_foreignkey_path] = pageObject;
 			}
-			if ((selectNode.page[d.navigator_node_concept].start == 0 || selectNode.page[d.navigator_node_concept].start < (selectNode.page[d.navigator_node_concept].total + pageSize))) {
+			if ((selectNode.page[d.navigator_node_foreignkey_path].start == 0 || selectNode.page[d.navigator_node_foreignkey_path].start < (selectNode.page[d.navigator_node_foreignkey_path].total + amalto.navigator.Navigator.getPageSize()))) {
 				Ext.Ajax
 						.request({
 							url : restServiceUrl + '/data/'
@@ -468,62 +511,35 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 									+ d.navigator_node_concept,
 							method : 'GET',
 							params : {
+								foreignKeyConcept : selectNode.navigator_node_concept,
 								foreignKeyPath : d.navigator_node_foreignkey_path,
-								foreignKeyValue : d.navigator_node_foreignkey_value,
+								foreignKeyValue : encodeURIComponent(d.navigator_node_foreignkey_value),
 								filterValue : filterValue,
-								start : selectNode.page[d.navigator_node_concept].start,
-								limit : pageSize,
+								parentType : selectNode.parentNode != null ? selectNode.parentNode.navigator_node_concept : "",
+								parentIds : selectNode.parentNode != null ? selectNode.parentNode.navigator_node_ids : "",
+								start : selectNode.page[d.navigator_node_foreignkey_path].start,
+								limit : amalto.navigator.Navigator.getPageSize(),
 								language : language
 							},
 							success : function(response, options) {
-								selectNode.expanded = true;
 								var resultObject = eval('('
 										+ response.responseText
 										+ ')');
-								if (selectNode.page[d.navigator_node_concept].start == 0) {
-									selectNode.page[d.navigator_node_concept].total = resultObject.totalCount;
+								resultObject.result[0].navigator_node_field_foreignkey_path = d.navigator_node_foreignkey_path;
+								selectNode.expanded = true;
+								if (selectNode.page[d.navigator_node_foreignkey_path].start == 0) {
+									selectNode.page[d.navigator_node_foreignkey_path].total = resultObject.totalCount;
 								}
-								var newNodes = resultObject.result;
-								for ( var i = 0; i < newNodes.length; i++) {
-									var node = newNodes[i];
-									var nodeLabel = handleMultiLanguageLabel(node.navigator_node_label);
-									var newNode = {
-										x : selectNode.x
-												+ getRandomInt(-15,
-														15),
-										y : selectNode.y
-												+ getRandomInt(-15,
-														15),
-										navigator_node_ids : node.navigator_node_ids,
-										navigator_node_concept : node.navigator_node_concept,
-										navigator_node_concept_label : node.navigator_node_concept_label,
-										navigator_node_type : node.navigator_node_type,
-										navigator_node_relation : NAVIGATOR_NODE_IN_ENTITY_TYPE,
-										navigator_node_label : nodeLabel,
-										navigator_node_short_label : generateNodeLabel(nodeLabel),
-										navigator_node_expand : false,
-										navigator_node_display : true
-									};
-									nodes.push(newNode);
-									selectNode.nodeChildren.push(newNode);
-									var newLink = {
-										source : selectNode,
-										target : newNode,
-										navigator_node_type : node.navigator_node_type,
-										navigator_line_label : d.navigator_line_label,
-										navigator_node_concept : node.navigator_node_concept,
-										navigator_line_display : true
-										
-									};
-									links.push(newLink);
-									selectNode.linkChildren.push(newLink);
+								selectNode.page[d.navigator_node_foreignkey_path].start = selectNode.page[d.navigator_node_foreignkey_path].start
+								+ amalto.navigator.Navigator.getPageSize();
+								if (d.navigator_node_hasPrimaryKeyInfo) {
+									amalto.navigator.Navigator.handleNodeLabel(Ext.encode(resultObject.result),NAVIGATOR_NODE_IN_ENTITY_TYPE);
+								} else {
+									paintDataNode(resultObject.result,NAVIGATOR_NODE_IN_ENTITY_TYPE);
 								}
-								paint();
-								selectNode.page[d.navigator_node_concept].start = selectNode.page[d.navigator_node_concept].start
-										+ pageSize;
 							},
 							failure : function(response, options) {
-								Ext.MessageBox.alert('Error', response.responseText);
+								handleFailure(response);
 							}
 						});
 			}
@@ -533,15 +549,15 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 				selectNode.nodeChildren = new Array();
 				selectNode.linkChildren = new Array();
 			}
-			if (selectNode.page[d.navigator_node_concept] === undefined) {
+			if (selectNode.page[d.navigator_node_foreignkey_path] === undefined) {
 				var pageObject = new Object();
 				pageObject.pageNumber = 1
 				pageObject.ids = d.navigator_node_ids;
-				selectNode.page[d.navigator_node_concept] = pageObject;
+				selectNode.page[d.navigator_node_foreignkey_path] = pageObject;
 			}
 			var idArray = [];
-			for (i = 0; (i < pageSize && i < selectNode.page[d.navigator_node_concept].ids.length); i++) {
-				idArray[i] = selectNode.page[d.navigator_node_concept].ids[i];
+			for (i = 0; (i < amalto.navigator.Navigator.getPageSize() && i < selectNode.page[d.navigator_node_foreignkey_path].ids.length); i++) {
+				idArray[i] = selectNode.page[d.navigator_node_foreignkey_path].ids[i];
 			}
 			if (idArray.length > 0) {
 				Ext.Ajax
@@ -556,48 +572,18 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 							},
 							success : function(response, options) {
 								selectNode.expanded = true;
-								var newNodes = eval('('
-										+ response.responseText
-										+ ')');
-								for ( var i = 0; i < newNodes.length; i++) {
-									var node = newNodes[i];
-									var nodeLabel = handleMultiLanguageLabel(node.navigator_node_label);
-									var newNode = {
-										x : selectNode.x
-												+ getRandomInt(-15,
-														15),
-										y : selectNode.y
-												+ getRandomInt(-15,
-														15),
-										navigator_node_ids : node.navigator_node_ids,
-										navigator_node_concept : d.navigator_node_concept,
-										navigator_node_concept_label : node.navigator_node_concept_label,
-										navigator_node_type : node.navigator_node_type,
-										navigator_node_relation : NAVIGATOR_NODE_OUT_ENTITY_TYPE,
-										navigator_node_label : nodeLabel,
-										navigator_node_short_label : generateNodeLabel(nodeLabel),
-										navigator_node_expand : false,
-										navigator_node_display : true
-									};
-									selectNode.nodeChildren.push(newNode);
-									nodes.push(newNode);
-									var newLink = {
-										source : selectNode,
-										target : newNode,
-										navigator_node_type : node.navigator_node_type,
-										navigator_line_label : d.navigator_line_label,
-										navigator_node_concept : node.navigator_node_concept,
-										navigator_line_display : true
-									};
-									selectNode.linkChildren.push(newLink);
-									links.push(newLink);
-									selectNode.page[d.navigator_node_concept].ids
-											.shift();
+								if (d.navigator_node_hasPrimaryKeyInfo) {
+									amalto.navigator.Navigator.handleNodeLabel(response.responseText,NAVIGATOR_NODE_OUT_ENTITY_TYPE);
+								} else {
+									var responseValue = eval('('
+											+ response.responseText
+											+ ')');
+									responseValue[0].navigator_node_foreignkey_path = d.navigator_node_foreignkey_path;
+									paintDataNode(responseValue,NAVIGATOR_NODE_OUT_ENTITY_TYPE);
 								}
-								paint();
 							},
 							failure : function(response, options) {
-								Ext.MessageBox.alert('Error', response.responseText);
+								handleFailure(response);
 							}
 						});
 			}
@@ -612,7 +598,7 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 				svg
 				.selectAll(
 						".image_"
-								+ getIdentifier(d))
+								+ getClassIndex(d))
 				.attr("xlink:href",function(node) {
 					return getImage(node);
 				});
@@ -621,13 +607,14 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 			 svg
 				.selectAll(
 						".image_"
-								+ getIdentifier(d))
+								+ getClassIndex(d))
 				.attr("xlink:href",function(node) {
 					return getImage(node);
 				});
 			 expandNode(d);
 		}
 		paint();
+		svg.select("#menu_group").remove();
 	}
 	
 	var expandNode = function(d) {
@@ -635,7 +622,7 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 			d.nodeChildren = d._nodeChildren;
 			d.linkChildren = d._linkChildren;
 			 for (var i=0;i<d.nodeChildren.length;i++) {
-				 svg.selectAll(".image_"+ getIdentifier(d.nodeChildren[i]))
+				 svg.selectAll(".image_"+ getClassIndex(d.nodeChildren[i]))
 				.attr("xlink:href",function(node) {
 					return getImage(node);
 				});
@@ -670,6 +657,7 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 	}
 
 	function showMenu(d, i) {
+		selectNode = d;
 		if (d3.event.defaultPrevented) return;
 		hiddenTypeCluster();
 		var elementId = "menu_group";
@@ -677,12 +665,8 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 				.selectAll("g").data(piedata).enter().append("g")
 				.attr("transform",
 						"translate(" + (d.x) + "," + (d.y) + ")");
-
-		var backgroundPath = arcs.append("path").attr("fill",
-				"#ddd").attr("d", arc);
-
 		var path = arcs.append("path").attr("fill", function(d, i) {
-			return color(i);
+			return getMenuColor(d);
 		}).transition().ease("elastic").duration(750).attrTween(
 				"d", arcTween);
 		arcs.append("text").attr("transform", function(d) {
@@ -692,7 +676,6 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 		});
 		arcs.on("click", menuClick);
 		// arcs.on("mouseout", menuMouseout);
-		selectNode = d;
 	}
 
 	function arcTween(d) {
@@ -826,77 +809,23 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 		});
 	}
 
-//	function zoomed() {
-//		svg.attr("transform", "translate(" + d3.event.translate
-//				+ ")scale(" + d3.event.scale + ")");
-//	}
-
-	function init() {
-		generateArrowMarker();
-		var ids = new Array(id);
-		Ext.Ajax
-				.request({
-					url : restServiceUrl + '/data/' + cluster
-							+ '/records/' + concept,
-					method : 'GET',
-					params : {
-						ids : ids,
-						language : language
-					},
-					success : function(response, options) {
-						nodes = eval('(' + response.responseText
-								+ ')');
-						nodes[0].navigator_node_label = handleMultiLanguageLabel(nodes[0].navigator_node_label);
-						nodes[0].navigator_node_short_label = generateNodeLabel(nodes[0].navigator_node_label);
-						nodes[0].children = new Array();
-						nodes[0].navigator_node_expand = true;
-						nodes[0].navigator_node_display = true;
-						links = [];
-						force = d3.layout.force().nodes(nodes)
-								.links(links).size(
-										[ width, height ])
-								.linkDistance(120).charge([ -400 ]);
-						drag = force.drag().on("dragstart",
-								function(d, i) {
-									d.fixed = true;
-									hiddenTypeCluster();
-								});
-
-						links = force.links();
-						nodes = force.nodes();
-						link = container.append("g").attr("id",
-								"navigator_data_link_group")
-								.selectAll(".link");
-						node = container.append("g").attr("id",
-								"navigator_data_node_group")
-								.selectAll("image");
-						link_text = container.append("g").attr(
-								"id", "navigator_text_link_group")
-								.selectAll(".linetext");
-						node_text = container.append("g").attr(
-								"id", "navigator_text_node_group")
-								.selectAll(".nodetext");
-						node_concept_text = container.append("g").attr(
-								"id", "navigator_concept_text_node_group")
-								.selectAll(".nodetext");
-						force.on("tick", tick);
-						paint();
-					},
-					failure : function(response, options) {
-						Ext.MessageBox.alert('Error', response.responseText);
-					}
-				});
+	function zoomed() {
+		container.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
 	}
+	
+	function dragstarted(d) {
+        d3.event.sourceEvent.stopPropagation();
+        d3.select(this).classed("dragging", true);
+        force.start();
+    }
 
-	function getColor(o) {
-		if (NAVIGATOR_NODE_IN_ENTITY_TYPE == o.navigator_node_type) {
-			return NAVIGATOR_NOD_COLOR_INBOUND;
-		} else if (NAVIGATOR_NODE_OUT_ENTITY_TYPE == o.navigator_node_type) {
-			return NAVIGATOR_NOD_COLOR_OUTBOUND;
-		} else {
-			return NAVIGATOR_NOD_COLOR_DATA;
-		}
-	}
+    function dragged(d) {
+    	d3.select(this).attr("cx", d.x = d3.event.x).attr("cy", d.y = d3.event.y);
+    }
+
+    function dragended(d) {
+    	d3.select(this).classed("dragging", false);
+    }
 
 	function getImage(o) {
 		if (NAVIGATOR_NODE_IN_ENTITY_TYPE == o.navigator_node_type) {
@@ -917,10 +846,24 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 		if (o.navigator_node_concept !== undefined) {
 			identifier = 'navigator_' + o.navigator_node_concept;
 		}
-		if (o.navigator_node_ids !== undefined) {
+		if (o.navigator_node_type == NAVIGATOR_NODE_VALUE_TYPE && o.navigator_node_ids !== undefined) {
 			identifier = identifier + '_' + o.navigator_node_ids;
 		}
-		return identifier.replace(/[ ]/g, "_");
+		if(o.navigator_node_type == NAVIGATOR_NODE_IN_ENTITY_TYPE){
+			identifier = identifier + '_' + o.navigator_line_label;
+		}
+		return identifier;
+	}
+	
+	function getClassIndex(o) {
+		var identifier = getIdentifier(o);
+		for (var i=0;i<class_array.length;i++) {
+			if (class_array[i] == identifier) {
+				return i;
+			}
+		}
+		class_array[class_index] = identifier;
+		return class_index++;
 	}
 
 	function hiddenTypeCluster() {
@@ -931,24 +874,6 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 		}
 	}
 
-	function handleMultiLanguageLabel(values) {
-		var label = '';
-		for (var i=0;i<values.length;i++) {
-			if (label != '') {
-				label = label + '.';
-			}
-			var value = values[i];
-			if (value != null) {
-				value = amalto.navigator.Navigator
-				.getMultiLanguageValue(value, language);
-			}
-			if (!(value == undefined || value == null || value == '')) {
-				label = label + value;
-			}
-		}
-		return label;
-	}
-	
 	function generateNodeLabel(value) {
 		if (value != null) {
 			if (value.length > nodeLabelLength) {
@@ -1019,13 +944,56 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 		    isIE10  : /msie 10.0/.test(UserAgent),
 		    isIE11  : /msie 11.0/.test(UserAgent),
 		    isLB   : /lbbrowser/.test(UserAgent),
-		　　　isWX   : /micromessenger/.test(UserAgent),
+		    isWX   : /micromessenger/.test(UserAgent),
 		    isQQ   : /qqbrowser/.test(UserAgent)
 		};
 	}());
 	
+	function handleFailure(response) {
+		if (sessionExpired(response)) {
+			amalto.navigator.Navigator.sessionExpired();
+		} else {
+			if (response.status == 0) {
+				Ext.MessageBox.alert('Error', message.getMsg("server_error"));
+			} else {
+				Ext.MessageBox.alert('Error', response.responseText);
+			}
+		}
+		
+	}
+	
+	function sessionExpired(response) {
+		if (response.status == 401) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	function getMenuColor(d) {
+		if ('detail' === d.data.name) {
+			return NAVIGATOR_MENU_DETAIL_COLOR;
+		} else if ('in' === d.data.name) {
+			if (selectNode.expanded == undefined || selectNode.expanded) {
+				return NAVIGATOR_MENU_IN_COLOR;
+			} else {
+				return NAVIGATOR_MENU_DISABLE_COLOR;
+			}
+		} else if ('out' === d.data.name) {
+			if (selectNode.expanded == undefined || selectNode.expanded) {
+				return NAVIGATOR_MENU_OUT_COLOR;
+			} else {
+				return NAVIGATOR_MENU_DISABLE_COLOR;
+			}
+		} else if ('settings' === d.data.name) {
+			return NAVIGATOR_MENU_SETTINGS_COLOR;
+		}
+	}
+	
 	return {
-		initUI : function(restServiceUrlParameter, idParameter, conceptParameter,clusterParameter, languageParameter) {
+		initUI : function(restServiceUrlParameter, idParameter, conceptParameter,clusterParameter, hasPrimaryKeyInfo,languageParameter) {
+			selectNode = undefined;
+			showNode = undefined;
 			restServiceUrl = restServiceUrlParameter;
 			id = idParameter;
 			concept = conceptParameter;
@@ -1055,11 +1023,13 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 					name : 'detail',
 					value : 25
 				} ];
-//						var zoom = d3.behavior.zoom().scaleExtent([ 1, 100 ]).on(
-//								"zoom", zoomed);
+				var zoom = d3.behavior.zoom()
+			    .center([width / 2, height / 2])
+			    .scaleExtent([1, 10])
+			    .on("zoom", zoomed);
 				svg = d3.select("#navigator").append("svg")
-					  .attr("width",Ext.get("navigator").dom.style.width)
-					  .attr("height", Ext.get("navigator").dom.style.height);
+					  .attr("width",2000)
+					  .attr("height", 2000).append("g").call(zoom).on('dblclick.zoom', null);
 				rect = svg.append("rect")
 					  .attr("width",Ext.get("navigator").dom.style.width)
 					  .attr("height",Ext.get("navigator").dom.style.height)
@@ -1084,20 +1054,48 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 				diagonal = d3.svg.diagonal().projection(function(d) {
 					return [ d.y, d.x ];
 				});
-				init();
+				class_index = 0;
+				class_array = new Array();
+				generateArrowMarker();
+				var ids = new Array(id);
+				Ext.Ajax.request({
+					url : restServiceUrl + '/data/' + cluster+ '/records/' + concept,
+					method : 'GET',
+					params : {
+						ids : ids,
+						language : language
+					},
+					success : function(response, options) {
+						if (hasPrimaryKeyInfo) {
+							amalto.navigator.Navigator.handleNodeLabel(response.responseText,0);
+						} else {
+							initDataNode(response.responseText);
+						}
+					},
+					failure : function(response, options) {
+						handleFailure(response);
+					}
+				});
 			});
 		},
 	
 		resize : function() {
-			if (svg != undefined) {
-				svg.attr("width",Ext.get("navigator").dom.style.width)
-				.attr("height",Ext.get("navigator").dom.style.height);
-			}
-
 			if (rect != undefined) {
 				rect.attr("width",Ext.get("navigator").dom.style.width)
 				.attr("height",Ext.get("navigator").dom.style.height);
 			}
+		},
+		
+		initDataNode : function(data) {
+			initDataNode(data);
+		},
+		
+		paintInDataNode : function(data) {
+			paintDataNode(eval('(' + data + ')'),NAVIGATOR_NODE_IN_ENTITY_TYPE);
+		},
+		
+		paintOutDataNode : function(data) {
+			paintDataNode(eval('(' + data + ')'),NAVIGATOR_NODE_OUT_ENTITY_TYPE);
 		}
 	}
 }();

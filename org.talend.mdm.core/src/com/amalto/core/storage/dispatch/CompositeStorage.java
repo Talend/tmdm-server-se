@@ -19,8 +19,10 @@ import com.amalto.core.storage.datasource.DataSourceDefinition;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.transaction.StorageTransaction;
 import org.apache.commons.collections.set.CompositeSet;
+import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.metadata.compare.ImpactAnalyzer;
+import org.talend.mdm.commmon.metadata.compare.Compare.DiffResults;
 
 import java.util.*;
 
@@ -248,4 +250,12 @@ public class CompositeStorage implements Storage {
         return false;
     }
 
+    @Override
+    public List<ComplexTypeMetadata> findSortedTypesToDrop(DiffResults diffResults, boolean force) {
+        final List<ComplexTypeMetadata> sortedtypesToDrop = new ArrayList<ComplexTypeMetadata>();
+        for (Storage storage : storages) {
+            sortedtypesToDrop.addAll(storage.findSortedTypesToDrop(diffResults, force));
+        }
+        return sortedtypesToDrop;
+    }
 }

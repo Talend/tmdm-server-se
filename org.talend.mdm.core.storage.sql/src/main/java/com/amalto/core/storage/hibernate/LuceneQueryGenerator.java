@@ -28,6 +28,7 @@ import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.NumericRangeQuery;
 import org.apache.lucene.search.PhraseQuery;
+import org.apache.lucene.search.PrefixQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
@@ -69,6 +70,7 @@ import com.amalto.core.query.user.metadata.TaskId;
 import com.amalto.core.query.user.metadata.Timestamp;
 import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.StorageMetadataUtils;
+import com.amalto.core.storage.exception.UnsupportedFullTextQueryException;
 
 class LuceneQueryGenerator extends VisitorAdapter<Query> {
 
@@ -348,10 +350,13 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
         StringBuilder queryBuffer = new StringBuilder();
         Iterator<Map.Entry<String, Boolean>> fieldsIterator = fieldsMap.entrySet().iterator();
         String fullTextValue = getFullTextValue(fullText);
+        BooleanQuery query = new BooleanQuery();
+        Query idQuery = null;
         while (fieldsIterator.hasNext()) {
             Map.Entry<String, Boolean> next = fieldsIterator.next();
             if (next.getValue()) {
                 queryBuffer.append(next.getKey()).append(ToLowerCaseFieldBridge.ID_POSTFIX + ':').append(fullTextValue);
+                idQuery = new PrefixQuery(new Term(next.getKey(), fullText.getValue()));
             } else {
                 queryBuffer.append(next.getKey()).append(':').append(fullTextValue);
             }
@@ -361,27 +366,40 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
         }
 
         String fullTextQuery = queryBuffer.toString();
-        return parseQuery(fieldsAsArray, fullTextQuery);
+        if (idQuery != null) {
+            query.add(idQuery, BooleanClause.Occur.SHOULD);
+        }
+        query.add(parseQuery(fieldsAsArray, fullTextQuery, fullText.getValue()), BooleanClause.Occur.SHOULD);
+        return query;
     }
 
     @Override
     public Query visit(FieldFullText fieldFullText) {
         String fieldName = fieldFullText.getField().getFieldMetadata().getName();
         String[] fieldsAsArray = new String[] { fieldName };
-        String fullTextQuery = fieldName + ':' + getFullTextValue(fieldFullText);
+        String fullTextValue = getFullTextValue(fieldFullText);
+        String fullTextQuery = fieldName + ':' + fullTextValue;
         if (fieldFullText.getField().getFieldMetadata().isKey()) {
-            fullTextQuery = fieldName + ToLowerCaseFieldBridge.ID_POSTFIX + ":" + getFullTextValue(fieldFullText); //$NON-NLS-1$
+            BooleanQuery query = new BooleanQuery();
+            query.add(new PrefixQuery(new Term(fieldName, fieldFullText.getValue())), BooleanClause.Occur.SHOULD);
+            fieldsAsArray = new String[] { fieldName + ToLowerCaseFieldBridge.ID_POSTFIX };
+            fullTextQuery = fieldName + ToLowerCaseFieldBridge.ID_POSTFIX + ":" + fullTextValue; //$NON-NLS-1$
+            query.add(parseQuery(fieldsAsArray, fullTextQuery, fieldFullText.getValue()), BooleanClause.Occur.SHOULD);
+            return query;
         }
-        return parseQuery(fieldsAsArray, fullTextQuery);
+        return parseQuery(fieldsAsArray, fullTextQuery, fieldFullText.getValue());
     }
 
-    private Query parseQuery(String[] fieldsAsArray, String fullTextQuery) {
+    private Query parseQuery(String[] fieldsAsArray, String fullTextQuery, String keywords) {
         MultiFieldQueryParser parser = new MultiFieldQueryParser(fieldsAsArray, new StandardAnalyzer());
         // Very important! Lucene does an implicit lower case for "expanded terms" (which is something used).
         parser.setLowercaseExpandedTerms(true);
         try {
             return parser.parse(fullTextQuery);
         } catch (Exception e) {
+            if (org.apache.lucene.queryparser.classic.ParseException.class.isInstance(e)) {
+                throw new UnsupportedFullTextQueryException("'" + keywords + "' is unsupported keywords", e); //$NON-NLS-1$ //$NON-NLS-2$
+            }
             throw new RuntimeException("Invalid generated Lucene query", e); //$NON-NLS-1$
         }
     }
@@ -398,12 +416,12 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
         if (index > 0) {
             value = value.substring(index);
         }
-        char[] removes = new char[] { '[', ']', '+', '!', '(', ')', '^', '\"', '~', ':', '\\' }; // Removes reserved
+        char[] removes = new char[] { '[', ']', '+', '!', '(', ')', '^', '\"', '~', ':', '\\', '-' }; // Removes reserved
                                                                                                  // characters
         for (char remove : removes) {
             value = value.replace(remove, ' ');
         }
-        if (value != null && value.startsWith("'") && value.endsWith("'")) { //$NON-NLS-1$//$NON-NLS-2$
+        if (value != null && value.length() > 1 && value.startsWith("'") && value.endsWith("'")) { //$NON-NLS-1$//$NON-NLS-2$
             value = "\"" + value.substring(1, value.length() - 1) + "\""; //$NON-NLS-1$ //$NON-NLS-2$
         } else {
             if (value.contains(" ")) { //$NON-NLS-1$
@@ -417,7 +435,6 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
         return value;
     }
 
-    @SuppressWarnings("unused")
     private static String getMultiKeywords(String value) {
         List<String> blocks = new ArrayList<String>(Arrays.asList(value.split(" "))); //$NON-NLS-1$
         StringBuffer sb = new StringBuffer();

@@ -113,21 +113,6 @@ public class ForeignKeyRowEditor extends RowEditor<ItemNodeModel> {
                                             msgBox.setMessage(msg == null || msg.isEmpty() ? MessagesFactory.getMessages()
                                                     .output_report_null() : msg);
                                             msgBox.show();
-                                        } else {
-                                            msgBox.setTitle(MessagesFactory.getMessages().info_title());
-                                            msgBox.setButtons(""); //$NON-NLS-1$
-                                            msgBox.setIcon(MessageBox.INFO);
-                                            msgBox.setMessage(msg == null || msg.isEmpty() ? MessagesFactory.getMessages()
-                                                    .save_success() : msg);
-                                            msgBox.show();
-                                            Timer timer = new Timer() {
-
-                                                @Override
-                                                public void run() {
-                                                    msgBox.close();
-                                                }
-                                            };
-                                            timer.schedule(1000);
                                         }
                                     }
                                 });

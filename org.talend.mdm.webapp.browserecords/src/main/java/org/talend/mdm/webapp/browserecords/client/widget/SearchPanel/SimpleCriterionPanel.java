@@ -260,13 +260,18 @@ public class SimpleCriterionPanel<T> extends HorizontalPanel implements ReturnCr
         return keyComboBox.getValue().get("value"); //$NON-NLS-1$
     }
 
-    private String getOperator() {
+    public String getOperator() {
         return operatorComboBox.getValue().get("value"); //$NON-NLS-1$
     }
 
-    private String getValue() {
+    public String getValue() {
 
         if (field != null) {
+
+            if (field.getValue() == null) {
+                return "";
+            }
+
             if (field instanceof ForeignKeyField) {
                 return ((ForeignKeyField) field).getValue().getId();
             } else if (field instanceof DateField) {
@@ -286,7 +291,7 @@ public class SimpleCriterionPanel<T> extends HorizontalPanel implements ReturnCr
 
     private String getInfo() {
         String info = getValue();
-        if (field != null && field instanceof ForeignKeyField) {
+        if (field != null && field instanceof ForeignKeyField && field.getValue() != null) {
             ForeignKeyBean fkField = ((ForeignKeyField) field).getValue();
             return fkField.getDisplayInfo() != null ? fkField.getDisplayInfo() : fkField.getId();
         }
@@ -296,7 +301,7 @@ public class SimpleCriterionPanel<T> extends HorizontalPanel implements ReturnCr
     public SimpleCriterion getCriteria() {
         try {
             SimpleCriterion simpleCriterion = new SimpleCriterion(getKey(), getOperator(), getValue(), getInfo());
-            if (field != null && field instanceof MultiLanguageField) {
+            if (field != null && field instanceof MultiLanguageField && field.getValue() != null) {
                 simpleCriterion.setInputValue(field.getValue().toString());
             }
             return simpleCriterion;

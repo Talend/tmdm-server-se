@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Vector;
 
+import org.apache.commons.lang3.StringUtils;
 import org.talend.mdm.webapp.base.client.model.Criteria;
 import org.talend.mdm.webapp.base.client.model.DataTypeConstants;
 import org.talend.mdm.webapp.base.client.model.ForeignKeyBean;
@@ -255,10 +256,10 @@ public class CommonUtil {
         } else {
             if (model.getType().getTypeName().equals(DataTypeConstants.BOOLEAN.getTypeName())) {
                 node.setObjectValue((Serializable) DataTypeConstants.BOOLEAN.getDefaultValue());
-            } else if (model.getType().getTypeName().equals(DataTypeConstants.DATE.getTypeName())) {
+            } else if (model.getType().getBaseTypeName().equals(DataTypeConstants.DATE.getTypeName())) {
                 String dateStr = DateUtil.getDate((Date) DataTypeConstants.DATE.getDefaultValue());
                 node.setObjectValue(dateStr);
-            } else if (model.getType().getTypeName().equals(DataTypeConstants.DATETIME.getTypeName())) {
+            } else if (model.getType().getBaseTypeName().equals(DataTypeConstants.DATETIME.getTypeName())) {
                 String dateStr = DateUtil.getDateTime((Date) DataTypeConstants.DATETIME.getDefaultValue());
                 node.setObjectValue(dateStr);
             } else if (model.getType().getTypeName().equals(DataTypeConstants.DECIMAL.getTypeName())) {
@@ -515,9 +516,12 @@ public class CommonUtil {
 
         int index = 2;
 
-        String value = ts[index++];
-        while (index < ts.length) {
-            value = value.concat(" " + ts[index++]); //$NON-NLS-1$
+        String value = "";
+        if (ts.length > index) {
+            value = ts[index++];
+            while (index < ts.length) {
+                value = value.concat(" " + ts[index++]); //$NON-NLS-1$
+            }
         }
         return new CriteriaAndC(new SimpleCriterion(ts[0], ts[1], value), ce);
     }

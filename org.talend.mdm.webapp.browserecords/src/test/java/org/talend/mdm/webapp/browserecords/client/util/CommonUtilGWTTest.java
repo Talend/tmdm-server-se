@@ -1,6 +1,7 @@
 package org.talend.mdm.webapp.browserecords.client.util;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -203,12 +204,17 @@ public class CommonUtilGWTTest extends GWTTestCase {
         oem_e.setTypePath("oem/oem_e");
         oem_e.setLabelMap(new HashMap<String, String>());
         oem.addSubType(oem_e);
+        DataTypeConstants.UNKNOW.setBaseTypeName("date");
+        SimpleTypeModel oem_f = new SimpleTypeModel("oem_f", DataTypeConstants.UNKNOW);
+        oem_f.setTypePath("oem/oem_f");
+        oem_f.setLabelMap(new HashMap<String, String>());
+        oem.addSubType(oem_f);
         // 2. Test defaultValue = true
         List<ItemNodeModel> list = CommonUtil.getDefaultTreeModel(oem, "en", true, false, false);
         assertNotNull(list);
         ItemNodeModel oemNodeModel = list.get(0);
         assertNotNull(oemNodeModel);
-        assertEquals(5, oemNodeModel.getChildCount());
+        assertEquals(6, oemNodeModel.getChildCount());
         ItemNodeModel oem_a_node = (ItemNodeModel) oemNodeModel.getChild(0);
         assertEquals(DataTypeConstants.STRING.getDefaultValue(), oem_a_node.getObjectValue());
         ItemNodeModel oem_b_node = (ItemNodeModel) oemNodeModel.getChild(1);
@@ -220,12 +226,14 @@ public class CommonUtilGWTTest extends GWTTestCase {
         assertTrue(oem_d_node.getObjectValue() instanceof String);
         ItemNodeModel oem_e_node = (ItemNodeModel) oemNodeModel.getChild(4);
         assertEquals(DataTypeConstants.DOUBLE.getDefaultValue(), oem_e_node.getObjectValue());
+        ItemNodeModel oem_f_node = (ItemNodeModel) oemNodeModel.getChild(5);
+        assertEquals(DateUtil.getDate((Date) DataTypeConstants.DATE.getDefaultValue()), oem_f_node.getObjectValue());
         // 3. Test defaultValue = false
         list = CommonUtil.getDefaultTreeModel(oem, "en", false, false, false);
         assertNotNull(list);
         oemNodeModel = list.get(0);
         assertNotNull(oemNodeModel);
-        assertEquals(5, oemNodeModel.getChildCount());
+        assertEquals(6, oemNodeModel.getChildCount());
         for (ModelData modelData : oemNodeModel.getChildren()) {
             ItemNodeModel itemNodeModel = (ItemNodeModel) modelData;
             assertTrue(itemNodeModel.getObjectValue() == null);
@@ -235,7 +243,7 @@ public class CommonUtilGWTTest extends GWTTestCase {
         assertNotNull(list);
         oemNodeModel = list.get(0);
         assertNotNull(oemNodeModel);
-        assertEquals(5, oemNodeModel.getChildCount());
+        assertEquals(6, oemNodeModel.getChildCount());
         for (ModelData modelData : oemNodeModel.getChildren()) {
             ItemNodeModel itemNodeModel = (ItemNodeModel) modelData;
             if(itemNodeModel.getName().equals("oem_a")){

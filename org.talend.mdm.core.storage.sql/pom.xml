@@ -3,7 +3,7 @@
     <parent>
         <groupId>org.talend.mdm</groupId>
         <artifactId>mdm-base</artifactId>
-        <version>6.2.1-SNAPSHOT</version>
+        <version>6.3.1-SNAPSHOT</version>
         <relativePath>../../tmdm-common/org.talend.mdm.base/pom.xml</relativePath>
     </parent>
     
@@ -56,6 +56,13 @@
         <dependency>
             <groupId>org.talend.mdm</groupId>
             <artifactId>org.talend.mdm.core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.talend.mdm</groupId>
+            <artifactId>org.talend.mdm.core</artifactId>
+            <classifier>test</classifier>
+            <version>${project.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.talend.mdm</groupId>

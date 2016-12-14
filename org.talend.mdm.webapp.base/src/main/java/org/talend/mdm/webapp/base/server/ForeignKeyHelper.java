@@ -751,6 +751,15 @@ public class ForeignKeyHelper {
 
         @Override
         public String visit(ContainedComplexTypeMetadata containedType) {
+            if (fieldPath.length >= level) {
+                Collection<FieldMetadata> fields = containedType.getFields();
+                for (FieldMetadata field : fields) {
+                    if (field.getName().equals(fieldPath[level])) {
+                        level++;
+                        return field.accept(this);
+                    }
+                }
+            }
             return null;
         }
 
@@ -801,6 +810,9 @@ public class ForeignKeyHelper {
 
         @Override
         public String visit(ContainedTypeFieldMetadata containedField) {
+            if (fieldPath.length >= level) {
+                return containedField.getType().accept(this);
+            }
             return null;
         }
 

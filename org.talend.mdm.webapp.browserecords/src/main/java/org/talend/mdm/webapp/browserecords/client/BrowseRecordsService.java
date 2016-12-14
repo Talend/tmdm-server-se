@@ -56,6 +56,8 @@ public interface BrowseRecordsService extends RemoteService {
 
     String saveItemBean(ItemBean item, String language) throws ServiceException;
 
+    String bulkUpdateItem(String baseUrl, String concept, String xml, String language) throws ServiceException;
+
     ItemBasePageLoadResult<ForeignKeyBean> getForeignKeyList(BasePagingLoadConfigImpl config, TypeModel model,
             String foreignKeyFilterValue, String dataClusterPK, String language) throws ServiceException;
 
@@ -158,4 +160,6 @@ public interface BrowseRecordsService extends RemoteService {
 
     List<ForeignKeyBean> getForeignKeySuggestion(BasePagingLoadConfigImpl config, TypeModel model, String foreignKeyFilterValue,
             String dataClusterPK, String language) throws ServiceException;
+
+    String handleNavigatorNodeLabel(String jsonString, String language) throws ServiceException;
 }

@@ -205,8 +205,16 @@ public class ViewUtil {
                         final Field<?> field = (Field<?>) hp.getWidget(1);
                         El inputEl = getInputEl(field);
                         String width = inputEl.dom.getStyle().getWidth();
+                        String height = inputEl.dom.getStyle().getHeight();
+                        String overflow = inputEl.dom.getStyle().getOverflow();
                         setStyleAttribute(inputEl.dom, valueStyle);
-                        inputEl.dom.getStyle().setProperty("width", width); //$NON-NLS-1$
+                        inputEl.dom.getStyle().setProperty("width", width); //$NON-NLS-1$                       
+                        if (!height.isEmpty()) {
+                            inputEl.dom.getStyle().setProperty("height", height); //$NON-NLS-1$
+                        }
+                        if (!overflow.isEmpty()) {
+                            inputEl.dom.getStyle().setProperty("overflow", overflow); //$NON-NLS-1$ 
+                        }
                     }
                 }
             }

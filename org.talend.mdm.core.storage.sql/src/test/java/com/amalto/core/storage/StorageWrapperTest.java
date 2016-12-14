@@ -20,6 +20,8 @@ import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -40,6 +42,8 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import com.amalto.core.delegator.BeanDelegatorContainer;
+import com.amalto.core.delegator.ILocalUser;
 import com.amalto.core.load.io.ResettableStringWriter;
 import com.amalto.core.query.StorageTestCase;
 import com.amalto.core.query.user.UserQueryBuilder;
@@ -52,6 +56,8 @@ import com.amalto.core.storage.record.DataRecordWriter;
 import com.amalto.core.storage.record.DataRecordXmlWriter;
 import com.amalto.core.storage.record.ViewSearchResultsWriter;
 import com.amalto.core.storage.record.XmlStringDataRecordReader;
+import com.amalto.core.util.XtentisException;
+import com.amalto.xmlserver.interfaces.ItemPKCriteria;
 import com.amalto.xmlserver.interfaces.XmlServerException;
 
 public class StorageWrapperTest extends TestCase {
@@ -82,7 +88,8 @@ public class StorageWrapperTest extends TestCase {
         assertTrue(uniqueIDs.containsAll(uniqueIDs_2));
     }
 
-    public void testGetDocumentAsString() throws Exception {    
+    public void testGetDocumentAsString() throws Exception {
+        BeanDelegatorContainer.createInstance().setDelegatorInstancePool(Collections.<String, Object> singletonMap("LocalUser", new MockUser())); //$NON-NLS-1$
         StorageWrapper wrapper = prepareWrapper("Product", "Product.xsd", XMLS_PRODUCT, IDS_PRODUCT); //$NON-NLS-1$ //$NON-NLS-2$
         String item = wrapper.getDocumentAsString("Product", "Product.Product.333", "UTF-8"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         assertNotNull(item);
@@ -99,18 +106,19 @@ public class StorageWrapperTest extends TestCase {
         assertNotNull(item);
         assertTrue(item.contains("<i>123</i>")); //$NON-NLS-1$
         assertTrue(item.contains("<InheritEntity><id>123</id><field1>a</field1><field2>b</field2></InheritEntity>")); //$NON-NLS-1$
-    }
-    
-    public void testGetDocumentsAsString() throws Exception {    
-        StorageWrapper wrapper = prepareWrapper("Product", "Product.xsd", XMLS_PRODUCT, IDS_PRODUCT); //$NON-NLS-1$ //$NON-NLS-2$
+        
+        //get documents as string
+        wrapper = prepareWrapper("Product", "Product.xsd", XMLS_PRODUCT, IDS_PRODUCT); //$NON-NLS-1$ //$NON-NLS-2$
         String[] uniqueIDs = {"Product.Product.333", "Product.ProductFamily.1", "Product.Store.1"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         String[] xmls = wrapper.getDocumentsAsString("Product", uniqueIDs, "UTF-8"); //$NON-NLS-1$ //$NON-NLS-2$
         assertNotNull(xmls[0]);
         assertTrue(xmls[0].contains("<i>333</i>")); //$NON-NLS-1$
         assertNotNull(xmls[1]);
-        assertTrue(xmls[1].contains("<ProductFamily><Id>1</Id>")); //$NON-NLS-1$
+        //check getting xml according access permission
+        assertTrue(xmls[1].contains("<p><ProductFamily><Id>1</Id><Name>1</Name></ProductFamily></p>")); //$NON-NLS-1$
         assertNotNull(xmls[2]);
         assertTrue(xmls[2].contains("<Store><Id>1</Id>")); //$NON-NLS-1$
+           
     }
 
     public void testMultipleOccurrenceComplex() throws IOException {
@@ -243,6 +251,48 @@ public class StorageWrapperTest extends TestCase {
         storage2.commit();
 
     }
+    
+    // TMDM-10201 Exported file of related entity is empty when entity is inheritance type
+    public void testGetItemPKsByCriteria() throws XmlServerException {
+        final MetadataRepository repository = prepareMetadata("InheritFKTest.xsd"); //$NON-NLS-1$
+        final Storage storage = prepareStorage("InheritFKTest", repository); //$NON-NLS-1$
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+
+        List<DataRecord> records = new LinkedList<DataRecord>();
+        records.add(factory.read(repository, repository.getComplexType("EnumValue"), //$NON-NLS-1$
+                "<EnumValue><EnumValID>1</EnumValID><EnumType>aaaa</EnumType><Value>bbbb</Value></EnumValue>")); //$NON-NLS-1$
+        records.add(factory.read(repository, repository.getComplexType("Feature"), //$NON-NLS-1$
+                "<Feature><FeatureCode>1111</FeatureCode><Name>cccc</Name><Value xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"EnumValueType\"><EnumType>aaaa</EnumType><EnumFK>[1]</EnumFK></Value></Feature>")); //$NON-NLS-1$
+        storage.begin();
+        storage.update(records);
+        storage.commit();
+        
+        
+        ItemPKCriteria criteria = new ItemPKCriteria();
+        criteria.setClusterName("InheritFKTest"); //$NON-NLS-1$
+        criteria.setConceptName("Feature"); //$NON-NLS-1$
+        criteria.setContentKeywords(""); //$NON-NLS-1$
+        criteria.setKeysKeywords("$Feature/Value/EnumFK,EnumValueType/EnumFK$[1]"); //$NON-NLS-1$
+        criteria.setKeys(""); //$NON-NLS-1$
+        criteria.setCompoundKeyKeywords(false);
+        criteria.setFromDate(-1L);
+        criteria.setToDate(-1L);
+        criteria.setMaxItems(Integer.MAX_VALUE);
+        criteria.setSkip(0);
+        criteria.setUseFTSearch(false);
+        
+        StorageWrapper wrapper = new StorageWrapper() {
+
+            @Override
+            protected Storage getStorage(String dataClusterName) {
+                return storage;
+            }
+
+        };
+        List<String> result = wrapper.getItemPKsByCriteria(criteria);
+        assertEquals("<totalCount>1</totalCount>", result.get(0)); //$NON-NLS-1$
+        assertTrue(result.get(1).contains("<n>Feature</n><ids><i>1111</i>")); //$NON-NLS-1$
+    }
 
     private MetadataRepository prepareMetadata(String xsd) {
         MetadataRepository repository = new MetadataRepository();
@@ -277,5 +327,20 @@ public class StorageWrapperTest extends TestCase {
         }
         wrapper.commit(name);
         return wrapper;
+    }
+    
+    protected static class MockUser extends ILocalUser {
+
+        @Override
+        public ILocalUser getILocalUser() throws XtentisException {
+            return this;
+        }
+
+        @Override
+        public HashSet<String> getRoles() {
+            HashSet<String> roleSet = new HashSet<String>();
+            roleSet.add("Demo_User");
+            return roleSet;
+        }
     }
 }

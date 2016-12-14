@@ -53,6 +53,8 @@ import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
+import com.amalto.core.delegator.BeanDelegatorContainer;
+import com.amalto.core.delegator.ILocalUser;
 import com.amalto.core.initdb.InitDBUtil;
 import com.amalto.core.metadata.ClassRepository;
 import com.amalto.core.objects.ObjectPOJO;
@@ -78,11 +80,14 @@ import com.amalto.core.storage.record.SystemDataRecordXmlWriter;
 import com.amalto.core.storage.record.XmlDOMDataRecordReader;
 import com.amalto.core.storage.record.XmlSAXDataRecordReader;
 import com.amalto.core.storage.record.XmlStringDataRecordReader;
+import com.amalto.core.util.XtentisException;
 
 @SuppressWarnings("nls")
 public class SystemStorageTest extends TestCase {
 
     private static Logger LOG = Logger.getLogger(StorageTestCase.class);
+    
+    private static boolean beanDelegatorContainerFlag = false;
 
     private static Collection<String> getConfigFiles() throws Exception {
         URL data = InitDBUtil.class.getResource("data"); //$NON-NLS-1$
@@ -127,6 +132,13 @@ public class SystemStorageTest extends TestCase {
             }
         }
         return result;
+    }
+    
+    private static void createBeanDelegatorContainer(){
+        if(!beanDelegatorContainerFlag){
+            BeanDelegatorContainer.createInstance();
+            beanDelegatorContainerFlag = true;
+        }
     }
 
     @SuppressWarnings("unused")
@@ -271,6 +283,8 @@ public class SystemStorageTest extends TestCase {
     }
 
     public void testGetDocumentsAsString() throws Exception {
+        createBeanDelegatorContainer();
+        BeanDelegatorContainer.getInstance().setDelegatorInstancePool(Collections.<String, Object> singletonMap("LocalUser", new MockUser())); //$NON-NLS-1$
         Map<String, Object> preparedItems = prepareRepositoryStorageWrapper();
         ClassRepository repository = (ClassRepository) preparedItems.get("repository"); //$NON-NLS-1$
         SecuredStorage storage = (SecuredStorage) preparedItems.get("storage"); //$NON-NLS-1$
@@ -298,6 +312,8 @@ public class SystemStorageTest extends TestCase {
     }
 
     public void testIdContainsDot() throws Exception {
+        createBeanDelegatorContainer();
+        BeanDelegatorContainer.getInstance().setDelegatorInstancePool(Collections.<String, Object> singletonMap("LocalUser", new MockUser())); //$NON-NLS-1$
         Map<String, Object> preparedItems = prepareRepositoryStorageWrapper();
         ClassRepository repository = (ClassRepository) preparedItems.get("repository");
         SecuredStorage storage = (SecuredStorage) preparedItems.get("storage");
@@ -334,6 +350,8 @@ public class SystemStorageTest extends TestCase {
     }
     
     public void testGetAutoIncrement() throws Exception {
+        createBeanDelegatorContainer();
+        BeanDelegatorContainer.getInstance().setDelegatorInstancePool(Collections.<String, Object> singletonMap("LocalUser", new MockUser())); //$NON-NLS-1$
         Map<String, Object> preparedItems = prepareRepositoryStorageWrapper();
         ClassRepository repository = (ClassRepository) preparedItems.get("repository");
         SecuredStorage storage = (SecuredStorage) preparedItems.get("storage");
@@ -763,4 +781,18 @@ public class SystemStorageTest extends TestCase {
         }
     }
 
+    protected static class MockUser extends ILocalUser {
+
+        @Override
+        public ILocalUser getILocalUser() throws XtentisException {
+            return this;
+        }
+
+        @Override
+        public HashSet<String> getRoles() {
+            HashSet<String> roleSet = new HashSet<String>();
+            roleSet.add("Demo_User");
+            return roleSet;
+        }
+    }
 }

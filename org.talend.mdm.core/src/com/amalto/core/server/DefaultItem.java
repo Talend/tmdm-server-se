@@ -12,13 +12,35 @@
 // ============================================================================
 package com.amalto.core.server;
 
+import static com.amalto.core.query.user.UserQueryBuilder.*;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.MetadataRepository;
+import org.talend.mdm.commmon.metadata.MetadataUtils;
+import org.talend.mdm.commmon.util.core.MDMConfiguration;
+
 import com.amalto.core.delegator.BeanDelegatorContainer;
 import com.amalto.core.delegator.ILocalUser;
+import com.amalto.core.integrity.FKIntegrityCheckResult;
+import com.amalto.core.integrity.FKIntegrityChecker;
 import com.amalto.core.objects.DroppedItemPOJOPK;
 import com.amalto.core.objects.ItemPOJO;
 import com.amalto.core.objects.ItemPOJOPK;
-import com.amalto.core.integrity.FKIntegrityCheckResult;
-import com.amalto.core.integrity.FKIntegrityChecker;
 import com.amalto.core.objects.datacluster.DataClusterPOJO;
 import com.amalto.core.objects.datacluster.DataClusterPOJOPK;
 import com.amalto.core.objects.datamodel.DataModelPOJO;
@@ -45,23 +67,13 @@ import com.amalto.core.util.EntityNotFoundException;
 import com.amalto.core.util.LocalUser;
 import com.amalto.core.util.Util;
 import com.amalto.core.util.XtentisException;
-import com.amalto.xmlserver.interfaces.*;
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
-import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
-import org.talend.mdm.commmon.metadata.MetadataRepository;
-import org.talend.mdm.commmon.metadata.MetadataUtils;
-import org.talend.mdm.commmon.util.core.MDMConfiguration;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.rmi.RemoteException;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static com.amalto.core.query.user.UserQueryBuilder.*;
+import com.amalto.xmlserver.interfaces.CustomWhereCondition;
+import com.amalto.xmlserver.interfaces.IWhereItem;
+import com.amalto.xmlserver.interfaces.ItemPKCriteria;
+import com.amalto.xmlserver.interfaces.WhereAnd;
+import com.amalto.xmlserver.interfaces.WhereCondition;
+import com.amalto.xmlserver.interfaces.WhereOr;
+import com.amalto.xmlserver.interfaces.XmlServerException;
 
 public class DefaultItem implements Item {
 
@@ -77,6 +89,7 @@ public class DefaultItem implements Item {
      * @throws com.amalto.core.util.XtentisException In case of error in MDM code.
      * @return A PK to the newly created record.
      */
+    @Override
     public ItemPOJOPK putItem(ItemPOJO item, DataModelPOJO dataModel) throws XtentisException {
         String schema = dataModel == null ? null : dataModel.getSchema();
         String dataModelName = dataModel == null ? null : dataModel.getName();
@@ -90,6 +103,7 @@ public class DefaultItem implements Item {
      * @throws XtentisException In case of error in MDM code.
      * @return A PK to the updated item.
      */
+    @Override
     public ItemPOJOPK updateItemMetadata(ItemPOJO item) throws XtentisException {
         return BeanDelegatorContainer.getInstance().getItemCtrlDelegator().putItem(item, null, null);
     }
@@ -101,6 +115,7 @@ public class DefaultItem implements Item {
      * @return The MDM record for the provided PK.
      * @throws com.amalto.core.util.XtentisException In case of error in MDM code.
      */
+    @Override
     public ItemPOJO getItem(ItemPOJOPK pk) throws XtentisException {
         try {
             ItemPOJO pojo = ItemPOJO.load(pk);
@@ -128,6 +143,7 @@ public class DefaultItem implements Item {
      * @return True is last modification of record is after time, false otherwise.
      * @throws com.amalto.core.util.XtentisException In case of error in MDM code.
      */
+    @Override
     public boolean isItemModifiedByOther(ItemPOJOPK item, long time) throws XtentisException {
         ItemPOJO pojo = ItemPOJO.load(item);
         return pojo == null || time != pojo.getInsertionTime();
@@ -140,6 +156,7 @@ public class DefaultItem implements Item {
      * @return True if item with PK exists in database.
      * @throws com.amalto.core.util.XtentisException In case of error in MDM code.
      */
+    @Override
     public ItemPOJO existsItem(ItemPOJOPK pk) throws XtentisException {
         try {
             return ItemPOJO.load(pk);
@@ -164,6 +181,7 @@ public class DefaultItem implements Item {
      * @return The PK of the deleted item.
      * @throws com.amalto.core.util.XtentisException In case of error in MDM code.
      */
+    @Override
     public ItemPOJOPK deleteItem(ItemPOJOPK pk, boolean override) throws XtentisException {
         String dataClusterName = pk.getDataClusterPOJOPK().getUniqueId();
         String conceptName = pk.getConceptName();
@@ -171,6 +189,8 @@ public class DefaultItem implements Item {
         if (LOGGER.isTraceEnabled()) {
             LOGGER.trace("Deleting " + dataClusterName + "." + Util.joinStrings(ids, "."));
         }
+        BeanDelegatorContainer.getInstance().getItemCtrlDelegator()
+                .allowDelete(dataClusterName, conceptName, ComplexTypeMetadata.DeleteType.PHYSICAL);
         if (!pk.getDataClusterPOJOPK().getUniqueId().endsWith(StorageAdmin.STAGING_SUFFIX)) {
             boolean allowDelete = FKIntegrityChecker.getInstance().allowDelete(dataClusterName, conceptName, ids, override);
             if (!allowDelete) {
@@ -202,8 +222,11 @@ public class DefaultItem implements Item {
      * @throws com.amalto.core.util.XtentisException In case of error in MDM code.
      */
     // TODO override is not taken into account here?
+    @Override
     public int deleteItems(DataClusterPOJOPK dataClusterPOJOPK, String conceptName, IWhereItem search, int spellThreshold, boolean override)
             throws XtentisException {
+        BeanDelegatorContainer.getInstance().getItemCtrlDelegator()
+                .allowDelete(dataClusterPOJOPK.getUniqueId(), conceptName, ComplexTypeMetadata.DeleteType.PHYSICAL);
         // build the patterns to cluster map - only one cluster at this stage
         XmlServer server = Util.getXmlServerCtrlLocal();
         try {
@@ -227,6 +250,7 @@ public class DefaultItem implements Item {
      * @return A PK to the item in the MDM trash.
      * @throws com.amalto.core.util.XtentisException In case of error in MDM code.
      */
+    @Override
     public DroppedItemPOJOPK dropItem(ItemPOJOPK itemPOJOPK, String partPath, boolean override) throws XtentisException {
         String dataClusterName = itemPOJOPK.getDataClusterPOJOPK().getUniqueId();
         String conceptName = itemPOJOPK.getConceptName();
@@ -235,6 +259,8 @@ public class DefaultItem implements Item {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Dropping " + dataClusterName + "." + Util.joinStrings(ids, "."));
         }
+        BeanDelegatorContainer.getInstance().getItemCtrlDelegator()
+                .allowDelete(dataClusterName, conceptName, ComplexTypeMetadata.DeleteType.LOGICAL);
         boolean allowDelete = FKIntegrityChecker.getInstance().allowDelete(dataClusterName, conceptName, ids, override);
         if (!allowDelete) {
             throw new RuntimeException("Cannot delete instance '" + itemPOJOPK.getUniqueID() + "' (concept name: " + conceptName + ") due to FK integrity constraints.");
@@ -263,6 +289,7 @@ public class DefaultItem implements Item {
      * @return The ordered list of results
      * @throws com.amalto.core.util.XtentisException In case of error in MDM code.
      */
+    @Override
     public ArrayList<String> viewSearch(DataClusterPOJOPK dataClusterPOJOPK, ViewPOJOPK viewPOJOPK, IWhereItem whereItem,
             int spellThreshold, int start, int limit) throws XtentisException {
         return viewSearch(dataClusterPOJOPK, viewPOJOPK, whereItem, spellThreshold, null, null, start, limit);
@@ -283,6 +310,7 @@ public class DefaultItem implements Item {
      * @return The ordered list of results
      * @throws com.amalto.core.util.XtentisException In case of error in MDM code.
      */
+    @Override
     public ArrayList<String> viewSearch(DataClusterPOJOPK dataClusterPOJOPK, ViewPOJOPK viewPOJOPK, IWhereItem whereItem,
             int spellThreshold, String orderBy, String direction, int start, int limit) throws XtentisException {
         return BeanDelegatorContainer.getInstance().getItemCtrlDelegator()
@@ -306,6 +334,7 @@ public class DefaultItem implements Item {
      * @return The ordered list of results
      * @throws com.amalto.core.util.XtentisException In case of error in MDM code.
      */
+    @Override
     public ArrayList<String> xPathsSearch(DataClusterPOJOPK dataClusterPOJOPK, String forceMainPivot,
             ArrayList<String> viewablePaths, IWhereItem whereItem, int spellThreshold, int start, int limit, boolean returnCount)
             throws XtentisException {
@@ -331,6 +360,7 @@ public class DefaultItem implements Item {
      * @return The ordered list of results
      * @throws com.amalto.core.util.XtentisException In case of error in MDM code.
      */
+    @Override
     public ArrayList<String> xPathsSearch(DataClusterPOJOPK dataClusterPOJOPK, String forceMainPivot,
             ArrayList<String> viewablePaths, IWhereItem whereItem, int spellThreshold, String orderBy, String direction,
             int start, int limit, boolean returnCount) throws XtentisException {
@@ -344,7 +374,7 @@ public class DefaultItem implements Item {
             ILocalUser user = LocalUser.getLocalUser();
             boolean authorized = false;
             String dataModelName = dataClusterPOJOPK.getUniqueId();
-            if (MDMConfiguration.getAdminUser().equals(user.getUsername())) { //$NON-NLS-1$
+            if (MDMConfiguration.getAdminUser().equals(user.getUsername())) { 
                 authorized = true;
             } else if (user.userCanRead(DataClusterPOJO.class, dataModelName)) {
                 authorized = true;
@@ -434,6 +464,7 @@ public class DefaultItem implements Item {
      * @return The number of items found
      * @throws com.amalto.core.util.XtentisException In case of error in MDM code.
      */
+    @Override
     public long count(DataClusterPOJOPK dataClusterPOJOPK, String conceptName, IWhereItem whereItem, int spellThreshold)
             throws XtentisException {
         try {
@@ -499,6 +530,7 @@ public class DefaultItem implements Item {
      * @return The ordered list of results
      * @throws com.amalto.core.util.XtentisException In case of error in MDM code.
      */
+    @Override
     public ArrayList<String> quickSearch(DataClusterPOJOPK dataClusterPOJOPK, ViewPOJOPK viewPOJOPK, String searchValue,
             boolean matchWholeSentence, int spellThreshold, String orderBy, String direction, int start, int limit)
             throws XtentisException {
@@ -569,6 +601,7 @@ public class DefaultItem implements Item {
      * @return The list of values
      * @throws com.amalto.core.util.XtentisException In case of error in MDM code.
      */
+    @Override
     public ArrayList<String> getFullPathValues(DataClusterPOJOPK dataClusterPOJOPK,
             String businessElementPath, IWhereItem whereItem, int spellThreshold, String orderBy, String direction)
             throws XtentisException {
@@ -590,10 +623,11 @@ public class DefaultItem implements Item {
             Pattern p = Pattern.compile("<.*>(.*?)</.*>", Pattern.DOTALL);
             for (String li : col) {
                 Matcher m = p.matcher(li);
-                if (m.matches())
+                if (m.matches()) {
                     res.add(StringEscapeUtils.unescapeXml(m.group(1)));
-                else
+                } else {
                     throw new XtentisException("Result values were not understood for business element: " + conceptName);
+                }
             }
 
             return res;
@@ -623,6 +657,7 @@ public class DefaultItem implements Item {
      * @param limit The maximum number of items to return
      * @throws com.amalto.core.util.XtentisException In case of error in MDM code.
      */
+    @Override
     public void extractUsingTransformerThroughView(DataClusterPOJOPK dataClusterPOJOPK, TransformerContext context,
             TransformerCallBack globalCallBack, ViewPOJOPK viewPOJOPK, IWhereItem whereItem, int spellThreshold, String orderBy,
             String direction, int start, int limit) throws XtentisException {
@@ -646,6 +681,7 @@ public class DefaultItem implements Item {
                 Util.getTransformerV2CtrlLocal().execute(context,
                         new TypedContent(raw.getBytes("utf-8"), "text/xml; charset=\"utf-8\""), //$NON-NLS-1$ //$NON-NLS-2$
                         new TransformerCallBack() {
+                            @Override
                             public void contentIsReady(TransformerContext context) throws XtentisException {
                                 // add numbered content to the pipeline
                                 TypedContent content = context.getFromPipeline(DEFAULT_VARIABLE);
@@ -658,6 +694,7 @@ public class DefaultItem implements Item {
                                 globalCallBack.contentIsReady(context);
                             }
 
+                            @Override
                             public void done(TransformerContext context) throws XtentisException {
                                 // do not notify
                             }
@@ -691,6 +728,7 @@ public class DefaultItem implements Item {
      * @param start The first item index (starts at zero)
      * @param limit The maximum number of items to return
      */
+    @Override
     public TransformerContext extractUsingTransformerThroughView(DataClusterPOJOPK dataClusterPOJOPK,
             TransformerV2POJOPK transformerPOJOPK, ViewPOJOPK viewPOJOPK, IWhereItem whereItem, int spellThreshold,
             String orderBy, String direction, int start, int limit) throws XtentisException {
@@ -703,9 +741,11 @@ public class DefaultItem implements Item {
             context.put("com.amalto.core.itemctrl2.content", content); //$NON-NLS-1$
             context.put("com.amalto.core.itemctrl2.ready", false); //$NON-NLS-1$
             TransformerCallBack globalCallBack = new TransformerCallBack() {
+                @Override
                 public void contentIsReady(TransformerContext context) throws XtentisException {
                 }
 
+                @Override
                 public void done(TransformerContext context) throws XtentisException {
                     context.put("com.amalto.core.itemctrl2.ready", true); //$NON-NLS-1$
                 }
@@ -745,6 +785,7 @@ public class DefaultItem implements Item {
      * @param parameters Optional parameter values to replace the %n in the query before execution
      * @return Query results as list of String.
      */
+    @Override
     public ArrayList<String> runQuery(DataClusterPOJOPK dataClusterPOJOPK, String query, String[] parameters)
             throws XtentisException {
         XmlServer server = Util.getXmlServerCtrlLocal();
@@ -758,6 +799,7 @@ public class DefaultItem implements Item {
         }
     }
 
+    @Override
     public List<String> getItemPKsByCriteria(ItemPKCriteria criteria) throws XtentisException {
         try {
             XmlServer server = Util.getXmlServerCtrlLocal();
@@ -769,6 +811,7 @@ public class DefaultItem implements Item {
         }
     }
 
+    @Override
     public List<String> getConceptsInDataCluster(DataClusterPOJOPK dataClusterPOJOPK) throws XtentisException {
         String dataModelName = dataClusterPOJOPK.getUniqueId();
         try {
@@ -806,6 +849,7 @@ public class DefaultItem implements Item {
         }
     }
 
+    @Override
     public long countItemsByCustomFKFilters(DataClusterPOJOPK dataClusterPOJOPK, String conceptName, String injectedXpath)
             throws XtentisException {
         try {
@@ -832,6 +876,7 @@ public class DefaultItem implements Item {
      *         custom XPath as additional condition.
      * @throws com.amalto.core.util.XtentisException In case of MDM server error.
      */
+    @Override
     public ArrayList<String> getItemsByCustomFKFilters(DataClusterPOJOPK dataClusterPOJOPK, ArrayList<String> viewablePaths,
                                                        String customXPath, IWhereItem whereItem, int start, int limit,
                                                        String orderBy, String direction, boolean returnCount)
@@ -869,6 +914,7 @@ public class DefaultItem implements Item {
      * @return The ordered list of results
      * @throws com.amalto.core.util.XtentisException In case of error in MDM code.
      */
+    @Override
     public ArrayList<String> getItems(DataClusterPOJOPK dataClusterPOJOPK, String conceptName, IWhereItem whereItem,
             int spellThreshold, int start, int limit, boolean totalCountOnFirstRow) throws XtentisException {
         return getItems(dataClusterPOJOPK, conceptName, whereItem, spellThreshold, null, null, start, limit, totalCountOnFirstRow);
@@ -890,12 +936,14 @@ public class DefaultItem implements Item {
      * @return The ordered list of results
      * @throws com.amalto.core.util.XtentisException In case of error in MDM code.
      */
+    @Override
     public ArrayList<String> getItems(DataClusterPOJOPK dataClusterPOJOPK, String conceptName, IWhereItem whereItem,
             int spellThreshold, String orderBy, String direction, int start, int limit, boolean totalCountOnFirstRow)
             throws XtentisException {
     	return BeanDelegatorContainer.getInstance().getItemCtrlDelegator().getItems(dataClusterPOJOPK, conceptName, whereItem, spellThreshold, orderBy, direction, start, limit, totalCountOnFirstRow);
     }
 
+    @Override
     public FKIntegrityCheckResult checkFKIntegrity(String dataCluster, String concept, String[] ids) throws XtentisException {
         return FKIntegrityChecker.getInstance().getFKIntegrityPolicy(dataCluster, concept, ids);
     }

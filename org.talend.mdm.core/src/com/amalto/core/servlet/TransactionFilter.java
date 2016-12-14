@@ -11,18 +11,28 @@
 
 package com.amalto.core.servlet;
 
-import com.amalto.core.server.Server;
-import com.amalto.core.server.ServerContext;
-import com.amalto.core.storage.transaction.*;
+import java.io.IOException;
 
-import javax.servlet.*;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 
-import java.io.IOException;
+import com.amalto.core.server.Server;
+import com.amalto.core.server.ServerContext;
+import com.amalto.core.storage.transaction.ExplicitTransaction;
+import com.amalto.core.storage.transaction.ImplicitTransactionState;
+import com.amalto.core.storage.transaction.TransactionState;
 
 public class TransactionFilter implements Filter {
+
+    private static final Logger LOGGER = Logger.getLogger(TransactionFilter.class);
 
     public static final String TRANSACTION_ID = "transaction-id"; //$NON-NLS-1$
 
@@ -52,6 +62,9 @@ public class TransactionFilter implements Filter {
         if (StringUtils.isEmpty(transactionId)) {
             return ImplicitTransactionState.INSTANCE;
         } else {
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Transaction ID from HTTP request: " + transactionId);
+            }
             return new ExplicitTransaction(transactionId);
         }
     }

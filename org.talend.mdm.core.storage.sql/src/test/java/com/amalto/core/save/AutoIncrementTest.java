@@ -32,6 +32,7 @@ import org.talend.mdm.commmon.metadata.MetadataRepository;
 import com.amalto.core.delegator.BeanDelegatorContainer;
 import com.amalto.core.metadata.ClassRepository;
 import com.amalto.core.objects.ObjectPOJO;
+import com.amalto.core.objects.datacluster.DataClusterPOJO;
 import com.amalto.core.objects.datamodel.DataModelPOJO;
 import com.amalto.core.query.user.Expression;
 import com.amalto.core.query.user.UserQueryBuilder;
@@ -51,6 +52,7 @@ import com.amalto.core.storage.StorageResults;
 import com.amalto.core.storage.StorageType;
 import com.amalto.core.storage.hibernate.HibernateStorage;
 import com.amalto.core.storage.record.DataRecord;
+import com.amalto.core.util.Util;
 
 @SuppressWarnings("nls")
 public class AutoIncrementTest extends TestCase {
@@ -164,6 +166,8 @@ public class AutoIncrementTest extends TestCase {
         BeanDelegatorContainer.getInstance().setDelegatorInstancePool(Collections.<String, Object> singletonMap("LocalUser", new MockAdmin()));
         SaverSession session = SaverSession.newSession(new MockSaverSource(masterRepository, true));
         InputStream is = new ByteArrayInputStream(documentXml.getBytes("UTF-8"));
+        Util.getDataClusterCtrlLocal().putDataCluster(new DataClusterPOJO("CONF"));
+        Util.getDataClusterCtrlLocal().putDataCluster(new DataClusterPOJO("TestAI"));
         DocumentSaverContext context = session.getContextFactory().create(storageName, storageName, StringUtils.EMPTY, is, true, false, false, false, false);
         DocumentSaver saver = context.createSaver();
         try {

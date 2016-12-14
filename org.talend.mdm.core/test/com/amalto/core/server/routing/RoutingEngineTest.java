@@ -191,7 +191,7 @@ public class RoutingEngineTest {
         // Expired message: put 2 messages, there's only one JMS consumer, service pauses for 400 ms, and expiration is
         // 300 ms
         // -> only 1 message should be consumed.
-        NoOpService.setPauseTime(400);
+        NoOpService.setPauseTime(500);
         int previous = routingEngine.getConsumeCallCount();
         RoutingRulePOJOPK[] routes = routingEngine.route(new ItemPOJOPK(container, "Person", new String[] { "1", "2" }));
         assertEquals(1, routes.length);

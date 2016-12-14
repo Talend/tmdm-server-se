@@ -21,6 +21,7 @@ import org.junit.Assert;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.CompoundFieldMetadata;
 import org.talend.mdm.commmon.metadata.ConsoleDumpMetadataVisitor;
+import org.talend.mdm.commmon.metadata.ContainedComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
@@ -620,5 +621,80 @@ public class MetadataRepositoryTest extends TestCase {
         InputStream stream = getClass().getResourceAsStream("SortType_05.xsd");
         repository.load(stream);
         MetadataUtils.sortTypes(repository, MetadataUtils.SortType.LENIENT);
+    }
+
+    public void test_31() throws Exception{
+        MetadataRepository repository = new MetadataRepository();
+        InputStream stream = getClass().getResourceAsStream("schema31_1.xsd");
+        repository.load(stream);
+        ComplexTypeMetadata entityType = repository.getComplexType("T_TRANSCO_FO");
+
+        assertNotNull(entityType);
+        FieldMetadata fieldMetadata = entityType.getField("LOCAL_FO_ID");
+        assertEquals(ReferenceFieldMetadata.class, fieldMetadata.getClass());
+        assertNotNull(fieldMetadata);
+        ReferenceFieldMetadata referFieldMetadata = (ReferenceFieldMetadata)fieldMetadata ;
+        if(!referFieldMetadata.getForeignKeyInfoFields().isEmpty()){
+            assertEquals(SimpleTypeFieldMetadata.class, referFieldMetadata.getForeignKeyInfoFields().get(0) .getClass()) ;
+        }
+
+        fieldMetadata = entityType.getField("LOCAL_SOURCE_ID");
+        assertEquals(ReferenceFieldMetadata.class, fieldMetadata.getClass());
+        assertNotNull(fieldMetadata);
+        referFieldMetadata = (ReferenceFieldMetadata)fieldMetadata ;
+        if(!referFieldMetadata.getForeignKeyInfoFields().isEmpty()){
+            assertEquals(SimpleTypeFieldMetadata.class, referFieldMetadata.getForeignKeyInfoFields().get(0) .getClass()) ;
+        }
+
+        stream = getClass().getResourceAsStream("schema31_2.xsd");
+        repository.load(stream);
+        ComplexTypeMetadata entityType2 = repository.getComplexType("EA");
+        assertNotNull(entityType);
+        fieldMetadata = entityType2.getField("FK1ToEB");
+        assertEquals(ReferenceFieldMetadata.class, fieldMetadata.getClass());
+        assertNotNull(fieldMetadata);
+        referFieldMetadata = (ReferenceFieldMetadata)fieldMetadata ;
+        if(!referFieldMetadata.getForeignKeyInfoFields().isEmpty()){
+            assertEquals(SimpleTypeFieldMetadata.class, referFieldMetadata.getForeignKeyInfoFields().get(0) .getClass()) ;
+        }
+
+        fieldMetadata = entityType2.getField("FK4ToEBName");
+        assertEquals(ReferenceFieldMetadata.class, fieldMetadata.getClass());
+        assertNotNull(fieldMetadata);
+        referFieldMetadata = (ReferenceFieldMetadata)fieldMetadata ;
+        if(!referFieldMetadata.getForeignKeyInfoFields().isEmpty()){
+            assertEquals(SimpleTypeFieldMetadata.class, referFieldMetadata.getForeignKeyInfoFields().get(0) .getClass()) ;
+        }
+
+        stream = getClass().getResourceAsStream("schema31_3.xsd");
+        repository.load(stream);
+        ComplexTypeMetadata entityType3 = ((ContainedComplexTypeMetadata)repository.getComplexType("TT").getField("MUl").getType()).getContainedType() ;
+        assertNotNull(entityType);
+        fieldMetadata = entityType3.getField("E3");
+        assertEquals(ReferenceFieldMetadata.class, fieldMetadata.getClass());
+        assertNotNull(fieldMetadata);
+        referFieldMetadata = (ReferenceFieldMetadata)fieldMetadata ;
+        if(!referFieldMetadata.getForeignKeyInfoFields().isEmpty()){
+            assertEquals(SimpleTypeFieldMetadata.class, referFieldMetadata.getForeignKeyInfoFields().get(0) .getClass()) ;
+        }
+    }
+
+    //TMDM-9086 if the default value is string, number, and the fn:true(), fn:false(), filed's data contains DEFAULT_VALUE_RULE value 
+    public void test_32() throws Exception {
+        MetadataRepository repository = new MetadataRepository();
+        InputStream stream = getClass().getResourceAsStream("schema32.xsd");
+        repository.load(stream);
+
+        ComplexTypeMetadata entityType = repository.getComplexType("Object");
+        assertNotNull(entityType);
+        assertTrue(entityType.hasField("name"));
+        assertTrue(entityType.hasField("lastname"));
+        assertTrue(entityType.hasField("sex"));
+
+        assertEquals("\"Jason\"", entityType.getField("lastname").getData(MetadataRepository.DEFAULT_VALUE_RULE));
+        assertEquals("6", entityType.getField("age").getData(MetadataRepository.DEFAULT_VALUE_RULE));
+        assertEquals("12.6", entityType.getField("weight").getData(MetadataRepository.DEFAULT_VALUE_RULE));
+        assertEquals("fn:true()", entityType.getField("sex").getData(MetadataRepository.DEFAULT_VALUE_RULE));
+        assertEquals(null, entityType.getField("name_1").getData(MetadataRepository.DEFAULT_VALUE_RULE));
     }
 }

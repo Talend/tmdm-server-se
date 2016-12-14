@@ -48,10 +48,12 @@ public class MultiLanguageModel extends ItemBaseModel {
     }
 
     public void setValueByLanguage(String language, String value) {
-        if (value != null && value.trim().length() > 0)
+        if (value != null && value.trim().length() > 0) {
             languageValueMap.put(language, value);
-        else
+        } else {
             languageValueMap.remove(language);
+        }
+        toString();
     }
 
     public LinkedHashMap<String, String> getLanguageValueMap() {
@@ -65,6 +67,10 @@ public class MultiLanguageModel extends ItemBaseModel {
     }
 
     public String toString() {
+        if (languageValueMap == null || languageValueMap.size() == 0) {
+            this.multiLanguageString = ""; //$NON-NLS-1$
+            return ""; //$NON-NLS-1$
+        }
         List<String> keys = new ArrayList<String>(languageValueMap.keySet());
         Collections.sort(keys);
         StringBuffer sb = new StringBuffer();

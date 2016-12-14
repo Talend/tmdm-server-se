@@ -9,7 +9,7 @@ http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
 
     <!-- MDM -->
     <import resource="classpath*:META-INF/mdm-context.xml" />
-    <context:property-placeholder location="${mdm.root.url}/conf/mdm.conf" local-override="false"/>
+    <context:property-placeholder location="${mdm.root.url}/conf/mdm.conf" ignore-unresolvable="true" local-override="false"/>
 
     <!-- CXF Services -->
     <import resource="classpath:META-INF/cxf/cxf.xml" />

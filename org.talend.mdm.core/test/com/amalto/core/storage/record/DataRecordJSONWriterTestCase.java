@@ -20,33 +20,20 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
-import org.talend.mdm.commmon.metadata.MetadataRepository;
 
-import com.amalto.core.storage.SecuredStorage;
-import com.amalto.core.storage.record.metadata.DataRecordMetadataImpl;
+public class DataRecordJSONWriterTestCase extends DataRecordDataWriterTestCase {
 
-
-public class DataRecordJSONWriterTestCase {
-    
-    private DataRecordJSONWriter writer;
-    
-    private SecuredStorage.UserDelegator delegate;
-    
-    private MetadataRepository repository;
+    DataRecordJSONWriter writer;
     
     @Before
-    public void setup() throws Exception{
+    public void setup() throws Exception {
+        super.setup();
         writer = new DataRecordJSONWriter();
-        delegate = Mockito.mock(SecuredStorage.UserDelegator.class);
-        Mockito.when(delegate.hide(Mockito.any(ComplexTypeMetadata.class))).thenReturn(false);
-        Mockito.when(delegate.hide(Mockito.any(FieldMetadata.class))).thenReturn(false);
         writer.setSecurityDelegator(delegate);
-        repository = new MetadataRepository();
         repository.load(this.getClass().getResourceAsStream("metadata.xsd"));
     }
     
@@ -180,19 +167,6 @@ public class DataRecordJSONWriterTestCase {
         
         Assert.assertEquals("{\"withmulticontained\":{\"id\":\"ABCD\",\"contained\":"
                 + "[]}}", result);
-    }
-    
-    private void setDataRecordField(DataRecord record, String name, Object value) throws Exception {
-        FieldMetadata fieldMd = record.getType().getField(name);
-        Assert.assertNotNull("Unknown field " + name, fieldMd);
-        record.set(fieldMd, value);
-    }
-    
-    private DataRecord createDataRecord(ComplexTypeMetadata type) throws Exception {
-        Assert.assertNotNull(type);
-        DataRecordMetadataImpl recordMeta = new DataRecordMetadataImpl(System.currentTimeMillis(), "taskId");
-        DataRecord record = new DataRecord(type, recordMeta);
-        return record;
     }
     
     private String toJSON(DataRecord record) throws Exception {

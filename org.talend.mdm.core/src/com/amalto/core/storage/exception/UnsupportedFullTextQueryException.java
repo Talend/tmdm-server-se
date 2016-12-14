@@ -12,24 +12,12 @@
 // ============================================================================
 package com.amalto.core.storage.exception;
 
-import javax.ws.rs.core.Response;
 
-public class DataServiceException extends RuntimeException {
+public class UnsupportedFullTextQueryException extends RuntimeException {
 
-    private static final long serialVersionUID = -4638437716474249177L;
+    private static final long serialVersionUID = 1L;
 
-    private Response.Status status;
-
-    public DataServiceException(Response.Status status, String message) {
-        super(message);
-        this.status = status;
-    }
-
-    public Response.Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Response.Status status) {
-        this.status = status;
+    public UnsupportedFullTextQueryException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

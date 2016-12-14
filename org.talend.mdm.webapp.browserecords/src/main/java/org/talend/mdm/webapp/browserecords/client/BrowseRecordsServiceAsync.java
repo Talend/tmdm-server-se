@@ -58,6 +58,8 @@ public interface BrowseRecordsServiceAsync {
 
     void saveItemBean(ItemBean item, String language, AsyncCallback<String> callback);
 
+    void bulkUpdateItem(String baseUrl, String concept, String xml, String language, AsyncCallback<String> callback);
+
     void getItem(ItemBean itemBean, String viewPK, EntityModel entityModel, boolean isStaging, String language,
             AsyncCallback<ItemBean> callback);
 
@@ -123,6 +125,8 @@ public interface BrowseRecordsServiceAsync {
     void getSmartViewList(String regex, AsyncCallback<List<ItemBaseModel>> callback);
 
     void getItemBeanById(String concept, String ids, String language, AsyncCallback<ItemBean> callback);
+
+    void handleNavigatorNodeLabel(String jsonString, String language, AsyncCallback<String> callback);
 
     void getItemBeanById(String concept, String[] ids, String language, AsyncCallback<ItemBean> callback);
 

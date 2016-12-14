@@ -55,6 +55,7 @@ class HibernateStorageResults implements StorageResults {
 
     @Override
     public int getCount() {
+        StorageResults countResult = null;
         try {
             Select countSelect = select.copy();
             List<TypedExpression> selectedFields = countSelect.getSelectedFields();
@@ -76,7 +77,7 @@ class HibernateStorageResults implements StorageResults {
             paging.setLimit(1);
             paging.setStart(0);
             countSelect.getOrderBy().clear();
-            StorageResults countResult = storage.fetch(countSelect); // Expects an active transaction here
+            countResult = storage.fetch(countSelect); // Expects an active transaction here
             Iterator<DataRecord> resultIterator = countResult.iterator();
             if (!resultIterator.hasNext()) {
                 return 0;
@@ -89,6 +90,10 @@ class HibernateStorageResults implements StorageResults {
             return Integer.parseInt(countAsString);
         } catch (Exception e) {
             throw new RuntimeException(e);
+        } finally {
+            if (countResult != null) {
+                countResult.close();
+            }
         }
     }
 

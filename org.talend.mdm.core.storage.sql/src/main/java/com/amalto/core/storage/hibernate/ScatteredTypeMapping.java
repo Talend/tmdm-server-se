@@ -259,7 +259,7 @@ class ScatteredTypeMapping extends TypeMapping {
                                     .getClass()));
                             DataRecord referencedRecord = new DataRecord(mapping.getUser(),
                                     UnsupportedDataRecordMetadata.INSTANCE);
-                            for (FieldMetadata fkField : ((ReferenceFieldMetadata) databaseField).getReferencedType().getFields()) {
+                            for (FieldMetadata fkField : mapping.getDatabase().getFields()) {
                                 if (mapping.getUser(fkField) != null) {
                                     referencedRecord.set(mapping.getUser(fkField), wrapper.get(fkField.getName()));
                                 }

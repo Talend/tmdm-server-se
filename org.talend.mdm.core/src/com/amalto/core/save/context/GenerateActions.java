@@ -65,7 +65,8 @@ class GenerateActions implements DocumentSaver {
         MetadataRepository metadataRepository = saverSource.getMetadataRepository(context.getDataModelName());
         // Generate field update actions for UUID and AutoIncrement elements.
         UpdateActionCreator updateActions = new UpdateActionCreator(databaseDocument, userDocument, date, source, userName,
-                context.generateTouchActions(), metadataRepository);
+                context.generateTouchActions(), metadataRepository, context.getDataCluster(), context.getDataModelName(),
+                saverSource);
         UserAction userAction = context.getUserAction();
         switch (userAction) {
         case CREATE_STRICT:
@@ -88,6 +89,7 @@ class GenerateActions implements DocumentSaver {
             if (context.getId().length <= 0) {
                 actions.addAll(type.accept(createActions));
             }
+            updateActions.setCreateAction(true);
             actions.addAll(type.accept(updateActions));
 
             // in case of beforesaving, don't re-generate id as it might have been used for reference
@@ -117,6 +119,7 @@ class GenerateActions implements DocumentSaver {
             break;
         case UPDATE:
             // get updated paths
+            updateActions.setCreateAction(false);
             actions = type.accept(updateActions);
             break;
         case REPLACE:
@@ -130,14 +133,16 @@ class GenerateActions implements DocumentSaver {
             PartialUpdateActionCreator partialUpdateActionCreator = new PartialUpdateActionCreator(databaseDocument,
                     userDocument, date, context.preserveOldCollectionValues(), context.getPartialUpdateIndex(),
                     context.getPartialUpdatePivot(), context.getPartialUpdateKey(), source, userName,
-                    context.generateTouchActions(), metadataRepository);
+                    context.generateTouchActions(), metadataRepository, context.getDataCluster(), context.getDataModelName(),
+                    saverSource);
             actions = type.accept(partialUpdateActionCreator);
             break;
         case PARTIAL_DELETE:
             userDocument = new PartialDeleteSimulator(databaseDocument, userDocument, context.getPartialUpdatePivot(),
                     context.getPartialUpdateKey()).simulateDelete();
             updateActions = new UpdateActionCreator(databaseDocument, userDocument, date, source, userName,
-                    context.generateTouchActions(), metadataRepository);
+                    context.generateTouchActions(), metadataRepository,context.getDataCluster(),
+                    context.getDataModelName(), saverSource);
             updateActions.setPartialDelete(true);
             actions = type.accept(updateActions);
             break;

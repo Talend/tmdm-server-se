@@ -199,6 +199,59 @@ public class StoragePrepareTest extends TestCase {
 
         storage.close();
     }
+
+    public void testStorageAfterFetchClassLoader() {
+        Storage storage = new SecuredStorage(new HibernateStorage("Goods", StorageType.MASTER), userSecurity);//$NON-NLS-1$
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(StoragePrepareTest.class.getResourceAsStream("GoodsDecimal.xml"));//$NON-NLS-1$
+        MockMetadataRepositoryAdmin.INSTANCE.register("Goods", repository);//$NON-NLS-1$
+
+        storage.init(getDatasource("H2-DS3"));//    //$NON-NLS-1$
+        storage.prepare(repository, Collections.<Expression> emptySet(), true, true);
+        ((MockStorageAdmin) ServerContext.INSTANCE.get().getStorageAdmin()).register(storage);
+
+        storage.begin();
+        ComplexTypeMetadata goods = repository.getComplexType("Goods");//$NON-NLS-1$
+        UserQueryBuilder qb = from(goods);
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(0, results.getCount());
+            for (DataRecord result : results) {
+                break;
+            }
+        } finally {
+            results.close();
+        }
+        storage.end();
+        ClassLoader StorageClassLoader = (ClassLoader) Thread.currentThread().getContextClassLoader();
+
+        List<DataRecord> records = new ArrayList<DataRecord>();
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+        records.add(factory.read(repository, goods, "<Goods><Id>1</Id><Price>12.00</Price></Goods>")); //$NON-NLS-1$
+        try {
+            storage.begin();
+            storage.update(records);
+            storage.commit();
+        } finally {
+            storage.end();
+        }
+
+        storage.begin();
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+            for (DataRecord result : results) {
+                break;
+            }
+
+        } finally {
+            results.close();
+        }
+        storage.end();
+        ClassLoader StorageClassLoader2 = (ClassLoader) Thread.currentThread().getContextClassLoader();
+        assertEquals(StorageClassLoader, StorageClassLoader2);
+    }
+
     protected static DataSourceDefinition getDatasource(String dataSourceName) {
         return ServerContext.INSTANCE.get().getDefinition(dataSourceName, "MDM");
     }

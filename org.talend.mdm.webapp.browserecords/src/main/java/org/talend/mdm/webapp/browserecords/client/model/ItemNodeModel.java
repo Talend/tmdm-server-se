@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.talend.mdm.webapp.base.shared.EntityModel;
 import org.talend.mdm.webapp.base.shared.TypeModel;
@@ -38,11 +37,13 @@ public class ItemNodeModel extends BaseTreeModel implements IsSerializable {
 
     private String realType;
 
-    private boolean hide = false ;
+    private boolean hide = false;
 
     private boolean visible = true;
 
     private boolean valid = false;
+
+    private boolean blankValid = false;
 
     private boolean rendered = false;
 
@@ -55,6 +56,12 @@ public class ItemNodeModel extends BaseTreeModel implements IsSerializable {
     private String typeName;
 
     private LinkedHashMap<String, TypeModel> metaDataTypes;
+
+    private boolean isMassUpdate = false;
+
+    private boolean isEdited = false;
+
+    private boolean isFieldMandatory = false;
 
     public String getTypeName() {
         return typeName;
@@ -106,6 +113,14 @@ public class ItemNodeModel extends BaseTreeModel implements IsSerializable {
 
     public void setValid(boolean valid) {
         this.valid = valid;
+    }
+
+    public boolean isBlankValid() {
+        return this.blankValid;
+    }
+
+    public void setBlankValid(boolean blankValid) {
+        this.blankValid = blankValid;
     }
 
     public boolean isRendered() {
@@ -295,6 +310,30 @@ public class ItemNodeModel extends BaseTreeModel implements IsSerializable {
 
     public void setMetaDataTypes(LinkedHashMap<String, TypeModel> metaDataTypes) {
         this.metaDataTypes = metaDataTypes;
+    }
+
+    public boolean isMassUpdate() {
+        return isMassUpdate;
+    }
+
+    public void setMassUpdate(boolean isMassUpdate) {
+        this.isMassUpdate = isMassUpdate;
+    }
+
+    public boolean isEdited() {
+        return isEdited;
+    }
+
+    public void setEdited(boolean isEdited) {
+        this.isEdited = isEdited;
+    }
+
+    public boolean isFieldMandatory() {
+        return isFieldMandatory;
+    }
+
+    public void setFieldMandatory(boolean isFieldMandatory) {
+        this.isFieldMandatory = isFieldMandatory;
     }
 
     public ItemNodeModel clone(boolean withValue) {

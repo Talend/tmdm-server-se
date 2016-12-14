@@ -818,6 +818,37 @@ public class ForeignKeyHelperTest extends TestCase {
         assertEquals("123", whereCondition4.getRightValueOrPath());
     }
 
+    // TMDM-9353 Search on FK info field doesn't work in FK picker dialog when a FK info is based on a field of a
+    // complex entity
+    public void testGetForeignKeyHolder_FKInfoFromComplexType() throws Exception {
+        InputStream resourceAsStream = this.getClass().getResourceAsStream("TMDM-9353.xsd");
+        repository.load(resourceAsStream);
+
+        TypeModel model = new SimpleTypeModel("FK_FONCTION_REF", DataTypeConstants.STRING); //$NON-NLS-1$
+        model.setForeignkey("REF_FONCTION/ID"); //$NON-NLS-1$
+        List<String> foreignKeyInfos = new ArrayList<String>();
+        foreignKeyInfos.add("REF_FONCTION/REFERENCE/LIBELLE"); //$NON-NLS-1$
+        model.setForeignKeyInfo(foreignKeyInfos);
+        model.setRetrieveFKinfos(true);
+        model.setXpath("CURSUS/FK_FONCTION_REF"); //$NON-NLS-1$
+        String value = "Hats"; //$NON-NLS-1$
+        InputStream stream = getClass().getResourceAsStream("TMDM-9353.xsd");
+        String xsd = inputStream2String(stream);
+        ForeignKeyHelper.overrideSchemaManager(new SchemaMockAgent(xsd, new DataModelID("CURSUS")));
+
+        // 1. ForeignKeyInfo = ProductFamily/Name
+        MDMConfiguration.getConfiguration().setProperty("xmldb.type", EDBType.QIZX.getName()); //$NON-NLS-1$
+        model.setFilterValue(value);
+        ForeignKeyHelper.ForeignKeyHolder result = ForeignKeyHelper.getForeignKeyHolder(model, "");
+        WSWhereItem whereItem = result.whereItem;
+        assertNotNull(whereItem);
+        WSWhereCondition condition = whereItem.getWhereOr().getWhereItems()[0].getWhereAnd().getWhereItems()[0].getWhereAnd()
+                .getWhereItems()[0].getWhereCondition();
+        assertEquals("REF_FONCTION/REFERENCE/LIBELLE", condition.getLeftPath());
+        assertEquals(WSWhereOperator.CONTAINS, condition.getOperator());
+        assertEquals("Hats", condition.getRightValueOrPath());
+    }
+
     @SuppressWarnings("unchecked")
     public static TestSuite suite() throws Exception {
         return new PowerMockSuite("Unit tests for " + ForeignKeyHelperTest.class.getSimpleName(), ForeignKeyHelperTest.class);

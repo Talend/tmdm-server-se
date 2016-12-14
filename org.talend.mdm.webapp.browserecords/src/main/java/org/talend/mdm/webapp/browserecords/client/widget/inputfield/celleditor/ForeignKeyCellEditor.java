@@ -1,5 +1,8 @@
 package org.talend.mdm.webapp.browserecords.client.widget.inputfield.celleditor;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.talend.mdm.webapp.base.client.model.DataTypeConstants;
 import org.talend.mdm.webapp.base.client.model.ForeignKeyBean;
 import org.talend.mdm.webapp.base.client.model.MultiLanguageModel;
@@ -7,6 +10,7 @@ import org.talend.mdm.webapp.base.client.widget.MultiLanguageField;
 import org.talend.mdm.webapp.base.shared.TypeModel;
 import org.talend.mdm.webapp.browserecords.client.util.DateUtil;
 import org.talend.mdm.webapp.browserecords.client.util.Locale;
+import org.talend.mdm.webapp.browserecords.client.widget.ForeignKey.ForeignKeyField;
 import org.talend.mdm.webapp.browserecords.client.widget.inputfield.BooleanField;
 
 import com.extjs.gxt.ui.client.widget.form.DateField;
@@ -65,6 +69,16 @@ public class ForeignKeyCellEditor extends CellEditor {
             ((MultiLanguageField) field).setMultiLanguageModel(multiLanguageModel);
             return multiLanguageModel.getValueByLanguage(Locale.getLanguage().toUpperCase());
         }
+
+        if (field instanceof ForeignKeyField) {
+            Map<String, String> foreignKeyInfo = new LinkedHashMap<String, String>();
+            foreignKeyInfo.put(typeModel.getXpath(), v);
+            ForeignKeyBean foreignKeyBean = new ForeignKeyBean();
+            foreignKeyBean.setForeignKeyInfo(foreignKeyInfo);
+            foreignKeyBean.setDisplayInfo(v);
+            return foreignKeyBean;
+        }
+
         if (field instanceof Field) {
             return v;
         }

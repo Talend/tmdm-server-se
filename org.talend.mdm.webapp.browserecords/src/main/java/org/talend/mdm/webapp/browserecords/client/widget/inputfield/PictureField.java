@@ -59,6 +59,7 @@ import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.Accessibility;
 import com.google.gwt.user.client.ui.Image;
 
 public class PictureField extends TextField<String> {
@@ -304,6 +305,14 @@ public class PictureField extends TextField<String> {
         this.readOnly = readOnly;
     }
 
+    public boolean isMandatory() {
+        return isMandatory;
+    }
+
+    public void setMandatory(boolean isMandatory) {
+        this.isMandatory = isMandatory;
+    }
+
     class EditWindow extends Window {
 
         private FormPanel editForm = new FormPanel();
@@ -461,5 +470,10 @@ public class PictureField extends TextField<String> {
             pictureSelector.refresh();
             editForm.reset();
         }
+    }
+
+    @Override
+    protected void setAriaState(String stateName, String stateValue) {
+        Accessibility.setState(wrap.dom, stateName, stateValue);
     }
 }

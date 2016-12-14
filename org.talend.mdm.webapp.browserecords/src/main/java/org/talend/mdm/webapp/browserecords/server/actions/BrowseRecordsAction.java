@@ -12,6 +12,10 @@
 // ============================================================================
 package org.talend.mdm.webapp.browserecords.server.actions;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.math.BigDecimal;
@@ -35,7 +39,17 @@ import java.util.TreeMap;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.methods.HttpPatch;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.log4j.Logger;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Namespace;
@@ -43,6 +57,7 @@ import org.dom4j.QName;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
+import org.talend.mdm.commmon.util.core.MDMConfiguration;
 import org.talend.mdm.commmon.util.datamodel.management.BusinessConcept;
 import org.talend.mdm.commmon.util.datamodel.management.ReusableType;
 import org.talend.mdm.commmon.util.webapp.XSystemObjects;
@@ -98,6 +113,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.amalto.commons.core.utils.XMLUtils;
 import com.amalto.core.integrity.FKIntegrityCheckResult;
 import com.amalto.core.objects.ItemPOJOPK;
 import com.amalto.core.objects.UpdateReportPOJO;
@@ -182,16 +198,13 @@ public class BrowseRecordsAction implements BrowseRecordsService {
     protected final Messages MESSAGES = MessagesFactory.getMessages(
             "org.talend.mdm.webapp.browserecords.client.i18n.BrowseRecordsMessages", this.getClass().getClassLoader()); //$NON-NLS-1$
 
-    private final List<String>  dateTypeNames   = Arrays.asList(DataTypeConstants.DATE.getBaseTypeName(),
-                                                        DataTypeConstants.DATETIME.getBaseTypeName());
+    private final List<String> dateTypeNames = Arrays.asList(DataTypeConstants.DATE.getBaseTypeName(),
+            DataTypeConstants.DATETIME.getBaseTypeName());
 
-    private final List<String>  numberTypeNames = Arrays.asList(DataTypeConstants.DOUBLE.getBaseTypeName(),
-                                                        DataTypeConstants.FLOAT.getBaseTypeName(),
-                                                        DataTypeConstants.DECIMAL.getBaseTypeName(),
-                                                        DataTypeConstants.INT.getBaseTypeName(),
-                                                        DataTypeConstants.INTEGER.getBaseTypeName(),
-                                                        DataTypeConstants.LONG.getBaseTypeName(),
-                                                        DataTypeConstants.SHORT.getBaseTypeName());
+    private final List<String> numberTypeNames = Arrays.asList(DataTypeConstants.DOUBLE.getBaseTypeName(),
+            DataTypeConstants.FLOAT.getBaseTypeName(), DataTypeConstants.DECIMAL.getBaseTypeName(),
+            DataTypeConstants.INT.getBaseTypeName(), DataTypeConstants.INTEGER.getBaseTypeName(),
+            DataTypeConstants.LONG.getBaseTypeName(), DataTypeConstants.SHORT.getBaseTypeName());
 
     public static final String ERROR_KEYWORD = "ERROR";//$NON-NLS-1$
 
@@ -204,58 +217,69 @@ public class BrowseRecordsAction implements BrowseRecordsService {
     @Override
     public List<ItemResult> deleteItemBeans(List<ItemBean> items, boolean override, String language) throws ServiceException {
         List<ItemResult> itemResults = new ArrayList<ItemResult>();
-        MetadataRepository repository = ServerContext.INSTANCE.get().getMetadataRepositoryAdmin().get(getCurrentDataModel());
+        Map<String, List<String>> deleteRecordMap = new HashMap<String, List<String>>();
+        String concept;
+        List<String> records;
         for (ItemBean item : items) {
-            Locale locale = new Locale(language);
-            ItemResult messageBean = new ItemResult();
-            try {
-                String dataClusterPK = getCurrentDataCluster();
-                String concept = item.getConcept();
-                String[] ids = getItemId(repository, item.getIds(), concept);
+            concept = item.getConcept();
+            if (deleteRecordMap.get(concept) == null) {
+                deleteRecordMap.put(concept, new ArrayList<String>());
+            }
+            records = deleteRecordMap.get(concept);
+            if (!records.contains(item.getIds())) {
+                Locale locale = new Locale(language);
+                ItemResult messageBean = new ItemResult();
+                try {
+                    MetadataRepository repository = CommonUtil.getCurrentRepository();
+                    String dataClusterPK = getCurrentDataCluster();
+                    String[] ids = getItemId(repository, item.getIds(), concept);
 
-                WSDeleteItemWithReport wsDeleteItem = new WSDeleteItemWithReport(new WSItemPK(new WSDataClusterPK(dataClusterPK),
-                        concept, ids), UpdateReportPOJO.GENERIC_UI_SOURCE, UpdateReportPOJO.OPERATION_TYPE_PHYSICAL_DELETE, "/", //$NON-NLS-1$
-                        LocalUser.getLocalUser().getUsername(), true, true, override);
+                    WSDeleteItemWithReport wsDeleteItem = new WSDeleteItemWithReport(new WSItemPK(new WSDataClusterPK(
+                            dataClusterPK), concept, ids), UpdateReportPOJO.GENERIC_UI_SOURCE,
+                            UpdateReportPOJO.OPERATION_TYPE_PHYSICAL_DELETE, "/", //$NON-NLS-1$
+                            LocalUser.getLocalUser().getUsername(), true, true, override);
 
-                WSString deleteMessage = CommonUtil.getPort().deleteItemWithReport(wsDeleteItem);
+                    WSString deleteMessage = CommonUtil.getPort().deleteItemWithReport(wsDeleteItem);
 
-                if (deleteMessage == null) {
-                    throw new ServiceException(MESSAGES.getMessage("delete_record_failure", locale)); //$NON-NLS-1$
-                } else {
-                    String message = deleteMessage.getValue();
-                    String messageType = wsDeleteItem.getSource();
-                    if (messageType != null && INFO_KEYWORD.equals(messageType)) {
-                        messageBean.setKey(item.getIds());
-                        messageBean.setStatus(getMessageTypeStatus(INFO_KEYWORD));
-                        messageBean.setMessage(message);
-                        itemResults.add(messageBean);
-                    } else if (messageType != null && FAIL_KEYWORD.equals(messageType)) {
-                        messageBean.setKey(item.getIds());
-                        messageBean.setStatus(getMessageTypeStatus(FAIL_KEYWORD));
-                        messageBean.setMessage(MESSAGES.getMessage("message_fail", locale)); //$NON-NLS-1$
-                        itemResults.add(messageBean);
-                    } else if (messageType != null && ERROR_KEYWORD.equals(messageType)) {
-                        messageBean.setKey(item.getIds());
-                        messageBean.setStatus(getMessageTypeStatus(ERROR_KEYWORD));
-                        messageBean.setMessage(message);
-                        itemResults.add(messageBean);
+                    if (deleteMessage == null) {
+                        throw new ServiceException(MESSAGES.getMessage("delete_record_failure", locale)); //$NON-NLS-1$
+                    } else {
+                        String message = deleteMessage.getValue();
+                        String messageType = wsDeleteItem.getSource();
+                        if (messageType != null && INFO_KEYWORD.equals(messageType)) {
+                            messageBean.setKey(item.getIds());
+                            messageBean.setStatus(getMessageTypeStatus(INFO_KEYWORD));
+                            messageBean.setMessage(message);
+                            itemResults.add(messageBean);
+                        } else if (messageType != null && FAIL_KEYWORD.equals(messageType)) {
+                            messageBean.setKey(item.getIds());
+                            messageBean.setStatus(getMessageTypeStatus(FAIL_KEYWORD));
+                            messageBean.setMessage(MESSAGES.getMessage("message_fail", locale)); //$NON-NLS-1$
+                            itemResults.add(messageBean);
+                        } else if (messageType != null && ERROR_KEYWORD.equals(messageType)) {
+                            messageBean.setKey(item.getIds());
+                            messageBean.setStatus(getMessageTypeStatus(ERROR_KEYWORD));
+                            messageBean.setMessage(message);
+                            itemResults.add(messageBean);
+                        }
                     }
+                } catch (ServiceException e) {
+                    LOG.error(e.getMessage(), e);
+                    throw e;
+                } catch (WebBaseException e) {
+                    throw new ServiceException(BASEMESSAGE.getMessage(locale, e.getMessage(), e.getArgs()));
+                } catch (Exception exception) {
+                    String errorMessage;
+                    if (CoreException.class.isInstance(exception.getCause())) {
+                        errorMessage = getErrorMessageFromWebCoreException(((CoreException) exception.getCause()),
+                                item.getConcept(), item.getIds(), locale);
+                    } else {
+                        errorMessage = exception.getMessage();
+                    }
+                    LOG.error(errorMessage, exception);
+                    throw new ServiceException(errorMessage);
                 }
-            } catch (ServiceException e) {
-                LOG.error(e.getMessage(), e);
-                throw e;
-            } catch (WebBaseException e) {
-                throw new ServiceException(BASEMESSAGE.getMessage(locale, e.getMessage(), e.getArgs()));
-            } catch (Exception exception) {
-                String errorMessage;
-                if (CoreException.class.isInstance(exception.getCause())) {
-                    errorMessage = getErrorMessageFromWebCoreException(((CoreException) exception.getCause()), item.getConcept(),
-                            item.getIds(), locale);
-                } else {
-                    errorMessage = exception.getMessage();
-                }
-                LOG.error(errorMessage, exception);
-                throw new ServiceException(errorMessage);
+                records.add(item.getIds());
             }
         }
         return itemResults;
@@ -361,6 +385,22 @@ public class BrowseRecordsAction implements BrowseRecordsService {
     }
 
     @Override
+    public String handleNavigatorNodeLabel(String jsonString, String language) throws ServiceException {
+        String navigator_node_ids = "navigator_node_ids"; //$NON-NLS-1$
+        String navigator_node_concept = "navigator_node_concept"; //$NON-NLS-1$
+        String navigator_node_label = "navigator_node_label"; //$NON-NLS-1$
+        JSONArray jsonArray = JSONArray.fromObject(jsonString);
+        for (int i = 0; i < jsonArray.size(); i++) {
+            JSONObject jsonObject = (JSONObject) jsonArray.get(i);
+            String ids = (String) jsonObject.get(navigator_node_ids);
+            String concept = (String) jsonObject.get(navigator_node_concept);
+            ItemBean itemBean = getItemBeanById(concept, ids, language);
+            jsonObject.put(navigator_node_label, itemBean.getDisplayPKInfo());
+        }
+        return jsonArray.toString();
+    }
+
+    @Override
     public List<Restriction> getForeignKeyPolymTypeList(String xpathForeignKey, String language) throws ServiceException {
         try {
             String fkEntityType;
@@ -436,8 +476,9 @@ public class BrowseRecordsAction implements BrowseRecordsService {
 
             WSItem wsItem = CommonUtil.getPort()
                     .getItem(new WSGetItem(new WSItemPK(wsDataClusterPK, itemBean.getConcept(), ids)));
-            extractUsingTransformerThroughView(concept, viewPK, ids, dataModel, dataCluster, DataModelHelper.getEleDecl(), wsItem);
             itemBean.setItemXml(wsItem.getContent());
+            extractUsingTransformerThroughView(concept, viewPK, ids, dataModel, dataCluster, DataModelHelper.getEleDecl(),
+                    itemBean);
             itemBean.set("time", wsItem.getInsertionTime()); //$NON-NLS-1$
             if (wsItem.getTaskId() != null && !"".equals(wsItem.getTaskId()) && !"null".equals(wsItem.getTaskId())) { //$NON-NLS-1$ //$NON-NLS-2$
                 itemBean.setTaskId(wsItem.getTaskId());
@@ -496,7 +537,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
                                 try {
                                     NumberFormat nf = NumberFormat.getInstance();
                                     Number num = nf.parse(dataText.trim());
-                                    String formatValue = "";
+                                    String formatValue = ""; //$NON-NLS-1$
                                     if (tm.getType().getBaseTypeName().equals(DataTypeConstants.DOUBLE.getBaseTypeName())) {
                                         formatValue = String.format(value[0], num.doubleValue()).trim();
                                     } else if (tm.getType().getBaseTypeName().equals(DataTypeConstants.FLOAT.getBaseTypeName())) {
@@ -962,7 +1003,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
                             try {
                                 NumberFormat nf = NumberFormat.getInstance();
                                 Number num = nf.parse(dataText.trim());
-                                String formatValue = "";
+                                String formatValue = ""; //$NON-NLS-1$
                                 if (tm.getType().getBaseTypeName().equals(DataTypeConstants.DOUBLE.getBaseTypeName())) {
                                     formatValue = String.format(value[0], num.doubleValue()).trim();
                                 } else if (tm.getType().getBaseTypeName().equals(DataTypeConstants.FLOAT.getBaseTypeName())) {
@@ -978,7 +1019,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
                                 com.amalto.core.util.Util
                                         .getNodeList(doc.getDocumentElement(), key.replaceFirst(concept + "/", "./")).item(0).setTextContent(formatValue); //$NON-NLS-1$ //$NON-NLS-2$
                             } catch (Exception e) {
-                                Log.info("format has error 111");
+                                Log.info("format has error 111"); //$NON-NLS-1$
                                 originalMap.remove(key);
                                 formateValueMap.remove(key);
                             }
@@ -987,8 +1028,9 @@ public class BrowseRecordsAction implements BrowseRecordsService {
                 }
             }
 
-            ItemBean itemBean = new ItemBean(concept,
-                    CommonUtil.joinStrings(idsArray, "."), Util.nodeToString(doc.getDocumentElement()));//$NON-NLS-1$
+            ItemBean itemBean = new ItemBean(
+                    concept,
+                    CommonUtil.joinStrings(idsArray, "."), XMLUtils.nodeToString(doc.getDocumentElement(), true, true));//$NON-NLS-1$
             itemBean.setOriginalMap(originalMap);
             itemBean.setFormateMap(formateValueMap);
             if (checkSmartViewExistsByLang(concept, language)) {
@@ -1281,6 +1323,8 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             header.setUseRelations(BrowseRecordsConfiguration.IsUseRelations());
             header.setEnterprise(Webapp.INSTANCE.isEnterpriseVersion());
             header.setUserProperties(LocalUser.getLocalUser().getUser().getProperties());
+            header.setExportRecordsDefaultCount(Integer.parseInt(MDMConfiguration.getConfiguration().getProperty("max.export.browserecord", MDMConfiguration.MAX_EXPORT_COUNT)));
+            header.setImportRecordsDefaultCount(Integer.parseInt(MDMConfiguration.getConfiguration().getProperty("max.import.browserecord", MDMConfiguration.MAX_IMPORT_COUNT)));
             return header;
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
@@ -1600,8 +1644,8 @@ public class BrowseRecordsAction implements BrowseRecordsService {
         TypeModel model = findTypeModelByTypePath(metaDataTypes, typePath, language);
         nodeModel.setTypePath(model.getTypePath());
         nodeModel.setHasVisiblueRule(model.isHasVisibleRule());
-        nodeModel.setHide(model.isHide()) ;
-        nodeModel.setVisible(!model.isHide()) ;
+        nodeModel.setHide(model.isHide());
+        nodeModel.setVisible(!model.isHide());
         String realXPath = xpath;
         if (isPolyType) {
             realXPath = realXPath.replaceAll(":\\w+", ""); //$NON-NLS-1$//$NON-NLS-2$
@@ -1780,6 +1824,26 @@ public class BrowseRecordsAction implements BrowseRecordsService {
     }
 
     @Override
+    public String bulkUpdateItem(String baseUrl, String concept, String xml, String language) throws ServiceException {
+        try {
+            String url = baseUrl + "services/rest/data/" + getCurrentDataCluster() + "/" + concept + "/bulk";
+            DefaultHttpClient httpClient = new DefaultHttpClient();
+            httpClient.getCredentialsProvider().setCredentials(
+                    AuthScope.ANY,
+                    new UsernamePasswordCredentials(LocalUser.getLocalUser().getUsername(), LocalUser.getLocalUser()
+                            .getPassword()));
+            HttpPatch httpPatch = new HttpPatch(url);
+            httpPatch.setHeader("Content-Type", "text/xml; charset=utf8"); //$NON-NLS-1$ //$NON-NLS-2$
+            HttpEntity entity = new StringEntity(xml);
+            httpPatch.setEntity(entity);
+            HttpResponse response = httpClient.execute(httpPatch);
+            return readRestErroMessage(response);
+        } catch (Exception e) {
+            return e.getCause().getLocalizedMessage();
+        }
+    }
+
+    @Override
     public ItemResult saveItem(String concept, String ids, String xml, boolean isCreate, String language) throws ServiceException {
         Locale locale = new Locale(language);
 
@@ -1875,7 +1939,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
                 doc = org.talend.mdm.webapp.base.server.util.XmlUtil.parseText(xml);
             }
 
-            if(changedNodes != null && changedNodes.size() > 0){
+            if (changedNodes != null && changedNodes.size() > 0) {
                 for (String xpath : changedNodes.keySet()) {
                     String value = changedNodes.get(xpath);
                     if (doc.selectSingleNode(xpath) == null) {
@@ -1894,7 +1958,6 @@ public class BrowseRecordsAction implements BrowseRecordsService {
                     }
                 }
             }
-
             return saveItem(concept, ids, doc.asXML(), false, language);
         } catch (WebBaseException e) {
             throw new ServiceException(BASEMESSAGE.getMessage(new Locale(language), e.getMessage(), e.getArgs()));
@@ -2172,7 +2235,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
      * first. 6.add properties into ViewPOJO. 7.add properties into webservice parameter.
      */
     private void extractUsingTransformerThroughView(String concept, String viewName, String[] ids, String dataModelPK,
-            String dataClusterPK, XSElementDecl elementDecl, WSItem wsItem) throws Exception {
+            String dataClusterPK, XSElementDecl elementDecl, ItemBean itemBean) throws Exception {
         if (viewName == null || viewName.length() == 0) {
             return;
         }
@@ -2182,7 +2245,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
         if ((null != view.getTransformerPK() && view.getTransformerPK().length() != 0) && view.getIsTransformerActive().is_true()) {
             String transformerPK = view.getTransformerPK();
             // FIXME: consider about revision
-            String passToProcessContent = wsItem.getContent();
+            String passToProcessContent = itemBean.getItemXml();
 
             WSTypedContent typedContent = new WSTypedContent(null, new WSByteArray(passToProcessContent.getBytes("UTF-8")), //$NON-NLS-1$
                     "text/xml; charset=UTF-8"); //$NON-NLS-1$
@@ -2237,7 +2300,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             }
 
             if (null != xmlStringFromProcess && xmlStringFromProcess.length() != 0) {
-                Document wsItemDoc = Util.parse(wsItem.getContent());
+                Document wsItemDoc = Util.parse(itemBean.getItemXml());
                 Document jobDoc = null;
                 try {
                     jobDoc = Util.parse(xmlStringFromProcess);
@@ -2278,18 +2341,28 @@ public class BrowseRecordsAction implements BrowseRecordsService {
                     searchPrefix = ""; //$NON-NLS-1$
                 }
 
+                if (lookupFieldsForWSItemDoc.size() > 0) {
+                    itemBean.setOriginalLookupFieldDisplayValueMap(new HashMap<String, List<String>>());
+                    itemBean.setOriginalLookupFieldValueMap(new HashMap<String, List<String>>());
+                }
                 for (String xpath : lookupFieldsForWSItemDoc) {
                     String[] values = com.amalto.core.util.Util.getTextNodes(jobDoc, searchPrefix + xpath);
                     int i = 0;
                     for (String value : values) {
                         NodeList list = com.amalto.core.util.Util.getNodeList(wsItemDoc, "/" + xpath); //$NON-NLS-1$
                         if (list != null && list.getLength() > 0 && list.item(i) != null) {
+                            if (!itemBean.getOriginalLookupFieldDisplayValueMap().containsKey(xpath)) {
+                                itemBean.getOriginalLookupFieldDisplayValueMap().put(xpath, new ArrayList());
+                                itemBean.getOriginalLookupFieldValueMap().put(xpath, new ArrayList());
+                            }
+                            itemBean.getOriginalLookupFieldDisplayValueMap().get(xpath).add(value);
+                            itemBean.getOriginalLookupFieldValueMap().get(xpath).add(list.item(i).getTextContent());
                             list.item(i).setTextContent(value);
                             ++i;
                         }
                     }
                 }
-                wsItem.setContent(Util.nodeToString(wsItemDoc));
+                itemBean.setItemXml(XMLUtils.nodeToString(wsItemDoc, true, true));
             }
         }
     }
@@ -2486,7 +2559,10 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             localizedMessage = coreException.getLocalizedMessage();
         }
         String errorMessage = MESSAGES.getMessage(locale, coreException.getTitle(), concept
-                + ((ids != null && !"".equals(ids)) ? "." + ids : ""), localizedMessage); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + ((ids != null && !"".equals(ids)) ? "." + ids : "") + "," + localizedMessage); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        if (StringUtils.isEmpty(concept) || StringUtils.isEmpty(ids)) {
+            errorMessage = MESSAGES.getMessage(locale, coreException.getTitle(), localizedMessage);
+        }
         return errorMessage;
     }
 
@@ -2545,4 +2621,32 @@ public class BrowseRecordsAction implements BrowseRecordsService {
         typeModel.setForeignKeyInfo(newFKInfoList);
     }
     
+    private static String readRestErroMessage(HttpResponse response) {
+    	final String httpCode = "200";
+    	if (httpCode.equals(response.getStatusLine().getStatusCode())) {
+    		return "";
+    	} else {
+      		BufferedReader br = null;
+    		StringBuilder sb = new StringBuilder();
+    		try {
+    			InputStream errorInputStream = response.getEntity().getContent();
+        		String line;
+    			br = new BufferedReader(new InputStreamReader(errorInputStream));
+    			while ((line = br.readLine()) != null) {
+    				sb.append(line);
+    			}
+    		} catch (IOException e) {
+    			e.printStackTrace();
+    		} finally {
+    			if (br != null) {
+    				try {
+    					br.close();
+    				} catch (IOException e) {
+    					e.printStackTrace();
+    				}
+    			}
+    		}
+    		return sb.toString();
+    	}
+	}
 }

@@ -39,7 +39,7 @@ import static com.amalto.core.query.user.UserQueryBuilder.eq;
 import static com.amalto.core.query.user.UserQueryBuilder.from;
 
 public abstract class ILocalUser implements IBeanDelegator {
-
+    
     public ILocalUser getILocalUser() throws XtentisException {
         return null;
     }

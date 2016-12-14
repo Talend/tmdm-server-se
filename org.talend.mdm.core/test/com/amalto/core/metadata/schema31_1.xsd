@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">  
+  <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/>  
+  <xsd:element name="T_TRANSCO_FO"> 
+    <xsd:annotation> 
+      <xsd:appinfo source="X_Deny_PhysicalDelete">pcube_ha_admin</xsd:appinfo>  
+      <xsd:appinfo source="X_Deny_PhysicalDelete">pcube_ha_normal_user</xsd:appinfo>  
+      <xsd:appinfo source="X_Deny_Create">pcube_ha_admin</xsd:appinfo>  
+      <xsd:appinfo source="X_Deny_Create">pcube_ha_normal_user</xsd:appinfo>  
+      <xsd:appinfo source="X_Deny_LogicalDelete">pcube_ha_admin</xsd:appinfo>  
+      <xsd:appinfo source="X_Deny_LogicalDelete">pcube_ha_normal_user</xsd:appinfo>  
+      <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo> 
+    </xsd:annotation>  
+    <xsd:complexType> 
+      <xsd:all> 
+        <xsd:element maxOccurs="1" minOccurs="1" name="PROCUBE_SEQ_ID"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_Deny_Create">pcube_ha_admin</xsd:appinfo>  
+            <xsd:appinfo source="X_Deny_Create">pcube_ha_normal_user</xsd:appinfo>  
+            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo> 
+          </xsd:annotation>  
+          <xsd:simpleType> 
+            <xsd:restriction base="xsd:string"> 
+              <xsd:maxLength value="9"/> 
+            </xsd:restriction> 
+          </xsd:simpleType> 
+        </xsd:element>  
+        <xsd:element maxOccurs="1" minOccurs="0" name="LOCAL_SOURCE_ID" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>  
+            <xsd:appinfo source="X_ForeignKeyInfo">T_LOCAL_FOURNISSEUR/LOCAL_SOURCE_ID</xsd:appinfo>  
+            <xsd:appinfo source="X_ForeignKey">T_LOCAL_FOURNISSEUR</xsd:appinfo>  
+            <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>  
+            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element>  
+        <xsd:element maxOccurs="1" minOccurs="0" name="LOCAL_FO_ID" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>  
+            <xsd:appinfo source="X_ForeignKeyInfo">T_LOCAL_FOURNISSEUR/LOCAL_FO_ID</xsd:appinfo>  
+            <xsd:appinfo source="X_ForeignKey">T_LOCAL_FOURNISSEUR</xsd:appinfo>  
+            <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>  
+            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element> 
+      </xsd:all> 
+    </xsd:complexType>  
+    <xsd:unique name="T_TRANSCO_FO"> 
+      <xsd:selector xpath="."/>  
+      <xsd:field xpath="PROCUBE_SEQ_ID"/> 
+    </xsd:unique> 
+  </xsd:element>  
+  <xsd:element name="T_LOCAL_FOURNISSEUR"> 
+    <xsd:annotation> 
+      <xsd:appinfo source="X_Deny_PhysicalDelete">pcube_ha_admin</xsd:appinfo>  
+      <xsd:appinfo source="X_Deny_PhysicalDelete">pcube_ha_normal_user</xsd:appinfo>  
+      <xsd:appinfo source="X_Deny_Create">pcube_ha_admin</xsd:appinfo>  
+      <xsd:appinfo source="X_Deny_LogicalDelete">pcube_ha_admin</xsd:appinfo>  
+      <xsd:appinfo source="X_Deny_LogicalDelete">pcube_ha_normal_user</xsd:appinfo>  
+      <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo> 
+    </xsd:annotation>  
+    <xsd:complexType> 
+      <xsd:all> 
+        <xsd:element maxOccurs="1" minOccurs="1" name="LOCAL_SOURCE_ID"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_Deny_Create">pcube_ha_admin</xsd:appinfo>  
+            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo> 
+          </xsd:annotation>  
+          <xsd:simpleType> 
+            <xsd:restriction base="xsd:string"> 
+              <xsd:maxLength value="10"/> 
+            </xsd:restriction> 
+          </xsd:simpleType> 
+        </xsd:element>  
+        <xsd:element maxOccurs="1" minOccurs="1" name="LOCAL_FO_ID"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_Deny_Create">pcube_ha_admin</xsd:appinfo>  
+            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo> 
+          </xsd:annotation>  
+          <xsd:simpleType> 
+            <xsd:restriction base="xsd:string"> 
+              <xsd:maxLength value="20"/> 
+            </xsd:restriction> 
+          </xsd:simpleType> 
+        </xsd:element> 
+      </xsd:all> 
+    </xsd:complexType>  
+    <xsd:unique name="T_LOCAL_FOURNISSEUR"> 
+      <xsd:selector xpath="."/>  
+      <xsd:field xpath="LOCAL_SOURCE_ID"/>  
+      <xsd:field xpath="LOCAL_FO_ID"/> 
+    </xsd:unique> 
+  </xsd:element> 
+</xsd:schema>

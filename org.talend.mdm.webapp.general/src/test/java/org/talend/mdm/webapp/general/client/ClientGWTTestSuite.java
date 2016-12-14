@@ -24,6 +24,7 @@ public class ClientGWTTestSuite extends TestCase /* note this is TestCase and no
     public static Test suite() {
         GWTTestSuite suite = new GWTTestSuite("All Gwt Tests go in here");
         suite.addTestSuite(org.talend.mdm.webapp.general.client.layout.WorkSpaceGWTTest.class);
+        suite.addTestSuite(org.talend.mdm.webapp.general.client.layout.ActionsPanelGWTTest.class);
         return suite;
     }
 }

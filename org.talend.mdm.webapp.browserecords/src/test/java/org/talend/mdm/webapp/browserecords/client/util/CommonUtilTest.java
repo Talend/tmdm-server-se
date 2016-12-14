@@ -42,54 +42,103 @@ import com.extjs.gxt.ui.client.data.ModelData;
 public class CommonUtilTest extends TestCase {
 
     public void testParseSimpleSearchExpression() throws Exception {
-            String s = "(foo/bar EQUALS 3/4)";
-            CommonUtil.CriteriaAndC r = CommonUtil.parseSimpleSearchExpression(s.toCharArray(), 0);
-            assertTrue(r.cr instanceof SimpleCriterion);
-            assertTrue(r.c == s.length() - 1);
-            assertTrue(((SimpleCriterion) r.cr).getOperator().equals("EQUALS"));
-            assertTrue(((SimpleCriterion) r.cr).getKey().equals("foo/bar"));
-            assertTrue(((SimpleCriterion) r.cr).getValue().equals("3/4"));
+        String s = "(foo/bar EQUALS 3/4)";
+        CommonUtil.CriteriaAndC r = CommonUtil.parseSimpleSearchExpression(s.toCharArray(), 0);
+        assertTrue(r.cr instanceof SimpleCriterion);
+        assertTrue(r.c == s.length() - 1);
+        assertTrue(((SimpleCriterion) r.cr).getOperator().equals("EQUALS"));
+        assertTrue(((SimpleCriterion) r.cr).getKey().equals("foo/bar"));
+        assertTrue(((SimpleCriterion) r.cr).getValue().equals("3/4"));
     }
 
     public void testParseSimpleSearchExpression_value_with_multi_words() throws Exception {
-            String s = "(Product/Name CONTAINS New York City)";
-            CommonUtil.CriteriaAndC r = CommonUtil.parseSimpleSearchExpression(s.toCharArray(), 0);
-            assertTrue(r.cr instanceof SimpleCriterion);
-            assertTrue(r.c == s.length() - 1);
-            assertTrue(((SimpleCriterion) r.cr).getOperator().equals("CONTAINS"));
-            assertTrue(((SimpleCriterion) r.cr).getKey().equals("Product/Name"));
-            assertTrue(((SimpleCriterion) r.cr).getValue().equals("New York City"));
+        String s = "(Product/Name CONTAINS New York City)";
+        CommonUtil.CriteriaAndC r = CommonUtil.parseSimpleSearchExpression(s.toCharArray(), 0);
+        assertTrue(r.cr instanceof SimpleCriterion);
+        assertTrue(r.c == s.length() - 1);
+        assertTrue(((SimpleCriterion) r.cr).getOperator().equals("CONTAINS"));
+        assertTrue(((SimpleCriterion) r.cr).getKey().equals("Product/Name"));
+        assertTrue(((SimpleCriterion) r.cr).getValue().equals("New York City"));
+
+        s = "(Product/Name EMPTY_NULL)";
+        r = CommonUtil.parseSimpleSearchExpression(s.toCharArray(), 0);
+        assertTrue(r.cr instanceof SimpleCriterion);
+        assertTrue(r.c == s.length() - 1);
+        assertTrue(((SimpleCriterion) r.cr).getOperator().equals("EMPTY_NULL"));
+        assertTrue(((SimpleCriterion) r.cr).getKey().equals("Product/Name"));
+        assertTrue(((SimpleCriterion) r.cr).getValue().equals(""));
+
+        s = "(Product/Name EMPTY_NULL *)";
+        r = CommonUtil.parseSimpleSearchExpression(s.toCharArray(), 0);
+        assertTrue(r.cr instanceof SimpleCriterion);
+        assertTrue(r.c == s.length() - 1);
+        assertTrue(((SimpleCriterion) r.cr).getOperator().equals("EMPTY_NULL"));
+        assertTrue(((SimpleCriterion) r.cr).getKey().equals("Product/Name"));
+        assertTrue(((SimpleCriterion) r.cr).getValue().equals("*"));
     }
     
     public void testParseMultipleSearchExpression() throws Exception {
-            String s = "((foo/bar EQUALS 3/4) AND ((a/a/a MORETHAN a/b) OR (c/b/f LESSTHAN 3.2)) AND (c/c/c MORETHAN c/c))";
-            CommonUtil.CriteriaAndC r = CommonUtil.parseMultipleSearchExpression(s.toCharArray(), 0);
-            assertTrue(r.cr instanceof MultipleCriteria);
-            assertTrue(r.c == s.length() - 1);
-            MultipleCriteria mc = (MultipleCriteria) r.cr;
-            assertTrue(mc.getOperator().equals("AND"));
-            List<Criteria> children = mc.getChildren();
-            assertTrue(children.size() == 3);
-            MultipleCriteria child = (MultipleCriteria) children.get(1);
-            assertTrue(child.getOperator().equals("OR"));
-            children = child.getChildren();
-            assertTrue(((SimpleCriterion) children.get(0)).getOperator().equals("MORETHAN"));
-            assertTrue(((SimpleCriterion) children.get(1)).getOperator().equals("LESSTHAN"));
-            s = "Product/Id CONTAINS *";
-            if (!s.startsWith("(") && !s.endsWith(")")) {
-                s = "((" + s + "))";
-            }
-            r = CommonUtil.parseMultipleSearchExpression(s.toCharArray(), 0);
-            assertTrue(r.cr instanceof MultipleCriteria);
-            assertTrue(r.c == s.length() - 1);
-            mc = (MultipleCriteria) r.cr;
-            assertTrue(mc.getOperator().equals("AND"));
-            children = mc.getChildren();
-            assertTrue(children.size() == 1);
-            SimpleCriterion simpleCriterion = (SimpleCriterion) children.get(0);
-            assertTrue(simpleCriterion.getKey().equals("Product/Id"));
-            assertTrue(simpleCriterion.getOperator().equals("CONTAINS"));
-            assertTrue(simpleCriterion.getValue().equals("*"));
+        String s = "((foo/bar EQUALS 3/4) AND ((a/a/a MORETHAN a/b) OR (c/b/f LESSTHAN 3.2)) AND (c/c/c MORETHAN c/c))";
+        CommonUtil.CriteriaAndC r = CommonUtil.parseMultipleSearchExpression(s.toCharArray(), 0);
+        assertTrue(r.cr instanceof MultipleCriteria);
+        assertTrue(r.c == s.length() - 1);
+        MultipleCriteria mc = (MultipleCriteria) r.cr;
+        assertTrue(mc.getOperator().equals("AND"));
+        List<Criteria> children = mc.getChildren();
+        assertTrue(children.size() == 3);
+        MultipleCriteria child = (MultipleCriteria) children.get(1);
+        assertTrue(child.getOperator().equals("OR"));
+        children = child.getChildren();
+        assertTrue(((SimpleCriterion) children.get(0)).getOperator().equals("MORETHAN"));
+        assertTrue(((SimpleCriterion) children.get(1)).getOperator().equals("LESSTHAN"));
+
+        s = "Product/Id CONTAINS *";
+        if (!s.startsWith("(") && !s.endsWith(")")) {
+            s = "((" + s + "))";
+        }
+        r = CommonUtil.parseMultipleSearchExpression(s.toCharArray(), 0);
+        assertTrue(r.cr instanceof MultipleCriteria);
+        assertTrue(r.c == s.length() - 1);
+        mc = (MultipleCriteria) r.cr;
+        assertTrue(mc.getOperator().equals("AND"));
+        children = mc.getChildren();
+        assertTrue(children.size() == 1);
+        SimpleCriterion simpleCriterion = (SimpleCriterion) children.get(0);
+        assertTrue(simpleCriterion.getKey().equals("Product/Id"));
+        assertTrue(simpleCriterion.getOperator().equals("CONTAINS"));
+        assertTrue(simpleCriterion.getValue().equals("*"));
+
+        s = "Product/Id EMPTY_NULL *";
+        if (!s.startsWith("(") && !s.endsWith(")")) {
+            s = "((" + s + "))";
+        }
+        r = CommonUtil.parseMultipleSearchExpression(s.toCharArray(), 0);
+        assertTrue(r.cr instanceof MultipleCriteria);
+        assertTrue(r.c == s.length() - 1);
+        mc = (MultipleCriteria) r.cr;
+        assertTrue(mc.getOperator().equals("AND"));
+        children = mc.getChildren();
+        assertTrue(children.size() == 1);
+        simpleCriterion = (SimpleCriterion) children.get(0);
+        assertTrue(simpleCriterion.getKey().equals("Product/Id"));
+        assertTrue(simpleCriterion.getOperator().equals("EMPTY_NULL"));
+        assertTrue(simpleCriterion.getValue().equals("*"));
+
+        s = "Product/Id EMPTY_NULL";
+        if (!s.startsWith("(") && !s.endsWith(")")) {
+            s = "((" + s + "))";
+        }
+        r = CommonUtil.parseMultipleSearchExpression(s.toCharArray(), 0);
+        assertTrue(r.cr instanceof MultipleCriteria);
+        assertTrue(r.c == s.length() - 1);
+        mc = (MultipleCriteria) r.cr;
+        assertTrue(mc.getOperator().equals("AND"));
+        children = mc.getChildren();
+        assertTrue(children.size() == 1);
+        simpleCriterion = (SimpleCriterion) children.get(0);
+        assertTrue(simpleCriterion.getKey().equals("Product/Id"));
+        assertTrue(simpleCriterion.getOperator().equals("EMPTY_NULL"));
+        assertTrue(simpleCriterion.getValue().equals(""));
     }
 
     public void testValidateSearchValue() {

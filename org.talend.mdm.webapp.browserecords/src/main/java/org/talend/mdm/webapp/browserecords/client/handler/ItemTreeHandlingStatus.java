@@ -17,5 +17,6 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 public enum ItemTreeHandlingStatus implements IsSerializable {
     BeforeLoad,
     InUse,
-    ToSave
+    ToSave,
+    BulkUpdate
 }

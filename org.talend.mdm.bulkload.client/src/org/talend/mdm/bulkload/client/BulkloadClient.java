@@ -33,6 +33,8 @@ public class BulkloadClient {
 
     private String transactionId;
 
+    private String sessionId;
+
     private String tokenKey;
 
     private String tokenValue;
@@ -152,6 +154,14 @@ public class BulkloadClient {
         this.tokenValue = tokenValue;
     }
 
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
+    }
+
     /**
      * load from a huge xml string
      *
@@ -182,7 +192,7 @@ public class BulkloadClient {
      */
     public void load(InputStream xmlDocuments) throws Exception {
         BulkloadClientUtil.bulkload(url, cluster, concept, dataModel, options.isValidate(), options.isSmartpk(), options.isInsertOnly(), xmlDocuments,
-                username, password, transactionId, universe, tokenKey, tokenValue);
+                username, password, transactionId, sessionId, universe, tokenKey, tokenValue);
     }
 
     /**
@@ -205,6 +215,6 @@ public class BulkloadClient {
      */
     public InputStreamMerger load() throws Exception {
         return BulkloadClientUtil.bulkload(url, cluster, concept, dataModel, options.isValidate(), options.isSmartpk(), options.isInsertOnly(), username,
-                password, transactionId, universe, tokenKey, tokenValue, startedBulkloadCount);
+                password, transactionId, sessionId, universe, tokenKey, tokenValue, startedBulkloadCount);
     }
 }

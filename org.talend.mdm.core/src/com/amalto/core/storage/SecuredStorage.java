@@ -12,6 +12,7 @@ package com.amalto.core.storage;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -19,6 +20,7 @@ import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.metadata.compare.ImpactAnalyzer;
+import org.talend.mdm.commmon.metadata.compare.Compare.DiffResults;
 
 import com.amalto.core.query.user.Expression;
 import com.amalto.core.storage.datasource.DataSource;
@@ -215,5 +217,10 @@ public class SecuredStorage implements Storage {
     @Override
     public boolean isClosed() {
         return delegate.isClosed();
+    }
+
+    @Override
+    public List<ComplexTypeMetadata> findSortedTypesToDrop(DiffResults diffResults, boolean force) {
+        return delegate.findSortedTypesToDrop(diffResults, force);
     }
 }

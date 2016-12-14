@@ -73,6 +73,24 @@ public interface BrowseRecordsMessages extends Messages {
 
     String export_btn();
 
+    String bulkUpdate_btn();
+
+    String bulkUpdate_title();
+
+    String bulkUpdate_confirm();
+
+    String bulkUpdate_success();
+
+    String bulkUpdate_progress_bar_title();
+
+    String bulkUpdate_progress_bar_message();
+
+    String bulkUpdate_foreignkey_warning();
+
+    String bulkUpdate_no_edit_info();
+
+    String page_size_field_label();
+
     String page_size_label();
 
     String page_size_notice();
@@ -178,6 +196,8 @@ public interface BrowseRecordsMessages extends Messages {
     String criteria_BOOLEQUALSTRUE();
 
     String criteria_BOOLEQUALSFALSE();
+
+    String criteria_EMPTY_NULL();
 
     String bookmark_heading();
 
@@ -295,6 +315,8 @@ public interface BrowseRecordsMessages extends Messages {
 
     String compare_choose_one_warning_message();
 
+    String mass_update_choose_warning_message();
+
     String delete_tip();
 
     String upload_title();
@@ -310,6 +332,8 @@ public interface BrowseRecordsMessages extends Messages {
     String label_field_separator();
 
     String label_field_delimiter();
+
+    String label_field_partial_update();
 
     String label_field_header_first();
 
@@ -387,6 +411,8 @@ public interface BrowseRecordsMessages extends Messages {
 
     String remove_btn();
 
+    String edit_btn();
+
     String abstract_type();
 
     String fk_validate_min_occurence(String name, int value);
@@ -394,6 +420,10 @@ public interface BrowseRecordsMessages extends Messages {
     String fk_validate_max_occurence(String name, int value);
 
     String import_success_label();
+
+    String import_items_greater_than_default(String defaultNumber);
+
+    String export_items_greater_than_defalut(String defaultNumber);
 
     String fk_edit_failure();
 
@@ -560,4 +590,6 @@ public interface BrowseRecordsMessages extends Messages {
     String navigator_panel_label();
 
     String navigator_detailPanel_label();
+
+    String setting_window_title();
 }

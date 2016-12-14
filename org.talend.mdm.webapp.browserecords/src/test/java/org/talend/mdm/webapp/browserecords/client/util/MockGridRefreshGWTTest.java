@@ -643,6 +643,14 @@ public class MockGridRefreshGWTTest extends GWTTestCase {
         @Override
         public void getExsitedViewName(String concept, AsyncCallback<String> callback) {
         }
+
+        @Override
+        public void handleNavigatorNodeLabel(String jsonString, String language, AsyncCallback<String> callback) {
+        }
+
+        @Override
+        public void bulkUpdateItem(String baseUrl, String concept, String xml, String language, AsyncCallback<String> callback) {
+        }
     }
 
     @Override

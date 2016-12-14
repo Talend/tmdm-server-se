@@ -18,7 +18,6 @@ import com.amalto.core.objects.datamodel.DataModelPOJOPK;
 import com.amalto.core.save.generator.AutoIncrementGenerator;
 import com.amalto.core.server.api.DataModel;
 import com.amalto.core.server.api.RoutingEngine;
-import org.talend.mdm.commmon.metadata.MetadataUtils;
 import com.amalto.core.query.user.Expression;
 import com.amalto.core.query.user.UserQueryBuilder;
 import com.amalto.core.save.DocumentSaverContext;
@@ -34,7 +33,6 @@ import com.amalto.core.util.*;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
-import org.talend.mdm.commmon.metadata.TypeMetadata;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -101,6 +99,10 @@ public class StorageSaverSource implements SaverSource {
     public boolean exist(String dataCluster, String dataModelName, String typeName, String[] key) {
         Storage storage = getStorage(dataCluster);
         if (storage == null) {
+            return false;
+        }
+        ComplexTypeMetadata type = storage.getMetadataRepository().getComplexType(typeName);
+        if (key.length < type.getKeyFields().size()) {
             return false;
         }
         StorageResults results = storage.fetch(buildQueryByID(storage, typeName, key)); // Expect a transaction to be active

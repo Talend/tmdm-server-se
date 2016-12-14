@@ -226,6 +226,18 @@ public class ForeignKeyInfoTransformerTest extends TestCase {
         assertEquals(actualFKInfo.get(0), "ID:f1 Name:fname1");
     }
 
+    // TMDM-9146 The second FK should show FK infos in journal not show the id value.
+    public void testCase_FK_multiLevel_ismany() {
+        String recordId = "a13";
+        String conceptName = "A";
+
+        fkPaths.put("a13", "//A[A_Id='a13']/BCollection2/FK_to_B/text()");
+        executeTestFor(recordId, conceptName);
+
+        fkPaths.put("a13", "//A[A_Id='a13']/BCollection2/SubBColleciton/FK_to_C/text()");
+        executeTestFor(recordId, conceptName);
+    }
+
     private void executeTestFor(String id, String concept) {
         typeMetadata = (ComplexTypeMetadata) metadataRepository.getType(concept);
 
@@ -404,5 +416,11 @@ public class ForeignKeyInfoTransformerTest extends TestCase {
         xmlDomRecordInputs.put("g1", "<G><G_Id>g1</G_Id><G_Name>gName1</G_Name><FK_to_F>[f1]</FK_to_F></G>");
         // case 12:
         xmlDomRecordInputs.put("h1", "<H><H_Id>h1</H_Id><H_Name>hName1</H_Name><FK_to_F>[f1]</FK_to_F></H>");
+        // case 13:
+        xmlDomRecordInputs
+                .put("a13",
+                "<A><A_Id>a13</A_Id><A_Name>aname1</A_Name><BCollection2><FK_to_B>[b1]</FK_to_B><FK_to_B>[b2]</FK_to_B></BCollection2>"
+                                + "<BCollection2><FK_to_B>[b1]</FK_to_B><FK_to_B>[b2]</FK_to_B><SubBColleciton><FK_to_C>[c1]</FK_to_C><FK_to_C>[c2]</FK_to_C></SubBColleciton></BCollection2>"
+                                + "<BCollection2><FK_to_B>[b1]</FK_to_B><FK_to_B>[b2]</FK_to_B></BCollection2></A>");
     }
 }

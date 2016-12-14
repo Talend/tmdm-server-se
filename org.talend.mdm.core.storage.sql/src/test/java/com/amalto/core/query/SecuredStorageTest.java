@@ -204,7 +204,8 @@ public class SecuredStorageTest extends StorageTestCase {
         // With security active
         assertTrue(userSecurity.isActive);
         UserQueryBuilder qb = from(person).selectId(person).select(person.getField("firstname"))
-                .orderBy(person.getField("Status"), OrderBy.Direction.DESC);
+                .orderBy(person.getField("Status"), OrderBy.Direction.DESC)
+                .orderBy(person.getField("id"), OrderBy.Direction.DESC);
 
         String[] firstNames = new String[3];
         storage.begin();
@@ -226,7 +227,8 @@ public class SecuredStorageTest extends StorageTestCase {
         userSecurity.setActive(false);
         assertFalse(userSecurity.isActive);
         qb = from(person).selectId(person).select(person.getField("firstname"))
-                .orderBy(person.getField("Status"), OrderBy.Direction.ASC);
+                .orderBy(person.getField("Status"), OrderBy.Direction.ASC)
+                .orderBy(person.getField("id"), OrderBy.Direction.ASC);
         storage.begin();
         results = storage.fetch(qb.getSelect());
         try {

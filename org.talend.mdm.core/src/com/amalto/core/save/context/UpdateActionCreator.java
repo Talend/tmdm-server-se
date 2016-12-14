@@ -10,6 +10,7 @@
 
 package com.amalto.core.save.context;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
+import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -33,10 +35,13 @@ import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
 import org.talend.mdm.commmon.metadata.SimpleTypeFieldMetadata;
 import org.talend.mdm.commmon.metadata.TypeMetadata;
 import org.talend.mdm.commmon.metadata.Types;
+import org.talend.mdm.commmon.util.core.EUUIDCustomType;
+import org.w3c.dom.Node;
 
 import com.amalto.core.history.Action;
 import com.amalto.core.history.MutableDocument;
 import com.amalto.core.history.accessor.Accessor;
+import com.amalto.core.history.accessor.DOMAccessor;
 import com.amalto.core.history.action.FieldInsertAction;
 import com.amalto.core.history.action.FieldUpdateAction;
 import com.amalto.core.storage.StorageMetadataUtils;
@@ -79,13 +84,28 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
     
     private boolean isPartialDelete = false;
 
+    private List<String> visitedOneToManyPath = new ArrayList<String>();
+
+    private String rootTypeName = null;
+
+    private final SaverSource saverSource;
+
+    private final String dataCluster;
+
+    private final String dataModel;
+
+    private boolean isCreateAction;
+
     public UpdateActionCreator(MutableDocument originalDocument,
                                MutableDocument newDocument,
                                Date date,
                                String source,
                                String userName,
                                boolean generateTouchActions,
-                               MetadataRepository repository) {
+                               MetadataRepository repository,
+                               String dataCluster,
+                               String dataModel,
+                               SaverSource saverSource) {
         this(originalDocument,
                 newDocument,
                 date,
@@ -94,7 +114,10 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
                 source,
                 userName,
                 generateTouchActions,
-                repository);
+                repository,
+                dataCluster,
+                dataModel,
+                saverSource);
     }
 
     public UpdateActionCreator(MutableDocument originalDocument,
@@ -104,7 +127,10 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
                                String source,
                                String userName,
                                boolean generateTouchActions,
-                               MetadataRepository repository) {
+                               MetadataRepository repository,
+                               String dataCluster,
+                               String dataModel,
+                               SaverSource saverSource) {
         this(originalDocument,
                 newDocument,
                 date,
@@ -113,7 +139,10 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
                 source,
                 userName,
                 generateTouchActions,
-                repository);
+                repository,
+                dataCluster,
+                dataModel,
+                saverSource);
     }
 
     public UpdateActionCreator(MutableDocument originalDocument,
@@ -124,7 +153,10 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
                                String source,
                                String userName,
                                boolean generateTouchActions,
-                               MetadataRepository repository) {
+                               MetadataRepository repository,
+                               String dataCluster,
+                               String dataModel,
+                               SaverSource saverSource) {
         this.preserveCollectionOldValues = preserveCollectionOldValues;
         this.originalDocument = originalDocument;
         this.newDocument = newDocument;
@@ -134,10 +166,16 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
         this.date = date;
         this.source = source;
         this.userName = userName;
+        this.dataCluster = dataCluster;
+        this.dataModel = dataModel;
+        this.saverSource = saverSource;
     }
 
     @Override
     public List<Action> visit(ComplexTypeMetadata complexType) {
+        if (rootTypeName == null) {
+            rootTypeName = complexType.getName();
+        }
         // This is an update, so both original and new document have a "entity root" element (TMDM-3883).
         generateNoOp("/"); //$NON-NLS-1$
         super.visit(complexType);
@@ -207,6 +245,16 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
         }
     }
 
+    /**
+     * Check if need to visit the one-to-many path
+     * 
+     * @param path
+     * @return
+     */
+    private boolean isNeedToVisit(String path) {
+        return path.contains("[") ? false : !visitedOneToManyPath.contains(path);
+    }
+
     protected void handleField(FieldMetadata field, Closure closure) {
         path.add(field.getName());
         if (field.isMany()) {
@@ -217,13 +265,13 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
                 rightAccessor = newDocument.createAccessor(currentPath);
                 if (!rightAccessor.exist() && !isDeletingContainedElement) {
                     // If new list does not exist, it means element was omitted in new version (legacy behavior).
-                    if (!isPartialDelete) {
+                    // TMDM-9559 'isPartialDelete' only affect for ONE time on the TOP element
+                    if (!isPartialDelete || !isNeedToVisit(currentPath)) {
                         return;
-                    } else { // TMDM-9559 'isPartialDelete' only affect for ONE time on the TOP element
-                        isPartialDelete = false;
                     }
                 }
                 leftAccessor = originalDocument.createAccessor(currentPath);
+                visitedOneToManyPath.add(currentPath);
             } finally {
                 path.pop();
             }
@@ -262,6 +310,17 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
                     generateNoOp(lastMatchPath);
                     actions.add(new FieldUpdateAction(date, source, userName, path, StringUtils.EMPTY, newAccessor.get(), comparedField));
                     generateNoOp(path);
+                } else if (EUUIDCustomType.AUTO_INCREMENT.getName().equalsIgnoreCase(comparedField.getType().getName())
+                        && isCreateAction == false) {
+                    generateNoOp(lastMatchPath);
+                    String conceptName = rootTypeName + "." + comparedField.getName().replaceAll("/", "."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    String autoIncrementValue = saverSource.nextAutoIncrementId(dataCluster, dataModel, conceptName);
+                    actions.add(new FieldUpdateAction(date, source, userName, path, StringUtils.EMPTY, autoIncrementValue, comparedField));
+                    generateNoOp(path);
+                } else if (EUUIDCustomType.UUID.getName().equalsIgnoreCase(comparedField.getType().getName())
+                        && isCreateAction == false) {
+                    String uuidValue = UUID.randomUUID().toString();
+                    actions.add(new FieldUpdateAction(date, source, userName, path, StringUtils.EMPTY, uuidValue, comparedField));
                 }
             }
         } else { // original accessor exist
@@ -331,6 +390,14 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
                                     return;
                                 }
                             }
+                            if (EUUIDCustomType.AUTO_INCREMENT.getName().equalsIgnoreCase(comparedField.getType().getName())
+                                    && isCreateAction == false && newObject == null) {
+                                String conceptName = rootTypeName + "." + comparedField.getName().replaceAll("/", "."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                                newValue = saverSource.nextAutoIncrementId(dataCluster, dataModel, conceptName);
+                            } else if (EUUIDCustomType.UUID.getName().equalsIgnoreCase(comparedField.getType().getName())
+                                    && isCreateAction == false && newObject == null) {
+                                newValue = UUID.randomUUID().toString();
+                            }
                         }
                         actions.add(new FieldUpdateAction(date, source, userName, path, oldValue, newValue.isEmpty() ? null : newValue, comparedField));
                     } else if (oldValue != null && oldValue.equals(newValue)) {
@@ -360,6 +427,14 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
                 actions.add(new TouchAction(path, date, source, userName));
             }
         }
+    }
+
+    public boolean isCreateAction() {
+        return isCreateAction;
+    }
+
+    public void setCreateAction(boolean isCreateAction) {
+        this.isCreateAction = isCreateAction;
     }
 
     private class ContainedTypeClosure implements Closure {

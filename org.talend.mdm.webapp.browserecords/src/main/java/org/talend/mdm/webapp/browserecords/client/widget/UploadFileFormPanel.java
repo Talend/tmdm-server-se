@@ -22,6 +22,7 @@ import org.talend.mdm.webapp.base.client.util.UrlUtil;
 import org.talend.mdm.webapp.base.shared.EntityModel;
 import org.talend.mdm.webapp.base.shared.FileUtil;
 import org.talend.mdm.webapp.base.shared.TypeModel;
+import org.talend.mdm.webapp.browserecords.client.BrowseRecords;
 import org.talend.mdm.webapp.browserecords.client.i18n.MessagesFactory;
 import org.talend.mdm.webapp.browserecords.shared.Constants;
 import org.talend.mdm.webapp.browserecords.shared.ViewBean;
@@ -35,6 +36,7 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -65,6 +67,8 @@ public class UploadFileFormPanel extends FormPanel implements Listener<FormEvent
 
     private TextField<String> multipleValueSeparatorField;
 
+    private CheckBox isPartialUpdate;
+    
     private CheckBox headerLine;
 
     private HiddenField<String> conceptField;
@@ -87,6 +91,8 @@ public class UploadFileFormPanel extends FormPanel implements Listener<FormEvent
 
     private Window window;
 
+    private int importRecordsDefaultCount;
+
     public UploadFileFormPanel(ViewBean viewBean, Window window) {
         this.viewBean = viewBean;
         this.window = window;
@@ -97,6 +103,7 @@ public class UploadFileFormPanel extends FormPanel implements Listener<FormEvent
         this.setWidth("100%"); //$NON-NLS-1$
         this.setAction(getActionUrl());
         this.renderForm();
+        importRecordsDefaultCount = BrowseRecords.getSession().getAppHeader().getImportRecordsDefaultCount();
     }
 
     protected String getHeaderString() {
@@ -241,6 +248,16 @@ public class UploadFileFormPanel extends FormPanel implements Listener<FormEvent
         ListStore<ItemBaseModel> typeList = new ListStore<ItemBaseModel>();
         typeList.add(list);
 
+        isPartialUpdate = new CheckBox();
+        isPartialUpdate.setId("isPartialUpdate"); //$NON-NLS-1$
+        isPartialUpdate.setName("isPartialUpdate"); //$NON-NLS-1$
+        isPartialUpdate.setValueAttribute("on"); //$NON-NLS-1$
+        isPartialUpdate.setFieldLabel(MessagesFactory.getMessages().label_field_partial_update());
+        isPartialUpdate.setValue(false);
+        isPartialUpdate.setInputStyleAttribute("left", "10px"); //$NON-NLS-1$ //$NON-NLS-2$
+        isPartialUpdate.setInputStyleAttribute("position", "absolute"); //$NON-NLS-1$ //$NON-NLS-2$
+        this.add(isPartialUpdate);
+        
         headerLine = new CheckBox();
         headerLine.setId("headersOnFirstLine");//$NON-NLS-1$
         headerLine.setName("headersOnFirstLine");//$NON-NLS-1$
@@ -354,9 +371,20 @@ public class UploadFileFormPanel extends FormPanel implements Listener<FormEvent
                     return;
                 }
 
-                UploadFileFormPanel.this.submit();
-                waitBar = MessageBox.wait(MessagesFactory.getMessages().import_progress_bar_title(), MessagesFactory
-                        .getMessages().import_progress_bar_message(), MessagesFactory.getMessages().import_progress_bar_laod());
+                MessageBox.confirm(MessagesFactory.getMessages().confirm_title(), MessagesFactory.getMessages()
+                        .import_items_greater_than_default(String.valueOf(importRecordsDefaultCount)), new Listener<MessageBoxEvent>() {
+
+                    @Override
+                    public void handleEvent(MessageBoxEvent be) {
+                        if (be.getButtonClicked().getItemId().equals(Dialog.YES)) {
+
+                            UploadFileFormPanel.this.submit();
+                            waitBar = MessageBox.wait(MessagesFactory.getMessages().import_progress_bar_title(), MessagesFactory
+                                    .getMessages().import_progress_bar_message(), MessagesFactory.getMessages()
+                                    .import_progress_bar_laod());
+                        }
+                    }
+                });
             }
         });
         this.addButton(submit);
@@ -373,8 +401,8 @@ public class UploadFileFormPanel extends FormPanel implements Listener<FormEvent
     @Override
     public void handleEvent(final FormEvent formEvent) {
         waitBar.close();
-        if (formEvent.getResultHtml().contains(MessagesFactory.getMessages().import_success_label())) {
-            MessageBox.alert(MessagesFactory.getMessages().info_title(), filterFormatTag(formEvent.getResultHtml()),
+        if (formEvent.getResultHtml().contains(Constants.IMPORT_SUCCESS)) {
+            MessageBox.alert(MessagesFactory.getMessages().info_title(), MessagesFactory.getMessages().import_success_label(),
                     new Listener<MessageBoxEvent>() {
 
                         @Override
@@ -385,8 +413,12 @@ public class UploadFileFormPanel extends FormPanel implements Listener<FormEvent
                         }
                     });
         } else {
-            MessageBox.alert(MessagesFactory.getMessages().error_title(),
-                    MultilanguageMessageParser.pickOutISOMessage(filterFormatTag(formEvent.getResultHtml())), null);
+            String returnMessage = filterFormatTag(formEvent.getResultHtml());
+            String displayMessage = MultilanguageMessageParser.pickOutISOMessage(returnMessage);
+            if (!MultilanguageMessageParser.getLanguageValueMap(returnMessage).isEmpty()) {
+                displayMessage = returnMessage.substring(0, returnMessage.indexOf("[")) + MultilanguageMessageParser.pickOutISOMessage(returnMessage); //$NON-NLS-1$
+            }
+            MessageBox.alert(MessagesFactory.getMessages().error_title(), displayMessage, null);
         }
     }
 

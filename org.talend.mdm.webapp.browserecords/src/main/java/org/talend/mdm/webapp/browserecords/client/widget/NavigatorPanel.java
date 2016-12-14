@@ -13,12 +13,10 @@
 package org.talend.mdm.webapp.browserecords.client.widget;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.talend.mdm.webapp.base.client.SessionAwareAsyncCallback;
-import org.talend.mdm.webapp.base.client.util.FormatUtil;
-import org.talend.mdm.webapp.base.client.util.MultilanguageMessageParser;
+import org.talend.mdm.webapp.base.client.i18n.BaseMessagesFactory;
 import org.talend.mdm.webapp.base.shared.TypeModel;
 import org.talend.mdm.webapp.browserecords.client.BrowseRecords;
 import org.talend.mdm.webapp.browserecords.client.BrowseRecordsServiceAsync;
@@ -31,24 +29,44 @@ import org.talend.mdm.webapp.browserecords.shared.Constants;
 import org.talend.mdm.webapp.browserecords.shared.ViewBean;
 
 import com.extjs.gxt.ui.client.Registry;
+import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MessageBoxEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.HorizontalPanel;
+import com.extjs.gxt.ui.client.widget.Label;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Window;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.Field;
+import com.extjs.gxt.ui.client.widget.form.NumberField;
+import com.extjs.gxt.ui.client.widget.form.Validator;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.ui.SimplePanel;
 
 public class NavigatorPanel extends ContentPanel {
-
+    
+    private String NAVIGATOR_PAGESIZE = "navigator_pagesize"; //$NON-NLS-1$
+    
     private BrowseRecordsServiceAsync service = (BrowseRecordsServiceAsync) Registry.get(BrowseRecords.BROWSERECORDS_SERVICE);
+    
+    private int NAVIGATOR_NODE_INIT_TYPE = 0;
+    
+    private int NAVIGATOR_NODE_IN_ENTITY_TYPE = 1;
+    
+    private int NAVIGATOR_NODE_OUT_ENTITY_TYPE = 2;
 
     private ContentPanel navigatorPanel;
 
@@ -60,8 +78,12 @@ public class NavigatorPanel extends ContentPanel {
 
     private boolean isHierarchyCall = false;
 
-    String operation = ItemDetailToolBar.VIEW_OPERATION;
-
+    private String operation = ItemDetailToolBar.VIEW_OPERATION;
+    
+    private int pageSize = 5;
+    
+    private Window settingWindow;
+    
     public NavigatorPanel() {
         setId(MessagesFactory.getMessages().navigator_panel_label());
         initPanel();
@@ -72,16 +94,68 @@ public class NavigatorPanel extends ContentPanel {
         setHeaderVisible(false);
         setLayout(new BorderLayout());
         setStyleAttribute("height", "100%"); //$NON-NLS-1$ //$NON-NLS-2$  
-        BorderLayoutData eastData = new BorderLayoutData(LayoutRegion.EAST, 400);
-        eastData.setSplit(true);
-        eastData.setFloatable(false);
-        initDetailPanel();
-        add(detailPanel, eastData);
-        BorderLayoutData centerData = new BorderLayoutData(LayoutRegion.CENTER);
-        centerData.setMargins(new Margins(0, 5, 0, 0));
-        centerData.setMaxSize(7000);
+        BorderLayoutData westData = new BorderLayoutData(LayoutRegion.WEST,800);
+        westData.setMargins(new Margins(0, 5, 0, 0));
+        westData.setSplit(true);
+        westData.setFloatable(false);
+        westData.setMinSize(0);
+        westData.setMaxSize(7000);
         initNavigatorPanel();
-        add(navigatorPanel, centerData);
+        add(navigatorPanel, westData);
+        
+        BorderLayoutData centerData = new BorderLayoutData(LayoutRegion.CENTER);
+        initDetailPanel();
+        add(detailPanel, centerData);
+        
+        if (Cookies.getCookie(NAVIGATOR_PAGESIZE) != null) {
+            pageSize = Integer.parseInt(Cookies.getCookie(NAVIGATOR_PAGESIZE));
+        }
+        
+        settingWindow = new Window();
+        settingWindow.setHeading(MessagesFactory.getMessages().setting_window_title());
+        settingWindow.setWidth(300);
+        settingWindow.setHeight(131);
+        settingWindow.setResizable(false);
+        settingWindow.setDraggable(false);
+        settingWindow.setLayout(new FitLayout());
+        settingWindow.setModal(true);
+        settingWindow.setBlinkModal(true);
+        
+        HorizontalPanel horizontalPanel = new HorizontalPanel();
+        TableData layoutData = new TableData();
+        layoutData.setPadding(10);
+        Label pageSizeLabel = new Label(MessagesFactory.getMessages().page_size_field_label());
+        final NumberField pageSizeField = new NumberField();
+        pageSizeField.setValue(pageSize);
+        pageSizeField.setValidator(validator);
+        pageSizeField.setWidth(150);
+        horizontalPanel.add(pageSizeLabel,layoutData);
+        horizontalPanel.add(pageSizeField,layoutData);
+        Button okButton = new Button(MessagesFactory.getMessages().ok_btn());
+        okButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                if (pageSizeField.isValid()) {
+                    NavigatorPanel.this.pageSize = pageSizeField.getValue().intValue();
+                    Cookies.setCookie(NAVIGATOR_PAGESIZE, String.valueOf(NavigatorPanel.this.pageSize));
+                    settingWindow.close();
+                }
+            }
+        });
+        Button cancelButton = new Button(MessagesFactory.getMessages().cancel_btn());
+        cancelButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                pageSizeField.setValue(pageSize);
+                settingWindow.close();
+            }
+        });
+        settingWindow.add(horizontalPanel);
+        settingWindow.setButtonAlign(HorizontalAlignment.CENTER);
+        settingWindow.addButton(okButton);
+        settingWindow.addButton(cancelButton);
     }
 
     private void initNavigatorPanel() {
@@ -104,7 +178,6 @@ public class NavigatorPanel extends ContentPanel {
         detailPanel = new ContentPanel();
         detailPanel.setLayout(new FitLayout());
         detailPanel.setHeading(MessagesFactory.getMessages().navigator_detailPanel_label());
-
     }
 
     public void updateDetailPanel(final String ids, final String concept) {
@@ -169,17 +242,70 @@ public class NavigatorPanel extends ContentPanel {
             }
         });
     }
-
-    public static String getMultiLanguageValue(String value, String language) {
-        LinkedHashMap<String, String> languageValueMap = new LinkedHashMap<String, String>();
-        LinkedHashMap<String, String> temp_languageValueMap = MultilanguageMessageParser.getLanguageValueMap(value);
-        for (String l : temp_languageValueMap.keySet()) {
-            languageValueMap.put(l, FormatUtil.languageValueDecode(temp_languageValueMap.get(l)));
+    
+    public int getPageSize() {
+        return this.pageSize;
+    }
+    
+    public void showSettingWindow() {
+        settingWindow.show();
+    }
+    
+    public void sessionExpired() {
+        MessageBox.alert(BaseMessagesFactory.getMessages().warning_title(), BaseMessagesFactory.getMessages()
+                .session_timeout_error(), new Listener<MessageBoxEvent>() {
+            public void handleEvent(MessageBoxEvent be) {
+                Cookies.removeCookie("JSESSIONID"); //$NON-NLS-1$
+                Cookies.removeCookie("JSESSIONIDSSO"); //$NON-NLS-1$
+                com.google.gwt.user.client.Window.Location.replace(GWT.getHostPageBaseURL());
+            }
+        });
+    }
+    
+    private Validator validator = new Validator() {
+        @Override
+        public String validate(Field<?> field, String value) {
+            String valueStr = value == null ? "" : value.toString(); //$NON-NLS-1$
+            boolean success = false;
+            try {
+                success = validatePageSize(Integer.parseInt(valueStr));
+            } catch (NumberFormatException e) {
+                success = false;
+            }
+            if (!success) {
+                return BaseMessagesFactory.getMessages().page_size_notice();
+            }
+            return null;
         }
-        return languageValueMap.isEmpty() ? value : languageValueMap.get(language);
+    };
+
+    private boolean validatePageSize(int pageSizeNumber) {
+        if (pageSizeNumber <= 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+    
+    public void handleNodeLabel(String jsonString,String type) {
+        final int nodeType = Integer.parseInt(type);
+        service.handleNavigatorNodeLabel(jsonString,Locale.getLanguage(), new SessionAwareAsyncCallback<String>() {
+
+            @Override
+            public void onSuccess(String data) {
+                if (nodeType == NAVIGATOR_NODE_INIT_TYPE) {
+                    initDataNode(data);
+                } else if (nodeType == NAVIGATOR_NODE_IN_ENTITY_TYPE) {
+                    paintInDataNode(data);
+                } else if (nodeType == NAVIGATOR_NODE_OUT_ENTITY_TYPE) {
+                    paintOutDataNode(data);;
+                }
+                
+            }
+        });
     }
 
-    public static void renderPanel(String baseUrl, String ids, String concept, String cluster, ContentPanel contentPanel) {
+    public static void renderPanel(String baseUrl, String ids, String concept, String cluster,boolean hasPrimaryKeyInfo, ContentPanel contentPanel) {
         if (GWT.isScript()) {
             String itemId = concept + "_" + ids; //$NON-NLS-1$
             renderGwtPanel(itemId, contentPanel);
@@ -187,7 +313,7 @@ public class NavigatorPanel extends ContentPanel {
             renderDebugPanel(contentPanel);
         }
         String restServiceUrl = baseUrl + "services/rest"; //$NON-NLS-1$
-        paintNavigator(restServiceUrl, ids, concept, cluster, Locale.getLanguage());
+        paintNavigator(restServiceUrl, ids, concept, cluster,hasPrimaryKeyInfo, Locale.getLanguage());
     }
 
     private static void renderDebugPanel(ContentPanel contentPanel) {
@@ -206,19 +332,40 @@ public class NavigatorPanel extends ContentPanel {
         $wnd.amalto.navigator = $wnd.amalto.navigator || {};
         $wnd.amalto.navigator.Navigator = $wnd.amalto.navigator.Navigator || {};
         $wnd.amalto.navigator.Navigator.openRecord = function(ids, concept) {
-            instance
-                    .@org.talend.mdm.webapp.browserecords.client.widget.NavigatorPanel::updateDetailPanel(Ljava/lang/String;Ljava/lang/String;)(
-                            ids, concept);
+            instance.@org.talend.mdm.webapp.browserecords.client.widget.NavigatorPanel::updateDetailPanel(Ljava/lang/String;Ljava/lang/String;)(ids, concept);
         }
                 
-        $wnd.amalto.navigator.Navigator.getMultiLanguageValue = function(value, language) {
-            return @org.talend.mdm.webapp.browserecords.client.widget.NavigatorPanel::getMultiLanguageValue(Ljava/lang/String;Ljava/lang/String;)(value, language);
+        $wnd.amalto.navigator.Navigator.handleNodeLabel = function(value,type) {
+            return instance.@org.talend.mdm.webapp.browserecords.client.widget.NavigatorPanel::handleNodeLabel(Ljava/lang/String;Ljava/lang/String;)(value,type);
         }
+        
+        $wnd.amalto.navigator.Navigator.sessionExpired = function() {
+            instance.@org.talend.mdm.webapp.browserecords.client.widget.NavigatorPanel::sessionExpired()();
+        }
+        $wnd.amalto.navigator.Navigator.getPageSize = function() {
+            return instance.@org.talend.mdm.webapp.browserecords.client.widget.NavigatorPanel::getPageSize()();
+        }
+        
+        $wnd.amalto.navigator.Navigator.showSettingWindow = function() {
+            instance.@org.talend.mdm.webapp.browserecords.client.widget.NavigatorPanel::showSettingWindow()();
+        }        
     }-*/;
 
-    public native static void paintNavigator(String restServiceUrl, String ids, String concept, String cluster, String language)/*-{
+    public native static void paintNavigator(String restServiceUrl, String ids, String concept, String cluster,boolean hasPrimaryKeyInfo, String language)/*-{
         $wnd.amalto.itemsbrowser.NavigatorPanel.initUI(restServiceUrl, ids, concept,
-                cluster, language);
+                cluster,hasPrimaryKeyInfo, language);
+    }-*/;
+    
+    public native static void initDataNode(String data)/*-{
+        $wnd.amalto.itemsbrowser.NavigatorPanel.initDataNode(data);
+    }-*/;
+    
+    public native static void paintInDataNode(String data)/*-{
+        $wnd.amalto.itemsbrowser.NavigatorPanel.paintInDataNode(data);
+    }-*/;
+    
+    public native static void paintOutDataNode(String data)/*-{
+        $wnd.amalto.itemsbrowser.NavigatorPanel.paintOutDataNode(data);
     }-*/;
     
     public native static void resizeNavigator()/*-{

@@ -17,7 +17,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.servlet.ServletException;
+import com.amalto.core.save.MultiRecordsSaveException;
+import com.amalto.core.save.SaveException;
+import com.amalto.core.storage.exception.FullTextQueryCompositeKeyException;
+import com.amalto.core.util.CoreException;
+import com.amalto.core.util.XtentisException;
+import com.amalto.xmlserver.interfaces.XmlServerException;
 
 import junit.framework.TestCase;
 
@@ -59,10 +64,40 @@ public class UploadUtilTest  extends TestCase {
     }
     
     public void testGetRootCause(){
-        RemoteException romoteException = new RemoteException("RemoteException Cause");
-        ServletException servletException = new ServletException("ServletException Cause",romoteException);
-        Exception exception = new Exception("Exception Cause",servletException);
-        assertEquals(UploadUtil.getRootCause(exception),"RemoteException Cause");
+        RuntimeException runtimeException = new RuntimeException("RuntimeException Cause");
+        SaveException saveException = new SaveException("SaveException Cause", runtimeException);
+        CoreException coreException = new CoreException("CoreException Cause", saveException);
+        RemoteException remoteException = new RemoteException("RemoteException Cause", coreException);
+        Exception exception = new Exception("Exception Cause",remoteException);
+        assertEquals("com.amalto.core.save.SaveException: SaveException Cause", UploadUtil.getRootCause(exception).getMessage());
+        
+        FullTextQueryCompositeKeyException fullTextQueryCompositeKeyException = new FullTextQueryCompositeKeyException("FullTextQueryCompositeKeyException Cause");
+        runtimeException = new RuntimeException("RuntimeException Cause", fullTextQueryCompositeKeyException);
+        XmlServerException xmlServerException = new XmlServerException("XmlServerException Cause", runtimeException);
+        XtentisException xtentisException = new XtentisException("XtentisException Cause", xmlServerException);
+        coreException = new CoreException("CoreException Cause", xtentisException);
+        remoteException = new RemoteException("RemoteException Cause", coreException);
+        exception = new Exception("Exception Cause",remoteException);
+        assertEquals("com.amalto.core.util.XtentisException: XtentisException Cause", UploadUtil.getRootCause(exception).getMessage());
+    }
+    
+    public void testGetMultiRecordsSaveException(){
+        int errorRowCount = 101;
+        String recordKey = "[12][34]";
+        RuntimeException runtimeException = new RuntimeException("RuntimeException Cause");
+        SaveException saveException = new SaveException("SaveException Cause", runtimeException);
+        MultiRecordsSaveException multiRecordsSaveException = new MultiRecordsSaveException(saveException.getCause().getMessage(), saveException.getCause(), recordKey, errorRowCount);
+        CoreException coreException = new CoreException("CoreException Cause", multiRecordsSaveException);
+        RemoteException remoteException = new RemoteException("RemoteException Cause", coreException);
+        Exception exception = new Exception("Exception Cause",remoteException);
+        assertEquals("com.amalto.core.save.MultiRecordsSaveException: RuntimeException Cause", UploadUtil.getRootCause(exception).getMessage());
+        
+        if (UploadUtil.getRootCause(exception) != null && CoreException.class.isInstance(UploadUtil.getRootCause(exception))) {
+            Throwable cause = UploadUtil.getRootCause(exception);
+            assertTrue(MultiRecordsSaveException.class.isInstance(cause.getCause()));
+            assertEquals(101, ((MultiRecordsSaveException)cause.getCause()).getRowCount());
+            assertEquals(recordKey, ((MultiRecordsSaveException)cause.getCause()).getKeyInfo());
+        }
     }
         
     public void testIsViewableXpathValid(){

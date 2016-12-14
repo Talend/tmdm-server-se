@@ -50,6 +50,9 @@ public interface Icons extends ClientBundle {
 
     @Source("save.png")
     ImageResource Save();
+    
+    @Source("bulkupdate.png")
+    ImageResource BulkUpdate();
 
     @Source("display.png")
     ImageResource Display();

@@ -15,7 +15,6 @@ package com.amalto.webapp.core.util;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.StringReader;
-import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -32,10 +31,6 @@ import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Logger;
@@ -409,22 +404,6 @@ public abstract class Util {
             return com.amalto.core.webservice.WSWhereOperator.CONTAINS;
         }
         return null;
-    }
-
-    /**
-     * Generates an xml string from a node (not pretty formatted)
-     * 
-     * @param n the node
-     * @return the xml string
-     * @throws Exception
-     */
-    public static String nodeToString(Node n) throws Exception {
-        StringWriter sw = new StringWriter();
-        Transformer transformer = TransformerFactory.newInstance().newTransformer();
-        transformer.setOutputProperty("omit-xml-declaration", "yes"); //$NON-NLS-1$ //$NON-NLS-2$
-        transformer.setOutputProperty("indent", "yes"); //$NON-NLS-1$ //$NON-NLS-2$
-        transformer.transform(new DOMSource(n), new StreamResult(sw));
-        return sw.toString();
     }
 
     /**

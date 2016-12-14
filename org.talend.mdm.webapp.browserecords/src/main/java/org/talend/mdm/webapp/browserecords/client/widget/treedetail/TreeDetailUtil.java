@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.talend.mdm.webapp.base.client.SessionAwareAsyncCallback;
+import org.talend.mdm.webapp.base.shared.ComplexTypeModel;
+import org.talend.mdm.webapp.base.shared.EntityModel;
 import org.talend.mdm.webapp.base.shared.TypeModel;
 import org.talend.mdm.webapp.browserecords.client.BrowseRecords;
 import org.talend.mdm.webapp.browserecords.client.BrowseRecordsServiceAsync;
@@ -411,6 +413,22 @@ public class TreeDetailUtil {
         }
         for (ModelData node : model.getChildren()) {
             if (isChangeValue((ItemNodeModel) node)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean isEditValue(EntityModel entityModel, ItemNodeModel model) {
+        String typePath = model.getTypePath();
+        TypeModel typeModel = entityModel.getMetaDataTypes().get(typePath);
+        if ((typeModel.isSimpleType() || (!typeModel.isSimpleType() && ((ComplexTypeModel) typeModel).getReusableComplexTypes()
+                .size() > 0))
+ && !model.isKey() && model.isMassUpdate() && model.isEdited()) {
+            return true;
+        }
+        for (ModelData node : model.getChildren()) {
+            if (isEditValue(entityModel, (ItemNodeModel) node)) {
                 return true;
             }
         }

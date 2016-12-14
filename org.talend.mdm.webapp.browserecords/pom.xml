@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.talend.mdm</groupId>
         <artifactId>mdm-base</artifactId>
-        <version>6.2.1-SNAPSHOT</version>
+        <version>6.3.1-SNAPSHOT</version>
         <relativePath>../../tmdm-common/org.talend.mdm.base/pom.xml</relativePath>
     </parent>
 
@@ -57,7 +57,10 @@
             <artifactId>saxon9-dom</artifactId>
             <version>${saxon.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+        </dependency>
         <!-- 3rd party dependencies -->
         <dependency>
             <groupId>com.google.gwt</groupId>
@@ -94,6 +97,17 @@
             </exclusions>             
         </dependency>
         <dependency>
+            <groupId>org.apache.xmlbeans</groupId>
+            <artifactId>xmlbeans</artifactId>
+            <version>2.6.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>stax</groupId>
+                    <artifactId>stax-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
             <groupId>commons-jxpath</groupId>
             <artifactId>commons-jxpath</artifactId>
         </dependency>
@@ -116,6 +130,11 @@
         <dependency>
             <groupId>org.restlet.gwt</groupId>
             <artifactId>org.restlet.ext.xml</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.json-lib</groupId>
+            <artifactId>json-lib</artifactId>
+            <classifier>jdk15</classifier>
         </dependency>
         <!-- MDM dependencies -->
         <dependency>

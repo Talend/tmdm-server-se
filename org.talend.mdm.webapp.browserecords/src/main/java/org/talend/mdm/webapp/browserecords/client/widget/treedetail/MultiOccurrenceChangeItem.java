@@ -15,6 +15,7 @@ import org.talend.mdm.webapp.browserecords.client.util.LabelUtil;
 import org.talend.mdm.webapp.browserecords.client.util.Locale;
 import org.talend.mdm.webapp.browserecords.client.widget.ItemDetailToolBar;
 import org.talend.mdm.webapp.browserecords.client.widget.ItemsDetailPanel;
+import org.talend.mdm.webapp.browserecords.client.widget.ForeignKey.ForeignKeySelector;
 import org.talend.mdm.webapp.browserecords.client.widget.inputfield.ComboBoxField;
 import org.talend.mdm.webapp.browserecords.client.widget.treedetail.TreeDetail.DynamicTreeItem;
 import org.talend.mdm.webapp.browserecords.shared.ViewBean;
@@ -26,6 +27,7 @@ import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.mvc.AppEvent;
 import com.extjs.gxt.ui.client.mvc.Dispatcher;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -38,6 +40,8 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class MultiOccurrenceChangeItem extends HorizontalPanel {
 
+    private String disabledStyle = "x-item-disabled";
+
     public interface AddRemoveHandler {
 
         void addedNode(DynamicTreeItem selectedItem, String optId);
@@ -45,6 +49,8 @@ public class MultiOccurrenceChangeItem extends HorizontalPanel {
         void removedNode(DynamicTreeItem selectedItem);
 
         void clearNodeValue(DynamicTreeItem selectedItem);
+
+        void removeAllNode(DynamicTreeItem item);
     }
 
     private AddRemoveHandler addRemoveHandler;
@@ -57,15 +63,20 @@ public class MultiOccurrenceChangeItem extends HorizontalPanel {
 
     private Image warnImg;
 
+    private Image editNodeImg;
+
     private TreeDetail treeDetail;
 
     private Field<?> field;
 
     private ViewBean viewBean;
 
+    private boolean editable = false;
+
     public void setAddRemoveHandler(AddRemoveHandler addRemoveHandler) {
         this.addRemoveHandler = addRemoveHandler;
     }
+
 
     public MultiOccurrenceChangeItem(final ItemNodeModel itemNode, final ViewBean viewBean, Map<String, Field<?>> fieldMap,
             String operation, final ItemsDetailPanel itemsDetailPanel) {
@@ -77,6 +88,7 @@ public class MultiOccurrenceChangeItem extends HorizontalPanel {
         String dynamicLabel = typeModel.getLabel(Locale.getLanguage());
         HTML label = new HTML();
         String html = itemNode.getLabel();
+        editable = itemNode.isEdited();
 
         if (LabelUtil.isDynamicLabel(dynamicLabel)) {
             if (itemNode.getDynamicLabel() != null && !"".equals(itemNode.getDynamicLabel())) { //$NON-NLS-1$
@@ -96,6 +108,9 @@ public class MultiOccurrenceChangeItem extends HorizontalPanel {
         }
         label.setHTML(html);
         this.add(label);
+        if (ItemDetailToolBar.BULK_UPDATE_OPERATION.equalsIgnoreCase(operation)) {
+            itemNode.setMassUpdate(true);
+        }
         if (typeModel.isSimpleType()
                 || (!typeModel.isSimpleType() && ((ComplexTypeModel) typeModel).getReusableComplexTypes().size() > 0)) {
 
@@ -127,7 +142,73 @@ public class MultiOccurrenceChangeItem extends HorizontalPanel {
                     }
                 });
             }
+            if (itemNode.isMassUpdate()) {
+                convertBulkUpdateField(field);
+                if (!itemNode.isKey() && !typeModel.isReadOnly()
+                        && (typeModel.getForeignkey() == null || typeModel.getForeignKeyFilter() == null)) {
+                    editNodeImg = new Image("secure/img/genericUI/bulkupdate.png"); //$NON-NLS-1$
+                    editNodeImg.getElement().setId("Edit"); //$NON-NLS-1$
+                    editNodeImg.setTitle(MessagesFactory.getMessages().bulkUpdate_title());
+                    editNodeImg.getElement().getStyle().setMarginLeft(20D, Unit.PX);
+                    editNodeImg.getElement().getStyle().setMarginTop(5D, Unit.PX);
+                    editNodeImg.addClickHandler(new ClickHandler() {
+
+                        @Override
+                        public void onClick(ClickEvent event) {
+                            editable = !editable;
+                            if (editable) {
+                                field.setReadOnly(false);
+                                field.removeStyleName(disabledStyle);
+                                field.focus();
+                                updateMultiOccurrenceButtonStatus(true);
+                                treeDetail.getMultiManager().handleOptIcons();
+                                itemNode.setEdited(true);
+                                TreeDetailGridFieldCreator.setMandatory(field, itemNode.isFieldMandatory());
+                                TreeDetailGridFieldCreator.validate(field, itemNode);
+                            } else {
+                                field.clear();
+                                field.setReadOnly(true);
+                                field.addStyleName(disabledStyle);
+                                updateMultiOccurrenceButtonStatus(false);
+                                itemNode.setValid(true);
+                                itemNode.setEdited(false);
+                                TreeDetailGridFieldCreator.setMandatory(field, false);
+                                TreeDetailGridFieldCreator.validate(field, itemNode);
+                                if (!isAddRemoveHandlerNull()) {
+                                    addRemoveHandler.removeAllNode(treeDetail.getSelectedItem());
+                                }
+                            }
+                        }
+                    });
+                    this.add(editNodeImg);
+                    this.setCellVerticalAlignment(editNodeImg, VerticalPanel.ALIGN_BOTTOM);
+                }
+                if (typeModel.getForeignkey() != null && typeModel.getForeignKeyFilter() != null && itemNode.isMassUpdate()) {
+                    MessageBox.alert(MessagesFactory.getMessages().warning_title(),
+                            MessagesFactory.getMessages().bulkUpdate_foreignkey_warning(), null).setIcon(MessageBox.WARNING);
+                }
+                if (itemNode.isKey()) {
+                    itemNode.setEdited(true);
+                } else {
+                    itemNode.setEdited(editable);
+                }
+                if (ItemDetailToolBar.BULK_UPDATE_OPERATION.equalsIgnoreCase(operation)) {
+                    if (editable) {
+                        field.setReadOnly(false);
+                        field.removeStyleName(disabledStyle);
+                    } else {
+                        field.setReadOnly(true);
+                        field.addStyleName(disabledStyle);
+                    }
+                }
+            }
             this.add(field);
+        } else {
+            itemNode.setEdited(true);
+        }
+
+        if (!itemNode.isEdited() && itemNode.isMassUpdate() && typeModel.getParentTypeModel() == null) {
+            itemNode.setEdited(true);
         }
 
         if (typeModel.getMaxOccurs() < 0 || typeModel.getMaxOccurs() > 1) {
@@ -147,7 +228,6 @@ public class MultiOccurrenceChangeItem extends HorizontalPanel {
             if (!typeModel.isReadOnly()) {
                 removeNodeImg.addClickHandler(handler);
             }
-
             this.add(addNodeImg);
             this.setCellVerticalAlignment(addNodeImg, VerticalPanel.ALIGN_BOTTOM);
             this.add(removeNodeImg);
@@ -163,7 +243,18 @@ public class MultiOccurrenceChangeItem extends HorizontalPanel {
                 this.add(cloneNodeImg);
                 this.setCellVerticalAlignment(cloneNodeImg, VerticalPanel.ALIGN_BOTTOM);
             }
+            if (!editable && editNodeImg != null) {
+            	updateMultiOccurrenceButtonStatus(false);
+            }
         }
+        if (!ItemDetailToolBar.BULK_UPDATE_OPERATION.equalsIgnoreCase(operation)) {
+            editable = true;
+        }
+        if (editNodeImg != null) {
+            this.add(editNodeImg);
+            this.setCellVerticalAlignment(editNodeImg, VerticalPanel.ALIGN_BOTTOM);
+        }
+
         this.add(new Label()); // format placeholder, align icon on line
         this.setCellWidth(label, "200px"); //$NON-NLS-1$
         warnImg = new Image("secure/img/genericUI/validateBadge.gif"); //$NON-NLS-1$
@@ -182,7 +273,7 @@ public class MultiOccurrenceChangeItem extends HorizontalPanel {
     }
 
     public void switchRemoveOpt(boolean isRemoveNode, boolean isFk) {
-        if (removeNodeImg != null) {
+        if (removeNodeImg != null && editable) {
             removeNodeImg.setVisible(true);
             if (isRemoveNode) {
                 removeNodeImg.setUrl("secure/img/genericUI/delete.png"); //$NON-NLS-1$
@@ -200,10 +291,10 @@ public class MultiOccurrenceChangeItem extends HorizontalPanel {
     }
 
     public void setAddIconVisible(boolean visible) {
-        if (addNodeImg != null) {
+        if (addNodeImg != null && editable) {
             addNodeImg.setVisible(visible);
         }
-        if (cloneNodeImg != null) {
+        if (cloneNodeImg != null && editable) {
             cloneNodeImg.setVisible(visible);
         }
     }
@@ -256,5 +347,39 @@ public class MultiOccurrenceChangeItem extends HorizontalPanel {
         app.setData("viewBean", viewBean); //$NON-NLS-1$
         app.setData(BrowseRecordsView.ITEMS_DETAIL_PANEL, itemsDetailPanel);
         Dispatcher.forwardEvent(app);
+    }
+
+    private void updateMultiOccurrenceButtonStatus(boolean visible) {
+        if (addNodeImg != null) {
+            addNodeImg.setVisible(visible);
+        }
+        if (cloneNodeImg != null) {
+            cloneNodeImg.setVisible(visible);
+        }
+        if (removeNodeImg != null) {
+            removeNodeImg.setVisible(visible);
+        }
+    }
+
+    public void setEditNodeButtonVisible(boolean visible) {
+        if (editNodeImg != null) {
+            editNodeImg.setVisible(visible);
+        }
+    }
+
+    public boolean isEditNodeButtonVisible() {
+        if (editNodeImg != null) {
+            return editNodeImg.isVisible();
+        } else {
+            return false;
+        }
+    }
+
+    private void convertBulkUpdateField(Field field) {
+        if (field instanceof ForeignKeySelector) {
+            ((ForeignKeySelector) field).setShowAddButton(false);
+            ((ForeignKeySelector) field).setShowCleanButton(false);
+            ((ForeignKeySelector) field).setShowRelationButton(false);
+        }
     }
 }

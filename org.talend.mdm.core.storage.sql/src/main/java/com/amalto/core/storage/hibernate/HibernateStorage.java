@@ -61,13 +61,14 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
 import org.hibernate.cfg.Mappings;
+import org.hibernate.engine.spi.Mapping;
 import org.hibernate.exception.ConstraintViolationException;
 import org.hibernate.internal.util.config.ConfigurationHelper;
 import org.hibernate.mapping.Any;
 import org.hibernate.mapping.Array;
 import org.hibernate.mapping.Bag;
+import org.hibernate.mapping.Column;
 import org.hibernate.mapping.Component;
-import org.hibernate.mapping.DenormalizedTable;
 import org.hibernate.mapping.DependantValue;
 import org.hibernate.mapping.IdentifierBag;
 import org.hibernate.mapping.Index;
@@ -91,6 +92,7 @@ import org.hibernate.search.FullTextSession;
 import org.hibernate.search.MassIndexer;
 import org.hibernate.search.Search;
 import org.hibernate.service.ServiceRegistry;
+import org.hibernate.tool.hbm2ddl.ColumnMetadata;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.hibernate.tool.hbm2ddl.SchemaUpdate;
 import org.hibernate.tool.hbm2ddl.SchemaValidator;
@@ -144,6 +146,8 @@ import com.amalto.core.storage.StorageType;
 import com.amalto.core.storage.datasource.DataSource;
 import com.amalto.core.storage.datasource.DataSourceDefinition;
 import com.amalto.core.storage.datasource.RDBMSDataSource;
+import com.amalto.core.storage.hibernate.mapping.MDMDenormalizedTable;
+import com.amalto.core.storage.hibernate.mapping.MDMTable;
 import com.amalto.core.storage.prepare.FullTextIndexCleaner;
 import com.amalto.core.storage.prepare.JDBCStorageCleaner;
 import com.amalto.core.storage.prepare.JDBCStorageInitializer;
@@ -293,12 +297,46 @@ public class HibernateStorage implements Storage {
         }
         configuration = new Configuration() {
 
+            protected transient Mapping mapping = buildMapping();
+
             @Override
             public Mappings createMappings() {
                 return new MDMMappingsImpl();
             }
 
             class MDMMappingsImpl extends MappingsImpl {
+
+                @Override
+                public Table addTable(
+                        String schema,
+                        String catalog,
+                        String name,
+                        String subselect,
+                        boolean isAbstract) {
+                    name = getObjectNameNormalizer().normalizeIdentifierQuoting( name );
+                    schema = getObjectNameNormalizer().normalizeIdentifierQuoting( schema );
+                    catalog = getObjectNameNormalizer().normalizeIdentifierQuoting( catalog );
+
+                    String key = subselect == null ? Table.qualify( catalog, schema, name ) : subselect;
+                    Table table = tables.get( key );
+
+                    if ( table == null ) {
+                        table = new MDMTable();
+                        table.setAbstract( isAbstract );
+                        table.setName( name );
+                        table.setSchema( schema );
+                        table.setCatalog( catalog );
+                        table.setSubselect( subselect );
+                        tables.put( key, table );
+                    }
+                    else {
+                        if ( !isAbstract ) {
+                            table.setAbstract( false );
+                        }
+                    }
+
+                    return table;
+                }
 
                 @Override
                 public Table addDenormalizedTable(String schema, String catalog, String name, boolean isAbstract,
@@ -311,7 +349,7 @@ public class HibernateStorage implements Storage {
                         throw new DuplicateMappingException(
                                 "Table " + key + " is duplicated.", DuplicateMappingException.Type.TABLE, name); //$NON-NLS-1$ //$NON-NLS-2$
                     }
-                    Table table = new DenormalizedTable(includedTable) {
+                    Table table = new MDMDenormalizedTable(includedTable) {
 
                         @SuppressWarnings({ "rawtypes", "unchecked" })
                         @Override
@@ -758,14 +796,19 @@ public class HibernateStorage implements Storage {
             // Call back closes session once calling code has consumed all results.
             Set<ResultsCallback> callbacks = Collections.<ResultsCallback> singleton(new ResultsCallback() {
 
+                private boolean hasBeginCallBack = false;
+
                 @Override
                 public void onBeginOfResults() {
                     storageClassLoader.bind(Thread.currentThread());
+                    hasBeginCallBack = true;
                 }
 
                 @Override
                 public void onEndOfResults() {
-                    storageClassLoader.unbind(Thread.currentThread());
+                    if (hasBeginCallBack) {
+                        storageClassLoader.unbind(Thread.currentThread());
+                    }
                 }
             });
             return internalFetch(session, userQuery, callbacks);
@@ -989,7 +1032,7 @@ public class HibernateStorage implements Storage {
         }
     }
 
-    private Set<ComplexTypeMetadata> findTypesToDelete(boolean force, Compare.DiffResults diffResults) {
+    public Set<ComplexTypeMetadata> findTypesToDelete(boolean force, Compare.DiffResults diffResults) {
         ImpactAnalyzer analyzer = getImpactAnalyzer();
         Map<ImpactAnalyzer.Impact, List<Change>> impacts = analyzer.analyzeImpacts(diffResults);
         Set<ComplexTypeMetadata> typesToDrop = new HashSet<ComplexTypeMetadata>();
@@ -1129,7 +1172,11 @@ public class HibernateStorage implements Storage {
         // Drop table order should be reversed
         for (int i = sortedTypesToDrop.size() - 1; i >= 0; i--) {
             ComplexTypeMetadata typeMetadata = sortedTypesToDrop.get(i);
-            PersistentClass metadata = configuration.getClassMapping(ClassCreator.getClassName(typeMetadata.getName()));
+            String typeName = typeMetadata.getName();
+            if (!typeMetadata.isInstantiable()) {
+                typeName = "X_" + typeName; //$NON-NLS-1$
+            }
+            PersistentClass metadata = configuration.getClassMapping(ClassCreator.getClassName(typeName));
             if (metadata != null) {
                 tablesToDrop.addAll((Collection<String>) metadata.accept(visitor));
             } else {
@@ -1155,7 +1202,7 @@ public class HibernateStorage implements Storage {
             connection = DriverManager.getConnection(dataSource.getConnectionURL(), dataSource.getUserName(),
                     dataSource.getPassword());
             int successCount = 0;
-            while(successCount < totalCount && totalRound++ < totalCount) {
+            while (successCount < totalCount && totalRound++ < totalCount) {
                 Set<String> dropedTables = new HashSet<String>();
                 for (String table : tablesToDrop) {
                     Statement statement = connection.createStatement();
@@ -1192,38 +1239,16 @@ public class HibernateStorage implements Storage {
         if (newRepository == null) {
             throw new IllegalArgumentException("New data model can not be null."); //$NON-NLS-1$
         }
-        // Compute diff between current data model and new one.
         MetadataRepository previousRepository = getMetadataRepository();
         Compare.DiffResults diffResults = Compare.compare(previousRepository, newRepository);
-        if (diffResults.getActions().isEmpty()) {
-            LOGGER.info("No change detected, no database schema update to perform."); //$NON-NLS-1$
-            return;
-        }
-        // Analyze impact to find types to delete
-        Set<ComplexTypeMetadata> typesToDrop = findTypesToDelete(force, diffResults);
-        if (!typesToDrop.isEmpty()) { // If types to drop, drop them
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug(typesToDrop.size() + " type(s) scheduled for deletion: " + Arrays.toString(typesToDrop.toArray()) //$NON-NLS-1$
-                        + "."); //$NON-NLS-1$
-            }
-            // Find dependent types to delete
-            Set<ComplexTypeMetadata> allDependencies = new HashSet<ComplexTypeMetadata>(); 
-            allDependencies.addAll(typesToDrop);
-            Set<ComplexTypeMetadata> dependentTypesToDrop = findDependentTypesToDelete(previousRepository, typesToDrop, allDependencies);
-            typesToDrop.addAll(dependentTypesToDrop);
-            // Sort in dependency order
-            List<ComplexTypeMetadata> sortedTypesToDrop = new ArrayList<ComplexTypeMetadata>(typesToDrop);
-            if(sortedTypesToDrop.size() > 1) {
-                sortedTypesToDrop = MetadataUtils.sortTypes(previousRepository, sortedTypesToDrop, SortType.LENIENT);
-            }
+        List<ComplexTypeMetadata> sortedTypesToDrop = findSortedTypesToDrop(diffResults, force);
+        if (sortedTypesToDrop.size() > 0) {
             // Clean full text index
             cleanFullTextIndex(sortedTypesToDrop);
             // Clean update reports
             cleanUpdateReports(sortedTypesToDrop);
             // Clean impacted tables
             cleanImpactedTables(sortedTypesToDrop);
-        } else {
-            LOGGER.info("Schema changes do no require to drop any database schema element."); //$NON-NLS-1$
         }
         // Reinitialize Hibernate
         LOGGER.info("Completing database schema update..."); //$NON-NLS-1$
@@ -1235,6 +1260,39 @@ public class HibernateStorage implements Storage {
         } catch (Exception e) {
             throw new RuntimeException("Unable to complete database schema update.", e); //$NON-NLS-1$
         }
+    }
+
+    @Override
+    public List<ComplexTypeMetadata> findSortedTypesToDrop(Compare.DiffResults diffResults, boolean force) {
+        List<ComplexTypeMetadata> sortedTypesToDrop = new ArrayList<ComplexTypeMetadata>();
+        MetadataRepository previousRepository = getMetadataRepository();
+        if (diffResults.getActions().isEmpty()) {
+            LOGGER.info("No change detected, no database schema update to perform."); //$NON-NLS-1$
+        } else {
+            // Analyze impact to find types to delete
+            Set<ComplexTypeMetadata> typesToDrop = findTypesToDelete(force, diffResults);
+            if (!typesToDrop.isEmpty()) {
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug(typesToDrop.size()
+                            + " type(s) scheduled for deletion: " + Arrays.toString(typesToDrop.toArray()) //$NON-NLS-1$
+                            + "."); //$NON-NLS-1$
+                }
+                // Find dependent types to delete
+                Set<ComplexTypeMetadata> allDependencies = new HashSet<ComplexTypeMetadata>();
+                allDependencies.addAll(typesToDrop);
+                Set<ComplexTypeMetadata> dependentTypesToDrop = findDependentTypesToDelete(previousRepository, typesToDrop,
+                        allDependencies);
+                typesToDrop.addAll(dependentTypesToDrop);
+                // Sort in dependency order
+                sortedTypesToDrop = new ArrayList<ComplexTypeMetadata>(typesToDrop);
+                if (sortedTypesToDrop.size() > 1) {
+                    sortedTypesToDrop = MetadataUtils.sortTypes(previousRepository, sortedTypesToDrop, SortType.LENIENT);
+                }
+            } else {
+                LOGGER.info("Schema changes do no require to drop any database schema element."); //$NON-NLS-1$
+            }
+        }
+        return sortedTypesToDrop;
     }
 
     @Override

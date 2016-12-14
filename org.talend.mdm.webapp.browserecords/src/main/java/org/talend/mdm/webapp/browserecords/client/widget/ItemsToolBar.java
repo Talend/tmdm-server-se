@@ -13,8 +13,10 @@
 package org.talend.mdm.webapp.browserecords.client.widget;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.talend.mdm.webapp.base.client.SessionAwareAsyncCallback;
 import org.talend.mdm.webapp.base.client.model.BasePagingLoadConfigImpl;
@@ -33,6 +35,7 @@ import org.talend.mdm.webapp.browserecords.client.creator.ItemCreator;
 import org.talend.mdm.webapp.browserecords.client.i18n.MessagesFactory;
 import org.talend.mdm.webapp.browserecords.client.model.BreadCrumbModel;
 import org.talend.mdm.webapp.browserecords.client.model.ItemBean;
+import org.talend.mdm.webapp.browserecords.client.model.ItemNodeModel;
 import org.talend.mdm.webapp.browserecords.client.model.QueryModel;
 import org.talend.mdm.webapp.browserecords.client.mvc.BrowseRecordsView;
 import org.talend.mdm.webapp.browserecords.client.resources.icon.Icons;
@@ -51,7 +54,7 @@ import org.talend.mdm.webapp.browserecords.client.widget.integrity.ListRefresh;
 import org.talend.mdm.webapp.browserecords.client.widget.integrity.LogicalDeleteAction;
 import org.talend.mdm.webapp.browserecords.client.widget.integrity.NoOpPostDeleteAction;
 import org.talend.mdm.webapp.browserecords.client.widget.integrity.PostDeleteAction;
-import org.talend.mdm.webapp.browserecords.server.bizhelpers.ViewHelper;
+import org.talend.mdm.webapp.browserecords.client.widget.treedetail.TreeDetailUtil;
 import org.talend.mdm.webapp.browserecords.shared.AppHeader;
 import org.talend.mdm.webapp.browserecords.shared.ViewBean;
 
@@ -84,6 +87,7 @@ import com.extjs.gxt.ui.client.mvc.Dispatcher;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ToggleButton;
@@ -105,6 +109,7 @@ import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -120,6 +125,12 @@ public class ItemsToolBar extends ToolBar {
     protected Button simulateMatchButton;
 
     protected Button uploadButton;
+
+    protected MenuItem importMenu;
+
+    protected MenuItem exportMenu;
+
+    protected Button bulkUpdateButton;
 
     public final Button searchButton = new Button(MessagesFactory.getMessages().search_btn());
 
@@ -152,6 +163,10 @@ public class ItemsToolBar extends ToolBar {
     private String bookmarkName = null;
 
     private ItemBaseModel currentModel = null;
+
+    private int maxExportRecordsCount = -1;
+
+    private int maxImportRecordsCount = -1;
 
     /*************************************/
 
@@ -188,9 +203,14 @@ public class ItemsToolBar extends ToolBar {
     protected ItemsToolBar() {
         // init user saved model
         userCluster = BrowseRecords.getSession().getAppHeader().getDatacluster();
+
+        maxExportRecordsCount = BrowseRecords.getSession().getAppHeader().getExportRecordsDefaultCount();
+        maxImportRecordsCount = BrowseRecords.getSession().getAppHeader().getImportRecordsDefaultCount();
+
         this.setBorders(false);
         this.setId("ItemsToolBar"); //$NON-NLS-1$
         this.setLayout(new ToolBarLayoutEx());
+
         initToolBar();
     }
 
@@ -259,12 +279,10 @@ public class ItemsToolBar extends ToolBar {
 
         createButton.setEnabled(false);
         uploadButton.setEnabled(true);
-        uploadButton.getMenu().getItemByItemId("importRecords").setEnabled(false); //$NON-NLS-1$
         deleteButton.setEnabled(false);
         String concept = ViewUtil.getConceptFromBrowseItemView(entityCombo.getValue().get("value").toString());//$NON-NLS-1$
         if (!viewBean.getBindingEntityModel().getMetaDataTypes().get(concept).isDenyCreatable()) {
             createButton.setEnabled(true);
-            uploadButton.getMenu().getItemByItemId("importRecords").setEnabled(true); //$NON-NLS-1$
             if (simulateMatchButton != null) {
                 simulateMatchButton.setEnabled(true);
             }
@@ -289,7 +307,9 @@ public class ItemsToolBar extends ToolBar {
                 }
             }
         }
-
+        if (bulkUpdateButton != null) {
+            bulkUpdateButton.setEnabled(true);
+        }
         updateUserCriteriasList();
         this.layout(true);
     }
@@ -307,6 +327,9 @@ public class ItemsToolBar extends ToolBar {
             addSimulateMatchButton();
         }
         addImportAndExportButton();
+        if (((AppHeader) BrowseRecords.getSession().get(UserSession.APP_HEADER)).isEnterprise() && !isStaging()) {
+            addBulkUpdateButton();
+        }
         add(new FillToolItem());
         addEntityCombo();
         updateEntityCombo();
@@ -318,6 +341,7 @@ public class ItemsToolBar extends ToolBar {
         addManageBookButton();
         addBookMarkButton();
         initAdvancedPanel();
+        setUploadButtonVisible();
     }
 
     protected void addCreateButton() {
@@ -329,34 +353,42 @@ public class ItemsToolBar extends ToolBar {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
-                ItemsMainTabPanel.getInstance().removeAll();
-                ItemsListPanel.getInstance().setCreate(true);
-                String concept = ViewUtil.getConceptFromBrowseItemView(entityCombo.getValue().get("value").toString());//$NON-NLS-1$
-
-                EntityModel entityModel = BrowseRecords.getSession().getCurrentEntityModel();
-                ItemBean itemBean = ItemCreator.createDefaultItemBean(concept, entityModel);
-
-                if (ItemsListPanel.getInstance().getGrid() != null) {
-                    ItemsListPanel.getInstance().getGrid().getSelectionModel().deselectAll();
+                List<TabItem> tabItemList = ItemsMainTabPanel.getInstance().getItems();
+                boolean isChangeCurrentRecord = false;
+                String label = "";
+                for (int i = 0; i < tabItemList.size(); i++) {
+                    TabItem tabItem = tabItemList.get(i);
+                    ItemsDetailPanel itemsDetailPanel = (ItemsDetailPanel) tabItem.getWidget(0);
+                    if (itemsDetailPanel != null && itemsDetailPanel.getPrimaryKeyTabWidget() != null) {
+                        // get tree root node from the primary key tab
+                        ItemPanel itemPanel = (ItemPanel) itemsDetailPanel.getPrimaryKeyTabWidget();
+                        ItemNodeModel root = itemPanel.getTree().getRootModel();
+                        label = root != null ? root.getLabel() : "";
+                        isChangeCurrentRecord = root != null ? TreeDetailUtil.isChangeValue(root) : false;
+                        if (isChangeCurrentRecord) {
+                            ItemsMainTabPanel.getInstance().setSelection(tabItem);
+                            break;
+                        }
+                    }
                 }
+                if (isChangeCurrentRecord) {
+                    MessageBox msgBox = MessageBox.confirm(MessagesFactory.getMessages().confirm_title(), MessagesFactory
+                            .getMessages().msg_confirm_close_tab(label), new Listener<MessageBoxEvent>() {
 
-                ItemsDetailPanel panel = ItemsDetailPanel.newInstance();
-                panel.setStaging(isStaging());
-                List<String> pkInfoList = new ArrayList<String>();
-                pkInfoList.add(itemBean.getLabel());
-                panel.initBanner(pkInfoList, itemBean.getDescription());
-                List<BreadCrumbModel> breads = new ArrayList<BreadCrumbModel>();
-                if (itemBean != null) {
-                    breads.add(new BreadCrumbModel("", BreadCrumb.DEFAULTNAME, null, null, false)); //$NON-NLS-1$
-                    breads.add(new BreadCrumbModel(itemBean.getConcept(), itemBean.getLabel(), null, null, true));
+                        @Override
+                        public void handleEvent(MessageBoxEvent be) {
+                            if (Dialog.YES.equals(be.getButtonClicked().getItemId())) {
+                                displayCreatePanel();
+                            } else {
+                                return;
+                            }
+                        }
+                    });
+                    msgBox.getDialog().setWidth(550);
+                    return;
+                } else {
+                    displayCreatePanel();
                 }
-                panel.initBreadCrumb(new BreadCrumb(breads, panel));
-                ViewBean viewBean = (ViewBean) BrowseRecords.getSession().get(UserSession.CURRENT_VIEW);
-                ItemPanel itemPanel = new ItemPanel(panel);
-                panel.addTabItem(itemBean.getLabel(), itemPanel, ItemsDetailPanel.SINGLETON, itemBean.getConcept());
-                itemPanel.initTreeDetail(viewBean, itemBean, ItemDetailToolBar.CREATE_OPERATION, isStaging());
-                ItemsMainTabPanel.getInstance().addMainTabItem(itemBean.getLabel(), panel, itemBean.getConcept());
-                CommonUtil.setCurrentCachedEntity(itemBean.getConcept() + panel.isOutMost(), itemPanel);
             }
 
         });
@@ -463,7 +495,7 @@ public class ItemsToolBar extends ToolBar {
         uploadButton.setIcon(AbstractImagePrototype.create(Icons.INSTANCE.Save()));
         uploadButton.setEnabled(false);
         Menu uploadMenu = new Menu();
-        MenuItem importMenu = new MenuItem(MessagesFactory.getMessages().import_btn());
+        importMenu = new MenuItem(MessagesFactory.getMessages().import_btn());
         importMenu.setId("importRecords"); //$NON-NLS-1$
         importMenu.setIcon(AbstractImagePrototype.create(Icons.INSTANCE.Save()));
         uploadMenu.add(importMenu);
@@ -473,7 +505,7 @@ public class ItemsToolBar extends ToolBar {
             @Override
             public void componentSelected(MenuEvent ce) {
                 final Window window = new Window();
-                window.setSize(480, 260);
+                window.setSize(480, 300);
                 window.setPlain(true);
                 window.setModal(true);
                 window.setBlinkModal(true);
@@ -487,7 +519,7 @@ public class ItemsToolBar extends ToolBar {
             }
         });
 
-        MenuItem exportMenu = new MenuItem(MessagesFactory.getMessages().export_btn());
+        exportMenu = new MenuItem(MessagesFactory.getMessages().export_btn());
         exportMenu.setIcon(AbstractImagePrototype.create(Icons.INSTANCE.Save()));
         uploadMenu.add(exportMenu);
 
@@ -513,6 +545,44 @@ public class ItemsToolBar extends ToolBar {
         });
         uploadButton.setMenu(uploadMenu);
         add(uploadButton);
+    }
+
+    protected void addBulkUpdateButton() {
+        bulkUpdateButton = new Button(MessagesFactory.getMessages().bulkUpdate_btn());
+        bulkUpdateButton.setIcon(AbstractImagePrototype.create(Icons.INSTANCE.BulkUpdate()));
+        bulkUpdateButton.setEnabled(false);
+        bulkUpdateButton.setId("BrowseRecords_BulkUpdate"); //$NON-NLS-1$
+        bulkUpdateButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                ItemsListPanel list = ItemsListPanel.getInstance();
+                if (list.getGrid() != null) {
+                    List<Map<String, Object>> keyMapList = new ArrayList<Map<String, Object>>();
+                    List<ItemBean> selectedItems = list.getGrid().getSelectionModel().getSelectedItems();
+                    if (selectedItems.size() > 0) {
+                        UserSession userSession = BrowseRecords.getSession();
+                        EntityModel entityModel = (EntityModel) userSession.get(UserSession.CURRENT_ENTITY_MODEL);
+                        String[] keys = entityModel.getKeys();
+                        for (int i = 0; i < selectedItems.size(); i++) {
+                            Map<String, Object> keyMap = new HashMap<String, Object>();
+                            for (int j = 0; j < keys.length; j++) {
+                                keyMap.put(keys[j], selectedItems.get(i).get(keys[j]));
+                            }
+                            keyMapList.add(keyMap);
+                        }
+                        BulkUpdatePanel bulkUpdatePanel = new BulkUpdatePanel(BrowseRecords.getSession().getCurrentEntityModel(),
+                                BrowseRecords.getSession().getCurrentView(), keyMapList, isStaging());
+                        bulkUpdatePanel.renderPanel();
+                        Registry.register(BrowseRecords.BULK_UPDATE_PANEL, bulkUpdatePanel);
+                    } else {
+                        MessageBox.alert(MessagesFactory.getMessages().warning_title(), MessagesFactory.getMessages()
+                                .mass_update_choose_warning_message(), null);
+                    }
+                }
+            }
+        });
+        add(bulkUpdateButton);
     }
 
     protected void addEntityCombo() {
@@ -580,7 +650,7 @@ public class ItemsToolBar extends ToolBar {
 
                     if (!GenerateContainer.getDefaultViewPk().equals("")) { //$NON-NLS-1$
                         boolean isExist = false;
-                        String pk = ViewHelper.DEFAULT_VIEW_PREFIX + "_" + GenerateContainer.getDefaultViewPk(); //$NON-NLS-1$   
+                        String pk = "Browse_items_" + GenerateContainer.getDefaultViewPk(); //$NON-NLS-1$   
                         for (ItemBaseModel bm : result) {
                             if (bm.get("value").equals(pk)) { //$NON-NLS-1$                               
                                 entityCombo.setValue(bm);
@@ -619,7 +689,13 @@ public class ItemsToolBar extends ToolBar {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
-                if (simplePanel.getCriteria() != null) {
+                boolean isEmptyValue = false;
+                if (!simplePanel.getOperator().equals("EMPTY_NULL") //$NON-NLS-1$
+                        && (simplePanel.getValue() == null || simplePanel.getValue().equals(""))) { //$NON-NLS-1$
+                    isEmptyValue = true;
+                }
+
+                if (simplePanel.getCriteria() != null && !isEmptyValue) {
                     isSimple = true;
                     String viewPk = entityCombo.getValue().get("value");//$NON-NLS-1$
                     AppEvent event = new AppEvent(BrowseRecordsEvents.SearchView, viewPk);
@@ -1205,6 +1281,37 @@ public class ItemsToolBar extends ToolBar {
         explainWindow.show();
     }
 
+    private void displayCreatePanel() {
+        ItemsMainTabPanel.getInstance().removeAll();
+        ItemsListPanel.getInstance().setCreate(true);
+        String concept = ViewUtil.getConceptFromBrowseItemView(entityCombo.getValue().get("value").toString());//$NON-NLS-1$
+
+        EntityModel entityModel = BrowseRecords.getSession().getCurrentEntityModel();
+        ItemBean itemBean = ItemCreator.createDefaultItemBean(concept, entityModel);
+
+        if (ItemsListPanel.getInstance().getGrid() != null) {
+            ItemsListPanel.getInstance().getGrid().getSelectionModel().deselectAll();
+        }
+
+        ItemsDetailPanel panel = ItemsDetailPanel.newInstance();
+        panel.setStaging(isStaging());
+        List<String> pkInfoList = new ArrayList<String>();
+        pkInfoList.add(itemBean.getLabel());
+        panel.initBanner(pkInfoList, itemBean.getDescription());
+        List<BreadCrumbModel> breads = new ArrayList<BreadCrumbModel>();
+        if (itemBean != null) {
+            breads.add(new BreadCrumbModel("", BreadCrumb.DEFAULTNAME, null, null, false)); //$NON-NLS-1$
+            breads.add(new BreadCrumbModel(itemBean.getConcept(), itemBean.getLabel(), null, null, true));
+        }
+        panel.initBreadCrumb(new BreadCrumb(breads, panel));
+        ViewBean viewBean = (ViewBean) BrowseRecords.getSession().get(UserSession.CURRENT_VIEW);
+        ItemPanel itemPanel = new ItemPanel(panel);
+        panel.addTabItem(itemBean.getLabel(), itemPanel, ItemsDetailPanel.SINGLETON, itemBean.getConcept());
+        itemPanel.initTreeDetail(viewBean, itemBean, ItemDetailToolBar.CREATE_OPERATION, isStaging());
+        ItemsMainTabPanel.getInstance().addMainTabItem(itemBean.getLabel(), panel, itemBean.getConcept());
+        CommonUtil.setCurrentCachedEntity(itemBean.getConcept() + panel.isOutMost(), itemPanel);
+    }
+
     public ItemBaseModel getCurrentModel() {
         return currentModel;
     }
@@ -1253,4 +1360,81 @@ public class ItemsToolBar extends ToolBar {
         return entityCombo;
     }
 
+    protected void setUploadButtonVisible() {
+        if (maxImportRecordsCount == 0 && maxExportRecordsCount == 0) {
+            uploadButton.setVisible(false);
+        }
+
+        if (maxImportRecordsCount == 0) {
+            importMenu.setVisible(false);
+        }
+        if (maxExportRecordsCount == 0) {
+            exportMenu.setVisible(false);
+        }
+    }
+
+    public Button getUploadButton() {
+        return uploadButton;
+    }
+
+    public MenuItem getImportMenu() {
+        return importMenu;
+    }
+
+    public MenuItem getExportMenu() {
+        return exportMenu;
+    }
+
+    protected void openDebugBulkUpdatePanel(BulkUpdatePanel panel) {
+        Window window = new Window();
+        window.setLayout(new FitLayout());
+        window.add(panel);
+        window.setSize(1100, 700);
+        window.setMaximizable(true);
+        window.setModal(false);
+        window.show();
+    }
+
+    protected native void openBulkUpdatePanel(String id, BulkUpdatePanel bulkUpdatePanel)/*-{
+		var tabPanel = $wnd.amalto.core.getTabPanel();
+		var panel = tabPanel.getItem(id);
+		if (panel == undefined) {
+			var panel = @org.talend.mdm.webapp.browserecords.client.widget.ItemsToolBar::convertBulkUpdatePanel(Lorg/talend/mdm/webapp/browserecords/client/widget/BulkUpdatePanel;)(bulkUpdatePanel);
+			tabPanel.add(panel);
+		}
+		tabPanel.setSelection(id);
+    }-*/;
+
+    private native static JavaScriptObject convertBulkUpdatePanel(BulkUpdatePanel bulkUpdatePanel)/*-{
+		var panel = {
+			// imitate extjs's render method, really call gxt code.
+			render : function(el) {
+				var rootPanel = @com.google.gwt.user.client.ui.RootPanel::get(Ljava/lang/String;)(el.id);
+				rootPanel.@com.google.gwt.user.client.ui.RootPanel::add(Lcom/google/gwt/user/client/ui/Widget;)(bulkUpdatePanel);
+			},
+			// imitate extjs's setSize method, really call gxt code.
+			setSize : function(width, height) {
+				bulkUpdatePanel.@org.talend.mdm.webapp.browserecords.client.widget.BulkUpdatePanel::setSize(II)(width, height);
+			},
+			// imitate extjs's getItemId, really return itemId of ContentPanel of GXT.
+			getItemId : function() {
+				return bulkUpdatePanel.@org.talend.mdm.webapp.browserecords.client.widget.BulkUpdatePanel::getItemId()();
+			},
+			// imitate El object of extjs
+			getEl : function() {
+				var el = bulkUpdatePanel.@org.talend.mdm.webapp.browserecords.client.widget.BulkUpdatePanel::getElement()();
+				return {
+					dom : el
+				};
+			},
+			// imitate extjs's doLayout method, really call gxt code.
+			doLayout : function() {
+				return bulkUpdatePanel.@org.talend.mdm.webapp.browserecords.client.widget.BulkUpdatePanel::doLayout()();
+			},
+			title : function() {
+				return bulkUpdatePanel.@org.talend.mdm.webapp.browserecords.client.widget.BulkUpdatePanel::getHeading()();
+			}
+		};
+		return panel;
+    }-*/;
 }

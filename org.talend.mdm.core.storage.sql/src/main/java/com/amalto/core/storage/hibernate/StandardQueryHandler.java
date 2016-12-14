@@ -400,8 +400,8 @@ class StandardQueryHandler extends AbstractQueryHandler {
     @Override
     public StorageResults visit(GroupSize groupSize) {
         Projection groupSizeProjection = Projections.sqlGroupProjection(
-                "count(" + Storage.METADATA_TASK_ID.toUpperCase() + ") as talend_group_size", //$NON-NLS-1$ //$NON-NLS-2$ 
-                Storage.METADATA_TASK_ID, new String[] { "talend_group_size" }, //$NON-NLS-1$
+                "count(this_." + Storage.METADATA_TASK_ID + ") as talend_group_size", //$NON-NLS-1$ //$NON-NLS-2$ 
+                "this_." + Storage.METADATA_TASK_ID, new String[] { "talend_group_size" }, //$NON-NLS-1$ //$NON-NLS-2$ 
                 new org.hibernate.type.Type[] { new IntegerType() });
         projectionList.add(groupSizeProjection);
         return null;
@@ -631,20 +631,15 @@ class StandardQueryHandler extends AbstractQueryHandler {
         }
         // If select is not a projection, selecting root type is enough, otherwise add projection for selected fields.
         if (select.isProjection()) {
+            boolean toDistinct = true;
             projectionList = Projections.projectionList();
             {
                 List<TypedExpression> queryFields = select.getSelectedFields();
                 boolean isCountQuery = false;
-                boolean isContainsGroupSize = false;
-                List<FieldMetadata> keyFields = new ArrayList<FieldMetadata>();
+                boolean hasGroupSize = false;
                 for (Expression selectedField : queryFields) {
                     if (selectedField instanceof GroupSize) {
-                        isContainsGroupSize = true;
-                    } else if (selectedField instanceof Field) {
-                        FieldMetadata fieldMetadata = ((Field) selectedField).getFieldMetadata();
-                        if (fieldMetadata.isKey()) {
-                            keyFields.add(fieldMetadata);
-                        }
+                        hasGroupSize = true;
                     }
                     selectedField.accept(this);
                     if (selectedField instanceof Alias) {
@@ -652,12 +647,15 @@ class StandardQueryHandler extends AbstractQueryHandler {
                         if (alias.getTypedExpression() instanceof Count) {
                             isCountQuery = true;
                         }
+                        if (alias.getTypedExpression() instanceof Distinct) {
+                            toDistinct = false;
+                        }
                     }
                 }
-                // TMDM-9502, If selected fields including "GroupSize and Key Fields", should GROUP BY "Key Fields" too
+                // TMDM-9502, If selected fields including "GroupSize", should GROUP BY "All Key Fields" too
                 // like: "GROUP BY x_talend_task_id, x_id"
-                if (isContainsGroupSize && keyFields.size() > 0) {
-                    for (FieldMetadata keyField : keyFields) {
+                if (hasGroupSize) {
+                    for (FieldMetadata keyField : mainType.getKeyFields()) {
                         Projection projection = Projections.groupProperty(keyField.getName());
                         projectionList.add(projection);
                     }
@@ -671,7 +669,19 @@ class StandardQueryHandler extends AbstractQueryHandler {
                     selectedFields.add(countTypedExpression);
                 }
             }
-            criteria.setProjection(projectionList);
+            // for SELECT DISTINCT, ORDER BY expressions must appear in select list. Or it will throw exception in H2, postgres...
+            for (OrderBy current : select.getOrderBy()) {
+                if ((current.getExpression() instanceof Field && !select.getSelectedFields().contains(current.getExpression()))
+                        || current.getExpression() instanceof Type || current.getExpression() instanceof Alias) {
+                    toDistinct = false;
+                    break;
+                }
+            }
+            if (select.getOrderBy().size() > 0 && toDistinct) {
+                criteria.setProjection(Projections.distinct(projectionList));
+            } else {
+                criteria.setProjection(projectionList);
+            }
         } else {
             // TMDM-5388: Hibernate sometimes returns duplicate results (like for User stored in System storage), this
             // line avoids this situation.

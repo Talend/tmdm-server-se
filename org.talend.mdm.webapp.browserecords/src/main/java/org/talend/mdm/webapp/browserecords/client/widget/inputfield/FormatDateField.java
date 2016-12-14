@@ -108,7 +108,7 @@ public class FormatDateField extends DateField {
             }
             return value == null ? "" : propertyEditor.getStringValue(value); //$NON-NLS-1$
         } catch (Exception e) {
-            if (!super.validateValue(rawValue)) {
+            if (!this.validateValue(rawValue)) {
                 return rawValue;
             }
             return value == null ? "" : propertyEditor.getStringValue(value); //$NON-NLS-1$
@@ -177,7 +177,11 @@ public class FormatDateField extends DateField {
 
     @Override
     public boolean validateValue(String value) {
-        return super.validateValue(value);
+        if (formatPattern != null && formatPattern.trim().length() > 0 && this.value != null) {
+            return super.validateValue(propertyEditor.getStringValue(this.value));
+        } else {
+            return super.validateValue(value);
+        }
     }
 
     public void setValidateFlag(boolean validateFlag) {
@@ -342,6 +346,25 @@ public class FormatDateField extends DateField {
                 menu.getDatePicker().focus();
             }
         });
+    }
+
+    @Override
+    public Date getValue() {
+        if (!rendered) {
+            return value;
+        }
+        String v = getRawValue();
+        if (emptyText != null && v.equals(emptyText)) {
+            return null;
+        }
+        if (v == null || v.equals("")) {
+            return null;
+        }
+        try {
+            return propertyEditor.convertStringValue(v);
+        } catch (Exception e) {
+            return value;
+        }
     }
 
     public HashMap<String, String> getUserProperties() {

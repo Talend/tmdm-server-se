@@ -30,8 +30,11 @@ import org.apache.commons.httpclient.params.HttpClientParams;
  */
 public class BulkloadClientUtil {
 
+    public static final String JVM_STICKY_SESSION = "sticky_session"; //$NON-NLS-1$
+    public static final String DEFAULT_STICKY_SESSION = "JSESSIONID"; //$NON-NLS-1$
+
     public static void bulkload(String url, String cluster, String concept, String datamodel, boolean validate, boolean smartpk, boolean insertonly,
-            InputStream itemdata, String username, String password, String transactionId, String universe, String tokenKey,
+            InputStream itemdata, String username, String password, String transactionId, String sessionId, String universe, String tokenKey,
             String tokenValue) throws Exception {
         HostConfiguration config = new HostConfiguration();
         URI uri = new URI(url, false, "UTF-8"); //$NON-NLS-1$
@@ -62,6 +65,9 @@ public class BulkloadClientUtil {
             if (transactionId != null) {
                 putMethod.setRequestHeader("transaction-id", transactionId); //$NON-NLS-1$
             }
+            if (sessionId != null) {
+                putMethod.setRequestHeader("Cookie", getStickySession() + "=" + sessionId); //$NON-NLS-1$ //$NON-NLS-2$
+            }
             if (tokenKey != null && tokenValue != null) {
                 putMethod.setRequestHeader(tokenKey, tokenValue);
             }
@@ -90,12 +96,20 @@ public class BulkloadClientUtil {
         }
     }
 
+    public static String getStickySession() {
+        String stickySession = System.getProperty(JVM_STICKY_SESSION);
+        if (stickySession == null) {
+            stickySession = DEFAULT_STICKY_SESSION;
+        }
+        return stickySession;
+    }
+
     public static InputStreamMerger bulkload(String url, String cluster, String concept, String dataModel, boolean validate,
-            boolean smartPK, boolean insertOnly, String username, String password, String transactionId, String universe, String tokenKey,
+            boolean smartPK, boolean insertOnly, String username, String password, String transactionId, String sessionId, String universe, String tokenKey,
             String tokenValue, AtomicInteger startedBulkloadCount) {
         InputStreamMerger merger = new InputStreamMerger();
         Runnable loadRunnable = new AsyncLoadRunnable(url, cluster, concept, dataModel, validate, smartPK, insertOnly, merger, username,
-                password, transactionId, universe, tokenKey, tokenValue, startedBulkloadCount);
+                password, transactionId, sessionId, universe, tokenKey, tokenValue, startedBulkloadCount);
         Thread loadThread = new Thread(loadRunnable);
         loadThread.start();
         return merger;
@@ -125,6 +139,8 @@ public class BulkloadClientUtil {
 
         private final String transactionId;
 
+        private final String sessionId;
+
         private final String universe;
 
         private final String tokenKey;
@@ -134,7 +150,7 @@ public class BulkloadClientUtil {
         private final AtomicInteger startedBulkloadCount;
 
         public AsyncLoadRunnable(String url, String cluster, String concept, String dataModel, boolean validate, boolean smartPK, boolean insertOnly,
-                InputStreamMerger inputStream, String userName, String password, String transactionId, String universe,
+                InputStreamMerger inputStream, String userName, String password, String transactionId, String sessionId, String universe,
                 String tokenKey, String tokenValue, AtomicInteger startedBulkloadCount) {
             this.url = url;
             this.cluster = cluster;
@@ -147,6 +163,7 @@ public class BulkloadClientUtil {
             this.userName = userName;
             this.password = password;
             this.transactionId = transactionId;
+            this.sessionId = sessionId;
             this.universe = universe;
             this.tokenKey = tokenKey;
             this.tokenValue = tokenValue;
@@ -158,7 +175,7 @@ public class BulkloadClientUtil {
             try {
                 startedBulkloadCount.incrementAndGet();
                 bulkload(url, cluster, concept, dataModel, validate, smartPK, insertOnly, inputStream, userName, password,
-                        transactionId, universe, tokenKey, tokenValue);
+                        transactionId, sessionId, universe, tokenKey, tokenValue);
             } catch (Throwable e) {
                 inputStream.reportFailure(e);
             } finally {

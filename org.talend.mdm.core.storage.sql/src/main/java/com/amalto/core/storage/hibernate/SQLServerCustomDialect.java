@@ -12,6 +12,7 @@
 package com.amalto.core.storage.hibernate;
 
 import org.hibernate.dialect.SQLServer2008Dialect;
+import org.hibernate.type.StandardBasicTypes;
 
 import java.sql.Types;
 
@@ -26,5 +27,10 @@ public class SQLServerCustomDialect extends SQLServer2008Dialect {
         registerColumnType(Types.CLOB, "nvarchar(max)"); //$NON-NLS-1$
         registerColumnType(Types.VARCHAR, 4000, "nvarchar($l)"); //$NON-NLS-1$
         registerColumnType(Types.CHAR, "nchar(1)"); //$NON-NLS-1$
+        registerColumnType(Types.NVARCHAR, 4000, "nvarchar($l)"); //$NON-NLS-1$
+        registerColumnType(Types.NVARCHAR, "nvarchar(max)"); //$NON-NLS-1$
+        
+        registerHibernateType(Types.NVARCHAR, StandardBasicTypes.STRING.getName());
+        registerHibernateType(Types.LONGNVARCHAR, StandardBasicTypes.TEXT.getName());
     }
 }

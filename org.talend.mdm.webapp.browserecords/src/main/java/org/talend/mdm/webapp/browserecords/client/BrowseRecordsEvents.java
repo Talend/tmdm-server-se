@@ -74,4 +74,8 @@ public class BrowseRecordsEvents {
     public static final int DefaultViewCode = 30013;
 
     public static final EventType DefaultView = new EventType(DefaultViewCode);
+
+    public static final int BulkUpdateItemCode = 30015;
+
+    public static final EventType BulkUpdateItem = new EventType(BulkUpdateItemCode);
 }

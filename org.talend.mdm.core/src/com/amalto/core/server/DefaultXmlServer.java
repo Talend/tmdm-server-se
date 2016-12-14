@@ -176,6 +176,15 @@ public class DefaultXmlServer implements XmlServer {
         }
     }
 
+    public ArrayList<String> runQuery(String clusterName, String query, String[] parameters, boolean includeNullValue)
+            throws XtentisException {
+        try {
+            return server.runQuery(clusterName, query, parameters, includeNullValue);
+        } catch (XmlServerException e) {
+            throw new XtentisException(e);
+        }
+    }
+
     public List<String> getItemPKsByCriteria(ItemPKCriteria criteria) throws XtentisException {
         try {
             return server.getItemPKsByCriteria(criteria);

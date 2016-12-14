@@ -1,5 +1,9 @@
 package org.talend.mdm.webapp.general.client.layout;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.talend.mdm.webapp.base.client.util.MultilanguageMessageParser;
 import org.talend.mdm.webapp.base.client.util.UserContextUtil;
 import org.talend.mdm.webapp.general.client.i18n.MessageFactory;
 import org.talend.mdm.webapp.general.client.mvc.GeneralEvent;
@@ -64,6 +68,7 @@ public class ActionsPanel extends FormPanel {
         dataContainerBox.setTypeAhead(true);
         dataContainerBox.setTriggerAction(TriggerAction.ALL);
         dataContainerBox.setEditable(disabled);
+        dataContainerBox.setTemplate(getTemplate());
         dataModelBox.setFieldLabel(MessageFactory.getMessages().data_model());
         dataModelBox.setDisplayField("value"); //$NON-NLS-1$
         dataModelBox.setValueField("value"); //$NON-NLS-1$
@@ -73,6 +78,7 @@ public class ActionsPanel extends FormPanel {
         dataModelBox.setTypeAhead(true);
         dataModelBox.setTriggerAction(TriggerAction.ALL);
         dataModelBox.setEditable(disabled);
+        dataModelBox.setTemplate(getTemplate());
         saveBtn.disable();
         formData = new FormData();
         formData.setMargins(new Margins(3, 0, 3, 0));
@@ -122,6 +128,11 @@ public class ActionsPanel extends FormPanel {
                     for (ComboBoxModel dataModel : dataContainerBox.getStore().getModels()) {
                         if (selectedValue.equals(dataModel.getValue())) {
                             dataContainerBox.setValue(dataModel);
+                            if (dataModel.getText() != null && !dataModel.getText().isEmpty()) {
+                                dataContainerBox.setTitle(dataModel.getText());
+                            } else {
+                                dataContainerBox.setTitle(null);
+                            }
                             containerSelectFlag = true;
                             saveBtn.enable();
                             saveConfigBtn.enable();
@@ -156,6 +167,11 @@ public class ActionsPanel extends FormPanel {
                     for (ComboBoxModel dataModel : dataModelBox.getStore().getModels()) {
                         if (selectedValue.equals(dataModel.getValue())) {
                             dataModelBox.setValue(dataModel);
+                            if (dataModel.getText() != null && !dataModel.getText().isEmpty()) {
+                                dataModelBox.setTitle(dataModel.getText());
+                            } else {
+                                dataModelBox.setTitle(null);
+                            }
                             modelSelectFlag = true;
                             return;
                         }
@@ -173,8 +189,11 @@ public class ActionsPanel extends FormPanel {
         containerStore.removeAll();
         dataStore.removeAll();
 
-        containerStore.add(action.getClusters());
-        dataStore.add(action.getModels());
+        List<ComboBoxModel> modelList = getDataModelListForTransferToCurrentLanguageValue(action.getModels());
+        List<ComboBoxModel> clusterList = getClusterListCopyModelDescription(action.getClusters(), modelList);
+
+        dataStore.add(modelList);
+        containerStore.add(clusterList);
 
         ComboBoxModel cluster = containerStore.findModel("value", action.getCurrentCluster()); //$NON-NLS-1$
         if (cluster != null) {
@@ -196,4 +215,48 @@ public class ActionsPanel extends FormPanel {
     public String getDataModel() {
         return dataModelBox.getValue().getValue();
     }
+
+    public ComboBox<ComboBoxModel> getDataContainerBox() {
+        return dataContainerBox;
+    }
+
+    public ComboBox<ComboBoxModel> getDataModelBox() {
+        return dataModelBox;
+    }
+
+    protected List<ComboBoxModel> getDataModelListForTransferToCurrentLanguageValue(List<ComboBoxModel> oldModelList) {
+        List<ComboBoxModel> modelList = new ArrayList<ComboBoxModel>(oldModelList);
+
+        for (ComboBoxModel model : modelList) {
+            String transferValue = MultilanguageMessageParser.getValueByLanguage(model.getText(), UserContextUtil.getLanguage());
+            transferValue = transferValue == null ? "" : transferValue ;
+            model.setText(transferValue);
+        }
+
+        return modelList;
+    }
+
+    protected List<ComboBoxModel> getClusterListCopyModelDescription(List<ComboBoxModel> oldClusterList,
+            List<ComboBoxModel> modelList) {
+        List<ComboBoxModel> clusters = new ArrayList<ComboBoxModel>(oldClusterList);
+
+        for (int i = 0; i < clusters.size(); i++) {
+            ComboBoxModel cluster = clusters.get(i);
+            for (ComboBoxModel model : modelList) {
+                if (cluster.getValue().equals(model.getValue())) {
+                    clusters.get(i).setText(model.getText());
+                    break;
+                }
+            }
+        }
+        return clusters;
+    }
+
+    private native String getTemplate() /*-{
+    return [
+            '<tpl for=".">',
+            '<div class="x-combo-list-item" title="{text}">{value}</div>',
+            '</tpl>' ].join("");
+}-*/;
+
 }

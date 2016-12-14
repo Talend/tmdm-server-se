@@ -45,13 +45,13 @@ import com.amalto.core.storage.record.metadata.DataRecordMetadata;
 
 public class DataRecordXmlWriter implements DataRecordWriter {
 
-    private final String rootElementName;
+    protected final String rootElementName;
 
-    private final boolean includeMetadata;
+    protected final boolean includeMetadata;
 
-    private ComplexTypeMetadata type;
+    protected ComplexTypeMetadata type;
 
-    private SecuredStorage.UserDelegator delegator = SecuredStorage.UNSECURED;
+    protected SecuredStorage.UserDelegator delegator = SecuredStorage.UNSECURED;
 
     public DataRecordXmlWriter() {
         rootElementName = null;
@@ -115,22 +115,21 @@ public class DataRecordXmlWriter implements DataRecordWriter {
         this.delegator = delegator;
     }
 
-    private static void writeMetadataField(Writer writer, MetadataField metadataField, Object value) throws IOException {
+    protected static void writeMetadataField(Writer writer, MetadataField metadataField, Object value) throws IOException {
         String fieldName = metadataField.getFieldName();
         if (value != null) { // TMDM-7521: Don't serialize null values to XML (prevent "null" string in result).
             writer.write("<" + fieldName + ">" + String.valueOf(value) + "</" + fieldName + ">"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         }
     }
 
-    private String getRootElementName(DataRecord record) {
+    protected String getRootElementName(DataRecord record) {
         return rootElementName == null ? record.getType().getName() : rootElementName;
     }
 
-    private class FieldPrinter extends DefaultMetadataVisitor<Void> {
+    class FieldPrinter extends DefaultMetadataVisitor<Void> {
 
-        private final DataRecord record;
-
-        private final Writer out;
+        protected final DataRecord record;
+        protected final Writer out;
 
         public FieldPrinter(DataRecord record, Writer out) {
             this.record = record;

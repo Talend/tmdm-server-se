@@ -9,9 +9,12 @@
  */
 package org.talend.mdm.webapp.journal.server;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
@@ -29,12 +32,12 @@ import org.talend.mdm.webapp.base.server.ForeignKeyHelper;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import com.amalto.core.objects.ItemPOJO;
-import com.amalto.core.objects.ItemPOJOPK;
 import com.amalto.core.history.Document;
 import com.amalto.core.history.DocumentTransformer;
 import com.amalto.core.history.MutableDocument;
 import com.amalto.core.history.accessor.Accessor;
+import com.amalto.core.objects.ItemPOJO;
+import com.amalto.core.objects.ItemPOJOPK;
 import com.amalto.core.objects.datacluster.DataClusterPOJOPK;
 import com.amalto.core.util.Util;
 import com.amalto.core.util.XtentisException;
@@ -68,23 +71,124 @@ public class ForeignKeyInfoTransformer implements DocumentTransformer {
         Map<ReferenceFieldMetadata, String> referenceFieldMetadataAndPaths = metadata.accept(new ForeignKeyInfoResolver());
 
         for (ReferenceFieldMetadata referenceFieldMetadata : referenceFieldMetadataAndPaths.keySet()) {
-            String path = referenceFieldMetadata.getPath();
-            if (path.equals("")) { //$NON-NLS-1$
-                path = referenceFieldMetadataAndPaths.get(referenceFieldMetadata);
-            }
-
-            if (referenceFieldMetadata.isMany()) {
-                boolean occurrencePathExists = true;
-                for (int i = 1; occurrencePathExists == true; i++) {
-                    occurrencePathExists = setForeignKeyValue(document, path + '[' + i + ']', referenceFieldMetadata);
-                }
-            } else {
-                setForeignKeyValue(document, path, referenceFieldMetadata);
-            }
-
+            List<PathItem> pathItems = getPathItems(referenceFieldMetadata);
+            doTransform(document, referenceFieldMetadata, pathItems, 0);
         }
 
         return document;
+    }
+
+    private void doTransform(MutableDocument document, ReferenceFieldMetadata referenceFieldMetadata, List<PathItem> pathItems,
+            int currentIndex) {
+        PathItem currentItem = pathItems.get(currentIndex);
+        boolean branchPathExists = document.createAccessor(getPath(pathItems, currentIndex)).exist();
+        while (branchPathExists) {
+            if (currentIndex == pathItems.size() - 1) {
+                setForeignKeyValues(document, referenceFieldMetadata, pathItems);
+                branchPathExists = false;
+            } else {
+                doTransform(document, referenceFieldMetadata, pathItems, currentIndex + 1);
+                for (int i = currentIndex + 1; i < pathItems.size(); i++) {
+                    pathItems.get(i).reset();
+                }
+                if (currentItem.isMany) {
+                    currentItem.next();
+                    branchPathExists = document.createAccessor(getPath(pathItems, currentIndex)).exist();
+                } else {
+                    branchPathExists = false;
+                }
+            }
+        }
+    }
+
+    private static class PathItem {
+
+        public String name;
+
+        public boolean isMany;
+
+        public int index;
+
+        public PathItem(String name, boolean isMany) {
+            this.name = name;
+            this.isMany = isMany;
+            if (isMany) {
+                index = 1;
+            } else {
+                index = 0;
+            }
+        }
+
+        public String getPath() {
+            if (isMany) {
+                return name + "[" + index + "]"; //$NON-NLS-1$ //$NON-NLS-2$
+            } else {
+                return name;
+            }
+        }
+
+        public void reset() {
+            if (isMany) {
+                this.index = 1;
+            }
+        }
+
+        public void next() {
+            if (isMany) {
+                this.index++;
+            }
+        }
+
+        @Override
+        public String toString() {
+            return "[Name=" + name + ", isMany=" + isMany + ", index=" + index + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        }
+
+    }
+
+    private List<PathItem> getPathItems(ReferenceFieldMetadata referenceFieldMetadata) {
+        List<PathItem> paths = new ArrayList<PathItem>();
+        paths.add(new PathItem(referenceFieldMetadata.getName(), referenceFieldMetadata.isMany()));
+        processField(paths, referenceFieldMetadata.getContainingType().getContainer());
+        Collections.reverse(paths);
+        return paths;
+    }
+
+    private void processField(List<PathItem> paths, FieldMetadata field) {
+        if (field != null) {
+            paths.add(new PathItem(field.getName(), field.isMany()));
+            if (field instanceof ContainedTypeFieldMetadata) {
+                processField(paths, field.getContainingType().getContainer());
+            }
+        }
+    }
+
+    private String getPath(List<PathItem> items, int currentBranchIndex) {
+        String path = ""; //$NON-NLS-1$
+        for (int i = 0; i < items.size(); i++) {
+            path += items.get(i).getPath();
+            if (i == currentBranchIndex) {
+                break;
+            }
+            if (i < items.size() - 1) {
+                path += "/"; //$NON-NLS-1$
+            }
+        }
+        return path;
+    }
+
+    public void setForeignKeyValues(MutableDocument document, ReferenceFieldMetadata referenceFieldMetadata,
+            List<PathItem> pathItems) {
+        PathItem leafItem = pathItems.get(pathItems.size() - 1);
+        if (leafItem.isMany) {
+            boolean pathExists = true;
+            while (pathExists) {
+                pathExists = setForeignKeyValue(document, getPath(pathItems, pathItems.size() - 1), referenceFieldMetadata);
+                leafItem.next();
+            }
+        } else {
+            setForeignKeyValue(document, getPath(pathItems, pathItems.size() - 1), referenceFieldMetadata);
+        }
     }
 
     private boolean setForeignKeyValue(MutableDocument document, String path, ReferenceFieldMetadata referenceFieldMetadata) {
@@ -94,7 +198,7 @@ public class ForeignKeyInfoTransformer implements DocumentTransformer {
             String resolvedForeignKeyInfo = resolveForeignKeyValue(referenceFieldMetadata, foreignKeyValue); // Value to be displayed to users
 
             if ("".equals(resolvedForeignKeyInfo)) { //$NON-NLS-1$
-                resolvedForeignKeyInfo=foreignKeyValue;
+                resolvedForeignKeyInfo = foreignKeyValue;
             }
             accessor.set(resolvedForeignKeyInfo);
             if (LOG.isDebugEnabled()) {
@@ -108,7 +212,6 @@ public class ForeignKeyInfoTransformer implements DocumentTransformer {
         return false;
     }
 
-    @SuppressWarnings("unused")
     private String resolveForeignKeyValue(ReferenceFieldMetadata foreignKeyField, String foreignKeyValue) {
         String referencedTypeName = foreignKeyField.getReferencedType().getName();
         String returnForeignKeyValue = foreignKeyValue;

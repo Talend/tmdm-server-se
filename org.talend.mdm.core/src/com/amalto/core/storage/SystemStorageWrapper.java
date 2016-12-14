@@ -291,10 +291,6 @@ public class SystemStorageWrapper extends StorageWrapper {
             if (type == null) {
                 return -1; // TODO
             }
-            if (DROPPED_ITEM_TYPE.equals(type.getName())) {
-                // head.Product.Product.0-
-                uniqueID = uniqueID.substring(0, uniqueID.length() - 1);
-            }
             MetadataRepository repository = storage.getMetadataRepository();
             DataRecord record = reader.read(repository, type, root);
             for (FieldMetadata keyField : type.getKeyFields()) {

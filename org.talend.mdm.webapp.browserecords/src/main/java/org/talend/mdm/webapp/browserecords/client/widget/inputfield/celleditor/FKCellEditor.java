@@ -10,8 +10,11 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 
 public class FKCellEditor extends CellEditor {
 
+    private ForeignKeyField field;
+    
     public FKCellEditor(ForeignKeyField field) {
         super(field);
+        this.field = field;
     }
 
     @Override
@@ -23,6 +26,9 @@ public class FKCellEditor extends CellEditor {
 
         ItemBean itemBean = grid.getSelectionModel().getSelectedItem();
         ForeignKeyBean fkBean = itemBean.getForeignkeyDesc((String) value);
+        if (fkBean == null && field != null && field.getSuggestBox() != null) {
+            field.getSuggestBox().setValue(null);
+        }
         return fkBean;
     }
 

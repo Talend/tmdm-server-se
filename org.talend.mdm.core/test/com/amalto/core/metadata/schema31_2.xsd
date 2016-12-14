@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:import namespace="http://www.w3.org/2001/XMLSchema" />
+    <xsd:element name="EA">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element name="EAId" type="xsd:string" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="FK1ToEB" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey">EB</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKeyInfo">EB/EBId</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="FK4ToEBName" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey">EB</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKeyInfo">EB/name</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="EA">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="EAId" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="EB">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element name="EBId" type="xsd:string" />
+                <xsd:element maxOccurs="1" minOccurs="1" name="name" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="EB">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="EBId" />
+            <xsd:field xpath="name" />
+        </xsd:unique>
+    </xsd:element>
+</xsd:schema>

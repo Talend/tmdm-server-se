@@ -92,4 +92,76 @@ public class XMLUnwrapperTest extends TestCase {
         assertEquals(2, i);
     }
 
+    public void testInheritanceType() throws Exception {
+        XMLStreamUnwrapper tokenizer = new XMLStreamUnwrapper(
+                new ByteArrayInputStream(
+                        "<records xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><Societe><CodeOSMOSE>1</CodeOSMOSE><Contacts><Contact><StatutContactFk>[1]</StatutContactFk><SpecialisationContactType xsi:type=\"SpecialisationContactEmail\"><NatureEmailFk>[2]</NatureEmailFk><Email>1234</Email></SpecialisationContactType></Contact></Contacts><EtablissementsConso/></Societe></records>"
+                                .getBytes()));
+        int i = 0;
+        while (tokenizer.hasMoreElements()) {
+            i++;
+            final String element = tokenizer.nextElement();
+            assertEquals(
+                    "<Societe xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><CodeOSMOSE>1</CodeOSMOSE><Contacts><Contact><StatutContactFk>[1]</StatutContactFk><SpecialisationContactType xsi:type=\"SpecialisationContactEmail\"><NatureEmailFk>[2]</NatureEmailFk><Email>1234</Email></SpecialisationContactType></Contact></Contacts><EtablissementsConso/></Societe>",
+                    element);
+        }
+        assertEquals(1, i);
+
+        tokenizer = new XMLStreamUnwrapper(
+                new ByteArrayInputStream(
+                        "<records xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><Societe xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><CodeOSMOSE>1</CodeOSMOSE><Contacts><Contact><StatutContactFk>[1]</StatutContactFk><SpecialisationContactType xsi:type=\"SpecialisationContactEmail\"><NatureEmailFk>[2]</NatureEmailFk><Email>1234</Email></SpecialisationContactType></Contact></Contacts><EtablissementsConso/></Societe></records>"
+                                .getBytes()));
+        i = 0;
+        while (tokenizer.hasMoreElements()) {
+            i++;
+            final String element = tokenizer.nextElement();
+            assertEquals(
+                    "<Societe xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><CodeOSMOSE>1</CodeOSMOSE><Contacts><Contact><StatutContactFk>[1]</StatutContactFk><SpecialisationContactType xsi:type=\"SpecialisationContactEmail\"><NatureEmailFk>[2]</NatureEmailFk><Email>1234</Email></SpecialisationContactType></Contact></Contacts><EtablissementsConso/></Societe>",
+                    element);
+        }
+        assertEquals(1, i);
+
+        tokenizer = new XMLStreamUnwrapper(
+                new ByteArrayInputStream(
+                        "<records><Societe xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><CodeOSMOSE>1</CodeOSMOSE><Contacts><Contact><StatutContactFk>[1]</StatutContactFk><SpecialisationContactType xsi:type=\"SpecialisationContactEmail\"><NatureEmailFk>[2]</NatureEmailFk><Email>1234</Email></SpecialisationContactType></Contact></Contacts><EtablissementsConso/></Societe></records>"
+                                .getBytes()));
+        i = 0;
+        while (tokenizer.hasMoreElements()) {
+            i++;
+            final String element = tokenizer.nextElement();
+            assertEquals(
+                    "<Societe xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><CodeOSMOSE>1</CodeOSMOSE><Contacts><Contact><StatutContactFk>[1]</StatutContactFk><SpecialisationContactType xsi:type=\"SpecialisationContactEmail\"><NatureEmailFk>[2]</NatureEmailFk><Email>1234</Email></SpecialisationContactType></Contact></Contacts><EtablissementsConso/></Societe>",
+                    element);
+        }
+        assertEquals(1, i);
+
+        tokenizer = new XMLStreamUnwrapper(
+                new ByteArrayInputStream(
+                        "<records xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><Societe><CodeOSMOSE>1</CodeOSMOSE><Contacts><Contact><StatutContactFk>[1]</StatutContactFk><SpecialisationContactType xsi:type=\"SpecialisationContactEmail\"><NatureEmailFk>[2]</NatureEmailFk><Email>1234</Email></SpecialisationContactType></Contact></Contacts><EtablissementsConso/></Societe><Societe><CodeOSMOSE>1</CodeOSMOSE><Contacts><Contact><StatutContactFk>[1]</StatutContactFk><SpecialisationContactType xsi:type=\"SpecialisationContactEmail\"><NatureEmailFk>[2]</NatureEmailFk><Email>1234</Email></SpecialisationContactType></Contact></Contacts><EtablissementsConso/></Societe><Societe><CodeOSMOSE>1</CodeOSMOSE><Contacts><Contact><StatutContactFk>[1]</StatutContactFk><SpecialisationContactType xsi:type=\"SpecialisationContactEmail\"><NatureEmailFk>[2]</NatureEmailFk><Email>1234</Email></SpecialisationContactType></Contact></Contacts><EtablissementsConso/></Societe><Societe><CodeOSMOSE>1</CodeOSMOSE><Contacts><Contact><StatutContactFk>[1]</StatutContactFk><SpecialisationContactType xsi:type=\"SpecialisationContactEmail\"><NatureEmailFk>[2]</NatureEmailFk><Email>1234</Email></SpecialisationContactType></Contact></Contacts><EtablissementsConso/></Societe></records>"
+                                .getBytes()));
+        i = 0;
+        while (tokenizer.hasMoreElements()) {
+            i++;
+            final String element = tokenizer.nextElement();
+            assertEquals(
+                    "<Societe xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><CodeOSMOSE>1</CodeOSMOSE><Contacts><Contact><StatutContactFk>[1]</StatutContactFk><SpecialisationContactType xsi:type=\"SpecialisationContactEmail\"><NatureEmailFk>[2]</NatureEmailFk><Email>1234</Email></SpecialisationContactType></Contact></Contacts><EtablissementsConso/></Societe>",
+                    element);
+        }
+        assertEquals(4, i);
+
+        tokenizer = new XMLStreamUnwrapper(
+                new ByteArrayInputStream(
+                        "<records><Societe xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><CodeOSMOSE>1</CodeOSMOSE><Contacts><Contact><StatutContactFk>[1]</StatutContactFk><SpecialisationContactType xsi:type=\"SpecialisationContactEmail\"><NatureEmailFk>[2]</NatureEmailFk><Email>1234</Email></SpecialisationContactType></Contact></Contacts><EtablissementsConso/></Societe><Societe xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><CodeOSMOSE>1</CodeOSMOSE><Contacts><Contact><StatutContactFk>[1]</StatutContactFk><SpecialisationContactType xsi:type=\"SpecialisationContactEmail\"><NatureEmailFk>[2]</NatureEmailFk><Email>1234</Email></SpecialisationContactType></Contact></Contacts><EtablissementsConso/></Societe><Societe xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><CodeOSMOSE>1</CodeOSMOSE><Contacts><Contact><StatutContactFk>[1]</StatutContactFk><SpecialisationContactType xsi:type=\"SpecialisationContactEmail\"><NatureEmailFk>[2]</NatureEmailFk><Email>1234</Email></SpecialisationContactType></Contact></Contacts><EtablissementsConso/></Societe><Societe xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><CodeOSMOSE>1</CodeOSMOSE><Contacts><Contact><StatutContactFk>[1]</StatutContactFk><SpecialisationContactType xsi:type=\"SpecialisationContactEmail\"><NatureEmailFk>[2]</NatureEmailFk><Email>1234</Email></SpecialisationContactType></Contact></Contacts><EtablissementsConso/></Societe></records>"
+                                .getBytes()));
+        i = 0;
+        while (tokenizer.hasMoreElements()) {
+            i++;
+            final String element = tokenizer.nextElement();
+            assertEquals(
+                    "<Societe xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><CodeOSMOSE>1</CodeOSMOSE><Contacts><Contact><StatutContactFk>[1]</StatutContactFk><SpecialisationContactType xsi:type=\"SpecialisationContactEmail\"><NatureEmailFk>[2]</NatureEmailFk><Email>1234</Email></SpecialisationContactType></Contact></Contacts><EtablissementsConso/></Societe>",
+                    element);
+        }
+        assertEquals(4, i);
+    }
+
 }

@@ -328,7 +328,7 @@ public class CommonUtil {
                             if (typeModel != null) {
                                 if (typeModel.getForeignKeyInfo() != null && typeModel.getForeignKeyInfo().size() > 0
                                         && !"".equals(value)) { //$NON-NLS-1$
-                                    value = ForeignKeyHelper.getDisplayValue(value, foreignKeyPath, getCurrentDataCluster(),
+                                    value = ForeignKeyHelper.getDisplayValue(value, foreignKeyPath, getCurrentDataCluster(isStaging),
                                             entityModel, language);
                                 }
 

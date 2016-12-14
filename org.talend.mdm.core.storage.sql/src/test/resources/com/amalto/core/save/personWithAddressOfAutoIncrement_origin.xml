@@ -1,0 +1,27 @@
+<ii>
+	<c>person</c>
+	<n>person</n>
+	<dmn>person</dmn>
+	<i>1</i>
+	<t>1</t>
+	<p>
+		<person>
+			<personId>1</personId>
+			<dwellingAddresses>
+				<address>
+					<idAddress>1</idAddress>
+					<type>swissMailAddress</type>
+				</address>
+				<address>
+					<idAddress>2</idAddress>
+					<type>swissHQAddress</type>
+				</address>
+				<address>
+					<idAddress>3</idAddress>
+					<type>foreignMailAddress</type>
+				</address>
+			</dwellingAddresses>
+			<active>true</active>
+		</person>
+	</p>
+</ii>

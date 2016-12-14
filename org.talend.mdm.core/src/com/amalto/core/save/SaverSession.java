@@ -19,6 +19,7 @@ import org.talend.mdm.commmon.util.webapp.XSystemObjects;
 import com.amalto.core.history.DeleteType;
 import com.amalto.core.history.Document;
 import com.amalto.core.history.MutableDocument;
+import com.amalto.core.save.context.StorageDocument;
 import com.amalto.core.save.context.StorageSaverSource;
 import com.amalto.core.save.context.SaverContextFactory;
 import com.amalto.core.save.context.SaverSource;
@@ -175,11 +176,17 @@ public class SaverSession {
             boolean needResetAutoIncrement = false;
             for (Map.Entry<String, List<Document>> currentTransaction : itemsToUpdate.entrySet()) {
                 String dataCluster = currentTransaction.getKey();
+                int itemCounter = 0;
+                String recordId = ""; //$NON-NLS-1$
                 try {
                     committer.begin(dataCluster);
                     Iterator<Document> iterator = currentTransaction.getValue().iterator();
                     while (iterator.hasNext()) {
+                        itemCounter++;
                         Document currentItemToCommit = iterator.next();
+                        if (StorageDocument.class.isInstance(currentItemToCommit)) {
+                            recordId = DataRecord.getId(((StorageDocument)currentItemToCommit).getDataRecord());
+                        }
                         if (!needResetAutoIncrement) {
                             needResetAutoIncrement = isAutoIncrementItem(currentItemToCommit);
                         }
@@ -193,6 +200,9 @@ public class SaverSession {
                     committer.commit(dataCluster);
                 } catch (Exception e) {
                     committer.rollback(dataCluster);
+                    if (e.getCause() != null) {
+                        throw new MultiRecordsSaveException(getCauseMessage(e), e.getCause(), recordId, itemCounter);
+                    }
                     throw e;
                 }
             }
@@ -240,6 +250,21 @@ public class SaverSession {
                 }
             }
         }
+    }
+    
+    /**
+     * Get cause message.
+     * @param throwable exception.
+     */
+    public String getCauseMessage(Throwable throwable) {
+        if (throwable != null) {
+            if (throwable.getCause() == null) {
+                return throwable.getMessage();
+            } else {
+                return getCauseMessage(throwable.getCause());
+            }
+        }
+        return ""; //$NON-NLS-1$
     }
 
     /**

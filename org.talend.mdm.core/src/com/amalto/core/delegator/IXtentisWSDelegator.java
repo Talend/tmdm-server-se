@@ -83,6 +83,7 @@ import com.amalto.core.objects.transformers.util.TransformerPluginVariableDescri
 import com.amalto.core.objects.transformers.util.TypedContent;
 import com.amalto.core.objects.view.ViewPOJOPK;
 import com.amalto.core.query.user.UserQueryBuilder;
+import com.amalto.core.save.MultiRecordsSaveException;
 import com.amalto.core.save.SaveException;
 import com.amalto.core.save.SaverHelper;
 import com.amalto.core.save.SaverSession;
@@ -107,6 +108,7 @@ import com.amalto.core.storage.StorageResults;
 import com.amalto.core.storage.StorageType;
 import com.amalto.core.storage.exception.ConstraintViolationException;
 import com.amalto.core.storage.exception.FullTextQueryCompositeKeyException;
+import com.amalto.core.storage.exception.UnsupportedFullTextQueryException;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.util.BeforeDeletingErrorException;
 import com.amalto.core.util.BeforeSavingErrorException;
@@ -160,6 +162,9 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
 
     // default save exception message
     public static final String SAVE_EXCEPTION_MESSAGE = "save_fail"; //$NON-NLS-1$
+    
+    // default save exception message
+    public static final String MULTI_RECORDS_SAVE_EXCEPTION_MESSAGE = "save_multi_records_fail"; //$NON-NLS-1$
 
     // define before saving report in error level
     public static final String SAVE_PROCESS_BEFORE_SAVING_FAILURE_MESSAGE = "save_failure_beforesaving_validate_error"; //$NON-NLS-1$ 
@@ -178,6 +183,9 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
     // full text query entity include composite key
     public static final String FULLTEXT_QUERY_COMPOSITE_KEY_EXCEPTION_MESSAGE = "fulltext_query_compositekey_fail"; //$NON-NLS-1$
 
+    // Unsupported keywords in generated lucene query error
+    public static final String UNSUPPORTED_FULLTEXT_QUERY_EXCEPTION_MESSAGE = "unsupported_fulltext_query_error"; //$NON-NLS-1$
+    
     // default remote error
     public static final String DEFAULT_REMOTE_ERROR_MESSAGE = "default_remote_error_message"; //$NON-NLS-1$
 
@@ -936,7 +944,9 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
             WSPutItemWithReport[] items = wsPutItemWithReportArray.getWsPutItem();
             List<WSItemPK> pks = new LinkedList<WSItemPK>();
             SaverSession session = SaverSession.newSession();
+            int itemCounter = 0;
             for (WSPutItemWithReport item : items) {
+                itemCounter++;
                 WSPutItem wsPutItem = item.getWsPutItem();
                 String source = item.getSource();
                 String dataClusterName = wsPutItem.getWsDataClusterPK().getPk();
@@ -955,6 +965,12 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
                     }
                     // Expected (legacy) behavior: set the before saving message as source.
                     item.setSource(e.getBeforeSavingMessage());
+                    if (e.getCause() != null) {
+                        if (StringUtils.isEmpty(e.getMessage()) && e.getCause() != null) {
+                            throw new RemoteException("Could not save record.", new MultiRecordsSaveException(e.getCause().getMessage(), e.getCause(), itemCounter)); //$NON-NLS-1$
+                        }
+                        throw new RemoteException("Could not save record.", new MultiRecordsSaveException(e.getMessage(), e.getCause(), itemCounter)); //$NON-NLS-1$
+                    }
                     throw new RemoteException("Could not save record.", e); //$NON-NLS-1$
                 }
                 pks.add(new WSItemPK(new WSDataClusterPK(), saver.getSavedConceptName(), saver.getSavedId()));
@@ -2588,6 +2604,12 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
             coreException = new CoreException(ROUTING_ERROR_MESSAGE, throwable);
         } else if (FullTextQueryCompositeKeyException.class.isInstance(throwable)) {
             coreException = new CoreException(FULLTEXT_QUERY_COMPOSITE_KEY_EXCEPTION_MESSAGE, throwable);
+        } else if (SaveException.class.isInstance(throwable)) {
+            coreException = new CoreException(SAVE_EXCEPTION_MESSAGE, throwable);
+        } else if (MultiRecordsSaveException.class.isInstance(throwable)) {
+            coreException = new CoreException(MULTI_RECORDS_SAVE_EXCEPTION_MESSAGE, throwable);
+        } else if (UnsupportedFullTextQueryException.class.isInstance(throwable)) {
+            coreException = new CoreException(UNSUPPORTED_FULLTEXT_QUERY_EXCEPTION_MESSAGE, throwable);
         } else {
             if (throwable.getCause() != null) {
                 return handleException(throwable.getCause(), errorMessage);

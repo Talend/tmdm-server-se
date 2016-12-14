@@ -178,7 +178,7 @@ class ManyFieldAccessor implements DOMAccessor {
         }
 
         // if the parent is exist and have no the child, will remove.
-        if (parent.exist() && isEmptyChild()) {
+        if (parent.exist() && isEmptyChildForXSIType()) {
             Node parentNode = parent.getNode();
             parentNode.getParentNode().removeChild(parentNode);
         }
@@ -188,10 +188,10 @@ class ManyFieldAccessor implements DOMAccessor {
         return parent.exist() && getCollectionItemNode() != null;
     }
 
-    public boolean isEmptyChild() {
+    public boolean isEmptyChildForXSIType() {
         Node parentNode = parent.getNode();
         NodeList childs = parentNode.getChildNodes();
-        return childs.getLength() == 0;
+        return childs.getLength() == 0; // && parentNode.getAttributes().getNamedItem("xsi:type") != null;
     }
 
     public void markModified(Marker marker) {

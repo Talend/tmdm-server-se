@@ -824,7 +824,7 @@ public class DocumentSaveTest extends TestCase {
                         add(new String[] { "Kids/Kid[2]/Habits/Habit[3]", "Boxing", "null" });
                         add(new String[] { "Kids/Kid[2]/Habits/Habit[2]", "Football", "null" });
                         add(new String[] { "Kids/Kid[2]/Habits/Habit[1]", "Basketball", "null" });
-                        add(new String[] { "Kids/Kid[2]/Habits", "", "null" });
+                        //add(new String[] { "Kids/Kid[2]/Habits", "", "null" });
                     }
                 });
                 put("report3", new ArrayList<String[]>() {
@@ -1466,20 +1466,13 @@ public class DocumentSaveTest extends TestCase {
         path = (String) evaluate(doc.getDocumentElement(), "Item[2]/path");
         oldValue = (String) evaluate(doc.getDocumentElement(), "Item[2]/oldValue");
         newValue = (String) evaluate(doc.getDocumentElement(), "Item[2]/newValue");
-        assertEquals("detail[1]/@xsi:type", path);
-        assertEquals("ContractDetailType", oldValue);
-        assertEquals("ContractDetailSubType", newValue);
-
-        path = (String) evaluate(doc.getDocumentElement(), "Item[3]/path");
-        oldValue = (String) evaluate(doc.getDocumentElement(), "Item[3]/oldValue");
-        newValue = (String) evaluate(doc.getDocumentElement(), "Item[3]/newValue");
         assertEquals("detail[1]/code", path);
         assertEquals("code-original", oldValue);
         assertEquals("code-new", newValue);
 
-        path = (String) evaluate(doc.getDocumentElement(), "Item[4]/path");
-        oldValue = (String) evaluate(doc.getDocumentElement(), "Item[4]/oldValue");
-        newValue = (String) evaluate(doc.getDocumentElement(), "Item[4]/newValue");
+        path = (String) evaluate(doc.getDocumentElement(), "Item[3]/path");
+        oldValue = (String) evaluate(doc.getDocumentElement(), "Item[3]/oldValue");
+        newValue = (String) evaluate(doc.getDocumentElement(), "Item[3]/newValue");
         assertEquals("detail[1]/features/actor", path);
         assertEquals("", oldValue);
         assertEquals("actor-new", newValue);
@@ -1539,37 +1532,22 @@ public class DocumentSaveTest extends TestCase {
         assertEquals("actor-original", oldValue);
         assertEquals("null", newValue);
 
-        path = (String) evaluate(doc.getDocumentElement(), "Item[5]/path");
         oldValue = (String) evaluate(doc.getDocumentElement(), "Item[5]/oldValue");
         newValue = (String) evaluate(doc.getDocumentElement(), "Item[5]/newValue");
-        assertEquals("detail[1]/features", path);
-        assertEquals("", oldValue);
+        assertEquals("detail[1]/features/actor", path);
+        assertEquals("true", oldValue);
         assertEquals("null", newValue);
 
         path = (String) evaluate(doc.getDocumentElement(), "Item[6]/path");
         oldValue = (String) evaluate(doc.getDocumentElement(), "Item[6]/oldValue");
         newValue = (String) evaluate(doc.getDocumentElement(), "Item[6]/newValue");
-        assertEquals("detail[1]/boolTest", path);
-        assertEquals("true", oldValue);
+        assertEquals("detail[1]/ReadOnlyEle", path);
+        assertEquals("[readOnlyEle-original]", oldValue);
         assertEquals("null", newValue);
 
         path = (String) evaluate(doc.getDocumentElement(), "Item[7]/path");
         oldValue = (String) evaluate(doc.getDocumentElement(), "Item[7]/oldValue");
         newValue = (String) evaluate(doc.getDocumentElement(), "Item[7]/newValue");
-        assertEquals("detail[1]/ReadOnlyEle", path);
-        assertEquals("[readOnlyEle-original]", oldValue);
-        assertEquals("null", newValue);
-
-        path = (String) evaluate(doc.getDocumentElement(), "Item[8]/path");
-        oldValue = (String) evaluate(doc.getDocumentElement(), "Item[8]/oldValue");
-        newValue = (String) evaluate(doc.getDocumentElement(), "Item[8]/newValue");
-        assertEquals("detail[1]/@xsi:type", path);
-        assertEquals("ContractDetailSubType", oldValue);
-        assertEquals("ContractDetailType", newValue);
-
-        path = (String) evaluate(doc.getDocumentElement(), "Item[9]/path");
-        oldValue = (String) evaluate(doc.getDocumentElement(), "Item[9]/oldValue");
-        newValue = (String) evaluate(doc.getDocumentElement(), "Item[9]/newValue");
         assertEquals("detail[1]/code", path);
         assertEquals("code-original", oldValue);
         assertEquals("code-new", newValue);

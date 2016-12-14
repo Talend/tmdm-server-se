@@ -18,6 +18,7 @@ import com.amalto.core.objects.UpdateReportPOJO;
 import com.amalto.core.save.DocumentSaverContext;
 import com.amalto.core.save.SaverSession;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.metadata.TypeMetadata;
 import org.w3c.dom.Document;
 
@@ -74,7 +75,7 @@ class UpdateReport implements DocumentSaver {
                 updateReportDocument.enableRecordFieldChange();
             }
 
-            if (!(action instanceof ChangeTypeAction) && !isInherit(action)) {
+            if (!(action instanceof ChangeTypeAction) && !isInherit(action, type)) {
                 action.perform(updateReportDocument);
                 action.undo(updateReportDocument);
             }
@@ -88,19 +89,28 @@ class UpdateReport implements DocumentSaver {
         next.save(session, context);
     }
 
-    private boolean isInherit(Action action) {
+    private boolean isInherit(Action action, ComplexTypeMetadata type) {
         if (!(action instanceof FieldUpdateAction)) {
             return false;
         }
         FieldUpdateAction filedUpdateAction = (FieldUpdateAction) action;
 
-        Collection<TypeMetadata> superTypeList = filedUpdateAction.getField().getDeclaringType().getSuperTypes();
-
-        if (superTypeList == null || superTypeList.size() == 0) {
-            return false;
+        String path = filedUpdateAction.getPath();
+        if (path.contains("[") || path.contains("]")) {
+            while (path.contains("[")) {
+                path = path.substring(0, path.indexOf("[")) + path.substring(path.indexOf("]") + 1, path.length());
+            }
         }
 
-        return true;
+        TypeMetadata filedType = type.getField(path).getType();
+
+        if (filedType instanceof ComplexTypeMetadata) {
+            if (((ComplexTypeMetadata) filedType).getContainer().getType().getName()
+                    .startsWith(MetadataRepository.ANONYMOUS_PREFIX)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void setHeader(MutableDocument updateReportDocument, String fieldName, String value) {

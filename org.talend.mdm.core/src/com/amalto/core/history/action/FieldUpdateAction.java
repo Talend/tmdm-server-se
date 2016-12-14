@@ -145,4 +145,8 @@ public class FieldUpdateAction extends AbstractFieldAction {
     public FieldMetadata getField() {
         return updatedField;
     }
+
+    public String getPath() {
+        return path;
+    }
 }

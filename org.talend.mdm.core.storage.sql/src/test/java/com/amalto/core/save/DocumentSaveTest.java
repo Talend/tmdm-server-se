@@ -1832,35 +1832,23 @@ public class DocumentSaveTest extends TestCase {
         saver.save(session, context);
         assertEquals("change the value successfully!", saver.getBeforeSavingMessage());
 
-        String lineSeparator = System.getProperty("line.separator");
         StringBuilder expectedUserXmlBuilder = new StringBuilder(
                 "<Agency xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">");
-        expectedUserXmlBuilder.append(lineSeparator);
         expectedUserXmlBuilder.append("<Id>5258f292-5670-473b-bc01-8b63434682f3</Id>");
-        expectedUserXmlBuilder.append(lineSeparator);
         expectedUserXmlBuilder.append("<Name>beforeSaving_Agency</Name>");
-        expectedUserXmlBuilder.append(lineSeparator);
         expectedUserXmlBuilder.append("<City>Chicago</City>");
-        expectedUserXmlBuilder.append(lineSeparator);
         expectedUserXmlBuilder.append("<State/>");
-        expectedUserXmlBuilder.append(lineSeparator);
         expectedUserXmlBuilder.append("<Zip>04102</Zip>");
-        expectedUserXmlBuilder.append(lineSeparator);
         expectedUserXmlBuilder.append("<Region>EAST</Region>");
-        expectedUserXmlBuilder.append(lineSeparator);
         expectedUserXmlBuilder.append("<Information>");
-        expectedUserXmlBuilder.append(lineSeparator);
         expectedUserXmlBuilder.append("<MoreInfo>http://www.newSite.org</MoreInfo>");
-        expectedUserXmlBuilder.append(lineSeparator);
         expectedUserXmlBuilder.append("<MoreInfo>http://www.newSite2.org</MoreInfo>");
-        expectedUserXmlBuilder.append(lineSeparator);
         expectedUserXmlBuilder.append("</Information>");
-        expectedUserXmlBuilder.append(lineSeparator);
         expectedUserXmlBuilder.append("</Agency>");
-        expectedUserXmlBuilder.append(lineSeparator);
         String expectedUserXml = expectedUserXmlBuilder.toString();
 
-        assertEquals(expectedUserXml, context.getUserDocument().exportToString());
+        assertEquals(expectedUserXml,
+                context.getUserDocument().exportToString().replace("   ", "").replace("\r", "").replace("\n", ""));
         MutableDocument updateReportDocument = context.getUpdateReportDocument();
         assertNotNull(updateReportDocument);
         Document doc = updateReportDocument.asDOM();

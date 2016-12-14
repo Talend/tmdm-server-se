@@ -44,13 +44,9 @@ public class DOMDocumentTest extends TestCase {
     }
 
     public void testIncludeXSINamespace() throws Exception {
-        String lineSeparator = System.getProperty("line.separator");
         StringBuilder xmlBuilder = new StringBuilder("<Organisation xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">");
-        xmlBuilder.append(lineSeparator);
         xmlBuilder.append("<IdOrganisation xsi:type=\"xsd:string\">5797</IdOrganisation>");
-        xmlBuilder.append(lineSeparator);
         xmlBuilder.append("</Organisation>");
-        xmlBuilder.append(lineSeparator);
         String xml = xmlBuilder.toString();
         InputStream documentStream = new ByteArrayInputStream(xml.getBytes("UTF-8"));
         // Parsing
@@ -69,7 +65,7 @@ public class DOMDocumentTest extends TestCase {
             throw new RuntimeException("Unable to parse document to save.", e);
         }
         assertNotNull(userDocument);
-        String result = userDocument.exportToString();
+        String result = userDocument.exportToString().replace("   ", "").replace("\r", "").replace("\n", "");
         assertEquals(xml, result);
     }
 

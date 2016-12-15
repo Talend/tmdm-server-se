@@ -152,7 +152,7 @@ class UnaryFieldAccessor implements DOMAccessor {
     public boolean isEmptyChildForXSIType() {
         Node parentNode = parent.getNode();
         NodeList childs = parentNode.getChildNodes();
-        return childs.getLength() == 0; // && parentNode.getAttributes().getNamedItem("xsi:type") != null;
+        return childs.getLength() == 0;
     }
 
     @Override

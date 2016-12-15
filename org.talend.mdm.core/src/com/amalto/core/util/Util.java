@@ -1250,4 +1250,24 @@ public class Util {
 
         public String message;
     }
+
+    /**
+     * remove the bracket and number between two bracket.
+     * eg.  /detail/feature/actor[1]    = /detail/feature/actor
+     *      /detail/feature[2]/actor    = /detail/feature/actor
+     *      /detail[3]/feature//actor   = /detail/feature/actor
+     *      /detail[s]/feature//actor   = /detail[s]/feature/actor
+     *
+     * @param path path to repalce
+     * @return the path have no the bracket and number between two bracket, return <code>null</code> if path is null
+     */
+    public static String removeBracketWithNumber(String path) {
+        if (path == null) {
+            return null;
+        }
+        if (path.contains("[") || path.contains("]")) { //$NON-NLS-1$ //$NON-NLS-2$
+            path = path.replaceAll("\\[\\d+\\]", ""); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+        return path;
+    }
 }

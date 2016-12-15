@@ -378,6 +378,22 @@ public class UtilTestCase extends TestCase {
         MessageFormat formatter = new MessageFormat(pattern.toString());
         assertEquals("An error occurred.error message one", formatter.format(args));
     }
-    
-    private class TestClassLoader extends ClassLoader {}
+
+    public void testRemoveBracketWithNumber() throws Exception {
+        String expectedResult = "/detail/feature/actor";
+        assertEquals(expectedResult, Util.removeBracketWithNumber("/detail/feature/actor[1]"));
+        assertEquals(expectedResult, Util.removeBracketWithNumber("/detail/feature[2]/actor"));
+        assertEquals(expectedResult, Util.removeBracketWithNumber("/detail[3]/feature/actor"));
+        assertEquals(expectedResult, Util.removeBracketWithNumber("/detail[12]/feature/actor[1]"));
+        assertEquals(expectedResult, Util.removeBracketWithNumber("/detail/feature[13]/actor[1]"));
+        assertEquals(expectedResult, Util.removeBracketWithNumber("/detail[12]/feature[0]/actor[1]"));
+        assertEquals("", Util.removeBracketWithNumber(""));
+
+        assertEquals("/detail/feature/actor[s]", Util.removeBracketWithNumber("/detail/feature/actor[s]"));
+
+        assertNull(Util.removeBracketWithNumber(null));
+    }
+
+    private class TestClassLoader extends ClassLoader {
+    }
 }

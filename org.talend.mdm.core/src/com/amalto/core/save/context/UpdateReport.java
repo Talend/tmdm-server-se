@@ -17,6 +17,9 @@ import com.amalto.core.history.accessor.Accessor;
 import com.amalto.core.objects.UpdateReportPOJO;
 import com.amalto.core.save.DocumentSaverContext;
 import com.amalto.core.save.SaverSession;
+import com.amalto.core.util.Util;
+
+import org.apache.commons.lang.StringUtils;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.metadata.TypeMetadata;
@@ -96,11 +99,7 @@ class UpdateReport implements DocumentSaver {
         FieldUpdateAction filedUpdateAction = (FieldUpdateAction) action;
 
         String path = filedUpdateAction.getPath();
-        if (path.contains("[") || path.contains("]")) {
-            while (path.contains("[")) {
-                path = path.substring(0, path.indexOf("[")) + path.substring(path.indexOf("]") + 1, path.length());
-            }
-        }
+        path = Util.removeBracketWithNumber(path);
 
         TypeMetadata filedType = type.getField(path).getType();
 

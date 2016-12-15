@@ -824,7 +824,6 @@ public class DocumentSaveTest extends TestCase {
                         add(new String[] { "Kids/Kid[2]/Habits/Habit[3]", "Boxing", "null" });
                         add(new String[] { "Kids/Kid[2]/Habits/Habit[2]", "Football", "null" });
                         add(new String[] { "Kids/Kid[2]/Habits/Habit[1]", "Basketball", "null" });
-                        //add(new String[] { "Kids/Kid[2]/Habits", "", "null" });
                     }
                 });
                 put("report3", new ArrayList<String[]>() {

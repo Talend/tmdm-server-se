@@ -666,8 +666,9 @@ class StandardQueryHandler extends AbstractQueryHandler {
                         }
                     }
                 }
-                // TMDM-9502, If selected fields including "GroupSize", should GROUP BY "All Key Fields" too
-                // like: "GROUP BY x_talend_task_id, x_id"
+                // TMDM-9502/TMDM-10395, If selected fields including "GroupSize", besides GROUP BY "x_talend_task_id"
+                // NOT ORACLE DB, should GROUP BY "All Key Fields"
+                // ORACLE DB, need to GROUP BY "All Selected Fields"
                 if (hasGroupSize) {
                     projectionList = optimizeProjectionList(mainType, projectionList);
                 }

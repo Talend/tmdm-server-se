@@ -62,6 +62,10 @@ public class OperationMessageWindow extends Window {
     
     ListStore<ItemResult> store;
     
+    public OperationMessageWindow() {
+        initWindow();
+    }
+    
     public OperationMessageWindow(List<ItemResult> msgs) {
         messages = msgs;
         initWindow();
@@ -148,6 +152,14 @@ public class OperationMessageWindow extends Window {
         panel.setBottomComponent(pagingBar);
         this.setLayout(new FitLayout());        
         this.add(panel);
+    }
+
+    public List<ItemResult> getMessages() {
+        return this.messages;
+    }
+
+    public void setMessages(List<ItemResult> messages) {
+        this.messages = messages;
     }
     
 }

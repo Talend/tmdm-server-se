@@ -193,10 +193,7 @@ public class DataModelHelper {
                 entityModel.getMetaDataTypes().put(currentXPath, typeModel);
             }
 
-            if (e.getType() != null && e.getType().getName() != null && parentTypeModel != null
-                    && e.getType().getName().equals(parentTypeModel.getType().getTypeName())) {
-
-            } else {
+            if (!isCircle(e, parentTypeModel)) {
                 if (typeModel instanceof ComplexTypeModel) {
                     parentTypeModel = (ComplexTypeModel) typeModel;
                 }
@@ -216,6 +213,18 @@ public class DataModelHelper {
             }
 
         }
+    }
+
+    private static boolean isCircle(XSElementDecl e, ComplexTypeModel parentTypeModel) {
+        TypeModel typeModel = parentTypeModel;
+        while (typeModel != null) {
+            if (e.getType() != null && e.getType().getName() != null
+                    && e.getType().getName().equals(typeModel.getType().getTypeName())) {
+                return true;
+            }
+            typeModel = typeModel.getParentTypeModel();
+        }
+        return false;
     }
 
     private static TypeModel parseElement(String currentXPath, XSElementDecl e, TypeModel typeModel, EntityModel entityModel,

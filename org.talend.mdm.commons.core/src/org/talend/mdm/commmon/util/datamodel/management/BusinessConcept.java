@@ -142,7 +142,7 @@ public class BusinessConcept {
     
     public void load() {
         beforeLoad();
-        travelXSElement(getE(), "/" + getName()); //$NON-NLS-1$
+        travelXSElement(getE(), "/" + getName(), null); //$NON-NLS-1$
         if (subReuseTypeMap.size() > 0) {
             Set<String> keySet = subReuseTypeMap.keySet();
             for (String key : keySet) {
@@ -233,7 +233,7 @@ public class BusinessConcept {
      * @param e
      * @param currentXPath
      */
-    private void travelXSElement(XSElementDecl e, String currentXPath) {
+    private void travelXSElement(XSElementDecl e, String currentXPath, List<String> parentTypes) {
         if (e != null) {
             //set base type
             setTypeMap(e, currentXPath);
@@ -245,7 +245,14 @@ public class BusinessConcept {
             parseAnnotation(currentXPath, e);
 
             if (e.getType().isComplexType()) {
-                setSubReuseType(e.getType().getName(), currentXPath);
+                if (parentTypes == null) {
+                    parentTypes = new ArrayList<>();
+                }
+                String typeName = e.getType().getName();
+                if (typeName != null) {
+                    parentTypes.add(typeName);
+                }
+                setSubReuseType(typeName, currentXPath);
                 XSModelGroup group = e.getType().asComplexType().getContentType().asParticle().getTerm().asModelGroup();
                 if (group != null) {
                     XSParticle[] subParticles = group.getChildren();
@@ -253,8 +260,8 @@ public class BusinessConcept {
                         for (int i = 0; i < subParticles.length; i++) {
                             XSParticle xsParticle = subParticles[i];
                             if (xsParticle.getTerm().asElementDecl() != null
-                                    && !xsParticle.getTerm().asElementDecl().getType().equals(e.getType())) {
-                                travelParticle(xsParticle, currentXPath);
+                                    && !parentTypes.contains(xsParticle.getTerm().asElementDecl().getType().getName())) {
+                                travelParticle(xsParticle, currentXPath, parentTypes);
                             }
                         }
                     }
@@ -325,15 +332,15 @@ public class BusinessConcept {
         return e.getType().getBaseType() instanceof RestrictionSimpleTypeImpl;
     }
 
-    private void travelParticle(XSParticle xsParticle, String currentXPath) {
+    private void travelParticle(XSParticle xsParticle, String currentXPath, List<String> parentTypes) {
         if (xsParticle.getTerm().asModelGroup() != null) {
             XSParticle[] xsps = xsParticle.getTerm().asModelGroup().getChildren();
             for (int j = 0; j < xsps.length; j++) {
-                travelParticle(xsps[j], currentXPath);
+                travelParticle(xsps[j], currentXPath, parentTypes);
             }
         } else if (xsParticle.getTerm().asElementDecl() != null) {
             XSElementDecl subElement = xsParticle.getTerm().asElementDecl();
-            travelXSElement(subElement, currentXPath + "/" + subElement.getName()); //$NON-NLS-1$
+            travelXSElement(subElement, currentXPath + "/" + subElement.getName(), parentTypes); //$NON-NLS-1$
         }
     }
 

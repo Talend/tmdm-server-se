@@ -26,10 +26,12 @@ import com.amalto.core.history.MutableDocument;
 import com.amalto.core.history.accessor.Accessor;
 import com.amalto.core.history.action.FieldUpdateAction;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.ContainedComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
 import org.talend.mdm.commmon.metadata.DefaultMetadataVisitor;
 import org.talend.mdm.commmon.metadata.EnumerationFieldMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
+import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
 import org.talend.mdm.commmon.metadata.SimpleTypeFieldMetadata;
 import org.w3c.dom.Node;
@@ -153,9 +155,7 @@ class CreateActions extends DefaultMetadataVisitor<List<Action>> {
             }
         } else {
             path.push(new PathElement(containedField, null));
-            if (!(containedField.getContainingType().getContainer() != null
-                    && containedField.getContainedType().getName()
-                    .equals(containedField.getContainingType().getContainer().getDeclaringType().getName()))) {
+            if (!MetadataRepository.isCircle(containedField.getContainingType())) {
                 super.visit(containedField);
             }
             path.pop();

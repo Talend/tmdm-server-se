@@ -34,4 +34,41 @@
       <xsd:field xpath="Id"/> 
     </xsd:unique> 
   </xsd:element> 
+  <xsd:complexType name="T01"> 
+    <xsd:all> 
+      <xsd:element maxOccurs="1" minOccurs="0" name="e01" type="xsd:string"> 
+        <xsd:annotation> 
+          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo> 
+        </xsd:annotation> 
+      </xsd:element>  
+      <xsd:element maxOccurs="1" minOccurs="0" name="e03" type="T02"> 
+        <xsd:annotation> 
+          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo> 
+        </xsd:annotation> 
+      </xsd:element> 
+    </xsd:all> 
+  </xsd:complexType>  
+  <xsd:element name="bb"> 
+    <xsd:complexType> 
+      <xsd:all> 
+        <xsd:element name="ENY2Id" type="xsd:string"/>  
+        <xsd:element maxOccurs="1" minOccurs="0" name="e01" type="T01"> 
+          <xsd:annotation/> 
+        </xsd:element> 
+      </xsd:all> 
+    </xsd:complexType>  
+    <xsd:unique name="bb"> 
+      <xsd:selector xpath="."/>  
+      <xsd:field xpath="ENY2Id"/> 
+    </xsd:unique> 
+  </xsd:element>  
+  <xsd:complexType name="T02"> 
+    <xsd:all> 
+      <xsd:element maxOccurs="1" minOccurs="0" name="e02" type="T01"> 
+        <xsd:annotation> 
+          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo> 
+        </xsd:annotation> 
+      </xsd:element> 
+    </xsd:all> 
+  </xsd:complexType> 
 </xsd:schema>

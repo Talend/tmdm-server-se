@@ -1710,32 +1710,37 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             } else {
                 if (!model.isAbstract()) {
                     childModels = ((ComplexTypeModel) model).getSubTypes();
-                    if (childModels.size() == 0 && children.item(0) != null
-                            && model.getType().getTypeName().equals(model.getParentTypeModel().getType().getTypeName())) {
+                    if (childModels.size() == 0 && children.item(0) != null) {
+                        TypeModel parentModel = model.getParentTypeModel();
+                        while (parentModel != null) {
+                            if (model.getType().getTypeName().equals(parentModel.getType().getTypeName())) {
+                                List<TypeModel> types = ((ComplexTypeModel) parentModel).getSubTypes();
+                                String parentPath = model.getTypePath();
 
-                        List<TypeModel> types = ((ComplexTypeModel) model.getParentTypeModel()).getSubTypes();
-                        String parentPath = model.getTypePath();
-
-                        for (TypeModel typeModel : types) {
-                            String path = parentPath + "/" + typeModel.getName();
-                            TypeModel childModel = null;
-                            if (typeModel.isSimpleType()) {
-                                childModel = new SimpleTypeModel(typeModel.getName(), typeModel.getType());
-                            } else {
-                                childModel = new ComplexTypeModel(typeModel.getName(), typeModel.getType());
+                                for (TypeModel typeModel : types) {
+                                    String path = parentPath + "/" + typeModel.getName(); //$NON-NLS-1$
+                                    TypeModel childModel = null;
+                                    if (typeModel.isSimpleType()) {
+                                        childModel = new SimpleTypeModel(typeModel.getName(), typeModel.getType());
+                                    } else {
+                                        childModel = new ComplexTypeModel(typeModel.getName(), typeModel.getType());
+                                    }
+                                    childModel.setAbstract(typeModel.isAbstract());
+                                    childModel.setXpath(path);
+                                    childModel.setTypePath(path);
+                                    childModel.setTypePathObject(new TypePath(path, new HashMap<String, List<String>>()));
+                                    childModel.setNillable(typeModel.isNillable());
+                                    childModel.setMinOccurs(typeModel.getMinOccurs());
+                                    childModel.setMaxOccurs(typeModel.getMaxOccurs());
+                                    childModel.setParentTypeModel(model);
+                                    childModels.add(childModel);
+                                    metaDataTypes.put(path, childModel);
+                                }
+                                isModelUpdated = true;
+                                break;
                             }
-                            childModel.setAbstract(typeModel.isAbstract());
-                            childModel.setXpath(path);
-                            childModel.setTypePath(path);
-                            childModel.setTypePathObject(new TypePath(path, new HashMap<String, List<String>>()));
-                            childModel.setNillable(typeModel.isNillable());
-                            childModel.setMinOccurs(typeModel.getMinOccurs());
-                            childModel.setMaxOccurs(typeModel.getMaxOccurs());
-                            childModel.setParentTypeModel(model);
-                            childModels.add(childModel);
-                            metaDataTypes.put(path, childModel);
+                            parentModel = parentModel.getParentTypeModel();
                         }
-                        isModelUpdated = true;
                     }
                 } else {
                     childModels = org.talend.mdm.webapp.browserecords.shared.ReusableType.getDefaultReusableTypeChildren(

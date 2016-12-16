@@ -571,7 +571,9 @@ public class MetadataRepositoryTest extends TestCase {
         repository.load(stream);
 
         ComplexTypeMetadata aa = repository.getComplexType("aa");
+        ComplexTypeMetadata bb = repository.getComplexType("bb");
         assertNotNull(aa);
+        assertNotNull(bb);
     }
 
     public void testMetadataAnnotation() {

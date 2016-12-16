@@ -77,7 +77,8 @@ public class ReusableType {
         beforeLoad();
         parseRootAnnotation(this.xsType);  
         if (this.xsType.isComplexType())
-            traverseXSType(this.xsType.asComplexType().getContentType().asParticle(), "/" + this.xsType.getName(), reusableTypeMap); //$NON-NLS-1$
+            traverseXSType(this.xsType.asComplexType().getContentType().asParticle(),
+                    "/" + this.xsType.getName(), reusableTypeMap, null); //$NON-NLS-1$
     }
 
     private void beforeLoad() {
@@ -87,8 +88,12 @@ public class ReusableType {
         orderValue = null;
     }
 
-    private void traverseXSType(XSParticle e, String currentXPath, Map<String, ReusableType> reusableTypeMap) {
+    private void traverseXSType(XSParticle e, String currentXPath, Map<String, ReusableType> reusableTypeMap,
+            List<String> parentTypes) {
         XSParticle[] particles = e.getTerm().asModelGroup().getChildren();
+        if (parentTypes == null) {
+            parentTypes = new ArrayList<>();
+        }
         for (XSParticle p : particles) {
             XSTerm pterm = p.getTerm();
             if (pterm.isElementDecl()) {
@@ -101,14 +106,15 @@ public class ReusableType {
                         toPutReusableType.load();// parse it
                     }
                     xPathReusableTypeMap.put(xpath, toPutReusableType);
-                    if (toPutReusableType.getName() != null
-                            && !toPutReusableType.getName().equals(currentXPath.substring(1))) {
-                        traverseXSType(el.getType().asComplexType().getContentType().asParticle(), xpath, reusableTypeMap);
+                    if (!parentTypes.contains(el.getType().getName())) {
+                        parentTypes.add(el.getType().getName());
+                        traverseXSType(el.getType().asComplexType().getContentType().asParticle(), xpath, reusableTypeMap,
+                                parentTypes);
                     }
                 }
                 parseAnnotation(el, xpath);
             } else {
-                traverseXSType(p, currentXPath, reusableTypeMap);
+                traverseXSType(p, currentXPath, reusableTypeMap, parentTypes);
             }
         }
     }

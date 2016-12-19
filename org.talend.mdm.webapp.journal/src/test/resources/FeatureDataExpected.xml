@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DataExpected>
+    <EnumValue><EnumValID>e1</EnumValID><EnumType>1-type</EnumType><Value>1-value</Value></EnumValue>
+    <Feature><FeatureCode>f-1</FeatureCode><Name>1-name</Name><Value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="EnumValueType"><EnumType>2</EnumType><EnumFK>1-value</EnumFK></Value></Feature> 
+</DataExpected>

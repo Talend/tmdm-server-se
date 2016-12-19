@@ -9,18 +9,23 @@
  */
 package org.talend.mdm.webapp.journal.server;
 
-import com.amalto.core.objects.ItemPOJO;
-import com.amalto.core.objects.ItemPOJOPK;
-import com.amalto.core.history.DocumentTransformer;
-import com.amalto.core.history.EmptyDocument;
-import com.amalto.core.objects.datacluster.DataClusterPOJOPK;
-import com.amalto.core.save.DOMDocument;
-import com.amalto.core.server.DefaultItem;
-import com.amalto.core.server.api.Item;
-import com.amalto.core.util.Util;
-import com.amalto.core.util.XtentisException;
+import static org.mockito.Mockito.when;
+import static org.powermock.api.support.membermodification.MemberMatcher.method;
+import static org.powermock.api.support.membermodification.MemberModifier.stub;
+
+import java.io.InputStream;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit3.PowerMockSuite;
@@ -31,18 +36,16 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.InputStream;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.mockito.Mockito.when;
-import static org.powermock.api.support.membermodification.MemberMatcher.method;
-import static org.powermock.api.support.membermodification.MemberModifier.stub;
+import com.amalto.core.history.DocumentTransformer;
+import com.amalto.core.history.EmptyDocument;
+import com.amalto.core.objects.ItemPOJO;
+import com.amalto.core.objects.ItemPOJOPK;
+import com.amalto.core.objects.datacluster.DataClusterPOJOPK;
+import com.amalto.core.save.DOMDocument;
+import com.amalto.core.server.DefaultItem;
+import com.amalto.core.server.api.Item;
+import com.amalto.core.util.Util;
+import com.amalto.core.util.XtentisException;
 
 @SuppressWarnings("nls")
 @PrepareForTest({ DefaultItem.class, Util.class })
@@ -102,7 +105,7 @@ public class ForeignKeyInfoTransformerTest extends TestCase {
 
         stub(method(Util.class, "getItemCtrl2Local")).toReturn(itemLocal);
 
-        String[] fks = new String[] { "b1", "b11", "b12", "b2", "c1", "c2", "e1", "f1" };
+        String[] fks = new String[] { "b1", "b11", "b12", "b2", "c1", "c2", "e1", "f1", "m1", "n1" };
 
         ItemPOJO item = null;
         for (String fk : fks) {
@@ -223,6 +226,31 @@ public class ForeignKeyInfoTransformerTest extends TestCase {
         assertEquals(actualFKInfo.get(0), "ID:f1 Name:fname1");
     }
 
+    // TMDM-7696
+    public void testCase_inherit_FK() throws Exception {
+        String recordId = "n1";
+        String conceptName = "Feature";
+
+        InputStream dataExpectedStream = this.getClass().getResourceAsStream("/FeatureDataExpected.xml");
+        dataExpected = documentBuilderFactory.newDocumentBuilder().parse(new InputSource(dataExpectedStream));
+
+        InputStream dataModelStream = this.getClass().getResourceAsStream("/Feature.xsd");
+        metadataRepository = new MetadataRepository();
+        metadataRepository.load(dataModelStream);
+
+        typeMetadata = (ComplexTypeMetadata) metadataRepository.getType(conceptName);
+        document = new DOMDocument(getDocument(recordId), typeMetadata, clusterName, modelName);
+
+        transformer = new ForeignKeyInfoTransformer(typeMetadata, clusterName);
+        ((ForeignKeyInfoTransformer) transformer).setMetadataRepository(metadataRepository);
+
+        transformedDocument = document.transform(transformer);
+
+        String path = fkPaths.get(recordId);
+        List<String> actualFKInfo = extractFKInfo(((DOMDocument) transformedDocument).asDOM(), path);
+        assertEquals("m1-1-keyinfo", actualFKInfo.get(0));
+    }
+
     // TMDM-9146 The second FK should show FK infos in journal not show the id value.
     public void testCase_FK_multiLevel_ismany() {
         String recordId = "a13";
@@ -306,6 +334,12 @@ public class ForeignKeyInfoTransformerTest extends TestCase {
         case 'f':
             referencedTypeName = "F";
             break;
+        case 'm':
+            referencedTypeName = "EnumValue";
+            break;
+        case 'n':
+            referencedTypeName = "Feature";
+            break;
         }
 
         pk.setConceptName(referencedTypeName);
@@ -351,6 +385,7 @@ public class ForeignKeyInfoTransformerTest extends TestCase {
         fkPaths.put("a12", "//A[A_Id='a12']/FK_to_B/text()");
         fkPaths.put("g1", "//G[G_Id='g1']/FK_to_F/text()");
         fkPaths.put("h1", "//H[H_Id='h1']/FK_to_F/text()");
+        fkPaths.put("n1", "//Feature[FeatureCode='f-1']/Value/EnumFK/text()");
 
         // entity data to be referenced by other entity data
         xmlDomRecordInputs.put("e1", "<E><E_Id>e1</E_Id><E_Name>ename1</E_Name><E_Title>etitle1</E_Title></E>");
@@ -419,5 +454,10 @@ public class ForeignKeyInfoTransformerTest extends TestCase {
                 "<A><A_Id>a13</A_Id><A_Name>aname1</A_Name><BCollection2><FK_to_B>[b1]</FK_to_B><FK_to_B>[b2]</FK_to_B></BCollection2>"
                                 + "<BCollection2><FK_to_B>[b1]</FK_to_B><FK_to_B>[b2]</FK_to_B><SubBColleciton><FK_to_C>[c1]</FK_to_C><FK_to_C>[c2]</FK_to_C></SubBColleciton></BCollection2>"
                                 + "<BCollection2><FK_to_B>[b1]</FK_to_B><FK_to_B>[b2]</FK_to_B></BCollection2></A>");
+        xmlDomRecordInputs.put("m1",
+                "<EnumValue><EnumValID>m1</EnumValID><EnumType>1-type</EnumType><Value>1-keyinfo</Value></EnumValue>");
+        xmlDomRecordInputs
+                .put("n1",
+                        "<Feature><FeatureCode>f-1</FeatureCode><Name>1-name</Name><Value xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"EnumValueType\"><EnumType>2</EnumType><EnumFK>[m1]</EnumFK></Value></Feature>");
     }
 }

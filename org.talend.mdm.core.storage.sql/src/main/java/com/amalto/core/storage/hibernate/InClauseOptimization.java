@@ -147,7 +147,6 @@ public class InClauseOptimization extends StandardQueryHandler {
             int i = 0;
             Criterion condition;
             while (keyFieldIterator.hasNext()) {
-                //inClause.append(alias).append('.').append(resolver.get(keyFieldIterator.next())).append(" IN ").append('('); //$NON-NLS-1$
                 Iterator<Object[]> valuesIterator = values.iterator();
                 while (valuesIterator.hasNext()) {
                     Object propertyValue = valuesIterator.next()[i];

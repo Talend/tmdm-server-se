@@ -10,7 +10,7 @@
 
 package com.amalto.core.storage.hibernate;
 
-import static com.amalto.core.query.user.UserQueryBuilder.*;
+import static com.amalto.core.query.user.UserQueryBuilder.from;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,6 +27,8 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.CriteriaQuery;
 import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.NullExpression;
+import org.hibernate.criterion.SimpleExpression;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.engine.spi.TypedValue;
 import org.hibernate.type.IntegerType;
@@ -85,11 +87,11 @@ public class InClauseOptimization extends StandardQueryHandler {
             if (select.getCondition() != null) {
                 qb.where(select.getCondition());
             }
-            List<String[]> constants;
+            List<Object[]> constants;
             if (limit != Integer.MAX_VALUE) {
-                constants = new ArrayList<String[]>(limit);
+                constants = new ArrayList<Object[]>(limit);
             } else {
-                constants = new LinkedList<String[]>();
+                constants = new LinkedList<Object[]>();
             }
             // Get ids for constant list
             StorageResults records = storage.fetch(qb.getSelect()); // Expects an active transaction here
@@ -103,11 +105,11 @@ public class InClauseOptimization extends StandardQueryHandler {
             } else {
                 for (DataRecord record : records) {
                     Set<FieldMetadata> setFields = record.getSetFields();
-                    String[] constant = new String[setFields.size()];
+                    Object[] constant = new Object[setFields.size()];
                     int i = 0;
                     for (FieldMetadata setField : setFields) {
                         Object o = record.get(setField);
-                        constant[i++] = String.valueOf(o);
+                        constant[i++] = o;
                     }
                     constants.add(constant);
                 }
@@ -130,9 +132,9 @@ public class InClauseOptimization extends StandardQueryHandler {
 
         private final TableResolver resolver;
 
-        private final List<String[]> values;
+        private final List<Object[]>            values;
 
-        public IdInConstantClause(Collection<FieldMetadata> keyFields, TableResolver resolver, List<String[]> values) {
+        public IdInConstantClause(Collection<FieldMetadata> keyFields, TableResolver resolver, List<Object[]> values) {
             this.keyFields = keyFields;
             this.resolver = resolver;
             this.values = values;
@@ -141,19 +143,28 @@ public class InClauseOptimization extends StandardQueryHandler {
         @Override
         public String toSqlString(Criteria criteria, CriteriaQuery criteriaQuery) throws HibernateException {
             StringBuilder inClause = new StringBuilder();
-            String alias = criteriaQuery.getSQLAlias(criteria);
             Iterator<FieldMetadata> keyFieldIterator = keyFields.iterator();
             int i = 0;
+            Criterion condition;
             while (keyFieldIterator.hasNext()) {
-                inClause.append(alias).append('.').append(resolver.get(keyFieldIterator.next())).append(" IN ").append('('); //$NON-NLS-1$
-                Iterator<String[]> valuesIterator = values.iterator();
+                //inClause.append(alias).append('.').append(resolver.get(keyFieldIterator.next())).append(" IN ").append('('); //$NON-NLS-1$
+                Iterator<Object[]> valuesIterator = values.iterator();
                 while (valuesIterator.hasNext()) {
-                    inClause.append('\'').append(valuesIterator.next()[i]).append('\'');
+                    Object propertyValue = valuesIterator.next()[i];
+
+                    boolean isString = propertyValue instanceof String;
+                    if (propertyValue != null) {
+                        condition = new MDMSimpleExpression(resolver.get(keyFieldIterator.next()).toString(), propertyValue, "=",
+                                isString);
+                    } else {
+                        condition = new MDMNullExpression(resolver.get(keyFieldIterator.next()));
+                    }
+
+                    inClause.append(condition.toSqlString(criteria, criteriaQuery));
                     if (valuesIterator.hasNext()) {
                         inClause.append(',');
                     }
                 }
-                inClause.append(')');
                 if (keyFieldIterator.hasNext()) {
                     inClause.append(" AND "); //$NON-NLS-1$
                 }
@@ -164,7 +175,31 @@ public class InClauseOptimization extends StandardQueryHandler {
 
         @Override
         public TypedValue[] getTypedValues(Criteria criteria, CriteriaQuery criteriaQuery) throws HibernateException {
-            return new TypedValue[0];
+            List<TypedValue> list = new ArrayList<TypedValue>();
+            TypedValue[] typeValue = new TypedValue[keyFields.size()];
+            Iterator<FieldMetadata> keyFieldIterator = keyFields.iterator();
+            int i = 0;
+            while (keyFieldIterator.hasNext()) {
+                String propertyName = resolver.get(keyFieldIterator.next());
+                Iterator<Object[]> valuesIterator = values.iterator();
+                while (valuesIterator.hasNext()) {
+                    Object propertyValue = valuesIterator.next()[i];
+
+                    boolean isString = propertyValue instanceof String;
+
+                    if (propertyValue != null) {
+                        Object casedValue = isString ? propertyValue.toString().toLowerCase() : propertyValue;
+                        list.add(criteriaQuery.getTypedValue(criteria, propertyName, casedValue));
+                        typeValue[i] = criteriaQuery.getTypedValue(criteria, propertyName, casedValue);
+                    } else {
+                        list.add((new TypedValue[0])[0]);
+                        typeValue[i] = null;
+                    }
+                }
+                i++;
+            }
+
+            return typeValue;
         }
     }
 
@@ -213,5 +248,23 @@ public class InClauseOptimization extends StandardQueryHandler {
                 return new TypedValue[] { new TypedValue(new IntegerType(), limit, EntityMode.POJO) };
             }
         }
+    }
+}
+
+class MDMSimpleExpression extends SimpleExpression {
+
+    public MDMSimpleExpression(String propertyName, Object value, String op) {
+        super(propertyName, value, op);
+    }
+
+    public MDMSimpleExpression(String propertyName, Object value, String op, boolean ignoreCase) {
+        super(propertyName, value, op, ignoreCase);
+    }
+}
+
+class MDMNullExpression extends NullExpression {
+
+    protected MDMNullExpression(String propertyName) {
+        super(propertyName);
     }
 }

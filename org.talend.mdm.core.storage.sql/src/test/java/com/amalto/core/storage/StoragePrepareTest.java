@@ -9,11 +9,14 @@
  */
 package com.amalto.core.storage;
 
+import static com.amalto.core.query.user.UserQueryBuilder.eq;
 import static com.amalto.core.query.user.UserQueryBuilder.from;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import junit.framework.TestCase;
 
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
@@ -247,6 +250,59 @@ public class StoragePrepareTest extends TestCase {
         storage.end();
         ClassLoader StorageClassLoader2 = (ClassLoader) Thread.currentThread().getContextClassLoader();
         assertEquals(StorageClassLoader, StorageClassLoader2);
+    }
+
+    // TMDM-10222
+    public void testInClauseHandle() {
+        Storage storage = new SecuredStorage(new HibernateStorage("Features", StorageType.MASTER), userSecurity);//$NON-NLS-1$
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(StoragePrepareTest.class.getResourceAsStream("Features.xsd"));//$NON-NLS-1$
+        MockMetadataRepositoryAdmin.INSTANCE.register("Features", repository);//$NON-NLS-1$
+
+        storage.init(getDatasource("H2-DS3"));//    //$NON-NLS-1$
+        storage.prepare(repository, Collections.<Expression> emptySet(), true, true);
+        ((MockStorageAdmin) ServerContext.INSTANCE.get().getStorageAdmin()).register(storage);
+
+        ComplexTypeMetadata factFacturesStg = repository.getComplexType("FactFacturesStg");//$NON-NLS-1$
+        ComplexTypeMetadata Factures = repository.getComplexType("Factures");//$NON-NLS-1$
+
+        List<DataRecord> records = new ArrayList<DataRecord>();
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+        // scale is less than define, expect result will be enlarge to define scale length
+        records.add(factory
+                .read(repository,
+                        factFacturesStg,
+                        "<FactFacturesStg><CodeEntiteFact>1</CodeEntiteFact><CodeServiceFact>1</CodeServiceFact><NoDocument>1</NoDocument><DateDocument>2016-07-20</DateDocument><CycleDocument>1</CycleDocument><OrigineDocument>1</OrigineDocument><FluxDocument>1</FluxDocument><RefTiersPrestation>1</RefTiersPrestation><LignesFacturesStg><IdLigne>1</IdLigne></LignesFacturesStg><TvaFacturesStg><IdLigneTva>1</IdLigneTva></TvaFacturesStg></FactFacturesStg>")); //$NON-NLS-1$
+        try {
+            storage.begin();
+            storage.update(records);
+            storage.commit();
+        } finally {
+            storage.end();
+        }
+
+        UserQueryBuilder qb = from(factFacturesStg).where(eq(factFacturesStg.getField("CodeEntiteFact"), "1"));
+        qb.getSelect().getPaging().setLimit(10);
+        storage.begin();
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+            for (DataRecord result : results) {
+                assertEquals("1", result.get("CodeServiceFact"));//$NON-NLS-1$ //$NON-NLS-2$
+            }
+
+        } finally {
+            results.close();
+        }
+        storage.end();
+
+        qb = from(factFacturesStg);
+        try {
+            storage.delete(qb.getSelect());
+            storage.commit();
+        } finally {
+            storage.close();
+        }
     }
 
     protected static DataSourceDefinition getDatasource(String dataSourceName) {

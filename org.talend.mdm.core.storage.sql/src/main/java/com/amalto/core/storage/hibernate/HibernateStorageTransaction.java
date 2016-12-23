@@ -288,12 +288,14 @@ class HibernateStorageTransaction extends StorageTransaction {
                     }
                 } finally {
                     try {
-                        /*
-                         * Eviction is not <b>needed</b> (the session will not be reused), but evicts cache in case the
-                         * session is reused.
-                         */
-                        if (session.isOpen() && session.getStatistics().getEntityKeys().size() > 0) {
-                            session.clear();
+                        if (session.isOpen()) {
+                            /*
+                             * Eviction is not <b>needed</b> (the session will not be reused), but evicts cache in case the session
+                             * is reused.
+                             */
+                            if (session.getStatistics().getEntityKeys().size() > 0) {
+                                session.clear();
+                            }
                             session.close();
                         }
                         hasFailed = false;

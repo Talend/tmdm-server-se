@@ -13,12 +13,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.talend.mdm.webapp.base.client.model.DataTypeConstants;
+import org.talend.mdm.webapp.base.client.model.ItemResult;
+import org.talend.mdm.webapp.base.client.widget.OperationMessageWindow;
 import org.talend.mdm.webapp.base.shared.ComplexTypeModel;
 import org.talend.mdm.webapp.base.shared.EntityModel;
 import org.talend.mdm.webapp.base.shared.SimpleTypeModel;
+import org.talend.mdm.webapp.browserecords.client.model.ItemBean;
 import org.talend.mdm.webapp.browserecords.client.model.ItemNodeModel;
+import org.talend.mdm.webapp.browserecords.shared.FKIntegrityResult;
 import org.talend.mdm.webapp.browserecords.shared.ViewBean;
 
 import com.extjs.gxt.ui.client.data.ModelData;
@@ -282,5 +287,59 @@ public class CommonUtilGWTTest extends GWTTestCase {
         list.add("Availability"); //$NON-NLS-1$
         String xml = "<header><item>Id</item><item>Name</item><item>Family</item><item>Price</item><item>Availability</item></header>"; //$NON-NLS-1$        
         assertEquals(xml,CommonUtil.convertList2Xml(list, "header")); //$NON-NLS-1$
+    }
+    
+    public void testSetDeleteItemInfo() throws Exception {
+        Map<ItemBean, FKIntegrityResult> items = new HashMap<ItemBean, FKIntegrityResult>();
+        items.put(new ItemBean("ProductFamily", "1", "<result xmlns:metadata=\"http://www.talend.com/mdm/metadata\"\r\n" +   //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+                "        xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r\n" +  //$NON-NLS-1$
+                "      <Id>1</Id>\r\n" +  //$NON-NLS-1$
+                "      <Name>f1</Name>\r\n" +  //$NON-NLS-1$
+                "      <taskId/>\r\n" +  //$NON-NLS-1$
+                "</result>"), FKIntegrityResult.FORBIDDEN); //$NON-NLS-1$
+        items.put(new ItemBean("ProductFamily", "2", "<result xmlns:metadata=\"http://www.talend.com/mdm/metadata\"\r\n" +  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                "        xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r\n" +  //$NON-NLS-1$
+                "      <Id>2</Id>\r\n" +  //$NON-NLS-1$
+                "      <Name>f2</Name>\r\n" +  //$NON-NLS-1$
+                "      <taskId/>\r\n" +   //$NON-NLS-1$
+                "</result>"), FKIntegrityResult.FORBIDDEN); //$NON-NLS-1$
+        items.put(new ItemBean("ProductFamily", "3", "<result xmlns:metadata=\"http://www.talend.com/mdm/metadata\"\r\n" +   //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+                "        xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r\n" +   //$NON-NLS-1$
+                "      <Id>3</Id>\r\n" +   //$NON-NLS-1$
+                "      <Name>f3</Name>\r\n" +   //$NON-NLS-1$
+                "      <taskId>null</taskId>\r\n" +   //$NON-NLS-1$
+                "</result>"), FKIntegrityResult.ALLOWED);  //$NON-NLS-1$
+        items.put(new ItemBean("ProductFamily", "4", "<result xmlns:metadata=\"http://www.talend.com/mdm/metadata\"\r\n" +   //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+                "        xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r\n" +   //$NON-NLS-1$
+                "      <Id>4</Id>\r\n" +   //$NON-NLS-1$
+                "      <Name>f4</Name>\r\n" +   //$NON-NLS-1$
+                "      <taskId>null</taskId>\r\n" +   //$NON-NLS-1$
+                "</result>"), FKIntegrityResult.ALLOWED);  //$NON-NLS-1$
+        
+        List<ItemResult> fkIntegrityMsgs = new ArrayList<ItemResult>();
+        List<ItemBean> itemBeans = new ArrayList<ItemBean>();
+        CommonUtil.setDeleteItemInfo(items, fkIntegrityMsgs, itemBeans);
+        
+        assertEquals(2, fkIntegrityMsgs.size());
+        assertEquals(2, itemBeans.size());
+    }
+    
+    public void testDisplayMsgBoxWindow() throws Exception {
+        ItemResult result1 = new ItemResult();
+        result1.setKey("1"); //$NON-NLS-1$
+        result1.setMessage("The record can not be deleted because of integrity constraints."); //$NON-NLS-1$
+        result1.setStatus(3);
+        ItemResult result2 = new ItemResult();
+        result2.setKey("2"); //$NON-NLS-1$
+        result2.setMessage("[EN:en error 1][FR:fr error 1][ZH:cn error 1]"); //$NON-NLS-1$
+        result2.setStatus(3);
+        List<ItemResult> msgs = new ArrayList<ItemResult>();
+        msgs.add(result1);
+        msgs.add(result2);
+        OperationMessageWindow operationWindow = new OperationMessageWindow();
+        CommonUtil.displayMsgBoxWindow(operationWindow, msgs);
+        List<ItemResult> newMsgs = operationWindow.getMessages();
+        assertEquals("Deletion failed message: The record can not be deleted because of integrity constraints.", newMsgs.get(0).getMessage()); //$NON-NLS-1$
+        assertEquals("Deletion failed message: en error 1", newMsgs.get(1).getMessage()); //$NON-NLS-1$
     }
 }

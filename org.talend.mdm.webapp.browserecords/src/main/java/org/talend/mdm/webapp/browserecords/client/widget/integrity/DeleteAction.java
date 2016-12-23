@@ -9,10 +9,11 @@
  */
 package org.talend.mdm.webapp.browserecords.client.widget.integrity;
 
-import java.util.List;
+import java.util.Map;
 
 import org.talend.mdm.webapp.browserecords.client.BrowseRecordsServiceAsync;
 import org.talend.mdm.webapp.browserecords.client.model.ItemBean;
+import org.talend.mdm.webapp.browserecords.shared.FKIntegrityResult;
 
 /**
  * Wraps a delete action for a single item.
@@ -44,6 +45,6 @@ public interface DeleteAction {
      * @see BrowseRecordsServiceAsync#logicalDeleteItem(org.talend.mdm.webapp.browserecords.client.model.ItemBean,
      * String, boolean, com.google.gwt.user.client.rpc.AsyncCallback)
      */
-    void delete(List<ItemBean> items, BrowseRecordsServiceAsync service, boolean override, PostDeleteAction postDeleteAction);
+    void delete(Map<ItemBean, FKIntegrityResult> items, BrowseRecordsServiceAsync service, boolean override, PostDeleteAction postDeleteAction);
 }
 

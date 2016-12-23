@@ -17,23 +17,30 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 import java.util.Vector;
 
-import org.apache.commons.lang3.StringUtils;
+import org.talend.mdm.webapp.base.client.i18n.BaseMessagesFactory;
 import org.talend.mdm.webapp.base.client.model.Criteria;
 import org.talend.mdm.webapp.base.client.model.DataTypeConstants;
 import org.talend.mdm.webapp.base.client.model.ForeignKeyBean;
+import org.talend.mdm.webapp.base.client.model.ItemResult;
 import org.talend.mdm.webapp.base.client.model.MultipleCriteria;
 import org.talend.mdm.webapp.base.client.model.SimpleCriterion;
+import org.talend.mdm.webapp.base.client.util.MultilanguageMessageParser;
+import org.talend.mdm.webapp.base.client.widget.OperationMessageWindow;
 import org.talend.mdm.webapp.base.shared.ComplexTypeModel;
 import org.talend.mdm.webapp.base.shared.EntityModel;
 import org.talend.mdm.webapp.base.shared.TypeModel;
 import org.talend.mdm.webapp.browserecords.client.BrowseRecords;
+import org.talend.mdm.webapp.browserecords.client.i18n.MessagesFactory;
 import org.talend.mdm.webapp.browserecords.client.model.ForeignKeyDrawer;
+import org.talend.mdm.webapp.browserecords.client.model.ItemBean;
 import org.talend.mdm.webapp.browserecords.client.model.ItemNodeModel;
 import org.talend.mdm.webapp.browserecords.client.resources.icon.Icons;
 import org.talend.mdm.webapp.browserecords.client.widget.ItemPanel;
+import org.talend.mdm.webapp.browserecords.shared.FKIntegrityResult;
 import org.talend.mdm.webapp.browserecords.shared.ReusableType;
 import org.talend.mdm.webapp.browserecords.shared.ViewBean;
 
@@ -51,6 +58,10 @@ public class CommonUtil {
     private static final String BEFORE_DOMAIN = "\\b((https?|ftp)://)"; //$NON-NLS-1$
 
     private static final String PATH = "(/[-a-z0-9A-Z_:@&?=+,.!/~*'%#$]*)*"; //$NON-NLS-1$
+    
+    private static final int FAIL = 2;
+    
+    private static final int ERROR = 3;
 
     public static String getHost(String url) {
         String host = url.replaceAll(BEFORE_DOMAIN, "").replaceAll(PATH, ""); //$NON-NLS-1$ //$NON-NLS-2$
@@ -656,6 +667,46 @@ public class CommonUtil {
             } else {
                 fkBean.setDisplayInfo(fkBean.getId());
             }
+        }
+    }
+    
+    public static void setDeleteItemInfo(Map<ItemBean, FKIntegrityResult> items, List<ItemResult> fkIntegrityMsgs, List<ItemBean> itemBeans) {
+        Set<Map.Entry<ItemBean, FKIntegrityResult>> itemsToDelete = items.entrySet();
+        for (Map.Entry<ItemBean, FKIntegrityResult> currentItem : itemsToDelete) {
+            FKIntegrityResult integrityCheckResult = currentItem.getValue();
+            switch (integrityCheckResult) {
+                case FORBIDDEN_OVERRIDE_ALLOWED:
+                case FORBIDDEN:
+                    ItemResult result = new ItemResult(ERROR);
+                    result.setKey(currentItem.getKey().getIds());
+                    result.setMessage(MessagesFactory.getMessages().fk_integrity_list_partial_delete());
+                    fkIntegrityMsgs.add(result);
+                    break;
+                case ALLOWED:
+                    itemBeans.add(currentItem.getKey());
+                    break;
+            }
+        }
+    }
+    
+    public static void displayMsgBoxWindow(OperationMessageWindow messageWindow, List<ItemResult> msgs) {
+        if (msgs != null && msgs.size() > 0) {
+            String windowTitle = MessagesFactory.getMessages().info_title();
+            for (ItemResult bean : msgs) {
+                bean.setMessage(MultilanguageMessageParser.pickOutISOMessage(bean.getMessage()));
+                if (bean.getStatus() == FAIL) {
+                    windowTitle = MessagesFactory.getMessages().message_fail();
+                    bean.setMessage(BaseMessagesFactory.getMessages().delete_fail_prefix() + bean.getMessage());
+                } else if (bean.getStatus() == ERROR) {
+                    windowTitle = MessagesFactory.getMessages().message_error();
+                    bean.setMessage(BaseMessagesFactory.getMessages().delete_fail_prefix() + bean.getMessage());
+                } else {
+                    bean.setMessage(BaseMessagesFactory.getMessages().delete_success_prefix() + bean.getMessage());
+                }
+            }
+            messageWindow.setHeading(windowTitle);
+            messageWindow.setMessages(msgs);
+            messageWindow.show();
         }
     }
 }

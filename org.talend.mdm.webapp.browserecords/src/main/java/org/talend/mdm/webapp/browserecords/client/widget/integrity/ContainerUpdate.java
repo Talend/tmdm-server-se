@@ -12,7 +12,6 @@ package org.talend.mdm.webapp.browserecords.client.widget.integrity;
 import org.talend.mdm.webapp.browserecords.client.i18n.MessagesFactory;
 import org.talend.mdm.webapp.browserecords.client.publiclistener.StatusObserver;
 import org.talend.mdm.webapp.browserecords.client.widget.ItemDetailToolBar;
-import org.talend.mdm.webapp.browserecords.client.widget.ItemsListPanel;
 import org.talend.mdm.webapp.browserecords.client.widget.ItemsMainTabPanel;
 
 import com.extjs.gxt.ui.client.widget.MessageBox;
@@ -51,12 +50,23 @@ public class ContainerUpdate implements PostDeleteAction {
         }
         // TMDM-3361, Hierarchy didn't need to refresh ItemsListPanel
         if (bar != null && bar.isHierarchyCall()) {
-            MessageBox.info(MessagesFactory.getMessages().info_title(), MessagesFactory.getMessages().delete_record_success(),
-                    null);
+            MessageBox messageBox = new MessageBox();
+            messageBox.setTitle(MessagesFactory.getMessages().info_title());
+            messageBox.setButtons(""); //$NON-NLS-1$
+            messageBox.setIcon(MessageBox.INFO);
+            messageBox.setMessage(MessagesFactory.getMessages().delete_record_success());
+            messageBox.show();
+            setTimeout(messageBox, 1000);
             StatusObserver.getInstance().notifyDeleted(null, null, false);
             return;
         }
 
         next.doAction();
     }
+
+    private native void setTimeout(MessageBox msgBox, int millisecond)/*-{
+		$wnd.setTimeout(function() {
+			msgBox.@com.extjs.gxt.ui.client.widget.MessageBox::close()();
+		}, millisecond);
+    }-*/;
 }

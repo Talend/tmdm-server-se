@@ -43,26 +43,6 @@ class ListDeleteStrategy implements DeleteStrategy {
      * @param postDeleteAction A {@link PostDeleteAction} that wraps all post-delete action to be performed once delete of
      */
     public void delete(Map<ItemBean, FKIntegrityResult> items, DeleteAction action, PostDeleteAction postDeleteAction) {
-        Set<Map.Entry<ItemBean, FKIntegrityResult>> itemsToDelete = items.entrySet();
-        boolean hasMetForbiddenDeletes = false;
-        List<ItemBean> itemBeans = new ArrayList<ItemBean>();
-        for (Map.Entry<ItemBean, FKIntegrityResult> currentItem : itemsToDelete) {
-            FKIntegrityResult integrityCheckResult = currentItem.getValue();
-            switch (integrityCheckResult) {
-                case FORBIDDEN_OVERRIDE_ALLOWED:
-                case FORBIDDEN:
-                    hasMetForbiddenDeletes = true;
-                    break;
-                case ALLOWED:
-                    itemBeans.add(currentItem.getKey());
-                    break;
-            }
-        }
-        action.delete(itemBeans, service, false, postDeleteAction);
-
-        if (hasMetForbiddenDeletes) {
-            MessageBox.info(MessagesFactory.getMessages().info_title(), MessagesFactory.getMessages()
-                    .fk_integrity_list_partial_delete(), null);
-        }
+        action.delete(items, service, false, postDeleteAction);
     }
 }

@@ -1344,7 +1344,6 @@ public class ItemsToolBar extends ToolBar {
                     service.checkFKIntegrity(list.getGrid().getSelectionModel().getSelectedItems(), new DeleteCallback(
                             DeleteAction.PHYSICAL, postDeleteAction, service));
                 }
-
             }
         }
     }

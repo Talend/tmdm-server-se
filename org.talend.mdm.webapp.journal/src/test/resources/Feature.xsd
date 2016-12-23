@@ -1,0 +1,167 @@
+<?xml version="1.0"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:import namespace="http://www.w3.org/2001/XMLSchema" />
+    <xsd:element name="Product">
+        <xsd:annotation>
+            <xsd:appinfo source="X_PrimaryKeyInfo">Product/ShortDescription</xsd:appinfo>
+            <xsd:appinfo source="X_PrimaryKeyInfo">Product/LongDescription</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element maxOccurs="1" minOccurs="1" name="ProductID" type="UUID">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="ShortDescription" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="LongDescription" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="Features">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    </xsd:annotation>
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element maxOccurs="unbounded" minOccurs="1" name="FeatureFK" type="xsd:string">
+                                <xsd:annotation>
+                                    <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
+                                    <xsd:appinfo source="X_ForeignKey">Feature/FeatureCode</xsd:appinfo>
+                                    <xsd:appinfo source="X_ForeignKeyInfo">Feature/FeatureCode</xsd:appinfo>
+                                    <xsd:appinfo source="X_ForeignKeyInfo">Feature/Name</xsd:appinfo>
+                                    <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                </xsd:annotation>
+                            </xsd:element>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+        <xsd:unique name="Product">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="ProductID" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:simpleType name="UUID">
+        <xsd:restriction base="xsd:string" />
+    </xsd:simpleType>
+    <xsd:element name="Feature">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1" name="FeatureCode" type="xsd:integer">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="Name" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="Value" type="AbstractValueType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_AutoExpand">false</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="Feature">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="FeatureCode" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:complexType name="EnumValueType">
+        <xsd:complexContent>
+            <xsd:extension base="AbstractValueType">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="1" minOccurs="1" name="EnumType" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element maxOccurs="1" minOccurs="1" name="EnumFK" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
+                            <xsd:appinfo source="X_ForeignKey">EnumValue/EnumValID</xsd:appinfo>
+                            <xsd:appinfo source="X_ForeignKey_Filter">EnumValue/EnumType$$=$$Feature/Value/EnumType$$#</xsd:appinfo>
+                            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                            <xsd:appinfo source="X_ForeignKeyInfo">EnumValue/EnumValID</xsd:appinfo>
+                            <xsd:appinfo source="X_ForeignKeyInfo">EnumValue/Value</xsd:appinfo>
+                            <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:element name="EnumValue">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1" name="EnumValID" type="AUTO_INCREMENT">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="EnumType" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="Value" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="EnumValue">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="EnumValID" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:simpleType name="AUTO_INCREMENT">
+        <xsd:restriction base="xsd:string" />
+    </xsd:simpleType>
+    <xsd:complexType name="SimpleValueType">
+        <xsd:complexContent>
+            <xsd:extension base="AbstractValueType">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="1" minOccurs="1" name="Value" type="xsd:string" />
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType abstract="true" name="AbstractValueType">
+        <xsd:sequence></xsd:sequence>
+    </xsd:complexType>
+</xsd:schema>

@@ -9,7 +9,9 @@
  */
 package org.talend.mdm.webapp.browserecords.client.widget.integrity;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.talend.mdm.webapp.base.client.SessionAwareAsyncCallback;
 import org.talend.mdm.webapp.base.client.i18n.BaseMessagesFactory;
@@ -21,7 +23,10 @@ import org.talend.mdm.webapp.browserecords.client.BrowseRecordsServiceAsync;
 import org.talend.mdm.webapp.browserecords.client.i18n.BrowseRecordsMessages;
 import org.talend.mdm.webapp.browserecords.client.i18n.MessagesFactory;
 import org.talend.mdm.webapp.browserecords.client.model.ItemBean;
+import org.talend.mdm.webapp.browserecords.client.util.CommonUtil;
 import org.talend.mdm.webapp.browserecords.client.util.Locale;
+import org.talend.mdm.webapp.browserecords.shared.FKIntegrityResult;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 
@@ -35,34 +40,25 @@ public class PhysicalDeleteAction implements DeleteAction {
     private final int ERROR = 3;
     
     @Override
-    public void delete(final List<ItemBean> items, BrowseRecordsServiceAsync service, boolean override,
+    public void delete(final Map<ItemBean, FKIntegrityResult> items, BrowseRecordsServiceAsync service, boolean override,
             final PostDeleteAction postDeleteAction) {
         final BrowseRecordsMessages message = MessagesFactory.getMessages();
         final MessageBox progressBar = MessageBox.wait(message.delete_item_title(), null, message.delete_item_progress());
-        service.deleteItemBeans(items, override, Locale.getLanguage(),
+        final List<ItemResult> fkIntegrityMsgs = new ArrayList<ItemResult>();
+        List<ItemBean> itemBeans = new ArrayList<ItemBean>();
+        CommonUtil.setDeleteItemInfo(items, fkIntegrityMsgs, itemBeans);
+        service.deleteItemBeans(itemBeans, override, Locale.getLanguage(),
                 new SessionAwareAsyncCallback<List<ItemResult>>() {
 
             @Override
             public void onSuccess(List<ItemResult> msgs) {
                 progressBar.close();
 
+                if (fkIntegrityMsgs != null && fkIntegrityMsgs.size() > 0) {
+                    msgs.addAll(fkIntegrityMsgs);
+                }
                 if (msgs != null && msgs.size() > 0) {
-                    String windowTitle = MessagesFactory.getMessages().info_title();
-                    for(ItemResult bean : msgs){
-                        if(bean.getStatus() == FAIL){
-                            windowTitle = MessagesFactory.getMessages().message_fail();
-                            bean.setMessage(BaseMessagesFactory.getMessages().delete_fail_prefix() + bean.getMessage());
-                        } else if(bean.getStatus() == ERROR){
-                            windowTitle = MessagesFactory.getMessages().message_error();
-                            bean.setMessage(BaseMessagesFactory.getMessages().delete_fail_prefix() + bean.getMessage());
-                        } else {
-                            bean.setMessage(BaseMessagesFactory.getMessages().delete_success_prefix() + bean.getMessage());
-                        }
-                        bean.setMessage(MultilanguageMessageParser.pickOutISOMessage(bean.getMessage()));
-                    }
-                    OperationMessageWindow messageWindow = new OperationMessageWindow(msgs);
-                    messageWindow.setHeading(windowTitle);
-                    messageWindow.show();
+                    CommonUtil.displayMsgBoxWindow(new OperationMessageWindow(), msgs);
                 } else {
                     MessageBox msgBox = new MessageBox();
                     msgBox.setTitle(MessagesFactory.getMessages().info_title());

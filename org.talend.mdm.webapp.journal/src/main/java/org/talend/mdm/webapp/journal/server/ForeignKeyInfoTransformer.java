@@ -370,6 +370,13 @@ public class ForeignKeyInfoTransformer implements DocumentTransformer {
             path = new StringBuilder(""); //$NON-NLS-1$
             path.append(containedField.getName());
             super.visit(containedField);
+            if (containedField.getContainedType().getSubTypes().size() > 0) {
+                Collection<ComplexTypeMetadata> fields = containedField.getContainedType().getSubTypes();
+                for (ComplexTypeMetadata fieldType : fields) {
+                    path.append("/" + fieldType.getName()); //$NON-NLS-1$
+                    fieldType.accept(this);
+                }
+            }
             return null;
         }
 

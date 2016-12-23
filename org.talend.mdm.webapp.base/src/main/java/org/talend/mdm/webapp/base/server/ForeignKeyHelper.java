@@ -186,7 +186,7 @@ public class ForeignKeyHelper {
                 if (foreignKeyInfo != null && foreignKeyInfo.size() > 0) {
                     // TMDM-5276: use substringBeforeLast in case sort field is a contained field
                     // (Entity/field1/.../fieldN)
-                    xpath = StringUtils.substringBeforeLast(xPaths.get(0), "/") + "/" + config.getSortField(); //$NON-NLS-1$ //$NON-NLS-2$
+                    xpath = config.getSortField();
                 } else {
                     xpath = StringUtils.substringBefore(xPaths.get(0), "/") + "/../../i"; //$NON-NLS-1$ //$NON-NLS-2$
                 }

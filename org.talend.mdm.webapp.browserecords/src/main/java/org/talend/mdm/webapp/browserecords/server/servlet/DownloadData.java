@@ -23,7 +23,12 @@ import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.dom4j.Attribute;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFFont;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.XPath;
@@ -62,7 +67,7 @@ public class DownloadData extends HttpServlet {
 
     private final String SHEET_LABEL = "Talend MDM"; //$NON-NLS-1$
 
-    protected final String DOWNLOADFILE_EXTEND_NAME = ".xls"; //$NON-NLS-1$
+    protected final String DOWNLOADFILE_EXTEND_NAME = ".xlsx"; //$NON-NLS-1$
 
     protected String fileName = ""; //$NON-NLS-1$
 
@@ -94,7 +99,7 @@ public class DownloadData extends HttpServlet {
 
     protected int columnIndex = 0;
 
-    protected HSSFCellStyle cs = null;
+    protected XSSFCellStyle cs = null;
 
     @Override
     public void init() throws ServletException {
@@ -110,18 +115,18 @@ public class DownloadData extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        HSSFWorkbook workbook = new HSSFWorkbook();
+        XSSFWorkbook workbook = new XSSFWorkbook();
         cs = workbook.createCellStyle();
-        HSSFFont f = workbook.createFont();
+        XSSFFont f = workbook.createFont();
         f.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
         cs.setFont(f);
-        HSSFSheet sheet = workbook.createSheet(SHEET_LABEL);
+        XSSFSheet sheet = workbook.createSheet(SHEET_LABEL);
         sheet.setDefaultColumnWidth((short) 20);
-        HSSFRow row = sheet.createRow((short) 0);
+        XSSFRow row = sheet.createRow((short) 0);
         try {
             setParameter(request);
             response.reset();
-            response.setContentType("application/vnd.ms-excel"); //$NON-NLS-1$
+            response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"); //$NON-NLS-1$
             response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             fillHeader(row);
             fillSheet(sheet);
@@ -167,16 +172,16 @@ public class DownloadData extends HttpServlet {
         }
     }
 
-    protected void fillHeader(HSSFRow row) {
+    protected void fillHeader(XSSFRow row) {
 
         for (int i = 0; i < headerArray.length; i++) {
-            HSSFCell cell = row.createCell((short) i);
+            XSSFCell cell = row.createCell((short) i);
             cell.setCellValue(headerArray[i]);
             cell.setCellStyle(cs);
         }
     }
 
-    protected void fillSheet(HSSFSheet sheet) throws Exception {
+    protected void fillSheet(XSSFSheet sheet) throws Exception {
         entity = org.talend.mdm.webapp.browserecords.server.util.CommonUtil.getEntityModel(concept, language);
         List<String> results = new LinkedList<String>();
 
@@ -250,12 +255,12 @@ public class DownloadData extends HttpServlet {
         }
         for (int i = 0; i < results.size(); i++) {
             Document document = XmlUtil.parseText(results.get(i));
-            HSSFRow row = sheet.createRow((short) i + 1);
+            XSSFRow row = sheet.createRow(i + 1);
             fillRow(row, document);
         }
     }
 
-    protected void fillRow(HSSFRow row, Document document) throws Exception {
+    protected void fillRow(XSSFRow row, Document document) throws Exception {
         columnIndex = 0;
         for (String xpath : xpathArray) {
             String tmp = null;

@@ -145,7 +145,6 @@ public class InClauseOptimization extends StandardQueryHandler {
             StringBuilder inClause = new StringBuilder();
             Iterator<FieldMetadata> keyFieldIterator = keyFields.iterator();
             int i = 0;
-            Criterion condition;
             while (keyFieldIterator.hasNext()) {
                 Iterator<Object[]> valuesIterator = values.iterator();
                 String fieldName = resolver.get(keyFieldIterator.next());
@@ -154,11 +153,7 @@ public class InClauseOptimization extends StandardQueryHandler {
                     Object propertyValue = valuesIterator.next()[i];
 
                     boolean isString = propertyValue instanceof String;
-                    if (propertyValue != null) {
-                        condition = new MDMSimpleExpression(fieldName, propertyValue, "=", isString);
-                    } else {
-                        condition = new MDMNullExpression(fieldName);
-                    }
+                    Criterion condition = new MDMSimpleExpression(fieldName, propertyValue, "=", isString);
 
                     inClause.append(condition.toSqlString(criteria, criteriaQuery));
                     if (valuesIterator.hasNext()) {
@@ -186,12 +181,8 @@ public class InClauseOptimization extends StandardQueryHandler {
 
                     boolean isString = propertyValue instanceof String;
 
-                    if (propertyValue != null) {
-                        Object casedValue = isString ? propertyValue.toString().toLowerCase() : propertyValue;
-                        list.add(criteriaQuery.getTypedValue(criteria, propertyName, casedValue));
-                    } else {
-                        list.add((new TypedValue[0])[0]);
-                    }
+                    Object casedValue = isString ? propertyValue.toString().toLowerCase() : propertyValue;
+                    list.add(criteriaQuery.getTypedValue(criteria, propertyName, casedValue));
                 }
                 i++;
             }
@@ -256,12 +247,5 @@ class MDMSimpleExpression extends SimpleExpression {
 
     public MDMSimpleExpression(String propertyName, Object value, String op, boolean ignoreCase) {
         super(propertyName, value, op, ignoreCase);
-    }
-}
-
-class MDMNullExpression extends NullExpression {
-
-    protected MDMNullExpression(String propertyName) {
-        super(propertyName);
     }
 }

@@ -148,20 +148,21 @@ public class InClauseOptimization extends StandardQueryHandler {
             Criterion condition;
             while (keyFieldIterator.hasNext()) {
                 Iterator<Object[]> valuesIterator = values.iterator();
+                String fieldName = resolver.get(keyFieldIterator.next());
+
                 while (valuesIterator.hasNext()) {
                     Object propertyValue = valuesIterator.next()[i];
 
                     boolean isString = propertyValue instanceof String;
                     if (propertyValue != null) {
-                        condition = new MDMSimpleExpression(resolver.get(keyFieldIterator.next()).toString(), propertyValue, "=",
-                                isString);
+                        condition = new MDMSimpleExpression(fieldName, propertyValue, "=", isString);
                     } else {
-                        condition = new MDMNullExpression(resolver.get(keyFieldIterator.next()));
+                        condition = new MDMNullExpression(fieldName);
                     }
 
                     inClause.append(condition.toSqlString(criteria, criteriaQuery));
                     if (valuesIterator.hasNext()) {
-                        inClause.append(',');
+                        inClause.append(" OR ");
                     }
                 }
                 if (keyFieldIterator.hasNext()) {
@@ -175,7 +176,6 @@ public class InClauseOptimization extends StandardQueryHandler {
         @Override
         public TypedValue[] getTypedValues(Criteria criteria, CriteriaQuery criteriaQuery) throws HibernateException {
             List<TypedValue> list = new ArrayList<TypedValue>();
-            TypedValue[] typeValue = new TypedValue[keyFields.size()];
             Iterator<FieldMetadata> keyFieldIterator = keyFields.iterator();
             int i = 0;
             while (keyFieldIterator.hasNext()) {
@@ -189,16 +189,14 @@ public class InClauseOptimization extends StandardQueryHandler {
                     if (propertyValue != null) {
                         Object casedValue = isString ? propertyValue.toString().toLowerCase() : propertyValue;
                         list.add(criteriaQuery.getTypedValue(criteria, propertyName, casedValue));
-                        typeValue[i] = criteriaQuery.getTypedValue(criteria, propertyName, casedValue);
                     } else {
                         list.add((new TypedValue[0])[0]);
-                        typeValue[i] = null;
                     }
                 }
                 i++;
             }
 
-            return typeValue;
+            return list.toArray(new TypedValue[list.size()]);
         }
     }
 

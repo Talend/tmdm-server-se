@@ -1338,16 +1338,12 @@ public class HibernateStorage implements Storage {
                         }
                         Map<ComplexTypeMetadata, Map<String, List>> recordsToDeleteMap = new HashMap<ComplexTypeMetadata, Map<String, List>>();
                         for (ComplexTypeMetadata typeToDelete : typesToDelete) {
-                            if (typeToDelete.equals(mainType)) {
-                                continue;
-                            }
                             InboundReferences inboundReferences = new InboundReferences(typeToDelete);
-                            Set<ReferenceFieldMetadata> references = internalRepository.accept(inboundReferences);
+                            Set<ReferenceFieldMetadata> references = internalRepository.accept(new InboundReferences(typeToDelete));
                             // Empty values from intermediate tables to this non instantiable type and unset inbound
                             // references
-                            for (ReferenceFieldMetadata reference : references) {
-                                if (reference.getContainingType().equals(mainType)) {
-                                    HashMap<String, List> fieldsCondition = new HashMap<>();
+                            if (typeToDelete.equals(mainType)) {
+                                for (ReferenceFieldMetadata reference : references) {
                                     if (reference.isMany()) {
                                         // No need to check for mandatory collections of references since constraint
                                         // cannot
@@ -1356,31 +1352,51 @@ public class HibernateStorage implements Storage {
                                         session.createSQLQuery("delete from " + formattedTableName).executeUpdate(); //$NON-NLS-1$
                                     } else {
                                         String referenceTableName = tableResolver.get(reference.getContainingType());
-                                        if (reference.getReferencedField() instanceof CompoundFieldMetadata) {
-                                            FieldMetadata[] fields = ((CompoundFieldMetadata) reference.getReferencedField())
-                                                    .getFields();
-                                            for (FieldMetadata field : fields) {
+                                        if (referenceTableName.startsWith("X_ANONYMOUS")) {
+                                            session.createSQLQuery("delete from " + referenceTableName).executeUpdate(); //$NON-NLS-1$
+                                        }
+                                    }
+                                }
+                            } else {
+                                for (ReferenceFieldMetadata reference : references) {
+                                    if (reference.getContainingType().equals(mainType)) {
+                                        HashMap<String, List> fieldsCondition = new HashMap<>();
+                                        if (reference.isMany()) {
+                                            // No need to check for mandatory collections of references since constraint
+                                            // cannot
+                                            // be expressed in db schema
+                                            String formattedTableName = tableResolver.getCollectionTable(reference);
+                                            session.createSQLQuery("delete from " + formattedTableName).executeUpdate(); //$NON-NLS-1$
+                                        } else {
+                                            String referenceTableName = tableResolver.get(reference.getContainingType());
+                                            if (reference.getReferencedField() instanceof CompoundFieldMetadata) {
+                                                FieldMetadata[] fields = ((CompoundFieldMetadata) reference.getReferencedField())
+                                                        .getFields();
+                                                for (FieldMetadata field : fields) {
+                                                    List list = session.createSQLQuery(
+                                                            "select " + tableResolver.get(field, reference.getName()) + " from " //$NON-NLS-1$ //$NON-NLS-2$
+                                                                    + referenceTableName).list();
+                                                    if (list == null || list.isEmpty()) {
+                                                        continue;
+                                                    } else {
+                                                        fieldsCondition.put(tableResolver.get(reference.getReferencedField()),
+                                                                list);
+                                                    }
+                                                }
+                                            } else {
                                                 List list = session.createSQLQuery(
-                                                        "select " + tableResolver.get(field, reference.getName()) + " from " //$NON-NLS-1$ //$NON-NLS-2$
-                                                                + referenceTableName).list();
+                                                                "select " //$NON-NLS-1$
+                                                                        + tableResolver.get(reference.getReferencedField(),
+                                                                                reference.getName())
+                                                                        + " from " + referenceTableName).list(); //$NON-NLS-1$
                                                 if (list == null || list.isEmpty()) {
                                                     continue;
                                                 } else {
                                                     fieldsCondition.put(tableResolver.get(reference.getReferencedField()), list);
                                                 }
                                             }
-                                        } else {
-                                            List list = session.createSQLQuery(
-                                                    "select " //$NON-NLS-1$
-                                                            + tableResolver.get(reference.getReferencedField(),
-                                                                    reference.getName()) + " from " + referenceTableName).list(); //$NON-NLS-1$
-                                            if (list == null || list.isEmpty()) {
-                                                continue;
-                                            } else {
-                                                fieldsCondition.put(tableResolver.get(reference.getReferencedField()), list);
-                                            }
+                                            recordsToDeleteMap.put(typeToDelete, fieldsCondition);
                                         }
-                                        recordsToDeleteMap.put(typeToDelete, fieldsCondition);
                                     }
                                 }
                             }

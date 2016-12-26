@@ -385,9 +385,7 @@ public class StorageQueryTest extends StorageTestCase {
             {
                 UserQueryBuilder qb = from(person);
                 storage.delete(qb.getSelect());
-                qb = from(address);
-                storage.delete(qb.getSelect());
-                qb = from(country);
+
                 storage.delete(qb.getSelect());
                 qb = from(b);
                 storage.delete(qb.getSelect());
@@ -402,6 +400,11 @@ public class StorageQueryTest extends StorageTestCase {
                 qb = from(store);
                 storage.delete(qb.getSelect());
                 qb = from(supplier);
+
+                qb = from(address);
+                storage.delete(qb.getSelect());
+                qb = from(country);
+
                 storage.delete(qb.getSelect());
                 qb = from(e2);
                 storage.delete(qb.getSelect());

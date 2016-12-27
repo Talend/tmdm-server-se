@@ -1339,20 +1339,19 @@ public class HibernateStorage implements Storage {
                         Map<ComplexTypeMetadata, Map<String, List>> recordsToDeleteMap = new HashMap<ComplexTypeMetadata, Map<String, List>>();
                         for (ComplexTypeMetadata typeToDelete : typesToDelete) {
                             InboundReferences inboundReferences = new InboundReferences(typeToDelete);
-                            Set<ReferenceFieldMetadata> references = internalRepository.accept(new InboundReferences(typeToDelete));
+                            Set<ReferenceFieldMetadata> references = internalRepository.accept(inboundReferences);
                             // Empty values from intermediate tables to this non instantiable type and unset inbound
                             // references
                             if (typeToDelete.equals(mainType)) {
                                 for (ReferenceFieldMetadata reference : references) {
                                     if (reference.isMany()) {
                                         // No need to check for mandatory collections of references since constraint
-                                        // cannot
-                                        // be expressed in db schema
+                                        // cannot be expressed in db schema
                                         String formattedTableName = tableResolver.getCollectionTable(reference);
                                         session.createSQLQuery("delete from " + formattedTableName).executeUpdate(); //$NON-NLS-1$
                                     } else {
                                         String referenceTableName = tableResolver.get(reference.getContainingType());
-                                        if (referenceTableName.startsWith("X_ANONYMOUS")) {
+                                        if (referenceTableName.startsWith("X_ANONYMOUS")) { //$NON-NLS-1$
                                             session.createSQLQuery("delete from " + referenceTableName).executeUpdate(); //$NON-NLS-1$
                                         }
                                     }

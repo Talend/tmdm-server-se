@@ -386,17 +386,13 @@ public class StorageQueryTest extends StorageTestCase {
                 qb = from(productFamily);
                 storage.delete(qb.getSelect());
 
-                qb = from(country);
-                storage.delete(qb.getSelect());
                 qb = from(supplier);
-
+                storage.delete(qb.getSelect());
                 qb = from(address);
                 storage.delete(qb.getSelect());
                 qb = from(country);
                 storage.delete(qb.getSelect());
 
-                qb = from(employee1);
-                storage.delete(qb.getSelect());
                 qb = from(e2);
                 storage.delete(qb.getSelect());
                 qb = from(e1);

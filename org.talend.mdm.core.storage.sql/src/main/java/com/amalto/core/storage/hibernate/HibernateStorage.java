@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -34,6 +35,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
@@ -67,7 +69,6 @@ import org.hibernate.internal.util.config.ConfigurationHelper;
 import org.hibernate.mapping.Any;
 import org.hibernate.mapping.Array;
 import org.hibernate.mapping.Bag;
-import org.hibernate.mapping.Column;
 import org.hibernate.mapping.Component;
 import org.hibernate.mapping.DependantValue;
 import org.hibernate.mapping.IdentifierBag;
@@ -92,7 +93,6 @@ import org.hibernate.search.FullTextSession;
 import org.hibernate.search.MassIndexer;
 import org.hibernate.search.Search;
 import org.hibernate.service.ServiceRegistry;
-import org.hibernate.tool.hbm2ddl.ColumnMetadata;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.hibernate.tool.hbm2ddl.SchemaUpdate;
 import org.hibernate.tool.hbm2ddl.SchemaValidator;
@@ -351,9 +351,9 @@ public class HibernateStorage implements Storage {
                     }
                     Table table = new MDMDenormalizedTable(includedTable) {
 
-                        @SuppressWarnings({ "rawtypes", "unchecked" })
+                        @SuppressWarnings({ "unchecked" })
                         @Override
-                        public Iterator getIndexIterator() {
+                        public Iterator<Index> getIndexIterator() {
                             List<Index> indexes = new ArrayList<Index>();
                             Iterator<Index> IndexIterator = super.getIndexIterator();
                             while (IndexIterator.hasNext()) {
@@ -1300,6 +1300,7 @@ public class HibernateStorage implements Storage {
         return factory == null || factory.isClosed();
     }
 
+    @SuppressWarnings("rawtypes")
     @Override
     public void delete(Expression userQuery) {
         Session session = this.getCurrentSession();
@@ -1335,58 +1336,74 @@ public class HibernateStorage implements Storage {
                                 typesToDelete.addAll(subTypes);
                             }
                         }
+                        Map<ComplexTypeMetadata, Map<String, List>> recordsToDeleteMap = new HashMap<ComplexTypeMetadata, Map<String, List>>();
                         for (ComplexTypeMetadata typeToDelete : typesToDelete) {
                             InboundReferences inboundReferences = new InboundReferences(typeToDelete);
                             Set<ReferenceFieldMetadata> references = internalRepository.accept(inboundReferences);
                             // Empty values from intermediate tables to this non instantiable type and unset inbound
                             // references
-                            for (ReferenceFieldMetadata reference : references) {
-                                if (reference.isMany()) {
-                                    // No need to check for mandatory collections of references since constraint cannot
-                                    // be expressed in db schema
-                                    String formattedTableName = tableResolver.getCollectionTable(reference);
-                                    session.createSQLQuery("delete from " + formattedTableName).executeUpdate(); //$NON-NLS-1$
-                                } else if (!reference.isMandatory()) {
-                                    String referenceTableName = tableResolver.get(reference.getContainingType());
-                                    List<String> fkColumnNames;
-                                    if (reference.getReferencedField() instanceof CompoundFieldMetadata) {
-                                        FieldMetadata[] fields = ((CompoundFieldMetadata) reference.getReferencedField())
-                                                .getFields();
-                                        fkColumnNames = new ArrayList<String>(fields.length);
-                                        for (FieldMetadata field : fields) {
-                                            fkColumnNames.add(tableResolver.get(field, reference.getName()));
-                                        }
+                            if (typeToDelete.equals(mainType)) {
+                                for (ReferenceFieldMetadata reference : references) {
+                                    if (reference.isMany()) {
+                                        // No need to check for mandatory collections of references since constraint
+                                        // cannot be expressed in db schema
+                                        String formattedTableName = tableResolver.getCollectionTable(reference);
+                                        session.createSQLQuery("delete from " + formattedTableName).executeUpdate(); //$NON-NLS-1$
                                     } else {
-                                        fkColumnNames = Collections.singletonList(tableResolver.get(
-                                                reference.getReferencedField(), reference.getName()));
+                                        String referenceTableName = tableResolver.get(reference.getContainingType());
+                                        if (referenceTableName.startsWith("X_ANONYMOUS")) { //$NON-NLS-1$
+                                            session.createSQLQuery("delete from " + referenceTableName).executeUpdate(); //$NON-NLS-1$
+                                        }
                                     }
-                                    for (String fkColumnName : fkColumnNames) {
-                                        session.createSQLQuery(
-                                                "update " + referenceTableName + " set " + fkColumnName + " = NULL").executeUpdate(); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                                }
+                            } else {
+                                for (ReferenceFieldMetadata reference : references) {
+                                    if (reference.getContainingType().equals(mainType)) {
+                                        HashMap<String, List> fieldsCondition = new HashMap<>();
+                                        if (reference.isMany()) {
+                                            // No need to check for mandatory collections of references since constraint
+                                            // cannot
+                                            // be expressed in db schema
+                                            String formattedTableName = tableResolver.getCollectionTable(reference);
+                                            session.createSQLQuery("delete from " + formattedTableName).executeUpdate(); //$NON-NLS-1$
+                                        } else {
+                                            String referenceTableName = tableResolver.get(reference.getContainingType());
+                                            if (reference.getReferencedField() instanceof CompoundFieldMetadata) {
+                                                FieldMetadata[] fields = ((CompoundFieldMetadata) reference.getReferencedField())
+                                                        .getFields();
+                                                for (FieldMetadata field : fields) {
+                                                    List list = session.createSQLQuery(
+                                                            "select " + tableResolver.get(field, reference.getName()) + " from " //$NON-NLS-1$ //$NON-NLS-2$
+                                                                    + referenceTableName).list();
+                                                    if (list == null || list.isEmpty()) {
+                                                        continue;
+                                                    } else {
+                                                        fieldsCondition.put(tableResolver.get(reference.getReferencedField()),
+                                                                list);
+                                                    }
+                                                }
+                                            } else {
+                                                List list = session.createSQLQuery(
+                                                                "select " //$NON-NLS-1$
+                                                                        + tableResolver.get(reference.getReferencedField(),
+                                                                                reference.getName())
+                                                                        + " from " + referenceTableName).list(); //$NON-NLS-1$
+                                                if (list == null || list.isEmpty()) {
+                                                    continue;
+                                                } else {
+                                                    fieldsCondition.put(tableResolver.get(reference.getReferencedField()), list);
+                                                }
+                                            }
+                                            recordsToDeleteMap.put(typeToDelete, fieldsCondition);
+                                        }
                                     }
                                 }
                             }
+                        }
+                        deleteData(mapping.getDatabase(), new HashMap<String, List>(), mapping);
+                        for (Map.Entry<ComplexTypeMetadata, Map<String, List>> entry : recordsToDeleteMap.entrySet()) {
                             // Empty values in type isMany=true reference
-                            for (FieldMetadata field : typeToDelete.getFields()) {
-                                if (field.isMany()) {
-                                    String formattedTableName = tableResolver.getCollectionTable(field);
-                                    session.createSQLQuery("delete from " + formattedTableName).executeUpdate(); //$NON-NLS-1$
-                                }
-                            }
-                            // Delete the type instances
-                            String className = storageClassLoader.getClassFromType(typeToDelete).getName();
-                            session.createQuery("delete from " + className).executeUpdate(); //$NON-NLS-1$
-                            // Clean up full text indexes
-                            if (dataSource.supportFullText()) {
-                                FullTextSession fullTextSession = Search.getFullTextSession(session);
-                                Set<Class<?>> indexedTypes = fullTextSession.getSearchFactory().getIndexedTypes();
-                                Class<? extends Wrapper> entityType = storageClassLoader.getClassFromType(mapping.getDatabase());
-                                if (indexedTypes.contains(entityType)) {
-                                    fullTextSession.purgeAll(entityType);
-                                } else {
-                                    LOGGER.warn("Unable to delete full text indexes for '" + entityType + "' (not indexed)."); //$NON-NLS-1$ //$NON-NLS-2$
-                                }
-                            }
+                            deleteData(entry.getKey(), entry.getValue(), mapping);
                         }
                     } finally {
                         session.setFlushMode(previousFlushMode);
@@ -1401,30 +1418,37 @@ public class HibernateStorage implements Storage {
             Iterable<DataRecord> records = internalFetch(session, userQuery, Collections.<ResultsCallback> emptySet());
             for (DataRecord currentDataRecord : records) {
                 ComplexTypeMetadata currentType = currentDataRecord.getType();
-                TypeMapping mapping = mappingRepository.getMappingFromUser(currentType);
-                if (mapping == null) {
-                    throw new IllegalArgumentException("Type '" + currentType.getName() + "' does not have a database mapping."); //$NON-NLS-1$ //$NON-NLS-2$
+                List<ComplexTypeMetadata> types = new ArrayList<>();
+                if (userQuery instanceof Select) {
+                    types.addAll(((Select) userQuery).getTypes());
                 }
-                Class<?> clazz = storageClassLoader.getClassFromType(mapping.getDatabase());
-
-                Serializable idValue;
-                Collection<FieldMetadata> keyFields = currentType.getKeyFields();
-                if (keyFields.size() == 1) {
-                    idValue = (Serializable) currentDataRecord.get(keyFields.iterator().next());
-                } else {
-                    List<Object> compositeIdValues = new LinkedList<Object>();
-                    for (FieldMetadata keyField : keyFields) {
-                        compositeIdValues.add(currentDataRecord.get(keyField));
+                if (types.isEmpty() || types.contains(currentType)) {
+                    TypeMapping mapping = mappingRepository.getMappingFromUser(currentType);
+                    if (mapping == null) {
+                        throw new IllegalArgumentException(
+                                "Type '" + currentType.getName() + "' does not have a database mapping."); //$NON-NLS-1$ //$NON-NLS-2$
                     }
-                    idValue = ObjectDataRecordConverter.createCompositeId(storageClassLoader, clazz, compositeIdValues);
-                }
+                    Class<?> clazz = storageClassLoader.getClassFromType(mapping.getDatabase());
 
-                Wrapper object = (Wrapper) session.get(clazz, idValue, LockOptions.READ);
-                if (object != null) {
-                    session.delete(object);
-                } else {
-                    LOGGER.warn("Instance of type '" + currentType.getName() + "' and ID '" + idValue.toString() //$NON-NLS-1$ //$NON-NLS-2$
-                            + "' has already been deleted within same transaction."); //$NON-NLS-1$
+                    Serializable idValue;
+                    Collection<FieldMetadata> keyFields = currentType.getKeyFields();
+                    if (keyFields.size() == 1) {
+                        idValue = (Serializable) currentDataRecord.get(keyFields.iterator().next());
+                    } else {
+                        List<Object> compositeIdValues = new LinkedList<Object>();
+                        for (FieldMetadata keyField : keyFields) {
+                            compositeIdValues.add(currentDataRecord.get(keyField));
+                        }
+                        idValue = ObjectDataRecordConverter.createCompositeId(storageClassLoader, clazz, compositeIdValues);
+                    }
+
+                    Wrapper object = (Wrapper) session.get(clazz, idValue, LockOptions.READ);
+                    if (object != null) {
+                        session.delete(object);
+                    } else {
+                        LOGGER.warn("Instance of type '" + currentType.getName() + "' and ID '" + idValue.toString() //$NON-NLS-1$ //$NON-NLS-2$
+                                + "' has already been deleted within same transaction."); //$NON-NLS-1$
+                    }
                 }
             }
         } catch (ConstraintViolationException e) {
@@ -1437,6 +1461,71 @@ public class HibernateStorage implements Storage {
         }
     }
 
+    @SuppressWarnings("rawtypes")
+    private void deleteData(ComplexTypeMetadata typeToDelete, Map<String, List> condition, TypeMapping mapping) {
+        Session session = this.getCurrentSession();
+        for (FieldMetadata field : typeToDelete.getFields()) {
+            if (field.isMany()) {
+                String formattedTableName = tableResolver.getCollectionTable(field);
+                String deleteFormattedTableSQL = "delete from " + formattedTableName; //$NON-NLS-1$
+                if (!condition.isEmpty()) {
+                    deleteFormattedTableSQL = deleteFormattedTableSQL + " where " + conditionMapToString(condition); //$NON-NLS-1$                    
+                }
+                session.createSQLQuery(deleteFormattedTableSQL).executeUpdate();
+            }
+        }
+        // Delete the type instances
+        String className = storageClassLoader.getClassFromType(typeToDelete).getName();
+        String hql = "delete from " + className; //$NON-NLS-1$
+        org.hibernate.Query query = session.createQuery(hql);
+        if (!condition.isEmpty()) {
+            hql = hql + " where "; //$NON-NLS-1$
+            for (Entry<String, List> fieldEntry : condition.entrySet()) {
+                if (!hql.endsWith("where ")) { //$NON-NLS-1$
+                    hql = hql + " and "; //$NON-NLS-1$
+                }
+                hql = hql + fieldEntry.getKey() + " in (:" + fieldEntry.getKey() + ")"; //$NON-NLS-1$//$NON-NLS-2$
+            }
+            query = session.createQuery(hql);
+            for (Entry<String, List> fieldEntry : condition.entrySet()) {
+                query.setParameterList(fieldEntry.getKey(), fieldEntry.getValue());
+            }
+        }
+        query.executeUpdate();
+        // Clean up full text indexes
+        if (dataSource.supportFullText()) {
+            FullTextSession fullTextSession = Search.getFullTextSession(session);
+            Set<Class<?>> indexedTypes = fullTextSession.getSearchFactory().getIndexedTypes();
+            Class<? extends Wrapper> entityType = storageClassLoader.getClassFromType(mapping.getDatabase());
+            if (indexedTypes.contains(entityType)) {
+                fullTextSession.purgeAll(entityType);
+            } else {
+                LOGGER.warn("Unable to delete full text indexes for '" + entityType + "' (not indexed)."); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+        }
+    }
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    private String conditionMapToString(Map<String, List> condition) {
+        String conditionString = StringUtils.EMPTY;
+        for (Entry<String, List> fieldEntry : condition.entrySet()) {
+            List<String> list = fieldEntry.getValue();
+            StringBuffer buffer = new StringBuffer();
+            for (int i = 0; i < list.size(); i++) {
+                buffer.append("'" + list.get(i) + "'"); //$NON-NLS-1$//$NON-NLS-2$
+                if (i != list.size() - 1) {
+                    buffer.append(","); //$NON-NLS-1$
+                }
+            }
+            if (buffer.length() > 0) {
+                if (!conditionString.isEmpty()) {
+                    conditionString = conditionString + " and "; //$NON-NLS-1$
+                }
+                conditionString = conditionString + fieldEntry.getKey() + " in (" + buffer.toString() + ")"; //$NON-NLS-1$//$NON-NLS-2$
+            }
+        }
+        return conditionString;
+    }
     @Override
     public void delete(DataRecord record) {
         Session session = this.getCurrentSession();
@@ -1727,36 +1816,37 @@ public class HibernateStorage implements Storage {
 
         @SuppressWarnings("rawtypes")
         private List<String> getTableNames(PersistentClass persistentClass) {
-			List<String> orderedTableNames = new LinkedList<String>();
-			// Add main table
-			orderedTableNames.add(persistentClass.getTable().getName());
-			// Add field's table
-			Iterator propertyClosureIterator = persistentClass.getPropertyClosureIterator();
-			ValueVisitor visitor = new ValueVisitor();
-			while (propertyClosureIterator.hasNext()) {
-				Property property = (Property) propertyClosureIterator.next();
-				String tableName = (String) property.getValue().accept(visitor);
-				if (!orderedTableNames.contains(tableName)) {
-					Value value = property.getValue();
-					// to-many, mapping(middle) table should before main table
-					if (value instanceof org.hibernate.mapping.Collection) {
-						orderedTableNames.add(0, tableName);
-					}
-					if (value instanceof ToOne) { // to-one
-						PersistentClass referencedEntityClass = configuration.getClassMapping(((ToOne) value).getReferencedEntityName());
-						String entityName = StringUtils.substringAfterLast(referencedEntityClass.getEntityName(), ".");
-						// only deal with nested types, not including entities
-						if (userMetadataRepository.getComplexType(entityName) == null) {
-							List<String> referencedEntityTables = getTableNames(referencedEntityClass);
-							for (String table : referencedEntityTables) {
-								if (!orderedTableNames.contains(table)) {
-									orderedTableNames.add(table);
-								}
-							}
-						}
-					}
-				}
-			}
+            List<String> orderedTableNames = new LinkedList<String>();
+            // Add main table
+            orderedTableNames.add(persistentClass.getTable().getName());
+            // Add field's table
+            Iterator propertyClosureIterator = persistentClass.getPropertyClosureIterator();
+            ValueVisitor visitor = new ValueVisitor();
+            while (propertyClosureIterator.hasNext()) {
+                Property property = (Property) propertyClosureIterator.next();
+                String tableName = (String) property.getValue().accept(visitor);
+                if (!orderedTableNames.contains(tableName)) {
+                    Value value = property.getValue();
+                    // to-many, mapping(middle) table should before main table
+                    if (value instanceof org.hibernate.mapping.Collection) {
+                        orderedTableNames.add(0, tableName);
+                    }
+                    if (value instanceof ToOne) { // to-one
+                        PersistentClass referencedEntityClass = configuration.getClassMapping(((ToOne) value)
+                                .getReferencedEntityName());
+                        String entityName = StringUtils.substringAfterLast(referencedEntityClass.getEntityName(), "."); //$NON-NLS-1$
+                        // only deal with nested types, not including entities
+                        if (userMetadataRepository.getComplexType(entityName) == null) {
+                            List<String> referencedEntityTables = getTableNames(referencedEntityClass);
+                            for (String table : referencedEntityTables) {
+                                if (!orderedTableNames.contains(table)) {
+                                    orderedTableNames.add(table);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             return orderedTableNames;
         }
 

@@ -384,11 +384,9 @@ public class StorageQueryTest extends StorageTestCase {
         try {
             storage.begin();
             {
-                UserQueryBuilder qb = from(address);
+                UserQueryBuilder qb = from(person);
                 storage.delete(qb.getSelect());
-                qb = from(country);
-                storage.delete(qb.getSelect());
-                qb = from(person);
+
                 storage.delete(qb.getSelect());
                 qb = from(b);
                 storage.delete(qb.getSelect());
@@ -396,21 +394,32 @@ public class StorageQueryTest extends StorageTestCase {
                 storage.delete(qb.getSelect());
                 qb = from(a);
                 storage.delete(qb.getSelect());
-                qb = from(supplier);
+                qb = from(product);
                 storage.delete(qb.getSelect());
                 qb = from(productFamily);
                 storage.delete(qb.getSelect());
                 qb = from(store);
                 storage.delete(qb.getSelect());
-                qb = from(product);
+                qb = from(supplier);
+
+                qb = from(address);
                 storage.delete(qb.getSelect());
-                qb = from(e1);
+                qb = from(country);
+
                 storage.delete(qb.getSelect());
                 qb = from(e2);
                 storage.delete(qb.getSelect());
+                qb = from(e1);
+                storage.delete(qb.getSelect());
+                qb = from(employee1);
+                storage.delete(qb.getSelect());
                 qb = from(manager1);
                 storage.delete(qb.getSelect());
+                qb = from(entityB);
+                storage.delete(qb.getSelect());
                 qb = from(entityA);
+                storage.delete(qb.getSelect());
+                qb = from(ContainedEntityC);
                 storage.delete(qb.getSelect());
                 qb = from(ContainedEntityB);
                 storage.delete(qb.getSelect());
@@ -420,19 +429,21 @@ public class StorageQueryTest extends StorageTestCase {
                 storage.delete(qb.getSelect());
                 qb = from(repeatableElementsEntity);
                 storage.delete(qb.getSelect());
+                qb = from(tt);
+                storage.delete(qb.getSelect());
                 qb = from(rr);
                 storage.delete(qb.getSelect());
                 qb = from(compte);
                 storage.delete(qb.getSelect());
-                qb = from(contexte);
-                storage.delete(qb.getSelect());
                 qb = from(personne);
+                storage.delete(qb.getSelect());
+                qb = from(contexte);
                 storage.delete(qb.getSelect());
                 qb = from(cpo_service);
                 storage.delete(qb.getSelect());
-                qb = from(location);
-                storage.delete(qb.getSelect());
                 qb = from(organisation);
+                storage.delete(qb.getSelect());
+                qb = from(location);
                 storage.delete(qb.getSelect());
                 qb = from(e_entity);
                 storage.delete(qb.getSelect());

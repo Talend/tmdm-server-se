@@ -86,7 +86,7 @@ public class SystemStorageWrapper extends StorageWrapper {
         if (uniqueId != null && uniqueId.startsWith("amalto_local_service_")) { //$NON-NLS-1$
             return repository.getComplexType("service-bMP"); //$NON-NLS-1$
         }
-        if (clusterName.startsWith(SYSTEM_PREFIX)) {
+        if (clusterName.startsWith(SYSTEM_PREFIX) || clusterName.startsWith("amalto")) { //$NON-NLS-1$) {
             if (!"amaltoOBJECTSservices".equals(clusterName)) { //$NON-NLS-1$
                 return repository.getComplexType(ClassRepository.format(clusterName.substring(SYSTEM_PREFIX.length()) + "POJO")); //$NON-NLS-1$
             } else {
@@ -97,6 +97,10 @@ public class SystemStorageWrapper extends StorageWrapper {
             return repository.getComplexType(DROPPED_ITEM_TYPE);
         } else if ("MDMDomainObjects".equals(clusterName) || "MDMItemImages".equals(clusterName) || "FailedAutoCommitSvnMessage".equals(clusterName)) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             return null; // Documents for these clusters don't have a predefined structure.
+        }
+        // No id, so no type to be read.
+        if (uniqueId == null) {
+            return null;
         }
         // MIGRATION.completed.record
         return repository.getComplexType(getTypeName(uniqueId));
@@ -119,7 +123,8 @@ public class SystemStorageWrapper extends StorageWrapper {
 
     @Override
     public String[] getAllClusters(String revisionID) throws XmlServerException {
-        return new String[0];
+        Set<String> internalClusterNames = DispatchWrapper.getInternalClusterNames();
+        return internalClusterNames.toArray(new String[internalClusterNames.size()]);
     }
 
     @Override

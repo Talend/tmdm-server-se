@@ -59,6 +59,9 @@ public class StorageAdminImpl implements StorageAdmin {
     private final Map<String, Map<String, Storage>> storages = new StorageMap();
 
     public String[] getAll(String revisionID) {
+        if (isHead(revisionID)) {
+            revisionID = null;
+        }
         Set<String> allStorageNames = new HashSet<String>();
         for (Map.Entry<String, Map<String, Storage>> currentStorage : storages.entrySet()) {
             if (currentStorage.getValue().containsKey(revisionID)) {

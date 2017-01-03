@@ -13,11 +13,15 @@ package com.amalto.core.storage;
 
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
 import org.talend.mdm.commmon.util.webapp.XObjectType;
@@ -26,6 +30,7 @@ import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
+import com.amalto.core.server.StorageAdmin;
 import com.amalto.xmlserver.interfaces.IWhereItem;
 import com.amalto.xmlserver.interfaces.IXmlServerSLWrapper;
 import com.amalto.xmlserver.interfaces.ItemPKCriteria;
@@ -42,6 +47,8 @@ public class DispatchWrapper implements IXmlServerSLWrapper {
     private boolean userWrapperUp;
 
     private boolean internalWrapperUp;
+
+    private static Set<String> internalClusterNames;
 
     public DispatchWrapper() {
         String mdmInternalWrapperClass = (String) MDMConfiguration.getConfiguration().get("mdm.internal.wrapper"); //$NON-NLS-1$
@@ -91,29 +98,65 @@ public class DispatchWrapper implements IXmlServerSLWrapper {
         return joinedArray;
     }
 
-    private boolean isMDMInternal(String clusterName) {
-        if (clusterName != null) {
-            if (clusterName.isEmpty()) { // Consider an empty cluster name as internal
+    public static boolean isMDMInternal(String clusterName) {
+        for (String internalClusterName : getInternalClusterNames()) {
+            if (StringUtils.equalsIgnoreCase(internalClusterName, clusterName)) {
                 return true;
             }
-            // TMDM-4507: Update report now stored in SQL storage (user space).
-            if (XSystemObjects.DC_UPDATE_PREPORT.getName().equals(clusterName)) {
-                return false; // Consider update reports as user data.
-            }
-            if (XSystemObjects.DC_CROSSREFERENCING.getName().equals(clusterName)) {
-                return false; // Consider cross reference as user data.
-            }
-            Map<String, XSystemObjects> xDataClustersMap = XSystemObjects.getXSystemObjects(XObjectType.DATA_CLUSTER);
-            return XSystemObjects.isXSystemObject(xDataClustersMap, clusterName)
-                    || clusterName.startsWith("amalto") //$NON-NLS-1$
-                    || "MDMDomainObjects".equals(clusterName) //$NON-NLS-1$
-                    || XSystemObjects.DC_MDMITEMSTRASH.getName().equals(clusterName)
-                    || "FailedAutoCommitSvnMessage".equals(clusterName)//$NON-NLS-1$
-                    || "twitter".equals(clusterName) //$NON-NLS-1$
-                    || "system".equals(clusterName); //$NON-NLS-1$
-        } else {
-            return true;
         }
+        return false;
+    }
+
+    public static synchronized Set<String> getInternalClusterNames() {
+        if (internalClusterNames == null) {
+            internalClusterNames = new HashSet<String>();
+            internalClusterNames.add(null);
+            internalClusterNames.add(StringUtils.EMPTY); // Consider an empty cluster name as internal
+            internalClusterNames.add(StorageAdmin.SYSTEM_STORAGE);
+            Map<String, XSystemObjects> systemObjects = XSystemObjects.getXSystemObjects(XObjectType.DATA_CLUSTER);
+            for (Map.Entry<String, XSystemObjects> entry : systemObjects.entrySet()) {
+                // Note #1: TMDM-4507: Update report now stored in SQL storage (user space).
+                // Note #2: Cross referencing is also user space.
+                if (!XSystemObjects.DC_CROSSREFERENCING.getName().equals(entry.getKey())
+                        && !XSystemObjects.DC_UPDATE_PREPORT.getName().equals(entry.getKey())) {
+                    internalClusterNames.add(entry.getKey());
+                }
+            }
+            internalClusterNames.add("MDMDomainObjects"); //$NON-NLS-1$
+            internalClusterNames.add("MDMItemsTrash");
+            // Adds amalto containers
+            String[] amaltoContainers = new String[] { "amaltoOBJECTSTransformerV2", //$NON-NLS-1$
+                    "amaltoOBJECTSFailedRoutingOrderV2", //$NON-NLS-1$
+                    "amaltoOBJECTSCompletedRoutingOrderV2", //$NON-NLS-1$
+                    "amaltoOBJECTSCustomForm", //$NON-NLS-1$
+                    "amaltoOBJECTSjcaadapters", //$NON-NLS-1$
+                    "amaltoOBJECTSRoutingEngineV2", //$NON-NLS-1$
+                    "amaltoOBJECTSRoutingRule", //$NON-NLS-1$
+                    "amaltoOBJECTSSynchronizationItem", //$NON-NLS-1$
+                    "amaltoOBJECTSSynchronizationPlan", //$NON-NLS-1$
+                    "amaltoOBJECTSservices", //$NON-NLS-1$
+                    "amaltoOBJECTSTransformerPluginV2", //$NON-NLS-1$
+                    "amaltoOBJECTSroutingorders", //$NON-NLS-1$
+                    "amaltoOBJECTSUniverse", //$NON-NLS-1$
+                    "amaltoOBJECTSVersioningSystem", //$NON-NLS-1$
+                    "amaltoOBJECTSroutingqueues", //$NON-NLS-1$
+                    "amaltoOBJECTSroutingservices", //$NON-NLS-1$
+                    "amaltoOBJECTSStoredProcedure", //$NON-NLS-1$
+                    "amaltoOBJECTSSynchronizationObject", //$NON-NLS-1$
+                    "amaltoOBJECTSMatchRule", //$NON-NLS-1$
+                    "amaltoOBJECTSVersionSystem", //$NON-NLS-1$
+                    "amaltoOBJECTSMenu", //$NON-NLS-1$
+                    "amaltoOBJECTSActiveRoutingOrderV2", //$NON-NLS-1$
+                    "amaltoOBJECTSDataCluster", //$NON-NLS-1$
+                    "amaltoOBJECTSLicense", //$NON-NLS-1$
+                    "amaltoOBJECTSRole", //$NON-NLS-1$
+                    "amaltoOBJECTSDataModel", //$NON-NLS-1$
+                    "amaltoOBJECTSBackgroundJob", //$NON-NLS-1$
+                    "amaltoOBJECTSView", //$NON-NLS-1$
+                    "amaltoOBJECTSConfigurationinfo" }; //$NON-NLS-1$
+            internalClusterNames.addAll(Arrays.asList(amaltoContainers));
+        }
+        return internalClusterNames;
     }
 
     private static String getClusterName(Map<String, String> conceptPatternsToClusterName, String conceptName) {

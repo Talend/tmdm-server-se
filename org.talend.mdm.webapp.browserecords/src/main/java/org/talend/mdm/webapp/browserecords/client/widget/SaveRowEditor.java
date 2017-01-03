@@ -43,6 +43,13 @@ public class SaveRowEditor extends RowEditor<ItemBean> {
         grid.getSelectionModel().setLocked(false);
     }
 
+    @Override
+    protected void positionButtons() {
+        if (rendered) {
+            super.positionButtons();
+        }
+    }
+
     public void createElements(String xpath, String elName, List<?> value, Map<String, Element> elementSet, Document doc) {
         Element parent = null;
         String[] xps = xpath.split("/");//$NON-NLS-1$

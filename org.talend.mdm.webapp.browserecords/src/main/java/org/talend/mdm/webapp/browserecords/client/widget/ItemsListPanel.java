@@ -367,7 +367,6 @@ public class ItemsListPanel extends ContentPanel {
         }
 
         re = new SaveRowEditor();
-        grid.getView().setForceFit(true);
         if (cm.getColumnCount() > 0) {
             grid.setAutoExpandColumn(cm.getColumn(0).getHeader());
         }
@@ -453,13 +452,16 @@ public class ItemsListPanel extends ContentPanel {
         });
 
         grid.setLoadMask(true);
+        grid.setBorders(false);
+        grid.setAutoExpandMin(120);
+        grid.setAutoExpandColumn(columnConfigList.get(1).getId());
         grid.addPlugin(re);
         grid.addPlugin(sm);
-
         grid.getAriaSupport().setDescribedBy("abcdefg"); //$NON-NLS-1$
         grid.getAriaSupport().setLabelledBy(this.getHeader().getId() + "-label"); //$NON-NLS-1$
 
         gridContainer.add(grid);
+        gridContainer.setFrame(false);
         gridContainer.setHeight(this.getHeight() - ItemsToolBar.getInstance().getHeight()
                 - ItemsToolBar.getInstance().getAdvancedPanel().getHeight());
         hookContextMenu();

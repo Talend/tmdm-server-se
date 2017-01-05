@@ -118,7 +118,7 @@ public interface BrowseRecordsMessages extends Messages {
 
     String save_error();
 
-    String save_fail(String value, String msg);
+    String save_fail(String value);
 
     String save_failEx(String value);
 

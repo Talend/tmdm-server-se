@@ -48,21 +48,21 @@ public class DefaultRoleTest extends TestCase {
     
     public void testLoadAllRolePKS() throws Exception {
         ArrayList<ObjectPOJOPK> list = new ArrayList<ObjectPOJOPK>();
-        list.add(new ObjectPOJOPK("SystemAdmin"));
-        list.add(new ObjectPOJOPK("DemoManager"));
-        list.add(new ObjectPOJOPK("DemoUser"));
-        list.add(new ObjectPOJOPK("User"));
+        list.add(new ObjectPOJOPK("SystemAdmin")); //$NON-NLS-1$
+        list.add(new ObjectPOJOPK("DemoManager")); //$NON-NLS-1$
+        list.add(new ObjectPOJOPK("DemoUser")); //$NON-NLS-1$
+        list.add(new ObjectPOJOPK("User")); //$NON-NLS-1$
         
         PowerMockito.mockStatic(ObjectPOJO.class);
-        PowerMockito.when(ObjectPOJO.findAllPKs(RolePOJO.class, "*")).thenReturn(list);
+        PowerMockito.when(ObjectPOJO.findAllPKs(RolePOJO.class, "*")).thenReturn(list); //$NON-NLS-1$
         
         Role ctrl = Util.getRoleCtrlLocal();
-        Collection<RolePOJOPK> c = ctrl.getRolePKs("*");
+        Collection<RolePOJOPK> c = ctrl.getRolePKs("*"); //$NON-NLS-1$
         
         assertEquals(4, c.size());
-        assertEquals("DemoManager", ((ArrayList<RolePOJOPK>)c).get(0).getUniqueId());
-        assertEquals("DemoUser", ((ArrayList<RolePOJOPK>)c).get(1).getUniqueId());
-        assertEquals("SystemAdmin", ((ArrayList<RolePOJOPK>)c).get(2).getUniqueId());
-        assertEquals("User", ((ArrayList<RolePOJOPK>)c).get(3).getUniqueId());
+        assertEquals("DemoManager", ((ArrayList<RolePOJOPK>)c).get(0).getUniqueId()); //$NON-NLS-1$
+        assertEquals("DemoUser", ((ArrayList<RolePOJOPK>)c).get(1).getUniqueId()); //$NON-NLS-1$
+        assertEquals("SystemAdmin", ((ArrayList<RolePOJOPK>)c).get(2).getUniqueId()); //$NON-NLS-1$
+        assertEquals("User", ((ArrayList<RolePOJOPK>)c).get(3).getUniqueId()); //$NON-NLS-1$
     }
 }

@@ -19,6 +19,8 @@ import com.amalto.core.server.api.Role;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class DefaultRole implements Role {
 
@@ -95,6 +97,15 @@ public class DefaultRole implements Role {
         for (ObjectPOJOPK currentObject : c) {
             l.add(new RolePOJOPK(currentObject));
         }
+
+        Collections.sort(l, new Comparator<RolePOJOPK>() {
+
+            @Override
+            public int compare(RolePOJOPK o1, RolePOJOPK o2) {
+                return o1.getUniqueId().compareTo(o2.getUniqueId());
+            }
+
+        });
         return l;
     }
 }

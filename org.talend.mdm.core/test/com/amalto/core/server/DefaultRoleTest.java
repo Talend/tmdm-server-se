@@ -54,7 +54,6 @@ public class DefaultRoleTest extends TestCase {
         list.add(new ObjectPOJOPK("User"));
         
         PowerMockito.mockStatic(ObjectPOJO.class);
-        PowerMockito.when(ObjectPOJO.getCluster(RolePOJO.class)).thenReturn("amaltoOBJECTSRole");
         PowerMockito.when(ObjectPOJO.findAllPKs(RolePOJO.class, "*")).thenReturn(list);
         
         Role ctrl = Util.getRoleCtrlLocal();

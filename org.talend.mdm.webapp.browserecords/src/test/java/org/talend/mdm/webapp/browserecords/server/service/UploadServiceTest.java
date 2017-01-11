@@ -345,6 +345,63 @@ public class UploadServiceTest extends TestCase {
         assertEquals(exceptResult2, removeFormatPattern.matcher(wsPutItemWithReportList.get(1).getWsPutItem().getXmlString()).replaceAll("")); //$NON-NLS-1$
     }
 
+    public void testGetExcelForeignKeyFieldValue() throws Exception {
+        String[] keys = { "Product/Id" }; //$NON-NLS-1$
+        headerVisibleMap = new HashMap<String, Boolean>();
+        headerVisibleMap.put("Product/Id", true); //$NON-NLS-1$
+        headerVisibleMap.put("Product/Name", true); //$NON-NLS-1$
+        headerVisibleMap.put("Product/Price", true); //$NON-NLS-1$
+        headerVisibleMap.put("Product/Description", true); //$NON-NLS-1$
+        headerVisibleMap.put("Product/Availability", true); //$NON-NLS-1$
+        headerVisibleMap.put("Product/Features/Sizes/Size", true); //$NON-NLS-1$
+        headerVisibleMap.put("Product/Features/Colors/Color", true); //$NON-NLS-1$"
+        headerVisibleMap.put("Product/Family", true); //$NON-NLS-1$"
+        multipleValueSeparator = "|"; //$NON-NLS-1$
+
+        EntityModel entityModel = getEntityModel("Product.xsd", "Product", "Product", keys); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        UploadService service = new TestUploadService(entityModel, fileType, isPartialUpdate, headersOnFirstLine,
+                headerVisibleMap, inheritanceNodePathList, multipleValueSeparator, seperator, encoding, textDelimiter, language);
+        file = new File(this.getClass().getResource("Product_FK.xls").getFile()); //$NON-NLS-1$
+        try {
+            FileInputStream fileInputStream = new FileInputStream(file);
+            POIFSFileSystem poiFSFile = new POIFSFileSystem(fileInputStream);
+            Workbook workBook = new HSSFWorkbook(poiFSFile);
+            Sheet sheet = workBook.getSheetAt(0);
+            Iterator<Row> rowIterator = sheet.rowIterator();
+            int rowNumber = 0;
+            while (rowIterator.hasNext()) {
+                rowNumber++;
+                Row row = rowIterator.next();
+                if (rowNumber == 1) {
+                    continue;
+                } else if (rowNumber == 2) {
+                    assertEquals("Id1", service.getExcelFieldValue(row.getCell(0))); //$NON-NLS-1$
+                    assertEquals("Name1", service.getExcelFieldValue(row.getCell(1))); //$NON-NLS-1$
+                    assertEquals("111.0", service.getExcelFieldValue(row.getCell(2))); //$NON-NLS-1$
+                    assertEquals("Description1", service.getExcelFieldValue(row.getCell(3)));
+                    assertEquals("[FK1]",
+                            service.transferFieldValue("Product/Family", (service.getExcelFieldValue(row.getCell(7)))));
+                } else if (rowNumber == 3) {
+                    assertEquals("Id2", service.getExcelFieldValue(row.getCell(0))); //$NON-NLS-1$
+                    assertEquals("Name2", service.getExcelFieldValue(row.getCell(1))); //$NON-NLS-1$
+                    assertEquals("222.0", service.getExcelFieldValue(row.getCell(2))); //$NON-NLS-1$
+                    assertEquals("Description2", service.getExcelFieldValue(row.getCell(3)));
+                    assertEquals("[FK2]",
+                            service.transferFieldValue("Product/Family", (service.getExcelFieldValue(row.getCell(7)))));
+                } else if (rowNumber == 4) {
+                    assertEquals("Id3", service.getExcelFieldValue(row.getCell(0))); //$NON-NLS-1$
+                    assertEquals("Name3", service.getExcelFieldValue(row.getCell(1))); //$NON-NLS-1$
+                    assertEquals("333.0", service.getExcelFieldValue(row.getCell(2))); //$NON-NLS-1$
+                    assertEquals("Description3", service.getExcelFieldValue(row.getCell(3)));
+                    assertEquals("[FK3]",
+                            service.transferFieldValue("Product/Family", (service.getExcelFieldValue(row.getCell(7)))));
+                }
+            }
+        } catch (Exception exception) {
+            fail("get excel file field value failed."); //$NON-NLS-1$
+        }
+    }
+
     protected EntityModel getEntityModel(String xsdFileName, String dataModel, String concept, String[] keys) throws Exception {
         String xsd = getFileContent(xsdFileName);
         String[] roles = { "System_Admin", "administration" }; //$NON-NLS-1$//$NON-NLS-2$

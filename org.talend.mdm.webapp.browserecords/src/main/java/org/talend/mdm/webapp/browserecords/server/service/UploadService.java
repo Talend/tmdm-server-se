@@ -20,6 +20,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
@@ -517,6 +519,7 @@ public class UploadService {
             String field[] = fieldPath.split(Constants.FILE_EXPORT_IMPORT_SEPARATOR);
             fieldPath = field[0];
         }
+        fieldValue = transferFieldValue(fieldPath, fieldValue);
         String[] xpathPartArray = fieldPath.split("/"); //$NON-NLS-1$
         String xpath = xpathPartArray[0];
         if (!isAttribute) {
@@ -676,6 +679,21 @@ public class UploadService {
             }
         }
         return fieldValue;
+    }
+
+    protected String transferFieldValue(String xpath, String value) {
+        if (value != null && !"".equals(value)) {
+            TypeModel headerTypeModel = entityModel.getTypeModel(xpath.endsWith("/") ? xpath.substring(0, xpath.lastIndexOf("/"))
+                    : xpath);
+            if (headerTypeModel.getForeignkey() != null) {
+                Pattern p = Pattern.compile("^\\[.+\\]$"); //$NON-NLS-1$
+                Matcher m = p.matcher(value);
+                if (!m.matches()) {
+                    value = "[" + value + "]";
+                }
+            }
+        }
+        return value;
     }
 
     private void setFieldValue(Element currentElement, String value) throws Exception {

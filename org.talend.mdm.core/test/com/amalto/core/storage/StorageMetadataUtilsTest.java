@@ -21,14 +21,14 @@ import org.talend.mdm.commmon.metadata.MetadataRepository;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.record.metadata.DataRecordMetadataImpl;
 
-public class StorageMetadataUtilsTestCase {
+public class StorageMetadataUtilsTest {
 
     protected static MetadataRepository repository;
     
     @BeforeClass
     public static void setup() throws Exception {
         repository = new MetadataRepository();
-        repository.load(StorageMetadataUtilsTestCase.class.getResourceAsStream("../storage/record/metadata.xsd"));  //$NON-NLS-1$
+        repository.load(StorageMetadataUtilsTest.class.getResourceAsStream("../storage/record/metadata.xsd"));  //$NON-NLS-1$
     }
     
     @Test

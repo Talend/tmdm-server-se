@@ -10,19 +10,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFFont;
@@ -31,7 +25,6 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.dom4j.Document;
 import org.dom4j.Element;
-import org.dom4j.XPath;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
 import org.talend.mdm.webapp.base.server.util.CommonUtil;
 import org.talend.mdm.webapp.base.server.util.XmlUtil;
@@ -60,6 +53,8 @@ import com.amalto.webapp.core.util.Util;
 public class DownloadData extends HttpServlet {
 
     private static final Logger LOG = Logger.getLogger(DownloadData.class);
+
+    private static final int FETCH_SIZE = 1000;
 
     private static final long serialVersionUID = 1L;
 
@@ -188,6 +183,29 @@ public class DownloadData extends HttpServlet {
         WSViewPK wsViewPK = new WSViewPK(viewPk);
         WSView wsView = CommonUtil.getPort().getView(new WSGetView(wsViewPK));
 
+        String[] result = null;
+        if (idsList != null && idsList.size() > FETCH_SIZE) {
+            for (int i = 0; i < idsList.size(); i = i + FETCH_SIZE) {
+                result = fetchResultWithIdList(wsViewPK, wsView, idsList.subList(i, i + FETCH_SIZE));
+                if (result.length > 1) {
+                    results.addAll(Arrays.asList(Arrays.copyOfRange(result, 1, result.length)));
+                }
+            }
+        } else {
+            result = fetchResultWithIdList(wsViewPK, wsView, idsList);
+            if (result.length > 1) {
+                results = Arrays.asList(Arrays.copyOfRange(result, 1, result.length));
+            }
+        }
+
+        for (int i = 0; i < results.size(); i++) {
+            Document document = XmlUtil.parseText(results.get(i));
+            XSSFRow row = sheet.createRow(i + 1);
+            fillRow(row, document);
+        }
+    }
+
+    private String[] fetchResultWithIdList(WSViewPK wsViewPK, WSView wsView, List<String> idsList) throws Exception {
         WSWhereCondition[] conditions = wsView.getWhereConditions();
         WSWhereItem wi = new WSWhereItem();
         WSWhereAnd whereAnd = new WSWhereAnd();
@@ -203,10 +221,14 @@ public class DownloadData extends HttpServlet {
             WSWhereItem idsWhereItem = new WSWhereItem();
             WSWhereOr idWhereOr = new WSWhereOr();
             List<WSWhereItem> idWhereItemArray = new ArrayList<WSWhereItem>();
+            if (idsList.size() > maxCount) {
+                idsList.subList(0, maxCount);
+            }
+
             for (String ids : idsList) {
                 WSWhereItem idWhereItem = new WSWhereItem();
 
-                //if the composite primary key
+                // if the composite primary key
                 if (entity.getKeys().length > 1) {
                     WSWhereItem compositeIdWhereItems = new WSWhereItem();
                     WSWhereAnd compositeIdWhereand = new WSWhereAnd();
@@ -248,16 +270,9 @@ public class DownloadData extends HttpServlet {
         String[] result = CommonUtil
                 .getPort()
                 .viewSearch(
-                        new WSViewSearch(new WSDataClusterPK(getCurrentDataCluster()), wsViewPK, wi, -1, 0, maxCount, null,
-                                null)).getStrings();
-        if (result.length > 1) {
-            results = Arrays.asList(Arrays.copyOfRange(result, 1, result.length));
-        }
-        for (int i = 0; i < results.size(); i++) {
-            Document document = XmlUtil.parseText(results.get(i));
-            XSSFRow row = sheet.createRow(i + 1);
-            fillRow(row, document);
-        }
+                        new WSViewSearch(new WSDataClusterPK(getCurrentDataCluster()), wsViewPK, wi, -1, 0, maxCount, null, null))
+                .getStrings();
+        return result;
     }
 
     protected void fillRow(XSSFRow row, Document document) throws Exception {

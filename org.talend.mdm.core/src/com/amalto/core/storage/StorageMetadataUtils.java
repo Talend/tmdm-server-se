@@ -570,6 +570,10 @@ public class StorageMetadataUtils {
     }
 
     public static String toString(Object value) {
+        return toString(value, true);
+    }
+
+    public static String toString(Object value, boolean escapeXml) {
         if (value == null) {
             return StringUtils.EMPTY;
         }
@@ -580,14 +584,18 @@ public class StorageMetadataUtils {
             for (FieldMetadata keyField : keyFields) {
                 String keyFieldValue = StorageMetadataUtils.toString(record.get(keyField), keyField);
                 TypeMetadata type = org.talend.mdm.commmon.metadata.MetadataUtils.getSuperConcreteType(keyField.getType());
-                if (Types.STRING.equals(type.getName())) {
+                if (Types.STRING.equals(type.getName()) && escapeXml) {
                     keyFieldValue = StringEscapeUtils.escapeXml(keyFieldValue);
                 }
                 builder.append('[').append(keyFieldValue).append(']');
             }
             return builder.toString();
         }
-        return StringEscapeUtils.escapeXml(String.valueOf(value));
+        if (escapeXml) {
+            return StringEscapeUtils.escapeXml(String.valueOf(value));
+        } else {
+            return String.valueOf(value);
+        }
     }
 
     public static String toString(Object o, FieldMetadata field) {

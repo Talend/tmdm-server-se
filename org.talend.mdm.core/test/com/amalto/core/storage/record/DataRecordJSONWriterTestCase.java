@@ -60,7 +60,20 @@ public class DataRecordJSONWriterTestCase {
         String result = toJSON(record);
         Assert.assertEquals("{\"simpleproduct\":{\"id\":\"12345\",\"name\":\"Name\",\"description\":\"Desc\",\"availability\":\"false\"}}", result);
     }
-    
+
+    @Test
+    public void testSimpleComplexTypeWithDifferentLanguage() throws Exception {
+        DataRecord record = createDataRecord(repository.getComplexType("SimpleProduct"));
+        setDataRecordField(record, "Id", "12345");
+        setDataRecordField(record, "Name", "1jGTpu é #dwe # é  BCLS #237 28TH & MAIN &&&& > < ,>= привет 안녕 하세요  こんにちは 你好");
+        setDataRecordField(record, "Description", "Desc");
+        setDataRecordField(record, "Availability", Boolean.FALSE);
+        String result = toJSON(record);
+        Assert.assertEquals(
+                "{\"simpleproduct\":{\"id\":\"12345\",\"name\":\"1jGTpu é #dwe # é  BCLS #237 28TH & MAIN &&&& > < ,>= привет 안녕 하세요  こんにちは 你好\",\"description\":\"Desc\",\"availability\":\"false\"}}",
+                result);
+    }
+
     @Test
     public void testSimpleTypeWithArray() throws Exception {
         DataRecord record = createDataRecord(repository.getComplexType("WithArray"));

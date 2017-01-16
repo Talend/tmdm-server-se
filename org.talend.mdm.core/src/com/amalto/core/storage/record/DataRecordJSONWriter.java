@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.charset.Charset;
 import java.util.List;
 
 import com.amalto.core.storage.SecuredStorage;
@@ -44,13 +45,14 @@ public class DataRecordJSONWriter implements DataRecordWriter {
                             }
                             try {
                                 if (!field.isMany()) {
-                                    writer.key(field.getName().toLowerCase()).value(StorageMetadataUtils.toString(record.get(field)));
+                                    writer.key(field.getName().toLowerCase()).value(
+                                            StorageMetadataUtils.toString(record.get(field), false));
                                 } else {
                                     List<Object> values = (List<Object>) record.get(field);
                                     if (values != null) {
                                         writer.key(field.getName().toLowerCase()).array();
                                         for (Object value : values) {
-                                            writer.value(StorageMetadataUtils.toString(value));
+                                            writer.value(StorageMetadataUtils.toString(value, false));
                                         }
                                         writer.endArray();
                                     }
@@ -112,7 +114,7 @@ public class DataRecordJSONWriter implements DataRecordWriter {
 
     @Override
     public void write(DataRecord record, OutputStream output) throws IOException {
-        write(record, new OutputStreamWriter(output));
+        write(record, new OutputStreamWriter(output, Charset.forName("UTF-8")));
     }
 
     @Override

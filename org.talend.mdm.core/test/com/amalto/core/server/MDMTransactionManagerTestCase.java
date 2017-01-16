@@ -19,7 +19,7 @@ import com.amalto.core.storage.transaction.Transaction;
 import com.amalto.core.storage.transaction.Transaction.Lifetime;
 
 
-public class MDMTransactionManagerTest {
+public class MDMTransactionManagerTestCase {
     
     private MDMTransactionManager transactionManager;
     

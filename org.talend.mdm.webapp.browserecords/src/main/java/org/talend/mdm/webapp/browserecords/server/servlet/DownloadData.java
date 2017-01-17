@@ -54,7 +54,7 @@ public class DownloadData extends HttpServlet {
 
     private static final Logger LOG = Logger.getLogger(DownloadData.class);
 
-    private static final int FETCH_SIZE = 1000;
+    private static final int FETCH_SIZE = 100;
 
     private static final long serialVersionUID = 1L;
 
@@ -183,10 +183,18 @@ public class DownloadData extends HttpServlet {
         WSViewPK wsViewPK = new WSViewPK(viewPk);
         WSView wsView = CommonUtil.getPort().getView(new WSGetView(wsViewPK));
 
+        if (idsList != null && idsList.size() > maxCount) {
+            idsList = idsList.subList(0, maxCount);
+        }
+
         String[] result = null;
         if (idsList != null && idsList.size() > FETCH_SIZE) {
             for (int i = 0; i < idsList.size(); i = i + FETCH_SIZE) {
-                result = fetchResultWithIdList(wsViewPK, wsView, idsList.subList(i, i + FETCH_SIZE));
+                int toIndex = i + FETCH_SIZE;
+                if (toIndex > idsList.size()) {
+                    toIndex = idsList.size();
+                }
+                result = fetchResultWithIdList(wsViewPK, wsView, idsList.subList(i, toIndex));
                 if (result.length > 1) {
                     results.addAll(Arrays.asList(Arrays.copyOfRange(result, 1, result.length)));
                 }
@@ -221,9 +229,6 @@ public class DownloadData extends HttpServlet {
             WSWhereItem idsWhereItem = new WSWhereItem();
             WSWhereOr idWhereOr = new WSWhereOr();
             List<WSWhereItem> idWhereItemArray = new ArrayList<WSWhereItem>();
-            if (idsList.size() > maxCount) {
-                idsList.subList(0, maxCount);
-            }
 
             for (String ids : idsList) {
                 WSWhereItem idWhereItem = new WSWhereItem();

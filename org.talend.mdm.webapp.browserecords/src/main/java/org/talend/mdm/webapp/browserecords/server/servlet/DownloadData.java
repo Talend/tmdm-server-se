@@ -188,7 +188,7 @@ public class DownloadData extends HttpServlet {
         WSViewPK wsViewPK = new WSViewPK(viewPk);
         WSView wsView = CommonUtil.getPort().getView(new WSGetView(wsViewPK));
 
-        if (idsList.size() > defaultMaxExportCount) {
+        if (idsList != null && idsList.size() > defaultMaxExportCount) {
             idsList = idsList.subList(0, defaultMaxExportCount);
         }
 

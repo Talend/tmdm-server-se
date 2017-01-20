@@ -1837,10 +1837,45 @@ public class HibernateStorage implements Storage {
                         String entityName = StringUtils.substringAfterLast(referencedEntityClass.getEntityName(), "."); //$NON-NLS-1$
                         // only deal with nested types, not including entities
                         if (userMetadataRepository.getComplexType(entityName) == null) {
-                            List<String> referencedEntityTables = getTableNames(referencedEntityClass);
+                            List<String> referencedEntityTables = getReferencedTableNames(referencedEntityClass);
                             for (String table : referencedEntityTables) {
                                 if (!orderedTableNames.contains(table)) {
                                     orderedTableNames.add(table);
+                                }
+                            }
+                            referencedEntityTables = getTableNames(referencedEntityClass);
+                            for (String table : referencedEntityTables) {
+                                if (!orderedTableNames.contains(table)) {
+                                    orderedTableNames.add(table);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return orderedTableNames;
+        }
+        
+        @SuppressWarnings("rawtypes")
+        private List<String> getReferencedTableNames(PersistentClass referencedPersistentClass) {
+            List<String> orderedTableNames = new LinkedList<String>();
+            Iterator<PersistentClass> classMappingIterator = configuration.getClassMappings();
+            while (classMappingIterator.hasNext()) {
+                PersistentClass persistentClass = classMappingIterator.next();
+                // Add field's table
+                Iterator propertyClosureIterator = persistentClass.getPropertyClosureIterator();
+                ValueVisitor visitor = new ValueVisitor();
+                while (propertyClosureIterator.hasNext()) {
+                    Property property = (Property) propertyClosureIterator.next();
+                    String tableName = (String) property.getValue().accept(visitor);
+                    if (!orderedTableNames.contains(tableName)) {
+                        Value value = property.getValue();
+                        if (value instanceof ToOne) {
+                            PersistentClass referencedEntityClass = configuration.getClassMapping(((ToOne) value)
+                                    .getReferencedEntityName());
+                            if (referencedPersistentClass.getEntityName().equals(referencedEntityClass.getEntityName())) {
+                                if (!orderedTableNames.contains(persistentClass.getTable().getName())) {
+                                    orderedTableNames.add(persistentClass.getTable().getName());
                                 }
                             }
                         }

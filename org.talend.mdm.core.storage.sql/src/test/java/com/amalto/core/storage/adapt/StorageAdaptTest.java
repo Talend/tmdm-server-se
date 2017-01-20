@@ -447,7 +447,6 @@ public class StorageAdaptTest extends TestCase {
         Storage storage = new HibernateStorage(STORAGE_NAME, StorageType.MASTER);
         storage.init(dataSource);
 
-        DataRecordReader<String> factory = new XmlStringDataRecordReader();
         MetadataRepository repository = new MetadataRepository();
         repository.load(StorageAdaptTest.class.getResourceAsStream("AOP.xsd"));
         storage.prepare(repository, true);
@@ -474,6 +473,44 @@ public class StorageAdaptTest extends TestCase {
         Object[] args1 = { sortedTypesToDrop };
         Set<String> tables = (Set<String>) findTablesToDrop.invoke(storage, args1);
         assertTrue(tables.contains("X_CompatibilityType"));
+        storage.close(true);
+    }
+
+    // TMDM-9941 Recreate table fields when there are reusable types changes
+    public void testFindReusableTablesToDrop() throws Exception {
+        // Test preparation
+        DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
+        Storage storage = new HibernateStorage(STORAGE_NAME, StorageType.MASTER);
+        storage.init(dataSource);
+
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(StorageAdaptTest.class.getResourceAsStream("TMDM-9941.xsd"));
+        storage.prepare(repository, true);
+        // Drop Type e2
+        ComplexTypeMetadata composition = repository.getComplexType("e2");
+        Set<ComplexTypeMetadata> typesToDrop = new HashSet<ComplexTypeMetadata>();
+        typesToDrop.add(composition);
+        // Find all dependencies of e2
+        Set<ComplexTypeMetadata> allDependencies = new HashSet<ComplexTypeMetadata>();
+        allDependencies.addAll(typesToDrop);
+        Method findDependentTypesToDelete = storage.getClass().getDeclaredMethod("findDependentTypesToDelete",
+                new Class[] { MetadataRepository.class, Set.class, Set.class });
+        findDependentTypesToDelete.setAccessible(true);
+        Object[] args = { repository, typesToDrop, allDependencies };
+        Set<ComplexTypeMetadata> dependentTypesToDrop = (Set<ComplexTypeMetadata>) findDependentTypesToDelete.invoke(storage,
+                args);
+        typesToDrop.addAll(dependentTypesToDrop);
+        // Sort types
+        List<ComplexTypeMetadata> sortedTypesToDrop = new ArrayList<ComplexTypeMetadata>(typesToDrop);
+        sortedTypesToDrop = MetadataUtils.sortTypes(repository, sortedTypesToDrop, SortType.LENIENT);
+        // Find tables to drop
+        Method findTablesToDrop = storage.getClass().getDeclaredMethod("findTablesToDrop", new Class[] { List.class });
+        findTablesToDrop.setAccessible(true);
+        Object[] args1 = { sortedTypesToDrop };
+        Set<String> tables = (Set<String>) findTablesToDrop.invoke(storage, args1);
+        assertTrue(tables.contains("e2"));
+        assertTrue(tables.contains("e1"));
+        assertTrue(tables.contains("X_share"));
         storage.close(true);
     }
 

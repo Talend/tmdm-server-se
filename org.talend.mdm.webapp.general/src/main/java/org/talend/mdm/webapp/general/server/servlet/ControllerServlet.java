@@ -117,7 +117,7 @@ public class ControllerServlet extends HttpServlet {
         }
         html.append("<script type='text/javascript'>document.onselectstart = new Function('event.returnValue=true;');</script>\n"); //$NON-NLS-1$
         html.append("</head>");
-        html.append("<body style=\"-moz-user-select: -moz-none\">");
+        html.append("<body style=\"-moz-user-select: text\">");
         html.append("<div id='loading'>");
         html.append("<div class='loading-indicator'>");
         html.append("<img src='secure/gxt/resources/images/default/shared/large-loading.gif' width='32' height='32' style='margin-right:8px;float:left;vertical-align:top;'/>");

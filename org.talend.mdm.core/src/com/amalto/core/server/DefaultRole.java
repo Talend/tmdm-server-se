@@ -102,7 +102,7 @@ public class DefaultRole implements Role {
 
             @Override
             public int compare(RolePOJOPK o1, RolePOJOPK o2) {
-                return o1.getUniqueId().compareTo(o2.getUniqueId());
+                return o1.getUniqueId().compareToIgnoreCase(o2.getUniqueId());
             }
 
         });

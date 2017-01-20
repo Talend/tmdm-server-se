@@ -40,6 +40,12 @@ public class DefaultRoleTest extends TestCase {
         list.add(new ObjectPOJOPK("DemoManager")); //$NON-NLS-1$
         list.add(new ObjectPOJOPK("DemoUser")); //$NON-NLS-1$
         list.add(new ObjectPOJOPK("User")); //$NON-NLS-1$
+        list.add(new ObjectPOJOPK("Apart")); //$NON-NLS-1$
+        list.add(new ObjectPOJOPK("administrator")); //$NON-NLS-1$
+        list.add(new ObjectPOJOPK("business")); //$NON-NLS-1$
+        list.add(new ObjectPOJOPK("BUT")); //$NON-NLS-1$
+        list.add(new ObjectPOJOPK("Group")); //$NON-NLS-1$
+        list.add(new ObjectPOJOPK("global")); //$NON-NLS-1$
         
         PowerMockito.mockStatic(ObjectPOJO.class);
         PowerMockito.when(ObjectPOJO.findAllPKs(RolePOJO.class, "*")).thenReturn(list); //$NON-NLS-1$
@@ -47,10 +53,16 @@ public class DefaultRoleTest extends TestCase {
         Role ctrl = Util.getRoleCtrlLocal();
         Collection<RolePOJOPK> c = ctrl.getRolePKs("*"); //$NON-NLS-1$
         
-        assertEquals(4, c.size());
-        assertEquals("DemoManager", ((ArrayList<RolePOJOPK>)c).get(0).getUniqueId()); //$NON-NLS-1$
-        assertEquals("DemoUser", ((ArrayList<RolePOJOPK>)c).get(1).getUniqueId()); //$NON-NLS-1$
-        assertEquals("SystemAdmin", ((ArrayList<RolePOJOPK>)c).get(2).getUniqueId()); //$NON-NLS-1$
-        assertEquals("User", ((ArrayList<RolePOJOPK>)c).get(3).getUniqueId()); //$NON-NLS-1$
+        assertEquals(10, c.size());
+        assertEquals("administrator", ((ArrayList<RolePOJOPK>)c).get(0).getUniqueId()); //$NON-NLS-1$
+        assertEquals("Apart", ((ArrayList<RolePOJOPK>)c).get(1).getUniqueId()); //$NON-NLS-1$
+        assertEquals("business", ((ArrayList<RolePOJOPK>)c).get(2).getUniqueId()); //$NON-NLS-1$
+        assertEquals("BUT", ((ArrayList<RolePOJOPK>)c).get(3).getUniqueId()); //$NON-NLS-1$
+        assertEquals("DemoManager", ((ArrayList<RolePOJOPK>)c).get(4).getUniqueId()); //$NON-NLS-1$
+        assertEquals("DemoUser", ((ArrayList<RolePOJOPK>)c).get(5).getUniqueId()); //$NON-NLS-1$
+        assertEquals("global", ((ArrayList<RolePOJOPK>)c).get(6).getUniqueId()); //$NON-NLS-1$
+        assertEquals("Group", ((ArrayList<RolePOJOPK>)c).get(7).getUniqueId()); //$NON-NLS-1$
+        assertEquals("SystemAdmin", ((ArrayList<RolePOJOPK>)c).get(8).getUniqueId()); //$NON-NLS-1$
+        assertEquals("User", ((ArrayList<RolePOJOPK>)c).get(9).getUniqueId()); //$NON-NLS-1$
     }
 }

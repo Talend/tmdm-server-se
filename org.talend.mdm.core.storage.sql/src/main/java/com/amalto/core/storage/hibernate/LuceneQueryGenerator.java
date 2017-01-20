@@ -416,7 +416,7 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
         if (index > 0) {
             value = value.substring(index);
         }
-        char[] removes = new char[] { '[', ']', '+', '!', '(', ')', '^', '\"', '~', ':', '\\', '-' }; // Removes reserved
+        char[] removes = new char[] { '[', ']', '+', '!', '(', ')', '^', '\"', '~', ':', ';', '\\', '-', '@', '#', '$', '%', '&', '=', ',', '.', '<', '>' }; // Removes reserved
                                                                                                  // characters
         for (char remove : removes) {
             value = value.replace(remove, ' ');

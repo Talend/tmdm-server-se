@@ -907,7 +907,7 @@ public class BrowseRecordsActionTest extends TestCase {
                 
                 Object para3[] = { coreException, "TestModel", "", new Locale("en") };
                 Object result3 = method.invoke(action, para3);
-                expectedMsg = "An error occurred.RuntimeException";
+                expectedMsg = "An error occurred.TestModel,RuntimeException";
                 assertEquals(expectedMsg, result3);
                 
                 Object para4[] = { coreException, "", "", new Locale("en") };

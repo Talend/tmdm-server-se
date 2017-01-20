@@ -54,7 +54,7 @@ class Init implements DocumentSaver {
             }
             if (e instanceof ValidateException) {
                 // In case of validation issue, don't include a potential before saving message in exception.
-                throw new com.amalto.core.save.SaveException(e);
+                throw new com.amalto.core.save.SaveException(e.getMessage(), e);
             }
             if (StringUtils.isEmpty(getBeforeSavingMessage())) {
                 throw new com.amalto.core.save.SaveException(e.getMessage(), e);

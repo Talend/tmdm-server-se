@@ -19,14 +19,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 import junit.framework.TestCase;
-
 import net.sf.ehcache.CacheManager;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
@@ -47,6 +45,8 @@ import com.amalto.core.query.user.UserQueryBuilder;
 import com.amalto.core.save.SaverSession.Committer;
 import com.amalto.core.save.context.DocumentSaver;
 import com.amalto.core.save.context.StorageSaverSource;
+import com.amalto.core.save.generator.AutoIdGenerator;
+import com.amalto.core.save.generator.AutoIncrementGenerator;
 import com.amalto.core.server.MDMContextAccessor;
 import com.amalto.core.server.MockMetadataRepositoryAdmin;
 import com.amalto.core.server.MockServerLifecycle;
@@ -126,7 +126,7 @@ public class RecordValidationTest extends TestCase {
 
         BeanDelegatorContainer.createInstance();
 
-        ApplicationContext context=new ClassPathXmlApplicationContext("classpath:com/amalto/core/server/mdm-context.xml");
+        new MDMContextAccessor().setApplicationContext(new ClassPathXmlApplicationContext("classpath:com/amalto/core/server/mdm-context.xml"));
         EhCacheCacheManager mdmEhcache = MDMContextAccessor.getApplicationContext().getBean(MDMEhCacheUtil.MDM_CACHE_MANAGER,EhCacheCacheManager.class);
         // CacheManager use the single instance, need reset the CacheManger
         mdmEhcache.setCacheManager(CacheManager.newInstance(RecordValidationTest.class.getResourceAsStream("../server/mdm-ehcache.xml")));
@@ -291,6 +291,8 @@ public class RecordValidationTest extends TestCase {
         
         private final boolean invokeBeforeSaving;
 
+        private AutoIdGenerator autoIdGenerator = AutoIncrementGenerator.get();
+
         public MockSaverSource(MetadataRepository repository, boolean isAdmin) {
             this.repository = repository;
             this.isAdmin = isAdmin;
@@ -301,6 +303,34 @@ public class RecordValidationTest extends TestCase {
             this.repository = repository;
             this.isAdmin = isAdmin;
             this.invokeBeforeSaving = invokeBeforeSaving;
+        }
+
+        public void setAutoIdGenerator(AutoIdGenerator autoIdGenerator) {
+            this.autoIdGenerator = autoIdGenerator;
+        }
+
+        @Override
+        public void initAutoIncrement() {
+            autoIdGenerator.init();
+        }
+
+        @Override
+        public void saveAutoIncrement() {
+            autoIdGenerator.saveState(Util.getXmlServerCtrlLocal());
+        }
+
+        @Override
+        public String nextAutoIncrementId(String dataCluster, String dataModelName, String conceptName) {
+            String autoIncrementId = null;
+            String concept = AutoIncrementGenerator.getConceptForAutoIncrement(dataModelName, conceptName);
+            if (concept != null) {
+                String autoIncrementFieldName = concept;
+                if (conceptName.contains(".")) { //$NON-NLS-1$
+                    autoIncrementFieldName = conceptName.split("\\.")[1]; //$NON-NLS-1$
+                }
+                autoIncrementId = autoIdGenerator.generateId(dataCluster, concept, autoIncrementFieldName);
+            }
+            return autoIncrementId;
         }
 
         @Override

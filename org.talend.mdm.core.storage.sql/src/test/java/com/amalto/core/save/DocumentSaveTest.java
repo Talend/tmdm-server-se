@@ -58,7 +58,6 @@ import com.amalto.core.save.context.SaverContextFactory;
 import com.amalto.core.save.context.SaverSource;
 import com.amalto.core.save.context.StorageDocument;
 import com.amalto.core.save.context.StorageSaverSource;
-import com.amalto.core.save.generator.AutoIncrementGenerator;
 import com.amalto.core.schema.validation.SkipAttributeDocumentBuilder;
 import com.amalto.core.schema.validation.Validator;
 import com.amalto.core.schema.validation.XmlSchemaValidator;
@@ -415,6 +414,7 @@ public class DocumentSaveTest extends TestCase {
         MockCommitter committer = new MockCommitter();
         session.end(committer);
 
+        assertTrue(source.hasCalledInitAutoIncrement());
         assertTrue(source.hasSavedAutoIncrement());
         assertTrue(committer.hasSaved());
         Element committedElement = committer.getCommittedElement();
@@ -1896,6 +1896,7 @@ public class DocumentSaveTest extends TestCase {
         MockCommitter committer = new MockCommitter();
         session.end(committer);
 
+        assertTrue(source.hasCalledInitAutoIncrement());
         assertTrue(source.hasSavedAutoIncrement());
         assertTrue(committer.hasSaved());
         Element committedElement = committer.getCommittedElement();
@@ -1922,7 +1923,7 @@ public class DocumentSaveTest extends TestCase {
         MockCommitter committer = new MockCommitter();
         session.end(committer);
 
-        assertTrue(AutoIncrementGenerator.get().isInitialized());
+        assertTrue(source.hasCalledInitAutoIncrement());
         assertTrue(source.hasSavedAutoIncrement());
         assertTrue(committer.hasSaved());
         Element committedElement = committer.getCommittedElement();
@@ -1954,7 +1955,8 @@ public class DocumentSaveTest extends TestCase {
         MockCommitter committer = new MockCommitter();
         session.end(committer);
         manager.currentTransaction().commit();
-        assertTrue(AutoIncrementGenerator.get().isInitialized());
+
+        assertTrue(source.hasCalledInitAutoIncrement());
         assertTrue(source.hasSavedAutoIncrement());
         assertTrue(committer.hasSaved());
         Element committedElement = committer.getCommittedElement();
@@ -3720,8 +3722,6 @@ public class DocumentSaveTest extends TestCase {
         
         private final Map<String, Integer> AUTO_INCREMENT_ID_MAP = new HashMap<String, Integer>();
 
-        private int currentId = 0;
-
         public TestSaverSource(MetadataRepository repository, boolean exist, String originalDocumentFileName,
                 String schemaFileName) {
             this.repository = repository;
@@ -3850,6 +3850,9 @@ public class DocumentSaveTest extends TestCase {
 
         @Override
         public String nextAutoIncrementId(String dataCluster, String dataModel, String conceptName) {
+            if (!hasCalledInitAutoIncrement) {
+                initAutoIncrement();
+            }
             int id = 0;
             if (AUTO_INCREMENT_ID_MAP.containsKey(conceptName)) {
                 id = AUTO_INCREMENT_ID_MAP.get(conceptName);
@@ -3861,6 +3864,10 @@ public class DocumentSaveTest extends TestCase {
 
         public boolean hasSavedAutoIncrement() {
             return hasSavedAutoIncrement;
+        }
+
+        public boolean hasCalledInitAutoIncrement() {
+            return hasCalledInitAutoIncrement;
         }
 
         public String getLastInvalidatedTypeCache() {
@@ -3998,6 +4005,7 @@ public class DocumentSaveTest extends TestCase {
             return null;
         }
 
+        @SuppressWarnings("rawtypes")
         @Override
         public Iterator getPrefixes(String namespaceURI) {
             return declaredPrefix.keySet().iterator();
@@ -4007,10 +4015,6 @@ public class DocumentSaveTest extends TestCase {
     private static class TestUserDelegator implements SecuredStorage.UserDelegator {
 
         boolean isActive = true;
-
-        public void setActive(boolean active) {
-            isActive = active;
-        }
 
         @Override
         public boolean hide(FieldMetadata field) {

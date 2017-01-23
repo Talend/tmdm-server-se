@@ -36,14 +36,14 @@ import com.amalto.core.storage.transaction.TransactionManager;
 
 /**
  * This {@link com.amalto.core.save.generator.AutoIdGenerator generator} is a more secure way to generate auto increment
- * values in case of concurrent access to the same underlying database.
+ * values in case of concurrent access to the same underlying database. <br />
+ * (It has been replaced by more effect resolution of {@link com.amalto.core.save.generator.HazelcastAutoIncrementGenerator HazelcastAutoIncrementGenerator})
  */
+@Deprecated
 @SuppressWarnings("nls")
 public class StorageAutoIncrementGenerator implements AutoIdGenerator {
 
     private static final Logger LOGGER = Logger.getLogger(StorageAutoIncrementGenerator.class);
-
-    private static final String AUTO_INCREMENT = "AutoIncrement";
 
     private final Storage system;
 
@@ -167,15 +167,16 @@ public class StorageAutoIncrementGenerator implements AutoIdGenerator {
                     integer ++;
                     entry.set(valueField, integer);
                     value = integer;
+                    break;
                 }
             }
         }
         if (value == null) { // No entry for current asked type, creates one
             DataRecord entry = new DataRecord((ComplexTypeMetadata) entryField.getType(), UnsupportedDataRecordMetadata.INSTANCE);
             entry.set(keyField, key);
-            entry.set(valueField, 0);
+            entry.set(valueField, 1);
             autoIncrementRecord.set(entryField, entry); // This add at end of collection is already present
-            value = getValue(autoIncrementType, autoIncrementRecord, key);
+            value = 1;
         }
         return value;
     }

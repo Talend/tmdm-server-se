@@ -18,14 +18,12 @@ import java.util.Collections;
 import java.util.List;
 
 import junit.framework.TestCase;
-
 import net.sf.ehcache.CacheManager;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
@@ -34,7 +32,6 @@ import org.talend.mdm.commmon.metadata.MetadataRepository;
 import com.amalto.core.delegator.BeanDelegatorContainer;
 import com.amalto.core.metadata.ClassRepository;
 import com.amalto.core.objects.ObjectPOJO;
-import com.amalto.core.objects.datacluster.DataClusterPOJO;
 import com.amalto.core.objects.datamodel.DataModelPOJO;
 import com.amalto.core.query.user.Expression;
 import com.amalto.core.query.user.UserQueryBuilder;
@@ -43,7 +40,8 @@ import com.amalto.core.save.RecordValidationTest.MockSaverSource;
 import com.amalto.core.save.RecordValidationTest.MockUserDelegator;
 import com.amalto.core.save.context.DocumentSaver;
 import com.amalto.core.save.generator.AutoIncrementGenerator;
-import com.amalto.core.save.generator.StorageAutoIncrementGenerator;
+import com.amalto.core.save.generator.HazelcastAutoIncrementGenerator;
+import com.amalto.core.save.generator.InMemoryAutoIncrementGenerator;
 import com.amalto.core.server.MDMContextAccessor;
 import com.amalto.core.server.MockMetadataRepositoryAdmin;
 import com.amalto.core.server.MockServerLifecycle;
@@ -56,25 +54,28 @@ import com.amalto.core.storage.StorageType;
 import com.amalto.core.storage.hibernate.HibernateStorage;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.util.MDMEhCacheUtil;
-import com.amalto.core.util.Util;
+import com.hazelcast.core.Hazelcast;
+import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.core.IAtomicLong;
+import com.hazelcast.core.IMap;
 
 @SuppressWarnings("nls")
 public class AutoIncrementTest extends TestCase {
-    
+
     private static final Logger LOG = Logger.getLogger(AutoIncrementTest.class);
-    
+
     protected static final Storage systemStorage;
-    
+
     protected static final Storage masterStorage;
-    
+
     protected static final MetadataRepository systemRepository;
-    
+
     protected static final MetadataRepository masterRepository;
-    
+
     protected static MockUserDelegator userSecurity = new MockUserDelegator();
-    
+
     protected static final ComplexTypeMetadata typeAutoIncrement;
-    
+
     protected static final ComplexTypeMetadata typeA;
 
     protected static final ComplexTypeMetadata typeB;
@@ -87,7 +88,7 @@ public class AutoIncrementTest extends TestCase {
         LOG.info("Setting up MDM server environment...");
         ServerContext.INSTANCE.get(new MockServerLifecycle());
         LOG.info("MDM server environment set.");
-        
+
         LOG.info("Preparing system storage");
         systemStorage = new SecuredStorage(new HibernateStorage("__SYSTEM", StorageType.SYSTEM), userSecurity);
         systemRepository = buildSystemRepository();
@@ -97,7 +98,7 @@ public class AutoIncrementTest extends TestCase {
         systemStorage.prepare(systemRepository, Collections.<Expression> emptySet(), true, true);
         ((MockStorageAdmin) ServerContext.INSTANCE.get().getStorageAdmin()).register(systemStorage);
         LOG.info("System storage prepared");
-        
+
         LOG.info("Preparing master storage");
         masterStorage = new SecuredStorage(new HibernateStorage("TestAI", StorageType.MASTER), userSecurity);
         masterRepository = new MetadataRepository();
@@ -110,11 +111,11 @@ public class AutoIncrementTest extends TestCase {
         masterStorage.prepare(masterRepository, Collections.<Expression> emptySet(), true, true);
         ((MockStorageAdmin) ServerContext.INSTANCE.get().getStorageAdmin()).register(masterStorage);
         LOG.info("Master storage prepared");
-        
+
         BeanDelegatorContainer.createInstance();
 
-        ApplicationContext context=new ClassPathXmlApplicationContext("classpath:com/amalto/core/server/mdm-context.xml");
-        EhCacheCacheManager mdmEhcache = MDMContextAccessor.getApplicationContext().getBean(MDMEhCacheUtil.MDM_CACHE_MANAGER,EhCacheCacheManager.class);
+        new MDMContextAccessor().setApplicationContext(new ClassPathXmlApplicationContext("classpath:com/amalto/core/server/mdm-context.xml"));
+        EhCacheCacheManager mdmEhcache = MDMContextAccessor.getApplicationContext().getBean(MDMEhCacheUtil.MDM_CACHE_MANAGER, EhCacheCacheManager.class);
         // CacheManager use the single instance, need reset the CacheManger
         mdmEhcache.setCacheManager(CacheManager.newInstance(AutoIncrementTest.class.getResourceAsStream("../server/mdm-ehcache.xml")));
     }
@@ -149,7 +150,7 @@ public class AutoIncrementTest extends TestCase {
         }
         return repository;
     }
-    
+
     protected void cleanAutoIncrement(){
         try {
             systemStorage.begin();
@@ -159,7 +160,7 @@ public class AutoIncrementTest extends TestCase {
             systemStorage.end();
         }
     }
-    
+
     protected void cleanTestAIData(){
         try {
             masterStorage.begin();
@@ -169,14 +170,16 @@ public class AutoIncrementTest extends TestCase {
             masterStorage.end();
         }
     }
-    
+
     // Create test data
-    protected static void createData(String storageName, String documentXml) throws Exception {
+    protected static void createData(String storageName, String documentXml, boolean isCluster) throws Exception {
         BeanDelegatorContainer.getInstance().setDelegatorInstancePool(Collections.<String, Object> singletonMap("LocalUser", new MockAdmin()));
-        SaverSession session = SaverSession.newSession(new MockSaverSource(masterRepository, true));
+        MockSaverSource saverSource = new MockSaverSource(masterRepository, true);
+        if (isCluster) {
+            saverSource.setAutoIdGenerator(HazelcastAutoIncrementGenerator.getInstance());
+        }
+        SaverSession session = SaverSession.newSession(saverSource);
         InputStream is = new ByteArrayInputStream(documentXml.getBytes("UTF-8"));
-        Util.getDataClusterCtrlLocal().putDataCluster(new DataClusterPOJO("CONF"));
-        Util.getDataClusterCtrlLocal().putDataCluster(new DataClusterPOJO("TestAI"));
         DocumentSaverContext context = session.getContextFactory().create(storageName, storageName, StringUtils.EMPTY, is, true, false, false, false, false);
         DocumentSaver saver = context.createSaver();
         try {
@@ -188,7 +191,7 @@ public class AutoIncrementTest extends TestCase {
             throw e;
         }
     }
-    
+
     // B and C extend A, the concept for AutoIncrement should all be "A"
     public void testGetConceptForAutoIncrement() throws Exception {
         String[] conceptNames = { "A.Id", "B.Id", "C.Id", "A", "B", "C" };
@@ -196,36 +199,31 @@ public class AutoIncrementTest extends TestCase {
             assertEquals("A", AutoIncrementGenerator.getConceptForAutoIncrement("TestAI", conceptName));
         }
     }
-    
-    public void testStorageGenerateId() throws Exception {
-        StorageAutoIncrementGenerator saig = new StorageAutoIncrementGenerator(systemStorage);
-        String idA = saig.generateId("TestAI", "A", "Id");
+
+    public void testInMemoryGenerateId() throws Exception {
+        InMemoryAutoIncrementGenerator generator = initInMemoryAutoIncrementGenerator();
+
+        String idA = generator.generateId("TestAI", "A", "Id");
         assertEquals("1", idA);
-        String idB = saig.generateId("TestAI", "B", "Id");
+        String idB = generator.generateId("TestAI", "B", "Id");
         assertEquals("2", idB);
-        String idC = saig.generateId("TestAI", "C", "Id");
+        String idC = generator.generateId("TestAI", "C", "Id");
         assertEquals("3", idC);
         
         cleanAutoIncrement();
     }
-    
+
     // TMDM-9414
-    @SuppressWarnings("unchecked")
     public void testPolymorphismAndAutoIncrement() throws Exception {
+        initInMemoryAutoIncrementGenerator();
+
         // Create test data
-        createData("TestAI", "<A></A>"); // Id=1
-        createData("TestAI", "<B><NameB>NameB</NameB></B>"); // Id=2
-        createData("TestAI", "<C><NameC>NameC</NameC></C>"); // Id=3
+        createData("TestAI", "<A></A>", false); // Id=1
+        createData("TestAI", "<B><NameB>NameB</NameB></B>", false); // Id=2
+        createData("TestAI", "<C><NameC>NameC</NameC></C>", false); // Id=3
         
         // Validate AutoIncrement
-        UserQueryBuilder qb1 = from(typeAutoIncrement);
-        StorageResults results1 = systemStorage.fetch(qb1.getSelect());
-        DataRecord autoIncrementRecord = results1.iterator().next();       
-        FieldMetadata entryField = typeAutoIncrement.getField("entry"); 
-        ComplexTypeMetadata entryType = (ComplexTypeMetadata) entryField.getType();
-        DataRecord entry = ((List<DataRecord>) autoIncrementRecord.get(entryField)).get(0);
-        assertEquals("TestAI.A.Id", entry.get(entryType.getField("key")));
-        assertEquals(3, entry.get(entryType.getField("value")));
+        validateAutoIncrement(3L);
         
         cleanAutoIncrement();
         
@@ -244,6 +242,143 @@ public class AutoIncrementTest extends TestCase {
         
         cleanTestAIData();
         
+    }
+
+    // TMDM-10450
+    public void testConcurrentInMemoryAutoIncrement() throws Exception {
+        InMemoryAutoIncrementGenerator generator = initInMemoryAutoIncrementGenerator();
+
+        Thread thread1 = new Thread() {
+
+            public void run() {
+                try {
+                    for (int i = 0; i < 10; i++) {
+                        createData("TestAI", "<B><NameB>NameB</NameB></B>", false);
+                    }
+                } catch (Exception e) {
+                    LOG.error("Create B error!", e);
+                }
+            }
+        };
+
+        Thread thread2 = new Thread() {
+
+            public void run() {
+                try {
+                    for (int i = 0; i < 10; i++) {
+                        createData("TestAI", "<C><NameC>NameC</NameC></C>", false);
+                    }
+                } catch (Exception e) {
+                    LOG.error("Create C error!", e);
+                }
+            }
+        };
+
+        thread1.start();
+        thread2.start();
+
+        thread1.join();
+        thread2.join();
+
+        validateAutoIncrement(20L);
+        assertEquals(generator.generateId("TestAI", "A", "Id"), "21");
+
+        cleanAutoIncrement();
+        cleanTestAIData();
+    }
+
+    // TMDM-10451
+    public void testConcurrentHazelcastAutoIncrement() throws Exception {
+        HazelcastAutoIncrementGenerator generator1 = initHazelcastAutoIncrementGenerator();
+        final MockHazelcastAutoIncrementGenerator generator2 = new MockHazelcastAutoIncrementGenerator();
+
+        Thread thread1 = new Thread() {
+
+            public void run() {
+                try {
+                    for (int i = 0; i < 10; i++) {
+                        createData("TestAI", "<B><NameB>NameB</NameB></B>", true);
+                    }
+                } catch (Exception e) {
+                    LOG.error("Create B error!", e);
+                }
+            }
+        };
+
+        Thread thread2 = new Thread() {
+
+            public void run() {
+                try {
+                    for (int i = 0; i < 10; i++) {
+                        createData("TestAI", "<C><NameC>NameC</NameC></C>", true);
+                    }
+                } catch (Exception e) {
+                    LOG.error("Create C error!", e);
+                }
+            }
+        };
+
+        Thread thread3 = new Thread() {
+
+            public void run() {
+                try {
+                    for (int i = 0; i < 10; i++) {
+                        generator2.generateId("TestAI", "A", "Id");
+                    }
+                } catch (Exception e) {
+                    LOG.error("Create C error!", e);
+                }
+            }
+        };
+
+        thread1.start();
+        thread2.start();
+        thread3.start();
+        thread1.join();
+        thread2.join();
+        thread3.join();
+
+        validateAutoIncrement(30L);
+        // Node1's nextId
+        assertEquals(generator1.generateId("TestAI", "A", "Id"), "31");
+        // Node2 will get right nextId
+        assertEquals(generator2.generateId("TestAI", "A", "Id"), "32");
+
+        cleanAutoIncrement();
+        cleanTestAIData();
+    }
+
+    @SuppressWarnings("unchecked")
+    private void validateAutoIncrement(Long value) {
+        UserQueryBuilder qb1 = from(typeAutoIncrement);
+        StorageResults results1 = systemStorage.fetch(qb1.getSelect());
+        DataRecord autoIncrementRecord = results1.iterator().next();
+        FieldMetadata entryField = typeAutoIncrement.getField("entry");
+        ComplexTypeMetadata entryType = (ComplexTypeMetadata) entryField.getType();
+        DataRecord entry = ((List<DataRecord>) autoIncrementRecord.get(entryField)).get(0);
+        assertEquals("TestAI.A.Id", entry.get(entryType.getField("key")));
+        assertEquals(value.toString(), entry.get(entryType.getField("value")).toString());
+    }
+
+    private InMemoryAutoIncrementGenerator initInMemoryAutoIncrementGenerator() {
+        BeanDelegatorContainer.getInstance().setDelegatorInstancePool(Collections.<String, Object> singletonMap("LocalUser", new MockAdmin()));
+        InMemoryAutoIncrementGenerator generator = InMemoryAutoIncrementGenerator.getInstance();
+        generator.init();
+        return generator;
+    }
+
+    private HazelcastAutoIncrementGenerator initHazelcastAutoIncrementGenerator() {
+        BeanDelegatorContainer.getInstance().setDelegatorInstancePool(Collections.<String, Object> singletonMap("LocalUser", new MockAdmin()));
+        HazelcastAutoIncrementGenerator generator = HazelcastAutoIncrementGenerator.getInstance();
+        generator.init();
+        return generator;
+    }
+
+    protected static class MockHazelcastAutoIncrementGenerator extends HazelcastAutoIncrementGenerator {
+
+        public MockHazelcastAutoIncrementGenerator() {
+            super();
+        }
     }
 
 }

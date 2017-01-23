@@ -17,21 +17,21 @@ import org.springframework.context.ApplicationContextAware;
 
 public class MDMContextAccessor implements ApplicationContextAware {
 
+    private static final Log LOG = LogFactory.getLog(MDMContextAccessor.class);
+
     private static ApplicationContext CONTEXT;
-    
-    private static Log LOG = LogFactory.getLog(MDMContextAccessor.class);
-    
+
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        synchronized(MDMContextAccessor.class){
-            if(CONTEXT != null){
+        synchronized (MDMContextAccessor.class) {
+            if (CONTEXT != null) {
                 LOG.info("Overriding current Spring context with a new one"); //$NON-NLS-1$
             }
             CONTEXT = applicationContext;
         }
     }
-    
-    public static ApplicationContext getApplicationContext(){
+
+    public static ApplicationContext getApplicationContext() {
         return CONTEXT;
     }
 

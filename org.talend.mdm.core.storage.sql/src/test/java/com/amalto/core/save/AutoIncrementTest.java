@@ -321,28 +321,24 @@ public class AutoIncrementTest extends TestCase {
         Thread thread3 = new Thread() {
 
             public void run() {
-                try {
-                    for (int i = 0; i < 10; i++) {
-                        generator2.generateId("TestAI", "A", "Id");
-                    }
-                } catch (Exception e) {
-                    LOG.error("Create C error!", e);
+                for (int i = 0; i < 2; i++) {
+                    generator2.generateId("TestAI", "A", "Id");
                 }
             }
         };
 
         thread1.start();
-        thread2.start();
         thread3.start();
+        thread2.start();
         thread1.join();
-        thread2.join();
         thread3.join();
+        thread2.join();
 
-        validateAutoIncrement(30L);
+        validateAutoIncrement(22L);
         // Node1's nextId
-        assertEquals(generator1.generateId("TestAI", "A", "Id"), "31");
+        assertEquals(generator1.generateId("TestAI", "A", "Id"), "23");
         // Node2 will get right nextId
-        assertEquals(generator2.generateId("TestAI", "A", "Id"), "32");
+        assertEquals(generator2.generateId("TestAI", "A", "Id"), "24");
 
         cleanAutoIncrement();
         cleanTestAIData();

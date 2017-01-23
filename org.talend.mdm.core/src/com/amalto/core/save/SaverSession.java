@@ -10,7 +10,12 @@
 
 package com.amalto.core.save;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.util.core.EUUIDCustomType;
@@ -19,10 +24,10 @@ import org.talend.mdm.commmon.util.webapp.XSystemObjects;
 import com.amalto.core.history.DeleteType;
 import com.amalto.core.history.Document;
 import com.amalto.core.history.MutableDocument;
-import com.amalto.core.save.context.StorageDocument;
-import com.amalto.core.save.context.StorageSaverSource;
 import com.amalto.core.save.context.SaverContextFactory;
 import com.amalto.core.save.context.SaverSource;
+import com.amalto.core.save.context.StorageDocument;
+import com.amalto.core.save.context.StorageSaverSource;
 import com.amalto.core.save.generator.AutoIncrementGenerator;
 import com.amalto.core.storage.record.DataRecord;
 
@@ -229,15 +234,8 @@ public class SaverSession {
             if (needResetAutoIncrement) {
                 saverSource.initAutoIncrement();
             }
-            // Save current state of autoincrement when save is completed.
+            // Save current state of auto-increment when save is completed.
             if (hasMetAutoIncrement) {
-                //  Make sure autoincrement counter is initialized before saving it
-                //  FIXME caller should not take care of AutoIncrementGenerator's internal state
-                //  This is temporary mesure to avoid nested transaction issue when initialize inside 
-                //  AutoIncrementGenerator.saveState()
-                if(!AutoIncrementGenerator.get().isInitialized()) {
-                    AutoIncrementGenerator.get().init();
-                }
                 // TMDM-3964 : Auto-Increment Id can not be saved immediately to DB
                 String dataCluster = XSystemObjects.DC_CONF.getName();
                 committer.begin(dataCluster);

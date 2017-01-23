@@ -11,12 +11,19 @@
 
 package com.amalto.core.save.generator;
 
+import org.talend.mdm.commmon.util.webapp.XSystemObjects;
+
+import com.amalto.core.objects.datacluster.DataClusterPOJOPK;
 import com.amalto.core.server.api.XmlServer;
 
-/**
- *
- */
 public interface AutoIdGenerator {
+
+    public static final DataClusterPOJOPK DC = new DataClusterPOJOPK(XSystemObjects.DC_CONF.getName());
+
+    public static final String AUTO_INCREMENT = "AutoIncrement";
+
+    public static final String[] IDS = new String[] { AUTO_INCREMENT };
+
     /**
      * <p>
      * Generate an automatic id for the <code>conceptName</code> (a.k.a. type name) in the <code>dataCluster</code>
@@ -49,4 +56,5 @@ public interface AutoIdGenerator {
      * @see #init()
      */
     boolean isInitialized();
+
 }

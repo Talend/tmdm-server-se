@@ -69,7 +69,7 @@ public class HazelcastAutoIncrementGenerator implements AutoIdGenerator {
     
     @Override
     public String generateId(String dataClusterName, String conceptName, String keyElementName) {
-        if (WAS_INIT_CALLED.getAndAlter(new SetFunction()) == 0) {
+        if (WAS_INIT_CALLED.getAndSet(1) == 0) {
             init();
         }
         long nextId = 0;
@@ -83,7 +83,7 @@ public class HazelcastAutoIncrementGenerator implements AutoIdGenerator {
             nextId++;
             if (!DataRecord.ValidateRecord.get()) {// don't actually save if for Record Validation
                 CONFIGURATION.put(key, nextId);
-                NEED_TO_SAVE.alter(new SetFunction());
+                NEED_TO_SAVE.set(1);
             }
         } finally {
             CONFIGURATION.unlock(key);
@@ -93,7 +93,7 @@ public class HazelcastAutoIncrementGenerator implements AutoIdGenerator {
 
     @Override
     public void saveState(XmlServer server) {
-        if (NEED_TO_SAVE.getAndAlter(new ResetFunction()) == 1) {
+        if (NEED_TO_SAVE.getAndSet(0) == 1) {
             try {
                 Properties properties = new Properties();
                 properties.putAll(CONFIGURATION);
@@ -134,7 +134,7 @@ public class HazelcastAutoIncrementGenerator implements AutoIdGenerator {
                     }
                 }
             }
-            WAS_INIT_CALLED.alter(new SetFunction());
+            WAS_INIT_CALLED.set(1);
         } catch (Exception e) {
             LOGGER.error(e.getLocalizedMessage(), e);
         }
@@ -143,26 +143,6 @@ public class HazelcastAutoIncrementGenerator implements AutoIdGenerator {
     @Override
     public boolean isInitialized() {
         return WAS_INIT_CALLED.get() == 1;
-    }
-
-    private static class SetFunction implements IFunction<Long, Long> {
-        
-        private static final long serialVersionUID = -7636440763486452293L;
-
-        @Override
-        public Long apply(Long input) {
-            return 1L;
-        }
-    }
-
-    private static class ResetFunction implements IFunction<Long, Long> {
-
-        private static final long serialVersionUID = -1863535494307297061L;
-
-        @Override
-        public Long apply(Long input) {
-            return 0L;
-        }
     }
 
 }

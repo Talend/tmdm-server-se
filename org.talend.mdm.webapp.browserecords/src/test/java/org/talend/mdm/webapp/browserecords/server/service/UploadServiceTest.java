@@ -190,6 +190,8 @@ public class UploadServiceTest extends TestCase {
         UploadService service = new TestUploadService(entityModel, fileType, isPartialUpdate, headersOnFirstLine, headerVisibleMap,
                 inheritanceNodePathList, multipleValueSeparator, seperator, encoding, textDelimiter, language);
         List<WSPutItemWithReport> wsPutItemWithReportList = service.readUploadFile(file);
+        // System.out.println(expectedResult);
+        // System.out.println(removeFormatPattern.matcher(wsPutItemWithReportList.get(0).getWsPutItem().getXmlString()).replaceAll(""));
         assertEquals(expectedResult, removeFormatPattern.matcher(wsPutItemWithReportList.get(0).getWsPutItem().getXmlString())
                 .replaceAll("")); //$NON-NLS-1$
 
@@ -205,6 +207,9 @@ public class UploadServiceTest extends TestCase {
         service = new TestUploadService(entityModel, fileType, isPartialUpdate, headersOnFirstLine, headerVisibleMap, inheritanceNodePathList,
                 multipleValueSeparator, seperator, encoding, textDelimiter, language);
         wsPutItemWithReportList = service.readUploadFile(file);
+        System.out.println(expectedResult);
+        System.out.println(removeFormatPattern.matcher(wsPutItemWithReportList.get(0).getWsPutItem().getXmlString())
+.replaceAll(""));
         assertEquals(expectedResult, removeFormatPattern.matcher(wsPutItemWithReportList.get(0).getWsPutItem().getXmlString())
                 .replaceAll("")); //$NON-NLS-1$
     }
@@ -380,21 +385,35 @@ public class UploadServiceTest extends TestCase {
                     assertEquals("111.0", service.getExcelFieldValue(row.getCell(2))); //$NON-NLS-1$
                     assertEquals("Description1", service.getExcelFieldValue(row.getCell(3)));
                     assertEquals("[FK1]",
-                            service.transferFieldValue("Product/Family", (service.getExcelFieldValue(row.getCell(7)))));
+                            service.transferFieldValue("Product/Family", (service.getExcelFieldValue(row.getCell(7))), "|"));
                 } else if (rowNumber == 3) {
                     assertEquals("Id2", service.getExcelFieldValue(row.getCell(0))); //$NON-NLS-1$
                     assertEquals("Name2", service.getExcelFieldValue(row.getCell(1))); //$NON-NLS-1$
                     assertEquals("222.0", service.getExcelFieldValue(row.getCell(2))); //$NON-NLS-1$
                     assertEquals("Description2", service.getExcelFieldValue(row.getCell(3)));
                     assertEquals("[FK2]",
-                            service.transferFieldValue("Product/Family", (service.getExcelFieldValue(row.getCell(7)))));
+                            service.transferFieldValue("Product/Family", (service.getExcelFieldValue(row.getCell(7))), "|"));
                 } else if (rowNumber == 4) {
                     assertEquals("Id3", service.getExcelFieldValue(row.getCell(0))); //$NON-NLS-1$
                     assertEquals("Name3", service.getExcelFieldValue(row.getCell(1))); //$NON-NLS-1$
                     assertEquals("333.0", service.getExcelFieldValue(row.getCell(2))); //$NON-NLS-1$
                     assertEquals("Description3", service.getExcelFieldValue(row.getCell(3)));
                     assertEquals("[FK3]",
-                            service.transferFieldValue("Product/Family", (service.getExcelFieldValue(row.getCell(7)))));
+                            service.transferFieldValue("Product/Family", (service.getExcelFieldValue(row.getCell(7))), "|"));
+                } else if (rowNumber == 5) {
+                    assertEquals("Id4", service.getExcelFieldValue(row.getCell(0))); //$NON-NLS-1$
+                    assertEquals("Name4", service.getExcelFieldValue(row.getCell(1))); //$NON-NLS-1$
+                    assertEquals("444.0", service.getExcelFieldValue(row.getCell(2))); //$NON-NLS-1$
+                    assertEquals("Description4", service.getExcelFieldValue(row.getCell(3)));
+                    assertEquals("[FK4]",
+                            service.transferFieldValue("Product/Family", (service.getExcelFieldValue(row.getCell(7))), "|"));
+                } else if (rowNumber == 6) {
+                    assertEquals("Id5", service.getExcelFieldValue(row.getCell(0))); //$NON-NLS-1$
+                    assertEquals("Name5", service.getExcelFieldValue(row.getCell(1))); //$NON-NLS-1$
+                    assertEquals("555.0", service.getExcelFieldValue(row.getCell(2))); //$NON-NLS-1$
+                    assertEquals("Description5", service.getExcelFieldValue(row.getCell(3)));
+                    assertEquals("[FK5]",
+                            service.transferFieldValue("Product/Family", (service.getExcelFieldValue(row.getCell(7))), "|"));
                 }
             }
         } catch (Exception exception) {

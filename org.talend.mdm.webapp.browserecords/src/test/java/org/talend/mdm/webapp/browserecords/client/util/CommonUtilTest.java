@@ -323,43 +323,6 @@ public class CommonUtilTest extends TestCase {
         assertEquals("price must > 10", actualMsg);
     }
 
-    public void testGetFKFormat() {
-        int result = -1;
-        result = org.talend.mdm.webapp.browserecords.server.util.CommonUtil.getFKFormatType(null, null);
-        assertEquals(0, result);
-
-        result = org.talend.mdm.webapp.browserecords.server.util.CommonUtil.getFKFormatType("   ", null);
-        assertEquals(0, result);
-
-        result = org.talend.mdm.webapp.browserecords.server.util.CommonUtil.getFKFormatType("[1]", null);
-        assertEquals(1, result);
-
-        result = org.talend.mdm.webapp.browserecords.server.util.CommonUtil.getFKFormatType("a[1]b", null);
-        assertEquals(0, result);
-
-        result = org.talend.mdm.webapp.browserecords.server.util.CommonUtil.getFKFormatType("[1]-aaa", "-");
-        assertEquals(2, result);
-
-        result = org.talend.mdm.webapp.browserecords.server.util.CommonUtil.getFKFormatType("aaa-[1]-aaa", null);
-        assertEquals(0, result);
-
-    }
-
-    public void testGetForeignKeyId() {
-        String fk = null;
-        fk = org.talend.mdm.webapp.browserecords.server.util.CommonUtil.getForeignKeyId("test", 0, null);
-        assertNull(fk);
-
-        fk = org.talend.mdm.webapp.browserecords.server.util.CommonUtil.getForeignKeyId("[1]", 1, null);
-        assertEquals("[1]", fk);
-
-        fk = org.talend.mdm.webapp.browserecords.server.util.CommonUtil.getForeignKeyId("test", 2, null);
-        assertNull(fk);
-
-        fk = org.talend.mdm.webapp.browserecords.server.util.CommonUtil.getForeignKeyId("[2]-test", 2, "-");
-        assertEquals("[2]", fk);
-    }
-
     public void test_isChangeValue() {
         String language = "en";
         boolean isCreate = true;

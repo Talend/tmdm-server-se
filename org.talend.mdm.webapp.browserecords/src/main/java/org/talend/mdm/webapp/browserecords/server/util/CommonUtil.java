@@ -13,8 +13,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -63,44 +61,6 @@ public class CommonUtil {
     public static List<ItemNodeModel> getDefaultTreeModel(TypeModel model, boolean isCreate, String language) {
         return org.talend.mdm.webapp.browserecords.client.util.CommonUtil.getDefaultTreeModel(model, language, false, isCreate,
                 true);
-    }
-
-    public static int getFKFormatType(String str, String separator) {
-        if (str == null) {
-            return 0;
-        }
-        if (str.trim().equalsIgnoreCase("")) { //$NON-NLS-1$
-            return 0;
-        }
-        Pattern p = Pattern.compile("^\\[.+\\]$"); //$NON-NLS-1$
-        Matcher m = p.matcher(str);
-        if (m.matches()) {
-            return 1;
-        }
-        if (separator != null && separator.length() > 0) {
-            p = Pattern.compile("^\\[.+\\].+"); //$NON-NLS-1$
-            m = p.matcher(str);
-            if (m.matches()) {
-                return 2;
-            }
-        }
-        return 0;
-    }
-
-    public static String getForeignKeyId(String str, int type, String separator) {
-        if (type == 1) {
-            return str;
-        }
-        if (type == 2) {
-            int index;
-            if (separator != null && separator.length() > 0) {
-                index = str.indexOf(separator);
-                if (index > 0) {
-                    return str.substring(0, index);
-                }
-            }
-        }
-        return null;
     }
 
     public static Document getSubXML(TypeModel typeModel, String realType, Map<String, List<String>> map, String language)

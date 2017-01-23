@@ -519,7 +519,7 @@ public class UploadService {
             String field[] = fieldPath.split(Constants.FILE_EXPORT_IMPORT_SEPARATOR);
             fieldPath = field[0];
         }
-        fieldValue = transferFieldValue(fieldPath, fieldValue);
+        fieldValue = transferFieldValue(fieldPath, fieldValue, multipleValueSeparator);
         String[] xpathPartArray = fieldPath.split("/"); //$NON-NLS-1$
         String xpath = xpathPartArray[0];
         if (!isAttribute) {
@@ -636,7 +636,6 @@ public class UploadService {
         }
     }
     
-
     protected String getExcelFieldValue(Cell cell) throws Exception {
         String fieldValue = null;
         int cellType = cell.getCellType();
@@ -648,12 +647,6 @@ public class UploadService {
             }
             case Cell.CELL_TYPE_STRING: {
                 fieldValue = cell.getRichStringCellValue().getString();
-                int result = org.talend.mdm.webapp.browserecords.server.util.CommonUtil.getFKFormatType(fieldValue,
-                        multipleValueSeparator);
-                if (result > 0) {
-                    fieldValue = org.talend.mdm.webapp.browserecords.server.util.CommonUtil.getForeignKeyId(
-                            fieldValue, result, multipleValueSeparator);
-                }
                 break;
             }
             case Cell.CELL_TYPE_BOOLEAN: {
@@ -681,11 +674,17 @@ public class UploadService {
         return fieldValue;
     }
 
-    protected String transferFieldValue(String xpath, String value) {
+    protected String transferFieldValue(String xpath, String value,String separator) {
         if (value != null && !"".equals(value)) {
             TypeModel headerTypeModel = entityModel.getTypeModel(xpath.endsWith("/") ? xpath.substring(0, xpath.lastIndexOf("/"))
                     : xpath);
             if (headerTypeModel.getForeignkey() != null) {
+                if (separator != null && separator.length() > 0 && value.contains(separator)) {
+                    int index = value.indexOf(separator);
+                    if (index > 0) {
+                        value = value.substring(0, index);
+                    }
+                }
                 Pattern p = Pattern.compile("^\\[.+\\]$"); //$NON-NLS-1$
                 Matcher m = p.matcher(value);
                 if (!m.matches()) {

@@ -13,13 +13,11 @@ import java.io.ByteArrayInputStream;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.dom4j.Attribute;
 import org.dom4j.DocumentException;
@@ -47,6 +45,12 @@ import com.sun.xml.xsom.XSElementDecl;
  * The server side implementation of the RPC service.
  */
 public class JournalDBService {
+
+    private static final String LEFT_BRACKET = "[";
+
+    private static final String RIGHT_BRACKET = "]";
+
+    private static final String SPRIT = "/";
 
     private static final Logger LOG = Logger.getLogger(JournalDBService.class);
 
@@ -226,32 +230,82 @@ public class JournalDBService {
         model.setUserName(checkNull(Util.getFirstTextNode(doc, "result/Update/UserName"))); //$NON-NLS-1$
         model.setIds(Util.joinStrings(new String[] { source, timeInMillis }, ".")); //$NON-NLS-1$
 
-        Map<String, List<String>> changeNodeMap = new LinkedHashMap<String, List<String>>();
-        String changeNodePath = ""; //$NON-NLS-1$
         String[] pathArray = Util.getTextNodes(doc, "result/Update/Item/path"); //$NON-NLS-1$
 
-        if (pathArray.length > 0) {
-            for (int i = 0; i < pathArray.length; i++) {
-                changeNodePath = "/" + model.getEntity() + "/" + pathArray[i]; //$NON-NLS-1$ //$NON-NLS-2$
-                if (changeNodePath.contains("[") && changeNodePath.contains("]")) { //$NON-NLS-1$ //$NON-NLS-2$
-                    changeNodePath = changeNodePath.substring(0, changeNodePath.lastIndexOf("[")); //$NON-NLS-1$
-                }
+        List<String> changeNodeList = getChangeNodeList(model.getEntity(), pathArray);
 
-                if (changeNodeMap.get(changeNodePath) == null) {
-                    changeNodeMap.put(changeNodePath, new LinkedList<String>());
-                }
-                changeNodeMap.get(changeNodePath).add("/" + model.getEntity() + "/" + pathArray[i]); //$NON-NLS-1$ //$NON-NLS-2$
-            }
-        }
-
-        Iterator<List<String>> it = changeNodeMap.values().iterator();
-        while (it.hasNext()) {
-            List<String> pathList = it.next();
-            for (int i = pathList.size() - 1; i >= 0; i--) {
-                model.getChangeNodeList().add(pathList.get(i));
-            }
-        }
+        model.getChangeNodeList().addAll(changeNodeList);
         return model;
+    }
+
+    protected List<String> getChangeNodeList(String modelEntityName, String[] pathArray) {
+        List<String> result = new ArrayList<String>();
+        getChagneNodePath(StringUtils.EMPTY, Arrays.asList(pathArray), result);
+        for(int i = 0 ; i < result.size() ; i++){
+            result.set(i, SPRIT + modelEntityName + SPRIT + result.get(i));
+        }
+        return result;
+    }
+
+    private List<String> getContainsList(String str, List<String> list) {
+        List<String> result = new ArrayList<String>();
+        for (String path : list) {
+            if (path.startsWith(str)) {
+                result.add(path);
+            }
+        }
+        return result;
+    }
+
+    private void getChagneNodePath(String prePath, List<String> pathList, List<String> result) {
+        for (int i = 0; i < pathList.size(); i++) {
+            String path = pathList.get(i);
+
+            if (result.contains(path)) {
+                continue;
+            }
+            if (i == pathList.size() - 1) {
+                result.add(path);
+                break;
+            }
+
+            String newpath = StringUtils.EMPTY; 
+            if (prePath.equals(StringUtils.EMPTY)) { 
+                newpath = path;
+            } else {
+                newpath = path.substring(prePath.length() + 1);
+            }
+
+            if (newpath.endsWith(LEFT_BRACKET) && !newpath.contains(SPRIT)) {
+                result.add(path);
+            } else if (!newpath.contains(LEFT_BRACKET) && !newpath.contains(SPRIT)) {
+                result.add(path);
+            } else if (newpath.contains(LEFT_BRACKET) || newpath.contains(SPRIT)) {
+                String firstStr = StringUtils.EMPTY;
+                if (newpath.contains(SPRIT)) {
+                    firstStr = newpath.substring(0, newpath.indexOf(SPRIT));
+                } else {
+                    firstStr = newpath;
+                }
+
+                if (firstStr.contains(LEFT_BRACKET)) {
+                    int firstStrNum = Integer.parseInt(firstStr.substring(firstStr.indexOf(LEFT_BRACKET) + 1, firstStr.indexOf(RIGHT_BRACKET)));
+                    for (int j = 1; j <= firstStrNum; j++) {
+                        String newStr = firstStr.substring(0, firstStr.indexOf(LEFT_BRACKET)) + LEFT_BRACKET + j + RIGHT_BRACKET;
+                        if (i < pathList.size() - 1) {
+                            List<String> containsList = getContainsList(prePath.equals(StringUtils.EMPTY) ? newStr : prePath + SPRIT + newStr,
+                                    pathList);
+                            getChagneNodePath(prePath.equals(StringUtils.EMPTY) ? newStr : prePath + SPRIT + newStr, containsList, result);
+                        }
+                    }
+                } else {
+                    List<String> containsList = getContainsList(prePath.equals(StringUtils.EMPTY) ? firstStr : prePath + SPRIT + firstStr,
+                            pathList);
+                    getChagneNodePath(prePath.equals(StringUtils.EMPTY) ? firstStr : prePath + SPRIT + firstStr, containsList, result);
+                }
+            }
+        }
+
     }
 
     private String checkNull(String str) {

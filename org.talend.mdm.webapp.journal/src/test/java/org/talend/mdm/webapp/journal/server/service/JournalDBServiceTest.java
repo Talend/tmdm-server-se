@@ -15,7 +15,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -210,5 +213,56 @@ public class JournalDBServiceTest extends TestCase {
         returnValue = method.invoke(journalDBService, new Object[] { null });
         assertEquals("", returnValue);
         method.setAccessible(false);
+    }
+
+    //TMDM-7410
+    public void testGetChangeNodeList() throws Exception {
+        String[] pathArray = new String[] { "comment[1]", "detail[3]/code", "detail[3]/features[2]/actor",
+                "detail[3]/features[2]/vendor[1]", "detail[3]/features[1]/actor", "detail[3]/features[1]/vendor[1]",
+                "detail[2]/code", "detail[1]/code", "detail[1]/features[2]/actor", "detail[1]/features[2]/vendor[1]",
+                "detail[1]/features[1]/actor", "detail[1]/features[1]/vendor[1]", "detail[1]/ReadOnlyEle[1]", "enumEle" };
+
+        List<String> changeNodeList = journalDBService.getChangeNodeList("Contract_1", pathArray);
+
+        assertEquals(14, changeNodeList.size());
+        assertEquals("/Contract_1/comment[1]", changeNodeList.get(0));
+        assertEquals("/Contract_1/detail[1]/code", changeNodeList.get(1));
+        assertEquals("/Contract_1/detail[1]/features[1]/actor", changeNodeList.get(2));
+        assertEquals("/Contract_1/detail[1]/features[1]/vendor[1]", changeNodeList.get(3));
+        assertEquals("/Contract_1/detail[1]/features[2]/actor", changeNodeList.get(4));
+        assertEquals("/Contract_1/detail[1]/features[2]/vendor[1]", changeNodeList.get(5));
+        assertEquals("/Contract_1/detail[1]/ReadOnlyEle[1]", changeNodeList.get(6));
+        assertEquals("/Contract_1/detail[2]/code", changeNodeList.get(7));
+        assertEquals("/Contract_1/detail[3]/code", changeNodeList.get(8));
+        assertEquals("/Contract_1/detail[3]/features[1]/actor", changeNodeList.get(9));
+        assertEquals("/Contract_1/detail[3]/features[1]/vendor[1]", changeNodeList.get(10));
+        assertEquals("/Contract_1/detail[3]/features[2]/actor", changeNodeList.get(11));
+        assertEquals("/Contract_1/detail[3]/features[2]/vendor[1]", changeNodeList.get(12));
+        assertEquals("/Contract_1/enumEle", changeNodeList.get(13));
+
+        pathArray = new String[] { "Description", "Features/Sizes/Size[2]", "Features/Sizes/Size[1]", "Features/Colors/Color[2]",
+                "Features/Colors/Color[1]", "Price", "Family" };
+
+        changeNodeList = journalDBService.getChangeNodeList("Product", pathArray);
+
+        assertEquals(7, changeNodeList.size());
+        assertEquals("/Product/Description", changeNodeList.get(0));
+        assertEquals("/Product/Features/Sizes/Size[1]", changeNodeList.get(1));
+        assertEquals("/Product/Features/Sizes/Size[2]", changeNodeList.get(2));
+        assertEquals("/Product/Features/Colors/Color[1]", changeNodeList.get(3));
+        assertEquals("/Product/Features/Colors/Color[2]", changeNodeList.get(4));
+        assertEquals("/Product/Price", changeNodeList.get(5));
+        assertEquals("/Product/Family", changeNodeList.get(6));
+
+        pathArray = new String[] { "Field1", "Field2", "intField1", "BatchId" };
+
+        changeNodeList = journalDBService.getChangeNodeList("PERF_TESTING", pathArray);
+
+        assertEquals(4, changeNodeList.size());
+        assertEquals("/PERF_TESTING/Field1", changeNodeList.get(0));
+        assertEquals("/PERF_TESTING/Field2", changeNodeList.get(1));
+        assertEquals("/PERF_TESTING/intField1", changeNodeList.get(2));
+        assertEquals("/PERF_TESTING/BatchId", changeNodeList.get(3));
+
     }
 }

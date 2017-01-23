@@ -56,6 +56,10 @@ import com.google.gwt.user.client.ui.Accessibility;
  */
 public class JournalComparisonPanel extends ContentPanel {
     
+    private static final String LEFT_BRAKCET = "[";
+
+    private static final String RIGHT_BRAKCET = "]";
+
     private JournalServiceAsync service = Registry.get(Journal.JOURNAL_SERVICE);
 
     private ToolBar toolbar;
@@ -371,11 +375,15 @@ public class JournalComparisonPanel extends ContentPanel {
     }
 
     public void selectTreeNodeByPath(String path) {
-        if (path.contains("[") && path.contains("]")) { //$NON-NLS-1$ //$NON-NLS-2$
-            path = path.replaceAll("\\[\\d+\\]", ""); //$NON-NLS-1$ //$NON-NLS-2$
-        }
 
-        JournalTreeModel model = modelMap.get(path);
+        String transferPath = path;
+        JournalTreeModel model = modelMap.get(transferPath);
+        if (path.endsWith(RIGHT_BRAKCET) && model == null) {
+            String temp = path.substring(0, path.lastIndexOf(LEFT_BRAKCET));
+            String lastIndex = path.substring(path.lastIndexOf(LEFT_BRAKCET));
+            transferPath = temp.concat(lastIndex.replaceAll("\\[\\d+\\]", ""));
+            model = modelMap.get(transferPath);
+        }
 
         tree.getSelectionModel().select(false, model);
         tree.scrollIntoView(model);

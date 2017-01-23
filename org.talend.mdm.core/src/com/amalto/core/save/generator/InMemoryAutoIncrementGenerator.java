@@ -29,13 +29,12 @@ public class InMemoryAutoIncrementGenerator implements AutoIdGenerator {
 
     private static final InMemoryAutoIncrementGenerator INSTANCE = new InMemoryAutoIncrementGenerator();
 
-    private AtomicBoolean WAS_INIT_CALLED = new AtomicBoolean(false);
-
     private AtomicBoolean NEED_TO_SAVE = new AtomicBoolean(false);
 
     private Properties CONFIGURATION;
 
     private InMemoryAutoIncrementGenerator() {
+        init();
     }
 
     public static InMemoryAutoIncrementGenerator getInstance() {
@@ -46,9 +45,6 @@ public class InMemoryAutoIncrementGenerator implements AutoIdGenerator {
     // See com.amalto.core.save.generator.StorageAutoIncrementGenerator for better concurrency support.
     @Override
     public synchronized String generateId(String dataClusterName, String conceptName, String keyElementName) {
-        if (!WAS_INIT_CALLED.getAndSet(true)) {
-            init();
-        }
         long nextId = 0;
         String key = dataClusterName + "." + AutoIncrementGenerator.getConceptForAutoIncrement(dataClusterName, conceptName) + "." + keyElementName;
         String value = CONFIGURATION.getProperty(key);
@@ -82,11 +78,6 @@ public class InMemoryAutoIncrementGenerator implements AutoIdGenerator {
     }
 
     @Override
-    public boolean isInitialized() {
-        return WAS_INIT_CALLED.get();
-    }
-    
-    @Override
     public synchronized void init() {
         CONFIGURATION = new Properties();
         try {
@@ -100,7 +91,6 @@ public class InMemoryAutoIncrementGenerator implements AutoIdGenerator {
                     CONFIGURATION = Util.convertAutoIncrement(xml);
                 }
             }
-            WAS_INIT_CALLED.set(true);
         } catch (Exception e) {
             LOGGER.error(e.getLocalizedMessage(), e);
         }

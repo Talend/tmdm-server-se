@@ -414,7 +414,6 @@ public class DocumentSaveTest extends TestCase {
         MockCommitter committer = new MockCommitter();
         session.end(committer);
 
-        assertTrue(source.hasCalledInitAutoIncrement());
         assertTrue(source.hasSavedAutoIncrement());
         assertTrue(committer.hasSaved());
         Element committedElement = committer.getCommittedElement();
@@ -1896,7 +1895,6 @@ public class DocumentSaveTest extends TestCase {
         MockCommitter committer = new MockCommitter();
         session.end(committer);
 
-        assertTrue(source.hasCalledInitAutoIncrement());
         assertTrue(source.hasSavedAutoIncrement());
         assertTrue(committer.hasSaved());
         Element committedElement = committer.getCommittedElement();
@@ -1923,7 +1921,6 @@ public class DocumentSaveTest extends TestCase {
         MockCommitter committer = new MockCommitter();
         session.end(committer);
 
-        assertTrue(source.hasCalledInitAutoIncrement());
         assertTrue(source.hasSavedAutoIncrement());
         assertTrue(committer.hasSaved());
         Element committedElement = committer.getCommittedElement();
@@ -1956,7 +1953,6 @@ public class DocumentSaveTest extends TestCase {
         session.end(committer);
         manager.currentTransaction().commit();
 
-        assertTrue(source.hasCalledInitAutoIncrement());
         assertTrue(source.hasSavedAutoIncrement());
         assertTrue(committer.hasSaved());
         Element committedElement = committer.getCommittedElement();
@@ -3864,10 +3860,6 @@ public class DocumentSaveTest extends TestCase {
 
         public boolean hasSavedAutoIncrement() {
             return hasSavedAutoIncrement;
-        }
-
-        public boolean hasCalledInitAutoIncrement() {
-            return hasCalledInitAutoIncrement;
         }
 
         public String getLastInvalidatedTypeCache() {

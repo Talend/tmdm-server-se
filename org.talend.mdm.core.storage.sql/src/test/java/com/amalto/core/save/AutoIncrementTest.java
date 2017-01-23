@@ -54,10 +54,6 @@ import com.amalto.core.storage.StorageType;
 import com.amalto.core.storage.hibernate.HibernateStorage;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.util.MDMEhCacheUtil;
-import com.hazelcast.core.Hazelcast;
-import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.IAtomicLong;
-import com.hazelcast.core.IMap;
 
 @SuppressWarnings("nls")
 public class AutoIncrementTest extends TestCase {
@@ -321,9 +317,7 @@ public class AutoIncrementTest extends TestCase {
         Thread thread3 = new Thread() {
 
             public void run() {
-                for (int i = 0; i < 2; i++) {
-                    generator2.generateId("TestAI", "A", "Id");
-                }
+                generator2.generateId("TestAI", "A", "Id");
             }
         };
 
@@ -334,11 +328,11 @@ public class AutoIncrementTest extends TestCase {
         thread3.join();
         thread2.join();
 
-        validateAutoIncrement(22L);
+        validateAutoIncrement(21L);
         // Node1's nextId
-        assertEquals(generator1.generateId("TestAI", "A", "Id"), "23");
+        assertEquals(generator1.generateId("TestAI", "A", "Id"), "22");
         // Node2 will get right nextId
-        assertEquals(generator2.generateId("TestAI", "A", "Id"), "24");
+        assertEquals(generator2.generateId("TestAI", "A", "Id"), "23");
 
         cleanAutoIncrement();
         cleanTestAIData();
@@ -359,14 +353,14 @@ public class AutoIncrementTest extends TestCase {
     private InMemoryAutoIncrementGenerator initInMemoryAutoIncrementGenerator() {
         BeanDelegatorContainer.getInstance().setDelegatorInstancePool(Collections.<String, Object> singletonMap("LocalUser", new MockAdmin()));
         InMemoryAutoIncrementGenerator generator = InMemoryAutoIncrementGenerator.getInstance();
-        generator.init();
+        generator.init(); // reset value in memory
         return generator;
     }
 
     private HazelcastAutoIncrementGenerator initHazelcastAutoIncrementGenerator() {
         BeanDelegatorContainer.getInstance().setDelegatorInstancePool(Collections.<String, Object> singletonMap("LocalUser", new MockAdmin()));
         HazelcastAutoIncrementGenerator generator = HazelcastAutoIncrementGenerator.getInstance();
-        generator.init();
+        generator.init(); // reset value in memory
         return generator;
     }
 

@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2016 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2017 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -14,6 +14,7 @@ package com.amalto.core.save.generator;
 
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.concurrent.locks.Lock;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -25,18 +26,15 @@ import com.amalto.core.server.MDMContextAccessor;
 import com.amalto.core.server.api.XmlServer;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.util.Util;
-import com.hazelcast.config.Config;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IAtomicLong;
-import com.hazelcast.core.IFunction;
 import com.hazelcast.core.IMap;
 
 /**
  * This {@link com.amalto.core.save.generator.AutoIdGenerator generator} is a more secure way to generate auto increment
  * values in case of concurrent access to the same underlying database. <br />
- * (It is used to replace the old resolution of {@link com.amalto.core.save.generator.StorageAutoIncrementGenerator
- * StorageAutoIncrementGenerator})
+ * (It is used to replace the old resolution of StorageAutoIncrementGenerator)
  */
 @SuppressWarnings("nls")
 public class HazelcastAutoIncrementGenerator implements AutoIdGenerator {
@@ -45,12 +43,14 @@ public class HazelcastAutoIncrementGenerator implements AutoIdGenerator {
 
     private static final HazelcastAutoIncrementGenerator INSTANCE = new HazelcastAutoIncrementGenerator();
 
+    protected Lock INIT_LOCK;
+
     protected IAtomicLong WAS_INIT_CALLED;
 
     protected IAtomicLong NEED_TO_SAVE;
 
     protected IMap<String, Long> CONFIGURATION;
-    
+
     protected HazelcastAutoIncrementGenerator() {
         HazelcastInstance hazelcast = null;
         if (MDMContextAccessor.getApplicationContext().containsBean("hazelcast")) {
@@ -58,9 +58,18 @@ public class HazelcastAutoIncrementGenerator implements AutoIdGenerator {
         } else {
             hazelcast = Hazelcast.newHazelcastInstance();
         }
+        INIT_LOCK = hazelcast.getLock("autoIncrement_initLock");
         WAS_INIT_CALLED = hazelcast.getAtomicLong("autoIncrement_wasInitCalled");
         NEED_TO_SAVE = hazelcast.getAtomicLong("autoIncrement_needToSave");
         CONFIGURATION = hazelcast.getMap("autoIncrement_configuration");
+        INIT_LOCK.lock();
+        try {
+            if (WAS_INIT_CALLED.get() == 0) {
+                init();
+            }
+        } finally {
+            INIT_LOCK.unlock();
+        }
     }
 
     public static HazelcastAutoIncrementGenerator getInstance() {
@@ -69,9 +78,6 @@ public class HazelcastAutoIncrementGenerator implements AutoIdGenerator {
     
     @Override
     public String generateId(String dataClusterName, String conceptName, String keyElementName) {
-        if (WAS_INIT_CALLED.getAndSet(1) == 0) {
-            init();
-        }
         long nextId = 0;
         String key = dataClusterName + "." + AutoIncrementGenerator.getConceptForAutoIncrement(dataClusterName, conceptName) + "." + keyElementName;
         CONFIGURATION.lock(key);
@@ -138,11 +144,6 @@ public class HazelcastAutoIncrementGenerator implements AutoIdGenerator {
         } catch (Exception e) {
             LOGGER.error(e.getLocalizedMessage(), e);
         }
-    }
-
-    @Override
-    public boolean isInitialized() {
-        return WAS_INIT_CALLED.get() == 1;
     }
 
 }

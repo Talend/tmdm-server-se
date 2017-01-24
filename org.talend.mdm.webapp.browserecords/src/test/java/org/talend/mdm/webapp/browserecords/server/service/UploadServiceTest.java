@@ -190,8 +190,6 @@ public class UploadServiceTest extends TestCase {
         UploadService service = new TestUploadService(entityModel, fileType, isPartialUpdate, headersOnFirstLine, headerVisibleMap,
                 inheritanceNodePathList, multipleValueSeparator, seperator, encoding, textDelimiter, language);
         List<WSPutItemWithReport> wsPutItemWithReportList = service.readUploadFile(file);
-        // System.out.println(expectedResult);
-        // System.out.println(removeFormatPattern.matcher(wsPutItemWithReportList.get(0).getWsPutItem().getXmlString()).replaceAll(""));
         assertEquals(expectedResult, removeFormatPattern.matcher(wsPutItemWithReportList.get(0).getWsPutItem().getXmlString())
                 .replaceAll("")); //$NON-NLS-1$
 
@@ -207,9 +205,6 @@ public class UploadServiceTest extends TestCase {
         service = new TestUploadService(entityModel, fileType, isPartialUpdate, headersOnFirstLine, headerVisibleMap, inheritanceNodePathList,
                 multipleValueSeparator, seperator, encoding, textDelimiter, language);
         wsPutItemWithReportList = service.readUploadFile(file);
-        System.out.println(expectedResult);
-        System.out.println(removeFormatPattern.matcher(wsPutItemWithReportList.get(0).getWsPutItem().getXmlString())
-.replaceAll(""));
         assertEquals(expectedResult, removeFormatPattern.matcher(wsPutItemWithReportList.get(0).getWsPutItem().getXmlString())
                 .replaceAll("")); //$NON-NLS-1$
     }

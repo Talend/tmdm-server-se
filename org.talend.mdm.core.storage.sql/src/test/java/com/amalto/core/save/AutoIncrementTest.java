@@ -148,23 +148,11 @@ public class AutoIncrementTest extends TestCase {
     }
 
     protected void cleanAutoIncrement(){
-        try {
-            systemStorage.begin();
-            systemStorage.delete(from(typeAutoIncrement).getSelect());
-            systemStorage.commit();
-        } finally {
-            systemStorage.end();
-        }
+        systemStorage.prepare(systemRepository, Collections.<Expression> emptySet(), true, true);
     }
 
     protected void cleanTestAIData(){
-        try {
-            masterStorage.begin();
-            masterStorage.delete(from(typeA).getSelect());
-            masterStorage.commit();
-        } finally {
-            masterStorage.end();
-        }
+        masterStorage.prepare(masterRepository, Collections.<Expression> emptySet(), true, true);
     }
 
     // Create test data
@@ -244,35 +232,10 @@ public class AutoIncrementTest extends TestCase {
     public void testConcurrentInMemoryAutoIncrement() throws Exception {
         InMemoryAutoIncrementGenerator generator = initInMemoryAutoIncrementGenerator();
 
-        Thread thread1 = new Thread() {
-
-            public void run() {
-                try {
-                    for (int i = 0; i < 10; i++) {
-                        createData("TestAI", "<B><NameB>NameB</NameB></B>", false);
-                    }
-                } catch (Exception e) {
-                    LOG.error("Create B error!", e);
-                }
-            }
-        };
-
-        Thread thread2 = new Thread() {
-
-            public void run() {
-                try {
-                    for (int i = 0; i < 10; i++) {
-                        createData("TestAI", "<C><NameC>NameC</NameC></C>", false);
-                    }
-                } catch (Exception e) {
-                    LOG.error("Create C error!", e);
-                }
-            }
-        };
-
+        Thread thread1 = new StandaloneCreateThread();
+        Thread thread2 = new StandaloneCreateThread();
         thread1.start();
         thread2.start();
-
         thread1.join();
         thread2.join();
 
@@ -288,32 +251,8 @@ public class AutoIncrementTest extends TestCase {
         HazelcastAutoIncrementGenerator generator1 = initHazelcastAutoIncrementGenerator();
         final MockHazelcastAutoIncrementGenerator generator2 = new MockHazelcastAutoIncrementGenerator();
 
-        Thread thread1 = new Thread() {
-
-            public void run() {
-                try {
-                    for (int i = 0; i < 10; i++) {
-                        createData("TestAI", "<B><NameB>NameB</NameB></B>", true);
-                    }
-                } catch (Exception e) {
-                    LOG.error("Create B error!", e);
-                }
-            }
-        };
-
-        Thread thread2 = new Thread() {
-
-            public void run() {
-                try {
-                    for (int i = 0; i < 10; i++) {
-                        createData("TestAI", "<C><NameC>NameC</NameC></C>", true);
-                    }
-                } catch (Exception e) {
-                    LOG.error("Create C error!", e);
-                }
-            }
-        };
-
+        Thread thread1 = new ClusterCreateThread();
+        Thread thread2 = new ClusterCreateThread();
         Thread thread3 = new Thread() {
 
             public void run() {
@@ -368,6 +307,32 @@ public class AutoIncrementTest extends TestCase {
 
         public MockHazelcastAutoIncrementGenerator() {
             super();
+        }
+    }
+
+    protected static class StandaloneCreateThread extends Thread {
+
+        public void run() {
+            try {
+                for (int i = 0; i < 10; i++) {
+                    createData("TestAI", "<B><NameB>NameB</NameB></B>", false);
+                }
+            } catch (Exception e) {
+                LOG.error("Create B error!", e);
+            }
+        }
+    }
+
+    protected static class ClusterCreateThread extends Thread {
+
+        public void run() {
+            try {
+                for (int i = 0; i < 10; i++) {
+                    createData("TestAI", "<B><NameB>NameB</NameB></B>", true);
+                }
+            } catch (Exception e) {
+                LOG.error("Create B error!", e);
+            }
         }
     }
 

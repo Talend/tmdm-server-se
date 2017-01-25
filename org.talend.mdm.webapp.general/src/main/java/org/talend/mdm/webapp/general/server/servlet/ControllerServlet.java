@@ -115,7 +115,7 @@ public class ControllerServlet extends HttpServlet {
         if (customHtml != null) {
             html.append(customHtml);
         }
-        html.append("<script type='text/javascript'>document.onselectstart = new Function('event.returnValue=true;');</script>\n"); //$NON-NLS-1$
+        html.append("<script type='text/javascript' language='javascript' src='secure/js/chromeCopy.js'></script>\n"); //$NON-NLS-1$
         html.append("</head>");
         html.append("<body style=\"-moz-user-select: text\">");
         html.append("<div id='loading'>");

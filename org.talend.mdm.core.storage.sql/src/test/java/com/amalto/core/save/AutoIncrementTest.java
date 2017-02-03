@@ -185,6 +185,8 @@ public class AutoIncrementTest extends TestCase {
     }
 
     public void testInMemoryGenerateId() throws Exception {
+        cleanAutoIncrement();
+
         InMemoryAutoIncrementGenerator generator = initInMemoryAutoIncrementGenerator();
 
         String idA = generator.generateId("TestAI", "A", "Id");
@@ -193,12 +195,13 @@ public class AutoIncrementTest extends TestCase {
         assertEquals("2", idB);
         String idC = generator.generateId("TestAI", "C", "Id");
         assertEquals("3", idC);
-        
-        cleanAutoIncrement();
     }
 
     // TMDM-9414
     public void testPolymorphismAndAutoIncrement() throws Exception {
+        cleanAutoIncrement();
+        cleanTestAIData();
+
         initInMemoryAutoIncrementGenerator();
 
         // Create test data
@@ -208,9 +211,7 @@ public class AutoIncrementTest extends TestCase {
         
         // Validate AutoIncrement
         validateAutoIncrement(3L);
-        
-        cleanAutoIncrement();
-        
+
         // Validate ID
         UserQueryBuilder qb2 = from(typeA);
         StorageResults results2 = masterStorage.fetch(qb2.getSelect());
@@ -223,14 +224,15 @@ public class AutoIncrementTest extends TestCase {
                 assertEquals("3", result.get("Id"));
             }
         }
-        
-        cleanTestAIData();
-        
     }
 
     // TMDM-10450
     public void testConcurrentInMemoryAutoIncrement() throws Exception {
+        cleanAutoIncrement();
+        cleanTestAIData();
+
         InMemoryAutoIncrementGenerator generator = initInMemoryAutoIncrementGenerator();
+        createData("TestAI", "<A></A>", false); // create a record to initialize auto-increment
 
         Thread thread1 = new StandaloneCreateThread();
         Thread thread2 = new StandaloneCreateThread();
@@ -239,18 +241,19 @@ public class AutoIncrementTest extends TestCase {
         thread1.join();
         thread2.join();
 
-        validateAutoIncrement(20L);
-        assertEquals(generator.generateId("TestAI", "A", "Id"), "21");
-
-        cleanAutoIncrement();
-        cleanTestAIData();
+        validateAutoIncrement(21L);
+        assertEquals(generator.generateId("TestAI", "A", "Id"), "22");
     }
 
     // TMDM-10451
     public void testConcurrentHazelcastAutoIncrement() throws Exception {
+        cleanAutoIncrement();
+        cleanTestAIData();
+
         HazelcastAutoIncrementGenerator generator1 = initHazelcastAutoIncrementGenerator();
         final MockHazelcastAutoIncrementGenerator generator2 = new MockHazelcastAutoIncrementGenerator();
 
+        createData("TestAI", "<A></A>", true); // create a record to initialize auto-increment
         Thread thread1 = new ClusterCreateThread();
         Thread thread2 = new ClusterCreateThread();
         Thread thread3 = new Thread() {
@@ -267,14 +270,11 @@ public class AutoIncrementTest extends TestCase {
         thread3.join();
         thread2.join();
 
-        validateAutoIncrement(21L);
+        validateAutoIncrement(22L);
         // Node1's nextId
-        assertEquals(generator1.generateId("TestAI", "A", "Id"), "22");
+        assertEquals(generator1.generateId("TestAI", "A", "Id"), "23");
         // Node2 will get right nextId
-        assertEquals(generator2.generateId("TestAI", "A", "Id"), "23");
-
-        cleanAutoIncrement();
-        cleanTestAIData();
+        assertEquals(generator2.generateId("TestAI", "A", "Id"), "24");
     }
 
     @SuppressWarnings("unchecked")

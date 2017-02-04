@@ -16,8 +16,6 @@ import java.util.Set;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import com.amalto.core.history.DeleteType;
-import com.amalto.core.storage.datasource.DataSourceDefinition;
 import junit.framework.TestCase;
 
 import org.apache.log4j.Logger;
@@ -28,7 +26,7 @@ import org.talend.mdm.commmon.metadata.compare.HibernateStorageImpactAnalyzer;
 import org.talend.mdm.commmon.metadata.compare.ImpactAnalyzer;
 import org.w3c.dom.Document;
 
-import com.amalto.core.objects.ItemPOJO;
+import com.amalto.core.history.DeleteType;
 import com.amalto.core.query.user.BinaryLogicOperator;
 import com.amalto.core.query.user.Compare;
 import com.amalto.core.query.user.Condition;
@@ -48,6 +46,7 @@ import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.StorageResults;
 import com.amalto.core.storage.StorageType;
 import com.amalto.core.storage.datasource.DataSource;
+import com.amalto.core.storage.datasource.DataSourceDefinition;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.transaction.StorageTransaction;
 
@@ -321,6 +320,11 @@ public class MetadataRepositoryTaskTest extends TestCase {
 
         @Override
         public List<ComplexTypeMetadata> findSortedTypesToDrop(DiffResults diffResults, boolean force) {
+            return null;
+        }
+
+        @Override
+        public Set<String> findTablesToDrop(List<ComplexTypeMetadata> sortedTypesToDrop) {
             return null;
         }
     }

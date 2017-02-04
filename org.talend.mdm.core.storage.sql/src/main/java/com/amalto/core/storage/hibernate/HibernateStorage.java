@@ -1165,8 +1165,8 @@ public class HibernateStorage implements Storage {
         }
     }
     
-    @SuppressWarnings("unchecked")
-    private Set<String> findTablesToDrop(List<ComplexTypeMetadata> sortedTypesToDrop) {
+    @Override
+    public Set<String> findTablesToDrop(List<ComplexTypeMetadata> sortedTypesToDrop) {
         Set<String> tablesToDrop = new LinkedHashSet<String>();
         TableClosureVisitor visitor = new TableClosureVisitor();
         // Drop table order should be reversed

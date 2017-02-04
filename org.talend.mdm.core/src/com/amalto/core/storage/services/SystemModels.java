@@ -12,6 +12,9 @@ package com.amalto.core.storage.services;
 
 import static com.amalto.core.query.user.UserQueryBuilder.eq;
 import static com.amalto.core.query.user.UserQueryBuilder.from;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -24,6 +27,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -57,9 +61,6 @@ import com.amalto.core.storage.StorageResults;
 import com.amalto.core.storage.StorageType;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.util.XtentisException;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 
 
 @Path("/system/models")
@@ -226,7 +227,7 @@ public class SystemModels {
             @ApiParam("Optional language to get localized result") @QueryParam("lang") String locale, 
             InputStream dataModel) {
         Map<ImpactAnalyzer.Impact, List<Change>> impacts;
-        List<ComplexTypeMetadata> typesToDrop = new ArrayList<ComplexTypeMetadata>();
+        List<String> typeNamesToDrop = new ArrayList<String>();
         if (!isSystemStorageAvailable()) {
             impacts = new EnumMap<>(ImpactAnalyzer.Impact.class);
             for (ImpactAnalyzer.Impact impact : impacts.keySet()) {
@@ -251,7 +252,13 @@ public class SystemModels {
             Compare.DiffResults diffResults = Compare.compare(previousRepository, newRepository);
             // Analyzes impacts on the select storage
             impacts = storage.getImpactAnalyzer().analyzeImpacts(diffResults);
-            typesToDrop = storage.findSortedTypesToDrop(diffResults, true);
+            List<ComplexTypeMetadata> typesToDrop = storage.findSortedTypesToDrop(diffResults, true);
+            Set<String> findTablesToDrop = storage.findTablesToDrop(typesToDrop);
+            for (String tableName : findTablesToDrop) {
+                if (previousRepository.getInstantiableTypes().contains(previousRepository.getComplexType(tableName))) {
+                    typeNamesToDrop.add(tableName);
+                }
+            }
         }
         // Serialize results to XML
         StringWriter resultAsXml = new StringWriter();
@@ -283,12 +290,10 @@ public class SystemModels {
                     writer.writeEndElement();
                 }
                 writer.writeStartElement("entitiesToDrop"); //$NON-NLS-1$
-                for (ComplexTypeMetadata type : typesToDrop) {
-                    if (type.isInstantiable()) {
-                        writer.writeStartElement("entity"); //$NON-NLS-1$
-                        writer.writeCharacters(type.getName());
-                        writer.writeEndElement();
-                    }
+                for (String typeName : typeNamesToDrop) {
+                    writer.writeStartElement("entity"); //$NON-NLS-1$
+                    writer.writeCharacters(typeName);
+                    writer.writeEndElement();
                 }
                 writer.writeEndElement();
             }

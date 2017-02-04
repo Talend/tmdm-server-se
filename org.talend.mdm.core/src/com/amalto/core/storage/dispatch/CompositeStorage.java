@@ -10,6 +10,18 @@
 
 package com.amalto.core.storage.dispatch;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+
+import org.apache.commons.collections.set.CompositeSet;
+import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.MetadataRepository;
+import org.talend.mdm.commmon.metadata.compare.Compare.DiffResults;
+import org.talend.mdm.commmon.metadata.compare.ImpactAnalyzer;
+
 import com.amalto.core.query.user.Expression;
 import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.StorageResults;
@@ -18,13 +30,6 @@ import com.amalto.core.storage.datasource.DataSource;
 import com.amalto.core.storage.datasource.DataSourceDefinition;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.transaction.StorageTransaction;
-import org.apache.commons.collections.set.CompositeSet;
-import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
-import org.talend.mdm.commmon.metadata.MetadataRepository;
-import org.talend.mdm.commmon.metadata.compare.ImpactAnalyzer;
-import org.talend.mdm.commmon.metadata.compare.Compare.DiffResults;
-
-import java.util.*;
 
 /**
  * A {@link com.amalto.core.storage.Storage} implementation that puts together several instances of Storage and expose
@@ -257,5 +262,10 @@ public class CompositeStorage implements Storage {
             sortedtypesToDrop.addAll(storage.findSortedTypesToDrop(diffResults, force));
         }
         return sortedtypesToDrop;
+    }
+
+    @Override
+    public Set<String> findTablesToDrop(List<ComplexTypeMetadata> sortedTypesToDrop) {
+        return new HashSet<String>();
     }
 }

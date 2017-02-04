@@ -10,7 +10,8 @@
 
 package com.amalto.core.storage;
 
-import static com.amalto.core.query.user.UserQueryBuilder.*;
+import static com.amalto.core.query.user.UserQueryBuilder.eq;
+import static com.amalto.core.query.user.UserQueryBuilder.from;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -25,8 +26,8 @@ import org.apache.commons.lang.StringUtils;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
-import org.talend.mdm.commmon.metadata.compare.ImpactAnalyzer;
 import org.talend.mdm.commmon.metadata.compare.Compare.DiffResults;
+import org.talend.mdm.commmon.metadata.compare.ImpactAnalyzer;
 
 import com.amalto.core.query.user.Expression;
 import com.amalto.core.query.user.UserQueryBuilder;
@@ -259,6 +260,12 @@ public class StagingStorage implements Storage {
     public List<ComplexTypeMetadata> findSortedTypesToDrop(DiffResults diffResults, boolean force) {
         return delegate.findSortedTypesToDrop(diffResults, force);
     }
+
+    @Override
+    public Set<String> findTablesToDrop(List<ComplexTypeMetadata> sortedTypesToDrop) {
+        return delegate.findTablesToDrop(sortedTypesToDrop);
+    }
+
     private static class StagingUpdateAction {
 
         private final String value;

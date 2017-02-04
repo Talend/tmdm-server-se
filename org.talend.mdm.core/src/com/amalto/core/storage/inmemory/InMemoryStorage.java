@@ -9,19 +9,56 @@
  */
 package com.amalto.core.storage.inmemory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.xml.XMLConstants;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
-import org.talend.mdm.commmon.metadata.*;
+import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.ComplexTypeMetadataImpl;
+import org.talend.mdm.commmon.metadata.FieldMetadata;
+import org.talend.mdm.commmon.metadata.MetadataRepository;
+import org.talend.mdm.commmon.metadata.SimpleTypeFieldMetadata;
+import org.talend.mdm.commmon.metadata.SimpleTypeMetadata;
+import org.talend.mdm.commmon.metadata.Types;
 import org.talend.mdm.commmon.metadata.compare.Change;
 import org.talend.mdm.commmon.metadata.compare.Compare;
-import org.talend.mdm.commmon.metadata.compare.ImpactAnalyzer;
 import org.talend.mdm.commmon.metadata.compare.Compare.DiffResults;
+import org.talend.mdm.commmon.metadata.compare.ImpactAnalyzer;
 
-import com.amalto.core.query.user.*;
+import com.amalto.core.query.user.Alias;
+import com.amalto.core.query.user.BigDecimalConstant;
+import com.amalto.core.query.user.BinaryLogicOperator;
+import com.amalto.core.query.user.BooleanConstant;
+import com.amalto.core.query.user.ByteConstant;
+import com.amalto.core.query.user.Condition;
+import com.amalto.core.query.user.DateConstant;
+import com.amalto.core.query.user.DateTimeConstant;
+import com.amalto.core.query.user.Distinct;
+import com.amalto.core.query.user.DoubleConstant;
+import com.amalto.core.query.user.Expression;
+import com.amalto.core.query.user.Field;
+import com.amalto.core.query.user.FloatConstant;
+import com.amalto.core.query.user.IntegerConstant;
+import com.amalto.core.query.user.IsNull;
+import com.amalto.core.query.user.LongConstant;
+import com.amalto.core.query.user.Select;
+import com.amalto.core.query.user.ShortConstant;
+import com.amalto.core.query.user.StringConstant;
+import com.amalto.core.query.user.TimeConstant;
+import com.amalto.core.query.user.TypedExpression;
+import com.amalto.core.query.user.UnaryLogicOperator;
+import com.amalto.core.query.user.VisitorAdapter;
 import com.amalto.core.query.user.metadata.StagingBlockKey;
 import com.amalto.core.server.ServerContext;
 import com.amalto.core.storage.StagingStorage;
@@ -30,7 +67,12 @@ import com.amalto.core.storage.StorageResults;
 import com.amalto.core.storage.StorageType;
 import com.amalto.core.storage.datasource.DataSource;
 import com.amalto.core.storage.datasource.DataSourceDefinition;
-import com.amalto.core.storage.inmemory.matcher.*;
+import com.amalto.core.storage.inmemory.matcher.BinaryMatcher;
+import com.amalto.core.storage.inmemory.matcher.BuiltInBlockKeyMatcher;
+import com.amalto.core.storage.inmemory.matcher.CompareMatcher;
+import com.amalto.core.storage.inmemory.matcher.MatchAll;
+import com.amalto.core.storage.inmemory.matcher.Matcher;
+import com.amalto.core.storage.inmemory.matcher.UnaryMatcher;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.record.metadata.UnsupportedDataRecordMetadata;
 import com.amalto.core.storage.transaction.StorageTransaction;
@@ -204,6 +246,11 @@ public class InMemoryStorage implements Storage {
     @Override
     public List<ComplexTypeMetadata> findSortedTypesToDrop(DiffResults diffResults, boolean force) {
         return new ArrayList<ComplexTypeMetadata>();
+    }
+
+    @Override
+    public Set<String> findTablesToDrop(List<ComplexTypeMetadata> sortedTypesToDrop) {
+        return new HashSet<String>();
     }
 
     private static interface ValueBuilder {
@@ -536,5 +583,4 @@ public class InMemoryStorage implements Storage {
             return records;
         }
     }
-
 }

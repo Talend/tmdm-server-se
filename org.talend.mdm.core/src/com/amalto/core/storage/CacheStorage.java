@@ -10,15 +10,19 @@
 
 package com.amalto.core.storage;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
-import org.talend.mdm.commmon.metadata.compare.ImpactAnalyzer;
 import org.talend.mdm.commmon.metadata.compare.Compare.DiffResults;
+import org.talend.mdm.commmon.metadata.compare.ImpactAnalyzer;
 
 import com.amalto.core.query.user.Expression;
 import com.amalto.core.storage.datasource.DataSource;
@@ -301,6 +305,11 @@ public class CacheStorage implements Storage {
     @Override
     public List<ComplexTypeMetadata> findSortedTypesToDrop(DiffResults diffResults, boolean force) {
         return delegate.findSortedTypesToDrop(diffResults, force);
+    }
+
+    @Override
+    public Set<String> findTablesToDrop(List<ComplexTypeMetadata> sortedTypesToDrop) {
+        return delegate.findTablesToDrop(sortedTypesToDrop);
     }
 
     static class CacheValue {

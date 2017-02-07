@@ -155,7 +155,7 @@ class CreateActions extends DefaultMetadataVisitor<List<Action>> {
             }
         } else {
             path.push(new PathElement(containedField, null));
-            if (!MetadataRepository.isCircle(containedField.getContainingType())) {
+            if (!MetadataRepository.isCircle(containedField.getContainingType(), null)) {
                 super.visit(containedField);
             }
             path.pop();

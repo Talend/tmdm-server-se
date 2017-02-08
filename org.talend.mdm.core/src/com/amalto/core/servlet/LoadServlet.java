@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -65,15 +66,15 @@ public class LoadServlet extends HttpServlet {
 
     private static final String PARAMETER_INSERTONLY = "insertonly"; //$NON-NLS-1$
 
-    private static final Map<String, Integer> THREAD_MAP = new HashMap<String, Integer>();;
+    private static final Map<String, AtomicInteger> DB_REQUESTS_MAP = new HashMap<String, AtomicInteger>();
 
-    private static final Integer MAX_THREADS;
+    private static final Integer MAX_DB_REQUESTS;
 
     private static final Long WAIT_MILLISECONDS;
 
     static {
-        MAX_THREADS = Integer.valueOf(MDMConfiguration.getConfiguration().getProperty("bulkload.max.threads", "10")); //$NON-NLS-1$ //$NON-NLS-2$
-        WAIT_MILLISECONDS = Long.valueOf(MDMConfiguration.getConfiguration().getProperty("bulkload.wait.milliseconds", "2000")); //$NON-NLS-1$ //$NON-NLS-2$
+        MAX_DB_REQUESTS = Integer.valueOf(MDMConfiguration.getConfiguration().getProperty("bulkload.concurrent.database.requests", "25")); //$NON-NLS-1$ //$NON-NLS-2$
+        WAIT_MILLISECONDS = Long.valueOf(MDMConfiguration.getConfiguration().getProperty("bulkload.concurrent.wait.milliseconds", "200")); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     public LoadServlet() {
@@ -122,21 +123,22 @@ public class LoadServlet extends HttpServlet {
         DocumentSaver saver = context.createSaver();
 
         // Wait until less that MAX_THREADS running
-        Integer currentThreads = getRunningThreads(dataClusterName);
-        try {
-            while (currentThreads >= MAX_THREADS) {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("Currently " + currentThreads + " threads running, wait for " + WAIT_MILLISECONDS + " ms.");
+        synchronized (LoadServlet.class) {
+            AtomicInteger dbRequests = getDbRequests(dataClusterName);
+            try {
+                while (dbRequests.get() >= MAX_DB_REQUESTS) {
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("Up to " + dbRequests + " db requests, wait for " + WAIT_MILLISECONDS + " ms.");
+                    }
+                    Thread.sleep(WAIT_MILLISECONDS);
                 }
-                Thread.sleep(WAIT_MILLISECONDS);
-                currentThreads = getRunningThreads(dataClusterName);
+                int newDbRequests = increaseDbRequests(dataClusterName);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Add 1 db request, currently " + newDbRequests + " requests left.");
+                }
+            } catch (InterruptedException e) {
+                LOG.error("Waiting to start db request meets exception.", e);
             }
-            currentThreads = increaseRunningThreads(dataClusterName);
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Add 1 load thread, currently " + currentThreads + " threads running.");
-            }
-        } catch (InterruptedException e) {
-            LOG.error("Waiting for bulkload meets exception.", e);
         }
 
         try {
@@ -155,31 +157,27 @@ public class LoadServlet extends HttpServlet {
         } finally {
             DataRecord.CheckExistence.remove();
             // Decrease total threads
-            currentThreads = decreaseRunningThreads(dataClusterName);
+            int newDbRequests = decreaseDbRequests(dataClusterName);
             if (LOG.isDebugEnabled()) {
-                LOG.debug("Finish 1 load thread, currently " + currentThreads + " threads running.");
+                LOG.debug("Finish 1 db request, currently " + newDbRequests + " requests left.");
             }
         }
         writer.write("</body></html>"); //$NON-NLS-1$
     }
 
-    protected synchronized Integer increaseRunningThreads(String dataClusterName) {
-        Integer value = THREAD_MAP.get(dataClusterName) + 1;
-        THREAD_MAP.put(dataClusterName, value);
-        return value;
+    protected int increaseDbRequests(String dataClusterName) {
+        return DB_REQUESTS_MAP.get(dataClusterName).incrementAndGet();
     }
 
-    protected synchronized Integer decreaseRunningThreads(String dataClusterName) {
-        Integer value = THREAD_MAP.get(dataClusterName) - 1;
-        THREAD_MAP.put(dataClusterName, value);
-        return value;
+    protected int decreaseDbRequests(String dataClusterName) {
+        return DB_REQUESTS_MAP.get(dataClusterName).decrementAndGet();
     }
 
-    protected synchronized Integer getRunningThreads(String dataClusterName) {
-        Integer value = THREAD_MAP.get(dataClusterName);
+    protected AtomicInteger getDbRequests(String dataClusterName) {
+        AtomicInteger value = DB_REQUESTS_MAP.get(dataClusterName);
         if (value == null) {
-            value = 0;
-            THREAD_MAP.put(dataClusterName, value);
+            value = new AtomicInteger(0);
+            DB_REQUESTS_MAP.put(dataClusterName, value);
         }
         return value;
     }

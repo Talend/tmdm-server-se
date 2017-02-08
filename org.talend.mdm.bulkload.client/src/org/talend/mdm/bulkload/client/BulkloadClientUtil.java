@@ -29,9 +29,16 @@ import org.apache.commons.httpclient.params.HttpClientParams;
  * 
  */
 public class BulkloadClientUtil {
-
-    public static final String JVM_STICKY_SESSION = "sticky_session"; //$NON-NLS-1$
-    public static final String DEFAULT_STICKY_SESSION = "JSESSIONID"; //$NON-NLS-1$
+    
+    public static final String STICKY_SESSION;
+    public static final Integer MAX_HTTP_REQUESTS;
+    
+    static {
+        String stickySession = System.getProperty("sticky_session");//$NON-NLS-1$
+        STICKY_SESSION = stickySession == null ? "JSESSIONID" : stickySession;//$NON-NLS-1$
+        String httpRequests = System.getProperty("bulkload.concurrent.http.requests");//$NON-NLS-1$
+        MAX_HTTP_REQUESTS = httpRequests == null? Integer.MAX_VALUE : Integer.parseInt(httpRequests);
+    }
 
     public static void bulkload(String url, String cluster, String concept, String datamodel, boolean validate, boolean smartpk, boolean insertonly,
             InputStream itemdata, String username, String password, String transactionId, String sessionId, String universe, String tokenKey,
@@ -66,7 +73,7 @@ public class BulkloadClientUtil {
                 putMethod.setRequestHeader("transaction-id", transactionId); //$NON-NLS-1$
             }
             if (sessionId != null) {
-                putMethod.setRequestHeader("Cookie", getStickySession() + "=" + sessionId); //$NON-NLS-1$ //$NON-NLS-2$
+                putMethod.setRequestHeader("Cookie", STICKY_SESSION + "=" + sessionId); //$NON-NLS-1$ //$NON-NLS-2$
             }
             if (tokenKey != null && tokenValue != null) {
                 putMethod.setRequestHeader(tokenKey, tokenValue);
@@ -96,18 +103,17 @@ public class BulkloadClientUtil {
         }
     }
 
-    public static String getStickySession() {
-        String stickySession = System.getProperty(JVM_STICKY_SESSION);
-        if (stickySession == null) {
-            stickySession = DEFAULT_STICKY_SESSION;
-        }
-        return stickySession;
-    }
-
     public static InputStreamMerger bulkload(String url, String cluster, String concept, String dataModel, boolean validate,
             boolean smartPK, boolean insertOnly, String username, String password, String transactionId, String sessionId, String universe, String tokenKey,
             String tokenValue, AtomicInteger startedBulkloadCount) {
         InputStreamMerger merger = new InputStreamMerger();
+        while (startedBulkloadCount.get() >= MAX_HTTP_REQUESTS) {
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                throw new BulkloadException("Waitting to create bulkload thread meets exception."); //$NON-NLS-1$
+            }
+        }
         Runnable loadRunnable = new AsyncLoadRunnable(url, cluster, concept, dataModel, validate, smartPK, insertOnly, merger, username,
                 password, transactionId, sessionId, universe, tokenKey, tokenValue, startedBulkloadCount);
         Thread loadThread = new Thread(loadRunnable);

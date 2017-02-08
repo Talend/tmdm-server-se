@@ -253,8 +253,8 @@ public class SystemModels {
             // Analyzes impacts on the select storage
             impacts = storage.getImpactAnalyzer().analyzeImpacts(diffResults);
             List<ComplexTypeMetadata> typesToDrop = storage.findSortedTypesToDrop(diffResults, true);
-            Set<String> findTablesToDrop = storage.findTablesToDrop(typesToDrop);
-            for (String tableName : findTablesToDrop) {
+            Set<String> tableNamesToDrop = storage.findTablesToDrop(typesToDrop);
+            for (String tableName : tableNamesToDrop) {
                 if (previousRepository.getInstantiableTypes().contains(previousRepository.getComplexType(tableName))) {
                     typeNamesToDrop.add(tableName);
                 }

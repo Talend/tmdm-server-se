@@ -217,7 +217,11 @@ public class StorageAdaptTest extends TestCase {
                        "    </nestedType3>"+
                        "  </nestedType2>"+
                        "</TestEntity_Nested>";
-        createRecord(storage, factory, repository1, typeNames, new String[] { input1 });
+        try {
+            createRecord(storage, factory, repository1, typeNames, new String[] { input1 });
+        } catch (Exception e) {
+            assertNull(e);
+        }
  
         MetadataRepository repository2 = new MetadataRepository();
         repository2.load(StorageAdaptTest.class.getResourceAsStream("schema3_2.xsd"));
@@ -235,7 +239,11 @@ public class StorageAdaptTest extends TestCase {
                         "    </nestedType3>"+
                         "  </nestedType2>"+
                         "</TestEntity_Nested>";
-        createRecord(storage, factory, repository2, typeNames, new String[] { input2 });
+        try {
+            createRecord(storage, factory, repository2, typeNames, new String[] { input2 });
+        } catch (Exception e) {
+            assertNull(e);
+        }
              
         MetadataRepository repository3 = new MetadataRepository();
         repository3.load(StorageAdaptTest.class.getResourceAsStream("schema3_3.xsd"));
@@ -252,7 +260,11 @@ public class StorageAdaptTest extends TestCase {
                         "    </nestedType3>"+
                         "  </nestedType2>"+
                         "</TestEntity_Nested>";
-        createRecord(storage, factory, repository3, typeNames, new String[] { input3 });
+        try {
+            createRecord(storage, factory, repository3, typeNames, new String[] { input3 });
+        } catch (Exception e) {
+            assertNull(e);
+        }
         
         MetadataRepository repository4 = new MetadataRepository();
         repository4.load(StorageAdaptTest.class.getResourceAsStream("schema3_4.xsd"));
@@ -268,7 +280,11 @@ public class StorageAdaptTest extends TestCase {
                         "    </nestedType3>"+
                         "  </nestedType2>"+
                         "</TestEntity_Nested>";
-        createRecord(storage, factory, repository4, typeNames, new String[] { input4 });
+        try {
+            createRecord(storage, factory, repository4, typeNames, new String[] { input4 });
+        } catch (Exception e) {
+            assertNull(e);
+        }
         
         storage.close(true);
     }
@@ -288,7 +304,11 @@ public class StorageAdaptTest extends TestCase {
         String input1_1 = "<TestEntity1_Extend><id>a</id><mandatory11>a</mandatory11><mandatory12>a</mandatory12></TestEntity1_Extend>";
         String input1_2 = "<TestEntity2_Extend><id>b</id><mandatory11>b</mandatory11><mandatory12>b</mandatory12><mandatory21>b</mandatory21><mandatory22>b</mandatory22></TestEntity2_Extend>";
         String input1_3 = "<TestEntity3_Extend><id>c</id><mandatory11>c</mandatory11><mandatory12>c</mandatory12><mandatory21>c</mandatory21><mandatory22>b</mandatory22><mandatory31>c</mandatory31><mandatory32>c</mandatory32></TestEntity3_Extend>";
-        createRecord(storage, factory, repository1, typeNames, new String[] { input1_1, input1_2, input1_3 });
+        try {
+            createRecord(storage, factory, repository1, typeNames, new String[] { input1_1, input1_2, input1_3 });
+        } catch (Exception e) {
+            assertNull(e);
+        }
         
         MetadataRepository repository2 = new MetadataRepository();
         repository2.load(StorageAdaptTest.class.getResourceAsStream("schema4_2.xsd"));
@@ -297,7 +317,11 @@ public class StorageAdaptTest extends TestCase {
         String input2_1 = "<TestEntity1_Extend><id>a</id><mandatory11>a</mandatory11></TestEntity1_Extend>";
         String input2_2 = "<TestEntity2_Extend><id>b</id><mandatory11>b</mandatory11><mandatory21>b</mandatory21><mandatory22>b</mandatory22></TestEntity2_Extend>";
         String input2_3 = "<TestEntity3_Extend><id>c</id><mandatory11>c</mandatory11><mandatory21>c</mandatory21><mandatory22>b</mandatory22><mandatory31>c</mandatory31><mandatory32>c</mandatory32></TestEntity3_Extend>";
-        createRecord(storage, factory, repository2, typeNames, new String[] { input2_1, input2_2, input2_3 });
+        try {
+            createRecord(storage, factory, repository2, typeNames, new String[] { input2_1, input2_2, input2_3 });
+        } catch (Exception e) {
+            assertNull(e);
+        }
         
         MetadataRepository repository3 = new MetadataRepository();
         repository3.load(StorageAdaptTest.class.getResourceAsStream("schema4_3.xsd"));
@@ -306,7 +330,11 @@ public class StorageAdaptTest extends TestCase {
         String input3_1 = "<TestEntity1_Extend><id>a</id><mandatory11>a</mandatory11></TestEntity1_Extend>";
         String input3_2 = "<TestEntity2_Extend><id>b</id><mandatory11>b</mandatory11><mandatory21>b</mandatory21></TestEntity2_Extend>";
         String input3_3 = "<TestEntity3_Extend><id>c</id><mandatory11>c</mandatory11><mandatory21>c</mandatory21><mandatory31>c</mandatory31><mandatory32>c</mandatory32></TestEntity3_Extend>";
-        createRecord(storage, factory, repository3, typeNames, new String[] { input3_1, input3_2, input3_3 });
+        try {
+            createRecord(storage, factory, repository3, typeNames, new String[] { input3_1, input3_2, input3_3 });
+        } catch (Exception e) {
+            assertNull(e);
+        }
         
         MetadataRepository repository4 = new MetadataRepository();
         repository4.load(StorageAdaptTest.class.getResourceAsStream("schema4_4.xsd"));
@@ -315,7 +343,11 @@ public class StorageAdaptTest extends TestCase {
         String input4_1 = "<TestEntity1_Extend><id>a</id><mandatory11>a</mandatory11></TestEntity1_Extend>";
         String input4_2 = "<TestEntity2_Extend><id>b</id><mandatory11>b</mandatory11><mandatory21>b</mandatory21></TestEntity2_Extend>";
         String input4_3 = "<TestEntity3_Extend><id>c</id><mandatory11>c</mandatory11><mandatory21>c</mandatory21><mandatory31>c</mandatory31></TestEntity3_Extend>";
-        createRecord(storage, factory, repository3, typeNames, new String[] { input4_1, input4_2, input4_3 });
+        try {
+            createRecord(storage, factory, repository3, typeNames, new String[] { input4_1, input4_2, input4_3 });
+        } catch (Exception e) {
+            assertNull(e);
+        }
         
         storage.close(true);
     }
@@ -337,42 +369,66 @@ public class StorageAdaptTest extends TestCase {
         String input_3 = "<TestEntity3_Reference><id>3</id><mandatory31>m31</mandatory31><mandatory32>m32</mandatory32><testEntity4>[4]</testEntity4><testEntity5>[5]</testEntity5></TestEntity3_Reference>";
         String input_2 = "<TestEntity2_Reference><id>2</id><mandatory21>m21</mandatory21><mandatory22>m22</mandatory22><testEntity4>[4]</testEntity4><testEntity5>[5]</testEntity5></TestEntity2_Reference>";
         String input_1 = "<TestEntity1_Reference><id>1</id><mandatory11>m11</mandatory11><mandatory12>m12</mandatory12><testEntity2>[2]</testEntity2><testEntity3>[3]</testEntity3></TestEntity1_Reference>";
-        createRecord(storage, factory, repository1, typeNames, new String[] { input_5, input_4, input_3, input_2, input_1 });
+        try {
+            createRecord(storage, factory, repository1, typeNames, new String[] { input_5, input_4, input_3, input_2, input_1 });
+        } catch (Exception e) {
+            assertNull(e);
+        }
                
         MetadataRepository repository2 = new MetadataRepository();
         repository2.load(StorageAdaptTest.class.getResourceAsStream("schema5_2.xsd"));
         storage.adapt(repository2, true);
         assertDatabaseChange(dataSource, tables, columns, new boolean[] {false, true, true, true, true});
         input_1 = "<TestEntity1_Reference><id>1</id><mandatory11>m11</mandatory11><testEntity2>[2]</testEntity2><testEntity3>[3]</testEntity3></TestEntity1_Reference>";
-        createRecord(storage, factory, repository2, typeNames, new String[] { input_5, input_4, input_3, input_2, input_1 });
+        try {
+            createRecord(storage, factory, repository2, typeNames, new String[] { input_5, input_4, input_3, input_2, input_1 });
+        } catch (Exception e) {
+            assertNull(e);
+        }
         
         MetadataRepository repository3 = new MetadataRepository();
         repository3.load(StorageAdaptTest.class.getResourceAsStream("schema5_3.xsd"));
         storage.adapt(repository3, true);
         assertDatabaseChange(dataSource, tables, columns, new boolean[] {false, false, true, true, true});
         input_2 = "<TestEntity2_Reference><id>2</id><mandatory21>m21</mandatory21><testEntity4>[4]</testEntity4><testEntity5>[5]</testEntity5></TestEntity2_Reference>";
-        createRecord(storage, factory, repository3, typeNames, new String[] { input_5, input_4, input_3, input_2, input_1 });
+        try {
+            createRecord(storage, factory, repository3, typeNames, new String[] { input_5, input_4, input_3, input_2, input_1 });
+        } catch (Exception e) {
+            assertNull(e);
+        }
         
         MetadataRepository repository4 = new MetadataRepository();
         repository4.load(StorageAdaptTest.class.getResourceAsStream("schema5_4.xsd"));
         storage.adapt(repository4, true);
         assertDatabaseChange(dataSource, tables, columns, new boolean[] {false, false, false, true, true});
         input_3 = "<TestEntity3_Reference><id>3</id><mandatory31>m31</mandatory31><testEntity4>[4]</testEntity4><testEntity5>[5]</testEntity5></TestEntity3_Reference>";
-        createRecord(storage, factory, repository4, typeNames, new String[] { input_5, input_4, input_3, input_2, input_1 });
+        try {
+            createRecord(storage, factory, repository4, typeNames, new String[] { input_5, input_4, input_3, input_2, input_1 });
+        } catch (Exception e) {
+            assertNull(e);
+        }
         
         MetadataRepository repository5 = new MetadataRepository();
         repository5.load(StorageAdaptTest.class.getResourceAsStream("schema5_5.xsd"));
         storage.adapt(repository5, true);
         assertDatabaseChange(dataSource, tables, columns, new boolean[] {false, false, false, false, true});
         input_4 = "<TestEntity4_Reference><id>4</id><mandatory41>m41</mandatory41></TestEntity4_Reference>";
-        createRecord(storage, factory, repository5, typeNames, new String[] { input_5, input_4, input_3, input_2, input_1 });
+        try {
+            createRecord(storage, factory, repository5, typeNames, new String[] { input_5, input_4, input_3, input_2, input_1 });
+        } catch (Exception e) {
+            assertNull(e);
+        }
         
         MetadataRepository repository6 = new MetadataRepository();
         repository6.load(StorageAdaptTest.class.getResourceAsStream("schema5_6.xsd"));
         storage.adapt(repository6, true);
         assertDatabaseChange(dataSource, tables, columns, new boolean[] {false, false, false, false, false});
         input_5 = "<TestEntity5_Reference><id>5</id><mandatory51>m51</mandatory51></TestEntity5_Reference>";
-        createRecord(storage, factory, repository6, typeNames, new String[] { input_5, input_4, input_3, input_2, input_1 });
+        try {
+            createRecord(storage, factory, repository6, typeNames, new String[] { input_5, input_4, input_3, input_2, input_1 });
+        } catch (Exception e) {
+            assertNull(e);
+        }
         
         storage.close(true);
     }
@@ -515,7 +571,7 @@ public class StorageAdaptTest extends TestCase {
     }
 
     // TMDM-9099 Increase the length of a string element should be low impact
-    public void test9_IncreaseStringFieldLength() {
+    public void test9_IncreaseStringFieldLength() throws Exception {
         DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
         Storage storage = new HibernateStorage("MyStr", StorageType.MASTER);
         storage.init(dataSource);
@@ -541,7 +597,11 @@ public class StorageAdaptTest extends TestCase {
         String input1 = "<MyStr><Id>id-1</Id><MyStr>str-1</MyStr></MyStr>";
         String input2 = "<MyStr><Id>id-2</Id><MyStr>str-1-1-1-1-1-1-1-1-1-1-1</MyStr></MyStr>";
         String input3 = "<MyStr><Id>id-3</Id><MyStr>str123456789123456789123456789123</MyStr></MyStr>";
-        createRecord(storage, factory, repository1, typeNames, new String[] { input1 });
+        try {
+            createRecord(storage, factory, repository1, typeNames, new String[] { input1 });
+        } catch (Exception e2) {
+            assertNull(e2);
+        }
 
         storage.begin();
         ComplexTypeMetadata MyStr = repository1.getComplexType("MyStr");//$NON-NLS-1$
@@ -594,7 +654,11 @@ public class StorageAdaptTest extends TestCase {
             assertNull(e);
         }
 
-        createRecord(storage, factory, repository2, typeNames, new String[] { input2 });
+        try {
+            createRecord(storage, factory, repository2, typeNames, new String[] { input2 });
+        } catch (Exception e1) {
+            assertNull(e1);
+        }
 
         storage.begin();
         MyStr = repository2.getComplexType("MyStr");//$NON-NLS-1$
@@ -631,7 +695,11 @@ public class StorageAdaptTest extends TestCase {
             assertNull(e);
         }
 
-        createRecord(storage, factory, repository3, typeNames, new String[] { input3 });
+        try {
+            createRecord(storage, factory, repository3, typeNames, new String[] { input3 });
+        } catch (Exception e1) {
+            assertNull(e1);
+        }
 
         storage.begin();
         MyStr = repository3.getComplexType("MyStr");//$NON-NLS-1$
@@ -720,7 +788,11 @@ public class StorageAdaptTest extends TestCase {
 
         String input1 = "<Person><Id>id-1</Id><name>name-1</name></Person>";
         String input2 = "<Person><Id>id-2</Id><name>name-2</name><lastname>Alice</lastname><age>20</age><weight>81.1</weight><sex>false</sex><name_2>abbc</name_2></Person>";
-        createRecord(storage, factory, repository1, typeNames, new String[] { input1 });
+        try {
+            createRecord(storage, factory, repository1, typeNames, new String[] { input1 });
+        } catch (Exception e1) {
+            assertNull(e1);
+        }
 
         storage.begin();
         ComplexTypeMetadata objectType = repository1.getComplexType("Person");//$NON-NLS-1$
@@ -738,7 +810,7 @@ public class StorageAdaptTest extends TestCase {
 
         MetadataRepository repository2 = new MetadataRepository();
         repository2.load(StorageAdaptTest.class.getResourceAsStream("schema11_2.xsd"));
-        storage.adapt(repository2, true);
+        storage.adapt(repository2, false);
         
         String[] updatedColumns = { "X_ID", "X_NAME", "X_LASTNAME", "X_AGE", "X_WEIGHT", "X_SEX", "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" };
         try {
@@ -768,7 +840,11 @@ public class StorageAdaptTest extends TestCase {
         }
         storage.end();
 
-        createRecord(storage, factory, repository2, typeNames, new String[] { input2 });
+        try {
+            createRecord(storage, factory, repository2, typeNames, new String[] { input2 });
+        } catch (Exception e) {
+            assertNull(e);
+        }
 
         storage.begin();
         objectType = repository2.getComplexType("Person");//$NON-NLS-1$
@@ -789,7 +865,334 @@ public class StorageAdaptTest extends TestCase {
         }
         storage.end();
     }
-    
+
+    // TMDM-10525 [Impact Analysis] Move a simple field from optional to mandatory 1
+    public void test12_MoveFieldFromOptionalToMandatory_ForNoValueInDB() throws Exception {
+        /*
+         * all the filed will change to mandatory from optional first name type is string, have no the default value
+         * second name type is string, contains the default value full name type is string, have no the default value
+         * age type is int, have no the default value married type is boolean contains the default value birthday type
+         * is data, have no default value
+         */
+        System.setProperty("mdmRootLocation", System.getProperty("user.dir"));
+
+        DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
+        HibernateStorage storage = new HibernateStorage("Person", StorageType.MASTER);
+        storage.init(dataSource);
+        String[] typeNames = { "Person" };
+        String[] tables = { "Person" };
+        String[] columns = { "X_ID", "X_FIRST_NAME", "X_SECOND_NAME", "X_FULL_NAME", "X_AGE", "X_MARRIED", "X_BIRTHDAY",
+                "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" };
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+        MetadataRepository repository1 = new MetadataRepository();
+        repository1.load(StorageAdaptTest.class.getResourceAsStream("schema12_1.xsd"));
+        storage.prepare(repository1, true);
+        try {
+            assertDatabaseChange(dataSource, tables, columns, new boolean[] { true });
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+
+        MetadataRepository repository2 = new MetadataRepository();
+        repository2.load(StorageAdaptTest.class.getResourceAsStream("schema12_2.xsd"));
+        storage.adapt(repository2, false);
+
+        // tabale had changed
+        try {
+            assertDatabaseChange(dataSource, tables, columns, new boolean[] { true });
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+
+        // create one record(all field have value) success
+        String input1 = "<Person><Id>1</Id><first_name>Jack</first_name><second_name>Chen</second_name><full_name>Jack Chen</full_name><age>11</age><married>true</married><birthday>2017-02-04</birthday></Person>";
+        try {
+            createRecord(storage, factory, repository2, typeNames, new String[] { input1 });
+        } catch (Exception e1) {
+            assertNull(e1);
+        }
+        storage.begin();
+        ComplexTypeMetadata objectType = repository2.getComplexType("Person");//$NON-NLS-1$
+        UserQueryBuilder qb = from(objectType);
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+            for (DataRecord result : results) {
+                assertEquals("1", result.get("Id"));
+            }
+        } finally {
+            results.close();
+        }
+        storage.end();
+
+        // create one record(birthday have no value ) failed
+        String input2 = "<Person><Id>1</Id><first_name>Jack</first_name><second_name>Chen</second_name><full_name>Jack Chen</full_name><age>11</age><married>true</married></Person>";
+        boolean createFail = false;
+        try {
+            createRecord(storage, factory, repository2, typeNames, new String[] { input2 });
+        } catch (Exception e) {
+            createFail = true;
+            assertTrue(e != null);
+        }
+        assertTrue(createFail);
+
+        qb = from(objectType);
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+        } finally {
+            results.close();
+        }
+        storage.end();
+
+        storage.begin();
+        storage.delete(qb.getSelect());
+        storage.end();
+
+    }
+
+    // TMDM-10525 [Impact Analysis] Move a simple field from optional to mandatory 2
+    public void test12_MoveFieldFromOptionalToMandatory_ForAllFieldContainsDataInDB() throws Exception {
+        /*
+         * all the filed will change to mandatory from optional first name type is string, have no the default value
+         * second name type is string, contains the default value full name type is string, have no the default value
+         * age type is int, have no the default value married type is boolean contains the default value birthday type
+         * is data, have no default value
+         */
+
+        System.setProperty("mdmRootLocation", System.getProperty("user.dir"));
+
+        DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
+        HibernateStorage storage = new HibernateStorage("Person", StorageType.MASTER);
+        storage.init(dataSource);
+        String[] typeNames = { "Person" };
+        String[] tables = { "Person" };
+        String[] columns = { "X_ID", "X_FIRST_NAME", "X_SECOND_NAME", "X_FULL_NAME", "X_AGE", "X_MARRIED", "X_BIRTHDAY",
+                "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" };
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+        MetadataRepository repository1 = new MetadataRepository();
+        repository1.load(StorageAdaptTest.class.getResourceAsStream("schema12_1.xsd"));
+        storage.prepare(repository1, true);
+        try {
+            assertDatabaseChange(dataSource, tables, columns, new boolean[] { true });
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+
+        // create record before change, second_name, married is null
+        String input1 = "<Person><Id>1</Id><first_name>Jack</first_name><second_name>Chen</second_name><full_name>Jack Chen</full_name><age>11</age><married>true</married><birthday>2017-02-04</birthday></Person>";
+        try {
+            createRecord(storage, factory, repository1, typeNames, new String[] { input1 });
+        } catch (Exception e1) {
+            assertNull(e1);
+        }
+
+        storage.begin();
+        ComplexTypeMetadata objectType = repository1.getComplexType("Person");//$NON-NLS-1$
+        UserQueryBuilder qb = from(objectType);
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+            for (DataRecord result : results) {
+                assertEquals("1", result.get("Id"));
+            }
+        } finally {
+            results.close();
+        }
+        storage.end();
+
+        MetadataRepository repository2 = new MetadataRepository();
+        repository2.load(StorageAdaptTest.class.getResourceAsStream("schema12_2.xsd"));
+        storage.adapt(repository2, true);
+
+        // tabale had changed
+        String[] updatedColumns = { "X_ID", "X_NAME", "X_LASTNAME", "X_AGE", "X_WEIGHT", "X_SEX", "X_TALEND_TIMESTAMP",
+                "X_TALEND_TASK_ID" };
+        try {
+            assertDatabaseChange(dataSource, tables, updatedColumns, new boolean[] { true });
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+
+        // data had changed for have default value field
+        storage.begin();
+        objectType = repository2.getComplexType("Person");//$NON-NLS-1$
+        qb = from(objectType);
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+            for (DataRecord result : results) {
+                assertEquals("1", result.get("Id"));
+                assertEquals("Jack", result.get("first_name"));
+                assertEquals("Chen", result.get("second_name"));
+                assertEquals("Jack Chen", result.get("full_name"));
+                assertEquals(11, result.get("age"));
+                assertEquals(Boolean.TRUE, result.get("married"));
+            }
+        } finally {
+            results.close();
+        }
+        storage.end();
+    }
+
+    // TMDM-10525 [Impact Analysis] Move a simple field from optional to mandatory 3
+    public void test12_MoveFieldFromOptionalToMandatory_ForContainsDefaultValueFieldNoDataInDB() throws Exception {
+        /*
+         * all the filed will change to mandatory from optional first name type is string, have no the default value
+         * second name type is string, contains the default value full name type is string, have no the default value
+         * age type is int, have no the default value married type is boolean contains the default value birthday type
+         * is data, have no default value
+         */
+        System.setProperty("mdmRootLocation", System.getProperty("user.dir"));
+
+        DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
+        Storage storage = new HibernateStorage("Person", StorageType.MASTER);
+        storage.init(dataSource);
+        String[] typeNames = { "Person" };
+        String[] tables = { "Person" };
+        String[] columns = { "X_ID", "X_FIRST_NAME", "X_SECOND_NAME", "X_FULL_NAME", "X_AGE", "X_MARRIED", "X_BIRTHDAY",
+                "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" };
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+        MetadataRepository repository1 = new MetadataRepository();
+        repository1.load(StorageAdaptTest.class.getResourceAsStream("schema12_1.xsd"));
+        storage.prepare(repository1, true);
+        try {
+            assertDatabaseChange(dataSource, tables, columns, new boolean[] { true });
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+
+        // create record before change, second_name, married is null
+        String input1 = "<Person><Id>1</Id><first_name>Jack</first_name><full_name>Jack Chen</full_name><age>11</age><birthday>2017-02-04</birthday></Person>";
+        try {
+            createRecord(storage, factory, repository1, typeNames, new String[] { input1 });
+        } catch (Exception e1) {
+            assertNull(e1);
+        }
+
+        storage.begin();
+        ComplexTypeMetadata objectType = repository1.getComplexType("Person");//$NON-NLS-1$
+        UserQueryBuilder qb = from(objectType);
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+            for (DataRecord result : results) {
+                assertEquals("1", result.get("Id"));
+            }
+        } finally {
+            results.close();
+        }
+        storage.end();
+
+        MetadataRepository repository2 = new MetadataRepository();
+        repository2.load(StorageAdaptTest.class.getResourceAsStream("schema12_2.xsd"));
+        storage.adapt(repository2, false);
+
+        // tabale had changed
+        String[] updatedColumns = { "X_ID", "X_NAME", "X_LASTNAME", "X_AGE", "X_WEIGHT", "X_SEX", "X_TALEND_TIMESTAMP",
+                "X_TALEND_TASK_ID" };
+        try {
+            assertDatabaseChange(dataSource, tables, updatedColumns, new boolean[] { true });
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+
+        // data contains in DB
+        storage.begin();
+        objectType = repository2.getComplexType("Person");//$NON-NLS-1$
+        qb = from(objectType);
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+            for (DataRecord result : results) {
+                assertEquals("1", result.get("Id"));
+                assertEquals("Jack", result.get("first_name"));
+                assertEquals("Chen", result.get("second_name"));
+                assertEquals("Jack Chen", result.get("full_name"));
+                assertEquals(11, result.get("age"));
+                assertEquals(Boolean.FALSE, result.get("married"));
+            }
+        } finally {
+            results.close();
+        }
+        storage.end();
+    }
+
+    // TMDM-10525 [Impact Analysis] Move a simple field from optional to mandatory 4
+    public void test12_MoveFieldFromOptionalToMandatory_ForNoDefaultValueFieldNoDataInDB() throws Exception {
+        /*
+         * all the filed will change to mandatory from optional first name type is string, have no the default value
+         * second name type is string, contains the default value full name type is string, have no the default value
+         * age type is int, have no the default value married type is boolean contains the default value birthday type
+         * is data, have no default value
+         */
+        System.setProperty("mdmRootLocation", System.getProperty("user.dir"));
+
+        DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
+        Storage storage = new HibernateStorage("Person", StorageType.MASTER);
+        storage.init(dataSource);
+        String[] typeNames = { "Person" };
+        String[] tables = { "Person" };
+        String[] columns = { "X_ID", "X_FIRST_NAME", "X_SECOND_NAME", "X_FULL_NAME", "X_AGE", "X_MARRIED", "X_BIRTHDAY",
+                "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" };
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+        MetadataRepository repository1 = new MetadataRepository();
+        repository1.load(StorageAdaptTest.class.getResourceAsStream("schema12_1.xsd"));
+        storage.prepare(repository1, true);
+        try {
+            assertDatabaseChange(dataSource, tables, columns, new boolean[] { true });
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+
+        // create record before change, second_name, married is null
+        String input1 = "<Person><Id>1</Id><second_name>Chen</second_name><full_name>Jack Chen</full_name><age>11</age><married>true</married><birthday>2017-02-04</birthday></Person>";
+        try {
+            createRecord(storage, factory, repository1, typeNames, new String[] { input1 });
+        } catch (Exception e1) {
+            assertNull(e1);
+        }
+
+        storage.begin();
+        ComplexTypeMetadata objectType = repository1.getComplexType("Person");//$NON-NLS-1$
+        UserQueryBuilder qb = from(objectType);
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+            for (DataRecord result : results) {
+                assertEquals("1", result.get("Id"));
+            }
+        } finally {
+            results.close();
+        }
+        storage.end();
+
+        MetadataRepository repository2 = new MetadataRepository();
+        repository2.load(StorageAdaptTest.class.getResourceAsStream("schema12_2.xsd"));
+        storage.adapt(repository2, true);
+
+        // tabale had changed
+        String[] updatedColumns = { "X_ID", "X_NAME", "X_LASTNAME", "X_AGE", "X_WEIGHT", "X_SEX", "X_TALEND_TIMESTAMP",
+                "X_TALEND_TASK_ID" };
+        try {
+            assertDatabaseChange(dataSource, tables, updatedColumns, new boolean[] { true });
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+
+        // data can't contains in DB
+        storage.begin();
+        objectType = repository2.getComplexType("Person");//$NON-NLS-1$
+        qb = from(objectType);
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(0, results.getCount());
+        } finally {
+            results.close();
+        }
+        storage.end();
+    }
+
     private void assertColumnLengthChange(DataSourceDefinition dataSource, String tables, String columns, int expectedLength)
             throws SQLException {
         DataSource master = dataSource.getMaster();
@@ -821,7 +1224,7 @@ public class StorageAdaptTest extends TestCase {
         assertTrue(master instanceof RDBMSDataSource);
         RDBMSDataSource rdbmsDataSource = (RDBMSDataSource) master;
         assertEquals(RDBMSDataSource.DataSourceDialect.H2, rdbmsDataSource.getDialectName());
-        Connection connection = DriverManager.getConnection(rdbmsDataSource.getConnectionURL());
+        Connection connection = DriverManager.getConnection(rdbmsDataSource.getConnectionURL(), rdbmsDataSource.getUserName(), rdbmsDataSource.getPassword());
         Statement statement = connection.createStatement();
         try {
             for (int i = 0; i < tables.length; i++) {
@@ -866,7 +1269,7 @@ public class StorageAdaptTest extends TestCase {
         }
     }
     
-    private void createRecord(Storage storage, DataRecordReader<String> factory, MetadataRepository repository,  String[] typeNames, String[] inputs){
+    private void createRecord(Storage storage, DataRecordReader<String> factory, MetadataRepository repository,  String[] typeNames, String[] inputs) throws Exception{
         List<DataRecord> records = new ArrayList<DataRecord>();
         for (int i = 0; i < typeNames.length; i++) {
             records.add(factory.read(repository, repository.getComplexType(typeNames[i]), inputs[i]));
@@ -875,8 +1278,10 @@ public class StorageAdaptTest extends TestCase {
             storage.begin();
             storage.update(records);
             storage.commit();
-        } finally {
             storage.end();
+        } catch (Exception e) {
+            storage.rollback();
+            throw new RuntimeException(e);
         }
     }
 }

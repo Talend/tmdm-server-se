@@ -98,6 +98,35 @@ public class MDMTable extends Table {
 
                 alter.append(column.getSqlType(dialect, p));
 
+                String defaultValue = column.getDefaultValue();
+                if (defaultValue != null) {
+                    alter.append(" default ").append(defaultValue);
+                }
+
+                if (column.isNullable()) {
+                    alter.append(dialect.getNullColumnString());
+                } else {
+                    alter.append(" not null");
+                }
+
+                if (column.isUnique()) {
+                    String keyName = Constraint.generateName("UK_", this, column);
+                    UniqueKey uk = getOrCreateUniqueKey(keyName);
+                    uk.addColumn(column);
+                    alter.append(dialect.getUniqueDelegate().getColumnDefinitionUniquenessFragment(column));
+                }
+
+                if (column.hasCheckConstraint() && dialect.supportsColumnCheck()) {
+                    alter.append(" check(").append(column.getCheckConstraint()).append(")");
+                }
+
+                String columnComment = column.getComment();
+                if (columnComment != null) {
+                    alter.append(dialect.getColumnComment(columnComment));
+                }
+
+                alter.append(dialect.getAddColumnSuffixString());
+
                 LOGGER.debug(alter.toString());
                 results.add(alter.toString());
             }

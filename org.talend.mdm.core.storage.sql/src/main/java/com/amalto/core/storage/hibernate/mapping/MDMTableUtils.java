@@ -21,8 +21,9 @@ public abstract class MDMTableUtils {
         if (oldColumnInfo == null) {
             return Boolean.FALSE;
         }
-        boolean isNeedToAlter = isUpdateColumnLength(newColumn, oldColumnInfo, dialect)
-                || isUpdateNull(newColumn, oldColumnInfo, dialect);
+        boolean isNeedToAlter = isVarcharField(newColumn, oldColumnInfo, dialect) 
+                && (isUpdateColumnLength(newColumn, oldColumnInfo, dialect)
+                || isUpdateNull(newColumn, oldColumnInfo, dialect));
         return isNeedToAlter;
     }
 

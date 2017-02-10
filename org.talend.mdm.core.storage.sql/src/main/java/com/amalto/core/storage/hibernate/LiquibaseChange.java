@@ -77,11 +77,9 @@ public class LiquibaseChange {
             liquibase.database.Database database = liquibase.database.DatabaseFactory.getInstance()
                     .findCorrectDatabaseImplementation(liquibaseConnection);
 
-            for (AbstractChange chagne : changeType) {
-                String filePath = generantionChangeLogfile(chagne);
-                Liquibase liquibase = new Liquibase(filePath, new FileSystemResourceAccessor(), database);
-                liquibase.update("Liquibase update");
-            }
+            String filePath = generantionChangeLogfile(changeType);
+            Liquibase liquibase = new Liquibase(filePath, new FileSystemResourceAccessor(), database);
+            liquibase.update("Liquibase update");
         } catch (Exception e1) {
             LOGGER.error("execute liquibase update failure", e1);
             throw e1;
@@ -143,32 +141,39 @@ public class LiquibaseChange {
         return changeActionList;
     }
 
-    private String generantionChangeLogfile(AbstractChange changeType) {
+    private String generantionChangeLogfile(List<AbstractChange> changeType) {
         String changeLogFilePath = "";
         // create a changelog
         liquibase.changelog.DatabaseChangeLog databaseChangeLog = new liquibase.changelog.DatabaseChangeLog();
 
-        // create a changeset
-        liquibase.changelog.ChangeSet changeSet = new liquibase.changelog.ChangeSet(UUID.randomUUID().toString(),
-                "administrator", false, false, "", null, null, true, null, databaseChangeLog);
+        for (AbstractChange change : changeType) {
+            // create a changeset
+            liquibase.changelog.ChangeSet changeSet = new liquibase.changelog.ChangeSet(UUID.randomUUID().toString(),
+                    "administrator", false, false, "", null, null, true, null, databaseChangeLog);
 
-        changeSet.addChange(changeType);
+            changeSet.addChange(change);
 
-        // add created changeset to changelog
-        databaseChangeLog.addChangeSet(changeSet);
+            // add created changeset to changelog
+            databaseChangeLog.addChangeSet(changeSet);
+        }
 
         // create a new serializer
         XMLChangeLogSerializer xmlChangeLogSerializer = new XMLChangeLogSerializer();
 
-        String mdmRootLocation = System.getProperty("mdmRootLocation");
-        String filePath = mdmRootLocation + "/data/liqubase-changelog/"
-                + DateUtils.format(System.currentTimeMillis(), "yyyyMMdd");
+        String mdmRootLocation = System.getProperty("mdm.root.url").replace("file:/", "");
+        String filePath = mdmRootLocation + "/data/liqubase-changelog/";
         try {
             File file = new File(filePath);
             if (!file.exists()) {
                 file.mkdir();
             }
-            changeLogFilePath = filePath + "/" + changeType + "-" + System.currentTimeMillis() + ".xml";
+            filePath += DateUtils.format(System.currentTimeMillis(), "yyyyMMdd");
+            file = new File(filePath);
+            if (!file.exists()) {
+                file.mkdir();
+            }
+            changeLogFilePath = filePath + "/" + DateUtils.format(System.currentTimeMillis(), "yyyyMMddHHmm") + "-"
+                    + System.currentTimeMillis() + ".xml";
             File changeLogFile = new File(changeLogFilePath);
             if (!changeLogFile.exists()) {
                 changeLogFile.createNewFile();

@@ -192,7 +192,7 @@ public class ThreadIsolatedSystemProperties extends Properties {
 
     @Override
     public synchronized Object clone() {
-        throw new UnsupportedOperationException();
+        return super.clone();
     }
 
     @Override

@@ -14,6 +14,7 @@ import static com.amalto.core.query.user.UserQueryBuilder.eq;
 import static com.amalto.core.query.user.UserQueryBuilder.from;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -28,6 +29,7 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
+import org.apache.tools.ant.util.DateUtils;
 import org.h2.jdbc.JdbcSQLException;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
@@ -45,6 +47,7 @@ import com.amalto.core.storage.datasource.DataSource;
 import com.amalto.core.storage.datasource.DataSourceDefinition;
 import com.amalto.core.storage.datasource.RDBMSDataSource;
 import com.amalto.core.storage.hibernate.HibernateStorage;
+import com.amalto.core.storage.hibernate.LiquibaseChange;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.record.DataRecordReader;
 import com.amalto.core.storage.record.XmlStringDataRecordReader;
@@ -874,7 +877,7 @@ public class StorageAdaptTest extends TestCase {
          * age type is int, have no the default value married type is boolean contains the default value birthday type
          * is data, have no default value
          */
-        System.setProperty("mdmRootLocation", System.getProperty("user.dir"));
+        System.setProperty(LiquibaseChange.MDM_ROOT_URL, System.getProperty("user.dir"));
 
         DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
         HibernateStorage storage = new HibernateStorage("Person", StorageType.MASTER);
@@ -949,6 +952,8 @@ public class StorageAdaptTest extends TestCase {
         storage.delete(qb.getSelect());
         storage.end();
 
+        deleteLiquibaseChangeLogFile();
+
     }
 
     // TMDM-10525 [Impact Analysis] Move a simple field from optional to mandatory 2
@@ -960,7 +965,7 @@ public class StorageAdaptTest extends TestCase {
          * is data, have no default value
          */
 
-        System.setProperty("mdmRootLocation", System.getProperty("user.dir"));
+        System.setProperty(LiquibaseChange.MDM_ROOT_URL, System.getProperty("user.dir"));
 
         DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
         HibernateStorage storage = new HibernateStorage("Person", StorageType.MASTER);
@@ -1033,6 +1038,12 @@ public class StorageAdaptTest extends TestCase {
             results.close();
         }
         storage.end();
+
+        storage.begin();
+        storage.delete(qb.getSelect());
+        storage.end();
+
+        deleteLiquibaseChangeLogFile();
     }
 
     // TMDM-10525 [Impact Analysis] Move a simple field from optional to mandatory 3
@@ -1043,7 +1054,7 @@ public class StorageAdaptTest extends TestCase {
          * age type is int, have no the default value married type is boolean contains the default value birthday type
          * is data, have no default value
          */
-        System.setProperty("mdmRootLocation", System.getProperty("user.dir"));
+        System.setProperty(LiquibaseChange.MDM_ROOT_URL, System.getProperty("user.dir"));
 
         DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
         Storage storage = new HibernateStorage("Person", StorageType.MASTER);
@@ -1116,6 +1127,12 @@ public class StorageAdaptTest extends TestCase {
             results.close();
         }
         storage.end();
+
+        storage.begin();
+        storage.delete(qb.getSelect());
+        storage.end();
+
+        deleteLiquibaseChangeLogFile();
     }
 
     // TMDM-10525 [Impact Analysis] Move a simple field from optional to mandatory 4
@@ -1126,7 +1143,7 @@ public class StorageAdaptTest extends TestCase {
          * age type is int, have no the default value married type is boolean contains the default value birthday type
          * is data, have no default value
          */
-        System.setProperty("mdmRootLocation", System.getProperty("user.dir"));
+        System.setProperty(LiquibaseChange.MDM_ROOT_URL, System.getProperty("user.dir"));
 
         DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
         Storage storage = new HibernateStorage("Person", StorageType.MASTER);
@@ -1191,6 +1208,12 @@ public class StorageAdaptTest extends TestCase {
             results.close();
         }
         storage.end();
+
+        storage.begin();
+        storage.delete(qb.getSelect());
+        storage.end();
+
+        deleteLiquibaseChangeLogFile();
     }
 
     private void assertColumnLengthChange(DataSourceDefinition dataSource, String tables, String columns, int expectedLength)
@@ -1268,8 +1291,9 @@ public class StorageAdaptTest extends TestCase {
             connection.close();
         }
     }
-    
-    private void createRecord(Storage storage, DataRecordReader<String> factory, MetadataRepository repository,  String[] typeNames, String[] inputs) throws Exception{
+
+    private void createRecord(Storage storage, DataRecordReader<String> factory, MetadataRepository repository,
+            String[] typeNames, String[] inputs) throws Exception {
         List<DataRecord> records = new ArrayList<DataRecord>();
         for (int i = 0; i < typeNames.length; i++) {
             records.add(factory.read(repository, repository.getComplexType(typeNames[i]), inputs[i]));
@@ -1283,5 +1307,12 @@ public class StorageAdaptTest extends TestCase {
             storage.rollback();
             throw new RuntimeException(e);
         }
+    }
+
+    private void deleteLiquibaseChangeLogFile() {
+        String mdmRootLocation = System.getProperty(LiquibaseChange.MDM_ROOT_URL).replace("file:/", "");
+        String filePath = mdmRootLocation + "/data/liqubase-changelog/";
+        File file = new File(filePath);
+        file.deleteOnExit();
     }
 }

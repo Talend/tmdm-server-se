@@ -21,9 +21,9 @@ public abstract class MDMTableUtils {
         if (oldColumnInfo == null) {
             return Boolean.FALSE;
         }
-        boolean isNeedToAlter = isVarcharField(newColumn, oldColumnInfo, dialect) 
-                && (isUpdateColumnLength(newColumn, oldColumnInfo, dialect)
-                || isUpdateNull(newColumn, oldColumnInfo, dialect));
+        boolean isNeedToAlter = Boolean.TRUE;
+        isNeedToAlter &= isVarcharField(newColumn, oldColumnInfo, dialect)
+                && isIncreaseVarcharColumnLength(newColumn, oldColumnInfo, dialect);
         return isNeedToAlter;
     }
 
@@ -36,12 +36,7 @@ public abstract class MDMTableUtils {
         return isVarcharType;
     }
 
-    public static boolean isUpdateColumnLength(Column newColumn, ColumnMetadata oldColumnInfo, Dialect dialect) {
-        return newColumn.getLength() != oldColumnInfo.getColumnSize();
-    }
-
-    public static boolean isUpdateNull(Column newColumn, ColumnMetadata oldColumnInfo, Dialect dialect) {
-        boolean nullable = oldColumnInfo.getNullable().equals("YES") ? true : false;
-        return nullable != newColumn.isNullable();
+    public static boolean isIncreaseVarcharColumnLength(Column newColumn, ColumnMetadata oldColumnInfo, Dialect dialect) {
+        return newColumn.getLength() > oldColumnInfo.getColumnSize();
     }
 }

@@ -49,6 +49,8 @@ import com.amalto.core.storage.datasource.RDBMSDataSource.DataSourceDialect;
 
 public class LiquibaseChange {
 
+    public static final String MDM_ROOT_URL = "mdm.root.url";
+
     private static final Logger LOGGER = Logger.getLogger(LiquibaseChange.class);
 
     private HibernateStorage storage;
@@ -77,9 +79,17 @@ public class LiquibaseChange {
             liquibase.database.Database database = liquibase.database.DatabaseFactory.getInstance()
                     .findCorrectDatabaseImplementation(liquibaseConnection);
 
-            String filePath = generantionChangeLogfile(changeType);
-            Liquibase liquibase = new Liquibase(filePath, new FileSystemResourceAccessor(), database);
-            liquibase.update("Liquibase update");
+            List<String> filePath = new ArrayList<String>();
+            DataSourceDialect dialect = ((RDBMSDataSource) storage.getDataSource()).getDialectName();
+           /* if(dialect == DataSourceDialect.MYSQL || dialect == DataSourceDialect.POSTGRES){
+                filePath = generantionChangeLogfileForMYSQL(changeType);
+            } else{*/
+                filePath = generantionChangeLogfile(changeType);
+            //}
+            for(String changeLogFile : filePath){
+                Liquibase liquibase = new Liquibase(changeLogFile, new FileSystemResourceAccessor(), database);
+                liquibase.update("Liquibase update");
+            }
         } catch (Exception e1) {
             LOGGER.error("execute liquibase update failure", e1);
             throw e1;
@@ -106,10 +116,21 @@ public class LiquibaseChange {
                 String defaultValueRule = ((FieldMetadata) current).getData(MetadataRepository.DEFAULT_VALUE_RULE);
                 if (current.isMandatory() && !previous.isMandatory()) {
                     if (changeList.contains(modifyAction)) {
-                        String tableName = tableResolver.get(current.getContainingType().getEntity());
+                        String tableName = tableResolver.get(current.getContainingType().getEntity()).toLowerCase();
                         String columnName = tableResolver.get(current);
                         String columnDataType = "";
                         columnDataType = getColumnType(current, columnDataType);
+
+                        AddNotNullConstraintChange addNotNullConstraintChange = new AddNotNullConstraintChange();
+                        addNotNullConstraintChange.setColumnDataType(columnDataType);
+                        addNotNullConstraintChange.setColumnName(columnName);
+                        addNotNullConstraintChange.setTableName(tableName);
+                        if (columnDataType.equals("bit") || columnDataType.equals("boolean")) {
+                            addNotNullConstraintChange.setDefaultNullValue(defaultValueRule.equals("1") ? "TRUE" : "FALSE");
+                        } else {
+                            addNotNullConstraintChange.setDefaultNullValue(defaultValueRule);
+                        }
+                        changeActionList.add(addNotNullConstraintChange);
 
                         if (StringUtils.isNotBlank(defaultValueRule)) {
                             defaultValueRule = convertedDefaultValue((RDBMSDataSource) storage.getDataSource(), defaultValueRule);
@@ -124,16 +145,6 @@ public class LiquibaseChange {
                             }
                             changeActionList.add(addDefaultValueChange);
                         }
-                        AddNotNullConstraintChange addNotNullConstraintChange = new AddNotNullConstraintChange();
-                        addNotNullConstraintChange.setColumnDataType(columnDataType);
-                        addNotNullConstraintChange.setColumnName(columnName);
-                        addNotNullConstraintChange.setTableName(tableName);
-                        if (columnDataType.equals("bit") || columnDataType.equals("boolean")) {
-                            addNotNullConstraintChange.setDefaultNullValue(defaultValueRule.equals("1") ? "TRUE" : "FALSE");
-                        } else {
-                            addNotNullConstraintChange.setDefaultNullValue(defaultValueRule);
-                        }
-                        changeActionList.add(addNotNullConstraintChange);
                     }
                 }
             }
@@ -141,7 +152,8 @@ public class LiquibaseChange {
         return changeActionList;
     }
 
-    private String generantionChangeLogfile(List<AbstractChange> changeType) {
+    private List<String> generantionChangeLogfile(List<AbstractChange> changeType) {
+        List<String> changeLogFilePathList = new ArrayList<String>();
         String changeLogFilePath = "";
         // create a changelog
         liquibase.changelog.DatabaseChangeLog databaseChangeLog = new liquibase.changelog.DatabaseChangeLog();
@@ -160,7 +172,7 @@ public class LiquibaseChange {
         // create a new serializer
         XMLChangeLogSerializer xmlChangeLogSerializer = new XMLChangeLogSerializer();
 
-        String mdmRootLocation = System.getProperty("mdm.root.url").replace("file:/", "");
+        String mdmRootLocation = System.getProperty(MDM_ROOT_URL).replace("file:/", "");
         String filePath = mdmRootLocation + "/data/liqubase-changelog/";
         try {
             File file = new File(filePath);
@@ -172,6 +184,7 @@ public class LiquibaseChange {
             if (!file.exists()) {
                 file.mkdir();
             }
+
             changeLogFilePath = filePath + "/" + DateUtils.format(System.currentTimeMillis(), "yyyyMMddHHmm") + "-"
                     + System.currentTimeMillis() + ".xml";
             File changeLogFile = new File(changeLogFilePath);
@@ -180,12 +193,13 @@ public class LiquibaseChange {
             }
             FileOutputStream baos = new FileOutputStream(changeLogFile);
             xmlChangeLogSerializer.write(databaseChangeLog.getChangeSets(), baos);
+            changeLogFilePathList.add(changeLogFilePath);
         } catch (FileNotFoundException e) {
             LOGGER.error("liquibase changelog file can't exist" + e);
         } catch (IOException e) {
             LOGGER.error("write liquibase changelog file failure", e);
         }
-        return changeLogFilePath;
+        return changeLogFilePathList;
     }
 
     private String getColumnType(FieldMetadata current, String columnDataType) {

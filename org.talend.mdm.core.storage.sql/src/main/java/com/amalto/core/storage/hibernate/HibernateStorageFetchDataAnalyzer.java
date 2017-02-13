@@ -47,14 +47,19 @@ public class HibernateStorageFetchDataAnalyzer extends HibernateStorageImpactAna
                 FieldMetadata current = (FieldMetadata) modifyAction.getCurrent();
 
                 if (current.isMandatory() && !previous.isMandatory()) {
-                    storage.begin();
-                    ComplexTypeMetadata objectType = previous.getContainingType().getEntity();
-                    UserQueryBuilder qb = UserQueryBuilder.from(objectType).select(count()).where(emptyOrNull(previous));
-                    StorageResults results = storage.fetch(qb.getSelect());
-                    if (results.getCount() == 0) {
-                        modifyAction.setHasNullValue(false);
-                    } else {
-                        modifyAction.setHasNullValue(true);
+                    try {
+                        storage.begin();
+                        ComplexTypeMetadata objectType = previous.getContainingType().getEntity();
+                        UserQueryBuilder qb = UserQueryBuilder.from(objectType).select(count()).where(emptyOrNull(previous));
+                        StorageResults results = storage.fetch(qb.getSelect());
+                        if (results.getCount() == 0) {
+                            modifyAction.setHasNullValue(false);
+                        } else {
+                            modifyAction.setHasNullValue(true);
+                        }
+                        results.close();
+                    } finally {
+                        storage.commit();
                     }
                 }
             }

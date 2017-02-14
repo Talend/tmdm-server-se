@@ -11,13 +11,15 @@
 
 package com.amalto.core.load;
 
+import junit.framework.TestCase;
+
+import org.talend.mdm.commmon.util.core.MDMConfiguration;
+
 import com.amalto.core.load.action.DefaultLoadAction;
 import com.amalto.core.load.action.LoadAction;
 import com.amalto.core.load.action.OptimizedLoadAction;
 import com.amalto.core.objects.datacluster.DataClusterPOJO;
 import com.amalto.core.servlet.LoadServlet;
-import junit.framework.TestCase;
-import org.talend.mdm.commmon.util.core.MDMConfiguration;
 
 /**
  *
@@ -25,7 +27,11 @@ import org.talend.mdm.commmon.util.core.MDMConfiguration;
 public class LoadServletTest extends TestCase {
 
     public static final String TEST_DATA_CLUSTER = "TestDataCluster";
-    
+
+    static {
+        MDMConfiguration.createConfiguration(LoadServletTest.class.getResource("/org/talend/mdm/commmon/util/core/mdm.conf").getFile(), false);
+    }
+
     public void testOptimizationSelection() {
         LoadServletTestFixture servlet = getFixture();
 
@@ -69,6 +75,8 @@ public class LoadServletTest extends TestCase {
     }
 
     private class LoadServletTestFixture extends LoadServlet {
+
+        private static final long serialVersionUID = 7664145661072675577L;
 
         private final String[] dataClusterNames;
 

@@ -51,17 +51,13 @@
 			<artifactId>liquibase-core</artifactId>
 			<version>3.5.3</version>
 		</dependency>
-		<dependency>
-		    <groupId>org.liquibase.ext</groupId>
-		    <artifactId>liquibase-hibernate4</artifactId>
-		    <version>3.6</version>
-		</dependency>
 
         <!-- jdbc drivers -->
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.talend.mdm</groupId>
             <artifactId>org.talend.mdm.core</artifactId>

@@ -39,10 +39,7 @@ public class HibernateStorageFetchDataAnalyzer extends HibernateStorageImpactAna
         // Modify actions
         for (ModifyChange modifyAction : diffResult.getModifyChanges()) {
             MetadataVisitable element = modifyAction.getElement();
-            if (element instanceof ComplexTypeMetadata) {
-                // Type modifications may include many things (inheritance changes for instance).
-                // impactSort.get(Impact.HIGH).add(modifyAction);
-            } else if (element instanceof FieldMetadata) {
+            if (element instanceof FieldMetadata) {
                 FieldMetadata previous = (FieldMetadata) modifyAction.getPrevious();
                 FieldMetadata current = (FieldMetadata) modifyAction.getCurrent();
 

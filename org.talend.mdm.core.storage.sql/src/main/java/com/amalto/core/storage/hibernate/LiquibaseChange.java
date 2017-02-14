@@ -79,14 +79,8 @@ public class LiquibaseChange {
             liquibase.database.Database database = liquibase.database.DatabaseFactory.getInstance()
                     .findCorrectDatabaseImplementation(liquibaseConnection);
 
-            List<String> filePath = new ArrayList<String>();
-            DataSourceDialect dialect = ((RDBMSDataSource) storage.getDataSource()).getDialectName();
-           /* if(dialect == DataSourceDialect.MYSQL || dialect == DataSourceDialect.POSTGRES){
-                filePath = generantionChangeLogfileForMYSQL(changeType);
-            } else{*/
-                filePath = generantionChangeLogfile(changeType);
-            //}
-            for(String changeLogFile : filePath){
+            List<String> filePath = generantionChangeLogfile(changeType);
+            for (String changeLogFile : filePath) {
                 Liquibase liquibase = new Liquibase(changeLogFile, new FileSystemResourceAccessor(), database);
                 liquibase.update("Liquibase update");
             }
@@ -120,6 +114,7 @@ public class LiquibaseChange {
                         String columnName = tableResolver.get(current);
                         String columnDataType = "";
                         columnDataType = getColumnType(current, columnDataType);
+                        defaultValueRule = convertedDefaultValue((RDBMSDataSource) storage.getDataSource(), defaultValueRule);
 
                         AddNotNullConstraintChange addNotNullConstraintChange = new AddNotNullConstraintChange();
                         addNotNullConstraintChange.setColumnDataType(columnDataType);
@@ -133,7 +128,6 @@ public class LiquibaseChange {
                         changeActionList.add(addNotNullConstraintChange);
 
                         if (StringUtils.isNotBlank(defaultValueRule)) {
-                            defaultValueRule = convertedDefaultValue((RDBMSDataSource) storage.getDataSource(), defaultValueRule);
                             AddDefaultValueChange addDefaultValueChange = new AddDefaultValueChange();
                             addDefaultValueChange.setColumnDataType(columnDataType);
                             addDefaultValueChange.setColumnName(columnName);
@@ -224,7 +218,7 @@ public class LiquibaseChange {
             hibernateTypeCode = java.sql.Types.BOOLEAN;
             columnDataType = dialect.getTypeName(hibernateTypeCode);
         } else if (current.getType().getName().equals("date") || current.getType().getName().equals("datetime")) {
-            hibernateTypeCode = java.sql.Types.DATE;
+            hibernateTypeCode = java.sql.Types.TIMESTAMP;
             columnDataType = dialect.getTypeName(hibernateTypeCode);
         } else if (current.getType().getName().equals("double") || current.getType().getName().equals("float")
                 || current.getType().getName().equals("demical")) {
@@ -237,6 +231,10 @@ public class LiquibaseChange {
     }
 
     public String convertedDefaultValue(RDBMSDataSource dataSource, String defaultValueRule) {
+        if (defaultValueRule == null) {
+            return null;
+        }
+
         String covertValue = defaultValueRule;
         DataSourceDialect dialectName = dataSource.getDialectName();
         if (defaultValueRule.equalsIgnoreCase(MetadataRepository.FN_FALSE)) {

@@ -32,9 +32,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.tools.ant.util.DateUtils;
 import org.hibernate.dialect.Dialect;
-import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.mapping.Column;
-import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.metadata.MetadataVisitable;
@@ -44,58 +42,58 @@ import org.talend.mdm.commmon.metadata.compare.ImpactAnalyzer;
 import org.talend.mdm.commmon.metadata.compare.ModifyChange;
 import org.talend.mdm.commmon.metadata.compare.Compare.DiffResults;
 
+import com.amalto.core.storage.HibernateStorageUtils;
 import com.amalto.core.storage.datasource.RDBMSDataSource;
-import com.amalto.core.storage.datasource.RDBMSDataSource.DataSourceDialect;
 
-public class LiquibaseChange {
+public class LiquibaseSchemaAdapter  {
 
     private static final String DATA_LIQUBASE_CHANGELOG_PATH = "/data/liqubase-changelog/";
 
     public static final String MDM_ROOT_URL = "mdm.root.url";
 
-    private static final Logger LOGGER = Logger.getLogger(LiquibaseChange.class);
-
-    private HibernateStorage storage;
+    private static final Logger LOGGER = Logger.getLogger(LiquibaseSchemaAdapter.class);
 
     private TableResolver tableResolver;
     
-    private SessionFactoryImplementor sessionFactoryImplementor;
-
     private Map<ImpactAnalyzer.Impact, List<Change>> impacts;
 
-    public LiquibaseChange(HibernateStorage storage, TableResolver tableResolver) {
-        this.storage = storage;
+    private Compare.DiffResults diffResults;
+
+    private Dialect dialect;
+
+    private RDBMSDataSource dataSource;
+
+    public LiquibaseSchemaAdapter (TableResolver tableResolver, Map<ImpactAnalyzer.Impact, List<Change>> impacts, Compare.DiffResults diffResults, Dialect dialect, RDBMSDataSource dataSource) {
         this.tableResolver = tableResolver;
-        sessionFactoryImplementor = (SessionFactoryImplementor) storage.getCurrentSession().getSessionFactory();
+        this.impacts = impacts;
+        this.diffResults = diffResults;
+        this.dialect = dialect;
+        this.dataSource = dataSource;
     }
 
-    public void executeLiquibase(Compare.DiffResults diffResults) throws Exception {
+    public void adapt(Connection connection) throws Exception {
 
-        List<AbstractChange> changeType = findToModifyTypes(diffResults, tableResolver);
+        List<AbstractChange> changeType = findChangeFiles(diffResults, tableResolver);
 
         try {
-            Connection connection = sessionFactoryImplementor.getConnectionProvider().getConnection();
 
             DatabaseConnection liquibaseConnection = new liquibase.database.jvm.JdbcConnection(connection);
 
             liquibase.database.Database database = liquibase.database.DatabaseFactory.getInstance()
                     .findCorrectDatabaseImplementation(liquibaseConnection);
 
-            List<String> filePath = generantionChangeLogfile(changeType);
-            for (String changeLogFile : filePath) {
-                Liquibase liquibase = new Liquibase(changeLogFile, new FileSystemResourceAccessor(), database);
-                liquibase.update("Liquibase update"); //$NON-NLS-1$
-            }
+            String filePath = getChangeLogFilePath(changeType);
+
+            Liquibase liquibase = new Liquibase(filePath, new FileSystemResourceAccessor(), database);
+            liquibase.update("Liquibase update"); //$NON-NLS-1$
         } catch (Exception e1) {
             LOGGER.error("execute liquibase update failure", e1); //$NON-NLS-1$
             throw e1;
         }
     }
 
-    private List<AbstractChange> findToModifyTypes(DiffResults diffResults, TableResolver tableResolver) {
+    private List<AbstractChange> findChangeFiles(DiffResults diffResults, TableResolver tableResolver) {
         List<AbstractChange> changeActionList = new ArrayList<AbstractChange>();
-
-        Map<ImpactAnalyzer.Impact, List<Change>> impacts = getImpacts();
 
         List<Change> changeList = impacts.get(ImpactAnalyzer.Impact.MEDIUM);
         changeList.addAll(impacts.get(ImpactAnalyzer.Impact.LOW));
@@ -107,35 +105,19 @@ public class LiquibaseChange {
                 FieldMetadata current = (FieldMetadata) modifyAction.getCurrent();
 
                 String defaultValueRule = ((FieldMetadata) current).getData(MetadataRepository.DEFAULT_VALUE_RULE);
-                if (current.isMandatory() && !previous.isMandatory() && changeList.contains(modifyAction)) {
-                    String tableName = tableResolver.get(current.getContainingType().getEntity()).toLowerCase();
-                    String columnName = tableResolver.get(current);
-                    String columnDataType = StringUtils.EMPTY;
-                    columnDataType = getColumnType(current, columnDataType);
-                    defaultValueRule = convertedDefaultValue((RDBMSDataSource) storage.getDataSource(), defaultValueRule);
+                defaultValueRule = HibernateStorageUtils.convertedDefaultValue(dataSource.getDialectName(), defaultValueRule, "");
+                String tableName = tableResolver.get(current.getContainingType().getEntity()).toLowerCase();
+                String columnName = tableResolver.get(current);
+                String columnDataType = StringUtils.EMPTY;
+                columnDataType = getColumnType(current, columnDataType);
 
-                    AddNotNullConstraintChange addNotNullConstraintChange = new AddNotNullConstraintChange();
-                    addNotNullConstraintChange.setColumnDataType(columnDataType);
-                    addNotNullConstraintChange.setColumnName(columnName);
-                    addNotNullConstraintChange.setTableName(tableName);
-                    if (isBooleanType(columnDataType)) {
-                        addNotNullConstraintChange.setDefaultNullValue(defaultValueRule.equals("1") ? "TRUE" : "FALSE"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                    } else {
-                        addNotNullConstraintChange.setDefaultNullValue(defaultValueRule);
-                    }
-                    changeActionList.add(addNotNullConstraintChange);
+                if (current.isMandatory() && !previous.isMandatory() && changeList.contains(modifyAction)) {
+                    changeActionList.add(generateAddNotNullConstraintChange(defaultValueRule, tableName, columnName,
+                            columnDataType));
 
                     if (StringUtils.isNotBlank(defaultValueRule)) {
-                        AddDefaultValueChange addDefaultValueChange = new AddDefaultValueChange();
-                        addDefaultValueChange.setColumnDataType(columnDataType);
-                        addDefaultValueChange.setColumnName(columnName);
-                        addDefaultValueChange.setTableName(tableName);
-                        if (isBooleanType(columnDataType)) {
-                            addDefaultValueChange.setDefaultValueBoolean(defaultValueRule.equals("1") ? true : false); //$NON-NLS-1$
-                        } else {
-                            addDefaultValueChange.setDefaultValue(defaultValueRule);
-                        }
-                        changeActionList.add(addDefaultValueChange);
+                        changeActionList.add(generateAddDefaultValueChange(defaultValueRule, tableName, columnName,
+                                columnDataType));
                     }
                 }
             }
@@ -143,13 +125,39 @@ public class LiquibaseChange {
         return changeActionList;
     }
 
+    private AddDefaultValueChange generateAddDefaultValueChange(String defaultValueRule, String tableName, String columnName,
+            String columnDataType) {
+        AddDefaultValueChange addDefaultValueChange = new AddDefaultValueChange();
+        addDefaultValueChange.setColumnDataType(columnDataType);
+        addDefaultValueChange.setColumnName(columnName);
+        addDefaultValueChange.setTableName(tableName);
+        if (isBooleanType(columnDataType)) {
+            addDefaultValueChange.setDefaultValueBoolean(defaultValueRule.equals("1") ? true : false); //$NON-NLS-1$
+        } else {
+            addDefaultValueChange.setDefaultValue(defaultValueRule);
+        }
+        return addDefaultValueChange;
+    }
+
+    private AddNotNullConstraintChange generateAddNotNullConstraintChange(String defaultValueRule, String tableName,
+            String columnName, String columnDataType) {
+        AddNotNullConstraintChange addNotNullConstraintChange = new AddNotNullConstraintChange();
+        addNotNullConstraintChange.setColumnDataType(columnDataType);
+        addNotNullConstraintChange.setColumnName(columnName);
+        addNotNullConstraintChange.setTableName(tableName);
+        if (isBooleanType(columnDataType)) {
+            addNotNullConstraintChange.setDefaultNullValue(defaultValueRule.equals("1") ? "TRUE" : "FALSE"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        } else {
+            addNotNullConstraintChange.setDefaultNullValue(defaultValueRule);
+        }
+        return addNotNullConstraintChange;
+    }
+
     private boolean isBooleanType(String columnDataType) {
         return columnDataType.equals("bit") || columnDataType.equals("boolean"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
-    private List<String> generantionChangeLogfile(List<AbstractChange> changeType) {
-        List<String> changeLogFilePathList = new ArrayList<String>();
-        String changeLogFilePath = StringUtils.EMPTY;
+    private String getChangeLogFilePath(List<AbstractChange> changeType) {
         // create a changelog
         liquibase.changelog.DatabaseChangeLog databaseChangeLog = new liquibase.changelog.DatabaseChangeLog();
 
@@ -164,6 +172,11 @@ public class LiquibaseChange {
             databaseChangeLog.addChangeSet(changeSet);
         }
 
+        return generateChangeLogFile(databaseChangeLog);
+    }
+
+    private String generateChangeLogFile(liquibase.changelog.DatabaseChangeLog databaseChangeLog) {
+        String changeLogFilePath = StringUtils.EMPTY;
         // create a new serializer
         XMLChangeLogSerializer xmlChangeLogSerializer = new XMLChangeLogSerializer();
 
@@ -188,19 +201,17 @@ public class LiquibaseChange {
             }
             FileOutputStream baos = new FileOutputStream(changeLogFile);
             xmlChangeLogSerializer.write(databaseChangeLog.getChangeSets(), baos);
-            changeLogFilePathList.add(changeLogFilePath);
         } catch (FileNotFoundException e) {
             LOGGER.error("liquibase changelog file can't exist" + e); //$NON-NLS-1$
         } catch (IOException e) {
             LOGGER.error("write liquibase changelog file failure", e); //$NON-NLS-1$
         }
-        return changeLogFilePathList;
+        return changeLogFilePath;
     }
 
     private String getColumnType(FieldMetadata current, String columnDataType) {
         int hibernateTypeCode = 0;
         Object currentLength = current.getData(MetadataRepository.DATA_MAX_LENGTH);
-        Dialect dialect = sessionFactoryImplementor.getDialect();
 
         if (current.getType().getName().equals("string")) { //$NON-NLS-1$
             hibernateTypeCode = java.sql.Types.VARCHAR;
@@ -228,48 +239,4 @@ public class LiquibaseChange {
         }
         return columnDataType;
     }
-
-    public String convertedDefaultValue(RDBMSDataSource dataSource, String defaultValueRule) {
-        if (defaultValueRule == null) {
-            return null;
-        }
-
-        String covertValue = defaultValueRule;
-        DataSourceDialect dialectName = dataSource.getDialectName();
-        if (defaultValueRule.equalsIgnoreCase(MetadataRepository.FN_FALSE)) {
-            if (dialectName == RDBMSDataSource.DataSourceDialect.SQL_SERVER
-                    || dialectName == RDBMSDataSource.DataSourceDialect.ORACLE_10G) {
-                covertValue = "0"; //$NON-NLS-1$
-            } else {
-                covertValue = Boolean.FALSE.toString();
-            }
-        } else if (defaultValueRule.equalsIgnoreCase(MetadataRepository.FN_TRUE)) {
-            if (dialectName == RDBMSDataSource.DataSourceDialect.SQL_SERVER
-                    || dialectName == RDBMSDataSource.DataSourceDialect.ORACLE_10G) {
-                covertValue = "1"; //$NON-NLS-1$
-            } else {
-                covertValue = Boolean.TRUE.toString();
-            }
-        } else if (defaultValueRule.startsWith("\"") && defaultValueRule.endsWith("\"")) { //$NON-NLS-1$ //$NON-NLS-2$
-            covertValue = defaultValueRule.replace("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
-        }
-        return covertValue;
-    }
-    
-    public Map<ImpactAnalyzer.Impact, List<Change>> getImpacts() {
-        return impacts;
-    }
-
-    public void setImpacts(Map<ImpactAnalyzer.Impact, List<Change>> impacts) {
-        this.impacts = impacts;
-    }
-
-    public TableResolver getTableResolver() {
-        return tableResolver;
-    }
-
-    public void setTableResolver(TableResolver tableResolver) {
-        this.tableResolver = tableResolver;
-    }
-
 }

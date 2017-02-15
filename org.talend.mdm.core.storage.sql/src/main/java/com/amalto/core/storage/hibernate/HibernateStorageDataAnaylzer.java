@@ -16,6 +16,7 @@ import static com.amalto.core.query.user.UserQueryBuilder.emptyOrNull;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.metadata.*;
 import org.talend.mdm.commmon.metadata.compare.Change;
 import org.talend.mdm.commmon.metadata.compare.Compare;
@@ -25,11 +26,13 @@ import org.talend.mdm.commmon.metadata.compare.ModifyChange;
 import com.amalto.core.query.user.UserQueryBuilder;
 import com.amalto.core.storage.StorageResults;
 
-public class HibernateStorageFetchDataAnalyzer extends HibernateStorageImpactAnalyzer {
+public class HibernateStorageDataAnaylzer extends HibernateStorageImpactAnalyzer {
+
+    private static final Logger LOGGER = Logger.getLogger(HibernateStorageDataAnaylzer.class);
 
     private HibernateStorage storage;
 
-    public HibernateStorageFetchDataAnalyzer(HibernateStorage storage) {
+    public HibernateStorageDataAnaylzer(HibernateStorage storage) {
         this.storage = storage;
     }
 
@@ -55,6 +58,9 @@ public class HibernateStorageFetchDataAnalyzer extends HibernateStorageImpactAna
                             modifyAction.setHasNullValue(true);
                         }
                         results.close();
+                    } catch (Exception e) {
+                        LOGGER.error("Hibernate Storage query data anaylzer failure", e);
+                        storage.rollback();
                     } finally {
                         storage.commit();
                     }

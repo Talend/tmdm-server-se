@@ -63,7 +63,9 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
 import org.hibernate.cfg.Mappings;
+import org.hibernate.dialect.Dialect;
 import org.hibernate.engine.spi.Mapping;
+import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.exception.ConstraintViolationException;
 import org.hibernate.internal.util.config.ConfigurationHelper;
 import org.hibernate.mapping.Any;
@@ -1004,7 +1006,7 @@ public class HibernateStorage implements Storage {
         switch (storageType) {
         case MASTER:
         case STAGING:
-            return new HibernateStorageFetchDataAnalyzer(this);
+            return new HibernateStorageDataAnaylzer(this);
         case SYSTEM:
             return new ImpactAnalyzer() {
 
@@ -1255,12 +1257,18 @@ public class HibernateStorage implements Storage {
 
         // for the liquibase
         if (!force) {
-            try{
-                LiquibaseChange liquibaseChange = new LiquibaseChange(this, tableResolver);
-                liquibaseChange.setImpacts(getImpactsResult(diffResults));
+            try {
+                SessionFactoryImplementor sessionFactoryImplementor = (SessionFactoryImplementor) this.getCurrentSession()
+                        .getSessionFactory();
 
-                liquibaseChange.executeLiquibase(diffResults);
-            } catch(Exception e){
+                Dialect dialect = sessionFactoryImplementor.getDialect();
+                Connection connection = sessionFactoryImplementor.getConnectionProvider().getConnection();
+
+                LiquibaseSchemaAdapter liquibaseChange = new LiquibaseSchemaAdapter(tableResolver, getImpactsResult(diffResults),
+                        diffResults, dialect, (RDBMSDataSource) this.getDataSource());
+                liquibaseChange.adapt(connection);
+
+            } catch (Exception e) {
                 LOGGER.error("execute liquibase update failure", e);
             }
         }
@@ -1707,7 +1715,7 @@ public class HibernateStorage implements Storage {
         return storageClassLoader;
     }
 
-    public Session getCurrentSession() {
+    private Session getCurrentSession() {
         TransactionManager transactionManager = ServerContext.INSTANCE.get().getTransactionManager();
         com.amalto.core.storage.transaction.Transaction currentTransaction = transactionManager.currentTransaction();
         HibernateStorageTransaction storageTransaction = (HibernateStorageTransaction) currentTransaction.include(this);

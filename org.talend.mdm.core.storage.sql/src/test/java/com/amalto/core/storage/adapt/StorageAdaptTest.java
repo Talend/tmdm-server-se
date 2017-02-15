@@ -47,7 +47,7 @@ import com.amalto.core.storage.datasource.DataSource;
 import com.amalto.core.storage.datasource.DataSourceDefinition;
 import com.amalto.core.storage.datasource.RDBMSDataSource;
 import com.amalto.core.storage.hibernate.HibernateStorage;
-import com.amalto.core.storage.hibernate.LiquibaseChange;
+import com.amalto.core.storage.hibernate.LiquibaseSchemaAdapter;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.record.DataRecordReader;
 import com.amalto.core.storage.record.XmlStringDataRecordReader;
@@ -877,7 +877,7 @@ public class StorageAdaptTest extends TestCase {
          * age type is int, have no the default value married type is boolean contains the default value birthday type
          * is data, have no default value
          */
-        System.setProperty(LiquibaseChange.MDM_ROOT_URL, System.getProperty("user.dir"));
+        System.setProperty(LiquibaseSchemaAdapter.MDM_ROOT_URL, System.getProperty("user.dir"));
 
         DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
         HibernateStorage storage = new HibernateStorage("Person", StorageType.MASTER);
@@ -965,7 +965,7 @@ public class StorageAdaptTest extends TestCase {
          * is data, have no default value
          */
 
-        System.setProperty(LiquibaseChange.MDM_ROOT_URL, System.getProperty("user.dir"));
+        System.setProperty(LiquibaseSchemaAdapter.MDM_ROOT_URL, System.getProperty("user.dir"));
 
         DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
         HibernateStorage storage = new HibernateStorage("Person", StorageType.MASTER);
@@ -1054,7 +1054,7 @@ public class StorageAdaptTest extends TestCase {
          * age type is int, have no the default value married type is boolean contains the default value birthday type
          * is data, have no default value
          */
-        System.setProperty(LiquibaseChange.MDM_ROOT_URL, System.getProperty("user.dir"));
+        System.setProperty(LiquibaseSchemaAdapter.MDM_ROOT_URL, System.getProperty("user.dir"));
 
         DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
         Storage storage = new HibernateStorage("Person", StorageType.MASTER);
@@ -1143,7 +1143,7 @@ public class StorageAdaptTest extends TestCase {
          * age type is int, have no the default value married type is boolean contains the default value birthday type
          * is data, have no default value
          */
-        System.setProperty(LiquibaseChange.MDM_ROOT_URL, System.getProperty("user.dir"));
+        System.setProperty(LiquibaseSchemaAdapter.MDM_ROOT_URL, System.getProperty("user.dir"));
 
         DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
         Storage storage = new HibernateStorage("Person", StorageType.MASTER);
@@ -1310,7 +1310,7 @@ public class StorageAdaptTest extends TestCase {
     }
 
     private void deleteLiquibaseChangeLogFile() {
-        String mdmRootLocation = System.getProperty(LiquibaseChange.MDM_ROOT_URL).replace("file:/", "");
+        String mdmRootLocation = System.getProperty(LiquibaseSchemaAdapter.MDM_ROOT_URL).replace("file:/", "");
         String filePath = mdmRootLocation + "/data/liqubase-changelog/";
         File file = new File(filePath);
         file.deleteOnExit();

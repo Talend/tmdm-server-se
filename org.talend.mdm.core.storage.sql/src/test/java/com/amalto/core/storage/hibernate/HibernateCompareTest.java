@@ -77,7 +77,7 @@ public class HibernateCompareTest {
         assertEquals(0, diffResults.getRemoveChanges().size());
         assertEquals(0, diffResults.getAddChanges().size());
         
-        ImpactAnalyzer analyzer = new HibernateStorageFetchDataAnalyzer(storage);
+        ImpactAnalyzer analyzer = new HibernateStorageDataAnaylzer(storage);
         Map<ImpactAnalyzer.Impact, List<Change>> sort = analyzer.analyzeImpacts(diffResults);
         assertEquals(0, sort.get(ImpactAnalyzer.Impact.HIGH).size());
         assertEquals(0, sort.get(ImpactAnalyzer.Impact.MEDIUM).size());
@@ -110,7 +110,7 @@ public class HibernateCompareTest {
         assertEquals(0, diffResults.getRemoveChanges().size());
         assertEquals(0, diffResults.getAddChanges().size());
         
-        ImpactAnalyzer analyzer = new HibernateStorageFetchDataAnalyzer(storage);
+        ImpactAnalyzer analyzer = new HibernateStorageDataAnaylzer(storage);
         Map<ImpactAnalyzer.Impact, List<Change>> sort = analyzer.analyzeImpacts(diffResults);
         assertEquals(0, sort.get(ImpactAnalyzer.Impact.HIGH).size());
         assertEquals(0, sort.get(ImpactAnalyzer.Impact.MEDIUM).size());
@@ -159,7 +159,7 @@ public class HibernateCompareTest {
         assertEquals(0, diffResults.getRemoveChanges().size());
         assertEquals(0, diffResults.getAddChanges().size());
         
-        ImpactAnalyzer analyzer = new HibernateStorageFetchDataAnalyzer(storage);
+        ImpactAnalyzer analyzer = new HibernateStorageDataAnaylzer(storage);
         Map<ImpactAnalyzer.Impact, List<Change>> sort = analyzer.analyzeImpacts(diffResults);
         assertEquals(1, sort.get(ImpactAnalyzer.Impact.HIGH).size());
         assertEquals(2, sort.get(ImpactAnalyzer.Impact.MEDIUM).size());

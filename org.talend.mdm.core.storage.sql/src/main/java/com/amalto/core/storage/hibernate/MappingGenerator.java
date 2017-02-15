@@ -38,8 +38,8 @@ import org.w3c.dom.Element;
 
 import com.amalto.core.metadata.LongString;
 import com.amalto.core.storage.HibernateMetadataUtils;
+import com.amalto.core.storage.HibernateStorageUtils;
 import com.amalto.core.storage.datasource.RDBMSDataSource;
-import com.amalto.core.storage.datasource.RDBMSDataSource.DataSourceDialect;
 
 // TODO Refactor (+ NON-NLS)
 public class MappingGenerator extends DefaultMetadataVisitor<Element> {
@@ -59,7 +59,7 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
 
     private final TableResolver resolver;
 
-    private final RDBMSDataSource dataSource;
+    public final RDBMSDataSource dataSource;
 
     private final Stack<String> tableNames = new Stack<String>();
 
@@ -662,31 +662,9 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
         String defaultValueRule = field.getData(MetadataRepository.DEFAULT_VALUE_RULE);
         if (StringUtils.isNotBlank(defaultValueRule)) {
             Attr defaultValueAttr = document.createAttribute("default"); //$NON-NLS-1$
-            defaultValueAttr.setValue(convertedDefaultValue(dataSource.getDialectName(), defaultValueRule));
+            defaultValueAttr.setValue(HibernateStorageUtils.convertedDefaultValue(dataSource.getDialectName(), defaultValueRule, "'"));
             columnElement.getAttributes().setNamedItem(defaultValueAttr);
         }
-    }
-
-    private String convertedDefaultValue(DataSourceDialect dialectName, String defaultValueRule) {
-        String covertValue = defaultValueRule;
-        if (defaultValueRule.equalsIgnoreCase(MetadataRepository.FN_FALSE)) {
-            if (dialectName == RDBMSDataSource.DataSourceDialect.SQL_SERVER
-                    || dialectName == RDBMSDataSource.DataSourceDialect.ORACLE_10G) {
-                covertValue = "0"; //$NON-NLS-1$
-            } else {
-                covertValue = Boolean.FALSE.toString();
-            }
-        } else if (defaultValueRule.equalsIgnoreCase(MetadataRepository.FN_TRUE)) {
-            if (dialectName == RDBMSDataSource.DataSourceDialect.SQL_SERVER
-                    || dataSource.getDialectName() == RDBMSDataSource.DataSourceDialect.ORACLE_10G) {
-                covertValue = "1"; //$NON-NLS-1$
-            } else {
-                covertValue = Boolean.TRUE.toString();
-            }
-        } else if (defaultValueRule.startsWith("\"") && defaultValueRule.endsWith("\"")) { //$NON-NLS-1$ //$NON-NLS-2$
-            covertValue = defaultValueRule.replace("\"", "'"); //$NON-NLS-1$ //$NON-NLS-2$
-        }
-        return covertValue;
     }
 
     private void setIndexName(FieldMetadata field, String fieldName, Attr indexName) {

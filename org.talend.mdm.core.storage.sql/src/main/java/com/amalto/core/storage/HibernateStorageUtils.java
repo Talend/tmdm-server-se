@@ -37,7 +37,7 @@ public abstract class HibernateStorageUtils {
                 covertValue = Boolean.TRUE.toString();
             }
         } else if (defaultValueRule.startsWith("\"") && defaultValueRule.endsWith("\"")) { //$NON-NLS-1$ //$NON-NLS-2$
-            covertValue = defaultValueRule.replace("\"", replexStr); //$NON-NLS-1$ //$NON-NLS-2$
+            covertValue = defaultValueRule.replace("\"", replexStr); //$NON-NLS-1$
         }
         return covertValue;
     }

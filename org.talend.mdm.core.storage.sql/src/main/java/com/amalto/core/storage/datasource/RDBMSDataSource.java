@@ -15,11 +15,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.util.webapp.XSystemObjects;
-
-import com.amalto.core.storage.datasource.RDBMSDataSource.DataSourceDialect;
-import com.amalto.core.storage.hibernate.MappingGenerator;
 
 public class RDBMSDataSource implements DataSource {
 

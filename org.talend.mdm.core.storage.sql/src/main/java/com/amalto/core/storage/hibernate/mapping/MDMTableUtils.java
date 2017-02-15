@@ -39,5 +39,4 @@ public abstract class MDMTableUtils {
     public static boolean isIncreaseVarcharColumnLength(Column newColumn, ColumnMetadata oldColumnInfo, Dialect dialect) {
         return newColumn.getLength() > oldColumnInfo.getColumnSize();
     }
-
 }

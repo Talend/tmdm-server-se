@@ -75,6 +75,10 @@ public class LiquibaseSchemaAdapter  {
 
         List<AbstractChange> changeType = findChangeFiles(diffResults, tableResolver);
 
+        if (changeType.isEmpty()) {
+            return;
+        }
+
         try {
 
             DatabaseConnection liquibaseConnection = new liquibase.database.jvm.JdbcConnection(connection);

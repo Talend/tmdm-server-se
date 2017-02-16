@@ -16,14 +16,17 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import liquibase.Liquibase;
 import liquibase.change.AbstractChange;
+import liquibase.change.ColumnConfig;
 import liquibase.change.core.AddDefaultValueChange;
 import liquibase.change.core.AddNotNullConstraintChange;
+import liquibase.change.core.DropColumnChange;
 import liquibase.database.DatabaseConnection;
 import liquibase.resource.FileSystemResourceAccessor;
 import liquibase.serializer.core.xml.XMLChangeLogSerializer;
@@ -41,6 +44,7 @@ import org.talend.mdm.commmon.metadata.compare.Compare;
 import org.talend.mdm.commmon.metadata.compare.ImpactAnalyzer;
 import org.talend.mdm.commmon.metadata.compare.ModifyChange;
 import org.talend.mdm.commmon.metadata.compare.Compare.DiffResults;
+import org.talend.mdm.commmon.metadata.compare.RemoveChange;
 
 import com.amalto.core.storage.HibernateStorageUtils;
 import com.amalto.core.storage.datasource.RDBMSDataSource;
@@ -99,9 +103,22 @@ public class LiquibaseSchemaAdapter  {
     private List<AbstractChange> findChangeFiles(DiffResults diffResults, TableResolver tableResolver) {
         List<AbstractChange> changeActionList = new ArrayList<AbstractChange>();
 
-        List<Change> changeList = impacts.get(ImpactAnalyzer.Impact.MEDIUM);
-        changeList.addAll(impacts.get(ImpactAnalyzer.Impact.LOW));
+        if (!diffResults.getRemoveChanges().isEmpty()) {
+            changeActionList.addAll(analyzeRemoveChange(diffResults, tableResolver));
+        }
 
+        if (!diffResults.getModifyChanges().isEmpty()) {
+            List<Change> changeList = impacts.get(ImpactAnalyzer.Impact.MEDIUM);
+            changeList.addAll(impacts.get(ImpactAnalyzer.Impact.LOW));
+
+            changeActionList.addAll(analyistModifyChange(diffResults, tableResolver, changeList));
+        }
+        return changeActionList;
+    }
+
+    private List<AbstractChange> analyistModifyChange(DiffResults diffResults, TableResolver tableResolver,
+            List<Change> changeList) {
+        List<AbstractChange> changeActionList = new ArrayList<AbstractChange>();
         for (ModifyChange modifyAction : diffResults.getModifyChanges()) {
             MetadataVisitable element = modifyAction.getElement();
             if (element instanceof FieldMetadata) {
@@ -125,6 +142,46 @@ public class LiquibaseSchemaAdapter  {
                     }
                 }
             }
+        }
+        return changeActionList;
+    }
+
+    private List<AbstractChange> analyzeRemoveChange(DiffResults diffResults, TableResolver tableResolver) {
+        List<AbstractChange> changeActionList = new ArrayList<AbstractChange>();
+
+        Map<String, List<String>> dropColumnMap = new HashMap<String, List<String>>();
+        for (RemoveChange removeAction : diffResults.getRemoveChanges()) {
+
+            MetadataVisitable element = removeAction.getElement();
+            if (element instanceof FieldMetadata) {
+                FieldMetadata field = (FieldMetadata) element;
+                if (!field.isMandatory()) {
+
+                    String tableName = tableResolver.get(field.getContainingType().getEntity()).toLowerCase();
+                    String columnName = tableResolver.get(field);
+
+                    List<String> columnList = dropColumnMap.get(tableName);
+                    if (columnList == null) {
+                        columnList = new ArrayList<String>();
+                    }
+                    columnList.add(columnName);
+                    dropColumnMap.put(tableName, columnList);
+                }
+            }
+        }
+
+        for (Map.Entry<String, List<String>> entry : dropColumnMap.entrySet()) {
+            List<String> columns = entry.getValue();
+            List<ColumnConfig> columnConfigList = new ArrayList<ColumnConfig>();
+            for (String columnName : columns) {
+                columnConfigList.add(new ColumnConfig(new liquibase.structure.core.Column(columnName)));
+            }
+
+            DropColumnChange dropColumnChange = new DropColumnChange();
+            dropColumnChange.setTableName(entry.getKey());
+            dropColumnChange.setColumns(columnConfigList);
+
+            changeActionList.add(dropColumnChange);
         }
         return changeActionList;
     }

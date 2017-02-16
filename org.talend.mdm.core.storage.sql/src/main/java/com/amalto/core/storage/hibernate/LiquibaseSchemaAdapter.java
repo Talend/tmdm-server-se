@@ -58,8 +58,6 @@ public class LiquibaseSchemaAdapter  {
     private static final Logger LOGGER = Logger.getLogger(LiquibaseSchemaAdapter.class);
 
     private TableResolver tableResolver;
-    
-    private Map<ImpactAnalyzer.Impact, List<Change>> impacts;
 
     private Compare.DiffResults diffResults;
 
@@ -67,9 +65,9 @@ public class LiquibaseSchemaAdapter  {
 
     private RDBMSDataSource dataSource;
 
-    public LiquibaseSchemaAdapter (TableResolver tableResolver, Map<ImpactAnalyzer.Impact, List<Change>> impacts, Compare.DiffResults diffResults, Dialect dialect, RDBMSDataSource dataSource) {
+    public LiquibaseSchemaAdapter(TableResolver tableResolver, Compare.DiffResults diffResults, Dialect dialect,
+            RDBMSDataSource dataSource) {
         this.tableResolver = tableResolver;
-        this.impacts = impacts;
         this.diffResults = diffResults;
         this.dialect = dialect;
         this.dataSource = dataSource;
@@ -108,16 +106,13 @@ public class LiquibaseSchemaAdapter  {
         }
 
         if (!diffResults.getModifyChanges().isEmpty()) {
-            List<Change> changeList = impacts.get(ImpactAnalyzer.Impact.MEDIUM);
-            changeList.addAll(impacts.get(ImpactAnalyzer.Impact.LOW));
 
-            changeActionList.addAll(analyistModifyChange(diffResults, tableResolver, changeList));
+            changeActionList.addAll(analyistModifyChange(diffResults, tableResolver));
         }
         return changeActionList;
     }
 
-    private List<AbstractChange> analyistModifyChange(DiffResults diffResults, TableResolver tableResolver,
-            List<Change> changeList) {
+    private List<AbstractChange> analyistModifyChange(DiffResults diffResults, TableResolver tableResolver) {
         List<AbstractChange> changeActionList = new ArrayList<AbstractChange>();
         for (ModifyChange modifyAction : diffResults.getModifyChanges()) {
             MetadataVisitable element = modifyAction.getElement();
@@ -132,7 +127,7 @@ public class LiquibaseSchemaAdapter  {
                 String columnDataType = StringUtils.EMPTY;
                 columnDataType = getColumnType(current, columnDataType);
 
-                if (current.isMandatory() && !previous.isMandatory() && changeList.contains(modifyAction)) {
+                if (current.isMandatory() && !previous.isMandatory()) {
                     changeActionList.add(generateAddNotNullConstraintChange(defaultValueRule, tableName, columnName,
                             columnDataType));
 

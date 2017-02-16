@@ -898,7 +898,6 @@ public class StorageAdaptTest extends TestCase {
         repository2.load(StorageAdaptTest.class.getResourceAsStream("schema12_2.xsd"));
         storage.adapt(repository2, false);
 
-        // tabale had changed
         try {
             assertDatabaseChange(dataSource, tables, columns, new boolean[] { true });
         } catch (SQLException e) {
@@ -1008,11 +1007,8 @@ public class StorageAdaptTest extends TestCase {
         repository2.load(StorageAdaptTest.class.getResourceAsStream("schema12_2.xsd"));
         storage.adapt(repository2, true);
 
-        // tabale had changed
-        String[] updatedColumns = { "X_ID", "X_NAME", "X_LASTNAME", "X_AGE", "X_WEIGHT", "X_SEX", "X_TALEND_TIMESTAMP",
-                "X_TALEND_TASK_ID" };
         try {
-            assertDatabaseChange(dataSource, tables, updatedColumns, new boolean[] { true });
+            assertDatabaseChange(dataSource, tables, columns, new boolean[] { true });
         } catch (SQLException e) {
             assertNull(e);
         }
@@ -1097,11 +1093,8 @@ public class StorageAdaptTest extends TestCase {
         repository2.load(StorageAdaptTest.class.getResourceAsStream("schema12_2.xsd"));
         storage.adapt(repository2, false);
 
-        // tabale had changed
-        String[] updatedColumns = { "X_ID", "X_NAME", "X_LASTNAME", "X_AGE", "X_WEIGHT", "X_SEX", "X_TALEND_TIMESTAMP",
-                "X_TALEND_TASK_ID" };
         try {
-            assertDatabaseChange(dataSource, tables, updatedColumns, new boolean[] { true });
+            assertDatabaseChange(dataSource, tables, columns, new boolean[] { true });
         } catch (SQLException e) {
             assertNull(e);
         }
@@ -1186,11 +1179,8 @@ public class StorageAdaptTest extends TestCase {
         repository2.load(StorageAdaptTest.class.getResourceAsStream("schema12_2.xsd"));
         storage.adapt(repository2, true);
 
-        // tabale had changed
-        String[] updatedColumns = { "X_ID", "X_NAME", "X_LASTNAME", "X_AGE", "X_WEIGHT", "X_SEX", "X_TALEND_TIMESTAMP",
-                "X_TALEND_TASK_ID" };
         try {
-            assertDatabaseChange(dataSource, tables, updatedColumns, new boolean[] { true });
+            assertDatabaseChange(dataSource, tables, columns, new boolean[] { true });
         } catch (SQLException e) {
             assertNull(e);
         }

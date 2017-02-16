@@ -1264,8 +1264,8 @@ public class HibernateStorage implements Storage {
                 Dialect dialect = sessionFactoryImplementor.getDialect();
                 Connection connection = sessionFactoryImplementor.getConnectionProvider().getConnection();
 
-                LiquibaseSchemaAdapter liquibaseChange = new LiquibaseSchemaAdapter(tableResolver, getImpactsResult(diffResults),
-                        diffResults, dialect, (RDBMSDataSource) this.getDataSource());
+                LiquibaseSchemaAdapter liquibaseChange = new LiquibaseSchemaAdapter(tableResolver, diffResults, dialect,
+                        (RDBMSDataSource) this.getDataSource());
                 liquibaseChange.adapt(connection);
 
             } catch (Exception e) {

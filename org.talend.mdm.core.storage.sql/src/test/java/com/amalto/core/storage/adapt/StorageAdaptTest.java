@@ -926,7 +926,7 @@ public class StorageAdaptTest extends TestCase {
         } finally {
             results.close();
         }
-        storage.end();
+        storage.commit();
 
         // create one record(birthday have no value ) failed
         String input2 = "<Person><Id>1</Id><first_name>Jack</first_name><second_name>Chen</second_name><full_name>Jack Chen</full_name><age>11</age><married>true</married></Person>";
@@ -946,11 +946,11 @@ public class StorageAdaptTest extends TestCase {
         } finally {
             results.close();
         }
-        storage.end();
+        storage.commit();
 
         storage.begin();
         storage.delete(qb.getSelect());
-        storage.end();
+        storage.commit();
 
         deleteLiquibaseChangeLogFile();
 
@@ -1004,7 +1004,7 @@ public class StorageAdaptTest extends TestCase {
         } finally {
             results.close();
         }
-        storage.end();
+        storage.commit();
 
         MetadataRepository repository2 = new MetadataRepository();
         repository2.load(StorageAdaptTest.class.getResourceAsStream("schema12_2.xsd"));
@@ -1037,11 +1037,11 @@ public class StorageAdaptTest extends TestCase {
         } finally {
             results.close();
         }
-        storage.end();
+        storage.commit();
 
         storage.begin();
         storage.delete(qb.getSelect());
-        storage.end();
+        storage.commit();
 
         deleteLiquibaseChangeLogFile();
     }
@@ -1093,7 +1093,7 @@ public class StorageAdaptTest extends TestCase {
         } finally {
             results.close();
         }
-        storage.end();
+        storage.commit();
 
         MetadataRepository repository2 = new MetadataRepository();
         repository2.load(StorageAdaptTest.class.getResourceAsStream("schema12_2.xsd"));
@@ -1126,11 +1126,11 @@ public class StorageAdaptTest extends TestCase {
         } finally {
             results.close();
         }
-        storage.end();
+        storage.commit();
 
         storage.begin();
         storage.delete(qb.getSelect());
-        storage.end();
+        storage.commit();
 
         deleteLiquibaseChangeLogFile();
     }
@@ -1182,7 +1182,7 @@ public class StorageAdaptTest extends TestCase {
         } finally {
             results.close();
         }
-        storage.end();
+        storage.commit();
 
         MetadataRepository repository2 = new MetadataRepository();
         repository2.load(StorageAdaptTest.class.getResourceAsStream("schema12_2.xsd"));
@@ -1207,11 +1207,11 @@ public class StorageAdaptTest extends TestCase {
         } finally {
             results.close();
         }
-        storage.end();
+        storage.commit();
 
         storage.begin();
         storage.delete(qb.getSelect());
-        storage.end();
+        storage.commit();
 
         deleteLiquibaseChangeLogFile();
     }

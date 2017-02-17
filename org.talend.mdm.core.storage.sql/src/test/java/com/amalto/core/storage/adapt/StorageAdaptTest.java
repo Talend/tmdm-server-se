@@ -1378,6 +1378,166 @@ public class StorageAdaptTest extends TestCase {
         deleteLiquibaseChangeLogFile();
     }
 
+    // TMDM-10531: [Impact Analysis] Move a simple field from mandatory to optional
+    public void test14_MoveSimpleFieldFormOptionToMandatory_ForNoData() throws Exception {
+        System.setProperty(LiquibaseSchemaAdapter.MDM_ROOT_URL, System.getProperty("user.dir"));
+
+        DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
+        Storage storage = new HibernateStorage("Person", StorageType.MASTER);
+        storage.init(dataSource);
+        String[] typeNames = { "Person" };
+        String[] tables = { "Person" };
+        String[] columns = { "", "X_ID", "X_FIRST_NAME", "X_SECOND_NAME", "X_FULL_NAME", "X_AGE", "X_MARRIED", "X_BIRTHDAY",
+                "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" };
+
+        int[] isNullable = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 };
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+        MetadataRepository repository1 = new MetadataRepository();
+        repository1.load(StorageAdaptTest.class.getResourceAsStream("schema14_1.xsd"));
+        storage.prepare(repository1, true);
+
+        try {
+            assertColumnNullAble(dataSource, tables, columns, isNullable);
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+
+        MetadataRepository repository2 = new MetadataRepository();
+        repository2.load(StorageAdaptTest.class.getResourceAsStream("schema14_2.xsd"));
+        storage.adapt(repository2, false);
+
+        int[] isNullableUpdated = { 0, 0, 1, 1, 1, 1, 1, 1, 0, 1 };
+        try {
+            assertColumnNullAble(dataSource, tables, columns, isNullableUpdated);
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+
+        // create record before change, second_name, married is null
+        String input1 = "<Person><Id>1</Id></Person>";
+        try {
+            createRecord(storage, factory, repository1, typeNames, new String[] { input1 });
+        } catch (Exception e1) {
+            assertNull(e1);
+        }
+
+        storage.begin();
+        ComplexTypeMetadata objectType = repository1.getComplexType("Person");//$NON-NLS-1$
+        UserQueryBuilder qb = from(objectType);
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+            for (DataRecord result : results) {
+                assertEquals("1", result.get("Id"));
+            }
+        } finally {
+            results.close();
+        }
+        storage.commit();
+
+        storage.begin();
+        storage.delete(qb.getSelect());
+        storage.commit();
+
+        deleteLiquibaseChangeLogFile();
+    }
+
+    // TMDM-10531: [Impact Analysis] Move a simple field from mandatory to optional
+    public void test14_MoveSimpleFieldFormOptionToMandatory_WithData() throws Exception {
+        System.setProperty(LiquibaseSchemaAdapter.MDM_ROOT_URL, System.getProperty("user.dir"));
+
+        DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
+        Storage storage = new HibernateStorage("Person", StorageType.MASTER);
+        storage.init(dataSource);
+        String[] typeNames = { "Person" };
+        String[] tables = { "Person" };
+        String[] columns = { "", "X_ID", "X_FIRST_NAME", "X_SECOND_NAME", "X_FULL_NAME", "X_AGE", "X_MARRIED", "X_BIRTHDAY",
+                "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" };
+
+        int[] isNullable = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 };
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+        MetadataRepository repository1 = new MetadataRepository();
+        repository1.load(StorageAdaptTest.class.getResourceAsStream("schema14_1.xsd"));
+        storage.prepare(repository1, true);
+        try {
+            assertColumnNullAble(dataSource, tables, columns, isNullable);
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+
+        // create record before change, second_name, married is null
+        String input1 = "<Person><Id>1</Id><first_name>Jack</first_name><second_name>Chen</second_name><full_name>Jack Chen</full_name><age>11</age><married>true</married><birthday>2017-02-04</birthday></Person>";
+        try {
+            createRecord(storage, factory, repository1, typeNames, new String[] { input1 });
+        } catch (Exception e1) {
+            assertNull(e1);
+        }
+
+        storage.begin();
+        ComplexTypeMetadata objectType = repository1.getComplexType("Person");//$NON-NLS-1$
+        UserQueryBuilder qb = from(objectType);
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+            for (DataRecord result : results) {
+                assertEquals("1", result.get("Id"));
+            }
+        } finally {
+            results.close();
+        }
+        storage.commit();
+
+        MetadataRepository repository2 = new MetadataRepository();
+        repository2.load(StorageAdaptTest.class.getResourceAsStream("schema14_2.xsd"));
+        storage.adapt(repository2, false);
+
+        int[] isNullableUpdated = { 0, 0, 1, 1, 1, 1, 1, 1, 0, 1 };
+        try {
+            assertColumnNullAble(dataSource, tables, columns, isNullableUpdated);
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+
+        storage.begin();
+        objectType = repository2.getComplexType("Person");//$NON-NLS-1$
+        qb = from(objectType);
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+            for (DataRecord result : results) {
+                assertEquals(7, result.getSetFields().size());
+                assertEquals("1", result.get("Id"));
+            }
+        } finally {
+            results.close();
+        }
+        storage.commit();
+
+        String input2 = "<Person><Id>2</Id></Person>";
+        try {
+            createRecord(storage, factory, repository2, typeNames, new String[] { input2 });
+        } catch (Exception e1) {
+            assertNotNull(e1);
+        }
+
+        storage.begin();
+        objectType = repository2.getComplexType("Person");//$NON-NLS-1$
+        qb = from(objectType);
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(2, results.getCount());
+        } finally {
+            results.close();
+        }
+        storage.commit();
+
+        storage.begin();
+        storage.delete(qb.getSelect());
+        storage.commit();
+
+        deleteLiquibaseChangeLogFile();
+    }
+
     private void assertColumnLengthChange(DataSourceDefinition dataSource, String tables, String columns, int expectedLength)
             throws SQLException {
         DataSource master = dataSource.getMaster();
@@ -1426,7 +1586,34 @@ public class StorageAdaptTest extends TestCase {
             connection.close();
         }
     }
-    
+
+    private void assertColumnNullAble(DataSourceDefinition dataSource, String[] tables, String[] columns, int[] isNullAble)
+            throws SQLException {
+        DataSource master = dataSource.getMaster();
+        assertTrue(master instanceof RDBMSDataSource);
+        RDBMSDataSource rdbmsDataSource = (RDBMSDataSource) master;
+        assertEquals(RDBMSDataSource.DataSourceDialect.H2, rdbmsDataSource.getDialectName());
+        Connection connection = DriverManager.getConnection(rdbmsDataSource.getConnectionURL(), rdbmsDataSource.getUserName(),
+                rdbmsDataSource.getPassword());
+        Statement statement = connection.createStatement();
+        try {
+            for (int i = 0; i < tables.length; i++) {
+                ResultSet resultSet = statement.executeQuery("SELECT * FROM " + tables[i]);
+                ResultSetMetaData metaData = resultSet.getMetaData();
+                assertEquals(columns.length - 1, metaData.getColumnCount());
+                for (int j = 1; j <= metaData.getColumnCount(); j++) {
+                    assertEquals(columns[j], metaData.getColumnName(j));
+                    assertEquals(isNullAble[j], metaData.isNullable(j));
+                }
+            }
+        } catch(Exception e){
+            assertNotNull(e);
+        } finally {
+            statement.close();
+            connection.close();
+        }
+    }
+
     private void assertExistTables(DataSourceDefinition dataSource, String[] tables, boolean[] exists)
             throws SQLException {
         DataSource master = dataSource.getMaster();

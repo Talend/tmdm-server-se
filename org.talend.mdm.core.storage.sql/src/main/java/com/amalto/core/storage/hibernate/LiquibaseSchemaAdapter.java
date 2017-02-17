@@ -27,6 +27,7 @@ import liquibase.change.ColumnConfig;
 import liquibase.change.core.AddDefaultValueChange;
 import liquibase.change.core.AddNotNullConstraintChange;
 import liquibase.change.core.DropColumnChange;
+import liquibase.change.core.DropNotNullConstraintChange;
 import liquibase.database.DatabaseConnection;
 import liquibase.resource.FileSystemResourceAccessor;
 import liquibase.serializer.core.xml.XMLChangeLogSerializer;
@@ -48,6 +49,7 @@ import org.talend.mdm.commmon.metadata.compare.RemoveChange;
 
 import com.amalto.core.storage.HibernateStorageUtils;
 import com.amalto.core.storage.datasource.RDBMSDataSource;
+import com.amalto.core.storage.datasource.RDBMSDataSource.DataSourceDialect;
 
 public class LiquibaseSchemaAdapter  {
 
@@ -135,6 +137,13 @@ public class LiquibaseSchemaAdapter  {
                         changeActionList.add(generateAddDefaultValueChange(defaultValueRule, tableName, columnName,
                                 columnDataType));
                     }
+                } else if(!current.isMandatory() && previous.isMandatory()){
+                    changeActionList.add(generateDropNotNullConstraintChange(tableName, columnName, columnDataType));
+
+                    if (StringUtils.isNotBlank(defaultValueRule) && dataSource.getDialectName() == DataSourceDialect.MYSQL) {
+                        changeActionList.add(generateAddDefaultValueChange(defaultValueRule, tableName, columnName,
+                                columnDataType));
+                    }
                 }
             }
         }
@@ -179,6 +188,15 @@ public class LiquibaseSchemaAdapter  {
             changeActionList.add(dropColumnChange);
         }
         return changeActionList;
+    }
+
+    private DropNotNullConstraintChange generateDropNotNullConstraintChange(String tableName, String columnName,
+            String columnDataType) {
+        DropNotNullConstraintChange dropNotNullConstraintChange = new DropNotNullConstraintChange();
+        dropNotNullConstraintChange.setTableName(tableName);
+        dropNotNullConstraintChange.setColumnName(columnName);
+        dropNotNullConstraintChange.setColumnDataType(columnDataType);
+        return dropNotNullConstraintChange;
     }
 
     private AddDefaultValueChange generateAddDefaultValueChange(String defaultValueRule, String tableName, String columnName,

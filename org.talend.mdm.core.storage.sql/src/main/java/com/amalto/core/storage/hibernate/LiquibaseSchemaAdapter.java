@@ -107,12 +107,12 @@ public class LiquibaseSchemaAdapter  {
 
         if (!diffResults.getModifyChanges().isEmpty()) {
 
-            changeActionList.addAll(analyistModifyChange(diffResults, tableResolver));
+            changeActionList.addAll(analyzeModifyChange(diffResults, tableResolver));
         }
         return changeActionList;
     }
 
-    private List<AbstractChange> analyistModifyChange(DiffResults diffResults, TableResolver tableResolver) {
+    private List<AbstractChange> analyzeModifyChange(DiffResults diffResults, TableResolver tableResolver) {
         List<AbstractChange> changeActionList = new ArrayList<AbstractChange>();
         for (ModifyChange modifyAction : diffResults.getModifyChanges()) {
             MetadataVisitable element = modifyAction.getElement();

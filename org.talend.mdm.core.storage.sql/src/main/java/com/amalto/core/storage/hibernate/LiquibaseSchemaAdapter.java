@@ -39,13 +39,16 @@ import org.hibernate.dialect.Dialect;
 import org.hibernate.mapping.Column;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
+import org.talend.mdm.commmon.metadata.MetadataUtils;
 import org.talend.mdm.commmon.metadata.MetadataVisitable;
+import org.talend.mdm.commmon.metadata.TypeMetadata;
 import org.talend.mdm.commmon.metadata.compare.Change;
 import org.talend.mdm.commmon.metadata.compare.Compare;
 import org.talend.mdm.commmon.metadata.compare.ImpactAnalyzer;
 import org.talend.mdm.commmon.metadata.compare.ModifyChange;
 import org.talend.mdm.commmon.metadata.compare.Compare.DiffResults;
 import org.talend.mdm.commmon.metadata.compare.RemoveChange;
+import org.talend.mdm.commmon.util.core.CommonUtil;
 
 import com.amalto.core.storage.HibernateStorageUtils;
 import com.amalto.core.storage.datasource.RDBMSDataSource;
@@ -285,32 +288,32 @@ public class LiquibaseSchemaAdapter  {
 
     private String getColumnType(FieldMetadata current, String columnDataType) {
         int hibernateTypeCode = 0;
-        Object currentLength = current.getData(MetadataRepository.DATA_MAX_LENGTH);
+        TypeMetadata type = MetadataUtils.getSuperConcreteType(current.getType());
 
-        if (current.getType().getName().equals("string")) { //$NON-NLS-1$
+        Object currentLength = CommonUtil.getSuperTypeMaxLength(current.getType(), current.getType());
+        Object currentTotalDigits = current.getType().getData(MetadataRepository.DATA_TOTAL_DIGITS);
+        Object currentFractionDigits = current.getType().getData(MetadataRepository.DATA_FRACTION_DIGITS);
+
+        int length = currentLength == null ? Column.DEFAULT_LENGTH : Integer.parseInt(currentLength.toString());
+        int precision = currentTotalDigits == null ? Column.DEFAULT_PRECISION : Integer.parseInt(currentTotalDigits.toString());
+        int scale = currentFractionDigits == null ? Column.DEFAULT_SCALE : Integer.parseInt(currentFractionDigits.toString());
+
+        if (type.getName().equals("string")) { //$NON-NLS-1$
             hibernateTypeCode = java.sql.Types.VARCHAR;
-            if (currentLength == null) {
-                columnDataType = dialect.getTypeName(hibernateTypeCode, Column.DEFAULT_LENGTH, Column.DEFAULT_PRECISION,
-                        Column.DEFAULT_SCALE);
-            } else {
-                columnDataType = dialect.getTypeName(hibernateTypeCode, Integer.valueOf(currentLength.toString()),
-                        Column.DEFAULT_PRECISION, Column.DEFAULT_SCALE);
-            }
-        } else if (current.getType().getName().equals("int") || current.getType().getName().equals("short") //$NON-NLS-1$ //$NON-NLS-2$
-                || current.getType().getName().equals("long") || current.getType().getName().equals("integer")) { //$NON-NLS-1$ //$NON-NLS-2$
+        } else if (type.getName().equals("int") || type.getName().equals("short") //$NON-NLS-1$ //$NON-NLS-2$
+                || type.getName().equals("long") || type.getName().equals("integer")) { //$NON-NLS-1$ //$NON-NLS-2$
             hibernateTypeCode = java.sql.Types.INTEGER;
-            columnDataType = dialect.getTypeName(hibernateTypeCode);
-        } else if (current.getType().getName().equals("boolean")) { //$NON-NLS-1$
+        } else if (type.getName().equals("boolean")) { //$NON-NLS-1$
             hibernateTypeCode = java.sql.Types.BOOLEAN;
-            columnDataType = dialect.getTypeName(hibernateTypeCode);
-        } else if (current.getType().getName().equals("date") || current.getType().getName().equals("datetime")) { //$NON-NLS-1$ //$NON-NLS-2$
+        } else if (type.getName().equals("date") || type.getName().equals("datetime")) { //$NON-NLS-1$ //$NON-NLS-2$
             hibernateTypeCode = java.sql.Types.TIMESTAMP;
-            columnDataType = dialect.getTypeName(hibernateTypeCode);
-        } else if (current.getType().getName().equals("double") || current.getType().getName().equals("float") //$NON-NLS-1$ //$NON-NLS-2$
-                || current.getType().getName().equals("demical")) { //$NON-NLS-1$
+        } else if (type.getName().equals("double") || type.getName().equals("float")) { //$NON-NLS-1$ //$NON-NLS-2$
             hibernateTypeCode = java.sql.Types.DOUBLE;
-            columnDataType = dialect.getTypeName(hibernateTypeCode);
+        } else if (type.getName().equals("decimal")) {
+            hibernateTypeCode = java.sql.Types.NUMERIC;
         }
+        columnDataType = dialect.getTypeName(hibernateTypeCode, length, precision, scale);
+
         return columnDataType;
     }
 }

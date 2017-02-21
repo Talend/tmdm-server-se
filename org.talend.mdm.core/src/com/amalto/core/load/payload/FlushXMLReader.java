@@ -135,7 +135,7 @@ public class FlushXMLReader implements XMLReader {
         for (String currentElementText : elementText) {
             contentHandler.startElement(StringUtils.EMPTY, elementName, elementName, Constants.EMPTY_ATTRIBUTES);
             {
-                char[] elementTextChars = String.valueOf(currentElementText).toCharArray();
+                char[] elementTextChars = currentElementText == null ? new char[0] : String.valueOf(currentElementText).toCharArray();
                 contentHandler.characters(elementTextChars, 0, elementTextChars.length);
             }
             contentHandler.endElement(StringUtils.EMPTY, elementName, elementName);

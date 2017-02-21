@@ -843,7 +843,6 @@ public class HibernateStorage implements Storage {
                     session.evict(o);
                     o = (Wrapper) converter.convert(currentDataRecord, mapping);
                 }
-                o.timestamp(System.currentTimeMillis());
                 DataRecordMetadata recordMetadata = currentDataRecord.getRecordMetadata();
                 Map<String, String> recordProperties = recordMetadata.getRecordProperties();
                 if (!ObjectUtils.equals(recordMetadata.getTaskId(), o.taskId())) {

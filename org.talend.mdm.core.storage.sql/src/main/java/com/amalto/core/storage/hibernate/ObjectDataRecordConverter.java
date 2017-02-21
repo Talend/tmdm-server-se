@@ -89,8 +89,8 @@ public class ObjectDataRecordConverter implements DataRecordConverter<Object> {
                 mainInstance = (Wrapper) mainInstanceClass.newInstance();
             }
             mapping.setValues(session, dataRecord, mainInstance);
+            mainInstance.timestamp(System.currentTimeMillis());
             if (needNewInstance) {
-                mainInstance.timestamp(System.currentTimeMillis());
                 session.persist(mainInstance);
             }
             return mainInstance;

@@ -37,6 +37,7 @@ import org.apache.log4j.Logger;
 import org.apache.tools.ant.util.DateUtils;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.mapping.Column;
+import org.talend.mdm.commmon.metadata.ContainedComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.metadata.MetadataUtils;
@@ -121,7 +122,8 @@ public class LiquibaseSchemaAdapter  {
         List<AbstractChange> changeActionList = new ArrayList<AbstractChange>();
         for (ModifyChange modifyAction : diffResults.getModifyChanges()) {
             MetadataVisitable element = modifyAction.getElement();
-            if (element instanceof FieldMetadata) {
+            if (element instanceof FieldMetadata && !(((FieldMetadata) element).getContainingType() instanceof ContainedComplexTypeMetadata)
+                    && !(((FieldMetadata) element).getType() instanceof ContainedComplexTypeMetadata)) {
                 FieldMetadata previous = (FieldMetadata) modifyAction.getPrevious();
                 FieldMetadata current = (FieldMetadata) modifyAction.getCurrent();
 

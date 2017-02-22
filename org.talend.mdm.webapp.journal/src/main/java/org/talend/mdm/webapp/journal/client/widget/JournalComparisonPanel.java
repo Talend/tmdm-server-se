@@ -409,8 +409,6 @@ public class JournalComparisonPanel extends ContentPanel {
             model = modelMap.get(transferPath);
             if (model == null) {
                 return getModelByPath(temp, lastIndexStr);
-            } else {
-                return model;
             }
         }
         return model;

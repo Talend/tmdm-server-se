@@ -118,6 +118,8 @@ import com.amalto.core.objects.customform.CustomFormPOJO;
 import com.amalto.core.objects.customform.CustomFormPOJOPK;
 import com.amalto.core.objects.datacluster.DataClusterPOJOPK;
 import com.amalto.core.server.ServerContext;
+import com.amalto.core.server.StorageAdmin;
+import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.task.StagingConstants;
 import com.amalto.core.util.CoreException;
 import com.amalto.core.util.EntityNotFoundException;
@@ -149,6 +151,7 @@ import com.amalto.core.webservice.WSItem;
 import com.amalto.core.webservice.WSItemPK;
 import com.amalto.core.webservice.WSPutItem;
 import com.amalto.core.webservice.WSPutItemWithReport;
+import com.amalto.core.webservice.WSRunQuery;
 import com.amalto.core.webservice.WSString;
 import com.amalto.core.webservice.WSStringArray;
 import com.amalto.core.webservice.WSStringPredicate;
@@ -1860,9 +1863,10 @@ public class BrowseRecordsAction implements BrowseRecordsService {
         try {
             // TODO (1) if update, check the item is modified by others?
             // TODO (2) if create, check if the item has not been created by someone else?
-            WSPutItemWithReport wsPutItemWithReport = new WSPutItemWithReport(new WSPutItem(new WSDataClusterPK(
-                    getCurrentDataCluster()), xml, new WSDataModelPK(getCurrentDataModel()), !isCreate),
-                    UpdateReportPOJO.GENERIC_UI_SOURCE, true);
+            WSDataClusterPK wsDataClusterPK = new WSDataClusterPK(getCurrentDataCluster());
+            WSDataModelPK wsDataModelPK = new WSDataModelPK(getCurrentDataModel());
+            WSPutItemWithReport wsPutItemWithReport = new WSPutItemWithReport(new WSPutItem(wsDataClusterPK, xml, wsDataModelPK,
+                    !isCreate), UpdateReportPOJO.GENERIC_UI_SOURCE, true);
             int status = ItemResult.SUCCESS;
             WSItemPK wsi = CommonUtil.getPort().putItemWithReport(wsPutItemWithReport);
             String message = wsPutItemWithReport.getSource(); // putItemWithReport is expected to put
@@ -1882,11 +1886,23 @@ public class BrowseRecordsAction implements BrowseRecordsService {
                 String[] pk = wsi.getIds();
                 if (pk == null || pk.length == 0) {
                     WSConceptKey key = CommonUtil.getPort().getBusinessConceptKey(
-                            new WSGetBusinessConceptKey(new WSDataModelPK(getCurrentDataModel()), concept));
+                            new WSGetBusinessConceptKey(wsDataModelPK, concept));
                     pk = CommonUtil.extractIdWithDots(key.getFields(), ids);
                 }
-                WSItem wsItem = CommonUtil.getPort().getItem(
-                        new WSGetItem(new WSItemPK(new WSDataClusterPK(getCurrentDataCluster()), concept, pk)));
+                WSItem wsItem = CommonUtil.getPort().getItem(new WSGetItem(new WSItemPK(wsDataClusterPK, concept, pk)));
+
+                // TMDM-10499 Do staging propagating if update master record
+                boolean isUpdateMaster = !isCreate && !wsDataClusterPK.getPk().endsWith(StorageAdmin.STAGING_SUFFIX);
+                boolean hasValidTaskId = StringUtils.isNotEmpty(wsItem.getTaskId()) && !"null".equals(wsItem.getTaskId()); //$NON-NLS-1$
+                boolean supportStaging = CommonUtil.getPort().supportStaging(wsDataClusterPK).is_true();
+                if (isUpdateMaster && hasValidTaskId && supportStaging) {
+                    WSDataClusterPK wsDataClusterPK_staging = new WSDataClusterPK(getCurrentDataCluster(true));
+                    String stagingStatus = getStagingStatus(wsDataClusterPK_staging, wsItem.getConceptName(), wsItem.getTaskId());
+                    if (StagingConstants.SUCCESS_VALIDATE.equals(stagingStatus)) {
+                        CommonUtil.getPort().putItem(new WSPutItem(wsDataClusterPK_staging, xml, wsDataModelPK, true));
+                    }
+                }
+
                 return new ItemResult(status, message, Util.joinStrings(pk, "."), wsItem.getInsertionTime()); //$NON-NLS-1$
             }
         } catch (ServiceException e) {
@@ -2653,4 +2669,20 @@ public class BrowseRecordsAction implements BrowseRecordsService {
     		return sb.toString();
     	}
 	}
+
+    private String getStagingStatus(WSDataClusterPK wsDataClusterPK, String conceptName, String taskId) {
+        String status = StringUtils.EMPTY;
+        String query = "select max(" + Storage.METADATA_STAGING_STATUS + ") from " + conceptName + " where " //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + Storage.METADATA_TASK_ID + "='" + taskId + "'"; //$NON-NLS-1$ //$NON-NLS-2$
+        WSRunQuery wsRunQuery = new WSRunQuery(wsDataClusterPK, query, null);
+        try {
+            String[] statusArray = CommonUtil.getPort().runQuery(wsRunQuery).getStrings();
+            if (statusArray.length == 1) {
+                status = StringUtils.substringBetween(statusArray[0], "<col0>", "</col0>"); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+        } catch (Exception e) {
+            LOG.error(e.getMessage(), e);
+        }
+        return status;
+    }
 }

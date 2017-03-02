@@ -2671,17 +2671,16 @@ public class BrowseRecordsAction implements BrowseRecordsService {
 	}
 
     private boolean isValidGoldenStatus(WSDataClusterPK wsDataClusterPK, String conceptName, String taskId) {
-        boolean valid = false;
         StringBuilder query = new StringBuilder().append("select count(*) from ").append(conceptName).append(" where ") //$NON-NLS-1$ //$NON-NLS-2$
                 .append(Storage.METADATA_TASK_ID).append("='").append(taskId).append("' and ") //$NON-NLS-1$ //$NON-NLS-2$
                 .append(Storage.METADATA_STAGING_STATUS).append("=").append(StagingConstants.SUCCESS_VALIDATE); //$NON-NLS-1$
         WSRunQuery wsRunQuery = new WSRunQuery(wsDataClusterPK, query.toString(), null);
         try {
             String countResult = CommonUtil.getPort().runQuery(wsRunQuery).getStrings()[0];
-            valid = Integer.parseInt(StringUtils.substringBetween(countResult, "<col0>", "</col0>")) == 1; //$NON-NLS-1$ //$NON-NLS-2$
+            return countResult.equals("<result><col0>1</col0></result>"); //$NON-NLS-1$
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
+            return false;
         }
-        return valid;
     }
 }

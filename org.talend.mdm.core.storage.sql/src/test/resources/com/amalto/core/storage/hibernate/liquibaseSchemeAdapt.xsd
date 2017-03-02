@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:import namespace="http://www.w3.org/2001/XMLSchema" />
+    <xsd:element name="Person">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1" name="Id" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="name" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="boy" type="Boy">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_AutoExpand">false</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="girl" type="Boy">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_AutoExpand">false</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="status" type="Status">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="aa" type="xsd:integer">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="Person">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="Id" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:complexType name="Boy">
+        <xsd:all>
+            <xsd:element maxOccurs="1" minOccurs="1" name="name" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="1" name="grade" type="xsd:int">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:all>
+    </xsd:complexType>
+    <xsd:element name="E2" type="Boy">
+        <xsd:unique name="E2">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="grade" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:simpleType name="Status">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="Pending" />
+            <xsd:enumeration value="Rejected" />
+            <xsd:enumeration value="Approved" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:element name="allType">
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1" name="Id" type="xsd:string" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="strField" type="xsd:string" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="booleanField" type="xsd:boolean" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="shortField" type="xsd:short" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="intField" type="xsd:int" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="longField" type="xsd:long" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="integerField" type="xsd:integer" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="floatField" type="xsd:float" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="doubleField" type="xsd:double" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="decimalField" type="xsd:decimal" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="dateField" type="xsd:date" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="datetimeField" type="xsd:dateTime" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="timeField" type="xsd:time" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="my_def_str" type="Def_Str" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="my_def_str_son" type="Dev-Str-Son" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="my_def_decimal" type="MyDecimal" />
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="allType">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="Id" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:simpleType name="MyDecimal">
+        <xsd:restriction base="xsd:decimal">
+            <xsd:fractionDigits value="2" />
+            <xsd:totalDigits value="5" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="Def_Str">
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="50" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="Dev-Str-Son">
+        <xsd:restriction base="Def_Str" />
+    </xsd:simpleType>
+</xsd:schema>

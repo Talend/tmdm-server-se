@@ -1894,12 +1894,12 @@ public class BrowseRecordsAction implements BrowseRecordsService {
                 // TMDM-10499 Do staging propagating if update master record
                 boolean isUpdateMaster = !isCreate && !wsDataClusterPK.getPk().endsWith(StorageAdmin.STAGING_SUFFIX);
                 boolean hasValidTaskId = StringUtils.isNotEmpty(wsItem.getTaskId()) && !"null".equals(wsItem.getTaskId()); //$NON-NLS-1$
-                boolean supportStaging = CommonUtil.getPort().supportStaging(wsDataClusterPK).is_true();
-                if (isUpdateMaster && hasValidTaskId && supportStaging) {
-                    WSDataClusterPK wsDataClusterPK_staging = new WSDataClusterPK(getCurrentDataCluster(true));
-                    String stagingStatus = getStagingStatus(wsDataClusterPK_staging, wsItem.getConceptName(), wsItem.getTaskId());
-                    if (StagingConstants.SUCCESS_VALIDATE.equals(stagingStatus)) {
-                        CommonUtil.getPort().putItem(new WSPutItem(wsDataClusterPK_staging, xml, wsDataModelPK, true));
+                if (isUpdateMaster && hasValidTaskId) {
+                    if (CommonUtil.getPort().supportStaging(wsDataClusterPK).is_true()) {
+                        WSDataClusterPK wsDataClusterPK_staging = new WSDataClusterPK(getCurrentDataCluster(true));
+                        if (isValidGoldenStatus(wsDataClusterPK_staging, wsItem.getConceptName(), wsItem.getTaskId())) {
+                            CommonUtil.getPort().putItem(new WSPutItem(wsDataClusterPK_staging, xml, wsDataModelPK, true));
+                        }
                     }
                 }
 
@@ -2670,19 +2670,18 @@ public class BrowseRecordsAction implements BrowseRecordsService {
     	}
 	}
 
-    private String getStagingStatus(WSDataClusterPK wsDataClusterPK, String conceptName, String taskId) {
-        String status = StringUtils.EMPTY;
-        String query = "select max(" + Storage.METADATA_STAGING_STATUS + ") from " + conceptName + " where " //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                + Storage.METADATA_TASK_ID + "='" + taskId + "'"; //$NON-NLS-1$ //$NON-NLS-2$
-        WSRunQuery wsRunQuery = new WSRunQuery(wsDataClusterPK, query, null);
+    private boolean isValidGoldenStatus(WSDataClusterPK wsDataClusterPK, String conceptName, String taskId) {
+        boolean valid = false;
+        StringBuilder query = new StringBuilder().append("select count(*) from ").append(conceptName).append(" where ") //$NON-NLS-1$ //$NON-NLS-2$
+                .append(Storage.METADATA_TASK_ID).append("='").append(taskId).append("' and ") //$NON-NLS-1$ //$NON-NLS-2$
+                .append(Storage.METADATA_STAGING_STATUS).append("=").append(StagingConstants.SUCCESS_VALIDATE); //$NON-NLS-1$
+        WSRunQuery wsRunQuery = new WSRunQuery(wsDataClusterPK, query.toString(), null);
         try {
-            String[] statusArray = CommonUtil.getPort().runQuery(wsRunQuery).getStrings();
-            if (statusArray.length == 1) {
-                status = StringUtils.substringBetween(statusArray[0], "<col0>", "</col0>"); //$NON-NLS-1$ //$NON-NLS-2$
-            }
+            String countResult = CommonUtil.getPort().runQuery(wsRunQuery).getStrings()[0];
+            valid = Integer.parseInt(StringUtils.substringBetween(countResult, "<col0>", "</col0>")) == 1; //$NON-NLS-1$ //$NON-NLS-2$
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
         }
-        return status;
+        return valid;
     }
 }

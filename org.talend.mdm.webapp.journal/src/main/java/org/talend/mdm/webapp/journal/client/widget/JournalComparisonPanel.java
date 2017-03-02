@@ -396,8 +396,26 @@ public class JournalComparisonPanel extends ContentPanel {
             }
         }
 
+        if (model == null && path.lastIndexOf(LEFT_BRAKCET) > path.indexOf(LEFT_BRAKCET)) {
+            Map<Integer, Integer[]> brakcetIndex = new HashMap<Integer, Integer[]>();
+            getBrakcetIndex(path, brakcetIndex);
+            int leftIndex = brakcetIndex.get(brakcetIndex.size() - 2)[0];
+            int rightIndex = brakcetIndex.get(brakcetIndex.size() - 2)[1];
+
+            transferPath = path.substring(0, leftIndex) + path.substring(rightIndex + 1);
+            model = modelMap.get(transferPath);
+        }
+
         tree.getSelectionModel().select(false, model);
         tree.scrollIntoView(model);
+    }
+
+    private void getBrakcetIndex(String path, Map<Integer, Integer[]> brakcetIndex) {
+        if (path.contains(LEFT_BRAKCET)) {
+            Integer[] index = { path.indexOf(LEFT_BRAKCET), path.indexOf(RIGHT_BRAKCET) };
+            brakcetIndex.put(brakcetIndex.size(), index);
+            getBrakcetIndex(path.replaceFirst("\\[", "/"), brakcetIndex);
+        }
     }
 
     private JournalTreeModel getModelByPath(String path, String lastIndex) {

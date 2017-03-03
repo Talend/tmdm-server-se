@@ -15,6 +15,8 @@ import java.util.List;
 import org.talend.mdm.webapp.base.client.SessionAwareAsyncCallback;
 import org.talend.mdm.webapp.base.client.exception.LicenseUserNumberValidationException;
 import org.talend.mdm.webapp.base.client.util.UrlUtil;
+import org.talend.mdm.webapp.base.shared.AppHeader;
+import org.talend.mdm.webapp.base.shared.Constants;
 import org.talend.mdm.webapp.general.client.General;
 import org.talend.mdm.webapp.general.client.GeneralServiceAsync;
 import org.talend.mdm.webapp.general.client.i18n.MessageFactory;
@@ -44,9 +46,11 @@ public class AccordionMenus extends ContentPanel {
     private HTMLMenuItem activeItem;
 
     private HTMLMenuItem welcomeportalItem;
-
+    
     private GeneralServiceAsync service = (GeneralServiceAsync) Registry.get(General.OVERALL_SERVICE);
-
+    
+    private AppHeader header = (AppHeader) Registry.get(General.APP_HEADER);
+    
     private AccordionMenus() {
         super();
         this.setHeading(MessageFactory.getMessages().menus());
@@ -246,9 +250,13 @@ public class AccordionMenus extends ContentPanel {
         String context = menuBean.getContext();
         String application = menuBean.getApplication();
         String errorMessage = MessageFactory.getMessages().application_undefined(context + '.' + application);
-        boolean success = initUI(context, application, errorMessage);
-        if (success) {
-            selectedItem(item);
+        if ("datastewardship".equals(context) && "Datastewardship".equals(application) && header.isTdsEnabled()) {
+            UrlUtil.openSingleWindow(header.getTdsBaseUrl(),Constants.TDS_NAME);
+        } else {
+            boolean success = initUI(context, application, errorMessage);
+            if (success) {
+                selectedItem(item);
+            }
         }
     }
 
@@ -265,7 +273,7 @@ public class AccordionMenus extends ContentPanel {
 		}
 		return false;
     }-*/;
-
+    
     class HTMLMenuItem extends HTML {
 
         MenuBean menuBean;

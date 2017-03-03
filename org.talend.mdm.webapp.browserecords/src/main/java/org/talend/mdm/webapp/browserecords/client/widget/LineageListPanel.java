@@ -23,9 +23,11 @@ import org.talend.mdm.webapp.base.client.model.ItemBasePageLoadResult;
 import org.talend.mdm.webapp.base.client.model.SimpleCriterion;
 import org.talend.mdm.webapp.base.client.model.UserContextModel;
 import org.talend.mdm.webapp.base.client.util.Parser;
+import org.talend.mdm.webapp.base.client.util.UrlUtil;
 import org.talend.mdm.webapp.base.client.util.UserContextUtil;
 import org.talend.mdm.webapp.base.client.widget.ColumnAlignGrid;
 import org.talend.mdm.webapp.base.client.widget.PagingToolBarEx;
+import org.talend.mdm.webapp.base.shared.AppHeader;
 import org.talend.mdm.webapp.base.shared.Constants;
 import org.talend.mdm.webapp.base.shared.EntityModel;
 import org.talend.mdm.webapp.base.shared.SimpleTypeModel;
@@ -52,7 +54,6 @@ import org.talend.mdm.webapp.browserecords.client.util.ViewUtil;
 import org.talend.mdm.webapp.browserecords.client.widget.filter.BooleanFilter;
 import org.talend.mdm.webapp.browserecords.client.widget.filter.NumericFilter;
 import org.talend.mdm.webapp.browserecords.client.widget.inputfield.creator.FieldCreator;
-import org.talend.mdm.webapp.browserecords.shared.AppHeader;
 import org.talend.mdm.webapp.browserecords.shared.ViewBean;
 
 import com.amalto.core.server.StorageAdmin;
@@ -446,8 +447,8 @@ public class LineageListPanel extends ContentPanel {
             public void componentSelected(ButtonEvent buttonEvent) {
                 if (header.isTdsEnabled()) {
                     String baseUrl = header.getTdsBaseUrl();
-                    openWindow(baseUrl + org.talend.mdm.webapp.browserecords.shared.Constants.TDS_ACCESSTASK
-                            + LineageListPanel.this.taskId);
+                    UrlUtil.openSingleWindow(baseUrl + Constants.TDS_ACCESSTASK
+                            + LineageListPanel.this.taskId,Constants.TDS_NAME);
                 } else {
                     initDSC(LineageListPanel.this.taskId);
                 }
@@ -601,9 +602,5 @@ public class LineageListPanel extends ContentPanel {
     private native boolean initDSC(String taskId)/*-{
 		$wnd.amalto.datastewardship.Datastewardship.taskItem(taskId);
 		return true;
-    }-*/;
-
-    private native void openWindow(String url)/*-{
-		window.open(url);
     }-*/;
 }

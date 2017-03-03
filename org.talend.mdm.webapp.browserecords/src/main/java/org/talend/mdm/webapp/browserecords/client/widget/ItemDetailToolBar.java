@@ -18,6 +18,7 @@ import org.talend.mdm.webapp.base.client.SessionAwareAsyncCallback;
 import org.talend.mdm.webapp.base.client.model.ItemBaseModel;
 import org.talend.mdm.webapp.base.client.util.MultilanguageMessageParser;
 import org.talend.mdm.webapp.base.client.util.UrlUtil;
+import org.talend.mdm.webapp.base.shared.Constants;
 import org.talend.mdm.webapp.base.shared.TypeModel;
 import org.talend.mdm.webapp.browserecords.client.BrowseRecords;
 import org.talend.mdm.webapp.browserecords.client.BrowseRecordsEvents;
@@ -798,7 +799,7 @@ public class ItemDetailToolBar extends ToolBar {
                                             public void componentSelected(MenuEvent menuEvent) {
                                                 if (BrowseRecords.getSession().getAppHeader().isTdsEnabled()) {
                                                     String baseUrl = BrowseRecords.getSession().getAppHeader().getTdsBaseUrl();
-                                                    openWindow(baseUrl + org.talend.mdm.webapp.browserecords.shared.Constants.TDS_ACCESSTASK + itemBean.getTaskId());
+                                                    UrlUtil.openSingleWindow(baseUrl + Constants.TDS_ACCESSTASK + itemBean.getTaskId(),Constants.TDS_NAME);
                                                 } else {
                                                     initDSC(itemBean.getTaskId());
                                                 }

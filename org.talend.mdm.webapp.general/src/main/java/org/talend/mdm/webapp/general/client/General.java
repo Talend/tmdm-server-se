@@ -10,7 +10,9 @@
 package org.talend.mdm.webapp.general.client;
 
 import org.talend.mdm.webapp.base.client.ServiceEnhancer;
+import org.talend.mdm.webapp.base.client.SessionAwareAsyncCallback;
 import org.talend.mdm.webapp.base.client.util.Cookies;
+import org.talend.mdm.webapp.base.shared.AppHeader;
 import org.talend.mdm.webapp.general.client.boundary.PubService;
 import org.talend.mdm.webapp.general.client.layout.AccordionMenus;
 import org.talend.mdm.webapp.general.client.layout.ActionsPanel;
@@ -18,10 +20,12 @@ import org.talend.mdm.webapp.general.client.message.PublicMessageService;
 import org.talend.mdm.webapp.general.client.mvc.GeneralEvent;
 import org.talend.mdm.webapp.general.client.mvc.controller.GeneralController;
 
+import com.amalto.core.util.MessagesFactory;
 import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.core.XDOM;
 import com.extjs.gxt.ui.client.mvc.Dispatcher;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
@@ -31,6 +35,8 @@ public class General implements EntryPoint {
     public static final String OVERALL_SERVICE = "GeneralService"; //$NON-NLS-1$
 
     public static final String USER_BEAN = "UserBean"; //$NON-NLS-1$
+    
+    public static final String APP_HEADER = "appHeader"; //$NON-NLS-1$
 
     @Override
     public void onModuleLoad() {
@@ -58,6 +64,14 @@ public class General implements EntryPoint {
         if (!GXT.isIE) {
             preventSelecStart();
         }
+        
+        ((GeneralServiceAsync)service).getAppHeader(new SessionAwareAsyncCallback<AppHeader>() {
+
+            @Override
+            public void onSuccess(AppHeader header) {
+                Registry.register(APP_HEADER, header);
+            }
+        });
     }
 
     private native void preventSelecStart()/*-{

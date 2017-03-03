@@ -21,10 +21,12 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.apache.log4j.Logger;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.talend.mdm.commmon.util.core.MDMConfiguration;
 import org.talend.mdm.commmon.util.webapp.XObjectType;
 import org.talend.mdm.commmon.util.webapp.XSystemObjects;
 import org.talend.mdm.webapp.base.client.exception.ServiceException;
 import org.talend.mdm.webapp.base.server.util.XmlUtil;
+import org.talend.mdm.webapp.base.shared.AppHeader;
 import org.talend.mdm.webapp.general.client.GeneralService;
 import org.talend.mdm.webapp.general.model.ActionBean;
 import org.talend.mdm.webapp.general.model.ComboBoxModel;
@@ -317,6 +319,19 @@ public class GeneralAction implements GeneralService {
             if (!failQuietly) {
                 throw new ServiceException(e.getLocalizedMessage());
             }
+        }
+    }
+    
+    @Override
+    public AppHeader getAppHeader() throws ServiceException {
+        try {
+            AppHeader header = new AppHeader();
+            header.setTdsEnabled(MDMConfiguration.isTdsEnabled());
+            header.setTdsBaseUrl(MDMConfiguration.getConfiguration().getProperty(MDMConfiguration.TDS_ROOT_URL));
+            return header;
+        } catch (Exception e) {
+            LOG.error(e.getMessage(), e);
+            throw new ServiceException(e.getLocalizedMessage());
         }
     }
 

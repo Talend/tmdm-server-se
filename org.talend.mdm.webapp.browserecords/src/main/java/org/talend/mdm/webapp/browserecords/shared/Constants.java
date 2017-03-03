@@ -38,7 +38,4 @@ public class Constants {
     public static final String BROWSE_STAGING_SUFFIX_MARK = "_S"; //$NON-NLS-1$
     
     public static final String IMPORT_SUCCESS = "import_success"; //$NON-NLS-1$
-
-    public static final String TDS_ACCESSTASK = "/#/accesstasks/";
-
 }

@@ -11,6 +11,7 @@ package org.talend.mdm.webapp.general.client;
 
 import java.util.List;
 
+import org.talend.mdm.webapp.base.shared.AppHeader;
 import org.talend.mdm.webapp.general.model.ActionBean;
 import org.talend.mdm.webapp.general.model.LanguageBean;
 import org.talend.mdm.webapp.general.model.MenuGroup;
@@ -45,4 +46,6 @@ public interface GeneralServiceAsync {
     void setDefaultLanguage(String language, AsyncCallback<Void> callback);
 
     void isEnterpriseVersion(AsyncCallback<Boolean> callback);
+    
+    void getAppHeader(AsyncCallback<AppHeader> callback);
 }

@@ -12,6 +12,7 @@ package org.talend.mdm.webapp.general.client;
 import java.util.List;
 
 import org.talend.mdm.webapp.base.client.exception.ServiceException;
+import org.talend.mdm.webapp.base.shared.AppHeader;
 import org.talend.mdm.webapp.general.model.ActionBean;
 import org.talend.mdm.webapp.general.model.LanguageBean;
 import org.talend.mdm.webapp.general.model.MenuGroup;
@@ -48,4 +49,6 @@ public interface GeneralService extends RemoteService {
     public void setDefaultLanguage(String language) throws ServiceException;
 
     public boolean isEnterpriseVersion() throws ServiceException;
+    
+    AppHeader getAppHeader() throws ServiceException;
 }

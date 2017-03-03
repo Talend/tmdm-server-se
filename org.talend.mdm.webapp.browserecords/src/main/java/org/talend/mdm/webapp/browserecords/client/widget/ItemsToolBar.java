@@ -23,6 +23,7 @@ import org.talend.mdm.webapp.base.client.model.MultipleCriteria;
 import org.talend.mdm.webapp.base.client.model.SimpleCriterion;
 import org.talend.mdm.webapp.base.client.util.CriteriaUtil;
 import org.talend.mdm.webapp.base.client.widget.PagingToolBarEx;
+import org.talend.mdm.webapp.base.shared.AppHeader;
 import org.talend.mdm.webapp.base.shared.EntityModel;
 import org.talend.mdm.webapp.browserecords.client.BrowseRecords;
 import org.talend.mdm.webapp.browserecords.client.BrowseRecordsEvents;
@@ -52,7 +53,6 @@ import org.talend.mdm.webapp.browserecords.client.widget.integrity.LogicalDelete
 import org.talend.mdm.webapp.browserecords.client.widget.integrity.NoOpPostDeleteAction;
 import org.talend.mdm.webapp.browserecords.client.widget.integrity.PostDeleteAction;
 import org.talend.mdm.webapp.browserecords.client.widget.treedetail.TreeDetailUtil;
-import org.talend.mdm.webapp.browserecords.shared.AppHeader;
 import org.talend.mdm.webapp.browserecords.shared.ViewBean;
 
 import com.extjs.gxt.ui.client.Registry;

@@ -28,6 +28,7 @@ import org.talend.mdm.webapp.base.client.util.Parser;
 import org.talend.mdm.webapp.base.client.util.UserContextUtil;
 import org.talend.mdm.webapp.base.client.widget.ColumnAlignGrid;
 import org.talend.mdm.webapp.base.client.widget.PagingToolBarEx;
+import org.talend.mdm.webapp.base.shared.AppHeader;
 import org.talend.mdm.webapp.base.shared.Constants;
 import org.talend.mdm.webapp.base.shared.EntityModel;
 import org.talend.mdm.webapp.base.shared.SimpleTypeModel;
@@ -50,7 +51,6 @@ import org.talend.mdm.webapp.browserecords.client.util.ViewUtil;
 import org.talend.mdm.webapp.browserecords.client.widget.filter.BooleanFilter;
 import org.talend.mdm.webapp.browserecords.client.widget.filter.NumericFilter;
 import org.talend.mdm.webapp.browserecords.client.widget.inputfield.creator.FieldCreator;
-import org.talend.mdm.webapp.browserecords.shared.AppHeader;
 import org.talend.mdm.webapp.browserecords.shared.ViewBean;
 
 import com.extjs.gxt.ui.client.Style.HideMode;

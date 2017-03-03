@@ -27,6 +27,7 @@ import com.amalto.core.util.UserHelper;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
@@ -125,7 +126,7 @@ public class MDMValidationTask extends MetadataRepositoryTask {
         for (FieldMetadata keyField : type.getKeyFields()) {
             // Only adds a AutoIncrement update if the type contains at least one AutoIncrement field
             if (EUUIDCustomType.AUTO_INCREMENT.getName().equals(keyField.getType().getName())) {
-                tasks.add(new AutoIncrementUpdateTask(storage, destinationStorage, type));
+                tasks.add(new AutoIncrementUpdateTask(storage, destinationStorage, type, context));
                 break;
             }
         }

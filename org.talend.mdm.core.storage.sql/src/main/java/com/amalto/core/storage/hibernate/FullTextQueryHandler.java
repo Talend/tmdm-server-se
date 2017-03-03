@@ -286,7 +286,7 @@ class FullTextQueryHandler extends AbstractQueryHandler {
                 }
             };
         }
-        return new FullTextStorageResults(pageSize, list.size(), iterator);
+        return new FullTextStorageResults(pageSize, query.getResultSize(), iterator);
     }
 
     private StorageResults createResults(ScrollableResults scrollableResults) {

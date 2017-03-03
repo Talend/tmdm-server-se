@@ -20,6 +20,7 @@ import java.util.*;
 
 import com.amalto.core.save.generator.AutoIncrementGenerator;
 import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
@@ -67,12 +68,16 @@ public class AutoIncrementUpdateTask implements Task {
     private ComplexTypeMetadata autoIncrementType;
 
     private FieldMetadata keyField;
+
     private DataRecord autoIncrementRecord;
 
-    public AutoIncrementUpdateTask(Storage origin, Storage destination, ComplexTypeMetadata type) {
+    private SecurityContext context;
+
+    public AutoIncrementUpdateTask(Storage origin, Storage destination, ComplexTypeMetadata type, SecurityContext context) {
         this.origin = origin;
         this.destination = destination;
         this.type = type;
+        this.context = context;
     }
 
     @Override
@@ -125,6 +130,7 @@ public class AutoIncrementUpdateTask implements Task {
 
     @Override
     public void setSecurityContext(SecurityContext context) {
+        this.context = context;
     }
 
     @Override
@@ -135,6 +141,7 @@ public class AutoIncrementUpdateTask implements Task {
     @SuppressWarnings("unchecked")
     @Override
     public void run() {
+        SecurityContextHolder.setContext(context);
         Server server = ServerContext.INSTANCE.get();
         // Create or get current transaction
         TransactionManager manager = server.getTransactionManager();

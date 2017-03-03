@@ -31,7 +31,8 @@ public class UrlUtil {
     }
     
     private static native void openWindow(String url,String name)/*-{
-        window.open(url,name);
+        var newWindow = openWindow(url,name);
+        newWindow.focus();
     }-*/;
 
     private static native String getCurrentLanguage() /*-{

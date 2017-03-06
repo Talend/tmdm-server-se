@@ -1256,9 +1256,15 @@ public class HibernateStorage implements Storage {
 
         // for the liquibase
         if (!force) {
+            Map<ImpactAnalyzer.Impact, List<Change>> impacts = getImpactsResult(diffResults);
+            if (impacts.get(ImpactAnalyzer.Impact.HIGH).size() > 0) {
+                throw new RuntimeException(
+                        "Unable to complete database schema update, have High impact change but not clean impacted tabled."); //$NON-NLS-1$
+            }
+
             try {
                 SessionFactoryImplementor sessionFactoryImplementor = (SessionFactoryImplementor) this.getCurrentSession()
-                        .getSessionFactory();
+    .getSessionFactory();
 
                 Dialect dialect = sessionFactoryImplementor.getDialect();
                 Connection connection = sessionFactoryImplementor.getConnectionProvider().getConnection();

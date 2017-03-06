@@ -699,4 +699,31 @@ public class MetadataRepositoryTest extends TestCase {
         assertEquals("fn:true()", entityType.getField("sex").getData(MetadataRepository.DEFAULT_VALUE_RULE));
         assertEquals(null, entityType.getField("name_1").getData(MetadataRepository.DEFAULT_VALUE_RULE));
     }
+
+    // test the min occurs and max occurs for TMDM-10534
+    public void test_33() throws Exception {
+        MetadataRepository repository = new MetadataRepository();
+        InputStream stream = getClass().getResourceAsStream("schema33.xsd");
+        repository.load(stream);
+
+        ComplexTypeMetadata entityType = repository.getComplexType("Person");
+        assertNotNull(entityType);
+        assertTrue(entityType.hasField("aa"));
+        assertTrue(entityType.hasField("bb"));
+        assertTrue(entityType.hasField("cc"));
+        assertTrue(entityType.hasField("dd"));
+        assertTrue(entityType.hasField("ee"));
+
+        assertEquals(0, entityType.getField("aa").getData(MetadataRepository.MIN_OCCURS));
+        assertEquals(0, entityType.getField("bb").getData(MetadataRepository.MIN_OCCURS));
+        assertEquals(1, entityType.getField("cc").getData(MetadataRepository.MIN_OCCURS));
+        assertEquals(1, entityType.getField("dd").getData(MetadataRepository.MIN_OCCURS));
+        assertEquals(1, entityType.getField("ee").getData(MetadataRepository.MIN_OCCURS));
+
+        assertEquals(8, entityType.getField("aa").getData(MetadataRepository.MAX_OCCURS));
+        assertEquals(-1, entityType.getField("bb").getData(MetadataRepository.MAX_OCCURS));
+        assertEquals(-1, entityType.getField("cc").getData(MetadataRepository.MAX_OCCURS));
+        assertEquals(2, entityType.getField("dd").getData(MetadataRepository.MAX_OCCURS));
+        assertEquals(-1, entityType.getField("ee").getData(MetadataRepository.MAX_OCCURS));
+    }
 }

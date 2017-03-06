@@ -1901,6 +1901,45 @@ public class StorageAdaptTest extends TestCase {
         deleteLiquibaseChangeLogFile();
     }
 
+    public void test17_forRepeatable() throws Exception {
+        System.setProperty(LiquibaseSchemaAdapter.MDM_ROOT_URL, System.getProperty("user.dir"));
+
+        DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
+        Storage storage = new HibernateStorage("Person", StorageType.MASTER);
+        storage.init(dataSource);
+        String[] typeNames = { "Person" };
+        String[] tables = { "Person" };
+        String[] columns = { "", "X_ID", "X_BB_X_TALEND_ID", "X_EE", "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" };
+
+        int[] isNullable = { 0, 0, 0, 0, 0, 1 };
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+        MetadataRepository repository1 = new MetadataRepository();
+        repository1.load(StorageAdaptTest.class.getResourceAsStream("../hibernate/schema2_1.xsd"));
+        storage.prepare(repository1, true);
+
+        try {
+            assertColumnNullAble(dataSource, tables, columns, isNullable);
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+
+        MetadataRepository repository2 = new MetadataRepository();
+        repository2.load(StorageAdaptTest.class.getResourceAsStream("../hibernate/schema2_2.xsd"));
+        try {
+            storage.adapt(repository2, false);
+        } catch (Exception e2) {
+            assertNull(e2);
+        }
+
+        int[] isNullableUpdated = { 0, 0, 1, 1, 0, 1 };
+        try {
+            assertColumnNullAble(dataSource, tables, columns, isNullableUpdated);
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+
+    }
+
     private void assertColumnLengthChange(DataSourceDefinition dataSource, String tables, String columns, int expectedLength)
             throws SQLException {
         DataSource master = dataSource.getMaster();

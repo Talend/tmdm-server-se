@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 import org.talend.mdm.webapp.base.client.ServiceEnhancer;
 import org.talend.mdm.webapp.base.client.model.ForeignKeyBean;
+import org.talend.mdm.webapp.base.shared.AppHeader;
 import org.talend.mdm.webapp.base.shared.EntityModel;
 import org.talend.mdm.webapp.base.shared.SimpleTypeModel;
 import org.talend.mdm.webapp.base.shared.TypeModel;
@@ -24,7 +25,6 @@ import org.talend.mdm.webapp.browserecords.client.util.CommonUtilTestData;
 import org.talend.mdm.webapp.browserecords.client.util.UserSession;
 import org.talend.mdm.webapp.browserecords.client.widget.ItemsDetailPanel;
 import org.talend.mdm.webapp.browserecords.client.widget.ForeignKey.ForeignKeySelector;
-import org.talend.mdm.webapp.browserecords.shared.AppHeader;
 
 import com.extjs.gxt.ui.client.Registry;
 import com.google.gwt.core.client.GWT;

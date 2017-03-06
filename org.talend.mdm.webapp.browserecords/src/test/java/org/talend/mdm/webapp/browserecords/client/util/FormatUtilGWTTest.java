@@ -11,10 +11,10 @@ package org.talend.mdm.webapp.browserecords.client.util;
 
 import java.math.BigDecimal;
 
+import org.talend.mdm.webapp.base.shared.AppHeader;
 import org.talend.mdm.webapp.browserecords.client.BrowseRecords;
 import org.talend.mdm.webapp.browserecords.client.widget.inputfield.FormatNumberField;
 import org.talend.mdm.webapp.browserecords.client.widget.inputfield.validator.NumberFieldValidator;
-import org.talend.mdm.webapp.browserecords.shared.AppHeader;
 
 import com.extjs.gxt.ui.client.Registry;
 import com.google.gwt.junit.client.GWTTestCase;

@@ -15,6 +15,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.talend.mdm.webapp.base.shared.AppHeader;
 import org.talend.mdm.webapp.base.shared.ComplexTypeModel;
 import org.talend.mdm.webapp.base.shared.EntityModel;
 import org.talend.mdm.webapp.base.shared.FacetModel;
@@ -27,7 +28,6 @@ import org.talend.mdm.webapp.browserecords.client.util.UserSession;
 import org.talend.mdm.webapp.browserecords.client.widget.ItemDetailToolBar;
 import org.talend.mdm.webapp.browserecords.client.widget.ItemsDetailPanel;
 import org.talend.mdm.webapp.browserecords.client.widget.treedetail.TreeDetail.DynamicTreeItem;
-import org.talend.mdm.webapp.browserecords.shared.AppHeader;
 import org.talend.mdm.webapp.browserecords.shared.ViewBean;
 
 import com.extjs.gxt.ui.client.Registry;
@@ -61,7 +61,7 @@ public class IncrementalBuildTreeGWTTest extends GWTTestCase {
     }
 
     private native void initJsEnv()/*-{
-        $wnd.language = "en";  //$NON-NLS-1$
+		$wnd.language = "en"; //$NON-NLS-1$
     }-*/;
 
     Map<String, String> genMap() {
@@ -76,8 +76,8 @@ public class IncrementalBuildTreeGWTTest extends GWTTestCase {
     }
 
     private native void __initTypeModel(TypeModel tm)/*-{
-        var map = this.@org.talend.mdm.webapp.browserecords.client.widget.treedetail.IncrementalBuildTreeGWTTest::genMap()();
-        tm.@org.talend.mdm.webapp.base.shared.TypeModel::labelMap = map;
+		var map = this.@org.talend.mdm.webapp.browserecords.client.widget.treedetail.IncrementalBuildTreeGWTTest::genMap()();
+		tm.@org.talend.mdm.webapp.base.shared.TypeModel::labelMap = map;
     }-*/;
 
     public void testIncrementalBuildTree() {

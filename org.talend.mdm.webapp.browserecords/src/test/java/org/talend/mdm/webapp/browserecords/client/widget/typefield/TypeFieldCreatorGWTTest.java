@@ -19,6 +19,7 @@ import java.util.Random;
 import org.talend.mdm.webapp.base.client.model.DataTypeConstants;
 import org.talend.mdm.webapp.base.client.model.DataTypeCustomized;
 import org.talend.mdm.webapp.base.client.widget.MultiLanguageField;
+import org.talend.mdm.webapp.base.shared.AppHeader;
 import org.talend.mdm.webapp.base.shared.ComplexTypeModel;
 import org.talend.mdm.webapp.base.shared.FacetModel;
 import org.talend.mdm.webapp.base.shared.SimpleTypeModel;
@@ -34,7 +35,6 @@ import org.talend.mdm.webapp.browserecords.client.widget.inputfield.FormatNumber
 import org.talend.mdm.webapp.browserecords.client.widget.inputfield.FormatTextAreaField;
 import org.talend.mdm.webapp.browserecords.client.widget.inputfield.FormatTextField;
 import org.talend.mdm.webapp.browserecords.client.widget.inputfield.PictureField;
-import org.talend.mdm.webapp.browserecords.shared.AppHeader;
 import org.talend.mdm.webapp.browserecords.shared.FacetEnum;
 
 import com.extjs.gxt.ui.client.Registry;
@@ -246,7 +246,7 @@ public class TypeFieldCreatorGWTTest extends GWTTestCase {
     }
 
     private native String getWidthFromField(Field<?> field)/*-{
-        return field.@com.extjs.gxt.ui.client.widget.BoxComponent::width;
+		return field.@com.extjs.gxt.ui.client.widget.BoxComponent::width;
     }-*/;
 
 }

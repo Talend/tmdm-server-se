@@ -14,6 +14,7 @@ import java.util.List;
 
 import org.talend.mdm.webapp.base.client.util.UrlUtil;
 import org.talend.mdm.webapp.base.client.util.UserContextUtil;
+import org.talend.mdm.webapp.base.shared.AppHeader;
 import org.talend.mdm.webapp.general.client.General;
 import org.talend.mdm.webapp.general.client.GeneralServiceAsync;
 import org.talend.mdm.webapp.general.model.ActionBean;
@@ -317,6 +318,10 @@ public class ActionsPanelGWTTest extends GWTTestCase {
         @Override
         public void isEnterpriseVersion(AsyncCallback<Boolean> callback) {
             callback.onSuccess(true);
+        }
+
+        @Override
+        public void getAppHeader(AsyncCallback<AppHeader> callback) {
         }
         
     }

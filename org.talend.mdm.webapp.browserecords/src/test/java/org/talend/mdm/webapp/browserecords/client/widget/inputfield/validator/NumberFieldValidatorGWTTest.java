@@ -9,10 +9,10 @@
  */
 package org.talend.mdm.webapp.browserecords.client.widget.inputfield.validator;
 
+import org.talend.mdm.webapp.base.shared.AppHeader;
 import org.talend.mdm.webapp.browserecords.client.BrowseRecords;
 import org.talend.mdm.webapp.browserecords.client.util.UserSession;
 import org.talend.mdm.webapp.browserecords.client.widget.inputfield.FormatNumberField;
-import org.talend.mdm.webapp.browserecords.shared.AppHeader;
 import org.talend.mdm.webapp.browserecords.shared.FacetEnum;
 
 import com.extjs.gxt.ui.client.Registry;

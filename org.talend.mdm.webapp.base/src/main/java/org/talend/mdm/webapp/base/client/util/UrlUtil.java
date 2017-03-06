@@ -31,7 +31,7 @@ public class UrlUtil {
     }
     
     private static native void openWindow(String url,String name)/*-{
-        var newWindow = openWindow(url,name);
+        var newWindow = window.open(url,name);
         newWindow.focus();
     }-*/;
 

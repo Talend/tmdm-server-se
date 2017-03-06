@@ -1909,9 +1909,9 @@ public class StorageAdaptTest extends TestCase {
         storage.init(dataSource);
         String[] typeNames = { "Person" };
         String[] tables = { "Person" };
-        String[] columns = { "", "X_ID", "X_BB_X_TALEND_ID", "X_EE", "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" };
+        String[] columns = { "", "X_ID", "X_BB_X_TALEND_ID", "X_EE", "X_UU_X_TALEND_ID", "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" };
 
-        int[] isNullable = { 0, 0, 0, 0, 0, 1 };
+        int[] isNullable = { 0, 0, 0, 0, 0, 0, 1 };
         DataRecordReader<String> factory = new XmlStringDataRecordReader();
         MetadataRepository repository1 = new MetadataRepository();
         repository1.load(StorageAdaptTest.class.getResourceAsStream("../hibernate/schema2_1.xsd"));
@@ -1931,13 +1931,12 @@ public class StorageAdaptTest extends TestCase {
             assertNull(e2);
         }
 
-        int[] isNullableUpdated = { 0, 0, 1, 1, 0, 1 };
+        int[] isNullableUpdated = { 0, 0, 1, 1, 1, 0, 1 };
         try {
             assertColumnNullAble(dataSource, tables, columns, isNullableUpdated);
         } catch (SQLException e) {
             assertNull(e);
         }
-
     }
 
     private void assertColumnLengthChange(DataSourceDefinition dataSource, String tables, String columns, int expectedLength)

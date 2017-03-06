@@ -361,16 +361,16 @@ public class CompareTest extends TestCase {
         MetadataRepository updated = new MetadataRepository();
         updated.load(CompareTest.class.getResourceAsStream("schema16_2.xsd")); //$NON-NLS-1$
         Compare.DiffResults diffResults = Compare.compare(original, updated);
-        assertEquals(4, diffResults.getActions().size());
-        assertEquals(3, diffResults.getModifyChanges().size());
-        assertEquals(0, diffResults.getRemoveChanges().size());
-        assertEquals(1, diffResults.getAddChanges().size());
+        assertEquals(6, diffResults.getActions().size());
+        assertEquals(1, diffResults.getModifyChanges().size());
+        assertEquals(2, diffResults.getRemoveChanges().size());
+        assertEquals(3, diffResults.getAddChanges().size());
 
         ImpactAnalyzer analyzer = new HibernateStorageImpactAnalyzer();
         Map<ImpactAnalyzer.Impact, List<Change>> sort = analyzer.analyzeImpacts(diffResults);
-        assertEquals(1, sort.get(ImpactAnalyzer.Impact.HIGH).size());
+        assertEquals(4, sort.get(ImpactAnalyzer.Impact.HIGH).size());
         assertEquals(0, sort.get(ImpactAnalyzer.Impact.MEDIUM).size());
-        assertEquals(1, sort.get(ImpactAnalyzer.Impact.LOW).size());
+        assertEquals(2, sort.get(ImpactAnalyzer.Impact.LOW).size());
     }
     
     public void test17() throws Exception {
@@ -720,7 +720,7 @@ public class CompareTest extends TestCase {
         assertEquals(0, sort.get(ImpactAnalyzer.Impact.LOW).size());
     }
 
-    public void test23_optionto_mandatory() throws Exception {
+    public void test23_option_to_mandatory_for_simpleType() throws Exception {
         MetadataRepository original = new MetadataRepository();
         original.load(CompareTest.class.getResourceAsStream("schema23_1.xsd")); //$NON-NLS-1$
         original = original.copy();
@@ -733,7 +733,7 @@ public class CompareTest extends TestCase {
         assertEquals(0, diffResults.getAddChanges().size());
     }
 
-    public void test24_mandatory_to_optionto() throws Exception {
+    public void test24_mandatory_to_option_for_simpleType() throws Exception {
         MetadataRepository original = new MetadataRepository();
         original.load(CompareTest.class.getResourceAsStream("Product_mandatory.xsd")); //$NON-NLS-1$
         original = original.copy();
@@ -750,6 +750,120 @@ public class CompareTest extends TestCase {
         assertEquals(0, sort.get(ImpactAnalyzer.Impact.HIGH).size());
         assertEquals(0, sort.get(ImpactAnalyzer.Impact.MEDIUM).size());
         assertEquals(14, sort.get(ImpactAnalyzer.Impact.LOW).size());
+    }
+
+    public void test25_mantory_to_option_for_complexType() throws Exception {
+        MetadataRepository original = new MetadataRepository();
+        original.load(CompareTest.class.getResourceAsStream("schema25_1.xsd")); //$NON-NLS-1$
+        original = original.copy();
+        MetadataRepository updated2 = new MetadataRepository();
+        updated2.load(CompareTest.class.getResourceAsStream("schema25_2.xsd")); //$NON-NLS-1$
+        Compare.DiffResults diffResults = Compare.compare(original, updated2);
+        assertEquals(8, diffResults.getActions().size());
+        assertEquals(8, diffResults.getModifyChanges().size());
+        assertEquals(0, diffResults.getRemoveChanges().size());
+        assertEquals(0, diffResults.getAddChanges().size());
+
+        ImpactAnalyzer analyzer = new HibernateStorageImpactAnalyzer();
+        Map<ImpactAnalyzer.Impact, List<Change>> sort = analyzer.analyzeImpacts(diffResults);
+        assertEquals(2, sort.get(ImpactAnalyzer.Impact.HIGH).size());
+        assertEquals(0, sort.get(ImpactAnalyzer.Impact.MEDIUM).size());
+        assertEquals(6, sort.get(ImpactAnalyzer.Impact.LOW).size());
+    }
+
+    public void test26_mantory_to_option_for_complexType() throws Exception {
+        MetadataRepository original = new MetadataRepository();
+        original.load(CompareTest.class.getResourceAsStream("schema26_1.xsd")); //$NON-NLS-1$
+        original = original.copy();
+        MetadataRepository updated2 = new MetadataRepository();
+        updated2.load(CompareTest.class.getResourceAsStream("schema26_2.xsd")); //$NON-NLS-1$
+        Compare.DiffResults diffResults = Compare.compare(original, updated2);
+        assertEquals(1, diffResults.getActions().size());
+        assertEquals(1, diffResults.getModifyChanges().size());
+        assertEquals(0, diffResults.getRemoveChanges().size());
+        assertEquals(0, diffResults.getAddChanges().size());
+
+        ImpactAnalyzer analyzer = new HibernateStorageImpactAnalyzer();
+        Map<ImpactAnalyzer.Impact, List<Change>> sort = analyzer.analyzeImpacts(diffResults);
+        assertEquals(1, sort.get(ImpactAnalyzer.Impact.HIGH).size());
+        assertEquals(0, sort.get(ImpactAnalyzer.Impact.MEDIUM).size());
+        assertEquals(0, sort.get(ImpactAnalyzer.Impact.LOW).size());
+    }
+
+    public void test27_mantory_to_option_for_complexType() throws Exception {
+        MetadataRepository original = new MetadataRepository();
+        original.load(CompareTest.class.getResourceAsStream("schema27_1.xsd")); //$NON-NLS-1$
+        original = original.copy();
+        MetadataRepository updated2 = new MetadataRepository();
+        updated2.load(CompareTest.class.getResourceAsStream("schema27_2.xsd")); //$NON-NLS-1$
+        Compare.DiffResults diffResults = Compare.compare(original, updated2);
+        assertEquals(1, diffResults.getActions().size());
+        assertEquals(1, diffResults.getModifyChanges().size());
+        assertEquals(0, diffResults.getRemoveChanges().size());
+        assertEquals(0, diffResults.getAddChanges().size());
+
+        ImpactAnalyzer analyzer = new HibernateStorageImpactAnalyzer();
+        Map<ImpactAnalyzer.Impact, List<Change>> sort = analyzer.analyzeImpacts(diffResults);
+        assertEquals(0, sort.get(ImpactAnalyzer.Impact.HIGH).size());
+        assertEquals(0, sort.get(ImpactAnalyzer.Impact.MEDIUM).size());
+        assertEquals(1, sort.get(ImpactAnalyzer.Impact.LOW).size());
+    }
+
+    public void test28_forChangeMany() throws Exception {
+        MetadataRepository original = new MetadataRepository();
+        original.load(CompareTest.class.getResourceAsStream("schema28_1.xsd")); //$NON-NLS-1$
+        original = original.copy();
+        MetadataRepository updated2 = new MetadataRepository();
+        updated2.load(CompareTest.class.getResourceAsStream("schema28_2.xsd")); //$NON-NLS-1$
+        Compare.DiffResults diffResults = Compare.compare(original, updated2);
+        assertEquals(11, diffResults.getActions().size());
+        assertEquals(11, diffResults.getModifyChanges().size());
+        assertEquals(0, diffResults.getRemoveChanges().size());
+        assertEquals(0, diffResults.getAddChanges().size());
+
+        ImpactAnalyzer analyzer = new HibernateStorageImpactAnalyzer();
+        Map<ImpactAnalyzer.Impact, List<Change>> sort = analyzer.analyzeImpacts(diffResults);
+        assertEquals(8, sort.get(ImpactAnalyzer.Impact.HIGH).size());
+        assertEquals(0, sort.get(ImpactAnalyzer.Impact.MEDIUM).size());
+        assertEquals(3, sort.get(ImpactAnalyzer.Impact.LOW).size());
+    }
+
+    public void test29_forComplexType() throws Exception {
+        MetadataRepository original = new MetadataRepository();
+        original.load(CompareTest.class.getResourceAsStream("schema29_1.xsd")); //$NON-NLS-1$
+        original = original.copy();
+        MetadataRepository updated2 = new MetadataRepository();
+        updated2.load(CompareTest.class.getResourceAsStream("schema29_2.xsd")); //$NON-NLS-1$
+        Compare.DiffResults diffResults = Compare.compare(original, updated2);
+        assertEquals(12, diffResults.getActions().size());
+        assertEquals(12, diffResults.getModifyChanges().size());
+        assertEquals(0, diffResults.getRemoveChanges().size());
+        assertEquals(0, diffResults.getAddChanges().size());
+
+        ImpactAnalyzer analyzer = new HibernateStorageImpactAnalyzer();
+        Map<ImpactAnalyzer.Impact, List<Change>> sort = analyzer.analyzeImpacts(diffResults);
+        assertEquals(9, sort.get(ImpactAnalyzer.Impact.HIGH).size());
+        assertEquals(0, sort.get(ImpactAnalyzer.Impact.MEDIUM).size());
+        assertEquals(3, sort.get(ImpactAnalyzer.Impact.LOW).size());
+    }
+
+    public void test30_forMovedField() throws Exception {
+        MetadataRepository original = new MetadataRepository();
+        original.load(CompareTest.class.getResourceAsStream("schema30_1.xsd")); //$NON-NLS-1$
+        original = original.copy();
+        MetadataRepository updated2 = new MetadataRepository();
+        updated2.load(CompareTest.class.getResourceAsStream("schema30_2.xsd")); //$NON-NLS-1$
+        Compare.DiffResults diffResults = Compare.compare(original, updated2);
+        assertEquals(25, diffResults.getActions().size());
+        assertEquals(0, diffResults.getModifyChanges().size());
+        assertEquals(25, diffResults.getRemoveChanges().size());
+        assertEquals(0, diffResults.getAddChanges().size());
+
+        ImpactAnalyzer analyzer = new HibernateStorageImpactAnalyzer();
+        Map<ImpactAnalyzer.Impact, List<Change>> sort = analyzer.analyzeImpacts(diffResults);
+        assertEquals(20, sort.get(ImpactAnalyzer.Impact.HIGH).size());
+        assertEquals(5, sort.get(ImpactAnalyzer.Impact.MEDIUM).size());
+        assertEquals(0, sort.get(ImpactAnalyzer.Impact.LOW).size());
     }
 
     @SuppressWarnings("rawtypes")

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:import namespace="http://www.w3.org/2001/XMLSchema" />
+    <xsd:element name="Person">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element maxOccurs="1" minOccurs="1" name="Id" type="xsd:string" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="aa_s" type="xsd:string" />
+                <xsd:element maxOccurs="1" minOccurs="1" name="bb_s" type="xsd:string" />
+                <xsd:element maxOccurs="unbounded" minOccurs="0" name="cc_s" type="xsd:string" />
+                <xsd:element maxOccurs="unbounded" minOccurs="1" name="dd_s" type="xsd:string" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="aa_c" type="Boy" />
+                <xsd:element maxOccurs="1" minOccurs="1" name="bb_c" type="Boy" />
+                <xsd:element maxOccurs="unbounded" minOccurs="0" name="cc_c" type="Boy" />
+                <xsd:element maxOccurs="unbounded" minOccurs="1" name="dd_c" type="Boy" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="uu_c">
+                    <xsd:complexType>
+                        <xsd:all>
+                            <xsd:element name="subelement" type="xsd:string" />
+                        </xsd:all>
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="uu_c_2">
+                    <xsd:complexType>
+                        <xsd:all>
+                            <xsd:element name="subelement" type="xsd:string" />
+                        </xsd:all>
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:element maxOccurs="unbounded" minOccurs="0" name="uu_c_n">
+                    <xsd:complexType>
+                        <xsd:all>
+                            <xsd:element name="subelement" type="xsd:string" />
+                        </xsd:all>
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:element maxOccurs="unbounded" minOccurs="1" name="uu_c_n_n">
+                    <xsd:complexType>
+                        <xsd:all>
+                            <xsd:element name="subelement" type="xsd:string" />
+                        </xsd:all>
+                    </xsd:complexType>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+        <xsd:unique name="Person">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="Id" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:complexType name="Boy">
+        <xsd:all>
+            <xsd:element maxOccurs="1" minOccurs="1" name="id" type="xsd:string" />
+            <xsd:element maxOccurs="1" minOccurs="0" name="name" type="xsd:string" />
+        </xsd:all>
+    </xsd:complexType>
+    <xsd:element name="Manager">
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element name="ManagerId" type="xsd:string" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="cc" type="Boy" />
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="Manager">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="ManagerId" />
+        </xsd:unique>
+    </xsd:element>
+</xsd:schema>

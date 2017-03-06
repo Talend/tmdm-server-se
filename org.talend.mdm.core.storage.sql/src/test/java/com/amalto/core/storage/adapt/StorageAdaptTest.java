@@ -1379,7 +1379,7 @@ public class StorageAdaptTest extends TestCase {
     }
 
     // TMDM-10531: [Impact Analysis] Move a simple field from mandatory to optional
-    public void test14_MoveSimpleFieldFormOptionToMandatory_ForNoData() throws Exception {
+    public void test14_MoveSimpleFieldFormMandatoryToOption_ForNoData() throws Exception {
         System.setProperty(LiquibaseSchemaAdapter.MDM_ROOT_URL, System.getProperty("user.dir"));
 
         DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
@@ -1443,7 +1443,7 @@ public class StorageAdaptTest extends TestCase {
     }
 
     // TMDM-10531: [Impact Analysis] Move a simple field from mandatory to optional
-    public void test14_MoveSimpleFieldFormOptionToMandatory_WithData() throws Exception {
+    public void test14_MoveSimpleFieldFormMandatoryToOption_WithData() throws Exception {
         System.setProperty(LiquibaseSchemaAdapter.MDM_ROOT_URL, System.getProperty("user.dir"));
 
         DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
@@ -1708,6 +1708,235 @@ public class StorageAdaptTest extends TestCase {
         storage.commit();
 
         deleteLiquibaseChangeLogFile();
+    }
+
+    // TMDM-10534：[Impact Analysis] Move a complex mandatory field (containing a simple optional field) to optional
+    public void test16_MoveComplexFieldFromMandatoryToOptional() throws Exception {
+        System.setProperty(LiquibaseSchemaAdapter.MDM_ROOT_URL, System.getProperty("user.dir"));
+
+        DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
+        Storage storage = new HibernateStorage("Person", StorageType.MASTER);
+        storage.init(dataSource);
+        String[] typeNames = { "Person" };
+        String[] tables = { "Person" };
+        String[] columns = { "", "X_ID", "X_NAME", "X_BOY_X_TALEND_ID", "X_GIRL_X_TALEND_ID", "X_STATUS", "X_UU_X_TALEND_ID",
+                "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" };
+
+        int[] isNullable = { 0, 0, 0, 0, 1, 0, 0, 0, 1 };
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+        MetadataRepository repository1 = new MetadataRepository();
+        repository1.load(StorageAdaptTest.class.getResourceAsStream("schema15_1.xsd"));
+        storage.prepare(repository1, true);
+        try {
+            assertColumnNullAble(dataSource, tables, columns, isNullable);
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+
+        String[] e2Tables = { "E2" };
+        String[] e2Columns = { "", "X_GRADE", "X_NAME", "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" };
+        int[] e2IsNullable = { 0, 0, 0, 0, 1 };
+        try {
+            assertColumnNullAble(dataSource, e2Tables, e2Columns, e2IsNullable);
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+
+        String[] anonymousTables = { "X_ANONYMOUS0" };
+        String[] anonymous0Columns = { "", "X_TALEND_ID", "X_SUBELEMENT" };
+        int[] anonymous0IsNullable = { 0, 0, 1 };
+        try {
+            assertColumnNullAble(dataSource, anonymousTables, anonymous0Columns, anonymous0IsNullable);
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+
+        // create record before change, second_name, married is null
+
+        String input1 = "<Person><Id>1</Id><name>person-name</name><boy><name>boy_name</name><grade>1</grade></boy><girl><name>girl_name</name><grade>1</grade></girl><status>Approved</status><uu><subelement>uu-sub</subelement></uu></Person>";
+        try {
+            createRecord(storage, factory, repository1, typeNames, new String[] { input1 });
+        } catch (Exception e1) {
+            assertNull(e1);
+        }
+
+        String[] e2TypeNames = { "E2" };
+        String input1_2 = "<E2><name>e2-name</name><grade>1</grade></E2>";
+        try {
+            createRecord(storage, factory, repository1, e2TypeNames, new String[] { input1_2 });
+        } catch (Exception e1) {
+            assertNull(e1);
+        }
+
+        storage.begin();
+        ComplexTypeMetadata objectType = repository1.getComplexType("Person");//$NON-NLS-1$
+        UserQueryBuilder qb = from(objectType);
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+            for (DataRecord result : results) {
+                assertEquals(6, result.getSetFields().size());
+                assertEquals("1", result.get("Id"));
+            }
+        } finally {
+            results.close();
+        }
+        storage.commit();
+
+        ComplexTypeMetadata e2Type = repository1.getComplexType("E2");//$NON-NLS-1$
+        qb = from(e2Type);
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+            for (DataRecord result : results) {
+                assertEquals(2, result.getSetFields().size());
+                assertEquals("e2-name", result.get("name"));
+            }
+        } finally {
+            results.close();
+        }
+        storage.commit();
+
+        MetadataRepository repository2 = new MetadataRepository();
+        repository2.load(StorageAdaptTest.class.getResourceAsStream("schema15_2.xsd"));
+        try {
+            storage.adapt(repository2, false);
+        } catch (Exception e2) {
+            assertNull(e2);
+        }
+
+        int[] isNullableUpdated = { 0, 0, 1, 1, 1, 1, 1, 0, 1 };
+        try {
+            assertColumnNullAble(dataSource, tables, columns, isNullableUpdated);
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+
+        String[] e2TablesUpdated = { "E2" };
+        String[] e2ColumnsUpdated = { "", "X_GRADE", "X_NAME", "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" };
+        int[] e2IsNullableUpdated = { 0, 0, 1, 0, 1 };
+        try {
+            assertColumnNullAble(dataSource, e2TablesUpdated, e2ColumnsUpdated, e2IsNullableUpdated);
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+
+        String[] anonymousTablesUpdated = { "X_ANONYMOUS0" };
+        String[] anonymous0ColumnsUpdated = { "", "X_TALEND_ID", "X_SUBELEMENT" };
+        int[] anonymous0IsNullableUpdated = { 0, 0, 1 };
+        try {
+            assertColumnNullAble(dataSource, anonymousTablesUpdated, anonymous0ColumnsUpdated, anonymous0IsNullableUpdated);
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+
+        storage.begin();
+        objectType = repository2.getComplexType("Person");//$NON-NLS-1$
+        qb = from(objectType);
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+            for (DataRecord result : results) {
+                assertEquals(6, result.getSetFields().size());
+            }
+        } finally {
+            results.close();
+        }
+        storage.commit();
+
+        storage.begin();
+        e2Type = repository2.getComplexType("E2");//$NON-NLS-1$
+        qb = from(e2Type);
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+            for (DataRecord result : results) {
+                assertEquals(2, result.getSetFields().size());
+            }
+        } finally {
+            results.close();
+        }
+        storage.commit();
+
+        String input2 = "<Person><Id>2</Id><girl><name>girl_name</name><grade>1</grade></girl></Person>";
+        try {
+            createRecord(storage, factory, repository2, typeNames, new String[] { input2 });
+        } catch (Exception e1) {
+            assertNull(e1);
+        }
+
+        String input2_2 = "<E2><grade>2</grade></E2>";
+        try {
+            createRecord(storage, factory, repository2, e2TypeNames, new String[] { input2_2 });
+        } catch (Exception e1) {
+            assertNull(e1);
+        }
+
+        storage.begin();
+        qb = from(objectType);
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(2, results.getCount());
+        } finally {
+            results.close();
+        }
+        storage.commit();
+
+        storage.begin();
+        qb = from(e2Type);
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(2, results.getCount());
+        } finally {
+            results.close();
+        }
+        storage.commit();
+
+        storage.begin();
+        storage.delete(qb.getSelect());
+        qb = from(objectType);
+        storage.delete(qb.getSelect());
+        storage.commit();
+
+        deleteLiquibaseChangeLogFile();
+    }
+
+    public void test17_forRepeatable() throws Exception {
+        System.setProperty(LiquibaseSchemaAdapter.MDM_ROOT_URL, System.getProperty("user.dir"));
+
+        DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
+        Storage storage = new HibernateStorage("Person", StorageType.MASTER);
+        storage.init(dataSource);
+        String[] typeNames = { "Person" };
+        String[] tables = { "Person" };
+        String[] columns = { "", "X_ID", "X_BB_X_TALEND_ID", "X_EE", "X_UU_X_TALEND_ID", "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" };
+
+        int[] isNullable = { 0, 0, 0, 0, 0, 0, 1 };
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+        MetadataRepository repository1 = new MetadataRepository();
+        repository1.load(StorageAdaptTest.class.getResourceAsStream("../hibernate/schema2_1.xsd"));
+        storage.prepare(repository1, true);
+
+        try {
+            assertColumnNullAble(dataSource, tables, columns, isNullable);
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+
+        MetadataRepository repository2 = new MetadataRepository();
+        repository2.load(StorageAdaptTest.class.getResourceAsStream("../hibernate/schema2_2.xsd"));
+        try {
+            storage.adapt(repository2, false);
+        } catch (Exception e2) {
+            assertNull(e2);
+        }
+
+        int[] isNullableUpdated = { 0, 0, 1, 1, 1, 0, 1 };
+        try {
+            assertColumnNullAble(dataSource, tables, columns, isNullableUpdated);
+        } catch (SQLException e) {
+            assertNull(e);
+        }
     }
 
     private void assertColumnLengthChange(DataSourceDefinition dataSource, String tables, String columns, int expectedLength)

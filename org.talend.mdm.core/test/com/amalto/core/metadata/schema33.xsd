@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:import namespace="http://www.w3.org/2001/XMLSchema" />
+    <xsd:element name="Person">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element maxOccurs="1" minOccurs="1" name="Id" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="8" minOccurs="0" name="aa" type="Boy">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="unbounded" minOccurs="0" name="bb" type="Boy">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="unbounded" minOccurs="1" name="cc" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="2" minOccurs="1" name="dd" type="Status">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="unbounded" minOccurs="1" name="ee" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey">School/Id</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+        <xsd:unique name="Person">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="Id" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:complexType name="Boy">
+        <xsd:all>
+            <xsd:element maxOccurs="1" minOccurs="1" name="name" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="1" name="grade" type="xsd:int">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:all>
+    </xsd:complexType>
+    <xsd:simpleType name="Status">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="Pending" />
+            <xsd:enumeration value="Rejected" />
+            <xsd:enumeration value="Approved" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:element name="School">
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1" name="Id" type="xsd:string" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="name" type="xsd:string" />
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="School">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="Id" />
+        </xsd:unique>
+    </xsd:element>
+</xsd:schema>

@@ -5,7 +5,12 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.sql.Connection;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
+
+import liquibase.change.AbstractChange;
+import liquibase.change.core.DropNotNullConstraintChange;
 
 import org.hibernate.dialect.Dialect;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
@@ -17,7 +22,10 @@ import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.metadata.TypeMetadata;
+import org.talend.mdm.commmon.metadata.compare.Compare;
+import org.talend.mdm.commmon.metadata.compare.ModifyChange;
 
+import com.amalto.core.metadata.compare.CompareTest;
 import com.amalto.core.server.MockServerLifecycle;
 import com.amalto.core.server.ServerContext;
 import com.amalto.core.storage.Storage;
@@ -121,5 +129,58 @@ public class LiquibaseSchemaAdapterTest {
         assertEquals("decimal(5,2)", adapter.getColumnTypeName(allType.getField("my_def_decimal")));
         assertEquals("varchar(255)", adapter.getColumnTypeName(person.getField("status")));
         assertEquals("varchar(255)", adapter.getColumnTypeName(person.getField("boy")));
+    }
+
+    @Test
+    public void testIsChangeMinOccursFormZeroToOneWithNMaxOccurs() throws Exception {
+        MetadataRepository repository2 = new MetadataRepository();
+        repository2.load(LiquibaseSchemaAdapterTest.class.getResourceAsStream("schema1.xsd"));
+
+        ComplexTypeMetadata person = repository2.getComplexType("Person");
+
+        assertFalse(adapter
+                .isChangeMinOccursFormZeroToOneWithNMaxOccurs(person.getField("aa_0_1_1"), person.getField("aa_0_1_2")));
+        assertFalse(adapter
+                .isChangeMinOccursFormZeroToOneWithNMaxOccurs(person.getField("aa_0_1_1"), person.getField("aa_0_1_3")));
+        assertFalse(adapter
+                .isChangeMinOccursFormZeroToOneWithNMaxOccurs(person.getField("bb_1_1_1"), person.getField("bb_1_1_2")));
+        assertFalse(adapter
+                .isChangeMinOccursFormZeroToOneWithNMaxOccurs(person.getField("bb_1_1_1"), person.getField("bb_1_1_2")));
+        assertFalse(adapter
+                .isChangeMinOccursFormZeroToOneWithNMaxOccurs(person.getField("cc_0_n_1"), person.getField("cc_0_n_2")));
+        assertFalse(adapter
+                .isChangeMinOccursFormZeroToOneWithNMaxOccurs(person.getField("cc_0_n_1"), person.getField("cc_0_n_3")));
+        assertTrue(adapter.isChangeMinOccursFormZeroToOneWithNMaxOccurs(person.getField("cc_0_n_1"), person.getField("cc_0_n_4")));
+        assertFalse(adapter
+                .isChangeMinOccursFormZeroToOneWithNMaxOccurs(person.getField("dd_1_n_1"), person.getField("dd_1_n_2")));
+        assertFalse(adapter
+                .isChangeMinOccursFormZeroToOneWithNMaxOccurs(person.getField("dd_1_n_1"), person.getField("dd_1_n_3")));
+        assertTrue(adapter.isChangeMinOccursFormZeroToOneWithNMaxOccurs(person.getField("dd_1_n_1"), person.getField("dd_1_n_4")));
+    }
+
+    @Test
+    public void testAnalyzeModifyChange_Complex() throws Exception {
+        MetadataRepository original = new MetadataRepository();
+        original.load(LiquibaseSchemaAdapterTest.class.getResourceAsStream("schema2_1.xsd")); //$NON-NLS-1$
+        original = original.copy();
+        MetadataRepository updated2 = new MetadataRepository();
+        updated2.load(LiquibaseSchemaAdapterTest.class.getResourceAsStream("schema2_2.xsd")); //$NON-NLS-1$
+        Compare.DiffResults diffResults = Compare.compare(original, updated2);
+
+        assertEquals(7, diffResults.getActions().size());
+        assertEquals(7, diffResults.getModifyChanges().size());
+        assertEquals(0, diffResults.getRemoveChanges().size());
+        assertEquals(0, diffResults.getAddChanges().size());
+
+        List<AbstractChange> changeList = adapter.analyzeModifyChange(diffResults);
+
+        assertEquals(3, changeList.size());
+        assertEquals("liquibase.change.core.DropNotNullConstraintChange", changeList.get(0).getClass().getName());
+        assertEquals("liquibase.change.core.DropNotNullConstraintChange", changeList.get(1).getClass().getName());
+        assertEquals("liquibase.change.core.DropNotNullConstraintChange", changeList.get(2).getClass().getName());
+
+        assertEquals("x_bb_x_talend_id", ((DropNotNullConstraintChange) changeList.get(0)).getColumnName());
+        assertEquals("x_ee", ((DropNotNullConstraintChange) changeList.get(1)).getColumnName());
+        assertEquals("x_uu_x_talend_id", ((DropNotNullConstraintChange) changeList.get(2)).getColumnName());
     }
 }

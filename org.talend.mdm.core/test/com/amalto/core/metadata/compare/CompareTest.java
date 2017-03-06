@@ -809,6 +809,44 @@ public class CompareTest extends TestCase {
         assertEquals(1, sort.get(ImpactAnalyzer.Impact.LOW).size());
     }
 
+    public void test28_forChangeMany() throws Exception {
+        MetadataRepository original = new MetadataRepository();
+        original.load(CompareTest.class.getResourceAsStream("schema28_1.xsd")); //$NON-NLS-1$
+        original = original.copy();
+        MetadataRepository updated2 = new MetadataRepository();
+        updated2.load(CompareTest.class.getResourceAsStream("schema28_2.xsd")); //$NON-NLS-1$
+        Compare.DiffResults diffResults = Compare.compare(original, updated2);
+        assertEquals(11, diffResults.getActions().size());
+        assertEquals(11, diffResults.getModifyChanges().size());
+        assertEquals(0, diffResults.getRemoveChanges().size());
+        assertEquals(0, diffResults.getAddChanges().size());
+
+        ImpactAnalyzer analyzer = new HibernateStorageImpactAnalyzer();
+        Map<ImpactAnalyzer.Impact, List<Change>> sort = analyzer.analyzeImpacts(diffResults);
+        assertEquals(8, sort.get(ImpactAnalyzer.Impact.HIGH).size());
+        assertEquals(0, sort.get(ImpactAnalyzer.Impact.MEDIUM).size());
+        assertEquals(3, sort.get(ImpactAnalyzer.Impact.LOW).size());
+    }
+
+    public void test29_forComplexType() throws Exception {
+        MetadataRepository original = new MetadataRepository();
+        original.load(CompareTest.class.getResourceAsStream("schema29_1.xsd")); //$NON-NLS-1$
+        original = original.copy();
+        MetadataRepository updated2 = new MetadataRepository();
+        updated2.load(CompareTest.class.getResourceAsStream("schema29_2.xsd")); //$NON-NLS-1$
+        Compare.DiffResults diffResults = Compare.compare(original, updated2);
+        assertEquals(12, diffResults.getActions().size());
+        assertEquals(12, diffResults.getModifyChanges().size());
+        assertEquals(0, diffResults.getRemoveChanges().size());
+        assertEquals(0, diffResults.getAddChanges().size());
+
+        ImpactAnalyzer analyzer = new HibernateStorageImpactAnalyzer();
+        Map<ImpactAnalyzer.Impact, List<Change>> sort = analyzer.analyzeImpacts(diffResults);
+        assertEquals(9, sort.get(ImpactAnalyzer.Impact.HIGH).size());
+        assertEquals(0, sort.get(ImpactAnalyzer.Impact.MEDIUM).size());
+        assertEquals(3, sort.get(ImpactAnalyzer.Impact.LOW).size());
+    }
+
     @SuppressWarnings("rawtypes")
     private ClassRepository buildRepository() {
         ClassRepository repository = new ClassRepository();

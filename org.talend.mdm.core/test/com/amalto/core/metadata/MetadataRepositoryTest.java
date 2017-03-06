@@ -714,16 +714,16 @@ public class MetadataRepositoryTest extends TestCase {
         assertTrue(entityType.hasField("dd"));
         assertTrue(entityType.hasField("ee"));
 
-        assertEquals(0, entityType.getField("aa").getData(MetadataRepository.MIN_OCCURS));
-        assertEquals(0, entityType.getField("bb").getData(MetadataRepository.MIN_OCCURS));
-        assertEquals(1, entityType.getField("cc").getData(MetadataRepository.MIN_OCCURS));
-        assertEquals(1, entityType.getField("dd").getData(MetadataRepository.MIN_OCCURS));
-        assertEquals(1, entityType.getField("ee").getData(MetadataRepository.MIN_OCCURS));
+        assertEquals(0, Integer.parseInt(entityType.getField("aa").getData(MetadataRepository.MIN_OCCURS).toString()));
+        assertEquals(0, Integer.parseInt(entityType.getField("bb").getData(MetadataRepository.MIN_OCCURS).toString()));
+        assertEquals(1, Integer.parseInt(entityType.getField("cc").getData(MetadataRepository.MIN_OCCURS).toString()));
+        assertEquals(1, Integer.parseInt(entityType.getField("dd").getData(MetadataRepository.MIN_OCCURS).toString()));
+        assertEquals(1, Integer.parseInt(entityType.getField("ee").getData(MetadataRepository.MIN_OCCURS).toString()));
 
-        assertEquals(8, entityType.getField("aa").getData(MetadataRepository.MAX_OCCURS));
-        assertEquals(-1, entityType.getField("bb").getData(MetadataRepository.MAX_OCCURS));
-        assertEquals(-1, entityType.getField("cc").getData(MetadataRepository.MAX_OCCURS));
-        assertEquals(2, entityType.getField("dd").getData(MetadataRepository.MAX_OCCURS));
-        assertEquals(-1, entityType.getField("ee").getData(MetadataRepository.MAX_OCCURS));
+        assertEquals(8, Integer.parseInt(entityType.getField("aa").getData(MetadataRepository.MAX_OCCURS).toString()));
+        assertEquals(-1, Integer.parseInt(entityType.getField("bb").getData(MetadataRepository.MAX_OCCURS).toString()));
+        assertEquals(-1, Integer.parseInt(entityType.getField("cc").getData(MetadataRepository.MAX_OCCURS).toString()));
+        assertEquals(2, Integer.parseInt(entityType.getField("dd").getData(MetadataRepository.MAX_OCCURS).toString()));
+        assertEquals(-1, Integer.parseInt(entityType.getField("ee").getData(MetadataRepository.MAX_OCCURS).toString()));
     }
 }

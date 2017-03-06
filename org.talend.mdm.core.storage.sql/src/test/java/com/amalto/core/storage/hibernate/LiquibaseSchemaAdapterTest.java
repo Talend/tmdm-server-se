@@ -3,9 +3,7 @@ package com.amalto.core.storage.hibernate;
 import static org.junit.Assert.*;
 
 import java.io.File;
-import java.sql.Connection;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -21,16 +19,12 @@ import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
-import org.talend.mdm.commmon.metadata.TypeMetadata;
 import org.talend.mdm.commmon.metadata.compare.Compare;
-import org.talend.mdm.commmon.metadata.compare.ModifyChange;
 
-import com.amalto.core.metadata.compare.CompareTest;
 import com.amalto.core.server.MockServerLifecycle;
 import com.amalto.core.server.ServerContext;
 import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.StorageType;
-import com.amalto.core.storage.adapt.StorageAdaptTest;
 import com.amalto.core.storage.datasource.DataSourceDefinition;
 import com.amalto.core.storage.datasource.RDBMSDataSource;
 

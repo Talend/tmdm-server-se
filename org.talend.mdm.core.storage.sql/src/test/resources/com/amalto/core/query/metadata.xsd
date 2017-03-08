@@ -2718,5 +2718,80 @@
 			<xsd:field xpath="id"/>
 		</xsd:unique>
 	</xsd:element>
-	
+	<xsd:element name="MM">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1" name="Id" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="name" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="nn" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_ForeignKey">NN</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKeyInfo">NN/Id</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKeyInfo">NN/name</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKeyInfo">NN/sub/title</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKeyInfo">NN/sub/name</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="MM">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="Id" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="NN">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1" name="Id" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="name" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="sub" type="NN_Sub">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="NN">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="Id" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:complexType name="NN_Sub">
+        <xsd:all>
+            <xsd:element maxOccurs="1" minOccurs="1" name="name" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="title" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:all>
+    </xsd:complexType>
 </xsd:schema>

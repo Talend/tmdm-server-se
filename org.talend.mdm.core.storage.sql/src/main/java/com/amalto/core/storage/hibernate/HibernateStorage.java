@@ -1442,38 +1442,21 @@ public class HibernateStorage implements Storage {
             }
             Iterable<DataRecord> records = internalFetch(session, userQuery, Collections.<ResultsCallback> emptySet());
             for (DataRecord currentDataRecord : records) {
-                ComplexTypeMetadata currentType = currentDataRecord.getType();
-                List<ComplexTypeMetadata> types = new ArrayList<>();
+                List<String> types = new ArrayList<String>();
                 if (userQuery instanceof Select) {
-                    types.addAll(((Select) userQuery).getTypes());
-                }
-                if (types.isEmpty() || types.contains(currentType)) {
-                    TypeMapping mapping = mappingRepository.getMappingFromUser(currentType);
-                    if (mapping == null) {
-                        throw new IllegalArgumentException(
-                                "Type '" + currentType.getName() + "' does not have a database mapping."); //$NON-NLS-1$ //$NON-NLS-2$
-                    }
-                    Class<?> clazz = storageClassLoader.getClassFromType(mapping.getDatabase());
-
-                    Serializable idValue;
-                    Collection<FieldMetadata> keyFields = currentType.getKeyFields();
-                    if (keyFields.size() == 1) {
-                        idValue = (Serializable) currentDataRecord.get(keyFields.iterator().next());
-                    } else {
-                        List<Object> compositeIdValues = new LinkedList<Object>();
-                        for (FieldMetadata keyField : keyFields) {
-                            compositeIdValues.add(currentDataRecord.get(keyField));
+                    List<ComplexTypeMetadata> selectTypes = ((Select) userQuery).getTypes();
+                    for (ComplexTypeMetadata complexTypeMetadata : selectTypes) {
+                        Collection<ComplexTypeMetadata> subTypes = complexTypeMetadata.getSubTypes();
+                        for (ComplexTypeMetadata subComplexTypeMetadata : subTypes) {
+                            if (subComplexTypeMetadata.isInstantiable()) {
+                                types.add(subComplexTypeMetadata.getName());
+                            }
                         }
-                        idValue = ObjectDataRecordConverter.createCompositeId(storageClassLoader, clazz, compositeIdValues);
+                        types.add(complexTypeMetadata.getName());
                     }
-
-                    Wrapper object = (Wrapper) session.get(clazz, idValue, LockOptions.READ);
-                    if (object != null) {
-                        session.delete(object);
-                    } else {
-                        LOGGER.warn("Instance of type '" + currentType.getName() + "' and ID '" + idValue.toString() //$NON-NLS-1$ //$NON-NLS-2$
-                                + "' has already been deleted within same transaction."); //$NON-NLS-1$
-                    }
+                }
+                if (types.isEmpty() || types.contains(currentDataRecord.getType().getName())) {
+                    delete(currentDataRecord);
                 }
             }
         } catch (ConstraintViolationException e) {

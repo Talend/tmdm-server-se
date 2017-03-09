@@ -126,30 +126,30 @@ public class LiquibaseSchemaAdapterTest {
     }
 
     @Test
-    public void testIsChangeMinOccursFormZeroToOneWithNMaxOccurs() throws Exception {
+    public void testIsModifyMinOccursForRepeatable() throws Exception {
         MetadataRepository repository2 = new MetadataRepository();
         repository2.load(LiquibaseSchemaAdapterTest.class.getResourceAsStream("schema1.xsd"));
 
         ComplexTypeMetadata person = repository2.getComplexType("Person");
 
         assertFalse(adapter
-                .isChangeMinOccursFormZeroToOneWithNMaxOccurs(person.getField("aa_0_1_1"), person.getField("aa_0_1_2")));
+                .isModifyMinOccursForRepeatable(person.getField("aa_0_1_1"), person.getField("aa_0_1_2")));
         assertFalse(adapter
-                .isChangeMinOccursFormZeroToOneWithNMaxOccurs(person.getField("aa_0_1_1"), person.getField("aa_0_1_3")));
+                .isModifyMinOccursForRepeatable(person.getField("aa_0_1_1"), person.getField("aa_0_1_3")));
         assertFalse(adapter
-                .isChangeMinOccursFormZeroToOneWithNMaxOccurs(person.getField("bb_1_1_1"), person.getField("bb_1_1_2")));
+                .isModifyMinOccursForRepeatable(person.getField("bb_1_1_1"), person.getField("bb_1_1_2")));
         assertFalse(adapter
-                .isChangeMinOccursFormZeroToOneWithNMaxOccurs(person.getField("bb_1_1_1"), person.getField("bb_1_1_2")));
+                .isModifyMinOccursForRepeatable(person.getField("bb_1_1_1"), person.getField("bb_1_1_2")));
         assertFalse(adapter
-                .isChangeMinOccursFormZeroToOneWithNMaxOccurs(person.getField("cc_0_n_1"), person.getField("cc_0_n_2")));
+                .isModifyMinOccursForRepeatable(person.getField("cc_0_n_1"), person.getField("cc_0_n_2")));
         assertFalse(adapter
-                .isChangeMinOccursFormZeroToOneWithNMaxOccurs(person.getField("cc_0_n_1"), person.getField("cc_0_n_3")));
-        assertTrue(adapter.isChangeMinOccursFormZeroToOneWithNMaxOccurs(person.getField("cc_0_n_1"), person.getField("cc_0_n_4")));
+                .isModifyMinOccursForRepeatable(person.getField("cc_0_n_1"), person.getField("cc_0_n_3")));
+        assertTrue(adapter.isModifyMinOccursForRepeatable(person.getField("cc_0_n_1"), person.getField("cc_0_n_4")));
         assertFalse(adapter
-                .isChangeMinOccursFormZeroToOneWithNMaxOccurs(person.getField("dd_1_n_1"), person.getField("dd_1_n_2")));
+                .isModifyMinOccursForRepeatable(person.getField("dd_1_n_1"), person.getField("dd_1_n_2")));
         assertFalse(adapter
-                .isChangeMinOccursFormZeroToOneWithNMaxOccurs(person.getField("dd_1_n_1"), person.getField("dd_1_n_3")));
-        assertTrue(adapter.isChangeMinOccursFormZeroToOneWithNMaxOccurs(person.getField("dd_1_n_1"), person.getField("dd_1_n_4")));
+                .isModifyMinOccursForRepeatable(person.getField("dd_1_n_1"), person.getField("dd_1_n_3")));
+        assertTrue(adapter.isModifyMinOccursForRepeatable(person.getField("dd_1_n_1"), person.getField("dd_1_n_4")));
     }
 
     @Test

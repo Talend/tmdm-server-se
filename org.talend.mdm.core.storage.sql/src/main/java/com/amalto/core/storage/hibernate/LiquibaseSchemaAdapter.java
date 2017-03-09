@@ -60,8 +60,7 @@ import com.amalto.core.storage.datasource.RDBMSDataSource.DataSourceDialect;
 
 public class LiquibaseSchemaAdapter  {
 
-    private static final String HYPHEN = "-"; //$NON-NLS-1$
-
+    private static final String SEPARATOR = "-"; //$NON-NLS-1$
 
     private static final String DATA_LIQUBASE_CHANGELOG_PATH = "/data/liqubase-changelog/";
 
@@ -145,7 +144,7 @@ public class LiquibaseSchemaAdapter  {
                     columnName = columnName.toUpperCase();
                 }
 
-                if (current.isMandatory() && !previous.isMandatory() && !isChangeMinOccursFormZeroToOneWithNMaxOccurs(previous, current)) {
+                if (current.isMandatory() && !previous.isMandatory() && !isModifyMinOccursForRepeatable(previous, current)) {
                     if (storageType == StorageType.MASTER) {
                         changeActionList.add(generateAddNotNullConstraintChange(defaultValueRule, tableName, columnName,
                                 columnDataType));
@@ -154,7 +153,7 @@ public class LiquibaseSchemaAdapter  {
                         changeActionList.add(generateAddDefaultValueChange(defaultValueRule, tableName, columnName,
                                 columnDataType));
                     }
-                } else if (!current.isMandatory() && previous.isMandatory() && !isChangeMinOccursFormZeroToOneWithNMaxOccurs(previous, current)) {
+                } else if (!current.isMandatory() && previous.isMandatory() && !isModifyMinOccursForRepeatable(previous, current)) {
                     if (storageType == StorageType.MASTER) {
                         changeActionList.add(generateDropNotNullConstraintChange(tableName, columnName, columnDataType));
                     }
@@ -280,8 +279,8 @@ public class LiquibaseSchemaAdapter  {
                 file.mkdir();
             }
 
-            changeLogFilePath = filePath + "/" + DateUtils.format(System.currentTimeMillis(), "yyyyMMddHHmm") + HYPHEN  //$NON-NLS-1$ //$NON-NLS-2$
-                    + System.currentTimeMillis() + HYPHEN + storageType + ".xml"; //$NON-NLS-1$ //$NON-NLS-2$
+            changeLogFilePath = filePath + "/" + DateUtils.format(System.currentTimeMillis(), "yyyyMMddHHmm") + SEPARATOR  //$NON-NLS-1$ //$NON-NLS-2$
+                    + System.currentTimeMillis() + SEPARATOR + storageType + ".xml"; //$NON-NLS-1$ //$NON-NLS-2$
             File changeLogFile = new File(changeLogFilePath);
             if (!changeLogFile.exists()) {
                 changeLogFile.createNewFile();
@@ -331,18 +330,14 @@ public class LiquibaseSchemaAdapter  {
         return dialect.getTypeName(hibernateTypeCode, length, precision, scale);
     }
 
-    protected boolean isChangeMinOccursFormZeroToOneWithNMaxOccurs(FieldMetadata previous, FieldMetadata current) {
+    protected boolean isModifyMinOccursForRepeatable(FieldMetadata previous, FieldMetadata current) {
         int previousMinOccurs = previous.getData(MetadataRepository.MIN_OCCURS);
         int previousMaxOccurs = previous.getData(MetadataRepository.MAX_OCCURS);
         int currentMinOccurs = current.getData(MetadataRepository.MIN_OCCURS);
         int currentMxnOccurs = current.getData(MetadataRepository.MAX_OCCURS);
 
         if (previousMaxOccurs == currentMxnOccurs && currentMxnOccurs == -1) {
-            if (previousMinOccurs == 0 && currentMinOccurs == 1) {
-                return true;
-            }
-
-            if (previousMinOccurs == 1 && currentMinOccurs == 0) {
+            if (previousMinOccurs != currentMinOccurs) {
                 return true;
             }
         }

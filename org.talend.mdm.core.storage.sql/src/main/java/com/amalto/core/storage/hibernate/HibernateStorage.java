@@ -1264,7 +1264,7 @@ public class HibernateStorage implements Storage {
 
             try {
                 SessionFactoryImplementor sessionFactoryImplementor = (SessionFactoryImplementor) this.getCurrentSession()
-    .getSessionFactory();
+                        .getSessionFactory();
 
                 Dialect dialect = sessionFactoryImplementor.getDialect();
                 Connection connection = sessionFactoryImplementor.getConnectionProvider().getConnection();

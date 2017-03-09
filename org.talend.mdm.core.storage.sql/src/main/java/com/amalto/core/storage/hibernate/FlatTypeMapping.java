@@ -155,7 +155,7 @@ class FlatTypeMapping extends TypeMapping {
                 } else if (field instanceof ReferenceFieldMetadata) {
                     StorageClassLoader storageClassLoader = (StorageClassLoader) Thread.currentThread().getContextClassLoader();
                     if (!field.isMany()) {
-                        if (value != null && "class com.amalto.core.storage.record.DataRecord".equals(value.getClass().toString())) { //$NON-NLS-1$
+                        if (value != null && value instanceof DataRecord) { //$NON-NLS-1$
                             DataRecord dataRecordValue = (DataRecord) value;
                             TypeMetadata referencedType = dataRecordValue.getType();
                             Class<?> referencedClass = storageClassLoader.findClass(referencedType.getName());

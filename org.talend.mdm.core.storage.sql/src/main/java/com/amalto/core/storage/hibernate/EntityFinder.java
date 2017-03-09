@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -30,7 +29,6 @@ import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.collections.set.ListOrderedSet;
-import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.search.Explanation;
 import org.apache.lucene.search.Sort;
 import org.hibernate.CacheMode;
@@ -426,8 +424,13 @@ public class EntityFinder {
                 Wrapper element = EntityFinder.findEntity((Wrapper) item, storage, session);
                 if (element != null) {
                     if (entityClassName.size() > 0) {
-                        if (this.entityClassName.contains(element.getClass().getName())) {
+                        String elementName = element.getClass().getName();
+                        if (this.entityClassName.contains(elementName)) {
                             newSet.add(element);
+                        } else if (elementName.contains("_$$")) {
+                            if (this.entityClassName.contains(elementName.subSequence(0, elementName.indexOf("_$$")))) {
+                                newSet.add(element);
+                            }
                         }
                     } else {
                         newSet.add(element);

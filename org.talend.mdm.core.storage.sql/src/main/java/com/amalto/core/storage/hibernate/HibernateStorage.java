@@ -1256,6 +1256,12 @@ public class HibernateStorage implements Storage {
 
         // for the liquibase
         if (!force) {
+            Map<ImpactAnalyzer.Impact, List<Change>> impacts = getImpactsResult(diffResults);
+            if (impacts.get(ImpactAnalyzer.Impact.HIGH).size() > 0) {
+                throw new RuntimeException(
+                        "Unable to complete database schema update, have High impact change but not clean impacted tabled."); //$NON-NLS-1$
+            }
+
             try {
                 SessionFactoryImplementor sessionFactoryImplementor = (SessionFactoryImplementor) this.getCurrentSession()
                         .getSessionFactory();
@@ -1263,12 +1269,13 @@ public class HibernateStorage implements Storage {
                 Dialect dialect = sessionFactoryImplementor.getDialect();
                 Connection connection = sessionFactoryImplementor.getConnectionProvider().getConnection();
 
-                LiquibaseSchemaAdapter liquibaseChange = new LiquibaseSchemaAdapter(tableResolver, diffResults, dialect,
-                        (RDBMSDataSource) this.getDataSource());
-                liquibaseChange.adapt(connection);
+                LiquibaseSchemaAdapter liquibaseChange = new LiquibaseSchemaAdapter(tableResolver, dialect,
+                        (RDBMSDataSource) this.getDataSource(), this.getType());
+                liquibaseChange.adapt(connection, diffResults);
 
             } catch (Exception e) {
                 LOGGER.error("execute liquibase update failure", e);
+                throw new RuntimeException("Unable to complete database schema update, execute liquibase failed.", e); //$NON-NLS-1$
             }
         }
 
@@ -1697,7 +1704,7 @@ public class HibernateStorage implements Storage {
         return storageClassLoader;
     }
 
-    private Session getCurrentSession() {
+    protected Session getCurrentSession() {
         TransactionManager transactionManager = ServerContext.INSTANCE.get().getTransactionManager();
         com.amalto.core.storage.transaction.Transaction currentTransaction = transactionManager.currentTransaction();
         HibernateStorageTransaction storageTransaction = (HibernateStorageTransaction) currentTransaction.include(this);

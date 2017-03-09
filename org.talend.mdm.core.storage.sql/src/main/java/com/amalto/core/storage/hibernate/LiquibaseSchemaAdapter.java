@@ -37,25 +37,30 @@ import org.apache.log4j.Logger;
 import org.apache.tools.ant.util.DateUtils;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.mapping.Column;
+import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.metadata.MetadataUtils;
 import org.talend.mdm.commmon.metadata.MetadataVisitable;
+import org.talend.mdm.commmon.metadata.SimpleTypeFieldMetadata;
+import org.talend.mdm.commmon.metadata.SimpleTypeMetadata;
 import org.talend.mdm.commmon.metadata.TypeMetadata;
-import org.talend.mdm.commmon.metadata.compare.Change;
 import org.talend.mdm.commmon.metadata.compare.Compare;
-import org.talend.mdm.commmon.metadata.compare.ImpactAnalyzer;
 import org.talend.mdm.commmon.metadata.compare.ModifyChange;
 import org.talend.mdm.commmon.metadata.compare.Compare.DiffResults;
 import org.talend.mdm.commmon.metadata.compare.RemoveChange;
 import org.talend.mdm.commmon.util.core.CommonUtil;
 
 import com.amalto.core.storage.HibernateStorageUtils;
+import com.amalto.core.storage.StorageType;
 import com.amalto.core.storage.datasource.RDBMSDataSource;
 import com.amalto.core.storage.datasource.RDBMSDataSource.DataSourceDialect;
 
 public class LiquibaseSchemaAdapter  {
+
+    private static final String SEPARATOR = "-"; //$NON-NLS-1$
 
     private static final String DATA_LIQUBASE_CHANGELOG_PATH = "/data/liqubase-changelog/";
 
@@ -65,30 +70,29 @@ public class LiquibaseSchemaAdapter  {
 
     private TableResolver tableResolver;
 
-    private Compare.DiffResults diffResults;
-
     private Dialect dialect;
 
     private RDBMSDataSource dataSource;
+    
+    private StorageType storageType;
 
-    public LiquibaseSchemaAdapter(TableResolver tableResolver, Compare.DiffResults diffResults, Dialect dialect,
-            RDBMSDataSource dataSource) {
+    public LiquibaseSchemaAdapter(TableResolver tableResolver, Dialect dialect, RDBMSDataSource dataSource,
+            StorageType storageType) {
         this.tableResolver = tableResolver;
-        this.diffResults = diffResults;
         this.dialect = dialect;
         this.dataSource = dataSource;
+        this.storageType = storageType;
     }
 
-    public void adapt(Connection connection) throws Exception {
+    public void adapt(Connection connection, Compare.DiffResults diffResults) throws Exception {
 
-        List<AbstractChange> changeType = findChangeFiles(diffResults, tableResolver);
+        List<AbstractChange> changeType = findChangeFiles(diffResults);
 
         if (changeType.isEmpty()) {
             return;
         }
 
         try {
-
             DatabaseConnection liquibaseConnection = new liquibase.database.jvm.JdbcConnection(connection);
 
             liquibase.database.Database database = liquibase.database.DatabaseFactory.getInstance()
@@ -104,47 +108,55 @@ public class LiquibaseSchemaAdapter  {
         }
     }
 
-    private List<AbstractChange> findChangeFiles(DiffResults diffResults, TableResolver tableResolver) {
+    protected List<AbstractChange> findChangeFiles(DiffResults diffResults) {
         List<AbstractChange> changeActionList = new ArrayList<AbstractChange>();
 
         if (!diffResults.getRemoveChanges().isEmpty()) {
-            changeActionList.addAll(analyzeRemoveChange(diffResults, tableResolver));
+            changeActionList.addAll(analyzeRemoveChange(diffResults));
         }
 
         if (!diffResults.getModifyChanges().isEmpty()) {
 
-            changeActionList.addAll(analyzeModifyChange(diffResults, tableResolver));
+            changeActionList.addAll(analyzeModifyChange(diffResults));
         }
         return changeActionList;
     }
 
-    private List<AbstractChange> analyzeModifyChange(DiffResults diffResults, TableResolver tableResolver) {
+    protected List<AbstractChange> analyzeModifyChange(DiffResults diffResults) {
         List<AbstractChange> changeActionList = new ArrayList<AbstractChange>();
         for (ModifyChange modifyAction : diffResults.getModifyChanges()) {
             MetadataVisitable element = modifyAction.getElement();
-            if (element instanceof FieldMetadata && !(((FieldMetadata) element).getContainingType() instanceof ContainedComplexTypeMetadata)
-                    && !(((FieldMetadata) element).getType() instanceof ContainedComplexTypeMetadata)) {
+            if (!isContainedComplexFieldTypeMetadata((FieldMetadata) element) || isSimpleTypeFieldMetadata((FieldMetadata) element)
+                    || isContainedComplexType((FieldMetadata) element)) {
                 FieldMetadata previous = (FieldMetadata) modifyAction.getPrevious();
                 FieldMetadata current = (FieldMetadata) modifyAction.getCurrent();
 
                 String defaultValueRule = ((FieldMetadata) current).getData(MetadataRepository.DEFAULT_VALUE_RULE);
-                defaultValueRule = HibernateStorageUtils.convertedDefaultValue(dataSource.getDialectName(), defaultValueRule, "");
+                defaultValueRule = HibernateStorageUtils.convertedDefaultValue(dataSource.getDialectName(), defaultValueRule, StringUtils.EMPTY);
                 String tableName = tableResolver.get(current.getContainingType().getEntity()).toLowerCase();
+                String columnDataType = getColumnTypeName(current);
                 String columnName = tableResolver.get(current);
-                String columnDataType = StringUtils.EMPTY;
-                columnDataType = getColumnType(current, columnDataType);
+                if (current instanceof ContainedTypeFieldMetadata) {
+                    columnName += "_x_talend_id";
+                }
 
-                if (current.isMandatory() && !previous.isMandatory()) {
-                    changeActionList.add(generateAddNotNullConstraintChange(defaultValueRule, tableName, columnName,
-                            columnDataType));
+                if (dataSource.getDialectName() == DataSourceDialect.ORACLE_10G) {
+                    columnName = columnName.toUpperCase();
+                }
 
+                if (current.isMandatory() && !previous.isMandatory() && !isModifyMinOccursForRepeatable(previous, current)) {
+                    if (storageType == StorageType.MASTER) {
+                        changeActionList.add(generateAddNotNullConstraintChange(defaultValueRule, tableName, columnName,
+                                columnDataType));
+                    }
                     if (StringUtils.isNotBlank(defaultValueRule)) {
                         changeActionList.add(generateAddDefaultValueChange(defaultValueRule, tableName, columnName,
                                 columnDataType));
                     }
-                } else if(!current.isMandatory() && previous.isMandatory()){
-                    changeActionList.add(generateDropNotNullConstraintChange(tableName, columnName, columnDataType));
-
+                } else if (!current.isMandatory() && previous.isMandatory() && !isModifyMinOccursForRepeatable(previous, current)) {
+                    if (storageType == StorageType.MASTER) {
+                        changeActionList.add(generateDropNotNullConstraintChange(tableName, columnName, columnDataType));
+                    }
                     if (StringUtils.isNotBlank(defaultValueRule) && dataSource.getDialectName() == DataSourceDialect.MYSQL) {
                         changeActionList.add(generateAddDefaultValueChange(defaultValueRule, tableName, columnName,
                                 columnDataType));
@@ -155,14 +167,15 @@ public class LiquibaseSchemaAdapter  {
         return changeActionList;
     }
 
-    private List<AbstractChange> analyzeRemoveChange(DiffResults diffResults, TableResolver tableResolver) {
+    protected List<AbstractChange> analyzeRemoveChange(DiffResults diffResults) {
         List<AbstractChange> changeActionList = new ArrayList<AbstractChange>();
 
         Map<String, List<String>> dropColumnMap = new HashMap<String, List<String>>();
         for (RemoveChange removeAction : diffResults.getRemoveChanges()) {
 
             MetadataVisitable element = removeAction.getElement();
-            if (element instanceof FieldMetadata) {
+            if (!isContainedComplexFieldTypeMetadata((FieldMetadata) element) || isSimpleTypeFieldMetadata((FieldMetadata) element)
+                    || isContainedComplexType((FieldMetadata) element)) {
                 FieldMetadata field = (FieldMetadata) element;
 
                 String tableName = tableResolver.get(field.getContainingType().getEntity()).toLowerCase();
@@ -193,7 +206,7 @@ public class LiquibaseSchemaAdapter  {
         return changeActionList;
     }
 
-    private DropNotNullConstraintChange generateDropNotNullConstraintChange(String tableName, String columnName,
+    protected DropNotNullConstraintChange generateDropNotNullConstraintChange(String tableName, String columnName,
             String columnDataType) {
         DropNotNullConstraintChange dropNotNullConstraintChange = new DropNotNullConstraintChange();
         dropNotNullConstraintChange.setTableName(tableName);
@@ -202,7 +215,7 @@ public class LiquibaseSchemaAdapter  {
         return dropNotNullConstraintChange;
     }
 
-    private AddDefaultValueChange generateAddDefaultValueChange(String defaultValueRule, String tableName, String columnName,
+    protected AddDefaultValueChange generateAddDefaultValueChange(String defaultValueRule, String tableName, String columnName,
             String columnDataType) {
         AddDefaultValueChange addDefaultValueChange = new AddDefaultValueChange();
         addDefaultValueChange.setColumnDataType(columnDataType);
@@ -216,13 +229,13 @@ public class LiquibaseSchemaAdapter  {
         return addDefaultValueChange;
     }
 
-    private AddNotNullConstraintChange generateAddNotNullConstraintChange(String defaultValueRule, String tableName,
+    protected AddNotNullConstraintChange generateAddNotNullConstraintChange(String defaultValueRule, String tableName,
             String columnName, String columnDataType) {
         AddNotNullConstraintChange addNotNullConstraintChange = new AddNotNullConstraintChange();
         addNotNullConstraintChange.setColumnDataType(columnDataType);
         addNotNullConstraintChange.setColumnName(columnName);
         addNotNullConstraintChange.setTableName(tableName);
-        if (isBooleanType(columnDataType)) {
+        if (isBooleanType(columnDataType) && StringUtils.isNoneBlank(defaultValueRule)) {
             addNotNullConstraintChange.setDefaultNullValue(defaultValueRule.equals("1") ? "TRUE" : "FALSE"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         } else {
             addNotNullConstraintChange.setDefaultNullValue(defaultValueRule);
@@ -230,11 +243,7 @@ public class LiquibaseSchemaAdapter  {
         return addNotNullConstraintChange;
     }
 
-    private boolean isBooleanType(String columnDataType) {
-        return columnDataType.equals("bit") || columnDataType.equals("boolean"); //$NON-NLS-1$ //$NON-NLS-2$
-    }
-
-    private String getChangeLogFilePath(List<AbstractChange> changeType) {
+    protected String getChangeLogFilePath(List<AbstractChange> changeType) {
         // create a changelog
         liquibase.changelog.DatabaseChangeLog databaseChangeLog = new liquibase.changelog.DatabaseChangeLog();
 
@@ -252,7 +261,7 @@ public class LiquibaseSchemaAdapter  {
         return generateChangeLogFile(databaseChangeLog);
     }
 
-    private String generateChangeLogFile(liquibase.changelog.DatabaseChangeLog databaseChangeLog) {
+    protected String generateChangeLogFile(liquibase.changelog.DatabaseChangeLog databaseChangeLog) {
         String changeLogFilePath = StringUtils.EMPTY;
         // create a new serializer
         XMLChangeLogSerializer xmlChangeLogSerializer = new XMLChangeLogSerializer();
@@ -270,8 +279,8 @@ public class LiquibaseSchemaAdapter  {
                 file.mkdir();
             }
 
-            changeLogFilePath = filePath + "/" + DateUtils.format(System.currentTimeMillis(), "yyyyMMddHHmm") + "-" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                    + System.currentTimeMillis() + ".xml"; //$NON-NLS-1$
+            changeLogFilePath = filePath + "/" + DateUtils.format(System.currentTimeMillis(), "yyyyMMddHHmm") + SEPARATOR  //$NON-NLS-1$ //$NON-NLS-2$
+                    + System.currentTimeMillis() + SEPARATOR + storageType + ".xml"; //$NON-NLS-1$ //$NON-NLS-2$
             File changeLogFile = new File(changeLogFilePath);
             if (!changeLogFile.exists()) {
                 changeLogFile.createNewFile();
@@ -286,7 +295,7 @@ public class LiquibaseSchemaAdapter  {
         return changeLogFilePath;
     }
 
-    private String getColumnType(FieldMetadata current, String columnDataType) {
+    protected String getColumnTypeName(FieldMetadata current) {
         int hibernateTypeCode = 0;
         TypeMetadata type = MetadataUtils.getSuperConcreteType(current.getType());
 
@@ -298,22 +307,60 @@ public class LiquibaseSchemaAdapter  {
         int precision = currentTotalDigits == null ? Column.DEFAULT_PRECISION : Integer.parseInt(currentTotalDigits.toString());
         int scale = currentFractionDigits == null ? Column.DEFAULT_SCALE : Integer.parseInt(currentFractionDigits.toString());
 
-        if (type.getName().equals("string")) { //$NON-NLS-1$
-            hibernateTypeCode = java.sql.Types.VARCHAR;
-        } else if (type.getName().equals("int") || type.getName().equals("short") //$NON-NLS-1$ //$NON-NLS-2$
-                || type.getName().equals("long") || type.getName().equals("integer")) { //$NON-NLS-1$ //$NON-NLS-2$
+        if (type.getName().equals("short")) { //$NON-NLS-1$
+            hibernateTypeCode = java.sql.Types.SMALLINT;
+        } else if (type.getName().equals("int") || type.getName().equals("integer")) { //$NON-NLS-1$ //$NON-NLS-2$
             hibernateTypeCode = java.sql.Types.INTEGER;
+        } else if (type.getName().equals("long")) { //$NON-NLS-1$
+            hibernateTypeCode = java.sql.Types.BIGINT;
         } else if (type.getName().equals("boolean")) { //$NON-NLS-1$
             hibernateTypeCode = java.sql.Types.BOOLEAN;
-        } else if (type.getName().equals("date") || type.getName().equals("datetime")) { //$NON-NLS-1$ //$NON-NLS-2$
+        } else if (type.getName().equals("date") || type.getName().equals("dateTime") || type.getName().equals("time")) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             hibernateTypeCode = java.sql.Types.TIMESTAMP;
-        } else if (type.getName().equals("double") || type.getName().equals("float")) { //$NON-NLS-1$ //$NON-NLS-2$
+        } else if (type.getName().equals("float")) { //$NON-NLS-1$ 
+            hibernateTypeCode = java.sql.Types.FLOAT;
+        } else if (type.getName().equals("double")) { //$NON-NLS-1$
             hibernateTypeCode = java.sql.Types.DOUBLE;
-        } else if (type.getName().equals("decimal")) {
+        } else if (type.getName().equals("decimal")) { //$NON-NLS-1$
             hibernateTypeCode = java.sql.Types.NUMERIC;
+        } else {
+            hibernateTypeCode = java.sql.Types.VARCHAR;
         }
-        columnDataType = dialect.getTypeName(hibernateTypeCode, length, precision, scale);
 
-        return columnDataType;
+        return dialect.getTypeName(hibernateTypeCode, length, precision, scale);
+    }
+
+    protected boolean isModifyMinOccursForRepeatable(FieldMetadata previous, FieldMetadata current) {
+        int previousMinOccurs = previous.getData(MetadataRepository.MIN_OCCURS);
+        int previousMaxOccurs = previous.getData(MetadataRepository.MAX_OCCURS);
+        int currentMinOccurs = current.getData(MetadataRepository.MIN_OCCURS);
+        int currentMxnOccurs = current.getData(MetadataRepository.MAX_OCCURS);
+
+        if (previousMaxOccurs == currentMxnOccurs && currentMxnOccurs == -1) {
+            if (previousMinOccurs != currentMinOccurs) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    protected boolean isContainedComplexFieldTypeMetadata(FieldMetadata fieldMetadata) {
+        return fieldMetadata.getContainingType() instanceof ContainedComplexTypeMetadata
+                && (fieldMetadata.getType() instanceof SimpleTypeMetadata);
+    }
+
+    protected boolean isSimpleTypeFieldMetadata(FieldMetadata fieldMetadata) {
+        return fieldMetadata instanceof SimpleTypeFieldMetadata
+                && !(fieldMetadata.getContainingType() instanceof ContainedComplexTypeMetadata)
+                && (fieldMetadata.getType() instanceof SimpleTypeMetadata);
+    }
+
+    protected boolean isContainedComplexType(FieldMetadata fieldMetadata) {
+        return (fieldMetadata.getContainingType() instanceof ComplexTypeMetadata)
+                && (fieldMetadata.getType() instanceof ContainedComplexTypeMetadata);
+    }
+
+    protected boolean isBooleanType(String columnDataType) {
+        return columnDataType.equals("bit") || columnDataType.equals("boolean"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 }

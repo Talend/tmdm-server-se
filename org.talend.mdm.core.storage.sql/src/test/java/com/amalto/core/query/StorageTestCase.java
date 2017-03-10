@@ -227,6 +227,9 @@ public class StorageTestCase extends TestCase {
         channel = repository.getComplexType("MYLOOKUP_BUSINESS_CHANNEL");
         party = repository.getComplexType("MYPARTY");
 
+        mm = repository.getComplexType("MM");
+        nn = repository.getComplexType("NN");
+        
         systemStorage = new SecuredStorage(new HibernateStorage("MDM", StorageType.SYSTEM), userSecurity);
         systemRepository = buildSystemRepository();
         

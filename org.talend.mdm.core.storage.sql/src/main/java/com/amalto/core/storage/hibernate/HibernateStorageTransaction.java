@@ -129,8 +129,16 @@ class HibernateStorageTransaction extends StorageTransaction {
                     LOGGER.debug("[" + storage + "] Transaction #" + transaction.hashCode() + " -> Commit includes " //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                             + session.getStatistics().getEntityCount() + " not-flushed record(s)..."); //$NON-NLS-1$
                 }
-                if (!transaction.isActive()) {
-                    throw new IllegalStateException("Can not commit transaction, no transaction is active."); //$NON-NLS-1$
+                if (!transaction.isActive()) {// not begun, was committed, was rolled back, failed commit
+                    LOGGER.warn("Transaction is not active, wasCommitted=" + transaction.wasCommitted() + ", wasRolledBack=" + transaction.wasRolledBack()); //$NON-NLS-1$ //$NON-NLS-2$
+                    if (!transaction.wasCommitted()) {
+                        try {
+                            transaction.begin();// not begun or rolled back
+                            LOGGER.warn("Transaction is not begun or rolled back unexpectedly, has been restarted."); //$NON-NLS-1$
+                        } catch (Exception e) { // failed commit
+                            throw new IllegalStateException("Transaction is not active and can't be restarted.", e); //$NON-NLS-1$
+                        }
+                    }
                 }
                 try {
                     if (!transaction.wasCommitted()) {
@@ -288,12 +296,14 @@ class HibernateStorageTransaction extends StorageTransaction {
                     }
                 } finally {
                     try {
-                        /*
-                         * Eviction is not <b>needed</b> (the session will not be reused), but evicts cache in case the
-                         * session is reused.
-                         */
-                        if (session.isOpen() && session.getStatistics().getEntityKeys().size() > 0) {
-                            session.clear();
+                        if (session.isOpen()) {
+                            /*
+                             * Eviction is not <b>needed</b> (the session will not be reused), but evicts cache in case the session
+                             * is reused.
+                             */
+                            if (session.getStatistics().getEntityKeys().size() > 0) {
+                                session.clear();
+                            }
                             session.close();
                         }
                         hasFailed = false;

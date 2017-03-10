@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -28,6 +29,7 @@ import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.util.core.EUUIDCustomType;
+import org.talend.mdm.commmon.util.core.MDMConfiguration;
 import org.talend.mdm.commmon.util.webapp.XSystemObjects;
 
 import com.amalto.core.load.action.DefaultLoadAction;
@@ -49,7 +51,11 @@ import com.amalto.core.util.XSDKey;
 
 public class LoadServlet extends HttpServlet {
 
+    private static final Logger LOG = Logger.getLogger(LoadServlet.class);
+
     private static final long serialVersionUID = 1L;
+
+    public static final Map<String, XSDKey> typeNameToKeyDef = new HashMap<String, XSDKey>();
 
     private static final String PARAMETER_CLUSTER = "cluster"; //$NON-NLS-1$
 
@@ -60,12 +66,19 @@ public class LoadServlet extends HttpServlet {
     private static final String PARAMETER_VALIDATE = "validate"; //$NON-NLS-1$
 
     private static final String PARAMETER_SMARTPK = "smartpk"; //$NON-NLS-1$
-    
+
     private static final String PARAMETER_INSERTONLY = "insertonly"; //$NON-NLS-1$
 
-    private static final Logger log = Logger.getLogger(LoadServlet.class);
+    private static final Map<String, AtomicInteger> DB_REQUESTS_MAP = new HashMap<String, AtomicInteger>();
 
-    public static final Map<String, XSDKey> typeNameToKeyDef = new HashMap<String, XSDKey>();
+    private static final Integer MAX_DB_REQUESTS;
+
+    private static final Long WAIT_MILLISECONDS;
+
+    static {
+        MAX_DB_REQUESTS = Integer.valueOf(MDMConfiguration.getConfiguration().getProperty("bulkload.concurrent.database.requests", "25")); //$NON-NLS-1$ //$NON-NLS-2$
+        WAIT_MILLISECONDS = Long.valueOf(MDMConfiguration.getConfiguration().getProperty("bulkload.concurrent.wait.milliseconds", "200")); //$NON-NLS-1$ //$NON-NLS-2$
+    }
 
     public LoadServlet() {
         super();
@@ -111,6 +124,26 @@ public class LoadServlet extends HttpServlet {
         DocumentSaverContext context = contextFactory.createBulkLoad(dataClusterName, dataModelName, keyMetadata,
                 request.getInputStream(), loadAction, server);
         DocumentSaver saver = context.createSaver();
+
+        // Wait until less that MAX_THREADS running
+        synchronized (LoadServlet.class) {
+            AtomicInteger dbRequests = getDbRequests(dataClusterName);
+            try {
+                while (dbRequests.get() >= MAX_DB_REQUESTS) {
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("Up to " + dbRequests + " db requests, wait for " + WAIT_MILLISECONDS + " ms.");
+                    }
+                    Thread.sleep(WAIT_MILLISECONDS);
+                }
+                int newDbRequests = increaseDbRequests(dataClusterName);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Add 1 db request, currently " + newDbRequests + " requests left.");
+                }
+            } catch (InterruptedException e) {
+                LOG.error("Waiting to start db request meets exception.", e);
+            }
+        }
+
         try {
             session.begin(dataClusterName);
             saver.save(session, context);
@@ -121,13 +154,35 @@ public class LoadServlet extends HttpServlet {
             try {
                 session.abort();
             } catch (Exception rollbackException) {
-                log.error("Ignoring rollback exception", rollbackException); //$NON-NLS-1$
+                LOG.error("Ignoring rollback exception", rollbackException); //$NON-NLS-1$
             }
             throw new ServletException(e);
         } finally {
             DataRecord.CheckExistence.remove();
+            // Decrease total threads
+            int newDbRequests = decreaseDbRequests(dataClusterName);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Finish 1 db request, currently " + newDbRequests + " requests left.");
+            }
         }
         writer.write("</body></html>"); //$NON-NLS-1$
+    }
+
+    protected int increaseDbRequests(String dataClusterName) {
+        return DB_REQUESTS_MAP.get(dataClusterName).incrementAndGet();
+    }
+
+    protected int decreaseDbRequests(String dataClusterName) {
+        return DB_REQUESTS_MAP.get(dataClusterName).decrementAndGet();
+    }
+
+    protected AtomicInteger getDbRequests(String dataClusterName) {
+        AtomicInteger value = DB_REQUESTS_MAP.get(dataClusterName);
+        if (value == null) {
+            value = new AtomicInteger(0);
+            DB_REQUESTS_MAP.put(dataClusterName, value);
+        }
+        return value;
     }
 
     protected LoadAction getLoadAction(String dataClusterName, String typeName, String dataModelName, boolean needValidate,
@@ -144,8 +199,8 @@ public class LoadServlet extends HttpServlet {
         } else {
             loadAction = new OptimizedLoadAction(dataClusterName, typeName, dataModelName, needAutoGenPK);
         }
-        if (log.isDebugEnabled()) {
-            log.debug("Load action selected for load: " + loadAction.getClass().getName() //$NON-NLS-1$
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Load action selected for load: " + loadAction.getClass().getName() //$NON-NLS-1$
                     + " / needValidate:" + needValidate + ")"); //$NON-NLS-1$ //$NON-NLS-2$
         }
         return loadAction;
@@ -196,7 +251,7 @@ public class LoadServlet extends HttpServlet {
      */
     private static PrintWriter configureWriter(HttpServletResponse resp) throws IOException {
         PrintWriter writer = resp.getWriter();
-        if (log.isDebugEnabled()) {
+        if (LOG.isDebugEnabled()) {
             return writer;
         } else {
             return new NoOpPrintWriter(writer);

@@ -45,7 +45,7 @@ class InMemoryAutoIncrementGenerator implements AutoIdGenerator {
     }
 
     @Override
-    public synchronized void saveState(XmlServer server) {
+    public void saveState(XmlServer server) {
         try {
             String xmlString = Util.convertAutoIncrement(CONFIGURATION);
             ItemPOJO pojo = new ItemPOJO(DC, // cluster

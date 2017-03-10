@@ -362,8 +362,7 @@ public class ForeignKeyListWindow extends Window {
             Map<String, TypeModel> dataTypes = entityModel.getMetaDataTypes();
             for (String info : foreignKeyInfo) {
                 TypeModel metaDataType = dataTypes.get(info);
-                String id = CommonUtil.getElementFromXpath(info);
-                ColumnConfig columnConfig = new ColumnConfig(id, metaDataType == null ? id : ViewUtil.getViewableLabel(
+                ColumnConfig columnConfig = new ColumnConfig(info, metaDataType == null ? info : ViewUtil.getViewableLabel(
                         Locale.getLanguage(), metaDataType), COLUMN_WIDTH);
                 columns.add(columnConfig);
                 if (entityModel.getTypeModel(info).getType().equals(DataTypeConstants.MLS)) {
@@ -379,6 +378,16 @@ public class ForeignKeyListWindow extends Window {
                         }
                     });
 
+                } else {
+                    columnConfig.setRenderer(new GridCellRenderer<ForeignKeyBean>() {
+
+                        @Override
+                        public Object render(final ForeignKeyBean fkBean, String property, ColumnData config, int rowIndex,
+                                int colIndex, ListStore<ForeignKeyBean> store, Grid<ForeignKeyBean> grid) {
+                            String propertyName = CommonUtil.getElementFromXpath(property);
+                            return fkBean.get(propertyName);
+                        }
+                    });
                 }
             }
             if (columns.size() > 0) {
@@ -402,15 +411,17 @@ public class ForeignKeyListWindow extends Window {
                         ListStore<ForeignKeyBean> store, Grid<ForeignKeyBean> grid) {
                     String result = ""; //$NON-NLS-1$
                     if (fkBean != null) {
-                        if (fkBean.get(property) != null && !"".equals(fkBean.get(property))) { //$NON-NLS-1$
+                        String propertyName = CommonUtil.getElementFromXpath(property);
+                        if (fkBean.get(propertyName) != null && !"".equals(fkBean.get(propertyName))) { //$NON-NLS-1$
                             if (entityModel.getTypeModel(fkInfo).getType().equals(DataTypeConstants.MLS)) {
-                                MultiLanguageModel multiLanguageModel = new MultiLanguageModel(fkBean.get(property).toString());
+                                MultiLanguageModel multiLanguageModel = new MultiLanguageModel(fkBean.get(propertyName)
+                                        .toString());
                                 result = multiLanguageModel.getValueByLanguage(Locale.getLanguage().toUpperCase()) + "-"; //$NON-NLS-1$
                             } else {
                                 if (fkBean.getDisplayInfo() != null && fkBean.getDisplayInfo().length() > 0) {
                                     result = fkBean.getDisplayInfo() + "-"; //$NON-NLS-1$
                                 } else {
-                                    result = fkBean.get(property) + "-"; //$NON-NLS-1$
+                                    result = fkBean.get(propertyName) + "-"; //$NON-NLS-1$
                                 }
                             }
                         }

@@ -1,0 +1,87 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">  
+  <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/>  
+  <xsd:complexType name="REFERENCE"> 
+    <xsd:all> 
+      <xsd:element maxOccurs="1" minOccurs="1" name="LIBELLE" type="STR_30"> 
+        <xsd:annotation> 
+          <xsd:appinfo source="X_Default_Value_Rule">/REF_MOTIF_DEP/REFERENCE/LIBELLE</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo> 
+        </xsd:annotation> 
+      </xsd:element>  
+      <xsd:element maxOccurs="1" minOccurs="1" name="ORDRE" type="xsd:int"> 
+        <xsd:annotation> 
+          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo> 
+        </xsd:annotation> 
+      </xsd:element>  
+      <xsd:element maxOccurs="1" minOccurs="1" name="ACTIF" type="xsd:boolean"> 
+        <xsd:annotation> 
+          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo> 
+        </xsd:annotation> 
+      </xsd:element> 
+    </xsd:all> 
+  </xsd:complexType>  
+  <xsd:simpleType name="AUTO_INCREMENT"> 
+    <xsd:restriction base="xsd:int"/> 
+  </xsd:simpleType>  
+  <xsd:simpleType name="STR_30"> 
+    <xsd:restriction base="xsd:string"/> 
+  </xsd:simpleType>  
+  <xsd:complexType name="FONCTION"> 
+    <xsd:all> 
+      <xsd:element maxOccurs="1" minOccurs="1" name="ID" type="xsd:integer"> 
+        <xsd:annotation> 
+          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo> 
+        </xsd:annotation> 
+      </xsd:element>  
+      <xsd:element maxOccurs="1" minOccurs="1" name="REFERENCE" type="REFERENCE"> 
+        <xsd:annotation> 
+          <xsd:appinfo source="X_AutoExpand">true</xsd:appinfo>  
+          <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>  
+          <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo> 
+        </xsd:annotation> 
+      </xsd:element>  
+      <xsd:element maxOccurs="1" minOccurs="1" name="TYPE_FONC" type="xsd:int"> 
+        <xsd:annotation> 
+          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo> 
+        </xsd:annotation> 
+      </xsd:element> 
+    </xsd:all> 
+  </xsd:complexType>  
+  <xsd:element name="REF_FONCTION" type="FONCTION"> 
+    <xsd:annotation> 
+      <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo> 
+    </xsd:annotation>  
+    <xsd:unique name="REF_FONCTION"> 
+      <xsd:selector xpath="."/>  
+      <xsd:field xpath="ID"/> 
+    </xsd:unique> 
+  </xsd:element>    
+  <xsd:element name="CURSUS"> 
+    <xsd:annotation> 
+      <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo> 
+    </xsd:annotation>  
+    <xsd:complexType> 
+      <xsd:all> 
+        <xsd:element maxOccurs="1" minOccurs="1" name="IDCURSUS" type="AUTO_INCREMENT"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element>  
+        <xsd:element maxOccurs="1" minOccurs="1" name="FK_FONCTION_REF" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>  
+            <xsd:appinfo source="X_ForeignKey">REF_FONCTION/ID</xsd:appinfo>  
+            <xsd:appinfo source="X_ForeignKeyInfo">REF_FONCTION/REFERENCE/LIBELLE</xsd:appinfo>  
+            <xsd:appinfo source="X_Retrieve_FKinfos">false</xsd:appinfo>  
+            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element> 
+      </xsd:all> 
+    </xsd:complexType>  
+    <xsd:unique name="CURSUS"> 
+      <xsd:selector xpath="."/>  
+      <xsd:field xpath="IDCURSUS"/> 
+    </xsd:unique> 
+  </xsd:element>     
+</xsd:schema>

@@ -42,7 +42,7 @@ class SimpleValue implements Setter, Getter {
             return StringUtils.EMPTY;
         }
         if (element.field instanceof ReferenceFieldMetadata) {
-            if (record.get(element.field) != null && "class com.amalto.core.storage.record.DataRecord".equals(record.get(element.field).getClass().toString())) { //$NON-NLS-1$
+            if (record.get(element.field) != null && record.get(element.field)  instanceof DataRecord) { //$NON-NLS-1$
                 DataRecord referencedRecord = (DataRecord) record.get(element.field);
                 if (referencedRecord == null) {
                     return StringUtils.EMPTY;

@@ -159,4 +159,6 @@ public interface BrowseRecordsServiceAsync {
 
     void getForeignKeySuggestion(BasePagingLoadConfigImpl config, TypeModel model, String foreignKeyFilterValue,
             String dataClusterPK, String language, AsyncCallback<List<ForeignKeyBean>> callback);
+    
+    void existTask(String taskId, AsyncCallback<Boolean> callback);
 }

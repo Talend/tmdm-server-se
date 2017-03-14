@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
         <groupId>org.talend.mdm</groupId>
@@ -139,7 +140,7 @@
 
     <dependencies>
         <!-- 3rd party dependencies -->
-	 <dependency>
+        <dependency>
             <groupId>io.swagger</groupId>
             <artifactId>swagger-jaxrs</artifactId>
         </dependency>
@@ -248,8 +249,8 @@
             <artifactId>ehcache</artifactId>
         </dependency>
         <dependency>
-	        <groupId>org.bouncycastle</groupId>
-	        <artifactId>bcprov-jdk15on</artifactId>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
         </dependency>
         <!-- Test dependencies -->
         <dependency>
@@ -408,10 +409,10 @@
             <version>3.7.4</version>
         </dependency>
         <dependency>
-        	<groupId>org.mockito</groupId>
-        	<artifactId>mockito-all</artifactId>
-        	<version>1.9.0</version>
-        	<scope>test</scope>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.9.0</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.powermock</groupId>
@@ -424,46 +425,53 @@
             <artifactId>powermock-api-mockito</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+        </dependency>
     </dependencies>
-    
+
     <profiles>
-    	<profile>
-    		<id>tem-build</id>
-    		<properties>
-    			<jar.include>${project.build.finalName}.jar</jar.include>
-    		</properties>
+        <profile>
+            <id>tem-build</id>
+            <properties>
+                <jar.include>${project.build.finalName}.jar</jar.include>
+            </properties>
         </profile>
-    	<profile>
-    		<id>tom-build</id>
-    		<properties>
-    			<jar.include>${project.build.finalName}*.jar</jar.include>
-    		</properties>
+        <profile>
+            <id>tom-build</id>
+            <properties>
+                <jar.include>${project.build.finalName}*.jar</jar.include>
+            </properties>
         </profile>
-    	<profile>
+        <profile>
             <id>dev-build</id>
             <build>
-            	<plugins>
-            		<plugin>
+                <plugins>
+                    <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-antrun-plugin</artifactId>
                         <executions>
-                        	<execution>
+                            <execution>
                                 <id>deploy-tomcat</id>
                                 <configuration>
-                                	<target>
-                                		<copy todir="${mdm.lib.dir}" overwrite="true">
-                                			<fileset dir="${project.build.directory}">
-                                				<include name="${jar.include}" />
-                                			</fileset>
-                                		</copy>
-                                	</target>
+                                    <target>
+                                        <copy todir="${mdm.lib.dir}"
+                                            overwrite="true">
+                                            <fileset
+                                                dir="${project.build.directory}">
+                                                <include
+                                                    name="${jar.include}" />
+                                            </fileset>
+                                        </copy>
+                                    </target>
                                 </configuration>
                             </execution>
                         </executions>
-                     </plugin>
+                    </plugin>
                 </plugins>
-            </build>                
-    	</profile>
+            </build>
+        </profile>
     </profiles>
 
 </project>

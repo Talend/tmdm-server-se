@@ -589,4 +589,6 @@ public interface BrowseRecordsMessages extends Messages {
     String navigator_detailPanel_label();
 
     String setting_window_title();
+
+    String task_id_no_exist(String taskId);
 }

@@ -483,8 +483,6 @@ public class ItemsToolBarGWTTest extends GWTTestCase {
 
         @Override
         public void existTask(String taskId, AsyncCallback<Boolean> callback) {
-            // TODO Auto-generated method stub
-
         }
     }
 }

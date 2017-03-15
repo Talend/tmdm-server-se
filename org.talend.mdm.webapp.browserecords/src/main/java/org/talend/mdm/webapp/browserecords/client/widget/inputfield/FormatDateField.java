@@ -16,6 +16,7 @@ import org.talend.mdm.webapp.base.client.SessionAwareAsyncCallback;
 import org.talend.mdm.webapp.browserecords.client.BrowseRecords;
 import org.talend.mdm.webapp.browserecords.client.BrowseRecordsServiceAsync;
 import org.talend.mdm.webapp.browserecords.client.model.FormatModel;
+import org.talend.mdm.webapp.browserecords.client.util.DateUtil;
 import org.talend.mdm.webapp.browserecords.client.util.Locale;
 
 import com.extjs.gxt.ui.client.GXT;
@@ -117,9 +118,13 @@ public class FormatDateField extends DateField {
             }
             return value == null ? "" : propertyEditor.getStringValue(value); //$NON-NLS-1$
         } catch (Exception e) {
-            if (!this.validateValue(rawValue)) {
+            if (rawValue != null && !rawValue.equals("")) {
+                Date d = DateUtil.tryConvertStringToDate(rawValue);
+                setValue(d);
+                rawValue = propertyEditor.getStringValue(d);
                 return rawValue;
             }
+
             return value == null ? "" : propertyEditor.getStringValue(value); //$NON-NLS-1$
         }
     }
@@ -129,7 +134,11 @@ public class FormatDateField extends DateField {
         String rawValue = value;
         if (formatPattern != null && formatPattern.trim().length() > 0) {
             if (hasFocus) {
-                rawValue = this.value == null ? "" : propertyEditor.getStringValue(this.value); //$NON-NLS-1$);
+                String oldValue = propertyEditor.getStringValue(this.value);
+                if (rawValue != null && !rawValue.equals(oldValue)) {
+                    Date d = propertyEditor.convertStringValue(rawValue);
+                    rawValue = propertyEditor.getStringValue(d);
+                }
             }
         }
 

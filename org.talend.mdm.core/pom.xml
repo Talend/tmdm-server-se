@@ -71,6 +71,7 @@
                                 <exclude>com/amalto/core/delegator/impl/DefaultXtentisWSDelegator.class</exclude>
                                 <exclude>com/amalto/core/delegator/impl/DefaultLocalUserDelegator.class</exclude>
                                 <exclude>com/amalto/core/server/ServerAccessImpl*.class</exclude>
+                                <exclude>com/amalto/core/storage/tds/TDSClientImpl.class</exclude>
                             </excludes>
                         </configuration>
                     </execution>
@@ -84,6 +85,7 @@
                                 <include>com/amalto/core/delegator/impl/DefaultXtentisWSDelegator.class</include>
                                 <include>com/amalto/core/delegator/impl/DefaultLocalUserDelegator.class</include>
                                 <include>com/amalto/core/server/ServerAccessImpl*.class</include>
+                                <include>com/amalto/core/storage/tds/TDSClientImpl.class</include>
                             </includes>
                         </configuration>
                         <goals>

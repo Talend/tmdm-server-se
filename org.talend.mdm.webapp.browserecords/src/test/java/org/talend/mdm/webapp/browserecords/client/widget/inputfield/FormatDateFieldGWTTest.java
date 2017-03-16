@@ -333,13 +333,8 @@ public class FormatDateFieldGWTTest extends GWTTestCase {
 
         @Override
         public void formatValue(FormatModel model, AsyncCallback<String> callback) {
-            String value = "" ;
-            if(model.getFormat().startsWith("%1")){
-                value = String.format(model.getFormat(), model.getObject());
-            }else{
-                DateTimeFormat df = DateTimeFormat.getFormat(model.getFormat());
-                value = df.format((Date)model.getObject());
-            }
+            DateTimeFormat df = DateTimeFormat.getFormat(model.getFormat());
+            String value = df.format((Date) model.getObject());
             callback.onSuccess(value);
         }
 

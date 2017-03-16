@@ -41,7 +41,9 @@ import org.talend.mdm.webapp.browserecords.shared.ViewBean;
 import org.talend.mdm.webapp.browserecords.shared.VisibleRuleResult;
 
 import com.extjs.gxt.ui.client.Registry;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.widget.form.DateTimePropertyEditor;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -140,10 +142,15 @@ public class FormatDateFieldGWTTest extends GWTTestCase {
         dateField.setValue(date);
         assertEquals("2012-05-09", dateField.getRawValue());
 
-        dateField.setFormatPattern("%1$te/%1$tm/%1$tY");
-        dateField.setRawValue("01/01/2015");
-        assertEquals("2012-05-09", dateField.getRawValue());
-
+        value = "2012-05-32";
+        dateField = new FormatDateField();
+        dateField.setPropertyEditor(new DateTimePropertyEditor(DateUtil.datePattern));
+        dateField.setFormatPattern(DateUtil.datePattern);
+        date = DateUtil.convertStringToDate(DateUtil.datePattern, value);
+        dateField.render(DOM.createElement("createDate"));
+        assertEquals("", dateField.getRawValue());
+        dateField.setValue(date);
+        assertEquals("2012-06-01", dateField.getRawValue());
     }
 
     private boolean compareDateAndString(DateTimePropertyEditor propertyEditor, Date date, String objectValue) {
@@ -326,11 +333,9 @@ public class FormatDateFieldGWTTest extends GWTTestCase {
 
         @Override
         public void formatValue(FormatModel model, AsyncCallback<String> callback) {
-            if (model.getFormat().equals(DateUtil.formatDateTimePattern)) {
-                callback.onSuccess("2012-05-09T00:00:00");
-            } else if (model.getFormat().equals(DateUtil.datePattern)) {
-                callback.onSuccess("2012-05-09");
-            }
+            DateTimeFormat df = DateTimeFormat.getFormat(model.getFormat());
+            String value = df.format((Date) model.getObject());
+            callback.onSuccess(value);
         }
 
         @Override

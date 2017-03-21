@@ -3000,6 +3000,29 @@ public class StorageQueryTest extends StorageTestCase {
         BinaryLogicOperator condition = (BinaryLogicOperator) UserQueryHelper.buildCondition(qb, fullWhere, repository);
         assertNotNull(condition);
 
+        qb = from(product);
+        conditions = new ArrayList<IWhereItem>();
+        conditions.add(new WhereCondition("Product/Name", "=", "*", "&"));
+        fullWhere = new WhereAnd(conditions);
+        condition = (BinaryLogicOperator) UserQueryHelper.buildCondition(qb, fullWhere, repository);
+        assertEquals(UserQueryHelper.TRUE, condition.getLeft());
+        assertEquals(UserQueryHelper.TRUE, condition.getRight());
+
+        qb = from(product);
+        conditions = new ArrayList<IWhereItem>();
+        conditions.add(new WhereCondition("Product/Name", "CONTAINS", "*", "&"));
+        fullWhere = new WhereAnd(conditions);
+        condition = (BinaryLogicOperator) UserQueryHelper.buildCondition(qb, fullWhere, repository);
+        assertEquals(UserQueryHelper.TRUE, condition.getLeft());
+        assertEquals(UserQueryHelper.TRUE, condition.getRight());
+
+        qb = from(product);
+        conditions = new ArrayList<IWhereItem>();
+        conditions.add(new WhereCondition("Product/Name", "Is Empty Or Null", "*", "&"));
+        fullWhere = new WhereAnd(conditions);
+        condition = (BinaryLogicOperator) UserQueryHelper.buildCondition(qb, fullWhere, repository);
+        assertTrue(condition.getRight() instanceof IsNull);
+
         conditions.clear();
         conditions.add(new WhereCondition("../../t", ">=", "1364227200000", "&"));
         fullWhere = new WhereAnd(conditions);

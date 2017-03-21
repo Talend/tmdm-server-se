@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:simpleType name="Status">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="Approve" />
+            <xsd:enumeration value="Reject" />
+            <xsd:enumeration value="Ignore" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="Exclusive">
+        <xsd:restriction base="xsd:int">
+            <xsd:maxExclusive value="9999" />
+            <xsd:minExclusive value="2" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="Address">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="[0-9]{2};[0-9]{1}" />
+            <xsd:length value="200" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="Inclusive">
+        <xsd:restriction base="xsd:int">
+            <xsd:maxInclusive value="9999" />
+            <xsd:minInclusive value="1" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:element name="Human">
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1" name="Id" type="xsd:string" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="address" type="Address" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="exclusive" type="Exclusive" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="inclusive" type="Inclusive" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="status" type="Status" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="name" type="Name" />
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="Human">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="Id" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:simpleType name="Name">
+        <xsd:restriction base="xsd:string">
+            <xsd:minLength value="20" />
+            <xsd:maxLength value="50" />
+        </xsd:restriction>
+    </xsd:simpleType>
+</xsd:schema>

@@ -470,6 +470,8 @@ public class MetadataRepositoryTest extends TestCase {
         assertNotNull(fieldMetadata);
         assertEquals(fieldMetadata.getType().getData(MetadataRepository.DATA_TOTAL_DIGITS), "15");
         assertEquals(fieldMetadata.getType().getData(MetadataRepository.DATA_FRACTION_DIGITS), "3");
+        assertEquals(fieldMetadata.getData(MetadataRepository.DATA_TOTAL_DIGITS), "15");
+        assertEquals(fieldMetadata.getData(MetadataRepository.DATA_FRACTION_DIGITS), "3");
     }
     
     public void testLenientSortSimpleTest() throws Exception {
@@ -725,5 +727,47 @@ public class MetadataRepositoryTest extends TestCase {
         assertEquals(-1, Integer.parseInt(entityType.getField("cc").getData(MetadataRepository.MAX_OCCURS).toString()));
         assertEquals(2, Integer.parseInt(entityType.getField("dd").getData(MetadataRepository.MAX_OCCURS).toString()));
         assertEquals(-1, Integer.parseInt(entityType.getField("ee").getData(MetadataRepository.MAX_OCCURS).toString()));
+    }
+
+    public void test_34() throws Exception {
+        MetadataRepository repository = new MetadataRepository();
+        InputStream stream = getClass().getResourceAsStream("schema34.xsd");
+        repository.load(stream);
+
+        ComplexTypeMetadata entityType = repository.getComplexType("Human");
+        assertNotNull(entityType);
+        assertTrue(entityType.hasField("status"));
+        assertTrue(entityType.hasField("exclusive"));
+        assertTrue(entityType.hasField("address"));
+        assertTrue(entityType.hasField("inclusive"));
+        assertTrue(entityType.hasField("name"));
+
+        assertEquals("[Approve, Reject, Ignore]", entityType.getField("status").getData(MetadataRepository.ENUMERATION_LIST)
+                .toString());
+        assertEquals(9999,
+                Integer.parseInt(entityType.getField("exclusive").getData(MetadataRepository.MAX_EXCLUSIVE).toString()));
+        assertEquals(2, Integer.parseInt(entityType.getField("exclusive").getData(MetadataRepository.MIN_EXCLUSIVE).toString()));
+        assertEquals("[0-9]{2};[0-9]{1}", entityType.getField("address").getData(MetadataRepository.PATTERN).toString());
+        assertEquals(9999,
+                Integer.parseInt(entityType.getField("inclusive").getData(MetadataRepository.MAX_INCLUSIVE).toString()));
+        assertEquals(1, Integer.parseInt(entityType.getField("inclusive").getData(MetadataRepository.MIN_INCLUSIVE).toString()));
+        assertEquals(50, Integer.parseInt(entityType.getField("name").getData(MetadataRepository.DATA_MAX_LENGTH).toString()));
+        assertEquals(20, Integer.parseInt(entityType.getField("name").getData(MetadataRepository.DATA_MIN_LENGTH).toString()));
+
+        assertEquals("[Approve, Reject, Ignore]",
+                entityType.getField("status").getType().getData(MetadataRepository.ENUMERATION_LIST).toString());
+        assertEquals(9999,
+                Integer.parseInt(entityType.getField("exclusive").getType().getData(MetadataRepository.MAX_EXCLUSIVE).toString()));
+        assertEquals(2,
+                Integer.parseInt(entityType.getField("exclusive").getType().getData(MetadataRepository.MIN_EXCLUSIVE).toString()));
+        assertEquals("[0-9]{2};[0-9]{1}", entityType.getField("address").getType().getData(MetadataRepository.PATTERN).toString());
+        assertEquals(9999,
+                Integer.parseInt(entityType.getField("inclusive").getType().getData(MetadataRepository.MAX_INCLUSIVE).toString()));
+        assertEquals(1,
+                Integer.parseInt(entityType.getField("inclusive").getType().getData(MetadataRepository.MIN_INCLUSIVE).toString()));
+        assertEquals(50,
+                Integer.parseInt(entityType.getField("name").getType().getData(MetadataRepository.DATA_MAX_LENGTH).toString()));
+        assertEquals(20,
+                Integer.parseInt(entityType.getField("name").getType().getData(MetadataRepository.DATA_MIN_LENGTH).toString()));
     }
 }

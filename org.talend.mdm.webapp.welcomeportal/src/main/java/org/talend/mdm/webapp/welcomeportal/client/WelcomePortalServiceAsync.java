@@ -21,6 +21,7 @@ package org.talend.mdm.webapp.welcomeportal.client;
 import java.util.List;
 import java.util.Map;
 
+import org.talend.mdm.webapp.base.shared.AppHeader;
 import org.talend.mdm.webapp.welcomeportal.client.mvc.PortalProperties;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -68,4 +69,5 @@ public interface WelcomePortalServiceAsync {
 
     void savePortalConfigAutoAndSetting(String portletName, List<String> coinfig, AsyncCallback<Void> callback);
 
+    void getAppHeader(AsyncCallback<AppHeader> callback);
 }

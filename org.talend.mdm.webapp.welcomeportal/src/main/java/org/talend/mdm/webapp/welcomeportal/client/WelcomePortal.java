@@ -10,6 +10,8 @@
 package org.talend.mdm.webapp.welcomeportal.client;
 
 import org.talend.mdm.webapp.base.client.ServiceEnhancer;
+import org.talend.mdm.webapp.base.client.SessionAwareAsyncCallback;
+import org.talend.mdm.webapp.base.shared.AppHeader;
 import org.talend.mdm.webapp.welcomeportal.client.mvc.WelcomePortalController;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -55,6 +57,8 @@ public class WelcomePortal implements EntryPoint {
 
     public static final String SEARCHCONTEXTAPP = "search"; //$NON-NLS-1$
 
+    public static final String APP_HEADER = "appHeader"; //$NON-NLS-1$
+
     /**
      * This is the entry point method.
      */
@@ -72,83 +76,91 @@ public class WelcomePortal implements EntryPoint {
         // add controller to dispatcher
         Dispatcher dispatcher = Dispatcher.get();
         dispatcher.addController(new WelcomePortalController());
+
+        ((WelcomePortalServiceAsync) service).getAppHeader(new SessionAwareAsyncCallback<AppHeader>() {
+
+            @Override
+            public void onSuccess(AppHeader header) {
+                Registry.register(APP_HEADER, header);
+            }
+        });
     }
 
     private native void registerPubService()/*-{
-		var instance = this;
-		$wnd.amalto.welcomeportal = {};
-		$wnd.amalto.welcomeportal.WelcomePortal = function() {
+        var instance = this;
+        $wnd.amalto.welcomeportal = {};
+        $wnd.amalto.welcomeportal.WelcomePortal = function() {
 
-			function initUI() {
-				instance.@org.talend.mdm.webapp.welcomeportal.client.WelcomePortal::initUI()();
-			}
+            function initUI() {
+                instance.@org.talend.mdm.webapp.welcomeportal.client.WelcomePortal::initUI()();
+            }
 
-			return {
-				init : function() {
-					initUI();
-				}
-			}
-		}();
+            return {
+                init : function() {
+                    initUI();
+                }
+            }
+        }();
 
-		$wnd.amalto.core.refreshPortal = function(portalConfig) {
-			instance.@org.talend.mdm.webapp.welcomeportal.client.WelcomePortal::refreshPortal(Ljava/lang/String;)(portalConfig);
-		};
+        $wnd.amalto.core.refreshPortal = function(portalConfig) {
+            instance.@org.talend.mdm.webapp.welcomeportal.client.WelcomePortal::refreshPortal(Ljava/lang/String;)(portalConfig);
+        };
     }-*/;
 
     private native void _initUI()/*-{
-		var instance = this;
+        var instance = this;
 
-		var tabPanel = $wnd.amalto.core.getTabPanel();
-		var panel = tabPanel.getItem("Welcome");
-		if (panel == undefined) {
-			@org.talend.mdm.webapp.welcomeportal.client.GenerateContainer::generateContentPanel()();
-			panel = this.@org.talend.mdm.webapp.welcomeportal.client.WelcomePortal::createPanel()();
-			tabPanel.add(panel);
-		} else {
-			this.@org.talend.mdm.webapp.welcomeportal.client.WelcomePortal::refresh()();
-		}
-		tabPanel.setSelection(panel.getItemId());
+        var tabPanel = $wnd.amalto.core.getTabPanel();
+        var panel = tabPanel.getItem("Welcome");
+        if (panel == undefined) {
+            @org.talend.mdm.webapp.welcomeportal.client.GenerateContainer::generateContentPanel()();
+            panel = this.@org.talend.mdm.webapp.welcomeportal.client.WelcomePortal::createPanel()();
+            tabPanel.add(panel);
+        } else {
+            this.@org.talend.mdm.webapp.welcomeportal.client.WelcomePortal::refresh()();
+        }
+        tabPanel.setSelection(panel.getItemId());
 
-		var removeTabEvent = function(tabPanel, tabItem) {
-			if (tabItem.getId() == "Welcome") {
-				instance.@org.talend.mdm.webapp.welcomeportal.client.WelcomePortal::removeWelcomePortal()();
-			}
-			return true;
-		};
-		tabPanel.on("beforeremove", removeTabEvent);
+        var removeTabEvent = function(tabPanel, tabItem) {
+            if (tabItem.getId() == "Welcome") {
+                instance.@org.talend.mdm.webapp.welcomeportal.client.WelcomePortal::removeWelcomePortal()();
+            }
+            return true;
+        };
+        tabPanel.on("beforeremove", removeTabEvent);
     }-*/;
 
     native JavaScriptObject createPanel()/*-{
-		var instance = this;
-		var panel = {
-			render : function(el) {
-				instance.@org.talend.mdm.webapp.welcomeportal.client.WelcomePortal::renderContent(Ljava/lang/String;)(el.id);
-			},
-			setSize : function(width, height) {
-				var cp = @org.talend.mdm.webapp.welcomeportal.client.GenerateContainer::getContentPanel()();
-				cp.@com.extjs.gxt.ui.client.widget.ContentPanel::setSize(II)(width, height);
-			},
-			getItemId : function() {
-				var cp = @org.talend.mdm.webapp.welcomeportal.client.GenerateContainer::getContentPanel()();
-				return cp.@com.extjs.gxt.ui.client.widget.ContentPanel::getItemId()();
-			},
-			getEl : function() {
-				var cp = @org.talend.mdm.webapp.welcomeportal.client.GenerateContainer::getContentPanel()();
-				var el = cp.@com.extjs.gxt.ui.client.widget.ContentPanel::getElement()();
-				return {
-					dom : el
-				};
-			},
-			doLayout : function() {
-				var cp = @org.talend.mdm.webapp.welcomeportal.client.GenerateContainer::getContentPanel()();
-				return cp.@com.extjs.gxt.ui.client.widget.ContentPanel::doLayout()();
-			},
-			title : function() {
-				var cp = @org.talend.mdm.webapp.welcomeportal.client.GenerateContainer::getContentPanel()();
-				return cp.@com.extjs.gxt.ui.client.widget.ContentPanel::getHeading()();
-			}
-		};
-		return panel;
+        var instance = this;
+        var panel = {
+            render : function(el) {
+                instance.@org.talend.mdm.webapp.welcomeportal.client.WelcomePortal::renderContent(Ljava/lang/String;)(el.id);
+            },
+            setSize : function(width, height) {
+                var cp = @org.talend.mdm.webapp.welcomeportal.client.GenerateContainer::getContentPanel()();
+                cp.@com.extjs.gxt.ui.client.widget.ContentPanel::setSize(II)(width, height);
+            },
+            getItemId : function() {
+                var cp = @org.talend.mdm.webapp.welcomeportal.client.GenerateContainer::getContentPanel()();
+                return cp.@com.extjs.gxt.ui.client.widget.ContentPanel::getItemId()();
+            },
+            getEl : function() {
+                var cp = @org.talend.mdm.webapp.welcomeportal.client.GenerateContainer::getContentPanel()();
+                var el = cp.@com.extjs.gxt.ui.client.widget.ContentPanel::getElement()();
+                return {
+                    dom : el
+                };
+            },
+            doLayout : function() {
+                var cp = @org.talend.mdm.webapp.welcomeportal.client.GenerateContainer::getContentPanel()();
+                return cp.@com.extjs.gxt.ui.client.widget.ContentPanel::doLayout()();
+            },
+            title : function() {
+                var cp = @org.talend.mdm.webapp.welcomeportal.client.GenerateContainer::getContentPanel()();
+                return cp.@com.extjs.gxt.ui.client.widget.ContentPanel::getHeading()();
+            }
+        };
+        return panel;
     }-*/;
 
     public void renderContent(final String contentId) {

@@ -74,7 +74,7 @@ public class MainFramePanel extends Portal {
 
     private boolean hiddenWorkFlowTask;
 
-    private boolean hiddenDSCTask;
+    private boolean hiddenTask;
 
     private List<BasePortlet> portlets;
 
@@ -662,12 +662,12 @@ public class MainFramePanel extends Portal {
         this.hiddenWorkFlowTask = hiddenWorkFlowTask;
     }
 
-    public boolean isHiddenDSCTask() {
-        return this.hiddenDSCTask;
+    public boolean isHiddenTask() {
+        return this.hiddenTask;
     }
 
-    public void setHiddenDSCTask(boolean hiddenDSCTask) {
-        this.hiddenDSCTask = hiddenDSCTask;
+    public void setHiddenTask(boolean hiddenTask) {
+        this.hiddenTask = hiddenTask;
     }
 
     public boolean getStartedAsOn() {
@@ -718,9 +718,9 @@ public class MainFramePanel extends Portal {
 
                     @Override
                     public void onSuccess(Boolean hideMeToo) {
-                        setHiddenDSCTask(hideMeToo);
+                        setHiddenTask(hideMeToo);
 
-                        if (!isHiddenWorkFlowTask() || !isHiddenDSCTask()) {
+                        if (!isHiddenWorkFlowTask() || !isHiddenTask()) {
                             BasePortlet portlet = new TaskPortlet(MainFramePanel.this);
                             portlets.add(portlet);
                             MainFramePanel.this.add(portlet);

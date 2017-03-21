@@ -90,6 +90,8 @@ public interface WelcomePortalMessages extends Messages {
 
     String waiting_dsctask(int newTasks, int pendingTasks);
     
+    String waiting_task(int newTasks);
+
     String waiting_dsctask_suffix();
 
     String tasks_desc();

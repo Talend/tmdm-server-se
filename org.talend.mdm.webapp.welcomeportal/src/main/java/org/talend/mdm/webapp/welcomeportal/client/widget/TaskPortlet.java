@@ -13,17 +13,36 @@ import java.util.Map;
 
 import org.talend.mdm.webapp.base.client.SessionAwareAsyncCallback;
 import org.talend.mdm.webapp.base.client.widget.PortletConstants;
+import org.talend.mdm.webapp.base.shared.AppHeader;
 import org.talend.mdm.webapp.welcomeportal.client.MainFramePanel;
 import org.talend.mdm.webapp.welcomeportal.client.WelcomePortal;
 import org.talend.mdm.webapp.welcomeportal.client.i18n.MessagesFactory;
 import org.talend.mdm.webapp.welcomeportal.client.resources.icon.Icons;
 
+import com.extjs.gxt.ui.client.Registry;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.RequestException;
+import com.google.gwt.http.client.Response;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.HTML;
 
 public class TaskPortlet extends BasePortlet {
+
+    private AppHeader header = (AppHeader) Registry.get(WelcomePortal.APP_HEADER);
+    
+    private final int STATUS_CODE_OK = 200;
+
+    private final String TASK_AMOUNT = "amount";
+
+    private String tdsServiceBaseUrl = GWT.getHostPageBaseURL() + "services/rest/tds/";
 
     private static String DSCTASKTYPE_NEW = "new"; //$NON-NLS-1$
 
@@ -35,16 +54,17 @@ public class TaskPortlet extends BasePortlet {
 
     private boolean isHiddenWorkFlowTask = true;
 
-    private boolean isHiddenDSCTask = true;
+    private boolean isHiddenTask = true;
 
     private enum TASK_TYPE {
         WORKFLOW_TYPE,
-        DES_TYPE
+        DSC_TYPE,
+        TDS_TYPE
     };
 
-    private Integer dscTask_New_Count;
+    private Integer task_New_Count;
 
-    private Integer dscTask_Pending_Count;
+    private Integer task_Pending_Count;
 
     private Integer workflowTask_Count;
 
@@ -52,12 +72,14 @@ public class TaskPortlet extends BasePortlet {
 
     private ClickHandler dscClikcHanlder;
 
+    private ClickHandler tdsClikcHanlder;
+
     public TaskPortlet(final MainFramePanel portal) {
         super(PortletConstants.TASKS_NAME, portal);
         setIcon(AbstractImagePrototype.create(Icons.INSTANCE.task()));
         setHeading(MessagesFactory.getMessages().tasks_title());
         isHiddenWorkFlowTask = portal.isHiddenWorkFlowTask();
-        isHiddenDSCTask = portal.isHiddenDSCTask();
+        isHiddenTask = portal.isHiddenTask();
         initConfigSettings();
         label.setText(MessagesFactory.getMessages().loading_task_msg());
         updateTaskes();
@@ -78,6 +100,14 @@ public class TaskPortlet extends BasePortlet {
                 portal.itemClick(WelcomePortal.DSC_TASKCONTEXT, WelcomePortal.DSC_TASKAPP);
             }
         };
+
+        tdsClikcHanlder = new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                portal.itemClick(WelcomePortal.DSC_TASKCONTEXT, WelcomePortal.DSC_TASKAPP);
+            }
+        };
     }
 
     @Override
@@ -86,102 +116,129 @@ public class TaskPortlet extends BasePortlet {
     }
 
     private void updateTaskes() {
-
-        if (!isHiddenWorkFlowTask && isHiddenDSCTask) {
+        if (!isHiddenWorkFlowTask && isHiddenTask) {
             service.getWorkflowTaskMsg(new SessionAwareAsyncCallback<Integer>() {
 
                 @Override
                 public void onSuccess(Integer workflowTaskCount) {
-                    if (workflowTaskCount != null && workflowTaskCount != workflowTask_Count) {
+                    if (workflowTaskCount != null && workflowTask_Count != workflowTaskCount) {
                         workflowTask_Count = workflowTaskCount;
-                        if (workflowTask_Count == 0) {
-                            label.setText(MessagesFactory.getMessages().no_tasks());
-                            fieldSet.setVisible(false);
-                        } else {
-                            HTML taskHtml = buildTaskHTML(TASK_TYPE.WORKFLOW_TYPE, workflowTaskCount, 0);
-                            if (taskHtml != null) {
-                                fieldSet.removeAll();
-                                fieldSet.add(taskHtml);
-                            }
-                        }
-                        fieldSet.layout(true);
+                        updateTaskPanel(workflowTask_Count, null, 0, 0);
                     }
                 }
             });
         }
 
-        if (!isHiddenDSCTask && isHiddenWorkFlowTask) {
-            service.getDSCTaskMsg(new SessionAwareAsyncCallback<Map<String, Integer>>() {
+        if (!isHiddenTask && isHiddenWorkFlowTask) {
+            if (header.isTdsEnabled()) {
+                String url = tdsServiceBaseUrl + TASK_AMOUNT;
+                RequestBuilder builder = new RequestBuilder(RequestBuilder.POST, url);
+                try {
+                    builder.sendRequest("", new RequestCallback() {
 
-                @Override
-                public void onSuccess(Map<String, Integer> dscTasksMap) {
-                    if (dscTasksMap.get(DSCTASKTYPE_NEW) != null && dscTasksMap.get(DSCTASKTYPE_PENDING) != null) {
-                        if (dscTasksMap.get(DSCTASKTYPE_NEW) != dscTask_New_Count
-                                || dscTasksMap.get(DSCTASKTYPE_PENDING) != dscTask_Pending_Count) {
-                            dscTask_New_Count = dscTasksMap.get(DSCTASKTYPE_NEW);
-                            dscTask_Pending_Count = dscTasksMap.get(DSCTASKTYPE_PENDING);
-                            if ((dscTask_New_Count + dscTask_Pending_Count) == 0) {
-                                label.setText(MessagesFactory.getMessages().no_tasks());
-                                fieldSet.setVisible(false);
-                            } else {
-                                HTML taskHtml = buildTaskHTML(TASK_TYPE.DES_TYPE, dscTask_New_Count, dscTask_Pending_Count);
-                                if (taskHtml != null) {
-                                    fieldSet.removeAll();
-                                    fieldSet.add(taskHtml);
+                        @Override
+                        public void onResponseReceived(Request request, Response response) {
+                            if (STATUS_CODE_OK == response.getStatusCode()) {
+                                JSONValue value = JSONParser.parse(response.getText());
+                                JSONObject object = value.isObject();
+                                JSONValue jsonValue = object.get(TASK_AMOUNT);
+                                if (jsonValue != null) {
+                                    int taskCount = Integer.valueOf(jsonValue.toString());
+                                    if (task_New_Count != taskCount) {
+                                        task_New_Count = taskCount;
+                                        updateTaskPanel(0, TASK_TYPE.TDS_TYPE, task_New_Count, 0);
+                                    }
                                 }
                             }
-                            fieldSet.layout(true);
+                        }
+
+                        @Override
+                        public void onError(Request request, Throwable exception) {
+                            // TODO Auto-generated method stub
+
+                        }
+
+                    });
+                } catch (RequestException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            } else {
+                service.getDSCTaskMsg(new SessionAwareAsyncCallback<Map<String, Integer>>() {
+
+                    @Override
+                    public void onSuccess(Map<String, Integer> dscTasksMap) {
+                        if (dscTasksMap.get(DSCTASKTYPE_NEW) != null && dscTasksMap.get(DSCTASKTYPE_PENDING) != null) {
+                            if (task_New_Count != dscTasksMap.get(DSCTASKTYPE_NEW)
+                                    || task_Pending_Count != dscTasksMap.get(DSCTASKTYPE_PENDING)) {
+                                task_New_Count = dscTasksMap.get(DSCTASKTYPE_NEW);
+                                task_Pending_Count = dscTasksMap.get(DSCTASKTYPE_PENDING);
+                                updateTaskPanel(0, TASK_TYPE.DSC_TYPE, task_New_Count, task_Pending_Count);
+                            }
                         }
                     }
-                }
-            });
+                });
+            }
         }
 
-        if (!isHiddenWorkFlowTask && !isHiddenDSCTask) {
+        if (!isHiddenWorkFlowTask && !isHiddenTask) {
             service.getWorkflowTaskMsg(new SessionAwareAsyncCallback<Integer>() {
 
                 @Override
                 public void onSuccess(final Integer workflowTaskCount) {
+                    final boolean workflowTaskChanged = workflowTaskCount != null && workflowTask_Count != workflowTaskCount;
 
-                    service.getDSCTaskMsg(new SessionAwareAsyncCallback<Map<String, Integer>>() {
+                    if (header.isTdsEnabled()) {
+                        String url = tdsServiceBaseUrl + TASK_AMOUNT;
+                        RequestBuilder builder = new RequestBuilder(RequestBuilder.POST, url);
+                        try {
+                            builder.sendRequest("", new RequestCallback() {
 
-                        @Override
-                        public void onSuccess(Map<String, Integer> dscTasksMap) {
-
-                            if (workflowTaskCount != null && dscTasksMap.get(DSCTASKTYPE_NEW) != null
-                                    && dscTasksMap.get(DSCTASKTYPE_PENDING) != null) {
-                                boolean workflowTaskChanged = workflowTaskCount != workflowTask_Count;
-                                boolean dscTasksChanged = (dscTasksMap.get(DSCTASKTYPE_NEW) != dscTask_New_Count || dscTasksMap
-                                        .get(DSCTASKTYPE_PENDING) != dscTask_Pending_Count);
-                                if (workflowTaskChanged || dscTasksChanged) {
-                                    if ((workflowTaskCount + dscTasksMap.get(DSCTASKTYPE_NEW) + dscTasksMap
-                                            .get(DSCTASKTYPE_PENDING)) == 0) {
-                                        label.setText(MessagesFactory.getMessages().no_tasks());
-                                        fieldSet.setVisible(false);
-                                    } else {
-                                        fieldSet.removeAll();
-                                        if (workflowTaskCount > 0) {
-                                            workflowTask_Count = workflowTaskCount;
-                                            HTML taskHtml = buildTaskHTML(TASK_TYPE.WORKFLOW_TYPE, workflowTask_Count, 0);
-                                            if (taskHtml != null) {
-                                                fieldSet.add(taskHtml);
-                                            }
-                                        }
-                                        if ((dscTasksMap.get(DSCTASKTYPE_NEW) + dscTasksMap.get(DSCTASKTYPE_PENDING)) > 0) {
-                                            dscTask_New_Count = dscTasksMap.get(DSCTASKTYPE_NEW);
-                                            dscTask_Pending_Count = dscTasksMap.get(DSCTASKTYPE_PENDING);
-                                            HTML taskHtml = buildTaskHTML(TASK_TYPE.DES_TYPE, dscTask_New_Count,
-                                                    dscTask_Pending_Count);
-                                            if (taskHtml != null) {
-                                                fieldSet.add(taskHtml);
+                                @Override
+                                public void onResponseReceived(Request request, Response response) {
+                                    if (STATUS_CODE_OK == response.getStatusCode()) {
+                                        JSONValue value = JSONParser.parse(response.getText());
+                                        JSONObject object = value.isObject();
+                                        JSONValue jsonValue = object.get(TASK_AMOUNT);
+                                        if (jsonValue != null) {
+                                            int taskCount = Integer.valueOf(jsonValue.toString());
+                                            if (task_New_Count != taskCount) {
+                                                task_New_Count = taskCount;
+                                                updateTaskPanel(workflowTask_Count, TASK_TYPE.TDS_TYPE, task_New_Count, 0);
                                             }
                                         }
                                     }
-                                    fieldSet.layout(true);
+                                }
+
+                                @Override
+                                public void onError(Request request, Throwable exception) {
+                                    // TODO Auto-generated method stub
+
+                                }
+
+                            });
+                        } catch (RequestException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                    } else {
+                        service.getDSCTaskMsg(new SessionAwareAsyncCallback<Map<String, Integer>>() {
+
+                            @Override
+                            public void onSuccess(Map<String, Integer> dscTasksMap) {
+                                boolean taskChanged = (dscTasksMap.get(DSCTASKTYPE_NEW) != null && task_New_Count != dscTasksMap
+                                        .get(DSCTASKTYPE_NEW))
+                                        || (dscTasksMap.get(DSCTASKTYPE_NEW) != null && task_Pending_Count != dscTasksMap
+                                                .get(DSCTASKTYPE_PENDING));
+                                if (workflowTaskChanged || taskChanged) {
+                                    workflowTask_Count = workflowTaskCount;
+                                    task_New_Count = dscTasksMap.get(DSCTASKTYPE_NEW);
+                                    task_Pending_Count = dscTasksMap.get(DSCTASKTYPE_PENDING);
+                                    updateTaskPanel(workflowTask_Count, TASK_TYPE.TDS_TYPE, task_New_Count, task_Pending_Count);
                                 }
                             }
-                        }
-                    });
+                        });
+                    }
                 }
             });
         }
@@ -195,11 +252,16 @@ public class TaskPortlet extends BasePortlet {
             taskStringBuilder = new StringBuilder(WORKFLOWTASKS_PREFIX);
             countString = buildMessage(String.valueOf(count1), MessagesFactory.getMessages().waiting_workflowtask_suffix());
             taskHtml.addClickHandler(workflowClikcHanlder);
-        } else if (type == TASK_TYPE.DES_TYPE) {
+        } else if (type == TASK_TYPE.DSC_TYPE) {
             taskStringBuilder = new StringBuilder(DSCTASKS_PREFIX);
             countString = buildMessage(MessagesFactory.getMessages().waiting_dsctask(count1, count2), MessagesFactory
                     .getMessages().waiting_dsctask_suffix());
             taskHtml.addClickHandler(dscClikcHanlder);
+        } else if (type == TASK_TYPE.DSC_TYPE) {
+            taskStringBuilder = new StringBuilder(DSCTASKS_PREFIX);
+            countString = buildMessage(MessagesFactory.getMessages().waiting_task(count1), MessagesFactory.getMessages()
+                    .waiting_dsctask_suffix());
+            taskHtml.addClickHandler(tdsClikcHanlder);
         } else {
             return null;
         }
@@ -219,5 +281,29 @@ public class TaskPortlet extends BasePortlet {
         message.append("</b>&nbsp;"); //$NON-NLS-1$
         message.append(task_suffix);
         return message.toString();
+    }
+
+    private void updateTaskPanel(int workflowTaskCount, TASK_TYPE taskType, int taskCount1, int taskCount2) {
+        if ((workflowTaskCount + taskCount1 + taskCount2) == 0) {
+            label.setText(MessagesFactory.getMessages().no_tasks());
+            fieldSet.setVisible(false);
+        } else {
+            fieldSet.removeAll();
+            if (workflowTaskCount > 0) {
+                workflowTask_Count = workflowTaskCount;
+                HTML taskHtml = buildTaskHTML(TASK_TYPE.WORKFLOW_TYPE, workflowTask_Count, 0);
+                if (taskHtml != null) {
+                    fieldSet.add(taskHtml);
+                }
+            }
+            if (taskCount1 + taskCount2 > 0) {
+                workflowTask_Count = workflowTaskCount;
+                HTML taskHtml = buildTaskHTML(taskType, taskCount1, taskCount2);
+                if (taskHtml != null) {
+                    fieldSet.add(taskHtml);
+                }
+            }
+        }
+        fieldSet.layout(true);
     }
 }

@@ -15,8 +15,10 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
+import org.talend.mdm.commmon.util.core.MDMConfiguration;
 import org.talend.mdm.webapp.base.client.exception.ServiceException;
 import org.talend.mdm.webapp.base.client.util.MultilanguageMessageParser;
+import org.talend.mdm.webapp.base.shared.AppHeader;
 import org.talend.mdm.webapp.base.shared.Constants;
 import org.talend.mdm.webapp.welcomeportal.client.WelcomePortal;
 import org.talend.mdm.webapp.welcomeportal.client.WelcomePortalService;
@@ -393,6 +395,20 @@ public class WelcomePortalAction implements WelcomePortalService {
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
             throw new ServiceException(MESSAGES.getMessage("save_portal_config_failed")); //$NON-NLS-1$
+        }
+    }
+
+    @Override
+    public AppHeader getAppHeader() throws ServiceException {
+        try {
+            AppHeader header = new AppHeader();
+            header.setDatamodel(Configuration.getConfiguration().getModel());
+            header.setTdsEnabled(MDMConfiguration.isTdsEnabled());
+            header.setTdsBaseUrl(MDMConfiguration.getConfiguration().getProperty(MDMConfiguration.TDS_ROOT_URL));
+            return header;
+        } catch (Exception e) {
+            LOG.error(e.getMessage(), e);
+            throw new ServiceException(e.getLocalizedMessage());
         }
     }
 }

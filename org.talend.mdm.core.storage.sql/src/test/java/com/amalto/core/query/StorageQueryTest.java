@@ -3021,7 +3021,8 @@ public class StorageQueryTest extends StorageTestCase {
         conditions.add(new WhereCondition("Product/Name", "Is Empty Or Null", "*", "&"));
         fullWhere = new WhereAnd(conditions);
         condition = (BinaryLogicOperator) UserQueryHelper.buildCondition(qb, fullWhere, repository);
-        assertTrue(condition.getRight() instanceof IsNull);
+        BinaryLogicOperator rightCondition = (BinaryLogicOperator) condition.getRight();
+        assertTrue(rightCondition.getRight() instanceof IsNull);
 
         conditions.clear();
         conditions.add(new WhereCondition("../../t", ">=", "1364227200000", "&"));

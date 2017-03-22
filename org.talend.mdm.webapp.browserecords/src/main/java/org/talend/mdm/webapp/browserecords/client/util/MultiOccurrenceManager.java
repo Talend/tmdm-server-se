@@ -223,7 +223,7 @@ public class MultiOccurrenceManager {
                 childItem.setTitle(mandatory);
                 nodeModel.setValid(false);
             } else {
-                nodeModel.setValid(true);
+                nodeModel.setValid(node.isValid());
             }
 
         }

@@ -16,6 +16,7 @@ import org.talend.mdm.webapp.base.client.SessionAwareAsyncCallback;
 import org.talend.mdm.webapp.browserecords.client.BrowseRecords;
 import org.talend.mdm.webapp.browserecords.client.BrowseRecordsServiceAsync;
 import org.talend.mdm.webapp.browserecords.client.model.FormatModel;
+import org.talend.mdm.webapp.browserecords.client.util.DateUtil;
 import org.talend.mdm.webapp.browserecords.client.util.Locale;
 
 import com.extjs.gxt.ui.client.GXT;
@@ -199,7 +200,20 @@ public class FormatDateField extends DateField {
                     return super.validateValue(value);
                 }
             } catch (Exception e) {
-                return super.validateValue(value);
+                if (formatPattern != null && formatPattern.trim().length() > 0) {
+                    try {
+                        Date d = DateUtil.convertStringToDateByFormat(value, formatPattern);
+                        if((d == this.value) || (d != null && d.equals(this.value))){
+                            return super.validateValue(propertyEditor.getStringValue(d));
+                        } else {
+                            return super.validateValue(value);
+                        }
+                    } catch (Exception e1) {
+                        return super.validateValue(value);
+                    }
+                }else{
+                    return super.validateValue(value);
+                }
             }
         } else {
             return super.validateValue(value);

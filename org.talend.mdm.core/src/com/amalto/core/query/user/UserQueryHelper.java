@@ -72,6 +72,9 @@ public class UserQueryHelper {
             WhereCondition whereCondition = (WhereCondition) whereItem;
             String operator = whereCondition.getOperator();
             String value = whereCondition.getRightValueOrPath();
+            if (!operator.equals(WhereCondition.EMPTY_NULL) && ("*".equals(value) || ".*".equals(value))) {
+                return TRUE;
+            }
             boolean isNotCondition = WhereCondition.PRE_NOT.equals(whereCondition.getStringPredicate());
             // Get metadata information for building query
             String leftPath = whereCondition.getLeftPath();

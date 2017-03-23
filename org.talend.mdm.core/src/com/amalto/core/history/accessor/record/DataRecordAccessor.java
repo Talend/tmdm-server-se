@@ -21,6 +21,7 @@ import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
+import org.talend.mdm.commmon.metadata.MetadataUtils;
 import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
 
 import com.amalto.core.history.accessor.Accessor;
@@ -497,7 +498,7 @@ public class DataRecordAccessor implements Accessor {
                 }
             }
         }
-        return current.getType().getName();
+        return MetadataUtils.getSuperConcreteType(current.getType()).getName();
     }
 
     @Override

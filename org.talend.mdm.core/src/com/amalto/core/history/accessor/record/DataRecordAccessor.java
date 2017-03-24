@@ -481,7 +481,7 @@ public class DataRecordAccessor implements Accessor {
         initPath();
         DataRecord current = dataRecord;
         for (PathElement pathElement : pathElements) {
-            if (pathElement.field instanceof ContainedTypeFieldMetadata || pathElement.field instanceof ReferenceFieldMetadata) {
+            if (pathElement.field instanceof ContainedTypeFieldMetadata) {
                 if (!pathElement.field.isMany()) {
                     Object o = current.get(pathElement.field);
                     if (o == null) {
@@ -496,9 +496,11 @@ public class DataRecordAccessor implements Accessor {
                     int index = pathElement.index == -1 ? 0 : pathElement.index;
                     current = (DataRecord) list.get(index);
                 }
+            } else if (pathElement.field instanceof ReferenceFieldMetadata) {
+                return ((ReferenceFieldMetadata)pathElement.field).getReferencedField().getContainingType().getName();
             }
         }
-        return MetadataUtils.getSuperConcreteType(current.getType()).getName();
+        return current.getType().getName();
     }
 
     @Override

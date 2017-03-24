@@ -12,14 +12,20 @@ package org.talend.mdm.webapp.welcomeportal.client.widget;
 import java.util.Map;
 
 import org.talend.mdm.webapp.base.client.SessionAwareAsyncCallback;
+import org.talend.mdm.webapp.base.client.i18n.BaseMessagesFactory;
+import org.talend.mdm.webapp.base.client.util.UrlUtil;
 import org.talend.mdm.webapp.base.client.widget.PortletConstants;
 import org.talend.mdm.webapp.base.shared.AppHeader;
+import org.talend.mdm.webapp.base.shared.Constants;
 import org.talend.mdm.webapp.welcomeportal.client.MainFramePanel;
 import org.talend.mdm.webapp.welcomeportal.client.WelcomePortal;
 import org.talend.mdm.webapp.welcomeportal.client.i18n.MessagesFactory;
 import org.talend.mdm.webapp.welcomeportal.client.resources.icon.Icons;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Registry;
+import com.extjs.gxt.ui.client.util.Format;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -105,7 +111,7 @@ public class TaskPortlet extends BasePortlet {
 
             @Override
             public void onClick(ClickEvent event) {
-                portal.itemClick(WelcomePortal.DSC_TASKCONTEXT, WelcomePortal.DSC_TASKAPP);
+                UrlUtil.openSingleWindow(header.getTdsBaseUrl(), Constants.TDS_NAME);
             }
         };
     }
@@ -121,9 +127,11 @@ public class TaskPortlet extends BasePortlet {
 
                 @Override
                 public void onSuccess(Integer workflowTaskCount) {
-                    if (workflowTaskCount != null && workflowTask_Count != workflowTaskCount) {
-                        workflowTask_Count = workflowTaskCount;
-                        updateTaskPanel(workflowTask_Count, null, 0, 0);
+                    if (workflowTaskCount != null) {
+                        if (workflowTask_Count == null || workflowTask_Count != workflowTaskCount) {
+                            workflowTask_Count = workflowTaskCount;
+                            updateTaskPanel(workflowTask_Count, null, 0, 0);
+                        }
                     }
                 }
             });
@@ -131,10 +139,12 @@ public class TaskPortlet extends BasePortlet {
 
         if (!isHiddenTask && isHiddenWorkFlowTask) {
             if (header.isTdsEnabled()) {
-                String url = tdsServiceBaseUrl + TASK_AMOUNT;
+                String url = tdsServiceBaseUrl + TASK_AMOUNT + "&model=" + header.getDatamodel();
                 RequestBuilder builder = new RequestBuilder(RequestBuilder.POST, url);
+                builder.setHeader("Accept", "application/json");
+                String requestData = "&model=" + header.getDatamodel();
                 try {
-                    builder.sendRequest("", new RequestCallback() {
+                    builder.sendRequest(requestData, new RequestCallback() {
 
                         @Override
                         public void onResponseReceived(Request request, Response response) {
@@ -144,7 +154,7 @@ public class TaskPortlet extends BasePortlet {
                                 JSONValue jsonValue = object.get(TASK_AMOUNT);
                                 if (jsonValue != null) {
                                     int taskCount = Integer.valueOf(jsonValue.toString());
-                                    if (task_New_Count != taskCount) {
+                                    if (task_New_Count == null || task_New_Count != taskCount) {
                                         task_New_Count = taskCount;
                                         updateTaskPanel(0, TASK_TYPE.TDS_TYPE, task_New_Count, 0);
                                     }
@@ -154,14 +164,13 @@ public class TaskPortlet extends BasePortlet {
 
                         @Override
                         public void onError(Request request, Throwable exception) {
-                            // TODO Auto-generated method stub
+                            handleServiceException(exception);
 
                         }
 
                     });
-                } catch (RequestException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                } catch (RequestException exception) {
+                    handleServiceException(exception);
                 }
             } else {
                 service.getDSCTaskMsg(new SessionAwareAsyncCallback<Map<String, Integer>>() {
@@ -169,8 +178,8 @@ public class TaskPortlet extends BasePortlet {
                     @Override
                     public void onSuccess(Map<String, Integer> dscTasksMap) {
                         if (dscTasksMap.get(DSCTASKTYPE_NEW) != null && dscTasksMap.get(DSCTASKTYPE_PENDING) != null) {
-                            if (task_New_Count != dscTasksMap.get(DSCTASKTYPE_NEW)
-                                    || task_Pending_Count != dscTasksMap.get(DSCTASKTYPE_PENDING)) {
+                            if ((task_New_Count == null || task_New_Count != dscTasksMap.get(DSCTASKTYPE_NEW))
+                                    || (task_Pending_Count == null || task_Pending_Count != dscTasksMap.get(DSCTASKTYPE_PENDING))) {
                                 task_New_Count = dscTasksMap.get(DSCTASKTYPE_NEW);
                                 task_Pending_Count = dscTasksMap.get(DSCTASKTYPE_PENDING);
                                 updateTaskPanel(0, TASK_TYPE.DSC_TYPE, task_New_Count, task_Pending_Count);
@@ -186,13 +195,18 @@ public class TaskPortlet extends BasePortlet {
 
                 @Override
                 public void onSuccess(final Integer workflowTaskCount) {
-                    final boolean workflowTaskChanged = workflowTaskCount != null && workflowTask_Count != workflowTaskCount;
+                    final boolean workflowTaskChanged = workflowTaskCount != null
+                            && (workflowTask_Count == null || workflowTask_Count != workflowTaskCount);
 
                     if (header.isTdsEnabled()) {
                         String url = tdsServiceBaseUrl + TASK_AMOUNT;
                         RequestBuilder builder = new RequestBuilder(RequestBuilder.POST, url);
+                        builder.setHeader("Accept", "application/json");
+                        builder.setUser("administrator");
+                        builder.setPassword("administrator");
+                        String requestData = "&model=" + header.getDatamodel();
                         try {
-                            builder.sendRequest("", new RequestCallback() {
+                            builder.sendRequest(requestData, new RequestCallback() {
 
                                 @Override
                                 public void onResponseReceived(Request request, Response response) {
@@ -202,7 +216,9 @@ public class TaskPortlet extends BasePortlet {
                                         JSONValue jsonValue = object.get(TASK_AMOUNT);
                                         if (jsonValue != null) {
                                             int taskCount = Integer.valueOf(jsonValue.toString());
-                                            if (task_New_Count != taskCount) {
+                                            boolean taskChanged = task_New_Count == null || task_New_Count != taskCount;
+                                            if (workflowTaskChanged || taskChanged) {
+                                                workflowTask_Count = workflowTaskCount;
                                                 task_New_Count = taskCount;
                                                 updateTaskPanel(workflowTask_Count, TASK_TYPE.TDS_TYPE, task_New_Count, 0);
                                             }
@@ -212,24 +228,23 @@ public class TaskPortlet extends BasePortlet {
 
                                 @Override
                                 public void onError(Request request, Throwable exception) {
-                                    // TODO Auto-generated method stub
-
+                                    handleServiceException(exception);
                                 }
 
                             });
-                        } catch (RequestException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
+                        } catch (RequestException exception) {
+                            handleServiceException(exception);
                         }
                     } else {
                         service.getDSCTaskMsg(new SessionAwareAsyncCallback<Map<String, Integer>>() {
 
                             @Override
                             public void onSuccess(Map<String, Integer> dscTasksMap) {
-                                boolean taskChanged = (dscTasksMap.get(DSCTASKTYPE_NEW) != null && task_New_Count != dscTasksMap
+                                boolean taskChanged = (dscTasksMap.get(DSCTASKTYPE_NEW) != null
+                                        && (task_New_Count == null || task_New_Count != dscTasksMap
                                         .get(DSCTASKTYPE_NEW))
                                         || (dscTasksMap.get(DSCTASKTYPE_NEW) != null && task_Pending_Count != dscTasksMap
-                                                .get(DSCTASKTYPE_PENDING));
+                                        .get(DSCTASKTYPE_PENDING)));
                                 if (workflowTaskChanged || taskChanged) {
                                     workflowTask_Count = workflowTaskCount;
                                     task_New_Count = dscTasksMap.get(DSCTASKTYPE_NEW);
@@ -257,7 +272,7 @@ public class TaskPortlet extends BasePortlet {
             countString = buildMessage(MessagesFactory.getMessages().waiting_dsctask(count1, count2), MessagesFactory
                     .getMessages().waiting_dsctask_suffix());
             taskHtml.addClickHandler(dscClikcHanlder);
-        } else if (type == TASK_TYPE.DSC_TYPE) {
+        } else if (type == TASK_TYPE.TDS_TYPE) {
             taskStringBuilder = new StringBuilder(DSCTASKS_PREFIX);
             countString = buildMessage(MessagesFactory.getMessages().waiting_task(count1), MessagesFactory.getMessages()
                     .waiting_dsctask_suffix());
@@ -297,13 +312,25 @@ public class TaskPortlet extends BasePortlet {
                 }
             }
             if (taskCount1 + taskCount2 > 0) {
-                workflowTask_Count = workflowTaskCount;
-                HTML taskHtml = buildTaskHTML(taskType, taskCount1, taskCount2);
+                task_New_Count = taskCount1;
+                task_Pending_Count = taskCount2;
+                HTML taskHtml = buildTaskHTML(taskType, task_New_Count, task_Pending_Count);
                 if (taskHtml != null) {
                     fieldSet.add(taskHtml);
                 }
             }
         }
         fieldSet.layout(true);
+    }
+
+    private void handleServiceException(Throwable caught) {
+        String errorMsg = caught.getLocalizedMessage();
+        if (Log.isDebugEnabled()) {
+            errorMsg = caught.toString();
+        } else {
+            errorMsg = BaseMessagesFactory.getMessages().unknown_error();
+        }
+        errorMsg = Format.htmlEncode(errorMsg);
+        MessageBox.alert(BaseMessagesFactory.getMessages().error_title(), errorMsg, null);
     }
 }

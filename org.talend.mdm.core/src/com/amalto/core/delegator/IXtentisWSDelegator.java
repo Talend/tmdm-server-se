@@ -838,7 +838,17 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
     public WSItemPK partialPutItem(WSPartialPutItem partialPutItem) throws RemoteException {
         try {
             SaverSession session = SaverSession.newSession();
-            DocumentSaver saver = SaverHelper.saveItem(partialPutItem, session);
+            DocumentSaver saver;
+            try {
+                saver = SaverHelper.saveItem(partialPutItem, session);
+            } catch (Exception e) {
+                try {
+                    session.abort();
+                } catch (Exception e1) {
+                    LOGGER.error("Could not abort save session.", e1); //$NON-NLS-1$
+                }
+                throw new RuntimeException(e);
+            }
             // Cause items being saved to be committed to database.
             session.end();
             String[] savedId = saver.getSavedId();
@@ -846,7 +856,13 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
             return new WSItemPK(new WSDataClusterPK(partialPutItem.getDatacluster()), savedConceptName, savedId);
         } catch (Exception e) {
             LOGGER.error("Could not do partial update.", e); //$NON-NLS-1$
-            throw new RemoteException(e.getLocalizedMessage(), e);
+            Throwable cause = e.getCause();
+            if (cause == null) {
+                throw new RemoteException(e.getLocalizedMessage(), e);
+            } else {
+                throw new RemoteException((cause.getCause() == null ? cause.getLocalizedMessage() : cause.getCause()
+                        .getLocalizedMessage()), e);
+            }
         }
     }
 

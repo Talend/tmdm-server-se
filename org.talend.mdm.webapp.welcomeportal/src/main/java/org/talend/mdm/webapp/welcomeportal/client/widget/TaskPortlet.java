@@ -34,9 +34,6 @@ import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONParser;
-import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.HTML;
 
@@ -139,25 +136,18 @@ public class TaskPortlet extends BasePortlet {
 
         if (!isHiddenTask && isHiddenWorkFlowTask) {
             if (header.isTdsEnabled()) {
-                String url = tdsServiceBaseUrl + TASK_AMOUNT + "&model=" + header.getDatamodel();
-                RequestBuilder builder = new RequestBuilder(RequestBuilder.POST, url);
-                builder.setHeader("Accept", "application/json");
-                String requestData = "&model=" + header.getDatamodel();
+                String url = tdsServiceBaseUrl + TASK_AMOUNT + "?model=" + header.getDatamodel();
+                RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
                 try {
-                    builder.sendRequest(requestData, new RequestCallback() {
+                    builder.sendRequest("", new RequestCallback() {
 
                         @Override
                         public void onResponseReceived(Request request, Response response) {
                             if (STATUS_CODE_OK == response.getStatusCode()) {
-                                JSONValue value = JSONParser.parse(response.getText());
-                                JSONObject object = value.isObject();
-                                JSONValue jsonValue = object.get(TASK_AMOUNT);
-                                if (jsonValue != null) {
-                                    int taskCount = Integer.valueOf(jsonValue.toString());
-                                    if (task_New_Count == null || task_New_Count != taskCount) {
-                                        task_New_Count = taskCount;
-                                        updateTaskPanel(0, TASK_TYPE.TDS_TYPE, task_New_Count, 0);
-                                    }
+                                int taskCount = Integer.valueOf(response.getText());
+                                if (task_New_Count == null || task_New_Count != taskCount) {
+                                    task_New_Count = taskCount;
+                                    updateTaskPanel(0, TASK_TYPE.TDS_TYPE, task_New_Count, 0);
                                 }
                             }
                         }
@@ -199,29 +189,22 @@ public class TaskPortlet extends BasePortlet {
                             && (workflowTask_Count == null || workflowTask_Count != workflowTaskCount);
 
                     if (header.isTdsEnabled()) {
-                        String url = tdsServiceBaseUrl + TASK_AMOUNT;
-                        RequestBuilder builder = new RequestBuilder(RequestBuilder.POST, url);
-                        builder.setHeader("Accept", "application/json");
+                        String url = tdsServiceBaseUrl + TASK_AMOUNT + "?model=" + header.getDatamodel();
+                        RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
                         builder.setUser("administrator");
                         builder.setPassword("administrator");
-                        String requestData = "&model=" + header.getDatamodel();
                         try {
-                            builder.sendRequest(requestData, new RequestCallback() {
+                            builder.sendRequest("", new RequestCallback() {
 
                                 @Override
                                 public void onResponseReceived(Request request, Response response) {
                                     if (STATUS_CODE_OK == response.getStatusCode()) {
-                                        JSONValue value = JSONParser.parse(response.getText());
-                                        JSONObject object = value.isObject();
-                                        JSONValue jsonValue = object.get(TASK_AMOUNT);
-                                        if (jsonValue != null) {
-                                            int taskCount = Integer.valueOf(jsonValue.toString());
-                                            boolean taskChanged = task_New_Count == null || task_New_Count != taskCount;
-                                            if (workflowTaskChanged || taskChanged) {
-                                                workflowTask_Count = workflowTaskCount;
-                                                task_New_Count = taskCount;
-                                                updateTaskPanel(workflowTask_Count, TASK_TYPE.TDS_TYPE, task_New_Count, 0);
-                                            }
+                                        int taskCount = Integer.valueOf(response.getText());
+                                        boolean taskChanged = task_New_Count == null || task_New_Count != taskCount;
+                                        if (workflowTaskChanged || taskChanged) {
+                                            workflowTask_Count = workflowTaskCount;
+                                            task_New_Count = taskCount;
+                                            updateTaskPanel(workflowTask_Count, TASK_TYPE.TDS_TYPE, task_New_Count, 0);
                                         }
                                     }
                                 }

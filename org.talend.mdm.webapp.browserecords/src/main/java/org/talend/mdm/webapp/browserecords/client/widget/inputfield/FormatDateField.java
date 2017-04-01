@@ -191,33 +191,18 @@ public class FormatDateField extends DateField {
 
     @Override
     public boolean validateValue(String value) {
-        if (formatPattern != null && formatPattern.trim().length() > 0) {
+        String tempValue = value;
+        if (formatPattern != null && formatPattern.trim().length() > 0 && this.value != null) {
             try {
-                Date d = propertyEditor.convertStringValue(value);
+                Date d = DateUtil.convertStringToDateByFormat(value, formatPattern);
                 if (d != null) {
-                    return super.validateValue(propertyEditor.getStringValue(d));
-                } else {
-                    return super.validateValue(value);
+                    tempValue = propertyEditor.getStringValue(d);
                 }
-            } catch (Exception e) {
-                if (formatPattern != null && formatPattern.trim().length() > 0) {
-                    try {
-                        Date d = DateUtil.convertStringToDateByFormat(value, formatPattern);
-                        if((d == this.value) || (d != null && d.equals(this.value))){
-                            return super.validateValue(propertyEditor.getStringValue(d));
-                        } else {
-                            return super.validateValue(value);
-                        }
-                    } catch (Exception e1) {
-                        return super.validateValue(value);
-                    }
-                }else{
-                    return super.validateValue(value);
-                }
+            } catch (Exception e1) {
+
             }
-        } else {
-            return super.validateValue(value);
         }
+        return super.validateValue(tempValue);
     }
 
     public void setValidateFlag(boolean validateFlag) {

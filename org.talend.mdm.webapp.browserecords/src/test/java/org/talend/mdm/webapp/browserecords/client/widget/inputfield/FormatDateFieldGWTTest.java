@@ -111,11 +111,11 @@ public class FormatDateFieldGWTTest extends GWTTestCase {
 
         dateField.setValue(date);
         dateField.setFormatPattern(DateUtil.formatDateTimePattern);
-        assertEquals(false, dateField.validateValue(value));
+        assertEquals(true, dateField.validateValue(value));
         
         dateField.setFormatPattern("%1$te/%1$tm/%1$tY");
         value = "02/05/2016";
-        assertEquals(false, dateField.validateValue(value));
+        assertEquals(true, dateField.validateValue(value));
         
     }
 

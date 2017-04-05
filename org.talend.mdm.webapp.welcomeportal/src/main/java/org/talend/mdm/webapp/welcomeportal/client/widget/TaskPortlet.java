@@ -242,7 +242,7 @@ public class TaskPortlet extends BasePortlet {
                                     workflowTask_Count = workflowTaskCount;
                                     task_New_Count = dscTasksMap.get(DSCTASKTYPE_NEW);
                                     task_Pending_Count = dscTasksMap.get(DSCTASKTYPE_PENDING);
-                                    updateTaskPanel(workflowTask_Count, TASK_TYPE.TDS_TYPE, task_New_Count, task_Pending_Count);
+                                    updateTaskPanel(workflowTask_Count, TASK_TYPE.DSC_TYPE, task_New_Count, task_Pending_Count);
                                 }
                             }
                         });

@@ -70,4 +70,6 @@ public interface WelcomePortalServiceAsync {
     void savePortalConfigAutoAndSetting(String portletName, List<String> coinfig, AsyncCallback<Void> callback);
 
     void getAppHeader(AsyncCallback<AppHeader> callback);
+
+    void getCurrentDataModel(AsyncCallback<String> callback);
 }

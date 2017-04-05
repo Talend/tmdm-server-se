@@ -402,10 +402,21 @@ public class WelcomePortalAction implements WelcomePortalService {
     public AppHeader getAppHeader() throws ServiceException {
         try {
             AppHeader header = new AppHeader();
-            header.setDatamodel(Configuration.getConfiguration().getModel());
             header.setTdsEnabled(MDMConfiguration.isTdsEnabled());
             header.setTdsBaseUrl(MDMConfiguration.getConfiguration().getProperty(MDMConfiguration.TDS_ROOT_URL));
             return header;
+        } catch (Exception e) {
+            LOG.error(e.getMessage(), e);
+            throw new ServiceException(e.getLocalizedMessage());
+        }
+    }
+
+    @Override
+    public String getCurrentDataModel() throws ServiceException {
+        Configuration config;
+        try {
+            config = Configuration.getConfiguration();
+            return config.getModel();
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
             throw new ServiceException(e.getLocalizedMessage());

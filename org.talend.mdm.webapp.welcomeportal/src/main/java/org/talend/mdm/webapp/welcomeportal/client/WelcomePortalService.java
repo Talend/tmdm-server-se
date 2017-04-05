@@ -63,6 +63,7 @@ public interface WelcomePortalService extends RemoteService {
 
     public void savePortalConfigAutoAndSetting(String portletName, List<String> coinfig) throws ServiceException;
 
-    AppHeader getAppHeader() throws ServiceException;
+    public AppHeader getAppHeader() throws ServiceException;
 
+    public String getCurrentDataModel() throws ServiceException;
 }

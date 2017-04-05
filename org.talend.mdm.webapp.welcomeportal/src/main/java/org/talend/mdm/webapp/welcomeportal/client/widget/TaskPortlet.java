@@ -136,32 +136,38 @@ public class TaskPortlet extends BasePortlet {
 
         if (!isHiddenTask && isHiddenWorkFlowTask) {
             if (header.isTdsEnabled()) {
-                String url = tdsServiceBaseUrl + TASK_AMOUNT + "?model=" + header.getDatamodel();
-                RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
-                try {
-                    builder.sendRequest("", new RequestCallback() {
+                service.getCurrentDataModel(new SessionAwareAsyncCallback<String>() {
 
-                        @Override
-                        public void onResponseReceived(Request request, Response response) {
-                            if (STATUS_CODE_OK == response.getStatusCode()) {
-                                int taskCount = Integer.valueOf(response.getText());
-                                if (task_New_Count == null || task_New_Count != taskCount) {
-                                    task_New_Count = taskCount;
-                                    updateTaskPanel(0, TASK_TYPE.TDS_TYPE, task_New_Count, 0);
+                    @Override
+                    public void onSuccess(String dataModel) {
+                        String url = tdsServiceBaseUrl + TASK_AMOUNT + "?model=" + dataModel;
+                        RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
+                        try {
+                            builder.sendRequest("", new RequestCallback() {
+
+                                @Override
+                                public void onResponseReceived(Request request, Response response) {
+                                    if (STATUS_CODE_OK == response.getStatusCode()) {
+                                        int taskCount = Integer.valueOf(response.getText());
+                                        if (task_New_Count == null || task_New_Count != taskCount) {
+                                            task_New_Count = taskCount;
+                                            updateTaskPanel(0, TASK_TYPE.TDS_TYPE, task_New_Count, 0);
+                                        }
+                                    }
                                 }
-                            }
-                        }
 
-                        @Override
-                        public void onError(Request request, Throwable exception) {
+                                @Override
+                                public void onError(Request request, Throwable exception) {
+                                    handleServiceException(exception);
+
+                                }
+
+                            });
+                        } catch (RequestException exception) {
                             handleServiceException(exception);
-
                         }
-
-                    });
-                } catch (RequestException exception) {
-                    handleServiceException(exception);
-                }
+                    }
+                });
             } else {
                 service.getDSCTaskMsg(new SessionAwareAsyncCallback<Map<String, Integer>>() {
 
@@ -189,35 +195,39 @@ public class TaskPortlet extends BasePortlet {
                             && (workflowTask_Count == null || workflowTask_Count != workflowTaskCount);
 
                     if (header.isTdsEnabled()) {
-                        String url = tdsServiceBaseUrl + TASK_AMOUNT + "?model=" + header.getDatamodel();
-                        RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
-                        builder.setUser("administrator");
-                        builder.setPassword("administrator");
-                        try {
-                            builder.sendRequest("", new RequestCallback() {
+                        service.getCurrentDataModel(new SessionAwareAsyncCallback<String>() {
 
-                                @Override
-                                public void onResponseReceived(Request request, Response response) {
-                                    if (STATUS_CODE_OK == response.getStatusCode()) {
-                                        int taskCount = Integer.valueOf(response.getText());
-                                        boolean taskChanged = task_New_Count == null || task_New_Count != taskCount;
-                                        if (workflowTaskChanged || taskChanged) {
-                                            workflowTask_Count = workflowTaskCount;
-                                            task_New_Count = taskCount;
-                                            updateTaskPanel(workflowTask_Count, TASK_TYPE.TDS_TYPE, task_New_Count, 0);
+                            @Override
+                            public void onSuccess(String dataModel) {
+                                String url = tdsServiceBaseUrl + TASK_AMOUNT + "?model=" + dataModel;
+                                RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
+                                try {
+                                    builder.sendRequest("", new RequestCallback() {
+
+                                        @Override
+                                        public void onResponseReceived(Request request, Response response) {
+                                            if (STATUS_CODE_OK == response.getStatusCode()) {
+                                                int taskCount = Integer.valueOf(response.getText());
+                                                boolean taskChanged = task_New_Count == null || task_New_Count != taskCount;
+                                                if (workflowTaskChanged || taskChanged) {
+                                                    workflowTask_Count = workflowTaskCount;
+                                                    task_New_Count = taskCount;
+                                                    updateTaskPanel(workflowTask_Count, TASK_TYPE.TDS_TYPE, task_New_Count, 0);
+                                                }
+                                            }
                                         }
-                                    }
-                                }
 
-                                @Override
-                                public void onError(Request request, Throwable exception) {
+                                        @Override
+                                        public void onError(Request request, Throwable exception) {
+                                            handleServiceException(exception);
+                                        }
+
+                                    });
+                                } catch (RequestException exception) {
                                     handleServiceException(exception);
                                 }
-
-                            });
-                        } catch (RequestException exception) {
-                            handleServiceException(exception);
-                        }
+                            }
+                        });
                     } else {
                         service.getDSCTaskMsg(new SessionAwareAsyncCallback<Map<String, Integer>>() {
 

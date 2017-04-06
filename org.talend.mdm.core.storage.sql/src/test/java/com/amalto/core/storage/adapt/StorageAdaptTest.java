@@ -756,8 +756,6 @@ public class StorageAdaptTest extends TestCase {
     
     // TMDM-10616 Can't delete Inheritance entity records
     public void testDeleteInheritanceReocrds() throws Exception {
-        System.setProperty(LiquibaseSchemaAdapter.MDM_ROOT_URL, System.getProperty("user.dir"));
-
         DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
         Storage storage = new HibernateStorage("Person", StorageType.MASTER);
         storage.init(dataSource);
@@ -823,7 +821,6 @@ public class StorageAdaptTest extends TestCase {
         results = storage.fetch(qb.getSelect());
         assertEquals(0, results.getCount());
         storage.commit();
-        deleteLiquibaseChangeLogFile();
     }
 
     private void assertColumnLengthChange(DataSourceDefinition dataSource, String tables, String columns, int expectedLength)

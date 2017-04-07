@@ -30,7 +30,6 @@ import junit.framework.TestCase;
 
 import org.h2.jdbc.JdbcSQLException;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
-import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.metadata.MetadataUtils;
 import org.talend.mdm.commmon.metadata.MetadataUtils.SortType;
@@ -1938,78 +1937,6 @@ public class StorageAdaptTest extends TestCase {
         } catch (SQLException e) {
             assertNull(e);
         }
-    }
-
-    // TMDM-10616 Can't delete Inheritance entity records
-    public void testDeleteInheritanceReocrds() throws Exception {
-        System.setProperty(LiquibaseSchemaAdapter.MDM_ROOT_URL, System.getProperty("user.dir"));
-
-        DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
-        Storage storage = new HibernateStorage("Person", StorageType.MASTER);
-        storage.init(dataSource);
-        String[] typeNames1 = { "Person" };
-        String[] typeNames2 = { "Employee" };
-        String[] typeNames3 = { "Manager" };
-
-        DataRecordReader<String> factory = new XmlStringDataRecordReader();
-        MetadataRepository repository = new MetadataRepository();
-        repository.load(StorageAdaptTest.class.getResourceAsStream("InheritanceDataModel.xsd"));
-        storage.prepare(repository, true);
-
-        // create record before change, second_name, married is null
-        String input1 = "<Person><id>1</id><name>Jack</name></Person>";
-        String input2 = "<Employee><id>2</id><name>Employee</name><role>Employee</role></Employee>";
-        String input3 = "<Manager><id>3</id><name>Manager</name><title>Manager</title></Manager>";
-        try {
-            createRecord(storage, factory, repository, typeNames1, new String[] { input1 });
-            createRecord(storage, factory, repository, typeNames2, new String[] { input2 });
-            createRecord(storage, factory, repository, typeNames3, new String[] { input3 });
-        } catch (Exception e1) {
-            assertNull(e1);
-        }
-
-        storage.begin();
-        ComplexTypeMetadata objectType = repository.getComplexType("Person");//$NON-NLS-1$
-        UserQueryBuilder qb = from(objectType);
-        StorageResults results = storage.fetch(qb.getSelect());
-        try {
-            assertEquals(3, results.getCount());
-            for (DataRecord result : results) {
-                if ("1".equals(result.get("id"))) {
-                    assertEquals("Jack", result.get("name"));
-                } else if ("2".equals(result.get("id"))) {
-                    assertEquals("Employee", result.get("name"));
-                } else if ("3".equals(result.get("id"))) {
-                    assertEquals("Manager", result.get("name"));
-                }
-            }
-        } finally {
-            results.close();
-        }
-        storage.commit();
-
-        FieldMetadata field = repository.getComplexType("Person").getField("id");
-        storage.begin();
-        qb.getSelect().setCondition(UserQueryBuilder.eq(field, "1"));
-        storage.delete(qb.getSelect());
-        storage.commit();
-
-        qb.getSelect().setCondition(UserQueryBuilder.eq(field, "2"));
-        storage.begin();
-        storage.delete(qb.getSelect());
-        storage.commit();
-
-        qb.getSelect().setCondition(UserQueryBuilder.eq(field, "3"));
-        storage.begin();
-        storage.delete(qb.getSelect());
-        storage.commit();
-
-        storage.begin();
-        qb = from(objectType);
-        results = storage.fetch(qb.getSelect());
-        assertEquals(0, results.getCount());
-        storage.commit();
-        deleteLiquibaseChangeLogFile();
     }
 
     private void assertColumnLengthChange(DataSourceDefinition dataSource, String tables, String columns, int expectedLength)

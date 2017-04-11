@@ -3569,6 +3569,70 @@ public class DocumentSaveTest extends TestCase {
         assertEquals("Compte SF", evaluate(committedElement, "/Compte/Level"));
     }
 
+    // TMDM-10616 Can't delete Inheritance entity records
+    public void testDeleteInheritanceReocrds() throws Exception {
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(DocumentSaveTest.class.getResourceAsStream("InheritanceDataModel.xsd"));
+
+        Storage storage = new SecuredStorage(new HibernateStorage("Test"), new TestUserDelegator());
+        storage.init(ServerContext.INSTANCE.get().getDefinition("H2-Default", "Test"));
+        storage.prepare(repository, true);
+
+        ComplexTypeMetadata objectType = repository.getComplexType("Person");
+        List<DataRecord> records = new ArrayList<DataRecord>();
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+        records.add(factory.read(repository, repository.getComplexType("Person"), "<Person><id>1</id><name>Jack</name></Person>"));
+        records.add(factory.read(repository, repository.getComplexType("Employee"), "<Employee><id>2</id><name>Employee</name><role>Employee</role></Employee>"));
+        records.add(factory.read(repository, repository.getComplexType("Manager"), "<Manager><id>3</id><name>Manager</name><title>Manager</title></Manager>"));
+        try {
+            storage.begin();
+            storage.update(records);
+            storage.commit();
+        } finally {
+            storage.end();
+        }
+
+        UserQueryBuilder qb = from(objectType);
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(3, results.getCount());
+            for (DataRecord result : results) {
+                if ("1".equals(result.get("id"))) {
+                    assertEquals("Jack", result.get("name"));
+                } else if ("2".equals(result.get("id"))) {
+                    assertEquals("Employee", result.get("name"));
+                } else if ("3".equals(result.get("id"))) {
+                    assertEquals("Manager", result.get("name"));
+                }
+            }
+        } finally {
+            results.close();
+        }
+        storage.commit();
+
+        FieldMetadata field = repository.getComplexType("Person").getField("id");
+        storage.begin();
+        qb.getSelect().setCondition(UserQueryBuilder.eq(field, "1"));
+        storage.delete(qb.getSelect());
+        storage.commit();
+
+        qb.getSelect().setCondition(UserQueryBuilder.eq(field, "2"));
+        storage.begin();
+        storage.delete(qb.getSelect());
+        storage.commit();
+
+        qb.getSelect().setCondition(UserQueryBuilder.eq(field, "3"));
+        storage.begin();
+        storage.delete(qb.getSelect());
+        storage.commit();
+
+        storage.begin();
+        qb = from(objectType);
+        results = storage.fetch(qb.getSelect());
+        assertEquals(0, results.getCount());
+        storage.commit();
+    }
+
     private static class MockCommitter implements SaverSession.Committer {
 
         private MutableDocument lastSaved;

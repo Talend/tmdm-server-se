@@ -7,6 +7,7 @@ import org.talend.mdm.webapp.base.client.SessionAwareAsyncCallback;
 import org.talend.mdm.webapp.browserecords.client.BrowseRecords;
 import org.talend.mdm.webapp.browserecords.client.BrowseRecordsServiceAsync;
 import org.talend.mdm.webapp.browserecords.client.model.FormatModel;
+import org.talend.mdm.webapp.browserecords.client.util.DateUtil;
 import org.talend.mdm.webapp.browserecords.client.util.Locale;
 
 import com.extjs.gxt.ui.client.GXT;
@@ -108,10 +109,7 @@ public class FormatDateField extends DateField {
             }
             return value == null ? "" : propertyEditor.getStringValue(value); //$NON-NLS-1$
         } catch (Exception e) {
-            if (!this.validateValue(rawValue)) {
-                return rawValue;
-            }
-            return value == null ? "" : propertyEditor.getStringValue(value); //$NON-NLS-1$
+            return rawValue;
         }
     }
 
@@ -156,20 +154,27 @@ public class FormatDateField extends DateField {
 
     private void setFormatedValue(final FormatValueCallback callback) {
         if (formatPattern != null && formatPattern.trim().length() > 0) {
-            if (value != null) {
-                final FormatModel model = new FormatModel(formatPattern, value, Locale.getLanguage());
-                service.formatValue(model, new SessionAwareAsyncCallback<String>() {
+            try {
+                Date d = propertyEditor.convertStringValue(this.getRawValue());
+                if (d != null) {
+                    final FormatModel model = new FormatModel(formatPattern, d, Locale.getLanguage());
+                    service.formatValue(model, new SessionAwareAsyncCallback<String>() {
 
-                    @Override
-                    public void onSuccess(String result) {
-                        if (callback != null) {
-                            callback.formatValue(result);
+                        @Override
+                        public void onSuccess(String result) {
+                            if (callback != null) {
+                                callback.formatValue(result);
+                            }
                         }
+                    });
+                } else {
+                    if (callback != null) {
+                        callback.formatValue(""); //$NON-NLS-1$
                     }
-                });
-            } else {
+                }
+            } catch (Exception e) {
                 if (callback != null) {
-                    callback.formatValue(""); //$NON-NLS-1$
+                    callback.formatValue(this.getRawValue()); //$NON-NLS-1$
                 }
             }
         }
@@ -177,11 +182,18 @@ public class FormatDateField extends DateField {
 
     @Override
     public boolean validateValue(String value) {
+        String tempValue = value;
         if (formatPattern != null && formatPattern.trim().length() > 0 && this.value != null) {
-            return super.validateValue(propertyEditor.getStringValue(this.value));
-        } else {
-            return super.validateValue(value);
+            try {
+                Date d = DateUtil.convertStringToDateByFormat(value, formatPattern);
+                if (d != null) {
+                    tempValue = propertyEditor.getStringValue(d);
+                }
+            } catch (Exception e1) {
+
+            }
         }
+        return super.validateValue(tempValue);
     }
 
     public void setValidateFlag(boolean validateFlag) {

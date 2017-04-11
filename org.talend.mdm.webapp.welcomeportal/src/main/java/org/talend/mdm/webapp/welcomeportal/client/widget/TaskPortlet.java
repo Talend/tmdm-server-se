@@ -41,8 +41,6 @@ public class TaskPortlet extends BasePortlet {
 
     private AppHeader header = (AppHeader) Registry.get(WelcomePortal.APP_HEADER);
     
-    private final int STATUS_CODE_OK = 200;
-
     private final String TASK_AMOUNT = "amount";
 
     private String tdsServiceBaseUrl = GWT.getHostPageBaseURL() + "services/rest/tds/";
@@ -108,7 +106,7 @@ public class TaskPortlet extends BasePortlet {
 
             @Override
             public void onClick(ClickEvent event) {
-                UrlUtil.openSingleWindow(header.getTdsBaseUrl(), Constants.TDS_NAME);
+                UrlUtil.openSingleWindow(header.getTdsBaseUrl() + "/#/mytasks", Constants.TDS_NAME);
             }
         };
     }
@@ -144,14 +142,18 @@ public class TaskPortlet extends BasePortlet {
                         RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
                         try {
                             builder.sendRequest("", new RequestCallback() {
-
                                 @Override
                                 public void onResponseReceived(Request request, Response response) {
-                                    if (STATUS_CODE_OK == response.getStatusCode()) {
-                                        int taskCount = Integer.valueOf(response.getText());
+                                    if (Response.SC_OK == response.getStatusCode()) {
+                                        int taskCount = handleTaskResult(response.getText());
                                         if (task_New_Count == null || task_New_Count != taskCount) {
                                             task_New_Count = taskCount;
                                             updateTaskPanel(0, TASK_TYPE.TDS_TYPE, task_New_Count, 0);
+                                        }
+                                    } else if (Response.SC_INTERNAL_SERVER_ERROR == response.getStatusCode()) {
+                                        int taskCount = handleTaskResult("");
+                                        if (task_New_Count == null) {
+                                            updateTaskPanel(0, TASK_TYPE.TDS_TYPE, taskCount, 0);
                                         }
                                     }
                                 }
@@ -206,13 +208,18 @@ public class TaskPortlet extends BasePortlet {
 
                                         @Override
                                         public void onResponseReceived(Request request, Response response) {
-                                            if (STATUS_CODE_OK == response.getStatusCode()) {
-                                                int taskCount = Integer.valueOf(response.getText());
+                                            if (Response.SC_OK == response.getStatusCode()) {
+                                                int taskCount = handleTaskResult(response.getText());
                                                 boolean taskChanged = task_New_Count == null || task_New_Count != taskCount;
                                                 if (workflowTaskChanged || taskChanged) {
                                                     workflowTask_Count = workflowTaskCount;
                                                     task_New_Count = taskCount;
                                                     updateTaskPanel(workflowTask_Count, TASK_TYPE.TDS_TYPE, task_New_Count, 0);
+                                                }
+                                            } else if (Response.SC_INTERNAL_SERVER_ERROR == response.getStatusCode()) {
+                                                int taskCount = handleTaskResult("");
+                                                if (workflowTaskChanged) {
+                                                    updateTaskPanel(workflowTask_Count, TASK_TYPE.TDS_TYPE, taskCount, 0);
                                                 }
                                             }
                                         }
@@ -325,5 +332,24 @@ public class TaskPortlet extends BasePortlet {
         }
         errorMsg = Format.htmlEncode(errorMsg);
         MessageBox.alert(BaseMessagesFactory.getMessages().error_title(), errorMsg, null);
+    }
+
+    private int handleTaskResult(String result) {
+        try {
+            Integer taskCount = Integer.valueOf(result);
+            return taskCount.intValue();
+        } catch (NumberFormatException exception) {
+            if ("authentication_failure".equals(result)) {
+                MessageBox.alert(BaseMessagesFactory.getMessages().warning_title(), MessagesFactory.getMessages()
+                        .login_tds_fail(), null);
+            } else if ("role_missing".equals(result)) {
+                MessageBox.info(BaseMessagesFactory.getMessages().info_title(), MessagesFactory.getMessages()
+                        .retrieve_campaign_fail(), null);
+            } else {
+                MessageBox.alert(BaseMessagesFactory.getMessages().error_title(), BaseMessagesFactory.getMessages()
+                        .unknown_error(), null);
+            }
+            return 0;
+        }
     }
 }

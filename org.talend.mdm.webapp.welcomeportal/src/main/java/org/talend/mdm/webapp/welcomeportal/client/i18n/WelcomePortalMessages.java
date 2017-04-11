@@ -133,4 +133,8 @@ public interface WelcomePortalMessages extends Messages {
     String chart_config_ok();
 
     String chart_config_cancel();
+
+    String login_tds_fail();
+
+    String retrieve_campaign_fail();
 }

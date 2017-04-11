@@ -1136,7 +1136,11 @@ public class HibernateStorage implements Storage {
         // Drop table order should be reversed
         for (int i = sortedTypesToDrop.size() - 1; i >= 0; i--) {
             ComplexTypeMetadata typeMetadata = sortedTypesToDrop.get(i);
-            PersistentClass metadata = configuration.getClassMapping(ClassCreator.getClassName(typeMetadata.getName()));
+            String typeName = typeMetadata.getName();
+            if (!typeMetadata.isInstantiable()) {
+                typeName = "X_" + typeName; //$NON-NLS-1$
+            }
+            PersistentClass metadata = configuration.getClassMapping(ClassCreator.getClassName(typeName));
             if (metadata != null) {
                 tablesToDrop.addAll((Collection<String>) metadata.accept(visitor));
             } else {
@@ -1162,7 +1166,7 @@ public class HibernateStorage implements Storage {
             connection = DriverManager.getConnection(dataSource.getConnectionURL(), dataSource.getUserName(),
                     dataSource.getPassword());
             int successCount = 0;
-            while(successCount < totalCount && totalRound++ < totalCount) {
+            while (successCount < totalCount && totalRound++ < totalCount) {
                 Set<String> dropedTables = new HashSet<String>();
                 for (String table : tablesToDrop) {
                     Statement statement = connection.createStatement();

@@ -83,23 +83,29 @@ class GenerateActions implements DocumentSaver {
                         context.getDataModelName(), saverSource);
             }
             Action createAction = new OverrideCreateAction(date, source, userName, userDocument, type);
+            Collection<FieldMetadata> keys = type.getKeyFields();
+            List<String> idValues = new ArrayList<String>(keys.size());
+            boolean isAutoIncrementKey = false;
+            for (FieldMetadata key : keys) {
+                if (EUUIDCustomType.AUTO_INCREMENT.getName().equalsIgnoreCase(key.getType().getName())
+                        || EUUIDCustomType.UUID.getName().equalsIgnoreCase(key.getType().getName())) {
+                    isAutoIncrementKey = true;
+                }
+            }
+                    
             // Builds action list (be sure to include actual creation as first action).
             actions = new LinkedList<Action>();
             actions.add(createAction);
-            if (context.getId().length <= 0) {
+            if (!isAutoIncrementKey || context.getId().length < 1) {
                 actions.addAll(type.accept(createActions));
             }
             updateActions.setCreateAction(true);
             actions.addAll(type.accept(updateActions));
 
-            // in case of beforesaving, don't re-generate id as it might have been used for reference
-            if (context.getId().length <= 0) { // reuse id from context, assumption: id should not be altered externally
-                // Get all actions on the id for the type
-                Collection<FieldMetadata> keys = type.getKeyFields();
-                List<String> idValues = new ArrayList<String>(keys.size());
+            // Don't re-generate auto-increment id & UUID
+            if (!isAutoIncrementKey || context.getId().length < 1) {
                 for (FieldMetadata key : keys) {
-                    if (EUUIDCustomType.AUTO_INCREMENT.getName().equalsIgnoreCase(key.getType().getName())
-                            || EUUIDCustomType.UUID.getName().equalsIgnoreCase(key.getType().getName())) {
+                    if (isAutoIncrementKey) {
                         for (Action action : actions) {
                             if (action instanceof FieldUpdateAction) {
                                 FieldUpdateAction fieldUpdateAction = (FieldUpdateAction) action;

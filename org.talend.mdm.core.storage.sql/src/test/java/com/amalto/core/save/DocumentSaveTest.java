@@ -1903,6 +1903,32 @@ public class DocumentSaveTest extends TestCase {
         assertEquals("testAutoIncrementPK", evaluate(committedElement, "/ProductFamily/Name"));
     }
 
+    public void testBeforeSavingByModifyPK() throws Exception {
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(DocumentSaveTest.class.getResourceAsStream("metadata1.xsd"));
+        MockMetadataRepositoryAdmin.INSTANCE.register("DStar", repository);
+        
+        boolean isOK = true;
+        boolean newOutput = true;
+        TestSaverSource source = new TestSaverSourceWithProductOutputReportItem(repository, false, "", isOK, newOutput);
+        
+        SaverSession session = SaverSession.newSession(source);
+        InputStream recordXml = DocumentSaveTest.class.getResourceAsStream("test_product_original.xml");
+        DocumentSaverContext context = session.getContextFactory().create("MDM", "DStar", "Source", recordXml, true, true, true,
+                true, false);
+        DocumentSaver saver = context.createSaver();
+        saver.save(session, context);
+        assertEquals("Save the value successfully!", saver.getBeforeSavingMessage());
+        MockCommitter committer = new MockCommitter();
+        session.end(committer);
+        
+        assertTrue(committer.hasSaved());
+        Element committedElement = committer.getCommittedElement();
+        assertEquals("id2", evaluate(committedElement, "/Product/Id"));
+        assertEquals("id2", context.getId()[0]);
+        assertEquals("Product Name1", evaluate(committedElement, "/Product/Name"));
+    }
+    
     public void testUpdateAutoIncrementRecord() throws Exception {
         createBeanDelegatorContainer();
         BeanDelegatorContainer.getInstance().setDelegatorInstancePool(
@@ -3999,6 +4025,37 @@ public class DocumentSaveTest extends TestCase {
             if (newOutput) {
                 item = "<exchange><item>"
                         + "<ProductFamily><Id>0</Id><Name>testAutoIncrementPK</Name></ProductFamily></item></exchange>";
+                report.setItem(item);
+            }
+            return report;
+        }
+    }
+    
+    private static class TestSaverSourceWithProductOutputReportItem extends DocumentSaveTest.TestSaverSource {
+
+        private final boolean OK;
+
+        private final boolean newOutput;
+
+        public TestSaverSourceWithProductOutputReportItem(MetadataRepository repository, boolean exist, String fileName, boolean OK,
+                boolean newOutput) {
+            super(repository, exist, fileName, "metadata1.xsd");
+            this.OK = OK;
+            this.newOutput = newOutput;
+        }
+
+        @Override
+        public OutputReport invokeBeforeSaving(DocumentSaverContext context, MutableDocument updateReportDocument) {
+            String message = "<report><message type=\"info\">Save the value successfully!</message></report>";
+            if (!OK) {
+                message = "<report><message type=\"error\">Save the value failed!</message></report>";
+            }
+            String item = null;
+            OutputReport report = new OutputReport(message, item);
+
+            if (newOutput) {
+                item = "<exchange><item>"
+                        + "<Product><Id>id2</Id><Name>Product Name1</Name><Description>Product Description1</Description><Price>11</Price></Product></item></exchange>";
                 report.setItem(item);
             }
             return report;

@@ -11,8 +11,11 @@
 package com.amalto.core.save.context;
 
 import java.io.StringReader;
+import java.util.Collection;
 
 import org.apache.commons.lang.StringUtils;
+import org.talend.mdm.commmon.metadata.FieldMetadata;
+import org.talend.mdm.commmon.util.core.EUUIDCustomType;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -112,6 +115,18 @@ public class BeforeSaving implements DocumentSaver {
                                     context.getDataModelName());
                             context.setUserDocument(document);
                             context.setDatabaseDocument(null);
+                            Collection<FieldMetadata> keys = context.getUserDocument().getType().getKeyFields();
+                            boolean isAutoIncrementKey = false;
+                            for (FieldMetadata key : keys) {
+                                if (EUUIDCustomType.AUTO_INCREMENT.getName().equalsIgnoreCase(key.getType().getName())
+                                        || EUUIDCustomType.UUID.getName().equalsIgnoreCase(key.getType().getName())) {
+                                    isAutoIncrementKey = true;
+                                }
+                            }
+                            // Don't re-generate auto-increment id & UUID
+                            if (context.getUserAction() == UserAction.CREATE && !isAutoIncrementKey) {
+                                context.setId(new String[0]); // Will re-read id from document.
+                            }
                             // Redo a set of actions and security checks.
                             // TMDM-4599: Adds UpdateReport phase so a new update report is generated based on latest changes.
                             next = new ID(new GenerateActions(new Security(new UpdateReport(new ApplyActions(next)))));

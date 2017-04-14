@@ -174,8 +174,8 @@ public class LiquibaseSchemaAdapter  {
         for (RemoveChange removeAction : diffResults.getRemoveChanges()) {
 
             MetadataVisitable element = removeAction.getElement();
-            if (!isContainedComplexFieldTypeMetadata((FieldMetadata) element) || isSimpleTypeFieldMetadata((FieldMetadata) element)
-                    || isContainedComplexType((FieldMetadata) element)) {
+            if (element instanceof FieldMetadata && (!isContainedComplexFieldTypeMetadata((FieldMetadata) element)
+                    || isSimpleTypeFieldMetadata((FieldMetadata) element) || isContainedComplexType((FieldMetadata) element))) {
                 FieldMetadata field = (FieldMetadata) element;
 
                 String tableName = tableResolver.get(field.getContainingType().getEntity()).toLowerCase();

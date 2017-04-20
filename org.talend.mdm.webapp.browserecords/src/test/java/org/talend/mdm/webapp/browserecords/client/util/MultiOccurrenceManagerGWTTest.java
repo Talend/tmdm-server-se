@@ -147,6 +147,77 @@ public class MultiOccurrenceManagerGWTTest extends GWTTestCase {
         }
     }
 
+    public void testAddMultiOccurrenceNodeValid() {
+        SimpleTypeModel simpleTypeModel = new SimpleTypeModel();
+        simpleTypeModel.setAutoExpand(false);
+        simpleTypeModel.setMaxOccurs(5);
+        metaDataTypes.put("ThirdEntity/optionalDetails/optionalUbounded3", simpleTypeModel); //$NON-NLS-1$
+
+        ComplexTypeModel complexTypeModel = new ComplexTypeModel();
+        complexTypeModel.setAutoExpand(false);
+        complexTypeModel.setMinOccurs(0);
+        metaDataTypes.put("ThirdEntity/optionalDetails", complexTypeModel); //$NON-NLS-1$
+
+        ItemNodeModel itemNodeModel = new ItemNodeModel();
+        itemNodeModel.setName("optionalUbounded3"); //$NON-NLS-1$
+        itemNodeModel.setTypePath("ThirdEntity/optionalDetails/optionalUbounded3"); //$NON-NLS-1$
+        itemNodeModel.setValid(true);
+        itemNodeModel.setBlankValid(true);
+        itemNodeModel.setMandatory(false);
+        itemNodeModel.setObjectValue("2017-02-02");
+
+        ItemNodeModel itemNodeModel2 = new ItemNodeModel();
+        itemNodeModel2.setName("optionalUbounded3"); //$NON-NLS-1$
+        itemNodeModel2.setTypePath("ThirdEntity/optionalDetails/optionalUbounded3"); //$NON-NLS-1$
+        itemNodeModel2.setValid(false);
+        itemNodeModel2.setBlankValid(true);
+        itemNodeModel2.setMandatory(false);
+        itemNodeModel2.setObjectValue("2017-02-33");
+
+        ItemNodeModel parent = new ItemNodeModel();
+        parent.setName("optionalDetails"); //$NON-NLS-1$
+        parent.setTypePath("ThirdEntity/optionalDetails"); //$NON-NLS-1$
+        parent.add(itemNodeModel);
+        itemNodeModel.setParent(parent);
+        itemNodeModel2.setParent(parent);
+
+        ItemNodeModel father = new ItemNodeModel();
+        father.setName("ThirdEntity"); //$NON-NLS-1$
+        father.setTypePath("ThirdEntity"); //$NON-NLS-1$
+        father.add(parent);
+        parent.setParent(father);
+
+        DynamicTreeItem item = new DynamicTreeItem();
+        item.setItemNodeModel(itemNodeModel);
+
+        DynamicTreeItem item2 = new DynamicTreeItem();
+        item2.setItemNodeModel(itemNodeModel2);
+
+        DynamicTreeItem parentItem = new DynamicTreeItem();
+        parentItem.addItem(item);
+        parentItem.addItem(item2);
+
+        DynamicTreeItem fatherItem = new DynamicTreeItem();
+        fatherItem.addItem(parentItem);
+
+        MultiOccurrenceManager manager = new MultiOccurrenceManager(metaDataTypes, treeDetail);
+        manager.addMultiOccurrenceNode(item);
+
+        multiNodes = _getMultiOccurrence(manager, "ThirdEntity/optionalDetails[1]/optionalUbounded3"); //$NON-NLS-1$
+        assertEquals(1, multiNodes.size());
+        assertEquals("optionalUbounded3", multiNodes.get(0).getItemNodeModel().getName()); //$NON-NLS-1$
+        assertTrue(multiNodes.get(0).getItemNodeModel().isValid()); //$NON-NLS-1$
+        manager.addMultiOccurrenceNode(item2);
+
+        multiNodes = _getMultiOccurrence(manager, "ThirdEntity/optionalDetails[1]/optionalUbounded3"); //$NON-NLS-1$
+        assertEquals(2, multiNodes.size());
+        assertFalse(multiNodes.get(1).getItemNodeModel().isValid()); //$NON-NLS-1$
+
+        manager.warningBrothers(multiNodes.get(0).getItemNodeModel());
+        assertTrue(multiNodes.get(0).getItemNodeModel().isValid()); //$NON-NLS-1$
+        assertFalse(multiNodes.get(1).getItemNodeModel().isValid()); //$NON-NLS-1$
+    }
+
     private native List<DynamicTreeItem> _getMultiOccurrence(MultiOccurrenceManager manager, String xpath)/*-{
 		return manager.@org.talend.mdm.webapp.browserecords.client.util.MultiOccurrenceManager::getBrothersGroup(Ljava/lang/String;)(xpath);
     }-*/;

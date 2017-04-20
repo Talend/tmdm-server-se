@@ -121,6 +121,8 @@ import com.amalto.core.server.ServerContext;
 import com.amalto.core.server.StorageAdmin;
 import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.task.StagingConstants;
+import com.amalto.core.storage.tds.TDSClient;
+import com.amalto.core.storage.tds.TDSClientImpl;
 import com.amalto.core.util.CoreException;
 import com.amalto.core.util.EntityNotFoundException;
 import com.amalto.core.util.FieldNotFoundException;
@@ -2560,6 +2562,12 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             LOG.error(exception.getMessage(), exception);
             throw new ServiceException(exception.getLocalizedMessage());
         }
+    }
+
+    @Override
+    public boolean existTask(String taskId) throws ServiceException {
+        TDSClient client = new TDSClientImpl();
+        return client.existTask(taskId);
     }
 
     private TypeModel findTypeModelByTypePath(Map<String, TypeModel> metaDataTypes, String typePath, String language)

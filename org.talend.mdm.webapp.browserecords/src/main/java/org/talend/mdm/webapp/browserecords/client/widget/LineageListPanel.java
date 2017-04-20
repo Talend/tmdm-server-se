@@ -240,11 +240,11 @@ public class LineageListPanel extends ContentPanel {
     }
 
     private native String getDataContainer(JavaScriptObject stagingAreaConfig)/*-{
-		return stagingAreaConfig.dataContainer;
+        return stagingAreaConfig.dataContainer;
     }-*/;
 
     private native String getCriteria(JavaScriptObject stagingAreaConfig)/*-{
-		return stagingAreaConfig.criteria;
+        return stagingAreaConfig.criteria;
     }-*/;
 
     private RecordsPagingConfig copyPgLoad(PagingLoadConfig pconfig) {
@@ -446,9 +446,20 @@ public class LineageListPanel extends ContentPanel {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
                 if (header.isTdsEnabled()) {
-                    String baseUrl = header.getTdsBaseUrl();
-                    UrlUtil.openSingleWindow(baseUrl + Constants.TDS_ACCESSTASK
-                            + LineageListPanel.this.taskId,Constants.TDS_NAME);
+                    final String taskId = LineageListPanel.this.taskId;
+                    browseStagingRecordService.existTask(taskId, new SessionAwareAsyncCallback<Boolean>() {
+
+                        @Override
+                        public void onSuccess(Boolean isExisted) {
+                            if (isExisted) {
+                                String baseUrl = header.getTdsBaseUrl();
+                                UrlUtil.openSingleWindow(baseUrl + Constants.TDS_ACCESSTASK + taskId, Constants.TDS_NAME);
+                            } else {
+                                MessageBox.alert(MessagesFactory.getMessages().warning_title(), MessagesFactory.getMessages()
+                                        .task_id_no_exist(taskId), null);
+                            }
+                        }
+                    });
                 } else {
                     initDSC(LineageListPanel.this.taskId);
                 }
@@ -592,15 +603,15 @@ public class LineageListPanel extends ContentPanel {
     }
 
     private native void selectStagingGridPanel()/*-{
-		var tabPanel = $wnd.amalto.core.getTabPanel();
-		var panel = tabPanel.getItem("Staging Data Viewer");
-		if (panel != undefined) {
-			tabPanel.setSelection(panel.getItemId());
-		}
+        var tabPanel = $wnd.amalto.core.getTabPanel();
+        var panel = tabPanel.getItem("Staging Data Viewer");
+        if (panel != undefined) {
+            tabPanel.setSelection(panel.getItemId());
+        }
     }-*/;
 
     private native boolean initDSC(String taskId)/*-{
-		$wnd.amalto.datastewardship.Datastewardship.taskItem(taskId);
-		return true;
+        $wnd.amalto.datastewardship.Datastewardship.taskItem(taskId);
+        return true;
     }-*/;
 }

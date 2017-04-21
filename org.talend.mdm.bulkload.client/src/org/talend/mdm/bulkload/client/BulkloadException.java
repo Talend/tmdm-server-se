@@ -14,9 +14,6 @@ package org.talend.mdm.bulkload.client;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 
-/**
- *
- */
 public class BulkloadException extends RuntimeException {
 
     private static final String SERVER_EXCEPTION_SEPARATOR = "== SERVER EXCEPTION ==";

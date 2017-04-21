@@ -153,6 +153,38 @@ public class BulkloadClientTest extends TestCase {
         }
     }
 
+    @SuppressWarnings("nls")
+    public void testInsertOnly() throws Exception {
+        String serverURL = "http://localhost:8080/datamanager/loadServlet";
+        boolean isServerRunning = isServerRunning(serverURL);
+        if (isServerRunning) {
+            BulkloadClient client = new BulkloadClient(serverURL, "admin", "talend", null, "Product", "Product", "Product");
+            BulkloadOptions options = new BulkloadOptions();
+            client.setOptions(options);
+
+            String xml1 = "<Product><Id>1</Id><Name>a</Name><Description>a</Description><Features><Sizes/><Colors/></Features><Price>2.00</Price><Stores/></Product>\n"
+                    + "<Product><Id>1</Id><Name>a</Name><Description>b</Description><Features><Sizes/><Colors/></Features><Price>3.00</Price><Stores/></Product>";
+
+            options.setInsertOnly(false);
+            try {
+                client.load(new ByteArrayInputStream(xml1.getBytes("utf-8")));
+            } catch (Exception e) {
+                fail("Insert should not fail with same ID when insertOnly=false");
+            }
+
+            String xml2 = "<Product><Id>2</Id><Name>a</Name><Description>a</Description><Features><Sizes/><Colors/></Features><Price>2.00</Price><Stores/></Product>\n"
+                    + "<Product><Id>2</Id><Name>a</Name><Description>b</Description><Features><Sizes/><Colors/></Features><Price>3.00</Price><Stores/></Product>";
+            options.setInsertOnly(true);
+            try {
+                client.load(new ByteArrayInputStream(xml2.getBytes("utf-8")));
+                fail("Insert should fail with same ID when insertOnly=true");
+            } catch (Exception e) {
+                System.out.println("Excepted exception:" + e.getMessage());
+            }
+
+        }
+    }
+
     class InterruptedTestResult {
 
         boolean success = false;

@@ -140,8 +140,8 @@ public class BulkloadClientTest extends TestCase {
             merger2.close();
             client2.waitForEndOfQueue();
             
-            assertEquals(true, merger1.isAlreadyProcessed());
-            assertEquals(true, merger2.isAlreadyProcessed());
+            assertEquals(true, merger1.isConsumed());
+            assertEquals(true, merger2.isConsumed());
         }
     }
 
@@ -153,8 +153,8 @@ public class BulkloadClientTest extends TestCase {
             client.setOptions(new BulkloadOptions());
             int count = 5;
             for (int i = 0; i < count; i++) {
-                InputStreamMerger manager = client.load();
-                synchronized (manager) {
+                InputStreamMerger merger = client.load();
+                synchronized (merger) {
                     InputStream bin = new InputStream() {
 
                         @Override
@@ -167,13 +167,13 @@ public class BulkloadClientTest extends TestCase {
                             return -1;
                         }
                     };
-                    manager.push(bin);
-                    manager.close();
-                    while (!manager.isAlreadyProcessed()) {
-                        manager.wait(100);
+                    merger.push(bin);
+                    merger.close();
+                    while (!merger.isConsumed()) {
+                        merger.wait(100);
                     }
-                    assertEquals(true, manager.isAlreadyProcessed());
-                    manager.notify();
+                    assertEquals(true, merger.isConsumed());
+                    merger.notify();
                 }
             }
         }

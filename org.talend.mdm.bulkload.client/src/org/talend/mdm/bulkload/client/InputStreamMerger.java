@@ -320,11 +320,7 @@ public class InputStreamMerger extends InputStream {
         }
     }
 
-    public boolean isAlreadyProcessed() {
-        return this.alreadyProcessed;
-    }
-
-    public void setAlreadyProcessed(boolean alreadyProcessed) {
-        this.alreadyProcessed = alreadyProcessed;
+    protected boolean isConsumed() {
+        return producerToConsumer.isEmpty();
     }
 }

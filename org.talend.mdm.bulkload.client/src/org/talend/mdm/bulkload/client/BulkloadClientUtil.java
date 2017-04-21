@@ -86,9 +86,6 @@ public class BulkloadClientUtil {
 
             client.executeMethod(config, putMethod);
             responseBody = putMethod.getResponseBodyAsString();
-            if(itemdata instanceof InputStreamMerger) {
-                ((InputStreamMerger) itemdata).setAlreadyProcessed(true);
-            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
@@ -180,8 +177,10 @@ public class BulkloadClientUtil {
         public void run() {
             try {
                 startedBulkloadCount.incrementAndGet();
-                bulkload(url, cluster, concept, dataModel, validate, smartPK, insertOnly, inputStream, userName, password,
-                        transactionId, sessionId, universe, tokenKey, tokenValue);
+                do {
+                    bulkload(url, cluster, concept, dataModel, validate, smartPK, insertOnly, inputStream, userName, password,
+                            transactionId, sessionId, universe, tokenKey, tokenValue);
+                } while(!inputStream.isConsumed());
             } catch (Throwable e) {
                 inputStream.reportFailure(e);
             } finally {

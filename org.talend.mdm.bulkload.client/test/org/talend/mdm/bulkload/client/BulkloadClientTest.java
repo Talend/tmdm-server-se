@@ -170,11 +170,7 @@ public class BulkloadClientTest extends TestCase {
                     + "<Product><Id>1</Id><Name>a</Name><Description>b</Description><Features><Sizes/><Colors/></Features><Price>3.00</Price><Stores/></Product>";
 
             options.setInsertOnly(false);
-            try {
-                client.load(new ByteArrayInputStream(xml1.getBytes("utf-8")));
-            } catch (Exception e) {
-                log.error("Insert should not fail with same ID when insertOnly=false");
-            }
+            client.load(new ByteArrayInputStream(xml1.getBytes("utf-8")));
 
             String xml2 = "<Product><Id>2</Id><Name>a</Name><Description>a</Description><Features><Sizes/><Colors/></Features><Price>2.00</Price><Stores/></Product>\n"
                     + "<Product><Id>2</Id><Name>a</Name><Description>b</Description><Features><Sizes/><Colors/></Features><Price>3.00</Price><Stores/></Product>";
@@ -183,7 +179,7 @@ public class BulkloadClientTest extends TestCase {
                 client.load(new ByteArrayInputStream(xml2.getBytes("utf-8")));
                 fail("Insert should fail with same ID when insertOnly=true");
             } catch (Exception e) {
-                log.error("Excepted exception:" + e.getMessage());
+                log.info("Expected exception:" + e.getMessage());
             }
 
         }

@@ -20,11 +20,15 @@ import java.util.concurrent.atomic.AtomicInteger;
 import junit.framework.TestCase;
 
 import org.apache.commons.lang.math.RandomUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  *
  */
 public class BulkloadClientTest extends TestCase {
+
+    private static Log log = LogFactory.getLog(BulkloadClientTest.class);
 
     public void testClient() throws Exception {
         String serverURL = "http://localhost:8080/datamanager/loadServlet";
@@ -169,7 +173,7 @@ public class BulkloadClientTest extends TestCase {
             try {
                 client.load(new ByteArrayInputStream(xml1.getBytes("utf-8")));
             } catch (Exception e) {
-                fail("Insert should not fail with same ID when insertOnly=false");
+                log.error("Insert should not fail with same ID when insertOnly=false");
             }
 
             String xml2 = "<Product><Id>2</Id><Name>a</Name><Description>a</Description><Features><Sizes/><Colors/></Features><Price>2.00</Price><Stores/></Product>\n"
@@ -179,7 +183,7 @@ public class BulkloadClientTest extends TestCase {
                 client.load(new ByteArrayInputStream(xml2.getBytes("utf-8")));
                 fail("Insert should fail with same ID when insertOnly=true");
             } catch (Exception e) {
-                System.out.println("Excepted exception:" + e.getMessage());
+                log.error("Excepted exception:" + e.getMessage());
             }
 
         }

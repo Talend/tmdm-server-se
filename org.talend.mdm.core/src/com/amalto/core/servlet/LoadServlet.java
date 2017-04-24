@@ -53,6 +53,8 @@ public class LoadServlet extends HttpServlet {
 
     private static final String PARAMETER_SMARTPK = "smartpk"; //$NON-NLS-1$
 
+    private static final String PARAMETER_INSERTONLY = "insertonly"; //$NON-NLS-1$
+
     private static final Logger log = Logger.getLogger(LoadServlet.class);
 
     public static final Map<String, XSDKey> typeNameToKeyDef = new HashMap<String, XSDKey>();
@@ -87,6 +89,7 @@ public class LoadServlet extends HttpServlet {
         String dataModelName = request.getParameter(PARAMETER_DATAMODEL);
         boolean needValidate = Boolean.valueOf(request.getParameter(PARAMETER_VALIDATE));
         boolean needAutoGenPK = Boolean.valueOf(request.getParameter(PARAMETER_SMARTPK));
+        boolean insertOnly = Boolean.valueOf(request.getParameter(PARAMETER_INSERTONLY));
         String action = request.getParameter(PARAMETER_ACTION);
         if (action == null || action.length() == 0) {
             action = getServletConfig().getInitParameter(PARAMETER_ACTION);
@@ -111,7 +114,7 @@ public class LoadServlet extends HttpServlet {
         } catch (Exception e) {
             throw new ServletException(e);
         }
-        DataRecord.CheckExistence.set(false);
+        DataRecord.CheckExistence.set(!insertOnly);
         SaverSession session = SaverSession.newSession();
         SaverContextFactory contextFactory = session.getContextFactory();
         DocumentSaverContext context = contextFactory.createBulkLoad(dataClusterName, dataModelName, keyMetadata, request.getInputStream(), loadAction, server);

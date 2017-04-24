@@ -8,3 +8,4 @@ indexes/
 bin/
 data/
 .gwt/
+.idea

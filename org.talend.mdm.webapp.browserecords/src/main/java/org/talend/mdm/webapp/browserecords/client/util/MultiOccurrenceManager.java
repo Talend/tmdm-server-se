@@ -225,8 +225,6 @@ public class MultiOccurrenceManager {
                 multiItem.warnMandatory();
                 childItem.setTitle(mandatory);
                 nodeModel.setValid(false);
-            } else {
-                nodeModel.setValid(node.isValid());
             }
 
         }

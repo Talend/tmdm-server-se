@@ -12,6 +12,7 @@ package com.amalto.core.storage.hibernate;
 
 import static com.amalto.core.query.user.UserQueryBuilder.from;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -27,8 +28,6 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.CriteriaQuery;
 import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.NullExpression;
-import org.hibernate.criterion.SimpleExpression;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.engine.spi.TypedValue;
 import org.hibernate.type.IntegerType;
@@ -116,7 +115,7 @@ public class InClauseOptimization extends StandardQueryHandler {
                 if (!constants.isEmpty()) {
                     // Standard criteria
                     Criteria criteria = createCriteria(select);
-                    criteria.add(new IdInConstantClause(mainType.getKeyFields(), resolver, constants));
+                    criteria.add(new IdInConstantClause(super.storage.getDataSource().getName(), mainType.getKeyFields(), resolver, constants));
                     results = createResults(criteria.list(), select.isProjection());
                 } else {
                     results = new HibernateStorageResults(storage, select, EmptyIterator.INSTANCE);
@@ -127,14 +126,21 @@ public class InClauseOptimization extends StandardQueryHandler {
     }
 
     private static class IdInConstantClause implements Criterion {
+        
+        private final String dataSourceName;
 
+        private static final String ORACLE_KEYWORDS = "Oracle"; //$NON-NLS-1$
+        
+        private static final String ORACLE_DATE_FORMAT = "YYYY-MM-DD HH24:MI:SS"; //$NON-NLS-1$
+        
         private final Collection<FieldMetadata> keyFields;
 
         private final TableResolver resolver;
 
-        private final List<Object[]>            values;
+        private final List<Object[]> values;
 
-        public IdInConstantClause(Collection<FieldMetadata> keyFields, TableResolver resolver, List<Object[]> values) {
+        public IdInConstantClause(String dataSourceName, Collection<FieldMetadata> keyFields, TableResolver resolver, List<Object[]> values) {
+            this.dataSourceName = dataSourceName;
             this.keyFields = keyFields;
             this.resolver = resolver;
             this.values = values;
@@ -143,23 +149,28 @@ public class InClauseOptimization extends StandardQueryHandler {
         @Override
         public String toSqlString(Criteria criteria, CriteriaQuery criteriaQuery) throws HibernateException {
             StringBuilder inClause = new StringBuilder();
+            String alias = criteriaQuery.getSQLAlias(criteria);
             Iterator<FieldMetadata> keyFieldIterator = keyFields.iterator();
             int i = 0;
             while (keyFieldIterator.hasNext()) {
+                inClause.append(alias).append('.').append(resolver.get(keyFieldIterator.next())).append(" IN ").append('('); //$NON-NLS-1$
                 Iterator<Object[]> valuesIterator = values.iterator();
-                String fieldName = resolver.get(keyFieldIterator.next());
-
                 while (valuesIterator.hasNext()) {
-                    Object propertyValue = valuesIterator.next()[i];
-
-                    boolean isString = propertyValue instanceof String;
-                    Criterion condition = new MDMSimpleExpression(fieldName, propertyValue, "=", isString);
-
-                    inClause.append(condition.toSqlString(criteria, criteriaQuery));
+                    Object valueElement = valuesIterator.next()[i];
+                    if (valueElement instanceof Timestamp && dataSourceName.contains(ORACLE_KEYWORDS)) {
+                        String dateValue = valueElement.toString();
+                        if (valueElement.toString().length() > 19){
+                            dateValue = valueElement.toString().substring(0, 19);
+                        }
+                        inClause.append("TO_DATE('" + dateValue + "','" + ORACLE_DATE_FORMAT + "')");  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+                    } else {
+                        inClause.append('\'').append(valueElement).append('\'');
+                    }
                     if (valuesIterator.hasNext()) {
-                        inClause.append(" OR ");
+                        inClause.append(',');
                     }
                 }
+                inClause.append(')');
                 if (keyFieldIterator.hasNext()) {
                     inClause.append(" AND "); //$NON-NLS-1$
                 }
@@ -170,24 +181,7 @@ public class InClauseOptimization extends StandardQueryHandler {
 
         @Override
         public TypedValue[] getTypedValues(Criteria criteria, CriteriaQuery criteriaQuery) throws HibernateException {
-            List<TypedValue> list = new ArrayList<TypedValue>();
-            Iterator<FieldMetadata> keyFieldIterator = keyFields.iterator();
-            int i = 0;
-            while (keyFieldIterator.hasNext()) {
-                String propertyName = resolver.get(keyFieldIterator.next());
-                Iterator<Object[]> valuesIterator = values.iterator();
-                while (valuesIterator.hasNext()) {
-                    Object propertyValue = valuesIterator.next()[i];
-
-                    boolean isString = propertyValue instanceof String;
-
-                    Object casedValue = isString ? propertyValue.toString().toLowerCase() : propertyValue;
-                    list.add(criteriaQuery.getTypedValue(criteria, propertyName, casedValue));
-                }
-                i++;
-            }
-
-            return list.toArray(new TypedValue[list.size()]);
+            return new TypedValue[0];
         }
     }
 
@@ -236,16 +230,5 @@ public class InClauseOptimization extends StandardQueryHandler {
                 return new TypedValue[] { new TypedValue(new IntegerType(), limit, EntityMode.POJO) };
             }
         }
-    }
-}
-
-class MDMSimpleExpression extends SimpleExpression {
-
-    public MDMSimpleExpression(String propertyName, Object value, String op) {
-        super(propertyName, value, op);
-    }
-
-    public MDMSimpleExpression(String propertyName, Object value, String op, boolean ignoreCase) {
-        super(propertyName, value, op, ignoreCase);
     }
 }

@@ -131,7 +131,7 @@ public class InClauseOptimization extends StandardQueryHandler {
 
         private static final String ORACLE_KEYWORDS = "Oracle"; //$NON-NLS-1$
         
-        private static final String ORACLE_DATE_FORMAT = "YYYY-MM-DD HH24:MI:SS"; //$NON-NLS-1$
+        private static final String ORACLE_TIMESTAMP_FORMAT = "YYYY-MM-DD HH24:MI:SSXFF"; //$NON-NLS-1$
         
         private final Collection<FieldMetadata> keyFields;
 
@@ -158,11 +158,7 @@ public class InClauseOptimization extends StandardQueryHandler {
                 while (valuesIterator.hasNext()) {
                     Object valueElement = valuesIterator.next()[i];
                     if (valueElement instanceof Timestamp && dataSourceName.contains(ORACLE_KEYWORDS)) {
-                        String dateValue = valueElement.toString();
-                        if (valueElement.toString().length() > 19){
-                            dateValue = valueElement.toString().substring(0, 19);
-                        }
-                        inClause.append("TO_DATE('" + dateValue + "','" + ORACLE_DATE_FORMAT + "')");  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+                        inClause.append("TO_TIMESTAMP('" + valueElement.toString() + "','" + ORACLE_TIMESTAMP_FORMAT + "')");  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
                     } else {
                         inClause.append('\'').append(valueElement).append('\'');
                     }

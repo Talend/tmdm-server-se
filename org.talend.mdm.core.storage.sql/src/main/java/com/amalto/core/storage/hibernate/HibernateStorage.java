@@ -1518,6 +1518,7 @@ public class HibernateStorage implements Storage {
                 LOGGER.warn("Unable to delete full text indexes for '" + entityType + "' (not indexed)."); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
+        this.releaseSession();
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })

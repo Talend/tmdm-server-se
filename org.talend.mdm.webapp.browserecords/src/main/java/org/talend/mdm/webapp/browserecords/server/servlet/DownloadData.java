@@ -287,46 +287,57 @@ public class DownloadData extends HttpServlet {
 
     protected void fillRow(XSSFRow row, Document document) throws Exception {
         columnIndex = 0;
-        EntityModel joinEntity = null;
+        Map<String, EntityModel> entityMaps = new HashMap<String, EntityModel>();
         for (String xpath : xpathArray) {
-            String tmp = null;
-            boolean isJoinField = DownloadUtil.isJoinField(xpath, concept);
-            if (isJoinField) {
-                tmp = getNodeValue(document, xpath);
+            String cellValue = null;
+            String joinEntityCluster = xpath.substring(0, xpath.indexOf("/")); //$NON-NLS-1$
+            if (DownloadUtil.isJoinField(xpath, concept)) {
+                cellValue = getNodeValue(document, xpath);
                 if (fkResovled) {
-                    if (colFkMap.containsKey(xpath)) {
-                        List<String> fkinfoList = fkMap.get(xpath);
-                        if (!fkinfoList.get(0).trim().equalsIgnoreCase("") && !tmp.equalsIgnoreCase("")) { //$NON-NLS-1$ //$NON-NLS-2$
-                            List<String> infoList = getFKInfo(colFkMap.get(xpath), fkinfoList, tmp);
-                            if (fkDisplay.equalsIgnoreCase("Id-FKInfo")) { //$NON-NLS-1$
-                                infoList.add(0, tmp);
-                            }
-                            if (multipleValueSeparator != null && multipleValueSeparator.length() > 0) {
-                                tmp = LabelUtil.convertList2String(infoList, multipleValueSeparator);
-                            } else {
-                                tmp = LabelUtil.convertList2String(infoList, "-"); //$NON-NLS-1$
-                            }
-                        }
-                    }
+                    cellValue = wrapFkResovledValue(xpath, cellValue);
+                }
+
+                if (!entityMaps.containsKey(joinEntityCluster)) {
+                    entityMaps.put(joinEntityCluster, entity);
                 }
             } else {
-                tmp = DownloadUtil.getJoinFieldValue(document, xpath, columnIndex);
-                joinEntity = org.talend.mdm.webapp.browserecords.server.util.CommonUtil.getEntityModel(xpath.substring(0, xpath.indexOf("/")), language);
+                cellValue = DownloadUtil.getJoinFieldValue(document, xpath, columnIndex);
+                if (!entityMaps.containsKey(joinEntityCluster)) {
+                    entityMaps.put(joinEntityCluster, org.talend.mdm.webapp.browserecords.server.util.CommonUtil
+                            .getEntityModel(joinEntityCluster, language));
+                }
             }
 
-            if (tmp != null) {
-                tmp = tmp.trim();
-                tmp = tmp.replaceAll("__h", ""); //$NON-NLS-1$ //$NON-NLS-2$
-                tmp = tmp.replaceAll("h__", ""); //$NON-NLS-1$//$NON-NLS-2$
+            if (cellValue != null) {
+                cellValue = cellValue.trim();
+                cellValue = cellValue.replaceAll("__h", ""); //$NON-NLS-1$ //$NON-NLS-2$
+                cellValue = cellValue.replaceAll("h__", ""); //$NON-NLS-1$//$NON-NLS-2$
             } else {
-                tmp = ""; //$NON-NLS-1$
+                cellValue = ""; //$NON-NLS-1$
             }
-            if (isJoinField) {
-                setCellValue(row, entity, xpath, tmp);
-            } else {
-                setCellValue(row, joinEntity, xpath, tmp);
+
+            setCellValue(row, entityMaps.get(joinEntityCluster), xpath, cellValue);
+
+            columnIndex++;
+        }
+    }
+
+    private String wrapFkResovledValue(String xpath, String value) throws Exception {
+        if (colFkMap.containsKey(xpath)) {
+            List<String> fkinfoList = fkMap.get(xpath);
+            if (!fkinfoList.get(0).trim().equalsIgnoreCase("") && !value.equalsIgnoreCase("")) { //$NON-NLS-1$ //$NON-NLS-2$
+                List<String> infoList = getFKInfo(colFkMap.get(xpath), fkinfoList, value);
+                if (fkDisplay.equalsIgnoreCase("Id-FKInfo")) { //$NON-NLS-1$
+                    infoList.add(0, value);
+                }
+                if (multipleValueSeparator != null && multipleValueSeparator.length() > 0) {
+                    value = LabelUtil.convertList2String(infoList, multipleValueSeparator);
+                } else {
+                    value = LabelUtil.convertList2String(infoList, "-"); //$NON-NLS-1$
+                }
             }
         }
+        return value;
     }
 
     private void setCellValue(XSSFRow row, EntityModel entity, String xpath, String value) {
@@ -339,8 +350,6 @@ public class DownloadData extends HttpServlet {
         } else {
             row.createCell((short) columnIndex).setCellValue(value);
         }
-
-        columnIndex++;
     }
 
     protected String getNodeValue(Document document, String xpath) {
@@ -368,14 +377,15 @@ public class DownloadData extends HttpServlet {
                 }
             }
         }
+
         if (valueList == null || valueList.size() == 0) {
             return ""; //$NON-NLS-1$
+        }
+
+        if (valueList.size() > 1) {
+            return CommonUtil.joinStrings(valueList, multipleValueSeparator);
         } else {
-            if (valueList.size() > 1) {
-                return CommonUtil.joinStrings(valueList, multipleValueSeparator);
-            } else {
-                return valueList.get(0);
-            }
+            return valueList.get(0);
         }
     }
 

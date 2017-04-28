@@ -287,9 +287,11 @@ public class DownloadData extends HttpServlet {
 
     protected void fillRow(XSSFRow row, Document document) throws Exception {
         columnIndex = 0;
+        EntityModel joinEntity = null;
         for (String xpath : xpathArray) {
             String tmp = null;
-            if (DownloadUtil.isJoinField(xpath, concept)) {
+            boolean isJoinField = DownloadUtil.isJoinField(xpath, concept);
+            if (isJoinField) {
                 tmp = getNodeValue(document, xpath);
                 if (fkResovled) {
                     if (colFkMap.containsKey(xpath)) {
@@ -309,6 +311,7 @@ public class DownloadData extends HttpServlet {
                 }
             } else {
                 tmp = DownloadUtil.getJoinFieldValue(document, xpath, columnIndex);
+                joinEntity = org.talend.mdm.webapp.browserecords.server.util.CommonUtil.getEntityModel(xpath.substring(0, xpath.indexOf("/")), language);
             }
 
             if (tmp != null) {
@@ -318,17 +321,26 @@ public class DownloadData extends HttpServlet {
             } else {
                 tmp = ""; //$NON-NLS-1$
             }
-            if (entity != null && entity.getTypeModel(xpath) != null) {
-                if (entity.getTypeModel(xpath).getMaxOccurs() != 1 && StringUtils.isNotEmpty(tmp) && multipleValueSeparator != null) {
-                    row.createCell((short) columnIndex).setCellValue(tmp.replace(",", multipleValueSeparator)); //$NON-NLS-1$
-                } else {
-                    row.createCell((short) columnIndex).setCellValue(tmp);
-                }
-                columnIndex++;
+            if (isJoinField) {
+                setCellValue(row, entity, xpath, tmp);
             } else {
-                continue;
+                setCellValue(row, joinEntity, xpath, tmp);
             }
         }
+    }
+
+    private void setCellValue(XSSFRow row, EntityModel entity, String xpath, String value) {
+        if (entity == null || entity.getTypeModel(xpath) == null) {
+            return;
+        }
+
+        if (entity.getTypeModel(xpath).getMaxOccurs() != 1 && StringUtils.isNotEmpty(value) && multipleValueSeparator != null) {
+            row.createCell((short) columnIndex).setCellValue(value.replace(",", multipleValueSeparator)); //$NON-NLS-1$
+        } else {
+            row.createCell((short) columnIndex).setCellValue(value);
+        }
+
+        columnIndex++;
     }
 
     protected String getNodeValue(Document document, String xpath) {

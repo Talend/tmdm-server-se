@@ -11,7 +11,7 @@
         </item>
         <item>
             <name>CONF</name>
-            <list></list>
+            <list>CONF.AutoIncrement.AutoIncrement</list>
         </item>
         <item>
             <name>PROVISIONING</name>

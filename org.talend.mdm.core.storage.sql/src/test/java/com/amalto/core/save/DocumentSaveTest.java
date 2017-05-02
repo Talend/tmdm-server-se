@@ -808,53 +808,53 @@ public class DocumentSaveTest extends TestCase {
                 put("report1", new ArrayList<String[]>() {
 
                     {
-                        add(new String[] { "Houses/House[3]", "[3]", "null" });
-                        add(new String[] { "Houses/House[2]", "[2]", "null" });
+                        add(new String[] { "Houses/House[3]", "[3]", "" });
+                        add(new String[] { "Houses/House[2]", "[2]", "" });
                         add(new String[] { "Houses/House[1]", "[1]", "[3]" });
                     }
                 });
                 put("report2", new ArrayList<String[]>() {
 
                     {
-                        add(new String[] { "Kids/Kid[3]/Name", "k3", "null" });
-                        add(new String[] { "Kids/Kid[3]/Age", "3", "null" });
-                        add(new String[] { "Kids/Kid[2]/Name", "k2", "null" });
-                        add(new String[] { "Kids/Kid[2]/Age", "2", "null" });
-                        add(new String[] { "Kids/Kid[2]/Habits/Habit[3]", "Boxing", "null" });
-                        add(new String[] { "Kids/Kid[2]/Habits/Habit[2]", "Football", "null" });
-                        add(new String[] { "Kids/Kid[2]/Habits/Habit[1]", "Basketball", "null" });
+                        add(new String[] { "Kids/Kid[3]/Name", "k3", "" });
+                        add(new String[] { "Kids/Kid[3]/Age", "3", "" });
+                        add(new String[] { "Kids/Kid[2]/Name", "k2", "" });
+                        add(new String[] { "Kids/Kid[2]/Age", "2", "" });
+                        add(new String[] { "Kids/Kid[2]/Habits/Habit[3]", "Boxing", "" });
+                        add(new String[] { "Kids/Kid[2]/Habits/Habit[2]", "Football", "" });
+                        add(new String[] { "Kids/Kid[2]/Habits/Habit[1]", "Basketball", "" });
                     }
                 });
                 put("report3", new ArrayList<String[]>() {
 
                     {
-                        add(new String[] { "Habits/Habit[4]", "Boxing", "null" });
-                        add(new String[] { "Habits/Habit[3]", "Tennis", "null" });
-                        add(new String[] { "Habits/Habit[2]", "Football", "null" });
+                        add(new String[] { "Habits/Habit[4]", "Boxing", "" });
+                        add(new String[] { "Habits/Habit[3]", "Tennis", "" });
+                        add(new String[] { "Habits/Habit[2]", "Football", "" });
                         add(new String[] { "Habits/Habit[1]", "Basketball", "Tennis" });
                     }
                 });
                 put("report4", new ArrayList<String[]>() {
 
                     {
-                        add(new String[] { "Kids/Kid[1]/Habits/Habit[3]", "Tennis", "null" });
-                        add(new String[] { "Kids/Kid[1]/Habits/Habit[2]", "Football", "null" });
+                        add(new String[] { "Kids/Kid[1]/Habits/Habit[3]", "Tennis", "" });
+                        add(new String[] { "Kids/Kid[1]/Habits/Habit[2]", "Football", "" });
                         add(new String[] { "Kids/Kid[1]/Habits/Habit[1]", "Basketball", "Tennis" });
                     }
                 });
                 put("report5", new ArrayList<String[]>() {
 
                     {
-                        add(new String[] { "Kids/Kid[2]/Habits/Habit[3]", "Boxing", "null" });
-                        add(new String[] { "Kids/Kid[2]/Habits/Habit[2]", "Football", "null" });
+                        add(new String[] { "Kids/Kid[2]/Habits/Habit[3]", "Boxing", "" });
+                        add(new String[] { "Kids/Kid[2]/Habits/Habit[2]", "Football", "" });
                         add(new String[] { "Kids/Kid[2]/Habits/Habit[1]", "Basketball", "Boxing" });
                     }
                 });
                 put("report6", new ArrayList<String[]>() {
 
                     {
-                        add(new String[] { "Pets[4]/Pet", "Cow", "null" });
-                        add(new String[] { "Pets[3]/Pet", "Pig", "null" });
+                        add(new String[] { "Pets[4]/Pet", "Cow", "" });
+                        add(new String[] { "Pets[3]/Pet", "Pig", "" });
                         add(new String[] { "Pets[2]/Pet", "Dog", "Cow" });
                         add(new String[] { "Pets[1]/Pet", "Cat", "Dog" });
                     }
@@ -1514,7 +1514,7 @@ public class DocumentSaveTest extends TestCase {
         newValue = (String) evaluate(doc.getDocumentElement(), "Item[2]/newValue");
         assertEquals("detail[1]/features/vendor", path);
         assertEquals("[vendor-original]", oldValue);
-        assertEquals("null", newValue);
+        assertEquals(null, newValue);
 
         path = (String) evaluate(doc.getDocumentElement(), "Item[3]/path");
         oldValue = (String) evaluate(doc.getDocumentElement(), "Item[3]/oldValue");

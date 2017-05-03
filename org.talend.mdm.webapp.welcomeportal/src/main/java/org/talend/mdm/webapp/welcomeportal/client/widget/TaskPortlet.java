@@ -134,42 +134,53 @@ public class TaskPortlet extends BasePortlet {
 
         if (!isHiddenTask && isHiddenWorkFlowTask) {
             if (header.isTdsEnabled()) {
-                service.getCurrentDataModel(new SessionAwareAsyncCallback<String>() {
+                String url = tdsServiceBaseUrl + TASK_AMOUNT;
+                RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
+                try {
+                    builder.sendRequest("", new RequestCallback() {
 
-                    @Override
-                    public void onSuccess(String dataModel) {
-                        String url = tdsServiceBaseUrl + TASK_AMOUNT + "?model=" + dataModel;
-                        RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
-                        try {
-                            builder.sendRequest("", new RequestCallback() {
-                                @Override
-                                public void onResponseReceived(Request request, Response response) {
-                                    if (Response.SC_OK == response.getStatusCode()) {
-                                        int taskCount = handleTaskResult(response.getText());
-                                        if (task_New_Count == null || task_New_Count != taskCount) {
-                                            task_New_Count = taskCount;
-                                            updateTaskPanel(0, TASK_TYPE.TDS_TYPE, task_New_Count, 0);
-                                        }
-                                    } else if (Response.SC_INTERNAL_SERVER_ERROR == response.getStatusCode()) {
-                                        int taskCount = handleTaskResult("");
-                                        if (task_New_Count == null) {
-                                            updateTaskPanel(0, TASK_TYPE.TDS_TYPE, taskCount, 0);
-                                        }
+                        @Override
+                        public void onResponseReceived(Request request, Response response) {
+                            if (Response.SC_OK == response.getStatusCode()) {
+                                try {
+                                    Integer taskCount = Integer.valueOf(response.getText());
+                                    if (task_New_Count == null || task_New_Count != taskCount) {
+                                        task_New_Count = taskCount;
+                                        updateTaskPanel(0, TASK_TYPE.TDS_TYPE, task_New_Count, 0);
                                     }
+                                } catch (NumberFormatException exception) {
+                                    label.setText(MessagesFactory.getMessages().no_tasks());
+                                    fieldSet.removeAll();
+                                    HTML errorHTML;
+                                    if ("authentication_failure".equals(response.getText())) {
+                                        errorHTML = buildErrorHTML(MessagesFactory.getMessages().login_tds_fail());
+                                    } else if ("role_missing".equals(response.getText())) {
+                                        errorHTML = buildErrorHTML(MessagesFactory.getMessages().retrieve_campaign_fail());
+                                    } else {
+                                        errorHTML = buildErrorHTML(BaseMessagesFactory.getMessages().unknown_error());
+                                    }
+                                    fieldSet.add(errorHTML);
+                                    fieldSet.layout(true);
                                 }
-
-                                @Override
-                                public void onError(Request request, Throwable exception) {
-                                    handleServiceException(exception);
-
-                                }
-
-                            });
-                        } catch (RequestException exception) {
-                            handleServiceException(exception);
+                            } else if (Response.SC_INTERNAL_SERVER_ERROR == response.getStatusCode()) {
+                                label.setText(MessagesFactory.getMessages().no_tasks());
+                                fieldSet.removeAll();
+                                HTML errorHTML = buildErrorHTML(BaseMessagesFactory.getMessages().unknown_error());
+                                fieldSet.add(errorHTML);
+                                fieldSet.layout(true);
+                            }
                         }
-                    }
-                });
+
+                        @Override
+                        public void onError(Request request, Throwable exception) {
+                            handleServiceException(exception);
+
+                        }
+
+                    });
+                } catch (RequestException exception) {
+                    handleServiceException(exception);
+                }
             } else {
                 service.getDSCTaskMsg(new SessionAwareAsyncCallback<Map<String, Integer>>() {
 
@@ -195,46 +206,69 @@ public class TaskPortlet extends BasePortlet {
                 public void onSuccess(final Integer workflowTaskCount) {
                     final boolean workflowTaskChanged = workflowTaskCount != null
                             && (workflowTask_Count == null || workflowTask_Count != workflowTaskCount);
-
                     if (header.isTdsEnabled()) {
-                        service.getCurrentDataModel(new SessionAwareAsyncCallback<String>() {
+                        String url = tdsServiceBaseUrl + TASK_AMOUNT;
+                        RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
+                        try {
+                            builder.sendRequest("", new RequestCallback() {
 
-                            @Override
-                            public void onSuccess(String dataModel) {
-                                String url = tdsServiceBaseUrl + TASK_AMOUNT + "?model=" + dataModel;
-                                RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
-                                try {
-                                    builder.sendRequest("", new RequestCallback() {
+                                @Override
+                                public void onResponseReceived(Request request, Response response) {
+                                    if (Response.SC_OK == response.getStatusCode()) {
+                                        try {
+                                            Integer taskCount = Integer.valueOf(response.getText());
+                                            boolean taskChanged = task_New_Count == null || task_New_Count != taskCount;
+                                            if (workflowTaskChanged || taskChanged) {
+                                                workflowTask_Count = workflowTaskCount;
+                                                task_New_Count = taskCount;
+                                                updateTaskPanel(workflowTask_Count, TASK_TYPE.TDS_TYPE, task_New_Count, 0);
+                                            }
+                                        } catch (NumberFormatException exception) {
+                                            HTML errorHTML;
+                                            if ("authentication_failure".equals(response.getText())) {
+                                                errorHTML = buildErrorHTML(MessagesFactory.getMessages().login_tds_fail());
+                                            } else if ("role_missing".equals(response.getText())) {
+                                                errorHTML = buildErrorHTML(MessagesFactory.getMessages().retrieve_campaign_fail());
+                                            } else {
+                                                errorHTML = buildErrorHTML(BaseMessagesFactory.getMessages().unknown_error());
+                                            }
+                                            if (workflowTaskCount > 0) {
+                                                updateTaskPanel(workflowTask_Count, TASK_TYPE.TDS_TYPE, 0, 0);
+                                                fieldSet.add(errorHTML);
+                                                fieldSet.layout(true);
 
-                                        @Override
-                                        public void onResponseReceived(Request request, Response response) {
-                                            if (Response.SC_OK == response.getStatusCode()) {
-                                                int taskCount = handleTaskResult(response.getText());
-                                                boolean taskChanged = task_New_Count == null || task_New_Count != taskCount;
-                                                if (workflowTaskChanged || taskChanged) {
-                                                    workflowTask_Count = workflowTaskCount;
-                                                    task_New_Count = taskCount;
-                                                    updateTaskPanel(workflowTask_Count, TASK_TYPE.TDS_TYPE, task_New_Count, 0);
-                                                }
-                                            } else if (Response.SC_INTERNAL_SERVER_ERROR == response.getStatusCode()) {
-                                                int taskCount = handleTaskResult("");
-                                                if (workflowTaskChanged) {
-                                                    updateTaskPanel(workflowTask_Count, TASK_TYPE.TDS_TYPE, taskCount, 0);
-                                                }
+                                            } else {
+                                                label.setText(MessagesFactory.getMessages().no_tasks());
+                                                fieldSet.removeAll();
+                                                fieldSet.add(errorHTML);
+                                                fieldSet.layout(true);
                                             }
                                         }
-
-                                        @Override
-                                        public void onError(Request request, Throwable exception) {
-                                            handleServiceException(exception);
+                                    } else if (Response.SC_INTERNAL_SERVER_ERROR == response.getStatusCode()) {
+                                        if (workflowTaskCount > 0) {
+                                            updateTaskPanel(workflowTask_Count, TASK_TYPE.TDS_TYPE, 0, 0);
+                                            HTML errorHTML = buildErrorHTML(BaseMessagesFactory.getMessages().unknown_error());
+                                            fieldSet.add(errorHTML);
+                                            fieldSet.layout(true);
+                                        } else {
+                                            label.setText(MessagesFactory.getMessages().no_tasks());
+                                            fieldSet.removeAll();
+                                            HTML errorHTML = buildErrorHTML(BaseMessagesFactory.getMessages().unknown_error());
+                                            fieldSet.add(errorHTML);
+                                            fieldSet.layout(true);
                                         }
+                                    }
+                                }
 
-                                    });
-                                } catch (RequestException exception) {
+                                @Override
+                                public void onError(Request request, Throwable exception) {
                                     handleServiceException(exception);
                                 }
-                            }
-                        });
+
+                            });
+                        } catch (RequestException exception) {
+                            handleServiceException(exception);
+                        }
                     } else {
                         service.getDSCTaskMsg(new SessionAwareAsyncCallback<Map<String, Integer>>() {
 
@@ -334,22 +368,14 @@ public class TaskPortlet extends BasePortlet {
         MessageBox.alert(BaseMessagesFactory.getMessages().error_title(), errorMsg, null);
     }
 
-    private int handleTaskResult(String result) {
-        try {
-            Integer taskCount = Integer.valueOf(result);
-            return taskCount.intValue();
-        } catch (NumberFormatException exception) {
-            if ("authentication_failure".equals(result)) {
-                MessageBox.alert(BaseMessagesFactory.getMessages().warning_title(), MessagesFactory.getMessages()
-                        .login_tds_fail(), null);
-            } else if ("role_missing".equals(result)) {
-                MessageBox.info(BaseMessagesFactory.getMessages().info_title(), MessagesFactory.getMessages()
-                        .retrieve_campaign_fail(), null);
-            } else {
-                MessageBox.alert(BaseMessagesFactory.getMessages().error_title(), BaseMessagesFactory.getMessages()
-                        .unknown_error(), null);
-            }
-            return 0;
-        }
+    private HTML buildErrorHTML(String errorMessage) {
+        HTML errorHtml = new HTML();
+        StringBuilder errorStringBuilder = new StringBuilder("</span>");
+        errorStringBuilder.append("<IMG SRC=\"secure/img/genericUI/alert-icon.png\"/>&nbsp;"); //$NON-NLS-1$
+        errorStringBuilder.append("&nbsp;"); //$NON-NLS-1$
+        errorStringBuilder.append(errorMessage);
+        errorStringBuilder.append("&nbsp;"); //$NON-NLS-1$
+        errorHtml.setHTML(errorStringBuilder.toString());
+        return errorHtml;
     }
 }

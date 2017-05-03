@@ -1514,34 +1514,34 @@ public class DocumentSaveTest extends TestCase {
         newValue = (String) evaluate(doc.getDocumentElement(), "Item[2]/newValue");
         assertEquals("detail[1]/features/vendor", path);
         assertEquals("[vendor-original]", oldValue);
-        assertEquals(null, newValue);
+        assertEquals("", newValue);
 
         path = (String) evaluate(doc.getDocumentElement(), "Item[3]/path");
         oldValue = (String) evaluate(doc.getDocumentElement(), "Item[3]/oldValue");
         newValue = (String) evaluate(doc.getDocumentElement(), "Item[3]/newValue");
         assertEquals("detail[1]/features/boolValue", path);
         assertEquals("true", oldValue);
-        assertEquals("null", newValue);
+        assertEquals("", newValue);
 
         path = (String) evaluate(doc.getDocumentElement(), "Item[4]/path");
         oldValue = (String) evaluate(doc.getDocumentElement(), "Item[4]/oldValue");
         newValue = (String) evaluate(doc.getDocumentElement(), "Item[4]/newValue");
         assertEquals("detail[1]/features/actor", path);
         assertEquals("actor-original", oldValue);
-        assertEquals("null", newValue);
+        assertEquals("", newValue);
 
         oldValue = (String) evaluate(doc.getDocumentElement(), "Item[5]/oldValue");
         newValue = (String) evaluate(doc.getDocumentElement(), "Item[5]/newValue");
         assertEquals("detail[1]/features/actor", path);
         assertEquals("true", oldValue);
-        assertEquals("null", newValue);
+        assertEquals("", newValue);
 
         path = (String) evaluate(doc.getDocumentElement(), "Item[6]/path");
         oldValue = (String) evaluate(doc.getDocumentElement(), "Item[6]/oldValue");
         newValue = (String) evaluate(doc.getDocumentElement(), "Item[6]/newValue");
         assertEquals("detail[1]/ReadOnlyEle", path);
         assertEquals("[readOnlyEle-original]", oldValue);
-        assertEquals("null", newValue);
+        assertEquals("", newValue);
 
         path = (String) evaluate(doc.getDocumentElement(), "Item[7]/path");
         oldValue = (String) evaluate(doc.getDocumentElement(), "Item[7]/oldValue");

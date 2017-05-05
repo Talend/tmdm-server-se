@@ -23,6 +23,7 @@ import org.apache.commons.httpclient.cookie.CookiePolicy;
 import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
 import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.httpclient.params.HttpClientParams;
+import org.apache.commons.httpclient.params.HttpConnectionParams;
 
 /**
  * Bulkload amount items client
@@ -32,6 +33,8 @@ public class BulkloadClientUtil {
     
     public static final String STICKY_SESSION;
     public static final Integer MAX_HTTP_REQUESTS;
+    public static final String CLIENT_CONNECTION_TIMEOUT = "ws_client_connection_timeout"; //$NON-NLS-1$
+    public static final String CLIENT_SOCKET_TIMEOUT = "ws_client_receive_timeout"; //$NON-NLS-1$
     
     static {
         String stickySession = System.getProperty("sticky_session");//$NON-NLS-1$
@@ -61,6 +64,9 @@ public class BulkloadClientUtil {
         HttpClientParams clientParams = client.getParams();
         clientParams.setAuthenticationPreemptive(true);
         clientParams.setCookiePolicy(CookiePolicy.IGNORE_COOKIES);
+        clientParams.setConnectionManagerTimeout(getClientConnectionTimeout());
+        clientParams.setParameter(HttpConnectionParams.CONNECTION_TIMEOUT, getClientConnectionTimeout());
+        clientParams.setParameter(HttpConnectionParams.SO_TIMEOUT, getClientSocketTimeout());
 
         PutMethod putMethod = new PutMethod();
         // This setPath call is *really* important (if not set, request will be sent to the JBoss root '/')
@@ -100,6 +106,38 @@ public class BulkloadClientUtil {
         }
     }
 
+    private static int getClientConnectionTimeout() throws Exception {
+        int defaultTimeout = 60000;
+        String inputTimeout = System.getProperty(CLIENT_CONNECTION_TIMEOUT);
+        if (inputTimeout != null) {
+            try {
+                int timeout = Integer.parseInt(inputTimeout);
+                if (timeout > 0) {
+                    return timeout;
+                }
+            } catch (Exception exception) {
+                throw new RuntimeException("Webservice client connection timeout value '" + inputTimeout + "' is invalid", exception);  //$NON-NLS-1$//$NON-NLS-2$
+            }
+        }
+        return defaultTimeout;
+    }
+    
+    private static int getClientSocketTimeout() throws Exception {
+        int defaultTimeout = 60000;
+        String inputTimeout = System.getProperty(CLIENT_SOCKET_TIMEOUT);
+        if (inputTimeout != null) {
+            try {
+                int timeout = Integer.parseInt(inputTimeout);
+                if (timeout > 0) {
+                    return timeout;
+                }
+            } catch (Exception exception) {
+                throw new RuntimeException("Webservice client socket timeout value '" + inputTimeout + "' is invalid", exception);  //$NON-NLS-1$//$NON-NLS-2$
+            }
+        }
+        return defaultTimeout;
+    }
+    
     public static InputStreamMerger bulkload(String url, String cluster, String concept, String dataModel, boolean validate,
             boolean smartPK, boolean insertOnly, String username, String password, String transactionId, String sessionId, String universe, String tokenKey,
             String tokenValue, AtomicInteger startedBulkloadCount) {

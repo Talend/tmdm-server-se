@@ -206,6 +206,9 @@ public class TaskPortlet extends BasePortlet {
                 public void onSuccess(final Integer workflowTaskCount) {
                     final boolean workflowTaskChanged = workflowTaskCount != null
                             && (workflowTaskNewCount == null || workflowTaskNewCount != workflowTaskCount);
+                    if (workflowTaskChanged) {
+                        workflowTaskNewCount = workflowTaskCount;
+                    }
                     if (header.isTdsEnabled()) {
                         String url = tdsServiceBaseUrl + TASK_AMOUNT;
                         RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
@@ -219,7 +222,6 @@ public class TaskPortlet extends BasePortlet {
                                             Integer taskCount = Integer.valueOf(response.getText());
                                             boolean taskChanged = taskNewCount == null || taskNewCount != taskCount;
                                             if (workflowTaskChanged || taskChanged) {
-                                                workflowTaskNewCount = workflowTaskCount;
                                                 taskNewCount = taskCount;
                                                 updateTaskPanel(workflowTaskNewCount, TASK_TYPE.TDS_TYPE, taskNewCount, 0);
                                             }
@@ -280,7 +282,6 @@ public class TaskPortlet extends BasePortlet {
                                         || (dscTasksMap.get(DSCTASKTYPE_NEW) != null && taskPendingCount != dscTasksMap
                                         .get(DSCTASKTYPE_PENDING)));
                                 if (workflowTaskChanged || taskChanged) {
-                                    workflowTaskNewCount = workflowTaskCount;
                                     taskNewCount = dscTasksMap.get(DSCTASKTYPE_NEW);
                                     taskPendingCount = dscTasksMap.get(DSCTASKTYPE_PENDING);
                                     updateTaskPanel(workflowTaskNewCount, TASK_TYPE.DSC_TYPE, taskNewCount, taskPendingCount);

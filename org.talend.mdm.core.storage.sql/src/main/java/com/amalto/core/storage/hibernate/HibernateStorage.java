@@ -148,6 +148,7 @@ import com.amalto.core.storage.StorageType;
 import com.amalto.core.storage.datasource.DataSource;
 import com.amalto.core.storage.datasource.DataSourceDefinition;
 import com.amalto.core.storage.datasource.RDBMSDataSource;
+import com.amalto.core.storage.datasource.RDBMSDataSource.DataSourceDialect;
 import com.amalto.core.storage.hibernate.mapping.MDMDenormalizedTable;
 import com.amalto.core.storage.hibernate.mapping.MDMTable;
 import com.amalto.core.storage.prepare.FullTextIndexCleaner;
@@ -1478,47 +1479,68 @@ public class HibernateStorage implements Storage {
 
     @SuppressWarnings("rawtypes")
     private void deleteData(ComplexTypeMetadata typeToDelete, Map<String, List> condition, TypeMapping mapping) {
-        Session session = this.getCurrentSession();
-        for (FieldMetadata field : typeToDelete.getFields()) {
-            if (field.isMany()) {
-                String formattedTableName = tableResolver.getCollectionTable(field);
-                String deleteFormattedTableSQL = "delete from " + formattedTableName; //$NON-NLS-1$
-                if (!condition.isEmpty()) {
-                    deleteFormattedTableSQL = deleteFormattedTableSQL + " where " + conditionMapToString(condition); //$NON-NLS-1$                    
-                }
-                session.createSQLQuery(deleteFormattedTableSQL).executeUpdate();
-            }
+        int loopSize = 1000;
+        if( dataSource.getDialectName() == DataSourceDialect.H2){
+            loopSize = 500;
         }
-        // Delete the type instances
-        String className = storageClassLoader.getClassFromType(typeToDelete).getName();
-        String hql = "delete from " + className; //$NON-NLS-1$
-        org.hibernate.Query query = session.createQuery(hql);
-        if (!condition.isEmpty()) {
-            hql = hql + " where "; //$NON-NLS-1$
-            for (Entry<String, List> fieldEntry : condition.entrySet()) {
-                if (!hql.endsWith("where ")) { //$NON-NLS-1$
-                    hql = hql + " and "; //$NON-NLS-1$
+        try {
+            Session session = this.getCurrentSession();
+            for (FieldMetadata field : typeToDelete.getFields()) {
+                if (field.isMany()) {
+                    String formattedTableName = tableResolver.getCollectionTable(field);
+                    String deleteFormattedTableSQL = "delete from " + formattedTableName; //$NON-NLS-1$
+                    if (!condition.isEmpty()) {
+                        deleteFormattedTableSQL = deleteFormattedTableSQL + " where " + conditionMapToString(condition); //$NON-NLS-1$                    
+                    }
+                    session.createSQLQuery(deleteFormattedTableSQL).executeUpdate();
                 }
-                hql = hql + fieldEntry.getKey() + " in (:" + fieldEntry.getKey() + ")"; //$NON-NLS-1$//$NON-NLS-2$
             }
-            query = session.createQuery(hql);
-            for (Entry<String, List> fieldEntry : condition.entrySet()) {
-                query.setParameterList(fieldEntry.getKey(), fieldEntry.getValue());
-            }
-        }
-        query.executeUpdate();
-        // Clean up full text indexes
-        if (dataSource.supportFullText()) {
-            FullTextSession fullTextSession = Search.getFullTextSession(session);
-            Set<Class<?>> indexedTypes = fullTextSession.getSearchFactory().getIndexedTypes();
-            Class<? extends Wrapper> entityType = storageClassLoader.getClassFromType(mapping.getDatabase());
-            if (indexedTypes.contains(entityType)) {
-                fullTextSession.purgeAll(entityType);
+            // Delete the type instances
+            String className = storageClassLoader.getClassFromType(typeToDelete).getName();
+            String hql = "delete from " + className; //$NON-NLS-1$
+            if (!condition.isEmpty()) {
+                hql = hql + " where "; //$NON-NLS-1$
+                for (Entry<String, List> fieldEntry : condition.entrySet()) {
+                    if (!hql.endsWith("where ")) { //$NON-NLS-1$
+                        hql = hql + " and "; //$NON-NLS-1$
+                    }
+                    hql = hql + fieldEntry.getKey() + " in (:" + fieldEntry.getKey() + ")"; //$NON-NLS-1$//$NON-NLS-2$
+                }
+                for (Entry<String, List> fieldEntry : condition.entrySet()) {
+                    org.hibernate.Query query = session.createQuery(hql);
+                    query = session.createQuery(hql);
+                    List list = fieldEntry.getValue();
+                    for(int i = 0 ; i < list.size(); i= i+loopSize){
+                        int toIndex = i + loopSize;
+                        if (toIndex > list.size()) {
+                            toIndex = list.size();
+                        }
+                        query.setParameterList(fieldEntry.getKey(), list.subList(i, toIndex));
+                        query.executeUpdate();
+                    }
+                }
             } else {
-                LOGGER.warn("Unable to delete full text indexes for '" + entityType + "' (not indexed)."); //$NON-NLS-1$ //$NON-NLS-2$
+                org.hibernate.Query query = session.createQuery(hql);
+                query = session.createQuery(hql);
+                query.executeUpdate();
             }
+            // Clean up full text indexes
+            if (dataSource.supportFullText()) {
+                FullTextSession fullTextSession = Search.getFullTextSession(session);
+                Set<Class<?>> indexedTypes = fullTextSession.getSearchFactory().getIndexedTypes();
+                Class<? extends Wrapper> entityType = storageClassLoader.getClassFromType(mapping.getDatabase());
+                if (indexedTypes.contains(entityType)) {
+                    fullTextSession.purgeAll(entityType);
+                } else {
+                    LOGGER.warn("Unable to delete full text indexes for '" + entityType + "' (not indexed)."); //$NON-NLS-1$ //$NON-NLS-2$
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.warn("Unable to delete table '" + storageClassLoader.getClassFromType(typeToDelete).getName() + "'."); //$NON-NLS-1$ //$NON-NLS-2$
+            throw new RuntimeException(e);
+        } finally {
+            this.releaseSession();
         }
-        this.releaseSession();
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })

@@ -64,7 +64,6 @@ public class BulkloadClientUtil {
         HttpClientParams clientParams = client.getParams();
         clientParams.setAuthenticationPreemptive(true);
         clientParams.setCookiePolicy(CookiePolicy.IGNORE_COOKIES);
-        clientParams.setConnectionManagerTimeout(getClientConnectionTimeout());
         clientParams.setParameter(HttpConnectionParams.CONNECTION_TIMEOUT, getClientConnectionTimeout());
         clientParams.setParameter(HttpConnectionParams.SO_TIMEOUT, getClientSocketTimeout());
 

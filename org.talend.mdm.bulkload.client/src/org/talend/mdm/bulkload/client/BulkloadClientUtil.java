@@ -64,8 +64,8 @@ public class BulkloadClientUtil {
         HttpClientParams clientParams = client.getParams();
         clientParams.setAuthenticationPreemptive(true);
         clientParams.setCookiePolicy(CookiePolicy.IGNORE_COOKIES);
-        clientParams.setParameter(HttpConnectionParams.CONNECTION_TIMEOUT, getClientConnectionTimeout());
-        clientParams.setParameter(HttpConnectionParams.SO_TIMEOUT, getClientSocketTimeout());
+        clientParams.setParameter(HttpConnectionParams.CONNECTION_TIMEOUT, getClientTimeout(CLIENT_CONNECTION_TIMEOUT));
+        clientParams.setParameter(HttpConnectionParams.SO_TIMEOUT, getClientTimeout(CLIENT_SOCKET_TIMEOUT));
 
         PutMethod putMethod = new PutMethod();
         // This setPath call is *really* important (if not set, request will be sent to the JBoss root '/')
@@ -105,9 +105,9 @@ public class BulkloadClientUtil {
         }
     }
 
-    private static int getClientConnectionTimeout() throws Exception {
+    private static int getClientTimeout(String property) throws Exception {
         int defaultTimeout = 60000;
-        String inputTimeout = System.getProperty(CLIENT_CONNECTION_TIMEOUT);
+        String inputTimeout = System.getProperty(property);
         if (inputTimeout != null) {
             try {
                 int timeout = Integer.parseInt(inputTimeout);
@@ -115,23 +115,7 @@ public class BulkloadClientUtil {
                     return timeout;
                 }
             } catch (Exception exception) {
-                throw new RuntimeException("Webservice client connection timeout value '" + inputTimeout + "' is invalid", exception);  //$NON-NLS-1$//$NON-NLS-2$
-            }
-        }
-        return defaultTimeout;
-    }
-    
-    private static int getClientSocketTimeout() throws Exception {
-        int defaultTimeout = 60000;
-        String inputTimeout = System.getProperty(CLIENT_SOCKET_TIMEOUT);
-        if (inputTimeout != null) {
-            try {
-                int timeout = Integer.parseInt(inputTimeout);
-                if (timeout > 0) {
-                    return timeout;
-                }
-            } catch (Exception exception) {
-                throw new RuntimeException("Webservice client socket timeout value '" + inputTimeout + "' is invalid", exception);  //$NON-NLS-1$//$NON-NLS-2$
+                throw new RuntimeException(property + " property value '" + inputTimeout + "' is invalid", exception);  //$NON-NLS-1$//$NON-NLS-2$
             }
         }
         return defaultTimeout;

@@ -15,6 +15,7 @@ import static com.amalto.core.query.user.UserQueryBuilder.from;
 
 import java.io.File;
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -28,6 +29,7 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
+import org.apache.log4j.Logger;
 import org.h2.jdbc.JdbcSQLException;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
@@ -54,6 +56,8 @@ import com.amalto.core.storage.record.XmlStringDataRecordReader;
 public class StorageAdaptTest extends TestCase {
 
     protected static final String STORAGE_NAME = "Test";
+
+    private static final Logger LOGGER = Logger.getLogger(StorageAdaptTest.class);
 
     @Override
     public void setUp() throws Exception {
@@ -867,6 +871,12 @@ public class StorageAdaptTest extends TestCase {
         storage.end();
     }
 
+    private static void setMDMRootURL() {
+        URL targetDir = StorageAdaptTest.class.getClassLoader().getResource(".");
+        LOGGER.info("Using MDM ROOT URL: " + targetDir.toExternalForm());
+        System.setProperty(LiquibaseSchemaAdapter.MDM_ROOT_URL, targetDir.toExternalForm());
+    }
+
     // TMDM-10525 [Impact Analysis] Move a simple field from optional to mandatory 1
     public void test12_MoveFieldFromOptionalToMandatory_ForNoValueInDB() throws Exception {
         /*
@@ -875,7 +885,7 @@ public class StorageAdaptTest extends TestCase {
          * age type is int, have no the default value married type is boolean contains the default value birthday type
          * is data, have no default value
          */
-        System.setProperty(LiquibaseSchemaAdapter.MDM_ROOT_URL, System.getProperty("user.dir"));
+        setMDMRootURL();
 
         DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
         HibernateStorage storage = new HibernateStorage("Person", StorageType.MASTER);
@@ -962,7 +972,7 @@ public class StorageAdaptTest extends TestCase {
          * is data, have no default value
          */
 
-        System.setProperty(LiquibaseSchemaAdapter.MDM_ROOT_URL, System.getProperty("user.dir"));
+        setMDMRootURL();
 
         DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
         HibernateStorage storage = new HibernateStorage("Person", StorageType.MASTER);
@@ -1048,7 +1058,7 @@ public class StorageAdaptTest extends TestCase {
          * age type is int, have no the default value married type is boolean contains the default value birthday type
          * is data, have no default value
          */
-        System.setProperty(LiquibaseSchemaAdapter.MDM_ROOT_URL, System.getProperty("user.dir"));
+        setMDMRootURL();
 
         DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
         Storage storage = new HibernateStorage("Person", StorageType.MASTER);
@@ -1134,7 +1144,7 @@ public class StorageAdaptTest extends TestCase {
          * age type is int, have no the default value married type is boolean contains the default value birthday type
          * is data, have no default value
          */
-        System.setProperty(LiquibaseSchemaAdapter.MDM_ROOT_URL, System.getProperty("user.dir"));
+        setMDMRootURL();
 
         DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
         Storage storage = new HibernateStorage("Person", StorageType.MASTER);
@@ -1207,7 +1217,7 @@ public class StorageAdaptTest extends TestCase {
     // TMDM-10529 [Impact Analysis] Delete an optional simple field, then recreate the same optional field with another
     // type
     public void test13_DeleteOptionField_ForNoData() throws Exception {
-        System.setProperty(LiquibaseSchemaAdapter.MDM_ROOT_URL, System.getProperty("user.dir"));
+        setMDMRootURL();
 
         DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
         Storage storage = new HibernateStorage("Person", StorageType.MASTER);
@@ -1277,7 +1287,7 @@ public class StorageAdaptTest extends TestCase {
     // TMDM-10529 [Impact Analysis] Delete an optional simple field, then recreate the same optional field with another
     // type
     public void test13_DeleteOptionField_ForWithData() throws Exception {
-        System.setProperty(LiquibaseSchemaAdapter.MDM_ROOT_URL, System.getProperty("user.dir"));
+        setMDMRootURL();
 
         DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
         Storage storage = new HibernateStorage("Person", StorageType.MASTER);
@@ -1380,7 +1390,7 @@ public class StorageAdaptTest extends TestCase {
 
     // TMDM-10531: [Impact Analysis] Move a simple field from mandatory to optional
     public void test14_MoveSimpleFieldFormMandatoryToOption_ForNoData() throws Exception {
-        System.setProperty(LiquibaseSchemaAdapter.MDM_ROOT_URL, System.getProperty("user.dir"));
+        setMDMRootURL();
 
         DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
         Storage storage = new HibernateStorage("Person", StorageType.MASTER);
@@ -1444,7 +1454,7 @@ public class StorageAdaptTest extends TestCase {
 
     // TMDM-10531: [Impact Analysis] Move a simple field from mandatory to optional
     public void test14_MoveSimpleFieldFormMandatoryToOption_WithData() throws Exception {
-        System.setProperty(LiquibaseSchemaAdapter.MDM_ROOT_URL, System.getProperty("user.dir"));
+        setMDMRootURL();
 
         DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
         Storage storage = new HibernateStorage("Person", StorageType.MASTER);
@@ -1540,7 +1550,7 @@ public class StorageAdaptTest extends TestCase {
 
     // TMDM-10533: [Impact Analysis] Deleting a mandatory field
     public void test15_DeleteMandatoryField_ForNoData() throws Exception {
-        System.setProperty(LiquibaseSchemaAdapter.MDM_ROOT_URL, System.getProperty("user.dir"));
+        setMDMRootURL();
 
         DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
         Storage storage = new HibernateStorage("Person", StorageType.MASTER);
@@ -1609,7 +1619,7 @@ public class StorageAdaptTest extends TestCase {
 
     // TMDM-10533: [Impact Analysis] Deleting a mandatory field
     public void test15_DeleteMandatoryField_ForWithData() throws Exception {
-        System.setProperty(LiquibaseSchemaAdapter.MDM_ROOT_URL, System.getProperty("user.dir"));
+        setMDMRootURL();
 
         DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
         Storage storage = new HibernateStorage("Person", StorageType.MASTER);
@@ -1712,7 +1722,7 @@ public class StorageAdaptTest extends TestCase {
 
     // TMDM-10534：[Impact Analysis] Move a complex mandatory field (containing a simple optional field) to optional
     public void test16_MoveComplexFieldFromMandatoryToOptional() throws Exception {
-        System.setProperty(LiquibaseSchemaAdapter.MDM_ROOT_URL, System.getProperty("user.dir"));
+        setMDMRootURL();
 
         DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
         Storage storage = new HibernateStorage("Person", StorageType.MASTER);
@@ -1902,7 +1912,7 @@ public class StorageAdaptTest extends TestCase {
     }
 
     public void test17_forRepeatable() throws Exception {
-        System.setProperty(LiquibaseSchemaAdapter.MDM_ROOT_URL, System.getProperty("user.dir"));
+        setMDMRootURL();
 
         DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
         Storage storage = new HibernateStorage("Person", StorageType.MASTER);
@@ -2060,9 +2070,6 @@ public class StorageAdaptTest extends TestCase {
     }
 
     private void deleteLiquibaseChangeLogFile() {
-        String mdmRootLocation = System.getProperty(LiquibaseSchemaAdapter.MDM_ROOT_URL).replace("file:/", "");
-        String filePath = mdmRootLocation + "/data/liqubase-changelog/";
-        File file = new File(filePath);
-        file.deleteOnExit();
+        // do nothing
     }
 }

@@ -140,6 +140,8 @@ public class BulkloadClientTest extends TestCase {
             merger2.close();
             client2.waitForEndOfQueue();
             
+            assertEquals(true, merger1.isAlreadyProcessed());
+            assertEquals(true, merger2.isAlreadyProcessed());
             assertEquals(true, merger1.isConsumed());
             assertEquals(true, merger2.isConsumed());
         }
@@ -169,9 +171,10 @@ public class BulkloadClientTest extends TestCase {
                     };
                     merger.push(bin);
                     merger.close();
-                    while (!merger.isConsumed()) {
+                    while (!merger.isAlreadyProcessed()) {
                         merger.wait(100);
                     }
+                    assertEquals(true, merger.isAlreadyProcessed());
                     assertEquals(true, merger.isConsumed());
                     merger.notify();
                 }

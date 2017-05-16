@@ -322,9 +322,12 @@ public class InputStreamMerger extends InputStream {
 
     // Keep this method public for Studio
     public boolean isAlreadyProcessed() {
-        return isConsumed();
+        return this.alreadyProcessed;
     }
 
+    public void setAlreadyProcessed(boolean alreadyProcessed) {
+        this.alreadyProcessed = alreadyProcessed;
+    }
     protected boolean isConsumed() {
         return producerToConsumer.isEmpty();
     }

@@ -18,6 +18,7 @@ import org.talend.mdm.commmon.util.core.MDMConfiguration;
 import com.amalto.core.server.ServerContext;
 import com.amalto.core.server.StorageAdmin;
 import com.amalto.core.storage.Storage;
+import com.amalto.core.util.Util;
 
 @SuppressWarnings("nls")
 public class AutoIncrementGenerator {
@@ -28,7 +29,7 @@ public class AutoIncrementGenerator {
 
     static {
         // Enable clustered auto increment generator
-        ENABLE_CLUSTERED_AUTO_INCREMENT = MDMConfiguration.isClusterEnabled();
+        ENABLE_CLUSTERED_AUTO_INCREMENT = Util.isEnterprise() && MDMConfiguration.isClusterEnabled();
         if (ENABLE_CLUSTERED_AUTO_INCREMENT) {
             LOGGER.info("Enable clustered access support for auto increment generator.");
         } else {

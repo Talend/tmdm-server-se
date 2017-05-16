@@ -18,6 +18,7 @@ import java.util.concurrent.locks.Lock;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.talend.mdm.commmon.util.core.MDMConfiguration;
 import org.talend.mdm.commmon.util.webapp.XSystemObjects;
 
 import com.amalto.core.objects.ItemPOJO;
@@ -26,6 +27,8 @@ import com.amalto.core.server.MDMContextAccessor;
 import com.amalto.core.server.api.XmlServer;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.util.Util;
+import com.hazelcast.config.Config;
+import com.hazelcast.config.GroupConfig;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IAtomicLong;
@@ -52,12 +55,15 @@ public class HazelcastAutoIncrementGenerator implements AutoIdGenerator {
     protected IMap<String, Long> CONFIGURATION;
 
     protected HazelcastAutoIncrementGenerator() {
-        HazelcastInstance hazelcast = null;
-        if (MDMContextAccessor.getApplicationContext().containsBean("hazelcast")) {
-            hazelcast = MDMContextAccessor.getApplicationContext().getBean("hazelcast", HazelcastInstance.class);
-        } else {
-            hazelcast = Hazelcast.newHazelcastInstance();
+        Config hzConfig = null;
+        if (MDMContextAccessor.getApplicationContext().containsBean("hzConfig")) {
+            hzConfig = MDMContextAccessor.getApplicationContext().getBean("hzConfig", Config.class);
+            String hzGroupName = (String) MDMConfiguration.getConfiguration().get("hz.group.name");
+            String hzGroupPassword = (String) MDMConfiguration.getConfiguration().get("hz.group.password");
+            hzConfig.setGroupConfig(new GroupConfig(hzGroupName, hzGroupPassword));
         }
+        HazelcastInstance hazelcast = Hazelcast.newHazelcastInstance(hzConfig);
+
         INIT_LOCK = hazelcast.getLock("autoIncrement_initLock");
         WAS_INIT_CALLED = hazelcast.getAtomicLong("autoIncrement_wasInitCalled");
         NEED_TO_SAVE = hazelcast.getAtomicLong("autoIncrement_needToSave");

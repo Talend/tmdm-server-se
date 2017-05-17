@@ -278,8 +278,8 @@ public class LiquibaseSchemaAdapter  {
                 changeLogDir.mkdir();
             }
 
-            File changeLogFile = new File(changeLogDir, DateUtils.format(System.currentTimeMillis(), "yyyyMMddHHmm") + SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$
-                    + System.currentTimeMillis() + SEPARATOR + storageType + ".xml"); //$NON-NLS-1$ //$NON-NLS-2$
+            File changeLogFile = new File(changeLogDir, DateUtils.format(System.currentTimeMillis(), "yyyyMMddHHmm") + SEPARATOR //$NON-NLS-1$
+                    + System.currentTimeMillis() + SEPARATOR + storageType + ".xml"); //$NON-NLS-1$
             if (!changeLogFile.exists()) {
                 changeLogFile.createNewFile();
             }

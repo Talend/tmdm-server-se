@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URL;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,7 +37,6 @@ import org.apache.log4j.Logger;
 import org.apache.tools.ant.util.DateUtils;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.mapping.Column;
-import org.springframework.util.ResourceUtils;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
@@ -64,9 +62,9 @@ public class LiquibaseSchemaAdapter  {
 
     private static final String SEPARATOR = "-"; //$NON-NLS-1$
 
-    private static final String DATA_LIQUBASE_CHANGELOG_PATH = "/data/liquibase-changelog/";
+    public static final String DATA_LIQUIBASE_CHANGELOG_PATH = "/data/liquibase-changelog/";
 
-    public static final String MDM_ROOT_URL = "mdm.root.url";
+    public static final String MDM_ROOT = "mdm.root";
 
     private static final Logger LOGGER = Logger.getLogger(LiquibaseSchemaAdapter.class);
 
@@ -267,34 +265,41 @@ public class LiquibaseSchemaAdapter  {
         // create a new serializer
         XMLChangeLogSerializer xmlChangeLogSerializer = new XMLChangeLogSerializer();
 
+        FileOutputStream baos = null;
         try {
-            URL mdmRootURL = new URL(System.getProperty(MDM_ROOT_URL));
-            File mdmRootFileDir = ResourceUtils.getFile(mdmRootURL);
-            File changeLogDir = new File(mdmRootFileDir, DATA_LIQUBASE_CHANGELOG_PATH);
+            File mdmRootFileDir = new File(System.getProperty(MDM_ROOT));
+            File changeLogDir = new File(mdmRootFileDir, DATA_LIQUIBASE_CHANGELOG_PATH);
 
             if (!changeLogDir.exists()) {
                 changeLogDir.mkdirs();
             }
-            changeLogDir = new File (changeLogDir, DateUtils.format(System.currentTimeMillis(), "yyyyMMdd"));//$NON-NLS-1$
+            changeLogDir = new File(changeLogDir, DateUtils.format(System.currentTimeMillis(), "yyyyMMdd"));//$NON-NLS-1$
             if (!changeLogDir.exists()) {
                 changeLogDir.mkdir();
             }
 
-            File changeLogFile = new File(changeLogDir, DateUtils.format(System.currentTimeMillis(), "yyyyMMddHHmm") + SEPARATOR  //$NON-NLS-1$ //$NON-NLS-2$
+            File changeLogFile = new File(changeLogDir, DateUtils.format(System.currentTimeMillis(), "yyyyMMddHHmm") + SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$
                     + System.currentTimeMillis() + SEPARATOR + storageType + ".xml"); //$NON-NLS-1$ //$NON-NLS-2$
             if (!changeLogFile.exists()) {
                 changeLogFile.createNewFile();
             }
-            FileOutputStream baos = new FileOutputStream(changeLogFile);
+            baos = new FileOutputStream(changeLogFile);
             xmlChangeLogSerializer.write(databaseChangeLog.getChangeSets(), baos);
             return changeLogFile.getAbsolutePath();
-
         } catch (FileNotFoundException e) {
             LOGGER.error("liquibase changelog file can't exist" + e); //$NON-NLS-1$
             return StringUtils.EMPTY;
         } catch (IOException e) {
             LOGGER.error("write liquibase changelog file failure", e); //$NON-NLS-1$
             return StringUtils.EMPTY;
+        } finally {
+            if (baos != null) {
+                try {
+                    baos.close();
+                } catch (IOException e) {
+                    LOGGER.error("close liquibase changelog file stream failed", e); //$NON-NLS-1$
+                }
+            }
         }
     }
 

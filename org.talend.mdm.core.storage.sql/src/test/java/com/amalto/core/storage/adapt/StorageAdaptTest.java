@@ -873,8 +873,8 @@ public class StorageAdaptTest extends TestCase {
 
     private static void setMDMRootURL() {
         URL targetDir = StorageAdaptTest.class.getClassLoader().getResource(".");
-        LOGGER.info("Using MDM ROOT URL: " + targetDir.toExternalForm());
-        System.setProperty(LiquibaseSchemaAdapter.MDM_ROOT_URL, targetDir.toExternalForm());
+        LOGGER.info("Using MDM ROOT: " + targetDir.getFile());
+        System.setProperty(LiquibaseSchemaAdapter.MDM_ROOT, targetDir.getFile());
     }
 
     // TMDM-10525 [Impact Analysis] Move a simple field from optional to mandatory 1

@@ -42,8 +42,8 @@ public class LiquibaseSchemaAdapterTest {
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
         URL targetDir = LiquibaseSchemaAdapterTest.class.getClassLoader().getResource(".");
-        LOGGER.info("Using MDM ROOT URL: " + targetDir.toExternalForm());
-        System.setProperty(LiquibaseSchemaAdapter.MDM_ROOT_URL, targetDir.toExternalForm());
+        LOGGER.info("Using MDM ROOT URL: " + targetDir.getFile());
+        System.setProperty(LiquibaseSchemaAdapter.MDM_ROOT, targetDir.getFile());
         
         ServerContext.INSTANCE.get(new MockServerLifecycle());
         
@@ -195,9 +195,13 @@ public class LiquibaseSchemaAdapterTest {
         String changeLogFilePath = adapter.getChangeLogFilePath(changeList);
         assertNotNull(changeLogFilePath);
 
+        File mdmRootFileDir = new File(System.getProperty(LiquibaseSchemaAdapter.MDM_ROOT));
+        File changeLogDir = new File(mdmRootFileDir, LiquibaseSchemaAdapter.DATA_LIQUIBASE_CHANGELOG_PATH);
+
         File changeLogFile = new File(changeLogFilePath);
         assertTrue(changeLogFile.exists());
         assertTrue(changeLogFile.isFile());
         assertTrue(changeLogFile.getName().endsWith(".xml"));
+        assertEquals(changeLogDir.getAbsolutePath(), changeLogFile.getParentFile().getParentFile().getAbsolutePath());
     }
 }

@@ -3,6 +3,7 @@ package com.amalto.core.storage.hibernate;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.net.URL;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -10,6 +11,7 @@ import java.util.Set;
 import liquibase.change.AbstractChange;
 import liquibase.change.core.DropNotNullConstraintChange;
 
+import org.apache.log4j.Logger;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.junit.AfterClass;
@@ -23,13 +25,15 @@ import org.talend.mdm.commmon.metadata.compare.Compare;
 
 import com.amalto.core.server.MockServerLifecycle;
 import com.amalto.core.server.ServerContext;
-import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.StorageType;
+import com.amalto.core.storage.adapt.StorageAdaptTest;
 import com.amalto.core.storage.datasource.DataSourceDefinition;
 import com.amalto.core.storage.datasource.RDBMSDataSource;
 
 
 public class LiquibaseSchemaAdapterTest {
+
+    private static final Logger LOGGER = Logger.getLogger(StorageAdaptTest.class);
 
     private static LiquibaseSchemaAdapter adapter;
 
@@ -37,7 +41,9 @@ public class LiquibaseSchemaAdapterTest {
     
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        System.setProperty(LiquibaseSchemaAdapter.MDM_ROOT_URL, System.getProperty("user.dir"));
+        URL targetDir = LiquibaseSchemaAdapterTest.class.getClassLoader().getResource(".");
+        LOGGER.info("Using MDM ROOT URL: " + targetDir.toExternalForm());
+        System.setProperty(LiquibaseSchemaAdapter.MDM_ROOT_URL, targetDir.toExternalForm());
         
         ServerContext.INSTANCE.get(new MockServerLifecycle());
         
@@ -67,10 +73,7 @@ public class LiquibaseSchemaAdapterTest {
 
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
-        String mdmRootLocation = System.getProperty(LiquibaseSchemaAdapter.MDM_ROOT_URL).replace("file:/", "");
-        String filePath = mdmRootLocation + "/data/liqubase-changelog/";
-        File file = new File(filePath);
-        file.deleteOnExit();
+
     }
 
     @Test
@@ -176,5 +179,25 @@ public class LiquibaseSchemaAdapterTest {
         assertEquals("x_bb_x_talend_id", ((DropNotNullConstraintChange) changeList.get(0)).getColumnName());
         assertEquals("x_ee", ((DropNotNullConstraintChange) changeList.get(1)).getColumnName());
         assertEquals("x_uu_x_talend_id", ((DropNotNullConstraintChange) changeList.get(2)).getColumnName());
+    }
+
+    @Test
+    public void testGetChangeLogFilePath() throws Exception {
+        MetadataRepository original = new MetadataRepository();
+        original.load(LiquibaseSchemaAdapterTest.class.getResourceAsStream("schema2_1.xsd")); //$NON-NLS-1$
+        original = original.copy();
+        MetadataRepository updated2 = new MetadataRepository();
+        updated2.load(LiquibaseSchemaAdapterTest.class.getResourceAsStream("schema2_2.xsd")); //$NON-NLS-1$
+        Compare.DiffResults diffResults = Compare.compare(original, updated2);
+
+        List<AbstractChange> changeList = adapter.analyzeModifyChange(diffResults);
+
+        String changeLogFilePath = adapter.getChangeLogFilePath(changeList);
+        assertNotNull(changeLogFilePath);
+
+        File changeLogFile = new File(changeLogFilePath);
+        assertTrue(changeLogFile.exists());
+        assertTrue(changeLogFile.isFile());
+        assertTrue(changeLogFile.getName().endsWith(".xml"));
     }
 }

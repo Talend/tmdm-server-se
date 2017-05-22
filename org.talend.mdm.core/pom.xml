@@ -13,7 +13,7 @@
     <name>org.talend.mdm.core</name>
 
     <properties>
-        <jackson.version>1.9.2</jackson.version>
+        <jackson.version>1.9.13</jackson.version>
     </properties>
 
     <build>
@@ -151,7 +151,7 @@
         <dependency>
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-pool</artifactId>
-            <version>5.7.0</version>
+            <version>5.14.5</version>
         </dependency>
         <dependency>
             <groupId>org.apache.activemq</groupId>

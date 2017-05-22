@@ -86,6 +86,9 @@ public class BulkloadClientUtil {
 
             client.executeMethod(config, putMethod);
             responseBody = putMethod.getResponseBodyAsString();
+            if (itemdata instanceof InputStreamMerger) {
+                ((InputStreamMerger) itemdata).setAlreadyProcessed(true);
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {

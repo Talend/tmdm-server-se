@@ -152,7 +152,9 @@ public class TaskPortlet extends BasePortlet {
                                     label.setText(MessagesFactory.getMessages().no_tasks());
                                     fieldSet.removeAll();
                                     HTML errorHTML;
-                                    if ("authentication_failure".equals(response.getText())) {
+                                    if ("connection_refused".equals(response.getText())) {
+                                        errorHTML = buildErrorHTML(MessagesFactory.getMessages().connect_tds_fail());
+                                    } else if ("authentication_failure".equals(response.getText())) {
                                         errorHTML = buildErrorHTML(MessagesFactory.getMessages().login_tds_fail());
                                     } else if ("role_missing".equals(response.getText())) {
                                         errorHTML = buildErrorHTML(MessagesFactory.getMessages().retrieve_campaign_fail());
@@ -227,7 +229,9 @@ public class TaskPortlet extends BasePortlet {
                                             }
                                         } catch (NumberFormatException exception) {
                                             HTML errorHTML;
-                                            if ("authentication_failure".equals(response.getText())) {
+                                            if ("connection_refused".equals(response.getText())) {
+                                                errorHTML = buildErrorHTML(MessagesFactory.getMessages().connect_tds_fail());
+                                            } else if ("authentication_failure".equals(response.getText())) {
                                                 errorHTML = buildErrorHTML(MessagesFactory.getMessages().login_tds_fail());
                                             } else if ("role_missing".equals(response.getText())) {
                                                 errorHTML = buildErrorHTML(MessagesFactory.getMessages().retrieve_campaign_fail());

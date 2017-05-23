@@ -164,6 +164,8 @@ import com.amalto.core.storage.transaction.TransactionManager;
 
 public class HibernateStorage implements Storage {
 
+    private static final int MAX_DELETE_RECORDS = 1000;
+
     private int DEFAULT_FETCH_SIZE = 500;
 
     public static final HibernateStorage.LocalEntityResolver ENTITY_RESOLVER = new HibernateStorage.LocalEntityResolver();
@@ -171,6 +173,8 @@ public class HibernateStorage implements Storage {
     private static final String CLASS_LOADER = "com.amalto.core.storage.hibernate.DefaultStorageClassLoader"; //$NON-NLS-1$
 
     private static final String ALTERNATE_CLASS_LOADER = "com.amalto.core.storage.hibernate.FullStorageClassLoader"; //$NON-NLS-1$
+
+    private static final String DELETE_FROM_STR = "delete from ";
 
     private static final Logger LOGGER = Logger.getLogger(HibernateStorage.class);
 
@@ -1381,11 +1385,11 @@ public class HibernateStorage implements Storage {
                                         // No need to check for mandatory collections of references since constraint
                                         // cannot be expressed in db schema
                                         String formattedTableName = tableResolver.getCollectionTable(reference);
-                                        session.createSQLQuery("delete from " + formattedTableName).executeUpdate(); //$NON-NLS-1$
+                                        session.createSQLQuery(DELETE_FROM_STR + formattedTableName).executeUpdate(); //$NON-NLS-1$
                                     } else {
                                         String referenceTableName = tableResolver.get(reference.getContainingType());
                                         if (referenceTableName.startsWith("X_ANONYMOUS")) { //$NON-NLS-1$
-                                            session.createSQLQuery("delete from " + referenceTableName).executeUpdate(); //$NON-NLS-1$
+                                            session.createSQLQuery(DELETE_FROM_STR + referenceTableName).executeUpdate(); // $NON-NLS-1$
                                         }
                                     }
                                 }
@@ -1398,7 +1402,7 @@ public class HibernateStorage implements Storage {
                                             // cannot
                                             // be expressed in db schema
                                             String formattedTableName = tableResolver.getCollectionTable(reference);
-                                            session.createSQLQuery("delete from " + formattedTableName).executeUpdate(); //$NON-NLS-1$
+                                            session.createSQLQuery(DELETE_FROM_STR + formattedTableName).executeUpdate(); //$NON-NLS-1$
                                         } else {
                                             String referenceTableName = tableResolver.get(reference.getContainingType());
                                             if (reference.getReferencedField() instanceof CompoundFieldMetadata) {
@@ -1479,51 +1483,21 @@ public class HibernateStorage implements Storage {
 
     @SuppressWarnings("rawtypes")
     private void deleteData(ComplexTypeMetadata typeToDelete, Map<String, List> condition, TypeMapping mapping) {
-        int loopSize = 1000;
-        if( dataSource.getDialectName() == DataSourceDialect.H2){
-            loopSize = 500;
-        }
         try {
             Session session = this.getCurrentSession();
             for (FieldMetadata field : typeToDelete.getFields()) {
                 if (field.isMany()) {
                     String formattedTableName = tableResolver.getCollectionTable(field);
-                    String deleteFormattedTableSQL = "delete from " + formattedTableName; //$NON-NLS-1$
-                    if (!condition.isEmpty()) {
-                        deleteFormattedTableSQL = deleteFormattedTableSQL + " where " + conditionMapToString(condition); //$NON-NLS-1$                    
-                    }
-                    session.createSQLQuery(deleteFormattedTableSQL).executeUpdate();
+                    String deleteFormattedTableSQL = DELETE_FROM_STR + formattedTableName; // $NON-NLS-1$
+                    deleteDataWithConditionForRepeatedField(session, condition, deleteFormattedTableSQL);
                 }
             }
             // Delete the type instances
             String className = storageClassLoader.getClassFromType(typeToDelete).getName();
-            String hql = "delete from " + className; //$NON-NLS-1$
-            if (!condition.isEmpty()) {
-                hql = hql + " where "; //$NON-NLS-1$
-                for (Entry<String, List> fieldEntry : condition.entrySet()) {
-                    if (!hql.endsWith("where ")) { //$NON-NLS-1$
-                        hql = hql + " and "; //$NON-NLS-1$
-                    }
-                    hql = hql + fieldEntry.getKey() + " in (:" + fieldEntry.getKey() + ")"; //$NON-NLS-1$//$NON-NLS-2$
-                }
-                for (Entry<String, List> fieldEntry : condition.entrySet()) {
-                    org.hibernate.Query query = session.createQuery(hql);
-                    query = session.createQuery(hql);
-                    List list = fieldEntry.getValue();
-                    for(int i = 0 ; i < list.size(); i= i+loopSize){
-                        int toIndex = i + loopSize;
-                        if (toIndex > list.size()) {
-                            toIndex = list.size();
-                        }
-                        query.setParameterList(fieldEntry.getKey(), list.subList(i, toIndex));
-                        query.executeUpdate();
-                    }
-                }
-            } else {
-                org.hibernate.Query query = session.createQuery(hql);
-                query = session.createQuery(hql);
-                query.executeUpdate();
-            }
+
+            String hql = DELETE_FROM_STR + className; //$NON-NLS-1$
+            deleteDataWithCondition(session, condition, hql);
+
             // Clean up full text indexes
             if (dataSource.supportFullText()) {
                 FullTextSession fullTextSession = Search.getFullTextSession(session);
@@ -1544,26 +1518,72 @@ public class HibernateStorage implements Storage {
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    private String conditionMapToString(Map<String, List> condition) {
-        String conditionString = StringUtils.EMPTY;
+    private void deleteDataWithConditionForRepeatedField(Session session, Map<String, List> condition, String sql) {
+        if (condition.isEmpty()) {
+            org.hibernate.Query query = session.createSQLQuery(sql);
+            query.executeUpdate();
+            return;
+        }
+
+        sql = sql + " where "; //$NON-NLS-1$
         for (Entry<String, List> fieldEntry : condition.entrySet()) {
             List<String> list = fieldEntry.getValue();
-            StringBuffer buffer = new StringBuffer();
-            for (int i = 0; i < list.size(); i++) {
-                buffer.append("'" + list.get(i) + "'"); //$NON-NLS-1$//$NON-NLS-2$
-                if (i != list.size() - 1) {
-                    buffer.append(","); //$NON-NLS-1$
+
+            for (int i = 0; i < list.size(); i = i + MAX_DELETE_RECORDS) {
+                String conditionString = StringUtils.EMPTY;
+                StringBuffer buffer = new StringBuffer();
+                int toIndex = i + MAX_DELETE_RECORDS;
+                if (toIndex > list.size()) {
+                    toIndex = list.size();
                 }
-            }
-            if (buffer.length() > 0) {
-                if (!conditionString.isEmpty()) {
-                    conditionString = conditionString + " and "; //$NON-NLS-1$
+                List tmp = list.subList(i, toIndex);
+                for (int j = 0; j < tmp.size(); j++) {
+                    buffer.append("'" + tmp.get(j) + "'"); //$NON-NLS-1$//$NON-NLS-2$
+                    if (j != tmp.size() - 1) {
+                        buffer.append(","); //$NON-NLS-1$
+                    }
                 }
-                conditionString = conditionString + fieldEntry.getKey() + " in (" + buffer.toString() + ")"; //$NON-NLS-1$//$NON-NLS-2$
+                if (buffer.length() > 0) {
+                    if (!conditionString.isEmpty()) {
+                        conditionString = conditionString + " and "; //$NON-NLS-1$
+                    }
+                    conditionString = conditionString + fieldEntry.getKey() + " in (" + buffer.toString() + ")"; //$NON-NLS-1$//$NON-NLS-2$
+                }
+                session.createSQLQuery(sql + conditionString).executeUpdate();
             }
         }
-        return conditionString;
     }
+
+    private void deleteDataWithCondition(Session session, Map<String, List> condition, String hql) {
+        if (condition.isEmpty()) {
+            org.hibernate.Query query = session.createQuery(hql);
+            query.executeUpdate();
+
+            return;
+        }
+
+        hql = hql + " where "; //$NON-NLS-1$
+        for (Entry<String, List> fieldEntry : condition.entrySet()) {
+            if (!hql.endsWith("where ")) { //$NON-NLS-1$
+                hql = hql + " and "; //$NON-NLS-1$
+            }
+            hql = hql + fieldEntry.getKey() + " in (:" + fieldEntry.getKey() + ")"; //$NON-NLS-1$//$NON-NLS-2$
+        }
+        org.hibernate.Query query = null;
+        for (Entry<String, List> fieldEntry : condition.entrySet()) {
+            query = session.createQuery(hql);
+            List list = fieldEntry.getValue();
+            for (int i = 0; i < list.size(); i = i + MAX_DELETE_RECORDS) {
+                int toIndex = i + MAX_DELETE_RECORDS;
+                if (toIndex > list.size()) {
+                    toIndex = list.size();
+                }
+                query.setParameterList(fieldEntry.getKey(), list.subList(i, toIndex));
+                query.executeUpdate();
+            }
+        }
+    }
+
     @Override
     public void delete(DataRecord record) {
         Session session = this.getCurrentSession();

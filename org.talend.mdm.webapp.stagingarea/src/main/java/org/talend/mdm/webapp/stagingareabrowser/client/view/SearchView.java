@@ -133,7 +133,7 @@ public class SearchView extends AbstractView {
         stateCombo.setWidth(250);
         statusCodeField = new NumberField();
         statusCodeField.setPropertyEditorType(Integer.class);
-        statusCodeField.setValue(0);
+        statusCodeField.setValue(null);
         statusCodeField.setFieldLabel(messages.status_code());
         statusCodeField.setWidth(250);
 

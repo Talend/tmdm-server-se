@@ -32,7 +32,7 @@ http://www.hazelcast.com/schema/spring http://www.hazelcast.com/schema/spring/ha
         </jaxrs:serviceBeans>
         <jaxrs:providers>
             <bean class="com.amalto.core.storage.task.staging.SerializableListWriter" />
-	    <bean class="org.codehaus.jackson.jaxrs.JacksonJaxbJsonProvider" />
+	    <bean class="com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider" />
         </jaxrs:providers>
     </jaxrs:server>
 

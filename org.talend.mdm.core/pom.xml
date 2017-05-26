@@ -150,13 +150,8 @@
         </dependency>
         <dependency>
             <groupId>org.apache.activemq</groupId>
-            <artifactId>activemq-pool</artifactId>
-            <version>5.7.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.activemq</groupId>
-            <artifactId>activemq-core</artifactId>
-            <version>5.7.0</version>
+            <artifactId>activemq-all</artifactId>
+            <version>5.14.5</version>
         </dependency>
         <dependency>
             <groupId>org.apache.xbean</groupId>

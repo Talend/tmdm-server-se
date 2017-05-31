@@ -385,6 +385,11 @@ public class TimeSlicer {
         }
 
         @Override
+        public Long visit(StagingHasTask stagingHasTask) {
+            return null;
+        }
+
+        @Override
         public Long visit(Field field) {
             if (field.equals(timestamp)) {
                 isTimestamp = true;

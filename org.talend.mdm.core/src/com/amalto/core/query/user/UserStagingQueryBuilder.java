@@ -49,4 +49,12 @@ public class UserStagingQueryBuilder {
     public static TypedExpression groupSize() {
         return GroupSize.INSTANCE;
     }
+
+    /**
+     * @return A {@link TypedExpression} that represents the staging area task exists of the record.
+     * @see com.amalto.core.storage.task.StagingConstants
+     */
+    public static TypedExpression hasTask() {
+        return StagingHasTask.INSTANCE;
+    }
 }

@@ -265,6 +265,11 @@ class FullTextQueryHandler extends AbstractQueryHandler {
                         }
 
                         @Override
+                        public Void visit(StagingHasTask stagingHasTask) {
+                            return handleMetadataField(stagingHasTask);
+                        }
+
+                        @Override
                         public Void visit(Type type) {
                             FieldMetadata fieldMetadata = type.getField().getFieldMetadata();
                             SimpleTypeMetadata fieldType = new SimpleTypeMetadata(XMLConstants.W3C_XML_SCHEMA_NS_URI, Types.STRING);

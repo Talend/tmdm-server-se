@@ -4,9 +4,8 @@
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
  *
- * You should have received a copy of the agreement
- * along with this program; if not, write to Talend SA
- * 9 rue Pages 92150 Suresnes, France
+ * You should have received a copy of the agreement along with this program; if not, write to Talend SA 9 rue Pages
+ * 92150 Suresnes, France
  */
 
 package com.amalto.core.storage;
@@ -236,6 +235,11 @@ class Checker extends VisitorAdapter<Boolean> {
 
     @Override
     public Boolean visit(StagingBlockKey stagingBlockKey) {
+        return true;
+    }
+
+    @Override
+    public Boolean visit(StagingHasTask stagingHasTask) {
         return true;
     }
 

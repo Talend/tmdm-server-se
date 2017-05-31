@@ -20,7 +20,6 @@ import java.util.Set;
 
 import javax.xml.XMLConstants;
 
-import com.amalto.core.storage.CloseableIterator;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -50,10 +49,12 @@ import com.amalto.core.query.user.VisitorAdapter;
 import com.amalto.core.query.user.metadata.GroupSize;
 import com.amalto.core.query.user.metadata.StagingBlockKey;
 import com.amalto.core.query.user.metadata.StagingError;
+import com.amalto.core.query.user.metadata.StagingHasTask;
 import com.amalto.core.query.user.metadata.StagingSource;
 import com.amalto.core.query.user.metadata.StagingStatus;
 import com.amalto.core.query.user.metadata.TaskId;
 import com.amalto.core.query.user.metadata.Timestamp;
+import com.amalto.core.storage.CloseableIterator;
 import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.record.metadata.UnsupportedDataRecordMetadata;
@@ -450,6 +451,15 @@ class ProjectionIterator implements CloseableIterator<DataRecord> {
         public ProjectionElement visit(StagingBlockKey stagingBlockKey) {
             if (!isAlias) {
                 createElement(stagingBlockKey.getTypeName(), "metadata:" + StagingBlockKey.STAGING_BLOCK_ALIAS); //$NON-NLS-1$
+            }
+            currentElement.value = values[currentIndex++];
+            return currentElement;
+        }
+
+        @Override
+        public ProjectionElement visit(StagingHasTask stagingHasTask) {
+            if (!isAlias) {
+                createElement(stagingHasTask.getTypeName(), "metadata:" + StagingHasTask.STAGING_HAS_TASK_ALIAS); //$NON-NLS-1$
             }
             currentElement.value = values[currentIndex++];
             return currentElement;

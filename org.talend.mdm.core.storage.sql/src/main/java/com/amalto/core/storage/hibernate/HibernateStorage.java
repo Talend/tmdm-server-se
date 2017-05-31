@@ -565,6 +565,9 @@ public class HibernateStorage implements Storage {
                     if (database.hasField(METADATA_TASK_ID)) {
                         databaseIndexedFields.add(database.getField(METADATA_TASK_ID));
                     }
+                    if (database.hasField(METADATA_STAGING_HAS_TASK)) {
+                        databaseIndexedFields.add(database.getField(METADATA_STAGING_HAS_TASK));
+                    }
                 }
                 break;
             case SYSTEM: // Nothing to index on SYSTEM

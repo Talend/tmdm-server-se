@@ -9,8 +9,16 @@
  */
 package com.amalto.core.query.user;
 
-import com.amalto.core.query.user.metadata.*;
 import org.apache.commons.lang.NotImplementedException;
+
+import com.amalto.core.query.user.metadata.GroupSize;
+import com.amalto.core.query.user.metadata.StagingBlockKey;
+import com.amalto.core.query.user.metadata.StagingError;
+import com.amalto.core.query.user.metadata.StagingHasTask;
+import com.amalto.core.query.user.metadata.StagingSource;
+import com.amalto.core.query.user.metadata.StagingStatus;
+import com.amalto.core.query.user.metadata.TaskId;
+import com.amalto.core.query.user.metadata.Timestamp;
 
 public class VisitorAdapter<T> implements Visitor<T> {
     public T visit(Select select) {
@@ -228,6 +236,11 @@ public class VisitorAdapter<T> implements Visitor<T> {
 
     @Override
     public T visit(IndexedField indexedField) {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public T visit(StagingHasTask stagingHasTask) {
         throw new NotImplementedException();
     }
 }

@@ -19,6 +19,8 @@ public class StagingConstant {
 
     public static final String STAGING_SOURCE = "/$staging_source$"; //$NON-NLS-1$
 
+    public static final String STAGING_HAS_TASK = "/$staging_hastask$"; //$NON-NLS-1$
+
     public static final String MATCH_ROOT_NAME = "groups"; //$NON-NLS-1$
 
     public static final String MATCH_GROUP_NAME = "group"; //$NON-NLS-1$

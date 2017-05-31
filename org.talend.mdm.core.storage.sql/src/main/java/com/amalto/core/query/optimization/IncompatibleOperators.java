@@ -225,6 +225,11 @@ public class IncompatibleOperators implements Optimizer {
         }
 
         @Override
+        public Condition visit(StagingHasTask stagingHasTask) {
+            return null;
+        }
+
+        @Override
         public Condition visit(StagingError stagingError) {
             return null;
         }

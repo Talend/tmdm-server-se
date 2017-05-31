@@ -127,6 +127,13 @@ public class ConditionChecks extends VisitorAdapter<Result> {
     }
 
     @Override
+    public Result visit(StagingHasTask stagingHasTask) {
+        Result fieldResult = new Result();
+        fieldResult.id = false;
+        return fieldResult;
+    }
+
+    @Override
     public Result visit(GroupSize groupSize) {
         Result fieldResult = new Result();
         fieldResult.id = false;

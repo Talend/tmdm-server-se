@@ -101,4 +101,14 @@ public interface StagingConstants {
      * Constant to indicate a record source when created by MDM.
      */
     String STAGING_MDM_SOURCE = "MDM"; //$NON-NLS-1$
+    /**
+     * Constant to indicate a record has a task
+     */
+    String STAGING_HAS_TASK_YES = Boolean.TRUE.toString();
+
+    /**
+     * Constant to indicate a record doesn't have a task
+     */
+    String STAGING_HAS_TASK_NO = Boolean.FALSE.toString();
+
 }

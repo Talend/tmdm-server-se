@@ -154,6 +154,11 @@ public class RecommendedIndexes {
             return Collections.emptySet();
         }
 
+        public Collection<FieldMetadata> visit(StagingHasTask stagingHasTask) {
+            // TODO Should indicate that staging status needs index
+            return Collections.emptySet();
+        }
+
         public Collection<FieldMetadata> visit(StagingError stagingError) {
             // TODO Should indicate that staging error needs index
             return Collections.emptySet();

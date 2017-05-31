@@ -147,6 +147,11 @@ public class ImplicitOrderBy implements Optimizer {
         }
 
         @Override
+        public Boolean visit(StagingHasTask stagingHasTask) {
+            return Boolean.TRUE;
+        }
+
+        @Override
         public Boolean visit(GroupSize groupSize) {
             return Boolean.FALSE;
         }

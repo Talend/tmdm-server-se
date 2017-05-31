@@ -50,6 +50,7 @@ import com.amalto.core.query.user.VisitorAdapter;
 import com.amalto.core.query.user.metadata.GroupSize;
 import com.amalto.core.query.user.metadata.StagingBlockKey;
 import com.amalto.core.query.user.metadata.StagingError;
+import com.amalto.core.query.user.metadata.StagingHasTask;
 import com.amalto.core.query.user.metadata.StagingSource;
 import com.amalto.core.query.user.metadata.StagingStatus;
 import com.amalto.core.query.user.metadata.TaskId;
@@ -509,6 +510,11 @@ public class ConfigurableContainsOptimizer implements Optimizer {
 
         @Override
         public Boolean visit(StagingBlockKey stagingBlockKey) {
+            return true;
+        }
+
+        @Override
+        public Boolean visit(StagingHasTask stagingHasTask) {
             return true;
         }
 

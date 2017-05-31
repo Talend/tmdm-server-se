@@ -34,6 +34,7 @@ class StagingTypeMappingRepository extends InternalRepository {
         if (database.isInstantiable() && !database.isFrozen()) {
             TypeMetadata intType = new SoftTypeRef(internalRepository, XMLConstants.W3C_XML_SCHEMA_NS_URI, Types.INT, false);
             TypeMetadata longType = new SoftTypeRef(internalRepository, XMLConstants.W3C_XML_SCHEMA_NS_URI, Types.LONG, false);
+            TypeMetadata booleanType = new SoftTypeRef(internalRepository, XMLConstants.W3C_XML_SCHEMA_NS_URI, Types.BOOLEAN, false);
             TypeMetadata stringType = new SimpleTypeMetadata(XMLConstants.W3C_XML_SCHEMA_NS_URI, Types.STRING);
             TypeMetadata limitedStringType = new SimpleTypeMetadata(XMLConstants.W3C_XML_SCHEMA_NS_URI, Types.STRING);
             limitedStringType.setData(MetadataRepository.DATA_MAX_LENGTH, UUID.randomUUID().toString().length());
@@ -43,6 +44,10 @@ class StagingTypeMappingRepository extends InternalRepository {
             // Task id
             database.addField(new SimpleTypeFieldMetadata(database, false, false, false, Storage.METADATA_TASK_ID,
                     limitedStringType, Collections.<String> emptyList(), Collections.<String> emptyList(), Collections
+                            .<String> emptyList(), StringUtils.EMPTY));
+            // Staging has task
+            database.addField(new SimpleTypeFieldMetadata(database, false, false, false, Storage.METADATA_STAGING_HAS_TASK,
+                    booleanType, Collections.<String> emptyList(), Collections.<String> emptyList(), Collections
                             .<String> emptyList(), StringUtils.EMPTY));
             // Staging status
             database.addField(new SimpleTypeFieldMetadata(database, false, false, false, Storage.METADATA_STAGING_STATUS,

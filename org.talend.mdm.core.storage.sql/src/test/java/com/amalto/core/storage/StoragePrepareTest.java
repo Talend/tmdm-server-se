@@ -13,6 +13,11 @@ import static com.amalto.core.query.user.UserQueryBuilder.eq;
 import static com.amalto.core.query.user.UserQueryBuilder.from;
 
 import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -30,7 +35,10 @@ import com.amalto.core.server.MockMetadataRepositoryAdmin;
 import com.amalto.core.server.MockServerLifecycle;
 import com.amalto.core.server.MockStorageAdmin;
 import com.amalto.core.server.ServerContext;
+import com.amalto.core.storage.adapt.StorageAdaptTest;
+import com.amalto.core.storage.datasource.DataSource;
 import com.amalto.core.storage.datasource.DataSourceDefinition;
+import com.amalto.core.storage.datasource.RDBMSDataSource;
 import com.amalto.core.storage.hibernate.HibernateStorage;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.record.DataRecordReader;
@@ -302,6 +310,35 @@ public class StoragePrepareTest extends TestCase {
             storage.commit();
         } finally {
             storage.close();
+        }
+    }
+
+    // TMDM-10861
+    public void testStagingHasTask() throws Exception {
+        DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS2", STORAGE_NAME);
+        Storage storage = new HibernateStorage("Test", StorageType.STAGING);
+        storage.init(dataSource);
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(StorageAdaptTest.class.getResourceAsStream("schema1_1.xsd"));
+        storage.prepare(repository, true);
+
+        DataSource staging = dataSource.getStaging();
+        assertTrue(staging instanceof RDBMSDataSource);
+        RDBMSDataSource rdbmsDataSource = (RDBMSDataSource) staging;
+        assertEquals(RDBMSDataSource.DataSourceDialect.H2, rdbmsDataSource.getDialectName());
+        Connection connection = DriverManager.getConnection(rdbmsDataSource.getConnectionURL());
+        Statement statement = connection.createStatement();
+        try {
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM PRODUCT");
+            ResultSetMetaData metaData = resultSet.getMetaData();
+            boolean hasTask = false;
+            for (int i = 1; i <= metaData.getColumnCount(); i++) {
+                hasTask |= "x_talend_staging_hastask".equalsIgnoreCase(metaData.getColumnName(i));
+            }
+            assertTrue(hasTask);
+        } finally {
+            statement.close();
+            connection.close();
         }
     }
 

@@ -109,6 +109,7 @@ import com.amalto.core.query.user.VisitorAdapter;
 import com.amalto.core.query.user.metadata.GroupSize;
 import com.amalto.core.query.user.metadata.StagingBlockKey;
 import com.amalto.core.query.user.metadata.StagingError;
+import com.amalto.core.query.user.metadata.StagingHasTask;
 import com.amalto.core.query.user.metadata.StagingSource;
 import com.amalto.core.query.user.metadata.StagingStatus;
 import com.amalto.core.query.user.metadata.TaskId;
@@ -408,6 +409,12 @@ class StandardQueryHandler extends AbstractQueryHandler {
     @Override
     public StorageResults visit(StagingBlockKey stagingBlockKey) {
         projectionList.add(Projections.property(Storage.METADATA_STAGING_BLOCK_KEY));
+        return null;
+    }
+
+    @Override
+    public StorageResults visit(StagingHasTask stagingHasTask) {
+        projectionList.add(Projections.property(Storage.METADATA_STAGING_HAS_TASK));
         return null;
     }
 
@@ -1672,6 +1679,11 @@ class StandardQueryHandler extends AbstractQueryHandler {
         @Override
         public FieldCondition visit(StagingBlockKey stagingBlockKey) {
             return createInternalCondition(Storage.METADATA_STAGING_BLOCK_KEY);
+        }
+
+        @Override
+        public FieldCondition visit(StagingHasTask stagingHasTask) {
+            return createInternalCondition(Storage.METADATA_STAGING_HAS_TASK);
         }
 
         @Override

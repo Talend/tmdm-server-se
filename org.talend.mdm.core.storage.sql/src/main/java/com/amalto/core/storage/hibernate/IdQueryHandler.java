@@ -337,5 +337,13 @@ class IdQueryHandler extends AbstractQueryHandler {
             nextRecord.set(field, o);
             return null;
         }
+
+        @Override
+        public Void visit(StagingHasTask stagingHasTask) {
+            FieldMetadata field = createField(stagingHasTask);
+            Object o = next.getRecordMetadata().getRecordProperties().get(Storage.METADATA_STAGING_HAS_TASK);
+            nextRecord.set(field, o);
+            return null;
+        }
     }
 }

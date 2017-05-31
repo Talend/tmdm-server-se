@@ -349,6 +349,14 @@ class SelectAnalyzer extends VisitorAdapter<Visitor<StorageResults>> {
     }
 
     @Override
+    public Visitor<StorageResults> visit(StagingHasTask stagingHasTask) {
+        if (isCheckingProjection && StorageType.STAGING == storage.getType()) {
+            selectedFields.add(stagingHasTask);
+        }
+        return null;
+    }
+
+    @Override
     public VisitorAdapter<StorageResults> visit(Condition condition) {
         return null;
     }

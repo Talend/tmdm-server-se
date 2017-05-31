@@ -210,6 +210,12 @@ class MappingExpressionTransformer extends VisitorAdapter<Expression> {
     }
 
     @Override
+    public Expression visit(StagingHasTask stagingHasTask) {
+        currentField = stagingHasTask;
+        return stagingHasTask;
+    }
+
+    @Override
     public Expression visit(GroupSize groupSize) {
         currentField = groupSize;
         return groupSize;

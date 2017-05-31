@@ -9,15 +9,17 @@
  */
 package com.amalto.core.storage.record.metadata;
 
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+
 import com.amalto.core.query.user.metadata.StagingBlockKey;
 import com.amalto.core.query.user.metadata.StagingError;
+import com.amalto.core.query.user.metadata.StagingHasTask;
 import com.amalto.core.query.user.metadata.StagingSource;
 import com.amalto.core.query.user.metadata.StagingStatus;
 import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.record.DataRecordReader;
-import org.apache.log4j.Logger;
-
-import java.util.Map;
 
 /**
  *
@@ -39,6 +41,8 @@ public class DataRecordMetadataHelper {
             properties.put(Storage.METADATA_STAGING_STATUS, value);
         } else if (StagingBlockKey.STAGING_BLOCK_ALIAS.equals(metadataProperty)) {
             properties.put(Storage.METADATA_STAGING_BLOCK_KEY, value);
+        } else if (StagingHasTask.STAGING_HAS_TASK_ALIAS.equals(metadataProperty)) {
+            properties.put(Storage.METADATA_STAGING_HAS_TASK, value);
         } else if (DataRecordReader.TASK_ID.equals(metadataProperty)) {
             metadata.setTaskId(value);
         } else if(LOGGER.isDebugEnabled()) {

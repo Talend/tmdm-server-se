@@ -32,6 +32,8 @@ public interface Visitor<T> {
 
     T visit(StagingBlockKey stagingBlockKey);
 
+    T visit(StagingHasTask stagingHasTask);
+
     T visit(GroupSize groupSize);
 
     T visit(Select select);

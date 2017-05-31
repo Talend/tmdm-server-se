@@ -55,6 +55,13 @@ public interface Storage {
     String METADATA_TASK_ID           = "x_talend_task_id";         //$NON-NLS-1$
 
     /**
+     * Name of the column where MDM has task is stored (for STAGING databases only).
+     * 
+     * @see com.amalto.core.storage.task.StagingConstants
+     */
+    String METADATA_STAGING_HAS_TASK    = "x_talend_staging_hastask";  //$NON-NLS-1$
+
+    /**
      * Name of the column where MDM source is stored (for STAGING databases only).
      */
     String METADATA_STAGING_SOURCE    = "x_talend_staging_source";  //$NON-NLS-1$

@@ -2527,7 +2527,10 @@ public class BrowseRecordsAction implements BrowseRecordsService {
         WSWhereCondition whereCondition_TaskID = new WSWhereCondition(StagingConstant.STAGING_TASKID.substring(1),
                 WSWhereOperator.EQUALS, taskId, WSStringPredicate.NONE, false);
         WSWhereItem whereItem_TaskID = new WSWhereItem(whereCondition_TaskID, null, null);
-        WSWhereItem[] whereItem_Array = { whereItem_TaskID, whereItem_Status_SUCCESS_VALIDATE };
+        WSWhereCondition whereCondition_HasTask = new WSWhereCondition(concept + StagingConstant.STAGING_HAS_TASK,
+                WSWhereOperator.EQUALS, StagingConstants.STAGING_HAS_TASK_YES, WSStringPredicate.NONE, false);
+        WSWhereItem whereItem_HasTask = new WSWhereItem(whereCondition_HasTask, null, null);
+        WSWhereItem[] whereItem_Array = { whereItem_TaskID, whereItem_Status_SUCCESS_VALIDATE, whereItem_HasTask };
         WSWhereAnd whereAnd = new WSWhereAnd(whereItem_Array);
         WSWhereItem whereItem = new WSWhereItem(null, whereAnd, null);
         try {

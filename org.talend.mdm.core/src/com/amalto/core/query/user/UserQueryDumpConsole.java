@@ -276,8 +276,15 @@ public class UserQueryDumpConsole implements Visitor<Void> {
         return null;
     }
 
+    @Override
     public Void visit(StagingStatus stagingStatus) {
         print("[Technical field: STAGING_STATUS]"); //$NON-NLS-1$
+        return null;
+    }
+
+    @Override
+    public Void visit(StagingHasTask stagingHasTask) {
+        print("[Technical field: STAGING_HAS_TASK]"); //$NON-NLS-1$
         return null;
     }
 

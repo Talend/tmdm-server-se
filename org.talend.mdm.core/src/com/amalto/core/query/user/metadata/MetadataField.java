@@ -26,7 +26,8 @@ public interface MetadataField extends TypedExpression {
      * Lists all metadata fields supported by this MDM.
      */
     MetadataField[] SUPPORTED_METADATA = new MetadataField[] { StagingError.INSTANCE, StagingSource.INSTANCE,
-            StagingStatus.INSTANCE, StagingBlockKey.INSTANCE, GroupSize.INSTANCE, TaskId.INSTANCE, Timestamp.INSTANCE };
+            StagingStatus.INSTANCE, StagingBlockKey.INSTANCE, StagingHasTask.INSTANCE, GroupSize.INSTANCE, TaskId.INSTANCE,
+            Timestamp.INSTANCE };
 
     /**
      * @return A non-null name that represents the metadata field. Each serialization format may alter or reuse as-is

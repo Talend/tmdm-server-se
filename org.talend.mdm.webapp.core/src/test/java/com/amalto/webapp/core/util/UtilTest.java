@@ -101,6 +101,13 @@ public class UtilTest extends TestCase {
         assertEquals(WSWhereOperator.EMPTY_NULL, whereCondition.getOperator());
         assertNull(whereCondition.getRightValueOrPath());
         assertEquals(WSStringPredicate.NONE, whereCondition.getStringPredicate());
+        
+        String[] values1 = { "ProductFamily/Name", "Is Empty Or Null", "", "Not" };
+        whereCondition = Util.convertLine(values1);
+        assertEquals("ProductFamily/Name", whereCondition.getLeftPath());
+        assertEquals(WSWhereOperator.EMPTY_NULL, whereCondition.getOperator());
+        assertEquals("", whereCondition.getRightValueOrPath());
+        assertEquals(WSStringPredicate.NOT, whereCondition.getStringPredicate());
     }
 
     private JSONArray parsingForeignKeyQueryResults(String[] results, boolean isQueryFkList) throws Exception {

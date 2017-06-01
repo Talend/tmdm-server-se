@@ -97,6 +97,7 @@
                         <configuration>
                             <classifier>test</classifier>
                             <includes>
+                                <include>com/amalto/core/save/generator/AutoIncrementGenerator.class</include>
                                 <include>com/amalto/core/server/ServerAccessImpl*.class</include>
                             </includes>
                         </configuration>

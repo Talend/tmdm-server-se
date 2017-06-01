@@ -58,7 +58,7 @@ class OracleStorageInitializer implements StorageInitializer {
                     statement.execute("alter user " + dataSource.getUserName() + " account unlock"); //$NON-NLS-1$ //$NON-NLS-2$
                 } catch (SQLException e) {
                     // Assumes database is already created.
-                    LOGGER.debug("Exception occurred during CREATE USER statement.", e);
+                    LOGGER.warn("Exception occurred during CREATE USER statement.", e);
                 } finally {
                     statement.close();
                 }

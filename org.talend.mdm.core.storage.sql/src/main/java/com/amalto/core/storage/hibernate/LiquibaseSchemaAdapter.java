@@ -94,6 +94,7 @@ public class LiquibaseSchemaAdapter  {
 
         try {
             DatabaseConnection liquibaseConnection = new liquibase.database.jvm.JdbcConnection(connection);
+            liquibaseConnection.setAutoCommit(true);
 
             liquibase.database.Database database = liquibase.database.DatabaseFactory.getInstance()
                     .findCorrectDatabaseImplementation(liquibaseConnection);
@@ -133,7 +134,7 @@ public class LiquibaseSchemaAdapter  {
 
                 String defaultValueRule = ((FieldMetadata) current).getData(MetadataRepository.DEFAULT_VALUE_RULE);
                 defaultValueRule = HibernateStorageUtils.convertedDefaultValue(dataSource.getDialectName(), defaultValueRule, StringUtils.EMPTY);
-                String tableName = tableResolver.get(current.getContainingType().getEntity()).toLowerCase();
+                String tableName = tableResolver.get(current.getContainingType().getEntity());
                 String columnDataType = getColumnTypeName(current);
                 String columnName = tableResolver.get(current);
                 if (current instanceof ContainedTypeFieldMetadata) {
@@ -142,6 +143,11 @@ public class LiquibaseSchemaAdapter  {
 
                 if (dataSource.getDialectName() == DataSourceDialect.ORACLE_10G) {
                     columnName = columnName.toUpperCase();
+                }
+
+
+                if (dataSource.getDialectName() == DataSourceDialect.POSTGRES) {
+                    tableName = tableName.toLowerCase();
                 }
 
                 if (current.isMandatory() && !previous.isMandatory() && !isModifyMinOccursForRepeatable(previous, current)) {

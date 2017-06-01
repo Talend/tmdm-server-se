@@ -47,7 +47,7 @@ class OracleStorageCleaner implements StorageCleaner {
                     statement.execute("drop user " + dataSource.getUserName() + " cascade");  //$NON-NLS-1$ //$NON-NLS-2$
                 } catch (SQLException e) {
                     // Assumes database is already dropped.
-                    LOGGER.debug("Exception occurred during DROP USER statement.", e);
+                    LOGGER.warn("Exception occurred during DROP USER statement.", e);
                 } finally {
                     statement.close();
                 }

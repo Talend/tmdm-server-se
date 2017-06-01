@@ -53,7 +53,7 @@ class SQLServerStorageInitializer implements StorageInitializer {
                     statement.execute("CREATE DATABASE " + dataSource.getDatabaseName() + ";"); //$NON-NLS-1$ //$NON-NLS-2$
                 } catch (SQLException e) {
                     // Assumes database is already created.
-                    LOGGER.debug("Exception occurred during CREATE DATABASE statement.", e);
+                    LOGGER.warn("Exception occurred during CREATE DATABASE statement.", e);
                 } finally {
                     statement.close();
                 }

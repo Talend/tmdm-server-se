@@ -51,7 +51,7 @@ class SQLServerStorageCleaner implements StorageCleaner {
                     statement.execute("DROP DATABASE " + dataSource.getDatabaseName() + ";");
                 } catch (SQLException e) {
                     // Assumes database is already dropped.
-                    LOGGER.debug("Exception occurred during DROP DATABASE statement.", e);
+                    LOGGER.warn("Exception occurred during DROP DATABASE statement.", e);
                 } finally {
                     statement.close();
                 }

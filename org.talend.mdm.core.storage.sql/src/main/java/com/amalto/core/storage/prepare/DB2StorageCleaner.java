@@ -53,7 +53,7 @@ class DB2StorageCleaner implements StorageCleaner {
                     statement.execute("DROP DATABASE " + dataSource.getDatabaseName() + ";");  //$NON-NLS-1$ //$NON-NLS-2$
                 } catch (SQLException e) {
                     // Assumes database is already dropped.
-                    LOGGER.debug("Exception occurred during DROP DATABASE statement.", e);
+                    LOGGER.warn("Exception occurred during DROP DATABASE statement.", e);
                 } finally {
                     statement.close();
                 }

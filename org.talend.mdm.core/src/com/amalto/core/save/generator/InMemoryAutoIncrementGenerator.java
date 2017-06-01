@@ -46,7 +46,7 @@ public class InMemoryAutoIncrementGenerator implements AutoIdGenerator {
     @Override
     public synchronized String generateId(String dataClusterName, String conceptName, String keyElementName) {
         long nextId = 0;
-        String key = dataClusterName + "." + AutoIncrementGenerator.getConceptForAutoIncrement(dataClusterName, conceptName) + "." + keyElementName;
+        String key = dataClusterName + "." + AutoIncrementUtil.getConceptForAutoIncrement(dataClusterName, conceptName) + "." + keyElementName;
         String value = CONFIGURATION.getProperty(key);
         if (value != null) {
             nextId = Long.valueOf(value);

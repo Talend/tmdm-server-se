@@ -70,6 +70,7 @@
                                 <exclude>com/amalto/core/delegator/impl/DefaultValidationDelegator.class</exclude>
                                 <exclude>com/amalto/core/delegator/impl/DefaultXtentisWSDelegator.class</exclude>
                                 <exclude>com/amalto/core/delegator/impl/DefaultLocalUserDelegator.class</exclude>
+                                <exclude>com/amalto/core/save/generator/AutoIncrementGenerator.class</exclude>
                                 <exclude>com/amalto/core/server/ServerAccessImpl*.class</exclude>
                             </excludes>
                         </configuration>
@@ -83,6 +84,7 @@
                                 <include>com/amalto/core/delegator/impl/DefaultValidationDelegator.class</include>
                                 <include>com/amalto/core/delegator/impl/DefaultXtentisWSDelegator.class</include>
                                 <include>com/amalto/core/delegator/impl/DefaultLocalUserDelegator.class</include>
+                                <include>com/amalto/core/save/generator/AutoIncrementGenerator.class</include>
                                 <include>com/amalto/core/server/ServerAccessImpl*.class</include>
                             </includes>
                         </configuration>

@@ -18,9 +18,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import junit.framework.TestCase;
-import net.sf.ehcache.CacheManager;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -47,6 +44,7 @@ import com.amalto.core.save.context.DocumentSaver;
 import com.amalto.core.save.context.StorageSaverSource;
 import com.amalto.core.save.generator.AutoIdGenerator;
 import com.amalto.core.save.generator.AutoIncrementGenerator;
+import com.amalto.core.save.generator.AutoIncrementUtil;
 import com.amalto.core.server.MDMContextAccessor;
 import com.amalto.core.server.MockMetadataRepositoryAdmin;
 import com.amalto.core.server.MockServerLifecycle;
@@ -63,6 +61,9 @@ import com.amalto.core.util.MDMEhCacheUtil;
 import com.amalto.core.util.OutputReport;
 import com.amalto.core.util.Util;
 import com.amalto.core.util.XtentisException;
+
+import junit.framework.TestCase;
+import net.sf.ehcache.CacheManager;
 
 @SuppressWarnings("nls")
 public class RecordValidationTest extends TestCase {
@@ -322,7 +323,7 @@ public class RecordValidationTest extends TestCase {
         @Override
         public String nextAutoIncrementId(String dataCluster, String dataModelName, String conceptName) {
             String autoIncrementId = null;
-            String concept = AutoIncrementGenerator.getConceptForAutoIncrement(dataModelName, conceptName);
+            String concept = AutoIncrementUtil.getConceptForAutoIncrement(dataModelName, conceptName);
             if (concept != null) {
                 String autoIncrementFieldName = concept;
                 if (conceptName.contains(".")) { //$NON-NLS-1$

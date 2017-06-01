@@ -17,8 +17,6 @@ import java.util.ServiceLoader;
 import com.amalto.core.storage.*;
 import com.amalto.core.storage.datasource.DataSource;
 import org.apache.log4j.Logger;
-import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
-import org.talend.mdm.commmon.metadata.FieldMetadata;
 
 import com.amalto.core.storage.datasource.DataSourceDefinition;
 import com.amalto.core.storage.dispatch.CompositeStorage;

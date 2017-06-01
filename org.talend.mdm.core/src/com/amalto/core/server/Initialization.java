@@ -35,6 +35,7 @@ import com.amalto.core.objects.configurationinfo.assemble.AssembleDirector;
 import com.amalto.core.objects.configurationinfo.assemble.AssembleProc;
 import com.amalto.core.objects.datacluster.DataClusterPOJO;
 import com.amalto.core.query.user.UserQueryBuilder;
+import com.amalto.core.save.generator.AutoIncrementGenerator;
 import com.amalto.core.server.security.SecurityConfig;
 import com.amalto.core.storage.DispatchWrapper;
 import com.amalto.core.storage.Storage;
@@ -153,6 +154,16 @@ public class Initialization implements ApplicationListener<ContextRefreshedEvent
                 initContainers(server, storageAdmin, containerNames);
             }
         });
+
+        LOGGER.info("Initializing autoincrement id generator..."); //$NON-NLS-1$
+        SecurityConfig.invokeSynchronousPrivateInternal(new Runnable() {
+
+            @Override
+            public void run() {
+                AutoIncrementGenerator.get();
+            }
+        });
+        LOGGER.info("Autoincrement id generator initialized."); //$NON-NLS-1$
 
         LOGGER.info("Talend MDM " + version + " started."); //$NON-NLS-1$ //$NON-NLS-2$
         if(this.applicationEventPublisher != null){

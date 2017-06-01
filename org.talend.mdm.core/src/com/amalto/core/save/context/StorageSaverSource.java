@@ -16,6 +16,7 @@ import com.amalto.core.objects.ItemPOJOPK;
 import com.amalto.core.objects.datacluster.DataClusterPOJOPK;
 import com.amalto.core.objects.datamodel.DataModelPOJOPK;
 import com.amalto.core.save.generator.AutoIncrementGenerator;
+import com.amalto.core.save.generator.AutoIncrementUtil;
 import com.amalto.core.server.api.DataModel;
 import com.amalto.core.server.api.RoutingEngine;
 import com.amalto.core.query.user.Expression;
@@ -207,7 +208,7 @@ public class StorageSaverSource implements SaverSource {
 
     public String nextAutoIncrementId(String dataCluster, String dataModelName, String conceptName) {
         String autoIncrementId = null;
-        String concept = AutoIncrementGenerator.getConceptForAutoIncrement(dataModelName, conceptName);
+        String concept = AutoIncrementUtil.getConceptForAutoIncrement(dataModelName, conceptName);
         if(concept != null) {
             String autoIncrementFieldName = concept;
             if (conceptName.contains(".")) { //$NON-NLS-1$

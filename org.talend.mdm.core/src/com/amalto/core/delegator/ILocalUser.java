@@ -41,7 +41,6 @@ public abstract class ILocalUser implements IBeanDelegator {
         return null;
     }
 
-    @SuppressWarnings("unused")
     public HashSet<String> getRoles() {
         HashSet<String> set = new HashSet<String>();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

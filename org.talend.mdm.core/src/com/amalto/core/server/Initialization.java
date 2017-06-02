@@ -115,8 +115,17 @@ public class Initialization implements ApplicationListener<ContextRefreshedEvent
                 assembleProc.run();
             }
         });
-
         LOGGER.info("Initialization and migration done."); //$NON-NLS-1$
+        // Initialize autoincrement id generator
+        LOGGER.info("Initializing autoincrement id generator..."); //$NON-NLS-1$
+        SecurityConfig.invokeSynchronousPrivateInternal(new Runnable() {
+
+            @Override
+            public void run() {
+                AutoIncrementGenerator.get();
+            }
+        });
+        LOGGER.info("Autoincrement id generator initialized."); //$NON-NLS-1$
         // Find configured containers
         MetadataRepository repository = systemStorage.getMetadataRepository();
         String className = StringUtils.substringAfterLast(DataClusterPOJO.class.getName(), "."); //$NON-NLS-1$
@@ -154,16 +163,6 @@ public class Initialization implements ApplicationListener<ContextRefreshedEvent
                 initContainers(server, storageAdmin, containerNames);
             }
         });
-
-        LOGGER.info("Initializing autoincrement id generator..."); //$NON-NLS-1$
-        SecurityConfig.invokeSynchronousPrivateInternal(new Runnable() {
-
-            @Override
-            public void run() {
-                AutoIncrementGenerator.get();
-            }
-        });
-        LOGGER.info("Autoincrement id generator initialized."); //$NON-NLS-1$
 
         LOGGER.info("Talend MDM " + version + " started."); //$NON-NLS-1$ //$NON-NLS-2$
         if(this.applicationEventPublisher != null){

@@ -103,10 +103,12 @@ public class LiquibaseSchemaAdapter  {
             String filePath = getChangeLogFilePath(changeType);
 
             Liquibase liquibase = new Liquibase(filePath, new FileSystemResourceAccessor(), database);
-            Writer output = new java.io.StringWriter();            
-            liquibase.update("Liquibase update", output);
             if(LOGGER.isDebugEnabled()) {
+                Writer output = new java.io.StringWriter();
+                liquibase.update("Liquibase update", output);
                 LOGGER.debug("DDL executed by liquibase: " + output.toString());
+            } else {
+                liquibase.update("Liquibase update");
             }
         } catch (Exception e1) {
             LOGGER.error("execute liquibase update failure", e1); //$NON-NLS-1$

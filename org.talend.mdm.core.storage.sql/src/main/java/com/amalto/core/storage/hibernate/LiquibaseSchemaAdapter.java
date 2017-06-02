@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.Writer;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -102,7 +103,11 @@ public class LiquibaseSchemaAdapter  {
             String filePath = getChangeLogFilePath(changeType);
 
             Liquibase liquibase = new Liquibase(filePath, new FileSystemResourceAccessor(), database);
-            liquibase.update("Liquibase update"); //$NON-NLS-1$
+            Writer output = new java.io.StringWriter();            
+            liquibase.update("Liquibase update", output);
+            if(LOGGER.isDebugEnabled()) {
+                LOGGER.debug("DDL executed by liquibase: " + output.toString());
+            }
         } catch (Exception e1) {
             LOGGER.error("execute liquibase update failure", e1); //$NON-NLS-1$
             throw e1;

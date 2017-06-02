@@ -11,16 +11,20 @@ package com.amalto.core.save.generator;
 
 import org.apache.log4j.Logger;
 
+@SuppressWarnings("nls")
 public class AutoIncrementGenerator {
 
     private static final Logger LOGGER = Logger.getLogger(AutoIncrementGenerator.class);
 
+    private static final AutoIdGenerator AUTO_ID_GENERATOR;
+
     static {
+        AUTO_ID_GENERATOR = InMemoryAutoIncrementGenerator.getInstance();
         LOGGER.info("Clustered access support for autoincrement id generator is disabled.");
     }
 
     public static AutoIdGenerator get() {
-        return InMemoryAutoIncrementGenerator.getInstance();
+        return AUTO_ID_GENERATOR;
     }
 
 }

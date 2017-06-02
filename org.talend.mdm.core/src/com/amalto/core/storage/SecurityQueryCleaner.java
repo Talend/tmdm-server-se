@@ -17,34 +17,8 @@ import java.util.List;
 
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 
-import com.amalto.core.query.user.BinaryLogicOperator;
-import com.amalto.core.query.user.Compare;
-import com.amalto.core.query.user.ComplexTypeExpression;
-import com.amalto.core.query.user.Condition;
-import com.amalto.core.query.user.ConstantCollection;
-import com.amalto.core.query.user.ConstantCondition;
-import com.amalto.core.query.user.Expression;
-import com.amalto.core.query.user.FieldFullText;
-import com.amalto.core.query.user.FullText;
-import com.amalto.core.query.user.IndexedField;
-import com.amalto.core.query.user.IsEmpty;
-import com.amalto.core.query.user.IsNull;
-import com.amalto.core.query.user.Isa;
-import com.amalto.core.query.user.NativeQuery;
-import com.amalto.core.query.user.NotIsEmpty;
-import com.amalto.core.query.user.NotIsNull;
-import com.amalto.core.query.user.OrderBy;
-import com.amalto.core.query.user.Range;
-import com.amalto.core.query.user.Select;
-import com.amalto.core.query.user.TypedExpression;
-import com.amalto.core.query.user.UnaryLogicOperator;
-import com.amalto.core.query.user.UserQueryHelper;
-import com.amalto.core.query.user.VisitorAdapter;
-import com.amalto.core.query.user.metadata.StagingBlockKey;
-import com.amalto.core.query.user.metadata.StagingError;
-import com.amalto.core.query.user.metadata.StagingHasTask;
-import com.amalto.core.query.user.metadata.StagingSource;
-import com.amalto.core.query.user.metadata.StagingStatus;
+import com.amalto.core.query.user.*;
+import com.amalto.core.query.user.metadata.*;
 
 // TODO Instead of removing, it is possible to return arbitrary string value ("???", "###"...).
 class SecurityQueryCleaner extends VisitorAdapter<Expression> {

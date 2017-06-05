@@ -219,6 +219,7 @@ public class TaskPortlet extends BasePortlet {
 
                                 @Override
                                 public void onResponseReceived(Request request, Response response) {
+                                    HTML errorHTML = null;
                                     if (Response.SC_OK == response.getStatusCode()) {
                                         try {
                                             Integer taskCount = Integer.valueOf(response.getText());
@@ -228,41 +229,26 @@ public class TaskPortlet extends BasePortlet {
                                                 updateTaskPanel(workflowTaskNewCount, TASK_TYPE.TDS_TYPE, taskNewCount, 0);
                                             }
                                         } catch (NumberFormatException exception) {
-                                            HTML errorHTML;
-                                            if ("connection_refused".equals(response.getText())) {
-                                                errorHTML = buildErrorHTML(MessagesFactory.getMessages().connect_tds_fail());
-                                            } else if ("authentication_failure".equals(response.getText())) {
-                                                errorHTML = buildErrorHTML(MessagesFactory.getMessages().login_tds_fail());
-                                            } else if ("role_missing".equals(response.getText())) {
-                                                errorHTML = buildErrorHTML(MessagesFactory.getMessages().retrieve_campaign_fail());
-                                            } else {
-                                                errorHTML = buildErrorHTML(BaseMessagesFactory.getMessages().unknown_error());
-                                            }
-                                            if (workflowTaskCount > 0) {
-                                                updateTaskPanel(workflowTaskNewCount, TASK_TYPE.TDS_TYPE, 0, 0);
-                                                fieldSet.add(errorHTML);
-                                                fieldSet.layout(true);
-
-                                            } else {
-                                                label.setText(MessagesFactory.getMessages().no_tasks());
-                                                fieldSet.removeAll();
-                                                fieldSet.add(errorHTML);
-                                                fieldSet.layout(true);
-                                            }
+                                            errorHTML = buildErrorHTML(BaseMessagesFactory.getMessages().unknown_error());
                                         }
-                                    } else if (Response.SC_INTERNAL_SERVER_ERROR == response.getStatusCode()) {
+                                    } else if (Response.SC_SERVICE_UNAVAILABLE == response.getStatusCode()) { // connection_refused
+                                        errorHTML = buildErrorHTML(MessagesFactory.getMessages().connect_tds_fail());
+                                    } else if (Response.SC_UNAUTHORIZED == response.getStatusCode()) { // authentication_failure
+                                        errorHTML = buildErrorHTML(MessagesFactory.getMessages().login_tds_fail());
+                                    } else if (Response.SC_FORBIDDEN == response.getStatusCode()) { // role_missing
+                                        errorHTML = buildErrorHTML(MessagesFactory.getMessages().retrieve_campaign_fail());
+                                    } else { // server error
+                                        errorHTML = buildErrorHTML(BaseMessagesFactory.getMessages().unknown_error());
+                                    }
+                                    if (errorHTML != null) {
                                         if (workflowTaskCount > 0) {
                                             updateTaskPanel(workflowTaskNewCount, TASK_TYPE.TDS_TYPE, 0, 0);
-                                            HTML errorHTML = buildErrorHTML(BaseMessagesFactory.getMessages().unknown_error());
-                                            fieldSet.add(errorHTML);
-                                            fieldSet.layout(true);
                                         } else {
                                             label.setText(MessagesFactory.getMessages().no_tasks());
                                             fieldSet.removeAll();
-                                            HTML errorHTML = buildErrorHTML(BaseMessagesFactory.getMessages().unknown_error());
-                                            fieldSet.add(errorHTML);
-                                            fieldSet.layout(true);
                                         }
+                                        fieldSet.add(errorHTML);
+                                        fieldSet.layout(true);
                                     }
                                 }
 

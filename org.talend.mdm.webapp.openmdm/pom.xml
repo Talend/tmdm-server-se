@@ -141,7 +141,7 @@
                                 <excludedArtifact>org.talend</excludedArtifact>
                             </excludedArtifacts>
                             <additionalArtifacts>
-                                <additionalArtifact>org.apache.tomcat:tomcat:zip::8.0.42</additionalArtifact>
+                                <additionalArtifact>org.apache.tomcat:tomcat:zip::8.0.44</additionalArtifact>
                                 <additionalArtifact>yui:yui:javascript::2.4.0</additionalArtifact>
                                 <additionalArtifact>simile:timeline:javascript::2.3.0</additionalArtifact>
                                 <additionalArtifact>googleapis:fonts:font::1.1</additionalArtifact>

@@ -56,6 +56,11 @@ public class MultilanguageMessageParserTest extends TestCase {
         assertTrue(MultilanguageMessageParser.pickOutISOMessage(s, "en").equals("e\\e")); //$NON-NLS-1$ //$NON-NLS-2$
         assertTrue(MultilanguageMessageParser.pickOutISOMessage(s, "fr").equals("f]f")); //$NON-NLS-1$//$NON-NLS-2$
         assertTrue(MultilanguageMessageParser.pickOutISOMessage(s, "zh").equals("c]c]")); //$NON-NLS-1$ //$NON-NLS-2$
+
+        s = "dddd[french:wer & wer]f]dddd[en:wer & wer]ddd[zh:wer & wer]c\\]]dddd";
+        assertTrue(MultilanguageMessageParser.pickOutISOMessage(s, "en").equals("wer & wer")); //$NON-NLS-1$ //$NON-NLS-2$
+        assertTrue(MultilanguageMessageParser.pickOutISOMessage(s, "fr").equals("wer & wer")); //$NON-NLS-1$//$NON-NLS-2$
+        assertTrue(MultilanguageMessageParser.pickOutISOMessage(s, "zh").equals("wer & wer")); //$NON-NLS-1$ //$NON-NLS-2$
         
         //Testing null
         s = null;
@@ -89,6 +94,11 @@ public class MultilanguageMessageParserTest extends TestCase {
         assertNull(MultilanguageMessageParser.getValueByLanguage(multiLanguageString, "EN"));
         assertTrue(MultilanguageMessageParser.isExistMultiLanguageFormat(multiLanguageString));
         assertTrue(MultilanguageMessageParser.getValueByLanguage(multiLanguageString, "FR").equals("Talend Company]"));
+
+        multiLanguageString = "[ZH:拓蓝&][FR:Talend Company&amp;#93;&]";
+        assertNull(MultilanguageMessageParser.getValueByLanguage(multiLanguageString, "EN"));
+        assertTrue(MultilanguageMessageParser.isExistMultiLanguageFormat(multiLanguageString));
+        assertTrue(MultilanguageMessageParser.getValueByLanguage(multiLanguageString, "FR").equals("Talend Company]&"));
 
     }
 

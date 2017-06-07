@@ -130,6 +130,25 @@ public class LiquibaseSchemaAdapter  {
         return changeActionList;
     }
 
+    private String getTableName(FieldMetadata field) {
+        String tableName = tableResolver.get(field.getContainingType().getEntity());
+        if (dataSource.getDialectName() == DataSourceDialect.POSTGRES) {
+            tableName = tableName.toLowerCase();
+        }
+        return tableName;
+    }
+
+    private String getColumnName(FieldMetadata field) {
+        String columnName = tableResolver.get(field);
+        if (field instanceof ContainedTypeFieldMetadata) {
+            columnName += "_x_talend_id";
+        }
+        if (dataSource.getDialectName() == DataSourceDialect.ORACLE_10G) {
+            columnName = columnName.toUpperCase();
+        }
+        return columnName;
+    }
+
     protected List<AbstractChange> analyzeModifyChange(DiffResults diffResults) {
         List<AbstractChange> changeActionList = new ArrayList<AbstractChange>();
         for (ModifyChange modifyAction : diffResults.getModifyChanges()) {
@@ -141,21 +160,9 @@ public class LiquibaseSchemaAdapter  {
 
                 String defaultValueRule = ((FieldMetadata) current).getData(MetadataRepository.DEFAULT_VALUE_RULE);
                 defaultValueRule = HibernateStorageUtils.convertedDefaultValue(dataSource.getDialectName(), defaultValueRule, StringUtils.EMPTY);
-                String tableName = tableResolver.get(current.getContainingType().getEntity());
+                String tableName = getTableName(current);
                 String columnDataType = getColumnTypeName(current);
-                String columnName = tableResolver.get(current);
-                if (current instanceof ContainedTypeFieldMetadata) {
-                    columnName += "_x_talend_id";
-                }
-
-                if (dataSource.getDialectName() == DataSourceDialect.ORACLE_10G) {
-                    columnName = columnName.toUpperCase();
-                }
-
-
-                if (dataSource.getDialectName() == DataSourceDialect.POSTGRES) {
-                    tableName = tableName.toLowerCase();
-                }
+                String columnName = getColumnName(current);
 
                 if (current.isMandatory() && !previous.isMandatory() && !isModifyMinOccursForRepeatable(previous, current)) {
                     if (storageType == StorageType.MASTER) {
@@ -191,8 +198,8 @@ public class LiquibaseSchemaAdapter  {
                     || isSimpleTypeFieldMetadata((FieldMetadata) element) || isContainedComplexType((FieldMetadata) element))) {
                 FieldMetadata field = (FieldMetadata) element;
 
-                String tableName = tableResolver.get(field.getContainingType().getEntity()).toLowerCase();
-                String columnName = tableResolver.get(field);
+                String tableName = getTableName(field);
+                String columnName = getColumnName(field);
 
                 List<String> columnList = dropColumnMap.get(tableName);
                 if (columnList == null) {

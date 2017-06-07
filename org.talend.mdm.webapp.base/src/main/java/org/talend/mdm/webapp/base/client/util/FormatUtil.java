@@ -32,17 +32,14 @@ public class FormatUtil {
 
     public static String languageValueDecode(String value) {
         if (value != null && value.trim().length() > 0) {
-            if (value.contains("&amp;")) {//$NON-NLS-1$
-                value = value.replace("&amp;", "&"); //$NON-NLS-1$ //$NON-NLS-2$
+            if (value.contains("&amp;#92;")) {//$NON-NLS-1$
+                value = value.replace("&amp;#92;", "\\"); //$NON-NLS-1$ //$NON-NLS-2$
             }
-            if (value.contains("&#92;")) {//$NON-NLS-1$
-                value = value.replace("&#92;", "\\"); //$NON-NLS-1$ //$NON-NLS-2$
+            if (value.contains("&amp;#91;")) {//$NON-NLS-1$
+                value = value.replace("&amp;#91;", "["); //$NON-NLS-1$ //$NON-NLS-2$
             }
-            if (value.contains("&#91;")) {//$NON-NLS-1$
-                value = value.replace("&#91;", "["); //$NON-NLS-1$ //$NON-NLS-2$
-            }
-            if (value.contains("&#93;")) {//$NON-NLS-1$
-                value = value.replace("&#93;", "]"); //$NON-NLS-1$ //$NON-NLS-2$
+            if (value.contains("&amp;#93;")) {//$NON-NLS-1$
+                value = value.replace("&amp;#93;", "]"); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
         return value;

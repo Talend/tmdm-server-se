@@ -2520,24 +2520,29 @@ public class BrowseRecordsAction implements BrowseRecordsService {
     }
 
     @Override
-    public int checkTask(String dataClusterPK, String concept, String taskId) throws ServiceException {
-        WSWhereCondition whereCondition_Status_SUCCESS_VALIDATE = new WSWhereCondition(concept + StagingConstant.STAGING_STATUS,
+    public Map<String, Integer> checkTask(String dataClusterPK, String concept, String taskId) throws ServiceException {
+        Map<String, Integer> checkResults = new HashMap<String, Integer>();
+        WSWhereCondition whereCondition_Status_202 = new WSWhereCondition(concept + StagingConstant.STAGING_STATUS,
                 WSWhereOperator.EQUALS, StagingConstants.SUCCESS_MERGE_CLUSTERS, WSStringPredicate.NONE, false);
-        WSWhereItem whereItem_Status_SUCCESS_VALIDATE = new WSWhereItem(whereCondition_Status_SUCCESS_VALIDATE, null, null);
+        WSWhereItem whereItem_Status_202 = new WSWhereItem(whereCondition_Status_202, null, null);
         WSWhereCondition whereCondition_TaskID = new WSWhereCondition(StagingConstant.STAGING_TASKID.substring(1),
                 WSWhereOperator.EQUALS, taskId, WSStringPredicate.NONE, false);
         WSWhereItem whereItem_TaskID = new WSWhereItem(whereCondition_TaskID, null, null);
-        WSWhereCondition whereCondition_HasTask = new WSWhereCondition(concept + StagingConstant.STAGING_HAS_TASK,
+        WSWhereCondition whereCondition_HasTask_true = new WSWhereCondition(concept + StagingConstant.STAGING_HAS_TASK,
                 WSWhereOperator.EQUALS, StagingConstants.STAGING_HAS_TASK_YES, WSStringPredicate.NONE, false);
-        WSWhereItem whereItem_HasTask = new WSWhereItem(whereCondition_HasTask, null, null);
-        WSWhereItem[] whereItem_Array = { whereItem_TaskID, whereItem_Status_SUCCESS_VALIDATE, whereItem_HasTask };
-        WSWhereAnd whereAnd = new WSWhereAnd(whereItem_Array);
-        WSWhereItem whereItem = new WSWhereItem(null, whereAnd, null);
+        WSWhereItem whereItem_HasTask_true = new WSWhereItem(whereCondition_HasTask_true, null, null);
+        WSWhereItem whereItem0 = new WSWhereItem(null, new WSWhereAnd(new WSWhereItem[] { whereItem_TaskID, whereItem_Status_202 }), null);
+        WSWhereItem whereItem1 = new WSWhereItem(null, new WSWhereAnd(new WSWhereItem[] { whereItem_TaskID, whereItem_Status_202, whereItem_HasTask_true }), null);
         try {
-            WSString results = CommonUtil.getPort()
-                    .count(new WSCount(new WSDataClusterPK(dataClusterPK), concept, whereItem, -1));
-            int resultSize = Integer.parseInt(results.getValue());
-            return resultSize;
+            WSString results0 = CommonUtil.getPort()
+                    .count(new WSCount(new WSDataClusterPK(dataClusterPK), concept, whereItem0, -1));
+            // count without checking staging_hastask
+            checkResults.put("withoutHasTask", Integer.parseInt(results0.getValue()));
+            WSString results1 = CommonUtil.getPort()
+                    .count(new WSCount(new WSDataClusterPK(dataClusterPK), concept, whereItem1, -1));
+            // count with checking staging_hastask=true
+            checkResults.put("withHasTask", Integer.parseInt(results1.getValue()));
+            return checkResults;
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
             throw new ServiceException(e.getLocalizedMessage());

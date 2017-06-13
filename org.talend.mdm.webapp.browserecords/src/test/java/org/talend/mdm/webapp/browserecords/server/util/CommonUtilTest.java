@@ -46,7 +46,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
-import com.amalto.core.server.StorageAdmin;
 import com.amalto.core.util.Util;
 import com.amalto.webapp.core.util.XmlUtil;
 

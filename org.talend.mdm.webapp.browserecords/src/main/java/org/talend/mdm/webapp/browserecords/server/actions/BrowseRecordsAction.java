@@ -237,7 +237,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
                     WSDeleteItemWithReport wsDeleteItem = new WSDeleteItemWithReport(new WSItemPK(new WSDataClusterPK(
                             dataClusterPK), concept, ids), UpdateReportPOJO.GENERIC_UI_SOURCE,
                             UpdateReportPOJO.OPERATION_TYPE_PHYSICAL_DELETE, "/", //$NON-NLS-1$
-                            LocalUser.getLocalUser().getUsername(), true, org.talend.mdm.webapp.browserecords.server.util.CommonUtil.isPushToUpdateReport(dataClusterPK), override);
+                            LocalUser.getLocalUser().getUsername(), true, true, override);
                     WSString deleteMessage = CommonUtil.getPort().deleteItemWithReport(wsDeleteItem);
 
                     if (deleteMessage == null) {

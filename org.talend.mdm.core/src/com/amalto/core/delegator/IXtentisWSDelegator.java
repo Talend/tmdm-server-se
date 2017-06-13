@@ -1232,7 +1232,8 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
                 // Now before delete process (if any configured) was called, perform delete.
                 ItemPOJOPK deleteItem = Util.getItemCtrl2Local().deleteItem(pk, wsDeleteItem.getOverride());
                 if (deleteItem != null) {
-                    if (!UpdateReportPOJO.DATA_CLUSTER.equals(dataClusterPK) && wsDeleteItem.getPushToUpdateReport()) {
+                    // TMDM-9848 while Staging Area operations should not create delete journal event
+                    if (!UpdateReportPOJO.DATA_CLUSTER.equals(dataClusterPK) && wsDeleteItem.getPushToUpdateReport() && !dataClusterPK.endsWith(StorageAdmin.STAGING_SUFFIX)) {
                         pushToUpdateReport(dataClusterPK, dataModelPK, concept, ids, wsDeleteItem.getInvokeBeforeSaving(),
                                 wsDeleteItem.getSource(), wsDeleteItem.getOperateType(), wsDeleteItem.getUser());
                     }

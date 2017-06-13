@@ -332,11 +332,6 @@ public class CommonUtilTest extends TestCase {
         assertEquals("ContractDetailType", itemBean.get("Contract/detail/@xsi:type"));
         assertEquals("pending", itemBean.get("Contract/enumEle"));
     }
-    
-    public void testIsPushToUpdateReport() {
-        assertFalse(CommonUtil.isPushToUpdateReport("Test" + StorageAdmin.STAGING_SUFFIX));
-        assertTrue(CommonUtil.isPushToUpdateReport("Test"));
-    }
 
     private String inputStream2String(InputStream is) {
 

@@ -14,8 +14,12 @@ public class Constants {
     public final static int PAGE_SIZE = 20;
 
     public final static String PORTAL_CONFIG_PREFIX = "mdm_pref_"; //$NON-NLS-1$
-    
-    public static final String TDS_ACCESSTASK = "/#/accesstasks/";
-    
-    public static final String TDS_NAME = "DataStewardship";
+
+    public static final String TDS_ACCESSTASK = "/#/accesstasks/"; //$NON-NLS-1$
+
+    public static final String TDS_NAME = "DataStewardship"; //$NON-NLS-1$
+
+    public static final String HAS_MATCH_GROUP = "HAS_MATCH_GROUP"; //$NON-NLS-1$
+
+    public static final String HAS_TASK = "HAS_TASK"; //$NON-NLS-1$
 }

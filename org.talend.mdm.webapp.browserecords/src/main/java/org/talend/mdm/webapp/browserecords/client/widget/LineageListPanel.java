@@ -291,7 +291,7 @@ public class LineageListPanel extends ContentPanel {
                     @Override
                     public void onSuccess(Map<String, Integer> result) {
                         int gridContainerHeight = LineageListPanel.this.getHeight();
-                        if (result.get("withoutHasTask") > 1) {
+                        if (result.get(Constants.HAS_TASK) > 1) {
                             openTaskToolBar.setVisible(true);
                         } else {
                             openTaskToolBar.setVisible(false);

@@ -680,8 +680,8 @@ public class ItemDetailToolBar extends ToolBar {
 
                                 @Override
                                 public void onSuccess(Map<String, Integer> result) {
-                                    int countWithoutHasTask = result.get("withoutHasTask");
-                                    int countWithHasTask = result.get("withHasTask");
+                                    int countHasMatchGroup = result.get(Constants.HAS_MATCH_GROUP);
+                                    int countHasTask = result.get(Constants.HAS_TASK);
 
                                     if (isStaging) {
                                         getBrowseRecordsService().getGoldenRecordIdByGroupId(
@@ -734,7 +734,7 @@ public class ItemDetailToolBar extends ToolBar {
                                                     }
                                                 });
                                     } else {
-                                        if (dataLineageMenuItem == null && countWithoutHasTask > 0) {
+                                        if (dataLineageMenuItem == null && countHasMatchGroup > 0) {
                                             dataLineageMenuItem = new MenuItem(MessagesFactory.getMessages().stagingRecords_btn());
                                             dataLineageMenuItem.setId("dataLineageMenuItem"); //$NON-NLS-1$
                                             dataLineageMenuItem.setItemId("dataLineageMenuItem"); //$NON-NLS-1$
@@ -759,7 +759,7 @@ public class ItemDetailToolBar extends ToolBar {
                                             subActionsMenu.add(dataLineageMenuItem);
                                         }
                                     }
-                                    if (explainMenuItem == null && countWithoutHasTask > 0) {
+                                    if (explainMenuItem == null && countHasMatchGroup > 0) {
                                         explainMenuItem = new MenuItem(MessagesFactory.getMessages().explain_button());
                                         explainMenuItem.setId("explainMenuItem"); //$NON-NLS-1$
                                         explainMenuItem.setIcon(AbstractImagePrototype.create(Icons.INSTANCE.Save()));
@@ -789,7 +789,7 @@ public class ItemDetailToolBar extends ToolBar {
                                         subActionsMenu.add(explainMenuItem);
                                     }
 
-                                    if (openTaskMenuItem == null && countWithHasTask > 1) {
+                                    if (openTaskMenuItem == null && countHasTask > 1) {
                                         openTaskMenuItem = new MenuItem(MessagesFactory.getMessages().open_task());
                                         openTaskMenuItem.setId("openTaskMenuItem"); //$NON-NLS-1$
                                         openTaskMenuItem.setIcon(AbstractImagePrototype.create(Icons.INSTANCE.openTask()));

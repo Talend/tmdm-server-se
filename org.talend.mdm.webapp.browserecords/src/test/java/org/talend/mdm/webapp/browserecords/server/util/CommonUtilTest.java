@@ -46,6 +46,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
+import com.amalto.core.server.StorageAdmin;
 import com.amalto.core.util.Util;
 import com.amalto.webapp.core.util.XmlUtil;
 
@@ -330,6 +331,11 @@ public class CommonUtilTest extends TestCase {
         assertEquals("code1", itemBean.get("Contract/detail/code"));
         assertEquals("ContractDetailType", itemBean.get("Contract/detail/@xsi:type"));
         assertEquals("pending", itemBean.get("Contract/enumEle"));
+    }
+    
+    public void testIsPushToUpdateReport() {
+        assertFalse(CommonUtil.isPushToUpdateReport("Test" + StorageAdmin.STAGING_SUFFIX));
+        assertTrue(CommonUtil.isPushToUpdateReport("Test"));
     }
 
     private String inputStream2String(InputStream is) {

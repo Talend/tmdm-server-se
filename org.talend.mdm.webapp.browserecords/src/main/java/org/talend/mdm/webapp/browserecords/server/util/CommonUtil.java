@@ -434,4 +434,12 @@ public class CommonUtil {
         Configuration config = Configuration.getConfiguration();
         return config.getModel();
     }
+    
+    public static boolean isPushToUpdateReport(String clusterName) {
+        if (clusterName != null && !clusterName.isEmpty()) {
+            return clusterName.endsWith(StorageAdmin.STAGING_SUFFIX) ? false : true;
+        } else {
+            return false;
+        }
+    }
 }

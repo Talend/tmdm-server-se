@@ -116,6 +116,7 @@ public class DispatchWrapper implements IXmlServerSLWrapper {
                 }
             }
             internalClusterNames.add("MDMDomainObjects"); //$NON-NLS-1$
+            internalClusterNames.add("MDMItemsTrash");
             // Adds amalto containers
             String[] amaltoContainers = new String[] { "amaltoOBJECTSTransformerV2", //$NON-NLS-1$
                     "amaltoOBJECTSFailedRoutingOrderV2", //$NON-NLS-1$

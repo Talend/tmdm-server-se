@@ -36,9 +36,6 @@ import java.util.TreeMap;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -71,6 +68,7 @@ import org.talend.mdm.webapp.base.server.exception.WebBaseException;
 import org.talend.mdm.webapp.base.server.util.CommonUtil;
 import org.talend.mdm.webapp.base.shared.AppHeader;
 import org.talend.mdm.webapp.base.shared.ComplexTypeModel;
+import org.talend.mdm.webapp.base.shared.Constants;
 import org.talend.mdm.webapp.base.shared.EntityModel;
 import org.talend.mdm.webapp.base.shared.SimpleTypeModel;
 import org.talend.mdm.webapp.base.shared.TypeModel;
@@ -184,6 +182,9 @@ import com.sun.xml.xsom.XSElementDecl;
 import com.sun.xml.xsom.XSParticle;
 import com.sun.xml.xsom.XSSchemaSet;
 import com.sun.xml.xsom.parser.XSOMParser;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 /**
  * DOC Administrator class global comment. Detailled comment
@@ -2520,24 +2521,31 @@ public class BrowseRecordsAction implements BrowseRecordsService {
     }
 
     @Override
-    public int checkTask(String dataClusterPK, String concept, String taskId) throws ServiceException {
-        WSWhereCondition whereCondition_Status_SUCCESS_VALIDATE = new WSWhereCondition(concept + StagingConstant.STAGING_STATUS,
+    public Map<String, Integer> checkTask(String dataClusterPK, String concept, String taskId) throws ServiceException {
+        Map<String, Integer> checkResults = new HashMap<String, Integer>();
+        WSWhereCondition condition_Status_202 = new WSWhereCondition(concept + StagingConstant.STAGING_STATUS,
                 WSWhereOperator.EQUALS, StagingConstants.SUCCESS_MERGE_CLUSTERS, WSStringPredicate.NONE, false);
-        WSWhereItem whereItem_Status_SUCCESS_VALIDATE = new WSWhereItem(whereCondition_Status_SUCCESS_VALIDATE, null, null);
-        WSWhereCondition whereCondition_TaskID = new WSWhereCondition(StagingConstant.STAGING_TASKID.substring(1),
+        WSWhereItem item_Status_202 = new WSWhereItem(condition_Status_202, null, null);
+        WSWhereCondition condition_TaskID = new WSWhereCondition(StagingConstant.STAGING_TASKID.substring(1),
                 WSWhereOperator.EQUALS, taskId, WSStringPredicate.NONE, false);
-        WSWhereItem whereItem_TaskID = new WSWhereItem(whereCondition_TaskID, null, null);
-        WSWhereCondition whereCondition_HasTask = new WSWhereCondition(concept + StagingConstant.STAGING_HAS_TASK,
+        WSWhereItem item_TaskID = new WSWhereItem(condition_TaskID, null, null);
+        WSWhereCondition condition_HasTask = new WSWhereCondition(concept + StagingConstant.STAGING_HAS_TASK,
                 WSWhereOperator.EQUALS, StagingConstants.STAGING_HAS_TASK_YES, WSStringPredicate.NONE, false);
-        WSWhereItem whereItem_HasTask = new WSWhereItem(whereCondition_HasTask, null, null);
-        WSWhereItem[] whereItem_Array = { whereItem_TaskID, whereItem_Status_SUCCESS_VALIDATE, whereItem_HasTask };
-        WSWhereAnd whereAnd = new WSWhereAnd(whereItem_Array);
-        WSWhereItem whereItem = new WSWhereItem(null, whereAnd, null);
+        WSWhereItem item_HasTask = new WSWhereItem(condition_HasTask, null, null);
+        WSWhereItem where_HasMatchGroup = new WSWhereItem(null,
+                new WSWhereAnd(new WSWhereItem[] { item_TaskID, item_Status_202 }), null);
+        WSWhereItem where_HasTask = new WSWhereItem(null,
+                new WSWhereAnd(new WSWhereItem[] { item_TaskID, item_Status_202, item_HasTask }), null);
         try {
-            WSString results = CommonUtil.getPort()
-                    .count(new WSCount(new WSDataClusterPK(dataClusterPK), concept, whereItem, -1));
-            int resultSize = Integer.parseInt(results.getValue());
-            return resultSize;
+            WSString result_HasMatchGroup = CommonUtil.getPort()
+                    .count(new WSCount(new WSDataClusterPK(dataClusterPK), concept, where_HasMatchGroup, -1));
+            // count without checking staging_hastask
+            checkResults.put(Constants.HAS_MATCH_GROUP, Integer.parseInt(result_HasMatchGroup.getValue()));
+            WSString result_HasTask = CommonUtil.getPort()
+                    .count(new WSCount(new WSDataClusterPK(dataClusterPK), concept, where_HasTask, -1));
+            // count with checking staging_hastask=true
+            checkResults.put(Constants.HAS_TASK, Integer.parseInt(result_HasTask.getValue()));
+            return checkResults;
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
             throw new ServiceException(e.getLocalizedMessage());

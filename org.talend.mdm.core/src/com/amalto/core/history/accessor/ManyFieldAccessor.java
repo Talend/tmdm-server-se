@@ -149,8 +149,8 @@ class ManyFieldAccessor implements DOMAccessor {
         } else if (node.getChildNodes().getLength() == 0) {
             // This accessor creates (n-1) empty elements when accessing first collection element at index n.
             // This setLastAccessedNode call allows all (n-1) elements to find their parent.
-            if (!(node.getLocalName().equals(document.getLastAccessedNode().getLocalName()) && document.getLastAccessedNode()
-                    .getParentNode() == node.getParentNode())) {
+            if (document.getLastAccessedNode() == null || (document.getLastAccessedNode() != null && !(node.getLocalName().equals(document.getLastAccessedNode().getLocalName()) && document.getLastAccessedNode()
+                    .getParentNode() == node.getParentNode()))) {
                 // if last accessed node is parallel with this node, can't modify last accessed node. eg, last accessed
                 // node=/feature/vendor[2], this node=/feature/vendor[1], the last accessed is still /feature/vendor[2]
                 document.setLastAccessedNode(node);

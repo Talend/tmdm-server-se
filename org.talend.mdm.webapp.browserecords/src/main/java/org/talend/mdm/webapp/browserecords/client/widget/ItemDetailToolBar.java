@@ -676,11 +676,12 @@ public class ItemDetailToolBar extends ToolBar {
                 }
                 if (hasTaskId) {
                     getBrowseRecordsService().checkTask(BrowseRecords.getSession().getAppHeader().getStagingDataCluster(),
-                            itemBean.getConcept(), itemBean.getTaskId(), new SessionAwareAsyncCallback<Integer>() {
+                            itemBean.getConcept(), itemBean.getTaskId(), new SessionAwareAsyncCallback<Map<String, Integer>>() {
 
                                 @Override
-                                public void onSuccess(Integer result) {
-                                    int count = result.intValue();
+                                public void onSuccess(Map<String, Integer> result) {
+                                    int countHasMatchGroup = result.get(Constants.HAS_MATCH_GROUP);
+                                    int countHasTask = result.get(Constants.HAS_TASK);
 
                                     if (isStaging) {
                                         getBrowseRecordsService().getGoldenRecordIdByGroupId(
@@ -733,7 +734,7 @@ public class ItemDetailToolBar extends ToolBar {
                                                     }
                                                 });
                                     } else {
-                                        if (dataLineageMenuItem == null && count > 0) {
+                                        if (dataLineageMenuItem == null && countHasMatchGroup > 0) {
                                             dataLineageMenuItem = new MenuItem(MessagesFactory.getMessages().stagingRecords_btn());
                                             dataLineageMenuItem.setId("dataLineageMenuItem"); //$NON-NLS-1$
                                             dataLineageMenuItem.setItemId("dataLineageMenuItem"); //$NON-NLS-1$
@@ -758,7 +759,7 @@ public class ItemDetailToolBar extends ToolBar {
                                             subActionsMenu.add(dataLineageMenuItem);
                                         }
                                     }
-                                    if (explainMenuItem == null && count > 0) {
+                                    if (explainMenuItem == null && countHasMatchGroup > 0) {
                                         explainMenuItem = new MenuItem(MessagesFactory.getMessages().explain_button());
                                         explainMenuItem.setId("explainMenuItem"); //$NON-NLS-1$
                                         explainMenuItem.setIcon(AbstractImagePrototype.create(Icons.INSTANCE.Save()));
@@ -788,7 +789,7 @@ public class ItemDetailToolBar extends ToolBar {
                                         subActionsMenu.add(explainMenuItem);
                                     }
 
-                                    if (openTaskMenuItem == null && count > 1) {
+                                    if (openTaskMenuItem == null && countHasTask > 1) {
                                         openTaskMenuItem = new MenuItem(MessagesFactory.getMessages().open_task());
                                         openTaskMenuItem.setId("openTaskMenuItem"); //$NON-NLS-1$
                                         openTaskMenuItem.setIcon(AbstractImagePrototype.create(Icons.INSTANCE.openTask()));
@@ -799,7 +800,7 @@ public class ItemDetailToolBar extends ToolBar {
                                             public void componentSelected(MenuEvent menuEvent) {
                                                 if (BrowseRecords.getSession().getAppHeader().isTdsEnabled()) {
                                                     String baseUrl = BrowseRecords.getSession().getAppHeader().getTdsBaseUrl();
-                                                    UrlUtil.openSingleWindow(baseUrl + Constants.TDS_ACCESSTASK + itemBean.getTaskId(),Constants.TDS_NAME);
+                                                    UrlUtil.openSingleWindow(baseUrl + Constants.TDS_ACCESSTASK + itemBean.getTaskId(), Constants.TDS_NAME);
                                                 } else {
                                                     initDSC(itemBean.getTaskId());
                                                 }

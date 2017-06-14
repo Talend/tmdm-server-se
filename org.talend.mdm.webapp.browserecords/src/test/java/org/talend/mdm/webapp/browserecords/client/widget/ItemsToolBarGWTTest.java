@@ -445,7 +445,7 @@ public class ItemsToolBarGWTTest extends GWTTestCase {
         }
 
         @Override
-        public void checkTask(String dataClusterPK, String concept, String groupId, AsyncCallback<Integer> callback) {
+        public void checkTask(String dataClusterPK, String concept, String groupId, AsyncCallback<Map<String, Integer>> callback) {
 
         }
 

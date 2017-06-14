@@ -147,7 +147,7 @@ public interface BrowseRecordsService extends RemoteService {
     String getGoldenRecordIdByGroupId(String dataClusterPK, String viewPK, String concept, String[] keys, String groupId)
             throws ServiceException;
 
-    int checkTask(String dataClusterPK, String concept, String groupId) throws ServiceException;
+    Map<String, Integer> checkTask(String dataClusterPK, String concept, String groupId) throws ServiceException;
 
     List<ItemBean> getRecords(String concept, List<String> idsList) throws ServiceException;
 

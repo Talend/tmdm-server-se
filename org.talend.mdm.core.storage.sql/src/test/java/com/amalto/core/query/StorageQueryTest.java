@@ -4558,7 +4558,31 @@ public class StorageQueryTest extends StorageTestCase {
         try{
             assertEquals(2, results.getSize());
             for (DataRecord result : results) {
-                this.assertTrue(ids.contains(result.get(person.getField("id"))));
+                assertTrue(ids.contains(result.get(person.getField("id"))));
+            }
+        } finally {
+            results.close();
+        }
+    }
+
+    public void testContainsSentenceSearchWithStandardQuary() throws Exception {
+        UserQueryBuilder qb = from(supplier).where(contains(supplier.getField("Contact/Name"), "'Jean Paul'"));
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getSize());
+            for (DataRecord result : results) {
+                assertTrue("3".equals(result.get(supplier.getField("Id"))));
+            }
+        } finally {
+            results.close();
+        }
+
+        qb = from(supplier).where(contains(supplier.getField("Contact/Name"), "Jean Paul"));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getSize());
+            for (DataRecord result : results) {
+                assertTrue("3".equals(result.get(supplier.getField("Id"))));
             }
         } finally {
             results.close();

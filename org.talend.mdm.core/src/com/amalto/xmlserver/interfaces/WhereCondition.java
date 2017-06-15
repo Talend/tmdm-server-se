@@ -34,6 +34,8 @@ public class WhereCondition implements IWhereItem, Serializable {
 
     public static final String CONTAINS = "CONTAINS";
 
+    public static final String CONTAINS_SENTENCE = "CONTAINS_SENTENCE";
+
     public static final String EQUALS = "=";
 
     public static final String NOT_EQUALS = "!=";
@@ -166,6 +168,14 @@ public class WhereCondition implements IWhereItem, Serializable {
                 && !rightValueOrPath.startsWith("^") && (null != this.operator && this.operator.equals(WhereCondition.STARTSWITH))) { //$NON-NLS-1$
             this.rightValueOrPath = "^" + rightValueOrPath; //$NON-NLS-1$
         } else {
+            if (operator != null && operator.equals(CONTAINS_SENTENCE)) {
+                if (rightValueOrPath != null && !rightValueOrPath.startsWith("'")) { //$NON-NLS-1$
+                    rightValueOrPath = "'" + rightValueOrPath; //$NON-NLS-1$
+                }
+                if (rightValueOrPath != null && !rightValueOrPath.endsWith("'")) { //$NON-NLS-1$
+                    rightValueOrPath = rightValueOrPath + "'"; //$NON-NLS-1$
+                }
+            } 
             this.rightValueOrPath = rightValueOrPath;
         }
     }

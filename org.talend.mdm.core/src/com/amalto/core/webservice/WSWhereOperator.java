@@ -14,11 +14,12 @@ package com.amalto.core.webservice;
 
 import javax.xml.bind.annotation.XmlType;
 
-@XmlType(name="WSWhereOperator")
+@XmlType(name = "WSWhereOperator")
 public enum WSWhereOperator {
     JOIN,
     CONTAINS_TEXT_OF,
     CONTAINS,
+    CONTAINS_SENTENCE,
     STARTSWITH,
     STRICTCONTAINS,
     EQUALS,

@@ -1194,7 +1194,7 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
             } else { // Physical delete
                 String status = null;
                 String message = null;
-                if (wsDeleteItem.getInvokeBeforeSaving()) {
+                if (wsDeleteItem.getInvokeBeforeSaving() && !dataClusterPK.endsWith(StorageAdmin.STAGING_SUFFIX)) {
                     Util.BeforeDeleteResult result = Util.beforeDeleting(dataClusterPK, concept, ids,
                             wsDeleteItem.getOperateType());
                     if (result != null) { // There was a before delete process to execute

@@ -19,6 +19,7 @@ import org.talend.mdm.webapp.base.client.model.ItemBaseModel;
 import org.talend.mdm.webapp.base.client.util.MultilanguageMessageParser;
 import org.talend.mdm.webapp.base.client.util.UrlUtil;
 import org.talend.mdm.webapp.base.shared.Constants;
+import org.talend.mdm.webapp.base.shared.EntityModel;
 import org.talend.mdm.webapp.base.shared.TypeModel;
 import org.talend.mdm.webapp.browserecords.client.BrowseRecords;
 import org.talend.mdm.webapp.browserecords.client.BrowseRecordsEvents;
@@ -556,7 +557,7 @@ public class ItemDetailToolBar extends ToolBar {
                         @Override
                         public void componentSelected(MenuEvent menuEvent) {
                             // TMDM-3202 open in a top-level tab
-                            String fromWhichApp = isHierarchyCall ? MessagesFactory.getMessages().hierarchy_title() : ""; //$NON-NLS-1$
+                            final String fromWhichApp = isHierarchyCall ? MessagesFactory.getMessages().hierarchy_title() : ""; //$NON-NLS-1$
                             String opt = ItemDetailToolBar.VIEW_OPERATION;
                             if (fromSmartView) {
                                 opt = ItemDetailToolBar.SMARTVIEW_OPERATION;
@@ -566,8 +567,24 @@ public class ItemDetailToolBar extends ToolBar {
                                     opt = ItemDetailToolBar.PERSONALEVIEW_OPERATION;
                                 }
                             }
-                            TreeDetailUtil.initItemsDetailPanelById(fromWhichApp, itemBean.getIds(), itemBean.getConcept(),
-                                    isFkToolBar, isHierarchyCall, opt, isStaging);
+                            if (viewBean != null) {
+                                final String viewType = opt;
+                                getBrowseRecordsService().getItem(itemBean, viewBean.getViewPK(), viewBean.getBindingEntityModel(), isStaging, Locale.getLanguage(),
+                                        new SessionAwareAsyncCallback<ItemBean>() {
+
+                                            @Override
+                                            public void onSuccess(ItemBean result) {
+                                                
+                                                ItemsDetailPanel panel = ItemsDetailPanel.newInstance();
+                                                ItemPanel itemPanel = new ItemPanel(isStaging, viewBean, result, viewType, panel);
+                                                TreeDetailUtil.initDetailPanel(viewBean, panel, itemPanel, result, fromWhichApp, isFkToolBar, isHierarchyCall,
+                                                        isStaging);
+                                            }
+                                        });
+                            } else {
+                                TreeDetailUtil.initItemsDetailPanelById(fromWhichApp, itemBean.getIds(), itemBean.getConcept(),
+                                        isFkToolBar, isHierarchyCall, opt, isStaging);
+                            }
                         }
                     });
                     subActionsMenu.add(openTabMenuItem);

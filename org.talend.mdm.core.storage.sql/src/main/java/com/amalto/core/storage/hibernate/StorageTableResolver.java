@@ -143,7 +143,6 @@ class StorageTableResolver implements TableResolver {
             String fkName = "FK_" + Math.abs(referenceField.getName().hashCode()) + fkIncrement.incrementAndGet();
             if (!fkNameMap.containsKey(referenceField.getEntityTypeName())) {
                 fkName = "FK_" + Constraint.hashedName("table`" + referenceField.getEntityTypeName()+"`column`"+referenceField.getName()+"`");
-                LOGGER.info("========  reference Container Name= " + referenceField.getContainingType().getName() + ", field name= " + referenceField.getName() + ",FKName= " + fkName);
             }
             fkNameMap.put(referenceField.getEntityTypeName(),fkName);
             return formatSQLName(fkName); //$NON-NLS-1$

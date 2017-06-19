@@ -12,8 +12,10 @@ package com.amalto.core.storage.hibernate;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -22,6 +24,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.hibernate.mapping.Constraint;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
@@ -45,6 +48,8 @@ class StorageTableResolver implements TableResolver {
     private final AtomicInteger fkIncrement = new AtomicInteger();
 
     private final Set<String> referenceFieldNames = new HashSet<String>();
+
+    private static final Map<String, String> fkNameMap = new HashMap<String, String>();
 
     public StorageTableResolver(Set<FieldMetadata> indexedFields, int maxLength) {
         this.indexedFields = indexedFields;
@@ -135,7 +140,13 @@ class StorageTableResolver implements TableResolver {
         // with same
         // length but different name.
         if (!referenceFieldNames.add(referenceField.getContainingType().getName().length() + '_' + referenceField.getName())) {
-            return formatSQLName("FK_" + Math.abs(referenceField.getName().hashCode()) + fkIncrement.incrementAndGet()); //$NON-NLS-1$
+            String fkName = "FK_" + Math.abs(referenceField.getName().hashCode()) + fkIncrement.incrementAndGet();
+            if (!fkNameMap.containsKey(referenceField.getEntityTypeName())) {
+                fkName = "FK_" + Constraint.hashedName("table`" + referenceField.getEntityTypeName()+"`column`"+referenceField.getName()+"`");
+                LOGGER.info("========  reference Container Name= " + referenceField.getContainingType().getName() + ", field name= " + referenceField.getName() + ",FKName= " + fkName);
+            }
+            fkNameMap.put(referenceField.getEntityTypeName(),fkName);
+            return formatSQLName(fkName); //$NON-NLS-1$
         } else {
             return StringUtils.EMPTY;
         }

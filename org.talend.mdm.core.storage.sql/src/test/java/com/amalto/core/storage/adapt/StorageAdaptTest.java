@@ -1949,6 +1949,24 @@ public class StorageAdaptTest extends TestCase {
         }
     }
 
+    public void test18_for_duplicated_fk() throws Exception {
+        DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
+        Storage storage = new HibernateStorage("Person", StorageType.MASTER);
+        storage.init(dataSource);
+
+        MetadataRepository repository1 = new MetadataRepository();
+        repository1.load(StorageAdaptTest.class.getResourceAsStream("schema18_1.xsd"));
+        storage.prepare(repository1, true);
+
+        MetadataRepository repository2 = new MetadataRepository();
+        repository2.load(StorageAdaptTest.class.getResourceAsStream("schema18_2.xsd"));
+        try {
+            storage.adapt(repository2, true);
+        } catch (Exception e2) {
+            assertNull(e2);
+        }
+    }
+
     private void assertColumnLengthChange(DataSourceDefinition dataSource, String tables, String columns, int expectedLength)
             throws SQLException {
         DataSource master = dataSource.getMaster();

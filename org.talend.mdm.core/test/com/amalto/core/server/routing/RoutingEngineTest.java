@@ -190,34 +190,33 @@ public class RoutingEngineTest {
         item.putItem(new ItemPOJO(container, "Person", new String[] { "1", "2" }, 0, "<Person><id>1</id><id2>2</id2></Person>"),
                 dataModel);
         // Adds a routing rule
-        TestRoutingEngine routingEngine = (TestRoutingEngine) context.getBean(RoutingEngine.class);
-        routingEngine.start();
         clearRules();
         RoutingRulePOJO rule = new RoutingRulePOJO("testTypeMatchRule");
         rule.setConcept("*");
         rule.setServiceJNDI("amalto/local/service/test/no_op_service");
         routingRule.putRoutingRule(rule);
-        // Expired message: put 2 messages, there's only one JMS consumer, service pauses for 400 ms, and expiration is
+
+        TestRoutingEngine routingEngine = (TestRoutingEngine) context.getBean(RoutingEngine.class);
+        routingEngine.start();
+        // Expired message: put 2 messages, there's only one JMS consumer, service pauses for 500 ms, and expiration is
         // 300 ms
         // -> only 1 message should be consumed.
         NoOpService.setPauseTime(500);
         int previous = routingEngine.getConsumeCallCount();
-        RoutingRulePOJOPK[] routes = routingEngine.route(new ItemPOJOPK(container, "Person", new String[] { "1", "2" }));
-        assertEquals(1, routes.length);
+        routingEngine.route(new ItemPOJOPK(container, "Person", new String[] { "1", "2" }));
         routingEngine.route(new ItemPOJOPK(container, "Person", new String[] { "1", "2" }));
         Thread.sleep(1000); // Give some time to process message
         assertEquals(previous + 1, routingEngine.getConsumeCallCount());
-        // Expired message: put 2 messages, there's only one JMS consumer, service pauses for *200* ms, and expiration
+        // Expired message: put 2 messages, there's only one JMS consumer, service pauses for 100 ms, and expiration
         // is 300 ms
         // -> only 2 message should be consumed.
-        NoOpService.setPauseTime(200);
+        NoOpService.setPauseTime(100);
         previous = routingEngine.getConsumeCallCount();
-        routes = routingEngine.route(new ItemPOJOPK(container, "Person", new String[] { "1", "2" }));
-        Thread.sleep(1000); // Give some time to process messages
-        assertEquals(1, routes.length);
+        routingEngine.route(new ItemPOJOPK(container, "Person", new String[] { "1", "2" }));
         routingEngine.route(new ItemPOJOPK(container, "Person", new String[] { "1", "2" }));
         Thread.sleep(1000); // Give some time to process messages
         assertEquals(previous + 2, routingEngine.getConsumeCallCount());
+        routingEngine.stop();
     }
 
     @Test

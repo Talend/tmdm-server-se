@@ -58,7 +58,7 @@ public class LiquibaseSchemaAdapterTest {
         Set<FieldMetadata> databaseIndexedFields = new HashSet<FieldMetadata>();
 
         TableResolver tableResolver = new StorageTableResolver(databaseIndexedFields, ((RDBMSDataSource) dataSource.get(storage
-                .getType())).getNameMaxLength());
+                .getType())).getNameMaxLength(), false);
 
         SessionFactoryImplementor sessionFactoryImplementor = (SessionFactoryImplementor) storage.getCurrentSession()
                 .getSessionFactory();

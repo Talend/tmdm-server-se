@@ -147,6 +147,8 @@ public interface BrowseRecordsMessages extends Messages {
 
     String criteria_CONTAINS();
 
+    String criteria_CONTAINS_SENTENCE();
+
     String criteria_EQUALS();
 
     String criteria_NOT_EQUALS();

@@ -258,6 +258,8 @@ public class XConverter {
         String operator = WhereCondition.CONTAINS;
         if (ws.getOperator().equals(WSWhereOperator.CONTAINS)) {
             operator = WhereCondition.CONTAINS;
+        } else if (ws.getOperator().equals(WSWhereOperator.CONTAINS_SENTENCE)) {
+            operator = WhereCondition.CONTAINS_SENTENCE;
         } else if (ws.getOperator().equals(WSWhereOperator.STRICTCONTAINS)) {
             operator = WhereCondition.STRICTCONTAINS;
         } else if (ws.getOperator().equals(WSWhereOperator.STARTSWITH)) {
@@ -299,8 +301,8 @@ public class XConverter {
             predicate = WhereCondition.PRE_NOT;
         }
 
-        WhereCondition myWhereCondition = new WhereCondition(ws.getLeftPath(), operator, ws.getRightValueOrPath(), predicate, ws
-                .isSpellCheck());
+        WhereCondition myWhereCondition = new WhereCondition(ws.getLeftPath(), operator, ws.getRightValueOrPath(), predicate,
+                ws.isSpellCheck());
 
         if (wcf != null) {
             wcf.doFilter(myWhereCondition);
@@ -310,13 +312,13 @@ public class XConverter {
     }
 
     public static WSItemPK POJO2WS(ItemPOJOPK itemPK) {
-        return new WSItemPK(new WSDataClusterPK(itemPK.getDataClusterPOJOPK().getUniqueId()), itemPK.getConceptName(), itemPK
-                .getIds());
+        return new WSItemPK(new WSDataClusterPK(itemPK.getDataClusterPOJOPK().getUniqueId()), itemPK.getConceptName(),
+                itemPK.getIds());
     }
 
     public static ItemPOJOPK WS2POJO(WSItemPK wsItemPK) {
-        return new ItemPOJOPK(new DataClusterPOJOPK(wsItemPK.getWsDataClusterPK().getPk()), wsItemPK.getConceptName(), wsItemPK
-                .getIds());
+        return new ItemPOJOPK(new DataClusterPOJOPK(wsItemPK.getWsDataClusterPK().getPk()), wsItemPK.getConceptName(),
+                wsItemPK.getIds());
     }
 
     public static WSRoutingRule VO2WS(RoutingRulePOJO vo) {
@@ -647,8 +649,8 @@ public class XConverter {
             return pipeline;
 
         for (WSPipelineTypedContentEntry entry : entries) {
-            pipeline.put(entry.getOutput(), new TypedContent(entry.getWsExtractedContent().getWsByteArray().getBytes(),
-                    entry.getWsExtractedContent().getContentType()));
+            pipeline.put(entry.getOutput(), new TypedContent(entry.getWsExtractedContent().getWsByteArray().getBytes(), entry
+                    .getWsExtractedContent().getContentType()));
         }
         return pipeline;
     }
@@ -976,19 +978,18 @@ public class XConverter {
 
     public static WSDroppedItem POJO2WS(DroppedItemPOJO droppedItemPOJO) {
 
-        return new WSDroppedItem(new WSDataClusterPK(droppedItemPOJO
-                .getDataClusterPOJOPK().getUniqueId()), droppedItemPOJO.getUniqueId(), droppedItemPOJO.getConceptName(),
-                droppedItemPOJO.getIds(), droppedItemPOJO.getPartPath(), droppedItemPOJO.getInsertionUserName(), droppedItemPOJO
-                        .getInsertionTime(), droppedItemPOJO.getProjection());
+        return new WSDroppedItem(new WSDataClusterPK(droppedItemPOJO.getDataClusterPOJOPK().getUniqueId()),
+                droppedItemPOJO.getUniqueId(), droppedItemPOJO.getConceptName(), droppedItemPOJO.getIds(),
+                droppedItemPOJO.getPartPath(), droppedItemPOJO.getInsertionUserName(), droppedItemPOJO.getInsertionTime(),
+                droppedItemPOJO.getProjection());
 
     }
 
     public static DroppedItemPOJO WS2POJO(WSDroppedItem wsDroppedItem) {
 
-        return new DroppedItemPOJO(new DataClusterPOJOPK(wsDroppedItem
-                .getWsDataClusterPK().getPk()), wsDroppedItem.getUniqueId(), wsDroppedItem.getConceptName(), wsDroppedItem
-                .getIds(), wsDroppedItem.getPartPath(), wsDroppedItem.getProjection(), wsDroppedItem.getInsertionUserName(),
-                wsDroppedItem.getInsertionTime());
+        return new DroppedItemPOJO(new DataClusterPOJOPK(wsDroppedItem.getWsDataClusterPK().getPk()),
+                wsDroppedItem.getUniqueId(), wsDroppedItem.getConceptName(), wsDroppedItem.getIds(), wsDroppedItem.getPartPath(),
+                wsDroppedItem.getProjection(), wsDroppedItem.getInsertionUserName(), wsDroppedItem.getInsertionTime());
 
     }
 
@@ -1021,7 +1022,8 @@ public class XConverter {
                     bytes = bos.toByteArray();
                 }
                 WSExtractedContent wsContent = new WSExtractedContent(new WSByteArray(bytes), content.getContentType());
-                WSPipelineTypedContentEntry wsEntry = new WSPipelineTypedContentEntry(Transformer.DEFAULT_VARIABLE.equals(output) ? "" : output, wsContent);
+                WSPipelineTypedContentEntry wsEntry = new WSPipelineTypedContentEntry(
+                        Transformer.DEFAULT_VARIABLE.equals(output) ? "" : output, wsContent);
                 entries.add(wsEntry);
             }
             return new WSPipeline(entries.toArray(new WSPipelineTypedContentEntry[entries.size()]));

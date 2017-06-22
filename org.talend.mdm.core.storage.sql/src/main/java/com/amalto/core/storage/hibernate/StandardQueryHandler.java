@@ -1297,6 +1297,9 @@ class StandardQueryHandler extends AbstractQueryHandler {
                     }
                 } else if (predicate == Predicate.CONTAINS) {
                     String value = String.valueOf(compareValue);
+                    if (value.length() > 2 && value.startsWith("'") && value.endsWith("'")) { //$NON-NLS-1$//$NON-NLS-2$
+                        value = value.substring(1, value.length() - 1);
+                    }
                     if (!value.isEmpty()) {
                         if (value.charAt(0) != '%') {
                             value = '%' + value;

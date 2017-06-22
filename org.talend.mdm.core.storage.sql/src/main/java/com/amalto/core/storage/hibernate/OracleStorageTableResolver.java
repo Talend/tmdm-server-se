@@ -18,8 +18,8 @@ import java.util.Set;
 
 public class OracleStorageTableResolver extends StorageTableResolver {
 
-    public OracleStorageTableResolver(Set<FieldMetadata> indexedFields, int maxLength) {
-        super(indexedFields, maxLength);
+    public OracleStorageTableResolver(Set<FieldMetadata> indexedFields, int maxLength, boolean isAdapt) {
+        super(indexedFields, maxLength, isAdapt);
     }
 
     @Override

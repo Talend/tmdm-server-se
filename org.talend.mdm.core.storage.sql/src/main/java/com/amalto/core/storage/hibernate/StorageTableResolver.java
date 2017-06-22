@@ -24,12 +24,13 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.hibernate.mapping.Constraint;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
 
 class StorageTableResolver implements TableResolver {
+
+    private static final String FK = "FK_";
 
     private static final String RESERVED_SQL_KEYWORDS = "reservedSQLKeywords.txt"; //$NON-NLS-1$
 
@@ -38,6 +39,8 @@ class StorageTableResolver implements TableResolver {
     private static final String STANDARD_PREFIX = "X_"; //$NON-NLS-1$
 
     private static final String RESERVED_KEYWORD_PREFIX = "X_"; //$NON-NLS-1$
+
+    private boolean isAdapt;
 
     private static Set<String> reservedKeyWords;
 
@@ -51,9 +54,10 @@ class StorageTableResolver implements TableResolver {
 
     private static final Map<String, String> fkNameMap = new HashMap<String, String>();
 
-    public StorageTableResolver(Set<FieldMetadata> indexedFields, int maxLength) {
+    public StorageTableResolver(Set<FieldMetadata> indexedFields, int maxLength, boolean isAdapt) {
         this.indexedFields = indexedFields;
         this.maxLength = maxLength;
+        this.isAdapt = isAdapt;
         // Loads reserved SQL keywords.
         synchronized (MappingGenerator.class) {
             if (reservedKeyWords == null) {
@@ -140,12 +144,24 @@ class StorageTableResolver implements TableResolver {
         // with same
         // length but different name.
         if (!referenceFieldNames.add(referenceField.getContainingType().getName().length() + '_' + referenceField.getName())) {
-            String fkName = "FK_" + Math.abs(referenceField.getName().hashCode()) + fkIncrement.incrementAndGet();
-            if (!fkNameMap.containsKey(referenceField.getEntityTypeName())) {
-                fkName = "FK_" + Constraint.hashedName("table`" + referenceField.getEntityTypeName()+"`column`"+referenceField.getName()+"`");
+            // TMDM-10993 if one entity add foreign key and generate fkname method for this entity is earlier than
+            // other entity which contains same foreign, ensure origin entity's fkname is same with originally, need to
+            // judge the entity if generated fkname, if not, need to generate with new logic, if yes, used the origin
+            // logic to generate fkname.
+            String fkName;
+            if (isAdapt) {
+                if (!fkNameMap.containsKey(referenceField.getEntityTypeName())) {
+                    fkName = FK
+                            + Math.abs(new String("table`" + referenceField.getEntityTypeName() + "`column`" //$NON-NLS-1$ //$NON-NLS-2$
+                                    + referenceField.getName() + "`").hashCode()); //$NON-NLS-1$
+                } else {
+                    fkName = FK + Math.abs(referenceField.getName().hashCode()) + fkIncrement.incrementAndGet();
+                }
+            } else {
+                fkName = FK + Math.abs(referenceField.getName().hashCode()) + fkIncrement.incrementAndGet();
             }
-            fkNameMap.put(referenceField.getEntityTypeName(),fkName);
-            return formatSQLName(fkName); //$NON-NLS-1$
+            fkNameMap.put(referenceField.getEntityTypeName(), fkName);
+            return formatSQLName(fkName);
         } else {
             return StringUtils.EMPTY;
         }

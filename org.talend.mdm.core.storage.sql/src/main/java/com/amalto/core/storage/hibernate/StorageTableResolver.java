@@ -40,8 +40,6 @@ class StorageTableResolver implements TableResolver {
 
     private static final String RESERVED_KEYWORD_PREFIX = "X_"; //$NON-NLS-1$
 
-    private boolean isAdapt;
-
     private static Set<String> reservedKeyWords;
 
     private final Set<FieldMetadata> indexedFields;
@@ -52,12 +50,9 @@ class StorageTableResolver implements TableResolver {
 
     private final Set<String> referenceFieldNames = new HashSet<String>();
 
-    private static final Map<String, String> fkNameMap = new HashMap<String, String>();
-
-    public StorageTableResolver(Set<FieldMetadata> indexedFields, int maxLength, boolean isAdapt) {
+    public StorageTableResolver(Set<FieldMetadata> indexedFields, int maxLength) {
         this.indexedFields = indexedFields;
         this.maxLength = maxLength;
-        this.isAdapt = isAdapt;
         // Loads reserved SQL keywords.
         synchronized (MappingGenerator.class) {
             if (reservedKeyWords == null) {
@@ -144,26 +139,20 @@ class StorageTableResolver implements TableResolver {
         // with same
         // length but different name.
         if (!referenceFieldNames.add(referenceField.getContainingType().getName().length() + '_' + referenceField.getName())) {
-            // TMDM-10993 if one entity add foreign key and generate fkname method for this entity is earlier than
-            // other entity which contains same foreign, ensure origin entity's fkname is same with originally, need to
-            // judge the entity if generated fkname, if not, need to generate with new logic, if yes, used the origin
-            // logic to generate fkname.
-            String fkName;
-            if (isAdapt) {
-                if (!fkNameMap.containsKey(referenceField.getEntityTypeName())) {
-                    fkName = FK
-                            + Math.abs(new String("table`" + referenceField.getEntityTypeName() + "`column`" //$NON-NLS-1$ //$NON-NLS-2$
-                                    + referenceField.getName() + "`").hashCode()); //$NON-NLS-1$
-                } else {
-                    fkName = FK + Math.abs(referenceField.getName().hashCode()) + fkIncrement.incrementAndGet();
-                }
-            } else {
-                fkName = FK + Math.abs(referenceField.getName().hashCode()) + fkIncrement.incrementAndGet();
-            }
-            fkNameMap.put(referenceField.getEntityTypeName(), fkName);
-            return formatSQLName(fkName);
+            // TMDM-10993 use the field's XPath to generate fkname
+            String name = getXpath(referenceField, referenceField.getName());
+            return formatSQLName("FK_" + Math.abs(name.hashCode()));
         } else {
             return StringUtils.EMPTY;
+        }
+    }
+
+    private String getXpath(FieldMetadata field, String name) {
+        if (field != null && field.getContainingType() != null) {
+            name = field.getContainingType().getName() + "/" + name;
+            return getXpath(field.getContainingType().getContainer(), name);
+        } else {
+            return name;
         }
     }
 

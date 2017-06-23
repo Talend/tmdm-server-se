@@ -1949,6 +1949,7 @@ public class StorageAdaptTest extends TestCase {
         }
     }
 
+    // TMDM-10993
     public void test18_for_duplicated_fk() throws Exception {
         DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
         Storage storage = new HibernateStorage("Person", StorageType.MASTER);

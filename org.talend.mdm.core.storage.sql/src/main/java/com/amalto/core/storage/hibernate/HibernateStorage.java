@@ -197,8 +197,6 @@ public class HibernateStorage implements Storage {
     private static final Boolean FLUSH_ON_LOAD = Boolean.valueOf(MDMConfiguration.getConfiguration().getProperty(
             "db.flush.on.load", "false")); //$NON-NLS-1$ //$NON-NLS-2$
 
-    private boolean isAdapt;
-
     private final String storageName;
 
     private final StorageType storageType;
@@ -592,10 +590,10 @@ public class HibernateStorage implements Storage {
             }
             switch (dataSource.getDialectName()) {
             case ORACLE_10G:
-                tableResolver = new OracleStorageTableResolver(databaseIndexedFields, dataSource.getNameMaxLength(), isAdapt);
+                tableResolver = new OracleStorageTableResolver(databaseIndexedFields, dataSource.getNameMaxLength());
                 break;
             default:
-                tableResolver = new StorageTableResolver(databaseIndexedFields, dataSource.getNameMaxLength(), isAdapt);
+                tableResolver = new StorageTableResolver(databaseIndexedFields, dataSource.getNameMaxLength());
             }
             storageClassLoader.setTableResolver(tableResolver);
             // Master, Staging and System share same class creator.
@@ -690,7 +688,6 @@ public class HibernateStorage implements Storage {
             }
             // All set: set prepared flag to true.
             isPrepared = true;
-            isAdapt = false;
             LOGGER.info("Storage '" + storageName + "' (" + storageType + ") is ready."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         } catch (Throwable t) {
             try {
@@ -1294,7 +1291,6 @@ public class HibernateStorage implements Storage {
         try {
             close(false);
             internalInit();
-            isAdapt = true;
             prepare(newRepository, false);
             LOGGER.info("Database schema update complete."); //$NON-NLS-1$
         } catch (Exception e) {

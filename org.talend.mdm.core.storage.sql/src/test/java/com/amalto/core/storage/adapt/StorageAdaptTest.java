@@ -450,6 +450,25 @@ public class StorageAdaptTest extends TestCase {
         storage.close(true);
     }
 
+    // TMDM-10993
+    public void test18_for_duplicated_fk() throws Exception {
+        DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
+        Storage storage = new HibernateStorage("Person", StorageType.MASTER);
+        storage.init(dataSource);
+
+        MetadataRepository repository1 = new MetadataRepository();
+        repository1.load(StorageAdaptTest.class.getResourceAsStream("schema18_1.xsd"));
+        storage.prepare(repository1, true);
+
+        MetadataRepository repository2 = new MetadataRepository();
+        repository2.load(StorageAdaptTest.class.getResourceAsStream("schema18_2.xsd"));
+        try {
+            storage.adapt(repository2, true);
+        } catch (Exception e2) {
+            assertNull(e2);
+        }
+    }
+
     private void assertDatabaseChange(DataSourceDefinition dataSource, String[] tables, String[] columns, boolean[] exists)
             throws SQLException {
         DataSource master = dataSource.getMaster();

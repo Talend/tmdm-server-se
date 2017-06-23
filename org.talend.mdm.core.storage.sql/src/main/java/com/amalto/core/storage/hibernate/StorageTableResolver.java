@@ -12,8 +12,10 @@ package com.amalto.core.storage.hibernate;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -27,6 +29,8 @@ import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
 
 class StorageTableResolver implements TableResolver {
+
+    private static final String FK = "FK_";
 
     private static final String RESERVED_SQL_KEYWORDS = "reservedSQLKeywords.txt"; //$NON-NLS-1$
 
@@ -135,9 +139,20 @@ class StorageTableResolver implements TableResolver {
         // with same
         // length but different name.
         if (!referenceFieldNames.add(referenceField.getContainingType().getName().length() + '_' + referenceField.getName())) {
-            return formatSQLName("FK_" + Math.abs(referenceField.getName().hashCode()) + fkIncrement.incrementAndGet()); //$NON-NLS-1$
+            // TMDM-10993 use the field's XPath to generate fkname
+            String name = getXpath(referenceField, referenceField.getName());
+            return formatSQLName("FK_" + Math.abs(name.hashCode()));
         } else {
             return StringUtils.EMPTY;
+        }
+    }
+
+    private String getXpath(FieldMetadata field, String name) {
+        if (field != null && field.getContainingType() != null) {
+            name = field.getContainingType().getName() + "/" + name;
+            return getXpath(field.getContainingType().getContainer(), name);
+        } else {
+            return name;
         }
     }
 

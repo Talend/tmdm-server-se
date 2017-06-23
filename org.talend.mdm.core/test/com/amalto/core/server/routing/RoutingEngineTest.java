@@ -205,7 +205,7 @@ public class RoutingEngineTest {
         int previous = routingEngine.getConsumeCallCount();
         routingEngine.route(new ItemPOJOPK(container, "Person", new String[] { "1", "2" }));
         routingEngine.route(new ItemPOJOPK(container, "Person", new String[] { "1", "2" }));
-        Thread.sleep(1000); // Give some time to process message
+        Thread.sleep(1500); // Give some time to process message
         assertEquals(previous + 1, routingEngine.getConsumeCallCount());
         // Expired message: put 2 messages, there's only one JMS consumer, service pauses for 100 ms, and expiration
         // is 300 ms
@@ -214,7 +214,7 @@ public class RoutingEngineTest {
         previous = routingEngine.getConsumeCallCount();
         routingEngine.route(new ItemPOJOPK(container, "Person", new String[] { "1", "2" }));
         routingEngine.route(new ItemPOJOPK(container, "Person", new String[] { "1", "2" }));
-        Thread.sleep(1000); // Give some time to process messages
+        Thread.sleep(1500); // Give some time to process messages
         assertEquals(previous + 2, routingEngine.getConsumeCallCount());
         routingEngine.stop();
     }

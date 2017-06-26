@@ -21,12 +21,11 @@ import com.amalto.core.history.MutableDocument;
 import com.amalto.core.history.accessor.Accessor;
 import com.amalto.core.save.DocumentSaverContext;
 import com.amalto.core.save.SaverSession;
+import com.amalto.core.util.Util;
 
 class Save implements DocumentSaver {
 
     private String[] savedId = new String[0];
-
-    private String[] invalidIdCharacters = { "'", "\"", "*", "[", "]" }; //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$//$NON-NLS-4$//$NON-NLS-5$
 
     @Override
     public void save(SaverSession session, DocumentSaverContext context) {
@@ -36,11 +35,7 @@ class Save implements DocumentSaver {
             throw new IllegalStateException("No ID information to save instance of '" + typeName + "'"); //$NON-NLS-1$ //$NON-NLS-2$
         }
         for (String id : savedId) {
-            for (String character : invalidIdCharacters) {
-                if (id.contains(character)) {
-                    throw new IllegalStateException("ID " + id + " contains invalid character " + character + " in entity "); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                }
-            }
+            Util.checkIdValidation(id);
         }
         MutableDocument databaseDocument = context.getDatabaseDocument();
         if (!StringUtils.EMPTY.equals(context.getTaskId())) {

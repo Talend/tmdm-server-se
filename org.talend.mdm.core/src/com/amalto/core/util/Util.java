@@ -128,6 +128,8 @@ public class Util {
 
     private static final Pattern extractCharsetPattern = Pattern.compile(".*charset\\s*=(.+)"); //$NON-NLS-1$
 
+    private static final String[] INVALID_ID_CHARACTERS = { "'", "\"", "*", "[", "]" }; //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$//$NON-NLS-4$//$NON-NLS-5$
+    
     private static DocumentBuilderFactory nonValidatingDocumentBuilderFactory;
 
     private static XmlServer defaultXmlServer;
@@ -1246,6 +1248,17 @@ public class Util {
         public String type;
 
         public String message;
+    }
+    
+    public static void checkIdValidation(String id) {
+        if (StringUtils.isNotEmpty(id)) {
+            for (String character : INVALID_ID_CHARACTERS) {
+                if (id.contains(character)) {
+                    // throw exception when ID contains invalid character
+                    throw new IllegalStateException("ID " + id + " contains invalid character '" + character + "'"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                }
+            }
+        }
     }
 
     /**

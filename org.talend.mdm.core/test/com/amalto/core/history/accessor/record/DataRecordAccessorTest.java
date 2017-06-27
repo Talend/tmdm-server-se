@@ -50,6 +50,6 @@ public class DataRecordAccessorTest extends DataRecordDataWriterTestCase{
 
         setDataRecordField(record, "supplier", referenced);
         DataRecordAccessor dataRecordAccessor = new DataRecordAccessor(repository, record, "supplier");
-        assertEquals("Party", dataRecordAccessor.getActualType());
+        assertEquals("PartyCompany", dataRecordAccessor.getActualType());
     }
 }

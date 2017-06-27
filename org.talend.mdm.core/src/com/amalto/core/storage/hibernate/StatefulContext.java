@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class StatefulContext implements MappingCreatorContext {
 
-    private final Map<FieldMetadata, String> enforcedUniqueNames = new HashMap<FieldMetadata, String>();
+    private final Map<String, String> enforcedUniqueNames = new HashMap<String, String>();
 
     private final AtomicInteger uniqueInheritanceCounter = new AtomicInteger();
 
@@ -39,10 +39,11 @@ public class StatefulContext implements MappingCreatorContext {
                 // make sure name becomes unique to avoid conflict (Hibernate doesn't issue warning/errors in case of
                 // overlap).
                 synchronized (enforcedUniqueNames) {
-                    String enforcedUniqueName = enforcedUniqueNames.get(field);
+                    String enforcedUniqueName = enforcedUniqueNames.get(field.getDeclaringType().getName() + "_"
+                            + field.getName());
                     if (enforcedUniqueName == null) {
                         enforcedUniqueName = getFieldColumn(field.getName()) + uniqueInheritanceCounter.incrementAndGet();
-                        enforcedUniqueNames.put(field, enforcedUniqueName);
+                        enforcedUniqueNames.put(field.getDeclaringType().getName() + "_" + field.getName(), enforcedUniqueName);
                     }
                     return enforcedUniqueName;
                 }

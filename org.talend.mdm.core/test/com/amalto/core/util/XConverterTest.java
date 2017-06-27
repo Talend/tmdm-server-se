@@ -13,6 +13,9 @@ package com.amalto.core.util;
 import java.util.HashSet;
 import com.amalto.core.objects.role.RolePOJO;
 import com.amalto.core.webservice.WSRole;
+import com.amalto.core.webservice.WSWhereCondition;
+import com.amalto.xmlserver.interfaces.WhereCondition;
+
 import junit.framework.TestCase;
 
 public class XConverterTest extends TestCase {
@@ -48,5 +51,18 @@ public class XConverterTest extends TestCase {
         assertEquals("<?xml version='1.0' encoding='UTF-8'?><role-where-condition><predicate>Or</predicate><right-value-or-path>'Pending'</right-value-or-path><operator>=</operator><left-path>ProductFamily/ChangeStatus</left-path></role-where-condition>", roleParameters[1]); //$NON-NLS-1$
         assertEquals("<?xml version='1.0' encoding='UTF-8'?><role-where-condition><predicate>And</predicate><right-value-or-path>'Hats'</right-value-or-path><operator>=</operator><left-path>ProductFamily/Name</left-path></role-where-condition>", roleParameters[2]); //$NON-NLS-1$
         assertEquals("<?xml version='1.0' encoding='UTF-8'?><role-where-condition><predicate></predicate><right-value-or-path>'Pending'</right-value-or-path><operator>=</operator><left-path>ProductFamily/ChangeStatus</left-path></role-where-condition>", roleParameters[3]); //$NON-NLS-1$
+    }
+    
+    public void testVO2WSWithNonePredicate() throws Exception {
+        WhereCondition whereCondition1 = new WhereCondition("Party/Contactpoints/ContactpointRel/FkContactpointID", "JOINS", "Contactpoint/MDMContactpointID", "&");  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$//$NON-NLS-4$
+        WSWhereCondition wsWhereCondition = XConverter.VO2WS(whereCondition1);
+        assertEquals("Party/Contactpoints/ContactpointRel/FkContactpointID", wsWhereCondition.getLeftPath()); //$NON-NLS-1$
+        assertEquals(com.amalto.core.webservice.WSWhereOperator.JOIN, wsWhereCondition.getOperator());
+        assertEquals("Contactpoint/MDMContactpointID", wsWhereCondition.getRightValueOrPath()); //$NON-NLS-1$
+        assertEquals(com.amalto.core.webservice.WSStringPredicate.AND, wsWhereCondition.getStringPredicate());
+        
+        WhereCondition whereCondition2 = new WhereCondition("Party/Contactpoints/ContactpointRel/FkContactpointID", "JOINS", "Contactpoint/MDMContactpointID", null);  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        wsWhereCondition = XConverter.VO2WS(whereCondition2);
+        assertEquals(com.amalto.core.webservice.WSStringPredicate.AND, wsWhereCondition.getStringPredicate());
     }
 }

@@ -155,7 +155,7 @@ public class BulkloadClient {
         this.tokenValue = tokenValue;
     }
 
-    public List<String> getCookie() {
+    public List<String> getCookies() {
         return cookies;
     }
 

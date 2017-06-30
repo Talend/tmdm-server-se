@@ -16,10 +16,13 @@ import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.net.URLEncoder;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -2269,9 +2272,36 @@ public class BrowseRecordsAction implements BrowseRecordsService {
         }
     }
 
+    private Date convertStringToDate(String value) {
+        String dateFormat = "yyyy-MM-dd"; //$NON-NLS-1$
+        String dateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss"; //$NON-NLS-1$
+
+        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat, java.util.Locale.ENGLISH);
+        Date date = null;
+        try {
+            date = sdf.parse(value);
+        } catch (ParseException e) {
+            sdf = new SimpleDateFormat(dateTimeFormat, java.util.Locale.ENGLISH);
+            try {
+                date = sdf.parse(value);
+            } catch (ParseException ex) {
+                LOG.debug("model object is not a data type", ex);
+            }
+        }
+        return date;
+    }
+
     @Override
     public String formatValue(FormatModel model) throws ServiceException {
         Locale locale = new Locale(model.getLanguage());
+
+        if (model.isDate()) {
+            Date d = convertStringToDate(model.getObject().toString());
+            if (d != null) {
+                model.setObject(d);
+            }
+        }
+
         try {
             return String.format(new Locale(model.getLanguage()), model.getFormat(), model.getObject());
         } catch (IllegalArgumentException ex) {

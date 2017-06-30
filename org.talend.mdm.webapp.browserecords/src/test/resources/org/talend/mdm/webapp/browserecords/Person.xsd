@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:element name="Person">
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1" name="Id" type="xsd:string" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="PersonalInfo">
+                    <xsd:complexType>
+                        <xsd:all>
+                            <xsd:element maxOccurs="1" minOccurs="1" name="LastName" type="xsd:string" />
+                            <xsd:element maxOccurs="1" minOccurs="0" name="firstName" type="xsd:string" />
+                            <xsd:element maxOccurs="1" minOccurs="0" name="DOB" type="xsd:date">
+                                <xsd:annotation>
+                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Display_Format_EN">%1$td/%1$tm/%1$ty</xsd:appinfo>
+                                    <xsd:appinfo source="X_Display_Format_FR">%1$td/%1$tm/%1$ty</xsd:appinfo>
+                                </xsd:annotation>
+                            </xsd:element>
+                        </xsd:all>
+                    </xsd:complexType>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="Person">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="Id" />
+        </xsd:unique>
+    </xsd:element>
+</xsd:schema>

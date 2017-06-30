@@ -483,6 +483,74 @@ public class BrowseRecordsActionTest extends TestCase {
         assertEquals("087", secondItemBean.get("FormatTest/num"));
     }
 
+    // TMDM-10719
+    public void test_queryItemBeansWithDateDisplayFormat() throws Exception {
+        // Create QueryModel parameter
+        QueryModel config = new QueryModel();
+        RecordsPagingConfig pagingConfig = new RecordsPagingConfig();
+        pagingConfig.setLimit(10);
+        pagingConfig.setSortDir("ASC");
+        pagingConfig.setSortField("Person/Id");
+        config.setPagingLoadConfig(pagingConfig);
+        config.setLanguage("en");
+        config.setDataClusterPK("Person");
+        String concept = "Person";
+        String fileName = "Person.xsd";
+        String viewPK = "Browse_items_Person";
+        // Create ViewBean
+        ViewBean viewBean = getViewBean(concept, fileName);
+        viewBean.setViewPK(viewPK);
+        String keys[] = new String[] { "Person/Id" };
+        viewBean.getBindingEntityModel().setKeys(keys);
+        // Set viewable elements and searchable elements
+        parseElements(concept, viewBean, getXml("Browse_items_Person.item"));
+        // Reference View file: 'Browse_items_Product.item' to check the parsing results
+        assertEquals(4, viewBean.getViewables().length);
+        assertEquals("Person/Id", viewBean.getViewables()[0]);
+        assertEquals("Person/PersonalInfo/LastName", viewBean.getViewables()[1]);
+        assertEquals("Person/PersonalInfo/firstName", viewBean.getViewables()[2]);
+        assertEquals("Person/PersonalInfo/DOB", viewBean.getViewables()[3]);
+        assertEquals(2, viewBean.getSearchables().size());
+        // Set entityModel and viewBean
+        config.setModel(viewBean.getBindingEntityModel());
+        config.setView(viewBean);
+        // Mock get result from server-side
+        PowerMockito.mockStatic(org.talend.mdm.webapp.base.server.util.CommonUtil.class);
+        XtentisPort port = PowerMockito.mock(XtentisPort.class);
+        String[] results = getMockResultsFromServerForDateDisplayFormat();
+        WSStringArray wsStringArray = new WSStringArray(results);
+        Mockito.when(org.talend.mdm.webapp.base.server.util.CommonUtil.getPort()).thenReturn(port);
+        Mockito.when(port.viewSearch(Mockito.any(WSViewSearch.class))).thenReturn(wsStringArray);
+        Mockito.when(port.isPagingAccurate(Mockito.any(WSInt.class))).thenReturn(new WSBoolean(true));
+        // Mock get SmartViewDescriptions
+        PowerMockito.mockStatic(SmartViewUtil.class);
+        SmartViewDescriptions svd = PowerMockito.mock(SmartViewDescriptions.class);
+        Mockito.when(SmartViewUtil.build(Mockito.any(SmartViewProvider.class), Mockito.anyString(), Mockito.anyString()))
+                .thenReturn(svd);
+        // Mock private method
+        BrowseRecordsAction newAction = PowerMockito.spy(action);
+        Whitebox.<Boolean> invokeMethod(newAction, "checkSmartViewExistsByLang", Mockito.anyString(), Mockito.anyString());
+        Whitebox.<Boolean> invokeMethod(newAction, "checkSmartViewExistsByOpt", Mockito.anyString(), Mockito.anyString());
+        // Call queryItemBeans
+        ItemBasePageLoadResult<ItemBean> itemBeans = action.queryItemBeans(config, "en");
+        // Total record size
+        assertEquals(results[0], "<totalCount>" + itemBeans.getTotalLength() + "</totalCount>");
+        // Query record size
+        assertEquals(results.length - 1, itemBeans.getData().size());
+        // First record
+        ItemBean firstItemBean = itemBeans.getData().get(0);
+        // First record (xml)
+        // First record (property name list size)
+        assertEquals(viewBean.getViewables().length, firstItemBean.getPropertyNames().size());
+        assertEquals("1", firstItemBean.get("Person/Id"));
+        assertEquals("Bill", firstItemBean.get("Person/PersonalInfo/LastName"));
+        assertEquals("Zhang", firstItemBean.get("Person/PersonalInfo/firstName"));
+        assertEquals("02/11/12", firstItemBean.get("Person/PersonalInfo/DOB"));
+
+        assertEquals(1, firstItemBean.getFormateMap().size());
+        assertEquals("02/11/12", firstItemBean.getFormateMap().get("Person/PersonalInfo/DOB"));
+    }
+
     /**
      * Using the ContractInheritance.xsd to test getItemNodeModel<br>
      * Data File: ContractSampleTwo.xml
@@ -703,6 +771,18 @@ public class BrowseRecordsActionTest extends TestCase {
     private String[] getMockResultsFromServerForDisplayFormat() throws IOException {
         List<String> results = new ArrayList<String>();
         InputStream is = BrowseRecordsActionTest.class.getResourceAsStream("../../FormatTestQueryResult.properties");
+        BufferedReader br = new BufferedReader(new InputStreamReader(is));
+        String ln = br.readLine();
+        while (ln != null) {
+            results.add(ln);
+            ln = br.readLine();
+        }
+        return results.toArray(new String[results.size()]);
+    }
+
+    private String[] getMockResultsFromServerForDateDisplayFormat() throws IOException {
+        List<String> results = new ArrayList<String>();
+        InputStream is = BrowseRecordsActionTest.class.getResourceAsStream("../../PersonQueryResult.properties");
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
         String ln = br.readLine();
         while (ln != null) {

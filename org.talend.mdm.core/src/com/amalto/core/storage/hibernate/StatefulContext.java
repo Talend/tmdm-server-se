@@ -39,11 +39,11 @@ public class StatefulContext implements MappingCreatorContext {
                 // make sure name becomes unique to avoid conflict (Hibernate doesn't issue warning/errors in case of
                 // overlap).
                 synchronized (enforcedUniqueNames) {
-                    String enforcedUniqueName = enforcedUniqueNames.get(field.getDeclaringType().getName() + "_"
+                    String enforcedUniqueName = enforcedUniqueNames.get(field.getDeclaringType().getName() + '/'
                             + field.getName());
                     if (enforcedUniqueName == null) {
                         enforcedUniqueName = getFieldColumn(field.getName()) + uniqueInheritanceCounter.incrementAndGet();
-                        enforcedUniqueNames.put(field.getDeclaringType().getName() + "_" + field.getName(), enforcedUniqueName);
+                        enforcedUniqueNames.put(field.getDeclaringType().getName() + '/' + field.getName(), enforcedUniqueName);
                     }
                     return enforcedUniqueName;
                 }

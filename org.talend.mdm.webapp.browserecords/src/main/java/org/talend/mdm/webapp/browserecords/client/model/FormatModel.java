@@ -21,6 +21,8 @@ public class FormatModel implements IsSerializable {
 
     private String language;
 
+    private boolean isDate;
+
     public FormatModel() {
 
     }
@@ -53,5 +55,13 @@ public class FormatModel implements IsSerializable {
 
     public void setLanguage(String language) {
         this.language = language;
+    }
+
+    public boolean isDate() {
+        return isDate;
+    }
+
+    public void setDate(boolean isDate) {
+        this.isDate = isDate;
     }
 }

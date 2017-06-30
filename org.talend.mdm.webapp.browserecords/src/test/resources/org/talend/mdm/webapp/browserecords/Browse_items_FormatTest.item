@@ -5,11 +5,13 @@
   <searchableBusinessElements>FormatTest/name</searchableBusinessElements>
   <searchableBusinessElements>FormatTest/d1</searchableBusinessElements>
   <searchableBusinessElements>FormatTest/dt1</searchableBusinessElements>
+  <searchableBusinessElements>FormatTest/d2</searchableBusinessElements>
   <searchableBusinessElements>FormatTest/num</searchableBusinessElements>
   <viewableBusinessElements>FormatTest/subelement</viewableBusinessElements>
   <viewableBusinessElements>FormatTest/name</viewableBusinessElements>
   <viewableBusinessElements>FormatTest/d1</viewableBusinessElements>
   <viewableBusinessElements>FormatTest/dt1</viewableBusinessElements>
+  <viewableBusinessElements>FormatTest/d2</viewableBusinessElements>
   <viewableBusinessElements>FormatTest/num</viewableBusinessElements>
   <isTransformerActive xmi:id="_AcVEpSJ8EeGKksxehAavMw"/>
 </mdmserverobject:WSViewE>

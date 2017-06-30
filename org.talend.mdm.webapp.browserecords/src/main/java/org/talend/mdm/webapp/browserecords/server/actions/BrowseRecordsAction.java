@@ -18,6 +18,7 @@ import java.io.StringReader;
 import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.text.NumberFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -85,6 +86,7 @@ import org.talend.mdm.webapp.browserecords.client.model.RecordsPagingConfig;
 import org.talend.mdm.webapp.browserecords.client.model.Restriction;
 import org.talend.mdm.webapp.browserecords.client.model.SearchTemplate;
 import org.talend.mdm.webapp.browserecords.client.model.UpdateItemModel;
+import org.talend.mdm.webapp.browserecords.client.util.DateUtil;
 import org.talend.mdm.webapp.browserecords.client.util.StagingConstant;
 import org.talend.mdm.webapp.browserecords.server.bizhelpers.DataModelHelper;
 import org.talend.mdm.webapp.browserecords.server.bizhelpers.ItemHelper;
@@ -974,7 +976,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
                     }
                 } else {
                     dataText = com.amalto.core.util.Util.getFirstTextNode(doc.getDocumentElement(),
-                            key.replaceFirst(concept + "/", "./")); //$NON-NLS-1$ //$NON-NLS-2$
+                            key.substring(key.lastIndexOf('/') + 1)); //$NON-NLS-1$ //$NON-NLS-2$
                 }
 
                 if (dataText != null) {
@@ -995,7 +997,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
                                 String formatValue = com.amalto.webapp.core.util.Util.formatDate(value[0], calendar);
                                 formateValueMap.put(key, formatValue);
                                 com.amalto.core.util.Util
-                                        .getNodeList(doc.getDocumentElement(), key.replaceFirst(concept + "/", "./")).item(0).setTextContent(formatValue); //$NON-NLS-1$ //$NON-NLS-2$
+                                        .getNodeList(doc.getDocumentElement(), key.substring(key.lastIndexOf('/') + 1)).item(0).setTextContent(formatValue); //$NON-NLS-1$ //$NON-NLS-2$
                             } catch (Exception e) {
                                 originalMap.remove(key);
                                 formateValueMap.remove(key);
@@ -2464,9 +2466,36 @@ public class BrowseRecordsAction implements BrowseRecordsService {
         }
     }
 
+    private Date convertStringToDate(String value) {
+        String dateFormat = "yyyy-MM-dd"; //$NON-NLS-1$
+        String dateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss"; //$NON-NLS-1$
+
+        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat, java.util.Locale.ENGLISH);
+        Date date = null;
+        try {
+            date = sdf.parse(value);
+        } catch (ParseException e) {
+            sdf = new SimpleDateFormat(dateTimeFormat, java.util.Locale.ENGLISH);
+            try {
+                date = sdf.parse(value);
+            } catch (ParseException ex) {
+                LOG.debug("model object is not a data type", ex);
+            }
+        }
+        return date;
+    }
+
     @Override
     public String formatValue(FormatModel model) throws ServiceException {
         Locale locale = new Locale(model.getLanguage());
+
+        if (model.isDate()) {
+            Date d = convertStringToDate(model.getObject().toString());
+            if (d != null) {
+                model.setObject(d);
+            }
+        }
+
         try {
             return String.format(new Locale(model.getLanguage()), model.getFormat(), model.getObject());
         } catch (IllegalArgumentException ex) {

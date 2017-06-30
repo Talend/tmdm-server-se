@@ -387,13 +387,14 @@ public class BrowseRecordsActionTest extends TestCase {
         // Set viewable elements and searchable elements
         parseElements(concept, viewBean, getXml("Browse_items_FormatTest.item"));
         // Reference View file: 'Browse_items_Product.item' to check the parsing results
-        assertEquals(5, viewBean.getViewables().length);
+        assertEquals(6, viewBean.getViewables().length);
         assertEquals("FormatTest/subelement", viewBean.getViewables()[0]);
         assertEquals("FormatTest/name", viewBean.getViewables()[1]);
         assertEquals("FormatTest/d1", viewBean.getViewables()[2]);
         assertEquals("FormatTest/dt1", viewBean.getViewables()[3]);
-        assertEquals("FormatTest/num", viewBean.getViewables()[4]);
-        assertEquals(5, viewBean.getSearchables().size());
+        assertEquals("FormatTest/d2", viewBean.getViewables()[4]);
+        assertEquals("FormatTest/num", viewBean.getViewables()[5]);
+        assertEquals(6, viewBean.getSearchables().size());
         // Set entityModel and viewBean
         config.setModel(viewBean.getBindingEntityModel());
         config.setView(viewBean);
@@ -423,7 +424,7 @@ public class BrowseRecordsActionTest extends TestCase {
         // First record
         ItemBean firstItemBean = itemBeans.getData().get(0);
         // First record (xml)
-        String result = "<result><subelement>1111</subelement><name>qqqqq8</name><d1>2012-11-01</d1><dt1>2012-11-02T12:00:00</dt1><num>55</num></result>";
+        String result = "<result><subelement>1111</subelement><name>qqqqq8</name><d1>2012-11-01</d1><dt1>2012-11-02T12:00:00</dt1><d2>2012-11-02</d2><num>55</num></result>";
         assertEquals(result, results[1]);
         // First record (property name list size)
         assertEquals(viewBean.getViewables().length, firstItemBean.getPropertyNames().size());
@@ -439,6 +440,7 @@ public class BrowseRecordsActionTest extends TestCase {
         calendar.setTime(date);
         String formatValue = com.amalto.webapp.core.util.Util.formatDate("%tc", calendar);
 
+        // assertEquals("2012", formatValue);
         assertEquals(formatValue, firstItemBean.get("FormatTest/d1"));
         // First record (property: dt1)
 
@@ -449,6 +451,8 @@ public class BrowseRecordsActionTest extends TestCase {
         formatValue = com.amalto.webapp.core.util.Util.formatDate("%tc", calendar);
 
         assertEquals(formatValue, firstItemBean.get("FormatTest/dt1"));
+        assertEquals("02/11/12", firstItemBean.get("FormatTest/d2"));
+
         // First record (property: num)
         assertEquals("055", firstItemBean.get("FormatTest/num"));
         // Second record
@@ -947,6 +951,20 @@ public class BrowseRecordsActionTest extends TestCase {
         formatModel.setFormat("%s World!");
         result = action.formatValue(formatModel);
         assertEquals(result, "Hello World!");
+
+        formatModel.setLanguage("en");
+        formatModel.setObject(new String("2013-01-15"));
+        formatModel.setFormat("%1$td/%1$tm/%1$ty");
+        formatModel.setDate(true);
+        result = action.formatValue(formatModel);
+        assertEquals(result, "15/01/13");
+
+        formatModel.setLanguage("en");
+        formatModel.setObject(new String("2013-01-15"));
+        formatModel.setFormat("%s World!");
+        formatModel.setDate(false);
+        result = action.formatValue(formatModel);
+        assertEquals(result, "2013-01-15 World!");
     }
 
     /**

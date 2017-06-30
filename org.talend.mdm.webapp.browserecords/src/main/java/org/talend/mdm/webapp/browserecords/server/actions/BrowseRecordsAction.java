@@ -995,7 +995,8 @@ public class BrowseRecordsAction implements BrowseRecordsService {
                                 String formatValue = com.amalto.webapp.core.util.Util.formatDate(value[0], calendar);
                                 formateValueMap.put(key, formatValue);
                                 com.amalto.core.util.Util
-                                .getNodeList(doc.getDocumentElement(), key.substring(key.lastIndexOf('/') + 1)).item(0).setTextContent(formatValue); //$NON-NLS-1$
+                                        .getNodeList(doc.getDocumentElement(), key.substring(key.lastIndexOf('/') + 1)).item(0)
+                                        .setTextContent(formatValue); //$NON-NLS-1$
                             } catch (Exception e) {
                                 originalMap.remove(key);
                                 formateValueMap.remove(key);

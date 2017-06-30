@@ -13,6 +13,7 @@ package org.talend.mdm.bulkload.client;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class BulkloadClient {
@@ -33,7 +34,7 @@ public class BulkloadClient {
 
     private String transactionId;
 
-    private String sessionId;
+    private List<String> cookies;
 
     private String tokenKey;
 
@@ -154,12 +155,12 @@ public class BulkloadClient {
         this.tokenValue = tokenValue;
     }
 
-    public String getSessionId() {
-        return sessionId;
+    public List<String> getCookies() {
+        return cookies;
     }
 
-    public void setSessionId(String sessionId) {
-        this.sessionId = sessionId;
+    public void setCookies(List<String> cookies) {
+        this.cookies = cookies;
     }
 
     /**
@@ -192,7 +193,7 @@ public class BulkloadClient {
      */
     public void load(InputStream xmlDocuments) throws Exception {
         BulkloadClientUtil.bulkload(url, cluster, concept, dataModel, options.isValidate(), options.isSmartpk(), options.isInsertOnly(), xmlDocuments,
-                username, password, transactionId, sessionId, universe, tokenKey, tokenValue);
+                username, password, transactionId, cookies, universe, tokenKey, tokenValue);
     }
 
     /**
@@ -215,6 +216,6 @@ public class BulkloadClient {
      */
     public InputStreamMerger load() throws Exception {
         return BulkloadClientUtil.bulkload(url, cluster, concept, dataModel, options.isValidate(), options.isSmartpk(), options.isInsertOnly(), username,
-                password, transactionId, sessionId, universe, tokenKey, tokenValue, startedBulkloadCount);
+                password, transactionId, cookies, universe, tokenKey, tokenValue, startedBulkloadCount);
     }
 }

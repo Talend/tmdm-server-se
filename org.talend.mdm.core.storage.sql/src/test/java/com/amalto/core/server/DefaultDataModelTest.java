@@ -1,10 +1,3 @@
-package com.amalto.core.server;
-
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-
-import java.util.Collections;
-import java.util.HashSet;
 /*
  * Copyright (C) 2006-2017 Talend Inc. - www.talend.com
  * 
@@ -14,6 +7,11 @@ import java.util.HashSet;
  * You should have received a copy of the agreement along with this program; if not, write to Talend SA 9 rue Pages
  * 92150 Suresnes, France
  */
+
+package com.amalto.core.server;
+
+import java.util.Collections;
+import java.util.HashSet;
 
 import junit.framework.TestCase;
 
@@ -29,8 +27,7 @@ import com.amalto.core.storage.StorageType;
 import com.amalto.core.util.Util;
 import com.amalto.core.util.XtentisException;
 
-
-public class DefaultDataModelTest extends TestCase{
+public class DefaultDataModelTest extends TestCase {
 
     @Override
     public void tearDown() throws Exception {

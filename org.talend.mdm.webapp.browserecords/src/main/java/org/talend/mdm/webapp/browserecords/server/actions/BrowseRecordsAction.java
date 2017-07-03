@@ -2276,17 +2276,18 @@ public class BrowseRecordsAction implements BrowseRecordsService {
         String dateFormat = "yyyy-MM-dd"; //$NON-NLS-1$
         String dateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss"; //$NON-NLS-1$
 
-        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat, java.util.Locale.ENGLISH);
+        SimpleDateFormat sdf = null;
+        if (value.length() == dateFormat.length()) {
+            sdf = new SimpleDateFormat(dateFormat, java.util.Locale.ENGLISH);
+        } else {
+            sdf = new SimpleDateFormat(dateTimeFormat, java.util.Locale.ENGLISH);
+        }
+        
         Date date = null;
         try {
             date = sdf.parse(value);
         } catch (ParseException e) {
-            sdf = new SimpleDateFormat(dateTimeFormat, java.util.Locale.ENGLISH);
-            try {
-                date = sdf.parse(value);
-            } catch (ParseException ex) {
-                LOG.debug("model object is not a data type", ex);
-            }
+            LOG.debug("model object is not a data type", e);
         }
         return date;
     }

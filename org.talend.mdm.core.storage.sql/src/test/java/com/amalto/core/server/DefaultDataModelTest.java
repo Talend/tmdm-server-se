@@ -73,7 +73,7 @@ public class DefaultDataModelTest extends TestCase {
         assertNull(metadataRepositoryAdmin.getMetadataRepository().get(modelName));
     }
 
-    private static class MockILocalUser extends com.amalto.core.delegator.impl.DefaultLocalUserDelegator {
+    private static class MockILocalUser extends com.amalto.core.delegator.ILocalUser {
 
         @Override
         public ILocalUser getILocalUser() throws XtentisException {

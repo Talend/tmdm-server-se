@@ -2272,7 +2272,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
         }
     }
 
-    private Date convertStringToDate(String value) {
+    private Date convertStringToDate(String value) throws ServiceException {
         String dateFormat = "yyyy-MM-dd"; //$NON-NLS-1$
         String dateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss"; //$NON-NLS-1$
 
@@ -2287,7 +2287,8 @@ public class BrowseRecordsAction implements BrowseRecordsService {
         try {
             date = sdf.parse(value);
         } catch (ParseException e) {
-            LOG.debug("model object is not a data type", e);
+            LOG.debug(value + " is not a data type", e);
+            throw new ServiceException(MESSAGES.getMessage(value, "model object is not a data type")); //$NON-NLS-1$
         }
         return date;
     }

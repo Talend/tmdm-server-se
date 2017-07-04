@@ -16,8 +16,6 @@ import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.net.URLEncoder;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -62,6 +60,7 @@ import org.talend.mdm.webapp.base.client.util.MultilanguageMessageParser;
 import org.talend.mdm.webapp.base.server.ForeignKeyHelper;
 import org.talend.mdm.webapp.base.server.exception.WebBaseException;
 import org.talend.mdm.webapp.base.server.util.CommonUtil;
+import org.talend.mdm.webapp.base.server.util.DateUtil;
 import org.talend.mdm.webapp.base.shared.AppHeader;
 import org.talend.mdm.webapp.base.shared.ComplexTypeModel;
 import org.talend.mdm.webapp.base.shared.Constants;
@@ -2272,33 +2271,21 @@ public class BrowseRecordsAction implements BrowseRecordsService {
         }
     }
 
-    private Date convertStringToDate(String value) throws ServiceException {
-        String dateFormat = "yyyy-MM-dd"; //$NON-NLS-1$
-        String dateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss"; //$NON-NLS-1$
-
-        SimpleDateFormat sdf = null;
-        if (value.length() == dateFormat.length()) {
-            sdf = new SimpleDateFormat(dateFormat, java.util.Locale.ENGLISH);
-        } else {
-            sdf = new SimpleDateFormat(dateTimeFormat, java.util.Locale.ENGLISH);
-        }
-        
-        Date date = null;
-        try {
-            date = sdf.parse(value);
-        } catch (ParseException e) {
-            LOG.debug(value + " is not a data type", e);
-            throw new ServiceException(MESSAGES.getMessage(value, "model object is not a data type")); //$NON-NLS-1$
-        }
-        return date;
-    }
-
     @Override
     public String formatValue(FormatModel model) throws ServiceException {
         Locale locale = new Locale(model.getLanguage());
 
+        String dateValue = model.getObject().toString();
         if (model.isDate()) {
-            Date d = convertStringToDate(model.getObject().toString());
+            String dateFormat = "yyyy-MM-dd"; //$NON-NLS-1$
+            String dateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss"; //$NON-NLS-1$
+
+            Date d = null;
+            if (dateValue.length() == dateFormat.length()) {
+                d = DateUtil.convertStringToDate(dateFormat, dateValue);
+            } else {
+                d = DateUtil.convertStringToDate(dateTimeFormat, dateValue);
+            }
             if (d != null) {
                 model.setObject(d);
             }
@@ -2308,8 +2295,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             return String.format(new Locale(model.getLanguage()), model.getFormat(), model.getObject());
         } catch (IllegalArgumentException ex) {
             LOG.error(ex.getMessage(), ex);
-            throw new ServiceException(MESSAGES.getMessage(locale,
-                    "format_exception_failure", model.getFormat(), model.getObject().toString())); //$NON-NLS-1$
+            throw new ServiceException(MESSAGES.getMessage(locale, "format_exception_failure", model.getFormat(), dateValue)); //$NON-NLS-1$
         }
     }
 

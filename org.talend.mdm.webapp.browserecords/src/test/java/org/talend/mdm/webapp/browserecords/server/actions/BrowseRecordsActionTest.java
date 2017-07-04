@@ -1048,17 +1048,37 @@ public class BrowseRecordsActionTest extends TestCase {
         result = action.formatValue(formatModel);
         assertEquals(result, "15/01/13");
 
+        formatModel.setLanguage("en");
+        formatModel.setObject(new String("2013-13-15"));
+        formatModel.setFormat("%1$td/%1$tm/%1$ty");
+        formatModel.setDate(true);
+        result = action.formatValue(formatModel);
+        assertEquals(result, "15/01/14");
+
         try {
             formatModel.setLanguage("en");
-            formatModel.setObject(new String("2013-36-15"));
+            formatModel.setObject(new String("2013-se-15"));
             formatModel.setFormat("%1$td/%1$tm/%1$ty");
             formatModel.setDate(true);
             result = action.formatValue(formatModel);
+            fail("format failed");
         } catch (Exception e) {
-            fail("2013-36-15 is not a date type");
-            assertEquals("2013-36-15 is not a date type", e.getMessage());
             assertNotNull(e);
         }
+
+        formatModel.setLanguage("en");
+        formatModel.setObject(new String("2013-01-15T15:00:00"));
+        formatModel.setFormat("%1$td/%1$tm/%1$ty-%1$tT");
+        formatModel.setDate(true);
+        result = action.formatValue(formatModel);
+        assertEquals(result, "15/01/13-15:00:00");
+
+        formatModel.setLanguage("en");
+        formatModel.setObject(new String("2013-13-15T15:00:00"));
+        formatModel.setFormat("%1$td/%1$tm/%1$ty-%1$tT");
+        formatModel.setDate(true);
+        result = action.formatValue(formatModel);
+        assertEquals(result, "15/01/14-15:00:00");
 
         formatModel.setLanguage("en");
         formatModel.setObject(new String("2013-01-15"));

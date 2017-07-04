@@ -60,7 +60,7 @@ public class DefaultDataModelTest extends TestCase {
 
         DataModelPOJO dataModelPOJO = new DataModelPOJO(modelName);
         dataModelPOJO.setSchema(IOUtils.toString(
-                DefaultDataModelTest.class.getResourceAsStream("../storage/product.xsd"), "UTF-8")); //$NON-NLS-1$
+                DefaultDataModelTest.class.getResourceAsStream("../storage/Product.xsd"), "UTF-8")); //$NON-NLS-1$
         dataModelPOJO.store();
 
         MockMetadataRepositoryAdmin metadataRepositoryAdmin = (MockMetadataRepositoryAdmin) ServerContext.INSTANCE.get()

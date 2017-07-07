@@ -199,9 +199,9 @@ public class BrowseRecordsAction implements BrowseRecordsService {
 
     public static final String FAIL_KEYWORD = "FAIL";//$NON-NLS-1$
 
-    public static final String dateFormat = "yyyy-MM-dd"; //$NON-NLS-1$
+    public static final String DATE_FORMAT = "yyyy-MM-dd"; //$NON-NLS-1$
 
-    public static final String dateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss"; //$NON-NLS-1$
+    public static final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss"; //$NON-NLS-1$
 
     boolean isModelUpdated = false;
 
@@ -2276,28 +2276,24 @@ public class BrowseRecordsAction implements BrowseRecordsService {
     }
 
     private String getFormat(String value) {
-        if (value.length() == dateTimeFormat.length()) {
-            return dateTimeFormat;
+        if (value.length() == DATE_TIME_FORMAT.length()) {
+            return DATE_TIME_FORMAT;
         } else {
-            return dateFormat;
+            return DATE_FORMAT;
         }
     }
 
     @Override
     public String formatValue(FormatModel model) throws ServiceException {
         Locale locale = new Locale(model.getLanguage());
-
         String dateValue = model.getObject().toString();
         if (model.isDate()) {
-            Date d = DateUtil.convertStringToDate(getFormat(dateValue), dateValue);
-
-            if (d != null) {
-                model.setObject(d);
-            }
+            Date dataObject = DateUtil.convertStringToDate(getFormat(dateValue), dateValue);
+            model.setObject(dataObject);
         }
 
         try {
-            return String.format(new Locale(model.getLanguage()), model.getFormat(), model.getObject());
+            return String.format(locale, model.getFormat(), model.getObject());
         } catch (IllegalArgumentException ex) {
             LOG.error(ex.getMessage(), ex);
             throw new ServiceException(MESSAGES.getMessage(locale, "format_exception_failure", model.getFormat(), dateValue)); //$NON-NLS-1$

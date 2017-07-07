@@ -362,7 +362,7 @@ public abstract class ObjectPOJO implements Serializable {
             List<IWhereItem> conditions = new LinkedList<IWhereItem>();
             if (instancePattern != null && !".*".equals(instancePattern)) {
                 WhereCondition idCondition = new WhereCondition(rootElementName + "/../../i", //$NON-NLS-1$
-                        WhereCondition.CONTAINS, instancePattern, WhereCondition.PRE_NONE);
+                        WhereCondition.CONTAINS, instancePattern, WhereCondition.PRE_AND);
                 conditions.add(idCondition);
             }
             if (synchronizationPlanName != null && !synchronizationPlanName.isEmpty()) {

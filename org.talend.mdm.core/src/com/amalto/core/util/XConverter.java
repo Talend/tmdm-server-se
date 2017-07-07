@@ -252,8 +252,10 @@ public class XConverter {
         }
 
         String predicate = vo.getStringPredicate();
-        WSStringPredicate pr = WSStringPredicate.NONE;
-        if ((predicate == null) || predicate.equals(WhereCondition.PRE_NONE) || predicate.equals(WhereCondition.PRE_AND)) {
+        WSStringPredicate pr = WSStringPredicate.AND;
+        if ((predicate == null) || predicate.equals(WhereCondition.PRE_NONE)) {
+            pr = WSStringPredicate.NONE;
+        } else if (predicate.equals(WhereCondition.PRE_AND)) {
             pr = WSStringPredicate.AND;
         } else if (predicate.equals(WhereCondition.PRE_EXACTLY)) {
             pr = WSStringPredicate.EXACTLY;

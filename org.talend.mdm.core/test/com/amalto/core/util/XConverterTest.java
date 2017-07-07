@@ -61,8 +61,12 @@ public class XConverterTest extends TestCase {
         assertEquals("Contactpoint/MDMContactpointID", wsWhereCondition.getRightValueOrPath()); //$NON-NLS-1$
         assertEquals(com.amalto.core.webservice.WSStringPredicate.AND, wsWhereCondition.getStringPredicate());
         
-        WhereCondition whereCondition2 = new WhereCondition("Party/Contactpoints/ContactpointRel/FkContactpointID", "JOINS", "Contactpoint/MDMContactpointID", null);  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        WhereCondition whereCondition2 = new WhereCondition("Party/Contactpoints/ContactpointRel/FkContactpointID", "JOINS", "Contactpoint/MDMContactpointID", "");  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         wsWhereCondition = XConverter.VO2WS(whereCondition2);
         assertEquals(com.amalto.core.webservice.WSStringPredicate.AND, wsWhereCondition.getStringPredicate());
+        
+        WhereCondition whereCondition3 = new WhereCondition("Party/Contactpoints/ContactpointRel/FkContactpointID", "JOINS", "Contactpoint/MDMContactpointID", null);  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        wsWhereCondition = XConverter.VO2WS(whereCondition3);
+        assertEquals(com.amalto.core.webservice.WSStringPredicate.NONE, wsWhereCondition.getStringPredicate());
     }
 }

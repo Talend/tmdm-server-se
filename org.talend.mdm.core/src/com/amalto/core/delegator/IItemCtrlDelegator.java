@@ -254,7 +254,7 @@ public abstract class IItemCtrlDelegator implements IBeanDelegator, IItemCtrlDel
                 if (condition instanceof WhereCondition) {
                     if (WhereCondition.PRE_OR.equals(predicate)) {
                         viewCondition = new WhereOr(Arrays.asList(viewCondition, condition));
-                    } else if (WhereCondition.PRE_AND.equals(predicate)) {
+                    } else if (WhereCondition.PRE_AND.equals(predicate) || WhereCondition.PRE_NONE.equals(predicate)) {
                         viewCondition = new WhereAnd(Arrays.asList(viewCondition, condition));
                     } else if (WhereCondition.PRE_NOT.equals(predicate)) {
                         // TMDM-6888 Support for NOT (only when one condition).

@@ -3425,13 +3425,13 @@ public class StorageQueryTest extends StorageTestCase {
 
         qb = from(product);
         qb.where(UserQueryHelper.buildCondition(qb, new WhereCondition("Product/Features/Sizes/Size[2]", WhereCondition.EQUALS,
-                "Medium", WhereCondition.PRE_NONE), repository));
+                "Medium", WhereCondition.PRE_AND), repository));
         results = storage.fetch(qb.getSelect());
         assertEquals(1, results.getCount());
 
         qb = from(product);
         qb.where(UserQueryHelper.buildCondition(qb, new WhereCondition("Product/Features/Sizes/Size[1]", WhereCondition.EQUALS,
-                "Medium", WhereCondition.PRE_NONE), repository));
+                "Medium", WhereCondition.PRE_AND), repository));
         results = storage.fetch(qb.getSelect());
         assertEquals(0, results.getCount());
     }

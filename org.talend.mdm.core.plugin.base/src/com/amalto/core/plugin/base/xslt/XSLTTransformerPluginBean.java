@@ -537,7 +537,7 @@ public class XSLTTransformerPluginBean extends Plugin {
             for (Iterator<Map.Entry<String, String>> iter = c.iterator(); iter.hasNext();) {
                 i++;
                 Map.Entry<String, String> entry = iter.next();
-                wAnd.add(new WhereCondition(entry.getKey(), WhereCondition.EQUALS, entry.getValue(), WhereCondition.PRE_NONE,
+                wAnd.add(new WhereCondition(entry.getKey(), WhereCondition.EQUALS, entry.getValue(), WhereCondition.PRE_AND,
                         false));
             }
 

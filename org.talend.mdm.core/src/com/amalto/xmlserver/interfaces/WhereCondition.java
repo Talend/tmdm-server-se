@@ -47,7 +47,7 @@ public class WhereCondition implements IWhereItem, Serializable {
 
     public static final String NO_OPERATOR = "NO OP";
 
-    public static final String PRE_NONE = "&"; // default
+    public static final String PRE_NONE = "NONE"; // default
 
     public static final String PRE_OR = "|";
 

@@ -163,8 +163,6 @@ public interface BrowseRecordsMessages extends Messages {
 
     String criteria_STARTSWITH();
 
-    String criteria_STRICTCONTAINS();
-
     String criteria_FULLTEXTSEARCH();
 
     String criteria_DATEEQUALS();

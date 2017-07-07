@@ -608,6 +608,21 @@ public class LoadParserTest extends TestCase {
         assertTrue(hasParsedCharacters(callback, "text"));
         assertEquals("1", callback.getId());
     }
+    
+    public void testIdContainsInvalidCharacter() {
+        InputStream testResource = new ByteArrayInputStream("<root><Id>p[roduct4','p[roduct]','p]roduct'</Id><element2>text</element2></root>".getBytes());
+        assertNotNull(testResource);
+        
+        try {
+            ParserTestCallback callback = new ParserTestCallback();
+            LoadParser.Configuration config = new LoadParser.Configuration("root", new String[]{"Id"}, false, "clusterName", "modelName", idGenerator);
+            LoadParser.parse(testResource, config, callback);
+            Assert.fail("Should have failed due to invalid ID character.");
+        } catch (Exception e) {
+            assertTrue(e instanceof IllegalStateException);
+            assertEquals("ID p[roduct4','p[roduct]','p]roduct' contains invalid character '''", e.getMessage());
+        }
+    }
 
     public void testEscapeCharacters() throws Exception {
 

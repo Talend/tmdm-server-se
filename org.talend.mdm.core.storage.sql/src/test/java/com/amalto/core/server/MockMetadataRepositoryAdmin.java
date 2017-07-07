@@ -81,4 +81,8 @@ public class MockMetadataRepositoryAdmin implements MetadataRepositoryAdmin {
     public boolean exist(String metadataRepositoryId) {
         return true;
     }
+
+    public Map<String, MetadataRepository> getMetadataRepository() {
+        return metadataRepository;
+    }
 }

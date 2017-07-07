@@ -125,7 +125,9 @@ public class DefaultDataModel implements DataModel {
         }
 
         try {
-            return new DataModelPOJOPK(ObjectPOJO.remove(DataModelPOJO.class, pk));
+            ObjectPOJOPK objectPOJOPK = ObjectPOJO.remove(DataModelPOJO.class, pk);
+            ServerContext.INSTANCE.get().getMetadataRepositoryAdmin().remove(objectPOJOPK.getUniqueId());
+            return new DataModelPOJOPK(objectPOJOPK);
         } catch (XtentisException e) {
             throw (e);
         } catch (Exception e) {

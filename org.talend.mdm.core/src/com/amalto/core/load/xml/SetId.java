@@ -14,6 +14,8 @@ import com.amalto.core.load.Constants;
 import com.amalto.core.load.State;
 import com.amalto.core.load.context.StateContext;
 import com.amalto.core.load.context.Utils;
+import com.amalto.core.util.Util;
+
 import org.apache.commons.lang.StringUtils;
 
 import javax.xml.stream.XMLStreamException;
@@ -41,6 +43,8 @@ public class SetId extends Characters {
 
         // We're parsing characters so call super.parse(context, reader)...
         super.parse(context, reader);
+        Util.checkIdValidation(reader.getText());
+        
         // ...and we're also setting id for metadata
         context.getMetadata().setId(context.getCurrentIdElement(), reader.getText());
         // If we're ready, flush document

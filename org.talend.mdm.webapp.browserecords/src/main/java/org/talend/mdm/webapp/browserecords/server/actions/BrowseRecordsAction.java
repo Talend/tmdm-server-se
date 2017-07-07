@@ -974,7 +974,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
                     }
                 } else {
                     dataText = com.amalto.core.util.Util.getFirstTextNode(doc.getDocumentElement(),
-                            key.replaceFirst(concept + "/", "./")); //$NON-NLS-1$ //$NON-NLS-2$
+                            key.substring(key.lastIndexOf('/') + 1)); //$NON-NLS-1$ //$NON-NLS-2$
                 }
 
                 if (dataText != null) {
@@ -995,7 +995,8 @@ public class BrowseRecordsAction implements BrowseRecordsService {
                                 String formatValue = com.amalto.webapp.core.util.Util.formatDate(value[0], calendar);
                                 formateValueMap.put(key, formatValue);
                                 com.amalto.core.util.Util
-                                        .getNodeList(doc.getDocumentElement(), key.replaceFirst(concept + "/", "./")).item(0).setTextContent(formatValue); //$NON-NLS-1$ //$NON-NLS-2$
+                                        .getNodeList(doc.getDocumentElement(), key.substring(key.lastIndexOf('/') + 1)).item(0)
+                                        .setTextContent(formatValue); //$NON-NLS-1$
                             } catch (Exception e) {
                                 originalMap.remove(key);
                                 formateValueMap.remove(key);

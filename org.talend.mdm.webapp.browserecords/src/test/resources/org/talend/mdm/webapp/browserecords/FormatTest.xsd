@@ -30,6 +30,13 @@
 <xsd:appinfo source="X_Display_Format_FR">%tc</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
+<xsd:element maxOccurs="1" minOccurs="0" name="d2" type="xsd:date">
+<xsd:annotation>
+<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Display_Format_EN">%1$td/%1$tm/%1$ty</xsd:appinfo>
+<xsd:appinfo source="X_Display_Format_FR">%1$td/%1$tm/%1$ty</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
 <xsd:element maxOccurs="1" minOccurs="0" name="num" type="xsd:int">
 <xsd:annotation>
 <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>

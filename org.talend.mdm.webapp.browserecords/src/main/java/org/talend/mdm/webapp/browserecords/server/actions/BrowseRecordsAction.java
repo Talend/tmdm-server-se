@@ -199,6 +199,10 @@ public class BrowseRecordsAction implements BrowseRecordsService {
 
     public static final String FAIL_KEYWORD = "FAIL";//$NON-NLS-1$
 
+    public static final String dateFormat = "yyyy-MM-dd"; //$NON-NLS-1$
+
+    public static final String dateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss"; //$NON-NLS-1$
+
     boolean isModelUpdated = false;
 
     @Override
@@ -2271,21 +2275,22 @@ public class BrowseRecordsAction implements BrowseRecordsService {
         }
     }
 
+    private String getFormat(String value) {
+        if (value.length() == dateTimeFormat.length()) {
+            return dateTimeFormat;
+        } else {
+            return dateFormat;
+        }
+    }
+
     @Override
     public String formatValue(FormatModel model) throws ServiceException {
         Locale locale = new Locale(model.getLanguage());
 
         String dateValue = model.getObject().toString();
         if (model.isDate()) {
-            String dateFormat = "yyyy-MM-dd"; //$NON-NLS-1$
-            String dateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss"; //$NON-NLS-1$
+            Date d = DateUtil.convertStringToDate(getFormat(dateValue), dateValue);
 
-            Date d = null;
-            if (dateValue.length() == dateFormat.length()) {
-                d = DateUtil.convertStringToDate(dateFormat, dateValue);
-            } else {
-                d = DateUtil.convertStringToDate(dateTimeFormat, dateValue);
-            }
             if (d != null) {
                 model.setObject(d);
             }

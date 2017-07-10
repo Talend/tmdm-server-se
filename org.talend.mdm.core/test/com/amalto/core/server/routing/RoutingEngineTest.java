@@ -9,7 +9,7 @@
  */
 package com.amalto.core.server.routing;
 
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertEquals;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
@@ -184,7 +185,7 @@ public class RoutingEngineTest {
         assertEquals("testTypeMatchRule1", routes[1].getUniqueId());
     }
 
-    @Test
+    @Ignore
     public void testExpiration() throws Exception {
         // Adds a record that matches the rule
         item.putItem(new ItemPOJO(container, "Person", new String[] { "1", "2" }, 0, "<Person><id>1</id><id2>2</id2></Person>"),

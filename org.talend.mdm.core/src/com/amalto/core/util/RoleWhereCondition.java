@@ -82,12 +82,12 @@ public class RoleWhereCondition {
         }
 		
 		String predicate = WhereCondition.PRE_AND;
-		if (this.getPredicate().equalsIgnoreCase("and")) {
+		if (this.getPredicate() == null || this.getPredicate().trim().equals("")) {
+		    predicate = WhereCondition.PRE_NONE;
+        } else if (this.getPredicate().equalsIgnoreCase("and")) {
             predicate = WhereCondition.PRE_AND;
         } else if (this.getPredicate().equals("exactly")) {
             predicate = WhereCondition.PRE_EXACTLY;
-        } else if (this.getPredicate() == null || this.getPredicate().trim().equals("")) {
-            predicate = WhereCondition.PRE_NONE;
         } else if (this.getPredicate().equalsIgnoreCase("not")) {
             predicate = WhereCondition.PRE_NOT;
         } else if (this.getPredicate().equalsIgnoreCase("or")) {

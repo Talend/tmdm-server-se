@@ -510,9 +510,10 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
                         ComplexTypeMetadata typeMetadata = repository.getComplexType(newType);
                         if (typeMetadata != null && typeMetadata.getSubTypes().size() > 0) {
                             String value = rightAccessor.get();
-                            if (value != null && !value.isEmpty()) {
+                            if (StringUtils.isNotEmpty(value)) {
+                                // We should get actual type in polymorphic reference field when xml only provied super type in ui.
                                 String actualType = getActualType(typeMetadata,value);
-                                if (!actualType.isEmpty()) {
+                                if (StringUtils.isNotEmpty(actualType)) {
                                     newType = actualType;
                                 }
                             }
@@ -558,7 +559,7 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
         }
         
         private String getActualType(ComplexTypeMetadata type,String ids) {
-            String realTypeName = "";
+            String realTypeName = null;
             StorageAdmin storageAdmin = ServerContext.INSTANCE.get().getStorageAdmin();
             Storage storage = storageAdmin.get(dataCluster, storageAdmin.getType(dataCluster));
             if (type != null) {

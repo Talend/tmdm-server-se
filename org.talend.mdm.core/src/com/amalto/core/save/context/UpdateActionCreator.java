@@ -10,6 +10,8 @@
 
 package com.amalto.core.save.context;
 
+import static com.amalto.core.query.user.UserQueryBuilder.eq;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -36,15 +38,18 @@ import org.talend.mdm.commmon.metadata.SimpleTypeFieldMetadata;
 import org.talend.mdm.commmon.metadata.TypeMetadata;
 import org.talend.mdm.commmon.metadata.Types;
 import org.talend.mdm.commmon.util.core.EUUIDCustomType;
-import org.w3c.dom.Node;
 
 import com.amalto.core.history.Action;
 import com.amalto.core.history.MutableDocument;
 import com.amalto.core.history.accessor.Accessor;
-import com.amalto.core.history.accessor.DOMAccessor;
 import com.amalto.core.history.action.FieldInsertAction;
 import com.amalto.core.history.action.FieldUpdateAction;
+import com.amalto.core.query.user.UserQueryBuilder;
+import com.amalto.core.server.ServerContext;
+import com.amalto.core.server.StorageAdmin;
+import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.StorageMetadataUtils;
+import com.amalto.core.storage.StorageResults;
 
 public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
 
@@ -501,13 +506,28 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
                 Accessor rightAccessor = newDocument.createAccessor(getRightPath());
                 if (rightAccessor.exist()) {
                     String newType = rightAccessor.getActualType();
+                    if (field instanceof ReferenceFieldMetadata) {
+                        ComplexTypeMetadata typeMetadata = repository.getComplexType(newType);
+                        if (typeMetadata != null && typeMetadata.getSubTypes().size() > 0) {
+                            String value = rightAccessor.get();
+                            if (StringUtils.isNotEmpty(value)) {
+                                // We should get actual type in polymorphic reference field when xml only provied super
+                                // type in ui.
+                                String actualType = getActualType(typeMetadata, value);
+                                if (StringUtils.isNotEmpty(actualType)) {
+                                    newType = actualType;
+                                }
+                            }
+                        }
+                    }
                     String previousType = StringUtils.EMPTY;
                     if (leftAccessor.exist()) {
                         previousType = leftAccessor.getActualType();
                     }
 
                     if (!newType.isEmpty() && !newType.startsWith(MetadataRepository.ANONYMOUS_PREFIX)) {
-                        ComplexTypeMetadata newTypeMetadata = (ComplexTypeMetadata) repository.getNonInstantiableType(repository.getUserNamespace(), newType);
+                        ComplexTypeMetadata newTypeMetadata = (ComplexTypeMetadata) repository
+                                .getNonInstantiableType(repository.getUserNamespace(), newType);
                         ComplexTypeMetadata previousTypeMetadata = null;
                         if (newTypeMetadata != null && !newTypeMetadata.isInstantiable()) {
                             ComplexTypeMetadata actualNewTypeMetadata = newTypeMetadata;
@@ -521,16 +541,19 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
                                 LOGGER.debug("Replacing type '" + newType + "' with '" + actualNewTypeMetadata.getName() + ".");
                             }
                             newTypeMetadata = actualNewTypeMetadata;
-                            previousTypeMetadata = (ComplexTypeMetadata) repository.getNonInstantiableType(repository.getUserNamespace(), previousType);
+                            previousTypeMetadata = (ComplexTypeMetadata) repository
+                                    .getNonInstantiableType(repository.getUserNamespace(), previousType);
                         } else if (newTypeMetadata == null) {
                             newTypeMetadata = (ComplexTypeMetadata) repository.getType(newType);
                             previousTypeMetadata = (ComplexTypeMetadata) repository.getType(previousType);
                         }
                         // Record the type change information (if applicable).
                         if (!newTypeMetadata.getSuperTypes().isEmpty() || !newTypeMetadata.getSubTypes().isEmpty()) {
-                            actions.addAll(ChangeReferenceTypeAction.create(originalDocument, date, source, userName, getLeftPath(), previousTypeMetadata, newTypeMetadata, field));
+                            actions.addAll(ChangeReferenceTypeAction.create(originalDocument, date, source, userName,
+                                    getLeftPath(), previousTypeMetadata, newTypeMetadata, field));
                         } else if (LOGGER.isDebugEnabled()) {
-                            LOGGER.debug("Ignore reference type change on '" + getLeftPath() + "': type '" + newTypeMetadata.getName() + "' does not belong to an inheritance tree.");
+                            LOGGER.debug("Ignore reference type change on '" + getLeftPath() + "': type '"
+                                    + newTypeMetadata.getName() + "' does not belong to an inheritance tree.");
                         }
                     }
                 }
@@ -538,6 +561,41 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
                     lastMatchPath = getLeftPath();
                 }
             }
+        }
+
+        private String getActualType(ComplexTypeMetadata type, String ids) {
+            String realTypeName = null;
+            StorageAdmin storageAdmin = ServerContext.INSTANCE.get().getStorageAdmin();
+            Storage storage = storageAdmin.get(dataCluster, storageAdmin.getType(dataCluster));
+            if (type != null) {
+                UserQueryBuilder qb = UserQueryBuilder.from(type);
+                Collection<FieldMetadata> keyFields = type.getKeyFields();
+                String[] splitIds = ids.replaceAll("^\\[|\\]$", "").replace("][", ".").split("\\."); //$NON-NLS-1$
+                if (splitIds.length != keyFields.size()) {
+                    throw new IllegalArgumentException(
+                            "ID '" + ids + "' does not contain all required values for key of type '" + type.getName()); //$NON-NLS-1$ //$NON-NLS-2$
+                }
+                for (String idsValue : splitIds) {
+                    qb.where(eq(keyFields.iterator().next(), idsValue));
+                }
+                StorageResults results = null;
+                try {
+                    storage.begin();
+                    results = storage.fetch(qb.getSelect());
+                    storage.commit();
+                    if (results.getSize() > 0) {
+                        realTypeName = results.iterator().next().getType().getName();
+                    }
+                } catch (Exception e) {
+                    storage.rollback();
+                    throw new RuntimeException(e);
+                } finally {
+                    if (results != null) {
+                        results.close();
+                    }
+                }
+            }
+            return realTypeName;
         }
     }
 }

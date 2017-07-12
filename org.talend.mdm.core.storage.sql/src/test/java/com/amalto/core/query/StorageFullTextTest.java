@@ -955,7 +955,7 @@ public class StorageFullTextTest extends StorageTestCase {
         try {
             assertEquals(1, results.getCount());
             for (DataRecord result : results) {
-                assertEquals("", result.get("Family"));
+                assertEquals(null, result.get("Family"));
             }
         } finally {
             results.close();

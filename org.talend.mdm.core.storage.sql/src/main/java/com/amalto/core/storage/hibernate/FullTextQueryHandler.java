@@ -391,9 +391,8 @@ class FullTextQueryHandler extends AbstractQueryHandler {
                 }
                 return compositeKeyValues.toArray(new Object[keyFields.size()]);
             }
-        } else {
-            return StringUtils.EMPTY;
-        }
+        } 
+        return null;
     }
 
     @Override

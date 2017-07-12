@@ -511,8 +511,9 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
                         if (typeMetadata != null && typeMetadata.getSubTypes().size() > 0) {
                             String value = rightAccessor.get();
                             if (StringUtils.isNotEmpty(value)) {
-                                // We should get actual type in polymorphic reference field when xml only provied super type in ui.
-                                String actualType = getActualType(typeMetadata,value);
+                                // We should get actual type in polymorphic reference field when xml only provied super
+                                // type in ui.
+                                String actualType = getActualType(typeMetadata, value);
                                 if (StringUtils.isNotEmpty(actualType)) {
                                     newType = actualType;
                                 }
@@ -525,7 +526,8 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
                     }
 
                     if (!newType.isEmpty() && !newType.startsWith(MetadataRepository.ANONYMOUS_PREFIX)) {
-                        ComplexTypeMetadata newTypeMetadata = (ComplexTypeMetadata) repository.getNonInstantiableType(repository.getUserNamespace(), newType);
+                        ComplexTypeMetadata newTypeMetadata = (ComplexTypeMetadata) repository
+                                .getNonInstantiableType(repository.getUserNamespace(), newType);
                         ComplexTypeMetadata previousTypeMetadata = null;
                         if (newTypeMetadata != null && !newTypeMetadata.isInstantiable()) {
                             ComplexTypeMetadata actualNewTypeMetadata = newTypeMetadata;
@@ -539,16 +541,19 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
                                 LOGGER.debug("Replacing type '" + newType + "' with '" + actualNewTypeMetadata.getName() + ".");
                             }
                             newTypeMetadata = actualNewTypeMetadata;
-                            previousTypeMetadata = (ComplexTypeMetadata) repository.getNonInstantiableType(repository.getUserNamespace(), previousType);
+                            previousTypeMetadata = (ComplexTypeMetadata) repository
+                                    .getNonInstantiableType(repository.getUserNamespace(), previousType);
                         } else if (newTypeMetadata == null) {
                             newTypeMetadata = (ComplexTypeMetadata) repository.getType(newType);
                             previousTypeMetadata = (ComplexTypeMetadata) repository.getType(previousType);
                         }
                         // Record the type change information (if applicable).
                         if (!newTypeMetadata.getSuperTypes().isEmpty() || !newTypeMetadata.getSubTypes().isEmpty()) {
-                            actions.addAll(ChangeReferenceTypeAction.create(originalDocument, date, source, userName, getLeftPath(), previousTypeMetadata, newTypeMetadata, field));
+                            actions.addAll(ChangeReferenceTypeAction.create(originalDocument, date, source, userName,
+                                    getLeftPath(), previousTypeMetadata, newTypeMetadata, field));
                         } else if (LOGGER.isDebugEnabled()) {
-                            LOGGER.debug("Ignore reference type change on '" + getLeftPath() + "': type '" + newTypeMetadata.getName() + "' does not belong to an inheritance tree.");
+                            LOGGER.debug("Ignore reference type change on '" + getLeftPath() + "': type '"
+                                    + newTypeMetadata.getName() + "' does not belong to an inheritance tree.");
                         }
                     }
                 }
@@ -557,8 +562,8 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
                 }
             }
         }
-        
-        private String getActualType(ComplexTypeMetadata type,String ids) {
+
+        private String getActualType(ComplexTypeMetadata type, String ids) {
             String realTypeName = null;
             StorageAdmin storageAdmin = ServerContext.INSTANCE.get().getStorageAdmin();
             Storage storage = storageAdmin.get(dataCluster, storageAdmin.getType(dataCluster));
@@ -567,7 +572,8 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
                 Collection<FieldMetadata> keyFields = type.getKeyFields();
                 String[] splitIds = ids.replaceAll("^\\[|\\]$", "").replace("][", ".").split("\\."); //$NON-NLS-1$
                 if (splitIds.length != keyFields.size()) {
-                    throw new IllegalArgumentException("ID '" + ids + "' does not contain all required values for key of type '" + type.getName()); //$NON-NLS-1$ //$NON-NLS-2$
+                    throw new IllegalArgumentException(
+                            "ID '" + ids + "' does not contain all required values for key of type '" + type.getName()); //$NON-NLS-1$ //$NON-NLS-2$
                 }
                 for (String idsValue : splitIds) {
                     qb.where(eq(keyFields.iterator().next(), idsValue));

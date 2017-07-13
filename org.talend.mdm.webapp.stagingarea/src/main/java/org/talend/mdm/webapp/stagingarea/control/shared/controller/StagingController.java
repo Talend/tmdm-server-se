@@ -41,4 +41,15 @@ public class StagingController {
             }
         }
     }
+    
+    public void startRefresh() {
+        if (this.autoRefresh) {
+            StagingAreaConfiguration stagingAreaConfig = StagingAreaControl.getStagingAreaConfig();
+            timer.scheduleRepeating(stagingAreaConfig.getRefreshIntervals());
+        }
+    }
+
+    public void stopRefresh() {
+        timer.cancel();
+    }
 }

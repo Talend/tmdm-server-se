@@ -97,6 +97,11 @@
         </dependency>
         <dependency>
             <groupId>org.talend.mdm</groupId>
+            <artifactId>org.talend.mdm.webapp.browserecords</artifactId>
+            <classifier>lib</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.talend.mdm</groupId>
             <artifactId>org.talend.mdm.commons.core</artifactId>
         </dependency>
         <dependency>

@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.util.core.ICoreConstants;
 import org.talend.mdm.commmon.util.webapp.XObjectType;
@@ -26,6 +27,9 @@ import org.talend.mdm.webapp.base.client.exception.ServiceException;
 import org.talend.mdm.webapp.base.client.model.BasePagingLoadConfigImpl;
 import org.talend.mdm.webapp.base.client.model.ItemBaseModel;
 import org.talend.mdm.webapp.base.client.model.ItemBasePageLoadResult;
+import org.talend.mdm.webapp.base.shared.EntityModel;
+import org.talend.mdm.webapp.browserecords.server.bizhelpers.DataModelHelper;
+import org.talend.mdm.webapp.browserecords.server.util.CommonUtil;
 import org.talend.mdm.webapp.journal.client.JournalService;
 import org.talend.mdm.webapp.journal.server.service.JournalDBService;
 import org.talend.mdm.webapp.journal.server.service.JournalHistoryService;
@@ -42,17 +46,11 @@ import com.amalto.core.util.MessagesFactory;
 import com.amalto.webapp.core.util.DataModelAccessor;
 import com.amalto.webapp.core.util.Util;
 import com.amalto.webapp.core.util.Webapp;
-import com.amalto.webapp.core.util.XtentisWebappException;
 import com.amalto.core.webservice.WSDataClusterPK;
 import com.amalto.core.webservice.WSDataModelPK;
 import com.amalto.core.webservice.WSExistsItem;
-import com.amalto.core.webservice.WSGetConceptsInDataCluster;
 import com.amalto.core.webservice.WSItemPK;
 import com.amalto.core.webservice.WSRegexDataModelPKs;
-import com.amalto.core.webservice.WSStringPredicate;
-import com.amalto.core.webservice.WSWhereCondition;
-import com.amalto.core.webservice.WSWhereItem;
-import com.amalto.core.webservice.WSWhereOperator;
 import com.amalto.core.webservice.XtentisPort;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
@@ -111,6 +109,19 @@ public class JournalAction extends RemoteServiceServlet implements JournalServic
             JournalTreeModel root;
             if (parameter.isAuth()) {
                 String xmlStr = JournalHistoryService.getInstance().getComparisionTreeString(parameter);
+                if (StringUtils.isNotBlank(xmlStr)) {
+                    org.dom4j.Document doc = org.talend.mdm.webapp.base.server.util.XmlUtil.parseText(xmlStr);
+                    EntityModel entityModel = new EntityModel();
+                    DataModelHelper.parseSchema(parameter.getDataModelName(), parameter.getConceptName(), entityModel, LocalUser
+                            .getLocalUser().getRoles());
+
+                    Map<String, String[]> formatMap = CommonUtil.checkDisplayFormat(entityModel, language);
+                    Map<String, Object> returnValue = CommonUtil.formatQuerylValue(formatMap, doc, entityModel,
+                            parameter.getConceptName());
+                    xmlStr = org.talend.mdm.webapp.base.server.util.XmlUtil.toXml(((org.dom4j.Document) returnValue
+                            .get(CommonUtil.RESULT)));
+
+                }
                 root = service.getComparisionTreeModel(xmlStr);
             } else {
                 root = new JournalTreeModel("root", "Document", "root"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$

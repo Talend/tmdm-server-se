@@ -15,16 +15,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.io.StringReader;
-import java.math.BigDecimal;
 import java.net.URLEncoder;
-import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -46,8 +41,6 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.log4j.Logger;
 import org.dom4j.DocumentHelper;
-import org.dom4j.Namespace;
-import org.dom4j.QName;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
@@ -107,7 +100,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.amalto.commons.core.utils.XMLUtils;
 import com.amalto.core.integrity.FKIntegrityCheckResult;
 import com.amalto.core.objects.ItemPOJOPK;
@@ -198,14 +190,6 @@ public class BrowseRecordsAction implements BrowseRecordsService {
 
     protected final Messages MESSAGES = MessagesFactory.getMessages(
             "org.talend.mdm.webapp.browserecords.client.i18n.BrowseRecordsMessages", this.getClass().getClassLoader()); //$NON-NLS-1$
-
-    private final List<String> dateTypeNames = Arrays.asList(DataTypeConstants.DATE.getBaseTypeName(),
-            DataTypeConstants.DATETIME.getBaseTypeName());
-
-    private final List<String> numberTypeNames = Arrays.asList(DataTypeConstants.DOUBLE.getBaseTypeName(),
-            DataTypeConstants.FLOAT.getBaseTypeName(), DataTypeConstants.DECIMAL.getBaseTypeName(),
-            DataTypeConstants.INT.getBaseTypeName(), DataTypeConstants.INTEGER.getBaseTypeName(),
-            DataTypeConstants.LONG.getBaseTypeName(), DataTypeConstants.SHORT.getBaseTypeName());
 
     public static final String ERROR_KEYWORD = "ERROR";//$NON-NLS-1$
 
@@ -462,9 +446,6 @@ public class BrowseRecordsAction implements BrowseRecordsService {
     public ItemBean getItem(ItemBean itemBean, String viewPK, EntityModel entityModel, boolean staging, String language)
             throws ServiceException {
         try {
-            String dateFormat = "yyyy-MM-dd"; //$NON-NLS-1$
-            String dateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss"; //$NON-NLS-1$
-
             String dataCluster = getCurrentDataCluster(staging);
             String dataModel = getCurrentDataModel();
             String concept = itemBean.getConcept();
@@ -485,81 +466,16 @@ public class BrowseRecordsAction implements BrowseRecordsService {
                 itemBean.setTaskId(wsItem.getTaskId());
             }
 
-            SimpleDateFormat sdf = null;
-            Map<String, String[]> formatMap = this.checkDisplayFormat(entityModel, language);
-            Set<String> keySet = formatMap.keySet();
-            for (String key : keySet) {
-                String[] value = formatMap.get(key);
-                org.dom4j.Document doc = org.talend.mdm.webapp.base.server.util.XmlUtil.parseText(itemBean.getItemXml());
-                TypeModel tm = entityModel.getMetaDataTypes().get(key);
-                String xpath = tm.getXpath();
-                org.dom4j.Node node = null;
-                if (!key.equals(xpath)) {
-                    Namespace namespace = new Namespace("xsi", "http://www.w3.org/2001/XMLSchema-instance"); //$NON-NLS-1$//$NON-NLS-2$
-                    List<?> nodeList = doc.selectNodes(xpath);
-                    if (nodeList != null && nodeList.size() > 0) {
-                        for (int i = 0; i < nodeList.size(); i++) {
-                            org.dom4j.Element current = (org.dom4j.Element) nodeList.get(i);
-                            String realType = current.getParent().attributeValue(new QName("type", namespace, "xsi:type")); //$NON-NLS-1$ //$NON-NLS-2$
-                            if (key.replaceAll(":" + realType, "").equals(xpath)) { //$NON-NLS-1$//$NON-NLS-2$
-                                node = current;
-                                break;
-                            }
-                        }
-                    }
-                } else {
-                    node = doc.selectSingleNode(key);
-                }
+            Map<String, String[]> formatMap = org.talend.mdm.webapp.browserecords.server.util.CommonUtil.checkDisplayFormat(
+                    entityModel, language);
+            org.dom4j.Document doc = org.talend.mdm.webapp.base.server.util.XmlUtil.parseText(itemBean.getItemXml());
+            Map<String, Object> returnValue = org.talend.mdm.webapp.browserecords.server.util.CommonUtil.formatQuerylValue(
+                    formatMap, doc, entityModel, concept);
 
-                if (node != null && itemBean.getOriginalMap() != null) {
-                    String dataText = node.getText();
-
-                    if (dataText != null) {
-                        if (dataText.trim().length() != 0) {
-                            if (dateTypeNames.contains(tm.getType().getBaseTypeName())) {
-                                if (value[1].equalsIgnoreCase("DATE")) { //$NON-NLS-1$
-                                    sdf = new SimpleDateFormat(dateFormat, java.util.Locale.ENGLISH);
-                                } else if (value[1].equalsIgnoreCase("DATETIME")) { //$NON-NLS-1$
-                                    sdf = new SimpleDateFormat(dateTimeFormat, java.util.Locale.ENGLISH);
-                                }
-
-                                try {
-                                    Date date = sdf.parse(dataText.trim());
-                                    itemBean.getOriginalMap().put(key, date);
-                                    Calendar calendar = Calendar.getInstance();
-                                    calendar.setTime(date);
-                                    String formatValue = com.amalto.webapp.core.util.Util.formatDate(value[0], calendar);
-                                    itemBean.getFormateMap().put(key, formatValue);
-                                } catch (Exception e) {
-                                    itemBean.getOriginalMap().remove(key);
-                                    itemBean.getFormateMap().remove(key);
-                                }
-                            } else if (numberTypeNames.contains(tm.getType().getBaseTypeName())) {
-                                try {
-                                    NumberFormat nf = NumberFormat.getInstance();
-                                    Number num = nf.parse(dataText.trim());
-                                    String formatValue = ""; //$NON-NLS-1$
-                                    if (tm.getType().getBaseTypeName().equals(DataTypeConstants.DOUBLE.getBaseTypeName())) {
-                                        formatValue = String.format(value[0], num.doubleValue()).trim();
-                                    } else if (tm.getType().getBaseTypeName().equals(DataTypeConstants.FLOAT.getBaseTypeName())) {
-                                        formatValue = String.format(value[0], num.floatValue()).trim();
-                                    } else if (tm.getType().getBaseTypeName().equals(DataTypeConstants.DECIMAL.getBaseTypeName())) {
-                                        formatValue = String.format(value[0], new BigDecimal(dataText.trim())).trim();
-                                    } else {
-                                        formatValue = String.format(value[0], num).trim();
-                                    }
-                                    itemBean.getOriginalMap().put(key, num);
-                                    itemBean.getFormateMap().put(key, formatValue);
-                                } catch (Exception e) {
-                                    itemBean.getOriginalMap().remove(key);
-                                    itemBean.getFormateMap().remove(key);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
+            itemBean.setOriginalMap((Map<String, Object>) returnValue
+                    .get(org.talend.mdm.webapp.browserecords.server.util.CommonUtil.ORIGINAL_VALUE));
+            itemBean.setFormateMap((Map<String, String>) returnValue
+                    .get(org.talend.mdm.webapp.browserecords.server.util.CommonUtil.FORMATE_VALUE));
             // dynamic Assemble
             dynamicAssemble(itemBean, entityModel, language);
 
@@ -903,12 +819,11 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             int max, String sortDir, String sortCol, String language) throws Exception {
 
         int totalSize = 0;
-        String dateFormat = "yyyy-MM-dd"; //$NON-NLS-1$
-        String dateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss"; //$NON-NLS-1$
 
         List<ItemBean> itemBeans = new ArrayList<ItemBean>();
         String concept = ViewHelper.getConceptFromDefaultViewName(viewBean.getViewPK());
-        Map<String, String[]> formatMap = this.checkDisplayFormat(entityModel, language);
+        Map<String, String[]> formatMap = org.talend.mdm.webapp.browserecords.server.util.CommonUtil.checkDisplayFormat(
+                entityModel, language);
 
         WSWhereItem wi = null;
         if (criteria != null) {
@@ -942,7 +857,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
                 }
                 continue;
             }
-            Document doc = parseResultDocument(results[i], "result"); //$NON-NLS-1$
+            Document doc = org.talend.mdm.webapp.browserecords.server.util.CommonUtil.parseResultDocument(results[i], "result"); //$NON-NLS-1$
             idsArray.clear();
             for (String key : entityModel.getKeys()) {
                 String id = com.amalto.core.util.Util.getFirstTextNode(doc.getDocumentElement(),
@@ -951,90 +866,18 @@ public class BrowseRecordsAction implements BrowseRecordsService {
                     idsArray.add(id);
                 }
             }
-            Set<String> keySet = formatMap.keySet();
-            Map<String, Object> originalMap = new HashMap<String, Object>();
-            Map<String, String> formateValueMap = new HashMap<String, String>();
-            for (String key : keySet) {
-                String[] value = formatMap.get(key);
-                TypeModel tm = entityModel.getMetaDataTypes().get(key);
-                String xpath = tm.getXpath();
-                String dataText = null;
-                if (!key.equals(xpath)) {
-                    NodeList list = com.amalto.core.util.Util.getNodeList(doc.getDocumentElement(),
-                            xpath.replaceFirst(concept + "/", "./")); //$NON-NLS-1$//$NON-NLS-2$
-                    if (list != null) {
-                        for (int k = 0; k < list.getLength(); k++) {
-                            Node node = list.item(k);
-                            String realType = ((Element) node.getParentNode()).getAttribute("xsi:type"); //$NON-NLS-1$
-                            if (key.replaceAll(":" + realType, "").equals(xpath)) { //$NON-NLS-1$//$NON-NLS-2$
-                                dataText = node.getTextContent();
-                                break;
-                            }
-                        }
-                    }
-                } else {
-                    dataText = com.amalto.core.util.Util.getFirstTextNode(doc.getDocumentElement(),
-                            key.substring(key.lastIndexOf('/') + 1)); //$NON-NLS-1$ //$NON-NLS-2$
-                }
+            org.dom4j.Document dom4jDoc = org.talend.mdm.webapp.base.server.util.XmlUtil.parseText(results[i]);
+            Map<String, Object> returnValue = org.talend.mdm.webapp.browserecords.server.util.CommonUtil.formatQuerylValue(
+                    formatMap, dom4jDoc, entityModel, concept);
 
-                if (dataText != null) {
-                    if (dataText.trim().length() != 0) {
-                        if (dateTypeNames.contains(tm.getType().getBaseTypeName())) {
-                            SimpleDateFormat sdf = null;
-                            if (value[1].equalsIgnoreCase("DATE")) { //$NON-NLS-1$
-                                sdf = new SimpleDateFormat(dateFormat, java.util.Locale.ENGLISH);
-                            } else if (value[1].equalsIgnoreCase("DATETIME")) { //$NON-NLS-1$
-                                sdf = new SimpleDateFormat(dateTimeFormat, java.util.Locale.ENGLISH);
-                            }
+            String value = org.talend.mdm.webapp.base.server.util.XmlUtil.toXml(((org.dom4j.Document) returnValue
+                    .get(org.talend.mdm.webapp.browserecords.server.util.CommonUtil.RESULT)));
 
-                            try {
-                                Date date = sdf.parse(dataText.trim());
-                                originalMap.put(key, date);
-                                Calendar calendar = Calendar.getInstance();
-                                calendar.setTime(date);
-                                String formatValue = com.amalto.webapp.core.util.Util.formatDate(value[0], calendar);
-                                formateValueMap.put(key, formatValue);
-                                com.amalto.core.util.Util
-                                        .getNodeList(doc.getDocumentElement(), key.substring(key.lastIndexOf('/') + 1)).item(0)
-                                        .setTextContent(formatValue); //$NON-NLS-1$
-                            } catch (Exception e) {
-                                originalMap.remove(key);
-                                formateValueMap.remove(key);
-                            }
-                        } else if (numberTypeNames.contains(tm.getType().getBaseTypeName())) {
-                            try {
-                                NumberFormat nf = NumberFormat.getInstance();
-                                Number num = nf.parse(dataText.trim());
-                                String formatValue = ""; //$NON-NLS-1$
-                                if (tm.getType().getBaseTypeName().equals(DataTypeConstants.DOUBLE.getBaseTypeName())) {
-                                    formatValue = String.format(value[0], num.doubleValue()).trim();
-                                } else if (tm.getType().getBaseTypeName().equals(DataTypeConstants.FLOAT.getBaseTypeName())) {
-                                    formatValue = String.format(value[0], num.floatValue()).trim();
-                                } else if (tm.getType().getBaseTypeName().equals(DataTypeConstants.DECIMAL.getBaseTypeName())) {
-                                    formatValue = String.format(value[0], new BigDecimal(dataText.trim())).trim();
-                                } else {
-                                    formatValue = String.format(value[0], num).trim();
-                                }
-
-                                originalMap.put(key, num);
-                                formateValueMap.put(key, formatValue);
-                                com.amalto.core.util.Util
-                                        .getNodeList(doc.getDocumentElement(), key.replaceFirst(concept + "/", "./")).item(0).setTextContent(formatValue); //$NON-NLS-1$ //$NON-NLS-2$
-                            } catch (Exception e) {
-                                Log.info("format has error 111"); //$NON-NLS-1$
-                                originalMap.remove(key);
-                                formateValueMap.remove(key);
-                            }
-                        }
-                    }
-                }
-            }
-
-            ItemBean itemBean = new ItemBean(
-                    concept,
-                    CommonUtil.joinStrings(idsArray, "."), XMLUtils.nodeToString(doc.getDocumentElement(), true, true));//$NON-NLS-1$
-            itemBean.setOriginalMap(originalMap);
-            itemBean.setFormateMap(formateValueMap);
+            ItemBean itemBean = new ItemBean(concept, CommonUtil.joinStrings(idsArray, "."), value);//$NON-NLS-1$
+            itemBean.setOriginalMap((Map<String, Object>) returnValue
+                    .get(org.talend.mdm.webapp.browserecords.server.util.CommonUtil.ORIGINAL_VALUE));
+            itemBean.setFormateMap((Map<String, String>) returnValue
+                    .get(org.talend.mdm.webapp.browserecords.server.util.CommonUtil.FORMATE_VALUE));
             if (checkSmartViewExistsByLang(concept, language)) {
                 itemBean.setSmartViewMode(ItemBean.SMARTMODE);
             } else if (checkSmartViewExistsByOpt(concept, language)) {
@@ -1044,44 +887,6 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             itemBeans.add(itemBean);
         }
         return new Object[] { itemBeans, totalSize };
-    }
-
-    private Map<String, String[]> checkDisplayFormat(EntityModel entityModel, String language) {
-        Map<String, TypeModel> metaData = entityModel.getMetaDataTypes();
-        Map<String, String[]> formatMap = new HashMap<String, String[]>();
-        String languageStr = "format_" + language.toLowerCase(); //$NON-NLS-1$
-        if (metaData == null) {
-            return formatMap;
-        }
-
-        Set<String> keySet = metaData.keySet();
-        for (String key : keySet) {
-            TypeModel typeModel = metaData.get(key);
-            if (dateTypeNames.contains(typeModel.getType().getBaseTypeName())
-                    || numberTypeNames.contains(typeModel.getType().getBaseTypeName())) {
-                if (typeModel.getDisplayFomats() != null && typeModel.getDisplayFomats().size() > 0) {
-                    if (typeModel.getDisplayFomats().containsKey(languageStr)) {
-                        formatMap.put(key, new String[] { typeModel.getDisplayFomats().get(languageStr),
-                                typeModel.getType().getBaseTypeName() });
-                    }
-                }
-            }
-
-        }
-        return formatMap;
-    }
-
-    protected Document parseResultDocument(String result, String expectedRootElement) throws Exception {
-        Document doc = Util.parse(result);
-        Element rootElement = doc.getDocumentElement();
-        if (!rootElement.getNodeName().equals(expectedRootElement)) {
-            // When there is a null value in fields, the viewable fields sequence is not enclosed by expected element
-            // FIXME Better to find out a solution at the underlying stage
-            doc.removeChild(rootElement);
-            Element resultElement = doc.createElement(expectedRootElement);
-            resultElement.appendChild(rootElement);
-        }
-        return doc;
     }
 
     @Override
@@ -2501,7 +2306,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
                             new WSViewSearch(new WSDataClusterPK(dataClusterPK), new WSViewPK(viewPK), whereItem, -1, 0, 5, null,
                                     null)).getStrings();
             if (results.length == 2) {
-                Document doc = parseResultDocument(results[1], "result"); //$NON-NLS-1$
+                Document doc = org.talend.mdm.webapp.browserecords.server.util.CommonUtil.parseResultDocument(results[1], "result"); //$NON-NLS-1$
 
                 for (String key : keys) {
                     String id = com.amalto.core.util.Util.getFirstTextNode(doc.getDocumentElement(),

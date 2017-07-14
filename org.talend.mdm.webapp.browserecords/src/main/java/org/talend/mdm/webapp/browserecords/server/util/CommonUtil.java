@@ -9,10 +9,17 @@
  */
 package org.talend.mdm.webapp.browserecords.server.util;
 
+import java.math.BigDecimal;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -42,6 +49,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.amalto.core.objects.ItemPOJO;
 import com.amalto.core.objects.ItemPOJOPK;
 import com.amalto.core.objects.datacluster.DataClusterPOJOPK;
@@ -57,6 +65,20 @@ import com.amalto.webapp.core.util.Util;
 public class CommonUtil {
 
     private static final Logger LOG = Logger.getLogger(CommonUtil.class);
+
+    public static final String ORIGINAL_VALUE = "originalValue";
+
+    public static final String FORMATE_VALUE = "formateValue";
+
+    public static final String RESULT = "result";
+
+    public static final List<String> dateTypeNames = Arrays.asList(DataTypeConstants.DATE.getBaseTypeName(),
+            DataTypeConstants.DATETIME.getBaseTypeName());
+
+    public static final List<String> numberTypeNames = Arrays.asList(DataTypeConstants.DOUBLE.getBaseTypeName(),
+            DataTypeConstants.FLOAT.getBaseTypeName(), DataTypeConstants.DECIMAL.getBaseTypeName(),
+            DataTypeConstants.INT.getBaseTypeName(), DataTypeConstants.INTEGER.getBaseTypeName(),
+            DataTypeConstants.LONG.getBaseTypeName(), DataTypeConstants.SHORT.getBaseTypeName());
 
     public static List<ItemNodeModel> getDefaultTreeModel(TypeModel model, boolean isCreate, String language) {
         return org.talend.mdm.webapp.browserecords.client.util.CommonUtil.getDefaultTreeModel(model, language, false, isCreate,
@@ -394,19 +416,6 @@ public class CommonUtil {
         }
     }
 
-    public static Document parseResultDocument(String result, String expectedRootElement) throws Exception {
-        Document doc = Util.parse(result);
-        Element rootElement = doc.getDocumentElement();
-        if (!rootElement.getNodeName().equals(expectedRootElement)) {
-            // When there is a null value in fields, the viewable fields sequence is not enclosed by expected element
-            // FIXME Better to find out a solution at the underlying stage
-            doc.removeChild(rootElement);
-            Element resultElement = doc.createElement(expectedRootElement);
-            resultElement.appendChild(rootElement);
-        }
-        return doc;
-    }
-
     public static EntityModel getEntityModel(String concept, String language) throws Exception {
         // bind entity model
         String model = getCurrentDataModel();
@@ -433,5 +442,146 @@ public class CommonUtil {
     public static String getCurrentDataModel() throws Exception {
         Configuration config = Configuration.getConfiguration();
         return config.getModel();
+    }
+
+    public static Map<String, Object> formatQuerylValue(Map<String, String[]> formatMap,  org.dom4j.Document doc, EntityModel entityModel, String concept) throws Exception{
+        String dateFormat = "yyyy-MM-dd"; //$NON-NLS-1$
+        String dateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss"; //$NON-NLS-1$
+        Set<String> keySet = formatMap.keySet();
+        Map<String, Object> originalMap = new HashMap<String, Object>();
+        Map<String, String> formateValueMap = new HashMap<String, String>();
+        for (String key : keySet) {
+            String[] value = formatMap.get(key);
+            TypeModel tm = entityModel.getMetaDataTypes().get(key);
+            String xpath = tm.getXpath();
+            String dataText = null;
+            org.dom4j.Node node = null;
+            if (!key.equals(xpath)) {
+                Namespace namespace = new Namespace("xsi", "http://www.w3.org/2001/XMLSchema-instance"); //$NON-NLS-1$//$NON-NLS-2$
+                List<?> nodeList = doc.selectNodes(xpath);
+                if (nodeList != null && nodeList.size() > 0) {
+                    for (int i = 0; i < nodeList.size(); i++) {
+                        org.dom4j.Element current = (org.dom4j.Element) nodeList.get(i);
+                        String realType = current.getParent().attributeValue(new QName("type", namespace, "xsi:type")); //$NON-NLS-1$ //$NON-NLS-2$
+                        if (key.replaceAll(":" + realType, "").equals(xpath)) { //$NON-NLS-1$//$NON-NLS-2$
+                            node = current;
+                            break;
+                        }
+                    }
+                }
+            } else {
+                node = doc.selectSingleNode(key);
+            }
+
+            if (node == null) {
+                node = doc.selectSingleNode("result/"+key.substring(key.lastIndexOf('/') + 1));
+            }
+            if (node != null) {
+                dataText = node.getText();
+            }
+            if (dataText != null) {
+                if (dataText.trim().length() != 0) {
+                    if (dateTypeNames.contains(tm.getType().getBaseTypeName())) {
+                        SimpleDateFormat sdf = null;
+                        if (value[1].equalsIgnoreCase(DataTypeConstants.DATE.getBaseTypeName())) {
+                            sdf = new SimpleDateFormat(dateFormat, java.util.Locale.ENGLISH);
+                        } else if (value[1].equalsIgnoreCase(DataTypeConstants.DATETIME.getBaseTypeName())) {
+                            sdf = new SimpleDateFormat(dateTimeFormat, java.util.Locale.ENGLISH);
+                        }
+
+                        try {
+                            Date date = sdf.parse(dataText.trim());
+                            originalMap.put(key, date);
+                            Calendar calendar = Calendar.getInstance();
+                            calendar.setTime(date);
+                            String formatValue = com.amalto.webapp.core.util.Util.formatDate(value[0], calendar);
+                            formateValueMap.put(key, formatValue);
+                            node.setText(formatValue);
+                        } catch (Exception e) {
+                            originalMap.remove(key);
+                            formateValueMap.remove(key);
+                        }
+                    } else if (numberTypeNames.contains(tm.getType().getBaseTypeName())) {
+                        try {
+                            NumberFormat nf = NumberFormat.getInstance();
+                            Number num = nf.parse(dataText.trim());
+                            String formatValue = ""; //$NON-NLS-1$
+                            if (tm.getType().getBaseTypeName().equals(DataTypeConstants.DOUBLE.getBaseTypeName())) {
+                                formatValue = String.format(value[0], num.doubleValue()).trim();
+                            } else if (tm.getType().getBaseTypeName().equals(DataTypeConstants.FLOAT.getBaseTypeName())) {
+                                formatValue = String.format(value[0], num.floatValue()).trim();
+                            } else if (tm.getType().getBaseTypeName().equals(DataTypeConstants.DECIMAL.getBaseTypeName())) {
+                                formatValue = String.format(value[0], new BigDecimal(dataText.trim())).trim();
+                            } else {
+                                formatValue = String.format(value[0], num).trim();
+                            }
+
+                            originalMap.put(key, num);
+                            formateValueMap.put(key, formatValue);
+                            node.setText(formatValue);
+                        } catch (Exception e) {
+                            Log.info("format has error 111"); //$NON-NLS-1$
+                            originalMap.remove(key);
+                            formateValueMap.remove(key);
+                        }
+                    } else if (DataTypeConstants.STRING.getBaseTypeName().equalsIgnoreCase(tm.getType().getBaseTypeName())) {
+                        try {
+                            String formatValue = String.format(value[0], dataText).trim();
+                            originalMap.put(key, dataText);
+                            formateValueMap.put(key, formatValue);
+                            node.setText(formatValue);
+                        } catch (Exception e) {
+                            Log.info("format has error 111"); //$NON-NLS-1$
+                            originalMap.remove(key);
+                            formateValueMap.remove(key);
+                        }
+                    }
+                }
+            }
+        }
+        Map<String, Object> returnValue = new HashMap<String, Object>();
+        returnValue.put(RESULT, doc);
+        returnValue.put(FORMATE_VALUE, formateValueMap);
+        returnValue.put(ORIGINAL_VALUE, originalMap);
+        return returnValue;
+    }
+
+    public static Document parseResultDocument(String result, String expectedRootElement) throws Exception {
+        Document doc = Util.parse(result);
+        Element rootElement = doc.getDocumentElement();
+        if (!rootElement.getNodeName().equals(expectedRootElement)) {
+            // When there is a null value in fields, the viewable fields sequence is not enclosed by expected element
+            // FIXME Better to find out a solution at the underlying stage
+            doc.removeChild(rootElement);
+            Element resultElement = doc.createElement(expectedRootElement);
+            resultElement.appendChild(rootElement);
+        }
+        return doc;
+    }
+
+    public static Map<String, String[]> checkDisplayFormat(EntityModel entityModel, String language) {
+        Map<String, TypeModel> metaData = entityModel.getMetaDataTypes();
+        Map<String, String[]> formatMap = new HashMap<String, String[]>();
+        String languageStr = "format_" + language.toLowerCase(); //$NON-NLS-1$
+        if (metaData == null) {
+            return formatMap;
+        }
+
+        Set<String> keySet = metaData.keySet();
+        for (String key : keySet) {
+            TypeModel typeModel = metaData.get(key);
+            if (CommonUtil.dateTypeNames.contains(typeModel.getType().getBaseTypeName())
+                    || CommonUtil.numberTypeNames.contains(typeModel.getType().getBaseTypeName())
+                    || DataTypeConstants.STRING.getBaseTypeName().equalsIgnoreCase(typeModel.getType().getBaseTypeName())) {
+                if (typeModel.getDisplayFomats() != null && typeModel.getDisplayFomats().size() > 0) {
+                    if (typeModel.getDisplayFomats().containsKey(languageStr)) {
+                        formatMap.put(key, new String[] { typeModel.getDisplayFomats().get(languageStr),
+                                typeModel.getType().getBaseTypeName() });
+                    }
+                }
+            }
+
+        }
+        return formatMap;
     }
 }

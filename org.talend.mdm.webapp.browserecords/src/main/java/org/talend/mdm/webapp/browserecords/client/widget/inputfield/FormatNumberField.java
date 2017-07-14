@@ -185,7 +185,10 @@ public class FormatNumberField extends NumberField {
     }
 
     private void setFieldValue(String result){
-        String displayValue = FormatUtil.changeNumberToFormatedValue(result);
+        String displayValue = result;
+        if (formatPattern == null) {
+            displayValue = FormatUtil.changeNumberToFormatedValue(result);
+        }
         setDiplayValue(displayValue);
         if (rendered) {
             if (isEditable()) {

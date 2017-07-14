@@ -16,6 +16,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,8 +47,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
+import com.amalto.core.util.LocalUser;
 import com.amalto.core.util.Util;
 import com.amalto.webapp.core.util.XmlUtil;
+import com.google.gwt.user.client.rpc.core.java.util.Collections;
 
 @PrepareForTest({ Util.class })
 @SuppressWarnings("nls")
@@ -330,6 +333,106 @@ public class CommonUtilTest extends TestCase {
         assertEquals("code1", itemBean.get("Contract/detail/code"));
         assertEquals("ContractDetailType", itemBean.get("Contract/detail/@xsi:type"));
         assertEquals("pending", itemBean.get("Contract/enumEle"));
+    }
+
+    public void testFormatQuerylValue() throws Exception {
+        String datamodelName = "Product";
+        String concept = "person";
+        String[] ids = { "" };
+        String[] roles = { "System_Admin" };
+        InputStream stream = getClass().getResourceAsStream("Person.xsd");
+        String language = "en";
+        String xsd = inputStream2String(stream);
+
+        EntityModel testModel = new EntityModel();
+
+        PowerMockito.mockStatic(Util.class);
+        Mockito.when(Util.isEnterprise()).thenReturn(false);
+        DataModelHelper.overrideSchemaManager(new SchemaMockAgent(xsd, new DataModelID(datamodelName)));
+        DataModelHelper.parseSchema(datamodelName, concept, DataModelHelper.convertXsd2ElDecl(concept, xsd), ids, testModel,
+                Arrays.asList(roles));
+
+        Map<String, TypeModel> types = testModel.getMetaDataTypes();
+        TypeModel rootModel = types.get("person");
+        assertNotNull(rootModel);
+
+        Map<String, String[]> formatMap = CommonUtil.checkDisplayFormat(testModel, language);
+        String result = "<result xmlns:metadata=\"http://www.talend.com/mdm/metadata\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><personId>1</personId><name>1</name>"
+                + "<DOB>2017-07-14</DOB><age>1</age><a_name>1</a_name><a_dob>2017-07-06</a_dob><a_age>12</a_age><b_date>2017-07-14</b_date><b_name>1</b_name><b_age>1</b_age><taskId/></result>";
+
+        org.dom4j.Document doc2 = org.talend.mdm.webapp.base.server.util.XmlUtil.parseText(result);
+        Map<String, Object> returnValue = CommonUtil.formatQuerylValue(formatMap, doc2, testModel, concept);
+
+        org.dom4j.Document resultDoc = (org.dom4j.Document) returnValue.get(CommonUtil.RESULT);
+
+        assertNotNull(resultDoc);
+        assertEquals("1 World!", org.talend.mdm.webapp.base.server.util.XmlUtil.getTextValueFromXpath(resultDoc, "name"));
+        assertEquals("14/07/17", org.talend.mdm.webapp.base.server.util.XmlUtil.getTextValueFromXpath(resultDoc, "DOB"));
+        assertEquals("001", org.talend.mdm.webapp.base.server.util.XmlUtil.getTextValueFromXpath(resultDoc, "age"));
+        assertEquals("1 World!", org.talend.mdm.webapp.base.server.util.XmlUtil.getTextValueFromXpath(resultDoc, "a_name"));
+        assertEquals("06/07/17", org.talend.mdm.webapp.base.server.util.XmlUtil.getTextValueFromXpath(resultDoc, "a_dob"));
+        assertEquals("012", org.talend.mdm.webapp.base.server.util.XmlUtil.getTextValueFromXpath(resultDoc, "a_age"));
+        assertEquals("14/07/17", org.talend.mdm.webapp.base.server.util.XmlUtil.getTextValueFromXpath(resultDoc, "b_date"));
+        assertEquals("1 World!", org.talend.mdm.webapp.base.server.util.XmlUtil.getTextValueFromXpath(resultDoc, "b_name"));
+        assertEquals("001", org.talend.mdm.webapp.base.server.util.XmlUtil.getTextValueFromXpath(resultDoc, "b_age"));
+
+        result = "<person><personId>1</personId><b_name>1</b_name><b_date>2017-07-14</b_date><b_age>1</b_age><personinfo><name>1</name><DOB>2017-07-14</DOB><age>1</age><aa><a_name>1</a_name><a_dob>2017-07-06</a_dob><a_age>12</a_age></aa></personinfo></person>";
+
+        doc2 = org.talend.mdm.webapp.base.server.util.XmlUtil.parseText(result);
+        returnValue = CommonUtil.formatQuerylValue(formatMap, doc2, testModel, concept);
+
+        resultDoc = (org.dom4j.Document) returnValue.get(CommonUtil.RESULT);
+
+        assertNotNull(resultDoc);
+        assertEquals("1 World!",
+                org.talend.mdm.webapp.base.server.util.XmlUtil.getTextValueFromXpath(resultDoc, "personinfo/name"));
+        assertEquals("14/07/17",
+                org.talend.mdm.webapp.base.server.util.XmlUtil.getTextValueFromXpath(resultDoc, "personinfo/DOB"));
+        assertEquals("001", org.talend.mdm.webapp.base.server.util.XmlUtil.getTextValueFromXpath(resultDoc, "personinfo/age"));
+        assertEquals("1 World!",
+                org.talend.mdm.webapp.base.server.util.XmlUtil.getTextValueFromXpath(resultDoc, "personinfo/aa/a_name"));
+        assertEquals("06/07/17",
+                org.talend.mdm.webapp.base.server.util.XmlUtil.getTextValueFromXpath(resultDoc, "personinfo/aa/a_dob"));
+        assertEquals("012",
+                org.talend.mdm.webapp.base.server.util.XmlUtil.getTextValueFromXpath(resultDoc, "personinfo/aa/a_age"));
+        assertEquals("14/07/17", org.talend.mdm.webapp.base.server.util.XmlUtil.getTextValueFromXpath(resultDoc, "b_date"));
+        assertEquals("1 World!", org.talend.mdm.webapp.base.server.util.XmlUtil.getTextValueFromXpath(resultDoc, "b_name"));
+        assertEquals("001", org.talend.mdm.webapp.base.server.util.XmlUtil.getTextValueFromXpath(resultDoc, "b_age"));
+
+    }
+
+    public void testCheckDisplayFormat() throws Exception {
+        String datamodelName = "Product";
+        String concept = "person";
+        String[] ids = { "" };
+        String[] roles = { "System_Admin" };
+        InputStream stream = getClass().getResourceAsStream("Person.xsd");
+        String language = "en";
+        String xsd = inputStream2String(stream);
+
+        EntityModel testModel = new EntityModel();
+
+        PowerMockito.mockStatic(Util.class);
+        Mockito.when(Util.isEnterprise()).thenReturn(false);
+        DataModelHelper.overrideSchemaManager(new SchemaMockAgent(xsd, new DataModelID(datamodelName)));
+        DataModelHelper.parseSchema(datamodelName, concept, DataModelHelper.convertXsd2ElDecl(concept, xsd), ids, testModel,
+                Arrays.asList(roles));
+
+        Map<String, TypeModel> types = testModel.getMetaDataTypes();
+        TypeModel rootModel = types.get("person");
+        assertNotNull(rootModel);
+
+        Map<String, String[]> formatMap = CommonUtil.checkDisplayFormat(testModel, language);
+        assertEquals(9, formatMap.size());
+        assertEquals("%1$td/%1$tm/%1$ty", formatMap.get("person/b_date")[0]);
+        assertEquals("%03d", formatMap.get("person/b_age")[0]);
+        assertEquals("%s World!", formatMap.get("person/b_name")[0]);
+        assertEquals("%s World!", formatMap.get("person/personinfo/name")[0]);
+        assertEquals("%03d", formatMap.get("person/personinfo/age")[0]);
+        assertEquals("%1$td/%1$tm/%1$ty", formatMap.get("person/personinfo/DOB")[0]);
+        assertEquals("%s World!", formatMap.get("person/personinfo/aa/a_name")[0]);
+        assertEquals("%03d", formatMap.get("person/personinfo/aa/a_age")[0]);
+        assertEquals("%1$td/%1$tm/%1$ty", formatMap.get("person/personinfo/aa/a_dob")[0]);
     }
 
     private String inputStream2String(InputStream is) {

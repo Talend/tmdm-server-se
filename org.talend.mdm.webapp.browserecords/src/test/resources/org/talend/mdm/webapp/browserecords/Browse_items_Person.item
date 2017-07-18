@@ -3,8 +3,14 @@
   <searchableBusinessElements>Person/Id</searchableBusinessElements>
   <searchableBusinessElements>Person/PersonalInfo</searchableBusinessElements>
   <viewableBusinessElements>Person/Id</viewableBusinessElements>
-  <viewableBusinessElements>Person/PersonalInfo/LastName</viewableBusinessElements>
-  <viewableBusinessElements>Person/PersonalInfo/firstName</viewableBusinessElements>
+  <viewableBusinessElements>Person/PersonalInfo/name</viewableBusinessElements>
   <viewableBusinessElements>Person/PersonalInfo/DOB</viewableBusinessElements>
+  <viewableBusinessElements>Person/PersonalInfo/age</viewableBusinessElements>
+  <viewableBusinessElements>Person/PersonalInfo/aa/a_name</viewableBusinessElements>
+  <viewableBusinessElements>Person/PersonalInfo/aa/a_dob</viewableBusinessElements>
+  <viewableBusinessElements>Person/PersonalInfo/aa/a_age</viewableBusinessElements>
+  <viewableBusinessElements>Person/b_date</viewableBusinessElements>
+  <viewableBusinessElements>Person/b_name</viewableBusinessElements>
+  <viewableBusinessElements>Person/b_age</viewableBusinessElements>
   <isTransformerActive xmi:id="_cXpzsF1AEeeWJ9riC_vyUA"/>
 </mdmserverobject:WSViewE>

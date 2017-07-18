@@ -505,11 +505,17 @@ public class BrowseRecordsActionTest extends TestCase {
         // Set viewable elements and searchable elements
         parseElements(concept, viewBean, getXml("Browse_items_Person.item"));
         // Reference View file: 'Browse_items_Product.item' to check the parsing results
-        assertEquals(4, viewBean.getViewables().length);
+        assertEquals(10, viewBean.getViewables().length);
         assertEquals("Person/Id", viewBean.getViewables()[0]);
-        assertEquals("Person/PersonalInfo/LastName", viewBean.getViewables()[1]);
-        assertEquals("Person/PersonalInfo/firstName", viewBean.getViewables()[2]);
-        assertEquals("Person/PersonalInfo/DOB", viewBean.getViewables()[3]);
+        assertEquals("Person/PersonalInfo/name", viewBean.getViewables()[1]);
+        assertEquals("Person/PersonalInfo/DOB", viewBean.getViewables()[2]);
+        assertEquals("Person/PersonalInfo/age", viewBean.getViewables()[3]);
+        assertEquals("Person/PersonalInfo/aa/a_name", viewBean.getViewables()[4]);
+        assertEquals("Person/PersonalInfo/aa/a_dob", viewBean.getViewables()[5]);
+        assertEquals("Person/PersonalInfo/aa/a_age", viewBean.getViewables()[6]);
+        assertEquals("Person/b_date", viewBean.getViewables()[7]);
+        assertEquals("Person/b_name", viewBean.getViewables()[8]);
+        assertEquals("Person/b_age", viewBean.getViewables()[9]);
         assertEquals(2, viewBean.getSearchables().size());
         // Set entityModel and viewBean
         config.setModel(viewBean.getBindingEntityModel());
@@ -519,6 +525,7 @@ public class BrowseRecordsActionTest extends TestCase {
         XtentisPort port = PowerMockito.mock(XtentisPort.class);
         String[] results = getMockResultsFromServerForDateDisplayFormat();
         WSStringArray wsStringArray = new WSStringArray(results);
+
         Mockito.when(org.talend.mdm.webapp.base.server.util.CommonUtil.getPort()).thenReturn(port);
         Mockito.when(port.viewSearch(Mockito.any(WSViewSearch.class))).thenReturn(wsStringArray);
         Mockito.when(port.isPagingAccurate(Mockito.any(WSInt.class))).thenReturn(new WSBoolean(true));
@@ -541,14 +548,18 @@ public class BrowseRecordsActionTest extends TestCase {
         ItemBean firstItemBean = itemBeans.getData().get(0);
         // First record (xml)
         // First record (property name list size)
+
         assertEquals(viewBean.getViewables().length, firstItemBean.getPropertyNames().size());
         assertEquals("1", firstItemBean.get("Person/Id"));
-        assertEquals("Bill", firstItemBean.get("Person/PersonalInfo/LastName"));
-        assertEquals("Zhang", firstItemBean.get("Person/PersonalInfo/firstName"));
-        assertEquals("02/11/12", firstItemBean.get("Person/PersonalInfo/DOB"));
-
-        assertEquals(1, firstItemBean.getFormateMap().size());
-        assertEquals("02/11/12", firstItemBean.getFormateMap().get("Person/PersonalInfo/DOB"));
+        assertEquals("Bill World!", firstItemBean.get("Person/PersonalInfo/name"));
+        assertEquals("14/07/17", firstItemBean.get("Person/PersonalInfo/DOB"));
+        assertEquals("002", firstItemBean.get("Person/PersonalInfo/age"));
+        assertEquals("a_Bill World!", firstItemBean.get("Person/PersonalInfo/aa/a_name"));
+        assertEquals("06/07/17", firstItemBean.get("Person/PersonalInfo/aa/a_dob"));
+        assertEquals("012", firstItemBean.get("Person/PersonalInfo/aa/a_age"));
+        assertEquals("11/02/17", firstItemBean.get("Person/b_date"));
+        assertEquals("b_Bills World!", firstItemBean.get("Person/b_name"));
+        assertEquals("012", firstItemBean.get("Person/b_age"));
     }
 
     /**

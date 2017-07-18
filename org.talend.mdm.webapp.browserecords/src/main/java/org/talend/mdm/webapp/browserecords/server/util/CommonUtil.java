@@ -450,6 +450,16 @@ public class CommonUtil {
         Set<String> keySet = formatMap.keySet();
         Map<String, Object> originalMap = new HashMap<String, Object>();
         Map<String, String> formateValueMap = new HashMap<String, String>();
+
+        Map<String, Object> returnValue = new HashMap<String, Object>();
+        returnValue.put(RESULT, doc);
+        returnValue.put(FORMATE_VALUE, formateValueMap);
+        returnValue.put(ORIGINAL_VALUE, originalMap);
+
+        if (formatMap.isEmpty()) {
+            return returnValue;
+        }
+
         for (String key : keySet) {
             String[] value = formatMap.get(key);
             TypeModel tm = entityModel.getMetaDataTypes().get(key);
@@ -474,7 +484,7 @@ public class CommonUtil {
             }
 
             if (node == null) {
-                node = doc.selectSingleNode("result/"+key.substring(key.lastIndexOf('/') + 1));
+                node = doc.selectSingleNode("result/" + key.substring(key.lastIndexOf('/') + 1));
             }
             if (node != null) {
                 dataText = node.getText();
@@ -539,10 +549,6 @@ public class CommonUtil {
                 }
             }
         }
-        Map<String, Object> returnValue = new HashMap<String, Object>();
-        returnValue.put(RESULT, doc);
-        returnValue.put(FORMATE_VALUE, formateValueMap);
-        returnValue.put(ORIGINAL_VALUE, originalMap);
         return returnValue;
     }
 

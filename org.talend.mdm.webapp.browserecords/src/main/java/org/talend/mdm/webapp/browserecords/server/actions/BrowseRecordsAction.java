@@ -2280,7 +2280,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
         Locale locale = new Locale(model.getLanguage());
         String dateValue = model.getObject().toString();
         if (model.isDate() || model.isDateTime()) {
-            Date dataObject = DateUtil.convertStringToDate(model.isDateTime() ? DATE_TIME_FORMAT : DATE_FORMAT, dateValue);
+            Date dataObject = DateUtil.convertStringToDate(model.isDateTime() ? DateUtil.DATE_TIME_FORMAT : DateUtil.DATE_FORMAT, dateValue);
             model.setObject(dataObject);
         }
 

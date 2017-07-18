@@ -23,9 +23,11 @@ public final class DateUtil {
 
     private static final Logger log = Logger.getLogger(DateUtil.class);
 
-    private static String datePattern = "yyyy-MM-dd";//$NON-NLS-1$
+    public static String DATE_FORMAT = "yyyy-MM-dd";//$NON-NLS-1$
 
     private static String timePattern = "HH:mm";//$NON-NLS-1$
+
+    public static final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss"; //$NON-NLS-1$
 
     /**
      * Return default date format (yyyy/MM/dd)
@@ -33,7 +35,7 @@ public final class DateUtil {
      * @return the date format will be show
      */
     public static String getDatePattern() {
-        return datePattern;
+        return DATE_FORMAT;
     }
 
     /**
@@ -47,7 +49,7 @@ public final class DateUtil {
         String returnValue = "";//$NON-NLS-1$
 
         if (aDate != null) {
-            df = new SimpleDateFormat(datePattern);
+            df = new SimpleDateFormat(DATE_FORMAT);
             returnValue = df.format(aDate);
         }
 
@@ -97,7 +99,7 @@ public final class DateUtil {
      */
     public static Calendar getToday() throws ParseException {
         Date today = new Date();
-        SimpleDateFormat df = new SimpleDateFormat(datePattern);
+        SimpleDateFormat df = new SimpleDateFormat(DATE_FORMAT);
 
         // This seems like quite a hack (date -> string -> date),
         // but it works ;-)
@@ -138,7 +140,7 @@ public final class DateUtil {
      * @return
      */
     public static final String convertDateToString(Date aDate) {
-        return getDateTime(datePattern, aDate);
+        return getDateTime(DATE_FORMAT, aDate);
     }
 
     /**
@@ -150,7 +152,7 @@ public final class DateUtil {
      * @throws ParseException
      */
     public static Date convertStringToDate(String strDate) throws ParseException {
-        return convertStringToDate(datePattern, strDate);
+        return convertStringToDate(DATE_FORMAT, strDate);
     }
 
     public static String weekday(String date) throws ParseException {

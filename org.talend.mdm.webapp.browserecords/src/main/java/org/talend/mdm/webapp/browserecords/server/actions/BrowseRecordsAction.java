@@ -199,10 +199,6 @@ public class BrowseRecordsAction implements BrowseRecordsService {
 
     public static final String FAIL_KEYWORD = "FAIL";//$NON-NLS-1$
 
-    public static final String DATE_FORMAT = "yyyy-MM-dd"; //$NON-NLS-1$
-
-    public static final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss"; //$NON-NLS-1$
-
     boolean isModelUpdated = false;
 
     @Override
@@ -878,6 +874,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
 
             String value = org.talend.mdm.webapp.base.server.util.XmlUtil.toXml(((org.dom4j.Document) returnValue
                     .get(org.talend.mdm.webapp.browserecords.server.util.CommonUtil.RESULT)));
+
 
             ItemBean itemBean = new ItemBean(concept, CommonUtil.joinStrings(idsArray, "."), value);//$NON-NLS-1$
             itemBean.setOriginalMap((Map<String, Object>) returnValue

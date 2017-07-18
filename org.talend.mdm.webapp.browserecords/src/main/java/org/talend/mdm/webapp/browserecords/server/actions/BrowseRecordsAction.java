@@ -2275,20 +2275,12 @@ public class BrowseRecordsAction implements BrowseRecordsService {
         }
     }
 
-    private String getFormat(String value) {
-        if (value.length() == DATE_TIME_FORMAT.length()) {
-            return DATE_TIME_FORMAT;
-        } else {
-            return DATE_FORMAT;
-        }
-    }
-
     @Override
     public String formatValue(FormatModel model) throws ServiceException {
         Locale locale = new Locale(model.getLanguage());
         String dateValue = model.getObject().toString();
-        if (model.isDate()) {
-            Date dataObject = DateUtil.convertStringToDate(getFormat(dateValue), dateValue);
+        if (model.isDate() || model.isDateTime()) {
+            Date dataObject = DateUtil.convertStringToDate(model.isDateTime() ? DATE_TIME_FORMAT : DATE_FORMAT, dateValue);
             model.setObject(dataObject);
         }
 

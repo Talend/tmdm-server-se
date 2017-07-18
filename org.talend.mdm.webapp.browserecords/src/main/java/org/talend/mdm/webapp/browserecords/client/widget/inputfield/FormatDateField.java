@@ -168,7 +168,8 @@ public class FormatDateField extends DateField {
                 Date d = propertyEditor.convertStringValue(rawValue);
                 if (d != null) {
                     final FormatModel model = new FormatModel(formatPattern, rawValue, Locale.getLanguage());
-                    model.setDate(true);
+                    model.setDateTime(this.isDateTime());
+                    model.setDate(!this.isDateTime());
                     service.formatValue(model, new SessionAwareAsyncCallback<String>() {
 
                         @Override

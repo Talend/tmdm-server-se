@@ -23,6 +23,8 @@ public class FormatModel implements IsSerializable {
 
     private boolean isDate;
 
+    private boolean isDateTime = false;
+
     public FormatModel() {
 
     }
@@ -63,5 +65,13 @@ public class FormatModel implements IsSerializable {
 
     public void setDate(boolean isDate) {
         this.isDate = isDate;
+    }
+
+    public boolean isDateTime() {
+        return isDateTime;
+    }
+
+    public void setDateTime(boolean isDateTime) {
+        this.isDateTime = isDateTime;
     }
 }

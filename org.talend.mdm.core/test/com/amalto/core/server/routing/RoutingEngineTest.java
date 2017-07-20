@@ -185,7 +185,7 @@ public class RoutingEngineTest {
         assertEquals("testTypeMatchRule1", routes[1].getUniqueId());
     }
 
-    @Ignore
+    @Test
     public void testExpiration() throws Exception {
         // Adds a record that matches the rule
         item.putItem(new ItemPOJO(container, "Person", new String[] { "1", "2" }, 0, "<Person><id>1</id><id2>2</id2></Person>"),
@@ -199,14 +199,14 @@ public class RoutingEngineTest {
 
         TestRoutingEngine routingEngine = (TestRoutingEngine) context.getBean(RoutingEngine.class);
         routingEngine.start();
-        // Expired message: put 2 messages, there's only one JMS consumer, service pauses for 500 ms, and expiration is
+        // Expired message: put 2 messages, there's only one JMS consumer, service pauses for 900 ms, and expiration is
         // 300 ms
         // -> only 1 message should be consumed.
-        NoOpService.setPauseTime(500);
+        NoOpService.setPauseTime(900);
         int previous = routingEngine.getConsumeCallCount();
         routingEngine.route(new ItemPOJOPK(container, "Person", new String[] { "1", "2" }));
         routingEngine.route(new ItemPOJOPK(container, "Person", new String[] { "1", "2" }));
-        Thread.sleep(1500); // Give some time to process message
+        Thread.sleep(2000); // Give some time to process message
         assertEquals(previous + 1, routingEngine.getConsumeCallCount());
         // Expired message: put 2 messages, there's only one JMS consumer, service pauses for 100 ms, and expiration
         // is 300 ms

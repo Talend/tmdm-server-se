@@ -41,8 +41,6 @@ import java.util.Set;
 
 import javax.xml.XMLConstants;
 
-import net.sf.ehcache.CacheManager;
-
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -57,6 +55,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.LockOptions;
 import org.hibernate.NonUniqueObjectException;
 import org.hibernate.PropertyValueException;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
@@ -148,7 +147,6 @@ import com.amalto.core.storage.StorageType;
 import com.amalto.core.storage.datasource.DataSource;
 import com.amalto.core.storage.datasource.DataSourceDefinition;
 import com.amalto.core.storage.datasource.RDBMSDataSource;
-import com.amalto.core.storage.datasource.RDBMSDataSource.DataSourceDialect;
 import com.amalto.core.storage.hibernate.mapping.MDMDenormalizedTable;
 import com.amalto.core.storage.hibernate.mapping.MDMTable;
 import com.amalto.core.storage.prepare.FullTextIndexCleaner;
@@ -161,6 +159,8 @@ import com.amalto.core.storage.record.DataRecordConverter;
 import com.amalto.core.storage.record.metadata.DataRecordMetadata;
 import com.amalto.core.storage.transaction.StorageTransaction;
 import com.amalto.core.storage.transaction.TransactionManager;
+
+import net.sf.ehcache.CacheManager;
 
 public class HibernateStorage implements Storage {
 
@@ -885,6 +885,30 @@ public class HibernateStorage implements Storage {
             throw new RuntimeException("Attempted to update multiple times same record within same transaction.", e); //$NON-NLS-1$
         } catch (Exception e) {
             throw new RuntimeException("Exception occurred during update.", e); //$NON-NLS-1$
+        } finally {
+            this.releaseSession();
+            storageClassLoader.unbind(Thread.currentThread());
+        }
+    }
+
+    /**
+     * 
+     * Update METADATA_STAGING_HAS_TASK to true (TMDM-11110)
+     * 
+     * @param type
+     * @param taskId
+     */
+    public void updateHasTask(ComplexTypeMetadata type, String taskId) {
+        Session session = this.getCurrentSession();
+        try {
+            storageClassLoader.bind(Thread.currentThread());
+            String databaseName = mappingRepository.getMappingFromUser(type).getDatabase().getName();
+            String className = storageClassLoader.findClass(databaseName).getSimpleName();
+            String queryString = "update " + className + " set x_talend_staging_hastask=? where x_talend_task_id=?"; //$NON-NLS-1$ //$NON-NLS-2$
+            Query query = session.createQuery(queryString).setBoolean(0, true).setString(1, taskId);
+            query.executeUpdate();
+        } catch (Exception e) {
+            throw new RuntimeException("Exception occurred during update METADATA_STAGING_HAS_TASK.", e); //$NON-NLS-1$
         } finally {
             this.releaseSession();
             storageClassLoader.unbind(Thread.currentThread());

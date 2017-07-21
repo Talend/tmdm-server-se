@@ -15,8 +15,6 @@ public class PortletConstants {
 
     public static final String PROCESS_NAME = "process"; //$NON-NLS-1$
 
-//    public static final String ALERT_NAME = "alert"; //$NON-NLS-1$
-
     public static final String SEARCH_NAME = "search"; //$NON-NLS-1$
 
     public static final String TASKS_NAME = "tasks"; //$NON-NLS-1$

@@ -382,9 +382,13 @@ class FullTextQueryHandler extends AbstractQueryHandler {
         DataRecord record;
         Object recordObject = next.get(field);
         if (recordObject != null && recordObject instanceof List) {
-            record = (DataRecord)((List<Object>)recordObject).get(0);
+            if (((List<Object>)recordObject).size() > 0) {
+                record = (DataRecord)((List<Object>)recordObject).get(0);
+            } else {
+                return null;
+            }
         } else {
-            record = (DataRecord) next.get(field);
+            record = (DataRecord)recordObject;
         }
         
         if (record != null) {

@@ -31,13 +31,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public interface WelcomePortalServiceAsync {
 
-    void isHiddenLicense(AsyncCallback<Boolean> callback);
-
     void isHiddenWorkFlowTask(AsyncCallback<Boolean> callback);
 
     void isHiddenDSCTask(AsyncCallback<Boolean> callback);
-
-    void getAlert(String language, AsyncCallback<Integer> callback);
 
     void getWorkflowTaskMsg(AsyncCallback<Integer> callback);
 
@@ -52,8 +48,6 @@ public interface WelcomePortalServiceAsync {
     void isEnterpriseVersion(AsyncCallback<Boolean> callback);
 
     void getMenuLabel(String language, String id, AsyncCallback<String> callback);
-
-    void getLicenseWarning(String language, AsyncCallback<String> callback);
 
     void getCurrentDataContainer(AsyncCallback<String> callback);
 

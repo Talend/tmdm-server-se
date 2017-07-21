@@ -55,8 +55,6 @@ public interface GeneralMessages extends Messages {
 
     String portlet_start();
 
-    String portlet_alert();
-
     String portlet_tasks();
 
     String portlet_process();

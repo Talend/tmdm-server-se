@@ -64,16 +64,6 @@ public class WelcomePortalAction implements WelcomePortalService {
     private PortalProperties portalConfig;
 
     /**
-     * check if is show license link.
-     * 
-     * @return
-     */
-    @Override
-    public boolean isHiddenLicense() throws ServiceException {
-        return isHiddenMenu(WelcomePortal.LICENSEAPP);
-    }
-
-    /**
      * check if is show workflow task link.
      * 
      * @return
@@ -117,32 +107,6 @@ public class WelcomePortalAction implements WelcomePortalService {
                 }
             }
             return true;
-        } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
-            throw new ServiceException(e.getLocalizedMessage());
-        }
-    }
-
-    @Override
-    public int getAlert(String language) throws ServiceException {
-        try {
-            ServerAccess.ServerAccessInfo info = Webapp.INSTANCE.getInfo();
-            if (info.getLicense() == null) {
-                return WelcomePortal.NOLICENSE;
-            } else if (!info.isLicenseValid()) {
-                return WelcomePortal.EXPIREDLICENSE;
-            }
-            return 0;
-        } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
-            throw new ServiceException(e.getLocalizedMessage());
-        }
-    }
-
-    @Override
-    public String getLicenseWarning(String language) throws ServiceException {
-        try {
-            return Webapp.INSTANCE.getLicenseWarning(language);
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
             throw new ServiceException(e.getLocalizedMessage());

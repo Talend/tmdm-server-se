@@ -25,13 +25,9 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 @RemoteServiceRelativePath("WelcomePortalService")
 public interface WelcomePortalService extends RemoteService {
 
-    public boolean isHiddenLicense() throws ServiceException;
-
     public boolean isHiddenWorkFlowTask() throws ServiceException;
 
     public boolean isHiddenDSCTask() throws ServiceException;
-
-    public int getAlert(String language) throws ServiceException;
 
     public int getWorkflowTaskMsg() throws ServiceException;
 
@@ -46,8 +42,6 @@ public interface WelcomePortalService extends RemoteService {
     boolean isEnterpriseVersion() throws ServiceException;
 
     public String getMenuLabel(String language, String id) throws Exception;
-
-    public String getLicenseWarning(String language) throws ServiceException;
 
     public String getCurrentDataContainer() throws ServiceException;
 

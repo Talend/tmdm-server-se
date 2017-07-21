@@ -26,7 +26,6 @@ import org.talend.mdm.webapp.base.client.SessionAwareAsyncCallback;
 import org.talend.mdm.webapp.base.client.util.UrlUtil;
 import org.talend.mdm.webapp.base.client.widget.PortletConstants;
 import org.talend.mdm.webapp.welcomeportal.client.mvc.PortalProperties;
-import org.talend.mdm.webapp.welcomeportal.client.widget.AlertPortlet;
 import org.talend.mdm.webapp.welcomeportal.client.widget.BasePortlet;
 import org.talend.mdm.webapp.welcomeportal.client.widget.DataChart;
 import org.talend.mdm.webapp.welcomeportal.client.widget.JournalChart;
@@ -211,13 +210,11 @@ public class MainFramePanel extends Portal {
 
     private List<String> getDefaultPortletOrdering(boolean isEE) {
         if (isEE) {
-            return Arrays.asList(PortletConstants.START_NAME, PortletConstants.PROCESS_NAME, PortletConstants.ALERT_NAME,
-                    PortletConstants.SEARCH_NAME, PortletConstants.TASKS_NAME, PortletConstants.DATA_CHART_NAME,
-                    PortletConstants.ROUTING_EVENT_CHART_NAME, PortletConstants.JOURNAL_CHART_NAME,
-                    PortletConstants.MATCHING_CHART_NAME);
+            return Arrays.asList(PortletConstants.START_NAME, PortletConstants.PROCESS_NAME, PortletConstants.SEARCH_NAME,
+                    PortletConstants.TASKS_NAME, PortletConstants.DATA_CHART_NAME, PortletConstants.ROUTING_EVENT_CHART_NAME,
+                    PortletConstants.JOURNAL_CHART_NAME, PortletConstants.MATCHING_CHART_NAME);
         } else {
-            return Arrays.asList(PortletConstants.START_NAME, PortletConstants.PROCESS_NAME, PortletConstants.ALERT_NAME,
-                    PortletConstants.TASKS_NAME);
+            return Arrays.asList(PortletConstants.START_NAME, PortletConstants.PROCESS_NAME, PortletConstants.TASKS_NAME);
         }
     }
 
@@ -342,8 +339,6 @@ public class MainFramePanel extends Portal {
 
         if (PortletConstants.PROCESS_NAME.equals(portletName)) {
             portlet = new ProcessPortlet(this);
-        } else if (PortletConstants.ALERT_NAME.equals(portletName)) {
-            initAlertPortlet();
         } else if (PortletConstants.SEARCH_NAME.equals(portletName)) {
             portlet = new SearchPortlet(MainFramePanel.this);
         } else if (PortletConstants.TASKS_NAME.equals(portletName)) {
@@ -370,8 +365,6 @@ public class MainFramePanel extends Portal {
             portlet = new StartPortlet(this);
         } else if (PortletConstants.PROCESS_NAME.equals(portletName)) {
             portlet = new ProcessPortlet(this);
-        } else if (PortletConstants.ALERT_NAME.equals(portletName)) {
-            portlet = new AlertPortlet(this);
         } else if (PortletConstants.SEARCH_NAME.equals(portletName)) {
             portlet = new SearchPortlet(this);
         } else if (PortletConstants.TASKS_NAME.equals(portletName)) {
@@ -397,8 +390,6 @@ public class MainFramePanel extends Portal {
             portlet = new StartPortlet(this);
         } else if (PortletConstants.PROCESS_NAME.equals(portletName)) {
             portlet = new ProcessPortlet(this);
-        } else if (PortletConstants.ALERT_NAME.equals(portletName)) {
-            portlet = new AlertPortlet(this);
         } else if (PortletConstants.SEARCH_NAME.equals(portletName)) {
             portlet = new SearchPortlet(this);
         } else if (PortletConstants.TASKS_NAME.equals(portletName)) {
@@ -684,26 +675,6 @@ public class MainFramePanel extends Portal {
 
     public void setPortletToLocations(Map<String, List<Integer>> portletToLocations) {
         this.portletToLocations = portletToLocations;
-    }
-
-    private void initAlertPortlet() {
-
-        service.isHiddenLicense(new SessionAwareAsyncCallback<Boolean>() {
-
-            @Override
-            public void onSuccess(Boolean hideMe) {
-                if (!hideMe) {
-                    BasePortlet portlet = new AlertPortlet(MainFramePanel.this);
-                    portlets.add(portlet);
-                    MainFramePanel.this.add(portlet);
-                } else {
-                    int index = default_index_ordering.indexOf(PortletConstants.ALERT_NAME);
-                    initializePortlet(default_index_ordering.get(index + 1));
-                }
-            }
-
-        });
-
     }
 
     private void initTaskPortlet() {

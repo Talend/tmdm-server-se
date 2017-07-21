@@ -82,6 +82,8 @@ public class ValidationController {
     }
 
     public void startValidation(FilterModel filterModel) {
+        // Cancel timer refresh before starting validation in order to avoid that validation and timer will refresh ui in same time.
+        Controllers.get().getStagingController().stopRefresh();
         UserContextModel ucx = UserContextUtil.getUserContext();
         Representation entity = null;
         if (filterModel != null) {
@@ -90,5 +92,6 @@ public class ValidationController {
         serviceHandler.runValidationTask(ucx.getDataContainer(), ucx.getDataModel(), entity);
         GenerateContainer.getValidationModel().notifyHandlers(
                 new ModelEvent(ModelEvent.Types.VALIDATION_START, GenerateContainer.getValidationModel()));
+        Controllers.get().getStagingController().startRefresh();
     }
 }

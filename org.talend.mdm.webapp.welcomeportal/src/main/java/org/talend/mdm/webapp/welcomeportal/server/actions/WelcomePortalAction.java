@@ -126,10 +126,10 @@ public class WelcomePortalAction implements WelcomePortalService {
     @Override
     public Map<String, Integer> getDSCTaskMsg() {
         Map<String, Integer> taskStatus = new HashMap<String, Integer>();
-        int[] taskCounts = Webapp.INSTANCE.getDSCTasksCount();
+        /*int[] taskCounts = Webapp.INSTANCE.getDSCTasksCount();
         taskStatus.put("new", taskCounts[0]); //$NON-NLS-1$
         taskStatus.put("pending", taskCounts[1]); //$NON-NLS-1$
-        return taskStatus;
+*/        return taskStatus;
     }
 
     @Override
@@ -356,7 +356,6 @@ public class WelcomePortalAction implements WelcomePortalService {
     public AppHeader getAppHeader() throws ServiceException {
         try {
             AppHeader header = new AppHeader();
-            header.setTdsEnabled(MDMConfiguration.isTdsEnabled());
             header.setTdsBaseUrl(MDMConfiguration.getConfiguration().getProperty(MDMConfiguration.TDS_ROOT_URL));
             return header;
         } catch (Exception e) {

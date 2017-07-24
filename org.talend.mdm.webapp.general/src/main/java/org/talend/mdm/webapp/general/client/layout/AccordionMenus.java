@@ -225,8 +225,8 @@ public class AccordionMenus extends ContentPanel {
         String context = menuBean.getContext();
         String application = menuBean.getApplication();
         String errorMessage = MessageFactory.getMessages().application_undefined(context + '.' + application);
-        if ("datastewardship".equals(context) && "Datastewardship".equals(application) && header.isTdsEnabled()) {
-            UrlUtil.openSingleWindow(header.getTdsBaseUrl(),Constants.TDS_NAME);
+        if ("datastewardship".equals(context) && "Datastewardship".equals(application)) {
+            UrlUtil.openSingleWindow(header.getTdsBaseUrl(), Constants.TDS_NAME);
         } else {
             boolean success = initUI(context, application, errorMessage);
             if (success) {

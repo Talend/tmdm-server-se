@@ -61,16 +61,6 @@ public class WebappImpl implements Webapp {
     }
     
     @Override
-    public int[] getDSCTasksCount() {
-        return serverAccess.getDSCTasksCount();
-    }
-
-    @Override
-    public boolean isDataSteWardShip() throws Exception {
-        return serverAccess.isDataSteWardShip();
-    }
-
-    @Override
     public boolean isEnterpriseVersion() {
         return serverAccess.isEnterpriseVersion();
     }

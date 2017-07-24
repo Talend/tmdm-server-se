@@ -37,12 +37,6 @@ public class EncryptUtilTest extends TestCase {
         assertEquals("tKyTop7U6czAJKGTd9yWRA==,Encrypt", confConfig.getString(MDMConfiguration.TECHNICAL_PASSWORD));
         assertEquals("DlqU02M503JUOVBeup29+w==,Encrypt", confConfig.getString(EncryptUtil.ACTIVEMQ_PASSWORD));
 
-        File tdscFile = new File(path + "tdsc-database.properties");
-        PropertiesConfiguration tdscConfig = new PropertiesConfiguration();
-        tdscConfig.setDelimiterParsingDisabled(true);
-        tdscConfig.load(tdscFile);
-        assertEquals("yzuBTeQahXQS7ts8Dh6zeQ==,Encrypt", tdscConfig.getString(EncryptUtil.TDSC_DATABASE_PASSWORD));
-
         File datasource = new File(path + "datasources.xml");
         XMLConfiguration config = new XMLConfiguration();
         config.setDelimiterParsingDisabled(true);

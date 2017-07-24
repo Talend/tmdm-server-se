@@ -310,7 +310,6 @@ public class GeneralAction implements GeneralService {
     public AppHeader getAppHeader() throws ServiceException {
         try {
             AppHeader header = new AppHeader();
-            header.setTdsEnabled(MDMConfiguration.isTdsEnabled());
             header.setTdsBaseUrl(MDMConfiguration.getConfiguration().getProperty(MDMConfiguration.TDS_ROOT_URL));
             return header;
         } catch (Exception e) {

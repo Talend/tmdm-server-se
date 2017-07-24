@@ -47,11 +47,6 @@ public class ServerAccessImpl implements ServerAccess {
     }
 
     @Override
-    public boolean isDataSteWardShip() throws Exception {
-        return false;
-    }
-
-    @Override
     public boolean isEnterpriseVersion() {
         return false;
     }
@@ -64,10 +59,5 @@ public class ServerAccessImpl implements ServerAccess {
     @Override
     public int getWorkflowTasksCount() {
         return 0;
-    }
-
-    @Override
-    public int[] getDSCTasksCount() {
-        return new int[] { 0, 0 };
     }
 }

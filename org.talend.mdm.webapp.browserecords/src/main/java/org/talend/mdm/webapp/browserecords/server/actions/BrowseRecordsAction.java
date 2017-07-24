@@ -1132,7 +1132,6 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             header.setUserProperties(LocalUser.getLocalUser().getUser().getProperties());
             header.setExportRecordsDefaultCount(Integer.parseInt(MDMConfiguration.getConfiguration().getProperty("max.export.browserecord", MDMConfiguration.MAX_EXPORT_COUNT)));
             header.setImportRecordsDefaultCount(Integer.parseInt(MDMConfiguration.getConfiguration().getProperty("max.import.browserecord", MDMConfiguration.MAX_IMPORT_COUNT)));
-            header.setTdsEnabled(MDMConfiguration.isTdsEnabled());
             header.setTdsBaseUrl(MDMConfiguration.getConfiguration().getProperty(MDMConfiguration.TDS_ROOT_URL));
             return header;
         } catch (Exception e) {

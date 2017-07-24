@@ -445,13 +445,8 @@ public class LineageListPanel extends ContentPanel {
 
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
-                if (header.isTdsEnabled()) {
-                    String baseUrl = header.getTdsBaseUrl();
-                    UrlUtil.openSingleWindow(baseUrl + Constants.TDS_ACCESSTASK
-                            + LineageListPanel.this.taskId,Constants.TDS_NAME);
-                } else {
-                    initDSC(LineageListPanel.this.taskId);
-                }
+                String baseUrl = header.getTdsBaseUrl();
+                UrlUtil.openSingleWindow(baseUrl + Constants.TDS_ACCESSTASK + LineageListPanel.this.taskId, Constants.TDS_NAME);
             }
 
         });

@@ -815,12 +815,8 @@ public class ItemDetailToolBar extends ToolBar {
 
                                             @Override
                                             public void componentSelected(MenuEvent menuEvent) {
-                                                if (BrowseRecords.getSession().getAppHeader().isTdsEnabled()) {
-                                                    String baseUrl = BrowseRecords.getSession().getAppHeader().getTdsBaseUrl();
-                                                    UrlUtil.openSingleWindow(baseUrl + Constants.TDS_ACCESSTASK + itemBean.getTaskId(), Constants.TDS_NAME);
-                                                } else {
-                                                    initDSC(itemBean.getTaskId());
-                                                }
+                                                String baseUrl = BrowseRecords.getSession().getAppHeader().getTdsBaseUrl();
+                                                UrlUtil.openSingleWindow(baseUrl + Constants.TDS_ACCESSTASK + itemBean.getTaskId(), Constants.TDS_NAME);
                                             }
                                         });
                                         int explainMenuItemIndex = subActionsMenu.indexOf(explainMenuItem);

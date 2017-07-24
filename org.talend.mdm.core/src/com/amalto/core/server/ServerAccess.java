@@ -26,16 +26,12 @@ public interface ServerAccess {
 
     public ServerAccessInfo getInfo();
 
-    public boolean isDataSteWardShip() throws Exception;
-
     public boolean isEnterpriseVersion();
 
     public String getLicenseWarning(String language) throws Exception;
 
     public int getWorkflowTasksCount();
 
-    public int[] getDSCTasksCount();
-    
     public static final ServerAccess INSTANCE = ServerAccessFactory.createAccess();
     
     public static final class ServerAccessFactory {

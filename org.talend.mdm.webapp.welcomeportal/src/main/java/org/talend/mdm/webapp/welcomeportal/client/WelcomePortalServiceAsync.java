@@ -35,6 +35,8 @@ public interface WelcomePortalServiceAsync {
 
     void isHiddenDSCTask(AsyncCallback<Boolean> callback);
 
+    void getAlert(String language, AsyncCallback<Integer> callback);
+
     void getWorkflowTaskMsg(AsyncCallback<Integer> callback);
 
     void getDSCTaskMsg(AsyncCallback<Map<String, Integer>> callback);

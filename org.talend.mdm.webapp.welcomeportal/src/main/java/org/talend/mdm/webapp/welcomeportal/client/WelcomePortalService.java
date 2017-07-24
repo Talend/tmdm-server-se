@@ -29,6 +29,8 @@ public interface WelcomePortalService extends RemoteService {
 
     public boolean isHiddenDSCTask() throws ServiceException;
 
+    public int getAlert(String language) throws ServiceException;
+
     public int getWorkflowTaskMsg() throws ServiceException;
 
     public Map<String, Integer> getDSCTaskMsg() throws ServiceException;

@@ -44,6 +44,8 @@ public class PortletConfigFieldSet extends FieldSet {
 
     private CheckBox processWidgetCheckBox;
 
+    private CheckBox alertWidgetCheckBox;
+
     private CheckBox searchWidgetCheckBox;
 
     private CheckBox tasksWidgetCheckBox;
@@ -135,6 +137,12 @@ public class PortletConfigFieldSet extends FieldSet {
         widgetGroup.add(processWidgetCheckBox);
 
         if (isEnterprise) {
+            alertWidgetCheckBox = new CheckBox();
+            alertWidgetCheckBox.setBoxLabel(MessageFactory.getMessages().portlet_alert());
+            alertWidgetCheckBox.setValue(false);
+            alertWidgetCheckBox.setVisible(true);
+            widgetGroup.add(alertWidgetCheckBox);
+
             searchWidgetCheckBox = new CheckBox();
             searchWidgetCheckBox.setBoxLabel(MessageFactory.getMessages().portlet_search());
             searchWidgetCheckBox.setValue(false);
@@ -286,6 +294,9 @@ public class PortletConfigFieldSet extends FieldSet {
             updates.add(PortletConstants.PROCESS_NAME);
         }
         if (isEnterprise) {
+            if (alertWidgetCheckBox.getValue()) {
+                updates.add(PortletConstants.ALERT_NAME);
+            }
             if (searchWidgetCheckBox.getValue()) {
                 updates.add(PortletConstants.SEARCH_NAME);
             }
@@ -316,6 +327,8 @@ public class PortletConfigFieldSet extends FieldSet {
             startWidgetCheckBox.setValue(value);
         } else if (PortletConstants.PROCESS_NAME.equals(name)) {
             processWidgetCheckBox.setValue(value);
+        } else if (PortletConstants.ALERT_NAME.equals(name)) {
+            alertWidgetCheckBox.setValue(value);
         } else if (PortletConstants.SEARCH_NAME.equals(name)) {
             searchWidgetCheckBox.setValue(value);
         } else if (PortletConstants.TASKS_NAME.equals(name)) {
@@ -354,6 +367,7 @@ public class PortletConfigFieldSet extends FieldSet {
         startWidgetCheckBox.setValue(false);
         processWidgetCheckBox.setValue(false);
         if (isEnterprise) {
+            alertWidgetCheckBox.setValue(false);
             searchWidgetCheckBox.setValue(false);
             tasksWidgetCheckBox.setValue(false);
             dataChartCheckBox.setValue(false);

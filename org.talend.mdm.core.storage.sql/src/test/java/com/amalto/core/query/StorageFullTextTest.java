@@ -1649,6 +1649,20 @@ public class StorageFullTextTest extends StorageTestCase {
         }
     }
     
+    public void testFullTextSearchResultContainsMultiOccurReferenceFields() throws Exception {
+        UserQueryBuilder qb = from(product).select(product.getField("Name")).select(product.getField("Supplier")).where(fullText("car"));
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+            for (DataRecord result : results) {
+                assertEquals("Renault car", (String)result.get("Name"));
+                assertEquals("2", ((List)result.get("Supplier")).get(0));
+            }
+        } finally {
+            results.close();
+        }
+    }
+    
     public void testFullTextSearchOnComplexType() throws Exception {
         UserQueryBuilder qb = from(persons).where(fullText("1"));
         qb.limit(5);

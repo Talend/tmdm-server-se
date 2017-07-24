@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
-    xmlns:context="http://www.springframework.org/schema/context" xmlns:security="http://www.springframework.org/schema/security"
+    xmlns:context="http://www.springframework.org/schema/context" 
     xmlns:jms="http://www.springframework.org/schema/jms" xmlns:cache="http://www.springframework.org/schema/cache" xmlns:aop="http://www.springframework.org/schema/aop"
     xmlns:amq="http://activemq.apache.org/schema/core"
     xsi:schemaLocation="
 http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
-http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd
 http://www.springframework.org/schema/jms http://www.springframework.org/schema/jms/spring-jms.xsd
 http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
 http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd">
@@ -103,126 +102,7 @@ http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/ac
     </bean>
     <bean id="pluginRegistry" class="com.amalto.core.util.PluginRegistry" factory-method="createInstance">
         <property name="pluginFactory" ref="pluginFactory" />
-    </bean>
-
-    <!-- ======================== -->
-    <!-- Security configuration -->
-    <!-- ======================== -->
-    <bean id="authenticationManager" class="org.springframework.security.authentication.ProviderManager">
-        <property name="providers">
-            <list>
-                <ref bean="jaasAuthenticationProvider" />
-            </list>
-        </property>
-        <property name="eraseCredentialsAfterAuthentication" value="false" />
-    </bean>
-
-    <security:http auto-config="false" pattern="\A/services.*\Z" create-session="ifRequired" entry-point-ref="basicAuthenticationEntryPoint"
-        authentication-manager-ref="authenticationManager" use-expressions="true" path-type="regex">
-        <security:intercept-url pattern="\A/services/rest\?_wadl" requires-channel="any" access="permitAll"
-            method="GET" />
-        <security:intercept-url pattern="\A/services/soap\?wsdl" requires-channel="any" access="permitAll"
-            method="GET" />
-        <security:intercept-url pattern="\A/services/TDSCWS\?wsdl" requires-channel="any" access="permitAll"
-            method="GET" />
-        <security:intercept-url pattern="\A/services" requires-channel="any" access="permitAll" method="GET" />
-        <security:intercept-url pattern="\A/services/run.*\Z" requires-channel="any" access="hasRole('administration')" />
-        <security:intercept-url pattern="\A/services/logviewer.*\Z" requires-channel="any"
-            access="hasRole('administration')" />
-        <security:intercept-url pattern="\A/services/uploadFile.*\Z" requires-channel="any"
-            access="hasRole('administration')" />
-        <security:intercept-url pattern="\A/services/licenseUpload.*\Z" requires-channel="any"
-            access="hasRole('administration')" method="POST" />
-        <security:intercept-url pattern="\A/services/pubcomponent.*\Z" requires-channel="any" access="permitAll"
-            method="GET" />
-        <security:intercept-url pattern="\A/services/pubcomponent.*\Z" requires-channel="any"
-            access="hasRole('administration')" />
-        <security:intercept-url pattern="\A/services/syncuser.*\Z" requires-channel="any"
-            access="hasRole('administration')" />
-        <security:intercept-url pattern="\A/services.*\Z" requires-channel="any" access="hasRole('authenticated')" />
-        <security:custom-filter position="BASIC_AUTH_FILTER" ref="basicAuthenticationFilter" />
-    </security:http>
-
-    <security:http auto-config="false" pattern="/**" entry-point-ref="formLoginAuthenticationEntryPoint"
-        authentication-manager-ref="authenticationManager" use-expressions="true">
-        <security:intercept-url pattern="/auth/**" requires-channel="any" access="permitAll" />
-        <security:intercept-url pattern="/ui" requires-channel="any"
-            access="hasRole('authenticated') and hasRole('UIAuthenticated')" />
-        <security:intercept-url pattern="/logviewer/**" requires-channel="any" access="hasRole('administration')" />
-        <security:intercept-url pattern="/h2console/**" requires-channel="any" access="hasRole('administration')" />
-        <security:intercept-url pattern="/api/**" requires-channel="any" access="hasRole('administration')" />
-        <security:intercept-url pattern="/**" requires-channel="any" access="hasRole('authenticated')" />
-        <security:custom-filter position="FORM_LOGIN_FILTER" ref="formLoginAuthenticationFilter" />
-        <security:custom-filter position="CONCURRENT_SESSION_FILTER" ref="concurrencySessionFilter" />
-        <security:logout logout-url="/auth/logout" invalidate-session="true" delete-cookies="JSESSIONID" />
-        <!-- Disable CSRF protection for now (see http://www.gwtproject.org/doc/latest/DevGuideSecurityRpcXsrf.html) -->
-        <!-- <security:csrf /> -->
-        <security:headers>
-            <!-- X-Frame-Options to SAMEORIGIN -->
-            <security:header ref="sameOriginframeOptionsWriter" />
-        </security:headers>
-        <security:access-denied-handler error-page="/auth/error.jsp?message=error.denied" />
-
-        <security:session-management session-authentication-strategy-ref="sessionAuthenticationStrategy" />
-    </security:http>
-
-    <bean id="sameOriginframeOptionsWriter" class="org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter">
-        <constructor-arg value="SAMEORIGIN" />
-    </bean>
-
-    <bean id="basicAuthenticationEntryPoint" class="org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint">
-        <property name="realmName" value="Talend MDM Services Realm" />
-    </bean>
-
-    <bean id="basicAuthenticationFilter" class="org.springframework.security.web.authentication.www.BasicAuthenticationFilter">
-        <property name="authenticationManager" ref="authenticationManager" />
-        <property name="authenticationEntryPoint" ref="basicAuthenticationEntryPoint" />
-    </bean>
-
-    <bean id="formLoginAuthenticationEntryPoint" class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
-        <property name="loginFormUrl" value="/auth/login.jsp" />
-    </bean>
-
-    <bean id="formLoginAuthenticationFilter" class="org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter">
-        <property name="filterProcessesUrl" value="/auth/j_security_check" />
-        <property name="authenticationManager" ref="authenticationManager" />
-        <property name="authenticationFailureHandler" ref="formLoginFailureHandler" />
-        <property name="authenticationSuccessHandler" ref="formLoginSuccessHandler" />
-        <property name="sessionAuthenticationStrategy" ref="sessionAuthenticationStrategy" />
-    </bean>
-
-    <bean id="formLoginSuccessHandler" class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler">
-        <property name="defaultTargetUrl" value="/ui" />
-        <property name="alwaysUseDefaultTargetUrl" value="true" />
-    </bean>
-
-    <bean id="formLoginFailureHandler" class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">
-        <property name="defaultFailureUrl" value="/auth/login.jsp?auth=fail" />
-    </bean>
-
-    <bean id="concurrencySessionFilter" class="org.springframework.security.web.session.ConcurrentSessionFilter">
-        <property name="sessionRegistry" ref="sessionRegistry" />
-        <property name="expiredUrl" value="/auth/login.jsp" />
-    </bean>
-
-    <bean id="sessionAuthenticationStrategy" class="org.springframework.security.web.authentication.session.CompositeSessionAuthenticationStrategy">
-        <constructor-arg>
-            <list>
-                <bean class="org.springframework.security.web.authentication.session.ConcurrentSessionControlAuthenticationStrategy">
-                    <constructor-arg ref="sessionRegistry" />
-                    <property name="maximumSessions" value="1" />
-                    <property name="exceptionIfMaximumExceeded" value="false" />
-                </bean>
-                <bean class="org.springframework.security.web.authentication.session.SessionFixationProtectionStrategy">
-                </bean>
-                <bean class="org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy">
-                    <constructor-arg ref="sessionRegistry" />
-                </bean>
-            </list>
-        </constructor-arg>
-    </bean>
-
-    <bean id="sessionRegistry" class="org.springframework.security.core.session.SessionRegistryImpl" />
+    </bean>   
 
     <!-- Enabling cache -->
     <cache:annotation-driven cache-manager="mdmCacheManager" />

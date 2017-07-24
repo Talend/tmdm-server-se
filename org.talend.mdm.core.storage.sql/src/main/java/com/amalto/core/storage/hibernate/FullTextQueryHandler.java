@@ -379,7 +379,18 @@ class FullTextQueryHandler extends AbstractQueryHandler {
     }
 
     private static Object getReferencedId(DataRecord next, ReferenceFieldMetadata field) {
-        DataRecord record = (DataRecord) next.get(field);
+        DataRecord record;
+        Object recordObject = next.get(field);
+        if (recordObject != null && recordObject instanceof List) {
+            if (((List<Object>)recordObject).size() > 0) {
+                record = (DataRecord)((List<Object>)recordObject).get(0);
+            } else {
+                return null;
+            }
+        } else {
+            record = (DataRecord)recordObject;
+        }
+        
         if (record != null) {
             Collection<FieldMetadata> keyFields = record.getType().getKeyFields();
             if (keyFields.size() == 1) {

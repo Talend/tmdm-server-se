@@ -1649,7 +1649,7 @@ public class StorageFullTextTest extends StorageTestCase {
         }
     }
     
-    public void testFullTextSearchResultContainsMultiOccurReferanceFields() throws Exception {
+    public void testFullTextSearchResultContainsMultiOccurReferenceFields() throws Exception {
         UserQueryBuilder qb = from(product).select(product.getField("Name")).select(product.getField("Supplier")).where(fullText("car"));
         StorageResults results = storage.fetch(qb.getSelect());
         try {

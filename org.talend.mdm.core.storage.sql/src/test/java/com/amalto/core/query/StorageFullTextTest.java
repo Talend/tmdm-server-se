@@ -106,6 +106,13 @@ public class StorageFullTextTest extends StorageTestCase {
                 + "            <Color>Klein blue2</Color>\n" + "        </Colors>\n" + "    </Features>\n"
                 + "    <Family>[1]</Family>\n" + "    <Status>Pending</Status>\n" + "    <Supplier>[2]</Supplier>\n"
                 + "    <Supplier>[1]</Supplier>\n" + "</Product>"));
+        allRecords.add(factory.read(repository, product, "<Product>\n" + "    <Id>3</Id>\n" + "    <Name>kevin cui</Name>\n"
+                + "    <ShortDescription>A person</ShortDescription>\n"
+                + "    <LongDescription>Long description 3</LongDescription>\n" + "    <Price>100</Price>\n" + "    <Features>\n"
+                + "        <Sizes>\n" + "            <Size>Large</Size>\n" + "        <Size>Large</Size></Sizes>\n"
+                + "        <Colors>\n" + "            <Color>Blue 3</Color>\n" + "            <Color>Blue 4</Color>\n"
+                + "            <Color>Kevin blue3</Color>\n" + "        </Colors>\n" + "    </Features>\n"
+                + "    <Family></Family>\n" + "    <Status>Pending</Status>\n" + "</Product>"));
         allRecords.add(factory.read(repository, supplier, "<Supplier>\n" + "    <Id>1</Id>\n"
                 + "    <SupplierName>Renault</SupplierName>\n" + "    <Contact>" + "        <Name>Jean Voiture</Name>\n"
                 + "        <Phone>33123456789</Phone>\n" + "        <Email>test@test.org</Email>\n" + "    </Contact>\n"
@@ -383,7 +390,7 @@ public class StorageFullTextTest extends StorageTestCase {
             for (DataRecord result : results) {
                 LOG.info("result = " + result);
             }
-            assertEquals(2, results.getCount());
+            assertEquals(3, results.getCount());
         } finally {
             results.close();
         }
@@ -553,7 +560,7 @@ public class StorageFullTextTest extends StorageTestCase {
 
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(2, results.getCount());
+            assertEquals(3, results.getCount());
         } finally {
             results.close();
         }
@@ -618,12 +625,12 @@ public class StorageFullTextTest extends StorageTestCase {
         UserQueryBuilder qb = from(supplier).and(product).where(fullText("*"));
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(6, results.getCount());
+            assertEquals(7, results.getCount());
             int actualCount = 0;
             for (DataRecord result : results) {
                 actualCount++;
             }
-            assertEquals(6, actualCount);
+            assertEquals(7, actualCount);
         } finally {
             results.close();
         }
@@ -631,12 +638,12 @@ public class StorageFullTextTest extends StorageTestCase {
         qb = from(supplier).and(product).where(fullText("**"));
         results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(6, results.getCount());
+            assertEquals(7, results.getCount());
             int actualCount = 0;
             for (DataRecord result : results) {
                 actualCount++;
             }
-            assertEquals(6, actualCount);
+            assertEquals(7, actualCount);
         } finally {
             results.close();
         }
@@ -662,7 +669,7 @@ public class StorageFullTextTest extends StorageTestCase {
         qb = from(supplier).and(product).where(fullText("     "));
         results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(6, results.getCount());
+            assertEquals(7, results.getCount());
         } finally {
             results.close();
         }
@@ -1471,7 +1478,7 @@ public class StorageFullTextTest extends StorageTestCase {
 
         qb = from(product).where(contains(product.getField("Features/Sizes/Size"), "large"));
         results = storage.fetch(qb.getSelect());
-        assertEquals(2, results.getCount());
+        assertEquals(3, results.getCount());
     }
 
     public void testContainsWithReservedCharacters() throws Exception {
@@ -1657,6 +1664,18 @@ public class StorageFullTextTest extends StorageTestCase {
             for (DataRecord result : results) {
                 assertEquals("Renault car", (String)result.get("Name"));
                 assertEquals("2", ((List)result.get("Supplier")).get(0));
+            }
+        } finally {
+            results.close();
+        }
+        
+        qb = from(product).select(product.getField("Name")).select(product.getField("Supplier")).where(fullText("kevin"));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+            for (DataRecord result : results) {
+                assertEquals("kevin cui", (String)result.get("Name"));
+                assertNull(result.get("Supplier"));
             }
         } finally {
             results.close();

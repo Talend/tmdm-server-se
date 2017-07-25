@@ -257,14 +257,18 @@ public class DataRecord {
             List list = (List) fieldToValue.get(field);
             // fields that may contain data records.
             if (field instanceof ReferenceFieldMetadata || field instanceof ContainedTypeFieldMetadata) {
-                if (list == null) {
-                    list = new LinkedList();
-                    fieldToValue.put(field, list);
-                }
-                if (o instanceof Collection) {
-                    list.addAll((Collection) o);
+                if (o != null) {
+                    if (list == null) {
+                        list = new LinkedList();
+                        fieldToValue.put(field, list);
+                    }
+                    if (o instanceof Collection) {
+                        list.addAll((Collection) o);
+                    } else {
+                        list.add(o);
+                    }
                 } else {
-                    list.add(o);
+                    fieldToValue.put(field, o);
                 }
             } else {
                 if (list == null && o instanceof List) {

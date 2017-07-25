@@ -216,8 +216,7 @@ public class MainFramePanel extends Portal {
                     PortletConstants.ROUTING_EVENT_CHART_NAME, PortletConstants.JOURNAL_CHART_NAME,
                     PortletConstants.MATCHING_CHART_NAME);
         } else {
-            return Arrays.asList(PortletConstants.START_NAME, PortletConstants.PROCESS_NAME, PortletConstants.ALERT_NAME,
-                    PortletConstants.TASKS_NAME);
+            return Arrays.asList(PortletConstants.START_NAME, PortletConstants.PROCESS_NAME);
         }
     }
 

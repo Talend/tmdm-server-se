@@ -37,8 +37,6 @@ public interface WelcomePortalServiceAsync {
 
     void getWorkflowTaskMsg(AsyncCallback<Integer> callback);
 
-    void getDSCTaskMsg(AsyncCallback<Map<String, Integer>> callback);
-
     void getStandaloneProcess(String language, AsyncCallback<Map<String, String>> callback);
 
     void runProcess(String transformerPK, AsyncCallback<String> callback);

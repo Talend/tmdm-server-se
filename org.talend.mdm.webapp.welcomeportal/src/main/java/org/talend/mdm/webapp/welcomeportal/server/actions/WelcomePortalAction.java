@@ -124,15 +124,6 @@ public class WelcomePortalAction implements WelcomePortalService {
     }
 
     @Override
-    public Map<String, Integer> getDSCTaskMsg() {
-        Map<String, Integer> taskStatus = new HashMap<String, Integer>();
-        /*int[] taskCounts = Webapp.INSTANCE.getDSCTasksCount();
-        taskStatus.put("new", taskCounts[0]); //$NON-NLS-1$
-        taskStatus.put("pending", taskCounts[1]); //$NON-NLS-1$
-*/        return taskStatus;
-    }
-
-    @Override
     public Map<String, String> getStandaloneProcess(String language) throws ServiceException {
         try {
             Map<String, String> processMap = new HashMap<String, String>();

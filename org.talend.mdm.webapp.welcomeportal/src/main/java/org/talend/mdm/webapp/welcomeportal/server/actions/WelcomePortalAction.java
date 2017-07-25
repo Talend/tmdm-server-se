@@ -113,12 +113,6 @@ public class WelcomePortalAction implements WelcomePortalService {
         }
     }
 
-    @Override
-    public int getAlert(String language) throws ServiceException {
-        // Add check alert action
-        return 0;
-    }
-
     /**
      * get workflow task informations.
      * 

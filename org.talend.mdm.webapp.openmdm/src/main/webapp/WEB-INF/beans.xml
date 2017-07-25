@@ -56,10 +56,8 @@ http://www.springframework.org/schema/security http://www.springframework.org/sc
             </list>
         </property>
     </bean>
-    
-    <!-- ======================== -->
+        
     <!-- Security configuration -->
-    <!-- ======================== -->
     <bean id="authenticationManager" class="org.springframework.security.authentication.ProviderManager">
         <property name="providers">
             <list>

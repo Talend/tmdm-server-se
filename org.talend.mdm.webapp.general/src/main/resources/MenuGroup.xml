@@ -20,7 +20,6 @@
     </groupitem>
     <groupitem en="Administration" fr="Administration" ru="Администрирование">
         <item>usermanager.UserManager</item>
-        <item>licensemanager.LicenseManager</item>
     </groupitem>
     <groupitem en="Tools" fr="Outils">
         <item>logviewer.LogViewer</item>

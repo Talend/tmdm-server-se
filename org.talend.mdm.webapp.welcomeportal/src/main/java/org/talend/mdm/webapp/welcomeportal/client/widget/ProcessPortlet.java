@@ -65,58 +65,51 @@ public class ProcessPortlet extends BasePortlet {
 
                     @Override
                     public void onClick(ClickEvent arg0) {
-                        service.isExpired(UrlUtil.getLanguage(), new SessionAwareAsyncCallback<Boolean>() {
+                        final MessageBox box = MessageBox.wait(null, MessagesFactory.getMessages().waiting_msg(),
+                                MessagesFactory.getMessages().waiting_desc());
+                        Timer t = new Timer() {
 
                             @Override
-                            public void onSuccess(Boolean result1) {
-                                final MessageBox box = MessageBox.wait(null, MessagesFactory.getMessages().waiting_msg(),
-                                        MessagesFactory.getMessages().waiting_desc());
-                                Timer t = new Timer() {
+                            public void run() {
+                                box.close();
+                            }
+                        };
+                        t.schedule(600000);
+                        service.runProcess(key, new SessionAwareAsyncCallback<String>() {
 
-                                    @Override
+                            @Override
+                            protected void doOnFailure(Throwable caught) {
+                                box.close();
+                                MessageBox.alert(MessagesFactory.getMessages().run_status(),
+                                        MessagesFactory.getMessages().run_fail(), null);
+
+                            }
+
+                            @Override
+                            public void onSuccess(final String result2) {
+                                box.close();
+                                final MessageBox msgBox = new MessageBox();
+                                msgBox.setTitle(MessagesFactory.getMessages().run_status());
+                                msgBox.setMessage(MessagesFactory.getMessages().run_launched());
+                                msgBox.setButtons(""); //$NON-NLS-1$
+                                msgBox.setIcon(MessageBox.INFO);
+                                msgBox.show();
+                                Timer timer = new Timer() {
+
                                     public void run() {
-                                        box.close();
+                                        msgBox.close();
+                                        if (result2.length() > 0) {
+                                            portal.openWindow(result2);
+                                        }
                                     }
                                 };
-                                t.schedule(600000);
-                                service.runProcess(key, new SessionAwareAsyncCallback<String>() {
-
-                                    @Override
-                                    protected void doOnFailure(Throwable caught) {
-                                        box.close();
-                                        MessageBox.alert(MessagesFactory.getMessages().run_status(), MessagesFactory
-                                                .getMessages().run_fail(), null);
-
-                                    }
-
-                                    @Override
-                                    public void onSuccess(final String result2) {
-                                        box.close();
-                                        final MessageBox msgBox = new MessageBox();
-                                        msgBox.setTitle(MessagesFactory.getMessages().run_status());
-                                        msgBox.setMessage(MessagesFactory.getMessages().run_launched());
-                                        msgBox.setButtons(""); //$NON-NLS-1$
-                                        msgBox.setIcon(MessageBox.INFO);
-                                        msgBox.show();
-                                        Timer timer = new Timer() {
-
-                                            public void run() {
-                                                msgBox.close();
-                                                if (result2.length() > 0) {
-                                                    portal.openWindow(result2);
-                                                }
-                                            }
-                                        };
-                                        timer.schedule(700);
-                                    }
-                                });
+                                timer.schedule(700);
                             }
                         });
                     }
                 });
                 fieldSet.add(processHtml);
                 fieldSet.layout(true);
-
             }
         }
     }

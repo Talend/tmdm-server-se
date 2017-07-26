@@ -304,10 +304,6 @@ public class ActionsPanelGWTTest extends GWTTestCase {
         }
 
         @Override
-        public void isExpired(String language, AsyncCallback<Boolean> callback) {
-        }
-
-        @Override
         public void supportStaging(String dataCluster, AsyncCallback<Boolean> callback) {
         }
 

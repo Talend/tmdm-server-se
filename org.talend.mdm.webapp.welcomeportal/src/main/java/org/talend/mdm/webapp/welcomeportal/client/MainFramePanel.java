@@ -642,15 +642,7 @@ public class MainFramePanel extends Portal {
     }
 
     public void itemClick(final String context, final String application) {
-        service.isExpired(UrlUtil.getLanguage(), new SessionAwareAsyncCallback<Boolean>() {
-
-            @Override
-            public void onSuccess(Boolean result) {
-                if(!result) {
-                    initUI(context, application);
-                }
-            }
-        });
+        initUI(context, application);
     }
 
     public boolean isHiddenWorkFlowTask() {

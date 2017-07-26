@@ -47,16 +47,6 @@ public class ServerAccessImpl implements ServerAccess {
     }
 
     @Override
-    public boolean isExpired() throws Exception {
-        return isExpired(null);
-    }
-
-    @Override
-    public boolean isExpired(String language) throws Exception {
-        return false;
-    }
-
-    @Override
     public boolean isDataSteWardShip() throws Exception {
         return false;
     }

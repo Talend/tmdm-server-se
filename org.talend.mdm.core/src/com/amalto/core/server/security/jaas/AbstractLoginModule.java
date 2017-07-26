@@ -116,7 +116,7 @@ public abstract class AbstractLoginModule implements LoginModule {
             handleCallbacks();
             try {
 
-                if (isAdminUser()) {
+                if (isAdminUser(username)) {
                     String adminPassword = MDMConfiguration.getAdminPassword();
                     if (adminMD5Password) {
                         if (!md5PasswordEncoder.isPasswordValid(adminPassword, password, null)) {
@@ -147,7 +147,7 @@ public abstract class AbstractLoginModule implements LoginModule {
             return false;
         }
         try {
-            if (isAdminUser()) {
+            if (isAdminUser(username)) {
                 principal = new MDMPrincipal(username);
                 principal.addRole(ICoreConstants.ADMIN_PERMISSION);
             } else {
@@ -200,7 +200,7 @@ public abstract class AbstractLoginModule implements LoginModule {
 
     protected abstract void doReset() throws Exception;
 
-    private boolean isAdminUser() {
+    public static boolean isAdminUser(String username) {
         return username.equals(MDMConfiguration.getAdminUser());
     }
 

@@ -154,8 +154,6 @@ public class AccordionMenus extends ContentPanel {
             icon = "secure/img/menu/updatereport.png"; //$NON-NLS-1$
         } else if ("workflowtasks.BonitaWorkflowTasks".equals(toCheckMenuID)) { //$NON-NLS-1$
             icon = "secure/img/menu/bonita_user_xp.png"; //$NON-NLS-1$
-        } else if ("license.License".equals(toCheckMenuID) || "licensemanager.LicenseManager".equals(toCheckMenuID)) { //$NON-NLS-1$ //$NON-NLS-2$
-            icon = "secure/img/menu/license.png"; //$NON-NLS-1$
         } else if ("datastewardship.Datastewardship".equals(toCheckMenuID)) { //$NON-NLS-1$
             icon = "secure/img/menu/stewardship.png"; //$NON-NLS-1$
         } else if ("search.Search".equals(toCheckMenuID)) { //$NON-NLS-1$
@@ -219,30 +217,7 @@ public class AccordionMenus extends ContentPanel {
                 MessageBox.alert(null, menuBean.getDisabledDesc(), null);
                 return;
             }
-            if (!menuBean.getContext().toLowerCase().equals("licensemanager")) { //$NON-NLS-1$
-                service.isExpired(UrlUtil.getLanguage(), new SessionAwareAsyncCallback<Boolean>() {
-
-                    @Override
-                    public void onSuccess(Boolean result) {
-                        if (!result) {
-                            clickMenu(menuBean, item);
-                        }
-                    }
-
-                    @Override
-                    protected void doOnFailure(final Throwable caught) {
-                        if (menuBean.getContext().toLowerCase().equals("usermanager") && //$NON-NLS-1$
-                                caught != null && caught instanceof LicenseUserNumberValidationException) {
-                            clickMenu(menuBean, item);
-                        } else {
-                            super.doOnFailure(caught);
-                        }
-                    }
-
-                });
-            } else {
-                clickMenu(menuBean, item);
-            }
+            clickMenu(menuBean, item);
         }
     };
 

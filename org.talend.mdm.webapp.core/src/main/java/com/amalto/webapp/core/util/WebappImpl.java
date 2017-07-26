@@ -66,16 +66,6 @@ public class WebappImpl implements Webapp {
     }
 
     @Override
-    public boolean isExpired() throws Exception {
-        return serverAccess.isExpired();
-    }
-    
-    @Override
-    public boolean isExpired(String language) throws Exception {
-        return serverAccess.isExpired(language);
-    }
-
-    @Override
     public boolean isDataSteWardShip() throws Exception {
         return serverAccess.isDataSteWardShip();
     }

@@ -39,8 +39,6 @@ public interface GeneralServiceAsync {
 
     void logout(AsyncCallback<Void> callback);
 
-    void isExpired(String language, AsyncCallback<Boolean> callback);
-
     void supportStaging(String dataCluster, AsyncCallback<Boolean> callback);
 
     void setDefaultLanguage(String language, AsyncCallback<Void> callback);

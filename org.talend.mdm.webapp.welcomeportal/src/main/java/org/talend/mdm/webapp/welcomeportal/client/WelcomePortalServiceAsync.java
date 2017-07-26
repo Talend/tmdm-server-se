@@ -43,8 +43,6 @@ public interface WelcomePortalServiceAsync {
 
     void runProcess(String transformerPK, AsyncCallback<String> callback);
 
-    void isExpired(String language, AsyncCallback<Boolean> callback);
-
     void isEnterpriseVersion(AsyncCallback<Boolean> callback);
 
     void getMenuLabel(String language, String id, AsyncCallback<String> callback);

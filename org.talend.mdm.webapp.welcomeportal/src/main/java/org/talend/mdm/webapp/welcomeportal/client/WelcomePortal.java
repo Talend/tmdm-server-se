@@ -41,8 +41,6 @@ public class WelcomePortal implements EntryPoint {
 
     public final static String BROWSECONTEXT = "browserecords", BROWSEAPP = "BrowseRecords"; //$NON-NLS-1$//$NON-NLS-2$
 
-    public final static String LICENSECONTEXT = "licensemanager", LICENSEAPP = "LicenseManager"; //$NON-NLS-1$ //$NON-NLS-2$
-
     public final static String JOURNALCONTEXT = "journal", JOURNALAPP = "Journal"; //$NON-NLS-1$ //$NON-NLS-2$
 
     public final static String WORKFLOW_TASKCONTEXT = "workflowtasks", WORKFLOW_TASKAPP = "BonitaWorkflowTasks";//$NON-NLS-1$ //$NON-NLS-2$

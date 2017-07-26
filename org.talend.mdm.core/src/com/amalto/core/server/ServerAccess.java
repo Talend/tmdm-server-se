@@ -26,10 +26,6 @@ public interface ServerAccess {
 
     public ServerAccessInfo getInfo();
 
-    public boolean isExpired() throws Exception;
-    
-    public boolean isExpired(String language) throws Exception;
-
     public boolean isDataSteWardShip() throws Exception;
 
     public boolean isEnterpriseVersion();

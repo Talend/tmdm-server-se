@@ -55,12 +55,9 @@ public class StorageAdminImpl implements StorageAdmin {
     private static final boolean autoClean = Boolean.valueOf(MDMConfiguration.getConfiguration().getProperty(
             "db.autoClean", "false")); //$NON-NLS-1$ //$NON-NLS-2$
 
-    private static final String LICENSE_POJO_CLASS = "com.amalto.core.util.license.LicensePOJO"; //$NON-NLS-1$
-
     private static final String VERSIONING_POJO_CLASS = "com.amalto.core.objects.versioning.ejb.VersioningSystemPOJO"; //$NON-NLS-1$
 
-    private static final String[] OPTIONAL_CLASSES = new String[] { LICENSE_POJO_CLASS, VERSIONING_POJO_CLASS,
-            MATCH_RULE_POJO_CLASS };
+    private static final String[] OPTIONAL_CLASSES = new String[] { VERSIONING_POJO_CLASS, MATCH_RULE_POJO_CLASS };
 
     // TODO Change value to an EnumMap
     private final Map<String, MultiKeyMap> storages = new StorageMap();
@@ -230,7 +227,7 @@ public class StorageAdminImpl implements StorageAdmin {
         // Additional POJO handling
         for (String optionalClass : OPTIONAL_CLASSES) {
             try {
-                // Keep the Class.forName() call (LicensePOJO might not be present).
+                // Keep the Class.forName() call.
                 Class<?> clazz = Class.forName(optionalClass);
                 repository.load(clazz);
             } catch (ClassNotFoundException e) {

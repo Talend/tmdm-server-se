@@ -274,11 +274,7 @@ public class WelcomePortalAction implements WelcomePortalService {
             user.setUserXML(parsedUser.serialize());
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
-            String details = e.getMessage();
-            // ignore failure caused by license since user will be notified more specifically in 'Alert' portlet
-            if (!details.contains("com.amalto.core.util.license.LicenseValidationException")) { //$NON-NLS-1$
-                throw new ServiceException(MESSAGES.getMessage("save_portal_config_failed")); //$NON-NLS-1$
-            }
+            throw new ServiceException(MESSAGES.getMessage("save_portal_config_failed")); //$NON-NLS-1$
         }
     }
 

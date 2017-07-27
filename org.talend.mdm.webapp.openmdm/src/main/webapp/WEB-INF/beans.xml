@@ -73,21 +73,13 @@ http://www.springframework.org/schema/security http://www.springframework.org/sc
             method="GET" />
         <security:intercept-url pattern="\A/services/soap\?wsdl" requires-channel="any" access="permitAll"
             method="GET" />
-        <security:intercept-url pattern="\A/services/TDSCWS\?wsdl" requires-channel="any" access="permitAll"
-            method="GET" />
         <security:intercept-url pattern="\A/services" requires-channel="any" access="permitAll" method="GET" />
         <security:intercept-url pattern="\A/services/run.*\Z" requires-channel="any" access="hasRole('administration')" />
-        <security:intercept-url pattern="\A/services/logviewer.*\Z" requires-channel="any"
-            access="hasRole('administration')" />
         <security:intercept-url pattern="\A/services/uploadFile.*\Z" requires-channel="any"
             access="hasRole('administration')" />
-        <security:intercept-url pattern="\A/services/licenseUpload.*\Z" requires-channel="any"
-            access="hasRole('administration')" method="POST" />
         <security:intercept-url pattern="\A/services/pubcomponent.*\Z" requires-channel="any" access="permitAll"
             method="GET" />
         <security:intercept-url pattern="\A/services/pubcomponent.*\Z" requires-channel="any"
-            access="hasRole('administration')" />
-        <security:intercept-url pattern="\A/services/syncuser.*\Z" requires-channel="any"
             access="hasRole('administration')" />
         <security:intercept-url pattern="\A/services.*\Z" requires-channel="any" access="hasRole('authenticated')" />
         <security:custom-filter position="BASIC_AUTH_FILTER" ref="basicAuthenticationFilter" />
@@ -97,9 +89,7 @@ http://www.springframework.org/schema/security http://www.springframework.org/sc
         authentication-manager-ref="authenticationManager" use-expressions="true">
         <security:intercept-url pattern="/auth/**" requires-channel="any" access="permitAll" />
         <security:intercept-url pattern="/ui" requires-channel="any"
-            access="hasRole('authenticated') and hasRole('UIAuthenticated')" />
-        <security:intercept-url pattern="/logviewer/**" requires-channel="any" access="hasRole('administration')" />
-        <security:intercept-url pattern="/h2console/**" requires-channel="any" access="hasRole('administration')" />
+            access="hasRole('authenticated') and hasRole('UIAuthenticated')" />         
         <security:intercept-url pattern="/api/**" requires-channel="any" access="hasRole('administration')" />
         <security:intercept-url pattern="/**" requires-channel="any" access="hasRole('authenticated')" />
         <security:custom-filter position="FORM_LOGIN_FILTER" ref="formLoginAuthenticationFilter" />

@@ -30,10 +30,6 @@ public interface WelcomePortalMessages extends Messages {
 
     String journal();
 
-    String no_license_msg();
-
-    String license_expired_msg();
-
     String loading_task_msg();
 
     String loading_alert_msg();

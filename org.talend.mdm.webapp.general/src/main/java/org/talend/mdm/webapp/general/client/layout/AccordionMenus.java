@@ -11,9 +11,6 @@ package org.talend.mdm.webapp.general.client.layout;
 
 import java.util.Iterator;
 import java.util.List;
-
-import org.talend.mdm.webapp.base.client.SessionAwareAsyncCallback;
-import org.talend.mdm.webapp.base.client.exception.LicenseUserNumberValidationException;
 import org.talend.mdm.webapp.base.client.util.UrlUtil;
 import org.talend.mdm.webapp.base.shared.AppHeader;
 import org.talend.mdm.webapp.base.shared.Constants;

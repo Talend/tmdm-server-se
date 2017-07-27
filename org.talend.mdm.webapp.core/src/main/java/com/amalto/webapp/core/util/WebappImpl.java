@@ -66,18 +66,8 @@ public class WebappImpl implements Webapp {
     }
 
     @Override
-    public boolean isDataSteWardShip() throws Exception {
-        return serverAccess.isDataSteWardShip();
-    }
-
-    @Override
     public boolean isEnterpriseVersion() {
         return serverAccess.isEnterpriseVersion();
-    }
-
-    @Override
-    public String getLicenseWarning(String language) throws Exception {
-        return serverAccess.getLicenseWarning(language);
     }
 
     @Override

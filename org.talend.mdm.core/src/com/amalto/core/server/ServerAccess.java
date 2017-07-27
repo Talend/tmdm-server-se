@@ -13,10 +13,6 @@ public interface ServerAccess {
 
     public interface ServerAccessInfo {
 
-        public boolean isLicenseValid();
-
-        public String getLicense();
-        
         public String getProductName();
         
         public String getProductEdition();
@@ -26,11 +22,7 @@ public interface ServerAccess {
 
     public ServerAccessInfo getInfo();
 
-    public boolean isDataSteWardShip() throws Exception;
-
     public boolean isEnterpriseVersion();
-
-    public String getLicenseWarning(String language) throws Exception;
 
     public int getWorkflowTasksCount();
 

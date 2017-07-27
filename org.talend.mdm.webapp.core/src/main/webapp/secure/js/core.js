@@ -677,8 +677,6 @@ amalto.core = function () {
                         	imageIconPart="<span style=\"padding-right:8px;\"><IMG SRC=\"/talendmdm/secure/img/menu/updatereport.png\"/></span>";
                         }else if(toCheckMenuID=='workflowtasks.WorkflowTasks'){
                         	imageIconPart="<span style=\"padding-right:8px;\"><IMG SRC=\"/talendmdm/secure/img/menu/workflowtasks.png\"/></span>";
-                        }else if(toCheckMenuID=='license.License'){
-                        	imageIconPart="<span style=\"padding-right:8px;\"><IMG SRC=\"/talendmdm/secure/img/menu/license.png\"/></span>";
                         }else if(toCheckMenuID=='datastewardship.Datastewardship'){
                         	imageIconPart="<span style=\"padding-right:8px;\"><IMG SRC=\"/talendmdm/secure/img/menu/stewardship.png\"/></span>";
                         }else{
@@ -748,27 +746,6 @@ amalto.core = function () {
 					$("menu-"+menu.id+"-div").style.display="none";
 					$("menu-"+menu.id+"-span").style.background="url(/core/secure/img/tree-closed.gif) no-repeat 0px 9px;";				
 				}
-			}
-			else if(menu.application.toLowerCase() == 'license') {
-				Ext.MessageBox.show({
-			           msg: 'Parsing informations of license, please wait...',
-			           progressText: 'Loading',
-			           width:300,
-			           wait:false,
-			           waitConfig: {interval:200}
-			        });
-				DWREngine.setAsync(false);
-				//load the script if necessary
-				amalto.core.loadMainScript(
-				menu.context,
-				menu.application,
-				function() {
-					var initFunction = "amalto."+menu.context+"."+menu.application.replace(/\s/g,'')+".init()";
-					setTimeout(initFunction,'50');
-					}
-				);
-				DWREngine.setAsync(true);
-				Ext.MessageBox.hide();
 			}else {
 				DWREngine.setAsync(false);
 				LayoutInterface.isShowMsg({

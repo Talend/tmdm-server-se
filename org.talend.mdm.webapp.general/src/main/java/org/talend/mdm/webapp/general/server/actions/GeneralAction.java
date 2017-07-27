@@ -43,7 +43,6 @@ import org.w3c.dom.NodeList;
 
 import com.amalto.core.delegator.ILocalUser;
 import com.amalto.core.server.ServerAccess.ServerAccessInfo;
-import com.amalto.core.util.LicenseUserNumberValidationException;
 import com.amalto.core.util.LocalUser;
 import com.amalto.core.util.Messages;
 import com.amalto.core.util.MessagesFactory;
@@ -248,7 +247,6 @@ public class GeneralAction implements GeneralService {
             if (storeLang != null && !"".equals(storeLang)) { //$NON-NLS-1$
                 lang = storeLang;
             } else {
-                // language is not set try to store it (if license is set)
                 setDefaultLanguage(language, true);
             }
             return Utils.getLanguages(lang);

@@ -16,14 +16,6 @@ public class ServerAccessImpl implements ServerAccess {
     public ServerAccessImpl() {
         serverAccessInfo = new ServerAccessInfo() {
 
-            public boolean isLicenseValid() {
-                return false;
-            }
-
-            public String getLicense() {
-                return null;
-            }
-            
             @Override
             public String getProductName() {
                 return "Talend MDM"; //$NON-NLS-1$
@@ -47,18 +39,8 @@ public class ServerAccessImpl implements ServerAccess {
     }
 
     @Override
-    public boolean isDataSteWardShip() throws Exception {
-        return false;
-    }
-
-    @Override
     public boolean isEnterpriseVersion() {
         return false;
-    }
-
-    @Override
-    public String getLicenseWarning(String language) throws Exception {
-        return null;
     }
 
     @Override

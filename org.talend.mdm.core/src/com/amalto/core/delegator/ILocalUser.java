@@ -9,31 +9,27 @@
  */
 package com.amalto.core.delegator;
 
-import com.amalto.core.objects.ItemPOJO;
-import com.amalto.core.query.user.UserQueryBuilder;
-import com.amalto.core.server.ServerContext;
-import com.amalto.core.server.StorageAdmin;
-import com.amalto.core.storage.Storage;
-import com.amalto.core.storage.StorageResults;
-import com.amalto.core.storage.StorageType;
-import com.amalto.core.storage.record.DataRecord;
-import com.amalto.core.storage.record.DataRecordWriter;
-import com.amalto.core.storage.record.DataRecordXmlWriter;
-import com.amalto.core.util.User;
-import com.amalto.core.util.XtentisException;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.Collection;
+import java.util.HashSet;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.Collection;
-import java.util.HashSet;
-
-import static com.amalto.core.query.user.UserQueryBuilder.eq;
-import static com.amalto.core.query.user.UserQueryBuilder.from;
+import com.amalto.core.objects.ItemPOJO;
+import com.amalto.core.server.ServerContext;
+import com.amalto.core.server.StorageAdmin;
+import com.amalto.core.server.security.SecurityUtils;
+import com.amalto.core.storage.Storage;
+import com.amalto.core.storage.StorageType;
+import com.amalto.core.storage.record.DataRecord;
+import com.amalto.core.storage.record.DataRecordWriter;
+import com.amalto.core.storage.record.DataRecordXmlWriter;
+import com.amalto.core.util.User;
+import com.amalto.core.util.XtentisException;
 
 public abstract class ILocalUser implements IBeanDelegator {
     
@@ -57,18 +53,12 @@ public abstract class ILocalUser implements IBeanDelegator {
         StorageAdmin storageAdmin = ServerContext.INSTANCE.get().getStorageAdmin();
         Storage systemStorage = storageAdmin.get(StorageAdmin.SYSTEM_STORAGE, StorageType.SYSTEM);
         ComplexTypeMetadata userType = systemStorage.getMetadataRepository().getComplexType("User"); //$NON-NLS-1$
-        UserQueryBuilder qb = from(userType).where(eq(userType.getField("username"), getUsername())); //$NON-NLS-1$
         DataRecordWriter writer = new DataRecordXmlWriter(userType);
         StringWriter userXml = new StringWriter();
         try {
-            systemStorage.begin();
-            StorageResults results = systemStorage.fetch(qb.getSelect());
-            for (DataRecord result : results) {
-                writer.write(result, userXml);
-            }
-            systemStorage.commit();
+            DataRecord dataRecord = SecurityUtils.retrieveUserDataRecord(getUsername());
+            writer.write(dataRecord, userXml);
         } catch (IOException e) {
-            systemStorage.rollback();
             throw new RuntimeException("Could not access user record.", e); //$NON-NLS-1$
         }
         return userXml.toString();

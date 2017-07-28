@@ -30,6 +30,7 @@ import org.talend.mdm.commmon.util.core.ICoreConstants;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
 
 import com.amalto.core.server.security.MDMPrincipal;
+import com.amalto.core.server.security.SecurityUtils;
 
 public abstract class AbstractLoginModule implements LoginModule {
 
@@ -116,7 +117,7 @@ public abstract class AbstractLoginModule implements LoginModule {
             handleCallbacks();
             try {
 
-                if (isAdminUser(username)) {
+                if (SecurityUtils.isAdminUser(username)) {
                     String adminPassword = MDMConfiguration.getAdminPassword();
                     if (adminMD5Password) {
                         if (!md5PasswordEncoder.isPasswordValid(adminPassword, password, null)) {
@@ -147,7 +148,7 @@ public abstract class AbstractLoginModule implements LoginModule {
             return false;
         }
         try {
-            if (isAdminUser(username)) {
+            if (SecurityUtils.isAdminUser(username)) {
                 principal = new MDMPrincipal(username);
                 principal.addRole(ICoreConstants.ADMIN_PERMISSION);
             } else {
@@ -199,10 +200,6 @@ public abstract class AbstractLoginModule implements LoginModule {
     protected abstract MDMPrincipal doCommit() throws Exception;
 
     protected abstract void doReset() throws Exception;
-
-    public static boolean isAdminUser(String username) {
-        return username.equals(MDMConfiguration.getAdminUser());
-    }
 
     private void retrievePass() {
         username = (String) sharedState.get(AUTH_LOGIN_NAME);

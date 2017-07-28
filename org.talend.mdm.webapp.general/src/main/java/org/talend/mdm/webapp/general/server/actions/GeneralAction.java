@@ -18,6 +18,7 @@ import javax.servlet.http.HttpSession;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -259,16 +260,21 @@ public class GeneralAction implements GeneralService {
     }
 
     @Override
-    public void logout() throws ServiceException {
+    public String logout() throws ServiceException {
         try {
-            Util.getPort().logout(new WSLogout("")).getValue(); //$NON-NLS-1$
-            HttpSession session = SessionContextHolder.currentSession();
-            if (session != null) {
-                session.invalidate();
+            if(MDMConfiguration.isIamEnabled()) {
+                return "/logout"; //$NON-NLS-1$
+            } else {
+                Util.getPort().logout(new WSLogout(StringUtils.EMPTY)).getValue();
+                HttpSession session = SessionContextHolder.currentSession();
+                if (session != null) {
+                    session.invalidate();
+                }
+                SecurityContext context = SecurityContextHolder.getContext();
+                context.setAuthentication(null);
+                SecurityContextHolder.clearContext();
+                return StringUtils.EMPTY;
             }
-            SecurityContext context = SecurityContextHolder.getContext();
-            context.setAuthentication(null);
-            SecurityContextHolder.clearContext();
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
             throw new ServiceException(e.getLocalizedMessage());

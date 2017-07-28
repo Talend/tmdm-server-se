@@ -40,7 +40,7 @@ public interface GeneralService extends RemoteService {
 
     public List<LanguageBean> getLanguages(String language) throws ServiceException;
 
-    public void logout() throws ServiceException;
+    public String logout() throws ServiceException;
 
     public boolean supportStaging(String dataCluster) throws ServiceException;
 

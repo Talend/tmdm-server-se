@@ -9,6 +9,7 @@
  */
 package com.amalto.core.delegator;
 
+
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Collection;
@@ -17,6 +18,7 @@ import java.util.HashSet;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 
 import com.amalto.core.objects.ItemPOJO;
@@ -67,7 +69,10 @@ public abstract class ILocalUser implements IBeanDelegator {
     public String getUsername() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Object principal = authentication.getPrincipal();
-        return (String)principal; 
+        if (principal instanceof UserDetails) {
+            return ((UserDetails) principal).getUsername();
+        }
+        return (String) principal;
     }
 
     public String getPassword() {

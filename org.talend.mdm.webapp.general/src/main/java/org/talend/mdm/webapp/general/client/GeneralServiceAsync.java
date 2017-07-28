@@ -37,7 +37,7 @@ public interface GeneralServiceAsync {
 
     void getAction(AsyncCallback<ActionBean> callback);
 
-    void logout(AsyncCallback<Void> callback);
+    void logout(AsyncCallback<String> callback);
 
     void supportStaging(String dataCluster, AsyncCallback<Boolean> callback);
 

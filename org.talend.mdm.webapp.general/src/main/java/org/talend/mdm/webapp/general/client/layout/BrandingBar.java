@@ -130,13 +130,13 @@ public class BrandingBar extends ContentPanel {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 GeneralServiceAsync service = (GeneralServiceAsync) Registry.get(General.OVERALL_SERVICE);
-                service.logout(new SessionAwareAsyncCallback<Void>() {
+                service.logout(new SessionAwareAsyncCallback<String>() {
 
                     @Override
-                    public void onSuccess(Void result) {
+                    public void onSuccess(String redirectUrl) {
                         Cookies.removeCookie("JSESSIONID"); //$NON-NLS-1$
                         Cookies.removeCookie("JSESSIONIDSSO"); //$NON-NLS-1$
-                        Window.Location.replace(GWT.getHostPageBaseURL());
+                        Window.Location.replace(GWT.getHostPageBaseURL() + redirectUrl);
                     }
                 });
             }

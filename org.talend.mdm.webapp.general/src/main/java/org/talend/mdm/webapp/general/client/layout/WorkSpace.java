@@ -235,10 +235,9 @@ public class WorkSpace extends LayoutContainer {
     }-*/;
 
     public void clearTabs() {
-        String itemId1 = GeneralView.DSCID;
         String itemId2 = GeneralView.WELCOMEID;
         for (String id : uiMap.keySet()) {
-            if (!(itemId1.equals(id) || itemId2.equals(id))) {
+            if (!(itemId2.equals(id))) {
                 workTabPanel.getItemByItemId(id).removeFromParent();
             }
         }

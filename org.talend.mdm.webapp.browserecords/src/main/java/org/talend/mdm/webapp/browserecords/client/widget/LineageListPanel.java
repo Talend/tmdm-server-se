@@ -598,9 +598,4 @@ public class LineageListPanel extends ContentPanel {
 			tabPanel.setSelection(panel.getItemId());
 		}
     }-*/;
-
-    private native boolean initDSC(String taskId)/*-{
-		$wnd.amalto.datastewardship.Datastewardship.taskItem(taskId);
-		return true;
-    }-*/;
 }

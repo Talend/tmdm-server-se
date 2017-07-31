@@ -1240,11 +1240,6 @@ public class ItemDetailToolBar extends ToolBar {
         add(cancelButton);
     }
 
-    private native boolean initDSC(String taskId)/*-{
-		$wnd.amalto.datastewardship.Datastewardship.taskItem(taskId);
-		return true;
-    }-*/;
-
     protected void initSmartViewToolBar() {
         addGeneratedViewButton();
         addSeparator();

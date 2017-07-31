@@ -9,8 +9,6 @@
  */
 package org.talend.mdm.webapp.welcomeportal.client.widget;
 
-import java.util.Map;
-
 import org.talend.mdm.webapp.base.client.SessionAwareAsyncCallback;
 import org.talend.mdm.webapp.base.client.i18n.BaseMessagesFactory;
 import org.talend.mdm.webapp.base.client.util.UrlUtil;
@@ -45,10 +43,6 @@ public class TaskPortlet extends BasePortlet {
 
     private String tdsServiceBaseUrl = GWT.getHostPageBaseURL() + "services/rest/tds/";
 
-    private static String DSCTASKTYPE_NEW = "new"; //$NON-NLS-1$
-
-    private static String DSCTASKTYPE_PENDING = "pending"; //$NON-NLS-1$
-
     private static String WORKFLOWTASKS_PREFIX = "<span id=\"workflowtasks\" style=\"padding-right:8px;cursor: pointer;\" class=\"labelStyle\" title=\"" + MessagesFactory.getMessages().tasks_title() + "\">"; //$NON-NLS-1$ //$NON-NLS-2$
 
     private static String DSCTASKS_PREFIX = "<span id=\"dsctasks\" style=\"padding-right:8px;cursor: pointer;\" class=\"labelStyle\" title=\"" + MessagesFactory.getMessages().tasks_title() + "\">"; //$NON-NLS-1$ //$NON-NLS-2$
@@ -59,7 +53,6 @@ public class TaskPortlet extends BasePortlet {
 
     private enum TASK_TYPE {
         WORKFLOW_TYPE,
-        DSC_TYPE,
         TDS_TYPE
     };
 
@@ -70,8 +63,6 @@ public class TaskPortlet extends BasePortlet {
     private Integer workflowTaskNewCount;
 
     private ClickHandler workflowClikcHanlder;
-
-    private ClickHandler dscClikcHanlder;
 
     private ClickHandler tdsClikcHanlder;
 
@@ -91,14 +82,6 @@ public class TaskPortlet extends BasePortlet {
             @Override
             public void onClick(ClickEvent event) {
                 portal.itemClick(WelcomePortal.WORKFLOW_TASKCONTEXT, WelcomePortal.WORKFLOW_TASKAPP);
-            }
-        };
-
-        dscClikcHanlder = new ClickHandler() {
-
-            @Override
-            public void onClick(ClickEvent event) {
-                portal.itemClick(WelcomePortal.DSC_TASKCONTEXT, WelcomePortal.DSC_TASKAPP);
             }
         };
 
@@ -292,11 +275,6 @@ public class TaskPortlet extends BasePortlet {
             taskStringBuilder = new StringBuilder(WORKFLOWTASKS_PREFIX);
             countString = buildMessage(String.valueOf(count1), MessagesFactory.getMessages().waiting_workflowtask_suffix());
             taskHtml.addClickHandler(workflowClikcHanlder);
-        } else if (type == TASK_TYPE.DSC_TYPE) {
-            taskStringBuilder = new StringBuilder(DSCTASKS_PREFIX);
-            countString = buildMessage(MessagesFactory.getMessages().waiting_dsctask(count1, count2), MessagesFactory
-                    .getMessages().waiting_dsctask_suffix());
-            taskHtml.addClickHandler(dscClikcHanlder);
         } else if (type == TASK_TYPE.TDS_TYPE) {
             taskStringBuilder = new StringBuilder(DSCTASKS_PREFIX);
             countString = buildMessage(MessagesFactory.getMessages().waiting_task(count1), MessagesFactory.getMessages()

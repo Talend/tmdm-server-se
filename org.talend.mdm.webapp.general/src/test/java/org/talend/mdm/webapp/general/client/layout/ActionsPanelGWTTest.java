@@ -300,7 +300,7 @@ public class ActionsPanelGWTTest extends GWTTestCase {
         }
 
         @Override
-        public void logout(AsyncCallback<Void> callback) {
+        public void logout(AsyncCallback<String> callback) {
         }
 
         @Override

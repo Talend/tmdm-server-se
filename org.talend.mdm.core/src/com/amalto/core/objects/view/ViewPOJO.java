@@ -34,6 +34,10 @@ public class ViewPOJO extends ObjectPOJO {
     private String transformerPK;
 
     private boolean isTransformerActive;
+    
+    private boolean isAsc;
+    
+    private String sortField;
 
     public ViewPOJO(String name) {
    		this.name = name;
@@ -112,14 +116,28 @@ public class ViewPOJO extends ObjectPOJO {
     public void setWhereConditions(ArrayListHolder<IWhereItem> whereConditions) {
 		this.whereConditions = whereConditions;
 	}
+    
+    public boolean getIsAsc() {
+        return isAsc;
+    }
 
-	@Override
+    public void setIsAsc(boolean isAsc) {
+        this.isAsc = isAsc;
+    }
+    
+    public String getSortField() {
+        return sortField;
+    }
+    
+    public void setSortField(String sortField) {
+        this.sortField = sortField;
+    }
+
+    @Override
 	public ObjectPOJOPK getPK() {
         if (getName() == null) {
             return null;
         }
         return new ObjectPOJOPK(new String[]{name});
     }
-
-
 }

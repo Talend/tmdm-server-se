@@ -179,11 +179,11 @@ public abstract class IItemCtrlDelegator implements IBeanDelegator, IItemCtrlDel
             qb.start(start < 0 ? 0 : start); // UI can send negative start index
             qb.limit(limit);
             // Order by
-            if (orderBy != null) {
-                ComplexTypeMetadata orderByType = repository.getComplexType(StringUtils.substringBefore(orderBy, "/")); //$NON-NLS-1$
-                String orderByFieldName = StringUtils.substringAfter(orderBy, "/"); //$NON-NLS-1$
-                List<TypedExpression> fields = UserQueryHelper.getFields(orderByType, orderByFieldName);
-                OrderBy.Direction queryDirection;
+            String orderByFieldPath;
+            OrderBy.Direction queryDirection;
+            
+            if (StringUtils.isNotEmpty(orderBy)) {
+                orderByFieldPath = orderBy;
                 if ("ascending".equals(direction) //$NON-NLS-1$
                         || "NUMBER:ascending".equals(direction) //$NON-NLS-1$
                         || "ASC".equals(direction)) { //$NON-NLS-1$
@@ -191,10 +191,19 @@ public abstract class IItemCtrlDelegator implements IBeanDelegator, IItemCtrlDel
                 } else {
                     queryDirection = OrderBy.Direction.DESC;
                 }
+            } else {
+                orderByFieldPath = view.getSortField();
+                queryDirection = view.getIsAsc() ? OrderBy.Direction.ASC : OrderBy.Direction.DESC;
+            }
+            if (StringUtils.isNotEmpty(orderByFieldPath)) {
+                ComplexTypeMetadata orderByType = repository.getComplexType(StringUtils.substringBefore(orderByFieldPath, "/")); //$NON-NLS-1$
+                String orderByFieldName = StringUtils.substringAfter(orderByFieldPath, "/"); //$NON-NLS-1$
+                List<TypedExpression> fields = UserQueryHelper.getFields(orderByType, orderByFieldName);
                 for (TypedExpression field : fields) {
                     qb.orderBy(field, queryDirection);
                 }
             }
+
             // Get records
             ArrayList<String> resultsAsString = new ArrayList<String>();
             try {

@@ -20,11 +20,16 @@ public class WSView {
     protected java.lang.String[] searchableBusinessElements;
     protected java.lang.String transformerPK;
     protected com.amalto.core.webservice.WSBoolean isTransformerActive;
+    protected com.amalto.core.webservice.WSBoolean isAsc;
+    protected java.lang.String sortField;
     
     public WSView() {
     }
     
-    public WSView(java.lang.String name, java.lang.String description, java.lang.String[] viewableBusinessElements, com.amalto.core.webservice.WSWhereCondition[] whereConditions, java.lang.String[] searchableBusinessElements, java.lang.String transformerPK, com.amalto.core.webservice.WSBoolean isTransformerActive) {
+    public WSView(java.lang.String name, java.lang.String description, java.lang.String[] viewableBusinessElements,
+            com.amalto.core.webservice.WSWhereCondition[] whereConditions, java.lang.String[] searchableBusinessElements,
+            java.lang.String transformerPK, com.amalto.core.webservice.WSBoolean isTransformerActive, com.amalto.core.webservice.WSBoolean isAsc,
+            java.lang.String sortField) {
         this.name = name;
         this.description = description;
         this.viewableBusinessElements = viewableBusinessElements;
@@ -32,6 +37,8 @@ public class WSView {
         this.searchableBusinessElements = searchableBusinessElements;
         this.transformerPK = transformerPK;
         this.isTransformerActive = isTransformerActive;
+        this.isAsc = isAsc;
+        this.sortField = sortField;
     }
     
     public java.lang.String getName() {
@@ -88,5 +95,21 @@ public class WSView {
     
     public void setIsTransformerActive(com.amalto.core.webservice.WSBoolean isTransformerActive) {
         this.isTransformerActive = isTransformerActive;
+    }
+    
+    public com.amalto.core.webservice.WSBoolean getIsAsc() {
+        return isAsc;
+    }
+    
+    public void setIsAsc(com.amalto.core.webservice.WSBoolean isAsc) {
+        this.isAsc = isAsc;
+    }
+    
+    public java.lang.String getSortField() {
+        return sortField;
+    }
+    
+    public void setSortField(java.lang.String sortField) {
+        this.sortField = sortField;
     }
 }

@@ -142,16 +142,15 @@ public class DefaultItemTest extends TestCase {
         // 1, one equals condition
         IWhereItem whereItem = new WhereAnd(conditions);
         List<String> queryResult;
-        Object[] parseResult;
+        List<Object[]> parseResult;
         try {
-            queryResult = item.viewSearch(new DataClusterPOJOPK("DStar"), dtStarViewPOJO, whereItem, null, null, 0, 20);
-            parseResult = parseResult(queryResult.toArray(new String[queryResult.size()]));
-            assertEquals(1, parseResult[0]);
-            assertEquals("3", parseResult[1]);
-            assertEquals("Juste", parseResult[2]);
-            assertEquals("John", parseResult[3]);
-            assertEquals("Leblanc_1", parseResult[4]);
-            assertEquals("my resume", parseResult[5]);
+            parseResult = parseResult(item.viewSearch(new DataClusterPOJOPK("DStar"), dtStarViewPOJO, whereItem, null, null, 0, 20));
+            assertEquals(1, parseResult.size());
+            assertEquals("3", parseResult.get(0)[0]);
+            assertEquals("Juste", parseResult.get(0)[1]);
+            assertEquals("John", parseResult.get(0)[2]);
+            assertEquals("Leblanc_1", parseResult.get(0)[3]);
+            assertEquals("my resume", parseResult.get(0)[4]);
         } catch (Exception e) {
             fail("Query failed");
         }
@@ -159,17 +158,15 @@ public class DefaultItemTest extends TestCase {
         // 2. one empty condition one result
         conditions = new ArrayList<IWhereItem>();
         conditions.add(new WhereCondition("Person/resume", WhereCondition.EMPTY_NULL, "", "NONE"));
-
         whereItem = new WhereAnd(conditions);
         try {
-            queryResult = item.viewSearch(new DataClusterPOJOPK("DStar"), dtStarViewPOJO, whereItem, null, null, 0, 20);
-            parseResult = parseResult(queryResult.toArray(new String[queryResult.size()]));
-            assertEquals(1, parseResult[0]);
-            assertEquals("4", parseResult[1]);
-            assertEquals("Julien", parseResult[2]);
-            assertEquals("John", parseResult[3]);
-            assertEquals("Leblanc_2", parseResult[4]);
-            assertEquals("", parseResult[5]);
+            parseResult = parseResult(item.viewSearch(new DataClusterPOJOPK("DStar"), dtStarViewPOJO, whereItem, null, null, 0, 20));
+            assertEquals(1, parseResult.size());
+            assertEquals("4", parseResult.get(0)[0]);
+            assertEquals("Julien", parseResult.get(0)[1]);
+            assertEquals("John", parseResult.get(0)[2]);
+            assertEquals("Leblanc_2", parseResult.get(0)[3]);
+            assertEquals("", parseResult.get(0)[4]);
         } catch (Exception e) {
             fail("Query failed");
         }
@@ -178,9 +175,8 @@ public class DefaultItemTest extends TestCase {
         conditions.add(new WhereCondition("Person/firstname", WhereCondition.EQUALS, "Juste", "NONE"));
         whereItem = new WhereAnd(conditions);
         try {
-            queryResult = item.viewSearch(new DataClusterPOJOPK("DStar"), dtStarViewPOJO, whereItem, null, null, 0, 20);
-            parseResult = parseResult(queryResult.toArray(new String[queryResult.size()]));
-            assertEquals(0, parseResult[0]);
+            parseResult = parseResult(item.viewSearch(new DataClusterPOJOPK("DStar"), dtStarViewPOJO, whereItem, null, null, 0, 20));
+            assertEquals(0, parseResult.size());
         } catch (Exception e) {
             fail("Query failed");
         }
@@ -191,14 +187,13 @@ public class DefaultItemTest extends TestCase {
         conditions.add(new WhereCondition("Person/firstname", WhereCondition.EQUALS, "Julien", "NONE"));
         whereItem = new WhereAnd(conditions);
         try {
-            queryResult = item.viewSearch(new DataClusterPOJOPK("DStar"), dtStarViewPOJO, whereItem, null, null, 0, 20);
-            parseResult = parseResult(queryResult.toArray(new String[queryResult.size()]));
-            assertEquals(1, parseResult[0]);
-            assertEquals("4", parseResult[1]);
-            assertEquals("Julien", parseResult[2]);
-            assertEquals("John", parseResult[3]);
-            assertEquals("Leblanc_2", parseResult[4]);
-            assertEquals("", parseResult[5]);
+            parseResult = parseResult(item.viewSearch(new DataClusterPOJOPK("DStar"), dtStarViewPOJO, whereItem, null, null, 0, 20));
+            assertEquals(1, parseResult.size());
+            assertEquals("4", parseResult.get(0)[0]);
+            assertEquals("Julien", parseResult.get(0)[1]);
+            assertEquals("John", parseResult.get(0)[2]);
+            assertEquals("Leblanc_2", parseResult.get(0)[3]);
+            assertEquals("", parseResult.get(0)[4]);
         } catch (Exception e) {
             fail("Query failed");
         }
@@ -218,21 +213,142 @@ public class DefaultItemTest extends TestCase {
         assertNotNull(t);
         assertTrue(t instanceof com.amalto.core.util.XtentisException);
         assertTrue(t.getMessage().startsWith("Unable to single search:"));
+        
+        // 6 sort
+        allRecords = new LinkedList<DataRecord>();
+        allRecords.add(factory.read(repository, person,
+                "<Person><id>1</id><score>200000.00</score><lastname>Leblanc_5</lastname><middlename>John1</middlename><firstname>B</firstname><age>30</age><resume>Resume1</resume><Status>Friend</Status></Person>"));
+        allRecords.add(factory.read(repository, person,
+                "<Person><id>2</id><score>200000.00</score><lastname>Leblanc_4</lastname><middlename>John2</middlename><firstname>D</firstname><age>30</age><resume>Resume2</resume><Status>Friend</Status></Person>"));
+        allRecords.add(factory.read(repository, person,
+                "<Person><id>3</id><score>200000.00</score><lastname>Leblanc_3</lastname><middlename>John3</middlename><firstname>C</firstname><age>30</age><resume>Resume3</resume><Status>Friend</Status></Person>"));
+        allRecords.add(factory.read(repository, person,
+                "<Person><id>4</id><score>200000.00</score><lastname>Leblanc_2</lastname><middlename>John4</middlename><firstname>A</firstname><age>30</age><resume>Resume1</resume><Status>Friend</Status></Person>"));
+        allRecords.add(factory.read(repository, person,
+                "<Person><id>5</id><score>200000.00</score><lastname>Aeblanc_1</lastname><middlename>John5</middlename><firstname>E</firstname><age>30</age><resume>Resume1</resume><Status>Friend</Status></Person>"));
+        storage.begin();
+        storage.update(allRecords);
+        storage.commit();
+        // 6.1 default sort
+        try {
+            parseResult = parseResult(item.viewSearch(new DataClusterPOJOPK("DStar"), dtStarViewPOJO, null, null, null, 0, 20));
+            assertEquals(5, parseResult.size());
+            assertEquals("1", parseResult.get(0)[0]);
+            assertEquals("B", parseResult.get(0)[1]);
+            assertEquals("Leblanc_5", parseResult.get(0)[3]);
+            assertEquals("2", parseResult.get(1)[0]);
+            assertEquals("D", parseResult.get(1)[1]);
+            assertEquals("Leblanc_4", parseResult.get(1)[3]);
+            assertEquals("3", parseResult.get(2)[0]);
+            assertEquals("C", parseResult.get(2)[1]);
+            assertEquals("Leblanc_3", parseResult.get(2)[3]);
+            assertEquals("4", parseResult.get(3)[0]);
+            assertEquals("A", parseResult.get(3)[1]);
+            assertEquals("Leblanc_2", parseResult.get(3)[3]);
+            assertEquals("5", parseResult.get(4)[0]);
+            assertEquals("E", parseResult.get(4)[1]);
+            assertEquals("Aeblanc_1", parseResult.get(4)[3]);
+        } catch (Exception e) {
+            fail("Query failed");
+        }
+
+        // 6.2 sort by view definition (order by firstname asc)
+        try {
+            parseResult = parseResult(item.viewSearch(new DataClusterPOJOPK("DStar"), new ViewPOJOPK("Browse_items_Person_"),
+                    null, null, null, 0, 20));
+            assertEquals(5, parseResult.size());
+            assertEquals("4", parseResult.get(0)[0]);
+            assertEquals("A", parseResult.get(0)[1]);
+            assertEquals("Leblanc_2", parseResult.get(0)[3]);
+            assertEquals("1", parseResult.get(1)[0]);
+            assertEquals("B", parseResult.get(1)[1]);
+            assertEquals("Leblanc_5", parseResult.get(1)[3]);
+            assertEquals("3", parseResult.get(2)[0]);
+            assertEquals("C", parseResult.get(2)[1]);
+            assertEquals("Leblanc_3", parseResult.get(2)[3]);
+            assertEquals("2", parseResult.get(3)[0]);
+            assertEquals("D", parseResult.get(3)[1]);
+            assertEquals("Leblanc_4", parseResult.get(3)[3]);
+            assertEquals("5", parseResult.get(4)[0]);
+            assertEquals("E", parseResult.get(4)[1]);
+            assertEquals("Aeblanc_1", parseResult.get(4)[3]);
+        } catch (Exception e) {
+            fail("Query failed");
+        }
+
+        // 6.3 sort by view definition (order by firstname asc) with filter (lastname CONTAINS 'L')
+        try {
+            parseResult = parseResult(item.viewSearch(new DataClusterPOJOPK("DStar"),
+                    new ViewPOJOPK("Browse_items_Person_Filter"), null, null, null, 0, 20));
+            assertEquals(4, parseResult.size());
+            assertEquals("4", parseResult.get(0)[0]);
+            assertEquals("A", parseResult.get(0)[1]);
+            assertEquals("Leblanc_2", parseResult.get(0)[3]);
+            assertEquals("1", parseResult.get(1)[0]);
+            assertEquals("B", parseResult.get(1)[1]);
+            assertEquals("Leblanc_5", parseResult.get(1)[3]);
+            assertEquals("3", parseResult.get(2)[0]);
+            assertEquals("C", parseResult.get(2)[1]);
+            assertEquals("Leblanc_3", parseResult.get(2)[3]);
+            assertEquals("2", parseResult.get(3)[0]);
+            assertEquals("D", parseResult.get(3)[1]);
+            assertEquals("Leblanc_4", parseResult.get(3)[3]);
+        } catch (Exception e) {
+            fail("Query failed");
+        }
+
+        // 6.4 sort by view definition (order by firstname asc) with full text search (Person FULLTEXTSEARCH 'L')
+        try {
+            parseResult = parseResult(item.viewSearch(new DataClusterPOJOPK("DStar"),
+                    new ViewPOJOPK("Browse_items_Person_FullText"), null, null, null, 0, 20));
+            assertEquals(4, parseResult.size());
+            assertEquals("4", parseResult.get(0)[0]);
+            assertEquals("A", parseResult.get(0)[1]);
+            assertEquals("Leblanc_2", parseResult.get(0)[3]);
+            assertEquals("1", parseResult.get(1)[0]);
+            assertEquals("B", parseResult.get(1)[1]);
+            assertEquals("Leblanc_5", parseResult.get(1)[3]);
+            assertEquals("3", parseResult.get(2)[0]);
+            assertEquals("C", parseResult.get(2)[1]);
+            assertEquals("Leblanc_3", parseResult.get(2)[3]);
+            assertEquals("2", parseResult.get(3)[0]);
+            assertEquals("D", parseResult.get(3)[1]);
+            assertEquals("Leblanc_4", parseResult.get(3)[3]);
+        } catch (Exception e) {
+            fail("Query failed");
+        }
+
+        // 6.4 sort by ui setting
+        try {
+            parseResult = parseResult(item.viewSearch(new DataClusterPOJOPK("DStar"),
+                    new ViewPOJOPK("Browse_items_Person_FullText"), null, "Person/lastname", "ASC", 0, 20));
+            assertEquals(4, parseResult.size());
+            assertEquals("4", parseResult.get(0)[0]);
+            assertEquals("A", parseResult.get(0)[1]);
+            assertEquals("Leblanc_2", parseResult.get(0)[3]);
+            assertEquals("3", parseResult.get(1)[0]);
+            assertEquals("C", parseResult.get(1)[1]);
+            assertEquals("Leblanc_3", parseResult.get(1)[3]);
+            assertEquals("2", parseResult.get(2)[0]);
+            assertEquals("D", parseResult.get(2)[1]);
+            assertEquals("Leblanc_4", parseResult.get(2)[3]);
+            assertEquals("1", parseResult.get(3)[0]);
+            assertEquals("B", parseResult.get(3)[1]);
+            assertEquals("Leblanc_5", parseResult.get(3)[3]);
+        } catch (Exception e) {
+            fail("Query failed");
+        }
     }
 
+    
     /*
-     * object[0] = total Size object[1] = id object[2] = firstname object[3] = middlename obejct[4] = lastname object[5]
-     * = resume
+     * object[0] = id object[1] = firstname object[2] = middlename obejct[3] = lastname object[4] = resume
      */
-    private Object[] parseResult(String[] results) throws Exception {
-        Object[] parseResult = new Object[6];
-        for (int i = 0; i < results.length; i++) {
-            if (i == 0) {
-                parseResult[0] = Integer.parseInt(Util.parse(results[i].toString()).getDocumentElement().getTextContent());
-                continue;
-            }
-            Document doc = Util.parse(results[i]); //$NON-NLS-1$
-
+    private List<Object[]> parseResult(List<String> resultList) throws Exception {
+        List<Object[]> reuslts = new ArrayList<Object[]>();
+        for (int i = 1; i < resultList.size(); i++) {
+            Object[] parseResult = new Object[5];
+            Document doc = Util.parse(resultList.get(i)); //$NON-NLS-1$
             Node nodeItem = (Node) XPathFactory.newInstance().newXPath().evaluate("//result", doc, XPathConstants.NODE); //$NON-NLS-1$
             if (nodeItem != null && nodeItem instanceof Element) {
                 NodeList list = nodeItem.getChildNodes();
@@ -241,21 +357,22 @@ public class DefaultItemTest extends TestCase {
                     if (list.item(j) instanceof Element) {
                         node = list.item(j);
                         if (node.getNodeName().equals("id")) {
-                            parseResult[1] = node.getTextContent();
+                            parseResult[0] = node.getTextContent();
                         } else if (node.getNodeName().equals("firstname")) {
-                            parseResult[2] = node.getTextContent();
+                            parseResult[1] = node.getTextContent();
                         } else if (node.getNodeName().equals("middlename")) {
-                            parseResult[3] = node.getTextContent();
+                            parseResult[2] = node.getTextContent();
                         } else if (node.getNodeName().equals("lastname")) {
-                            parseResult[4] = node.getTextContent();
+                            parseResult[3] = node.getTextContent();
                         } else if (node.getNodeName().equals("resume")) {
-                            parseResult[5] = node.getTextContent();
+                            parseResult[4] = node.getTextContent();
                         }
                     }
                 }
             }
+            reuslts.add(parseResult);
         }
-        return parseResult;
+        return reuslts;
     }
 
     class MockDefaultItemCtrlDelegator extends IItemCtrlDelegator {
@@ -273,12 +390,23 @@ public class DefaultItemTest extends TestCase {
             list.add("Person/middlename");
             list.add("Person/lastname");
             list.add("Person/resume");
+            if (!viewPOJOPK.toString().endsWith("Person")) {
+                viewPOJO.setSortField("Person/firstname");
+                viewPOJO.setIsAsc(true);
+            }
             ArrayListHolder<String> searchableBusinessElements = new ArrayListHolder<String>();
             searchableBusinessElements.setList(list);
             viewPOJO.setSearchableBusinessElements(searchableBusinessElements);
             viewPOJO.setTransformerPK("");
             viewPOJO.setViewableBusinessElements(searchableBusinessElements);
             ArrayListHolder<IWhereItem> whereConditions = new ArrayListHolder<IWhereItem>();
+            if (viewPOJOPK.toString().endsWith("Filter")) {
+                WhereCondition whereCondition = new WhereCondition("Person/lastname", "CONTAINS", "L", "NONE");
+                whereConditions.getList().add(whereCondition);
+            } else if (viewPOJOPK.toString().endsWith("FullText")) {
+                WhereCondition whereCondition = new WhereCondition("Person", "FULLTEXTSEARCH", "L", "NONE");
+                whereConditions.getList().add(whereCondition);
+            }
             viewPOJO.setWhereConditions(whereConditions);
             return viewPOJO;
         }

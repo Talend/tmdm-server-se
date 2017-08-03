@@ -184,6 +184,8 @@ public class XConverter {
 
             s.setWhereConditions(wcs);
         }
+        s.setIsAsc(new WSBoolean(pojo.getIsAsc()));
+        s.setSortField(pojo.getSortField());
         return s;
     }
 
@@ -220,6 +222,8 @@ public class XConverter {
 
         }
         pojo.setWhereConditions(new ArrayListHolder(l));
+        pojo.setIsAsc(ws.getIsAsc() == null ? false : ws.getIsAsc().is_true());
+        pojo.setSortField(ws.getSortField());
         return pojo;
     }
 

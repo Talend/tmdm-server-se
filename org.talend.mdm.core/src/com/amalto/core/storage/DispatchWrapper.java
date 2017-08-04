@@ -145,7 +145,6 @@ public class DispatchWrapper implements IXmlServerSLWrapper {
                             "amaltoOBJECTSMenu", //$NON-NLS-1$
                             "amaltoOBJECTSActiveRoutingOrderV2", //$NON-NLS-1$
                             "amaltoOBJECTSDataCluster", //$NON-NLS-1$
-                            "amaltoOBJECTSLicense", //$NON-NLS-1$
                             "amaltoOBJECTSRole", //$NON-NLS-1$
                             "amaltoOBJECTSDataModel", //$NON-NLS-1$
                             "amaltoOBJECTSBackgroundJob", //$NON-NLS-1$

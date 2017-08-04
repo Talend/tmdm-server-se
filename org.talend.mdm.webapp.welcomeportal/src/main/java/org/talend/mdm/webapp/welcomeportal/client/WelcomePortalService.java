@@ -31,13 +31,9 @@ public interface WelcomePortalService extends RemoteService {
 
     public int getWorkflowTaskMsg() throws ServiceException;
 
-    public Map<String, Integer> getDSCTaskMsg() throws ServiceException;
-
     public Map<String, String> getStandaloneProcess(String language) throws ServiceException;
 
     public String runProcess(String transformerPK) throws ServiceException;
-
-    public boolean isExpired(String language) throws ServiceException;
 
     boolean isEnterpriseVersion() throws ServiceException;
 

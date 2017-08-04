@@ -47,9 +47,4 @@ public class ServerAccessImpl implements ServerAccess {
     public int getWorkflowTasksCount() {
         return 0;
     }
-
-    @Override
-    public int[] getDSCTasksCount() {
-        return new int[] { 0, 0 };
-    }
 }

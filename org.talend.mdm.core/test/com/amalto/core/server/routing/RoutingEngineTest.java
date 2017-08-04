@@ -185,41 +185,6 @@ public class RoutingEngineTest {
         assertEquals("testTypeMatchRule1", routes[1].getUniqueId());
     }
 
-    @Ignore
-    public void testExpiration() throws Exception {
-        // Adds a record that matches the rule
-        item.putItem(new ItemPOJO(container, "Person", new String[] { "1", "2" }, 0, "<Person><id>1</id><id2>2</id2></Person>"),
-                dataModel);
-        // Adds a routing rule
-        clearRules();
-        RoutingRulePOJO rule = new RoutingRulePOJO("testTypeMatchRule");
-        rule.setConcept("*");
-        rule.setServiceJNDI("amalto/local/service/test/no_op_service");
-        routingRule.putRoutingRule(rule);
-
-        TestRoutingEngine routingEngine = (TestRoutingEngine) context.getBean(RoutingEngine.class);
-        routingEngine.start();
-        // Expired message: put 2 messages, there's only one JMS consumer, service pauses for 500 ms, and expiration is
-        // 300 ms
-        // -> only 1 message should be consumed.
-        NoOpService.setPauseTime(500);
-        int previous = routingEngine.getConsumeCallCount();
-        routingEngine.route(new ItemPOJOPK(container, "Person", new String[] { "1", "2" }));
-        routingEngine.route(new ItemPOJOPK(container, "Person", new String[] { "1", "2" }));
-        Thread.sleep(1500); // Give some time to process message
-        assertEquals(previous + 1, routingEngine.getConsumeCallCount());
-        // Expired message: put 2 messages, there's only one JMS consumer, service pauses for 100 ms, and expiration
-        // is 300 ms
-        // -> only 2 message should be consumed.
-        NoOpService.setPauseTime(100);
-        previous = routingEngine.getConsumeCallCount();
-        routingEngine.route(new ItemPOJOPK(container, "Person", new String[] { "1", "2" }));
-        routingEngine.route(new ItemPOJOPK(container, "Person", new String[] { "1", "2" }));
-        Thread.sleep(1500); // Give some time to process messages
-        assertEquals(previous + 2, routingEngine.getConsumeCallCount());
-        routingEngine.stop();
-    }
-
     @Test
     public void testSynchronousRule() throws Exception {
         RoutingEngine routingEngine = context.getBean(RoutingEngine.class);

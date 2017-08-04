@@ -61,11 +61,6 @@ public class WebappImpl implements Webapp {
     }
     
     @Override
-    public int[] getDSCTasksCount() {
-        return serverAccess.getDSCTasksCount();
-    }
-
-    @Override
     public boolean isEnterpriseVersion() {
         return serverAccess.isEnterpriseVersion();
     }

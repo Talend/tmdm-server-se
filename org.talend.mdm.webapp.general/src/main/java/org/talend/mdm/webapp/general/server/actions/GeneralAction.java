@@ -274,22 +274,6 @@ public class GeneralAction implements GeneralService {
     }
 
     @Override
-    public boolean isExpired(String language) throws ServiceException {
-        try {
-            return Webapp.INSTANCE.isExpired(language);
-        } catch (Exception e) {
-            LOG.error(e.getMessage());
-            if (e instanceof LicenseUserNumberValidationException) {
-                throw new org.talend.mdm.webapp.base.client.exception.LicenseUserNumberValidationException(
-                        e.getLocalizedMessage());
-            } else {
-                throw new ServiceException(e.getLocalizedMessage());
-            }
-
-        }
-    }
-
-    @Override
     public boolean supportStaging(String dataCluster) throws ServiceException {
         try {
             WSDataClusterPK wsDataClusterPK = new WSDataClusterPK(Configuration.getConfiguration().getCluster());
@@ -324,7 +308,6 @@ public class GeneralAction implements GeneralService {
     public AppHeader getAppHeader() throws ServiceException {
         try {
             AppHeader header = new AppHeader();
-            header.setTdsEnabled(MDMConfiguration.isTdsEnabled());
             header.setTdsBaseUrl(MDMConfiguration.getConfiguration().getProperty(MDMConfiguration.TDS_ROOT_URL));
             return header;
         } catch (Exception e) {

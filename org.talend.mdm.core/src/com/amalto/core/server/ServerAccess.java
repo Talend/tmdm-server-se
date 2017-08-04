@@ -26,8 +26,6 @@ public interface ServerAccess {
 
     public int getWorkflowTasksCount();
 
-    public int[] getDSCTasksCount();
-    
     public static final ServerAccess INSTANCE = ServerAccessFactory.createAccess();
     
     public static final class ServerAccessFactory {

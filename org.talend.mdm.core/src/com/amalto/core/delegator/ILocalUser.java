@@ -78,7 +78,7 @@ public abstract class ILocalUser implements IBeanDelegator {
     public String getPassword() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Object credentials = authentication.getCredentials();
-        return (String)credentials;
+        return (String) credentials;
     }
     
     public User getUser() {

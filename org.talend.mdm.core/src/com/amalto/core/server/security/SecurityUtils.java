@@ -38,6 +38,13 @@ import com.amalto.core.storage.record.DataRecord;
 @SuppressWarnings("nls")
 public class SecurityUtils {
 
+    public static String IAM_ENABLED = "iam.enabled";
+
+    public static boolean isUseIAM() {
+        String useIAM = MDMConfiguration.getConfiguration().getProperty(IAM_ENABLED);
+        return Boolean.TRUE.toString().equalsIgnoreCase(useIAM);
+    }
+
     public static ComplexTypeMetadata getUserType() {
         StorageAdmin storageAdmin = ServerContext.INSTANCE.get().getStorageAdmin();
         Storage systemStorage = storageAdmin.get(StorageAdmin.SYSTEM_STORAGE, StorageType.SYSTEM);

@@ -9,6 +9,8 @@
  */
 package com.amalto.core.delegator;
 
+import static com.amalto.core.query.user.UserQueryBuilder.eq;
+import static com.amalto.core.query.user.UserQueryBuilder.from;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -22,10 +24,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 
 import com.amalto.core.objects.ItemPOJO;
+import com.amalto.core.query.user.UserQueryBuilder;
 import com.amalto.core.server.ServerContext;
 import com.amalto.core.server.StorageAdmin;
-import com.amalto.core.server.security.SecurityUtils;
 import com.amalto.core.storage.Storage;
+import com.amalto.core.storage.StorageResults;
 import com.amalto.core.storage.StorageType;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.record.DataRecordWriter;
@@ -55,12 +58,18 @@ public abstract class ILocalUser implements IBeanDelegator {
         StorageAdmin storageAdmin = ServerContext.INSTANCE.get().getStorageAdmin();
         Storage systemStorage = storageAdmin.get(StorageAdmin.SYSTEM_STORAGE, StorageType.SYSTEM);
         ComplexTypeMetadata userType = systemStorage.getMetadataRepository().getComplexType("User"); //$NON-NLS-1$
+        UserQueryBuilder qb = from(userType).where(eq(userType.getField("username"), getUsername())); //$NON-NLS-1$
         DataRecordWriter writer = new DataRecordXmlWriter(userType);
         StringWriter userXml = new StringWriter();
         try {
-            DataRecord dataRecord = SecurityUtils.retrieveUserDataRecord(getUsername());
-            writer.write(dataRecord, userXml);
+            systemStorage.begin();
+            StorageResults results = systemStorage.fetch(qb.getSelect());
+            for (DataRecord result : results) {
+                writer.write(result, userXml);
+            }
+            systemStorage.commit();
         } catch (IOException e) {
+            systemStorage.rollback();
             throw new RuntimeException("Could not access user record.", e); //$NON-NLS-1$
         }
         return userXml.toString();

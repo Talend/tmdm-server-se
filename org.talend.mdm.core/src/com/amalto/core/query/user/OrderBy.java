@@ -18,7 +18,8 @@ public class OrderBy implements Expression {
 
     public static enum Direction {
         ASC,
-        DESC
+        DESC,
+        NONE
     }
 
     private final TypedExpression expression;

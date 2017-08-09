@@ -133,6 +133,7 @@ import com.amalto.core.query.optimization.RangeOptimizer;
 import com.amalto.core.query.optimization.RecommendedIndexes;
 import com.amalto.core.query.optimization.UpdateReportOptimizer;
 import com.amalto.core.query.user.Expression;
+import com.amalto.core.query.user.OrderBy;
 import com.amalto.core.query.user.Select;
 import com.amalto.core.query.user.UserQueryBuilder;
 import com.amalto.core.query.user.UserQueryDumpConsole;
@@ -1712,9 +1713,14 @@ public class HibernateStorage implements Storage {
             // Contains optimizations (use of full text, disable it...)
             ConfigurableContainsOptimizer containsOptimizer = new ConfigurableContainsOptimizer(dataSource);
             containsOptimizer.optimize(select);
-            // Implicit order by id for databases that need a order by (e.g. Postgres).
-            ImplicitOrderBy implicitOrderBy = new ImplicitOrderBy(dataSource);
-            implicitOrderBy.optimize(select);
+            // Remove implicit order by id if view set order by to None
+            if (select.getOrderBy().size() == 1 && select.getOrderBy().get(0).getDirection() == OrderBy.Direction.NONE) {
+                select.getOrderBy().remove(0);
+            } else {
+                // Implicit order by id for databases that need a order by (e.g. Postgres).
+                ImplicitOrderBy implicitOrderBy = new ImplicitOrderBy(dataSource);
+                implicitOrderBy.optimize(select);
+            }
             // Other optimizations
             for (Optimizer optimizer : OPTIMIZERS) {
                 optimizer.optimize(select);

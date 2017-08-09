@@ -251,8 +251,16 @@ public class DefaultItemTest extends TestCase {
         } catch (Exception e) {
             fail("Query failed");
         }
+        
+        // 6.2 none sort
+        try {
+            parseResult = parseResult(item.viewSearch(new DataClusterPOJOPK("DStar"), new ViewPOJOPK("Browse_items_Person_None"), null, null, null, 0, 20));
+            assertEquals(5, parseResult.size());
+        } catch (Exception e) {
+            fail("Query failed");
+        }
 
-        // 6.2 sort by view definition (order by firstname asc)
+        // 6.3 sort by view definition (order by firstname asc)
         try {
             parseResult = parseResult(item.viewSearch(new DataClusterPOJOPK("DStar"), new ViewPOJOPK("Browse_items_Person_"),
                     null, null, null, 0, 20));
@@ -276,7 +284,7 @@ public class DefaultItemTest extends TestCase {
             fail("Query failed");
         }
 
-        // 6.3 sort by view definition (order by firstname asc) with filter (lastname CONTAINS 'L')
+        // 6.4 sort by view definition (order by firstname asc) with filter (lastname CONTAINS 'L')
         try {
             parseResult = parseResult(item.viewSearch(new DataClusterPOJOPK("DStar"),
                     new ViewPOJOPK("Browse_items_Person_Filter"), null, null, null, 0, 20));
@@ -297,7 +305,7 @@ public class DefaultItemTest extends TestCase {
             fail("Query failed");
         }
 
-        // 6.4 sort by view definition (order by firstname asc) with full text search (Person FULLTEXTSEARCH 'L')
+        // 6.5 sort by view definition (order by firstname asc) with full text search (Person FULLTEXTSEARCH 'L')
         try {
             parseResult = parseResult(item.viewSearch(new DataClusterPOJOPK("DStar"),
                     new ViewPOJOPK("Browse_items_Person_FullText"), null, null, null, 0, 20));
@@ -318,7 +326,7 @@ public class DefaultItemTest extends TestCase {
             fail("Query failed");
         }
 
-        // 6.4 sort by ui setting
+        // 6.6 sort by ui setting
         try {
             parseResult = parseResult(item.viewSearch(new DataClusterPOJOPK("DStar"),
                     new ViewPOJOPK("Browse_items_Person_FullText"), null, "Person/lastname", "ASC", 0, 20));
@@ -390,10 +398,14 @@ public class DefaultItemTest extends TestCase {
             list.add("Person/middlename");
             list.add("Person/lastname");
             list.add("Person/resume");
-            if (!viewPOJOPK.toString().endsWith("Person")) {
+            if (viewPOJOPK.toString().endsWith("None")) {
+                viewPOJO.setSortField("None");
+                viewPOJO.setIsAsc(false);
+            } else if (!viewPOJOPK.toString().endsWith("Person")) {
                 viewPOJO.setSortField("Person/firstname");
                 viewPOJO.setIsAsc(true);
             }
+             
             ArrayListHolder<String> searchableBusinessElements = new ArrayListHolder<String>();
             searchableBusinessElements.setList(list);
             viewPOJO.setSearchableBusinessElements(searchableBusinessElements);

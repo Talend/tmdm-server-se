@@ -22,7 +22,6 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
-import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 
 import com.amalto.core.objects.ItemPOJO;
@@ -33,9 +32,7 @@ import com.amalto.core.objects.role.RolePOJO;
 import com.amalto.core.objects.role.RolePOJOPK;
 import com.amalto.core.objects.view.ViewPOJO;
 import com.amalto.core.objects.view.ViewPOJOPK;
-import com.amalto.core.query.user.Field;
 import com.amalto.core.query.user.OrderBy;
-import com.amalto.core.query.user.Type;
 import com.amalto.core.query.user.TypedExpression;
 import com.amalto.core.query.user.UserQueryBuilder;
 import com.amalto.core.query.user.UserQueryHelper;
@@ -199,12 +196,8 @@ public abstract class IItemCtrlDelegator implements IBeanDelegator, IItemCtrlDel
                 queryDirection = view.getIsAsc() ? OrderBy.Direction.ASC : OrderBy.Direction.DESC;
             }
             if (StringUtils.isNotEmpty(orderByFieldPath)) {
-                if ("None".equals(orderByFieldPath)) {
-                    FieldMetadata keyfield = type.getKeyFields().iterator().next();
-                    List<TypedExpression> fields = UserQueryHelper.getFields(type, "../../taskId");
-                    for (TypedExpression field : fields) {
-                        qb.orderBy(field, OrderBy.Direction.NONE);
-                    }
+                if (OrderBy.NONE.equals(orderByFieldPath)) {
+                    OrderBy.OrderByNone.set(true);
                 } else {
                     ComplexTypeMetadata orderByType = repository.getComplexType(StringUtils.substringBefore(orderByFieldPath, "/")); //$NON-NLS-1$
                     String orderByFieldName = StringUtils.substringAfter(orderByFieldPath, "/"); //$NON-NLS-1$

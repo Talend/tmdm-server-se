@@ -15,11 +15,41 @@ package com.amalto.core.query.user;
  *
  */
 public class OrderBy implements Expression {
+    
+    public static String NONE = "None";
+    
+    /**
+     * Used to control if order by none.
+     *
+     */
+    public static class OrderByNone {
+
+        private static ThreadLocal<Boolean> threadLocal = new ThreadLocal<Boolean>() {
+
+            public Boolean initialValue() {
+                return Boolean.FALSE;
+            }
+        };
+
+        private OrderByNone() {
+        }
+
+        public static void set(boolean value) {
+            threadLocal.set(value);
+        }
+
+        public static boolean get() {
+            return threadLocal.get();
+        }
+
+        public static void remove() {
+            threadLocal.remove();
+        }
+    }
 
     public static enum Direction {
         ASC,
-        DESC,
-        NONE
+        DESC
     }
 
     private final TypedExpression expression;

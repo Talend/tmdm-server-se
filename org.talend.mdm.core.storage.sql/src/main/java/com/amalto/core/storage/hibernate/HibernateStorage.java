@@ -1714,13 +1714,16 @@ public class HibernateStorage implements Storage {
             ConfigurableContainsOptimizer containsOptimizer = new ConfigurableContainsOptimizer(dataSource);
             containsOptimizer.optimize(select);
             // Remove implicit order by id if view set order by to None
-            if (select.getOrderBy().size() == 1 && select.getOrderBy().get(0).getDirection() == OrderBy.Direction.NONE) {
-                select.getOrderBy().remove(0);
-            } else {
-                // Implicit order by id for databases that need a order by (e.g. Postgres).
-                ImplicitOrderBy implicitOrderBy = new ImplicitOrderBy(dataSource);
-                implicitOrderBy.optimize(select);
+            try {
+                if (!OrderBy.OrderByNone.get()) {
+                    // Implicit order by id for databases that need a order by (e.g. Postgres).
+                    ImplicitOrderBy implicitOrderBy = new ImplicitOrderBy(dataSource);
+                    implicitOrderBy.optimize(select);
+                }
+            } finally {
+                OrderBy.OrderByNone.remove();
             }
+          
             // Other optimizations
             for (Optimizer optimizer : OPTIMIZERS) {
                 optimizer.optimize(select);

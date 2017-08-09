@@ -31,6 +31,7 @@ import org.dom4j.io.SAXReader;
 import org.talend.mdm.commmon.util.webapp.XSystemObjects;
 import org.talend.mdm.webapp.base.client.model.DataTypeConstants;
 import org.talend.mdm.webapp.base.server.util.Constants;
+import org.talend.mdm.webapp.base.server.util.DateUtil;
 import org.talend.mdm.webapp.base.shared.EntityModel;
 import org.talend.mdm.webapp.base.shared.TypeModel;
 import org.talend.mdm.webapp.browserecords.server.bizhelpers.DataModelHelper;
@@ -109,7 +110,6 @@ public class JournalDBService {
     public JournalTreeModel getDetailTreeModel(String[] idsArr,EntityModel entityModel, String language) throws Exception {
         WSDataClusterPK wsDataClusterPK = new WSDataClusterPK(XSystemObjects.DC_UPDATE_PREPORT.getName());
         String conceptName = "Update"; //$NON-NLS-1$
-        //String[] idsArr = parameter.getIds().split("\\."); //$NON-NLS-1$
         WSGetItem wsGetItem = new WSGetItem(new WSItemPK(wsDataClusterPK, conceptName, idsArr));
         WSItem wsItem = webService.getItem(wsGetItem);
         String content = wsItem.getContent();
@@ -146,9 +146,6 @@ public class JournalDBService {
         boolean isAuth = !com.amalto.webapp.core.util.Util.isElementHiddenForCurrentUser(decl);
         root.setAuth(isAuth);
 
-        String dateFormat = "yyyy-MM-dd"; //$NON-NLS-1$
-        String dateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss"; //$NON-NLS-1$
-
         if (isAuth) {
             NodeList ls = com.amalto.core.util.Util.getNodeList(doc, "/Update/Item"); //$NON-NLS-1$
             if (ls.getLength() > 0) {
@@ -158,8 +155,8 @@ public class JournalDBService {
 
                     String oldValue = checkNull(Util.getFirstTextNode(doc, "/Update/Item[" + (i + 1) + "]/oldValue")); //$NON-NLS-1$//$NON-NLS-2$
                     String newValue = checkNull(Util.getFirstTextNode(doc, "/Update/Item[" + (i + 1) + "]/newValue")); //$NON-NLS-1$ //$NON-NLS-2$
-                    oldValue = formateValue(entityModel, formatMap, dateFormat, dateTimeFormat, path, oldValue);
-                    newValue = formateValue(entityModel, formatMap, dateFormat, dateTimeFormat, path, newValue);
+                    oldValue = formateValue(entityModel, formatMap, path, oldValue);
+                    newValue = formateValue(entityModel, formatMap, path, newValue);
 
                     list.add(new JournalTreeModel("path:" + path)); //$NON-NLS-1$
                     list.add(new JournalTreeModel("oldValue:" + oldValue)); //$NON-NLS-1$
@@ -174,8 +171,7 @@ public class JournalDBService {
         return root;
     }
 
-    private String formateValue(EntityModel entityModel, Map<String, String[]> formatMap, String dateFormat,
-            String dateTimeFormat, String path, String oldValue) {
+    private String formateValue(EntityModel entityModel, Map<String, String[]> formatMap, String path, String oldValue) {
         String formatValue = oldValue;
         for (Map.Entry<String, String[]> entry : formatMap.entrySet()) {
             String key = entry.getKey();
@@ -191,9 +187,9 @@ public class JournalDBService {
                     if (CommonUtil.dateTypeNames.contains(tm.getType().getBaseTypeName())) {
                         SimpleDateFormat sdf = null;
                         if (value[1].equalsIgnoreCase(DataTypeConstants.DATE.getBaseTypeName())) {
-                            sdf = new SimpleDateFormat(dateFormat, java.util.Locale.ENGLISH);
+                            sdf = new SimpleDateFormat(DateUtil.DATE_FORMAT, java.util.Locale.ENGLISH);
                         } else if (value[1].equalsIgnoreCase(DataTypeConstants.DATETIME.getBaseTypeName())) {
-                            sdf = new SimpleDateFormat(dateTimeFormat, java.util.Locale.ENGLISH);
+                            sdf = new SimpleDateFormat(DateUtil.DATE_TIME_FORMAT, java.util.Locale.ENGLISH);
                         }
 
                         try {

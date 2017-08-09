@@ -29,9 +29,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -108,6 +105,9 @@ import com.amalto.core.webservice.XtentisPort;
 import com.amalto.webapp.core.bean.Configuration;
 import com.amalto.webapp.core.util.XmlUtil;
 import com.extjs.gxt.ui.client.data.ModelData;
+
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 @PrepareForTest({ Util.class, org.talend.mdm.webapp.base.server.util.CommonUtil.class, MetadataRepository.class,
         org.talend.mdm.webapp.browserecords.server.util.CommonUtil.class, XtentisPort.class, WSViewSearch.class,
@@ -1261,7 +1261,7 @@ public class BrowseRecordsActionTest extends TestCase {
                         + "<Etablissement><IdEtablissement>2</IdEtablissement><Adresse>Ville1</Adresse></Etablissement>"
                         + "<Etablissement><IdEtablissement>3</IdEtablissement><Adresse>3</Adresse></Etablissement>"
                         + "<Region>Lausanne</Region></Agency>";
-                assertEquals(expectedMsg, itemBean.getItemXml().replaceAll("\r", "").replaceAll("\n", ""));
+                assertEquals(expectedMsg, itemBean.getItemXml().replaceAll("\r", "").replaceAll("\n", "").replaceAll(" ", ""));
                 break;
             }
         }

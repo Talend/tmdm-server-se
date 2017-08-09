@@ -32,7 +32,7 @@ public interface JournalService extends RemoteService {
     ItemBasePageLoadResult<JournalGridModel> getJournalList(JournalSearchCriteria criteria, BasePagingLoadConfigImpl load)
             throws ServiceException;
 
-    JournalTreeModel getDetailTreeModel(String ids) throws ServiceException;
+    JournalTreeModel getDetailTreeModel(JournalParameters parameter, String language) throws ServiceException;
 
     JournalTreeModel getComparisionTree(JournalParameters parameter, String language) throws ServiceException;
 

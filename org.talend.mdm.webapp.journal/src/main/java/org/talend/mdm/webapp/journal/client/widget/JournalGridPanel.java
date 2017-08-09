@@ -244,9 +244,10 @@ public class JournalGridPanel extends ContentPanel {
     }
 
     public void openTabPanel(final JournalGridModel gridModel) {
-        service.getDetailTreeModel(gridModel.getIds(), new SessionAwareAsyncCallback<JournalTreeModel>() {
+        service.getDetailTreeModel(JournalSearchUtil.buildParameter(gridModel, "before", true), UrlUtil.getLanguage(),
+                new SessionAwareAsyncCallback<JournalTreeModel>() {
 
-            @Override
+                    @Override
             public void onSuccess(final JournalTreeModel root) {
                 service.isEnterpriseVersion(new SessionAwareAsyncCallback<Boolean>() {
 

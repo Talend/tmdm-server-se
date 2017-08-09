@@ -29,7 +29,7 @@ public interface JournalServiceAsync {
     void getJournalList(JournalSearchCriteria criteria, BasePagingLoadConfigImpl load,
             AsyncCallback<ItemBasePageLoadResult<JournalGridModel>> callback);    
 
-    void getDetailTreeModel(String ids, AsyncCallback<JournalTreeModel> callback);
+    void getDetailTreeModel(JournalParameters parameter, String language, AsyncCallback<JournalTreeModel> callback);
 
     void getComparisionTree(JournalParameters parameter, String language, AsyncCallback<JournalTreeModel> callback);
 

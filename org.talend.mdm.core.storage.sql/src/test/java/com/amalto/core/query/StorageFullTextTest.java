@@ -83,51 +83,17 @@ public class StorageFullTextTest extends StorageTestCase {
         }
         DataRecordReader<String> factory = new XmlStringDataRecordReader();
         List<DataRecord> allRecords = new LinkedList<DataRecord>();
-        allRecords.add(factory.read(repository, productFamily, "<ProductFamily>\n" + "    <Id>1</Id>\n"
-                + "    <Name>ProductFamily1</Name>\n" + "</ProductFamily>"));
-        allRecords.add(factory.read(repository, productFamily, "<ProductFamily>\n" + "    <Id>2</Id>\n"
-                + "    <Name>ProductFamily2</Name>\n" + "</ProductFamily>"));
-        allRecords.add(factory.read(repository, productFamily, "<ProductFamily>\n" + "    <Id>3</Id>\n"
-                + "    <Name>ProductFamily3</Name>\n" + "</ProductFamily>"));
-        allRecords.add(factory.read(repository, productFamily, "<ProductFamily>\n" + "    <Id>4</Id>\n"
-                + "    <Name>test_name4</Name>\n" + "</ProductFamily>"));
-        allRecords.add(factory.read(repository, product, "<Product>\n" + "    <Id>1</Id>\n" + "    <Name>talend</Name>\n"
-                + "    <ShortDescription>Short description word</ShortDescription>\n"
-                + "    <LongDescription>Long description</LongDescription>\n" + "    <Price>10</Price>\n" + "    <Features>\n"
-                + "        <Sizes>\n" + "            <Size>Small</Size>\n" + "            <Size>Medium</Size>\n"
-                + "            <Size>Large</Size>\n" + "        </Sizes>\n" + "        <Colors>\n"
-                + "            <Color>Blue</Color>\n" + "            <Color>Red</Color>\n" + "        </Colors>\n"
-                + "    </Features>\n" + "    <Status>Pending</Status>\n" + "    <Supplier>[1]</Supplier>\n" + "</Product>"));
-        allRecords.add(factory.read(repository, product, "<Product>\n" + "    <Id>2</Id>\n" + "    <Name>Renault car</Name>\n"
-                + "    <ShortDescription>A car</ShortDescription>\n"
-                + "    <LongDescription>Long description 2</LongDescription>\n" + "    <Price>10</Price>\n" + "    <Features>\n"
-                + "        <Sizes>\n" + "            <Size>Large</Size>\n" + "        <Size>Large</Size></Sizes>\n"
-                + "        <Colors>\n" + "            <Color>Blue 2</Color>\n" + "            <Color>Blue 1</Color>\n"
-                + "            <Color>Klein blue2</Color>\n" + "        </Colors>\n" + "    </Features>\n"
-                + "    <Family>[1]</Family>\n" + "    <Status>Pending</Status>\n" + "    <Supplier>[2]</Supplier>\n"
-                + "    <Supplier>[1]</Supplier>\n" + "</Product>"));
-        allRecords.add(factory.read(repository, product, "<Product>\n" + "    <Id>3</Id>\n" + "    <Name>kevin cui</Name>\n"
-                + "    <ShortDescription>A person</ShortDescription>\n"
-                + "    <LongDescription>Long description 3</LongDescription>\n" + "    <Price>100</Price>\n" + "    <Features>\n"
-                + "        <Sizes>\n" + "            <Size>Large</Size>\n" + "        <Size>Large</Size></Sizes>\n"
-                + "        <Colors>\n" + "            <Color>Blue 3</Color>\n" + "            <Color>Blue 4</Color>\n"
-                + "            <Color>Kevin blue3</Color>\n" + "        </Colors>\n" + "    </Features>\n"
-                + "    <Family></Family>\n" + "    <Status>Pending</Status>\n" + "</Product>"));
-        allRecords.add(factory.read(repository, supplier, "<Supplier>\n" + "    <Id>1</Id>\n"
-                + "    <SupplierName>Renault</SupplierName>\n" + "    <Contact>" + "        <Name>Jean Voiture</Name>\n"
-                + "        <Phone>33123456789</Phone>\n" + "        <Email>test@test.org</Email>\n" + "    </Contact>\n"
-                + "</Supplier>"));
-        allRecords.add(factory.read(repository, supplier, "<Supplier>\n" + "    <Id>2</Id>\n"
-                + "    <SupplierName>Starbucks Talend</SupplierName>\n" + "    <Contact>" + "        <Name>Jean Cafe</Name>\n"
-                + "        <Phone>33234567890</Phone>\n" + "        <Email>test@testfactory.org</Email>\n" + "    </Contact>\n"
-                + "</Supplier>"));
-        allRecords.add(factory.read(repository, supplier, "<Supplier>\n" + "    <Id>3</Id>\n"
-                + "    <SupplierName>Talend</SupplierName>\n" + "    <Contact>" + "        <Name>Jean Paul</Name>\n"
-                + "        <Phone>33234567890</Phone>\n" + "        <Email>test@talend.com</Email>\n" + "    </Contact>\n"
-                + "</Supplier>"));
-        allRecords.add(factory.read(repository, supplier, "<Supplier>\n" + "    <Id>4</Id>\n"
-                + "    <SupplierName>IdSoftware</SupplierName>\n" + "    <Contact>" + "        <Name>John Carmack</Name>\n"
-                + "        <Phone>123456789</Phone>\n" + "        <Email></Email>\n" + "    </Contact>\n" + "</Supplier>"));
+        allRecords.add(factory.read(repository, productFamily, "<ProductFamily><Id>1</Id><Name>ProductFamily1</Name></ProductFamily>"));
+        allRecords.add(factory.read(repository, productFamily, "<ProductFamily><Id>2</Id><Name>ProductFamily2</Name></ProductFamily>"));
+        allRecords.add(factory.read(repository, productFamily, "<ProductFamily><Id>3</Id><Name>ProductFamily3</Name></ProductFamily>"));
+        allRecords.add(factory.read(repository, productFamily, "<ProductFamily><Id>4</Id><Name>test_name4</Name></ProductFamily>"));
+        allRecords.add(factory.read(repository, product, "<Product><Id>1</Id><Name>talend</Name><ShortDescription>Short description word</ShortDescription><LongDescription>Long description</LongDescription><Price>10</Price><Features><Sizes><Size>Small</Size><Size>Medium</Size><Size>Large</Size></Sizes><Colors><Color>Blue</Color><Color>Red</Color></Colors></Features><Status>Pending</Status><Supplier>[1]</Supplier></Product>"));
+        allRecords.add(factory.read(repository, product, "<Product><Id>2</Id><Name>Renault car</Name><ShortDescription>A car</ShortDescription><LongDescription>Long description 2</LongDescription><Price>10</Price><Features><Sizes><Size>Large</Size><Size>Large</Size></Sizes><Colors><Color>Blue 2</Color><Color>Blue 1</Color><Color>Klein blue2</Color></Colors></Features><Family>[1]</Family><Status>Pending</Status><Supplier>[2]</Supplier><Supplier>[1]</Supplier></Product>"));
+        allRecords.add(factory.read(repository, product, "<Product><Id>3</Id><Name>kevin cui</Name><ShortDescription>A person</ShortDescription><LongDescription>Long description 3</LongDescription><Price>100</Price><Features><Sizes><Size>Large</Size><Size>Large</Size></Sizes><Colors><Color>Blue 3</Color><Color>Blue 4</Color><Color>Kevin blue3</Color></Colors></Features><Family></Family><Status>Pending</Status></Product>"));
+        allRecords.add(factory.read(repository, supplier, "<Supplier><Id>1</Id><SupplierName>Renault</SupplierName><Contact><Name>Jean Voiture</Name><Phone>33123456789</Phone><Email>test@test.org</Email></Contact></Supplier>"));
+        allRecords.add(factory.read(repository, supplier, "<Supplier><Id>2</Id><SupplierName>Starbucks Talend</SupplierName><Contact><Name>Jean Cafe</Name><Phone>33234567890</Phone><Email>test@testfactory.org</Email></Contact></Supplier>"));
+        allRecords.add(factory.read(repository, supplier, "<Supplier><Id>3</Id><SupplierName>Talend</SupplierName><Contact><Name>Jean Paul</Name><Phone>33234567890</Phone><Email>test@talend.com</Email></Contact></Supplier>"));
+        allRecords.add(factory.read(repository, supplier, "<Supplier><Id>4</Id><SupplierName>IdSoftware</SupplierName><Contact><Name>John Carmack</Name><Phone>123456789</Phone><Email></Email></Contact></Supplier>"));
 
         allRecords
                 .add(factory

@@ -15,11 +15,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -32,14 +28,10 @@ import org.powermock.modules.junit3.PowerMockSuite;
 import org.talend.mdm.webapp.base.shared.EntityModel;
 import org.talend.mdm.webapp.browserecords.server.bizhelpers.DataModelHelper;
 import org.talend.mdm.webapp.journal.shared.JournalGridModel;
-import org.talend.mdm.webapp.journal.shared.JournalParameters;
 import org.talend.mdm.webapp.journal.shared.JournalSearchCriteria;
 import org.talend.mdm.webapp.journal.shared.JournalTreeModel;
 
-import com.amalto.core.delegator.ILocalUser;
 import com.amalto.core.objects.UpdateReportPOJO;
-import com.amalto.core.util.LocalUser;
-import com.amalto.core.util.XtentisException;
 import com.amalto.core.webservice.WSDataModelPK;
 import com.amalto.core.webservice.WSDataModelPKArray;
 import com.amalto.core.webservice.WSGetConceptsInDataCluster;

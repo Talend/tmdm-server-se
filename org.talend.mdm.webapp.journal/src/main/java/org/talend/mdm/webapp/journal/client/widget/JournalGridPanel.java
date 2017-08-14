@@ -248,20 +248,20 @@ public class JournalGridPanel extends ContentPanel {
                 new SessionAwareAsyncCallback<JournalTreeModel>() {
 
                     @Override
-            public void onSuccess(final JournalTreeModel root) {
-                service.isEnterpriseVersion(new SessionAwareAsyncCallback<Boolean>() {
+                    public void onSuccess(final JournalTreeModel root) {
+                        service.isEnterpriseVersion(new SessionAwareAsyncCallback<Boolean>() {
 
-                    @Override
-                    public void onSuccess(Boolean isEnterprise) {
-                        if (GWT.isScript()) {
-                            JournalGridPanel.this.openGWTPanel(isEnterprise, gridModel, root);
-                        } else {
-                            JournalGridPanel.this.openDebugPanel(isEnterprise, gridModel, root);
-                        }
+                            @Override
+                            public void onSuccess(Boolean isEnterprise) {
+                                if (GWT.isScript()) {
+                                    JournalGridPanel.this.openGWTPanel(isEnterprise, gridModel, root);
+                                } else {
+                                    JournalGridPanel.this.openDebugPanel(isEnterprise, gridModel, root);
+                                }
+                            }
+                        });
                     }
                 });
-            }
-        });
     }
 
     private native void openHistoryTabPanel(String ids, JournalHistoryPanel source)/*-{

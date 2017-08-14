@@ -170,23 +170,22 @@ public class SaverContextFactory {
             final MetadataRepositoryAdmin admin = server.getMetadataRepositoryAdmin();
             String typeName = userDomDocument.getDocumentElement().getNodeName();
             MetadataRepository repository;
-            if (!admin.exist(dataModelName)) {
-                final Storage systemStorage = server.getStorageAdmin().get(StorageAdmin.SYSTEM_STORAGE, StorageType.SYSTEM);
-                final MetadataRepository systemRepository = systemStorage.getMetadataRepository();
-                if (systemRepository.getComplexType(typeName) != null) {
-                    // Record to save is a system object!
-                    return new DirectWriteContext(dataCluster, Util.nodeToString(userDomDocument));
-                } else {
-                    throw new IllegalArgumentException("Data model '" + dataModelName + "' does not exist."); //$NON-NLS-1$ //$NON-NLS-2$
-                }
+
+            final Storage systemStorage = server.getStorageAdmin().get(StorageAdmin.SYSTEM_STORAGE, StorageType.SYSTEM);
+            final MetadataRepository systemRepository = systemStorage.getMetadataRepository();
+
+            if (systemRepository.getComplexType(typeName) != null) {
+                // Record to save is a system object!
+                return new DirectWriteContext(dataCluster, Util.nodeToString(userDomDocument));
             } else {
                 repository = admin.get(dataModelName);
+                ComplexTypeMetadata type = repository.getComplexType(typeName);
+                if (type == null) {
+                    throw new IllegalArgumentException(
+                            "Type '" + typeName + "' does not exist in data model '" + dataModelName + "'."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                }
+                userDocument = new DOMDocument(userDomDocument.getDocumentElement(), type, dataCluster, dataModelName);
             }
-            ComplexTypeMetadata type = repository.getComplexType(typeName);
-            if (type == null) {
-                throw new IllegalArgumentException("Type '" + typeName + "' does not exist in data model '" + dataModelName + "'."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            }
-            userDocument = new DOMDocument(userDomDocument.getDocumentElement(), type, dataCluster, dataModelName);
         } catch (Exception e) {
             throw new RuntimeException("Unable to parse document to save.", e); //$NON-NLS-1$
         }

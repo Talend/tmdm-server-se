@@ -111,6 +111,7 @@ import com.amalto.core.objects.customform.CustomFormPOJOPK;
 import com.amalto.core.objects.datacluster.DataClusterPOJOPK;
 import com.amalto.core.server.ServerContext;
 import com.amalto.core.server.StorageAdmin;
+import com.amalto.core.server.security.SecurityUtils;
 import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.task.StagingConstants;
 import com.amalto.core.util.CoreException;
@@ -1644,10 +1645,16 @@ public class BrowseRecordsAction implements BrowseRecordsService {
         try {
             String url = baseUrl + "services/rest/data/" + getCurrentDataCluster() + "/" + concept + "/bulk";
             DefaultHttpClient httpClient = new DefaultHttpClient();
+            String credentials;
+            if (SecurityUtils.isUseIAM()) {
+                credentials = SecurityUtils.getToken();
+            } else {
+                credentials = LocalUser.getLocalUser().getPassword();
+            }
             httpClient.getCredentialsProvider().setCredentials(
                     AuthScope.ANY,
-                    new UsernamePasswordCredentials(LocalUser.getLocalUser().getUsername(), LocalUser.getLocalUser()
-                            .getPassword()));
+                    new UsernamePasswordCredentials(LocalUser.getLocalUser().getUsername(), credentials));
+
             HttpPatch httpPatch = new HttpPatch(url);
             httpPatch.setHeader("Content-Type", "text/xml; charset=utf8"); //$NON-NLS-1$ //$NON-NLS-2$
             HttpEntity entity = new StringEntity(xml);

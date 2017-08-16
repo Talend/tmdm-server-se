@@ -1645,15 +1645,8 @@ public class BrowseRecordsAction implements BrowseRecordsService {
         try {
             String url = baseUrl + "services/rest/data/" + getCurrentDataCluster() + "/" + concept + "/bulk";
             DefaultHttpClient httpClient = new DefaultHttpClient();
-            String credentials;
-            if (MDMConfiguration.isIamEnabled()) {
-                credentials = SecurityUtils.getIdToken();
-            } else {
-                credentials = LocalUser.getLocalUser().getPassword();
-            }
-            httpClient.getCredentialsProvider().setCredentials(
-                    AuthScope.ANY,
-                    new UsernamePasswordCredentials(LocalUser.getLocalUser().getUsername(), credentials));
+            httpClient.getCredentialsProvider().setCredentials(AuthScope.ANY,
+                    new UsernamePasswordCredentials(LocalUser.getLocalUser().getUsername(), SecurityUtils.getCredentials()));
 
             HttpPatch httpPatch = new HttpPatch(url);
             httpPatch.setHeader("Content-Type", "text/xml; charset=utf8"); //$NON-NLS-1$ //$NON-NLS-2$

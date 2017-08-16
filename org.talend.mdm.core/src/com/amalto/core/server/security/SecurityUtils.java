@@ -37,6 +37,8 @@ import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.StorageResults;
 import com.amalto.core.storage.StorageType;
 import com.amalto.core.storage.record.DataRecord;
+import com.amalto.core.util.LocalUser;
+import com.amalto.core.util.XtentisException;
 
 /**
  * created by pwlin
@@ -89,8 +91,7 @@ public class SecurityUtils {
     @SuppressWarnings("unchecked")
     public static String getIdToken() {
         OAuth2Authentication authentication = (OAuth2Authentication) SecurityContextHolder.getContext().getAuthentication();
-        Map<String, Object> map = (Map<String, Object>) authentication.getUserAuthentication()
-                .getDetails();
+        Map<String, Object> map = (Map<String, Object>) authentication.getUserAuthentication().getDetails();
         return ID_TOKEN + " " + map.get(ID_TOKEN);
     }
 
@@ -104,5 +105,22 @@ public class SecurityUtils {
         additionalInformation.put(ID_TOKEN, idToken);
         accessToken.setAdditionalInformation(additionalInformation);
         return accessToken;
+    }
+
+    /**
+     * Return id_token if using SSO, else return password
+     * 
+     * @return
+     */
+    public static String getCredentials() {
+        if (MDMConfiguration.isIamEnabled()) {
+            return getIdToken();
+        } else {
+            try {
+                return LocalUser.getLocalUser().getPassword();
+            } catch (XtentisException e) {
+                return StringUtils.EMPTY;
+            }
+        }
     }
 }

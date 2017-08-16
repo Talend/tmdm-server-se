@@ -104,6 +104,9 @@ public class DefaultCustomForm implements CustomForm {
                 CustomFormPOJO pojo = ObjectPOJO.load(CustomFormPOJO.class, new ObjectPOJOPK(pk.split("\\.\\.")));//$NON-NLS-1$
                 if (pojo!=null && pojo.getDatamodel().equals(cpk.getDatamodel())
                         && pojo.getEntity().equals(cpk.getEntity())) {
+                    if (pojo.getName().equals(cpk.getName())) {
+                        return pojo;
+                    }
                     list.add(pojo);
                 }
             }

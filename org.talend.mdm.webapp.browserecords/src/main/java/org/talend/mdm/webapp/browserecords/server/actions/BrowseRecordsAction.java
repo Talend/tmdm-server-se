@@ -672,7 +672,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
         // searchables
         vb.setSearchables(ViewHelper.getSearchables(wsView, model, language, entityModel));
         // bind layout model
-        vb.setColumnLayoutModel(getColumnTreeLayout(concept));
+        vb.setColumnLayoutModel(getColumnTreeLayout(concept, wsView.getCustomForm()));
         return vb;
     }
 
@@ -1810,9 +1810,9 @@ public class BrowseRecordsAction implements BrowseRecordsService {
     }
 
     @Override
-    public ColumnTreeLayoutModel getColumnTreeLayout(String concept) throws ServiceException {
+    public ColumnTreeLayoutModel getColumnTreeLayout(String concept, String name) throws ServiceException {
         try {
-            CustomFormPOJOPK pk = new CustomFormPOJOPK(getCurrentDataModel(), concept);
+            CustomFormPOJOPK pk = new CustomFormPOJOPK(getCurrentDataModel(), concept, name);
             CustomFormPOJO customForm = com.amalto.core.util.Util.getCustomFormCtrlLocal().getUserCustomForm(pk);
             if (customForm == null) {
                 return null;

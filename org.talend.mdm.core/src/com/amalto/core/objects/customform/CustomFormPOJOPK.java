@@ -22,6 +22,7 @@ public class CustomFormPOJOPK extends ObjectPOJOPK {
     String entity;
 
     String name;
+
     public CustomFormPOJOPK() {
 
     }

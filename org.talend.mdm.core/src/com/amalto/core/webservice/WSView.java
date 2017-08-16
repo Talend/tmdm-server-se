@@ -22,6 +22,7 @@ public class WSView {
     protected com.amalto.core.webservice.WSBoolean isTransformerActive;
     protected com.amalto.core.webservice.WSBoolean isAsc;
     protected java.lang.String sortField;
+    protected java.lang.String customForm;
     
     public WSView() {
     }
@@ -29,7 +30,7 @@ public class WSView {
     public WSView(java.lang.String name, java.lang.String description, java.lang.String[] viewableBusinessElements,
             com.amalto.core.webservice.WSWhereCondition[] whereConditions, java.lang.String[] searchableBusinessElements,
             java.lang.String transformerPK, com.amalto.core.webservice.WSBoolean isTransformerActive, com.amalto.core.webservice.WSBoolean isAsc,
-            java.lang.String sortField) {
+            java.lang.String sortField, java.lang.String customForm) {
         this.name = name;
         this.description = description;
         this.viewableBusinessElements = viewableBusinessElements;
@@ -39,6 +40,7 @@ public class WSView {
         this.isTransformerActive = isTransformerActive;
         this.isAsc = isAsc;
         this.sortField = sortField;
+        this.customForm = customForm;
     }
     
     public java.lang.String getName() {
@@ -112,4 +114,13 @@ public class WSView {
     public void setSortField(java.lang.String sortField) {
         this.sortField = sortField;
     }
+
+    public java.lang.String getCustomForm() {
+        return customForm;
+    }
+
+    public void setCustomForm(java.lang.String customForm) {
+        this.customForm = customForm;
+    }
+
 }

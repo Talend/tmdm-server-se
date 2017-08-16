@@ -118,11 +118,13 @@ public class TaskPortlet extends BasePortlet {
         if (!isHiddenTask && isHiddenWorkFlowTask) {
             String url = tdsServiceBaseUrl + TASK_AMOUNT;
             RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
+            builder.setHeader("Accept", "application/json");
             try {
                 builder.sendRequest("", new RequestCallback() {
 
                     @Override
                     public void onResponseReceived(Request request, Response response) {
+                        HTML errorHTML = null;
                         if (Response.SC_OK == response.getStatusCode()) {
                             try {
                                 Integer taskCount = Integer.valueOf(response.getText());
@@ -131,25 +133,14 @@ public class TaskPortlet extends BasePortlet {
                                     updateTaskPanel(0, TASK_TYPE.TDS_TYPE, taskNewCount, 0);
                                 }
                             } catch (NumberFormatException exception) {
-                                label.setText(MessagesFactory.getMessages().no_tasks());
-                                fieldSet.removeAll();
-                                HTML errorHTML;
-                                if ("connection_refused".equals(response.getText())) {
-                                    errorHTML = buildErrorHTML(MessagesFactory.getMessages().connect_tds_fail());
-                                } else if ("authentication_failure".equals(response.getText())) {
-                                    errorHTML = buildErrorHTML(MessagesFactory.getMessages().login_tds_fail());
-                                } else if ("role_missing".equals(response.getText())) {
-                                    errorHTML = buildErrorHTML(MessagesFactory.getMessages().retrieve_campaign_fail());
-                                } else {
-                                    errorHTML = buildErrorHTML(BaseMessagesFactory.getMessages().unknown_error());
-                                }
-                                fieldSet.add(errorHTML);
-                                fieldSet.layout(true);
+                                errorHTML = buildErrorHTML(BaseMessagesFactory.getMessages().unknown_error());
                             }
-                        } else if (Response.SC_INTERNAL_SERVER_ERROR == response.getStatusCode()) {
+                        } else {
+                            errorHTML = buildErrorHTML(getResponseErrorMessage(response.getStatusCode()));
+                        }
+                        if (errorHTML != null) {
                             label.setText(MessagesFactory.getMessages().no_tasks());
                             fieldSet.removeAll();
-                            HTML errorHTML = buildErrorHTML(BaseMessagesFactory.getMessages().unknown_error());
                             fieldSet.add(errorHTML);
                             fieldSet.layout(true);
                         }
@@ -179,6 +170,7 @@ public class TaskPortlet extends BasePortlet {
                     }
                     String url = tdsServiceBaseUrl + TASK_AMOUNT;
                     RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
+                    builder.setHeader("Accept", "application/json");
                     try {
                         builder.sendRequest("", new RequestCallback() {
 
@@ -196,14 +188,8 @@ public class TaskPortlet extends BasePortlet {
                                     } catch (NumberFormatException exception) {
                                         errorHTML = buildErrorHTML(BaseMessagesFactory.getMessages().unknown_error());
                                     }
-                                } else if (Response.SC_SERVICE_UNAVAILABLE == response.getStatusCode()) { // connection_refused
-                                    errorHTML = buildErrorHTML(MessagesFactory.getMessages().connect_tds_fail());
-                                } else if (Response.SC_UNAUTHORIZED == response.getStatusCode()) { // authentication_failure
-                                    errorHTML = buildErrorHTML(MessagesFactory.getMessages().login_tds_fail());
-                                } else if (Response.SC_FORBIDDEN == response.getStatusCode()) { // role_missing
-                                    errorHTML = buildErrorHTML(MessagesFactory.getMessages().retrieve_campaign_fail());
-                                } else { // server error
-                                    errorHTML = buildErrorHTML(BaseMessagesFactory.getMessages().unknown_error());
+                                } else {
+                                    errorHTML = buildErrorHTML(getResponseErrorMessage(response.getStatusCode()));
                                 }
                                 if (errorHTML != null) {
                                     if (workflowTaskCount > 0) {
@@ -310,5 +296,16 @@ public class TaskPortlet extends BasePortlet {
         errorStringBuilder.append("&nbsp;"); //$NON-NLS-1$
         errorHtml.setHTML(errorStringBuilder.toString());
         return errorHtml;
+    }
+    
+    private String getResponseErrorMessage(int statusCode) {
+        switch (statusCode) {
+        case Response.SC_SERVICE_UNAVAILABLE:
+            return MessagesFactory.getMessages().connect_tds_fail();
+        case Response.SC_FORBIDDEN:
+            return MessagesFactory.getMessages().retrieve_campaign_fail();
+        default:
+            return BaseMessagesFactory.getMessages().unknown_error();
+        }
     }
 }

@@ -15,14 +15,17 @@ package com.amalto.core.server.security;
 import static com.amalto.core.query.user.UserQueryBuilder.eq;
 import static com.amalto.core.query.user.UserQueryBuilder.from;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.security.authentication.AuthenticationServiceException;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
@@ -42,14 +45,7 @@ import com.amalto.core.storage.record.DataRecord;
 @SuppressWarnings("nls")
 public class SecurityUtils {
 
-    public static String IAM_ENABLED = "iam.enabled";
-
     public static String ID_TOKEN = "id_token";
-
-    public static boolean isUseIAM() {
-        String useIAM = MDMConfiguration.getConfiguration().getProperty(IAM_ENABLED);
-        return Boolean.TRUE.toString().equalsIgnoreCase(useIAM);
-    }
 
     public static ComplexTypeMetadata getUserType() {
         StorageAdmin storageAdmin = ServerContext.INSTANCE.get().getStorageAdmin();
@@ -91,10 +87,22 @@ public class SecurityUtils {
     }
 
     @SuppressWarnings("unchecked")
-    public static String getToken() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Map<String, Object> map = (Map<String, Object>) ((OAuth2Authentication) authentication).getUserAuthentication()
+    public static String getIdToken() {
+        OAuth2Authentication authentication = (OAuth2Authentication) SecurityContextHolder.getContext().getAuthentication();
+        Map<String, Object> map = (Map<String, Object>) authentication.getUserAuthentication()
                 .getDetails();
         return ID_TOKEN + " " + map.get(ID_TOKEN);
+    }
+
+    public static OAuth2AccessToken buildAccessTokenWithIdToken(String password) {
+        if (!password.startsWith(ID_TOKEN)) {
+            return null;
+        }
+        String idToken = password.substring(ID_TOKEN.length() + 1);
+        DefaultOAuth2AccessToken accessToken = new DefaultOAuth2AccessToken(StringUtils.EMPTY);
+        Map<String, Object> additionalInformation = new HashMap<>();
+        additionalInformation.put(ID_TOKEN, idToken);
+        accessToken.setAdditionalInformation(additionalInformation);
+        return accessToken;
     }
 }

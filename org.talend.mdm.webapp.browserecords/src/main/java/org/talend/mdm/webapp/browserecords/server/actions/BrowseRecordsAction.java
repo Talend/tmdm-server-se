@@ -1136,7 +1136,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             header.setUserProperties(LocalUser.getLocalUser().getUser().getProperties());
             header.setExportRecordsDefaultCount(Integer.parseInt(MDMConfiguration.getConfiguration().getProperty("max.export.browserecord", MDMConfiguration.MAX_EXPORT_COUNT)));
             header.setImportRecordsDefaultCount(Integer.parseInt(MDMConfiguration.getConfiguration().getProperty("max.import.browserecord", MDMConfiguration.MAX_IMPORT_COUNT)));
-            header.setTdsBaseUrl(MDMConfiguration.getConfiguration().getProperty(MDMConfiguration.TDS_ROOT_URL));
+            header.setTdsBaseUrl(MDMConfiguration.getTdsRootUrl());
             return header;
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
@@ -1646,8 +1646,8 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             String url = baseUrl + "services/rest/data/" + getCurrentDataCluster() + "/" + concept + "/bulk";
             DefaultHttpClient httpClient = new DefaultHttpClient();
             String credentials;
-            if (SecurityUtils.isUseIAM()) {
-                credentials = SecurityUtils.getToken();
+            if (MDMConfiguration.isIamEnabled()) {
+                credentials = SecurityUtils.getIdToken();
             } else {
                 credentials = LocalUser.getLocalUser().getPassword();
             }

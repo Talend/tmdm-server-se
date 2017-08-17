@@ -15,7 +15,7 @@
         </item>
         <item>
             <name>PROVISIONING</name>
-            <list>PROVISIONING.User.administrator;PROVISIONING.User.user</list>
+            <list></list>
         </item>
         <item>
             <name>UpdateReport</name>
@@ -63,7 +63,7 @@
         </item>
         <item>
             <name>amaltoOBJECTSRole</name>
-            <list>role/System_Admin;role/System_Interactive;role/System_Web</list>
+            <list></list>
         </item>
         <item>
             <name>amaltoOBJECTSRoutingEngineV2</name>

@@ -95,7 +95,7 @@ public class SecurityUtils {
         return ID_TOKEN + " " + map.get(ID_TOKEN);
     }
 
-    public static OAuth2AccessToken buildAccessTokenWithIdToken(String password) {
+    public static OAuth2AccessToken buildAccessToken(String password) {
         if (!password.startsWith(ID_TOKEN)) {
             return null;
         }

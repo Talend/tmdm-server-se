@@ -193,7 +193,7 @@ public class JournalDBService {
                             calendar.setTime(date);
                             formatValue = com.amalto.webapp.core.util.Util.formatDate(value[0], calendar);
                         } catch (Exception e) {
-                            Log.warn("journal update report item date value format error", e); //$NON-NLS-1$
+                            Log.warn("Format '" + oldValue +"' to date gets error.", e); //$NON-NLS-1$ //$NON-NLS-2$
                         }
                     } else if (CommonUtil.numberTypeNames.contains(tm.getType().getBaseTypeName())) {
                         try {
@@ -210,13 +210,13 @@ public class JournalDBService {
                             }
 
                         } catch (Exception e) {
-                            Log.warn("journal update report item number value format error", e); //$NON-NLS-1$
+                            Log.warn("Format '" + oldValue +"' to number gets error.", e); //$NON-NLS-1$ //$NON-NLS-2$
                         }
                     } else if (DataTypeConstants.STRING.getBaseTypeName().equalsIgnoreCase(tm.getType().getBaseTypeName())) {
                         try {
                             formatValue = String.format(value[0], oldValue).trim();
                         } catch (Exception e) {
-                            Log.warn("journal update report item string value format error", e); //$NON-NLS-1$
+                            Log.warn("Format '" + oldValue +"' to string gets error.", e); //$NON-NLS-1$ //$NON-NLS-2$
                         }
                     }
                 }

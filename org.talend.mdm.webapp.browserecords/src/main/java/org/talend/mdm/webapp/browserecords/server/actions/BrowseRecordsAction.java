@@ -9,10 +9,6 @@
  */
 package org.talend.mdm.webapp.browserecords.server.actions;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.net.URLEncoder;
@@ -35,6 +31,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.methods.HttpPatch;
@@ -111,6 +108,7 @@ import com.amalto.core.objects.customform.CustomFormPOJOPK;
 import com.amalto.core.objects.datacluster.DataClusterPOJOPK;
 import com.amalto.core.server.ServerContext;
 import com.amalto.core.server.StorageAdmin;
+import com.amalto.core.server.security.SecurityUtils;
 import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.task.StagingConstants;
 import com.amalto.core.util.CoreException;
@@ -1135,7 +1133,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             header.setUserProperties(LocalUser.getLocalUser().getUser().getProperties());
             header.setExportRecordsDefaultCount(Integer.parseInt(MDMConfiguration.getConfiguration().getProperty("max.export.browserecord", MDMConfiguration.MAX_EXPORT_COUNT)));
             header.setImportRecordsDefaultCount(Integer.parseInt(MDMConfiguration.getConfiguration().getProperty("max.import.browserecord", MDMConfiguration.MAX_IMPORT_COUNT)));
-            header.setTdsBaseUrl(MDMConfiguration.getConfiguration().getProperty(MDMConfiguration.TDS_ROOT_URL));
+            header.setTdsBaseUrl(MDMConfiguration.getTdsRootUrl());
             return header;
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
@@ -1641,21 +1639,26 @@ public class BrowseRecordsAction implements BrowseRecordsService {
 
     @Override
     public String bulkUpdateItem(String baseUrl, String concept, String xml, String language) throws ServiceException {
+        String errorMsg = "Bulk update failed.";
         try {
             String url = baseUrl + "services/rest/data/" + getCurrentDataCluster() + "/" + concept + "/bulk";
             DefaultHttpClient httpClient = new DefaultHttpClient();
-            httpClient.getCredentialsProvider().setCredentials(
-                    AuthScope.ANY,
-                    new UsernamePasswordCredentials(LocalUser.getLocalUser().getUsername(), LocalUser.getLocalUser()
-                            .getPassword()));
+            httpClient.getCredentialsProvider().setCredentials(AuthScope.ANY,
+                    new UsernamePasswordCredentials(LocalUser.getLocalUser().getUsername(), SecurityUtils.getCredentials()));
+
             HttpPatch httpPatch = new HttpPatch(url);
             httpPatch.setHeader("Content-Type", "text/xml; charset=utf8"); //$NON-NLS-1$ //$NON-NLS-2$
             HttpEntity entity = new StringEntity(xml);
             httpPatch.setEntity(entity);
             HttpResponse response = httpClient.execute(httpPatch);
-            return readRestErroMessage(response);
+            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+                return StringUtils.EMPTY;
+            } else {
+                return errorMsg;
+            }
         } catch (Exception e) {
-            return e.getCause().getLocalizedMessage();
+            LOG.error(errorMsg, e);
+            return errorMsg;
         }
     }
 
@@ -2463,35 +2466,6 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             newFKInfoList.add(foreignKeyInfo.replace(foregnKeyConcept, entityName));
         }
         typeModel.setForeignKeyInfo(newFKInfoList);
-    }
-    
-    private static String readRestErroMessage(HttpResponse response) {
-        final String httpCode = "200";
-        if (httpCode.equals(response.getStatusLine().getStatusCode())) {
-            return "";
-        } else {
-            BufferedReader br = null;
-            StringBuilder sb = new StringBuilder();
-            try {
-                InputStream errorInputStream = response.getEntity().getContent();
-                String line;
-                br = new BufferedReader(new InputStreamReader(errorInputStream));
-                while ((line = br.readLine()) != null) {
-                    sb.append(line);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                if (br != null) {
-                    try {
-                        br.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-            return sb.toString();
-        }
     }
 
     private boolean isValidGoldenStatus(WSDataClusterPK wsDataClusterPK, String conceptName, String taskId) {

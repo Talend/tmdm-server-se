@@ -11,11 +11,15 @@ package org.talend.mdm.webapp.journal.server.service;
 
 import java.io.ByteArrayInputStream;
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -23,7 +27,12 @@ import org.dom4j.Attribute;
 import org.dom4j.DocumentException;
 import org.dom4j.io.SAXReader;
 import org.talend.mdm.commmon.util.webapp.XSystemObjects;
+import org.talend.mdm.webapp.base.client.model.DataTypeConstants;
 import org.talend.mdm.webapp.base.server.util.Constants;
+import org.talend.mdm.webapp.base.server.util.DateUtil;
+import org.talend.mdm.webapp.base.shared.EntityModel;
+import org.talend.mdm.webapp.base.shared.TypeModel;
+import org.talend.mdm.webapp.browserecords.server.util.CommonUtil;
 import org.talend.mdm.webapp.journal.server.LocalLabelTransformer;
 import org.talend.mdm.webapp.journal.shared.JournalGridModel;
 import org.talend.mdm.webapp.journal.shared.JournalSearchCriteria;
@@ -31,6 +40,7 @@ import org.talend.mdm.webapp.journal.shared.JournalTreeModel;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.amalto.core.util.Util;
 import com.amalto.core.webservice.WSDataClusterPK;
 import com.amalto.core.webservice.WSGetItem;
@@ -92,12 +102,15 @@ public class JournalDBService {
         return resArr;
     }
 
-    public JournalTreeModel getDetailTreeModel(String[] idsArr) throws Exception {
+    public JournalTreeModel getDetailTreeModel(String[] idsArr,EntityModel entityModel, String language) throws Exception {
         WSDataClusterPK wsDataClusterPK = new WSDataClusterPK(XSystemObjects.DC_UPDATE_PREPORT.getName());
         String conceptName = "Update"; //$NON-NLS-1$
         WSGetItem wsGetItem = new WSGetItem(new WSItemPK(wsDataClusterPK, conceptName, idsArr));
         WSItem wsItem = webService.getItem(wsGetItem);
         String content = wsItem.getContent();
+
+        Map<String, String[]> formatMap = CommonUtil.checkDisplayFormat(entityModel, language);
+
         JournalTreeModel root = new JournalTreeModel("Update"); //$NON-NLS-1$
 
         if (content == null) {
@@ -137,6 +150,8 @@ public class JournalDBService {
 
                     String oldValue = checkNull(Util.getFirstTextNode(doc, "/Update/Item[" + (i + 1) + "]/oldValue")); //$NON-NLS-1$//$NON-NLS-2$
                     String newValue = checkNull(Util.getFirstTextNode(doc, "/Update/Item[" + (i + 1) + "]/newValue")); //$NON-NLS-1$ //$NON-NLS-2$
+                    oldValue = formateValue(entityModel, formatMap, path, oldValue);
+                    newValue = formateValue(entityModel, formatMap, path, newValue);
 
                     list.add(new JournalTreeModel("path:" + path)); //$NON-NLS-1$
                     list.add(new JournalTreeModel("oldValue:" + oldValue)); //$NON-NLS-1$
@@ -149,6 +164,66 @@ public class JournalDBService {
         }
 
         return root;
+    }
+
+    private String formateValue(EntityModel entityModel, Map<String, String[]> formatMap, String path, String oldValue) {
+        String formatValue = oldValue;
+        for (Map.Entry<String, String[]> entry : formatMap.entrySet()) {
+            String key = entry.getKey();
+            if (!key.contains(path)) {
+                continue;
+            }
+
+            String[] value = formatMap.get(key);
+            TypeModel tm = entityModel.getMetaDataTypes().get(key);
+
+            if (StringUtils.isNoneBlank(oldValue)) {
+                if (oldValue.trim().length() != 0) {
+                    if (CommonUtil.dateTypeNames.contains(tm.getType().getBaseTypeName())) {
+                        SimpleDateFormat sdf = null;
+                        if (value[1].equalsIgnoreCase(DataTypeConstants.DATE.getBaseTypeName())) {
+                            sdf = new SimpleDateFormat(DateUtil.DATE_FORMAT, java.util.Locale.ENGLISH);
+                        } else if (value[1].equalsIgnoreCase(DataTypeConstants.DATETIME.getBaseTypeName())) {
+                            sdf = new SimpleDateFormat(DateUtil.DATE_TIME_FORMAT, java.util.Locale.ENGLISH);
+                        }
+
+                        try {
+                            Date date = sdf.parse(oldValue.trim());
+                            Calendar calendar = Calendar.getInstance();
+                            calendar.setTime(date);
+                            formatValue = com.amalto.webapp.core.util.Util.formatDate(value[0], calendar);
+                        } catch (Exception e) {
+                            Log.info("format has error"); //$NON-NLS-1$
+                        }
+                    } else if (CommonUtil.numberTypeNames.contains(tm.getType().getBaseTypeName())) {
+                        try {
+                            NumberFormat nf = NumberFormat.getInstance();
+                            Number num = nf.parse(oldValue.trim());
+                            formatValue = ""; //$NON-NLS-1$
+                            if (tm.getType().getBaseTypeName().equals(DataTypeConstants.DOUBLE.getBaseTypeName())) {
+                                formatValue = String.format(value[0], num.doubleValue()).trim();
+                            } else if (tm.getType().getBaseTypeName().equals(DataTypeConstants.FLOAT.getBaseTypeName())) {
+                                formatValue = String.format(value[0], num.floatValue()).trim();
+                            } else if (tm.getType().getBaseTypeName().equals(DataTypeConstants.DECIMAL.getBaseTypeName())) {
+                                formatValue = String.format(value[0], new BigDecimal(oldValue.trim())).trim();
+                            } else {
+                                formatValue = String.format(value[0], num).trim();
+                            }
+
+                        } catch (Exception e) {
+                            Log.info("format has error"); //$NON-NLS-1$
+                        }
+                    } else if (DataTypeConstants.STRING.getBaseTypeName().equalsIgnoreCase(tm.getType().getBaseTypeName())) {
+                        try {
+                            formatValue = String.format(value[0], oldValue).trim();
+                        } catch (Exception e) {
+                            Log.info("format has error"); //$NON-NLS-1$
+                        }
+                    }
+                }
+            }
+        }
+        return formatValue;
     }
 
     public JournalTreeModel getComparisionTreeModel(String xmlString) {

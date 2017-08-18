@@ -170,7 +170,7 @@ public class SaverContextFactory {
             final MetadataRepositoryAdmin admin = server.getMetadataRepositoryAdmin();
             String typeName = userDomDocument.getDocumentElement().getNodeName();
             MetadataRepository repository;
-            if (!admin.exist(dataModelName)) {
+            if (dataModelName.startsWith("amaltoOBJECTS") || !admin.exist(dataModelName)) {
                 final Storage systemStorage = server.getStorageAdmin().get(StorageAdmin.SYSTEM_STORAGE, StorageType.SYSTEM);
                 final MetadataRepository systemRepository = systemStorage.getMetadataRepository();
                 if (systemRepository.getComplexType(typeName) != null) {

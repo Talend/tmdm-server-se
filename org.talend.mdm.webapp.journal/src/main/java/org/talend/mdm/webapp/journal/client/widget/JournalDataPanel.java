@@ -17,10 +17,12 @@ import java.util.Set;
 import org.talend.mdm.webapp.base.client.SessionAwareAsyncCallback;
 import org.talend.mdm.webapp.base.client.model.BasePagingLoadConfigImpl;
 import org.talend.mdm.webapp.base.client.model.ItemBasePageLoadResult;
+import org.talend.mdm.webapp.base.client.util.UrlUtil;
 import org.talend.mdm.webapp.journal.client.Journal;
 import org.talend.mdm.webapp.journal.client.JournalServiceAsync;
 import org.talend.mdm.webapp.journal.client.i18n.MessagesFactory;
 import org.talend.mdm.webapp.journal.client.resources.icon.Icons;
+import org.talend.mdm.webapp.journal.client.util.JournalSearchUtil;
 import org.talend.mdm.webapp.journal.shared.JournalGridModel;
 import org.talend.mdm.webapp.journal.shared.JournalSearchCriteria;
 import org.talend.mdm.webapp.journal.shared.JournalTreeModel;
@@ -430,7 +432,8 @@ public class JournalDataPanel extends FormPanel {
     }
 
     public void updateTabPanel(final JournalGridModel gridModel) {
-        service.getDetailTreeModel(gridModel.getIds(), new SessionAwareAsyncCallback<JournalTreeModel>() {
+        service.getDetailTreeModel(JournalSearchUtil.buildParameter(gridModel, "before", true), UrlUtil.getLanguage(),
+                new SessionAwareAsyncCallback<JournalTreeModel>() {
 
             @Override
             public void onSuccess(final JournalTreeModel newRoot) {

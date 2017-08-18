@@ -244,23 +244,24 @@ public class JournalGridPanel extends ContentPanel {
     }
 
     public void openTabPanel(final JournalGridModel gridModel) {
-        service.getDetailTreeModel(gridModel.getIds(), new SessionAwareAsyncCallback<JournalTreeModel>() {
-
-            @Override
-            public void onSuccess(final JournalTreeModel root) {
-                service.isEnterpriseVersion(new SessionAwareAsyncCallback<Boolean>() {
+        service.getDetailTreeModel(JournalSearchUtil.buildParameter(gridModel, "before", true), UrlUtil.getLanguage(),
+                new SessionAwareAsyncCallback<JournalTreeModel>() {
 
                     @Override
-                    public void onSuccess(Boolean isEnterprise) {
-                        if (GWT.isScript()) {
-                            JournalGridPanel.this.openGWTPanel(isEnterprise, gridModel, root);
-                        } else {
-                            JournalGridPanel.this.openDebugPanel(isEnterprise, gridModel, root);
-                        }
+                    public void onSuccess(final JournalTreeModel root) {
+                        service.isEnterpriseVersion(new SessionAwareAsyncCallback<Boolean>() {
+
+                            @Override
+                            public void onSuccess(Boolean isEnterprise) {
+                                if (GWT.isScript()) {
+                                    JournalGridPanel.this.openGWTPanel(isEnterprise, gridModel, root);
+                                } else {
+                                    JournalGridPanel.this.openDebugPanel(isEnterprise, gridModel, root);
+                                }
+                            }
+                        });
                     }
                 });
-            }
-        });
     }
 
     private native void openHistoryTabPanel(String ids, JournalHistoryPanel source)/*-{

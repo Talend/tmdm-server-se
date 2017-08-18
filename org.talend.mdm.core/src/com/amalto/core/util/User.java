@@ -92,9 +92,12 @@ public class User implements Cloneable {
                 + (universe == null ? "" : universe) + "</universe>" + "    <language>" + (language == null ? "" : language) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                 + "</language>"; //$NON-NLS-1$
         user += "    <roles>"; //$NON-NLS-1$
-        Iterator<String> iter = roleNames.iterator();
-        while (iter.hasNext()) {
-            user += "<role>" + iter.next() + "</role>"; //$NON-NLS-1$ //$NON-NLS-2$
+        Iterator<String> iter;
+        if (roleNames != null) {
+            iter = roleNames.iterator();
+            while (iter.hasNext()) {
+                user += "<role>" + iter.next() + "</role>"; //$NON-NLS-1$ //$NON-NLS-2$
+            }
         }
         user += "    </roles>"; //$NON-NLS-1$
         user += "    <properties>"; //$NON-NLS-1$

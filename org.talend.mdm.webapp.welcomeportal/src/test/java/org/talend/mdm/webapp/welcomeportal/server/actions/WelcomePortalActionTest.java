@@ -28,7 +28,7 @@ public class WelcomePortalActionTest extends TestCase {
 		processMap.put("Runnable#CallBack", "Runnable#CallBack template process");
 		processMap.put("Runnable#BacktoPrevious", "Back to Previous");
 		
-		Map<String, String> result = action.sortProcessMap(processMap);
+		Map<String, String> result = action.useAlphabeticallySortProcessMap(processMap);
 		
 		int i = 1;
 		for (Map.Entry<String, String> entry : result.entrySet()) {

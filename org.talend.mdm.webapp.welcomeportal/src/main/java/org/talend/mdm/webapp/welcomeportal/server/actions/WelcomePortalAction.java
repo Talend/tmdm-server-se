@@ -125,24 +125,26 @@ public class WelcomePortalAction implements WelcomePortalService {
         return Webapp.INSTANCE.getWorkflowTasksCount();
     }
 
-    @Override
-    public Map<String, String> getStandaloneProcess(String language) throws ServiceException {
-        try {
-            Map<String, String> processMap = new HashMap<String, String>();
-            WSTransformerV2PK[] wst = Util.getPort().getTransformerV2PKs(new WSGetTransformerV2PKs("*")).getWsTransformerV2PK(); //$NON-NLS-1$
-            for (WSTransformerV2PK wstransformerpk : wst) {
-                if (isStandaloneProcess(wstransformerpk.getPk())) {
-                    WSTransformerV2 wsTransformer = Util.getPort().getTransformerV2(new WSGetTransformerV2(wstransformerpk));
-                    processMap.put(wstransformerpk.getPk(),
-                            MultilanguageMessageParser.pickOutISOMessage(wsTransformer.getDescription(), language));
-                }
+	@Override
+	public Map<String, String> getStandaloneProcess(String language) throws ServiceException {
+		try {
+			Map<String, String> processMap = new HashMap<String, String>();
+			WSTransformerV2PK[] wst = Util.getPort().getTransformerV2PKs(new WSGetTransformerV2PKs("*")) //$NON-NLS-1$
+					.getWsTransformerV2PK();
+			for (WSTransformerV2PK wstransformerpk : wst) {
+				if (isStandaloneProcess(wstransformerpk.getPk())) {
+					WSTransformerV2 wsTransformer = Util.getPort()
+							.getTransformerV2(new WSGetTransformerV2(wstransformerpk));
+					processMap.put(wstransformerpk.getPk(),
+							MultilanguageMessageParser.pickOutISOMessage(wsTransformer.getDescription(), language));
+				}
 			}
 			return useAlphabeticallySortProcessMap(processMap);
 		} catch (Exception e) {
-            LOG.error(e.getMessage(), e);
-            throw new ServiceException(e.getLocalizedMessage());
-        }
-    }
+			LOG.error(e.getMessage(), e);
+			throw new ServiceException(e.getLocalizedMessage());
+		}
+	}
 
 	protected Map<String, String> useAlphabeticallySortProcessMap(Map<String, String> processMap) {
 		String runableStr = "Runnable#"; //$NON-NLS-1$

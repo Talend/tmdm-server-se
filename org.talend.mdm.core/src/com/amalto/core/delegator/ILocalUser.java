@@ -16,17 +16,21 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
+import org.talend.mdm.commmon.util.core.MDMConfiguration;
 
 import com.amalto.core.objects.ItemPOJO;
 import com.amalto.core.query.user.UserQueryBuilder;
 import com.amalto.core.server.ServerContext;
 import com.amalto.core.server.StorageAdmin;
+import com.amalto.core.server.security.SecurityUtils;
 import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.StorageResults;
 import com.amalto.core.storage.StorageType;
@@ -36,8 +40,9 @@ import com.amalto.core.storage.record.DataRecordXmlWriter;
 import com.amalto.core.util.User;
 import com.amalto.core.util.XtentisException;
 
+@SuppressWarnings("nls")
 public abstract class ILocalUser implements IBeanDelegator {
-    
+
     public ILocalUser getILocalUser() throws XtentisException {
         return null;
     }
@@ -84,12 +89,23 @@ public abstract class ILocalUser implements IBeanDelegator {
         return (String) principal;
     }
 
-    public String getPassword() {
+    /**
+     * Return id_token if using SSO, else return password
+     * 
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public String getCredentials() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Object credentials = authentication.getCredentials();
-        return (String) credentials;
+        if (MDMConfiguration.isIamEnabled()) {
+            OAuth2Authentication oAuth2Authentication = (OAuth2Authentication) authentication;
+            Map<String, Object> map = (Map<String, Object>) oAuth2Authentication.getUserAuthentication().getDetails();
+            return SecurityUtils.ID_TOKEN + " " + map.get(SecurityUtils.ID_TOKEN);
+        } else {
+            return (String) authentication.getCredentials();
+        }
     }
-    
+
     public User getUser() {
         User user = new User();
         String xml = getUserXML();

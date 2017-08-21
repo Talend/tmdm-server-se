@@ -27,6 +27,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
 
@@ -94,7 +95,13 @@ public class SecurityUtils {
         Map<String, Object> map = (Map<String, Object>) authentication.getUserAuthentication().getDetails();
         return ID_TOKEN + " " + map.get(ID_TOKEN);
     }
-
+    
+    public static String getToken() {
+        OAuth2Authentication authentication = (OAuth2Authentication) SecurityContextHolder.getContext().getAuthentication();
+        OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) authentication.getDetails();
+        return details.getTokenType() + " " + details.getTokenValue();
+    }
+    
     public static OAuth2AccessToken buildAccessToken(String password) {
         if (!password.startsWith(ID_TOKEN)) {
             return null;

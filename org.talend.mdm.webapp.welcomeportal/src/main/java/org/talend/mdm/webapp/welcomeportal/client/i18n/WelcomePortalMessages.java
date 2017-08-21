@@ -133,4 +133,6 @@ public interface WelcomePortalMessages extends Messages {
     String login_tds_fail();
 
     String retrieve_campaign_fail();
+    
+    String access_tds_fail();
 }

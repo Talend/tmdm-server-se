@@ -341,14 +341,9 @@ public class WelcomePortalAction implements WelcomePortalService {
 
     @Override
     public AppHeader getAppHeader() throws ServiceException {
-        try {
-            AppHeader header = new AppHeader();
-            header.setTdsBaseUrl(MDMConfiguration.getConfiguration().getProperty(MDMConfiguration.TDS_ROOT_URL));
-            return header;
-        } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
-            throw new ServiceException(e.getLocalizedMessage());
-        }
+        AppHeader header = new AppHeader();
+        header.setTdsBaseUrl(MDMConfiguration.getTdsRootUrl());
+        return header;
     }
 
     @Override

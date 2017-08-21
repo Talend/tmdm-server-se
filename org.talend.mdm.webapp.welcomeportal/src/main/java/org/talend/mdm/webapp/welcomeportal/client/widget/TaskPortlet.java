@@ -50,6 +50,8 @@ public class TaskPortlet extends BasePortlet {
     private boolean isHiddenWorkFlowTask = true;
 
     private boolean isHiddenTask = true;
+    
+    private String ACCESS_TDS_FAIL = "access_tds_fail";
 
     private enum TASK_TYPE {
         WORKFLOW_TYPE,
@@ -136,7 +138,7 @@ public class TaskPortlet extends BasePortlet {
                                 errorHTML = buildErrorHTML(BaseMessagesFactory.getMessages().unknown_error());
                             }
                         } else {
-                            errorHTML = buildErrorHTML(getResponseErrorMessage(response.getStatusCode()));
+                            errorHTML = buildErrorHTML(getResponseErrorMessage(response));
                         }
                         if (errorHTML != null) {
                             label.setText(MessagesFactory.getMessages().no_tasks());
@@ -189,7 +191,7 @@ public class TaskPortlet extends BasePortlet {
                                         errorHTML = buildErrorHTML(BaseMessagesFactory.getMessages().unknown_error());
                                     }
                                 } else {
-                                    errorHTML = buildErrorHTML(getResponseErrorMessage(response.getStatusCode()));
+                                    errorHTML = buildErrorHTML(getResponseErrorMessage(response));
                                 }
                                 if (errorHTML != null) {
                                     if (workflowTaskCount > 0) {
@@ -298,10 +300,16 @@ public class TaskPortlet extends BasePortlet {
         return errorHtml;
     }
     
-    private String getResponseErrorMessage(int statusCode) {
-        switch (statusCode) {
+    private String getResponseErrorMessage(Response response) {
+        switch (response.getStatusCode()) {
         case Response.SC_SERVICE_UNAVAILABLE:
             return MessagesFactory.getMessages().connect_tds_fail();
+        case Response.SC_UNAUTHORIZED:
+            if (ACCESS_TDS_FAIL.equals(response.getStatusText())) {
+                return MessagesFactory.getMessages().access_tds_fail();
+            } else {
+                return MessagesFactory.getMessages().login_tds_fail();
+            }
         case Response.SC_FORBIDDEN:
             return MessagesFactory.getMessages().retrieve_campaign_fail();
         default:

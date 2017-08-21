@@ -305,7 +305,7 @@ public class TaskPortlet extends BasePortlet {
         case Response.SC_SERVICE_UNAVAILABLE:
             return MessagesFactory.getMessages().connect_tds_fail();
         case Response.SC_UNAUTHORIZED:
-            if (ACCESS_TDS_FAIL.equals(response.getStatusText())) {
+            if (ACCESS_TDS_FAIL.equals(response.getText())) {
                 return MessagesFactory.getMessages().access_tds_fail();
             } else {
                 return MessagesFactory.getMessages().login_tds_fail();

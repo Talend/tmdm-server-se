@@ -1652,12 +1652,11 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
                 return StringUtils.EMPTY;
             } else {
-                return "Bulk update failed.";
+                return MESSAGES.getMessage("bulkUpdate_error");
             }
         } catch (Exception e) {
-            String errorMsg = "Bulk update failed.";
-            LOG.error(errorMsg, e);
-            return errorMsg;
+            LOG.error(MESSAGES.getMessage("bulkUpdate_error"), e);
+            return MESSAGES.getMessage("bulkUpdate_error");
         }
     }
 

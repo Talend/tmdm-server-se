@@ -138,14 +138,14 @@ public class WelcomePortalAction implements WelcomePortalService {
                             MultilanguageMessageParser.pickOutISOMessage(wsTransformer.getDescription(), language));
                 }
             }
-            return useAlphabeticallySortProcessMap(processMap);
+            return alphabeticalSortProcessMap(processMap);
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
             throw new ServiceException(e.getLocalizedMessage());
         }
     }
 
-    protected Map<String, String> useAlphabeticallySortProcessMap(Map<String, String> processMap) {
+    protected Map<String, String> alphabeticalSortProcessMap(Map<String, String> processMap) {
         String runableStr = "Runnable#"; //$NON-NLS-1$
 
         Map<String, String> linkedHashMap = new LinkedHashMap<>();

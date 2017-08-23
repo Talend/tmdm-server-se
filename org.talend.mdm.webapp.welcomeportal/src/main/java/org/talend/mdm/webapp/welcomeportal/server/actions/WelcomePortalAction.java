@@ -146,14 +146,12 @@ public class WelcomePortalAction implements WelcomePortalService {
     }
 
     protected Map<String, String> alphabeticalSortProcessMap(Map<String, String> processMap) {
-        String runableStr = "Runnable#"; //$NON-NLS-1$
-
         Map<String, String> linkedHashMap = new LinkedHashMap<>();
         Map<String, String> processMapTmp = new HashMap<String, String>(processMap);
 
         processMapTmp.entrySet().stream().peek(entry -> {
-            if (entry.getValue().startsWith(runableStr)) {
-                entry.setValue(entry.getValue().replace(runableStr, StringUtils.EMPTY));
+            if (isStandaloneProcess(entry.getValue())) {
+                entry.setValue(entry.getValue().replace(STANDALONE_PROCESS_PREFIX, StringUtils.EMPTY));
             }
 
         }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)).entrySet().stream()

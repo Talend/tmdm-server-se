@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.coobird.thumbnailator.Thumbnails;
+import talend.ext.images.server.util.ImagePathUtil;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -35,6 +36,8 @@ public class ImageLocateServlet extends HttpServlet {
     private static final long serialVersionUID = -3012919798771313147L;
 
     private static final Logger LOGGER = Logger.getLogger(ImageLocateServlet.class);
+    
+    private final String CONTENT_TYPE_HEADER = "Content-Type";
 
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
@@ -58,7 +61,12 @@ public class ImageLocateServlet extends HttpServlet {
             }
             File resourceFile = new File(resourceFilePath);
             if (resourceFile.exists()) {
-
+                
+                String resourceFileType = ImagePathUtil.parseFileFullName(resourceFilePath)[1];
+                String ResourceFileMIMEType = getResourceFileMIMEType(resourceFileType);
+                if (StringUtils.isNotEmpty(ResourceFileMIMEType)) {
+                    response.setHeader(CONTENT_TYPE_HEADER, ResourceFileMIMEType + "; charset=UTF-8");
+                }
                 String strWidth = request.getParameter("width"); //$NON-NLS-1$
                 String strHeight = request.getParameter("height"); //$NON-NLS-1$
                 String strPreserveAspectRatio = request.getParameter("preserveAspectRatio"); //$NON-NLS-1$
@@ -110,5 +118,30 @@ public class ImageLocateServlet extends HttpServlet {
         path = ImageServerInfo.getInstance().getUploadPath() + File.separator + path;
         path = path.replaceAll("\\\\", "/"); //$NON-NLS-1$//$NON-NLS-2$
         return path;
+    }
+    
+    private String getResourceFileMIMEType(String fileType) {
+        switch (fileType) {
+        case "bmp":
+            return "image/bmp";
+        case "gif":
+            return "image/gif";
+        case "ico":
+            return "image/x-icon";
+        case "jpg":
+            return "image/jpeg";
+        case "jpeg":
+            return "image/jpeg";
+        case "png":
+            return "image/png";
+        case "psd":
+            return "image/vnd.adobe.photoshop";
+        case "tif":
+            return "image/tiff";
+        case "tiff":
+            return "image/tiff";
+        default:
+            return "";
+        }
     }
 }

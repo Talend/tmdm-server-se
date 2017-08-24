@@ -28,6 +28,7 @@ import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.StorageType;
 import com.amalto.core.storage.datasource.DataSourceFactory;
 import com.amalto.core.util.MDMEhCacheUtil;
+import com.amalto.core.util.Util;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
@@ -200,7 +201,11 @@ public class StorageAdminImpl implements StorageAdmin {
         // Additional POJOs
         repository.load(DroppedItemPOJO.class);
         // Load additional types (PROVISIONING...)
-        String[] models = new String[] { "/com/amalto/core/initdb/data/datamodel/PROVISIONING", //$NON-NLS-1$
+        String provisioningResource = "/com/amalto/core/initdb/data/datamodel/PROVISIONING"; //$NON-NLS-1$
+        if (Util.isEnterprise()) {
+            provisioningResource = "/com/amalto/core/initdb/data/datamodel/PROVISIONING_EE"; //$NON-NLS-1$
+        }
+        String[] models = new String[] { provisioningResource, 
                 "/com/amalto/core/initdb/data/datamodel/CONF", //$NON-NLS-1$
                 "/com/amalto/core/initdb/data/datamodel/SearchTemplate" //$NON-NLS-1$
         };

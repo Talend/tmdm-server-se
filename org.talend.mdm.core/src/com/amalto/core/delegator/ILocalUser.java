@@ -20,7 +20,7 @@ import java.util.HashSet;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+import com.amalto.core.delegator.LocalUserDetails;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 
 import com.amalto.core.objects.ItemPOJO;
@@ -34,6 +34,7 @@ import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.record.DataRecordWriter;
 import com.amalto.core.storage.record.DataRecordXmlWriter;
 import com.amalto.core.util.User;
+import com.amalto.core.util.Util;
 import com.amalto.core.util.XtentisException;
 
 public abstract class ILocalUser implements IBeanDelegator {
@@ -57,8 +58,11 @@ public abstract class ILocalUser implements IBeanDelegator {
     public String getUserXML() {
         StorageAdmin storageAdmin = ServerContext.INSTANCE.get().getStorageAdmin();
         Storage systemStorage = storageAdmin.get(StorageAdmin.SYSTEM_STORAGE, StorageType.SYSTEM);
-        ComplexTypeMetadata userType = systemStorage.getMetadataRepository().getComplexType("User"); //$NON-NLS-1$
+        ComplexTypeMetadata userType = systemStorage.getMetadataRepository().getComplexType("User"); //$NON-NLS-1$        
         UserQueryBuilder qb = from(userType).where(eq(userType.getField("username"), getUsername())); //$NON-NLS-1$
+        if (Util.isEnterprise()) {
+            qb = from(userType).where(eq(userType.getField("id"), getUsername())); //$NON-NLS-1$
+        }
         DataRecordWriter writer = new DataRecordXmlWriter(userType);
         StringWriter userXml = new StringWriter();
         try {
@@ -78,8 +82,11 @@ public abstract class ILocalUser implements IBeanDelegator {
     public String getUsername() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Object principal = authentication.getPrincipal();
-        if (principal instanceof UserDetails) {
-            return ((UserDetails) principal).getUsername();
+        if (principal instanceof LocalUserDetails) {
+            if (Util.isEnterprise()) {
+                return ((LocalUserDetails) principal).getId();
+            }
+            return ((LocalUserDetails) principal).getUsername();
         }
         return (String) principal;
     }

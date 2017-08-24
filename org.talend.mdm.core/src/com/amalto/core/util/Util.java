@@ -845,6 +845,10 @@ public class Util {
 
         ItemPOJOPK itemPk = new ItemPOJOPK(new DataClusterPOJOPK("PROVISIONING"), "User", new String[] { LocalUser.getLocalUser()
                 .getUsername() });
+        if (Util.isEnterprise()) {
+            itemPk = new ItemPOJOPK(new DataClusterPOJOPK("PROVISIONING"), "ID", new String[] { LocalUser.getLocalUser()
+                .getUsername() });
+        }
         ItemPOJO item = ItemPOJO.load(itemPk);
         if (item == null) {
             return null;

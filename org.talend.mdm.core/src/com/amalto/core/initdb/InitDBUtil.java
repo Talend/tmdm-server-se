@@ -30,6 +30,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.amalto.core.objects.configurationinfo.ConfigurationHelper;
+import com.amalto.core.util.Util;
 
 /**
  * Create system init data cluster / data model. etc Current only support head universe
@@ -43,6 +44,8 @@ public class InitDBUtil {
     private static final Map<String, List<String>> initExtensionDB = new LinkedHashMap<String, List<String>>();
 
     private static final String INIT_DB_CONFIG = "/com/amalto/core/initdb/initdb.xml"; //$NON-NLS-1$
+    
+    private static final String INIT_DB_CONFIG_EE = "/com/amalto/core/initdb/initdb_ee.xml"; //$NON-NLS-1$
 
     private static final String INIT_DB_EXTENSION_CONFIG = "/com/amalto/core/initdb/initdb-extension.xml"; //$NON-NLS-1$
 
@@ -52,7 +55,11 @@ public class InitDBUtil {
         InputStream dbIn = null;
         InputStream edbIn = null;
         try {
-            dbIn = InitDBUtil.class.getResourceAsStream(INIT_DB_CONFIG);
+            if (Util.isEnterprise()) {
+                dbIn = InitDBUtil.class.getResourceAsStream(INIT_DB_CONFIG_EE);
+            } else {
+                dbIn = InitDBUtil.class.getResourceAsStream(INIT_DB_CONFIG);
+            }
             edbIn = InitDBUtil.class.getResourceAsStream(INIT_DB_EXTENSION_CONFIG);
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             parseInitMap(dbIn, builder, initDB);

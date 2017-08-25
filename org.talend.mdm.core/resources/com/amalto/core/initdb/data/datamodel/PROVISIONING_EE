@@ -1,0 +1,94 @@
+<data-model-pOJO>
+    <name>PROVISIONING</name>
+    <schema>&lt;xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" blockDefault="" elementFormDefault="unqualified" finalDefault=""&gt;
+	&lt;xsd:element abstract="false" name="User" nillable="false"&gt;
+		&lt;xsd:complexType mixed="false"&gt;
+			&lt;xsd:sequence maxOccurs="1" minOccurs="1"&gt;
+                &lt;xsd:element maxOccurs="1" minOccurs="1" name="id" nillable="false" type="xsd:string"/&gt;
+				&lt;xsd:element maxOccurs="1" minOccurs="0" name="username" nillable="false" type="xsd:string"/&gt;
+				&lt;xsd:element maxOccurs="1" minOccurs="0" name="password" nillable="false" type="xsd:string"/&gt;
+				&lt;xsd:element maxOccurs="1" minOccurs="0" name="givenname" nillable="false" type="xsd:string"/&gt;
+				&lt;xsd:element maxOccurs="1" minOccurs="0" name="familyname" nillable="false" type="xsd:string"/&gt;
+				&lt;xsd:element maxOccurs="1" minOccurs="0" name="phonenumber" nillable="false" type="xsd:string"/&gt;
+				&lt;xsd:element maxOccurs="1" minOccurs="0" name="company" nillable="false" type="xsd:string"/&gt;
+				&lt;xsd:element maxOccurs="1" minOccurs="0" name="signature" nillable="false" type="xsd:string"/&gt;
+				&lt;xsd:element maxOccurs="1" minOccurs="0" name="realemail" nillable="false" type="xsd:string"/&gt;
+				&lt;xsd:element maxOccurs="1" minOccurs="0" name="fakeemail" nillable="false" type="xsd:string"/&gt;
+				&lt;xsd:element maxOccurs="1" minOccurs="0" name="viewrealemail" nillable="false" type="YESNO"/&gt;
+				&lt;xsd:element maxOccurs="1" minOccurs="1" name="registrationdate" nillable="false" type="xsd:long"/&gt;
+				&lt;xsd:element maxOccurs="1" minOccurs="0" name="lastvisitdate" nillable="false" type="xsd:long"/&gt;
+				&lt;xsd:element maxOccurs="1" minOccurs="0" name="lastsynctime" nillable="false" type="xsd:long"/&gt;
+				&lt;xsd:element maxOccurs="1" minOccurs="0" name="enabled" nillable="false" type="YESNO"/&gt;
+				&lt;xsd:element maxOccurs="1" minOccurs="0" name="homepage" nillable="false" type="xsd:string"/&gt;
+                &lt;xsd:element maxOccurs="1" minOccurs="0" name="language" nillable="false" type="xsd:string"/&gt;
+				&lt;xsd:element maxOccurs="1" minOccurs="0" name="universe" nillable="false" type="xsd:string"/&gt;
+				&lt;xsd:element maxOccurs="1" minOccurs="0" name="roles" nillable="false"&gt;
+					&lt;xsd:complexType mixed="false"&gt;
+						&lt;xsd:sequence maxOccurs="1" minOccurs="1"&gt;
+							&lt;xsd:element maxOccurs="unbounded" minOccurs="1" name="role" nillable="false" type="xsd:string"/&gt;
+						&lt;/xsd:sequence&gt;
+					&lt;/xsd:complexType&gt;
+				&lt;/xsd:element&gt;
+				&lt;xsd:element maxOccurs="1" minOccurs="0" name="properties" nillable="false"&gt;
+					&lt;xsd:complexType mixed="false"&gt;
+						&lt;xsd:sequence maxOccurs="1" minOccurs="1"&gt;
+							&lt;xsd:element maxOccurs="unbounded" minOccurs="0" name="property" nillable="false" type="NAMEVALUEPAIR"/&gt;
+						&lt;/xsd:sequence&gt;
+					&lt;/xsd:complexType&gt;
+				&lt;/xsd:element&gt;
+				&lt;xsd:element maxOccurs="1" minOccurs="0" name="applications" nillable="false"&gt;
+					&lt;xsd:complexType mixed="false"&gt;
+						&lt;xsd:sequence maxOccurs="1" minOccurs="1"&gt;
+							&lt;xsd:element maxOccurs="unbounded" minOccurs="0" name="application" nillable="false" type="NAMEVALUEPAIR"/&gt;
+						&lt;/xsd:sequence&gt;
+					&lt;/xsd:complexType&gt;
+				&lt;/xsd:element&gt;
+			&lt;/xsd:sequence&gt;
+		&lt;/xsd:complexType&gt;
+		&lt;xsd:unique name="User"&gt;
+			&lt;xsd:selector xpath="."/&gt;
+			&lt;xsd:field xpath="id"/&gt;
+		&lt;/xsd:unique&gt;
+	&lt;/xsd:element&gt;
+	&lt;xsd:simpleType name="YESNO"&gt;
+		&lt;xsd:restriction base="xsd:string"&gt;
+			&lt;xsd:enumeration value="yes"/&gt;
+			&lt;xsd:enumeration value="no"/&gt;
+		&lt;/xsd:restriction&gt;
+	&lt;/xsd:simpleType&gt;
+	&lt;xsd:complexType abstract="false" mixed="false" name="NAMEVALUEPAIR"&gt;
+		&lt;xsd:sequence maxOccurs="1" minOccurs="1"&gt;
+			&lt;xsd:element maxOccurs="1" minOccurs="1" name="name" nillable="false" type="xsd:string"/&gt;
+			&lt;xsd:element maxOccurs="1" minOccurs="1" name="value" nillable="false" type="xsd:string"/&gt;
+		&lt;/xsd:sequence&gt;
+	&lt;/xsd:complexType&gt;
+	&lt;xsd:element abstract="false" name="Role" nillable="false"&gt;
+		&lt;xsd:complexType mixed="false"&gt;
+			&lt;xsd:sequence maxOccurs="1" minOccurs="1"&gt;
+				&lt;xsd:element maxOccurs="1" minOccurs="1" name="name" nillable="false" type="xsd:string"/&gt;
+				&lt;xsd:element maxOccurs="1" minOccurs="1" name="description" nillable="false" type="xsd:string"/&gt;
+				&lt;xsd:element maxOccurs="1" minOccurs="0" name="role_to_assign" nillable="false" type="xsd:string"/&gt;
+				&lt;xsd:element maxOccurs="1" minOccurs="0" name="applications" nillable="false"&gt;
+					&lt;xsd:complexType mixed="false"&gt;
+						&lt;xsd:sequence maxOccurs="1" minOccurs="1"&gt;
+							&lt;xsd:element maxOccurs="1" minOccurs="0" name="context" nillable="false" type="xsd:string"/&gt;
+							&lt;xsd:element maxOccurs="unbounded" minOccurs="1" name="name" nillable="false" type="xsd:string"/&gt;
+						&lt;/xsd:sequence&gt;
+					&lt;/xsd:complexType&gt;
+				&lt;/xsd:element&gt;
+			&lt;/xsd:sequence&gt;
+		&lt;/xsd:complexType&gt;
+		&lt;xsd:unique name="Role"&gt;
+			&lt;xsd:selector xpath="."/&gt;
+			&lt;xsd:field xpath="name"/&gt;
+		&lt;/xsd:unique&gt;
+	&lt;/xsd:element&gt;
+&lt;/xsd:schema&gt;
+</schema>
+    <description>Users and Roles</description>
+    <PK>
+        <ids>PROVISIONING</ids>
+        <unique-id>PROVISIONING</unique-id>
+    </PK>
+    <digest>1ca3226d32153d6650f75f7213b95f2f</digest>
+</data-model-pOJO>

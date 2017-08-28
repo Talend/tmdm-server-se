@@ -609,7 +609,7 @@ public class SystemStorageTest extends TestCase {
         factory.setNamespaceAware(true);
         DocumentBuilder documentBuilder = factory.newDocumentBuilder();
         int error = 0;
-        int ignore = 0;
+        int ignore = 1;
         List<DataRecord> records = new LinkedList<DataRecord>();
         Set<ComplexTypeMetadata> presentTypes = new HashSet<ComplexTypeMetadata>();
         for (String fis1 : files) {

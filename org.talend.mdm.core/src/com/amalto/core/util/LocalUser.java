@@ -9,10 +9,12 @@
  */
 package com.amalto.core.util;
 
+import java.util.HashSet;
+
+import org.talend.mdm.commmon.util.core.MDMConfiguration;
+
 import com.amalto.core.delegator.BeanDelegatorContainer;
 import com.amalto.core.delegator.ILocalUser;
-
-import java.util.HashSet;
 
 public class LocalUser {
     
@@ -75,5 +77,9 @@ public class LocalUser {
 
     public ILocalUser getILocalUser() throws XtentisException {
         return getLocalUser().getILocalUser();
+    }
+
+    public static boolean isAdminUser(String username) {
+        return username.equals(MDMConfiguration.getAdminUser());
     }
 }

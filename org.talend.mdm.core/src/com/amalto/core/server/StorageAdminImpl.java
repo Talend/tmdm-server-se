@@ -201,11 +201,7 @@ public class StorageAdminImpl implements StorageAdmin {
         // Additional POJOs
         repository.load(DroppedItemPOJO.class);
         // Load additional types (PROVISIONING...)
-        String provisioningResource = "/com/amalto/core/initdb/data/datamodel/PROVISIONING"; //$NON-NLS-1$
-        if (Util.isEnterprise()) {
-            provisioningResource = "/com/amalto/core/initdb/data/datamodel/PROVISIONING_EE"; //$NON-NLS-1$
-        }
-        String[] models = new String[] { provisioningResource, 
+        String[] models = new String[] { "/com/amalto/core/initdb/data/datamodel/PROVISIONING", //$NON-NLS-1$
                 "/com/amalto/core/initdb/data/datamodel/CONF", //$NON-NLS-1$
                 "/com/amalto/core/initdb/data/datamodel/SearchTemplate" //$NON-NLS-1$
         };

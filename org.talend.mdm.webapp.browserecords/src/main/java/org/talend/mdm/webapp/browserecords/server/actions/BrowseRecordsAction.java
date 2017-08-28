@@ -1811,9 +1811,9 @@ public class BrowseRecordsAction implements BrowseRecordsService {
     }
 
     @Override
-    public ColumnTreeLayoutModel getColumnTreeLayout(String concept, String name) throws ServiceException {
+    public ColumnTreeLayoutModel getColumnTreeLayout(String concept, String customFormName) throws ServiceException {
         try {
-            CustomFormPOJOPK pk = new CustomFormPOJOPK(getCurrentDataModel(), concept, name);
+            CustomFormPOJOPK pk = new CustomFormPOJOPK(getCurrentDataModel(), concept, customFormName);
             CustomFormPOJO customForm = com.amalto.core.util.Util.getCustomFormCtrlLocal().getUserCustomForm(pk);
             if (customForm == null) {
                 return null;

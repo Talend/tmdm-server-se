@@ -9,7 +9,7 @@
  */
 package com.amalto.core.history.accessor.record;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -50,6 +50,11 @@ public class DataRecordAccessorTest extends DataRecordDataWriterTestCase{
 
         setDataRecordField(record, "supplier", referenced);
         DataRecordAccessor dataRecordAccessor = new DataRecordAccessor(repository, record, "supplier");
+        assertEquals(true, dataRecordAccessor.exist());
         assertEquals("PartyCompany", dataRecordAccessor.getActualType());
+        
+        setDataRecordField(record, "supplier", referenced);
+        dataRecordAccessor = new DataRecordAccessor(repository, record, "supplier/name");
+        assertEquals(false, dataRecordAccessor.exist());
     }
 }

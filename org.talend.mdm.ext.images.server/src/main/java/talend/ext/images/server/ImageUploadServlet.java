@@ -17,6 +17,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -203,7 +205,7 @@ public class ImageUploadServlet extends HttpServlet {
             String fileName = item.getName();
             String uid = Uuid.get32Code().toString();
 
-            String[] fileParsedResult = ImagePathUtil.parseFileFullName(fileName);
+            String[] fileParsedResult = parseFileFullName(fileName);
             imageUploadInfo.sourceFileName = fileParsedResult[0];
             imageUploadInfo.sourceFileType = fileParsedResult[1];
             if (imageUploadInfo.targetFileShortName != null && imageUploadInfo.targetFileShortName.trim().length() > 0) {
@@ -279,6 +281,26 @@ public class ImageUploadServlet extends HttpServlet {
 
         }
         return null;
+    }
+
+    private String[] parseFileFullName(String fileName) {
+        String[] result = new String[2];
+        String simpleFileName = ""; //$NON-NLS-1$
+        if (fileName.indexOf("/") == -1 && fileName.indexOf("\\") == -1) { //$NON-NLS-1$ //$NON-NLS-2$
+            simpleFileName = fileName;
+        } else {
+            String regExp = ".+\\\\(.+)$"; //$NON-NLS-1$
+            Pattern p = Pattern.compile(regExp);
+            Matcher m = p.matcher(fileName);
+            m.find();
+            simpleFileName = m.group(1);
+        }
+
+        int point = simpleFileName.lastIndexOf("."); //$NON-NLS-1$
+        result[0] = simpleFileName.substring(0, point);
+        result[1] = simpleFileName.substring(point + 1);
+
+        return result;
     }
 
     private String generateCatalogName() {

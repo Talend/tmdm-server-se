@@ -14,6 +14,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -21,12 +24,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.coobird.thumbnailator.Thumbnails;
-import talend.ext.images.server.util.ImagePathUtil;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+
+import net.coobird.thumbnailator.Thumbnails;
 
 /**
  * Servlet implementation class ImageLocateServlet
@@ -61,16 +63,16 @@ public class ImageLocateServlet extends HttpServlet {
             }
             File resourceFile = new File(resourceFilePath);
             if (resourceFile.exists()) {
-                
-                String resourceFileType = ImagePathUtil.parseFileFullName(resourceFilePath)[1];
-                String ResourceFileMIMEType = getResourceFileMIMEType(resourceFileType);
-                if (StringUtils.isNotEmpty(ResourceFileMIMEType)) {
-                    response.setHeader(CONTENT_TYPE_HEADER, ResourceFileMIMEType + "; charset=UTF-8");
-                }
+
                 String strWidth = request.getParameter("width"); //$NON-NLS-1$
                 String strHeight = request.getParameter("height"); //$NON-NLS-1$
                 String strPreserveAspectRatio = request.getParameter("preserveAspectRatio"); //$NON-NLS-1$
 
+                Path source = Paths.get(resourceFilePath);
+                String contentType = Files.probeContentType(source);
+                if (StringUtils.isNotEmpty(contentType)) {
+                    response.setHeader(CONTENT_TYPE_HEADER, contentType + "; charset=UTF-8");
+                }
                 if (strWidth != null && strHeight != null) {
                     int width = Integer.valueOf(strWidth);
                     int height = Integer.valueOf(strHeight);
@@ -118,30 +120,5 @@ public class ImageLocateServlet extends HttpServlet {
         path = ImageServerInfo.getInstance().getUploadPath() + File.separator + path;
         path = path.replaceAll("\\\\", "/"); //$NON-NLS-1$//$NON-NLS-2$
         return path;
-    }
-    
-    private String getResourceFileMIMEType(String fileType) {
-        switch (fileType) {
-        case "bmp":
-            return "image/bmp";
-        case "gif":
-            return "image/gif";
-        case "ico":
-            return "image/x-icon";
-        case "jpg":
-            return "image/jpeg";
-        case "jpeg":
-            return "image/jpeg";
-        case "png":
-            return "image/png";
-        case "psd":
-            return "image/vnd.adobe.photoshop";
-        case "tif":
-            return "image/tiff";
-        case "tiff":
-            return "image/tiff";
-        default:
-            return "";
-        }
     }
 }

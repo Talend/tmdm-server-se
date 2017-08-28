@@ -11,8 +11,6 @@ package talend.ext.images.server.util;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -32,24 +30,5 @@ public abstract class ImagePathUtil {
         } catch (URISyntaxException e) {
             throw new IllegalArgumentException(e);
         }
-    }
-    
-    public static String[] parseFileFullName(String fileName) {
-        String[] result = new String[2];
-        String simpleFileName = ""; //$NON-NLS-1$
-        if (fileName.indexOf("/") == -1 && fileName.indexOf("\\") == -1 && fileName.contains(".")) { //$NON-NLS-1$ //$NON-NLS-2$
-            simpleFileName = fileName;
-        } else {
-            String regExp = ".+[\\\\\\/](.+)$"; //$NON-NLS-1$
-            Pattern p = Pattern.compile(regExp);
-            Matcher m = p.matcher(fileName);
-            m.find();
-            simpleFileName = m.group(1);
-        }
-
-        int point = simpleFileName.lastIndexOf("."); //$NON-NLS-1$
-        result[0] = simpleFileName.substring(0, point);
-        result[1] = simpleFileName.substring(point + 1);
-        return result;
     }
 }

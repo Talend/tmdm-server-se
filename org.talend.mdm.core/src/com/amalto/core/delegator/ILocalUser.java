@@ -36,8 +36,9 @@ import com.amalto.core.storage.record.DataRecordXmlWriter;
 import com.amalto.core.util.User;
 import com.amalto.core.util.XtentisException;
 
+@SuppressWarnings("nls")
 public abstract class ILocalUser implements IBeanDelegator {
-    
+
     public ILocalUser getILocalUser() throws XtentisException {
         return null;
     }
@@ -57,8 +58,8 @@ public abstract class ILocalUser implements IBeanDelegator {
     public String getUserXML() {
         StorageAdmin storageAdmin = ServerContext.INSTANCE.get().getStorageAdmin();
         Storage systemStorage = storageAdmin.get(StorageAdmin.SYSTEM_STORAGE, StorageType.SYSTEM);
-        ComplexTypeMetadata userType = systemStorage.getMetadataRepository().getComplexType("User"); //$NON-NLS-1$
-        UserQueryBuilder qb = from(userType).where(eq(userType.getField("username"), getUsername())); //$NON-NLS-1$
+        ComplexTypeMetadata userType = systemStorage.getMetadataRepository().getComplexType("User");
+        UserQueryBuilder qb = from(userType).where(eq(userType.getField("username"), getUsername()));
         DataRecordWriter writer = new DataRecordXmlWriter(userType);
         StringWriter userXml = new StringWriter();
         try {
@@ -70,7 +71,7 @@ public abstract class ILocalUser implements IBeanDelegator {
             systemStorage.commit();
         } catch (IOException e) {
             systemStorage.rollback();
-            throw new RuntimeException("Could not access user record.", e); //$NON-NLS-1$
+            throw new RuntimeException("Could not access user record.", e);
         }
         return userXml.toString();
     }
@@ -84,12 +85,11 @@ public abstract class ILocalUser implements IBeanDelegator {
         return (String) principal;
     }
 
-    public String getPassword() {
+    public String getCredentials() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Object credentials = authentication.getCredentials();
-        return (String) credentials;
+        return (String) authentication.getCredentials();
     }
-    
+
     public User getUser() {
         User user = new User();
         String xml = getUserXML();
@@ -98,7 +98,7 @@ public abstract class ILocalUser implements IBeanDelegator {
                 User.parse(xml, user);
             }
         } catch (Exception e) {
-            throw new RuntimeException("Could not parse user xml.", e); //$NON-NLS-1$
+            throw new RuntimeException("Could not parse user xml.", e);
         }
         return user;
     }

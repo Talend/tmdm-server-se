@@ -150,8 +150,8 @@ public class JournalDBService {
 
                     String oldValue = checkNull(Util.getFirstTextNode(doc, "/Update/Item[" + (i + 1) + "]/oldValue")); //$NON-NLS-1$//$NON-NLS-2$
                     String newValue = checkNull(Util.getFirstTextNode(doc, "/Update/Item[" + (i + 1) + "]/newValue")); //$NON-NLS-1$ //$NON-NLS-2$
-                    oldValue = formateValue(entityModel, formatMap, path, oldValue);
-                    newValue = formateValue(entityModel, formatMap, path, newValue);
+                    oldValue = formatValue(entityModel, formatMap, path, oldValue);
+                    newValue = formatValue(entityModel, formatMap, path, newValue);
 
                     list.add(new JournalTreeModel("path:" + path)); //$NON-NLS-1$
                     list.add(new JournalTreeModel("oldValue:" + oldValue)); //$NON-NLS-1$
@@ -166,7 +166,7 @@ public class JournalDBService {
         return root;
     }
 
-    private String formateValue(EntityModel entityModel, Map<String, String[]> formatMap, String path, String oldValue) {
+    private String formatValue(EntityModel entityModel, Map<String, String[]> formatMap, String path, String oldValue) {
         String formatValue = oldValue;
         for (Map.Entry<String, String[]> entry : formatMap.entrySet()) {
             String key = entry.getKey();
@@ -193,13 +193,12 @@ public class JournalDBService {
                             calendar.setTime(date);
                             formatValue = com.amalto.webapp.core.util.Util.formatDate(value[0], calendar);
                         } catch (Exception e) {
-                            Log.info("format has error"); //$NON-NLS-1$
+                            Log.warn("Format '" + oldValue +"' to date gets error.", e); //$NON-NLS-1$ //$NON-NLS-2$
                         }
                     } else if (CommonUtil.numberTypeNames.contains(tm.getType().getBaseTypeName())) {
                         try {
                             NumberFormat nf = NumberFormat.getInstance();
                             Number num = nf.parse(oldValue.trim());
-                            formatValue = ""; //$NON-NLS-1$
                             if (tm.getType().getBaseTypeName().equals(DataTypeConstants.DOUBLE.getBaseTypeName())) {
                                 formatValue = String.format(value[0], num.doubleValue()).trim();
                             } else if (tm.getType().getBaseTypeName().equals(DataTypeConstants.FLOAT.getBaseTypeName())) {
@@ -211,13 +210,13 @@ public class JournalDBService {
                             }
 
                         } catch (Exception e) {
-                            Log.info("format has error"); //$NON-NLS-1$
+                            Log.warn("Format '" + oldValue +"' to number gets error.", e); //$NON-NLS-1$ //$NON-NLS-2$
                         }
                     } else if (DataTypeConstants.STRING.getBaseTypeName().equalsIgnoreCase(tm.getType().getBaseTypeName())) {
                         try {
                             formatValue = String.format(value[0], oldValue).trim();
                         } catch (Exception e) {
-                            Log.info("format has error"); //$NON-NLS-1$
+                            Log.warn("Format '" + oldValue +"' to string gets error.", e); //$NON-NLS-1$ //$NON-NLS-2$
                         }
                     }
                 }

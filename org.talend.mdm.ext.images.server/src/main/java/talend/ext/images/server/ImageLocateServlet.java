@@ -39,7 +39,7 @@ public class ImageLocateServlet extends HttpServlet {
 
     private static final Logger LOGGER = Logger.getLogger(ImageLocateServlet.class);
     
-    private final String CONTENT_TYPE_HEADER = "Content-Type";
+    private static final String CONTENT_TYPE_HEADER = "Content-Type";
 
     public void init(ServletConfig config) throws ServletException {
         super.init(config);

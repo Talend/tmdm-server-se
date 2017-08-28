@@ -194,6 +194,10 @@ public abstract class Util {
         ArrayList<WSWhereItem> condition = new ArrayList<WSWhereItem>();
         for (String cria : criterias) {
             String[] values = cria.split("\\$\\$"); //$NON-NLS-1$
+            //remove the invalid filter
+            if (!isValid(foreignKey, values[0])) {
+                continue;
+            }
             WSWhereCondition wc = Util.convertLine(values);
             if (wc != null) {
                 if (formatFkValue) {
@@ -222,6 +226,15 @@ public abstract class Util {
         } else {
             return null;
         }
+    }
+
+    //the filter xpath is not same with foreignkey is not valid
+    private static boolean isValid(String foreignKey, String value) {
+        String tmp = value;
+        if (value.indexOf("/") > 0) {
+            tmp = value.split("/")[0];
+        }
+        return foreignKey.split("/")[0].equals(tmp);
     }
 
     public static WSWhereItem makeWhereItem(List<WSWhereItem> conditions) {

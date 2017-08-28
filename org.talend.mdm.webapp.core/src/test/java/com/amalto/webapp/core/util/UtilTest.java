@@ -9,6 +9,7 @@
  */
 package com.amalto.webapp.core.util;
 
+import com.amalto.core.webservice.WSWhereItem;
 import junit.framework.TestCase;
 
 import org.codehaus.jettison.json.JSONArray;
@@ -108,6 +109,42 @@ public class UtilTest extends TestCase {
         assertEquals(WSWhereOperator.EMPTY_NULL, whereCondition.getOperator());
         assertEquals("", whereCondition.getRightValueOrPath());
         assertEquals(WSStringPredicate.NOT, whereCondition.getStringPredicate());
+    }
+
+    public void testGetConditionFromFKFilter() {
+        String foreignKey = "NmlNafNiv5/IdNmlNafNiv5";
+        String foreignKeyInfo = "NmlNafNiv5/CodeNafNiv5,NmlNafNiv5/LibCourtNafNiv5";
+        String fkFilter = "NmlNafNiv5/NmlNafNiv3Fk$$=$$1$$Or#TiersTMP/TiersSpec/NmlNafNiv1Fk$$Is Empty Or Null$$$$#";
+
+        WSWhereItem whereItem = Util.getConditionFromFKFilter(foreignKey, foreignKeyInfo, fkFilter, false);
+        assertNotNull(whereItem.getWhereCondition());
+        assertNull(whereItem.getWhereAnd());
+        assertNull(whereItem.getWhereOr());
+        assertEquals("NmlNafNiv5/NmlNafNiv3Fk", whereItem.getWhereCondition().getLeftPath());
+        assertEquals("EQUALS", whereItem.getWhereCondition().getOperator().name());
+        assertEquals("1", whereItem.getWhereCondition().getRightValueOrPath());
+
+        fkFilter = "NmlNafNiv5/NmlNafNiv3Fk$$=$$1$$Or#NmlNafNiv5/LibCourtNafNiv5$$Is Empty Or Null$$$$#";
+
+        whereItem = Util.getConditionFromFKFilter(foreignKey, foreignKeyInfo, fkFilter, false);
+        assertNull(whereItem.getWhereCondition());
+        assertNull(whereItem.getWhereAnd());
+        assertNotNull(whereItem.getWhereOr());
+        assertEquals(2, whereItem.getWhereOr().getWhereItems().length);
+
+        assertNotNull(whereItem.getWhereOr().getWhereItems()[0].getWhereCondition());
+        assertNull(whereItem.getWhereOr().getWhereItems()[0].getWhereAnd());
+        assertNull(whereItem.getWhereOr().getWhereItems()[0].getWhereOr());
+        assertEquals("NmlNafNiv5/NmlNafNiv3Fk", whereItem.getWhereOr().getWhereItems()[0].getWhereCondition().getLeftPath());
+        assertEquals("EQUALS", whereItem.getWhereOr().getWhereItems()[0].getWhereCondition().getOperator().name());
+        assertEquals("1", whereItem.getWhereOr().getWhereItems()[0].getWhereCondition().getRightValueOrPath());
+
+        assertNotNull(whereItem.getWhereOr().getWhereItems()[1].getWhereCondition());
+        assertNull(whereItem.getWhereOr().getWhereItems()[1].getWhereAnd());
+        assertNull(whereItem.getWhereOr().getWhereItems()[1].getWhereOr());
+        assertEquals("NmlNafNiv5/LibCourtNafNiv5", whereItem.getWhereOr().getWhereItems()[1].getWhereCondition().getLeftPath());
+        assertEquals("EMPTY_NULL", whereItem.getWhereOr().getWhereItems()[1].getWhereCondition().getOperator().name());
+        assertNull(whereItem.getWhereOr().getWhereItems()[1].getWhereCondition().getRightValueOrPath());
     }
 
     private JSONArray parsingForeignKeyQueryResults(String[] results, boolean isQueryFkList) throws Exception {

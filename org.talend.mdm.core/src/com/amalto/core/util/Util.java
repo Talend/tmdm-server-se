@@ -117,18 +117,18 @@ import com.sun.xml.xsom.XSType;
 import com.sun.xml.xsom.parser.XSOMParser;
 import com.sun.xml.xsom.util.DomAnnotationParserFactory;
 
-@SuppressWarnings("deprecation")
+@SuppressWarnings({ "deprecation", "nls" })
 public class Util {
 
     private static final Logger LOGGER = Logger.getLogger(Util.class);
 
-    private static final String USER_PROPERTY_PREFIX = "${user_context"; //$NON-NLS-1$
+    private static final String USER_PROPERTY_PREFIX = "${user_context";
 
     private static final ScriptEngineManager SCRIPT_FACTORY = new ScriptEngineManager();
 
-    private static final Pattern extractCharsetPattern = Pattern.compile(".*charset\\s*=(.+)"); //$NON-NLS-1$
+    private static final Pattern extractCharsetPattern = Pattern.compile(".*charset\\s*=(.+)");
 
-    private static final String[] INVALID_ID_CHARACTERS = { "'", "\"", "*", "[", "]" }; //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$//$NON-NLS-4$//$NON-NLS-5$
+    private static final String[] INVALID_ID_CHARACTERS = { "'", "\"", "*", "[", "]" };
     
     private static DocumentBuilderFactory nonValidatingDocumentBuilderFactory;
 
@@ -199,7 +199,7 @@ public class Util {
     private static String[] getTextNodes(Node contextNode, String xPath, final Node namespaceNode) throws TransformerException {
         String[] results;
         // test for hard-coded values
-        if (xPath.startsWith("\"") && xPath.endsWith("\"")) { //$NON-NLS-1$ //$NON-NLS-2$
+        if (xPath.startsWith("\"") && xPath.endsWith("\"")) {
             return new String[] { xPath.substring(1, xPath.length() - 1) };
         }
         // test for incomplete path (elements missing /text())
@@ -362,7 +362,7 @@ public class Util {
 
                 @Override
                 public String getNamespaceURI(String s) {
-                    if ("xsd".equals(s)) { //$NON-NLS-1$
+                    if ("xsd".equals(s)) {
                         return XMLConstants.W3C_XML_SCHEMA_NS_URI;
                     }
                     return null;
@@ -371,7 +371,7 @@ public class Util {
                 @Override
                 public String getPrefix(String s) {
                     if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(s)) {
-                        return "xsd"; //$NON-NLS-1$
+                        return "xsd";
                     }
                     return null;
                 }
@@ -413,7 +413,7 @@ public class Util {
         String token = null;
         try {
             String userName = LocalUser.getLocalUser().getUsername();
-            String password = LocalUser.getLocalUser().getPassword();
+            String password = LocalUser.getLocalUser().getCredentials();
             token = userName + "/" + password;
         } catch (XtentisException e) {
             LOGGER.error(e);
@@ -597,7 +597,7 @@ public class Util {
         boolean isBeforeSavingTransformerExist = false;
         Collection<TransformerV2POJOPK> wst = getTransformerV2CtrlLocal().getTransformerPKs("*");
         for (TransformerV2POJOPK id : wst) {
-            if (id.getIds()[0].equals("beforeSaving_" + concept)) { //$NON-NLS-1$
+            if (id.getIds()[0].equals("beforeSaving_" + concept)) {
                 isBeforeSavingTransformerExist = true;
                 break;
             }
@@ -606,22 +606,22 @@ public class Util {
         if (isBeforeSavingTransformerExist) {
 
             try {
-                final String RUNNING = "XtentisWSBean.executeTransformerV2.running"; //$NON-NLS-1$
-                TransformerContext context = new TransformerContext(new TransformerV2POJOPK("beforeSaving_" + concept)); //$NON-NLS-1$
+                final String RUNNING = "XtentisWSBean.executeTransformerV2.running";
+                TransformerContext context = new TransformerContext(new TransformerV2POJOPK("beforeSaving_" + concept));
                 String exchangeData = mergeExchangeData(xml, resultUpdateReport);
                 context.put(RUNNING, Boolean.TRUE);
                 com.amalto.core.server.api.Transformer ctrl = getTransformerV2CtrlLocal();
-                TypedContent wsTypedContent = new TypedContent(exchangeData.getBytes("UTF-8"), "text/xml; charset=utf-8"); //$NON-NLS-1$
+                TypedContent wsTypedContent = new TypedContent(exchangeData.getBytes("UTF-8"), "text/xml; charset=utf-8");
                 ctrl.execute(context, wsTypedContent, new TransformerCallBack() {
 
                     @Override
                     public void contentIsReady(TransformerContext context) throws XtentisException {
-                        LOGGER.debug("XtentisWSBean.executeTransformerV2.contentIsReady() "); //$NON-NLS-1$
+                        LOGGER.debug("XtentisWSBean.executeTransformerV2.contentIsReady() ");
                     }
 
                     @Override
                     public void done(TransformerContext context) throws XtentisException {
-                        LOGGER.debug("XtentisWSBean.executeTransformerV2.done() "); //$NON-NLS-1$
+                        LOGGER.debug("XtentisWSBean.executeTransformerV2.done() ");
                         context.put(RUNNING, Boolean.FALSE);
                     }
                 });
@@ -629,21 +629,21 @@ public class Util {
                     Thread.sleep(100);
                 }
                 // TODO process no plug-in issue
-                String message = "<report><message type=\"error\"/></report> "; //$NON-NLS-1$;
+                String message = "<report><message type=\"error\"/></report> ";
                 String item = null;
                 // Scan the entries - in priority, aka the content of the 'output_error_message' entry,
                 boolean hasOutputReport = false;
                 for (Entry<String, TypedContent> entry : context.getPipelineClone().entrySet()) {
                     if (ITransformerConstants.VARIABLE_OUTPUT_OF_BEFORESAVINGTRANFORMER.equals(entry.getKey())) {
                         hasOutputReport = true;
-                        message = new String(entry.getValue().getContentBytes(), "UTF-8"); //$NON-NLS-1$                        
+                        message = new String(entry.getValue().getContentBytes(), "UTF-8");
                     }
                     if (ITransformerConstants.VARIABLE_OUTPUTITEM_OF_BEFORESAVINGTRANFORMER.equals(entry.getKey())) {
-                        item = new String(entry.getValue().getContentBytes(), "UTF-8"); //$NON-NLS-1$                        
+                        item = new String(entry.getValue().getContentBytes(), "UTF-8");
                     }
                 }
                 if (!hasOutputReport) {
-                    throw new OutputReportMissingException("Output variable 'output_report' is missing"); //$NON-NLS-1$
+                    throw new OutputReportMissingException("Output variable 'output_report' is missing");
                 }
                 return new OutputReport(message, item);
             } catch (Exception e) {
@@ -686,12 +686,12 @@ public class Util {
                 ItemPOJO pojo = ItemPOJO.load(itemPk);
                 String xml = null;
                 if (pojo == null) {// load from recycle bin
-                    DroppedItemPOJOPK droppedItemPk = new DroppedItemPOJOPK(itemPk, "/");//$NON-NLS-1$
+                    DroppedItemPOJOPK droppedItemPk = new DroppedItemPOJOPK(itemPk, "/");
                     DroppedItemPOJO droppedItem = Util.getDroppedItemCtrlLocal().loadDroppedItem(droppedItemPk);
                     if (droppedItem != null) {
                         xml = droppedItem.getProjection();
                         Document doc = Util.parse(xml);
-                        Node item = (Node) XPathFactory.newInstance().newXPath().evaluate("//ii/p", doc, XPathConstants.NODE); //$NON-NLS-1$
+                        Node item = (Node) XPathFactory.newInstance().newXPath().evaluate("//ii/p", doc, XPathConstants.NODE);
                         if (item != null && item instanceof Element) {
                             NodeList list = item.getChildNodes();
                             Node node = null;
@@ -773,25 +773,25 @@ public class Util {
                 BeforeDeleteResult result = new BeforeDeleteResult();
                 if (outputErrorMessage == null) {
                     LOGGER.warn("No message generated by before delete process.");
-                    result.type = "info"; //$NON-NLS-1$
+                    result.type = "info";
                     result.message = StringUtils.EMPTY;
                 } else {
                     if (outputErrorMessage.length() > 0) {
                         Document doc = Util.parse(outputErrorMessage);
                         // TODO what if multiple error nodes ?
-                        String xpath = "//report/message"; //$NON-NLS-1$
+                        String xpath = "//report/message";
                         Node errorNode = (Node) XPathFactory.newInstance().newXPath().evaluate(xpath, doc, XPathConstants.NODE);
                         if (errorNode instanceof Element) {
                             Element errorElement = (Element) errorNode;
-                            result.type = errorElement.getAttribute("type"); //$NON-NLS-1$
+                            result.type = errorElement.getAttribute("type");
                             Node child = errorElement.getFirstChild();
                             if (child instanceof Text) {
                                 result.message = child.getTextContent();
                             }
                         }
                     } else {
-                        result.type = "error"; //$NON-NLS-1$
-                        result.message = "<report><message type=\"error\"/></report>"; //$NON-NLS-1$
+                        result.type = "error";
+                        result.message = "<report><message type=\"error\"/></report>";
                     }
                 }
                 return result;
@@ -804,28 +804,28 @@ public class Util {
     }
 
     public static String mergeExchangeData(String xml, String resultUpdateReport) {
-        String exchangeData = "<exchange>\n"; //$NON-NLS-1$
-        exchangeData += "<report>" + resultUpdateReport + "</report>"; //$NON-NLS-1$
-        exchangeData += "\n"; //$NON-NLS-1$
-        exchangeData += "<item>" + xml + "</item>"; //$NON-NLS-1$
-        exchangeData += "\n</exchange>"; //$NON-NLS-1$
+        String exchangeData = "<exchange>\n";
+        exchangeData += "<report>" + resultUpdateReport + "</report>";
+        exchangeData += "\n";
+        exchangeData += "<item>" + xml + "</item>";
+        exchangeData += "\n</exchange>";
         return exchangeData;
     }
 
     private static String getAppServerDeployDir() {
-        String appServerDeployDir = System.getenv("JBOSS_HOME"); //$NON-NLS-1$
+        String appServerDeployDir = System.getenv("JBOSS_HOME");
         if (appServerDeployDir == null) {
-            appServerDeployDir = System.getProperty("jboss.home.dir"); //$NON-NLS-1$
+            appServerDeployDir = System.getProperty("jboss.home.dir");
         }
         if (appServerDeployDir == null) {
-            appServerDeployDir = System.getProperty("user.dir"); //$NON-NLS-1$
+            appServerDeployDir = System.getProperty("user.dir");
         }
         return appServerDeployDir;
     }
 
     public static String getBarHomeDir() {
-        String mdmRootDir = System.getProperty("mdm.root"); //$NON-NLS-1$
-        return mdmRootDir + File.separator + "barfiles"; //$NON-NLS-1$
+        String mdmRootDir = System.getProperty("mdm.root");
+        return mdmRootDir + File.separator + "barfiles";
     }
 
     private static List<File> listFiles(FileFilter filter, File folder) {
@@ -857,12 +857,12 @@ public class Util {
     }
 
     private static String getUserDataModel(Element item) throws Exception {
-        NodeList nodeList = Util.getNodeList(item, "//property"); //$NON-NLS-1$
+        NodeList nodeList = Util.getNodeList(item, "//property");
         if (nodeList != null) {
             for (int i = 0; i < nodeList.getLength(); i++) {
                 Node node = nodeList.item(i);
-                if ("model".equals(Util.getFirstTextNode(node, "name"))) { //$NON-NLS-1$
-                    Node firstChild = Util.getNodeList(node, "value").item(0).getFirstChild(); //$NON-NLS-1$
+                if ("model".equals(Util.getFirstTextNode(node, "name"))) {
+                    Node firstChild = Util.getNodeList(node, "value").item(0).getFirstChild();
                     return firstChild.getNodeValue();
                 }
             }
@@ -892,39 +892,39 @@ public class Util {
         if(name == null){
             return;
         }
-        NodeList properties = Util.getNodeList(user, "//properties"); //$NON-NLS-1$
+        NodeList properties = Util.getNodeList(user, "//properties");
         Element propertiesElement = null;
         if(properties == null || properties.getLength() == 0){
-            propertiesElement = user.createElement("properties"); //$NON-NLS-1$
+            propertiesElement = user.createElement("properties");
             user.getDocumentElement().appendChild(propertiesElement);
         }
         else {
             propertiesElement = (Element)properties.item(0);
         }
-        NodeList props = Util.getNodeList(propertiesElement, "//property"); //$NON-NLS-1$
+        NodeList props = Util.getNodeList(propertiesElement, "//property");
         boolean propertyFound = false;
         if(props != null){
             for(int i=0; i<props.getLength(); i++){
                 Node node = props.item(i);
-                if (name.equals(getFirstTextNode(node, "name"))) { //$NON-NLS-1$
+                if (name.equals(getFirstTextNode(node, "name"))) {
                     propertyFound = true;
-                    if (getFirstTextNode(node, "value") == null) { //$NON-NLS-1$
-                        getNodeList(node, "value").item(0).appendChild(user.createTextNode(value)); //$NON-NLS-1$
+                    if (getFirstTextNode(node, "value") == null) {
+                        getNodeList(node, "value").item(0).appendChild(user.createTextNode(value));
                     } else {
-                        getNodeList(node, "value").item(0).getFirstChild().setNodeValue(value); //$NON-NLS-1$
+                        getNodeList(node, "value").item(0).getFirstChild().setNodeValue(value);
                     }
                 }
             }
         }
         if(!propertyFound){
-            Element propertyElement = user.createElement("property"); //$NON-NLS-1$
+            Element propertyElement = user.createElement("property");
             propertiesElement.appendChild(propertyElement);
             
-            Element nameElement = user.createElement("name"); //$NON-NLS-1$
+            Element nameElement = user.createElement("name");
             nameElement.setTextContent(name);
             propertyElement.appendChild(nameElement);
             
-            Element valueElement = user.createElement("value"); //$NON-NLS-1$
+            Element valueElement = user.createElement("value");
             valueElement.setTextContent(value);
             propertyElement.appendChild(valueElement);
         }
@@ -959,16 +959,16 @@ public class Util {
                     && condition.getRightValueOrPath().contains(USER_PROPERTY_PREFIX)) {
                 // TMDM-7207: Only create the groovy script engine if needed (huge performance issues)
                 // TODO Should there be some pool of ScriptEngine instances? (is reusing ok?)
-                ScriptEngine scriptEngine = SCRIPT_FACTORY.getEngineByName("groovy"); //$NON-NLS-1$
+                ScriptEngine scriptEngine = SCRIPT_FACTORY.getEngineByName("groovy");
                 if (userXML != null && !userXML.isEmpty()) {
                     User user = User.parse(userXML);
-                    scriptEngine.put("user_context", user);//$NON-NLS-1$
+                    scriptEngine.put("user_context", user);
                 }
                 String rightCondition = condition.getRightValueOrPath();
                 String userExpression = rightCondition.substring(rightCondition.indexOf('{') + 1, rightCondition.indexOf('}'));
                 try {
                     if (LOGGER.isDebugEnabled()) {
-                        LOGGER.debug("Groovy engine evaluating " + userExpression + ".");//$NON-NLS-1$ //$NON-NLS-2$
+                        LOGGER.debug("Groovy engine evaluating " + userExpression + ".");
                     }
                     Object expressionValue = scriptEngine.eval(userExpression);
                     if (expressionValue != null) {
@@ -985,7 +985,8 @@ public class Util {
             }
 
             if (!condition.getOperator().equals(WhereCondition.EMPTY_NULL)) {
-                whereItem = "*".equals(condition.getRightValueOrPath()) || ".*".equals(condition.getRightValueOrPath()) ? null : whereItem; //$NON-NLS-1$
+                whereItem = "*".equals(condition.getRightValueOrPath()) || ".*".equals(condition.getRightValueOrPath()) ? null
+                        : whereItem;
             }
         } else {
             throw new XmlServerException("Unknown Where Type : " + whereItem.getClass().getName());
@@ -1036,14 +1037,14 @@ public class Util {
                         && condition.getRightValueOrPath().contains(USER_PROPERTY_PREFIX)) {
                     String rightCondition = condition.getRightValueOrPath();
                     String userExpression = rightCondition
-                            .substring(rightCondition.indexOf("{") + 1, rightCondition.indexOf("}"));//$NON-NLS-1$ //$NON-NLS-2$
+                            .substring(rightCondition.indexOf("{") + 1, rightCondition.indexOf("}"));
                     try {
                         if (LOGGER.isDebugEnabled()) {
-                            LOGGER.debug("Groovy engine evaluating " + userExpression + ".");//$NON-NLS-1$ //$NON-NLS-2$
+                            LOGGER.debug("Groovy engine evaluating " + userExpression + ".");
                         }
-                        ScriptEngine scriptEngine = SCRIPT_FACTORY.getEngineByName("groovy"); //$NON-NLS-1$
+                        ScriptEngine scriptEngine = SCRIPT_FACTORY.getEngineByName("groovy");
                         User user = User.parse(userXML);
-                        scriptEngine.put("user_context", user);//$NON-NLS-1$
+                        scriptEngine.put("user_context", user);
                         Object expressionValue = scriptEngine.eval(userExpression);
                         if (expressionValue != null) {
                             String result = String.valueOf(expressionValue);
@@ -1076,7 +1077,7 @@ public class Util {
 
                 @Override
                 public boolean accept(File pathName) {
-                    return pathName.isDirectory() || (pathName.isFile() && pathName.getName().toLowerCase().endsWith(".zip")); //$NON-NLS-1$
+                    return pathName.isDirectory() || (pathName.isFile() && pathName.getName().toLowerCase().endsWith(".zip"));
                 }
             };
             List<File> zipFiles = listFiles(filter, new File(JobContainer.getUniqueInstance().getDeployDir()));
@@ -1101,22 +1102,22 @@ public class Util {
         try {
             ZipEntry z;
             try (ZipInputStream in = new ZipInputStream(new FileInputStream(fileName))) {
-                String jobName = ""; //$NON-NLS-1$
-                String jobVersion = ""; //$NON-NLS-1$
+                String jobName = "";
+                String jobVersion = "";
                 // war
-                if (fileName.endsWith(".war")) { //$NON-NLS-1$
+                if (fileName.endsWith(".war")) {
                     while ((z = in.getNextEntry()) != null) {
                         String dirName = z.getName();
                         // get job version
-                        if (dirName.endsWith("undeploy.wsdd")) { //$NON-NLS-1$
-                            Pattern p = Pattern.compile(".*?_(\\d_\\d)/undeploy.wsdd"); //$NON-NLS-1$
+                        if (dirName.endsWith("undeploy.wsdd")) {
+                            Pattern p = Pattern.compile(".*?_(\\d_\\d)/undeploy.wsdd");
                             Matcher m = p.matcher(dirName);
                             if (m.matches()) {
                                 jobVersion = m.group(1);
                             }
                         }
                         // get job name
-                        Pattern p = Pattern.compile(".*?/(.*?)\\.wsdl"); //$NON-NLS-1$
+                        Pattern p = Pattern.compile(".*?/(.*?)\\.wsdl");
                         Matcher m = p.matcher(dirName);
                         if (m.matches()) {
                             jobName = m.group(1);
@@ -1125,14 +1126,14 @@ public class Util {
                     if (jobName.length() > 0) {
                         jobInfo = new WSMDMJob(null, null, null);
                         jobInfo.setJobName(jobName);
-                        jobInfo.setJobVersion(jobVersion.replaceAll("_", ".")); //$NON-NLS-1$ //$NON-NLS-2$
-                        jobInfo.setSuffix(".war"); //$NON-NLS-1$
+                        jobInfo.setJobVersion(jobVersion.replaceAll("_", "."));
+                        jobInfo.setSuffix(".war");
                         return jobInfo;
                     } else {
                         return null;
                     }
                 }// war
-                if (fileName.endsWith(".zip")) { //$NON-NLS-1$
+                if (fileName.endsWith(".zip")) {
                     if ((z = in.getNextEntry()) != null) {
                         String dirName = z.getName();
                         int pos = dirName.indexOf('/');
@@ -1148,7 +1149,7 @@ public class Util {
                         jobInfo = new WSMDMJob(null, null, null);
                         jobInfo.setJobName(jobName);
                         jobInfo.setJobVersion(jobVersion);
-                        jobInfo.setSuffix(".zip"); //$NON-NLS-1$
+                        jobInfo.setSuffix(".zip");
                         return jobInfo;
                     } else {
                         return null;
@@ -1156,12 +1157,12 @@ public class Util {
                 }
             } catch (FileNotFoundException e) {
                 if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("getJobInfo error.", e); //$NON-NLS-1$
+                    LOGGER.debug("getJobInfo error.", e);
                 }
             }
         } catch (Exception e) {
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("getJobInfo error.", e); //$NON-NLS-1$
+                LOGGER.debug("getJobInfo error.", e);
             }
         }
         return jobInfo;
@@ -1169,29 +1170,29 @@ public class Util {
 
     public static String convertAutoIncrement(Properties p) {
         StringBuilder buffer = new StringBuilder();
-        buffer.append("<AutoIncrement>"); //$NON-NLS-1$
-        buffer.append("<id>AutoIncrement</id>"); //$NON-NLS-1$
+        buffer.append("<AutoIncrement>");
+        buffer.append("<id>AutoIncrement</id>");
         if (p != null) {
             for (Entry entry : p.entrySet()) {
-                buffer.append("<entry>"); //$NON-NLS-1$
-                buffer.append("<key>").append(entry.getKey()).append("</key>"); //$NON-NLS-1$ //$NON-NLS-2$
-                buffer.append("<value>").append(entry.getValue()).append("</value>"); //$NON-NLS-1$ //$NON-NLS-2$
-                buffer.append("</entry>"); //$NON-NLS-1$
+                buffer.append("<entry>");
+                buffer.append("<key>").append(entry.getKey()).append("</key>");
+                buffer.append("<value>").append(entry.getValue()).append("</value>");
+                buffer.append("</entry>");
             }
         }
-        buffer.append("</AutoIncrement>"); //$NON-NLS-1$
+        buffer.append("</AutoIncrement>");
         return buffer.toString();
     }
 
     public static Properties convertAutoIncrement(String xml) throws Exception {
         Properties p = new Properties();
         Node n = parse(xml).getDocumentElement();
-        NodeList list = getNodeList(n, "entry"); //$NON-NLS-1$
+        NodeList list = getNodeList(n, "entry");
         for (int i = 0; i < list.getLength(); i++) {
             Node item = list.item(i);
             if (item.getNodeType() == Node.ELEMENT_NODE) {
-                String key = getFirstTextNode(item, "key"); //$NON-NLS-1$
-                String value = getFirstTextNode(item, "value"); //$NON-NLS-1$
+                String key = getFirstTextNode(item, "key");
+                String value = getFirstTextNode(item, "value");
                 p.setProperty(key, value);
             }
         }
@@ -1240,7 +1241,7 @@ public class Util {
     }
 
     public static String getDefaultSystemLocale() {
-        return MDMConfiguration.getConfiguration().getProperty("system.locale.default");//$NON-NLS-1$
+        return MDMConfiguration.getConfiguration().getProperty("system.locale.default");
     }
 
     public static class BeforeDeleteResult {
@@ -1255,7 +1256,7 @@ public class Util {
             for (String character : INVALID_ID_CHARACTERS) {
                 if (id.contains(character)) {
                     // throw exception when ID contains invalid character
-                    throw new IllegalStateException("ID " + id + " contains invalid character '" + character + "'"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    throw new IllegalStateException("ID " + id + " contains invalid character '" + character + "'"); //$NON-NLS-3$
                 }
             }
         }
@@ -1275,8 +1276,8 @@ public class Util {
         if (path == null) {
             return null;
         }
-        if (path.contains("[") || path.contains("]")) { //$NON-NLS-1$ //$NON-NLS-2$
-            path = path.replaceAll("\\[\\d+\\]", ""); //$NON-NLS-1$ //$NON-NLS-2$
+        if (path.contains("[") || path.contains("]")) {
+            path = path.replaceAll("\\[\\d+\\]", "");
         }
         return path;
     }

@@ -23,10 +23,8 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
@@ -38,8 +36,6 @@ import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.StorageResults;
 import com.amalto.core.storage.StorageType;
 import com.amalto.core.storage.record.DataRecord;
-import com.amalto.core.util.LocalUser;
-import com.amalto.core.util.XtentisException;
 
 /**
  * created by pwlin
@@ -89,19 +85,11 @@ public class SecurityUtils {
         return new SimpleGrantedAuthority(role);
     }
 
-    @SuppressWarnings("unchecked")
-    public static String getIdToken() {
-        OAuth2Authentication authentication = (OAuth2Authentication) SecurityContextHolder.getContext().getAuthentication();
-        Map<String, Object> map = (Map<String, Object>) authentication.getUserAuthentication().getDetails();
-        return ID_TOKEN + " " + map.get(ID_TOKEN);
-    }
-    
     public static String getToken() {
         OAuth2Authentication authentication = (OAuth2Authentication) SecurityContextHolder.getContext().getAuthentication();
         OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) authentication.getDetails();
         return details.getTokenType() + " " + details.getTokenValue();
     }
-    
     public static OAuth2AccessToken buildAccessToken(String password) {
         if (!password.startsWith(ID_TOKEN)) {
             return null;
@@ -112,22 +100,5 @@ public class SecurityUtils {
         additionalInformation.put(ID_TOKEN, idToken);
         accessToken.setAdditionalInformation(additionalInformation);
         return accessToken;
-    }
-
-    /**
-     * Return id_token if using SSO, else return password
-     * 
-     * @return
-     */
-    public static String getCredentials() {
-        if (MDMConfiguration.isIamEnabled()) {
-            return getIdToken();
-        } else {
-            try {
-                return LocalUser.getLocalUser().getPassword();
-            } catch (XtentisException e) {
-                return StringUtils.EMPTY;
-            }
-        }
     }
 }

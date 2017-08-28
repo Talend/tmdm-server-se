@@ -10,10 +10,13 @@
 package org.talend.mdm.webapp.welcomeportal.server.actions;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
 import org.talend.mdm.webapp.base.client.exception.ServiceException;
@@ -27,7 +30,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
 import com.amalto.core.delegator.ILocalUser;
-import com.amalto.core.server.ServerAccess;
 import com.amalto.core.util.LocalUser;
 import com.amalto.core.util.Messages;
 import com.amalto.core.util.MessagesFactory;
@@ -127,7 +129,8 @@ public class WelcomePortalAction implements WelcomePortalService {
     public Map<String, String> getStandaloneProcess(String language) throws ServiceException {
         try {
             Map<String, String> processMap = new HashMap<String, String>();
-            WSTransformerV2PK[] wst = Util.getPort().getTransformerV2PKs(new WSGetTransformerV2PKs("*")).getWsTransformerV2PK(); //$NON-NLS-1$
+            WSTransformerV2PK[] wst = Util.getPort().getTransformerV2PKs(new WSGetTransformerV2PKs("*")) //$NON-NLS-1$
+                    .getWsTransformerV2PK();
             for (WSTransformerV2PK wstransformerpk : wst) {
                 if (isStandaloneProcess(wstransformerpk.getPk())) {
                     WSTransformerV2 wsTransformer = Util.getPort().getTransformerV2(new WSGetTransformerV2(wstransformerpk));
@@ -135,11 +138,27 @@ public class WelcomePortalAction implements WelcomePortalService {
                             MultilanguageMessageParser.pickOutISOMessage(wsTransformer.getDescription(), language));
                 }
             }
-            return processMap;
+            return sortProcess(processMap);
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
             throw new ServiceException(e.getLocalizedMessage());
         }
+    }
+
+    protected Map<String, String> sortProcess(Map<String, String> processMap) {
+        Map<String, String> linkedHashMap = new LinkedHashMap<>();
+        Map<String, String> processMapTmp = new HashMap<String, String>(processMap);
+
+        processMapTmp.entrySet().stream().peek(entry -> {
+            if (isStandaloneProcess(entry.getValue())) {
+                entry.setValue(entry.getValue().replace(STANDALONE_PROCESS_PREFIX, StringUtils.EMPTY));
+            }
+
+        }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)).entrySet().stream()
+                .sorted(Map.Entry.<String, String>comparingByValue())
+                .forEachOrdered(x -> linkedHashMap.put(x.getKey(), processMap.get(x.getKey())));
+
+        return linkedHashMap;
     }
 
     /**

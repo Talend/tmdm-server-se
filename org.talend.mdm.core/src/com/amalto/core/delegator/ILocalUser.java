@@ -60,9 +60,6 @@ public abstract class ILocalUser implements IBeanDelegator {
         Storage systemStorage = storageAdmin.get(StorageAdmin.SYSTEM_STORAGE, StorageType.SYSTEM);
         ComplexTypeMetadata userType = systemStorage.getMetadataRepository().getComplexType("User"); //$NON-NLS-1$        
         UserQueryBuilder qb = from(userType).where(eq(userType.getField("username"), getUsername())); //$NON-NLS-1$
-        if (Util.isEnterprise()) {
-            qb = from(userType).where(eq(userType.getField("id"), getUsername())); //$NON-NLS-1$
-        }
         DataRecordWriter writer = new DataRecordXmlWriter(userType);
         StringWriter userXml = new StringWriter();
         try {
@@ -83,9 +80,6 @@ public abstract class ILocalUser implements IBeanDelegator {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Object principal = authentication.getPrincipal();
         if (principal instanceof LocalUserDetails) {
-            if (Util.isEnterprise()) {
-                return ((LocalUserDetails) principal).getId();
-            }
             return ((LocalUserDetails) principal).getUsername();
         }
         return (String) principal;

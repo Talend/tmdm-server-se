@@ -15,10 +15,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -28,6 +25,8 @@ import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit3.PowerMockSuite;
+import org.talend.mdm.webapp.base.shared.EntityModel;
+import org.talend.mdm.webapp.browserecords.server.bizhelpers.DataModelHelper;
 import org.talend.mdm.webapp.journal.shared.JournalGridModel;
 import org.talend.mdm.webapp.journal.shared.JournalSearchCriteria;
 import org.talend.mdm.webapp.journal.shared.JournalTreeModel;
@@ -47,7 +46,7 @@ import com.sun.xml.xsom.XSElementDecl;
  * DOC talend2 class global comment. Detailled comment
  */
 @SuppressWarnings("nls")
-@PrepareForTest({ Util.class, XtentisPort.class, WSDataModelPKArray.class, WSRegexDataModelPKs.class })
+@PrepareForTest({ Util.class, XtentisPort.class, WSDataModelPKArray.class, WSRegexDataModelPKs.class})
 public class JournalDBServiceTest extends TestCase {
 
     private WebServiceMock mock = new WebServiceMock();
@@ -104,7 +103,11 @@ public class JournalDBServiceTest extends TestCase {
         Mockito.when(Util.isElementHiddenForCurrentUser(Mockito.any(XSElementDecl.class))).thenReturn(false);
 
         String[] ids = { "genericUI", "1360140140037" };
-        JournalTreeModel journalTreeModel = journalDBService.getDetailTreeModel(ids);
+
+        EntityModel entityModel = new EntityModel();
+        DataModelHelper.parseSchema("Product", "Product", entityModel, null);
+
+        JournalTreeModel journalTreeModel = journalDBService.getDetailTreeModel(ids, entityModel, "en");
         assertEquals("Update", journalTreeModel.getName());
         assertEquals(9, journalTreeModel.getChildCount());
         JournalTreeModel childModel = (JournalTreeModel) journalTreeModel.getChild(0);

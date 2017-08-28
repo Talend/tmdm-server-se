@@ -343,7 +343,7 @@ public class WelcomePortalAction implements WelcomePortalService {
     public AppHeader getAppHeader() throws ServiceException {
         try {
             AppHeader header = new AppHeader();
-            header.setTdsBaseUrl(MDMConfiguration.getConfiguration().getProperty(MDMConfiguration.TDS_ROOT_URL));
+            header.setTdsBaseUrl(MDMConfiguration.getTdsRootUrl());
             return header;
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);

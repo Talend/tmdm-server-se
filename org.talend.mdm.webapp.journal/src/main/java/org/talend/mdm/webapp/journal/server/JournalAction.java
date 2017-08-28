@@ -90,10 +90,13 @@ public class JournalAction extends RemoteServiceServlet implements JournalServic
     }
 
     @Override
-    public JournalTreeModel getDetailTreeModel(String ids) throws ServiceException {
-        String[] idsArr = ids.split("\\."); //$NON-NLS-1$
+    public JournalTreeModel getDetailTreeModel(JournalParameters parameter, String language) throws ServiceException {
+        String[] idsArr = parameter.getIds().split("\\."); //$NON-NLS-1$
         try {
-            return service.getDetailTreeModel(idsArr);
+            EntityModel entityModel = new EntityModel();
+            DataModelHelper.parseSchema(parameter.getDataModelName(), parameter.getConceptName(), entityModel, LocalUser
+                    .getLocalUser().getRoles());
+            return service.getDetailTreeModel(idsArr, entityModel, language);
         } catch (ServiceException e) {
             LOG.error(e.getMessage(), e);
             throw e;

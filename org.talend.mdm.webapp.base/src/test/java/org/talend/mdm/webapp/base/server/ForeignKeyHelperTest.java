@@ -319,6 +319,39 @@ public class ForeignKeyHelperTest extends TestCase {
         assertEquals(WSWhereOperator.CONTAINS, condition1.getOperator());
         assertEquals("1", condition1.getRightValueOrPath());
 
+        // 12. two filter, one is Empty or null
+        ifFKFilter = true;
+        model.setForeignKeyFilter("ProductFamily/Name$$=$$Product/Name$$Or#ProductFamily/ChangeStatus$$Is Empty Or Null$$$$#");
+        xml = "<Product><id>1</id><Name>Shirts</Name><Family>[3]</Family></Product>";
+        foreignKeyFilter = ForeignKeyHelper.getForeignKeyFilter(ifFKFilter, currentXpath.split("/")[0], xml, currentXpath, model); //$NON-NLS-1$
+        model.getForeignKeyInfo().clear();
+        model.setFilterValue("");
+        result = ForeignKeyHelper.getForeignKeyHolder(model, foreignKeyFilter);
+        whereItem = result.whereItem;
+        condition1 = whereItem.getWhereCondition();
+        assertNull(condition1);
+        assertNull(whereItem.getWhereAnd());
+        assertNotNull(whereItem.getWhereOr());
+        assertEquals("ProductFamily/Name", whereItem.getWhereOr().getWhereItems()[0].getWhereCondition().getLeftPath()); //$NON-NLS-1$
+        assertEquals(WSWhereOperator.EQUALS, whereItem.getWhereOr().getWhereItems()[0].getWhereCondition().getOperator());
+        assertEquals("Shirts", whereItem.getWhereOr().getWhereItems()[0].getWhereCondition().getRightValueOrPath()); //$NON-NLS-1$
+        assertEquals("ProductFamily/ChangeStatus", whereItem.getWhereOr().getWhereItems()[1].getWhereCondition().getLeftPath()); //$NON-NLS-1$
+        assertEquals(WSWhereOperator.EMPTY_NULL, whereItem.getWhereOr().getWhereItems()[1].getWhereCondition().getOperator());
+        assertNull(whereItem.getWhereOr().getWhereItems()[1].getWhereCondition().getRightValueOrPath()); // $NON-NLS-1$
+
+        // 13. two filter, one filter xpath=Product/Name and operation is Empty or null
+        ifFKFilter = true;
+        model.setForeignKeyFilter("ProductFamily/Name$$=$$Product/Name$$Or#Product/Name$$Is Empty Or Null$$$$#");
+        xml = "<Product><id>1</id><Name>Shirts</Name><Family>[3]</Family></Product>";
+        foreignKeyFilter = ForeignKeyHelper.getForeignKeyFilter(ifFKFilter, currentXpath.split("/")[0], xml, currentXpath, model); //$NON-NLS-1$
+        model.getForeignKeyInfo().clear();
+        model.setFilterValue("");
+        result = ForeignKeyHelper.getForeignKeyHolder(model, foreignKeyFilter);
+        whereItem = result.whereItem;
+        condition1 = whereItem.getWhereCondition();
+        assertEquals("ProductFamily/Name", condition1.getLeftPath()); //$NON-NLS-1$
+        assertEquals(WSWhereOperator.EQUALS, condition1.getOperator());
+        assertEquals("Shirts", condition1.getRightValueOrPath()); //$NON-NLS-1$
     }
 
     // TMDM-9417 Polymorphism Entity / Foreign Key / label issue

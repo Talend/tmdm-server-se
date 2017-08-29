@@ -216,7 +216,7 @@ public class ForeignKeySelector extends ForeignKeyField implements ReturnCriteri
                         .buildConditionByCriteria(cria);
                 if (OperatorValueConstants.EMPTY_NULL.equals(conditionMap.get("Operator"))) { //$NON-NLS-1$
                     conditions.add(conditionMap);
-                    break;
+                    continue;
                 }
                 String filterValue = conditionMap.get("Value"); //$NON-NLS-1$
                 if (filterValue == null || this.foreignKeyPath == null) {

@@ -229,7 +229,7 @@ public class ForeignKeyHelperTest extends TestCase {
         currentXpath = "Product/Type";
         model.setForeignKeyFilter("ProductType/Type/@xsi:type$$=$$ProductTypeOne$$#");
         foreignKeyFilter = ForeignKeyHelper.getForeignKeyFilter(ifFKFilter, currentXpath.split("/")[0], xml, currentXpath, model); //$NON-NLS-1$
-        model.setForeignkey("ProductFamily/Id");
+        model.setForeignkey("ProductType/Id");
         model.getForeignKeyInfo().clear();
         result = ForeignKeyHelper.getForeignKeyHolder(model, foreignKeyFilter);
         whereItem = result.whereItem;

@@ -279,6 +279,7 @@ public class ForeignKeyHelperTest extends TestCase {
         model.setForeignKeyFilter("ProductFamily/Id$$=$$\"[3]\"$$#");
         xml = "<Product><id>1</id><Name>Shirts</Name><Family>[3]</Family></Product>";
         model.getForeignKeyInfo().clear();
+        model.setForeignkey("ProductFamily/Id"); //$NON-NLS-1$
         foreignKeyFilter = ForeignKeyHelper.getForeignKeyFilter(ifFKFilter, currentXpath.split("/")[0], xml, currentXpath, model); //$NON-NLS-1$
         model.setFilterValue("");
         result = ForeignKeyHelper.getForeignKeyHolder(model, foreignKeyFilter);

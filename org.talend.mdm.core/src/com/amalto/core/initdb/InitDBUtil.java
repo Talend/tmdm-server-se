@@ -30,7 +30,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.amalto.core.objects.configurationinfo.ConfigurationHelper;
-import com.amalto.core.util.Util;
 
 /**
  * Create system init data cluster / data model. etc Current only support head universe

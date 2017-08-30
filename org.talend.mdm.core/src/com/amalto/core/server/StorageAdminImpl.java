@@ -28,7 +28,6 @@ import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.StorageType;
 import com.amalto.core.storage.datasource.DataSourceFactory;
 import com.amalto.core.util.MDMEhCacheUtil;
-import com.amalto.core.util.Util;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;

@@ -140,6 +140,8 @@ public class User implements Cloneable {
             
             if (Util.isEnterprise()) {
                 user.setID(Integer.parseInt(Util.getFirstTextNode(result, "//id"))); //$NON-NLS-1$
+                user.setUserName(Util.getFirstTextNode(result, "//username")); //$NON-NLS-1$
+                user.setPassword(Util.getFirstTextNode(result, "//password")); //$NON-NLS-1$
             } else {
                 user.setUserName(Util.getFirstTextNode(result, "//username")); //$NON-NLS-1$
                 user.setPassword(Util.getFirstTextNode(result, "//password")); //$NON-NLS-1$

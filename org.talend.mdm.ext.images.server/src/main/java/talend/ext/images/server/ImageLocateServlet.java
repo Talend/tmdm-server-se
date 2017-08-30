@@ -14,21 +14,17 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-
 import net.coobird.thumbnailator.Thumbnails;
+import net.sf.jmimemagic.Magic;
+import net.sf.jmimemagic.MagicMatch;
 
 /**
  * Servlet implementation class ImageLocateServlet
@@ -67,9 +63,8 @@ public class ImageLocateServlet extends HttpServlet {
                 String strWidth = request.getParameter("width"); //$NON-NLS-1$
                 String strHeight = request.getParameter("height"); //$NON-NLS-1$
                 String strPreserveAspectRatio = request.getParameter("preserveAspectRatio"); //$NON-NLS-1$
-
-                Path source = Paths.get(resourceFilePath);
-                String contentType = Files.probeContentType(source);
+                MagicMatch match = Magic.getMagicMatch(resourceFile,true);
+                String contentType = match.getMimeType();
                 if (StringUtils.isNotEmpty(contentType)) {
                     response.setHeader(CONTENT_TYPE_HEADER, contentType + "; charset=UTF-8");
                 }

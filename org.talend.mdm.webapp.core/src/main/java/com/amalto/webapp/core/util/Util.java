@@ -194,7 +194,7 @@ public abstract class Util {
         ArrayList<WSWhereItem> condition = new ArrayList<WSWhereItem>();
         for (String cria : criterias) {
             String[] values = cria.split("\\$\\$"); //$NON-NLS-1$
-            //remove the invalid filter
+            // remove the invalid filter
             if (!isValidForignKeyFilter(foreignKey, values[0])) {
                 continue;
             }

@@ -116,7 +116,6 @@ public class UtilTest extends TestCase {
 
         WSWhereItem whereItem = Util.getConditionFromFKFilter(foreignKey, foreignKeyInfo, fkFilter, false);
         assertNotNull(whereItem.getWhereCondition());
-        assertNull(whereItem.getWhereAnd());
         assertNull(whereItem.getWhereOr());
         assertEquals("ProductFamily/ChangeStatus", whereItem.getWhereCondition().getLeftPath());
         assertEquals("EQUALS", whereItem.getWhereCondition().getOperator().name());
@@ -126,23 +125,20 @@ public class UtilTest extends TestCase {
 
         whereItem = Util.getConditionFromFKFilter(foreignKey, foreignKeyInfo, fkFilter, false);
         assertNull(whereItem.getWhereCondition());
-        assertNull(whereItem.getWhereAnd());
         assertNotNull(whereItem.getWhereOr());
         assertEquals(2, whereItem.getWhereOr().getWhereItems().length);
 
-        assertNotNull(whereItem.getWhereOr().getWhereItems()[0].getWhereCondition());
-        assertNull(whereItem.getWhereOr().getWhereItems()[0].getWhereAnd());
-        assertNull(whereItem.getWhereOr().getWhereItems()[0].getWhereOr());
-        assertEquals("ProductFamily/ChangeStatus", whereItem.getWhereOr().getWhereItems()[0].getWhereCondition().getLeftPath());
-        assertEquals("EQUALS", whereItem.getWhereOr().getWhereItems()[0].getWhereCondition().getOperator().name());
-        assertEquals("1", whereItem.getWhereOr().getWhereItems()[0].getWhereCondition().getRightValueOrPath());
+        WSWhereItem whereItem1 = whereItem.getWhereOr().getWhereItems()[0];
+        assertNotNull(whereItem1.getWhereCondition());
+        assertEquals("ProductFamily/ChangeStatus", whereItem1.getWhereCondition().getLeftPath());
+        assertEquals("EQUALS", whereItem1.getWhereCondition().getOperator().name());
+        assertEquals("1", whereItem1.getWhereCondition().getRightValueOrPath());
 
-        assertNotNull(whereItem.getWhereOr().getWhereItems()[1].getWhereCondition());
-        assertNull(whereItem.getWhereOr().getWhereItems()[1].getWhereAnd());
-        assertNull(whereItem.getWhereOr().getWhereItems()[1].getWhereOr());
-        assertEquals("ProductFamily/Name", whereItem.getWhereOr().getWhereItems()[1].getWhereCondition().getLeftPath());
-        assertEquals("EMPTY_NULL", whereItem.getWhereOr().getWhereItems()[1].getWhereCondition().getOperator().name());
-        assertNull(whereItem.getWhereOr().getWhereItems()[1].getWhereCondition().getRightValueOrPath());
+        WSWhereItem whereItem2 = whereItem.getWhereOr().getWhereItems()[1];
+        assertNotNull(whereItem2.getWhereCondition());
+        assertEquals("ProductFamily/Name", whereItem2.getWhereCondition().getLeftPath());
+        assertEquals("EMPTY_NULL", whereItem2.getWhereCondition().getOperator().name());
+        assertNull(whereItem2.getWhereCondition().getRightValueOrPath());
     }
 
     private JSONArray parsingForeignKeyQueryResults(String[] results, boolean isQueryFkList) throws Exception {

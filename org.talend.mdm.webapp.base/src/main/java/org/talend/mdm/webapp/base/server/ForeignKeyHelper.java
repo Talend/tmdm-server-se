@@ -48,6 +48,7 @@ import org.talend.mdm.webapp.base.client.util.MultilanguageMessageParser;
 import org.talend.mdm.webapp.base.server.util.CommonUtil;
 import org.talend.mdm.webapp.base.server.util.Constants;
 import org.talend.mdm.webapp.base.shared.EntityModel;
+import org.talend.mdm.webapp.base.shared.OperatorValueConstants;
 import org.talend.mdm.webapp.base.shared.TypeModel;
 import org.talend.mdm.webapp.base.shared.XpathUtil;
 import org.w3c.dom.Element;
@@ -616,6 +617,10 @@ public class ForeignKeyHelper {
                 Map<String, String> conditionMap = org.talend.mdm.webapp.base.shared.util.CommonUtil
                         .buildConditionByCriteria(cria);
                 String value = conditionMap.get("Value"); //$NON-NLS-1$
+                if (OperatorValueConstants.EMPTY_NULL.equals(conditionMap.get("Operator"))) { //$NON-NLS-1$
+                    conditions.add(conditionMap);
+                    continue;
+                }
                 value = StringEscapeUtils.unescapeXml(value);
                 value = parseRightValueOrPath(xml, dataObject, value, currentXpath);
                 if (isFkPath(conditionMap.get("Xpath"))) { //$NON-NLS-1$

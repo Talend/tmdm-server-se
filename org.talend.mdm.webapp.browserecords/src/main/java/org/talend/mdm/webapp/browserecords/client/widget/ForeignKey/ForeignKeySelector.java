@@ -218,7 +218,8 @@ public class ForeignKeySelector extends ForeignKeyField implements ReturnCriteri
                 Map<String, String> conditionMap = org.talend.mdm.webapp.base.shared.util.CommonUtil
                         .buildConditionByCriteria(cria);
                 if (OperatorValueConstants.EMPTY_NULL.equals(conditionMap.get("Operator"))) { //$NON-NLS-1$
-                    return foreignKeyFilter;
+                    conditions.add(conditionMap);
+                    continue;
                 }
                 String filterValue = conditionMap.get("Value"); //$NON-NLS-1$
                 if (filterValue == null || this.foreignKeyPath == null) {

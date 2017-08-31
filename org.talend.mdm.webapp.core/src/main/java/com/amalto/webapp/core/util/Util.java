@@ -195,7 +195,7 @@ public abstract class Util {
         for (String cria : criterias) {
             String[] values = cria.split("\\$\\$"); //$NON-NLS-1$
             //remove the invalid filter
-            if (!isValid(foreignKey, values[0])) {
+            if (!isValidForignKeyFilter(foreignKey, values[0])) {
                 continue;
             }
             WSWhereCondition wc = Util.convertLine(values);
@@ -228,13 +228,12 @@ public abstract class Util {
         }
     }
 
-    //the filter xpath is not same with foreignkey is not valid
-    private static boolean isValid(String foreignKey, String value) {
-        String tmp = value;
-        if (value.indexOf("/") > 0) {
-            tmp = value.split("/")[0];
+    // entity name is same with the foreign entity name
+    private static boolean isValidForignKeyFilter(String foreignKey, String xpath) {
+        if (xpath.contains("/")) {
+            return foreignKey.split("/")[0].equals(xpath.split("/")[0]);
         }
-        return foreignKey.split("/")[0].equals(tmp);
+        return false;
     }
 
     public static WSWhereItem makeWhereItem(List<WSWhereItem> conditions) {

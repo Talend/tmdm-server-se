@@ -114,16 +114,7 @@ public class UtilTest extends TestCase {
     public void testGetConditionFromFKFilter() {
         String fkFilter = "ProductFamily/ChangeStatus$$=$$1$$Or#Product/Name$$Is Empty Or Null$$$$#";
 
-        WSWhereItem whereItem = Util.getConditionFromFKFilter(foreignKey, foreignKeyInfo, fkFilter, false);
-        assertNotNull(whereItem.getWhereCondition());
-        assertNull(whereItem.getWhereOr());
-        assertEquals("ProductFamily/ChangeStatus", whereItem.getWhereCondition().getLeftPath());
-        assertEquals("EQUALS", whereItem.getWhereCondition().getOperator().name());
-        assertEquals("1", whereItem.getWhereCondition().getRightValueOrPath());
-
-        fkFilter = "ProductFamily/ChangeStatus$$=$$1$$Or#ProductFamily/Name$$Is Empty Or Null$$$$#";
-
-        whereItem = Util.getConditionFromFKFilter(foreignKey, foreignKeyInfo, fkFilter, false);
+        WSWhereItem  whereItem = Util.getConditionFromFKFilter(foreignKey, foreignKeyInfo, fkFilter, false);
         assertNull(whereItem.getWhereCondition());
         assertNotNull(whereItem.getWhereOr());
         assertEquals(2, whereItem.getWhereOr().getWhereItems().length);
@@ -135,6 +126,25 @@ public class UtilTest extends TestCase {
         assertEquals("1", whereItem1.getWhereCondition().getRightValueOrPath());
 
         WSWhereItem whereItem2 = whereItem.getWhereOr().getWhereItems()[1];
+        assertNotNull(whereItem2.getWhereCondition());
+        assertEquals("Product/Name", whereItem2.getWhereCondition().getLeftPath());
+        assertEquals("EMPTY_NULL", whereItem2.getWhereCondition().getOperator().name());
+        assertNull(whereItem2.getWhereCondition().getRightValueOrPath());
+
+        fkFilter = "ProductFamily/ChangeStatus$$=$$1$$Or#ProductFamily/Name$$Is Empty Or Null$$$$#";
+
+        whereItem = Util.getConditionFromFKFilter(foreignKey, foreignKeyInfo, fkFilter, false);
+        assertNull(whereItem.getWhereCondition());
+        assertNotNull(whereItem.getWhereOr());
+        assertEquals(2, whereItem.getWhereOr().getWhereItems().length);
+
+        whereItem1 = whereItem.getWhereOr().getWhereItems()[0];
+        assertNotNull(whereItem1.getWhereCondition());
+        assertEquals("ProductFamily/ChangeStatus", whereItem1.getWhereCondition().getLeftPath());
+        assertEquals("EQUALS", whereItem1.getWhereCondition().getOperator().name());
+        assertEquals("1", whereItem1.getWhereCondition().getRightValueOrPath());
+
+        whereItem2 = whereItem.getWhereOr().getWhereItems()[1];
         assertNotNull(whereItem2.getWhereCondition());
         assertEquals("ProductFamily/Name", whereItem2.getWhereCondition().getLeftPath());
         assertEquals("EMPTY_NULL", whereItem2.getWhereCondition().getOperator().name());

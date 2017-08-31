@@ -349,9 +349,15 @@ public class ForeignKeyHelperTest extends TestCase {
         result = ForeignKeyHelper.getForeignKeyHolder(model, foreignKeyFilter);
         whereItem = result.whereItem;
         condition1 = whereItem.getWhereCondition();
-        assertEquals("ProductFamily/Name", condition1.getLeftPath()); //$NON-NLS-1$
-        assertEquals(WSWhereOperator.EQUALS, condition1.getOperator());
-        assertEquals("Shirts", condition1.getRightValueOrPath()); //$NON-NLS-1$
+        assertNull(condition1);
+        assertNull(whereItem.getWhereAnd());
+        assertNotNull(whereItem.getWhereOr());
+        assertEquals("ProductFamily/Name", whereItem.getWhereOr().getWhereItems()[0].getWhereCondition().getLeftPath()); //$NON-NLS-1$
+        assertEquals(WSWhereOperator.EQUALS, whereItem.getWhereOr().getWhereItems()[0].getWhereCondition().getOperator());
+        assertEquals("Shirts", whereItem.getWhereOr().getWhereItems()[0].getWhereCondition().getRightValueOrPath()); //$NON-NLS-1$
+        assertEquals("Product/Name", whereItem.getWhereOr().getWhereItems()[1].getWhereCondition().getLeftPath()); //$NON-NLS-1$
+        assertEquals(WSWhereOperator.EMPTY_NULL, whereItem.getWhereOr().getWhereItems()[1].getWhereCondition().getOperator());
+        assertNull(whereItem.getWhereOr().getWhereItems()[1].getWhereCondition().getRightValueOrPath()); // $NON-NLS-1$
     }
 
     // TMDM-9417 Polymorphism Entity / Foreign Key / label issue

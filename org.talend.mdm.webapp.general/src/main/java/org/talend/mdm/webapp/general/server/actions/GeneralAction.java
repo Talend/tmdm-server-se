@@ -173,7 +173,7 @@ public class GeneralAction implements GeneralService {
             userBean.setEnterprise(com.amalto.core.util.Util.isEnterprise());
             if (!com.amalto.core.util.Util.isEnterprise()) {
                 // TMDM-7629 init locaUser cache
-                String userName = LocalUser.getLocalUser().getUsername();
+                String userName = LocalUser.getLocalUser().getDisplayUsername();
                 userBean.setName(userName);
                 WSItem item = Util.getPort().getItem(
                         new WSGetItem(new WSItemPK(new WSDataClusterPK("PROVISIONING"), "User", new String[] { userName }))); //$NON-NLS-1$ //$NON-NLS-2$
@@ -192,7 +192,7 @@ public class GeneralAction implements GeneralService {
             if (familyname != null && givenname != null) {
                 userBean.setName(givenname + " " + familyname); //$NON-NLS-1$
             } else {
-                userBean.setName(LocalUser.getLocalUser().getUsername());
+                userBean.setName(LocalUser.getLocalUser().getDisplayUsername());
             }
             return userBean;
         } catch (Exception e) {

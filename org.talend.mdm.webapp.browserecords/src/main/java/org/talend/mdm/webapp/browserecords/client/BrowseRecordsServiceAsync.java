@@ -104,7 +104,7 @@ public interface BrowseRecordsServiceAsync {
 
     void saveItem(String concept, String ids, String xml, boolean isCreate, String language, AsyncCallback<ItemResult> callback);
 
-    void getColumnTreeLayout(String concept, AsyncCallback<ColumnTreeLayoutModel> callback);
+    void getColumnTreeLayout(String concept, String customFormName, AsyncCallback<ColumnTreeLayoutModel> callback);
 
     void getForeignKeyModel(String concept, String ids, boolean isStaging, String language,
             AsyncCallback<ForeignKeyModel> callback);

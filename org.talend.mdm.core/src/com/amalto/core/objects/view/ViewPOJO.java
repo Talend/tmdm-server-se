@@ -39,6 +39,8 @@ public class ViewPOJO extends ObjectPOJO {
     
     private String sortField;
 
+    private String customForm;
+
     public ViewPOJO(String name) {
    		this.name = name;
    	}
@@ -131,6 +133,14 @@ public class ViewPOJO extends ObjectPOJO {
     
     public void setSortField(String sortField) {
         this.sortField = sortField;
+    }
+
+    public String getCustomForm() {
+        return customForm;
+    }
+
+    public void setCustomForm(String customForm) {
+        this.customForm = customForm;
     }
 
     @Override

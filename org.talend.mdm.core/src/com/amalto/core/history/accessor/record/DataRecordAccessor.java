@@ -409,6 +409,10 @@ public class DataRecordAccessor implements Accessor {
                         if (value instanceof DataRecord) {
                             current = (DataRecord) value;
                         }
+                    // We can't get sub element value of ReferenceFieldMetadata,like Product/Family/Name.Because we can't use path Product/Family/Name to retrieve value from Product document.
+                    } else if (field instanceof ReferenceFieldMetadata && tokenizer.hasMoreElements()) {
+                        cachedExist = false;
+                        return false;
                     }
                 }
             }

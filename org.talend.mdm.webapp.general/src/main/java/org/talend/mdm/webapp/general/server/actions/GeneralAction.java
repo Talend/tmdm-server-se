@@ -312,14 +312,8 @@ public class GeneralAction implements GeneralService {
     
     @Override
     public AppHeader getAppHeader() throws ServiceException {
-        try {
-            AppHeader header = new AppHeader();
-            header.setTdsBaseUrl(MDMConfiguration.getTdsRootUrl());
-            return header;
-        } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
-            throw new ServiceException(e.getLocalizedMessage());
-        }
+        AppHeader header = new AppHeader();
+        header.setTdsBaseUrl(MDMConfiguration.getTdsRootUrl());
+        return header;
     }
-
 }

@@ -148,16 +148,10 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
                 }
             }
 
-            // Mark new class as indexed for Hibernate search (full text) extensions.
-            ConstPool cp = classFile.getConstPool();
-            AnnotationsAttribute annotationsAttribute = new AnnotationsAttribute(cp, AnnotationsAttribute.visibleTag);
-            Annotation indexedAnnotation = new Annotation(Indexed.class.getName(), cp);
-            annotationsAttribute.setAnnotation(indexedAnnotation);
-            classFile.addAttribute(annotationsAttribute);
-
             Collection<FieldMetadata> keyFields = complexType.getKeyFields();
             // Composite id class.
             if (keyFields.size() > 1) {
+                LOGGER.warn("Ignoring indexation for '" + complexType.getName() + "' due to composite key");  //$NON-NLS-1$//$NON-NLS-2$
                 String idClassName = getClassName(typeName) + "_ID"; //$NON-NLS-1$
                 CtClass newIdClass = classPool.makeClass(idClassName);
                 newIdClass.setInterfaces(new CtClass[] { serializable });
@@ -208,6 +202,13 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
 
                 Class<? extends Wrapper> compiledNewClassId = classCreationStack.pop().toClass();
                 storageClassLoader.register(idClassName, compiledNewClassId);
+            } else {
+                // Mark new class as indexed for Hibernate search (full text) extensions.
+                ConstPool cp = classFile.getConstPool();
+                AnnotationsAttribute annotationsAttribute = new AnnotationsAttribute(cp, AnnotationsAttribute.visibleTag);
+                Annotation indexedAnnotation = new Annotation(Indexed.class.getName(), cp);
+                annotationsAttribute.setAnnotation(indexedAnnotation);
+                classFile.addAttribute(annotationsAttribute);
             }
 
             classCreationStack.push(newClass);
@@ -497,8 +498,10 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
                                 providedId.addMemberValue("bridge", new AnnotationMemberValue(fieldBridge, cp)); //$NON-NLS-1$
                                 AnnotationsAttribute attribute = (AnnotationsAttribute) currentClassFile
                                         .getAttribute(AnnotationsAttribute.visibleTag);
-                                attribute.addAnnotation(providedId);
-                                classIndexed.add(currentClass);
+                                if (attribute != null) {
+                                    attribute.addAnnotation(providedId);
+                                    classIndexed.add(currentClass);
+                                }
                             }
                         }
                     }

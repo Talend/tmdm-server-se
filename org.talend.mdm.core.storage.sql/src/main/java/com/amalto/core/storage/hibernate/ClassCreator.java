@@ -148,13 +148,6 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
                 }
             }
 
-            // Mark new class as indexed for Hibernate search (full text) extensions.
-            ConstPool cp = classFile.getConstPool();
-            AnnotationsAttribute annotationsAttribute = new AnnotationsAttribute(cp, AnnotationsAttribute.visibleTag);
-            Annotation indexedAnnotation = new Annotation(Indexed.class.getName(), cp);
-            annotationsAttribute.setAnnotation(indexedAnnotation);
-            classFile.addAttribute(annotationsAttribute);
-
             Collection<FieldMetadata> keyFields = complexType.getKeyFields();
             // Composite id class.
             if (keyFields.size() > 1) {
@@ -208,6 +201,13 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
 
                 Class<? extends Wrapper> compiledNewClassId = classCreationStack.pop().toClass();
                 storageClassLoader.register(idClassName, compiledNewClassId);
+            } else {
+                // Mark new class as indexed for Hibernate search (full text) extensions.
+                ConstPool cp = classFile.getConstPool();
+                AnnotationsAttribute annotationsAttribute = new AnnotationsAttribute(cp, AnnotationsAttribute.visibleTag);
+                Annotation indexedAnnotation = new Annotation(Indexed.class.getName(), cp);
+                annotationsAttribute.setAnnotation(indexedAnnotation);
+                classFile.addAttribute(annotationsAttribute);
             }
 
             classCreationStack.push(newClass);
@@ -497,8 +497,10 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
                                 providedId.addMemberValue("bridge", new AnnotationMemberValue(fieldBridge, cp)); //$NON-NLS-1$
                                 AnnotationsAttribute attribute = (AnnotationsAttribute) currentClassFile
                                         .getAttribute(AnnotationsAttribute.visibleTag);
-                                attribute.addAnnotation(providedId);
-                                classIndexed.add(currentClass);
+                                if (attribute != null) {
+                                    attribute.addAnnotation(providedId);
+                                    classIndexed.add(currentClass);
+                                }
                             }
                         }
                     }

@@ -933,8 +933,8 @@ public class HibernateStorage implements Storage {
             indexer.optimizeAfterPurge(true);
             indexer.idFetchSize(generateIdFetchSize()).threadsToLoadObjects(1).typesToIndexInParallel(5)
                     .batchSizeToLoadObjects(batchSize).startAndWait();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            throw new RuntimeException("Exception occurred when re-indexing full-text for " + storageName + ".", e); //$NON-NLS-1$ //$NON-NLS-2$
         } finally {
             this.releaseSession();
             LOGGER.info("Re-indexing done."); //$NON-NLS-1$

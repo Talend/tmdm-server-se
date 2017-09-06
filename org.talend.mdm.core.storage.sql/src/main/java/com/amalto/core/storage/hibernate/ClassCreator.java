@@ -151,6 +151,7 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
             Collection<FieldMetadata> keyFields = complexType.getKeyFields();
             // Composite id class.
             if (keyFields.size() > 1) {
+                LOGGER.warn("Ignoring indexation for '" + complexType.getName() + "' due to composite key");  //$NON-NLS-1$//$NON-NLS-2$
                 String idClassName = getClassName(typeName) + "_ID"; //$NON-NLS-1$
                 CtClass newIdClass = classPool.makeClass(idClassName);
                 newIdClass.setInterfaces(new CtClass[] { serializable });

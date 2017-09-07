@@ -1506,7 +1506,7 @@ public class BrowseRecordsActionTest extends TestCase {
         }
 
         @Override
-        public String getUsername() {
+        public String getIdentity() {
             return "Admin";
         }
 

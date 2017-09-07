@@ -360,14 +360,14 @@ public class DroppedItemPOJO implements Serializable {
         ILocalUser user = LocalUser.getLocalUser();
 
         if (authorizeMode.equals("w")) {
-            if (MDMConfiguration.getAdminUser().equals(user.getUsername())) {
+            if (MDMConfiguration.getAdminUser().equals(user.getIdentity())) {
                 authorized = true;
             } else if (XSystemObjects.isExist(XObjectType.DATA_CLUSTER, refItemPOJOPK.getDataClusterPOJOPK().getUniqueId())
                     || user.userItemCanWrite(ItemPOJO.load(refItemPOJOPK), refItemPOJOPK.getDataClusterPOJOPK().getUniqueId(), refItemPOJOPK.getConceptName())) {
                 authorized = true;
             }
         } else if (authorizeMode.equals("r")) {
-            if (MDMConfiguration.getAdminUser().equals(user.getUsername())) {
+            if (MDMConfiguration.getAdminUser().equals(user.getIdentity())) {
                 authorized = true;
             } else if (user.userItemCanRead(ItemPOJO.load(refItemPOJOPK))) {
                 authorized = true;
@@ -375,10 +375,10 @@ public class DroppedItemPOJO implements Serializable {
         }
         if (!authorized) {
             String err = "Unauthorized " + actionName + " access by " +
-                    "user " + user.getUsername() + " on a dropped item of Item '" + refItemPOJOPK.getUniqueID() + "'";
+                    "user " + user.getIdentity() + " on a dropped item of Item '" + refItemPOJOPK.getUniqueID() + "'";
             LOGGER.error(err);
             throw new XtentisException(err);
         }
-        return user.getUsername();
+        return user.getIdentity();
     }
 }

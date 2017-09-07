@@ -447,7 +447,7 @@ public class ItemPOJO implements Serializable {
                     itemPOJOPK.getIds(),
                     partPath,
                     xmlDocument.toString(),
-                    user.getUsername(),
+                    user.getIdentity(),
                     System.currentTimeMillis());
             // Marshal
             StringWriter sw = new StringWriter();
@@ -660,7 +660,7 @@ public class ItemPOJO implements Serializable {
     private static void checkAccess(ILocalUser user, ItemPOJOPK itemPOJOPK, boolean mutableAccess, String accessLabel) throws XtentisException {
         assert user != null;
         boolean authorizedAccess;
-        String username = user.getUsername();
+        String username = user.getIdentity();
 
         boolean isSystemObject = XSystemObjects.isXSystemObject(DATA_CLUSTER_SYSTEM_OBJECTS, itemPOJOPK.getDataClusterPOJOPK().getIds()[0]);
 

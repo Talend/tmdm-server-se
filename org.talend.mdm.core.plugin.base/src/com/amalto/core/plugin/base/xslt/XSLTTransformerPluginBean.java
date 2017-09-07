@@ -319,7 +319,7 @@ public class XSLTTransformerPluginBean extends Plugin {
             Transformer transformer = transFactory.newTransformer(new StreamSource(new StringReader(parameters.getXslt())));
 
             // Pass Parameters to the XSLT processor
-            String username = LocalUser.getLocalUser().getUsername();
+            String username = LocalUser.getLocalUser().getIdentity();
             transformer.setParameter("USERNAME", username); //$NON-NLS-1$
             transformer.setErrorListener(new ErrorListener() {
 

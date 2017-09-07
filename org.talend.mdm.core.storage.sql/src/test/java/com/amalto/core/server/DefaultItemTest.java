@@ -445,7 +445,7 @@ public class DefaultItemTest extends TestCase {
         }
 
         @Override
-        public String getUsername() {
+        public String getIdentity() {
             return "administrator";
         }
 

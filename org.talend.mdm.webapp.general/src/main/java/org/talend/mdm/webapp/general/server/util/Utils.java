@@ -328,7 +328,7 @@ public class Utils {
         try {
             ILocalUser user = LocalUser.getLocalUser();
             if (Util.userCanWrite(user)) {
-                String userName = user.getUsername();
+                String userName = user.getIdentity();
                 WSItemPK itemPK = new WSItemPK(new WSDataClusterPK(DATACLUSTER_PK), PROVISIONING_CONCEPT,
                         new String[] { userName });
                 if (userName != null && userName.length() > 0) {

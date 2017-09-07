@@ -31,11 +31,11 @@ public class LocalUser {
     }
 
     public String getUsername() {
-        return findLocalUser().getUsername();
+        return findLocalUser().getIdentity();
     }
 
     public void setUsername(String username) {
-        findLocalUser().setUsername(username);
+        findLocalUser().setIdentity(username);
     }
 
     /**

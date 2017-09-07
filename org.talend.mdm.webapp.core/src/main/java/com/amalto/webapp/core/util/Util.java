@@ -839,7 +839,7 @@ public abstract class Util {
 
     public static String getDefaultLanguage() throws Exception {
         String defaultLanguage = ""; //$NON-NLS-1$
-        String userName = LocalUser.getLocalUser().getUsername();
+        String userName = LocalUser.getLocalUser().getIdentity();
         WSItemPK itemPK = new WSItemPK(new WSDataClusterPK(DATACLUSTER_PK), PROVISIONING_CONCEPT, new String[] { userName });
         if (userName != null && userName.length() > 0) {
             Document doc = XMLUtils.parse(Util.getPort().getItem(new WSGetItem(itemPK)).getContent());

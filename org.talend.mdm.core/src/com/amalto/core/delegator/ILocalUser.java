@@ -59,7 +59,7 @@ public abstract class ILocalUser implements IBeanDelegator {
         StorageAdmin storageAdmin = ServerContext.INSTANCE.get().getStorageAdmin();
         Storage systemStorage = storageAdmin.get(StorageAdmin.SYSTEM_STORAGE, StorageType.SYSTEM);
         ComplexTypeMetadata userType = systemStorage.getMetadataRepository().getComplexType("User");
-        UserQueryBuilder qb = from(userType).where(eq(userType.getField("username"), getUsername()));
+        UserQueryBuilder qb = from(userType).where(eq(userType.getField("username"), getIdentity()));
         DataRecordWriter writer = new DataRecordXmlWriter(userType);
         StringWriter userXml = new StringWriter();
         try {
@@ -76,7 +76,7 @@ public abstract class ILocalUser implements IBeanDelegator {
         return userXml.toString();
     }
 
-    public String getUsername() {
+    public String getIdentity() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Object principal = authentication.getPrincipal();
         if (principal instanceof LocalUserDetails) {
@@ -85,7 +85,7 @@ public abstract class ILocalUser implements IBeanDelegator {
         return (String) principal;
     }
     
-    public String getDisplayUsername() {
+    public String getUsername() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Object principal = authentication.getPrincipal();
         if (principal instanceof LocalUserDetails) {
@@ -129,9 +129,12 @@ public abstract class ILocalUser implements IBeanDelegator {
     public void setUserXML(String userXML) {
     }
 
-    public void setUsername(String username) {
+    public void setIdentity(String username) {
     }
 
+    public void setUsername(String username) {
+    }
+    
     public boolean userCanRead(Class<?> objectTypeClass, String instanceId) throws XtentisException {
         return true;
     }

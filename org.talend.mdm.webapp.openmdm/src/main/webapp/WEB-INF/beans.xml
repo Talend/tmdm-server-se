@@ -33,7 +33,7 @@ http://www.hazelcast.com/schema/spring http://www.hazelcast.com/schema/spring/ha
         </jaxrs:serviceBeans>
         <jaxrs:providers>
             <bean class="com.amalto.core.storage.task.staging.SerializableListWriter" />
-	    <bean class="com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider" />
+        <bean class="com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider" />
         </jaxrs:providers>
     </jaxrs:server>
 
@@ -59,12 +59,11 @@ http://www.hazelcast.com/schema/spring http://www.hazelcast.com/schema/spring/ha
         
     <!-- Security configuration -->
     <bean id="authenticationManager" class="org.springframework.security.authentication.ProviderManager">
-		<constructor-arg>
-
-			<list>
+        <constructor-arg>
+            <list>
                 <ref bean="jaasAuthenticationProvider" />
             </list>
-		</constructor-arg>
+        </constructor-arg>
 
         <property name="eraseCredentialsAfterAuthentication" value="false" />
     </bean>
@@ -128,7 +127,7 @@ http://www.hazelcast.com/schema/spring http://www.hazelcast.com/schema/spring/ha
         <property name="authenticationSuccessHandler" ref="formLoginSuccessHandler" />
         <property name="sessionAuthenticationStrategy" ref="sessionAuthenticationStrategy" />
         <property name="usernameParameter" value="j_username" />
-		<property name="passwordParameter" value="j_password" />
+        <property name="passwordParameter" value="j_password" />
     </bean>
 
     <bean id="formLoginSuccessHandler" class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler">

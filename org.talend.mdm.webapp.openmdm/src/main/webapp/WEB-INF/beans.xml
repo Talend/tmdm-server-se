@@ -33,7 +33,7 @@ http://www.hazelcast.com/schema/spring http://www.hazelcast.com/schema/spring/ha
         </jaxrs:serviceBeans>
         <jaxrs:providers>
             <bean class="com.amalto.core.storage.task.staging.SerializableListWriter" />
-        <bean class="com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider" />
+            <bean class="com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider" />
         </jaxrs:providers>
     </jaxrs:server>
 
@@ -84,7 +84,7 @@ http://www.hazelcast.com/schema/spring http://www.hazelcast.com/schema/spring/ha
             access="hasAuthority('administration')" />
         <security:intercept-url pattern="\A/services.*\Z" requires-channel="any" access="hasAuthority('authenticated')" />
         <security:custom-filter position="BASIC_AUTH_FILTER" ref="basicAuthenticationFilter" />
-        <security:csrf disabled="true"/>
+        <security:csrf disabled="true" />
     </security:http>
 
     <security:http auto-config="false" pattern="/**" entry-point-ref="formLoginAuthenticationEntryPoint"
@@ -98,7 +98,7 @@ http://www.hazelcast.com/schema/spring http://www.hazelcast.com/schema/spring/ha
         <security:custom-filter position="CONCURRENT_SESSION_FILTER" ref="concurrencySessionFilter" />
         <security:logout logout-url="/auth/logout" invalidate-session="true" delete-cookies="JSESSIONID" />
         <!-- Disable CSRF protection for now (see http://www.gwtproject.org/doc/latest/DevGuideSecurityRpcXsrf.html) -->
-        <security:csrf disabled="true"/>
+        <security:csrf disabled="true" />
         <security:headers>
             <!-- X-Frame-Options to SAMEORIGIN -->
             <security:frame-options policy="SAMEORIGIN" />

@@ -131,8 +131,8 @@ public class StorageMetadataUtils {
         Collection<FieldMetadata> fields = type.getFields();
         for (FieldMetadata current : fields) {
             if (current instanceof ReferenceFieldMetadata
-                    && ((ReferenceFieldMetadata) current).getReferencedType().equals(target.getContainingType())) {
-
+                    && ((ReferenceFieldMetadata) current).getReferencedType().equals(target.getContainingType())
+                    && !((ReferenceFieldMetadata) current).getReferencedType().equals(type)) {
                 path.push(current);
                 if (current.equals(target)) {
                     return;

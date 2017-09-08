@@ -130,6 +130,35 @@ public class StorageMetadataUtils {
         processedTypes.add(type);
         Collection<FieldMetadata> fields = type.getFields();
         for (FieldMetadata current : fields) {
+            if (current instanceof ReferenceFieldMetadata
+                    && ((ReferenceFieldMetadata) current).getReferencedType().equals(target.getContainingType())) {
+
+                path.push(current);
+                if (current.equals(target)) {
+                    return;
+                }
+
+                ComplexTypeMetadata referencedType = ((ReferenceFieldMetadata) current).getReferencedType();
+                _path(referencedType, target, path, processedTypes, true);
+                if (path.peek().equals(target)) {
+                    return;
+                }
+                for (ComplexTypeMetadata subType : referencedType.getSubTypes()) {
+                    for (FieldMetadata field : subType.getFields()) {
+                        if (field.getDeclaringType() == subType) {
+                            _path(subType, target, path, processedTypes, true);
+                            if (path.peek().equals(target)) {
+                                return;
+                            }
+                        }
+                    }
+                }
+
+            }
+
+        }
+
+        for (FieldMetadata current : fields) {
             path.push(current);
             if (current.equals(target)) {
                 return;

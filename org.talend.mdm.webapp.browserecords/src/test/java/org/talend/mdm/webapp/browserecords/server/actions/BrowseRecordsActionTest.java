@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2016 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2017 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -1229,7 +1229,7 @@ public class BrowseRecordsActionTest extends TestCase {
         String[] businessElements = { "Agency/AgencyId", "Agency/Name", "Agency/Etablissement", "Agency/Region" };
         WSWhereCondition[] conditions = {};
         WSView view = new WSView("Browse_items_Agency", "[EN:Agency]", businessElements, conditions, businessElements,
-                "LookupLocation", new WSBoolean(true),new WSBoolean(false),null);
+                "LookupLocation", new WSBoolean(true), new WSBoolean(false), null, null);
         XtentisPort port = PowerMockito.mock(XtentisPort.class);
         PowerMockito.spy(com.amalto.webapp.core.util.Util.class);
         PowerMockito.doReturn(port).when(com.amalto.webapp.core.util.Util.class, "getPort");

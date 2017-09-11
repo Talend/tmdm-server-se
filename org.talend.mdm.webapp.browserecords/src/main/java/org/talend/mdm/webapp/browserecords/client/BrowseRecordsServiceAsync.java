@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2016 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2017 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -104,7 +104,7 @@ public interface BrowseRecordsServiceAsync {
 
     void saveItem(String concept, String ids, String xml, boolean isCreate, String language, AsyncCallback<ItemResult> callback);
 
-    void getColumnTreeLayout(String concept, AsyncCallback<ColumnTreeLayoutModel> callback);
+    void getColumnTreeLayout(String concept, String customFormName, AsyncCallback<ColumnTreeLayoutModel> callback);
 
     void getForeignKeyModel(String concept, String ids, boolean isStaging, String language,
             AsyncCallback<ForeignKeyModel> callback);

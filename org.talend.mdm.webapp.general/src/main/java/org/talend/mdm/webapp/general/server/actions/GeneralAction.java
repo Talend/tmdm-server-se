@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2016 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2017 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -312,14 +312,8 @@ public class GeneralAction implements GeneralService {
     
     @Override
     public AppHeader getAppHeader() throws ServiceException {
-        try {
-            AppHeader header = new AppHeader();
-            header.setTdsBaseUrl(MDMConfiguration.getConfiguration().getProperty(MDMConfiguration.TDS_ROOT_URL));
-            return header;
-        } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
-            throw new ServiceException(e.getLocalizedMessage());
-        }
+        AppHeader header = new AppHeader();
+        header.setTdsBaseUrl(MDMConfiguration.getTdsRootUrl());
+        return header;
     }
-
 }

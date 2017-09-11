@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2016 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2017 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -72,7 +72,7 @@ public abstract class SessionAwareAsyncCallback<T> implements AsyncCallback<T> {
             // When session expires container will use a configured expired Url to return the content of the login page
             // However, since an GWT RPC response cannot be of HTML text, the InvocationException is thrown with the
             // HTML content as the message.
-            return msg == null ? false : msg.contains("<meta name=\"description\" content=\"Talend MDM login page\"/>"); //$NON-NLS-1$
+            return msg == null ? false : (msg.contains("<meta name=\"description\" content=\"Talend MDM login page\"/>") || msg.contains("<title>Talend - Login</title>")); //$NON-NLS-1$
         } else
             return false;
     }

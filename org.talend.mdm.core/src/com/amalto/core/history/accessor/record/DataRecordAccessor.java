@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2016 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2017 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -409,6 +409,10 @@ public class DataRecordAccessor implements Accessor {
                         if (value instanceof DataRecord) {
                             current = (DataRecord) value;
                         }
+                    // We can't get sub element value of ReferenceFieldMetadata,like Product/Family/Name.Because we can't use path Product/Family/Name to retrieve value from Product document.
+                    } else if (field instanceof ReferenceFieldMetadata && tokenizer.hasMoreElements()) {
+                        cachedExist = false;
+                        return false;
                     }
                 }
             }

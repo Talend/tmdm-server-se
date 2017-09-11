@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2016 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2017 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -108,7 +108,6 @@ import com.amalto.core.objects.customform.CustomFormPOJOPK;
 import com.amalto.core.objects.datacluster.DataClusterPOJOPK;
 import com.amalto.core.server.ServerContext;
 import com.amalto.core.server.StorageAdmin;
-import com.amalto.core.server.security.SecurityUtils;
 import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.task.StagingConstants;
 import com.amalto.core.util.CoreException;
@@ -181,6 +180,7 @@ import net.sf.json.JSONObject;
 /**
  * DOC Administrator class global comment. Detailled comment
  */
+@SuppressWarnings("nls")
 public class BrowseRecordsAction implements BrowseRecordsService {
 
     private static final Logger LOG = Logger.getLogger(BrowseRecordsAction.class);
@@ -670,7 +670,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
         // searchables
         vb.setSearchables(ViewHelper.getSearchables(wsView, model, language, entityModel));
         // bind layout model
-        vb.setColumnLayoutModel(getColumnTreeLayout(concept));
+        vb.setColumnLayoutModel(getColumnTreeLayout(concept, wsView.getCustomForm()));
         return vb;
     }
 
@@ -1639,26 +1639,24 @@ public class BrowseRecordsAction implements BrowseRecordsService {
 
     @Override
     public String bulkUpdateItem(String baseUrl, String concept, String xml, String language) throws ServiceException {
-        String errorMsg = "Bulk update failed.";
         try {
             String url = baseUrl + "services/rest/data/" + getCurrentDataCluster() + "/" + concept + "/bulk";
             DefaultHttpClient httpClient = new DefaultHttpClient();
-            httpClient.getCredentialsProvider().setCredentials(AuthScope.ANY,
-                    new UsernamePasswordCredentials(LocalUser.getLocalUser().getUsername(), SecurityUtils.getCredentials()));
-
+            httpClient.getCredentialsProvider().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(
+                    LocalUser.getLocalUser().getUsername(), LocalUser.getLocalUser().getCredentials()));
             HttpPatch httpPatch = new HttpPatch(url);
-            httpPatch.setHeader("Content-Type", "text/xml; charset=utf8"); //$NON-NLS-1$ //$NON-NLS-2$
+            httpPatch.setHeader("Content-Type", "text/xml; charset=utf8");
             HttpEntity entity = new StringEntity(xml);
             httpPatch.setEntity(entity);
             HttpResponse response = httpClient.execute(httpPatch);
             if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
                 return StringUtils.EMPTY;
             } else {
-                return errorMsg;
+                return MESSAGES.getMessage("bulkUpdate_error");
             }
         } catch (Exception e) {
-            LOG.error(errorMsg, e);
-            return errorMsg;
+            LOG.error(MESSAGES.getMessage("bulkUpdate_error"), e);
+            return MESSAGES.getMessage("bulkUpdate_error");
         }
     }
 
@@ -1813,9 +1811,9 @@ public class BrowseRecordsAction implements BrowseRecordsService {
     }
 
     @Override
-    public ColumnTreeLayoutModel getColumnTreeLayout(String concept) throws ServiceException {
+    public ColumnTreeLayoutModel getColumnTreeLayout(String concept, String customFormName) throws ServiceException {
         try {
-            CustomFormPOJOPK pk = new CustomFormPOJOPK(getCurrentDataModel(), concept);
+            CustomFormPOJOPK pk = new CustomFormPOJOPK(getCurrentDataModel(), concept, customFormName);
             CustomFormPOJO customForm = com.amalto.core.util.Util.getCustomFormCtrlLocal().getUserCustomForm(pk);
             if (customForm == null) {
                 return null;

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2016 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2017 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -9,7 +9,7 @@
  */
 package com.amalto.core.history.accessor.record;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -50,6 +50,11 @@ public class DataRecordAccessorTest extends DataRecordDataWriterTestCase{
 
         setDataRecordField(record, "supplier", referenced);
         DataRecordAccessor dataRecordAccessor = new DataRecordAccessor(repository, record, "supplier");
+        assertEquals(true, dataRecordAccessor.exist());
         assertEquals("PartyCompany", dataRecordAccessor.getActualType());
+        
+        setDataRecordField(record, "supplier", referenced);
+        dataRecordAccessor = new DataRecordAccessor(repository, record, "supplier/name");
+        assertEquals(false, dataRecordAccessor.exist());
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2016 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2017 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -38,6 +38,8 @@ public class ViewPOJO extends ObjectPOJO {
     private boolean isAsc;
     
     private String sortField;
+
+    private String customForm;
 
     public ViewPOJO(String name) {
    		this.name = name;
@@ -131,6 +133,14 @@ public class ViewPOJO extends ObjectPOJO {
     
     public void setSortField(String sortField) {
         this.sortField = sortField;
+    }
+
+    public String getCustomForm() {
+        return customForm;
+    }
+
+    public void setCustomForm(String customForm) {
+        this.customForm = customForm;
     }
 
     @Override

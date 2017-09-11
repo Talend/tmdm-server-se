@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2016 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2017 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -133,4 +133,6 @@ public interface WelcomePortalMessages extends Messages {
     String login_tds_fail();
 
     String retrieve_campaign_fail();
+    
+    String access_tds_fail();
 }

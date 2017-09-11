@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2016 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2017 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -186,6 +186,7 @@ public class XConverter {
         }
         s.setIsAsc(new WSBoolean(pojo.getIsAsc()));
         s.setSortField(pojo.getSortField());
+        s.setCustomForm(pojo.getCustomForm());
         return s;
     }
 
@@ -224,6 +225,7 @@ public class XConverter {
         pojo.setWhereConditions(new ArrayListHolder(l));
         pojo.setIsAsc(ws.getIsAsc() == null ? false : ws.getIsAsc().is_true());
         pojo.setSortField(ws.getSortField());
+        pojo.setCustomForm(ws.getCustomForm());
         return pojo;
     }
 

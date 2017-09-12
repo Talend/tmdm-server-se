@@ -123,7 +123,6 @@ public class StorageMetadataUtils {
                 return;
             }
         }
-        //
         if (processedTypes.contains(type)) {
             return;
         }

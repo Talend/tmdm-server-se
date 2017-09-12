@@ -111,14 +111,10 @@ public class DefaultCustomForm implements CustomForm {
             }
 
             String name = cpk.getName();
-            if (allCustomFormPermitted) {
-                if (StringUtils.isNotBlank(name)) {
-                    CustomFormPOJO pojo = ObjectPOJO.load(CustomFormPOJO.class,
-                            new ObjectPOJOPK(cpk.getUniqueId().split("\\.\\.")));//$NON-NLS-1$
-                    if (pojo != null && pojo.getDatamodel().equals(cpk.getDatamodel())
-                            && pojo.getEntity().equals(cpk.getEntity())) {
-                        return pojo;
-                    }
+            if (allCustomFormPermitted && StringUtils.isNotBlank(name)) {
+                CustomFormPOJO pojo = ObjectPOJO.load(CustomFormPOJO.class, new ObjectPOJOPK(cpk.getUniqueId().split("\\.\\.")));//$NON-NLS-1$
+                if (pojo != null && pojo.getDatamodel().equals(cpk.getDatamodel()) && pojo.getEntity().equals(cpk.getEntity())) {
+                    return pojo;
                 }
             }
 

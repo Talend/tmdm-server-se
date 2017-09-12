@@ -258,7 +258,6 @@ public class StorageMetadataUtils {
         if (Storage.PROJECTION_TYPE.equals(type.getName()) && type.hasField(target.getName())) {
             currentPath.push(type.getField(target.getName()));
         }
-        //
         Collection<FieldMetadata> fields = type.getFields();
         for (FieldMetadata current : fields) {
             currentPath.push(current);

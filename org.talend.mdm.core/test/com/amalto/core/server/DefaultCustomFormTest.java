@@ -49,7 +49,7 @@ public class DefaultCustomFormTest extends TestCase {
 
         CustomFormPOJOPK cfpk = new CustomFormPOJOPK(datamodel, entity, customFormName);
 
-        //
+        // role System_Interactive
         PowerMockito.mockStatic(LocalUser.class);
         ILocalUser mockUser = PowerMockito.mock(ILocalUser.class);
         PowerMockito.when(mockUser.getRoles()).thenReturn(roleNames);
@@ -62,7 +62,7 @@ public class DefaultCustomFormTest extends TestCase {
         PowerMockito.when(ObjectPOJO.class, method, Mockito.same(RolePOJO.class), Mockito.eq(new RolePOJOPK(roles[2])))
                 .thenReturn(mockRolePojo_system_interactive);
 
-        //
+        // role Demo_Manager
         RolePOJO mockRolePojo_DemoManager = PowerMockito.mock(RolePOJO.class);
         RoleSpecification specification = new RoleSpecification();
         specification.setAdmin(false);
@@ -82,7 +82,7 @@ public class DefaultCustomFormTest extends TestCase {
         PowerMockito.when(ObjectPOJO.class, method, Mockito.same(CustomFormPOJO.class),
                 Mockito.eq(new ObjectPOJOPK(pk.split("\\.\\.")))).thenReturn(customFormPojo); //$NON-NLS-1$
 
-        //
+        // role Demo_user
         RolePOJO mockRolePojo_DemoUser = PowerMockito.mock(RolePOJO.class);
         PowerMockito.when(mockRolePojo_DemoUser.getRoleSpecifications()).thenReturn(new HashMap<String, RoleSpecification>());
         PowerMockito.when(ObjectPOJO.class, method, Mockito.same(RolePOJO.class), Mockito.eq(new RolePOJOPK(roles[4])))
@@ -110,7 +110,7 @@ public class DefaultCustomFormTest extends TestCase {
         specification1.setInstances(instances1);
         demoUserRoleSpecifications.put(objectType, specification1);
         PowerMockito.when(mockRolePojo_DemoUser.getRoleSpecifications()).thenReturn(demoUserRoleSpecifications);
-        cfpk.setName("");
+        cfpk.setName(""); //$NON-NLS-1$
         userCustomForm = defaultCustomForm.getUserCustomForm(cfpk);
         assertNotNull(userCustomForm);
         assertEquals(customFormPojo, userCustomForm);

@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.amalto.core.delegator.ILocalUser;
@@ -111,7 +112,7 @@ public class DefaultCustomForm implements CustomForm {
 
             String name = cpk.getName();
             if (allCustomFormPermitted) {
-                boolean validCustomFormPOJOPK = name != null && !name.trim().isEmpty();
+                boolean validCustomFormPOJOPK = StringUtils.isNotBlank(name);
                 if (validCustomFormPOJOPK) {
                     CustomFormPOJO pojo = ObjectPOJO.load(CustomFormPOJO.class,
                             new ObjectPOJOPK(cpk.getUniqueId().split("\\.\\.")));//$NON-NLS-1$

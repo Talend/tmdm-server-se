@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2016 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2017 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -133,10 +133,10 @@ public class ForeignKeySelectorGWTTest extends GWTTestCase {
         assertEquals("ProductFamily/ChangeStatus$$Is Empty Or Null$$123456$$#", foreignKeySelector.parseForeignKeyFilter()); //$NON-NLS-1$
 
         subelementType
-                .setForeignKeyFilter("ProductFamily/ChangeStatus$$Is Empty Or Null$$ProductFamily/Name$$=$$Product/Name$$#"); //$NON-NLS-1$
+                .setForeignKeyFilter("ProductFamily/ChangeStatus$$Is Empty Or Null$$Or#ProductFamily/Name$$=$$Product/Name$$#"); //$NON-NLS-1$
         foreignKeySelector = new ForeignKeySelector(subelementType, itemsDetailPanel, family);
         assertEquals(
-                "ProductFamily/ChangeStatus$$Is Empty Or Null$$ProductFamily/Name$$=$$Product/Name$$#", foreignKeySelector.parseForeignKeyFilter()); //$NON-NLS-1$
+                "ProductFamily/ChangeStatus$$Is Empty Or Null$$Or$$#ProductFamily/Name$$=$$talend$$#", foreignKeySelector.parseForeignKeyFilter()); //$NON-NLS-1$
 
         // test Person datamodel
         ItemNodeModel person = new ItemNodeModel();

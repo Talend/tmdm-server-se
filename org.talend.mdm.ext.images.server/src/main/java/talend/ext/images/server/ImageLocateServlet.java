@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2016 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2017 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -14,18 +14,17 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import net.coobird.thumbnailator.Thumbnails;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import net.coobird.thumbnailator.Thumbnails;
+import net.sf.jmimemagic.Magic;
+import net.sf.jmimemagic.MagicMatch;
 
 /**
  * Servlet implementation class ImageLocateServlet
@@ -35,6 +34,8 @@ public class ImageLocateServlet extends HttpServlet {
     private static final long serialVersionUID = -3012919798771313147L;
 
     private static final Logger LOGGER = Logger.getLogger(ImageLocateServlet.class);
+    
+    private static final String CONTENT_TYPE_HEADER = "Content-Type";
 
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
@@ -62,7 +63,11 @@ public class ImageLocateServlet extends HttpServlet {
                 String strWidth = request.getParameter("width"); //$NON-NLS-1$
                 String strHeight = request.getParameter("height"); //$NON-NLS-1$
                 String strPreserveAspectRatio = request.getParameter("preserveAspectRatio"); //$NON-NLS-1$
-
+                MagicMatch match = Magic.getMagicMatch(resourceFile,true);
+                String contentType = match.getMimeType();
+                if (StringUtils.isNotEmpty(contentType)) {
+                    response.setHeader(CONTENT_TYPE_HEADER, contentType + "; charset=UTF-8");
+                }
                 if (strWidth != null && strHeight != null) {
                     int width = Integer.valueOf(strWidth);
                     int height = Integer.valueOf(strHeight);

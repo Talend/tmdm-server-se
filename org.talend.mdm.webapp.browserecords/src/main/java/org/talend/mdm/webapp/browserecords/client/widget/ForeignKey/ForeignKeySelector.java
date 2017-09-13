@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2016 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2017 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -215,7 +215,8 @@ public class ForeignKeySelector extends ForeignKeyField implements ReturnCriteri
                 Map<String, String> conditionMap = org.talend.mdm.webapp.base.shared.util.CommonUtil
                         .buildConditionByCriteria(cria);
                 if (OperatorValueConstants.EMPTY_NULL.equals(conditionMap.get("Operator"))) { //$NON-NLS-1$
-                    return foreignKeyFilter;
+                    conditions.add(conditionMap);
+                    continue;
                 }
                 String filterValue = conditionMap.get("Value"); //$NON-NLS-1$
                 if (filterValue == null || this.foreignKeyPath == null) {

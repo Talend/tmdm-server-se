@@ -18,22 +18,22 @@ import org.junit.Test;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
+import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
 
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.record.metadata.DataRecordMetadataImpl;
 
 public class StorageMetadataUtilsTest {
 
-    protected static MetadataRepository repository;
-    
     @BeforeClass
     public static void setup() throws Exception {
-        repository = new MetadataRepository();
-        repository.load(StorageMetadataUtilsTest.class.getResourceAsStream("../storage/record/metadata.xsd"));  //$NON-NLS-1$
     }
     
     @Test
     public void testToString() throws Exception {
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(StorageMetadataUtilsTest.class.getResourceAsStream("../storage/record/metadata.xsd"));  //$NON-NLS-1$
+
         // test for escapeXml
         assertEquals("Name", StorageMetadataUtils.toString("Name"));
         assertEquals("Name &gt; &amp; &gt;=", StorageMetadataUtils.toString("Name > & >="));
@@ -64,6 +64,50 @@ public class StorageMetadataUtilsTest {
         setDataRecordField(record, "Id", "12345  é or ç > & >= 你好");
         setDataRecordField(record, "Name", "Name");
         assertEquals("[12345  é or ç > & >= 你好]", StorageMetadataUtils.toString(record, false));
+    }
+
+    @Test
+    public void testPath() throws Exception {
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(StorageMetadataUtilsTest.class.getResourceAsStream("parnter.xsd")); //$NON-NLS-1$
+
+        ComplexTypeMetadata mainType = repository.getComplexType("Partner_Relation");
+        FieldMetadata fieldMetadata = mainType.getField("FK_Partner");
+        FieldMetadata groupField = ((ReferenceFieldMetadata) fieldMetadata).getReferencedType().getField("FK_Account_Group");
+        FieldMetadata domainField = mainType.getField("FK_Partner_Commercial_Domain");
+
+        List<FieldMetadata> path = StorageMetadataUtils.path(mainType, fieldMetadata);
+        assertEquals(1, path.size());
+        assertEquals(fieldMetadata, path.get(0));
+
+        path = StorageMetadataUtils.path(mainType, groupField);
+        assertEquals(2, path.size());
+        assertEquals(fieldMetadata, path.get(0));
+        assertEquals(groupField, path.get(1));
+
+        path = StorageMetadataUtils.path(mainType, domainField);
+        assertEquals(1, path.size());
+        assertEquals(domainField, path.get(0));
+    }
+
+    @Test
+    public void testPathForInheritance() throws Exception {
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(StorageMetadataUtilsTest.class.getResourceAsStream("inheritance.xsd")); //$NON-NLS-1$
+
+        ComplexTypeMetadata mainType = repository.getComplexType("A");
+        FieldMetadata nestedBField = mainType.getField("nestedB");
+
+        List<FieldMetadata> path = StorageMetadataUtils.path(mainType, nestedBField);
+        assertEquals(1, path.size());
+        assertEquals(nestedBField, path.get(0));
+
+        mainType = repository.getComplexType("Compte");
+        FieldMetadata childOfField = mainType.getField("childOf");
+
+        path = StorageMetadataUtils.path(mainType, childOfField);
+        assertEquals(1, path.size());
+        assertEquals(childOfField, path.get(0));
     }
 
     protected DataRecord createDataRecord(ComplexTypeMetadata type) throws Exception {

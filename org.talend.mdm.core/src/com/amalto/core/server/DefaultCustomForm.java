@@ -9,6 +9,15 @@
  */
 package com.amalto.core.server;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+
 import com.amalto.core.delegator.ILocalUser;
 import com.amalto.core.objects.ObjectPOJO;
 import com.amalto.core.objects.ObjectPOJOPK;
@@ -16,14 +25,11 @@ import com.amalto.core.objects.customform.CustomFormPOJO;
 import com.amalto.core.objects.customform.CustomFormPOJOPK;
 import com.amalto.core.objects.role.RolePOJO;
 import com.amalto.core.objects.role.RolePOJOPK;
+import com.amalto.core.server.api.CustomForm;
+import com.amalto.core.server.security.SecurityConfig;
 import com.amalto.core.util.LocalUser;
 import com.amalto.core.util.RoleSpecification;
 import com.amalto.core.util.XtentisException;
-import org.apache.log4j.Logger;
-import com.amalto.core.server.api.CustomForm;
-import com.amalto.core.server.security.SecurityConfig;
-
-import java.util.*;
 
 public class DefaultCustomForm implements CustomForm {
 
@@ -84,6 +90,7 @@ public class DefaultCustomForm implements CustomForm {
             String objectType = "Custom Layout"; //$NON-NLS-1$
             ILocalUser user = LocalUser.getLocalUser();
             HashSet<String> roleNames = user.getRoles();
+            boolean allCustomFormPermitted = false;
             for (String roleName : roleNames) {
                 if (SecurityConfig.isSecurityPermission(roleName)) {
                     continue;
@@ -93,18 +100,29 @@ public class DefaultCustomForm implements CustomForm {
                 //get Specifications for the View Object
                 RoleSpecification specification = role.getRoleSpecifications().get(objectType);
                 if (specification != null) {
+                    if (specification.isAdmin()) {
+                        allCustomFormPermitted = true;
+                    }
                     Set<String> keys = specification.getInstances().keySet();
                     for (String id : keys) {
                         ids.add(id);
                     }
                 }
             }
+
+            String name = cpk.getName();
+            if (allCustomFormPermitted && StringUtils.isNotBlank(name)) {
+                CustomFormPOJO pojo = ObjectPOJO.load(CustomFormPOJO.class, new ObjectPOJOPK(cpk.getUniqueId().split("\\.\\.")));//$NON-NLS-1$
+                if (pojo != null && pojo.getDatamodel().equals(cpk.getDatamodel()) && pojo.getEntity().equals(cpk.getEntity())) {
+                    return pojo;
+                }
+            }
+
             List<CustomFormPOJO> list = new ArrayList<CustomFormPOJO>();
             for (String pk : ids) {
                 CustomFormPOJO pojo = ObjectPOJO.load(CustomFormPOJO.class, new ObjectPOJOPK(pk.split("\\.\\.")));//$NON-NLS-1$
-                if (pojo!=null && pojo.getDatamodel().equals(cpk.getDatamodel())
-                        && pojo.getEntity().equals(cpk.getEntity())) {
-                    if (pojo.getName().equals(cpk.getName())) {
+                if (pojo != null && pojo.getDatamodel().equals(cpk.getDatamodel()) && pojo.getEntity().equals(cpk.getEntity())) {
+                    if (pojo.getName().equals(name)) {
                         return pojo;
                     }
                     list.add(pojo);

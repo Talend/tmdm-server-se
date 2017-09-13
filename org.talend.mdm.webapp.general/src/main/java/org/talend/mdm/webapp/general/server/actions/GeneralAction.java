@@ -260,7 +260,7 @@ public class GeneralAction implements GeneralService {
     @Override
     public String logout() throws ServiceException {
         try {
-            if(MDMConfiguration.isIamEnabled()) {
+            if (com.amalto.core.util.Util.isEnterprise()) {
                 return "/logout"; //$NON-NLS-1$
             } else {
                 Util.getPort().logout(new WSLogout(StringUtils.EMPTY)).getValue();

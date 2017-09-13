@@ -55,7 +55,7 @@ function getBrowserType() {
         } else if (fIEVersion == 11) {
             return "IE11";
         } else {
-            return ""
+            return "";
         }
     } else if (userAgent.indexOf("Windows NT 6.1; Trident/7.0;") > -1) {
         return "Edge";
@@ -67,5 +67,7 @@ function getBrowserType() {
     } else if (userAgent.indexOf("Chrome") > -1
             && userAgent.indexOf("Safari") > -1) {
         return "Chrome";
+    } else {
+        return "";
     }
 }

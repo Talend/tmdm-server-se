@@ -19,6 +19,8 @@ public class LocalUserDetails extends User {
     
     private String id;
     
+    private String username;
+    
     private String firstName;
 
     private String lastName;
@@ -42,6 +44,14 @@ public class LocalUserDetails extends User {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getFirstName() {

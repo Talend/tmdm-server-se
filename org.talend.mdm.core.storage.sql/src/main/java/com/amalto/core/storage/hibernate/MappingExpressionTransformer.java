@@ -288,12 +288,12 @@ class MappingExpressionTransformer extends VisitorAdapter<Expression> {
 
     @Override
     public Expression visit(StringConstant constant) {
-        return getConstant(constant.getValue());
+        return getConstant(constant.getStringValue());
     }
 
     @Override
     public Expression visit(IntegerConstant constant) {
-        return getConstant(constant.getValue());
+        return getConstant(constant.getStringValue());
     }
 
     @Override
@@ -308,12 +308,12 @@ class MappingExpressionTransformer extends VisitorAdapter<Expression> {
 
     @Override
     public Expression visit(BooleanConstant constant) {
-        return getConstant(constant.getValue());
+        return getConstant(constant.getStringValue());
     }
 
     @Override
     public Expression visit(BigDecimalConstant constant) {
-        return getConstant(constant.getValue());
+        return getConstant(constant.getStringValue());
     }
 
     @Override
@@ -323,27 +323,27 @@ class MappingExpressionTransformer extends VisitorAdapter<Expression> {
 
     @Override
     public Expression visit(ShortConstant constant) {
-        return getConstant(constant.getValue());
+        return getConstant(constant.getStringValue());
     }
 
     @Override
     public Expression visit(ByteConstant constant) {
-        return getConstant(constant.getValue());
+        return getConstant(constant.getStringValue());
     }
 
     @Override
     public Expression visit(LongConstant constant) {
-        return getConstant(constant.getValue());
+        return getConstant(constant.getStringValue());
     }
 
     @Override
     public Expression visit(DoubleConstant constant) {
-        return getConstant(constant.getValue());
+        return getConstant(constant.getStringValue());
     }
 
     @Override
     public Expression visit(FloatConstant constant) {
-        return getConstant(constant.getValue());
+        return getConstant(constant.getStringValue());
     }
 
     @Override

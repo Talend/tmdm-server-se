@@ -24,7 +24,7 @@ public class Range implements Condition {
     }
 
     public Range(TypedExpression expression, int start, int end) {
-        this(expression, new IntegerConstant(start), new IntegerConstant(end));
+        this(expression, new IntegerConstant(String.valueOf(start)), new IntegerConstant(String.valueOf(end)));
     }
 
     public Expression normalize() {

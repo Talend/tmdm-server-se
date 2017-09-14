@@ -15,6 +15,9 @@ import org.talend.mdm.commmon.metadata.Types;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 
 /**
@@ -26,10 +29,22 @@ public class DateTimeConstant implements ConstantExpression<Date> {
 
     private final Date value;
 
+    private Collection<Date> constantCollection = new ArrayList();
+
     public DateTimeConstant(String value) {
         synchronized (DATE_FORMAT) {
             try {
-                this.value = DATE_FORMAT.parse(value);
+                if (value.contains(UserQueryBuilder.IN_VALUE_SPLIT)) {
+                    Collection<String> stringCollection = Arrays.asList(value.split(UserQueryBuilder.IN_VALUE_SPLIT));
+                    Collection<Date> resultCollection = new ArrayList();
+                    for (String tmp : stringCollection) {
+                        resultCollection.add(DATE_FORMAT.parse(tmp));
+                    }
+                    this.constantCollection = resultCollection;
+                    this.value = null;
+                } else {
+                    this.value = DATE_FORMAT.parse(value);
+                }
             } catch (ParseException e) {
                 throw new RuntimeException(e);
             }
@@ -71,6 +86,25 @@ public class DateTimeConstant implements ConstantExpression<Date> {
 
     @Override
     public int hashCode() {
-        return value != null ? value.hashCode() : 0;
+        return value != null ? value.hashCode() : constantCollection.isEmpty() ? 0 : constantCollection.hashCode();
+    }
+
+    @Override
+    public String getStringValue() {
+        if (value != null) {
+            return String.valueOf(DATE_FORMAT.format(value));
+        } else {
+            StringBuilder sb = new StringBuilder();
+            for (Date date : constantCollection) {
+                sb.append(DATE_FORMAT.format(date));
+                sb.append(UserQueryBuilder.IN_VALUE_SPLIT);
+            }
+            return sb.toString().substring(0, sb.toString().length() - UserQueryBuilder.IN_VALUE_SPLIT.length());
+        }
+    }
+
+    @Override
+    public Collection<Date> getValueList() {
+        return constantCollection;
     }
 }

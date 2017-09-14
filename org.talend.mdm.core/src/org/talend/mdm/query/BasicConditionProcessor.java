@@ -11,6 +11,7 @@ package org.talend.mdm.query;
 
 import com.amalto.core.query.user.Condition;
 import com.amalto.core.query.user.TypedExpression;
+import com.amalto.core.query.user.UserQueryBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -31,6 +32,17 @@ abstract class BasicConditionProcessor implements ConditionProcessor {
                     value = element.getAsJsonPrimitive("value").getAsString(); //$NON-NLS-1
                 } else if (valueElement.isJsonObject()) {
                     valueExpression = Deserializer.getTypedExpression(valueElement.getAsJsonObject()).process(valueElement.getAsJsonObject(), repository);
+                } else if(valueElement instanceof JsonArray){
+                    JsonArray array = (JsonArray)valueElement;
+                    StringBuilder sb = new StringBuilder();
+                    for(int j= 0 ; j < array.size(); j++){
+                        JsonElement jsonElement = array.get(j);
+                        if(jsonElement.isJsonPrimitive()){
+                            sb.append(jsonElement.getAsJsonPrimitive().getAsString());
+                            sb.append(UserQueryBuilder.IN_VALUE_SPLIT);
+                        }
+                    }
+                    value = sb.toString().substring(0, sb.toString().length()-UserQueryBuilder.IN_VALUE_SPLIT.length());
                 } else {
                     throw new IllegalArgumentException("Value '" + valueElement + "' is not supported.");
                 }

@@ -11,6 +11,10 @@
 
 package com.amalto.core.query.user;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+
 import org.talend.mdm.commmon.metadata.Types;
 
 /**
@@ -20,8 +24,20 @@ public class StringConstant implements ConstantExpression<String> {
 
     private final String value;
 
+    private Collection<String> constantCollection = new ArrayList();
+
     public StringConstant(String value) {
-        this.value = value;
+        if (value.contains(UserQueryBuilder.IN_VALUE_SPLIT)) {
+            Collection<String> stringCollection = Arrays.asList(value.split(UserQueryBuilder.IN_VALUE_SPLIT));
+            Collection<String> resultCollection = new ArrayList();
+            for (String tmp : stringCollection) {
+                resultCollection.add(tmp);
+            }
+            this.constantCollection = resultCollection;
+            this.value = null;
+        } else {
+            this.value = value;
+        }
     }
 
     public String getValue() {
@@ -59,6 +75,26 @@ public class StringConstant implements ConstantExpression<String> {
 
     @Override
     public int hashCode() {
-        return value != null ? value.hashCode() : 0;
+        return value != null ? value.hashCode() : constantCollection.isEmpty() ? 0 : constantCollection.hashCode();
+    }
+
+    @Override
+    public String getStringValue() {
+        if (value != null) {
+            return String.valueOf(value);
+        } else {
+            StringBuilder sb = new StringBuilder();
+            for (String value : constantCollection) {
+                sb.append(value);
+                sb.append(UserQueryBuilder.IN_VALUE_SPLIT);
+            }
+            return sb.toString().substring(0, sb.toString().length() - UserQueryBuilder.IN_VALUE_SPLIT.length());
+        }
+    }
+
+    @Override
+    public Collection<String> getValueList() {
+        // TODO Auto-generated method stub
+        return constantCollection;
     }
 }

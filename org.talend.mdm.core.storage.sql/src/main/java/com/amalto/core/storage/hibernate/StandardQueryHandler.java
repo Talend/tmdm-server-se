@@ -24,6 +24,7 @@ import static org.hibernate.criterion.Restrictions.or;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -1459,6 +1460,28 @@ class StandardQueryHandler extends AbstractQueryHandler {
                     Criterion current = null;
                     for (String fieldName : leftFieldCondition.criterionFieldNames) {
                         Criterion newCriterion = le(fieldName, compareValue);
+                        if (current == null) {
+                            current = newCriterion;
+                        } else {
+                            current = or(newCriterion, current);
+                        }
+                    }
+                    return current;
+                } else if (predicate == Predicate.IN) {
+                    Criterion current = null;
+                    for (String fieldName : leftFieldCondition.criterionFieldNames) {
+                        Criterion newCriterion = Restrictions.in(fieldName, (Collection) compareValue);
+                        if (current == null) {
+                            current = newCriterion;
+                        } else {
+                            current = or(newCriterion, current);
+                        }
+                    }
+                    return current;
+                } else if (predicate == Predicate.NOT_IN) {
+                    Criterion current = null;
+                    for (String fieldName : leftFieldCondition.criterionFieldNames) {
+                        Criterion newCriterion = Restrictions.not(Restrictions.in(fieldName, (Collection) compareValue));
                         if (current == null) {
                             current = newCriterion;
                         } else {

@@ -34,6 +34,8 @@ public class UserQueryBuilder {
     
     public static final String ALL_FIELD = "../*";  //$NON-NLS-1$
 
+    public static final String IN_VALUE_SPLIT = "@@@@";
+
     private static final Logger LOGGER = Logger.getLogger(UserQueryBuilder.class);
 
     private final Expression expression;
@@ -216,6 +218,96 @@ public class UserQueryBuilder {
         }
     }
 
+    public static Condition in(TypedExpression left, TypedExpression right) {
+        return new Compare(left, Predicate.IN, right);
+    }
+
+    public static Condition in(TypedExpression expression, String constant) {
+        assertNullField(expression);
+        if (expression instanceof Field) {
+            return in(((Field) expression), constant);
+        } else {
+            if (constant == null) {
+                return isNull(expression);
+            }
+            return new Compare(expression, Predicate.IN, createConstant(expression, constant));
+        }
+    }
+
+    public static Condition in(FieldMetadata field, String constant) {
+        assertNullField(field);
+        Field userField = new Field(field);
+        if (StorageMetadataUtils.isValueAssignable(constant, field)) {
+            return in(userField, constant);
+        } else {
+            return UserQueryHelper.FALSE;
+        }
+    }
+
+    public static Condition in(Field field, String constant) {
+        if (field == null) {
+            throw new IllegalArgumentException("Field cannot be null");
+        }
+        if (constant == null) {
+            return isNull(field);
+        }
+        assertValueConditionArguments(field, constant);
+        if (!StorageMetadataUtils.isValueAssignable(constant, field.getFieldMetadata())) {
+            return UserQueryHelper.FALSE;
+        }
+        if (field.getFieldMetadata() instanceof ReferenceFieldMetadata) {
+            ReferenceFieldMetadata fieldMetadata = (ReferenceFieldMetadata) field.getFieldMetadata();
+            return new Compare(field, Predicate.IN, new Id(fieldMetadata.getReferencedType(), constant));
+        } else {
+            return new Compare(field, Predicate.IN, createConstant(field, constant));
+        }
+    }
+
+    public static Condition notIn(TypedExpression left, TypedExpression right) {
+        return new Compare(left, Predicate.NOT_IN, right);
+    }
+
+    public static Condition notIn(TypedExpression expression, String constant) {
+        assertNullField(expression);
+        if (expression instanceof Field) {
+            return notIn(((Field) expression), constant);
+        } else {
+            if (constant == null) {
+                return isNull(expression);
+            }
+            return new Compare(expression, Predicate.NOT_IN, createConstant(expression, constant));
+        }
+    }
+
+    public static Condition notIn(FieldMetadata field, String constant) {
+        assertNullField(field);
+        Field userField = new Field(field);
+        if (StorageMetadataUtils.isValueAssignable(constant, field)) {
+            return notIn(userField, constant);
+        } else {
+            return UserQueryHelper.FALSE;
+        }
+    }
+
+    public static Condition notIn(Field field, String constant) {
+        if (field == null) {
+            throw new IllegalArgumentException("Field cannot be null");
+        }
+        if (constant == null) {
+            return isNull(field);
+        }
+        assertValueConditionArguments(field, constant);
+        if (!StorageMetadataUtils.isValueAssignable(constant, field.getFieldMetadata())) {
+            return UserQueryHelper.FALSE;
+        }
+        if (field.getFieldMetadata() instanceof ReferenceFieldMetadata) {
+            ReferenceFieldMetadata fieldMetadata = (ReferenceFieldMetadata) field.getFieldMetadata();
+            return new Compare(field, Predicate.NOT_IN, new Id(fieldMetadata.getReferencedType(), constant));
+        } else {
+            return new Compare(field, Predicate.NOT_IN, createConstant(field, constant));
+        }
+    }
+
     public static Condition isa(FieldMetadata field, ComplexTypeMetadata type) {
         if (type == null) {
             throw new IllegalArgumentException("Type argument cannot be null.");
@@ -274,9 +366,9 @@ public class UserQueryBuilder {
                 || Types.UNSIGNED_INT.equals(fieldTypeName)
                 || Types.INT.equals(fieldTypeName)) {
             if (constant.isEmpty()) {
-                return new IntegerConstant(0);
+                return new IntegerConstant(String.valueOf(0));
             } else {
-                return new IntegerConstant(Integer.parseInt(constant));
+                return new IntegerConstant(constant);
             }
         } else if (Types.STRING.equals(fieldTypeName)
                 || Types.HEX_BINARY.equals(fieldTypeName)
@@ -357,7 +449,7 @@ public class UserQueryBuilder {
         String typeName = MetadataUtils.getSuperConcreteType(field.getType()).getName();
         for (String numberType : Types.NUMBERS) {
             if (numberType.equals(typeName)) {
-                return new Compare(new Field(field), Predicate.EQUALS, new IntegerConstant(0));
+                return new Compare(new Field(field), Predicate.EQUALS, new IntegerConstant(String.valueOf(0)));
             }
         }
         // For booleans, consider "field equals false"

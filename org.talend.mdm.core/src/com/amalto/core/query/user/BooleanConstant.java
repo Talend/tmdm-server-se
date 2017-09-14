@@ -10,6 +10,9 @@
 
 package com.amalto.core.query.user;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.talend.mdm.commmon.metadata.Types;
 
 /**
@@ -18,6 +21,8 @@ import org.talend.mdm.commmon.metadata.Types;
 public class BooleanConstant implements ConstantExpression<Boolean> {
 
     private final boolean value;
+
+    private Collection<Boolean> valueCollection = new ArrayList();
 
     public BooleanConstant(boolean value) {
         this.value = value;
@@ -60,4 +65,17 @@ public class BooleanConstant implements ConstantExpression<Boolean> {
     public int hashCode() {
         return (value ? 1 : 0);
     }
+
+    @Override
+    public String getStringValue() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Collection<Boolean> getValueList() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

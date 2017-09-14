@@ -11,14 +11,30 @@
 
 package com.amalto.core.query.user;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+
 import org.talend.mdm.commmon.metadata.Types;
 
 public class ByteConstant implements ConstantExpression<Byte> {
 
     private final Byte constant;
 
+    private Collection<Byte> constantCollection = new ArrayList();
+
     public ByteConstant(String constant) {
-        this.constant = Byte.parseByte(constant);
+        if (constant.contains(UserQueryBuilder.IN_VALUE_SPLIT)) {
+            Collection<String> stringCollection = Arrays.asList(constant.split(UserQueryBuilder.IN_VALUE_SPLIT));
+            Collection<Byte> resultCollection = new ArrayList();
+            for (String tmp : stringCollection) {
+                resultCollection.add(Byte.parseByte(tmp));
+            }
+            this.constantCollection = resultCollection;
+            this.constant = null;
+        } else {
+            this.constant = Byte.parseByte(constant);
+        }
     }
 
     public Expression normalize() {
@@ -57,5 +73,24 @@ public class ByteConstant implements ConstantExpression<Byte> {
     @Override
     public int hashCode() {
         return constant.hashCode();
+    }
+
+    @Override
+    public String getStringValue() {
+        if (constant != null) {
+            return String.valueOf(constant);
+        } else {
+            StringBuilder sb = new StringBuilder();
+            for (Byte value : constantCollection) {
+                sb.append(value);
+                sb.append(UserQueryBuilder.IN_VALUE_SPLIT);
+            }
+            return sb.toString().substring(0, sb.toString().length() - UserQueryBuilder.IN_VALUE_SPLIT.length());
+        }
+    }
+
+    @Override
+    public Collection<Byte> getValueList() {
+        return constantCollection;
     }
 }

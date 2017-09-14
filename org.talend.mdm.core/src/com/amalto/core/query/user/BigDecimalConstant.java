@@ -11,14 +11,37 @@
 package com.amalto.core.query.user;
 
 import org.talend.mdm.commmon.metadata.Types;
+
+import com.google.gson.JsonElement;
+
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 
 public class BigDecimalConstant implements ConstantExpression<BigDecimal> {
 
     private final BigDecimal constant;
 
+    private Collection<BigDecimal> constantCollection = new ArrayList();
+
     public BigDecimalConstant(String constant) {
-        this.constant = new BigDecimal(constant);
+        if(constant.contains(UserQueryBuilder.IN_VALUE_SPLIT)){
+            Collection<String> stringCollection = Arrays.asList(constant.split(UserQueryBuilder.IN_VALUE_SPLIT));
+            Collection<BigDecimal> resultCollection = new ArrayList();
+            for(String tmp: stringCollection){
+                resultCollection.add(new BigDecimal(tmp));
+            }
+            this.constantCollection = resultCollection;
+            this.constant = null ;
+        }else{
+            this.constant = new BigDecimal(constant);
+        }
+    }
+
+    public BigDecimalConstant(Collection<BigDecimal> constantCollection) {
+        this.constant = null;
+        this.constantCollection = constantCollection;
     }
 
     public Expression normalize() {
@@ -36,6 +59,23 @@ public class BigDecimalConstant implements ConstantExpression<BigDecimal> {
 
     public BigDecimal getValue() {
         return constant;
+    }
+
+    public String getStringValue() {
+        if (constant != null) {
+            return String.valueOf(constant);
+        } else {
+            StringBuilder sb = new StringBuilder();
+            for (BigDecimal value : constantCollection) {
+                sb.append(value);
+                sb.append(UserQueryBuilder.IN_VALUE_SPLIT);
+            }
+            return sb.toString().substring(0, sb.toString().length() - UserQueryBuilder.IN_VALUE_SPLIT.length());
+        }
+    }
+
+    public Collection<BigDecimal> getValueList() {
+        return constantCollection;
     }
 
     public String getTypeName() {
@@ -56,6 +96,6 @@ public class BigDecimalConstant implements ConstantExpression<BigDecimal> {
 
     @Override
     public int hashCode() {
-        return constant.hashCode();
+        return constant == null ? constantCollection.hashCode() : constant.hashCode();
     }
 }

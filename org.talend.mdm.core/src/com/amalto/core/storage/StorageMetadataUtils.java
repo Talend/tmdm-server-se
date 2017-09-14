@@ -15,6 +15,7 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -45,6 +46,7 @@ import org.talend.mdm.commmon.metadata.Types;
 import com.amalto.core.query.user.DateConstant;
 import com.amalto.core.query.user.DateTimeConstant;
 import com.amalto.core.query.user.TimeConstant;
+import com.amalto.core.query.user.UserQueryBuilder;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.record.metadata.UnsupportedDataRecordMetadata;
 
@@ -488,11 +490,23 @@ public class StorageMetadataUtils {
             return null;
         } else {
             TypeMetadata superType = org.talend.mdm.commmon.metadata.MetadataUtils.getSuperConcreteType(type);
-            return convert(dataAsString, superType.getName());
+            if(dataAsString.contains(UserQueryBuilder.IN_VALUE_SPLIT)){
+                return convertList(dataAsString, superType.getName());
+            }else{
+                return convert(dataAsString, superType.getName());
+            }
         }
     }
 
     public static Object convert(String dataAsString, String type) {
+        if (dataAsString.contains(UserQueryBuilder.IN_VALUE_SPLIT)) {
+            return convertList(dataAsString, type);
+        } else {
+            return convertData(dataAsString, type);
+        }
+    }
+
+    public static Object convertData(String dataAsString, String type) {
         if (Types.STRING.equals(type) || Types.TOKEN.equals(type) || Types.DURATION.equals(type)) {
             return dataAsString;
         } else if (Types.INTEGER.equals(type) || Types.POSITIVE_INTEGER.equals(type) || Types.NEGATIVE_INTEGER.equals(type)
@@ -564,6 +578,130 @@ public class StorageMetadataUtils {
                     DateFormat dateFormat = TimeConstant.TIME_FORMAT;
                     Date date = dateFormat.parse(dataAsString);
                     return new Timestamp(date.getTime());
+                } catch (ParseException e) {
+                    throw new RuntimeException("Could not parse time string", e);
+                }
+            }
+        } else {
+            throw new NotImplementedException("No support for type '" + type + "'");
+        }
+    }
+
+    public static Object convertList(String dataAsString, String type) {
+        Collection<String> stringCollection = Arrays.asList(dataAsString.split(UserQueryBuilder.IN_VALUE_SPLIT));
+        if (Types.STRING.equals(type) || Types.TOKEN.equals(type) || Types.DURATION.equals(type)) {
+            return stringCollection;
+        } else if (Types.INTEGER.equals(type) || Types.POSITIVE_INTEGER.equals(type) || Types.NEGATIVE_INTEGER.equals(type)
+                || Types.NON_NEGATIVE_INTEGER.equals(type) || Types.NON_POSITIVE_INTEGER.equals(type) || Types.INT.equals(type)
+                || Types.UNSIGNED_INT.equals(type)) {
+            Collection<Integer> resultCollection = new ArrayList<Integer>();
+            for(String tmp: stringCollection){
+                resultCollection.add(Integer.parseInt(tmp));
+            }
+            return resultCollection;
+        } else if (Types.DATE.equals(type)) {
+            // Be careful here: DateFormat is not thread safe
+            synchronized (DateConstant.DATE_FORMAT) {
+                try {
+                    DateFormat dateFormat = DateConstant.DATE_FORMAT;
+                    Collection<Date> resultCollection = new ArrayList();
+                    for(String tmp: stringCollection){
+                        resultCollection.add(dateFormat.parse(tmp));
+                    }
+                    return resultCollection;
+                } catch (Exception e) {
+                    throw new RuntimeException("Could not parse date string", e);
+                }
+            }
+        } else if (Types.DATETIME.equals(type)) {
+            // Be careful here: DateFormat is not thread safe
+            synchronized (DateTimeConstant.DATE_FORMAT) {
+                try {
+                    DateFormat dateFormat = DateTimeConstant.DATE_FORMAT;
+                    Collection<Date> resultCollection = new ArrayList();
+                    for(String tmp: stringCollection){
+                        resultCollection.add(new Timestamp(dateFormat.parse(tmp).getTime()));
+                    }
+                    return resultCollection;
+                } catch (Exception e) {
+                    throw new RuntimeException("Could not parse date time string", e);
+                }
+            }
+        } else if (Types.BOOLEAN.equals(type)) {
+            // Boolean.parseBoolean returns "false" if content isn't a boolean string value. Callers of this method
+            // expect call to fail if data is malformed.
+            Collection<Boolean> resultCollection = new ArrayList();
+            for(String tmp: stringCollection){
+                if ("0".equals(tmp)) { //$NON-NLS-1$
+                    resultCollection.add(false);
+                } else if ("1".equals(dataAsString)) { //$NON-NLS-1$
+                    resultCollection.add(true);
+                }
+                if (!"false".equalsIgnoreCase(tmp) && !"true".equalsIgnoreCase(tmp)) { //$NON-NLS-1$ //$NON-NLS-2$
+                    throw new IllegalArgumentException("Value '" + dataAsString + "' is not valid for boolean");
+                }
+                resultCollection.add(Boolean.parseBoolean(tmp));
+            }
+            return resultCollection;
+        } else if (Types.DECIMAL.equals(type)) {
+            try {
+                Collection<BigDecimal> resultCollection = new ArrayList();
+                for(String tmp: stringCollection){
+                    resultCollection.add(new BigDecimal(tmp));
+                }
+                return resultCollection;
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("'" + dataAsString + "' is not a number.", e);
+            }
+        } else if (Types.FLOAT.equals(type)) {
+            Collection<Float> resultCollection = new ArrayList();
+            for(String tmp: stringCollection){
+                resultCollection.add(Float.parseFloat(tmp));
+            }
+            return resultCollection;
+        } else if (Types.LONG.equals(type) || Types.UNSIGNED_LONG.equals(type)) {
+            Collection<Long> resultCollection = new ArrayList();
+            for(String tmp: stringCollection){
+                resultCollection.add(Long.parseLong(tmp));
+            }
+            return resultCollection;
+        } else if (Types.ANY_URI.equals(type)) {
+            return stringCollection;
+        } else if (Types.SHORT.equals(type) || Types.UNSIGNED_SHORT.equals(type)) {
+            Collection<Short> resultCollection = new ArrayList();
+            for(String tmp: stringCollection){
+                resultCollection.add(Short.parseShort(tmp));
+            }
+            return resultCollection;
+        } else if (Types.QNAME.equals(type)) {
+            return stringCollection;
+        } else if (Types.BASE64_BINARY.equals(type)) {
+            return stringCollection;
+        } else if (Types.HEX_BINARY.equals(type)) {
+            return stringCollection;
+        } else if (Types.BYTE.equals(type) || Types.UNSIGNED_BYTE.equals(type)) {
+            Collection<Byte> resultCollection = new ArrayList();
+            for(String tmp: stringCollection){
+                resultCollection.add(Byte.parseByte(tmp));
+            }
+            return resultCollection;
+        } else if (Types.DOUBLE.equals(type) || Types.UNSIGNED_DOUBLE.equals(type)) {
+            Collection<Double> resultCollection = new ArrayList();
+            for(String tmp: stringCollection){
+                resultCollection.add(Double.parseDouble(tmp));
+            }
+            return resultCollection;
+        } else if (Types.TIME.equals(type)) {
+            // Be careful here: DateFormat is not thread safe
+            synchronized (TimeConstant.TIME_FORMAT) {
+                try {
+                    DateFormat dateFormat = TimeConstant.TIME_FORMAT;
+                    Date date = dateFormat.parse(dataAsString);
+                    Collection<Timestamp> resultCollection = new ArrayList();
+                    for(String tmp: stringCollection){
+                        resultCollection.add(new Timestamp(dateFormat.parse(tmp).getTime()));
+                    }
+                    return resultCollection;
                 } catch (ParseException e) {
                     throw new RuntimeException("Could not parse time string", e);
                 }

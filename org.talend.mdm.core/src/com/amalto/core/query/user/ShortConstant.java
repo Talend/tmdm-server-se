@@ -76,20 +76,6 @@ public class ShortConstant implements ConstantExpression<Short> {
     }
 
     @Override
-    public String getStringValue() {
-        if (constant != null) {
-            return String.valueOf(constant);
-        } else {
-            StringBuilder sb = new StringBuilder();
-            for (Short value : constantCollection) {
-                sb.append(value);
-                sb.append(UserQueryBuilder.IN_VALUE_SPLIT);
-            }
-            return sb.toString().substring(0, sb.toString().length() - UserQueryBuilder.IN_VALUE_SPLIT.length());
-        }
-    }
-
-    @Override
     public Collection<Short> getValueList() {
         return constantCollection;
     }

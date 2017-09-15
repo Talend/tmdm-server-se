@@ -90,20 +90,6 @@ public class DateTimeConstant implements ConstantExpression<Date> {
     }
 
     @Override
-    public String getStringValue() {
-        if (value != null) {
-            return String.valueOf(DATE_FORMAT.format(value));
-        } else {
-            StringBuilder sb = new StringBuilder();
-            for (Date date : constantCollection) {
-                sb.append(DATE_FORMAT.format(date));
-                sb.append(UserQueryBuilder.IN_VALUE_SPLIT);
-            }
-            return sb.toString().substring(0, sb.toString().length() - UserQueryBuilder.IN_VALUE_SPLIT.length());
-        }
-    }
-
-    @Override
     public Collection<Date> getValueList() {
         return constantCollection;
     }

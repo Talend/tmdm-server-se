@@ -79,20 +79,6 @@ public class StringConstant implements ConstantExpression<String> {
     }
 
     @Override
-    public String getStringValue() {
-        if (value != null) {
-            return String.valueOf(value);
-        } else {
-            StringBuilder sb = new StringBuilder();
-            for (String value : constantCollection) {
-                sb.append(value);
-                sb.append(UserQueryBuilder.IN_VALUE_SPLIT);
-            }
-            return sb.toString().substring(0, sb.toString().length() - UserQueryBuilder.IN_VALUE_SPLIT.length());
-        }
-    }
-
-    @Override
     public Collection<String> getValueList() {
         // TODO Auto-generated method stub
         return constantCollection;

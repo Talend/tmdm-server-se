@@ -76,20 +76,6 @@ public class FloatConstant implements ConstantExpression<Float> {
     }
 
     @Override
-    public String getStringValue() {
-        if (constant != null) {
-            return String.valueOf(constant);
-        } else {
-            StringBuilder sb = new StringBuilder();
-            for (Float value : constantCollection) {
-                sb.append(value);
-                sb.append(UserQueryBuilder.IN_VALUE_SPLIT);
-            }
-            return sb.toString().substring(0, sb.toString().length() - UserQueryBuilder.IN_VALUE_SPLIT.length());
-        }
-    }
-
-    @Override
     public Collection<Float> getValueList() {
         return constantCollection;
     }

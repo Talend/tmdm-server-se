@@ -76,20 +76,6 @@ public class ByteConstant implements ConstantExpression<Byte> {
     }
 
     @Override
-    public String getStringValue() {
-        if (constant != null) {
-            return String.valueOf(constant);
-        } else {
-            StringBuilder sb = new StringBuilder();
-            for (Byte value : constantCollection) {
-                sb.append(value);
-                sb.append(UserQueryBuilder.IN_VALUE_SPLIT);
-            }
-            return sb.toString().substring(0, sb.toString().length() - UserQueryBuilder.IN_VALUE_SPLIT.length());
-        }
-    }
-
-    @Override
     public Collection<Byte> getValueList() {
         return constantCollection;
     }

@@ -20,7 +20,7 @@ import org.talend.mdm.commmon.metadata.Types;
  */
 public class BooleanConstant implements ConstantExpression<Boolean> {
 
-    private final boolean value;
+    private final Boolean value;
 
     private Collection<Boolean> valueCollection = new ArrayList();
 
@@ -63,19 +63,12 @@ public class BooleanConstant implements ConstantExpression<Boolean> {
 
     @Override
     public int hashCode() {
-        return (value ? 1 : 0);
-    }
-
-    @Override
-    public String getStringValue() {
-        // TODO Auto-generated method stub
-        return null;
+        return value != null ? 1 : valueCollection.isEmpty() ? 0: valueCollection.hashCode();
     }
 
     @Override
     public Collection<Boolean> getValueList() {
-        // TODO Auto-generated method stub
-        return null;
+        return valueCollection;
     }
 
 }

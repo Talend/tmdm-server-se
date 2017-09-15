@@ -94,20 +94,6 @@ public class TimeConstant implements ConstantExpression<Date> {
     }
 
     @Override
-    public String getStringValue() {
-        if (value != null) {
-            return String.valueOf(TIME_FORMAT.format(value));
-        } else {
-            StringBuilder sb = new StringBuilder();
-            for (Date date : constantCollection) {
-                sb.append(TIME_FORMAT.format(date));
-                sb.append(UserQueryBuilder.IN_VALUE_SPLIT);
-            }
-            return sb.toString().substring(0, sb.toString().length() - UserQueryBuilder.IN_VALUE_SPLIT.length());
-        }
-    }
-
-    @Override
     public Collection<Date> getValueList() {
         return constantCollection;
     }

@@ -20,9 +20,20 @@ public interface ConstantExpression<T extends Comparable> extends TypedExpressio
 
     public T getValue();
 
-    public String getStringValue();
-
     public Collection<T> getValueList();
+    
+    default String getStringValue(){
+        if (getValue() != null) {
+            return String.valueOf(getValue());
+        } else {
+            StringBuilder sb = new StringBuilder();
+            for (T value : getValueList()) {
+                sb.append(value);
+                sb.append(UserQueryBuilder.IN_VALUE_SPLIT);
+            }
+            return sb.toString().substring(0, sb.toString().length() - UserQueryBuilder.IN_VALUE_SPLIT.length());
+        }
+    }
 
     default Object getConstant(){
         if (getValue() != null && getValueList().isEmpty()) {

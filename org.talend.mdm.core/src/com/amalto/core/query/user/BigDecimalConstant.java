@@ -61,19 +61,6 @@ public class BigDecimalConstant implements ConstantExpression<BigDecimal> {
         return constant;
     }
 
-    public String getStringValue() {
-        if (constant != null) {
-            return String.valueOf(constant);
-        } else {
-            StringBuilder sb = new StringBuilder();
-            for (BigDecimal value : constantCollection) {
-                sb.append(value);
-                sb.append(UserQueryBuilder.IN_VALUE_SPLIT);
-            }
-            return sb.toString().substring(0, sb.toString().length() - UserQueryBuilder.IN_VALUE_SPLIT.length());
-        }
-    }
-
     public Collection<BigDecimal> getValueList() {
         return constantCollection;
     }

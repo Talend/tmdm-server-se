@@ -98,10 +98,8 @@ public class DefaultRole implements Role {
         Collection<ObjectPOJOPK> c = ObjectPOJO.findAllPKs(RolePOJO.class, regex);
         ArrayList<RolePOJOPK> l = new ArrayList<RolePOJOPK>();
         for (ObjectPOJOPK currentObject : c) {
-            if (Util.isEnterprise()) {
-                if (currentObject.getIds().length > 0 && currentObject.getIds()[0].length() > 7 && SYSTEM_PREFIX.equals(currentObject.getIds()[0].substring(0, 7)) ) {
-                    continue;
-                }
+            if (currentObject.getIds().length > 0 && currentObject.getIds()[0].length() > 7 && SYSTEM_PREFIX.equals(currentObject.getIds()[0].substring(0, 7)) ) {
+                continue;
             }
             l.add(new RolePOJOPK(currentObject));
         }

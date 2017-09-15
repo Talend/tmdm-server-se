@@ -79,9 +79,6 @@ public abstract class ILocalUser implements IBeanDelegator {
     public String getIdentity() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Object principal = authentication.getPrincipal();
-        if (principal instanceof LocalUserDetails) {
-            return ((LocalUserDetails) principal).getUsername();
-        }
         return (String) principal;
     }
     

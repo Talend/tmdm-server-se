@@ -45,23 +45,24 @@ http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/ac
     <import resource="${mdm.jms.provider.xml:activemq-provider.xml}"/>
     
     <!-- Caching connection factory for JMS template performances -->
-    <bean id="jmsPooledConnectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
-        <constructor-arg ref="jmsConnectionFactory"/>
+    <bean id="jmsConnectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
+        <property name="targetConnectionFactory" ref="spiJmsConnectionFactory"/>
+        <property name="sessionCacheSize" value="${mdm.routing.engine.broker.sessionCacheSize:1}"/>
     </bean>
     
     <!-- Single connection and several sessions -->
     <bean id="jmsSingleConnectionFactory" class="org.springframework.jms.connection.SingleConnectionFactory">
-    	<constructor-arg ref="jmsConnectionFactory"/>
+    	<constructor-arg ref="spiJmsConnectionFactory"/>
     </bean>
     
     <!-- Single connection and several sessions -->
     <bean id="jmsSingleConnectionFactoryForExpired" class="org.springframework.jms.connection.SingleConnectionFactory">
-    	<constructor-arg ref="jmsConnectionFactory"/>
+    	<constructor-arg ref="spiJmsConnectionFactory"/>
     </bean>
 
 	<!-- JMSTemplate used to send messages to routing events queue -->
     <bean id="routingEngineJmsTemplate" class="org.springframework.jms.core.JmsTemplate">
-        <property name="connectionFactory" ref="jmsPooledConnectionFactory"/>
+        <property name="connectionFactory" ref="jmsConnectionFactory"/>
         <property name="defaultDestination" ref="routingEventsQueue"/>
     </bean>
     

@@ -10,8 +10,8 @@ http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd
 http://www.hazelcast.com/schema/spring http://www.hazelcast.com/schema/spring/hazelcast-spring.xsd">
 
     <!-- MDM -->
-    <import resource="classpath*:META-INF/mdm-context.xml" />
     <context:property-placeholder location="${mdm.root.url}/conf/mdm.conf" ignore-unresolvable="true" local-override="false"/>
+    <import resource="classpath*:META-INF/mdm-context.xml" />
 
     <!-- CXF Services -->
     <import resource="classpath:META-INF/cxf/cxf.xml" />

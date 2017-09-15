@@ -6,7 +6,7 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd">
 
 	<!-- Connection Factory definition -->
-	<bean id="jmsConnectionFactory" class="com.amalto.core.util.ActiveMQConnectionFactoryExtension">
+	<bean id="spiJmsConnectionFactory" class="com.amalto.core.util.ActiveMQConnectionFactoryExtension">
 		<property name="brokerURL" value="${mdm.routing.engine.broker.url}"/>
 		<property name="userName" value="${mdm.routing.engine.broker.userName}"/>
 		<property name="password" value="${mdm.routing.engine.broker.password}"/>

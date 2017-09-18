@@ -325,7 +325,7 @@ public class StorageMetadataUtils {
     
     public static boolean isValueAssignable(Collection value, String typeName) {
         try {
-            convertList(value, typeName);
+            convertDataList(value, typeName);
         } catch (Exception e) {
             return false;
         }
@@ -507,6 +507,10 @@ public class StorageMetadataUtils {
     public static Object convert(String dataAsString, FieldMetadata field) {
         return convert(dataAsString, field.getType());
     }
+    
+    public static Object convert(List<String> dataAsList, FieldMetadata field) {
+        return convert(dataAsList, field.getType());
+    }
 
     public static Object convert(String dataAsString, FieldMetadata field, TypeMetadata actualType) {
         if (actualType == null) {
@@ -574,9 +578,24 @@ public class StorageMetadataUtils {
             return convert(dataAsString, superType.getName());
         }
     }
+    
+    public static Object convert(List<String> dataAsString, TypeMetadata type) {
+        String typeName = type.getName();
+        if (dataAsString == null
+                || (dataAsString.isEmpty() && !Types.STRING.equals(typeName) && !typeName.contains("limitedString"))) { //$NON-NLS-1$
+            return null;
+        } else {
+            TypeMetadata superType = org.talend.mdm.commmon.metadata.MetadataUtils.getSuperConcreteType(type);
+            return convert(dataAsString, superType.getName());
+        }
+    }
 
     public static Object convert(String dataAsString, String type) {
         return convertData(dataAsString, type);
+    }
+    
+    public static Object convert(List<String> dataAsList, String type) {
+        return convertDataList(dataAsList, type);
     }
 
     public static Object convertData(String dataAsString, String type) {
@@ -660,7 +679,7 @@ public class StorageMetadataUtils {
         }
     }
 
-    public static Object convertList(Collection valueList, String type) {
+    public static Object convertDataList(Collection valueList, String type) {
         if (Types.STRING.equals(type) || Types.TOKEN.equals(type) || Types.DURATION.equals(type)) {
             return valueList;
         } else if (Types.INTEGER.equals(type) || Types.POSITIVE_INTEGER.equals(type) || Types.NEGATIVE_INTEGER.equals(type)

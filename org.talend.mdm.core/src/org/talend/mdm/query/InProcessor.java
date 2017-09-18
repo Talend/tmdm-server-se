@@ -10,6 +10,7 @@
 package org.talend.mdm.query;
 
 import java.util.Collection;
+import java.util.List;
 
 import com.amalto.core.query.user.Condition;
 import com.amalto.core.query.user.TypedExpression;
@@ -39,7 +40,7 @@ class InProcessor extends BasicConditionProcessor {
     }
 
     @Override
-    protected Condition buildCondition(TypedExpression expression, Collection<Object> value) {
+    protected Condition buildCondition(TypedExpression expression, List value) {
         return in(expression, value);
     }
 }

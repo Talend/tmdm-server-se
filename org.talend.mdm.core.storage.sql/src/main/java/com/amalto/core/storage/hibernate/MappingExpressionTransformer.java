@@ -273,7 +273,12 @@ class MappingExpressionTransformer extends VisitorAdapter<Expression> {
 
     @Override
     public Expression visit(Id id) {
-        return new Id(getMapping(id.getType()), id.getId());
+        if(id.getId() != null){
+            return new Id(getMapping(id.getType()), id.getId()); 
+        } else {
+            return new Id(getMapping(id.getType()), id.getConstantCollection());
+        }
+       
     }
 
     @Override

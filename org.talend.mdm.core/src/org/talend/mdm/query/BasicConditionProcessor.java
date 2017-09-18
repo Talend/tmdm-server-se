@@ -11,6 +11,7 @@ package org.talend.mdm.query;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import com.amalto.core.query.user.Condition;
 import com.amalto.core.query.user.TypedExpression;
@@ -28,7 +29,7 @@ abstract class BasicConditionProcessor implements ConditionProcessor {
         JsonArray conditionElement = condition.get(getConditionElement()).getAsJsonArray(); //$NON-NLS-1
         TypedExpression expression = null;
         String value = null;
-        Collection valueList = new ArrayList();
+        List valueList = new ArrayList();
         TypedExpression valueExpression = null;
         for (int i = 0; i < conditionElement.size(); i++) {
             JsonObject element = conditionElement.get(i).getAsJsonObject();
@@ -68,7 +69,7 @@ abstract class BasicConditionProcessor implements ConditionProcessor {
 
     protected abstract Condition buildCondition(TypedExpression expression, String value);
 
-    protected Condition buildCondition(TypedExpression expression, Collection<Object> value) {
+    protected Condition buildCondition(TypedExpression expression, List value) {
         return null;
     }
 

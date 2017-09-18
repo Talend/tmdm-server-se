@@ -128,10 +128,11 @@ abstract class AbstractQueryHandler extends VisitorAdapter<StorageResults> {
             Collection<FieldMetadata> keyFields = type.getKeyFields();
             List<String> ids = new LinkedList<String>();
             StringBuilder builder = null;
-            String idAsString = id.getId();
-            if (idAsString.startsWith("[")) { //$NON-NLS-1$
-                for (char currentChar : idAsString.toCharArray()) {
-                    switch (currentChar) {
+            if(id.getId() != null){
+                String idAsString = id.getId();
+                if (idAsString.startsWith("[")) { //$NON-NLS-1$
+                    for (char currentChar : idAsString.toCharArray()) {
+                        switch (currentChar) {
                         case '[':
                             builder = new StringBuilder();
                             break;
@@ -145,23 +146,28 @@ abstract class AbstractQueryHandler extends VisitorAdapter<StorageResults> {
                                 builder.append(currentChar);
                             }
                             break;
+                        }
                     }
+                    if (ids.isEmpty()) {
+                        throw new IllegalArgumentException("Id '" + idAsString + "' does not match expected format (no id found).");
+                    }
+                } else {
+                    ids.add(idAsString);
                 }
-                if (ids.isEmpty()) {
-                    throw new IllegalArgumentException("Id '" + idAsString + "' does not match expected format (no id found).");
+                Iterator<FieldMetadata> iterator = keyFields.iterator();
+                if (ids.size() == 1) {
+                    return StorageMetadataUtils.convert(ids.get(0), iterator.next());
+                } else {
+                    Object[] convertedId = new Object[ids.size()];
+                    for (int i = 0; i< ids.size(); i++) {
+                        convertedId[i] = StorageMetadataUtils.convert(ids.get(i), iterator.next());
+                    }
+                    return convertedId;
                 }
             } else {
-                ids.add(idAsString);
-            }
-            Iterator<FieldMetadata> iterator = keyFields.iterator();
-            if (ids.size() == 1) {
-                return StorageMetadataUtils.convert(ids.get(0), iterator.next());
-            } else {
-                Object[] convertedId = new Object[ids.size()];
-                for (int i = 0; i< ids.size(); i++) {
-                    convertedId[i] = StorageMetadataUtils.convert(ids.get(i), iterator.next());
-                }
-                return convertedId;
+                ids = id.getConstantCollection();
+                Iterator<FieldMetadata> iterator = keyFields.iterator();
+                return StorageMetadataUtils.convert(ids, iterator.next());
             }
         }
 

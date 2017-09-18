@@ -12,6 +12,10 @@
 package com.amalto.core.query.user;
 
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 
 public class Id implements Expression {
@@ -20,9 +24,17 @@ public class Id implements Expression {
 
     private final String id;
 
+    private List<String> constantCollection = new ArrayList(); 
+
     public Id(ComplexTypeMetadata type, String id) {
         this.type = type;
         this.id = id;
+    }
+
+    public Id(ComplexTypeMetadata type, List<String> constantCollection) {
+        this.type = type;
+        this.id = null;
+        this.constantCollection = constantCollection;
     }
 
     public Expression normalize() {
@@ -40,6 +52,10 @@ public class Id implements Expression {
 
     public String getId() {
         return id;
+    }
+
+    public List<String> getConstantCollection() {
+        return constantCollection;
     }
 
     public ComplexTypeMetadata getType() {

@@ -12,12 +12,9 @@
 package com.amalto.core.query.user;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 
 import org.talend.mdm.commmon.metadata.Types;
-
-import com.amalto.core.util.Util;
 
 /**
  *

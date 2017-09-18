@@ -238,7 +238,7 @@ public class UserQueryBuilder {
         }
     }
 
-    public static Condition in(TypedExpression expression, Collection constant) {
+    public static Condition in(TypedExpression expression, List constant) {
         assertNullField(expression);
         if (expression instanceof Field) {
             return in(((Field) expression), constant);
@@ -260,7 +260,7 @@ public class UserQueryBuilder {
         }
     }
 
-    public static Condition in(FieldMetadata field, Collection constant) {
+    public static Condition in(FieldMetadata field, List constant) {
         assertNullField(field);
         Field userField = new Field(field);
         if (StorageMetadataUtils.isValueListAssignable(constant, field)) {
@@ -289,7 +289,7 @@ public class UserQueryBuilder {
         }
     }
 
-    public static Condition in(Field field, Collection constant) {
+    public static Condition in(Field field, List constant) {
         if (field == null) {
             throw new IllegalArgumentException("Field cannot be null");
         }
@@ -302,8 +302,8 @@ public class UserQueryBuilder {
         }
         if (field.getFieldMetadata() instanceof ReferenceFieldMetadata) {
             ReferenceFieldMetadata fieldMetadata = (ReferenceFieldMetadata) field.getFieldMetadata();
-            // return new Compare(field, Predicate.IN, new Id(fieldMetadata.getReferencedType(), constant));
-            return null;
+            return new Compare(field, Predicate.IN, new Id(fieldMetadata.getReferencedType(), constant));
+            //return null;
         } else {
             return new Compare(field, Predicate.IN, createConstant(field, constant));
         }
@@ -347,7 +347,7 @@ public class UserQueryBuilder {
         }
     }
 
-    public static Condition notIn(FieldMetadata field, Collection constant) {
+    public static Condition notIn(FieldMetadata field, List constant) {
         assertNullField(field);
         Field userField = new Field(field);
         if (StorageMetadataUtils.isValueListAssignable(constant, field)) {
@@ -376,7 +376,7 @@ public class UserQueryBuilder {
         }
     }
 
-    public static Condition notIn(Field field, Collection constant) {
+    public static Condition notIn(Field field, List constant) {
         if (field == null) {
             throw new IllegalArgumentException("Field cannot be null");
         }
@@ -389,8 +389,7 @@ public class UserQueryBuilder {
         }
         if (field.getFieldMetadata() instanceof ReferenceFieldMetadata) {
             ReferenceFieldMetadata fieldMetadata = (ReferenceFieldMetadata) field.getFieldMetadata();
-            // return new Compare(field, Predicate.NOT_IN, new Id(fieldMetadata.getReferencedType(), constant));
-            return null;
+            return new Compare(field, Predicate.NOT_IN, new Id(fieldMetadata.getReferencedType(), constant));
         } else {
             return new Compare(field, Predicate.NOT_IN, createConstant(field, constant));
         }

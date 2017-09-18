@@ -140,8 +140,6 @@ public class User implements Cloneable {
             
             if (Util.isEnterprise()) {
                 user.setID(Integer.parseInt(Util.getFirstTextNode(result, "//id"))); //$NON-NLS-1$
-                user.setUserName(Util.getFirstTextNode(result, "//username")); //$NON-NLS-1$
-                user.setPassword(Util.getFirstTextNode(result, "//password")); //$NON-NLS-1$
             } else {
                 user.setUserName(Util.getFirstTextNode(result, "//username")); //$NON-NLS-1$
                 user.setPassword(Util.getFirstTextNode(result, "//password")); //$NON-NLS-1$
@@ -173,7 +171,6 @@ public class User implements Cloneable {
                 }
                 user.setEnabled("yes".equals(Util.getFirstTextNode(result, "//enabled"))); //$NON-NLS-1$ //$NON-NLS-2$
                 user.setHomePage(Util.getFirstTextNode(result, "//homepage")); //$NON-NLS-1$
-                user.setUniverse(Util.getFirstTextNode(result, "//universe")); //$NON-NLS-1$
             }
             user.setLanguage(Util.getFirstTextNode(result, "//language")); //$NON-NLS-1$
 

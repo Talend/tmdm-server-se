@@ -313,7 +313,7 @@ public class UserQueryBuilder {
         return new Compare(left, Predicate.NOT_IN, right);
     }
 
-    public static Condition notIn(TypedExpression expression, Collection constant) {
+    public static Condition notIn(TypedExpression expression, List constant) {
         assertNullField(expression);
         if (expression instanceof Field) {
             return notIn(((Field) expression), constant);

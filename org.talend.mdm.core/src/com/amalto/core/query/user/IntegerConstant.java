@@ -15,6 +15,8 @@ import java.util.Collection;
 
 import org.talend.mdm.commmon.metadata.Types;
 
+import com.amalto.core.util.Util;
+
 public class IntegerConstant implements ConstantExpression<Integer> {
 
     private final Integer constant;
@@ -22,17 +24,12 @@ public class IntegerConstant implements ConstantExpression<Integer> {
     private Collection<Integer> constantCollection = new ArrayList();
 
     public IntegerConstant(String constant) {
-        if (constant.contains(UserQueryBuilder.IN_VALUE_SPLIT)) {
-            Collection<String> stringCollection = Arrays.asList(constant.split(UserQueryBuilder.IN_VALUE_SPLIT));
-            Collection<Integer> resultCollection = new ArrayList();
-            for (String tmp : stringCollection) {
-                resultCollection.add(Integer.parseInt(tmp));
-            }
-            this.constantCollection = resultCollection;
-            this.constant = null;
-        } else {
-            this.constant = Integer.parseInt(constant);
-        }
+        this.constant = Integer.parseInt(constant);
+    }
+
+    public IntegerConstant(Collection constant) {
+        this.constantCollection = constant;
+        this.constant = null;
     }
 
     public Expression normalize() {

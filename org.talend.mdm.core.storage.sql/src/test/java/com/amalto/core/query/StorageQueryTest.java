@@ -44,6 +44,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -384,6 +385,26 @@ public class StorageQueryTest extends StorageTestCase {
         allRecords.add(factory.read(repository, e_entity, "<E_Entity><E_EntityId>E_id2</E_EntityId><name>E_name2</name></E_Entity>"));
         allRecords.add(factory.read(repository, t_entity, "<T_Entity xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><T_EntityId>T_id1</T_EntityId><T_Field xsi:type=\"T1\"><T1_Field1><A1_Field1><element><elementB>[E_id1]</elementB></element></A1_Field1><A1_Field2><element><elementB>[E_id2]</elementB></element></A1_Field2></T1_Field1></T_Field></T_Entity>"));
 
+        allRecords
+                .add(factory
+                        .read(repository,
+                                type,
+                                "<TypeA><Id>1</Id><string>string1</string><boolean>true</boolean><float>1.0</float><double>1.0</double><decimal>1.00</decimal><dateTime>2017-09-15T12:00:00</dateTime><time>12:00:00</time><date>2017-09-15</date><integer>1</integer><long>1</long><int>1</int><short>1</short><byte>1</byte></TypeA>"));
+        allRecords
+        .add(factory
+                .read(repository,
+                        type,
+                        "<TypeA><Id>2</Id><string>string2</string><boolean>true</boolean><float>2.0</float><double>2.0</double><decimal>2.00</decimal><dateTime>2017-09-16T12:00:00</dateTime><time>13:00:00</time><date>2017-09-16</date><integer>2</integer><long>2</long><int>2</int><short>2</short><byte>2</byte></TypeA>"));
+        allRecords
+        .add(factory
+                .read(repository,
+                        type,
+                        "<TypeA><Id>3</Id><string>string3</string><boolean>true</boolean><float>3.0</float><double>3.0</double><decimal>3.00</decimal><dateTime>2017-09-17T12:00:00</dateTime><time>14:00:00</time><date>2017-09-17</date><integer>3</integer><long>3</long><int>3</int><short>3</short><byte>3</byte></TypeA>"));
+        allRecords
+        .add(factory
+                .read(repository,
+                        type,
+                        "<TypeA><Id>4</Id><string>4</string><float>4.0</float><double>4.0</double><decimal>4.00</decimal><dateTime>2017-09-18T12:00:00</dateTime><time>16:00:00</time><date>2017-09-18</date><integer>4</integer><long>4</long><int>4</int><short>4</short><byte>4</byte></TypeA>"));
         try {
             storage.begin();
             storage.update(allRecords);
@@ -4790,6 +4811,462 @@ public class StorageQueryTest extends StorageTestCase {
         }
 
         assertEquals("<$ExplicitProjection$><col0></col0></$ExplicitProjection$>", result);
+    }
+
+    public void testInCondition() throws Exception {
+        Collection<Object> dataList = new ArrayList();
+        // string type
+        dataList.add("string1");
+        dataList.add("string2");
+        dataList.add("string3");
+        UserQueryBuilder qb = from(type).where(in(type.getField("string"), dataList));
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(3, results.getSize());
+            assertEquals(3, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        // boolean type
+        dataList.clear();
+        dataList.add(true);
+        qb = from(type).where(in(type.getField("boolean"), dataList));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(3, results.getSize());
+            assertEquals(3, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        // short type
+        dataList.clear();
+        dataList.add("1");
+        dataList.add("2");
+        dataList.add("3");
+        qb = from(type).where(in(type.getField("short"), dataList));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(3, results.getSize());
+            assertEquals(3, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        dataList.clear();
+        dataList.add(1);
+        qb = from(type).where(in(type.getField("short"), dataList));
+        try {
+            results = storage.fetch(qb.getSelect());
+            fail("can't support query for different type and value, short type, but the value is int type,");
+        } catch (Exception e) {
+            assertNotNull(e);
+        }
+
+        // int type
+        dataList.clear();
+        dataList.add(1);
+        dataList.add(2);
+        dataList.add(3);
+        qb = from(type).where(in(type.getField("int"), dataList));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(3, results.getSize());
+            assertEquals(3, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        // long type
+        dataList.clear();
+        dataList.add(new Long(1));
+        dataList.add(new Long(2));
+        dataList.add(new Long(3));
+        qb = from(type).where(in(type.getField("long"), dataList));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(3, results.getSize());
+            assertEquals(3, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        // integer type
+        dataList.clear();
+        dataList.add(1);
+        dataList.add(2);
+        dataList.add(3);
+        qb = from(type).where(in(type.getField("integer"), dataList));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(3, results.getSize());
+            assertEquals(3, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        // byte type
+        dataList.clear();
+        dataList.add(new Byte("1"));
+        dataList.add(new Byte("2"));
+        dataList.add(new Byte("3"));
+        qb = from(type).where(in(type.getField("byte"), dataList));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(3, results.getSize());
+            assertEquals(3, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        // float type.
+        dataList.clear();
+        dataList.add(1f);
+        dataList.add(2f);
+        dataList.add(3f);
+        qb = from(type).where(in(type.getField("float"), dataList));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(3, results.getSize());
+            assertEquals(3, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        dataList.clear();
+        dataList.add("1.0");
+        dataList.add("2.0");
+        dataList.add("3.0");
+        qb = from(type).where(in(type.getField("float"), dataList));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(3, results.getSize());
+            assertEquals(3, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        // double type
+        dataList.clear();
+        dataList.add(1d);
+        dataList.add(2d);
+        dataList.add(3d);
+        qb = from(type).where(in(type.getField("double"), dataList));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(3, results.getSize());
+            assertEquals(3, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        dataList.clear();
+        dataList.add(1.0);
+        dataList.add(2.0);
+        dataList.add(3.0);
+        qb = from(type).where(in(type.getField("double"), dataList));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(3, results.getSize());
+            assertEquals(3, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        dataList.clear();
+        dataList.add(1d);
+        dataList.add(2.0d);
+        dataList.add("3.0");
+        qb = from(type).where(in(type.getField("double"), dataList));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(3, results.getSize());
+            assertEquals(3, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        // decimal type
+        dataList.clear();
+        dataList.add(new BigDecimal("1"));
+        dataList.add(new BigDecimal("2"));
+        dataList.add(new BigDecimal("3"));
+        qb = from(type).where(in(type.getField("decimal"), dataList));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(3, results.getSize());
+            assertEquals(3, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        // date type
+        dataList.clear();
+        dataList.add("2017-09-15");
+        dataList.add("2017-09-16");
+        qb = from(type).where(in(type.getField("date"), dataList));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(2, results.getSize());
+            assertEquals(2, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        // datetime type
+        dataList.clear();
+        dataList.add("2017-09-15T12:00:00");
+        dataList.add("2017-09-16T12:00:00");
+        qb = from(type).where(in(type.getField("dateTime"), dataList));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(2, results.getSize());
+            assertEquals(2, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        // time type
+        dataList.clear();
+        dataList.add("12:00:00");
+        dataList.add("13:00:00");
+        qb = from(type).where(in(type.getField("time"), dataList));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(2, results.getSize());
+            assertEquals(2, results.getCount());
+        } finally {
+            results.close();
+        }
+    }
+
+    public void testNotInCondition() throws Exception {
+        Collection<Object> dataList = new ArrayList();
+        // string type
+        dataList.add("string1");
+        dataList.add("string2");
+        dataList.add("string3");
+        UserQueryBuilder qb = from(type).where(notIn(type.getField("string"), dataList));
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getSize());
+            assertEquals(1, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        // boolean type
+        dataList.clear();
+        dataList.add(true);
+        qb = from(type).where(notIn(type.getField("boolean"), dataList));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(0, results.getSize());
+            assertEquals(0, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        // short type
+        dataList.clear();
+        dataList.add("1");
+        dataList.add("2");
+        dataList.add("3");
+        qb = from(type).where(notIn(type.getField("short"), dataList));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getSize());
+            assertEquals(1, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        dataList.clear();
+        dataList.add(1);
+        qb = from(type).where(notIn(type.getField("short"), dataList));
+        try {
+            results = storage.fetch(qb.getSelect());
+            fail("can't support query for different type and value, short type, but the value is int type,");
+        } catch (Exception e) {
+            assertNotNull(e);
+        }
+
+        // int type
+        dataList.clear();
+        dataList.add(1);
+        dataList.add(2);
+        dataList.add(3);
+        qb = from(type).where(notIn(type.getField("int"), dataList));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getSize());
+            assertEquals(1, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        // long type
+        dataList.clear();
+        dataList.add(new Long(1));
+        dataList.add(new Long(2));
+        dataList.add(new Long(3));
+        qb = from(type).where(notIn(type.getField("long"), dataList));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getSize());
+            assertEquals(1, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        // integer type
+        dataList.clear();
+        dataList.add(1);
+        dataList.add(2);
+        dataList.add(3);
+        qb = from(type).where(notIn(type.getField("integer"), dataList));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getSize());
+            assertEquals(1, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        // byte type
+        dataList.clear();
+        dataList.add(new Byte("1"));
+        dataList.add(new Byte("2"));
+        dataList.add(new Byte("3"));
+        qb = from(type).where(notIn(type.getField("byte"), dataList));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getSize());
+            assertEquals(1, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        // float type.
+        dataList.clear();
+        dataList.add(1f);
+        dataList.add(2f);
+        dataList.add(3f);
+        qb = from(type).where(notIn(type.getField("float"), dataList));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getSize());
+            assertEquals(1, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        dataList.clear();
+        dataList.add("1.0");
+        dataList.add("2.0");
+        dataList.add("3.0");
+        qb = from(type).where(notIn(type.getField("float"), dataList));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getSize());
+            assertEquals(1, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        // double type
+        dataList.clear();
+        dataList.add(1d);
+        dataList.add(2d);
+        dataList.add(3d);
+        qb = from(type).where(notIn(type.getField("double"), dataList));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getSize());
+            assertEquals(1, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        dataList.clear();
+        dataList.add(1.0);
+        dataList.add(2.0);
+        dataList.add(3.0);
+        qb = from(type).where(notIn(type.getField("double"), dataList));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getSize());
+            assertEquals(1, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        dataList.clear();
+        dataList.add(1d);
+        dataList.add(2.0d);
+        dataList.add("3.0");
+        qb = from(type).where(notIn(type.getField("double"), dataList));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getSize());
+            assertEquals(1, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        // decimal type
+        dataList.clear();
+        dataList.add(new BigDecimal("1"));
+        dataList.add(new BigDecimal("2"));
+        dataList.add(new BigDecimal("3"));
+        qb = from(type).where(notIn(type.getField("decimal"), dataList));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getSize());
+            assertEquals(1, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        // date type
+        dataList.clear();
+        dataList.add("2017-09-15");
+        dataList.add("2017-09-16");
+        qb = from(type).where(notIn(type.getField("date"), dataList));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(2, results.getSize());
+            assertEquals(2, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        // datetime type
+        dataList.clear();
+        dataList.add("2017-09-15T12:00:00");
+        dataList.add("2017-09-16T12:00:00");
+        qb = from(type).where(notIn(type.getField("dateTime"), dataList));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(2, results.getSize());
+            assertEquals(2, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        // time type
+        dataList.clear();
+        dataList.add("12:00:00");
+        dataList.add("13:00:00");
+        qb = from(type).where(notIn(type.getField("time"), dataList));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(2, results.getSize());
+            assertEquals(2, results.getCount());
+        } finally {
+            results.close();
+        }
     }
 
     public void testGetFKRecordContainedTypeContent() throws Exception {

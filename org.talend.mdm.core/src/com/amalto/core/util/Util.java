@@ -74,6 +74,7 @@ import com.amalto.core.objects.transformers.TransformerV2POJOPK;
 import com.amalto.core.objects.transformers.util.TransformerCallBack;
 import com.amalto.core.objects.transformers.util.TransformerContext;
 import com.amalto.core.objects.transformers.util.TypedContent;
+import com.amalto.core.query.user.UserQueryBuilder;
 import com.amalto.core.server.DefaultBackgroundJob;
 import com.amalto.core.server.DefaultConfigurationInfo;
 import com.amalto.core.server.DefaultCustomForm;

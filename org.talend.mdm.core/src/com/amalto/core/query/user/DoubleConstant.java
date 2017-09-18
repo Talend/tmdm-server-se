@@ -17,6 +17,8 @@ import java.util.Collection;
 
 import org.talend.mdm.commmon.metadata.Types;
 
+import com.amalto.core.util.Util;
+
 public class DoubleConstant implements ConstantExpression<Double> {
 
     private final Double constant;
@@ -24,17 +26,12 @@ public class DoubleConstant implements ConstantExpression<Double> {
     private Collection<Double> constantCollection = new ArrayList();
 
     public DoubleConstant(String constant) {
-        if (constant.contains(UserQueryBuilder.IN_VALUE_SPLIT)) {
-            Collection<String> stringCollection = Arrays.asList(constant.split(UserQueryBuilder.IN_VALUE_SPLIT));
-            Collection<Double> resultCollection = new ArrayList();
-            for (String tmp : stringCollection) {
-                resultCollection.add(Double.parseDouble(tmp));
-            }
-            this.constantCollection = resultCollection;
-            this.constant = null;
-        } else {
-            this.constant = Double.parseDouble(constant);
-        }
+        this.constant = Double.parseDouble(constant);
+    }
+
+    public DoubleConstant(Collection constant) {
+        this.constantCollection = constant;
+        this.constant = null;
     }
 
     public Expression normalize() {

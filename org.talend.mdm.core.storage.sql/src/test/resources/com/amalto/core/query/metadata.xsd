@@ -289,7 +289,7 @@
 			<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
 		</xsd:annotation>
 		<xsd:complexType>
-			<xsd:sequence maxOccurs="1" minOccurs="1">
+			<xsd:sequence maxOccurs="1" minOccurs="0">
 				<xsd:element maxOccurs="1" minOccurs="1" name="Id"
 					type="xsd:string">
 					<xsd:annotation>
@@ -297,70 +297,70 @@
 						<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
 					</xsd:annotation>
 				</xsd:element>
-				<xsd:element maxOccurs="1" minOccurs="1" name="string"
+				<xsd:element maxOccurs="1" minOccurs="0" name="string"
 					type="xsd:string">
 					<xsd:annotation>
 						<xsd:appinfo source="X_Create">System_Admin</xsd:appinfo>
 						<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
 					</xsd:annotation>
 				</xsd:element>
-				<xsd:element maxOccurs="1" minOccurs="1" name="boolean"
+				<xsd:element maxOccurs="1" minOccurs="0" name="boolean"
 					type="xsd:boolean">
 					<xsd:annotation>
 						<xsd:appinfo source="X_Create">System_Admin</xsd:appinfo>
 						<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
 					</xsd:annotation>
 				</xsd:element>
-				<xsd:element maxOccurs="1" minOccurs="1" name="float"
+				<xsd:element maxOccurs="1" minOccurs="0" name="float"
 					type="xsd:float">
 					<xsd:annotation>
 						<xsd:appinfo source="X_Create">System_Admin</xsd:appinfo>
 						<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
 					</xsd:annotation>
 				</xsd:element>
-				<xsd:element maxOccurs="1" minOccurs="1" name="double"
+				<xsd:element maxOccurs="1" minOccurs="0" name="double"
 					type="xsd:double">
 					<xsd:annotation>
 						<xsd:appinfo source="X_Create">System_Admin</xsd:appinfo>
 						<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
 					</xsd:annotation>
 				</xsd:element>
-				<xsd:element maxOccurs="1" minOccurs="1" name="decimal"
+				<xsd:element maxOccurs="1" minOccurs="0" name="decimal"
 					type="xsd:decimal">
 					<xsd:annotation>
 						<xsd:appinfo source="X_Create">System_Admin</xsd:appinfo>
 						<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
 					</xsd:annotation>
 				</xsd:element>
-				<xsd:element maxOccurs="1" minOccurs="1" name="duration"
+				<xsd:element maxOccurs="1" minOccurs="0" name="duration"
 					type="xsd:duration">
 					<xsd:annotation>
 						<xsd:appinfo source="X_Create">System_Admin</xsd:appinfo>
 						<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
 					</xsd:annotation>
 				</xsd:element>
-				<xsd:element maxOccurs="1" minOccurs="1" name="dateTime"
+				<xsd:element maxOccurs="1" minOccurs="0" name="dateTime"
 					type="xsd:dateTime">
 					<xsd:annotation>
 						<xsd:appinfo source="X_Create">System_Admin</xsd:appinfo>
 						<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
 					</xsd:annotation>
 				</xsd:element>
-				<xsd:element maxOccurs="1" minOccurs="1" name="time"
+				<xsd:element maxOccurs="1" minOccurs="0" name="time"
 					type="xsd:time">
 					<xsd:annotation>
 						<xsd:appinfo source="X_Create">System_Admin</xsd:appinfo>
 						<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
 					</xsd:annotation>
 				</xsd:element>
-				<xsd:element maxOccurs="1" minOccurs="1" name="date"
+				<xsd:element maxOccurs="1" minOccurs="0" name="date"
 					type="xsd:date">
 					<xsd:annotation>
 						<xsd:appinfo source="X_Create">System_Admin</xsd:appinfo>
 						<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
 					</xsd:annotation>
 				</xsd:element>
-				<xsd:element maxOccurs="1" minOccurs="1" name="hexBinary"
+				<xsd:element maxOccurs="1" minOccurs="0" name="hexBinary"
 					type="xsd:hexBinary">
 					<xsd:annotation>
 						<xsd:appinfo source="cX_Write">Demo_Manager</xsd:appinfo>
@@ -368,7 +368,7 @@
 						<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
 					</xsd:annotation>
 				</xsd:element>
-				<xsd:element maxOccurs="1" minOccurs="1" name="base64Binary"
+				<xsd:element maxOccurs="1" minOccurs="0" name="base64Binary"
 					type="xsd:base64Binary">
 					<xsd:annotation>
 						<xsd:appinfo source="cX_Write">Demo_Manager</xsd:appinfo>
@@ -376,7 +376,7 @@
 						<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
 					</xsd:annotation>
 				</xsd:element>
-				<xsd:element maxOccurs="1" minOccurs="1" name="anyURI"
+				<xsd:element maxOccurs="1" minOccurs="0" name="anyURI"
 					type="xsd:anyURI">
 					<xsd:annotation>
 						<xsd:appinfo source="cX_Write">Demo_Manager</xsd:appinfo>
@@ -384,7 +384,7 @@
 						<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
 					</xsd:annotation>
 				</xsd:element>
-				<xsd:element maxOccurs="1" minOccurs="1" name="qname"
+				<xsd:element maxOccurs="1" minOccurs="0" name="qname"
 					type="xsd:string">
 					<xsd:annotation>
 						<xsd:appinfo source="cX_Write">Demo_Manager</xsd:appinfo>

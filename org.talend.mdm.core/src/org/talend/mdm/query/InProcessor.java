@@ -9,6 +9,8 @@
  */
 package org.talend.mdm.query;
 
+import java.util.Collection;
+
 import com.amalto.core.query.user.Condition;
 import com.amalto.core.query.user.TypedExpression;
 
@@ -34,5 +36,10 @@ class InProcessor extends BasicConditionProcessor {
     @Override
     protected String getConditionElement() {
         return "in"; //$NON-NLS-1
+    }
+
+    @Override
+    protected Condition buildCondition(TypedExpression expression, Collection<Object> value) {
+        return in(expression, value);
     }
 }

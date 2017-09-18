@@ -12,6 +12,8 @@ package com.amalto.core.query.user;
 
 import org.talend.mdm.commmon.metadata.Types;
 
+import com.amalto.core.util.Util;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -34,21 +36,16 @@ public class DateConstant implements ConstantExpression<Date> {
     public DateConstant(String value) {
         synchronized (DATE_FORMAT) {
             try {
-                if (value.contains(UserQueryBuilder.IN_VALUE_SPLIT)) {
-                    Collection<String> stringCollection = Arrays.asList(value.split(UserQueryBuilder.IN_VALUE_SPLIT));
-                    Collection<Date> resultCollection = new ArrayList();
-                    for (String tmp : stringCollection) {
-                        resultCollection.add(DATE_FORMAT.parse(tmp));
-                    }
-                    this.constantCollection = resultCollection;
-                    this.value = null;
-                } else {
-                    this.value = DATE_FORMAT.parse(value);
-                }
+                this.value = DATE_FORMAT.parse(value);
             } catch (ParseException e) {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    public DateConstant(Collection value) {
+        this.constantCollection = value;
+        this.value = null;
     }
 
     public Date getValue() {

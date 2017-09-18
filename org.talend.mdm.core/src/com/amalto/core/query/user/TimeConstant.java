@@ -20,6 +20,8 @@ import java.util.Date;
 
 import org.talend.mdm.commmon.metadata.Types;
 
+import com.amalto.core.util.Util;
+
 /**
  *
  */
@@ -34,21 +36,16 @@ public class TimeConstant implements ConstantExpression<Date> {
     public TimeConstant(String value) {
         synchronized (TIME_FORMAT) {
             try {
-                if (value.contains(UserQueryBuilder.IN_VALUE_SPLIT)) {
-                    Collection<String> stringCollection = Arrays.asList(value.split(UserQueryBuilder.IN_VALUE_SPLIT));
-                    Collection<Date> resultCollection = new ArrayList();
-                    for (String tmp : stringCollection) {
-                        resultCollection.add(TIME_FORMAT.parse(tmp));
-                    }
-                    this.constantCollection = resultCollection;
-                    this.value = null;
-                } else {
-                    this.value = TIME_FORMAT.parse(value);
-                }
+                this.value = TIME_FORMAT.parse(value);
             } catch (ParseException e) {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    public TimeConstant(Collection value) {
+        this.constantCollection = value;
+        this.value = null;
     }
 
     @Override

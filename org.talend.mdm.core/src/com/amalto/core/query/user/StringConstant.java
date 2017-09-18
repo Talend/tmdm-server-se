@@ -17,6 +17,8 @@ import java.util.Collection;
 
 import org.talend.mdm.commmon.metadata.Types;
 
+import com.amalto.core.util.Util;
+
 /**
  *
  */
@@ -27,17 +29,12 @@ public class StringConstant implements ConstantExpression<String> {
     private Collection<String> constantCollection = new ArrayList();
 
     public StringConstant(String value) {
-        if (value.contains(UserQueryBuilder.IN_VALUE_SPLIT)) {
-            Collection<String> stringCollection = Arrays.asList(value.split(UserQueryBuilder.IN_VALUE_SPLIT));
-            Collection<String> resultCollection = new ArrayList();
-            for (String tmp : stringCollection) {
-                resultCollection.add(tmp);
-            }
-            this.constantCollection = resultCollection;
-            this.value = null;
-        } else {
-            this.value = value;
-        }
+        this.value = value;
+    }
+
+    public StringConstant(Collection value) {
+        this.constantCollection = value;
+        this.value = null;
     }
 
     public String getValue() {

@@ -17,6 +17,8 @@ import java.util.Collection;
 
 import org.talend.mdm.commmon.metadata.Types;
 
+import com.amalto.core.util.Util;
+
 public class LongConstant implements ConstantExpression<Long> {
 
     private final Long constant;
@@ -24,17 +26,12 @@ public class LongConstant implements ConstantExpression<Long> {
     private Collection<Long> constantCollection = new ArrayList();
 
     public LongConstant(String constant) {
-        if (constant.contains(UserQueryBuilder.IN_VALUE_SPLIT)) {
-            Collection<String> stringCollection = Arrays.asList(constant.split(UserQueryBuilder.IN_VALUE_SPLIT));
-            Collection<Long> resultCollection = new ArrayList();
-            for (String tmp : stringCollection) {
-                resultCollection.add(Long.parseLong(tmp));
-            }
-            this.constantCollection = resultCollection;
-            this.constant = null;
-        } else {
-            this.constant = Long.parseLong(constant);
-        }
+        this.constant = Long.parseLong(constant);
+    }
+
+    public LongConstant(Collection constant) {
+        this.constantCollection = constant;
+        this.constant = null;
     }
 
     public Expression normalize() {

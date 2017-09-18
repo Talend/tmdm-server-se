@@ -9,12 +9,17 @@
  */
 package org.talend.mdm.query;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import com.amalto.core.query.user.Condition;
 import com.amalto.core.query.user.TypedExpression;
 import com.amalto.core.query.user.UserQueryBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 
 abstract class BasicConditionProcessor implements ConditionProcessor {
@@ -23,6 +28,7 @@ abstract class BasicConditionProcessor implements ConditionProcessor {
         JsonArray conditionElement = condition.get(getConditionElement()).getAsJsonArray(); //$NON-NLS-1
         TypedExpression expression = null;
         String value = null;
+        Collection valueList = new ArrayList();
         TypedExpression valueExpression = null;
         for (int i = 0; i < conditionElement.size(); i++) {
             JsonObject element = conditionElement.get(i).getAsJsonObject();
@@ -34,15 +40,12 @@ abstract class BasicConditionProcessor implements ConditionProcessor {
                     valueExpression = Deserializer.getTypedExpression(valueElement.getAsJsonObject()).process(valueElement.getAsJsonObject(), repository);
                 } else if(valueElement instanceof JsonArray){
                     JsonArray array = (JsonArray)valueElement;
-                    StringBuilder sb = new StringBuilder();
                     for(int j= 0 ; j < array.size(); j++){
                         JsonElement jsonElement = array.get(j);
                         if(jsonElement.isJsonPrimitive()){
-                            sb.append(jsonElement.getAsJsonPrimitive().getAsString());
-                            sb.append(UserQueryBuilder.IN_VALUE_SPLIT);
+                            valueList.add(jsonElement.getAsJsonPrimitive().getAsString());
                         }
                     }
-                    value = sb.toString().substring(0, sb.toString().length()-UserQueryBuilder.IN_VALUE_SPLIT.length());
                 } else {
                     throw new IllegalArgumentException("Value '" + valueElement + "' is not supported.");
                 }
@@ -50,17 +53,24 @@ abstract class BasicConditionProcessor implements ConditionProcessor {
                 expression = Deserializer.getTypedExpression(element.getAsJsonObject()).process(element.getAsJsonObject(), repository);
             }
         }
-        if (expression == null || (value == null && valueExpression == null)) {
+        if (expression == null || (value == null && valueExpression == null && valueList.isEmpty())) {
             throw new IllegalArgumentException("Missing expression and/or value.");
         }
-        if (value != null) {
+
+        if (value != null && valueList.isEmpty()) {
             return buildCondition(expression, value);
+        } else if (value == null && !valueList.isEmpty()) {
+            return buildCondition(expression, valueList);
         } else { // valueExpression != null
             return buildCondition(expression, valueExpression);
         }
     }
 
     protected abstract Condition buildCondition(TypedExpression expression, String value);
+
+    protected Condition buildCondition(TypedExpression expression, Collection<Object> value) {
+        return null;
+    }
 
     protected abstract Condition buildCondition(TypedExpression expression, TypedExpression value);
 

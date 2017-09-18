@@ -12,6 +12,7 @@ package com.amalto.core.query.user;
 
 import org.talend.mdm.commmon.metadata.Types;
 
+import com.amalto.core.util.Util;
 import com.google.gson.JsonElement;
 
 import java.math.BigDecimal;
@@ -26,17 +27,7 @@ public class BigDecimalConstant implements ConstantExpression<BigDecimal> {
     private Collection<BigDecimal> constantCollection = new ArrayList();
 
     public BigDecimalConstant(String constant) {
-        if(constant.contains(UserQueryBuilder.IN_VALUE_SPLIT)){
-            Collection<String> stringCollection = Arrays.asList(constant.split(UserQueryBuilder.IN_VALUE_SPLIT));
-            Collection<BigDecimal> resultCollection = new ArrayList();
-            for(String tmp: stringCollection){
-                resultCollection.add(new BigDecimal(tmp));
-            }
-            this.constantCollection = resultCollection;
-            this.constant = null ;
-        }else{
-            this.constant = new BigDecimal(constant);
-        }
+        this.constant = new BigDecimal(constant);
     }
 
     public BigDecimalConstant(Collection<BigDecimal> constantCollection) {

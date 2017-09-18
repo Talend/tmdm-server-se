@@ -11,9 +11,12 @@
 package com.amalto.core.query.user;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 
 import org.talend.mdm.commmon.metadata.Types;
+
+import com.amalto.core.util.Util;
 
 /**
  *
@@ -24,8 +27,13 @@ public class BooleanConstant implements ConstantExpression<Boolean> {
 
     private Collection<Boolean> valueCollection = new ArrayList();
 
-    public BooleanConstant(boolean value) {
-        this.value = value;
+    public BooleanConstant(String value) {
+        this.value = Boolean.valueOf(value);
+    }
+
+    public BooleanConstant(Collection value) {
+        this.valueCollection = value;
+        this.value = null;
     }
 
     public Boolean getValue() {

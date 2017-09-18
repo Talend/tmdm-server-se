@@ -17,6 +17,8 @@ import java.util.Collection;
 
 import org.talend.mdm.commmon.metadata.Types;
 
+import com.amalto.core.util.Util;
+
 public class ByteConstant implements ConstantExpression<Byte> {
 
     private final Byte constant;
@@ -24,17 +26,12 @@ public class ByteConstant implements ConstantExpression<Byte> {
     private Collection<Byte> constantCollection = new ArrayList();
 
     public ByteConstant(String constant) {
-        if (constant.contains(UserQueryBuilder.IN_VALUE_SPLIT)) {
-            Collection<String> stringCollection = Arrays.asList(constant.split(UserQueryBuilder.IN_VALUE_SPLIT));
-            Collection<Byte> resultCollection = new ArrayList();
-            for (String tmp : stringCollection) {
-                resultCollection.add(Byte.parseByte(tmp));
-            }
-            this.constantCollection = resultCollection;
-            this.constant = null;
-        } else {
-            this.constant = Byte.parseByte(constant);
-        }
+        this.constant = Byte.parseByte(constant);
+    }
+
+    public ByteConstant(Collection constant) {
+        this.constantCollection = constant;
+        this.constant = null;
     }
 
     public Expression normalize() {

@@ -17,6 +17,8 @@ import java.util.Collection;
 
 import org.talend.mdm.commmon.metadata.Types;
 
+import com.amalto.core.util.Util;
+
 public class ShortConstant implements ConstantExpression<Short> {
 
     private final Short constant;
@@ -24,17 +26,12 @@ public class ShortConstant implements ConstantExpression<Short> {
     private Collection<Short> constantCollection = new ArrayList();
 
     public ShortConstant(String constant) {
-        if (constant.contains(UserQueryBuilder.IN_VALUE_SPLIT)) {
-            Collection<String> stringCollection = Arrays.asList(constant.split(UserQueryBuilder.IN_VALUE_SPLIT));
-            Collection<Short> resultCollection = new ArrayList();
-            for (String value : stringCollection) {
-                resultCollection.add(Short.parseShort(value));
-            }
-            this.constantCollection = resultCollection;
-            this.constant = null;
-        } else {
-            this.constant = Short.parseShort(constant);
-        }
+        this.constant = Short.parseShort(constant);
+    }
+
+    public ShortConstant(Collection constant) {
+        this.constantCollection = constant;
+        this.constant = null;
     }
 
     public Expression normalize() {

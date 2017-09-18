@@ -288,62 +288,62 @@ class MappingExpressionTransformer extends VisitorAdapter<Expression> {
 
     @Override
     public Expression visit(StringConstant constant) {
-        return getConstant(constant.getStringValue());
+        return getConstant(constant.getConstant());
     }
 
     @Override
     public Expression visit(IntegerConstant constant) {
-        return getConstant(constant.getStringValue());
+        return getConstant(constant.getConstant());
     }
 
     @Override
     public Expression visit(DateConstant constant) {
-        return constant;
+        return getConstant(constant.getConstant());
     }
 
     @Override
     public Expression visit(DateTimeConstant constant) {
-        return constant;
+        return getConstant(constant.getConstant());
     }
 
     @Override
     public Expression visit(BooleanConstant constant) {
-        return getConstant(constant.getStringValue());
+        return getConstant(constant.getConstant());
     }
 
     @Override
     public Expression visit(BigDecimalConstant constant) {
-        return getConstant(constant.getStringValue());
+        return getConstant(constant.getConstant());
     }
 
     @Override
     public Expression visit(TimeConstant constant) {
-        return constant;
+        return getConstant(constant.getConstant());
     }
 
     @Override
     public Expression visit(ShortConstant constant) {
-        return getConstant(constant.getStringValue());
+        return getConstant(constant.getConstant());
     }
 
     @Override
     public Expression visit(ByteConstant constant) {
-        return getConstant(constant.getStringValue());
+        return getConstant(constant.getConstant());
     }
 
     @Override
     public Expression visit(LongConstant constant) {
-        return getConstant(constant.getStringValue());
+        return getConstant(constant.getConstant());
     }
 
     @Override
     public Expression visit(DoubleConstant constant) {
-        return getConstant(constant.getStringValue());
+        return getConstant(constant.getConstant());
     }
 
     @Override
     public Expression visit(FloatConstant constant) {
-        return getConstant(constant.getStringValue());
+        return getConstant(constant.getConstant());
     }
 
     @Override
@@ -421,8 +421,20 @@ class MappingExpressionTransformer extends VisitorAdapter<Expression> {
     }
 
     private Expression getConstant(Object data) {
-        if (StorageMetadataUtils.isValueAssignable(String.valueOf(data), currentField.getTypeName())) {
-            return UserQueryBuilder.createConstant(currentField, String.valueOf(data));
+        if (data instanceof Collection) {
+            return getConstant((Collection) data);
+        } else {
+            if (StorageMetadataUtils.isValueAssignable(String.valueOf(data), currentField.getTypeName())) {
+                return UserQueryBuilder.createConstant(currentField, String.valueOf(data));
+            } else {
+                return null;
+            }
+        }
+    }
+
+    private Expression getConstant(Collection data) {
+        if (StorageMetadataUtils.isValueAssignable(data, currentField.getTypeName())) {
+            return UserQueryBuilder.createConstant(currentField, data);
         } else {
             return null;
         }

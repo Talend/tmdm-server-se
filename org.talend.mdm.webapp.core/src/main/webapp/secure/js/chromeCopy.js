@@ -63,6 +63,7 @@ function getBrowserType() {
         return "Firefox";
     } else if (userAgent.indexOf("Safari") > -1
             && userAgent.indexOf("Chrome") == -1) {
+        event.returnValue = true;
         return "Safari";
     } else if (userAgent.indexOf("Chrome") > -1
             && userAgent.indexOf("Safari") > -1) {

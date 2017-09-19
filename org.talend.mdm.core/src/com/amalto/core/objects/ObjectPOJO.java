@@ -239,9 +239,9 @@ public abstract class ObjectPOJO implements Serializable {
             // for delete we need to be admin, or have a role of admin , or role of write on instance
             boolean authorized = false;
             ILocalUser user = LocalUser.getLocalUser();
-            if (user.getUsername() == null)
+            if (user.getIdentity() == null)
                 return null;
-            if (MDMConfiguration.getAdminUser().equals(user.getUsername())) { //$NON-NLS-1$
+            if (MDMConfiguration.getAdminUser().equals(user.getIdentity())) { //$NON-NLS-1$
                 authorized = true;
             } else if (user.isAdmin(objectClass)) {
                 authorized = true;
@@ -249,7 +249,7 @@ public abstract class ObjectPOJO implements Serializable {
                 authorized = true;
             }
             if (!authorized) {
-                String err = "Unauthorized access on delete for " + "user " + user.getUsername() + " of object "
+                String err = "Unauthorized access on delete for " + "user " + user.getIdentity() + " of object "
                         + ObjectPOJO.getObjectName(objectClass) + " [" + objectPOJOPK.getUniqueId() + "] ";
                 LOG.error(err);
                 throw new XtentisException(err);
@@ -324,7 +324,7 @@ public abstract class ObjectPOJO implements Serializable {
             }
             if (BAMLogger.log) {
                 BAMLogger
-                        .log("DATA MANAGER", user.getUsername(), "find all", objectClass, new ObjectPOJOPK(numItems + " Items"), numItems > 0); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                        .log("DATA MANAGER", user.getIdentity(), "find all", objectClass, new ObjectPOJOPK(numItems + " Items"), numItems > 0); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             }
             return list;
         } catch (XtentisException e) {
@@ -404,7 +404,7 @@ public abstract class ObjectPOJO implements Serializable {
         try {
             // check if we are admin
             ILocalUser user = LocalUser.getLocalUser();
-            String userName = user.getUsername();
+            String userName = user.getIdentity();
             boolean isAdmin = false;
             if (MDMConfiguration.getAdminUser().equals(userName)) {
                 isAdmin = true;
@@ -507,13 +507,13 @@ public abstract class ObjectPOJO implements Serializable {
             // for storing we need to be admin, or have a role of admin , or role of write on instance
             boolean authorized = false;
             ILocalUser user = LocalUser.getLocalUser();
-            if (MDMConfiguration.getAdminUser().equals(user.getUsername())) {
+            if (MDMConfiguration.getAdminUser().equals(user.getIdentity())) {
                 authorized = true;
             } else if (user.userCanWrite(this.getClass(), this.getPK().getUniqueId())) {
                 authorized = true;
             }
             if (!authorized) {
-                String err = "Unauthorized write access by " + "user " + user.getUsername() + " on object "
+                String err = "Unauthorized write access by " + "user " + user.getIdentity() + " on object "
                         + ObjectPOJO.getObjectName(this.getClass()) + " [" + getPK().getUniqueId() + "] ";
                 LOG.error(err);
                 throw new XtentisException(err);

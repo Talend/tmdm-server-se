@@ -92,9 +92,12 @@ public class User implements Cloneable {
                 + (universe == null ? "" : universe) + "</universe>" + "    <language>" + (language == null ? "" : language) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                 + "</language>"; //$NON-NLS-1$
         user += "    <roles>"; //$NON-NLS-1$
-        Iterator<String> iter = roleNames.iterator();
-        while (iter.hasNext()) {
-            user += "<role>" + iter.next() + "</role>"; //$NON-NLS-1$ //$NON-NLS-2$
+        Iterator<String> iter;
+        if (roleNames != null) {
+            iter = roleNames.iterator();
+            while (iter.hasNext()) {
+                user += "<role>" + iter.next() + "</role>"; //$NON-NLS-1$ //$NON-NLS-2$
+            }
         }
         user += "    </roles>"; //$NON-NLS-1$
         user += "    <properties>"; //$NON-NLS-1$
@@ -134,37 +137,41 @@ public class User implements Cloneable {
 
         try {
             Element result = Util.parse(xml).getDocumentElement();
-            user.setUserName(Util.getFirstTextNode(result, "//username")); //$NON-NLS-1$
-            user.setPassword(Util.getFirstTextNode(result, "//password")); //$NON-NLS-1$
-            user.setGivenName(Util.getFirstTextNode(result, "//givenname")); //$NON-NLS-1$
-            user.setFamilyName(Util.getFirstTextNode(result, "//familyname")); //$NON-NLS-1$
-            user.setPhoneNumber(Util.getFirstTextNode(result, "//phonenumber")); //$NON-NLS-1$
-            user.setCompany(Util.getFirstTextNode(result, "//company")); //$NON-NLS-1$
-            user.setSignature(Util.getFirstTextNode(result, "//signature")); //$NON-NLS-1$
-            user.setRealEmail(Util.getFirstTextNode(result, "//realemail")); //$NON-NLS-1$
-            user.setFakeEmail(Util.getFirstTextNode(result, "//fakeemail")); //$NON-NLS-1$
-            user.setViewRealEmail("yes".equals(Util.getFirstTextNode(result, "//viewrealemail"))); //$NON-NLS-1$ //$NON-NLS-2$
-
-            try {
-                user.setRegistrationDate(new Date(Long.parseLong(Util.getFirstTextNode(result, "//registrationdate")))); //$NON-NLS-1$
-            } catch (Exception nfe) {
-                user.setRegistrationDate(null);
-            }
-
-            try {
-                user.setLastVisitDate(new Date(Long.parseLong(Util.getFirstTextNode(result, "//lastvisitdate")))); //$NON-NLS-1$
-            } catch (Exception nfe) {
-                user.setLastVisitDate(null);
-            }
             
-            try {
-                user.setLastSyncTime(new Date(Long.parseLong(Util.getFirstTextNode(result, "//lastsynctime")))); //$NON-NLS-1$
-            } catch (Exception nfe) {
-                user.setLastSyncTime(null);
+            if (Util.isEnterprise()) {
+                user.setID(Integer.parseInt(Util.getFirstTextNode(result, "//id"))); //$NON-NLS-1$
+            } else {
+                user.setUserName(Util.getFirstTextNode(result, "//username")); //$NON-NLS-1$
+                user.setPassword(Util.getFirstTextNode(result, "//password")); //$NON-NLS-1$
+                user.setGivenName(Util.getFirstTextNode(result, "//givenname")); //$NON-NLS-1$
+                user.setFamilyName(Util.getFirstTextNode(result, "//familyname")); //$NON-NLS-1$
+                user.setPhoneNumber(Util.getFirstTextNode(result, "//phonenumber")); //$NON-NLS-1$
+                user.setCompany(Util.getFirstTextNode(result, "//company")); //$NON-NLS-1$
+                user.setSignature(Util.getFirstTextNode(result, "//signature")); //$NON-NLS-1$
+                user.setRealEmail(Util.getFirstTextNode(result, "//realemail")); //$NON-NLS-1$
+                user.setFakeEmail(Util.getFirstTextNode(result, "//fakeemail")); //$NON-NLS-1$
+                user.setViewRealEmail("yes".equals(Util.getFirstTextNode(result, "//viewrealemail"))); //$NON-NLS-1$ //$NON-NLS-2$
+
+                try {
+                    user.setRegistrationDate(new Date(Long.parseLong(Util.getFirstTextNode(result, "//registrationdate")))); //$NON-NLS-1$
+                } catch (Exception nfe) {
+                    user.setRegistrationDate(null);
+                }
+
+                try {
+                    user.setLastVisitDate(new Date(Long.parseLong(Util.getFirstTextNode(result, "//lastvisitdate")))); //$NON-NLS-1$
+                } catch (Exception nfe) {
+                    user.setLastVisitDate(null);
+                }
+                
+                try {
+                    user.setLastSyncTime(new Date(Long.parseLong(Util.getFirstTextNode(result, "//lastsynctime")))); //$NON-NLS-1$
+                } catch (Exception nfe) {
+                    user.setLastSyncTime(null);
+                }
+                user.setEnabled("yes".equals(Util.getFirstTextNode(result, "//enabled"))); //$NON-NLS-1$ //$NON-NLS-2$
+                user.setHomePage(Util.getFirstTextNode(result, "//homepage")); //$NON-NLS-1$
             }
-            user.setEnabled("yes".equals(Util.getFirstTextNode(result, "//enabled"))); //$NON-NLS-1$ //$NON-NLS-2$
-            user.setHomePage(Util.getFirstTextNode(result, "//homepage")); //$NON-NLS-1$
-            user.setUniverse(Util.getFirstTextNode(result, "//universe")); //$NON-NLS-1$
             user.setLanguage(Util.getFirstTextNode(result, "//language")); //$NON-NLS-1$
 
             String[] roles = Util.getTextNodes(result, "//roles/role"); //$NON-NLS-1$

@@ -371,14 +371,14 @@ public class DefaultItem implements Item {
             ILocalUser user = LocalUser.getLocalUser();
             boolean authorized = false;
             String dataModelName = dataClusterPOJOPK.getUniqueId();
-            if (MDMConfiguration.getAdminUser().equals(user.getUsername())) { 
+            if (MDMConfiguration.getAdminUser().equals(user.getIdentity())) { 
                 authorized = true;
             } else if (user.userCanRead(DataClusterPOJO.class, dataModelName)) {
                 authorized = true;
             }
             if (!authorized) {
                 throw new XtentisException("Unauthorized read access on data cluster '" + dataModelName + "' by user '"
-                        + user.getUsername() + "'");
+                        + user.getIdentity() + "'");
             }
             Server server = ServerContext.INSTANCE.get();
             String typeName = StringUtils.substringBefore(viewablePaths.get(0), "/"); //$NON-NLS-1$
@@ -818,14 +818,14 @@ public class DefaultItem implements Item {
             Storage storage = storageAdmin.get(dataModelName, storageAdmin.getType(dataModelName));
             ILocalUser user = LocalUser.getLocalUser();
             boolean authorized = false;
-            if (MDMConfiguration.getAdminUser().equals(user.getUsername())) {
+            if (MDMConfiguration.getAdminUser().equals(user.getIdentity())) {
                 authorized = true;
             } else if (user.userCanRead(DataClusterPOJO.class, dataModelName)) {
                 authorized = true;
             }
             if (!authorized) {
                 throw new RemoteException("Unauthorized read access on data cluster " + dataModelName
-                        + " by user " + user.getUsername());
+                        + " by user " + user.getIdentity());
             }
             // This should be moved to ItemCtrl
             MetadataRepository repository = storage.getMetadataRepository();

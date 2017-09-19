@@ -36,11 +36,14 @@ import com.amalto.core.delegator.ILocalUser;
 import com.amalto.core.util.LocalUser;
 import com.amalto.core.util.Messages;
 import com.amalto.core.util.MessagesFactory;
+import com.amalto.core.webservice.WSCount;
 import com.amalto.core.webservice.WSDataClusterPK;
 import com.amalto.core.webservice.WSDataModelPK;
 import com.amalto.core.webservice.WSGetItem;
 import com.amalto.core.webservice.WSItemPK;
 import com.amalto.core.webservice.WSPutItem;
+import com.amalto.core.webservice.WSString;
+import com.amalto.core.webservice.WSWhereItem;
 import com.amalto.webapp.core.bean.Configuration;
 import com.amalto.webapp.core.util.Menu;
 import com.amalto.webapp.core.util.SystemLocale;
@@ -328,10 +331,23 @@ public class Utils {
         try {
             ILocalUser user = LocalUser.getLocalUser();
             if (Util.userCanWrite(user)) {
-                String userName = user.getUsername();
+                String identity = user.getIdentity();
+                
+                if (com.amalto.core.util.Util.isEnterprise()) {
+                    WSWhereItem wi = new WSWhereItem();
+                    String criteria = "User/id EQUALS " + identity; //$NON-NLS-1$
+                    wi = Util.buildWhereItems(criteria);
+                    WSDataClusterPK wsDataClusterPK = new WSDataClusterPK(DATACLUSTER_PK);
+                    WSString countResult = Util.getPort().count(new WSCount(wsDataClusterPK, PROVISIONING_CONCEPT, wi, -1));
+                    int totalLength = countResult.getValue() == null ? 0 : Integer.valueOf(countResult.getValue());
+                    if (totalLength == 0) {
+                        return false;
+                    }
+                }
+                
                 WSItemPK itemPK = new WSItemPK(new WSDataClusterPK(DATACLUSTER_PK), PROVISIONING_CONCEPT,
-                        new String[] { userName });
-                if (userName != null && userName.length() > 0) {
+                        new String[] { identity });
+                if (identity != null && identity.length() > 0) {
                     String userXml = Util.getPort().getItem(new WSGetItem(itemPK)).getContent();
                     Util.getPort().putItem(
                             new WSPutItem(new WSDataClusterPK(DATACLUSTER_PK), Utils.setLanguage(userXml, language),

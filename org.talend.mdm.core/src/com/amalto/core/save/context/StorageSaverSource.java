@@ -160,7 +160,7 @@ public class StorageSaverSource implements SaverSource {
 
     public String getUserName() {
         try {
-            return LocalUser.getLocalUser().getUsername();
+            return LocalUser.getLocalUser().getIdentity();
         } catch (XtentisException e) {
             throw new RuntimeException(e);
         }

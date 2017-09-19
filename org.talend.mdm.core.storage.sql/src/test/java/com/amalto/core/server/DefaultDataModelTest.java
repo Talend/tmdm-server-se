@@ -88,7 +88,7 @@ public class DefaultDataModelTest extends TestCase {
         }
 
         @Override
-        public String getUsername() {
+        public String getIdentity() {
             return "Admin"; //$NON-NLS-1$
         }
 

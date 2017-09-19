@@ -249,7 +249,7 @@ public class RecordValidationTest extends TestCase {
         }
 
         @Override
-        public String getUsername() {
+        public String getIdentity() {
             return "administrator";
         }
 
@@ -274,7 +274,7 @@ public class RecordValidationTest extends TestCase {
         }
 
         @Override
-        public String getUsername() {
+        public String getIdentity() {
             return "user";
         }
 

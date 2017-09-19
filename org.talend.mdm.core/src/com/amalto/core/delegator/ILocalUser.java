@@ -20,7 +20,7 @@ import java.util.HashSet;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+import com.amalto.core.delegator.LocalUserDetails;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 
 import com.amalto.core.objects.ItemPOJO;
@@ -59,7 +59,7 @@ public abstract class ILocalUser implements IBeanDelegator {
         StorageAdmin storageAdmin = ServerContext.INSTANCE.get().getStorageAdmin();
         Storage systemStorage = storageAdmin.get(StorageAdmin.SYSTEM_STORAGE, StorageType.SYSTEM);
         ComplexTypeMetadata userType = systemStorage.getMetadataRepository().getComplexType("User");
-        UserQueryBuilder qb = from(userType).where(eq(userType.getField("username"), getUsername()));
+        UserQueryBuilder qb = from(userType).where(eq(userType.getField("username"), getIdentity()));
         DataRecordWriter writer = new DataRecordXmlWriter(userType);
         StringWriter userXml = new StringWriter();
         try {
@@ -76,11 +76,17 @@ public abstract class ILocalUser implements IBeanDelegator {
         return userXml.toString();
     }
 
+    public String getIdentity() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Object principal = authentication.getPrincipal();
+        return (String) principal;
+    }
+    
     public String getUsername() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Object principal = authentication.getPrincipal();
-        if (principal instanceof UserDetails) {
-            return ((UserDetails) principal).getUsername();
+        if (principal instanceof LocalUserDetails) {
+            return ((LocalUserDetails) principal).getUsername();
         }
         return (String) principal;
     }
@@ -120,9 +126,12 @@ public abstract class ILocalUser implements IBeanDelegator {
     public void setUserXML(String userXML) {
     }
 
-    public void setUsername(String username) {
+    public void setIdentity(String username) {
     }
 
+    public void setUsername(String username) {
+    }
+    
     public boolean userCanRead(Class<?> objectTypeClass, String instanceId) throws XtentisException {
         return true;
     }

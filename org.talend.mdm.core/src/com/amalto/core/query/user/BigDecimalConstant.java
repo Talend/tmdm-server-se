@@ -14,7 +14,6 @@ import org.talend.mdm.commmon.metadata.Types;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class BigDecimalConstant implements ConstantExpression<BigDecimal> {

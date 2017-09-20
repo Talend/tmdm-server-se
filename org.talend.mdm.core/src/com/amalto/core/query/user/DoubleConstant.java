@@ -16,8 +16,6 @@ import java.util.List;
 
 import org.talend.mdm.commmon.metadata.Types;
 
-import com.amalto.core.util.Util;
-
 public class DoubleConstant implements ConstantExpression<Double> {
 
     private final Double constant;

@@ -9,7 +9,6 @@
  */
 package org.talend.mdm.query;
 
-import java.util.Collection;
 import java.util.List;
 
 import com.amalto.core.query.user.Condition;

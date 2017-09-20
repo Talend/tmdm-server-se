@@ -26,12 +26,12 @@ class InProcessor extends BasicConditionProcessor {
 
     @Override
     protected Condition buildCondition(TypedExpression expression, String value) {
-        return in(expression, value);
+        throw new UnsupportedOperationException();
     }
 
     @Override
     protected Condition buildCondition(TypedExpression expression, TypedExpression value) {
-        return in(expression, value);
+        throw new UnsupportedOperationException();
     }
 
     @Override

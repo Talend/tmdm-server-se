@@ -26,12 +26,12 @@ class NotInProcessor extends BasicConditionProcessor {
 
     @Override
     protected Condition buildCondition(TypedExpression expression, String value) {
-        return notIn(expression, value);
+        throw new UnsupportedOperationException();
     }
 
     @Override
     protected Condition buildCondition(TypedExpression expression, TypedExpression value) {
-        return notIn(expression, value);
+        throw new UnsupportedOperationException();
     }
 
     @Override

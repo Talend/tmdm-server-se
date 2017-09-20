@@ -263,7 +263,7 @@ public class UserQueryBuilder {
     public static Condition in(FieldMetadata field, List constant) {
         assertNullField(field);
         Field userField = new Field(field);
-        if (StorageMetadataUtils.isValueListAssignable(constant, field)) {
+        if (StorageMetadataUtils.isValueAssignable(constant, field)) {
             return in(userField, constant);
         } else {
             return UserQueryHelper.FALSE;
@@ -297,7 +297,7 @@ public class UserQueryBuilder {
             return isNull(field);
         }
         assertValueConditionArguments(field, constant);
-        if (!StorageMetadataUtils.isValueListAssignable(constant, field.getFieldMetadata())) {
+        if (!StorageMetadataUtils.isValueAssignable(constant, field.getFieldMetadata())) {
             return UserQueryHelper.FALSE;
         }
         if (field.getFieldMetadata() instanceof ReferenceFieldMetadata) {
@@ -350,7 +350,7 @@ public class UserQueryBuilder {
     public static Condition notIn(FieldMetadata field, List constant) {
         assertNullField(field);
         Field userField = new Field(field);
-        if (StorageMetadataUtils.isValueListAssignable(constant, field)) {
+        if (StorageMetadataUtils.isValueAssignable(constant, field)) {
             return notIn(userField, constant);
         } else {
             return UserQueryHelper.FALSE;
@@ -384,7 +384,7 @@ public class UserQueryBuilder {
             return isNull(field);
         }
         assertValueConditionArguments(field, constant);
-        if (!StorageMetadataUtils.isValueListAssignable(constant, field.getFieldMetadata())) {
+        if (!StorageMetadataUtils.isValueAssignable(constant, field.getFieldMetadata())) {
             return UserQueryHelper.FALSE;
         }
         if (field.getFieldMetadata() instanceof ReferenceFieldMetadata) {

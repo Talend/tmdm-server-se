@@ -9,6 +9,8 @@
  */
 package org.talend.mdm.query;
 
+import java.util.List;
+
 import com.amalto.core.query.user.Condition;
 import com.amalto.core.query.user.TypedExpression;
 
@@ -34,5 +36,10 @@ class LessThanEqualsProcessor extends BasicConditionProcessor {
     @Override
     protected String getConditionElement() {
         return "lte"; //$NON-NLS-1
+    }
+
+    @Override
+    protected Condition buildCondition(TypedExpression expression, List value) {
+        throw new UnsupportedOperationException();
     }
 }

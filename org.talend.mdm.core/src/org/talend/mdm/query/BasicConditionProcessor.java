@@ -66,9 +66,7 @@ abstract class BasicConditionProcessor implements ConditionProcessor {
 
     protected abstract Condition buildCondition(TypedExpression expression, String value);
 
-    protected Condition buildCondition(TypedExpression expression, List value) {
-        return null;
-    }
+    protected abstract Condition buildCondition(TypedExpression expression, List value);
 
     protected abstract Condition buildCondition(TypedExpression expression, TypedExpression value);
 

@@ -319,9 +319,9 @@ public class StorageMetadataUtils {
         return true;
     }
     
-    public static boolean isValueAssignable(Collection value, String typeName) {
+    public static boolean isValueAssignable(List value, String typeName) {
         try {
-            convertDataList(value, typeName);
+            convert(value, typeName);
         } catch (Exception e) {
             return false;
         }
@@ -404,7 +404,7 @@ public class StorageMetadataUtils {
         }
     }
 
-    public static boolean isValueListAssignable(final Collection value, FieldMetadata field) {
+    public static boolean isValueAssignable(final List value, FieldMetadata field) {
         if (value == null) {
             return true;
         }
@@ -430,9 +430,30 @@ public class StorageMetadataUtils {
                     return fieldTypes;
                 }
             });
+            List<String> convertValue = field.accept(new DefaultMetadataVisitor<List<String>>() {
+                List<String> values = new LinkedList<String>();
+
+                @Override
+                public List<String> visit(ReferenceFieldMetadata referenceField) {
+                    values.addAll(value);
+                    return values;
+                }
+
+                @Override
+                public List<String> visit(SimpleTypeFieldMetadata simpleField) {
+                    values.addAll(value);
+                    return values;
+                }
+
+                @Override
+                public List<String> visit(EnumerationFieldMetadata enumField) {
+                    values.addAll(value);
+                    return values;
+                }
+            });
             for (int i = 0; i < fieldType.size(); i++) {
                 try {
-                    //convertList(convertValue.get(i), fieldType.get(i));
+                    convert(convertValue, fieldType.get(i));
                 } catch (Exception e) {
                     return false;
                 }
@@ -558,16 +579,8 @@ public class StorageMetadataUtils {
     }
 
     public static Object convert(String dataAsString, String type) {
-        return convertData(dataAsString, type);
-    }
-    
-    public static Object convert(List<String> dataAsList, String type) {
-        return convertDataList(dataAsList, type);
-    }
-
-    public static Object convertData(String dataAsString, String type) {
         if (Types.STRING.equals(type) || Types.TOKEN.equals(type) || Types.DURATION.equals(type)) {
-            return dataAsString;
+      return dataAsString;
         } else if (Types.INTEGER.equals(type) || Types.POSITIVE_INTEGER.equals(type) || Types.NEGATIVE_INTEGER.equals(type)
                 || Types.NON_NEGATIVE_INTEGER.equals(type) || Types.NON_POSITIVE_INTEGER.equals(type) || Types.INT.equals(type)
                 || Types.UNSIGNED_INT.equals(type)) {
@@ -646,7 +659,7 @@ public class StorageMetadataUtils {
         }
     }
 
-    public static Object convertDataList(Collection valueList, String type) {
+    public static Object convert(List valueList, String type) {
         if (Types.STRING.equals(type) || Types.TOKEN.equals(type) || Types.DURATION.equals(type)) {
             return valueList;
         } else if (Types.INTEGER.equals(type) || Types.POSITIVE_INTEGER.equals(type) || Types.NEGATIVE_INTEGER.equals(type)

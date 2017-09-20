@@ -4814,7 +4814,7 @@ public class StorageQueryTest extends StorageTestCase {
     }
 
     public void testInCondition() throws Exception {
-        Collection<Object> dataList = new ArrayList();
+        List dataList = new ArrayList();
         // string type
         dataList.add("string1");
         dataList.add("string2");
@@ -5042,7 +5042,7 @@ public class StorageQueryTest extends StorageTestCase {
     }
 
     public void testNotInCondition() throws Exception {
-        Collection<Object> dataList = new ArrayList();
+        List dataList = new ArrayList();
         // string type
         dataList.add("string1");
         dataList.add("string2");

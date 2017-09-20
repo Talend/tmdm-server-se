@@ -11,9 +11,7 @@
 
 package com.amalto.core.query.user;
 
-
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;

@@ -10,16 +10,13 @@
 package org.talend.mdm.query;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import com.amalto.core.query.user.Condition;
 import com.amalto.core.query.user.TypedExpression;
-import com.amalto.core.query.user.UserQueryBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 

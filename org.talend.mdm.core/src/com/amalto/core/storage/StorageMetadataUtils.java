@@ -15,7 +15,6 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -45,12 +44,9 @@ import org.talend.mdm.commmon.metadata.SimpleTypeFieldMetadata;
 import org.talend.mdm.commmon.metadata.TypeMetadata;
 import org.talend.mdm.commmon.metadata.Types;
 
-import com.amalto.core.query.user.BooleanConstant;
 import com.amalto.core.query.user.DateConstant;
 import com.amalto.core.query.user.DateTimeConstant;
-import com.amalto.core.query.user.IntegerConstant;
 import com.amalto.core.query.user.TimeConstant;
-import com.amalto.core.query.user.UserQueryBuilder;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.record.metadata.UnsupportedDataRecordMetadata;
 
@@ -434,35 +430,6 @@ public class StorageMetadataUtils {
                     return fieldTypes;
                 }
             });
-           /* List<String> convertValue = field.accept(new DefaultMetadataVisitor<List<String>>() {
-                List<String> values = new LinkedList<String>();
-
-                @Override
-                public List<String> visit(ReferenceFieldMetadata referenceField) {
-                    if (value.startsWith("[")) { //$NON-NLS-1$
-                        StringTokenizer tokenizer = new StringTokenizer(value, "["); //$NON-NLS-1$
-                        while (tokenizer.hasMoreTokens()) {
-                            String nextToken = tokenizer.nextToken();
-                            values.add(nextToken.substring(1, nextToken.length() - 1));
-                        }
-                    } else {
-                        values.add(value);
-                    }
-                    return values;
-                }
-
-                @Override
-                public List<String> visit(SimpleTypeFieldMetadata simpleField) {
-                    values.add(value);
-                    return values;
-                }
-
-                @Override
-                public List<String> visit(EnumerationFieldMetadata enumField) {
-                    values.add(value);
-                    return values;
-                }
-            });*/
             for (int i = 0; i < fieldType.size(); i++) {
                 try {
                     //convertList(convertValue.get(i), fieldType.get(i));

@@ -580,7 +580,7 @@ public class StorageMetadataUtils {
 
     public static Object convert(String dataAsString, String type) {
         if (Types.STRING.equals(type) || Types.TOKEN.equals(type) || Types.DURATION.equals(type)) {
-      return dataAsString;
+            return dataAsString;
         } else if (Types.INTEGER.equals(type) || Types.POSITIVE_INTEGER.equals(type) || Types.NEGATIVE_INTEGER.equals(type)
                 || Types.NON_NEGATIVE_INTEGER.equals(type) || Types.NON_POSITIVE_INTEGER.equals(type) || Types.INT.equals(type)
                 || Types.UNSIGNED_INT.equals(type)) {

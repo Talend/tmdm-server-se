@@ -13,7 +13,7 @@ package com.amalto.core.query.user;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.List;
 
 import org.talend.mdm.commmon.metadata.Types;
 
@@ -23,7 +23,7 @@ public class FloatConstant implements ConstantExpression<Float> {
 
     private final Float constant;
 
-    private Collection<Float> constantCollection = new ArrayList();
+    private List<Float> constantCollection = new ArrayList();
 
     public FloatConstant(String constant) {
         this.constant = Float.parseFloat(constant);

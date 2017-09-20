@@ -12,7 +12,7 @@
 package com.amalto.core.query.user;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 import org.talend.mdm.commmon.metadata.Types;
 
@@ -22,7 +22,7 @@ public class DoubleConstant implements ConstantExpression<Double> {
 
     private final Double constant;
 
-    private Collection<Double> constantCollection = new ArrayList();
+    private List<Double> constantCollection = new ArrayList();
 
     public DoubleConstant(String constant) {
         this.constant = Double.parseDouble(constant);

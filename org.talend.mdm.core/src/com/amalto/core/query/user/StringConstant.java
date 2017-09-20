@@ -12,7 +12,7 @@
 package com.amalto.core.query.user;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 import org.talend.mdm.commmon.metadata.Types;
 
@@ -23,7 +23,7 @@ public class StringConstant implements ConstantExpression<String> {
 
     private final String value;
 
-    private Collection<String> constantCollection = new ArrayList();
+    private List<String> constantCollection = new ArrayList();
 
     public StringConstant(String value) {
         this.value = value;

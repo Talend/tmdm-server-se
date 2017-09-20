@@ -11,7 +11,7 @@
 
 package com.amalto.core.query.user;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  *
@@ -20,7 +20,7 @@ public interface ConstantExpression<T extends Comparable> extends TypedExpressio
 
     public T getValue();
 
-    public Collection<T> getValueList();
+    public List<T> getValueList();
 
     default Object getConstant(){
         if (getValue() != null && getValueList().isEmpty()) {

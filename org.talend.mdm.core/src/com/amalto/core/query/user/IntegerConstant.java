@@ -11,7 +11,7 @@ package com.amalto.core.query.user;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.List;
 
 import org.talend.mdm.commmon.metadata.Types;
 
@@ -21,7 +21,7 @@ public class IntegerConstant implements ConstantExpression<Integer> {
 
     private final Integer constant;
 
-    private Collection<Integer> constantCollection = new ArrayList();
+    private List<Integer> constantCollection = new ArrayList();
 
     public IntegerConstant(String constant) {
         this.constant = Integer.parseInt(constant);

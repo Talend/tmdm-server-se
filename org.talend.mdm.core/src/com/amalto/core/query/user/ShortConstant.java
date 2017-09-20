@@ -13,7 +13,7 @@ package com.amalto.core.query.user;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.List;
 
 import org.talend.mdm.commmon.metadata.Types;
 
@@ -23,7 +23,7 @@ public class ShortConstant implements ConstantExpression<Short> {
 
     private final Short constant;
 
-    private Collection<Short> constantCollection = new ArrayList();
+    private List<Short> constantCollection = new ArrayList();
 
     public ShortConstant(String constant) {
         this.constant = Short.parseShort(constant);

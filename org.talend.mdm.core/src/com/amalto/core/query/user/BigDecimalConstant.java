@@ -18,13 +18,13 @@ import com.google.gson.JsonElement;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.List;
 
 public class BigDecimalConstant implements ConstantExpression<BigDecimal> {
 
     private final BigDecimal constant;
 
-    private Collection<BigDecimal> constantCollection = new ArrayList();
+    private List<BigDecimal> constantCollection = new ArrayList();
 
     public BigDecimalConstant(String constant) {
         this.constant = new BigDecimal(constant);

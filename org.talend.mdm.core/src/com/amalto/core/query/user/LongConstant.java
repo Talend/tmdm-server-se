@@ -13,7 +13,7 @@ package com.amalto.core.query.user;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.List;
 
 import org.talend.mdm.commmon.metadata.Types;
 
@@ -23,7 +23,7 @@ public class LongConstant implements ConstantExpression<Long> {
 
     private final Long constant;
 
-    private Collection<Long> constantCollection = new ArrayList();
+    private List<Long> constantCollection = new ArrayList();
 
     public LongConstant(String constant) {
         this.constant = Long.parseLong(constant);

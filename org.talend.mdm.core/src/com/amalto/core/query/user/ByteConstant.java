@@ -13,7 +13,7 @@ package com.amalto.core.query.user;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.List;
 
 import org.talend.mdm.commmon.metadata.Types;
 
@@ -23,7 +23,7 @@ public class ByteConstant implements ConstantExpression<Byte> {
 
     private final Byte constant;
 
-    private Collection<Byte> constantCollection = new ArrayList();
+    private List<Byte> constantCollection = new ArrayList();
 
     public ByteConstant(String constant) {
         this.constant = Byte.parseByte(constant);

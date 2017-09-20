@@ -273,12 +273,11 @@ class MappingExpressionTransformer extends VisitorAdapter<Expression> {
 
     @Override
     public Expression visit(Id id) {
-        if(id.getId() != null){
-            return new Id(getMapping(id.getType()), id.getId()); 
+        if (id.getId() != null) {
+            return new Id(getMapping(id.getType()), id.getId());
         } else {
             return new Id(getMapping(id.getType()), id.getConstantCollection());
         }
-       
     }
 
     @Override
@@ -441,8 +440,8 @@ class MappingExpressionTransformer extends VisitorAdapter<Expression> {
     }
 
     private Expression getConstant(Object data) {
-        if (data instanceof Collection) {
-            return getConstant((Collection) data);
+        if (data instanceof List) {
+            return getConstant((List) data);
         } else {
             if (StorageMetadataUtils.isValueAssignable(String.valueOf(data), currentField.getTypeName())) {
                 return UserQueryBuilder.createConstant(currentField, String.valueOf(data));
@@ -452,7 +451,7 @@ class MappingExpressionTransformer extends VisitorAdapter<Expression> {
         }
     }
 
-    private Expression getConstant(Collection data) {
+    private Expression getConstant(List data) {
         if (StorageMetadataUtils.isValueAssignable(data, currentField.getTypeName())) {
             return UserQueryBuilder.createConstant(currentField, data);
         } else {

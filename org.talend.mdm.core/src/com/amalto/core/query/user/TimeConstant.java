@@ -15,8 +15,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import org.talend.mdm.commmon.metadata.Types;
 
@@ -31,7 +31,7 @@ public class TimeConstant implements ConstantExpression<Date> {
 
     private final Date value;
 
-    private Collection<Date> constantCollection = new ArrayList();
+    private List<Date> constantCollection = new ArrayList();
 
     public TimeConstant(String value) {
         synchronized (TIME_FORMAT) {

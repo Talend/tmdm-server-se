@@ -11,36 +11,43 @@
 
 package com.amalto.core.save.context;
 
-import com.amalto.core.history.MutableDocument;
-import com.amalto.core.objects.ItemPOJOPK;
-import com.amalto.core.objects.datacluster.DataClusterPOJOPK;
-import com.amalto.core.objects.datamodel.DataModelPOJOPK;
-import com.amalto.core.save.generator.AutoIncrementGenerator;
-import com.amalto.core.save.generator.AutoIncrementUtil;
-import com.amalto.core.server.api.DataModel;
-import com.amalto.core.server.api.RoutingEngine;
-import com.amalto.core.query.user.Expression;
-import com.amalto.core.query.user.UserQueryBuilder;
-import com.amalto.core.save.DocumentSaverContext;
-import com.amalto.core.schema.validation.XmlSchemaValidator;
-import com.amalto.core.server.ServerContext;
-import com.amalto.core.server.StorageAdmin;
-import com.amalto.core.servlet.LoadServlet;
-import com.amalto.core.storage.Storage;
-import com.amalto.core.storage.StorageResults;
-import com.amalto.core.storage.record.DataRecord;
-import com.amalto.core.util.*;
+import static com.amalto.core.query.user.UserQueryBuilder.eq;
+import static com.amalto.core.query.user.UserQueryBuilder.from;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.util.*;
-
-import static com.amalto.core.query.user.UserQueryBuilder.eq;
-import static com.amalto.core.query.user.UserQueryBuilder.from;
+import com.amalto.core.history.MutableDocument;
+import com.amalto.core.objects.ItemPOJOPK;
+import com.amalto.core.objects.datacluster.DataClusterPOJOPK;
+import com.amalto.core.objects.datamodel.DataModelPOJOPK;
+import com.amalto.core.query.user.Expression;
+import com.amalto.core.query.user.UserQueryBuilder;
+import com.amalto.core.save.DocumentSaverContext;
+import com.amalto.core.save.generator.AutoIncrementGenerator;
+import com.amalto.core.save.generator.AutoIncrementUtil;
+import com.amalto.core.schema.validation.XmlSchemaValidator;
+import com.amalto.core.server.ServerContext;
+import com.amalto.core.server.StorageAdmin;
+import com.amalto.core.server.api.DataModel;
+import com.amalto.core.server.api.RoutingEngine;
+import com.amalto.core.servlet.LoadServlet;
+import com.amalto.core.storage.Storage;
+import com.amalto.core.storage.StorageResults;
+import com.amalto.core.storage.record.DataRecord;
+import com.amalto.core.util.LocalUser;
+import com.amalto.core.util.OutputReport;
+import com.amalto.core.util.Util;
+import com.amalto.core.util.XtentisException;
 
 public class StorageSaverSource implements SaverSource {
 
@@ -160,7 +167,7 @@ public class StorageSaverSource implements SaverSource {
 
     public String getUserName() {
         try {
-            return LocalUser.getLocalUser().getIdentity();
+            return LocalUser.getLocalUser().getUsername();
         } catch (XtentisException e) {
             throw new RuntimeException(e);
         }

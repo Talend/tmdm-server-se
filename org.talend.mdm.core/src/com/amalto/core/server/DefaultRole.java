@@ -9,25 +9,24 @@
  */
 package com.amalto.core.server;
 
-import com.amalto.core.objects.ObjectPOJO;
-import com.amalto.core.objects.ObjectPOJOPK;
-import com.amalto.core.objects.role.RolePOJO;
-import com.amalto.core.objects.role.RolePOJOPK;
-import com.amalto.core.util.Util;
-import com.amalto.core.util.XtentisException;
-import org.apache.log4j.Logger;
-import com.amalto.core.server.api.Role;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 
+import org.apache.log4j.Logger;
+import org.talend.mdm.commmon.util.core.ICoreConstants;
+
+import com.amalto.core.objects.ObjectPOJO;
+import com.amalto.core.objects.ObjectPOJOPK;
+import com.amalto.core.objects.role.RolePOJO;
+import com.amalto.core.objects.role.RolePOJOPK;
+import com.amalto.core.server.api.Role;
+import com.amalto.core.util.XtentisException;
+
 public class DefaultRole implements Role {
 
     private static final Logger LOGGER = Logger.getLogger(DefaultRole.class);
-
-    private static final String SYSTEM_PREFIX = "System_"; //$NON-NLS-1$
     
     public RolePOJOPK putRole(RolePOJO role) throws XtentisException {
         LOGGER.trace("putRole() ");
@@ -98,7 +97,7 @@ public class DefaultRole implements Role {
         Collection<ObjectPOJOPK> c = ObjectPOJO.findAllPKs(RolePOJO.class, regex);
         ArrayList<RolePOJOPK> l = new ArrayList<RolePOJOPK>();
         for (ObjectPOJOPK currentObject : c) {
-            if (currentObject.getIds().length > 0 && currentObject.getIds()[0].length() > 7 && SYSTEM_PREFIX.equals(currentObject.getIds()[0].substring(0, 7)) ) {
+            if (currentObject.getIds().length > 0 && currentObject.getIds()[0].startsWith(ICoreConstants.SYSTEM_PREFIX)) {
                 continue;
             }
             l.add(new RolePOJOPK(currentObject));

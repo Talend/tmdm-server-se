@@ -412,7 +412,7 @@ public class Util {
     public static String getUsernameAndPasswordToken() {
         String token = null;
         try {
-            String userName = LocalUser.getLocalUser().getIdentity();
+            String userName = LocalUser.getLocalUser().getUsername();
             String password = LocalUser.getLocalUser().getCredentials();
             token = userName + "/" + password;
         } catch (XtentisException e) {
@@ -712,7 +712,7 @@ public class Util {
                 // Create before deleting update report
                 String username;
                 try {
-                    username = LocalUser.getLocalUser().getIdentity();
+                    username = LocalUser.getLocalUser().getUsername();
                 } catch (Exception e1) {
                     LOGGER.error(e1);
                     throw e1;
@@ -842,13 +842,8 @@ public class Util {
     }
 
     private static Element getLoginProvisioningFromDB() throws Exception {
-
-        ItemPOJOPK itemPk = new ItemPOJOPK(new DataClusterPOJOPK("PROVISIONING"), "User", new String[] { LocalUser.getLocalUser()
-                .getIdentity() });
-        if (Util.isEnterprise()) {
-            itemPk = new ItemPOJOPK(new DataClusterPOJOPK("PROVISIONING"), "ID", new String[] { LocalUser.getLocalUser()
-                .getIdentity() });
-        }
+        ItemPOJOPK itemPk = new ItemPOJOPK(new DataClusterPOJOPK("PROVISIONING"), "ID",
+                new String[] { LocalUser.getLocalUser().getIdentity() });
         ItemPOJO item = ItemPOJO.load(itemPk);
         if (item == null) {
             return null;

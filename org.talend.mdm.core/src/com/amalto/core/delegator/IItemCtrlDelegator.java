@@ -464,11 +464,13 @@ public abstract class IItemCtrlDelegator implements IBeanDelegator, IItemCtrlDel
         if (roles != null && roles.size() > 0) {
             if (ComplexTypeMetadata.DeleteType.LOGICAL.equals(deleteType)) {
                 if (!Collections.disjoint(complexTypeMetadata.getDenyDelete(ComplexTypeMetadata.DeleteType.LOGICAL), roles)) {
-                    throw new XtentisException("Unauthorized. User '" + LocalUser.getLocalUser().getIdentity() + "' has no logical delete permission on '" + clusterName + "." + concept + "'");   //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$
+                    throw new XtentisException("Unauthorized. User '" + LocalUser.getLocalUser().getUsername() //$NON-NLS-1$
+                            + "' has no logical delete permission on '" + clusterName + "." + concept + "'"); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
                 }
             } else if (ComplexTypeMetadata.DeleteType.PHYSICAL.equals(deleteType)) {
                 if (!Collections.disjoint(complexTypeMetadata.getDenyDelete(ComplexTypeMetadata.DeleteType.PHYSICAL), roles)) {
-                    throw new XtentisException("Unauthorized. User '" + LocalUser.getLocalUser().getIdentity() + "' has no physical delete permission on '" + clusterName + "." + concept + "'");   //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$
+                    throw new XtentisException("Unauthorized. User '" + LocalUser.getLocalUser().getUsername() //$NON-NLS-1$
+                            + "' has no physical delete permission on '" + clusterName + "." + concept + "'"); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
                 }
             }
         }

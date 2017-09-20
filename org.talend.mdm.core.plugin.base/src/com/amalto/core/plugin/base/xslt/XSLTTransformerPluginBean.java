@@ -34,8 +34,6 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import net.sf.saxon.FeatureKeys;
-
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -55,6 +53,8 @@ import com.amalto.core.util.Util;
 import com.amalto.core.util.XtentisException;
 import com.amalto.xmlserver.interfaces.WhereAnd;
 import com.amalto.xmlserver.interfaces.WhereCondition;
+
+import net.sf.saxon.FeatureKeys;
 
 /**
  * <h1>XSLT Plugin</h1> <h3>Plugin name: xslt</h3> <h3>Description</h3> The XSLT plugin executes an XSLT on an input XML
@@ -319,7 +319,7 @@ public class XSLTTransformerPluginBean extends Plugin {
             Transformer transformer = transFactory.newTransformer(new StreamSource(new StringReader(parameters.getXslt())));
 
             // Pass Parameters to the XSLT processor
-            String username = LocalUser.getLocalUser().getIdentity();
+            String username = LocalUser.getLocalUser().getUsername();
             transformer.setParameter("USERNAME", username); //$NON-NLS-1$
             transformer.setErrorListener(new ErrorListener() {
 

@@ -9,9 +9,16 @@
  */
 package com.amalto.core.util;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.talend.mdm.commmon.util.core.ICoreConstants;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -19,7 +26,7 @@ public class User implements Cloneable {
     
     private static final Logger LOG = Logger.getLogger(User.class);
 
-    Integer ID;
+    String id;
 
     String userName;
 
@@ -81,7 +88,7 @@ public class User implements Cloneable {
                 + "    <givenname>" + (givenName == null ? "" : givenName) + "</givenname>" + "    <familyname>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                 + (familyName == null ? "" : familyName) + "</familyname>" + "    <phonenumber>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + (phoneNumber == null ? "" : phoneNumber) + "</phonenumber>" + "    <company>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                + (company == null ? "" : company) + "</company>" + "    <id>" + ID + "</id>" + "    <signature>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+                + (company == null ? "" : company) + "</company>" + "    <id>" + id + "</id>" + "    <signature>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
                 + (signature == null ? "" : signature) + "</signature>" + "    <realemail>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + (realEmail == null ? "" : realEmail) + "</realemail>" + "    <fakeemail>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + (fakeEmail == null ? "" : fakeEmail) + "</fakeemail>" + "    <viewrealemail>" + (viewRealEmail ? "yes" : "no") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
@@ -133,13 +140,30 @@ public class User implements Cloneable {
         return user;
     }
 
+    public static User parseWithoutSystemRoles(String xml) throws Exception {
+        User user = new User();
+        parse(xml, user);
+
+        if (com.amalto.core.util.Util.isEnterprise() && user.getRoleNames() != null) {
+            Set<String> roleNames = new HashSet<String>();
+            for (String role : user.getRoleNames()) {
+                if (role != null && role.startsWith(ICoreConstants.SYSTEM_PREFIX)) {
+                    continue;
+                }
+                roleNames.add(role);
+            }
+            user.setRoleNames(roleNames);
+        }
+        return user;
+    }
+
     public static void parse(String xml, User user) throws Exception {
 
         try {
             Element result = Util.parse(xml).getDocumentElement();
             
             if (Util.isEnterprise()) {
-                user.setID(Integer.parseInt(Util.getFirstTextNode(result, "//id"))); //$NON-NLS-1$
+                user.setId(Util.getFirstTextNode(result, "//id")); //$NON-NLS-1$
             } else {
                 user.setUserName(Util.getFirstTextNode(result, "//username")); //$NON-NLS-1$
                 user.setPassword(Util.getFirstTextNode(result, "//password")); //$NON-NLS-1$
@@ -291,12 +315,12 @@ public class User implements Cloneable {
         this.homePage = homePage;
     }
 
-    public Integer getID() {
-        return ID;
+    public String getId() {
+        return id;
     }
 
-    public void setID(Integer id) {
-        ID = id;
+    public void setId(String id) {
+        this.id = id;
     }
 
     // for groovy

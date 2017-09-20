@@ -10,11 +10,9 @@
 package org.talend.mdm.webapp.welcomeportal.server.actions;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
@@ -61,8 +59,6 @@ public class WelcomePortalAction implements WelcomePortalService {
     private static final Logger LOG = Logger.getLogger(WelcomePortalAction.class);
 
     private static final String STANDALONE_PROCESS_PREFIX = "Runnable#"; //$NON-NLS-1$
-
-    private static final String SYSTEM_PREFIX = "System_"; //$NON-NLS-1$
     
     private static final Messages MESSAGES = MessagesFactory.getMessages(
             "org.talend.mdm.webapp.welcomeportal.client.i18n.WelcomePortalMessages", WelcomePortalAction.class.getClassLoader()); //$NON-NLS-1$
@@ -259,20 +255,10 @@ public class WelcomePortalAction implements WelcomePortalService {
     public void savePortalConfig(PortalProperties config) throws ServiceException {
         try {
             ILocalUser user = LocalUser.getLocalUser();
-            if(!Util.userCanWrite(user)) {
+            if (!user.userCanWrite()) {
                 return;
             }
-            User parsedUser = User.parse(user.getUserXML());
-            if (com.amalto.core.util.Util.isEnterprise() && parsedUser.getRoleNames() != null) {
-                Set<String> roleNames = new HashSet<String>();
-                for (String role : parsedUser.getRoleNames()) {
-                    if (role != null && role.length() > 7 && SYSTEM_PREFIX.equals(role.substring(0, 7))) {
-                        continue;
-                    }
-                    roleNames.add(role);
-                }
-                parsedUser.setRoleNames(roleNames);
-            }
+            User parsedUser = User.parseWithoutSystemRoles(user.getUserXML());
             Map<String, String> properties = parsedUser.getProperties();
             String value;
             for (String name : config.getKeys()) {
@@ -296,7 +282,7 @@ public class WelcomePortalAction implements WelcomePortalService {
     public void savePortalConfig(String key, String value) throws ServiceException {
         try {
             ILocalUser user = LocalUser.getLocalUser();
-            if(!Util.userCanWrite(user)) {
+            if (!user.userCanWrite()) {
                 return;
             }
             User parsedUser = User.parse(user.getUserXML());
@@ -319,7 +305,7 @@ public class WelcomePortalAction implements WelcomePortalService {
     public void savePortalConfig(String key, String portletName, String value) throws ServiceException {
         try {
             ILocalUser user = LocalUser.getLocalUser();
-            if(!Util.userCanWrite(user)) {
+            if (!user.userCanWrite()) {
                 return;
             }
             User parsedUser = User.parse(user.getUserXML());
@@ -347,7 +333,7 @@ public class WelcomePortalAction implements WelcomePortalService {
         assert configs.size() == 2;
         try {
             ILocalUser user = LocalUser.getLocalUser();
-            if(!Util.userCanWrite(user)) {
+            if (!user.userCanWrite()) {
                 return;
             }
             User parsedUser = User.parse(user.getUserXML());

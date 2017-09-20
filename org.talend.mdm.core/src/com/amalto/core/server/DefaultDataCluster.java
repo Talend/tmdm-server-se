@@ -147,7 +147,7 @@ public class DefaultDataCluster implements DataCluster {
         try {
             ILocalUser user = LocalUser.getLocalUser();
             if (user != null && !user.userCanRead(DataClusterPOJO.class, pk.getUniqueId())) {
-                String err = "Unauthorized read access by " + "user '" + user.getIdentity() + "' on object "
+                String err = "Unauthorized read access by " + "user '" + user.getUsername() + "' on object "
                         + ObjectPOJO.getObjectName(DataClusterPOJO.class) + " [" + pk.getUniqueId() + "] ";
                 LOGGER.error(err);
                 throw new XtentisException(err);

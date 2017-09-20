@@ -104,7 +104,7 @@ public class Configuration {
         }
 
         ILocalUser user = LocalUser.getLocalUser();
-        if (!Util.userCanWrite(user)) {
+        if (!user.userCanWrite()) {
             return;
         }
 

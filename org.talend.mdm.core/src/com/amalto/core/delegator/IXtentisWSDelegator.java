@@ -666,14 +666,14 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
             // Check if user is allowed to read the cluster
             ILocalUser user = LocalUser.getLocalUser();
             boolean authorized = false;
-            if (MDMConfiguration.getAdminUser().equals(user.getIdentity())) {
+            if (LocalUser.isAdminUser(user.getUsername())) {
                 authorized = true;
             } else if (user.userCanRead(DataClusterPOJO.class, dataClusterName)) {
                 authorized = true;
             }
             if (!authorized) {
                 throw new RemoteException("Unauthorized read access on data cluster '" + dataClusterName + "' by user '" //$NON-NLS-1$ //$NON-NLS-2$
-                        + user.getIdentity() + "'"); //$NON-NLS-1$
+                        + user.getUsername() + "'"); //$NON-NLS-1$
             }
             // If not all concepts are store in the same revision,
             // force the concept to be specified by the user.
@@ -1145,7 +1145,7 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
             deleteItemWithReport(new WSDeleteItemWithReport(itemPK, wsDeleteItem.getSource(),
                     UpdateReportPOJO.OPERATION_TYPE_PHYSICAL_DELETE,
                     "/", //$NON-NLS-1$
-                    LocalUser.getLocalUser().getIdentity(), wsDeleteItem.getInvokeBeforeDeleting(), wsDeleteItem.getWithReport(),
+                    LocalUser.getLocalUser().getUsername(), wsDeleteItem.getInvokeBeforeDeleting(), wsDeleteItem.getWithReport(),
                     wsDeleteItem.getOverride()));
             return itemPK;
         } catch (Exception e) {
@@ -1174,7 +1174,7 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
         if (deleteUser != null && deleteUser.length() > 0) {
             userName = deleteUser;
         } else {
-            userName = user.getIdentity();
+            userName = user.getUsername();
         }
         UpdateReportPOJO updateReportPOJO = new UpdateReportPOJO(concept, Util.joinStrings(ids, "."), operationType, //$NON-NLS-1$
                 source, System.currentTimeMillis(), dataClusterPK, dataModelPK, userName, updateReportItemsMap);
@@ -1276,8 +1276,8 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
         try {
             WSItemPK wsItemPK = wsDropItem.getWsItemPK();
             deleteItemWithReport(new WSDeleteItemWithReport(wsItemPK, wsDropItem.getSource(),
-                    UpdateReportPOJO.OPERATION_TYPE_LOGICAL_DELETE, wsDropItem.getPartPath(), LocalUser.getLocalUser()
-                            .getIdentity(), wsDropItem.getInvokeBeforeDeleting(), wsDropItem.getWithReport(),
+                    UpdateReportPOJO.OPERATION_TYPE_LOGICAL_DELETE, wsDropItem.getPartPath(),
+                    LocalUser.getLocalUser().getUsername(), wsDropItem.getInvokeBeforeDeleting(), wsDropItem.getWithReport(),
                     wsDropItem.getOverride()));
             return new WSDroppedItemPK(wsItemPK, wsDropItem.getPartPath()); // TODO Revision
         } catch (Exception e) {

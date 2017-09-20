@@ -330,7 +330,7 @@ public class Utils {
     public static Boolean setDefaultLanguage(String language) throws Exception {
         try {
             ILocalUser user = LocalUser.getLocalUser();
-            if (Util.userCanWrite(user)) {
+            if (user.userCanWrite()) {
                 String identity = user.getIdentity();
                 
                 if (com.amalto.core.util.Util.isEnterprise()) {

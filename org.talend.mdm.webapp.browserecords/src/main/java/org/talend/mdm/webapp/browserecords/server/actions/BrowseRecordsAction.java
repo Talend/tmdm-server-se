@@ -222,7 +222,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
                     WSDeleteItemWithReport wsDeleteItem = new WSDeleteItemWithReport(new WSItemPK(new WSDataClusterPK(
                             dataClusterPK), concept, ids), UpdateReportPOJO.GENERIC_UI_SOURCE,
                             UpdateReportPOJO.OPERATION_TYPE_PHYSICAL_DELETE, "/", //$NON-NLS-1$
-                            LocalUser.getLocalUser().getIdentity(), true, true, override);
+                            LocalUser.getLocalUser().getUsername(), true, true, override);
 
                     WSString deleteMessage = CommonUtil.getPort().deleteItemWithReport(wsDeleteItem);
 
@@ -1005,7 +1005,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
         WSWhereCondition wc1 = new WSWhereCondition("BrowseItem/ViewPK", WSWhereOperator.EQUALS, view,//$NON-NLS-1$
                 WSStringPredicate.NONE, false);
         WSWhereCondition wc3 = new WSWhereCondition("BrowseItem/Owner", WSWhereOperator.EQUALS,//$NON-NLS-1$
-                LocalUser.getLocalUser().getIdentity(), WSStringPredicate.OR, false);
+                LocalUser.getLocalUser().getUsername(), WSStringPredicate.OR, false);
         WSWhereCondition wc4;
         WSWhereOr or = new WSWhereOr();
         if (isShared) {
@@ -1164,7 +1164,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
     @Override
     public void saveCriteria(String viewPK, String templateName, boolean isShared, String criteriaString) throws ServiceException {
         try {
-            String owner = LocalUser.getLocalUser().getIdentity();
+            String owner = LocalUser.getLocalUser().getUsername();
             SearchTemplate searchTemplate = new SearchTemplate();
             searchTemplate.setViewPK(viewPK);
             searchTemplate.setCriteriaName(templateName);
@@ -1643,7 +1643,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             String url = baseUrl + "services/rest/data/" + getCurrentDataCluster() + "/" + concept + "/bulk";
             DefaultHttpClient httpClient = new DefaultHttpClient();
             httpClient.getCredentialsProvider().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(
-                    LocalUser.getLocalUser().getIdentity(), LocalUser.getLocalUser().getCredentials()));
+                    LocalUser.getLocalUser().getUsername(), LocalUser.getLocalUser().getCredentials()));
             HttpPatch httpPatch = new HttpPatch(url);
             httpPatch.setHeader("Content-Type", "text/xml; charset=utf8");
             HttpEntity entity = new StringEntity(xml);
@@ -1941,8 +1941,8 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             String dataClusterPK = config.getCluster() == null ? StringUtils.EMPTY : config.getCluster();
             UpdateReportPOJO updateReportPOJO = new UpdateReportPOJO(concept,
                     Util.joinStrings(ids, "."), UpdateReportPOJO.OPERATION_TYPE_ACTION, //$NON-NLS-1$
-                    UpdateReportPOJO.GENERIC_UI_SOURCE, System.currentTimeMillis(), dataClusterPK, dataModelPK, LocalUser
-                            .getLocalUser().getIdentity(), null);
+                    UpdateReportPOJO.GENERIC_UI_SOURCE, System.currentTimeMillis(), dataClusterPK, dataModelPK,
+                    LocalUser.getLocalUser().getUsername(), null);
 
             String updateReport = updateReportPOJO.serialize();
             WSTypedContent wsTypedContent = new WSTypedContent(null, new WSByteArray(updateReport.getBytes("UTF-8")),//$NON-NLS-1$

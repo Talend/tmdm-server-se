@@ -73,7 +73,6 @@
                                 <exclude>com/amalto/core/delegator/impl/DefaultLocalUserDelegator.class</exclude>
                                 <exclude>com/amalto/core/save/generator/AutoIncrementGenerator.class</exclude>
                                 <exclude>com/amalto/core/server/ServerAccessImpl*.class</exclude>
-                                <exclude>com/amalto/core/initdb/data/datamodel/PROVISIONING</exclude>
                                 <exclude>com/amalto/core/initdb/initdb.xml</exclude>
                             </excludes>
                         </configuration>
@@ -89,7 +88,6 @@
                                 <include>com/amalto/core/delegator/impl/DefaultLocalUserDelegator.class</include>
                                 <include>com/amalto/core/save/generator/AutoIncrementGenerator.class</include>
                                 <include>com/amalto/core/server/ServerAccessImpl*.class</include>
-                                <include>com/amalto/core/initdb/data/datamodel/PROVISIONING</include>
                                 <include>com/amalto/core/initdb/initdb.xml</include>
                             </includes>
                         </configuration>

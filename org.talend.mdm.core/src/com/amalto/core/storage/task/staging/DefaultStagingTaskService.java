@@ -112,7 +112,7 @@ public class DefaultStagingTaskService implements StagingTaskServiceDelegate {
         }
         String userName;
         try {
-            userName = LocalUser.getLocalUser().getIdentity();
+            userName = LocalUser.getLocalUser().getUsername();
         } catch (XtentisException e) {
             throw new RuntimeException("Can not get current user information.", e);
         }

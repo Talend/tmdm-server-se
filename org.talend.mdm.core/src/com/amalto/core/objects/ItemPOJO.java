@@ -31,7 +31,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import com.amalto.core.delegator.IBeanDelegator;
 import com.amalto.core.delegator.ILocalUser;
 import com.amalto.core.objects.datacluster.DataClusterPOJO;
 import com.amalto.core.objects.datacluster.DataClusterPOJOPK;
@@ -447,7 +446,7 @@ public class ItemPOJO implements Serializable {
                     itemPOJOPK.getIds(),
                     partPath,
                     xmlDocument.toString(),
-                    user.getIdentity(),
+                    user.getUsername(),
                     System.currentTimeMillis());
             // Marshal
             StringWriter sw = new StringWriter();
@@ -660,7 +659,7 @@ public class ItemPOJO implements Serializable {
     private static void checkAccess(ILocalUser user, ItemPOJOPK itemPOJOPK, boolean mutableAccess, String accessLabel) throws XtentisException {
         assert user != null;
         boolean authorizedAccess;
-        String username = user.getIdentity();
+        String username = user.getUsername();
 
         boolean isSystemObject = XSystemObjects.isXSystemObject(DATA_CLUSTER_SYSTEM_OBJECTS, itemPOJOPK.getDataClusterPOJOPK().getIds()[0]);
 

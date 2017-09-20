@@ -23,7 +23,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
-import org.talend.mdm.commmon.util.core.MDMConfiguration;
 import org.talend.mdm.commmon.util.webapp.XObjectType;
 import org.talend.mdm.commmon.util.webapp.XSystemObjects;
 
@@ -360,14 +359,14 @@ public class DroppedItemPOJO implements Serializable {
         ILocalUser user = LocalUser.getLocalUser();
 
         if (authorizeMode.equals("w")) {
-            if (MDMConfiguration.getAdminUser().equals(user.getIdentity())) {
+            if (LocalUser.isAdminUser(user.getUsername())) {
                 authorized = true;
             } else if (XSystemObjects.isExist(XObjectType.DATA_CLUSTER, refItemPOJOPK.getDataClusterPOJOPK().getUniqueId())
                     || user.userItemCanWrite(ItemPOJO.load(refItemPOJOPK), refItemPOJOPK.getDataClusterPOJOPK().getUniqueId(), refItemPOJOPK.getConceptName())) {
                 authorized = true;
             }
         } else if (authorizeMode.equals("r")) {
-            if (MDMConfiguration.getAdminUser().equals(user.getIdentity())) {
+            if (LocalUser.isAdminUser(user.getUsername())) {
                 authorized = true;
             } else if (user.userItemCanRead(ItemPOJO.load(refItemPOJOPK))) {
                 authorized = true;
@@ -375,10 +374,10 @@ public class DroppedItemPOJO implements Serializable {
         }
         if (!authorized) {
             String err = "Unauthorized " + actionName + " access by " +
-                    "user " + user.getIdentity() + " on a dropped item of Item '" + refItemPOJOPK.getUniqueID() + "'";
+                    "user " + user.getUsername() + " on a dropped item of Item '" + refItemPOJOPK.getUniqueID() + "'";
             LOGGER.error(err);
             throw new XtentisException(err);
         }
-        return user.getIdentity();
+        return user.getUsername();
     }
 }

@@ -27,7 +27,7 @@ public class IntegerConstant implements ConstantExpression<Integer> {
         this.constant = Integer.parseInt(constant);
     }
 
-    public IntegerConstant(Collection constant) {
+    public IntegerConstant(List<Integer> constant) {
         this.constantCollection = constant;
         this.constant = null;
     }
@@ -62,7 +62,11 @@ public class IntegerConstant implements ConstantExpression<Integer> {
             return false;
         }
         IntegerConstant that = (IntegerConstant) o;
-        return constant == that.constant;
+        if (constant != null && constantCollection.isEmpty()) {
+            return constant == that.constant;
+        } else {
+            return constantCollection.equals(that.constantCollection);
+        }
     }
 
     @Override
@@ -71,7 +75,7 @@ public class IntegerConstant implements ConstantExpression<Integer> {
     }
 
     @Override
-    public Collection<Integer> getValueList() {
+    public List<Integer> getValueList() {
         return constantCollection;
     }
 }

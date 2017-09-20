@@ -29,7 +29,7 @@ public class ByteConstant implements ConstantExpression<Byte> {
         this.constant = Byte.parseByte(constant);
     }
 
-    public ByteConstant(Collection constant) {
+    public ByteConstant(List<Byte> constant) {
         this.constantCollection = constant;
         this.constant = null;
     }
@@ -64,7 +64,11 @@ public class ByteConstant implements ConstantExpression<Byte> {
             return false;
         }
         ByteConstant that = (ByteConstant) o;
-        return constant.equals(that.constant);
+        if (constant != null && constantCollection.isEmpty()) {
+            return constant.equals(that.constant);
+        } else {
+            return constantCollection.equals(that.constantCollection);
+        }
     }
 
     @Override
@@ -73,7 +77,7 @@ public class ByteConstant implements ConstantExpression<Byte> {
     }
 
     @Override
-    public Collection<Byte> getValueList() {
+    public List<Byte> getValueList() {
         return constantCollection;
     }
 }

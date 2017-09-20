@@ -28,7 +28,7 @@ public class DoubleConstant implements ConstantExpression<Double> {
         this.constant = Double.parseDouble(constant);
     }
 
-    public DoubleConstant(Collection constant) {
+    public DoubleConstant(List<Double> constant) {
         this.constantCollection = constant;
         this.constant = null;
     }
@@ -63,7 +63,11 @@ public class DoubleConstant implements ConstantExpression<Double> {
             return false;
         }
         DoubleConstant that = (DoubleConstant) o;
-        return !(constant != null ? !constant.equals(that.constant) : that.constant != null);
+        if (constant != null && constantCollection.isEmpty()) {
+            return !(constant != null ? !constant.equals(that.constant) : that.constant != null);
+        } else {
+            return constantCollection.equals(that.constantCollection);
+        }
     }
 
     @Override
@@ -72,7 +76,7 @@ public class DoubleConstant implements ConstantExpression<Double> {
     }
 
     @Override
-    public Collection<Double> getValueList() {
+    public List<Double> getValueList() {
         return constantCollection;
     }
 

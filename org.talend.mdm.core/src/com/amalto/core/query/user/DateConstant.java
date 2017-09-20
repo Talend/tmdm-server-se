@@ -75,8 +75,11 @@ public class DateConstant implements ConstantExpression<Date> {
             return false;
         }
         DateConstant that = (DateConstant) o;
-        return !(value != null ? !value.equals(that.value) : that.value != null);
-
+        if (value != null && constantCollection.isEmpty()) {
+            return !(value != null ? !value.equals(that.value) : that.value != null);
+        } else {
+            return constantCollection.equals(that.constantCollection);
+        }
     }
 
     @Override
@@ -85,7 +88,7 @@ public class DateConstant implements ConstantExpression<Date> {
     }
 
     @Override
-    public Collection<Date> getValueList() {
+    public List<Date> getValueList() {
         return constantCollection;
     }
 }

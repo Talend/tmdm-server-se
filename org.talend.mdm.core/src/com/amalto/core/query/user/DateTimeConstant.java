@@ -40,7 +40,7 @@ public class DateTimeConstant implements ConstantExpression<Date> {
         }
     }
 
-    public DateTimeConstant(Collection value) {
+    public DateTimeConstant(List<Date> value) {
         this.constantCollection = value;
         this.value = null;
     }
@@ -75,7 +75,11 @@ public class DateTimeConstant implements ConstantExpression<Date> {
             return false;
         }
         DateTimeConstant that = (DateTimeConstant) o;
-        return !(value != null ? !value.equals(that.value) : that.value != null);
+        if (value != null && constantCollection.isEmpty()) {
+            return !(value != null ? !value.equals(that.value) : that.value != null);
+        } else {
+            return constantCollection.equals(that.constantCollection);
+        }
     }
 
     @Override
@@ -84,7 +88,7 @@ public class DateTimeConstant implements ConstantExpression<Date> {
     }
 
     @Override
-    public Collection<Date> getValueList() {
+    public List<Date> getValueList() {
         return constantCollection;
     }
 }

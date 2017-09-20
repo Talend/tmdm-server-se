@@ -29,7 +29,7 @@ public class LongConstant implements ConstantExpression<Long> {
         this.constant = Long.parseLong(constant);
     }
 
-    public LongConstant(Collection constant) {
+    public LongConstant(List<Long> constant) {
         this.constantCollection = constant;
         this.constant = null;
     }
@@ -64,7 +64,11 @@ public class LongConstant implements ConstantExpression<Long> {
             return false;
         }
         LongConstant that = (LongConstant) o;
-        return constant.equals(that.constant);
+        if (constant != null && constantCollection.isEmpty()) {
+            return constant.equals(that.constant);
+        } else {
+            return constantCollection.equals(that.constantCollection);
+        }
     }
 
     @Override
@@ -73,7 +77,7 @@ public class LongConstant implements ConstantExpression<Long> {
     }
 
     @Override
-    public Collection<Long> getValueList() {
+    public List<Long> getValueList() {
         return constantCollection;
     }
 }

@@ -31,7 +31,7 @@ public class BooleanConstant implements ConstantExpression<Boolean> {
         this.value = Boolean.valueOf(value);
     }
 
-    public BooleanConstant(Collection value) {
+    public BooleanConstant(List<Boolean> value) {
         this.valueCollection = value;
         this.value = null;
     }
@@ -66,7 +66,11 @@ public class BooleanConstant implements ConstantExpression<Boolean> {
             return false;
         }
         BooleanConstant that = (BooleanConstant) o;
-        return value == that.value;
+        if (value != null && valueCollection.isEmpty()) {
+            return value == that.value;
+        } else {
+            return valueCollection.equals(that.valueCollection);
+        }
     }
 
     @Override
@@ -75,7 +79,7 @@ public class BooleanConstant implements ConstantExpression<Boolean> {
     }
 
     @Override
-    public Collection<Boolean> getValueList() {
+    public List<Boolean> getValueList() {
         return valueCollection;
     }
 

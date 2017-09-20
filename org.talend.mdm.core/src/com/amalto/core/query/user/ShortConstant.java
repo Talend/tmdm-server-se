@@ -29,7 +29,7 @@ public class ShortConstant implements ConstantExpression<Short> {
         this.constant = Short.parseShort(constant);
     }
 
-    public ShortConstant(Collection constant) {
+    public ShortConstant(List<Short> constant) {
         this.constantCollection = constant;
         this.constant = null;
     }
@@ -64,7 +64,11 @@ public class ShortConstant implements ConstantExpression<Short> {
             return false;
         }
         ShortConstant that = (ShortConstant) o;
-        return constant.equals(that.constant);
+        if (constant != null && constantCollection.isEmpty()) {
+            return constant.equals(that.constant);
+        } else {
+            return constantCollection.equals(that.constantCollection);
+        }
     }
 
     @Override
@@ -73,7 +77,7 @@ public class ShortConstant implements ConstantExpression<Short> {
     }
 
     @Override
-    public Collection<Short> getValueList() {
+    public List<Short> getValueList() {
         return constantCollection;
     }
 }

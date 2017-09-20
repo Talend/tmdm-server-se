@@ -489,7 +489,7 @@ public class UserQueryBuilder {
         }
     }
 
-    public static TypedExpression createConstant(TypedExpression expression, Collection constant) {
+    public static TypedExpression createConstant(TypedExpression expression, List constant) {
         String fieldTypeName = expression.getTypeName();
         if (Types.INTEGER.equals(fieldTypeName) || Types.POSITIVE_INTEGER.equals(fieldTypeName)
                 || Types.NEGATIVE_INTEGER.equals(fieldTypeName) || Types.NON_POSITIVE_INTEGER.equals(fieldTypeName)

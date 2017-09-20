@@ -29,7 +29,7 @@ public class FloatConstant implements ConstantExpression<Float> {
         this.constant = Float.parseFloat(constant);
     }
 
-    public FloatConstant(Collection constant) {
+    public FloatConstant(List<Float> constant) {
         this.constantCollection = constant;
         this.constant = null;
     }
@@ -64,7 +64,11 @@ public class FloatConstant implements ConstantExpression<Float> {
             return false;
         }
         FloatConstant that = (FloatConstant) o;
-        return !(constant != null ? !constant.equals(that.constant) : that.constant != null);
+        if (constant != null && constantCollection.isEmpty()) {
+            return !(constant != null ? !constant.equals(that.constant) : that.constant != null);
+        } else {
+            return constantCollection.equals(that.constantCollection);
+        }
     }
 
     @Override
@@ -73,7 +77,7 @@ public class FloatConstant implements ConstantExpression<Float> {
     }
 
     @Override
-    public Collection<Float> getValueList() {
+    public List<Float> getValueList() {
         return constantCollection;
     }
 }

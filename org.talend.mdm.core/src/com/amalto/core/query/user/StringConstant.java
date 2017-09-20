@@ -29,7 +29,7 @@ public class StringConstant implements ConstantExpression<String> {
         this.value = value;
     }
 
-    public StringConstant(Collection value) {
+    public StringConstant(List<String> value) {
         this.constantCollection = value;
         this.value = null;
     }
@@ -64,7 +64,11 @@ public class StringConstant implements ConstantExpression<String> {
             return false;
         }
         StringConstant that = (StringConstant) o;
-        return !(value != null ? !value.equals(that.value) : that.value != null);
+        if (value != null && constantCollection.isEmpty()) {
+            return !(value != null ? !value.equals(that.value) : that.value != null);
+        } else {
+            return constantCollection.equals(that.constantCollection);
+        }
     }
 
     @Override
@@ -73,8 +77,7 @@ public class StringConstant implements ConstantExpression<String> {
     }
 
     @Override
-    public Collection<String> getValueList() {
-        // TODO Auto-generated method stub
+    public List<String> getValueList() {
         return constantCollection;
     }
 }

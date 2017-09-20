@@ -5269,6 +5269,134 @@ public class StorageQueryTest extends StorageTestCase {
         }
     }
 
+    public void testInWithForeignKey() {
+        List dataList = new ArrayList();
+        // string type
+        dataList.add("2");
+        UserQueryBuilder qb = UserQueryBuilder.from(product);
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(2, results.getSize());
+            assertEquals(2, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        qb = UserQueryBuilder.from(product).where(in(product.getField("Family"), dataList));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getSize());
+            assertEquals(1, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        qb = UserQueryBuilder.from(address);
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(5, results.getSize());
+            assertEquals(5, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        qb = UserQueryBuilder.from(address).where(in(address.getField("country"), dataList));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(2, results.getSize());
+            assertEquals(2, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        dataList.clear();
+        dataList.add("1");
+        qb = UserQueryBuilder.from(address).where(in(address.getField("country"), dataList));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(3, results.getSize());
+            assertEquals(3, results.getCount());
+        } finally {
+            results.close();
+        }
+    }
+
+    public void testNotInWithForeignKey() {
+        List dataList = new ArrayList();
+        // string type
+        dataList.add("1");
+        UserQueryBuilder qb = UserQueryBuilder.from(address);
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(5, results.getSize());
+            assertEquals(5, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        qb = UserQueryBuilder.from(address).where(notIn(address.getField("country"), dataList));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(2, results.getSize());
+            assertEquals(2, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        dataList.clear();
+        dataList.add("2");
+        qb = UserQueryBuilder.from(address).where(notIn(address.getField("country"), dataList));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(3, results.getSize());
+            assertEquals(3, results.getCount());
+        } finally {
+            results.close();
+        }
+    }
+
+    public void testMoreConditionWithIn() {
+        List dataList = new ArrayList();
+        dataList.add("1");
+        UserQueryBuilder qb = UserQueryBuilder.from(address);
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(5, results.getSize());
+            assertEquals(5, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        qb = UserQueryBuilder.from(address).where(in(address.getField("country"), dataList));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(3, results.getSize());
+            assertEquals(3, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        qb = UserQueryBuilder.from(address).where(
+                and(in(address.getField("country"), dataList), eq(address.getField("Street"), "Street3")));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(2, results.getSize());
+            assertEquals(2, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        qb = UserQueryBuilder.from(address).where(
+                and(in(address.getField("country"), dataList), eq(address.getField("Street"), "Street1")));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getSize());
+            assertEquals(1, results.getCount());
+        } finally {
+            results.close();
+        }
+    }
+
     public void testGetFKRecordContainedTypeContent() throws Exception {
         UserQueryBuilder qb = UserQueryBuilder.from(entityB);
         StorageResults results = storage.fetch(qb.getSelect());

@@ -23,7 +23,6 @@ import org.hibernate.Session;
 import org.hibernate.criterion.CriteriaQuery;
 import org.hibernate.criterion.Criterion;
 
-import java.sql.Timestamp;
 import java.util.*;
 
 abstract class AbstractQueryHandler extends VisitorAdapter<StorageResults> {

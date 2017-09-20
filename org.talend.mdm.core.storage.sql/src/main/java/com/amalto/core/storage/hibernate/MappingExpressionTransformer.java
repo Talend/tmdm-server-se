@@ -303,12 +303,22 @@ class MappingExpressionTransformer extends VisitorAdapter<Expression> {
 
     @Override
     public Expression visit(DateConstant constant) {
-        return getConstant(constant.getConstant());
+        Date date = constant.getValue();
+        Object dateObject = constant.getConstant();
+        if (date != null) {
+            dateObject = constant.DATE_FORMAT.format(date);
+        }
+        return getConstant(dateObject);
     }
 
     @Override
     public Expression visit(DateTimeConstant constant) {
-        return getConstant(constant.getConstant());
+        Date date = constant.getValue();
+        Object dateObject = constant.getConstant();
+        if (date != null) {
+            dateObject = constant.DATE_FORMAT.format(date);
+        }
+        return getConstant(dateObject);
     }
 
     @Override
@@ -323,7 +333,12 @@ class MappingExpressionTransformer extends VisitorAdapter<Expression> {
 
     @Override
     public Expression visit(TimeConstant constant) {
-        return getConstant(constant.getConstant());
+        Date date = constant.getValue();
+        Object dateObject = constant.getConstant();
+        if (date != null) {
+            dateObject = constant.TIME_FORMAT.format(date);
+        }
+        return getConstant(dateObject);
     }
 
     @Override

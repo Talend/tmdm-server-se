@@ -16,8 +16,8 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -28,7 +28,7 @@ public class DateConstant implements ConstantExpression<Date> {
 
     private final Date value;
 
-    private Collection<Date> constantCollection = new ArrayList();
+    private List<Date> constantCollection = new ArrayList();
 
     public DateConstant(String value) {
         synchronized (DATE_FORMAT) {
@@ -40,7 +40,7 @@ public class DateConstant implements ConstantExpression<Date> {
         }
     }
 
-    public DateConstant(Collection value) {
+    public DateConstant(List<Date> value) {
         this.constantCollection = value;
         this.value = null;
     }

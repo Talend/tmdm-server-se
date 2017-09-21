@@ -1643,7 +1643,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             String url = baseUrl + "services/rest/data/" + getCurrentDataCluster() + "/" + concept + "/bulk";
             DefaultHttpClient httpClient = new DefaultHttpClient();
             httpClient.getCredentialsProvider().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(
-                    LocalUser.getLocalUser().getIdentity(), LocalUser.getLocalUser().getCredentials()));
+                    LocalUser.getLocalUser().getUsername(), LocalUser.getLocalUser().getCredentials()));
             HttpPatch httpPatch = new HttpPatch(url);
             httpPatch.setHeader("Content-Type", "text/xml; charset=utf8");
             HttpEntity entity = new StringEntity(xml);

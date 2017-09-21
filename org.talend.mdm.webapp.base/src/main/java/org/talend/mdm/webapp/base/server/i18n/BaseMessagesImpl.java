@@ -186,6 +186,11 @@ public final class BaseMessagesImpl implements BaseMessages {
     public String server_error_notification() {
         return MESSAGES.getMessage("server_error_notification");
     }
+    
+    @Override
+    public String server_error_forbidden_resource() {
+        return MESSAGES.getMessage("server_error_forbidden_resource");
+    }
 
     @Override
     public String service_rest_error() {

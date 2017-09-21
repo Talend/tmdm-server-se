@@ -542,6 +542,11 @@ public class CommonUtilTest extends TestCase {
         }
 
         @Override
+        public String server_error_forbidden_resource() {
+            return "";
+        }
+        
+        @Override
         public String service_rest_error() {
             return "";
         }

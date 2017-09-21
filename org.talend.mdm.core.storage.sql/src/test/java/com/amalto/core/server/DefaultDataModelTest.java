@@ -13,8 +13,6 @@ package com.amalto.core.server;
 import java.util.Collections;
 import java.util.HashSet;
 
-import junit.framework.TestCase;
-
 import org.apache.commons.io.IOUtils;
 
 import com.amalto.core.delegator.BeanDelegatorContainer;
@@ -26,6 +24,8 @@ import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.StorageType;
 import com.amalto.core.util.Util;
 import com.amalto.core.util.XtentisException;
+
+import junit.framework.TestCase;
 
 public class DefaultDataModelTest extends TestCase {
 
@@ -88,7 +88,7 @@ public class DefaultDataModelTest extends TestCase {
         }
 
         @Override
-        public String getIdentity() {
+        public String getUsername() {
             return "Admin"; //$NON-NLS-1$
         }
 

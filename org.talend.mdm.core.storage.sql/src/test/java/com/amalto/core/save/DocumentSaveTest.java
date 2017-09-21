@@ -33,8 +33,6 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import junit.framework.TestCase;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
@@ -80,6 +78,8 @@ import com.amalto.core.util.OutputReport;
 import com.amalto.core.util.Util;
 import com.amalto.core.util.ValidateException;
 import com.amalto.core.util.XtentisException;
+
+import junit.framework.TestCase;
 
 @SuppressWarnings("nls")
 public class DocumentSaveTest extends TestCase {
@@ -3774,7 +3774,7 @@ public class DocumentSaveTest extends TestCase {
         }
 
         @Override
-        public String getIdentity() {
+        public String getUsername() {
             return "Admin";
         }
 

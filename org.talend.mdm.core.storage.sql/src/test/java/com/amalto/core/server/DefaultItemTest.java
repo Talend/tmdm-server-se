@@ -18,8 +18,6 @@ import java.util.List;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
-import junit.framework.TestCase;
-
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.w3c.dom.Document;
@@ -44,6 +42,8 @@ import com.amalto.core.util.XtentisException;
 import com.amalto.xmlserver.interfaces.IWhereItem;
 import com.amalto.xmlserver.interfaces.WhereAnd;
 import com.amalto.xmlserver.interfaces.WhereCondition;
+
+import junit.framework.TestCase;
 
 
 /**
@@ -439,13 +439,11 @@ public class DefaultItemTest extends TestCase {
         @Override
         public HashSet<String> getRoles() {
             HashSet<String> roleSet = new HashSet<String>();
-            // roleSet.add("System_Admin");
-            // roleSet.add("administration");
             return roleSet;
         }
 
         @Override
-        public String getIdentity() {
+        public String getUsername() {
             return "administrator";
         }
 

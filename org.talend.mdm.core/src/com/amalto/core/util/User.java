@@ -147,7 +147,7 @@ public class User implements Cloneable {
         if (com.amalto.core.util.Util.isEnterprise() && user.getRoleNames() != null) {
             Set<String> roleNames = new HashSet<String>();
             for (String role : user.getRoleNames()) {
-                if (role != null && role.startsWith(ICoreConstants.SYSTEM_PREFIX)) {
+                if (role != null && role.startsWith(ICoreConstants.SYSTEM_ROLE_PREFIX)) {
                     continue;
                 }
                 roleNames.add(role);

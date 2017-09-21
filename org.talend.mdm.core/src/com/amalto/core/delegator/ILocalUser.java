@@ -16,13 +16,11 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
-import org.talend.mdm.commmon.util.core.ICoreConstants;
 
 import com.amalto.core.objects.ItemPOJO;
 import com.amalto.core.query.user.UserQueryBuilder;
@@ -35,7 +33,6 @@ import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.record.DataRecordWriter;
 import com.amalto.core.storage.record.DataRecordXmlWriter;
 import com.amalto.core.util.User;
-import com.amalto.core.util.Util;
 import com.amalto.core.util.XtentisException;
 
 @SuppressWarnings("nls")
@@ -142,11 +139,6 @@ public abstract class ILocalUser implements IBeanDelegator {
     }
 
     public boolean userCanWrite() {
-        if (Util.isEnterprise()) {
-            Set<String> roles = getRoles();
-            return roles.contains(ICoreConstants.ADMIN_PERMISSION) || roles.contains(ICoreConstants.SYSTEM_ADMIN_ROLE)
-                    || roles.contains(ICoreConstants.SYSTEM_INTERACTIVE_ROLE) || roles.contains(ICoreConstants.SYSTEM_WEB_ROLE);
-        }
         return true;
     }
 

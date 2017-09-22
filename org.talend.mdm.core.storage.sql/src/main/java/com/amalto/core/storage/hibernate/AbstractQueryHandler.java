@@ -165,7 +165,7 @@ abstract class AbstractQueryHandler extends VisitorAdapter<StorageResults> {
                     return convertedId;
                 }
             } else {
-                ids = id.getConstantCollection();
+                ids = id.getIdList();
                 Iterator<FieldMetadata> iterator = keyFields.iterator();
                 return StorageMetadataUtils.convert(ids, iterator.next());
             }
@@ -193,62 +193,62 @@ abstract class AbstractQueryHandler extends VisitorAdapter<StorageResults> {
 
         @Override
         public Object visit(StringConstant constant) {
-            return constant.getConstant();
+            return constant.getValueObject();
         }
 
         @Override
         public Object visit(IntegerConstant constant) {
-            return constant.getConstant();
+            return constant.getValueObject();
         }
 
         @Override
         public Object visit(DateConstant constant) {
-            return constant.getConstant();
+            return constant.getValueObject();
         }
 
         @Override
         public Object visit(DateTimeConstant constant) {
-            return constant.getConstant();
+            return constant.getValueObject();
         }
 
         @Override
         public Object visit(BooleanConstant constant) {
-            return constant.getConstant();
+            return constant.getValueObject();
         }
 
         @Override
         public Object visit(BigDecimalConstant constant) {
-            return constant.getConstant();
+            return constant.getValueObject();
         }
 
         @Override
         public Object visit(TimeConstant constant) {
-            return constant.getConstant();
+            return constant.getValueObject();
         }
 
         @Override
         public Object visit(ShortConstant constant) {
-            return constant.getConstant();
+            return constant.getValueObject();
         }
 
         @Override
         public Object visit(ByteConstant constant) {
-            return constant.getConstant();
+            return constant.getValueObject();
         }
 
         @Override
         public Object visit(LongConstant constant) {
-            return constant.getConstant();
+            return constant.getValueObject();
         }
 
         @Override
         public Object visit(DoubleConstant constant) {
-            return constant.getConstant();
+            return constant.getValueObject();
         }
 
         @Override
         public Object visit(FloatConstant constant) {
-            return constant.getConstant();
+            return constant.getValueObject();
         }
 
         @Override

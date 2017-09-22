@@ -13,22 +13,24 @@ package com.amalto.core.query.user;
 import org.talend.mdm.commmon.metadata.Types;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 public class BigDecimalConstant implements ConstantExpression<BigDecimal> {
 
-    private final BigDecimal constant;
+    private final BigDecimal value;
 
-    private List<BigDecimal> constantCollection = new ArrayList();
+    private List<BigDecimal> valueList;
 
-    public BigDecimalConstant(String constant) {
-        this.constant = new BigDecimal(constant);
+    public BigDecimalConstant(String value) {
+        assert value != null;
+        this.value = new BigDecimal(value);
+        this.valueList = null;
     }
 
-    public BigDecimalConstant(List<BigDecimal> constantCollection) {
-        this.constant = null;
-        this.constantCollection = constantCollection;
+    public BigDecimalConstant(List<BigDecimal> valueList) {
+        assert valueList != null;
+        this.value = null;
+        this.valueList = valueList;
     }
 
     public Expression normalize() {
@@ -45,11 +47,15 @@ public class BigDecimalConstant implements ConstantExpression<BigDecimal> {
     }
 
     public BigDecimal getValue() {
-        return constant;
+        return value;
     }
 
     public List<BigDecimal> getValueList() {
-        return constantCollection;
+        return valueList;
+    }
+
+    @Override public boolean isExpressionList() {
+        return this.valueList != null;
     }
 
     public String getTypeName() {
@@ -65,15 +71,15 @@ public class BigDecimalConstant implements ConstantExpression<BigDecimal> {
             return false;
         }
         BigDecimalConstant that = (BigDecimalConstant) o;
-        if (constant != null && constantCollection.isEmpty()) {
-            return constant.equals(that.constant);
+        if (value != null && valueList.isEmpty()) {
+            return value.equals(that.value);
         } else {
-            return constantCollection.equals(that.constantCollection);
+            return valueList.equals(that.valueList);
         }
     }
 
     @Override
     public int hashCode() {
-        return constant == null ? constantCollection.hashCode() : constant.hashCode();
+        return value == null ? valueList.hashCode() : value.hashCode();
     }
 }

@@ -11,32 +11,33 @@
 
 package com.amalto.core.query.user;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.talend.mdm.commmon.metadata.Types;
 
 public class LongConstant implements ConstantExpression<Long> {
 
-    private final Long constant;
+    private final Long value;
 
-    private List<Long> constantCollection = new ArrayList();
+    private List<Long> valueList;
 
-    public LongConstant(String constant) {
-        this.constant = Long.parseLong(constant);
+    public LongConstant(String value) {
+        assert value != null;
+        this.value = Long.parseLong(value);
+        this.valueList = null;
     }
 
-    public LongConstant(List<Long> constant) {
-        this.constantCollection = constant;
-        this.constant = null;
+    public LongConstant(List<Long> valueList) {
+        assert valueList != null;
+        this.valueList = valueList;
+        this.value = null;
     }
 
     public Expression normalize() {
         return this;
     }
 
-    @Override
-    public boolean cache() {
+    @Override public boolean cache() {
         return false;
     }
 
@@ -45,15 +46,22 @@ public class LongConstant implements ConstantExpression<Long> {
     }
 
     public Long getValue() {
-        return constant;
+        return value;
+    }
+
+    @Override public List<Long> getValueList() {
+        return valueList;
+    }
+
+    @Override public boolean isExpressionList() {
+        return this.valueList != null;
     }
 
     public String getTypeName() {
         return Types.LONG;
     }
 
-    @Override
-    public boolean equals(Object o) {
+    @Override public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -61,20 +69,15 @@ public class LongConstant implements ConstantExpression<Long> {
             return false;
         }
         LongConstant that = (LongConstant) o;
-        if (constant != null && constantCollection.isEmpty()) {
-            return constant.equals(that.constant);
+        if (value != null && valueList.isEmpty()) {
+            return value.equals(that.value);
         } else {
-            return constantCollection.equals(that.constantCollection);
+            return valueList.equals(that.valueList);
         }
     }
 
-    @Override
-    public int hashCode() {
-        return constant != null ? constant.hashCode() : constantCollection.isEmpty() ? 0 : constantCollection.hashCode();
+    @Override public int hashCode() {
+        return value != null ? value.hashCode() : valueList.isEmpty() ? 0 : valueList.hashCode();
     }
 
-    @Override
-    public List<Long> getValueList() {
-        return constantCollection;
-    }
 }

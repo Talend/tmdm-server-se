@@ -13,7 +13,6 @@ package com.amalto.core.query.user;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -28,50 +27,55 @@ public class TimeConstant implements ConstantExpression<Date> {
 
     private final Date value;
 
-    private List<Date> constantCollection = new ArrayList();
+    private List<Date> valueList;
 
     public TimeConstant(String value) {
+        assert value != null;
         synchronized (TIME_FORMAT) {
             try {
                 this.value = TIME_FORMAT.parse(value);
+                this.valueList = null;
             } catch (ParseException e) {
                 throw new RuntimeException(e);
             }
         }
     }
 
-    public TimeConstant(List<Date> value) {
-        this.constantCollection = value;
+    public TimeConstant(List<Date> valueList) {
+        assert valueList != null;
+        this.valueList = valueList;
         this.value = null;
     }
 
-    @Override
-    public Date getValue() {
+    @Override public Date getValue() {
         return value;
     }
 
-    @Override
-    public <T> T accept(Visitor<T> visitor) {
+    @Override public List<Date> getValueList() {
+        return valueList;
+    }
+
+    @Override public boolean isExpressionList() {
+        return this.valueList != null;
+    }
+
+    @Override public <T> T accept(Visitor<T> visitor) {
         return visitor.visit(this);
     }
 
-    @Override
-    public Expression normalize() {
+    @Override public Expression normalize() {
         return this;
     }
 
-    @Override
-    public boolean cache() {
+    @Override public boolean cache() {
         return false;
     }
 
-    @Override
-    public String getTypeName() {
+    @Override public String getTypeName() {
         return Types.DATETIME;
     }
 
-    @Override
-    public boolean equals(Object o) {
+    @Override public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -79,20 +83,15 @@ public class TimeConstant implements ConstantExpression<Date> {
             return false;
         }
         TimeConstant that = (TimeConstant) o;
-        if (value != null && constantCollection.isEmpty()) {
+        if (value != null && valueList.isEmpty()) {
             return !(value != null ? !value.equals(that.value) : that.value != null);
         } else {
-            return constantCollection.equals(that.constantCollection);
+            return valueList.equals(that.valueList);
         }
     }
 
-    @Override
-    public int hashCode() {
-        return value != null ? value.hashCode() : constantCollection.isEmpty() ? 0 : constantCollection.hashCode();
+    @Override public int hashCode() {
+        return value != null ? value.hashCode() : valueList.isEmpty() ? 0 : valueList.hashCode();
     }
 
-    @Override
-    public List<Date> getValueList() {
-        return constantCollection;
-    }
 }

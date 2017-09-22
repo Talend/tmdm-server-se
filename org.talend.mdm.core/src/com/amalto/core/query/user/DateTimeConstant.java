@@ -15,7 +15,6 @@ import org.talend.mdm.commmon.metadata.Types;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -28,25 +27,37 @@ public class DateTimeConstant implements ConstantExpression<Date> {
 
     private final Date value;
 
-    private List<Date> constantCollection = new ArrayList();
+    private List<Date> valueList;
 
     public DateTimeConstant(String value) {
+        assert value != null;
         synchronized (DATE_FORMAT) {
             try {
                 this.value = DATE_FORMAT.parse(value);
+                this.valueList = null;
             } catch (ParseException e) {
                 throw new RuntimeException(e);
             }
         }
     }
 
-    public DateTimeConstant(List<Date> value) {
-        this.constantCollection = value;
+    public DateTimeConstant(List<Date> valueList) {
+        assert valueList != null;
+        this.valueList = valueList;
         this.value = null;
     }
 
     public Date getValue() {
         return value;
+    }
+
+    @Override
+    public List<Date> getValueList() {
+        return valueList;
+    }
+
+    @Override public boolean isExpressionList() {
+        return this.valueList != null;
     }
 
     public <T> T accept(Visitor<T> visitor) {
@@ -75,20 +86,17 @@ public class DateTimeConstant implements ConstantExpression<Date> {
             return false;
         }
         DateTimeConstant that = (DateTimeConstant) o;
-        if (value != null && constantCollection.isEmpty()) {
+        if (value != null && valueList.isEmpty()) {
             return !(value != null ? !value.equals(that.value) : that.value != null);
         } else {
-            return constantCollection.equals(that.constantCollection);
+            return valueList.equals(that.valueList);
         }
     }
 
     @Override
     public int hashCode() {
-        return value != null ? value.hashCode() : constantCollection.isEmpty() ? 0 : constantCollection.hashCode();
+        return value != null ? value.hashCode() : valueList.isEmpty() ? 0 : valueList.hashCode();
     }
 
-    @Override
-    public List<Date> getValueList() {
-        return constantCollection;
-    }
+
 }

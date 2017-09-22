@@ -10,12 +10,9 @@
 
 package com.amalto.core.query.user;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.talend.mdm.commmon.metadata.Types;
-
-import com.amalto.core.util.Util;
 
 /**
  *
@@ -24,19 +21,30 @@ public class BooleanConstant implements ConstantExpression<Boolean> {
 
     private final Boolean value;
 
-    private List<Boolean> valueCollection = new ArrayList();
+    private List<Boolean> valueList;
 
     public BooleanConstant(String value) {
+        assert value != null;
         this.value = Boolean.valueOf(value);
+        this.valueList = null;
     }
 
     public BooleanConstant(List<Boolean> value) {
-        this.valueCollection = value;
+        assert value != null;
+        this.valueList = value;
         this.value = null;
     }
 
     public Boolean getValue() {
         return value;
+    }
+
+    @Override public List<Boolean> getValueList() {
+        return valueList;
+    }
+
+    @Override public boolean isExpressionList() {
+        return this.valueList != null;
     }
 
     public <T> T accept(Visitor<T> visitor) {
@@ -65,21 +73,15 @@ public class BooleanConstant implements ConstantExpression<Boolean> {
             return false;
         }
         BooleanConstant that = (BooleanConstant) o;
-        if (value != null && valueCollection.isEmpty()) {
+        if (value != null && valueList.isEmpty()) {
             return value == that.value;
         } else {
-            return valueCollection.equals(that.valueCollection);
+            return valueList.equals(that.valueList);
         }
     }
 
     @Override
     public int hashCode() {
-        return value != null ? 1 : valueCollection.isEmpty() ? 0: valueCollection.hashCode();
+        return value != null ? 1 : valueList.isEmpty() ? 0: valueList.hashCode();
     }
-
-    @Override
-    public List<Boolean> getValueList() {
-        return valueCollection;
-    }
-
 }

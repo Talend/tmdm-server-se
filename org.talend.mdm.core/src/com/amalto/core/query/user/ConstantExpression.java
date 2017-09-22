@@ -22,11 +22,13 @@ public interface ConstantExpression<T extends Comparable> extends TypedExpressio
 
     public List<T> getValueList();
 
-    default Object getConstant(){
-        if (getValue() != null && getValueList().isEmpty()) {
-            return getValue();
-        } else {
+    public boolean isExpressionList();
+
+    default Object getValueObject() {
+        if (isExpressionList()) {
             return getValueList();
+        } else {
+            return getValue();
         }
     }
 }

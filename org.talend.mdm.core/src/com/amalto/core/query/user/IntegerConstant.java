@@ -16,25 +16,27 @@ import org.talend.mdm.commmon.metadata.Types;
 
 public class IntegerConstant implements ConstantExpression<Integer> {
 
-    private final Integer constant;
+    private final Integer value;
 
-    private List<Integer> constantCollection = new ArrayList();
+    private List<Integer> valueList;
 
-    public IntegerConstant(String constant) {
-        this.constant = Integer.parseInt(constant);
+    public IntegerConstant(String value) {
+        assert value != null;
+        this.value = Integer.parseInt(value);
+        this.valueList = null;
     }
 
-    public IntegerConstant(List<Integer> constant) {
-        this.constantCollection = constant;
-        this.constant = null;
+    public IntegerConstant(List<Integer> valueList) {
+        assert valueList != null;
+        this.valueList = valueList;
+        this.value = null;
     }
 
     public Expression normalize() {
         return this;
     }
 
-    @Override
-    public boolean cache() {
+    @Override public boolean cache() {
         return false;
     }
 
@@ -43,7 +45,15 @@ public class IntegerConstant implements ConstantExpression<Integer> {
     }
 
     public Integer getValue() {
-        return constant;
+        return value;
+    }
+
+    @Override public List<Integer> getValueList() {
+        return valueList;
+    }
+
+    @Override public boolean isExpressionList() {
+        return this.valueList != null;
     }
 
     public String getTypeName() {
@@ -59,20 +69,15 @@ public class IntegerConstant implements ConstantExpression<Integer> {
             return false;
         }
         IntegerConstant that = (IntegerConstant) o;
-        if (constant != null && constantCollection.isEmpty()) {
-            return constant == that.constant;
+        if (value != null && valueList.isEmpty()) {
+            return value == that.value;
         } else {
-            return constantCollection.equals(that.constantCollection);
+            return valueList.equals(that.valueList);
         }
     }
 
-    @Override
-    public int hashCode() {
-        return constant != null ? constant : constantCollection.isEmpty() ? 0: constantCollection.hashCode();
+    @Override public int hashCode() {
+        return value != null ? value : valueList.isEmpty() ? 0 : valueList.hashCode();
     }
 
-    @Override
-    public List<Integer> getValueList() {
-        return constantCollection;
-    }
 }

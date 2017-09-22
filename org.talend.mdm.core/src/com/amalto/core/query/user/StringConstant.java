@@ -23,19 +23,31 @@ public class StringConstant implements ConstantExpression<String> {
 
     private final String value;
 
-    private List<String> constantCollection = new ArrayList();
+    private List<String> valueList;
 
     public StringConstant(String value) {
+        assert value != null;
         this.value = value;
+        this.valueList = null;
     }
 
-    public StringConstant(List<String> value) {
-        this.constantCollection = value;
+    public StringConstant(List<String> valueList) {
+        assert valueList != null;
+        this.valueList = valueList;
         this.value = null;
     }
 
     public String getValue() {
         return value;
+    }
+
+    @Override
+    public List<String> getValueList() {
+        return valueList;
+    }
+
+    @Override public boolean isExpressionList() {
+        return this.valueList != null;
     }
 
     public <T> T accept(Visitor<T> visitor) {
@@ -64,20 +76,17 @@ public class StringConstant implements ConstantExpression<String> {
             return false;
         }
         StringConstant that = (StringConstant) o;
-        if (value != null && constantCollection.isEmpty()) {
+        if (value != null && valueList.isEmpty()) {
             return !(value != null ? !value.equals(that.value) : that.value != null);
         } else {
-            return constantCollection.equals(that.constantCollection);
+            return valueList.equals(that.valueList);
         }
     }
 
     @Override
     public int hashCode() {
-        return value != null ? value.hashCode() : constantCollection.isEmpty() ? 0 : constantCollection.hashCode();
+        return value != null ? value.hashCode() : valueList.isEmpty() ? 0 : valueList.hashCode();
     }
 
-    @Override
-    public List<String> getValueList() {
-        return constantCollection;
-    }
+
 }

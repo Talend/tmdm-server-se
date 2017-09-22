@@ -11,26 +11,26 @@
 
 package com.amalto.core.query.user;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.talend.mdm.commmon.metadata.Types;
 
-import com.amalto.core.util.Util;
-
 public class ByteConstant implements ConstantExpression<Byte> {
 
-    private final Byte constant;
+    private final Byte value;
 
-    private List<Byte> constantCollection = new ArrayList();
+    private List<Byte> valueList;
 
-    public ByteConstant(String constant) {
-        this.constant = Byte.parseByte(constant);
+    public ByteConstant(String value) {
+        assert value != null;
+        this.value = Byte.parseByte(value);
+        this.valueList = null;
     }
 
-    public ByteConstant(List<Byte> constant) {
-        this.constantCollection = constant;
-        this.constant = null;
+    public ByteConstant(List<Byte> valueList) {
+        assert valueList != null;
+        this.valueList = valueList;
+        this.value = null;
     }
 
     public Expression normalize() {
@@ -47,7 +47,15 @@ public class ByteConstant implements ConstantExpression<Byte> {
     }
 
     public Byte getValue() {
-        return constant;
+        return value;
+    }
+
+    @Override public List<Byte> getValueList() {
+        return valueList;
+    }
+
+    @Override public boolean isExpressionList() {
+        return this.valueList != null;
     }
 
     public String getTypeName() {
@@ -63,20 +71,20 @@ public class ByteConstant implements ConstantExpression<Byte> {
             return false;
         }
         ByteConstant that = (ByteConstant) o;
-        if (constant != null && constantCollection.isEmpty()) {
-            return constant.equals(that.constant);
+        if (value != null && valueList.isEmpty()) {
+            return value.equals(that.value);
         } else {
-            return constantCollection.equals(that.constantCollection);
+            return valueList.equals(that.valueList);
         }
     }
 
     @Override
     public int hashCode() {
-        return constant.hashCode();
+        if (isExpressionList()) {
+            return this.valueList.hashCode();
+        } else {
+            return this.value.hashCode();
+        }
     }
 
-    @Override
-    public List<Byte> getValueList() {
-        return constantCollection;
-    }
 }

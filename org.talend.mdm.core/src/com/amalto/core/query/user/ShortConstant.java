@@ -11,24 +11,26 @@
 
 package com.amalto.core.query.user;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.talend.mdm.commmon.metadata.Types;
 
 public class ShortConstant implements ConstantExpression<Short> {
 
-    private final Short constant;
+    private final Short value;
 
-    private List<Short> constantCollection = new ArrayList();
+    private List<Short> valueList;
 
-    public ShortConstant(String constant) {
-        this.constant = Short.parseShort(constant);
+    public ShortConstant(String value) {
+        assert value != null;
+        this.value = Short.parseShort(value);
+        this.valueList = null;
     }
 
-    public ShortConstant(List<Short> constant) {
-        this.constantCollection = constant;
-        this.constant = null;
+    public ShortConstant(List<Short> valueList) {
+        assert valueList != null;
+        this.valueList = valueList;
+        this.value = null;
     }
 
     public Expression normalize() {
@@ -45,7 +47,16 @@ public class ShortConstant implements ConstantExpression<Short> {
     }
 
     public Short getValue() {
-        return constant;
+        return value;
+    }
+
+    @Override
+    public List<Short> getValueList() {
+        return valueList;
+    }
+
+    @Override public boolean isExpressionList() {
+        return this.valueList != null;
     }
 
     public String getTypeName() {
@@ -61,20 +72,16 @@ public class ShortConstant implements ConstantExpression<Short> {
             return false;
         }
         ShortConstant that = (ShortConstant) o;
-        if (constant != null && constantCollection.isEmpty()) {
-            return constant.equals(that.constant);
+        if (value != null && valueList.isEmpty()) {
+            return value.equals(that.value);
         } else {
-            return constantCollection.equals(that.constantCollection);
+            return valueList.equals(that.valueList);
         }
     }
 
     @Override
     public int hashCode() {
-        return constant != null ? constant.hashCode() : constantCollection.isEmpty() ? 0 : constantCollection.hashCode();
+        return value != null ? value.hashCode() : valueList.isEmpty() ? 0 : valueList.hashCode();
     }
 
-    @Override
-    public List<Short> getValueList() {
-        return constantCollection;
-    }
 }

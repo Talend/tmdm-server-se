@@ -11,24 +11,26 @@
 
 package com.amalto.core.query.user;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.talend.mdm.commmon.metadata.Types;
 
 public class DoubleConstant implements ConstantExpression<Double> {
 
-    private final Double constant;
+    private final Double value;
 
-    private List<Double> constantCollection = new ArrayList();
+    private List<Double> valueList;
 
-    public DoubleConstant(String constant) {
-        this.constant = Double.parseDouble(constant);
+    public DoubleConstant(String value) {
+        assert value != null;
+        this.value = Double.parseDouble(value);
+        this.valueList = null;
     }
 
-    public DoubleConstant(List<Double> constant) {
-        this.constantCollection = constant;
-        this.constant = null;
+    public DoubleConstant(List<Double> valueList) {
+        assert valueList != null;
+        this.valueList = valueList;
+        this.value = null;
     }
 
     public Expression normalize() {
@@ -45,7 +47,15 @@ public class DoubleConstant implements ConstantExpression<Double> {
     }
 
     public Double getValue() {
-        return constant;
+        return value;
+    }
+
+    @Override public List<Double> getValueList() {
+        return valueList;
+    }
+
+    @Override public boolean isExpressionList() {
+        return this.valueList != null;
     }
 
     public String getTypeName() {
@@ -61,21 +71,14 @@ public class DoubleConstant implements ConstantExpression<Double> {
             return false;
         }
         DoubleConstant that = (DoubleConstant) o;
-        if (constant != null && constantCollection.isEmpty()) {
-            return !(constant != null ? !constant.equals(that.constant) : that.constant != null);
+        if (value != null && valueList.isEmpty()) {
+            return !(value != null ? !value.equals(that.value) : that.value != null);
         } else {
-            return constantCollection.equals(that.constantCollection);
+            return valueList.equals(that.valueList);
         }
     }
 
-    @Override
-    public int hashCode() {
-        return constant != null ? constant.hashCode() : constantCollection != null ? constantCollection.hashCode(): 0;
+    @Override public int hashCode() {
+        return value != null ? value.hashCode() : valueList != null ? valueList.hashCode() : 0;
     }
-
-    @Override
-    public List<Double> getValueList() {
-        return constantCollection;
-    }
-
 }

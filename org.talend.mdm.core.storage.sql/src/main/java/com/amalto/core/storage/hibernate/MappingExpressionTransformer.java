@@ -273,10 +273,10 @@ class MappingExpressionTransformer extends VisitorAdapter<Expression> {
 
     @Override
     public Expression visit(Id id) {
-        if (id.getId() != null) {
-            return new Id(getMapping(id.getType()), id.getId());
+        if (id.isExpressionList()) {
+            return new Id(getMapping(id.getType()), id.getIdList());
         } else {
-            return new Id(getMapping(id.getType()), id.getConstantCollection());
+            return new Id(getMapping(id.getType()), id.getId());
         }
     }
 
@@ -292,18 +292,18 @@ class MappingExpressionTransformer extends VisitorAdapter<Expression> {
 
     @Override
     public Expression visit(StringConstant constant) {
-        return getConstant(constant.getConstant());
+        return getConstant(constant.getValueObject());
     }
 
     @Override
     public Expression visit(IntegerConstant constant) {
-        return getConstant(constant.getConstant());
+        return getConstant(constant.getValueObject());
     }
 
     @Override
     public Expression visit(DateConstant constant) {
         Date date = constant.getValue();
-        Object dateObject = constant.getConstant();
+        Object dateObject = constant.getValueObject();
         if (date != null) {
             dateObject = constant.DATE_FORMAT.format(date);
         }
@@ -313,7 +313,7 @@ class MappingExpressionTransformer extends VisitorAdapter<Expression> {
     @Override
     public Expression visit(DateTimeConstant constant) {
         Date date = constant.getValue();
-        Object dateObject = constant.getConstant();
+        Object dateObject = constant.getValueObject();
         if (date != null) {
             dateObject = constant.DATE_FORMAT.format(date);
         }
@@ -322,18 +322,18 @@ class MappingExpressionTransformer extends VisitorAdapter<Expression> {
 
     @Override
     public Expression visit(BooleanConstant constant) {
-        return getConstant(constant.getConstant());
+        return getConstant(constant.getValueObject());
     }
 
     @Override
     public Expression visit(BigDecimalConstant constant) {
-        return getConstant(constant.getConstant());
+        return getConstant(constant.getValueObject());
     }
 
     @Override
     public Expression visit(TimeConstant constant) {
         Date date = constant.getValue();
-        Object dateObject = constant.getConstant();
+        Object dateObject = constant.getValueObject();
         if (date != null) {
             dateObject = constant.TIME_FORMAT.format(date);
         }
@@ -342,27 +342,27 @@ class MappingExpressionTransformer extends VisitorAdapter<Expression> {
 
     @Override
     public Expression visit(ShortConstant constant) {
-        return getConstant(constant.getConstant());
+        return getConstant(constant.getValueObject());
     }
 
     @Override
     public Expression visit(ByteConstant constant) {
-        return getConstant(constant.getConstant());
+        return getConstant(constant.getValueObject());
     }
 
     @Override
     public Expression visit(LongConstant constant) {
-        return getConstant(constant.getConstant());
+        return getConstant(constant.getValueObject());
     }
 
     @Override
     public Expression visit(DoubleConstant constant) {
-        return getConstant(constant.getConstant());
+        return getConstant(constant.getValueObject());
     }
 
     @Override
     public Expression visit(FloatConstant constant) {
-        return getConstant(constant.getConstant());
+        return getConstant(constant.getValueObject());
     }
 
     @Override

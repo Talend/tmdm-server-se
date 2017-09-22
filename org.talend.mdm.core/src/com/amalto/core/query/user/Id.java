@@ -22,25 +22,27 @@ public class Id implements Expression {
 
     private final String id;
 
-    private List<String> constantCollection = new ArrayList(); 
+    private List<String> idList;
 
     public Id(ComplexTypeMetadata type, String id) {
+        assert id != null;
         this.type = type;
         this.id = id;
+        this.idList = null;
     }
 
-    public Id(ComplexTypeMetadata type, List<String> constantCollection) {
+    public Id(ComplexTypeMetadata type, List<String> idList) {
+        assert idList != null;
         this.type = type;
+        this.idList = idList;
         this.id = null;
-        this.constantCollection = constantCollection;
     }
 
     public Expression normalize() {
         return this;
     }
 
-    @Override
-    public boolean cache() {
+    @Override public boolean cache() {
         return false;
     }
 
@@ -52,16 +54,19 @@ public class Id implements Expression {
         return id;
     }
 
-    public List<String> getConstantCollection() {
-        return constantCollection;
+    public List<String> getIdList() {
+        return idList;
+    }
+
+    public boolean isExpressionList() {
+        return this.idList != null;
     }
 
     public ComplexTypeMetadata getType() {
         return type;
     }
 
-    @Override
-    public boolean equals(Object o) {
+    @Override public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -78,8 +83,7 @@ public class Id implements Expression {
         return true;
     }
 
-    @Override
-    public int hashCode() {
+    @Override public int hashCode() {
         int result = type != null ? type.hashCode() : 0;
         result = 31 * result + (id != null ? id.hashCode() : 0);
         return result;

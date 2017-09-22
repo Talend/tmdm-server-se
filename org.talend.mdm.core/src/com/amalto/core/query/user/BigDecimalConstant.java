@@ -80,6 +80,10 @@ public class BigDecimalConstant implements ConstantExpression<BigDecimal> {
 
     @Override
     public int hashCode() {
-        return value == null ? valueList.hashCode() : value.hashCode();
+        if (isExpressionList()) {
+            return this.valueList.hashCode();
+        } else {
+            return value.hashCode();
+        }
     }
 }

@@ -74,9 +74,14 @@ public class Id implements Expression {
             return false;
         }
         Id id1 = (Id) o;
-        if (id != null ? !id.equals(id1.id) : id1.id != null) {
-            return false;
+        if (isExpressionList()) {
+            return this.idList.equals(id1.idList);
+        } else {
+            if (id != null ? !id.equals(id1.id) : id1.id != null) {
+                return false;
+            }
         }
+
         if (type != null ? !type.equals(id1.type) : id1.type != null) {
             return false;
         }
@@ -85,7 +90,11 @@ public class Id implements Expression {
 
     @Override public int hashCode() {
         int result = type != null ? type.hashCode() : 0;
-        result = 31 * result + (id != null ? id.hashCode() : 0);
+        if (isExpressionList()) {
+            result = 31 * result + idList.hashCode();
+        } else {
+            result = 31 * result + (id != null ? id.hashCode() : 0);
+        }
         return result;
     }
 }

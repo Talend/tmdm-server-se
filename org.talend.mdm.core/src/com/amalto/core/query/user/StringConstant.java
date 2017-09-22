@@ -85,7 +85,11 @@ public class StringConstant implements ConstantExpression<String> {
 
     @Override
     public int hashCode() {
-        return value != null ? value.hashCode() : valueList.isEmpty() ? 0 : valueList.hashCode();
+        if (isExpressionList()) {
+            return this.valueList.hashCode();
+        } else {
+            return value.hashCode();
+        }
     }
 
 

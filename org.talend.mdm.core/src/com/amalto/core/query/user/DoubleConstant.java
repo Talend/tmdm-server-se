@@ -79,6 +79,10 @@ public class DoubleConstant implements ConstantExpression<Double> {
     }
 
     @Override public int hashCode() {
-        return value != null ? value.hashCode() : valueList != null ? valueList.hashCode() : 0;
+        if (isExpressionList()) {
+            return this.valueList.hashCode();
+        } else {
+            return value.hashCode();
+        }
     }
 }

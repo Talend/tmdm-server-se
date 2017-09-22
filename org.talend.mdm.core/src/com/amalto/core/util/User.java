@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.talend.mdm.commmon.util.core.ICoreConstants;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -140,42 +139,23 @@ public class User implements Cloneable {
         return user;
     }
 
-    public static User parseWithoutSystemRoles(String xml) throws Exception {
-        User user = new User();
-        parse(xml, user);
-
-        if (com.amalto.core.util.Util.isEnterprise() && user.getRoleNames() != null) {
-            Set<String> roleNames = new HashSet<String>();
-            for (String role : user.getRoleNames()) {
-                if (role != null && role.startsWith(ICoreConstants.SYSTEM_ROLE_PREFIX)) {
-                    continue;
-                }
-                roleNames.add(role);
-            }
-            user.setRoleNames(roleNames);
-        }
-        return user;
-    }
-
     public static void parse(String xml, User user) throws Exception {
 
         try {
             Element result = Util.parse(xml).getDocumentElement();
-            
-            if (Util.isEnterprise()) {
-                user.setId(Util.getFirstTextNode(result, "//id")); //$NON-NLS-1$
-            } else {
-                user.setUserName(Util.getFirstTextNode(result, "//username")); //$NON-NLS-1$
+
+            user.setId(Util.getFirstTextNode(result, "//id")); //$NON-NLS-1$
+            user.setUserName(Util.getFirstTextNode(result, "//username")); //$NON-NLS-1$
+            user.setGivenName(Util.getFirstTextNode(result, "//givenname")); //$NON-NLS-1$
+            user.setFamilyName(Util.getFirstTextNode(result, "//familyname")); //$NON-NLS-1$
+            if (!Util.isEnterprise()) {
                 user.setPassword(Util.getFirstTextNode(result, "//password")); //$NON-NLS-1$
-                user.setGivenName(Util.getFirstTextNode(result, "//givenname")); //$NON-NLS-1$
-                user.setFamilyName(Util.getFirstTextNode(result, "//familyname")); //$NON-NLS-1$
                 user.setPhoneNumber(Util.getFirstTextNode(result, "//phonenumber")); //$NON-NLS-1$
                 user.setCompany(Util.getFirstTextNode(result, "//company")); //$NON-NLS-1$
                 user.setSignature(Util.getFirstTextNode(result, "//signature")); //$NON-NLS-1$
                 user.setRealEmail(Util.getFirstTextNode(result, "//realemail")); //$NON-NLS-1$
                 user.setFakeEmail(Util.getFirstTextNode(result, "//fakeemail")); //$NON-NLS-1$
                 user.setViewRealEmail("yes".equals(Util.getFirstTextNode(result, "//viewrealemail"))); //$NON-NLS-1$ //$NON-NLS-2$
-
                 try {
                     user.setRegistrationDate(new Date(Long.parseLong(Util.getFirstTextNode(result, "//registrationdate")))); //$NON-NLS-1$
                 } catch (Exception nfe) {
@@ -187,7 +167,7 @@ public class User implements Cloneable {
                 } catch (Exception nfe) {
                     user.setLastVisitDate(null);
                 }
-                
+
                 try {
                     user.setLastSyncTime(new Date(Long.parseLong(Util.getFirstTextNode(result, "//lastsynctime")))); //$NON-NLS-1$
                 } catch (Exception nfe) {

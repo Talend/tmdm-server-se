@@ -154,4 +154,9 @@ public abstract class ILocalUser implements IBeanDelegator {
         return true;
     }
 
+    public User parseWithoutSystemRoles() throws Exception {
+        User user = User.parse(getUserXML());
+        return user;
+    }
+
 }

@@ -258,19 +258,17 @@ public class WelcomePortalAction implements WelcomePortalService {
             if (!user.userCanWrite()) {
                 return;
             }
-            User parsedUser = User.parseWithoutSystemRoles(user.getUserXML());
+            User parsedUser = user.parseWithoutSystemRoles();
             Map<String, String> properties = parsedUser.getProperties();
             String value;
             for (String name : config.getKeys()) {
                 value = config.get(name);
                 properties.put(name, value);
             }
-
             Util.getPort()
                     .putItem(
                             new WSPutItem(
                                     new WSDataClusterPK("PROVISIONING"), parsedUser.serialize(), new WSDataModelPK("PROVISIONING"), false)); //$NON-NLS-1$ //$NON-NLS-2$
-
             user.setUserXML(parsedUser.serialize());
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);

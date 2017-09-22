@@ -69,10 +69,10 @@ public class IntegerConstant implements ConstantExpression<Integer> {
             return false;
         }
         IntegerConstant that = (IntegerConstant) o;
-        if (value != null && valueList.isEmpty()) {
-            return value == that.value;
-        } else {
+        if (this.isExpressionList()) {
             return valueList.equals(that.valueList);
+        } else {
+            return value.equals(that.value);
         }
     }
 

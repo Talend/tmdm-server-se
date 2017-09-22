@@ -69,10 +69,10 @@ public class LongConstant implements ConstantExpression<Long> {
             return false;
         }
         LongConstant that = (LongConstant) o;
-        if (value != null && valueList.isEmpty()) {
-            return value.equals(that.value);
-        } else {
+        if (this.isExpressionList()) {
             return valueList.equals(that.valueList);
+        } else {
+            return value.equals(that.value);
         }
     }
 

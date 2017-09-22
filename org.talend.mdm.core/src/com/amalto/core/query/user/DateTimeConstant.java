@@ -86,10 +86,10 @@ public class DateTimeConstant implements ConstantExpression<Date> {
             return false;
         }
         DateTimeConstant that = (DateTimeConstant) o;
-        if (value != null && valueList.isEmpty()) {
-            return !(value != null ? !value.equals(that.value) : that.value != null);
-        } else {
+        if (this.isExpressionList()) {
             return valueList.equals(that.valueList);
+        } else {
+            return value.equals(that.value);
         }
     }
 

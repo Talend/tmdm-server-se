@@ -73,10 +73,10 @@ public class BooleanConstant implements ConstantExpression<Boolean> {
             return false;
         }
         BooleanConstant that = (BooleanConstant) o;
-        if (value != null && valueList.isEmpty()) {
-            return value == that.value;
-        } else {
+        if (this.isExpressionList()) {
             return valueList.equals(that.valueList);
+        } else {
+            return value.equals(that.value);
         }
     }
 

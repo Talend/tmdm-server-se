@@ -72,10 +72,10 @@ public class ShortConstant implements ConstantExpression<Short> {
             return false;
         }
         ShortConstant that = (ShortConstant) o;
-        if (value != null && valueList.isEmpty()) {
-            return value.equals(that.value);
-        } else {
+        if (this.isExpressionList()) {
             return valueList.equals(that.valueList);
+        } else {
+            return value.equals(that.value);
         }
     }
 

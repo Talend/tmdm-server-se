@@ -83,10 +83,10 @@ public class TimeConstant implements ConstantExpression<Date> {
             return false;
         }
         TimeConstant that = (TimeConstant) o;
-        if (value != null && valueList.isEmpty()) {
-            return !(value != null ? !value.equals(that.value) : that.value != null);
-        } else {
+        if (this.isExpressionList()) {
             return valueList.equals(that.valueList);
+        } else {
+            return value.equals(that.value);
         }
     }
 

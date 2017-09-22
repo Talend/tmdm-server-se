@@ -85,10 +85,10 @@ public class DateConstant implements ConstantExpression<Date> {
             return false;
         }
         DateConstant that = (DateConstant) o;
-        if (value != null && valueList.isEmpty()) {
-            return !(value != null ? !value.equals(that.value) : that.value != null);
-        } else {
+        if (this.isExpressionList()) {
             return valueList.equals(that.valueList);
+        } else {
+            return value.equals(that.value);
         }
     }
 

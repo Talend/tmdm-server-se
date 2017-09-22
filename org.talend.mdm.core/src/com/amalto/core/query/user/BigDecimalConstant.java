@@ -71,10 +71,10 @@ public class BigDecimalConstant implements ConstantExpression<BigDecimal> {
             return false;
         }
         BigDecimalConstant that = (BigDecimalConstant) o;
-        if (value != null && valueList.isEmpty()) {
-            return value.equals(that.value);
-        } else {
+        if (this.isExpressionList()) {
             return valueList.equals(that.valueList);
+        } else {
+            return value.equals(that.value);
         }
     }
 

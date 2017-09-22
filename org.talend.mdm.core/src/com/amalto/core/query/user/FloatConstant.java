@@ -69,10 +69,10 @@ public class FloatConstant implements ConstantExpression<Float> {
             return false;
         }
         FloatConstant that = (FloatConstant) o;
-        if (value != null && valueList.isEmpty()) {
-            return !(value != null ? !value.equals(that.value) : that.value != null);
-        } else {
+        if (this.isExpressionList()) {
             return valueList.equals(that.valueList);
+        } else {
+            return value.equals(that.value);
         }
     }
 

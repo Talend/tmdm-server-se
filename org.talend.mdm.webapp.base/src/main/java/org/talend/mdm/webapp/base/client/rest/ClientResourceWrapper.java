@@ -74,6 +74,9 @@ public class ClientResourceWrapper {
                 // http://stackoverflow.com/questions/10046972/msie-returns-status-code-of-1223-for-ajax-request
                 if (statusCode >= 200 && statusCode <= 299 || statusCode == 1223) {
                     callbackHandler.process(request, response);
+                } else if (statusCode == 403) {
+                    MessageBox.alert(BaseMessagesFactory.getMessages().server_error(), BaseMessagesFactory.getMessages()
+                            .server_error_forbidden_resource(), null);
                 } else {
                     MessageBox.alert(BaseMessagesFactory.getMessages().server_error(), BaseMessagesFactory.getMessages()
                             .server_error_notification(), null);

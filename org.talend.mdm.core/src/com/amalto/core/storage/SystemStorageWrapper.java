@@ -376,7 +376,7 @@ public class SystemStorageWrapper extends StorageWrapper {
             if (uniqueID.startsWith(PROVISIONING_PREFIX_INFO)) {
                 documentUniqueID = StringUtils.substringAfter(uniqueID, PROVISIONING_PREFIX_INFO);
             } else if (uniqueID.startsWith(BROWSEITEM_PREFIX_INFO)) {
-                documentUniqueID = StringUtils.substringAfter(uniqueID, BROWSEITEM_PREFIX_INFO); //$NON-NLS-1$
+                documentUniqueID = StringUtils.substringAfter(uniqueID, BROWSEITEM_PREFIX_INFO);
             } else if (isUserFormat) {
                 documentUniqueID = StringUtils.substringAfterLast(uniqueID, "."); //$NON-NLS-1$
             }
@@ -415,7 +415,7 @@ public class SystemStorageWrapper extends StorageWrapper {
             if (uniqueID.startsWith(PROVISIONING_PREFIX_INFO)) {
                 uniqueID = StringUtils.substringAfter(uniqueID, PROVISIONING_PREFIX_INFO);
             } else if (uniqueID.startsWith(BROWSEITEM_PREFIX_INFO)) {
-                uniqueID = StringUtils.substringAfter(uniqueID, BROWSEITEM_PREFIX_INFO); //$NON-NLS-1$
+                uniqueID = StringUtils.substringAfter(uniqueID, BROWSEITEM_PREFIX_INFO);
             } else if (uniqueID.contains(".")) { //$NON-NLS-1$
                 uniqueID = StringUtils.substringAfterLast(uniqueID, "."); //$NON-NLS-1$
             }

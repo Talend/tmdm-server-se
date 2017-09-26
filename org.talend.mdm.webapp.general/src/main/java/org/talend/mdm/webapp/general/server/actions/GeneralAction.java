@@ -184,7 +184,7 @@ public class GeneralAction implements GeneralService {
             String givenname = null;
             String familyname = null;
             String xml = LocalUser.getLocalUser().getUserXML();
-            if (xml != null) {
+            if (StringUtils.isNotEmpty(xml)) {
                 Document d = Util.parse(xml);
                 givenname = com.amalto.core.util.Util.getFirstTextNode(d, "//givenname"); //$NON-NLS-1$
                 familyname = com.amalto.core.util.Util.getFirstTextNode(d, "//familyname"); //$NON-NLS-1$

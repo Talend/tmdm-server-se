@@ -50,7 +50,7 @@ public class FullTextIndexCleaner implements StorageCleaner, StorageInitializer 
                     throw new IllegalStateException("Could not successfully delete '" + indexDirectory.getAbsolutePath() + "'", e);
                 }
             } else {
-                LOGGER.warn("Directory '" + dataSourceIndexDirectory + "' does not exist. No need to clean full text indexes.");
+                LOGGER.warn("Directory '" + indexDirectory + "' does not exist. No need to clean full text indexes.");
             }
         }
     }

@@ -31,7 +31,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Logger;
-import org.talend.mdm.commmon.util.core.ICoreConstants;
 import org.talend.mdm.commmon.util.datamodel.management.BusinessConcept;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
@@ -49,11 +48,13 @@ import com.amalto.core.server.api.XmlServer;
 import com.amalto.core.util.LocalUser;
 import com.amalto.core.util.XtentisException;
 import com.amalto.core.webservice.WSConceptKey;
+import com.amalto.core.webservice.WSCount;
 import com.amalto.core.webservice.WSDataClusterPK;
 import com.amalto.core.webservice.WSDataModelPK;
 import com.amalto.core.webservice.WSGetBusinessConceptKey;
 import com.amalto.core.webservice.WSGetItem;
 import com.amalto.core.webservice.WSItemPK;
+import com.amalto.core.webservice.WSString;
 import com.amalto.core.webservice.WSStringPredicate;
 import com.amalto.core.webservice.WSWhereAnd;
 import com.amalto.core.webservice.WSWhereCondition;
@@ -839,9 +840,21 @@ public abstract class Util {
 
     public static String getDefaultLanguage() throws Exception {
         String defaultLanguage = ""; //$NON-NLS-1$
-        String userName = LocalUser.getLocalUser().getUsername();
-        WSItemPK itemPK = new WSItemPK(new WSDataClusterPK(DATACLUSTER_PK), PROVISIONING_CONCEPT, new String[] { userName });
-        if (userName != null && userName.length() > 0) {
+        String identity = LocalUser.getLocalUser().getIdentity();
+        if (com.amalto.core.util.Util.isEnterprise()) {
+            WSWhereItem wi = new WSWhereItem();
+            String criteria = "User/id EQUALS " + identity; //$NON-NLS-1$
+            wi = Util.buildWhereItems(criteria);
+            WSDataClusterPK wsDataClusterPK = new WSDataClusterPK(DATACLUSTER_PK);
+            WSString countResult = Util.getPort().count(new WSCount(wsDataClusterPK, PROVISIONING_CONCEPT, wi, -1));
+            int totalLength = countResult.getValue() == null ? 0 : Integer.valueOf(countResult.getValue());
+            if (totalLength == 0) {
+                return defaultLanguage;
+            }
+        }
+        
+        WSItemPK itemPK = new WSItemPK(new WSDataClusterPK(DATACLUSTER_PK), PROVISIONING_CONCEPT, new String[] { identity });
+        if (identity != null && identity.length() > 0) {
             Document doc = XMLUtils.parse(Util.getPort().getItem(new WSGetItem(itemPK)).getContent());
             if (doc.getElementsByTagName("language") != null) { //$NON-NLS-1$
                 Node language = doc.getElementsByTagName("language").item(0); //$NON-NLS-1$
@@ -851,14 +864,5 @@ public abstract class Util {
             }
         }
         return defaultLanguage;
-    }
-
-    public static boolean userCanWrite(ILocalUser user) {
-        if (Webapp.INSTANCE.isEnterpriseVersion()) {
-            Set<String> roles = user.getRoles();
-            return roles.contains(ICoreConstants.ADMIN_PERMISSION) || roles.contains(ICoreConstants.SYSTEM_ADMIN_ROLE)
-                    || roles.contains(ICoreConstants.SYSTEM_INTERACTIVE_ROLE) || roles.contains(ICoreConstants.SYSTEM_WEB_ROLE);
-        }
-        return true;
     }
 }

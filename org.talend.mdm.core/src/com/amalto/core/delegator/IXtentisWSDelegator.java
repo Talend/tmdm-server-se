@@ -666,7 +666,7 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
             // Check if user is allowed to read the cluster
             ILocalUser user = LocalUser.getLocalUser();
             boolean authorized = false;
-            if (MDMConfiguration.getAdminUser().equals(user.getUsername())) {
+            if (LocalUser.isAdminUser(user.getUsername())) {
                 authorized = true;
             } else if (user.userCanRead(DataClusterPOJO.class, dataClusterName)) {
                 authorized = true;
@@ -1276,8 +1276,8 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
         try {
             WSItemPK wsItemPK = wsDropItem.getWsItemPK();
             deleteItemWithReport(new WSDeleteItemWithReport(wsItemPK, wsDropItem.getSource(),
-                    UpdateReportPOJO.OPERATION_TYPE_LOGICAL_DELETE, wsDropItem.getPartPath(), LocalUser.getLocalUser()
-                            .getUsername(), wsDropItem.getInvokeBeforeDeleting(), wsDropItem.getWithReport(),
+                    UpdateReportPOJO.OPERATION_TYPE_LOGICAL_DELETE, wsDropItem.getPartPath(),
+                    LocalUser.getLocalUser().getUsername(), wsDropItem.getInvokeBeforeDeleting(), wsDropItem.getWithReport(),
                     wsDropItem.getOverride()));
             return new WSDroppedItemPK(wsItemPK, wsDropItem.getPartPath()); // TODO Revision
         } catch (Exception e) {

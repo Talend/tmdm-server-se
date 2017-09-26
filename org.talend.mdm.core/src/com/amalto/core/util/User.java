@@ -9,7 +9,13 @@
  */
 package com.amalto.core.util;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
@@ -19,7 +25,7 @@ public class User implements Cloneable {
     
     private static final Logger LOG = Logger.getLogger(User.class);
 
-    Integer ID;
+    String id;
 
     String userName;
 
@@ -81,7 +87,7 @@ public class User implements Cloneable {
                 + "    <givenname>" + (givenName == null ? "" : givenName) + "</givenname>" + "    <familyname>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                 + (familyName == null ? "" : familyName) + "</familyname>" + "    <phonenumber>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + (phoneNumber == null ? "" : phoneNumber) + "</phonenumber>" + "    <company>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                + (company == null ? "" : company) + "</company>" + "    <id>" + ID + "</id>" + "    <signature>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+                + (company == null ? "" : company) + "</company>" + "    <id>" + id + "</id>" + "    <signature>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
                 + (signature == null ? "" : signature) + "</signature>" + "    <realemail>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + (realEmail == null ? "" : realEmail) + "</realemail>" + "    <fakeemail>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + (fakeEmail == null ? "" : fakeEmail) + "</fakeemail>" + "    <viewrealemail>" + (viewRealEmail ? "yes" : "no") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
@@ -92,9 +98,12 @@ public class User implements Cloneable {
                 + (universe == null ? "" : universe) + "</universe>" + "    <language>" + (language == null ? "" : language) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                 + "</language>"; //$NON-NLS-1$
         user += "    <roles>"; //$NON-NLS-1$
-        Iterator<String> iter = roleNames.iterator();
-        while (iter.hasNext()) {
-            user += "<role>" + iter.next() + "</role>"; //$NON-NLS-1$ //$NON-NLS-2$
+        Iterator<String> iter;
+        if (roleNames != null) {
+            iter = roleNames.iterator();
+            while (iter.hasNext()) {
+                user += "<role>" + iter.next() + "</role>"; //$NON-NLS-1$ //$NON-NLS-2$
+            }
         }
         user += "    </roles>"; //$NON-NLS-1$
         user += "    <properties>"; //$NON-NLS-1$
@@ -134,37 +143,39 @@ public class User implements Cloneable {
 
         try {
             Element result = Util.parse(xml).getDocumentElement();
+
+            user.setId(Util.getFirstTextNode(result, "//id")); //$NON-NLS-1$
             user.setUserName(Util.getFirstTextNode(result, "//username")); //$NON-NLS-1$
-            user.setPassword(Util.getFirstTextNode(result, "//password")); //$NON-NLS-1$
             user.setGivenName(Util.getFirstTextNode(result, "//givenname")); //$NON-NLS-1$
             user.setFamilyName(Util.getFirstTextNode(result, "//familyname")); //$NON-NLS-1$
-            user.setPhoneNumber(Util.getFirstTextNode(result, "//phonenumber")); //$NON-NLS-1$
-            user.setCompany(Util.getFirstTextNode(result, "//company")); //$NON-NLS-1$
-            user.setSignature(Util.getFirstTextNode(result, "//signature")); //$NON-NLS-1$
-            user.setRealEmail(Util.getFirstTextNode(result, "//realemail")); //$NON-NLS-1$
-            user.setFakeEmail(Util.getFirstTextNode(result, "//fakeemail")); //$NON-NLS-1$
-            user.setViewRealEmail("yes".equals(Util.getFirstTextNode(result, "//viewrealemail"))); //$NON-NLS-1$ //$NON-NLS-2$
+            if (!Util.isEnterprise()) {
+                user.setPassword(Util.getFirstTextNode(result, "//password")); //$NON-NLS-1$
+                user.setPhoneNumber(Util.getFirstTextNode(result, "//phonenumber")); //$NON-NLS-1$
+                user.setCompany(Util.getFirstTextNode(result, "//company")); //$NON-NLS-1$
+                user.setSignature(Util.getFirstTextNode(result, "//signature")); //$NON-NLS-1$
+                user.setRealEmail(Util.getFirstTextNode(result, "//realemail")); //$NON-NLS-1$
+                user.setFakeEmail(Util.getFirstTextNode(result, "//fakeemail")); //$NON-NLS-1$
+                user.setViewRealEmail("yes".equals(Util.getFirstTextNode(result, "//viewrealemail"))); //$NON-NLS-1$ //$NON-NLS-2$
+                try {
+                    user.setRegistrationDate(new Date(Long.parseLong(Util.getFirstTextNode(result, "//registrationdate")))); //$NON-NLS-1$
+                } catch (Exception nfe) {
+                    user.setRegistrationDate(null);
+                }
 
-            try {
-                user.setRegistrationDate(new Date(Long.parseLong(Util.getFirstTextNode(result, "//registrationdate")))); //$NON-NLS-1$
-            } catch (Exception nfe) {
-                user.setRegistrationDate(null);
-            }
+                try {
+                    user.setLastVisitDate(new Date(Long.parseLong(Util.getFirstTextNode(result, "//lastvisitdate")))); //$NON-NLS-1$
+                } catch (Exception nfe) {
+                    user.setLastVisitDate(null);
+                }
 
-            try {
-                user.setLastVisitDate(new Date(Long.parseLong(Util.getFirstTextNode(result, "//lastvisitdate")))); //$NON-NLS-1$
-            } catch (Exception nfe) {
-                user.setLastVisitDate(null);
+                try {
+                    user.setLastSyncTime(new Date(Long.parseLong(Util.getFirstTextNode(result, "//lastsynctime")))); //$NON-NLS-1$
+                } catch (Exception nfe) {
+                    user.setLastSyncTime(null);
+                }
+                user.setEnabled("yes".equals(Util.getFirstTextNode(result, "//enabled"))); //$NON-NLS-1$ //$NON-NLS-2$
+                user.setHomePage(Util.getFirstTextNode(result, "//homepage")); //$NON-NLS-1$
             }
-            
-            try {
-                user.setLastSyncTime(new Date(Long.parseLong(Util.getFirstTextNode(result, "//lastsynctime")))); //$NON-NLS-1$
-            } catch (Exception nfe) {
-                user.setLastSyncTime(null);
-            }
-            user.setEnabled("yes".equals(Util.getFirstTextNode(result, "//enabled"))); //$NON-NLS-1$ //$NON-NLS-2$
-            user.setHomePage(Util.getFirstTextNode(result, "//homepage")); //$NON-NLS-1$
-            user.setUniverse(Util.getFirstTextNode(result, "//universe")); //$NON-NLS-1$
             user.setLanguage(Util.getFirstTextNode(result, "//language")); //$NON-NLS-1$
 
             String[] roles = Util.getTextNodes(result, "//roles/role"); //$NON-NLS-1$
@@ -284,12 +295,12 @@ public class User implements Cloneable {
         this.homePage = homePage;
     }
 
-    public Integer getID() {
-        return ID;
+    public String getId() {
+        return id;
     }
 
-    public void setID(Integer id) {
-        ID = id;
+    public void setId(String id) {
+        this.id = id;
     }
 
     // for groovy

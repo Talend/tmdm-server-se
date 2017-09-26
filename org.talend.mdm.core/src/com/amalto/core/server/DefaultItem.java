@@ -9,7 +9,7 @@
  */
 package com.amalto.core.server;
 
-import static com.amalto.core.query.user.UserQueryBuilder.*;
+import static com.amalto.core.query.user.UserQueryBuilder.from;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -29,7 +29,6 @@ import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.metadata.MetadataUtils;
-import org.talend.mdm.commmon.util.core.MDMConfiguration;
 
 import com.amalto.core.delegator.BeanDelegatorContainer;
 import com.amalto.core.delegator.ILocalUser;
@@ -371,7 +370,7 @@ public class DefaultItem implements Item {
             ILocalUser user = LocalUser.getLocalUser();
             boolean authorized = false;
             String dataModelName = dataClusterPOJOPK.getUniqueId();
-            if (MDMConfiguration.getAdminUser().equals(user.getUsername())) { 
+            if (LocalUser.isAdminUser(user.getUsername())) {
                 authorized = true;
             } else if (user.userCanRead(DataClusterPOJO.class, dataModelName)) {
                 authorized = true;
@@ -818,7 +817,7 @@ public class DefaultItem implements Item {
             Storage storage = storageAdmin.get(dataModelName, storageAdmin.getType(dataModelName));
             ILocalUser user = LocalUser.getLocalUser();
             boolean authorized = false;
-            if (MDMConfiguration.getAdminUser().equals(user.getUsername())) {
+            if (LocalUser.isAdminUser(user.getUsername())) {
                 authorized = true;
             } else if (user.userCanRead(DataClusterPOJO.class, dataModelName)) {
                 authorized = true;

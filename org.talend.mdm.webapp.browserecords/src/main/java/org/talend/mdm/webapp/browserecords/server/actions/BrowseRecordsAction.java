@@ -1941,8 +1941,8 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             String dataClusterPK = config.getCluster() == null ? StringUtils.EMPTY : config.getCluster();
             UpdateReportPOJO updateReportPOJO = new UpdateReportPOJO(concept,
                     Util.joinStrings(ids, "."), UpdateReportPOJO.OPERATION_TYPE_ACTION, //$NON-NLS-1$
-                    UpdateReportPOJO.GENERIC_UI_SOURCE, System.currentTimeMillis(), dataClusterPK, dataModelPK, LocalUser
-                            .getLocalUser().getUsername(), null);
+                    UpdateReportPOJO.GENERIC_UI_SOURCE, System.currentTimeMillis(), dataClusterPK, dataModelPK,
+                    LocalUser.getLocalUser().getUsername(), null);
 
             String updateReport = updateReportPOJO.serialize();
             WSTypedContent wsTypedContent = new WSTypedContent(null, new WSByteArray(updateReport.getBytes("UTF-8")),//$NON-NLS-1$

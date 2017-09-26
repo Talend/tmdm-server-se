@@ -104,7 +104,7 @@ public class Configuration {
         }
 
         ILocalUser user = LocalUser.getLocalUser();
-        if (!Util.userCanWrite(user)) {
+        if (!user.userCanWrite()) {
             return;
         }
 
@@ -112,7 +112,7 @@ public class Configuration {
                 .getPort()
                 .getItem(
                         new WSGetItem(new WSItemPK(
-                                new WSDataClusterPK("PROVISIONING"), "User", new String[] { user.getUsername() }))) //$NON-NLS-1$//$NON-NLS-2$
+                                new WSDataClusterPK("PROVISIONING"), "User", new String[] { user.getIdentity() }))) //$NON-NLS-1$//$NON-NLS-2$
                 .getContent();
         Document d = Util.parse(xml);
 
@@ -126,7 +126,7 @@ public class Configuration {
                                     new WSDataClusterPK("PROVISIONING"), XMLUtils.nodeToString(d.getDocumentElement(), true, true).replaceAll( //$NON-NLS-1$
                                                     "<\\?xml.*?\\?>", ""), new WSDataModelPK("PROVISIONING"), false)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         } else {
-            Util.storeProvisioning(LocalUser.getLocalUser().getUsername(),
+            Util.storeProvisioning(LocalUser.getLocalUser().getIdentity(),
                     XMLUtils.nodeToString(d.getDocumentElement(), true, true).replaceAll("<\\?xml.*?\\?>", "")); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }

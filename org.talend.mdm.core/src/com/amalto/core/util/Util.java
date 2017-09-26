@@ -842,9 +842,8 @@ public class Util {
     }
 
     private static Element getLoginProvisioningFromDB() throws Exception {
-
-        ItemPOJOPK itemPk = new ItemPOJOPK(new DataClusterPOJOPK("PROVISIONING"), "User", new String[] { LocalUser.getLocalUser()
-                .getUsername() });
+        ItemPOJOPK itemPk = new ItemPOJOPK(new DataClusterPOJOPK("PROVISIONING"), "ID",
+                new String[] { LocalUser.getLocalUser().getIdentity() });
         ItemPOJO item = ItemPOJO.load(itemPk);
         if (item == null) {
             return null;

@@ -33,25 +33,14 @@ document.onselectstart = function(event) {
 // check browser type
 function getBrowserType() {
     var userAgent = navigator.userAgent;
-    var isOpera = userAgent.indexOf("Opera") > -1; // Opera
-    var isIE = userAgent.indexOf("compatible") > -1
-            && userAgent.indexOf("MSIE") > -1 && !isOpera; // IE
-    var isEdge = userAgent.indexOf("Windows NT 6.1; Trident/7.0;") > -1
-            && !isIE; // Edge
-    var isFF = userAgent.indexOf("Firefox") > -1; // Firefox
-    var isSafari = userAgent.indexOf("Safari") > -1
-            && userAgent.indexOf("Chrome") == -1; // Safari
-    var isChrome = userAgent.indexOf("Chrome") > -1
-            && userAgent.indexOf("Safari") > -1; // Chrome
-    var isWindows10Edge = userAgent.indexOf("Windows NT 10.0;") > -1
-            && userAgent.indexOf("Edge") > -1; // windows 10 Edge
-
-    if (isWindows10Edge) {
+    if (isWindows10Edge = userAgent.indexOf("Windows NT 10.0;") > -1
+            && userAgent.indexOf("Edge") > -1) {
         event.returnValue = true;
         return "Windows10Edge";
-    }
-
-    if (isIE) {
+    } else if (userAgent.indexOf("Opera") > -1) {
+        return "Opera";
+    } else if (userAgent.indexOf("compatible") > -1
+            && userAgent.indexOf("MSIE") > -1) {
         var reIE = new RegExp("MSIE (\\d+\\.\\d+);");
         reIE.test(userAgent);
         var fIEVersion = parseFloat(RegExp["$1"]);
@@ -66,23 +55,19 @@ function getBrowserType() {
         } else if (fIEVersion == 11) {
             return "IE11";
         } else {
-            return ""
+            return "";
         }
-    }
-
-    if (isFF) {
-        return "Firefox";
-    }
-    if (isOpera) {
-        return "Opera";
-    }
-    if (isSafari) {
-        return "Safari";
-    }
-    if (isChrome) {
-        return "Chrome";
-    }
-    if (isEdge) {
+    } else if (userAgent.indexOf("Windows NT 6.1; Trident/7.0;") > -1) {
         return "Edge";
+    } else if (userAgent.indexOf("Firefox") > -1) {
+        return "Firefox";
+    } else if (userAgent.indexOf("Safari") > -1
+            && userAgent.indexOf("Chrome") == -1) {
+        return "Safari";
+    } else if (userAgent.indexOf("Chrome") > -1
+            && userAgent.indexOf("Safari") > -1) {
+        return "Chrome";
+    } else {
+        return "";
     }
 }

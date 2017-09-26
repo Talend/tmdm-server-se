@@ -20,7 +20,6 @@ import java.util.HashSet;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 
 import com.amalto.core.objects.ItemPOJO;
@@ -76,11 +75,20 @@ public abstract class ILocalUser implements IBeanDelegator {
         return userXml.toString();
     }
 
+    public String getIdentity() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Object principal = authentication.getPrincipal();
+        if (principal instanceof LocalUserDetails) {
+            return ((LocalUserDetails) principal).getId();
+        }
+        return (String) principal;
+    }
+    
     public String getUsername() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Object principal = authentication.getPrincipal();
-        if (principal instanceof UserDetails) {
-            return ((UserDetails) principal).getUsername();
+        if (principal instanceof LocalUserDetails) {
+            return ((LocalUserDetails) principal).getUsername();
         }
         return (String) principal;
     }
@@ -120,10 +128,17 @@ public abstract class ILocalUser implements IBeanDelegator {
     public void setUserXML(String userXML) {
     }
 
-    public void setUsername(String username) {
+    public void setIdentity(String username) {
     }
 
+    public void setUsername(String username) {
+    }
+    
     public boolean userCanRead(Class<?> objectTypeClass, String instanceId) throws XtentisException {
+        return true;
+    }
+
+    public boolean userCanWrite() {
         return true;
     }
 
@@ -137,6 +152,11 @@ public abstract class ILocalUser implements IBeanDelegator {
 
     public boolean userItemCanWrite(ItemPOJO item, String datacluster, String concept) throws XtentisException {
         return true;
+    }
+
+    public User parseWithoutSystemRoles() throws Exception {
+        User user = User.parse(getUserXML());
+        return user;
     }
 
 }

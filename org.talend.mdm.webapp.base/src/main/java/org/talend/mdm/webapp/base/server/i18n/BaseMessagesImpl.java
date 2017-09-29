@@ -188,6 +188,11 @@ public final class BaseMessagesImpl implements BaseMessages {
     }
     
     @Override
+    public String server_error_unauthorized() {
+        return MESSAGES.getMessage("server_error_unauthorized");
+    }
+    
+    @Override
     public String server_error_forbidden_resource() {
         return MESSAGES.getMessage("server_error_forbidden_resource");
     }

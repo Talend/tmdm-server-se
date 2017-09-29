@@ -73,6 +73,8 @@ public interface BaseMessages extends Messages {
 
     String server_error_notification();
 
+    String server_error_unauthorized();
+    
     String server_error_forbidden_resource();
     
     String service_rest_error();

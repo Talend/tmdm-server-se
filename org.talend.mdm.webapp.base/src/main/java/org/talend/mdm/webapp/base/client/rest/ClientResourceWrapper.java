@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.http.HttpStatus;
 import org.restlet.client.Request;
 import org.restlet.client.Response;
 import org.restlet.client.Uniform;
@@ -74,10 +75,10 @@ public class ClientResourceWrapper {
                 // http://stackoverflow.com/questions/10046972/msie-returns-status-code-of-1223-for-ajax-request
                 if (statusCode >= 200 && statusCode <= 299 || statusCode == 1223) {
                     callbackHandler.process(request, response);
-                } else if (statusCode == 401) {
+                } else if (statusCode == HttpStatus.SC_UNAUTHORIZED) {
                     MessageBox.alert(BaseMessagesFactory.getMessages().server_error(), BaseMessagesFactory.getMessages()
                             .server_error_unauthorized(), null);
-                } else if (statusCode == 403) {
+                } else if (statusCode == HttpStatus.SC_FORBIDDEN) {
                     MessageBox.alert(BaseMessagesFactory.getMessages().server_error(), BaseMessagesFactory.getMessages()
                             .server_error_forbidden_resource(), null);
                 } else {

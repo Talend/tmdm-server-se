@@ -54,7 +54,10 @@
             <artifactId>relaxngDatatype</artifactId>
             <scope>test</scope>
         </dependency>
-
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+        </dependency>
         <!-- 3rd party dependencies -->
         <dependency>
             <groupId>com.google.gwt</groupId>

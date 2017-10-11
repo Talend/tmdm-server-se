@@ -474,7 +474,8 @@ public class ConfigurableContainsOptimizer implements Optimizer {
             return (condition.getPredicate() == Predicate.EQUALS
                     || condition.getPredicate() == Predicate.GREATER_THAN
                     || condition.getPredicate() == Predicate.GREATER_THAN_OR_EQUALS
-                    || condition.getPredicate() == Predicate.LOWER_THAN || condition.getPredicate() == Predicate.LOWER_THAN_OR_EQUALS)
+                    || condition.getPredicate() == Predicate.LOWER_THAN || condition.getPredicate() == Predicate.LOWER_THAN_OR_EQUALS
+                    || condition.getPredicate() == Predicate.IN)
                     || condition.getLeft().accept(this);
         }
 

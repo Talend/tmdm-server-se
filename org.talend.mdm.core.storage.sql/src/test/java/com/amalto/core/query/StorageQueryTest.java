@@ -33,6 +33,7 @@ import static com.amalto.core.query.user.UserQueryBuilder.or;
 import static com.amalto.core.query.user.UserQueryBuilder.startsWith;
 import static com.amalto.core.query.user.UserQueryBuilder.taskId;
 import static com.amalto.core.query.user.UserQueryBuilder.timestamp;
+import static com.amalto.core.query.user.UserQueryBuilder.in;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -5047,7 +5048,7 @@ public class StorageQueryTest extends StorageTestCase {
         dataList.add("string1");
         dataList.add("string2");
         dataList.add("string3");
-        UserQueryBuilder qb = from(type).where(notIn(type.getField("string"), dataList));
+        UserQueryBuilder qb = from(type).where(not(in(type.getField("string"), dataList)));
         StorageResults results = storage.fetch(qb.getSelect());
         try {
             assertEquals(1, results.getSize());
@@ -5059,7 +5060,7 @@ public class StorageQueryTest extends StorageTestCase {
         // boolean type
         dataList.clear();
         dataList.add(true);
-        qb = from(type).where(notIn(type.getField("boolean"), dataList));
+        qb = from(type).where(not(in(type.getField("boolean"), dataList)));
         results = storage.fetch(qb.getSelect());
         try {
             assertEquals(0, results.getSize());
@@ -5073,7 +5074,7 @@ public class StorageQueryTest extends StorageTestCase {
         dataList.add("1");
         dataList.add("2");
         dataList.add("3");
-        qb = from(type).where(notIn(type.getField("short"), dataList));
+        qb = from(type).where(not(in(type.getField("short"), dataList)));
         results = storage.fetch(qb.getSelect());
         try {
             assertEquals(1, results.getSize());
@@ -5084,7 +5085,7 @@ public class StorageQueryTest extends StorageTestCase {
 
         dataList.clear();
         dataList.add(1);
-        qb = from(type).where(notIn(type.getField("short"), dataList));
+        qb = from(type).where(not(in(type.getField("short"), dataList)));
         try {
             results = storage.fetch(qb.getSelect());
             fail("can't support query for different type and value, short type, but the value is int type,");
@@ -5097,7 +5098,7 @@ public class StorageQueryTest extends StorageTestCase {
         dataList.add(1);
         dataList.add(2);
         dataList.add(3);
-        qb = from(type).where(notIn(type.getField("int"), dataList));
+        qb = from(type).where(not(in(type.getField("int"), dataList)));
         results = storage.fetch(qb.getSelect());
         try {
             assertEquals(1, results.getSize());
@@ -5111,7 +5112,7 @@ public class StorageQueryTest extends StorageTestCase {
         dataList.add(new Long(1));
         dataList.add(new Long(2));
         dataList.add(new Long(3));
-        qb = from(type).where(notIn(type.getField("long"), dataList));
+        qb = from(type).where(not(in(type.getField("long"), dataList)));
         results = storage.fetch(qb.getSelect());
         try {
             assertEquals(1, results.getSize());
@@ -5125,7 +5126,7 @@ public class StorageQueryTest extends StorageTestCase {
         dataList.add(1);
         dataList.add(2);
         dataList.add(3);
-        qb = from(type).where(notIn(type.getField("integer"), dataList));
+        qb = from(type).where(not(in(type.getField("integer"), dataList)));
         results = storage.fetch(qb.getSelect());
         try {
             assertEquals(1, results.getSize());
@@ -5139,7 +5140,7 @@ public class StorageQueryTest extends StorageTestCase {
         dataList.add(new Byte("1"));
         dataList.add(new Byte("2"));
         dataList.add(new Byte("3"));
-        qb = from(type).where(notIn(type.getField("byte"), dataList));
+        qb = from(type).where(not(in(type.getField("byte"), dataList)));
         results = storage.fetch(qb.getSelect());
         try {
             assertEquals(1, results.getSize());
@@ -5153,7 +5154,7 @@ public class StorageQueryTest extends StorageTestCase {
         dataList.add(1f);
         dataList.add(2f);
         dataList.add(3f);
-        qb = from(type).where(notIn(type.getField("float"), dataList));
+        qb = from(type).where(not(in(type.getField("float"), dataList)));
         results = storage.fetch(qb.getSelect());
         try {
             assertEquals(1, results.getSize());
@@ -5166,7 +5167,7 @@ public class StorageQueryTest extends StorageTestCase {
         dataList.add("1.0");
         dataList.add("2.0");
         dataList.add("3.0");
-        qb = from(type).where(notIn(type.getField("float"), dataList));
+        qb = from(type).where(not(in(type.getField("float"), dataList)));
         results = storage.fetch(qb.getSelect());
         try {
             assertEquals(1, results.getSize());
@@ -5180,7 +5181,7 @@ public class StorageQueryTest extends StorageTestCase {
         dataList.add(1d);
         dataList.add(2d);
         dataList.add(3d);
-        qb = from(type).where(notIn(type.getField("double"), dataList));
+        qb = from(type).where(not(in(type.getField("double"), dataList)));
         results = storage.fetch(qb.getSelect());
         try {
             assertEquals(1, results.getSize());
@@ -5193,7 +5194,7 @@ public class StorageQueryTest extends StorageTestCase {
         dataList.add(1.0);
         dataList.add(2.0);
         dataList.add(3.0);
-        qb = from(type).where(notIn(type.getField("double"), dataList));
+        qb = from(type).where(not(in(type.getField("double"), dataList)));
         results = storage.fetch(qb.getSelect());
         try {
             assertEquals(1, results.getSize());
@@ -5206,7 +5207,7 @@ public class StorageQueryTest extends StorageTestCase {
         dataList.add(1d);
         dataList.add(2.0d);
         dataList.add("3.0");
-        qb = from(type).where(notIn(type.getField("double"), dataList));
+        qb = from(type).where(not(in(type.getField("double"), dataList)));
         results = storage.fetch(qb.getSelect());
         try {
             assertEquals(1, results.getSize());
@@ -5220,7 +5221,7 @@ public class StorageQueryTest extends StorageTestCase {
         dataList.add(new BigDecimal("1"));
         dataList.add(new BigDecimal("2"));
         dataList.add(new BigDecimal("3"));
-        qb = from(type).where(notIn(type.getField("decimal"), dataList));
+        qb = from(type).where(not(in(type.getField("decimal"), dataList)));
         results = storage.fetch(qb.getSelect());
         try {
             assertEquals(1, results.getSize());
@@ -5233,7 +5234,7 @@ public class StorageQueryTest extends StorageTestCase {
         dataList.clear();
         dataList.add("2017-09-15");
         dataList.add("2017-09-16");
-        qb = from(type).where(notIn(type.getField("date"), dataList));
+        qb = from(type).where(not(in(type.getField("date"), dataList)));
         results = storage.fetch(qb.getSelect());
         try {
             assertEquals(2, results.getSize());
@@ -5246,7 +5247,7 @@ public class StorageQueryTest extends StorageTestCase {
         dataList.clear();
         dataList.add("2017-09-15T12:00:00");
         dataList.add("2017-09-16T12:00:00");
-        qb = from(type).where(notIn(type.getField("dateTime"), dataList));
+        qb = from(type).where(not(in(type.getField("dateTime"), dataList)));
         results = storage.fetch(qb.getSelect());
         try {
             assertEquals(2, results.getSize());
@@ -5259,7 +5260,7 @@ public class StorageQueryTest extends StorageTestCase {
         dataList.clear();
         dataList.add("12:00:00");
         dataList.add("13:00:00");
-        qb = from(type).where(notIn(type.getField("time"), dataList));
+        qb = from(type).where(not(in(type.getField("time"), dataList)));
         results = storage.fetch(qb.getSelect());
         try {
             assertEquals(2, results.getSize());
@@ -5334,7 +5335,7 @@ public class StorageQueryTest extends StorageTestCase {
             results.close();
         }
 
-        qb = UserQueryBuilder.from(address).where(notIn(address.getField("country"), dataList));
+        qb = UserQueryBuilder.from(address).where(not(in(address.getField("country"), dataList)));
         results = storage.fetch(qb.getSelect());
         try {
             assertEquals(2, results.getSize());
@@ -5345,7 +5346,7 @@ public class StorageQueryTest extends StorageTestCase {
 
         dataList.clear();
         dataList.add("2");
-        qb = UserQueryBuilder.from(address).where(notIn(address.getField("country"), dataList));
+        qb = UserQueryBuilder.from(address).where(not(in(address.getField("country"), dataList)));
         results = storage.fetch(qb.getSelect());
         try {
             assertEquals(3, results.getSize());
@@ -5392,6 +5393,21 @@ public class StorageQueryTest extends StorageTestCase {
         try {
             assertEquals(1, results.getSize());
             assertEquals(1, results.getCount());
+        } finally {
+            results.close();
+        }
+
+
+        dataList.clear();
+        dataList.add("1");
+        dataList.add("2");
+        qb = UserQueryBuilder.from(address).where(
+                and(in(address.getField("id"), dataList), contains(address.getField("Street"), "Street")));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(2, results.getSize());
+
+            assertEquals(2, results.getCount());
         } finally {
             results.close();
         }

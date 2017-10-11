@@ -38,8 +38,6 @@ public class UserQueryBuilder {
     
     public static final String ALL_FIELD = "../*";  //$NON-NLS-1$
 
-    public static final String IN_VALUE_SPLIT = "@@@@";
-
     private static final Logger LOGGER = Logger.getLogger(UserQueryBuilder.class);
 
     private final Expression expression;
@@ -306,92 +304,6 @@ public class UserQueryBuilder {
             //return null;
         } else {
             return new Compare(field, Predicate.IN, createConstant(field, constant));
-        }
-    }
-
-    public static Condition notIn(TypedExpression left, TypedExpression right) {
-        return new Compare(left, Predicate.NOT_IN, right);
-    }
-
-    public static Condition notIn(TypedExpression expression, List constant) {
-        assertNullField(expression);
-        if (expression instanceof Field) {
-            return notIn(((Field) expression), constant);
-        } else {
-            if (constant == null) {
-                return isNull(expression);
-            }
-            return new Compare(expression, Predicate.NOT_IN, createConstant(expression, constant));
-        }
-    }
-
-    public static Condition notIn(TypedExpression expression, String constant) {
-        assertNullField(expression);
-        if (expression instanceof Field) {
-            return notIn(((Field) expression), constant);
-        } else {
-            if (constant == null) {
-                return isNull(expression);
-            }
-            return new Compare(expression, Predicate.NOT_IN, createConstant(expression, constant));
-        }
-    }
-
-    public static Condition notIn(FieldMetadata field, String constant) {
-        assertNullField(field);
-        Field userField = new Field(field);
-        if (StorageMetadataUtils.isValueAssignable(constant, field)) {
-            return notIn(userField, constant);
-        } else {
-            return UserQueryHelper.FALSE;
-        }
-    }
-
-    public static Condition notIn(FieldMetadata field, List constant) {
-        assertNullField(field);
-        Field userField = new Field(field);
-        if (StorageMetadataUtils.isValueAssignable(constant, field)) {
-            return notIn(userField, constant);
-        } else {
-            return UserQueryHelper.FALSE;
-        }
-    }
-
-    public static Condition notIn(Field field, String constant) {
-        if (field == null) {
-            throw new IllegalArgumentException("Field cannot be null");
-        }
-        if (constant == null) {
-            return isNull(field);
-        }
-        assertValueConditionArguments(field, constant);
-        if (!StorageMetadataUtils.isValueAssignable(constant, field.getFieldMetadata())) {
-            return UserQueryHelper.FALSE;
-        }
-        if (field.getFieldMetadata() instanceof ReferenceFieldMetadata) {
-            ReferenceFieldMetadata fieldMetadata = (ReferenceFieldMetadata) field.getFieldMetadata();
-            return new Compare(field, Predicate.NOT_IN, new Id(fieldMetadata.getReferencedType(), constant));
-        } else {
-            return new Compare(field, Predicate.NOT_IN, createConstant(field, constant));
-        }
-    }
-
-    public static Condition notIn(Field field, List constant) {
-        if (field == null) {
-            throw new IllegalArgumentException("Field cannot be null");
-        }
-        if (constant == null) {
-            return isNull(field);
-        }
-        assertValueConditionArguments(field, constant);
-        if (!StorageMetadataUtils.isValueAssignable(constant, field.getFieldMetadata())) {
-            return UserQueryHelper.FALSE;
-        }
-        if (field.getFieldMetadata() instanceof ReferenceFieldMetadata) {
-            ReferenceFieldMetadata fieldMetadata = (ReferenceFieldMetadata) field.getFieldMetadata();
-            return new Compare(field, Predicate.NOT_IN, new Id(fieldMetadata.getReferencedType(), constant));
-        } else {
-            return new Compare(field, Predicate.NOT_IN, createConstant(field, constant));
         }
     }
 

@@ -114,13 +114,4 @@ public interface Predicate extends Visitable {
         }
 
     }
-
-    Predicate NOT_IN = new NOT_IN();
-
-    static class NOT_IN implements Predicate {
-        public <T> T accept(Visitor<T> visitor) {
-            return visitor.visit(this);
-        }
-
-    }
 }

@@ -9,6 +9,17 @@
  */
 package com.amalto.core.servlet;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.talend.mdm.commmon.util.core.MDMConfiguration;
+
 import com.amalto.core.objects.configurationinfo.assemble.AssembleConcreteBuilder;
 import com.amalto.core.objects.configurationinfo.assemble.AssembleDirector;
 import com.amalto.core.objects.configurationinfo.assemble.AssembleProc;
@@ -16,16 +27,8 @@ import com.amalto.core.server.ServerContext;
 import com.amalto.core.server.StorageAdmin;
 import com.amalto.core.storage.Storage;
 import com.amalto.core.util.Util;
-import org.talend.mdm.commmon.util.core.MDMConfiguration;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
-
+@SuppressWarnings("nls")
 public class RunServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
@@ -42,7 +45,6 @@ public class RunServlet extends HttpServlet {
         doGet(request, response);
     }
 
-    @SuppressWarnings("nls")
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String action = req.getParameter("action");
         PrintWriter writer = resp.getWriter();
@@ -89,7 +91,14 @@ public class RunServlet extends HttpServlet {
                 } else {
                     StorageAdmin storageAdmin = ServerContext.INSTANCE.get().getStorageAdmin();
                     Storage storage = storageAdmin.get(container, storageAdmin.getType(container));
-                    storage.reindex();
+                    try {
+                        storage.begin();
+                        storage.reindex();
+                        storage.commit();
+                    } catch (Exception e) {
+                        storage.rollback();
+                        throw new RuntimeException("Could not complete reindex action.", e);//$NON-NLS-1$
+                    }
                 }
             } else {
                 writer.write("<p><b>Unknown action: </b>" + action + "<br/>");

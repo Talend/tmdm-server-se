@@ -97,7 +97,7 @@ public class RunServlet extends HttpServlet {
                         storage.commit();
                     } catch (Exception e) {
                         storage.rollback();
-                        throw new RuntimeException("Could not complete reindex action.", e);//$NON-NLS-1$
+                        throw new RuntimeException("Could not complete reindex action.", e);
                     }
                 }
             } else {

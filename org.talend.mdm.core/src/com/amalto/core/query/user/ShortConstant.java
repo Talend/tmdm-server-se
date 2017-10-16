@@ -55,7 +55,8 @@ public class ShortConstant implements ConstantExpression<Short> {
         return valueList;
     }
 
-    @Override public boolean isExpressionList() {
+    @Override
+    public boolean isExpressionList() {
         return this.valueList != null;
     }
 
@@ -72,7 +73,7 @@ public class ShortConstant implements ConstantExpression<Short> {
             return false;
         }
         ShortConstant that = (ShortConstant) o;
-        if (this.isExpressionList()) {
+        if (isExpressionList()) {
             return valueList.equals(that.valueList);
         } else {
             return value.equals(that.value);
@@ -82,7 +83,7 @@ public class ShortConstant implements ConstantExpression<Short> {
     @Override
     public int hashCode() {
         if (isExpressionList()) {
-            return this.valueList.hashCode();
+            return valueList.hashCode();
         } else {
             return value.hashCode();
         }

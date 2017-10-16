@@ -8,7 +8,6 @@
  * along with this program; if not, write to Talend SA
  * 9 rue Pages 92150 Suresnes, France
  */
-
 package com.amalto.core.query.user;
 
 import java.util.List;
@@ -50,11 +49,13 @@ public class DoubleConstant implements ConstantExpression<Double> {
         return value;
     }
 
-    @Override public List<Double> getValueList() {
+    @Override
+    public List<Double> getValueList() {
         return valueList;
     }
 
-    @Override public boolean isExpressionList() {
+    @Override
+    public boolean isExpressionList() {
         return this.valueList != null;
     }
 
@@ -71,16 +72,17 @@ public class DoubleConstant implements ConstantExpression<Double> {
             return false;
         }
         DoubleConstant that = (DoubleConstant) o;
-        if (this.isExpressionList()) {
+        if (isExpressionList()) {
             return valueList.equals(that.valueList);
         } else {
             return value.equals(that.value);
         }
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         if (isExpressionList()) {
-            return this.valueList.hashCode();
+            return valueList.hashCode();
         } else {
             return value.hashCode();
         }

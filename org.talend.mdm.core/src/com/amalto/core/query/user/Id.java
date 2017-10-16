@@ -11,7 +11,6 @@
 
 package com.amalto.core.query.user;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
@@ -42,7 +41,8 @@ public class Id implements Expression {
         return this;
     }
 
-    @Override public boolean cache() {
+    @Override
+    public boolean cache() {
         return false;
     }
 
@@ -66,7 +66,8 @@ public class Id implements Expression {
         return type;
     }
 
-    @Override public boolean equals(Object o) {
+    @Override
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -88,7 +89,8 @@ public class Id implements Expression {
         return true;
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         int result = type != null ? type.hashCode() : 0;
         if (isExpressionList()) {
             result = 31 * result + idList.hashCode();

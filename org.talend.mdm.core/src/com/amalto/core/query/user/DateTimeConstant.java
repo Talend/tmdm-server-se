@@ -18,9 +18,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-/**
- *
- */
 public class DateTimeConstant implements ConstantExpression<Date> {
 
     public static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"); //$NON-NLS-1$
@@ -86,7 +83,7 @@ public class DateTimeConstant implements ConstantExpression<Date> {
             return false;
         }
         DateTimeConstant that = (DateTimeConstant) o;
-        if (this.isExpressionList()) {
+        if (isExpressionList()) {
             return valueList.equals(that.valueList);
         } else {
             return value.equals(that.value);
@@ -96,7 +93,7 @@ public class DateTimeConstant implements ConstantExpression<Date> {
     @Override
     public int hashCode() {
         if (isExpressionList()) {
-            return this.valueList.hashCode();
+            return valueList.hashCode();
         } else {
             return value.hashCode();
         }

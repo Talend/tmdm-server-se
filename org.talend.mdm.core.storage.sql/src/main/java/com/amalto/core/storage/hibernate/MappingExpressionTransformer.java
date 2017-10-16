@@ -305,7 +305,7 @@ class MappingExpressionTransformer extends VisitorAdapter<Expression> {
         if (constant.isExpressionList()) {
             return getConstant(constant.getValueList());
         } else {
-            return getConstant(constant.DATE_FORMAT.format(constant.getValue()));
+            return getConstant(DateConstant.DATE_FORMAT.format(constant.getValue()));
         }
     }
 
@@ -314,7 +314,7 @@ class MappingExpressionTransformer extends VisitorAdapter<Expression> {
         if (constant.isExpressionList()) {
             return getConstant(constant.getValueList());
         } else {
-            return getConstant(constant.DATE_FORMAT.format(constant.getValue()));
+            return getConstant(DateTimeConstant.DATE_FORMAT.format(constant.getValue()));
         }
     }
 
@@ -333,7 +333,7 @@ class MappingExpressionTransformer extends VisitorAdapter<Expression> {
         if (constant.isExpressionList()) {
             return getConstant(constant.getValueList());
         } else {
-            return getConstant(constant.TIME_FORMAT.format(constant.getValue()));
+            return getConstant(TimeConstant.TIME_FORMAT.format(constant.getValue()));
         }
     }
 
@@ -436,6 +436,7 @@ class MappingExpressionTransformer extends VisitorAdapter<Expression> {
         return mappedField;
     }
 
+    @SuppressWarnings("rawtypes")
     private Expression getConstant(Object data) {
         if (data instanceof List) {
             return getConstant((List) data);
@@ -448,6 +449,7 @@ class MappingExpressionTransformer extends VisitorAdapter<Expression> {
         }
     }
 
+    @SuppressWarnings("rawtypes")
     private Expression getConstant(List data) {
         if (StorageMetadataUtils.isValueAssignable(data, currentField.getTypeName())) {
             return UserQueryBuilder.createConstant(currentField, data);

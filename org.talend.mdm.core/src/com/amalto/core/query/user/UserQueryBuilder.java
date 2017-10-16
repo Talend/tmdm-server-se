@@ -27,9 +27,6 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.*;
 
-/**
- *
- */
 public class UserQueryBuilder {
 
     public static final String ID_FIELD = "../../i"; //$NON-NLS-1$
@@ -236,6 +233,7 @@ public class UserQueryBuilder {
         }
     }
 
+    @SuppressWarnings("rawtypes")
     public static Condition in(TypedExpression expression, List constant) {
         assertNullField(expression);
         if (expression instanceof Field) {
@@ -258,6 +256,7 @@ public class UserQueryBuilder {
         }
     }
 
+    @SuppressWarnings("rawtypes")
     public static Condition in(FieldMetadata field, List constant) {
         assertNullField(field);
         Field userField = new Field(field);
@@ -270,7 +269,7 @@ public class UserQueryBuilder {
 
     public static Condition in(Field field, String constant) {
         if (field == null) {
-            throw new IllegalArgumentException("Field cannot be null");
+            throw new IllegalArgumentException("Field cannot be null"); //$NON-NLS-1$
         }
         if (constant == null) {
             return isNull(field);
@@ -287,9 +286,10 @@ public class UserQueryBuilder {
         }
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public static Condition in(Field field, List constant) {
         if (field == null) {
-            throw new IllegalArgumentException("Field cannot be null");
+            throw new IllegalArgumentException("Field cannot be null"); //$NON-NLS-1$
         }
         if (constant == null) {
             return isNull(field);
@@ -309,10 +309,10 @@ public class UserQueryBuilder {
 
     public static Condition isa(FieldMetadata field, ComplexTypeMetadata type) {
         if (type == null) {
-            throw new IllegalArgumentException("Type argument cannot be null.");
+            throw new IllegalArgumentException("Type argument cannot be null."); //$NON-NLS-1$
         }
         if (field instanceof ReferenceFieldMetadata) {
-            throw new IllegalArgumentException("Cannot perform type check on a foreign key.");
+            throw new IllegalArgumentException("Cannot perform type check on a foreign key."); //$NON-NLS-1$
         }
         // Get the matching type from the field definition (field uses a contained version of the type).
         ComplexTypeMetadata fieldType = type;
@@ -401,6 +401,7 @@ public class UserQueryBuilder {
         }
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public static TypedExpression createConstant(TypedExpression expression, List constant) {
         String fieldTypeName = expression.getTypeName();
         if (Types.INTEGER.equals(fieldTypeName) || Types.POSITIVE_INTEGER.equals(fieldTypeName)
@@ -1025,6 +1026,7 @@ public class UserQueryBuilder {
         }
     }
 
+    @SuppressWarnings("rawtypes")
     private static void assertValueConditionArguments(Object field, Collection constant) {
         if (field == null) {
             throw new IllegalArgumentException("Field cannot be null");

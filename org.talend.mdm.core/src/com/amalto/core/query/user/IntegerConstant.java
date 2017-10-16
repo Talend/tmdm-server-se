@@ -9,7 +9,6 @@
  */
 package com.amalto.core.query.user;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.talend.mdm.commmon.metadata.Types;
@@ -36,7 +35,8 @@ public class IntegerConstant implements ConstantExpression<Integer> {
         return this;
     }
 
-    @Override public boolean cache() {
+    @Override
+    public boolean cache() {
         return false;
     }
 
@@ -48,11 +48,13 @@ public class IntegerConstant implements ConstantExpression<Integer> {
         return value;
     }
 
-    @Override public List<Integer> getValueList() {
+    @Override
+    public List<Integer> getValueList() {
         return valueList;
     }
 
-    @Override public boolean isExpressionList() {
+    @Override
+    public boolean isExpressionList() {
         return this.valueList != null;
     }
 
@@ -69,16 +71,17 @@ public class IntegerConstant implements ConstantExpression<Integer> {
             return false;
         }
         IntegerConstant that = (IntegerConstant) o;
-        if (this.isExpressionList()) {
+        if (isExpressionList()) {
             return valueList.equals(that.valueList);
         } else {
             return value.equals(that.value);
         }
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         if (isExpressionList()) {
-            return this.valueList.hashCode();
+            return valueList.hashCode();
         } else {
             return value.hashCode();
         }

@@ -38,6 +38,7 @@ class ContainsProcessor extends BasicConditionProcessor {
         return "contains"; //$NON-NLS-1
     }
 
+    @SuppressWarnings("rawtypes")
     @Override
     protected Condition buildCondition(TypedExpression expression, List value) {
         throw new UnsupportedOperationException();

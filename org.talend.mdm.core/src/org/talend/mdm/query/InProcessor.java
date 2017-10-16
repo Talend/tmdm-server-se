@@ -38,6 +38,7 @@ class InProcessor extends BasicConditionProcessor {
         return "in"; //$NON-NLS-1
     }
 
+    @SuppressWarnings("rawtypes")
     @Override
     protected Condition buildCondition(TypedExpression expression, List value) {
         return in(expression, value);

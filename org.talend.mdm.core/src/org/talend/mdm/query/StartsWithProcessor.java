@@ -38,6 +38,7 @@ class StartsWithProcessor extends BasicConditionProcessor {
         return "startsWith"; //$NON-NLS-1
     }
 
+    @SuppressWarnings("rawtypes")
     @Override
     protected Condition buildCondition(TypedExpression expression, List value) {
         throw new UnsupportedOperationException();

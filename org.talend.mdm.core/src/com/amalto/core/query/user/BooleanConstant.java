@@ -14,9 +14,6 @@ import java.util.List;
 
 import org.talend.mdm.commmon.metadata.Types;
 
-/**
- *
- */
 public class BooleanConstant implements ConstantExpression<Boolean> {
 
     private final Boolean value;
@@ -39,11 +36,13 @@ public class BooleanConstant implements ConstantExpression<Boolean> {
         return value;
     }
 
-    @Override public List<Boolean> getValueList() {
+    @Override
+    public List<Boolean> getValueList() {
         return valueList;
     }
 
-    @Override public boolean isExpressionList() {
+    @Override
+    public boolean isExpressionList() {
         return this.valueList != null;
     }
 
@@ -73,7 +72,7 @@ public class BooleanConstant implements ConstantExpression<Boolean> {
             return false;
         }
         BooleanConstant that = (BooleanConstant) o;
-        if (this.isExpressionList()) {
+        if (isExpressionList()) {
             return valueList.equals(that.valueList);
         } else {
             return value.equals(that.value);

@@ -50,11 +50,13 @@ public class ByteConstant implements ConstantExpression<Byte> {
         return value;
     }
 
-    @Override public List<Byte> getValueList() {
+    @Override
+    public List<Byte> getValueList() {
         return valueList;
     }
 
-    @Override public boolean isExpressionList() {
+    @Override
+    public boolean isExpressionList() {
         return this.valueList != null;
     }
 
@@ -71,7 +73,7 @@ public class ByteConstant implements ConstantExpression<Byte> {
             return false;
         }
         ByteConstant that = (ByteConstant) o;
-        if (this.isExpressionList()) {
+        if (isExpressionList()) {
             return valueList.equals(that.valueList);
         } else {
             return value.equals(that.value);
@@ -81,7 +83,7 @@ public class ByteConstant implements ConstantExpression<Byte> {
     @Override
     public int hashCode() {
         if (isExpressionList()) {
-            return this.valueList.hashCode();
+            return valueList.hashCode();
         } else {
             return this.value.hashCode();
         }

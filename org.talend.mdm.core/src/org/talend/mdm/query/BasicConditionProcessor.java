@@ -22,6 +22,7 @@ import org.talend.mdm.commmon.metadata.MetadataRepository;
 
 abstract class BasicConditionProcessor implements ConditionProcessor {
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public Condition process(JsonObject condition, MetadataRepository repository) {
         JsonArray conditionElement = condition.get(getConditionElement()).getAsJsonArray(); //$NON-NLS-1
         TypedExpression expression = null;
@@ -31,28 +32,28 @@ abstract class BasicConditionProcessor implements ConditionProcessor {
         for (int i = 0; i < conditionElement.size(); i++) {
             JsonObject element = conditionElement.get(i).getAsJsonObject();
             if (element.has("value")) { //$NON-NLS-1
-                JsonElement valueElement = element.get("value");
+                JsonElement valueElement = element.get("value"); //$NON-NLS-1
                 if (valueElement.isJsonPrimitive()) {
                     value = element.getAsJsonPrimitive("value").getAsString(); //$NON-NLS-1
                 } else if (valueElement.isJsonObject()) {
                     valueExpression = Deserializer.getTypedExpression(valueElement.getAsJsonObject()).process(valueElement.getAsJsonObject(), repository);
-                } else if(valueElement instanceof JsonArray){
-                    JsonArray array = (JsonArray)valueElement;
-                    for(int j= 0 ; j < array.size(); j++){
+                } else if (valueElement instanceof JsonArray) {
+                    JsonArray array = (JsonArray) valueElement;
+                    for (int j = 0; j < array.size(); j++) {
                         JsonElement jsonElement = array.get(j);
-                        if(jsonElement.isJsonPrimitive()){
+                        if (jsonElement.isJsonPrimitive()) {
                             valueList.add(jsonElement.getAsJsonPrimitive().getAsString());
                         }
                     }
                 } else {
-                    throw new IllegalArgumentException("Value '" + valueElement + "' is not supported.");
+                    throw new IllegalArgumentException("Value '" + valueElement + "' is not supported."); //$NON-NLS-1 //$NON-NLS-2
                 }
             } else {
                 expression = Deserializer.getTypedExpression(element.getAsJsonObject()).process(element.getAsJsonObject(), repository);
             }
         }
         if (expression == null || (value == null && valueExpression == null && valueList.isEmpty())) {
-            throw new IllegalArgumentException("Missing expression and/or value.");
+            throw new IllegalArgumentException("Missing expression and/or value."); //$NON-NLS-1
         }
 
         if (value != null && valueList.isEmpty()) {
@@ -66,6 +67,7 @@ abstract class BasicConditionProcessor implements ConditionProcessor {
 
     protected abstract Condition buildCondition(TypedExpression expression, String value);
 
+    @SuppressWarnings("rawtypes")
     protected abstract Condition buildCondition(TypedExpression expression, List value);
 
     protected abstract Condition buildCondition(TypedExpression expression, TypedExpression value);

@@ -11,14 +11,10 @@
 
 package com.amalto.core.query.user;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.talend.mdm.commmon.metadata.Types;
 
-/**
- *
- */
 public class StringConstant implements ConstantExpression<String> {
 
     private final String value;
@@ -46,7 +42,8 @@ public class StringConstant implements ConstantExpression<String> {
         return valueList;
     }
 
-    @Override public boolean isExpressionList() {
+    @Override
+    public boolean isExpressionList() {
         return this.valueList != null;
     }
 
@@ -76,7 +73,7 @@ public class StringConstant implements ConstantExpression<String> {
             return false;
         }
         StringConstant that = (StringConstant) o;
-        if (this.isExpressionList()) {
+        if (isExpressionList()) {
             return valueList.equals(that.valueList);
         } else {
             return value.equals(that.value);
@@ -86,11 +83,10 @@ public class StringConstant implements ConstantExpression<String> {
     @Override
     public int hashCode() {
         if (isExpressionList()) {
-            return this.valueList.hashCode();
+            return valueList.hashCode();
         } else {
             return value.hashCode();
         }
     }
-
 
 }

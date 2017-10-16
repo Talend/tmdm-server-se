@@ -37,7 +37,8 @@ public class LongConstant implements ConstantExpression<Long> {
         return this;
     }
 
-    @Override public boolean cache() {
+    @Override
+    public boolean cache() {
         return false;
     }
 
@@ -49,11 +50,13 @@ public class LongConstant implements ConstantExpression<Long> {
         return value;
     }
 
-    @Override public List<Long> getValueList() {
+    @Override
+    public List<Long> getValueList() {
         return valueList;
     }
 
-    @Override public boolean isExpressionList() {
+    @Override
+    public boolean isExpressionList() {
         return this.valueList != null;
     }
 
@@ -61,7 +64,8 @@ public class LongConstant implements ConstantExpression<Long> {
         return Types.LONG;
     }
 
-    @Override public boolean equals(Object o) {
+    @Override
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -69,16 +73,17 @@ public class LongConstant implements ConstantExpression<Long> {
             return false;
         }
         LongConstant that = (LongConstant) o;
-        if (this.isExpressionList()) {
+        if (isExpressionList()) {
             return valueList.equals(that.valueList);
         } else {
             return value.equals(that.value);
         }
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         if (isExpressionList()) {
-            return this.valueList.hashCode();
+            return valueList.hashCode();
         } else {
             return value.hashCode();
         }

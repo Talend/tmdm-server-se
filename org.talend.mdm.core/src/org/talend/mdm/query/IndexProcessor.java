@@ -40,13 +40,13 @@ class IndexProcessor implements TypedExpressionProcessor {
             }
         }
         if (expression == null) {
-            throw new IllegalArgumentException("Malformed query (expected expression in '" + index + "'");
+            throw new IllegalArgumentException("Malformed query (expected expression in '" + index + "'"); //$NON-NLS-1$ //$NON-NLS-2$
         }
         if (indexValue < 0) {
-            throw new IllegalArgumentException("Malformed query (expected 'index' in '" + index + "'");
+            throw new IllegalArgumentException("Malformed query (expected 'index' in '" + index + "'"); //$NON-NLS-1$ //$NON-NLS-2$
         }
         if (!(expression instanceof Field)) {
-            throw new IllegalArgumentException("Malformed query (expected a field in expression)");
+            throw new IllegalArgumentException("Malformed query (expected a field in expression)"); //$NON-NLS-1$
         }
         return index(((Field) expression).getFieldMetadata(), indexValue);
     }

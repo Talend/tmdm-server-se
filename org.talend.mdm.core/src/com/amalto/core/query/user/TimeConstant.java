@@ -18,9 +18,6 @@ import java.util.List;
 
 import org.talend.mdm.commmon.metadata.Types;
 
-/**
- *
- */
 public class TimeConstant implements ConstantExpression<Date> {
 
     public static final DateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm:ss"); //$NON-NLS-1$
@@ -47,35 +44,43 @@ public class TimeConstant implements ConstantExpression<Date> {
         this.value = null;
     }
 
-    @Override public Date getValue() {
+    @Override
+    public Date getValue() {
         return value;
     }
 
-    @Override public List<Date> getValueList() {
+    @Override
+    public List<Date> getValueList() {
         return valueList;
     }
 
-    @Override public boolean isExpressionList() {
+    @Override
+    public boolean isExpressionList() {
         return this.valueList != null;
     }
 
-    @Override public <T> T accept(Visitor<T> visitor) {
+    @Override
+    public <T> T accept(Visitor<T> visitor) {
         return visitor.visit(this);
     }
 
-    @Override public Expression normalize() {
+    @Override
+    public Expression normalize() {
         return this;
     }
 
-    @Override public boolean cache() {
+    @Override
+    public boolean cache() {
         return false;
     }
 
-    @Override public String getTypeName() {
+    @Override
+    public String getTypeName() {
         return Types.DATETIME;
     }
 
-    @Override public boolean equals(Object o) {
+    @Override
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -83,16 +88,17 @@ public class TimeConstant implements ConstantExpression<Date> {
             return false;
         }
         TimeConstant that = (TimeConstant) o;
-        if (this.isExpressionList()) {
+        if (isExpressionList()) {
             return valueList.equals(that.valueList);
         } else {
             return value.equals(that.value);
         }
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         if (isExpressionList()) {
-            return this.valueList.hashCode();
+            return valueList.hashCode();
         } else {
             return value.hashCode();
         }

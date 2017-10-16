@@ -319,6 +319,7 @@ public class StorageMetadataUtils {
         return true;
     }
     
+    @SuppressWarnings("rawtypes")
     public static boolean isValueAssignable(List value, String typeName) {
         try {
             convert(value, typeName);
@@ -404,6 +405,7 @@ public class StorageMetadataUtils {
         }
     }
 
+    @SuppressWarnings("rawtypes")
     public static boolean isValueAssignable(final List value, FieldMetadata field) {
         if (value == null) {
             return true;
@@ -433,18 +435,21 @@ public class StorageMetadataUtils {
             List<String> convertValue = field.accept(new DefaultMetadataVisitor<List<String>>() {
                 List<String> values = new LinkedList<String>();
 
+                @SuppressWarnings("unchecked")
                 @Override
                 public List<String> visit(ReferenceFieldMetadata referenceField) {
                     values.addAll(value);
                     return values;
                 }
 
+                @SuppressWarnings("unchecked")
                 @Override
                 public List<String> visit(SimpleTypeFieldMetadata simpleField) {
                     values.addAll(value);
                     return values;
                 }
 
+                @SuppressWarnings("unchecked")
                 @Override
                 public List<String> visit(EnumerationFieldMetadata enumField) {
                     values.addAll(value);
@@ -593,7 +598,7 @@ public class StorageMetadataUtils {
                     Date date = dateFormat.parse(dataAsString);
                     return new Timestamp(date.getTime());
                 } catch (Exception e) {
-                    throw new RuntimeException("Could not parse date string", e);
+                    throw new RuntimeException("Could not parse date string", e); //$NON-NLS-1$
                 }
             }
         } else if (Types.DATETIME.equals(type)) {
@@ -604,7 +609,7 @@ public class StorageMetadataUtils {
                     Date date = dateFormat.parse(dataAsString);
                     return new Timestamp(date.getTime());
                 } catch (Exception e) {
-                    throw new RuntimeException("Could not parse date time string", e);
+                    throw new RuntimeException("Could not parse date time string", e); //$NON-NLS-1$
                 }
             }
         } else if (Types.BOOLEAN.equals(type)) {
@@ -616,14 +621,14 @@ public class StorageMetadataUtils {
                 return true;
             }
             if (!"false".equalsIgnoreCase(dataAsString) && !"true".equalsIgnoreCase(dataAsString)) { //$NON-NLS-1$ //$NON-NLS-2$
-                throw new IllegalArgumentException("Value '" + dataAsString + "' is not valid for boolean");
+                throw new IllegalArgumentException("Value '" + dataAsString + "' is not valid for boolean"); //$NON-NLS-1$ //$NON-NLS-2$
             }
             return Boolean.parseBoolean(dataAsString);
         } else if (Types.DECIMAL.equals(type)) {
             try {
                 return new BigDecimal(dataAsString);
             } catch (NumberFormatException e) {
-                throw new IllegalArgumentException("'" + dataAsString + "' is not a number.", e);
+                throw new IllegalArgumentException("'" + dataAsString + "' is not a number.", e); //$NON-NLS-1$ //$NON-NLS-2$
             }
         } else if (Types.FLOAT.equals(type)) {
             return Float.parseFloat(dataAsString);
@@ -651,14 +656,15 @@ public class StorageMetadataUtils {
                     Date date = dateFormat.parse(dataAsString);
                     return new Timestamp(date.getTime());
                 } catch (ParseException e) {
-                    throw new RuntimeException("Could not parse time string", e);
+                    throw new RuntimeException("Could not parse time string", e); //$NON-NLS-1$
                 }
             }
         } else {
-            throw new NotImplementedException("No support for type '" + type + "'");
+            throw new NotImplementedException("No support for type '" + type + "'"); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 
+    @SuppressWarnings("rawtypes")
     public static Object convert(List valueList, String type) {
         if (Types.STRING.equals(type) || Types.TOKEN.equals(type) || Types.DURATION.equals(type)) {
             return valueList;
@@ -684,7 +690,7 @@ public class StorageMetadataUtils {
                             try {
                                 return DateConstant.DATE_FORMAT.parse((String) input);
                             } catch (ParseException e) {
-                                throw new IllegalArgumentException("Value '" + input.toString() + "' is not valid for Date");
+                                throw new IllegalArgumentException("Value '" + input.toString() + "' is not valid for Date.", e); //$NON-NLS-1$ //$NON-NLS-2$
                             }
                         } else {
                             return input;
@@ -702,7 +708,7 @@ public class StorageMetadataUtils {
                             try {
                                 return DateTimeConstant.DATE_FORMAT.parse((String) input);
                             } catch (ParseException e) {
-                                throw new IllegalArgumentException("Value '" + input.toString() + "' is not valid for Date Time");
+                                throw new IllegalArgumentException("Value '" + input.toString() + "' is not valid for Date Time.", e); //$NON-NLS-1$ //$NON-NLS-2$
                             }
                         } else {
                             return input;
@@ -723,7 +729,7 @@ public class StorageMetadataUtils {
                             return true;
                         }
                         if (!"false".equalsIgnoreCase(input.toString()) && !"true".equalsIgnoreCase(input.toString())) { //$NON-NLS-1$ //$NON-NLS-2$
-                            throw new IllegalArgumentException("Value '" + input.toString() + "' is not valid for boolean");
+                            throw new IllegalArgumentException("Value '" + input.toString() + "' is not valid for Boolean"); //$NON-NLS-1$ //$NON-NLS-2$
                         }
                         return Boolean.parseBoolean(input.toString());
                     } else {
@@ -815,7 +821,7 @@ public class StorageMetadataUtils {
                             try {
                                 return TimeConstant.TIME_FORMAT.parse((String) input);
                             } catch (ParseException e) {
-                                throw new IllegalArgumentException("Value '" + input.toString() + "' is not valid for Time");
+                                throw new IllegalArgumentException("Value '" + input.toString() + "' is not valid for Time.", e); //$NON-NLS-1$ //$NON-NLS-2$
                             }
                         } else {
                             return input;
@@ -825,7 +831,7 @@ public class StorageMetadataUtils {
             }
             return valueList;
         } else {
-            throw new NotImplementedException("No support for type '" + type + "'");
+            throw new NotImplementedException("No support for type '" + type + "'"); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 

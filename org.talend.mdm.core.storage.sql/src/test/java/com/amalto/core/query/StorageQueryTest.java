@@ -10,7 +10,29 @@
 
 package com.amalto.core.query;
 
-import static com.amalto.core.query.user.UserQueryBuilder.*;
+import static com.amalto.core.query.user.UserQueryBuilder.alias;
+import static com.amalto.core.query.user.UserQueryBuilder.and;
+import static com.amalto.core.query.user.UserQueryBuilder.contains;
+import static com.amalto.core.query.user.UserQueryBuilder.count;
+import static com.amalto.core.query.user.UserQueryBuilder.distinct;
+import static com.amalto.core.query.user.UserQueryBuilder.emptyOrNull;
+import static com.amalto.core.query.user.UserQueryBuilder.eq;
+import static com.amalto.core.query.user.UserQueryBuilder.from;
+import static com.amalto.core.query.user.UserQueryBuilder.gt;
+import static com.amalto.core.query.user.UserQueryBuilder.gte;
+import static com.amalto.core.query.user.UserQueryBuilder.index;
+import static com.amalto.core.query.user.UserQueryBuilder.isEmpty;
+import static com.amalto.core.query.user.UserQueryBuilder.isNull;
+import static com.amalto.core.query.user.UserQueryBuilder.lt;
+import static com.amalto.core.query.user.UserQueryBuilder.lte;
+import static com.amalto.core.query.user.UserQueryBuilder.max;
+import static com.amalto.core.query.user.UserQueryBuilder.min;
+import static com.amalto.core.query.user.UserQueryBuilder.neq;
+import static com.amalto.core.query.user.UserQueryBuilder.not;
+import static com.amalto.core.query.user.UserQueryBuilder.or;
+import static com.amalto.core.query.user.UserQueryBuilder.startsWith;
+import static com.amalto.core.query.user.UserQueryBuilder.taskId;
+import static com.amalto.core.query.user.UserQueryBuilder.timestamp;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -39,6 +61,7 @@ import org.apache.commons.lang.StringUtils;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
+import org.talend.mdm.commmon.metadata.MetadataRepository;
 
 import com.amalto.core.delegator.BeanDelegatorContainer;
 import com.amalto.core.delegator.ILocalUser;
@@ -75,9 +98,9 @@ import com.amalto.core.storage.StorageType;
 import com.amalto.core.storage.StorageWrapper;
 import com.amalto.core.storage.hibernate.HibernateStorage;
 import com.amalto.core.storage.record.DataRecord;
+import com.amalto.core.storage.record.DataRecordIncludeNullValueXmlWriter;
 import com.amalto.core.storage.record.DataRecordReader;
 import com.amalto.core.storage.record.DataRecordWriter;
-import com.amalto.core.storage.record.DataRecordIncludeNullValueXmlWriter;
 import com.amalto.core.storage.record.DataRecordXmlWriter;
 import com.amalto.core.storage.record.ViewSearchResultsWriter;
 import com.amalto.core.storage.record.XmlStringDataRecordReader;
@@ -4777,6 +4800,45 @@ public class StorageQueryTest extends StorageTestCase {
         }
     }
     
+    public void testGetCountWithMultipleForeignKey() {
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(DataRecordCreationTest.class.getResourceAsStream("MultipleForeignKey.xsd"));
+
+        Storage storage = new HibernateStorage("H2-DS1", StorageType.MASTER);
+        storage.init(ServerContext.INSTANCE.get().getDefinition("H2-DS1", "MDM"));
+        storage.prepare(repository, true);
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+
+        List<DataRecord> records = new LinkedList<DataRecord>();
+        records.add(factory.read(repository, repository.getComplexType("Child"), "<Child><Id>1</Id><Name>Child1</Name></Child>"));
+        records.add(factory.read(repository, repository.getComplexType("Child"), "<Child><Id>2</Id><Name>Child2</Name></Child>"));
+        records.add(factory.read(repository, repository.getComplexType("Child"), "<Child><Id>3</Id><Name>Child3</Name></Child>"));
+        records.add(factory.read(repository, repository.getComplexType("Parent1"),
+                "<Parent1><Id>1</Id><Name>Parent1</Name><ChildFK>[1]</ChildFK><ChildFK>[2]</ChildFK><ChildFK>[3]</ChildFK></Parent1>"));
+        records.add(factory.read(repository, repository.getComplexType("Parent2"),
+                "<Parent2><Id>2</Id><Name>Parent2</Name><SonFK>[1]</SonFK><SonFK>[2]</SonFK><SonFK>[3]</SonFK><DaughterFK>[1]</DaughterFK><DaughterFK>[2]</DaughterFK><DaughterFK>[3]</DaughterFK><Names>Names1</Names><Names>Names2</Names></Parent2>")); // $NON-NLS-2$
+        storage.begin();
+        storage.update(records);
+        storage.commit();
+
+        // Query saved data count
+        storage.begin();
+        ComplexTypeMetadata complexTypeMetadata = repository.getComplexType("Parent1");
+        UserQueryBuilder qb = from(complexTypeMetadata).select(complexTypeMetadata.getField("Id"))
+                .select(complexTypeMetadata.getField("Name")).select(complexTypeMetadata.getField("ChildFK"));
+        qb.start(0);
+        qb.limit(1);
+        StorageResults results = storage.fetch(qb.getSelect());
+        assertEquals(3, results.getCount());
+        complexTypeMetadata = repository.getComplexType("Parent2");
+        qb = from(complexTypeMetadata).select(complexTypeMetadata.getField("Id")).select(complexTypeMetadata.getField("Name"))
+                .select(complexTypeMetadata.getField("SonFK")).select(complexTypeMetadata.getField("DaughterFK"));
+        qb.start(0);
+        qb.limit(1);
+        results = storage.fetch(qb.getSelect());
+        assertEquals(9, results.getCount());
+    }
+
     private static class TestUserDelegator implements SecuredStorage.UserDelegator {
 
         boolean isActive = true;

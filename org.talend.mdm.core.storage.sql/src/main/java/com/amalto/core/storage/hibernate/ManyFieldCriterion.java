@@ -10,6 +10,9 @@
 
 package com.amalto.core.storage.hibernate;
 
+import java.text.SimpleDateFormat;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
@@ -25,6 +28,9 @@ import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
 import org.talend.mdm.commmon.metadata.SimpleTypeFieldMetadata;
 import org.talend.mdm.commmon.metadata.Types;
 
+import com.amalto.core.query.user.DateTimeConstant;
+import com.amalto.core.query.user.Predicate;
+import com.amalto.core.query.user.TimeConstant;
 import com.amalto.core.storage.datasource.RDBMSDataSource;
 
 class ManyFieldCriterion extends SQLCriterion {
@@ -41,13 +47,17 @@ class ManyFieldCriterion extends SQLCriterion {
 
     private final TableResolver resolver;
 
+    private final Predicate predicate; 
+
+    private final String fieldTypeName;
+
     ManyFieldCriterion(RDBMSDataSource dataSource, Criteria typeSelectionCriteria, TableResolver resolver, FieldMetadata field,
-            Object value) {
-        this(dataSource, typeSelectionCriteria, resolver, field, value, -1);
+            Object value, Predicate predicate, String fieldTypeName) {
+        this(dataSource, typeSelectionCriteria, resolver, field, value, predicate, fieldTypeName, -1);
     }
 
     ManyFieldCriterion(RDBMSDataSource dataSource, Criteria typeSelectionCriteria, TableResolver resolver, FieldMetadata field,
-            Object value, int position) {
+            Object value, Predicate predicate, String fieldTypeName, int position) {
         super(StringUtils.EMPTY, new Object[0], new Type[0]);
         this.dataSource = dataSource;
         this.typeCriteria = typeSelectionCriteria;
@@ -55,11 +65,16 @@ class ManyFieldCriterion extends SQLCriterion {
         this.field = field;
         this.value = value;
         this.position = position;
+        this.predicate = predicate;
+        this.fieldTypeName = fieldTypeName;
     }
 
     @Override
     public String toSqlString(Criteria criteria, CriteriaQuery criteriaQuery) throws HibernateException {
         if (field instanceof ReferenceFieldMetadata && position < 0) {
+            if (value instanceof List) {
+                throw new UnsupportedOperationException("Do not support collection search criteria with multiple values."); //$NON-NLS-1$
+            }
             return field.accept(new ForeignKeySQLGenerator(criteriaQuery, value));
         } else {
             if (value instanceof Object[]) {
@@ -89,8 +104,27 @@ class ManyFieldCriterion extends SQLCriterion {
                     .append(containingTypeKey).append(" = ") //$NON-NLS-1$
                     .append(joinedTableName).append(".") //$NON-NLS-1$
                     .append(containingTypeKey).append(" WHERE ") //$NON-NLS-1$
-                    .append(joinedTableName).append("." + columnName + " = '") //$NON-NLS-1$ //$NON-NLS-2$
-                    .append(value).append("'"); //$NON-NLS-1$
+                    .append(joinedTableName).append("." + columnName); //$NON-NLS-1$ //$NON-NLS-2$
+            if (predicate == Predicate.IN) {
+                if (!(value instanceof List)) {
+                    throw new UnsupportedOperationException("The value should be invalidea for in operation"); //$NON-NLS-1$
+                }
+                builder.append(" in(");
+                List valuelsit = (List) value;
+                for (int i = 0; i < valuelsit.size(); i++) {
+                    Object obj = valuelsit.get(i);
+                    builder.append("'");
+                    builder.append(obj);
+                    builder.append("'");
+                    if (i < valuelsit.size() - 1) {
+                        builder.append(",");
+                    }
+                }
+                builder.append(") ");
+            } else if (predicate == Predicate.EQUALS) {
+                builder.append(" = '").append(value).append("'"); //$NON-NLS-2$
+            }
+
             if (position >= 0) {
                 builder.append(" AND ").append(joinedTableName).append(".pos = ").append(position); //$NON-NLS-1$ //$NON-NLS-2$
             }

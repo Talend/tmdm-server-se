@@ -5413,6 +5413,29 @@ public class StorageQueryTest extends StorageTestCase {
         }
     }
 
+    public void testInConditionWithOneToMany() {
+        List dataList = new ArrayList();
+        dataList.add("aaa");
+        dataList.add("ccc");
+        UserQueryBuilder qb = UserQueryBuilder.from(contexte);
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(3, results.getSize());
+            assertEquals(3, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        qb = UserQueryBuilder.from(contexte).where(in(contexte.getField("name"), dataList));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(2, results.getSize());
+            assertEquals(2, results.getCount());
+        } finally {
+            results.close();
+        }
+    }
+
     public void testGetFKRecordContainedTypeContent() throws Exception {
         UserQueryBuilder qb = UserQueryBuilder.from(entityB);
         StorageResults results = storage.fetch(qb.getSelect());

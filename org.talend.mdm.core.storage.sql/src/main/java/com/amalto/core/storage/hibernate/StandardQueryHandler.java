@@ -1177,11 +1177,13 @@ class StandardQueryHandler extends AbstractQueryHandler {
                             }
                         }
                         if (leftFieldCondition.position >= 0) {
-                            return new ManyFieldCriterion(datasource, typeCheckCriteria, resolver, fieldMetadata, condition
-                                    .getRight().accept(VALUE_ADAPTER), leftFieldCondition.position);
+                            return new ManyFieldCriterion(datasource, typeCheckCriteria, resolver, fieldMetadata,
+                                    condition.getRight().accept(VALUE_ADAPTER), condition.getPredicate(), leftField.getTypeName(),
+                                    leftFieldCondition.position);
                         } else {
-                            return new ManyFieldCriterion(datasource, typeCheckCriteria, resolver, fieldMetadata, condition
-                                    .getRight().accept(VALUE_ADAPTER));
+                            return new ManyFieldCriterion(datasource, typeCheckCriteria, resolver, fieldMetadata,
+                                    condition.getRight().accept(VALUE_ADAPTER), condition.getPredicate(),
+                                    leftField.getTypeName());
                         }
                     } else {
                         throw new IllegalStateException("Expected a criteria instance of " + CriteriaImpl.class.getName() + "."); //$NON-NLS-1$ //$NON-NLS-2$

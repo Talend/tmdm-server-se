@@ -10,7 +10,6 @@
 
 package com.amalto.core.storage.hibernate;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;

@@ -28,9 +28,7 @@ import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
 import org.talend.mdm.commmon.metadata.SimpleTypeFieldMetadata;
 import org.talend.mdm.commmon.metadata.Types;
 
-import com.amalto.core.query.user.DateTimeConstant;
 import com.amalto.core.query.user.Predicate;
-import com.amalto.core.query.user.TimeConstant;
 import com.amalto.core.storage.datasource.RDBMSDataSource;
 
 class ManyFieldCriterion extends SQLCriterion {

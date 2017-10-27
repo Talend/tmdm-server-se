@@ -23,9 +23,7 @@ package com.amalto.core.storage.hibernate;
 
 import junit.framework.TestCase;
 
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -43,7 +41,6 @@ import org.talend.mdm.commmon.metadata.SimpleTypeFieldMetadata;
 import org.talend.mdm.commmon.metadata.SimpleTypeMetadata;
 import org.talend.mdm.commmon.metadata.Types;
 
-import com.amalto.core.query.user.DateTimeConstant;
 import com.amalto.core.query.user.Predicate;
 import com.amalto.core.storage.datasource.RDBMSDataSource;
 

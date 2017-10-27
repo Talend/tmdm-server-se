@@ -51,10 +51,16 @@ public class Id implements Expression {
     }
 
     public String getId() {
+        if (isExpressionList()) {
+            throw new IllegalStateException("The property of 'value' is not valid."); //$NON-NLS-1$
+        }
         return id;
     }
 
     public List<String> getIdList() {
+        if (!isExpressionList()) {
+            throw new IllegalStateException("The property of 'valueList' is not valid."); //$NON-NLS-1$
+        }
         return idList;
     }
 

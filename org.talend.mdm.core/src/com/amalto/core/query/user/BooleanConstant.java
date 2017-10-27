@@ -33,11 +33,17 @@ public class BooleanConstant implements ConstantExpression<Boolean> {
     }
 
     public Boolean getValue() {
+        if (isExpressionList()) {
+            throw new IllegalStateException("The property of 'value' is not valid."); //$NON-NLS-1$
+        }
         return value;
     }
 
     @Override
     public List<Boolean> getValueList() {
+        if (!isExpressionList()) {
+            throw new IllegalStateException("The property of 'valueList' is not valid."); //$NON-NLS-1$
+        }
         return valueList;
     }
 

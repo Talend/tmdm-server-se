@@ -45,11 +45,17 @@ public class DateConstant implements ConstantExpression<Date> {
     }
 
     public Date getValue() {
+        if (isExpressionList()) {
+            throw new IllegalStateException("The property of 'value' is not valid."); //$NON-NLS-1$
+        }
         return value;
     }
 
     @Override
     public List<Date> getValueList() {
+        if (!isExpressionList()) {
+            throw new IllegalStateException("The property of 'valueList' is not valid."); //$NON-NLS-1$
+        }
         return valueList;
     }
 

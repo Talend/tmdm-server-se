@@ -47,11 +47,17 @@ public class LongConstant implements ConstantExpression<Long> {
     }
 
     public Long getValue() {
+        if (isExpressionList()) {
+            throw new IllegalStateException("The property of 'value' is not valid."); //$NON-NLS-1$
+        }
         return value;
     }
 
     @Override
     public List<Long> getValueList() {
+        if (!isExpressionList()) {
+            throw new IllegalStateException("The property of 'valueList' is not valid."); //$NON-NLS-1$
+        }
         return valueList;
     }
 

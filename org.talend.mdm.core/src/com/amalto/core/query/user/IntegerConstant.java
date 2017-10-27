@@ -45,11 +45,17 @@ public class IntegerConstant implements ConstantExpression<Integer> {
     }
 
     public Integer getValue() {
+        if (isExpressionList()) {
+            throw new IllegalStateException("The property of 'value' is not valid."); //$NON-NLS-1$
+        }
         return value;
     }
 
     @Override
     public List<Integer> getValueList() {
+        if (!isExpressionList()) {
+            throw new IllegalStateException("The property of 'valueList' is not valid."); //$NON-NLS-1$
+        }
         return valueList;
     }
 

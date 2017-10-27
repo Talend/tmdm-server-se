@@ -47,10 +47,16 @@ public class BigDecimalConstant implements ConstantExpression<BigDecimal> {
     }
 
     public BigDecimal getValue() {
+        if (isExpressionList()) {
+            throw new IllegalStateException("The property of 'value' is not valid."); //$NON-NLS-1$
+        }
         return value;
     }
 
     public List<BigDecimal> getValueList() {
+        if (!isExpressionList()) {
+            throw new IllegalStateException("The property of 'valueList' is not valid."); //$NON-NLS-1$
+        }
         return valueList;
     }
 

@@ -59,7 +59,8 @@ public class DateTimeConstant implements ConstantExpression<Date> {
         return valueList;
     }
 
-    @Override public boolean isExpressionList() {
+    @Override
+    public boolean isExpressionList() {
         return this.valueList != null;
     }
 

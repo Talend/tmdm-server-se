@@ -301,7 +301,6 @@ public class UserQueryBuilder {
         if (field.getFieldMetadata() instanceof ReferenceFieldMetadata) {
             ReferenceFieldMetadata fieldMetadata = (ReferenceFieldMetadata) field.getFieldMetadata();
             return new Compare(field, Predicate.IN, new Id(fieldMetadata.getReferencedType(), constant));
-            //return null;
         } else {
             return new Compare(field, Predicate.IN, createConstant(field, constant));
         }

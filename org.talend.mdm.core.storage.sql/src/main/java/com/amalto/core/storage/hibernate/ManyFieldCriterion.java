@@ -106,20 +106,20 @@ class ManyFieldCriterion extends SQLCriterion {
                 if (!(value instanceof List)) {
                     throw new UnsupportedOperationException("The value should be invalidea for in operation"); //$NON-NLS-1$
                 }
-                builder.append(" in(");
+                builder.append(" in("); //$NON-NLS-1$
                 List valuelsit = (List) value;
                 for (int i = 0; i < valuelsit.size(); i++) {
                     Object obj = valuelsit.get(i);
-                    builder.append("'");
+                    builder.append("'"); //$NON-NLS-1$
                     builder.append(obj);
-                    builder.append("'");
+                    builder.append("'"); //$NON-NLS-1$
                     if (i < valuelsit.size() - 1) {
-                        builder.append(",");
+                        builder.append(","); //$NON-NLS-1$
                     }
                 }
-                builder.append(") ");
-            } else if (predicate == Predicate.EQUALS) {
-                builder.append(" = '").append(value).append("'"); //$NON-NLS-2$
+                builder.append(") "); //$NON-NLS-1$
+            } else {
+                builder.append(" = '").append(value).append("'"); //$NON-NLS-1$ //$NON-NLS-2$
             }
 
             if (position >= 0) {

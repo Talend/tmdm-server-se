@@ -127,7 +127,7 @@ abstract class AbstractQueryHandler extends VisitorAdapter<StorageResults> {
             Collection<FieldMetadata> keyFields = type.getKeyFields();
             List<String> ids = new LinkedList<String>();
             StringBuilder builder = null;
-            if (id.getId() != null) {
+            if (!id.isExpressionList()) {
                 String idAsString = id.getId();
                 if (idAsString.startsWith("[")) { //$NON-NLS-1$
                     for (char currentChar : idAsString.toCharArray()) {

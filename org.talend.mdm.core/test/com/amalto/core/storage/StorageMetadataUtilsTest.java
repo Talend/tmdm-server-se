@@ -88,6 +88,14 @@ public class StorageMetadataUtilsTest {
         path = StorageMetadataUtils.path(mainType, domainField);
         assertEquals(1, path.size());
         assertEquals(domainField, path.get(0));
+
+        // TMDM-11467 The path of 'CodeNoeud' field should not contains 'NiveauPere' field.
+        repository.load(StorageMetadataUtilsTest.class.getResourceAsStream("si_usage.xsd")); //$NON-NLS-1$
+        mainType = repository.getComplexType("NoeudNomenclature");
+        fieldMetadata = mainType.getField("CodeNoeud");
+        path = StorageMetadataUtils.path(mainType, fieldMetadata);
+        assertEquals(1, path.size());
+        assertEquals(fieldMetadata, path.get(0));
     }
 
     @Test

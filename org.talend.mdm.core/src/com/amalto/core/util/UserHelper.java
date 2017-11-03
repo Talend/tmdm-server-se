@@ -27,11 +27,11 @@ public final class UserHelper {
     private UserHelper(boolean isFromRemote) {
         if (Util.isEnterprise()) {
             try {
-                Class<?> clazz = Class.forName("com.amalto.core.server.security.sso.MdmUserManageImpl");
+                Class<?> clazz = Class.forName("com.amalto.core.server.security.sso.MdmUserManageImpl"); //$NON-NLS-1$
                 Constructor<?> constructor = clazz.getConstructor(boolean.class);
                 um = (UserManage) constructor.newInstance(isFromRemote);
             } catch (Exception e) {
-                LOGGER.error("Could not create class 'com.amalto.core.server.security.sso.MdmUserManageImpl'");
+                LOGGER.error("Could not create class 'com.amalto.core.server.security.sso.MdmUserManageImpl'", e); //$NON-NLS-1$
             }
         } else {
             um = new UserManageOptimizedImpl(isFromRemote);

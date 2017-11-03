@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
 
 public final class UserHelper {
 
-    private Logger LOGGER = Logger.getLogger(UserHelper.class);
+    private static final Logger LOGGER = Logger.getLogger(UserHelper.class);
 
     private static UserHelper instance;
 
@@ -31,7 +31,7 @@ public final class UserHelper {
                 Constructor<?> constructor = clazz.getConstructor(boolean.class);
                 um = (UserManage) constructor.newInstance(isFromRemote);
             } catch (Exception e) {
-                LOGGER.error("Could not create class 'com.amalto.core.server.security.sso.MdmUserManageImpl'", e); //$NON-NLS-1$
+                LOGGER.error("Could not create class 'com.amalto.core.server.security.sso.MdmUserManageImpl'.", e); //$NON-NLS-1$
             }
         } else {
             um = new UserManageOptimizedImpl(isFromRemote);

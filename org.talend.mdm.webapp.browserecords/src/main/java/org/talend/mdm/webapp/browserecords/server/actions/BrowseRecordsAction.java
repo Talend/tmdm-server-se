@@ -1819,7 +1819,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
 
             if (StringUtils.isNotBlank(customFormName) && (customForm == null || !customFormName.equals(customForm.getName()))) {
                 vBean.setMissingCustomForm(customFormName);
-                LOG.error("Couldn't find custom layout '" + customFormName + "' associated to view '" + vBean.getViewPK()//$NON-NLS-1$//$NON-NLS-2$
+                LOG.warn("Couldn't find custom layout '" + customFormName + "' associated to view '" + vBean.getViewPK()//$NON-NLS-1$//$NON-NLS-2$
                         + "'");//$NON-NLS-1$
             }
 

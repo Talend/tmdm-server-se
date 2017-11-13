@@ -496,38 +496,67 @@ public class UploadService {
         }
     }
     
-    private List<String> splitString(String valueString, String separator) {
-        List<String> valueList = new ArrayList<String>();
-        if (valueString == null || valueString.isEmpty()) {
-            valueList.add(""); //$NON-NLS-1$
-        } else {
-            String[] valueArray = valueString.split(separator, -1);
-            for (String value : valueArray) {
-                valueList.add(value);
-            }
-        }
-        return valueList;
-    }
-
     protected void fillFieldValue(Element currentElement, String fieldPath, String fieldValue, Row row, String[] record)
             throws Exception {
         String parentPath = null;
         boolean isAttribute = false;
-        List<String> valueList = null;
+        List<String> valueList = new ArrayList<String>();
         List<Element> valueNodeList = new ArrayList<Element>();
         if (fieldPath.endsWith(Constants.XSI_TYPE_QUALIFIED_NAME)) {
             isAttribute = true;
             String field[] = fieldPath.split(Constants.FILE_EXPORT_IMPORT_SEPARATOR);
             fieldPath = field[0];
         }
-        fieldValue = transferFieldValue(fieldPath, fieldValue, multipleValueSeparator);
-        String[] xpathPartArray = fieldPath.split("/"); //$NON-NLS-1$
-        String xpath = xpathPartArray[0];
         if (!isAttribute) {
-            if (multipleValueSeparator != null && !multipleValueSeparator.isEmpty()) {
-                valueList = splitString(fieldValue, "\\" + String.valueOf(multipleValueSeparator.charAt(0))); //$NON-NLS-1$
+            if (StringUtils.isNotEmpty(fieldValue)) {
+                TypeModel headerTypeModel = entityModel
+                        .getTypeModel(fieldPath.endsWith("/") ? fieldPath.substring(0, fieldPath.lastIndexOf("/")) : fieldPath); //$NON-NLS-1$ //$NON-NLS-2$
+                // Handle foreign key field
+                if (headerTypeModel.getForeignkey() != null) {
+                    if (StringUtils.isNotEmpty(multipleValueSeparator) && fieldValue.contains(multipleValueSeparator)) {
+                        if (headerTypeModel.isMultiOccurrence()) {
+                            List<String> values = splitForeignKey(fieldValue, multipleValueSeparator);
+                            for (int i = 0; i < values.size(); i++) {
+                                if (headerTypeModel.getForeignKeyInfo() != null
+                                        && headerTypeModel.getForeignKeyInfo().size() > 0) {
+                                    // When type model are multiple occurrence and have foreign key info,we only get
+                                    // value between bracket.For instance we get 1 and 2 from [1]|FkInfo1|[2]|FKInfo2 or
+                                    // [1]-FkInfo1|[2]-FKInfo2
+                                    String fkValue = extractForeignKey(values.get(i), SEPRATOR_FOR_FK_AND_INFO);
+                                    if (fkValue.startsWith("[") && fkValue.endsWith("]")) { //$NON-NLS-1$ //$NON-NLS-2$
+                                        valueList.add(fkValue);
+                                    }
+                                } else {
+                                    // When type model are multiple occurrence and don't have foreign key info,we just
+                                    // add bracket.
+                                    valueList.add(org.talend.mdm.webapp.base.shared.util.CommonUtil.wrapFkValue(values.get(i)));
+                                }
+                            }
+                        } else {
+                            if (headerTypeModel.getForeignKeyInfo() != null && headerTypeModel.getForeignKeyInfo().size() > 0) {
+                                // When type model are not multiple occurrence and have foreign key info,the format like
+                                // FK|FKInfo.We only need FK.
+                                fieldValue = extractForeignKey(fieldValue, multipleValueSeparator);
+                            }
+                            valueList.add(org.talend.mdm.webapp.base.shared.util.CommonUtil
+                                    .wrapFkValue(fieldValue));
+                        }
+                    } else {
+                        valueList.add(org.talend.mdm.webapp.base.shared.util.CommonUtil
+                                .wrapFkValue(extractForeignKey(fieldValue, SEPRATOR_FOR_FK_AND_INFO)));
+                    }
+                } else {
+                    String[] valueArray = StringUtils.split(fieldValue, multipleValueSeparator);
+                    for (String value : valueArray) {
+                        valueList.add(value);
+                    }
+                }
+            } else {
+                valueList.add(""); //$NON-NLS-1$
             }
         }
+        String[] xpathPartArray = fieldPath.split("/"); //$NON-NLS-1$
+        String xpath = xpathPartArray[0];
         for (int i = 1; i < xpathPartArray.length; i++) {
             if (currentElement != null) {
                 parentPath = xpath;
@@ -602,7 +631,7 @@ public class UploadService {
                                 setFieldValue(multiNodeList.get(j), valueList.get(j));
                             }
                         } else {
-                            setFieldValue(currentElement, fieldValue);
+                            setFieldValue(currentElement, valueList.size() > 0 ? valueList.get(0) : fieldValue);
                         }
                     }
                 } else {
@@ -675,56 +704,34 @@ public class UploadService {
         return fieldValue;
     }
 
-    protected String transferFieldValue(String xpath, String value, String separator) {
-        if (StringUtils.isNotEmpty(value)) {
-            TypeModel headerTypeModel = entityModel
-                    .getTypeModel(xpath.endsWith("/") ? xpath.substring(0, xpath.lastIndexOf("/")) : xpath);
-            // Handle foreign key field
-            if (headerTypeModel.getForeignkey() != null) {
-                if (StringUtils.isNotEmpty(separator) && value.contains(separator)) {
-                    if (headerTypeModel.isMultiOccurrence()) {
-                        String[] values = StringUtils.split(value, separator);
-                        StringBuilder valueStringBuilder = new StringBuilder();
-                        for (int i = 0; i < values.length; i++) {
-                            if (headerTypeModel.getForeignKeyInfo() != null && headerTypeModel.getForeignKeyInfo().size() > 0) {
-                                // When type model are multiple occurrence and have foreign key info,we only get value
-                                // between bracket.For instance we get 1 and 2 from [1]|FkInfo1|[2]|FKInfo2 or
-                                // [1]-FkInfo1|[2]-FKInfo2
-                                String fkValue = extractForeignKey(values[i], SEPRATOR_FOR_FK_AND_INFO);
-                                if (fkValue.startsWith("[") && fkValue.endsWith("]")) {
-                                    valueStringBuilder.append(fkValue);
-                                    valueStringBuilder.append(separator);
-                                }
-                            } else {
-                                // When type model are multiple occurrence and don't have foreign key info,we just add
-                                // bracket.
-                                valueStringBuilder
-                                        .append(org.talend.mdm.webapp.base.shared.util.CommonUtil.wrapFkValue(values[i]));
-                                valueStringBuilder.append(separator);
-                            }
-                        }
-                        String valueString = valueStringBuilder.toString();
-                        value = valueString.subSequence(0, valueString.length() - 1).toString();
-                    } else {
-                        if (headerTypeModel.getForeignKeyInfo() != null && headerTypeModel.getForeignKeyInfo().size() > 0) {
-                            // When type model are not multiple occurrence and have foreign key info,the format like
-                            // FK|FKInfo.We only need FK.
-                            value = extractForeignKey(value, separator);
-                        }
-                    }
-                } else {
-                    value = extractForeignKey(value, SEPRATOR_FOR_FK_AND_INFO);
-                }
-                value = org.talend.mdm.webapp.base.shared.util.CommonUtil.wrapFkValue(value);
+    private List<String> splitForeignKey(String value, String separator) {
+        // This method will separate foreign key value by separator,but it do not separate value with bracket.
+        // For instance,A-B-C separate to A,B and C.[A-B]-C separate to [A-B] and C.
+        String[] values = StringUtils.split(value, separator);
+        List<String> foreignKeyList = new ArrayList<String>();
+        boolean withBracket = false;
+        for (String foreignKeyValue : values) {
+            if (withBracket) {
+                int lastIndex = foreignKeyList.size() - 1;
+                foreignKeyList.set(lastIndex, foreignKeyList.get(lastIndex) + separator + foreignKeyValue);
+            } else {
+                foreignKeyList.add(foreignKeyValue);
+            }
+            if (foreignKeyValue.startsWith("[")) { //$NON-NLS-1$
+                withBracket = true;
+            }
+            if (foreignKeyValue.endsWith("]") || foreignKeyValue.contains("]" + SEPRATOR_FOR_FK_AND_INFO)) { //$NON-NLS-1$ //$NON-NLS-2$
+                withBracket = false;
             }
         }
-        return value;
+        return foreignKeyList;
     }
 
     private String extractForeignKey(String value, String separator) {
         int index = value.indexOf(separator);
         if (index > 0) {
-            return value.substring(0, index);
+            List<String> foreignKeyList = splitForeignKey(value, separator);
+            return foreignKeyList.get(0);
         } else {
             return value;
         }

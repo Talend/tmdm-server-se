@@ -713,7 +713,9 @@ public class UploadService {
                         }
                     }
                 } else {
-                    value = extractForeignKey(value, SEPRATOR_FOR_FK_AND_INFO);
+                    if (!org.talend.mdm.webapp.base.shared.util.CommonUtil.isWrapedFkValue(value)) {
+                        value = extractForeignKey(value, SEPRATOR_FOR_FK_AND_INFO);
+                    }
                 }
                 value = org.talend.mdm.webapp.base.shared.util.CommonUtil.wrapFkValue(value);
             }

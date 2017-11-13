@@ -373,7 +373,7 @@ public class UploadServiceTest extends TestCase {
             if (rowNumber == 1) {
                 continue;
             } else if (rowNumber == 2) {
-                // case 1 Test foreign key value with bracket like [1]
+                // case 1 Test foreign key value with bracket like [FK1]
                 document = XmlUtil.parseDocument(org.talend.mdm.webapp.browserecords.server.util.CommonUtil
                         .getSubXML(entityModel.getTypeModel("TestFK"), null, null, "en"));
                 Element currentElement = document.getRootElement();
@@ -383,7 +383,17 @@ public class UploadServiceTest extends TestCase {
                         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<TestFK xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><Id/><Name/><FK>[FK1]</FK></TestFK>", //$NON-NLS-1$
                         document.asXML());
             } else if (rowNumber == 3) {
-                // case 2 Test foreign key value without bracket like 1
+                // case 1 Test foreign key value without bracket like [FK1-AAA]
+                document = XmlUtil.parseDocument(org.talend.mdm.webapp.browserecords.server.util.CommonUtil
+                        .getSubXML(entityModel.getTypeModel("TestFK"), null, null, "en"));
+                Element currentElement = document.getRootElement();
+                service.resetMultiNodeMap();
+                service.fillFieldValue(currentElement, "TestFK/FK", service.getExcelFieldValue(row.getCell(2)), row, null);
+                assertEquals(
+                        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<TestFK xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><Id/><Name/><FK>[FK1-AAA]</FK></TestFK>", //$NON-NLS-1$
+                        document.asXML());
+            } else if (rowNumber == 4) {
+                // case 2 Test foreign key value without bracket like FK1
                 document = XmlUtil.parseDocument(org.talend.mdm.webapp.browserecords.server.util.CommonUtil
                         .getSubXML(entityModel.getTypeModel("TestFK"), null, null, "en"));
                 Element currentElement = document.getRootElement();

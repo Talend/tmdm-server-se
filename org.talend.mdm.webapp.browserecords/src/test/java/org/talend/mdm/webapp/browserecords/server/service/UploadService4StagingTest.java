@@ -15,13 +15,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.TestSuite;
-
 import org.powermock.modules.junit3.PowerMockSuite;
 import org.talend.mdm.webapp.base.shared.EntityModel;
 import org.talend.mdm.webapp.browserecordsinstaging.server.service.UploadService4Staging;
 
 import com.amalto.core.webservice.WSPutItemWithReport;
+
+import junit.framework.TestSuite;
 
 public class UploadService4StagingTest extends UploadServiceTest {
 
@@ -34,6 +34,7 @@ public class UploadService4StagingTest extends UploadServiceTest {
     @Override
     public void testUploadModel_Polymorphism() throws Exception {
         // Set test parameter value
+        multipleValueSeparator = "|"; //$NON-NLS-1$
         headerVisibleMap = new HashMap<String, Boolean>();
         headerVisibleMap.put("UploadTestModel_Polymorphism/id", true); //$NON-NLS-1$
         headerVisibleMap.put("UploadTestModel_Polymorphism/info/@xsi:type", true); //$NON-NLS-1$

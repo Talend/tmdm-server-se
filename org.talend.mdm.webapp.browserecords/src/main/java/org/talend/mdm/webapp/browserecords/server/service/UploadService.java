@@ -705,6 +705,8 @@ public class UploadService {
     }
 
     private List<String> splitForeignKey(String value, String separator) {
+        // This method will separate foreign key value by separator,but it do not separate value with bracket.
+        // For instance,A-B-C separate to A,B and C.[A-B]-C separate to [A-B] and C.
         String[] values = StringUtils.split(value, separator);
         List<String> foreignKeyList = new ArrayList<String>();
         boolean withBracket = false;

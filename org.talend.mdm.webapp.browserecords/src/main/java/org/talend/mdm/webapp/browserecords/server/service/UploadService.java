@@ -707,13 +707,19 @@ public class UploadService {
     private List<String> splitForeignKey(String value, String separator) {
         String[] values = StringUtils.split(value, separator);
         List<String> foreignKeyList = new ArrayList<String>();
+        boolean withBracket = false;
         for (String foreignKeyValue : values) {
-            if ((!foreignKeyValue.startsWith("[") && foreignKeyValue.endsWith("]")) //$NON-NLS-1$ //$NON-NLS-2$
-                    || (!foreignKeyValue.startsWith("[") && !foreignKeyValue.endsWith("]") && foreignKeyValue.contains("]["))) { //$NON-NLS-1$ //$NON-NLS-2$
+            if (withBracket) {
                 int lastIndex = foreignKeyList.size() - 1;
                 foreignKeyList.set(lastIndex, foreignKeyList.get(lastIndex) + separator + foreignKeyValue);
             } else {
                 foreignKeyList.add(foreignKeyValue);
+            }
+            if (foreignKeyValue.startsWith("[")) { //$NON-NLS-1$
+                withBracket = true;
+            }
+            if (foreignKeyValue.endsWith("]") || foreignKeyValue.contains("]" + SEPRATOR_FOR_FK_AND_INFO)) { //$NON-NLS-1$ //$NON-NLS-2$
+                withBracket = false;
             }
         }
         return foreignKeyList;

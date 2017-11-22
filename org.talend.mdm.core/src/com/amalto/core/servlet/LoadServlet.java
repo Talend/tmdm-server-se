@@ -208,7 +208,7 @@ public class LoadServlet extends HttpServlet {
         try {
             DataCluster dataClusterCtrlLocal = Util.getDataClusterCtrlLocal();
             DataClusterPOJOPK dataClusterPOJOPK = new DataClusterPOJOPK(dataClusterName);
-            dataCluster = dataClusterCtrlLocal.getDataCluster(dataClusterPOJOPK);
+            dataCluster = dataClusterCtrlLocal.existsDataCluster(dataClusterPOJOPK);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

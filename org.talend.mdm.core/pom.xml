@@ -320,6 +320,11 @@
             <groupId>org.talend.mdm</groupId>
             <artifactId>org.talend.mdm.commons.core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.talend.logging.audit</groupId>
+            <artifactId>logging-audit</artifactId>
+            <version>0.0.1</version>
+        </dependency>
         <!-- 3rd dependencies -->
         <dependency>
             <groupId>org.apache.abdera</groupId>

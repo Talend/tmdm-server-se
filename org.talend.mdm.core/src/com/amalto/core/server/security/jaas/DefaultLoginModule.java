@@ -22,6 +22,7 @@ import org.apache.commons.lang.StringUtils;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.util.core.Crypt;
 
+import com.amalto.core.audit.MDMAuditLogger;
 import com.amalto.core.query.user.UserQueryBuilder;
 import com.amalto.core.server.ServerContext;
 import com.amalto.core.server.StorageAdmin;
@@ -73,13 +74,18 @@ public class DefaultLoginModule extends AbstractLoginModule {
 
     @Override
     protected void doLogin() throws Exception {
-        if(!passwordByUserMap.containsKey(username)) {
-            throw new FailedLoginException("Invalid username"); //$NON-NLS-1$
+        if (!passwordByUserMap.containsKey(username)) {
+            Exception failedLoginException = new FailedLoginException("Invalid username"); //$NON-NLS-1$
+            MDMAuditLogger.loginFail(username, failedLoginException);
+            throw failedLoginException;
         }
         String savedPassword = passwordByUserMap.get(username);
         if (password == null || !password.equals(savedPassword)) {
-            throw new FailedLoginException("Invalid password"); //$NON-NLS-1$
+            Exception failedLoginException = new FailedLoginException("Invalid password"); //$NON-NLS-1$
+            MDMAuditLogger.loginFail(username, failedLoginException);
+            throw failedLoginException;
         }
+        MDMAuditLogger.loginSuccess(username);
     }
 
     @Override

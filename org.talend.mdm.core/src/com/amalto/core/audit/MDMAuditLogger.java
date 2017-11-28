@@ -37,6 +37,5 @@ public class MDMAuditLogger {
         object.addProperty("logMessage", "User has logged out successfully");
         object.addProperty("user", userName);
         LOGGER.info(object.toString());
-
     }
 }

@@ -14,6 +14,6 @@ import org.talend.logging.audit.StandardEventAuditLogger;
 
 public interface MDMEventAuditLogger extends StandardEventAuditLogger {
 
-    @AuditEvent(category = "security", message = "User has logged out successfully")
+    @AuditEvent(category = "security", message = "User has logged out successfully") //$NON-NLS-1$ //$NON-NLS-2$
     void logoutSuccess(Object... args);
 }

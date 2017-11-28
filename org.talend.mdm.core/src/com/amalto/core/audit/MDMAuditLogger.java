@@ -19,13 +19,13 @@ import com.amalto.core.audit.logger.impl.MDMEventAuditLogger;
 
 public class MDMAuditLogger {
 
-    private static final String SYSPROP_CONFIG_FILE = "talend.logging.audit.config";
+    private static final String AUDIT_CONFIG_FILE_LOCATION = "talend.logging.audit.config";  //$NON-NLS-1$
 
     private static MDMEventAuditLogger auditLogger;
 
     static {
-        System.setProperty(SYSPROP_CONFIG_FILE,
-                SystemPropertyUtils.resolvePlaceholders(MDMConfiguration.getConfiguration().getProperty(SYSPROP_CONFIG_FILE)));
+        System.setProperty(AUDIT_CONFIG_FILE_LOCATION,
+                SystemPropertyUtils.resolvePlaceholders(MDMConfiguration.getConfiguration().getProperty(AUDIT_CONFIG_FILE_LOCATION)));
         auditLogger = AuditLoggerFactory.getEventAuditLogger(MDMEventAuditLogger.class);
     }
 
@@ -33,17 +33,17 @@ public class MDMAuditLogger {
     }
 
     public static void loginSuccess(String userName) {
-        Context ctx = ContextBuilder.create("user", userName).build();
+        Context ctx = ContextBuilder.create("user", userName).build(); //$NON-NLS-1$
         auditLogger.loginSuccess(ctx);
     }
 
     public static void loginFail(String userName, Exception ex) {
-        Context ctx = ContextBuilder.create("user", userName).build();
+        Context ctx = ContextBuilder.create("user", userName).build(); //$NON-NLS-1$
         auditLogger.loginFail(ctx, ex);
     }
 
     public static void logoutSuccess(String userName) {
-        Context ctx = ContextBuilder.create("user", userName).build();
+        Context ctx = ContextBuilder.create("user", userName).build(); //$NON-NLS-1$
         auditLogger.logoutSuccess(ctx);
     }
 }

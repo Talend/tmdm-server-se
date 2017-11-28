@@ -145,8 +145,6 @@ public class FormatNumberField extends NumberField {
                 return false;
             }
 
-            this.setOjbectValue(d);
-
             if (validator != null) {
                 String msg = validator.validate(this, value);
                 if (msg != null) {
@@ -154,6 +152,11 @@ public class FormatNumberField extends NumberField {
                     return false;
                 }
             }
+
+            // Set display value and object value after validate.
+            setDiplayValue(value);
+            this.setOjbectValue(d);
+
             return true;
         }
     }
@@ -189,7 +192,6 @@ public class FormatNumberField extends NumberField {
         if (formatPattern == null) {
             displayValue = FormatUtil.changeNumberToFormatedValue(result);
         }
-        setDiplayValue(displayValue);
         if (rendered) {
             if (isEditable()) {
                 getInputEl().setValue(displayValue == null ? "" : displayValue); //$NON-NLS-1$

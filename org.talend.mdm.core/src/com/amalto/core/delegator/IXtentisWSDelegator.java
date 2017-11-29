@@ -42,6 +42,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
+import com.amalto.core.audit.MDMAuditLogger;
 import com.amalto.core.integrity.FKIntegrityCheckResult;
 import com.amalto.core.jobox.util.JobNotFoundException;
 import com.amalto.core.metadata.ClassRepository;
@@ -2431,9 +2432,18 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
     @Override
     public WSRolePK putRole(WSPutRole wsRole) throws RemoteException {
         try {
+            String user = LocalUser.getLocalUser().getUsername();
             Role ctrl = Util.getRoleCtrlLocal();
-            RolePOJOPK pk = ctrl.putRole(XConverter.WS2POJO(wsRole.getWsRole()));
+            RolePOJO oldRole = ctrl.existsRole(new RolePOJOPK(wsRole.getWsRole().getName()));
+
+            RolePOJO newRolePOJO = XConverter.WS2POJO(wsRole.getWsRole());
+            RolePOJOPK pk = ctrl.putRole(newRolePOJO);
             LocalUser.resetLocalUsers();
+            if (oldRole == null) {
+                MDMAuditLogger.roleCreated(user, newRolePOJO);
+            } else {
+                MDMAuditLogger.roleModified(user, oldRole, newRolePOJO);
+            }
             return new WSRolePK(pk.getUniqueId());
         } catch (Exception e) {
             if (LOGGER.isDebugEnabled()) {
@@ -2447,7 +2457,9 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
     public WSRolePK deleteRole(WSDeleteRole wsRoleDelete) throws RemoteException {
         try {
             Role ctrl = Util.getRoleCtrlLocal();
-            return new WSRolePK(ctrl.removeRole(new RolePOJOPK(wsRoleDelete.getWsRolePK().getPk())).getUniqueId());
+            WSRolePK wsRolePK = new WSRolePK(ctrl.removeRole(new RolePOJOPK(wsRoleDelete.getWsRolePK().getPk())).getUniqueId());
+            MDMAuditLogger.roleDeleted(LocalUser.getLocalUser().getUsername(), wsRoleDelete.getWsRolePK().getPk());
+            return wsRolePK;
         } catch (Exception e) {
             throw new RemoteException(e.getLocalizedMessage(), e);
         }

@@ -9,7 +9,11 @@
  */
 package com.amalto.core.audit;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+
+import com.amalto.core.objects.role.RolePOJO;
+import com.google.common.base.Strings;
 import com.google.gson.JsonObject;
 
 @SuppressWarnings("nls")
@@ -37,4 +41,33 @@ public class MDMAuditLogger {
         object.addProperty("user", userName);
         LOGGER.info(object.toString());
     }
+
+    public static void roleCreated(String user, RolePOJO role) {
+        JsonObject object = new JsonObject();
+        object.addProperty("logMessage", "Role has been created");
+        object.addProperty("user", user);
+        object.addProperty("roleName", Strings.nullToEmpty(role.getName()));
+        object.addProperty("roleDescription", Strings.nullToEmpty(role.getDescription()));
+        LOGGER.info(object.toString());
+    }
+
+    public static void roleModified(String user, RolePOJO oldRole, RolePOJO newRole) {
+        if (!StringUtils.equals(oldRole.getDescription(), newRole.getDescription())) {
+            JsonObject object = new JsonObject();
+            object.addProperty("logMessage", "Role has been modified");
+            object.addProperty("user", user);
+            object.addProperty("roleDescriptionChange",
+                    Strings.nullToEmpty(oldRole.getDescription()) + " -> " + Strings.nullToEmpty(newRole.getDescription()));
+            LOGGER.info(object.toString());
+        }
+    }
+
+    public static void roleDeleted(String user, String roleName) {
+        JsonObject object = new JsonObject();
+        object.addProperty("logMessage", "Role has been deleted");
+        object.addProperty("user", user);
+        object.addProperty("roleName", Strings.nullToEmpty(roleName));
+        LOGGER.info(object.toString());
+    }
+
 }

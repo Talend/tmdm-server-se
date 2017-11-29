@@ -9,5 +9,7 @@
  */
 package com.amalto.core.audit.logger.impl;
 
+
+@SuppressWarnings("nls")
 public interface MDMEventAuditLogger extends StandardEventAuditLogger {
 }

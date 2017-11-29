@@ -10,6 +10,4 @@
 package com.amalto.core.audit.logger.impl;
 
 public interface MDMEventAuditLogger extends StandardEventAuditLogger {
-
-    
 }

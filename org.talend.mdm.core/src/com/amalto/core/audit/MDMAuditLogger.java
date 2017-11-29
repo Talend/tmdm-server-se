@@ -9,6 +9,7 @@
  */
 package com.amalto.core.audit;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.util.SystemPropertyUtils;
 import org.talend.logging.audit.AuditLoggerFactory;
@@ -27,7 +28,7 @@ public class MDMAuditLogger {
 
     static {
         String auditConfigFileLocation = MDMConfiguration.getConfiguration().getProperty(AUDIT_CONFIG_FILE_LOCATION);
-        if (auditConfigFileLocation == null) {
+        if (StringUtils.isBlank(auditConfigFileLocation)) {
             LOGGER.warn("Audit is disabled.");
             auditLogger = null;
         } else {

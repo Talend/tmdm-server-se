@@ -16,4 +16,16 @@ public interface MDMEventAuditLogger extends StandardEventAuditLogger {
 
     @AuditEvent(category = "security", message = "User has logged out successfully") //$NON-NLS-1$ //$NON-NLS-2$
     void logoutSuccess(Object... args);
+
+    @AuditEvent(category = "active", message = "Role name has been changed") //$NON-NLS-1$ //$NON-NLS-2$
+    void roleNameChanged(Object... args);
+
+    @AuditEvent(category = "active", message = "Role description has been changed") //$NON-NLS-1$ //$NON-NLS-2$
+    void roleDescriptionChanged(Object... args);
+
+    @AuditEvent(category = "active", message = "Role digest has been changed") //$NON-NLS-1$ //$NON-NLS-2$
+    void roleDigestChanged(Object... args);
+
+    @AuditEvent(category = "active", message = "Role permision has been changed") //$NON-NLS-1$ //$NON-NLS-2$
+    void rolePermisionChanged(Object... args);
 }

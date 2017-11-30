@@ -28,7 +28,7 @@ public class MDMAuditLogger {
 
     static {
         String auditConfigFileLocation = MDMConfiguration.getConfiguration().getProperty(AUDIT_CONFIG_FILE_LOCATION);
-        if (StringUtils.isBlank(auditConfigFileLocation)) {
+        if (auditConfigFileLocation == null) {
             LOGGER.warn("Audit is disabled.");
             auditLogger = null;
         } else {

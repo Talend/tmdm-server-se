@@ -14,8 +14,6 @@ import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
 
-import junit.framework.TestCase;
-
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
@@ -24,6 +22,8 @@ import org.talend.mdm.commmon.metadata.Types;
 import org.talend.mdm.commmon.metadata.ValidationError;
 import org.talend.mdm.commmon.metadata.ValidationHandler;
 import org.w3c.dom.Element;
+
+import junit.framework.TestCase;
 
 public class MetadataValidationTest extends TestCase {
 
@@ -149,6 +149,20 @@ public class MetadataValidationTest extends TestCase {
         assertTrue(field.getType().getName().startsWith("X_ANONYMOUS"));
         assertEquals(1, field.getType().getSuperTypes().size());
         assertEquals(Types.STRING, field.getType().getSuperTypes().iterator().next().getName());
+    }
+
+    public void testFK9() throws Exception {
+        TestValidationHandler handler = new TestValidationHandler();
+        try {
+            MetadataRepository repository = new MetadataRepository();
+            InputStream resourceAsStream = this.getClass().getResourceAsStream("FK9_0.1.xsd");
+            repository.load(resourceAsStream, handler);
+        } catch (Exception e) {
+            //
+        }
+        Set<ValidationError> errors = handler.errors;
+        assertTrue(errors.size() == 1);
+        assertTrue(errors.iterator().next() == ValidationError.FOREIGN_KEY_HOST_INVALID);
     }
 
     public void testVisibility1() throws Exception {

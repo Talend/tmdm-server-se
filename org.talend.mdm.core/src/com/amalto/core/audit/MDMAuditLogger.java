@@ -9,6 +9,8 @@
  */
 package com.amalto.core.audit;
 
+import java.io.File;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.util.SystemPropertyUtils;
@@ -25,6 +27,7 @@ public class MDMAuditLogger {
     private static final Logger LOGGER = Logger.getLogger(MDMAuditLogger.class);
     private static final String AUDIT_CONFIG_FILE_LOCATION = "talend.logging.audit.config";
     private static final MDMEventAuditLogger auditLogger;
+    private static final String DEFAULT_AUDIT_CONFIG_FILE_LOCATION = "/conf/audit.properties";
 
     static {
         String auditConfigFileLocation = MDMConfiguration.getConfiguration().getProperty(AUDIT_CONFIG_FILE_LOCATION);
@@ -33,6 +36,9 @@ public class MDMAuditLogger {
             auditLogger = null;
         } else {
             auditConfigFileLocation = SystemPropertyUtils.resolvePlaceholders(auditConfigFileLocation);
+            if (StringUtils.isEmpty(auditConfigFileLocation.trim()) || !new File(auditConfigFileLocation).exists()) {
+                auditConfigFileLocation = System.getenv("mdm.root") + DEFAULT_AUDIT_CONFIG_FILE_LOCATION;
+            }
             LOGGER.info("Configuring audit using file '" + auditConfigFileLocation + "'");
             System.setProperty(AUDIT_CONFIG_FILE_LOCATION, auditConfigFileLocation);
             auditLogger = AuditLoggerFactory.getEventAuditLogger(MDMEventAuditLogger.class);

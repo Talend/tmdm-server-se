@@ -10,7 +10,6 @@
 package com.amalto.core.audit;
 
 import org.apache.log4j.Logger;
-
 import com.google.gson.JsonObject;
 
 @SuppressWarnings("nls")

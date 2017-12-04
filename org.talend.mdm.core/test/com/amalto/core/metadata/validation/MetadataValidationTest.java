@@ -151,6 +151,7 @@ public class MetadataValidationTest extends TestCase {
         assertEquals(Types.STRING, field.getType().getSuperTypes().iterator().next().getName());
     }
 
+    // see TMDM-11593
     public void testFK9() throws Exception {
         TestValidationHandler handler = new TestValidationHandler();
         try {

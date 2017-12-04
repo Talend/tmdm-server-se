@@ -1,36 +1,38 @@
-<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-<xsd:element name="Product">
-<xsd:complexType>
-<xsd:all>
-<xsd:element name="ProductId" type="xsd:string"/>
-<xsd:element maxOccurs="1" minOccurs="0" name="name" type="xsd:string"/>
-<xsd:element maxOccurs="1" minOccurs="0" name="FKElement" type="FKType">
-<xsd:annotation>
-<xsd:appinfo source="X_Label_EN">FK on complex type is invalid</xsd:appinfo>
-<xsd:appinfo source="X_ForeignKey">ProductFamily/ProductFamilyId</xsd:appinfo>
-</xsd:annotation>
-</xsd:element>
-</xsd:all>
-</xsd:complexType>
-<xsd:unique name="Product">
-<xsd:selector xpath="."/>
-<xsd:field xpath="ProductId"/>
-</xsd:unique>
-</xsd:element>
-<xsd:element name="ProductFamily">
-<xsd:complexType>
-<xsd:all>
-<xsd:element name="ProductFamilyId" type="xsd:string"/>
-</xsd:all>
-</xsd:complexType>
-<xsd:unique name="ProductFamily">
-<xsd:selector xpath="."/>
-<xsd:field xpath="ProductFamilyId"/>
-</xsd:unique>
-</xsd:element>
-<xsd:complexType name="FKType">
-<xsd:all>
-<xsd:element maxOccurs="1" minOccurs="1" name="Id" type="xsd:string"/>
-</xsd:all>
-</xsd:complexType>
+<?xml version="1.0" encoding="utf-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">  
+  <xsd:element name="Product"> 
+    <xsd:complexType> 
+      <xsd:all> 
+        <xsd:element name="ProductId" type="xsd:string"/>  
+        <xsd:element maxOccurs="1" minOccurs="0" name="name" type="xsd:string"/>  
+        <xsd:element maxOccurs="1" minOccurs="0" name="FKElement" type="FKType"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_Label_EN">FK on complex type is invalid</xsd:appinfo>  
+            <xsd:appinfo source="X_ForeignKey">ProductFamily/ProductFamilyId</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element> 
+      </xsd:all> 
+    </xsd:complexType>  
+    <xsd:unique name="Product"> 
+      <xsd:selector xpath="."/>  
+      <xsd:field xpath="ProductId"/> 
+    </xsd:unique> 
+  </xsd:element>  
+  <xsd:element name="ProductFamily"> 
+    <xsd:complexType> 
+      <xsd:all> 
+        <xsd:element name="ProductFamilyId" type="xsd:string"/> 
+      </xsd:all> 
+    </xsd:complexType>  
+    <xsd:unique name="ProductFamily"> 
+      <xsd:selector xpath="."/>  
+      <xsd:field xpath="ProductFamilyId"/> 
+    </xsd:unique> 
+  </xsd:element>  
+  <xsd:complexType name="FKType"> 
+    <xsd:all> 
+      <xsd:element maxOccurs="1" minOccurs="1" name="Id" type="xsd:string"/> 
+    </xsd:all> 
+  </xsd:complexType> 
 </xsd:schema>

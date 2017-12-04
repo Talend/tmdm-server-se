@@ -9,14 +9,24 @@
  */
 package com.amalto.core.audit;
 
+import java.util.HashMap;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.amalto.core.objects.role.RolePOJO;
+import com.amalto.core.util.RoleInstance;
+import com.amalto.core.util.RoleSpecification;
 import com.google.common.base.Strings;
+<<<<<<< HEAD
 import com.google.gson.JsonObject;
+=======
+import com.google.gson.JsonParser;
+import com.hazelcast.com.eclipsesource.json.JsonObject;
+
+import net.minidev.json.JSONObject;
+>>>>>>> TMDM-11221 Capture audit event operations to MDM custom roles
 
 @SuppressWarnings("nls")
 public class MDMAuditLogger {
@@ -45,6 +55,7 @@ public class MDMAuditLogger {
     }
 
     public static void roleCreated(String user, RolePOJO role) {
+<<<<<<< HEAD
         JsonObject object = new JsonObject();
         object.addProperty("logMessage", "Role has been created");
         object.addProperty("user", user);

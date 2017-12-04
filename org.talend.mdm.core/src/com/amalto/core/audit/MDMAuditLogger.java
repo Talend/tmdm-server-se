@@ -9,67 +9,15 @@
  */
 package com.amalto.core.audit;
 
-import java.io.File;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
-import org.springframework.util.SystemPropertyUtils;
-import org.talend.logging.audit.AuditLoggerFactory;
-import org.talend.logging.audit.Context;
-import org.talend.logging.audit.ContextBuilder;
-import org.talend.mdm.commmon.util.core.MDMConfiguration;
-
-import com.amalto.core.audit.logger.impl.MDMEventAuditLogger;
-
 @SuppressWarnings("nls")
 public class MDMAuditLogger {
 
-    private static final Logger LOGGER = Logger.getLogger(MDMAuditLogger.class);
-    private static final String AUDIT_CONFIG_FILE_LOCATION = "talend.logging.audit.config";
-    private static final MDMEventAuditLogger auditLogger;
-    private static final String DEFAULT_AUDIT_CONFIG_FILE_LOCATION = "/conf/audit.properties";
-
-    static {
-        String auditConfigFileLocation = MDMConfiguration.getConfiguration().getProperty(AUDIT_CONFIG_FILE_LOCATION);
-        if (auditConfigFileLocation == null) {
-            LOGGER.warn("Audit is disabled.");
-            auditLogger = null;
-        } else {
-            auditConfigFileLocation = SystemPropertyUtils.resolvePlaceholders(auditConfigFileLocation);
-            if (StringUtils.isEmpty(auditConfigFileLocation.trim()) || !new File(auditConfigFileLocation).exists()) {
-                auditConfigFileLocation = System.getenv("mdm.root") + DEFAULT_AUDIT_CONFIG_FILE_LOCATION;
-            }
-            LOGGER.info("Configuring audit using file '" + auditConfigFileLocation + "'");
-            System.setProperty(AUDIT_CONFIG_FILE_LOCATION, auditConfigFileLocation);
-            auditLogger = AuditLoggerFactory.getEventAuditLogger(MDMEventAuditLogger.class);
-        }
-    }
-
-    private MDMAuditLogger() {
-    }
-
-    public static boolean isAuditEnabled() {
-        return auditLogger != null;
-    }
-
     public static void loginSuccess(String userName) {
-        if (isAuditEnabled()) {
-            Context ctx = ContextBuilder.create("user", userName).build();
-            auditLogger.loginSuccess(ctx);
-        }
     }
 
     public static void loginFail(String userName, Exception ex) {
-        if (isAuditEnabled()) {
-            Context ctx = ContextBuilder.create("user", userName).build();
-            auditLogger.loginFail(ctx, ex);
-        }
     }
 
     public static void logoutSuccess(String userName) {
-        if (isAuditEnabled()) {
-            Context ctx = ContextBuilder.create("user", userName).build();
-            auditLogger.logoutSuccess(ctx);
-        }
     }
 }

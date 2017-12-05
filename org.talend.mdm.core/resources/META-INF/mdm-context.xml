@@ -46,17 +46,18 @@ http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/ac
     
     <!-- Caching connection factory for JMS template performances -->
     <bean id="jmsPooledConnectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
-        <constructor-arg ref="jmsConnectionFactory"/>
+        <property name="targetConnectionFactory" ref="jmsConnectionFactory"/>
+        <property name="sessionCacheSize" value="${mdm.routing.engine.broker.sessionCacheSize:1}"/>
     </bean>
     
     <!-- Single connection and several sessions -->
     <bean id="jmsSingleConnectionFactory" class="org.springframework.jms.connection.SingleConnectionFactory">
-    	<constructor-arg ref="jmsConnectionFactory"/>
+        <constructor-arg ref="jmsConnectionFactory"/>
     </bean>
     
     <!-- Single connection and several sessions -->
     <bean id="jmsSingleConnectionFactoryForExpired" class="org.springframework.jms.connection.SingleConnectionFactory">
-    	<constructor-arg ref="jmsConnectionFactory"/>
+        <constructor-arg ref="jmsConnectionFactory"/>
     </bean>
 
 	<!-- JMSTemplate used to send messages to routing events queue -->

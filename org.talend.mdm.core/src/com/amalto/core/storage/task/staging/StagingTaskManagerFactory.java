@@ -34,16 +34,14 @@ public class StagingTaskManagerFactory implements ApplicationContextAware, Dispo
     private DefaultMessageListenerContainer listener;
     
     public StagingTaskManager createStagingTaskManager(){
-        if(isClusterEnabled()){
+        if (isClusterEnabled()) {
             ClusteredStagingTaskManager clusteredManager = new ClusteredStagingTaskManager();
-            ConnectionFactory connectionFactory = this.getConnectionFactory();
             Topic topic = this.getTopic();
-            clusteredManager.setJmsTemplate(createJmsTemplate(connectionFactory, topic));
+            clusteredManager.setJmsTemplate(createJmsTemplate(getPooledConnectionFactory(), topic));
             clusteredManager.setRepository(this.repository);
-            this.startMessageListener(connectionFactory, topic, clusteredManager);
+            this.startMessageListener(getNonPooledConnectionFactory(), topic, clusteredManager);
             return clusteredManager;
-        }
-        else {
+        } else {
             LocalStagingTaskManager localManagermanager = new LocalStagingTaskManager();
             localManagermanager.setRepository(this.repository);
             return localManagermanager;
@@ -70,12 +68,16 @@ public class StagingTaskManagerFactory implements ApplicationContextAware, Dispo
         template.setDefaultDestination(this.getTopic());
         return template;
     }
-    
-    private ConnectionFactory getConnectionFactory(){
+
+    private ConnectionFactory getNonPooledConnectionFactory() {
         return this.applicationContext.getBean("jmsConnectionFactory", ConnectionFactory.class);
     }
-    
-    private Topic getTopic(){
+
+    private ConnectionFactory getPooledConnectionFactory() {
+        return this.applicationContext.getBean("jmsPooledConnectionFactory", ConnectionFactory.class);
+    }
+
+    private Topic getTopic() {
         return this.applicationContext.getBean("stagingTaskCancellationTopic", Topic.class);
     }
     

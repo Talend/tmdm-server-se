@@ -9,15 +9,33 @@
  */
 package com.amalto.core.audit;
 
+import org.apache.log4j.Logger;
+
+import com.google.gson.JsonObject;
+
 @SuppressWarnings("nls")
 public class MDMAuditLogger {
 
+    private static final Logger LOGGER = Logger.getLogger(MDMAuditLogger.class);
+
     public static void loginSuccess(String userName) {
+        JsonObject object = new JsonObject();
+        object.addProperty("logMessage", "User has logged in successfully");
+        object.addProperty("user", userName);
+        LOGGER.info(object.toString());
     }
 
     public static void loginFail(String userName, Exception ex) {
+        JsonObject object = new JsonObject();
+        object.addProperty("logMessage", "User login attempt failed");
+        object.addProperty("user", userName);
+        LOGGER.info(object.toString());
     }
 
     public static void logoutSuccess(String userName) {
+        JsonObject object = new JsonObject();
+        object.addProperty("logMessage", "User has logged out successfully");
+        object.addProperty("user", userName);
+        LOGGER.info(object.toString());
     }
 }

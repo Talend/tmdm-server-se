@@ -12,6 +12,7 @@ package com.amalto.core.server;
 
 import static com.amalto.core.query.user.UserQueryBuilder.from;
 
+import java.io.File;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
@@ -25,8 +26,10 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.util.SystemPropertyUtils;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
+import org.talend.mdm.commmon.util.core.MDMConfiguration;
 
 import com.amalto.core.jobox.properties.ThreadIsolatedSystemProperties;
 import com.amalto.core.metadata.ClassRepository;
@@ -43,6 +46,7 @@ import com.amalto.core.storage.StorageResults;
 import com.amalto.core.storage.StorageType;
 import com.amalto.core.storage.datasource.DataSourceDefinition;
 import com.amalto.core.storage.record.DataRecord;
+import com.amalto.core.util.Util;
 import com.amalto.core.util.Version;
 
 public class Initialization implements ApplicationListener<ContextRefreshedEvent>, InitializingBean, DisposableBean, ApplicationEventPublisherAware {
@@ -51,7 +55,9 @@ public class Initialization implements ApplicationListener<ContextRefreshedEvent
     private ServerLifecycle serverLifecycle;
 
     private static final Logger LOGGER = Logger.getLogger(Initialization.class);
-    
+
+    private static final String AUDIT_CONFIG_FILE_LOCATION = "talend.logging.audit.config";
+
     private Properties previousSystemProperties;
     
     private ApplicationEventPublisher applicationEventPublisher;
@@ -84,6 +90,20 @@ public class Initialization implements ApplicationListener<ContextRefreshedEvent
         System.setProperties(ThreadIsolatedSystemProperties.getInstance());
         LOGGER.info("Enabled system properties isolation for threads."); //$NON-NLS-1$
 
+        // Initializes audit configuration
+        if (Util.isEnterprise()) {
+            String auditConfigFileLocation = MDMConfiguration.getConfiguration().getProperty(AUDIT_CONFIG_FILE_LOCATION);
+            if (auditConfigFileLocation == null) {
+                LOGGER.warn("Audit is disabled.");
+            } else {
+                auditConfigFileLocation = SystemPropertyUtils.resolvePlaceholders(auditConfigFileLocation);
+                if (StringUtils.isEmpty(auditConfigFileLocation.trim()) || !new File(auditConfigFileLocation).exists()) {
+                    throw new IllegalStateException("Audit configuration is not set (is server running on a supported platform?)"); //$NON-NLS-1$
+                }
+                LOGGER.info("Configuring audit using file '" + auditConfigFileLocation + "'");
+                System.setProperty(AUDIT_CONFIG_FILE_LOCATION, auditConfigFileLocation);
+            }
+        }
         // Initializes server now
         if (serverLifecycle == null) {
             throw new IllegalStateException("Server lifecycle is not set (is server running on a supported platform?)"); //$NON-NLS-1$

@@ -88,7 +88,7 @@
                                 <include>com/amalto/core/delegator/impl/DefaultLocalUserDelegator.class</include>
                                 <include>com/amalto/core/save/generator/AutoIncrementGenerator.class</include>
                                 <include>com/amalto/core/server/ServerAccessImpl*.class</include>
-                                <exclude>com/amalto/core/audit/MDMAuditLogger.class</exclude>
+                                <include>com/amalto/core/audit/MDMAuditLogger.class</include>
                             </includes>
                         </configuration>
                         <goals>
@@ -319,10 +319,6 @@
         <dependency>
             <groupId>org.talend.mdm</groupId>
             <artifactId>org.talend.mdm.commons.core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.talend.daikon</groupId>
-            <artifactId>daikon-audit</artifactId>
         </dependency>
         <!-- 3rd dependencies -->
         <dependency>

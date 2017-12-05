@@ -320,10 +320,6 @@
             <groupId>org.talend.mdm</groupId>
             <artifactId>org.talend.mdm.commons.core</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.talend.daikon</groupId>
-            <artifactId>daikon-audit</artifactId>
-        </dependency>
         <!-- 3rd dependencies -->
         <dependency>
             <groupId>org.apache.abdera</groupId>

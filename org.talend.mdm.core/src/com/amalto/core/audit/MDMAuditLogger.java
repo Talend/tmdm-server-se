@@ -9,7 +9,7 @@
  */
 package com.amalto.core.audit;
 
-import java.util.HashMap;
+
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
@@ -18,7 +18,6 @@ import org.apache.log4j.Logger;
 import com.amalto.core.objects.role.RolePOJO;
 import com.google.common.base.Strings;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 @SuppressWarnings("nls")
 public class MDMAuditLogger {
@@ -36,7 +35,7 @@ public class MDMAuditLogger {
         JsonObject object = new JsonObject();
         object.addProperty("logMessage", "User login attempt failed");
         object.addProperty("user", userName);
-        LOGGER.info(object.toString());
+        LOGGER.info(object.toString(), ex);
     }
 
     public static void logoutSuccess(String userName) {
@@ -53,6 +52,14 @@ public class MDMAuditLogger {
         object.addProperty("roleName", Strings.nullToEmpty(role.getName()));
         object.addProperty("roleDescription", Strings.nullToEmpty(role.getDescription()));
         LOGGER.info(object.toString());
+    }
+
+    public static void roleCreatedOrModifyFaild(String user, String roleName, Exception ex) {
+        JsonObject object = new JsonObject();
+        object.addProperty("logMessage", "Role has been created/update failed");
+        object.addProperty("user", user);
+        object.addProperty("roleName", Strings.nullToEmpty(roleName));
+        LOGGER.info(object.toString(), ex);
     }
 
     public static void roleModified(String user, RolePOJO oldRole, RolePOJO newRole) {
@@ -74,4 +81,14 @@ public class MDMAuditLogger {
         LOGGER.info(object.toString());
     }
 
+    public static void roleDeletedFaild(String user, String roleName, Exception ex) {
+        JsonObject object = new JsonObject();
+        object.addProperty("logMessage", "Role has been deleted failed");
+        object.addProperty("user", user);
+        object.addProperty("roleName", Strings.nullToEmpty(roleName));
+        LOGGER.info(object.toString(), ex);
+    }
+
+    public static void userRoleModified(String user, String targetUser, Set<String> oldRoles, Set<String> newRoles) {
+    }
 }

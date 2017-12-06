@@ -2431,8 +2431,9 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
 
     @Override
     public WSRolePK putRole(WSPutRole wsRole) throws RemoteException {
+        String user = "";
         try {
-            String user = LocalUser.getLocalUser().getUsername();
+            user = LocalUser.getLocalUser().getUsername();
             Role ctrl = Util.getRoleCtrlLocal();
             RolePOJO oldRole = ctrl.existsRole(new RolePOJOPK(wsRole.getWsRole().getName()));
 
@@ -2449,18 +2450,22 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug(e.getMessage(), e);
             }
+            MDMAuditLogger.roleCreatedOrModifyFaild(user, wsRole.getWsRole().getName(), e);
             throw new RemoteException(e.getLocalizedMessage(), e);
         }
     }
 
     @Override
     public WSRolePK deleteRole(WSDeleteRole wsRoleDelete) throws RemoteException {
+        String user = "";
         try {
             Role ctrl = Util.getRoleCtrlLocal();
             WSRolePK wsRolePK = new WSRolePK(ctrl.removeRole(new RolePOJOPK(wsRoleDelete.getWsRolePK().getPk())).getUniqueId());
-            MDMAuditLogger.roleDeleted(LocalUser.getLocalUser().getUsername(), wsRoleDelete.getWsRolePK().getPk());
+            user = LocalUser.getLocalUser().getUsername();
+            MDMAuditLogger.roleDeleted(user, wsRoleDelete.getWsRolePK().getPk());
             return wsRolePK;
         } catch (Exception e) {
+            MDMAuditLogger.roleDeletedFaild(user, wsRoleDelete.getWsRolePK().getPk(), e);
             throw new RemoteException(e.getLocalizedMessage(), e);
         }
     }

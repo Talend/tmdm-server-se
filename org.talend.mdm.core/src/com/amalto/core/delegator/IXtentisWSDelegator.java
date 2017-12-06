@@ -2459,9 +2459,9 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
     public WSRolePK deleteRole(WSDeleteRole wsRoleDelete) throws RemoteException {
         String user = "";
         try {
+            user = LocalUser.getLocalUser().getUsername();
             Role ctrl = Util.getRoleCtrlLocal();
             WSRolePK wsRolePK = new WSRolePK(ctrl.removeRole(new RolePOJOPK(wsRoleDelete.getWsRolePK().getPk())).getUniqueId());
-            user = LocalUser.getLocalUser().getUsername();
             MDMAuditLogger.roleDeleted(user, wsRoleDelete.getWsRolePK().getPk());
             return wsRolePK;
         } catch (Exception e) {

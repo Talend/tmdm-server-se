@@ -2431,34 +2431,33 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
 
     @Override
     public WSRolePK putRole(WSPutRole wsRole) throws RemoteException {
-        String user = "";
+        String user = StringUtils.EMPTY;
         Boolean isUpdate = null;
         try {
             user = LocalUser.getLocalUser().getUsername();
             Role ctrl = Util.getRoleCtrlLocal();
             RolePOJO oldRole = ctrl.existsRole(new RolePOJOPK(wsRole.getWsRole().getName()));
+            isUpdate = oldRole != null;
 
             RolePOJO newRolePOJO = XConverter.WS2POJO(wsRole.getWsRole());
             RolePOJOPK pk = ctrl.putRole(newRolePOJO);
             LocalUser.resetLocalUsers();
-            if (oldRole == null) {
-                isUpdate = false;
-                MDMAuditLogger.roleCreated(user, newRolePOJO);
-            } else {
-                isUpdate = true;
+            if (isUpdate) {
                 MDMAuditLogger.roleModified(user, oldRole, newRolePOJO);
+            } else {
+                MDMAuditLogger.roleCreated(user, newRolePOJO);
             }
             return new WSRolePK(pk.getUniqueId());
         } catch (Exception e) {
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug(e.getMessage(), e);
             }
-            if (isUpdate == null) {
+            if (isUpdate == null) {// If check existence failed
                 MDMAuditLogger.roleCreateOrModifyFail(user, wsRole.getWsRole().getName(), e);
-            } else if (isUpdate == false) {
-                MDMAuditLogger.roleCreateFail(user, wsRole.getWsRole().getName(), e);
-            } else if (isUpdate == true) {
+            } else if (isUpdate) {
                 MDMAuditLogger.roleModifyFail(user, wsRole.getWsRole().getName(), e);
+            } else {
+                MDMAuditLogger.roleCreateFail(user, wsRole.getWsRole().getName(), e);
             }
             throw new RemoteException(e.getLocalizedMessage(), e);
         }
@@ -2466,7 +2465,7 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
 
     @Override
     public WSRolePK deleteRole(WSDeleteRole wsRoleDelete) throws RemoteException {
-        String user = "";
+        String user = StringUtils.EMPTY;
         try {
             user = LocalUser.getLocalUser().getUsername();
             Role ctrl = Util.getRoleCtrlLocal();

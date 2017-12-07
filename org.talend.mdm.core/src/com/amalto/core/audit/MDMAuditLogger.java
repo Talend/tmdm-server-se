@@ -27,7 +27,7 @@ public class MDMAuditLogger {
     public static void roleCreated(String user, RolePOJO role) {
     }
 
-    public static void roleCreatedOrModifyFaild(String user, String roleName, Exception ex) {
+    public static void roleCreateOrModifyFail(String user, String roleName, Exception ex) {
     }
 
     public static void roleModified(String user, RolePOJO oldRole, RolePOJO newRole) {
@@ -36,15 +36,15 @@ public class MDMAuditLogger {
     public static void roleDeleted(String user, String roleName) {
     }
 
-    public static void roleDeletedFaild(String user, String roleName, Exception ex) {
+    public static void roleDeleteFail(String user, String roleName, Exception ex) {
     }
 
-    public static void userRoleModified(String user, String targetUser, Set<String> oldRoles, Set<String> newRoles) {
+    public static void userRolesModified(String user, String targetUser, Set<String> oldRoles, Set<String> newRoles) {
     }
 
-    public static void roleCreatedFaild(String user, String roleName, Exception ex) {
+    public static void roleCreateFail(String user, String roleName, Exception ex) {
     }
 
-    public static void roleModifyFaild(String user, String roleName, Exception ex) {
+    public static void roleModifyFail(String user, String roleName, Exception ex) {
     }
 }

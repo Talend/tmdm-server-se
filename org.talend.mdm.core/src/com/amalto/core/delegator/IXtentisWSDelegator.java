@@ -2454,11 +2454,11 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
                 LOGGER.debug(e.getMessage(), e);
             }
             if (isUpdate == null) {
-                MDMAuditLogger.roleCreatedOrModifyFaild(user, wsRole.getWsRole().getName(), e);
+                MDMAuditLogger.roleCreateOrModifyFail(user, wsRole.getWsRole().getName(), e);
             } else if (isUpdate == false) {
-                MDMAuditLogger.roleCreatedFaild(user, wsRole.getWsRole().getName(), e);
+                MDMAuditLogger.roleCreateFail(user, wsRole.getWsRole().getName(), e);
             } else if (isUpdate == true) {
-                MDMAuditLogger.roleModifyFaild(user, wsRole.getWsRole().getName(), e);
+                MDMAuditLogger.roleModifyFail(user, wsRole.getWsRole().getName(), e);
             }
             throw new RemoteException(e.getLocalizedMessage(), e);
         }
@@ -2474,7 +2474,7 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
             MDMAuditLogger.roleDeleted(user, wsRoleDelete.getWsRolePK().getPk());
             return wsRolePK;
         } catch (Exception e) {
-            MDMAuditLogger.roleDeletedFaild(user, wsRoleDelete.getWsRolePK().getPk(), e);
+            MDMAuditLogger.roleDeleteFail(user, wsRoleDelete.getWsRolePK().getPk(), e);
             throw new RemoteException(e.getLocalizedMessage(), e);
         }
     }

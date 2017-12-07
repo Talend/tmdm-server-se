@@ -13,7 +13,6 @@ import java.util.Set;
 
 import com.amalto.core.objects.role.RolePOJO;
 
-@SuppressWarnings("nls")
 public class MDMAuditLogger {
 
     public static void loginSuccess(String userName) {
@@ -41,5 +40,11 @@ public class MDMAuditLogger {
     }
 
     public static void userRoleModified(String user, String targetUser, Set<String> oldRoles, Set<String> newRoles) {
+    }
+
+    public static void roleCreatedFaild(String user, String roleName, Exception ex) {
+    }
+
+    public static void roleModifyFaild(String user, String roleName, Exception ex) {
     }
 }

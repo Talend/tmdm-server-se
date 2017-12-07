@@ -2432,6 +2432,7 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
     @Override
     public WSRolePK putRole(WSPutRole wsRole) throws RemoteException {
         String user = "";
+        Boolean isUpdate = null;
         try {
             user = LocalUser.getLocalUser().getUsername();
             Role ctrl = Util.getRoleCtrlLocal();
@@ -2441,8 +2442,10 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
             RolePOJOPK pk = ctrl.putRole(newRolePOJO);
             LocalUser.resetLocalUsers();
             if (oldRole == null) {
+                isUpdate = false;
                 MDMAuditLogger.roleCreated(user, newRolePOJO);
             } else {
+                isUpdate = true;
                 MDMAuditLogger.roleModified(user, oldRole, newRolePOJO);
             }
             return new WSRolePK(pk.getUniqueId());
@@ -2450,7 +2453,13 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug(e.getMessage(), e);
             }
-            MDMAuditLogger.roleCreatedOrModifyFaild(user, wsRole.getWsRole().getName(), e);
+            if (isUpdate == null) {
+                MDMAuditLogger.roleCreatedOrModifyFaild(user, wsRole.getWsRole().getName(), e);
+            } else if (isUpdate == false) {
+                MDMAuditLogger.roleCreatedFaild(user, wsRole.getWsRole().getName(), e);
+            } else if (isUpdate == true) {
+                MDMAuditLogger.roleModifyFaild(user, wsRole.getWsRole().getName(), e);
+            }
             throw new RemoteException(e.getLocalizedMessage(), e);
         }
     }

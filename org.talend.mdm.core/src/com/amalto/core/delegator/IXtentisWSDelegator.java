@@ -59,6 +59,7 @@ import com.amalto.core.objects.backgroundjob.BackgroundJobPOJO;
 import com.amalto.core.objects.backgroundjob.BackgroundJobPOJOPK;
 import com.amalto.core.objects.datacluster.DataClusterPOJO;
 import com.amalto.core.objects.datacluster.DataClusterPOJOPK;
+import com.amalto.core.objects.datamodel.DataModelPOJO;
 import com.amalto.core.objects.datamodel.DataModelPOJOPK;
 import com.amalto.core.objects.menu.MenuPOJO;
 import com.amalto.core.objects.menu.MenuPOJOPK;
@@ -299,24 +300,49 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
 
     @Override
     public WSDataModelPK deleteDataModel(WSDeleteDataModel wsDeleteDataModel) throws RemoteException {
+        String user = StringUtils.EMPTY;
         try {
-            return new WSDataModelPK(Util.getDataModelCtrlLocal()
-                    .removeDataModel(new DataModelPOJOPK(wsDeleteDataModel.getWsDataModelPK().getPk())).getUniqueId());
+            DataModelPOJOPK dataModelPK = Util.getDataModelCtrlLocal()
+                    .removeDataModel(new DataModelPOJOPK(wsDeleteDataModel.getWsDataModelPK().getPk()));
+            user = LocalUser.getLocalUser().getUsername();
+            MDMAuditLogger.dataModelDeleted(user, dataModelPK.getUniqueId());
+            return new WSDataModelPK(dataModelPK.getUniqueId());
         } catch (Exception e) {
+            MDMAuditLogger.dataModelDeleteFail(user, wsDeleteDataModel.getWsDataModelPK().getPk(), e);
             throw new RemoteException((e.getCause() == null ? e.getLocalizedMessage() : e.getCause().getLocalizedMessage()), e);
         }
     }
 
     @Override
     public WSDataModelPK putDataModel(WSPutDataModel wsDataModel) throws RemoteException {
+        String user = StringUtils.EMPTY;
+        Boolean isUpdate = null;
         try {
-            WSDataModelPK wsDataModelPK = new WSDataModelPK(Util.getDataModelCtrlLocal()
-                    .putDataModel(XConverter.WS2VO(wsDataModel.getWsDataModel())).getUniqueId());
+            user = LocalUser.getLocalUser().getUsername();
+            DataModelPOJO oldDataModel = Util.getDataModelCtrlLocal()
+                    .existsDataModel(new DataModelPOJOPK(wsDataModel.getWsDataModel().getName()));
+            isUpdate = oldDataModel != null;
+
+            DataModelPOJO newDataModel = XConverter.WS2VO(wsDataModel.getWsDataModel());
+            WSDataModelPK wsDataModelPK = new WSDataModelPK(
+                    Util.getDataModelCtrlLocal().putDataModel(newDataModel).getUniqueId());
             SaverSession session = SaverSession.newSession();
             session.invalidateTypeCache(wsDataModelPK.getPk());
             session.end();
+            if (isUpdate) {
+                MDMAuditLogger.dataModelModified(user, oldDataModel, newDataModel);
+            } else {
+                MDMAuditLogger.dataModelCreated(user, newDataModel);
+            }
             return wsDataModelPK;
         } catch (Exception e) {
+            if (isUpdate == null) { //If check existence failed
+                MDMAuditLogger.dataModelCreateOrModifyFail(user, wsDataModel.getWsDataModel().getName(), e);
+            } else if (isUpdate) {
+                MDMAuditLogger.dataModelModifyFail(user, wsDataModel.getWsDataModel().getName(), e);
+            } else if (isUpdate) {
+                MDMAuditLogger.dataModelCreateFail(user, wsDataModel.getWsDataModel().getName(), e);
+            }
             throw RemoteExceptionFactory.aggregateCauses(e, true);
         }
     }

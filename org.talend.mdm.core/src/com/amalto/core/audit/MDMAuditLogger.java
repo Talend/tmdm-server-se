@@ -11,6 +11,7 @@ package com.amalto.core.audit;
 
 import java.util.Set;
 
+import com.amalto.core.objects.datamodel.DataModelPOJO;
 import com.amalto.core.objects.role.RolePOJO;
 import com.amalto.core.objects.view.ViewPOJO;
 
@@ -69,4 +70,26 @@ public class MDMAuditLogger {
 
     public static void viewlDeleteFail(String user, String viewName, Exception e) {
     }
+
+    public static void dataModelCreated(String user, DataModelPOJO dataModel) {
+    }
+
+    public static void dataModelDeleted(String user, String dataModelName) {
+    }
+
+    public static void dataModelModified(String user, DataModelPOJO oldDataModel, DataModelPOJO newDataModel) {
+    }
+
+    public static void dataModelCreateOrModifyFail(String user, String dataModelName, Exception ex) {
+    }
+
+    public static void dataModelDeleteFail(String user, String dataModelName, Exception ex) {
+    }
+
+    public static void dataModelModifyFail(String user, String dataModelName, Exception e) {
+    }
+
+    public static void dataModelCreateFail(String user, String dataModelName, Exception e) {
+    }
+
 }

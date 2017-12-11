@@ -194,7 +194,7 @@ public abstract class AbstractLoginModule implements LoginModule {
         try {
             MDMAuditLogger.logoutSuccess(LocalUser.getLocalUser().getUsername());
         } catch (XtentisException e) {
-            LOGGER.warn("Can't get the current user when logout", e);
+            LOGGER.warn("Unable to get the current user when logout or session out.");
         }
         reset();
         return true;

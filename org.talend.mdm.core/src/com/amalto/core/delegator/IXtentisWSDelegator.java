@@ -79,6 +79,7 @@ import com.amalto.core.objects.transformers.util.TransformerCallBack;
 import com.amalto.core.objects.transformers.util.TransformerContext;
 import com.amalto.core.objects.transformers.util.TransformerPluginVariableDescriptor;
 import com.amalto.core.objects.transformers.util.TypedContent;
+import com.amalto.core.objects.view.ViewPOJO;
 import com.amalto.core.objects.view.ViewPOJOPK;
 import com.amalto.core.query.user.UserQueryBuilder;
 import com.amalto.core.save.MultiRecordsSaveException;
@@ -543,20 +544,47 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
 
     @Override
     public WSViewPK deleteView(WSDeleteView wsDeleteView) throws RemoteException {
+        String user = StringUtils.EMPTY;
         try {
-            return new WSViewPK(
+            user = LocalUser.getLocalUser().getUsername();
+            WSViewPK wsViewPK = new WSViewPK(
                     Util.getViewCtrlLocal().removeView(new ViewPOJOPK(wsDeleteView.getWsViewPK().getPk())).getIds()[0]);
+            MDMAuditLogger.viewDeleted(user, wsViewPK.getPk());
+            return wsViewPK;
         } catch (Exception e) {
-            throw new RemoteException((e.getCause() == null ? e.getLocalizedMessage() : e.getCause().getLocalizedMessage()), e);
+            RemoteException ex = new RemoteException((e.getCause() == null ? e.getLocalizedMessage() : e.getCause().getLocalizedMessage()), e);
+            MDMAuditLogger.viewlDeleteFail(user, wsDeleteView.getWsViewPK().getPk(), e);
+            throw ex;
         }
     }
 
     @Override
     public WSViewPK putView(WSPutView wsView) throws RemoteException {
+        String user = StringUtils.EMPTY;
+        Boolean isUpdate = null;
         try {
-            return new WSViewPK(Util.getViewCtrlLocal().putView(XConverter.WS2VO(wsView.getWsView())).getIds()[0]);
+            user = LocalUser.getLocalUser().getUsername();
+            ViewPOJO oldView = Util.getViewCtrlLocal().existsView(new ViewPOJOPK(wsView.getWsView().getName()));
+            isUpdate = oldView != null;
+
+            ViewPOJO newView = XConverter.WS2VO(wsView.getWsView());
+            WSViewPK wsViewPK = new WSViewPK(Util.getViewCtrlLocal().putView(newView).getIds()[0]);
+            if (isUpdate) {
+                MDMAuditLogger.viewModified(user, oldView, newView);
+            } else {
+                MDMAuditLogger.viewCreated(user, newView);
+            }
+            return wsViewPK;
         } catch (Exception e) {
-            throw new RemoteException((e.getCause() == null ? e.getLocalizedMessage() : e.getCause().getLocalizedMessage()), e);
+            RemoteException ex = new RemoteException((e.getCause() == null ? e.getLocalizedMessage() : e.getCause().getLocalizedMessage()), e);
+            if (isUpdate == null) {// If check existence failed
+                MDMAuditLogger.viewCreateOrModifyFail(user, wsView.getWsView().getName(), ex);
+            } else if (isUpdate) {
+                MDMAuditLogger.viewModifyFail(user, wsView.getWsView().getName(), ex);
+            } else {
+                MDMAuditLogger.viewCreateFail(user, wsView.getWsView().getName(), ex);
+            }
+            throw ex;
         }
     }
 

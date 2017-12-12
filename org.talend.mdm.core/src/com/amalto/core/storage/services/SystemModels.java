@@ -140,13 +140,9 @@ public class SystemModels {
             } else {
                 MDMAuditLogger.dataModelModified(user, oldDataModel, dataModelPOJO);
             }
-        } catch (IOException e) {
-            RuntimeException ex = new RuntimeException("Could not fully read new data model.", e); //$NON-NLS-1$
-            MDMAuditLogger.dataModelDeleteFail(user, modelName, ex);
-            throw ex;
-        } catch (XtentisException e) {
-            RuntimeException ex = new RuntimeException("Could not store new data model.", e); //$NON-NLS-1$
-            MDMAuditLogger.dataModelDeleteFail(user, modelName, ex);
+        } catch (Exception e) {
+            RuntimeException ex = new RuntimeException("An error occurred while creating Data Model.", e); //$NON-NLS-1$
+            MDMAuditLogger.dataModelCreateFail(user, modelName, ex);
             throw ex;
         }
     }
@@ -171,12 +167,8 @@ public class SystemModels {
                 dataModelPOJO.store();
                 MDMAuditLogger.dataModelModified(user, oldDataModel, dataModelPOJO);
                 return;
-            } catch (IOException e) {
-                RuntimeException ex = new RuntimeException("Could not fully read new data model.", e); //$NON-NLS-1$
-                MDMAuditLogger.dataModelModifyFail(user, modelName, ex);
-                throw ex;
-            } catch (XtentisException e) {
-                RuntimeException ex = new RuntimeException("Could not store new data model.", e); //$NON-NLS-1$
+            } catch (Exception e) {
+                RuntimeException ex = new RuntimeException("An error occurred while updating Data Model.", e); //$NON-NLS-1$
                 MDMAuditLogger.dataModelModifyFail(user, modelName, ex);
                 throw ex;
             }
@@ -242,7 +234,7 @@ public class SystemModels {
         try {
             DataModelPOJO dataModelPOJO = DataModelPOJO.load(DataModelPOJO.class, new DataModelPOJOPK(modelName));
             MDMAuditLogger.dataModelModified(user, oldDataModel, dataModelPOJO);
-        } catch (XtentisException e) {
+        } catch (Exception e) {
             MDMAuditLogger.dataModelModifyFail(user, modelName, e);
         }
         // synchronize with outer agents

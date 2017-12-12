@@ -154,11 +154,12 @@ public class SystemModels {
             @ApiParam("Update model even if HIGH or MEDIUM impacts were found") @QueryParam("force") boolean force, InputStream dataModel) {
         String user = StringUtils.EMPTY;
         DataModelPOJO oldDataModel = null;
+        // Prepare data for audit log
         try {
             user = LocalUser.getLocalUser().getUsername();
             oldDataModel = DataModelPOJO.load(DataModelPOJO.class, new DataModelPOJOPK(modelName));
-        } catch (XtentisException ex) {
-            LOGGER.warn("featch exist datamodel have a wrong", ex);
+        } catch (XtentisException e) {
+            LOGGER.error("An error occurred while fetching Data Model.", e);
         }
         if (!isSystemStorageAvailable()) { // If no system storage is available, store new schema version.
             try {
@@ -226,16 +227,15 @@ public class SystemModels {
                 }
                 systemStorage.commit();
                 reloadDataModel(modelName);
+                // Add audit log
+                DataModelPOJO newdataModelPOJO = new DataModelPOJO(modelName);
+                newdataModelPOJO.setSchema(content);
+                MDMAuditLogger.dataModelModified(user, oldDataModel, newdataModelPOJO);
             } catch (Exception e) {
                 systemStorage.rollback();
+                MDMAuditLogger.dataModelModifyFail(user, modelName, e);
                 throw new RuntimeException("Could not update data model.", e); //$NON-NLS-1$
             }
-        }
-        try {
-            DataModelPOJO dataModelPOJO = DataModelPOJO.load(DataModelPOJO.class, new DataModelPOJOPK(modelName));
-            MDMAuditLogger.dataModelModified(user, oldDataModel, dataModelPOJO);
-        } catch (Exception e) {
-            MDMAuditLogger.dataModelModifyFail(user, modelName, e);
         }
         // synchronize with outer agents
         DataModelChangeNotifier dmUpdateEventNotifier = DataModelChangeNotifier.createInstance();

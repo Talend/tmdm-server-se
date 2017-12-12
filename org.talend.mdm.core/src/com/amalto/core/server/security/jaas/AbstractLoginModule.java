@@ -30,9 +30,9 @@ import org.talend.mdm.commmon.util.core.ICoreConstants;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
 
 import com.amalto.core.audit.MDMAuditLogger;
+import com.amalto.core.delegator.ILocalUser;
 import com.amalto.core.server.security.MDMPrincipal;
 import com.amalto.core.util.LocalUser;
-import com.amalto.core.util.XtentisException;
 
 public abstract class AbstractLoginModule implements LoginModule {
 

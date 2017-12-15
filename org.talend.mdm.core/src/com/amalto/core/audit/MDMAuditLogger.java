@@ -92,4 +92,7 @@ public class MDMAuditLogger {
     public static void dataModelCreateFail(String user, String dataModelName, Exception e) {
     }
 
+    public static void logoutFail(String userName) {
+    }
+
 }

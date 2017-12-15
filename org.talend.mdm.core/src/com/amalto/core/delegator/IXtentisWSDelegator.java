@@ -223,11 +223,15 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
     @Override
     public WSString logout(WSLogout logout) throws RemoteException {
         String msg = "OK"; //$NON-NLS-1$
+        String currentUser = StringUtils.EMPTY;
         try {
             ILocalUser user = LocalUser.getLocalUser();
+            currentUser = user.getUsername();
             user.logout();
+            MDMAuditLogger.logoutSuccess(currentUser);
         } catch (Exception e) {
             msg = e.getMessage();
+            MDMAuditLogger.logoutFail(currentUser);
         }
         return new WSString(msg);
     }

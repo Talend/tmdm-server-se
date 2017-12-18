@@ -29,6 +29,7 @@ import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.talend.mdm.commmon.util.core.ICoreConstants;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
 
+import com.amalto.core.audit.MDMAuditLogger;
 import com.amalto.core.server.security.MDMPrincipal;
 
 public abstract class AbstractLoginModule implements LoginModule {
@@ -136,7 +137,9 @@ public abstract class AbstractLoginModule implements LoginModule {
                 if (LOGGER.isDebugEnabled()) {
                     LOGGER.debug(e.getMessage(), e);
                 }
-                throw new FailedLoginException();
+                FailedLoginException ex = new FailedLoginException();
+                MDMAuditLogger.loginFail(username, ex);
+                throw ex;
             }
         }
         return succeeded;

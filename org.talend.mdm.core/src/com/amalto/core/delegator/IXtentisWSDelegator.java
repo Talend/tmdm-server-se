@@ -302,7 +302,7 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
 
     @Override
     public WSDataModelPK deleteDataModel(WSDeleteDataModel wsDeleteDataModel) throws RemoteException {
-        String user = StringUtils.EMPTY;
+        String user = null;
         try {
             DataModelPOJOPK dataModelPK = Util.getDataModelCtrlLocal()
                     .removeDataModel(new DataModelPOJOPK(wsDeleteDataModel.getWsDataModelPK().getPk()));
@@ -317,7 +317,7 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
 
     @Override
     public WSDataModelPK putDataModel(WSPutDataModel wsDataModel) throws RemoteException {
-        String user = StringUtils.EMPTY;
+        String user = null;
         Boolean isUpdate = null;
         try {
             user = LocalUser.getLocalUser().getUsername();
@@ -572,7 +572,7 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
 
     @Override
     public WSViewPK deleteView(WSDeleteView wsDeleteView) throws RemoteException {
-        String user = StringUtils.EMPTY;
+        String user = null;
         try {
             user = LocalUser.getLocalUser().getUsername();
             WSViewPK wsViewPK = new WSViewPK(
@@ -588,7 +588,7 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
 
     @Override
     public WSViewPK putView(WSPutView wsView) throws RemoteException {
-        String user = StringUtils.EMPTY;
+        String user = null;
         Boolean isUpdate = null;
         try {
             user = LocalUser.getLocalUser().getUsername();
@@ -2487,7 +2487,7 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
 
     @Override
     public WSRolePK putRole(WSPutRole wsRole) throws RemoteException {
-        String user = StringUtils.EMPTY;
+        String user = null;
         Boolean isUpdate = null;
         try {
             user = LocalUser.getLocalUser().getUsername();
@@ -2521,7 +2521,7 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
 
     @Override
     public WSRolePK deleteRole(WSDeleteRole wsRoleDelete) throws RemoteException {
-        String user = StringUtils.EMPTY;
+        String user = null;
         try {
             user = LocalUser.getLocalUser().getUsername();
             Role ctrl = Util.getRoleCtrlLocal();

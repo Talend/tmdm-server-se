@@ -27,10 +27,10 @@ public class MDMAuditLogger {
     public static void logoutSuccess(String userName) {
     }
 
-    public static void userCreateSuccess(String user, Map<String, String> newUser) {
+    public static void userCreated(String user, Map<String, String> newUser) {
     }
 
-    public static void userRolesModifySuccess(String user, String targetUser, Set<String> oldRoles, Set<String> newRoles) {
+    public static void userRolesModified(String user, String targetUser, Set<String> oldRoles, Set<String> newRoles) {
     }
 
     public static void userModifyFail(String user, String userName, Exception e) {
@@ -39,22 +39,22 @@ public class MDMAuditLogger {
     public static void userCreateFail(String user, String userName, Exception e) {
     }
 
-    public static void userDeleteSuccess(String user, String userName) {
+    public static void userDeleted(String user, String userName) {
     }
 
     public static void userDeleteFail(String user, String userName, Exception e) {
     }
 
-    public static void roleCreateSuccess(String user, RolePOJO role) {
+    public static void roleCreated(String user, RolePOJO role) {
     }
 
     public static void roleCreateOrModifyFail(String user, String roleName, Exception ex) {
     }
 
-    public static void roleModifySuccess(String user, RolePOJO oldRole, RolePOJO newRole) {
+    public static void roleModified(String user, RolePOJO oldRole, RolePOJO newRole) {
     }
 
-    public static void roleDeleteSuccess(String user, String roleName) {
+    public static void roleDeleted(String user, String roleName) {
     }
 
     public static void roleDeleteFail(String user, String roleName, Exception ex) {
@@ -66,10 +66,10 @@ public class MDMAuditLogger {
     public static void roleModifyFail(String user, String roleName, Exception ex) {
     }
 
-    public static void viewModifySuccess(String user, ViewPOJO oldView, ViewPOJO newView) {
+    public static void viewModified(String user, ViewPOJO oldView, ViewPOJO newView) {
     }
 
-    public static void viewCreateSuccess(String user, ViewPOJO newView) {
+    public static void viewCreated(String user, ViewPOJO newView) {
     }
 
     public static void viewCreateOrModifyFail(String user, String viewName, Exception ex) {
@@ -81,19 +81,19 @@ public class MDMAuditLogger {
     public static void viewCreateFail(String user, String viewName, Exception ex) {
     }
 
-    public static void viewDeleteSuccess(String user, String viewName) {
+    public static void viewDeleted(String user, String viewName) {
     }
 
     public static void viewlDeleteFail(String user, String viewName, Exception e) {
     }
 
-    public static void dataModelCreateSuccess(String user, DataModelPOJO dataModel) {
+    public static void dataModelCreated(String user, DataModelPOJO dataModel) {
     }
 
-    public static void dataModelDeleteSuccess(String user, String dataModelName) {
+    public static void dataModelDeleted(String user, String dataModelName) {
     }
 
-    public static void dataModelModifySuccess(String user, DataModelPOJO oldDataModel, DataModelPOJO newDataModel) {
+    public static void dataModelModified(String user, DataModelPOJO oldDataModel, DataModelPOJO newDataModel) {
     }
 
     public static void dataModelCreateOrModifyFail(String user, String dataModelName, Exception ex) {

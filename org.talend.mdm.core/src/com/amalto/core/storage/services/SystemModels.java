@@ -136,9 +136,9 @@ public class SystemModels {
             DataModelChangeNotifier dmUpdateEventNotifier = DataModelChangeNotifier.createInstance();
             dmUpdateEventNotifier.notifyChange(new DMUpdateEvent(modelName));
             if (oldDataModel == null) {
-                MDMAuditLogger.dataModelCreateSuccess(user, dataModelPOJO);
+                MDMAuditLogger.dataModelCreated(user, dataModelPOJO);
             } else {
-                MDMAuditLogger.dataModelModifySuccess(user, oldDataModel, dataModelPOJO);
+                MDMAuditLogger.dataModelModified(user, oldDataModel, dataModelPOJO);
             }
         } catch (Exception e) {
             RuntimeException ex = new RuntimeException("An error occurred while creating Data Model.", e); //$NON-NLS-1$
@@ -166,7 +166,7 @@ public class SystemModels {
                 DataModelPOJO dataModelPOJO = new DataModelPOJO(modelName);
                 dataModelPOJO.setSchema(IOUtils.toString(dataModel, "UTF-8")); //$NON-NLS-1$
                 dataModelPOJO.store();
-                MDMAuditLogger.dataModelModifySuccess(user, oldDataModel, dataModelPOJO);
+                MDMAuditLogger.dataModelModified(user, oldDataModel, dataModelPOJO);
                 return;
             } catch (Exception e) {
                 RuntimeException ex = new RuntimeException("An error occurred while updating Data Model.", e); //$NON-NLS-1$
@@ -230,7 +230,7 @@ public class SystemModels {
                 // Add audit log
                 DataModelPOJO newdataModelPOJO = new DataModelPOJO(modelName);
                 newdataModelPOJO.setSchema(content);
-                MDMAuditLogger.dataModelModifySuccess(user, oldDataModel, newdataModelPOJO);
+                MDMAuditLogger.dataModelModified(user, oldDataModel, newdataModelPOJO);
             } catch (Exception e) {
                 systemStorage.rollback();
                 MDMAuditLogger.dataModelModifyFail(user, modelName, e);

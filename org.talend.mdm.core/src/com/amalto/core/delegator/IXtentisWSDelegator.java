@@ -307,7 +307,7 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
             DataModelPOJOPK dataModelPK = Util.getDataModelCtrlLocal()
                     .removeDataModel(new DataModelPOJOPK(wsDeleteDataModel.getWsDataModelPK().getPk()));
             user = LocalUser.getLocalUser().getUsername();
-            MDMAuditLogger.dataModelDeleted(user, dataModelPK.getUniqueId());
+            MDMAuditLogger.dataModelDeleteSuccess(user, dataModelPK.getUniqueId());
             return new WSDataModelPK(dataModelPK.getUniqueId());
         } catch (Exception e) {
             MDMAuditLogger.dataModelDeleteFail(user, wsDeleteDataModel.getWsDataModelPK().getPk(), e);
@@ -332,9 +332,9 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
             session.invalidateTypeCache(wsDataModelPK.getPk());
             session.end();
             if (isUpdate) {
-                MDMAuditLogger.dataModelModified(user, oldDataModel, newDataModel);
+                MDMAuditLogger.dataModelModifySuccess(user, oldDataModel, newDataModel);
             } else {
-                MDMAuditLogger.dataModelCreated(user, newDataModel);
+                MDMAuditLogger.dataModelCreateSuccess(user, newDataModel);
             }
             return wsDataModelPK;
         } catch (Exception e) {
@@ -577,7 +577,7 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
             user = LocalUser.getLocalUser().getUsername();
             WSViewPK wsViewPK = new WSViewPK(
                     Util.getViewCtrlLocal().removeView(new ViewPOJOPK(wsDeleteView.getWsViewPK().getPk())).getIds()[0]);
-            MDMAuditLogger.viewDeleted(user, wsViewPK.getPk());
+            MDMAuditLogger.viewDeleteSuccess(user, wsViewPK.getPk());
             return wsViewPK;
         } catch (Exception e) {
             RemoteException ex = new RemoteException((e.getCause() == null ? e.getLocalizedMessage() : e.getCause().getLocalizedMessage()), e);
@@ -598,9 +598,9 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
             ViewPOJO newView = XConverter.WS2VO(wsView.getWsView());
             WSViewPK wsViewPK = new WSViewPK(Util.getViewCtrlLocal().putView(newView).getIds()[0]);
             if (isUpdate) {
-                MDMAuditLogger.viewModified(user, oldView, newView);
+                MDMAuditLogger.viewModifySuccess(user, oldView, newView);
             } else {
-                MDMAuditLogger.viewCreated(user, newView);
+                MDMAuditLogger.viewCreateSuccess(user, newView);
             }
             return wsViewPK;
         } catch (Exception e) {
@@ -2499,9 +2499,9 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
             RolePOJOPK pk = ctrl.putRole(newRolePOJO);
             LocalUser.resetLocalUsers();
             if (isUpdate) {
-                MDMAuditLogger.roleModified(user, oldRole, newRolePOJO);
+                MDMAuditLogger.roleModifySuccess(user, oldRole, newRolePOJO);
             } else {
-                MDMAuditLogger.roleCreated(user, newRolePOJO);
+                MDMAuditLogger.roleCreateSuccess(user, newRolePOJO);
             }
             return new WSRolePK(pk.getUniqueId());
         } catch (Exception e) {
@@ -2526,7 +2526,7 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
             user = LocalUser.getLocalUser().getUsername();
             Role ctrl = Util.getRoleCtrlLocal();
             WSRolePK wsRolePK = new WSRolePK(ctrl.removeRole(new RolePOJOPK(wsRoleDelete.getWsRolePK().getPk())).getUniqueId());
-            MDMAuditLogger.roleDeleted(user, wsRoleDelete.getWsRolePK().getPk());
+            MDMAuditLogger.roleDeleteSuccess(user, wsRoleDelete.getWsRolePK().getPk());
             return wsRolePK;
         } catch (Exception e) {
             MDMAuditLogger.roleDeleteFail(user, wsRoleDelete.getWsRolePK().getPk(), e);

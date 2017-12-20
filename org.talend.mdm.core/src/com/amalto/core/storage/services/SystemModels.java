@@ -142,7 +142,7 @@ public class SystemModels {
             }
         } catch (Exception e) {
             RuntimeException ex = new RuntimeException("An error occurred while creating Data Model.", e); //$NON-NLS-1$
-            MDMAuditLogger.dataModelCreateFail(user, modelName, ex);
+            MDMAuditLogger.dataModelCreationFailed(user, modelName, ex);
             throw ex;
         }
     }
@@ -170,7 +170,7 @@ public class SystemModels {
                 return;
             } catch (Exception e) {
                 RuntimeException ex = new RuntimeException("An error occurred while updating Data Model.", e); //$NON-NLS-1$
-                MDMAuditLogger.dataModelModifyFail(user, modelName, ex);
+                MDMAuditLogger.dataModelModificationFailed(user, modelName, ex);
                 throw ex;
             }
         }
@@ -233,7 +233,7 @@ public class SystemModels {
                 MDMAuditLogger.dataModelModified(user, oldDataModel, newdataModelPOJO);
             } catch (Exception e) {
                 systemStorage.rollback();
-                MDMAuditLogger.dataModelModifyFail(user, modelName, e);
+                MDMAuditLogger.dataModelModificationFailed(user, modelName, e);
                 throw new RuntimeException("Could not update data model.", e); //$NON-NLS-1$
             }
         }

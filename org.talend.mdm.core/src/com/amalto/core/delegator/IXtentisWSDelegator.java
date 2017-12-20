@@ -310,7 +310,7 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
             MDMAuditLogger.dataModelDeleted(user, dataModelPK.getUniqueId());
             return new WSDataModelPK(dataModelPK.getUniqueId());
         } catch (Exception e) {
-            MDMAuditLogger.dataModelDeleteFail(user, wsDeleteDataModel.getWsDataModelPK().getPk(), e);
+            MDMAuditLogger.dataModelDeletionFailed(user, wsDeleteDataModel.getWsDataModelPK().getPk(), e);
             throw new RemoteException((e.getCause() == null ? e.getLocalizedMessage() : e.getCause().getLocalizedMessage()), e);
         }
     }
@@ -339,11 +339,11 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
             return wsDataModelPK;
         } catch (Exception e) {
             if (isUpdate == null) { //If check existence failed
-                MDMAuditLogger.dataModelCreateOrModifyFail(user, wsDataModel.getWsDataModel().getName(), e);
+                MDMAuditLogger.dataModelCreationOrModificationFailed(user, wsDataModel.getWsDataModel().getName(), e);
             } else if (isUpdate) {
-                MDMAuditLogger.dataModelModifyFail(user, wsDataModel.getWsDataModel().getName(), e);
+                MDMAuditLogger.dataModelModificationFailed(user, wsDataModel.getWsDataModel().getName(), e);
             } else if (isUpdate) {
-                MDMAuditLogger.dataModelCreateFail(user, wsDataModel.getWsDataModel().getName(), e);
+                MDMAuditLogger.dataModelCreationFailed(user, wsDataModel.getWsDataModel().getName(), e);
             }
             throw RemoteExceptionFactory.aggregateCauses(e, true);
         }
@@ -581,7 +581,7 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
             return wsViewPK;
         } catch (Exception e) {
             RemoteException ex = new RemoteException((e.getCause() == null ? e.getLocalizedMessage() : e.getCause().getLocalizedMessage()), e);
-            MDMAuditLogger.viewlDeleteFail(user, wsDeleteView.getWsViewPK().getPk(), e);
+            MDMAuditLogger.viewlDeletionFailed(user, wsDeleteView.getWsViewPK().getPk(), e);
             throw ex;
         }
     }
@@ -606,11 +606,11 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
         } catch (Exception e) {
             RemoteException ex = new RemoteException((e.getCause() == null ? e.getLocalizedMessage() : e.getCause().getLocalizedMessage()), e);
             if (isUpdate == null) {// If check existence failed
-                MDMAuditLogger.viewCreateOrModifyFail(user, wsView.getWsView().getName(), ex);
+                MDMAuditLogger.viewCreationOrModificationFailed(user, wsView.getWsView().getName(), ex);
             } else if (isUpdate) {
-                MDMAuditLogger.viewModifyFail(user, wsView.getWsView().getName(), ex);
+                MDMAuditLogger.viewModificationFailed(user, wsView.getWsView().getName(), ex);
             } else {
-                MDMAuditLogger.viewCreateFail(user, wsView.getWsView().getName(), ex);
+                MDMAuditLogger.viewCreationFailed(user, wsView.getWsView().getName(), ex);
             }
             throw ex;
         }
@@ -2509,11 +2509,11 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
                 LOGGER.debug(e.getMessage(), e);
             }
             if (isUpdate == null) {// If check existence failed
-                MDMAuditLogger.roleCreateOrModifyFail(user, wsRole.getWsRole().getName(), e);
+                MDMAuditLogger.roleCreationOrModificationFailed(user, wsRole.getWsRole().getName(), e);
             } else if (isUpdate) {
-                MDMAuditLogger.roleModifyFail(user, wsRole.getWsRole().getName(), e);
+                MDMAuditLogger.roleModificationFailed(user, wsRole.getWsRole().getName(), e);
             } else {
-                MDMAuditLogger.roleCreateFail(user, wsRole.getWsRole().getName(), e);
+                MDMAuditLogger.roleCreationFailed(user, wsRole.getWsRole().getName(), e);
             }
             throw new RemoteException(e.getLocalizedMessage(), e);
         }
@@ -2529,7 +2529,7 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
             MDMAuditLogger.roleDeleted(user, wsRoleDelete.getWsRolePK().getPk());
             return wsRolePK;
         } catch (Exception e) {
-            MDMAuditLogger.roleDeleteFail(user, wsRoleDelete.getWsRolePK().getPk(), e);
+            MDMAuditLogger.roleDeletionFailed(user, wsRoleDelete.getWsRolePK().getPk(), e);
             throw new RemoteException(e.getLocalizedMessage(), e);
         }
     }

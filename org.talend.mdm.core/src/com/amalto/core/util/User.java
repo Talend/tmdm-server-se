@@ -173,9 +173,9 @@ public class User implements Cloneable {
                 } catch (Exception nfe) {
                     user.setLastSyncTime(null);
                 }
-                user.setEnabled("yes".equals(Util.getFirstTextNode(result, "//enabled"))); //$NON-NLS-1$ //$NON-NLS-2$
                 user.setHomePage(Util.getFirstTextNode(result, "//homepage")); //$NON-NLS-1$
             }
+            user.setEnabled("yes".equals(Util.getFirstTextNode(result, "//enabled"))); //$NON-NLS-1$ //$NON-NLS-2$
             user.setLanguage(Util.getFirstTextNode(result, "//language")); //$NON-NLS-1$
 
             String[] roles = Util.getTextNodes(result, "//roles/role"); //$NON-NLS-1$

@@ -74,6 +74,7 @@
                                 <exclude>com/amalto/core/save/generator/AutoIncrementGenerator.class</exclude>
                                 <exclude>com/amalto/core/server/ServerAccessImpl*.class</exclude>
                                 <exclude>com/amalto/core/initdb/initdb.xml</exclude>
+                                <exclude>com/amalto/core/audit/MDMAuditLogger.class</exclude>
                             </excludes>
                         </configuration>
                     </execution>
@@ -89,6 +90,7 @@
                                 <include>com/amalto/core/save/generator/AutoIncrementGenerator.class</include>
                                 <include>com/amalto/core/server/ServerAccessImpl*.class</include>
                                 <include>com/amalto/core/initdb/initdb.xml</include>
+                                <include>com/amalto/core/audit/MDMAuditLogger.class</include>
                             </includes>
                         </configuration>
                         <goals>
@@ -434,6 +436,10 @@
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
         </dependency>
         <dependency>
             <groupId>bsh</groupId>

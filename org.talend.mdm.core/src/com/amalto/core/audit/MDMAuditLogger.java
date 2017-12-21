@@ -41,9 +41,6 @@ public class MDMAuditLogger {
     public static void roleModificationFailed(String user, String roleName, Exception ex) {
     }
 
-    public static void viewModified(String user, ViewPOJO oldView, ViewPOJO newView) {
-    }
-
     public static void userRolesModificationFailed(String user, String targetUser, Exception ex) {
     }
 

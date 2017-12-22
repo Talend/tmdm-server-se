@@ -50,7 +50,9 @@ import org.talend.mdm.commmon.metadata.compare.ImpactAnalyzer;
 
 import com.amalto.commons.core.datamodel.synchronization.DMUpdateEvent;
 import com.amalto.commons.core.datamodel.synchronization.DataModelChangeNotifier;
+import com.amalto.core.audit.MDMAuditLogger;
 import com.amalto.core.objects.datamodel.DataModelPOJO;
+import com.amalto.core.objects.datamodel.DataModelPOJOPK;
 import com.amalto.core.query.user.UserQueryBuilder;
 import com.amalto.core.save.SaverSession;
 import com.amalto.core.server.MetadataRepositoryAdmin;
@@ -60,6 +62,7 @@ import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.StorageResults;
 import com.amalto.core.storage.StorageType;
 import com.amalto.core.storage.record.DataRecord;
+import com.amalto.core.util.LocalUser;
 import com.amalto.core.util.XtentisException;
 
 
@@ -122,17 +125,25 @@ public class SystemModels {
     @Path("/")
     @ApiOperation("Create a new data model given its name and XSD provided as request content")
     public void createDataModel(@ApiParam("New model name") @QueryParam("name") String modelName, InputStream dataModel) {
+        String user = null;
         try {
+            user = LocalUser.getLocalUser().getUsername();
+            DataModelPOJO oldDataModel = DataModelPOJO.load(DataModelPOJO.class, new DataModelPOJOPK(modelName));
             DataModelPOJO dataModelPOJO = new DataModelPOJO(modelName);
             dataModelPOJO.setSchema(IOUtils.toString(dataModel, "UTF-8")); //$NON-NLS-1$
             dataModelPOJO.store();
             // synchronize with outer agents
             DataModelChangeNotifier dmUpdateEventNotifier = DataModelChangeNotifier.createInstance();
             dmUpdateEventNotifier.notifyChange(new DMUpdateEvent(modelName));
-        } catch (IOException e) {
-            throw new RuntimeException("Could not fully read new data model.", e); //$NON-NLS-1$
-        } catch (XtentisException e) {
-            throw new RuntimeException("Could not store new data model.", e); //$NON-NLS-1$
+            if (oldDataModel == null) {
+                MDMAuditLogger.dataModelCreated(user, dataModelPOJO);
+            } else {
+                MDMAuditLogger.dataModelModified(user, oldDataModel, dataModelPOJO);
+            }
+        } catch (Exception e) {
+            RuntimeException ex = new RuntimeException("An error occurred while creating Data Model.", e); //$NON-NLS-1$
+            MDMAuditLogger.dataModelCreationFailed(user, modelName, ex);
+            throw ex;
         }
     }
 
@@ -141,16 +152,26 @@ public class SystemModels {
     @ApiOperation("Updates the requested model with the XSD provided as request content")
     public void updateModel(@ApiParam("Model name") @PathParam("model") String modelName, 
             @ApiParam("Update model even if HIGH or MEDIUM impacts were found") @QueryParam("force") boolean force, InputStream dataModel) {
+        String user = null;
+        DataModelPOJO oldDataModel = null;
+        // Prepare data for audit log
+        try {
+            user = LocalUser.getLocalUser().getUsername();
+            oldDataModel = DataModelPOJO.load(DataModelPOJO.class, new DataModelPOJOPK(modelName));
+        } catch (XtentisException e) {
+            LOGGER.error("An error occurred while fetching Data Model.", e);
+        }
         if (!isSystemStorageAvailable()) { // If no system storage is available, store new schema version.
             try {
                 DataModelPOJO dataModelPOJO = new DataModelPOJO(modelName);
                 dataModelPOJO.setSchema(IOUtils.toString(dataModel, "UTF-8")); //$NON-NLS-1$
                 dataModelPOJO.store();
+                MDMAuditLogger.dataModelModified(user, oldDataModel, dataModelPOJO);
                 return;
-            } catch (IOException e) {
-                throw new RuntimeException("Could not fully read new data model.", e); //$NON-NLS-1$
-            } catch (XtentisException e) {
-                throw new RuntimeException("Could not store new data model.", e); //$NON-NLS-1$
+            } catch (Exception e) {
+                RuntimeException ex = new RuntimeException("An error occurred while updating Data Model.", e); //$NON-NLS-1$
+                MDMAuditLogger.dataModelModificationFailed(user, modelName, ex);
+                throw ex;
             }
         }
         StorageAdmin storageAdmin = ServerContext.INSTANCE.get().getStorageAdmin();
@@ -206,8 +227,13 @@ public class SystemModels {
                 }
                 systemStorage.commit();
                 reloadDataModel(modelName);
+                // Add audit log
+                DataModelPOJO newdataModelPOJO = new DataModelPOJO(modelName);
+                newdataModelPOJO.setSchema(content);
+                MDMAuditLogger.dataModelModified(user, oldDataModel, newdataModelPOJO);
             } catch (Exception e) {
                 systemStorage.rollback();
+                MDMAuditLogger.dataModelModificationFailed(user, modelName, e);
                 throw new RuntimeException("Could not update data model.", e); //$NON-NLS-1$
             }
         }
@@ -215,6 +241,7 @@ public class SystemModels {
         DataModelChangeNotifier dmUpdateEventNotifier = DataModelChangeNotifier.createInstance();
         dmUpdateEventNotifier.notifyChange(new DMUpdateEvent(modelName));
     }
+
 
     private boolean isSystemStorageAvailable() {
         return !dataModelType.getName().isEmpty();

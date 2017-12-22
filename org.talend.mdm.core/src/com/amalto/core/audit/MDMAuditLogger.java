@@ -13,6 +13,7 @@ import java.util.Set;
 
 import com.amalto.core.objects.datamodel.DataModelPOJO;
 import com.amalto.core.objects.role.RolePOJO;
+import com.amalto.core.objects.view.ViewPOJO;
 
 public class MDMAuditLogger {
 
@@ -42,6 +43,27 @@ public class MDMAuditLogger {
     }
 
     public static void userRolesModificationFailed(String user, String targetUser, Exception ex) {
+    }
+
+    public static void viewModified(String user, ViewPOJO oldView, ViewPOJO newView) {
+    }
+
+    public static void viewCreated(String user, ViewPOJO newView) {
+    }
+
+    public static void viewCreationOrModificationFailed(String user, String viewName, Exception ex) {
+    }
+
+    public static void viewModificationFailed(String user, String viewName, Exception ex) {
+    }
+
+    public static void viewCreationFailed(String user, String viewName, Exception ex) {
+    }
+
+    public static void viewDeleted(String user, String viewName) {
+    }
+
+    public static void viewlDeletionFailed(String user, String viewName, Exception e) {
     }
 
     public static void dataModelCreated(String user, DataModelPOJO dataModel) {

@@ -125,7 +125,7 @@ public class SystemModels {
     @Path("/")
     @ApiOperation("Create a new data model given its name and XSD provided as request content")
     public void createDataModel(@ApiParam("New model name") @QueryParam("name") String modelName, InputStream dataModel) {
-        String user = StringUtils.EMPTY;
+        String user = null;
         try {
             user = LocalUser.getLocalUser().getUsername();
             DataModelPOJO oldDataModel = DataModelPOJO.load(DataModelPOJO.class, new DataModelPOJOPK(modelName));
@@ -152,7 +152,7 @@ public class SystemModels {
     @ApiOperation("Updates the requested model with the XSD provided as request content")
     public void updateModel(@ApiParam("Model name") @PathParam("model") String modelName, 
             @ApiParam("Update model even if HIGH or MEDIUM impacts were found") @QueryParam("force") boolean force, InputStream dataModel) {
-        String user = StringUtils.EMPTY;
+        String user = null;
         DataModelPOJO oldDataModel = null;
         // Prepare data for audit log
         try {

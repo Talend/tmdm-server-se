@@ -116,16 +116,18 @@ public abstract class AbstractLoginModule implements LoginModule {
         } else {
             handleCallbacks();
             try {
-
                 if (isAdminUser()) {
                     String adminPassword = MDMConfiguration.getAdminPassword();
+                    FailedLoginException failedLoginException = new FailedLoginException("Invalid password"); //$NON-NLS-1$ ;
                     if (adminMD5Password) {
                         if (!md5PasswordEncoder.isPasswordValid(adminPassword, password, null)) {
-                            throw new FailedLoginException("Invalid password"); //$NON-NLS-1$;
+                            MDMAuditLogger.loginFail(username, failedLoginException);
+                            throw failedLoginException;
                         }
                     } else {
                         if (!password.equals(adminPassword)) {
-                            throw new FailedLoginException("Invalid password"); //$NON-NLS-1$;
+                            MDMAuditLogger.loginFail(username, failedLoginException);
+                            throw failedLoginException;
                         }
                     }
                 } else {

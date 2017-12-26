@@ -75,17 +75,12 @@ public class DefaultLoginModule extends AbstractLoginModule {
     @Override
     protected void doLogin() throws Exception {
         if (!passwordByUserMap.containsKey(username)) {
-            Exception failedLoginException = new FailedLoginException("Invalid username"); //$NON-NLS-1$
-            MDMAuditLogger.loginFail(username, failedLoginException);
-            throw failedLoginException;
+            throw new FailedLoginException("Invalid username"); //$NON-NLS-1$
         }
         String savedPassword = passwordByUserMap.get(username);
         if (password == null || !password.equals(savedPassword)) {
-            Exception failedLoginException = new FailedLoginException("Invalid password"); //$NON-NLS-1$
-            MDMAuditLogger.loginFail(username, failedLoginException);
-            throw failedLoginException;
+            throw new FailedLoginException("Invalid password"); //$NON-NLS-1$
         }
-        MDMAuditLogger.loginSuccess(username);
     }
 
     @Override

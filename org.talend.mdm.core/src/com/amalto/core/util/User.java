@@ -149,7 +149,6 @@ public class User implements Cloneable {
             user.setGivenName(Util.getFirstTextNode(result, "//givenname")); //$NON-NLS-1$
             user.setFamilyName(Util.getFirstTextNode(result, "//familyname")); //$NON-NLS-1$
             if (!Util.isEnterprise()) {
-                user.setPassword(Util.getFirstTextNode(result, "//password")); //$NON-NLS-1$
                 user.setPhoneNumber(Util.getFirstTextNode(result, "//phonenumber")); //$NON-NLS-1$
                 user.setCompany(Util.getFirstTextNode(result, "//company")); //$NON-NLS-1$
                 user.setSignature(Util.getFirstTextNode(result, "//signature")); //$NON-NLS-1$
@@ -175,6 +174,8 @@ public class User implements Cloneable {
                 }
                 user.setHomePage(Util.getFirstTextNode(result, "//homepage")); //$NON-NLS-1$
             }
+            // Migration Tool need to parse the password and enabled in userXML from 6.5
+            user.setPassword(Util.getFirstTextNode(result, "//password")); //$NON-NLS-1$
             user.setEnabled("yes".equals(Util.getFirstTextNode(result, "//enabled"))); //$NON-NLS-1$ //$NON-NLS-2$
             user.setLanguage(Util.getFirstTextNode(result, "//language")); //$NON-NLS-1$
 

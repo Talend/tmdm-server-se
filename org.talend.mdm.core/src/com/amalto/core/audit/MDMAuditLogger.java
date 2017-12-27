@@ -84,7 +84,7 @@ public class MDMAuditLogger {
     public static void viewDeleted(String user, String viewName) {
     }
 
-    public static void viewlDeletionFailed(String user, String viewName, Exception e) {
+    public static void viewDeletionFailed(String user, String viewName, Exception e) {
     }
 
     public static void dataModelCreated(String user, DataModelPOJO dataModel) {

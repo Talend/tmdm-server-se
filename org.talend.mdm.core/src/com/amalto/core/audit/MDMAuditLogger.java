@@ -96,6 +96,9 @@ public class MDMAuditLogger {
     public static void dataModelModified(String user, DataModelPOJO oldDataModel, DataModelPOJO newDataModel) {
     }
 
+    public static void dataModelModified(String user, DataModelPOJO oldDataModel, DataModelPOJO newDataModel, boolean rest) {
+    }
+
     public static void dataModelCreationOrModificationFailed(String user, String dataModelName, Exception ex) {
     }
 

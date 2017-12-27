@@ -166,7 +166,7 @@ public class SystemModels {
                 DataModelPOJO dataModelPOJO = new DataModelPOJO(modelName);
                 dataModelPOJO.setSchema(IOUtils.toString(dataModel, "UTF-8")); //$NON-NLS-1$
                 dataModelPOJO.store();
-                MDMAuditLogger.dataModelModified(user, oldDataModel, dataModelPOJO);
+                MDMAuditLogger.dataModelModified(user, oldDataModel, dataModelPOJO, true);
                 return;
             } catch (Exception e) {
                 RuntimeException ex = new RuntimeException("An error occurred while updating Data Model.", e); //$NON-NLS-1$

@@ -2485,6 +2485,9 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
 
     @Override
     public WSRolePK putRole(WSPutRole wsRole) throws RemoteException {
+        if (wsRole.getWsRole().getName().equals(ICoreConstants.ADMIN_PERMISSION)) {
+            throw new RemoteException("Role \"" + ICoreConstants.ADMIN_PERMISSION + "\" is built-in as Super Admin in TAC.");
+        }
         String user = null;
         Boolean isUpdate = null;
         try {

@@ -35,11 +35,6 @@
     String editionTitle=Webapp.INSTANCE.getProductInfo();
     String version=Version.getSimpleVersionAsString(this.getClass());
 %>
-<script>
-	function login(){
-	  document.getElementById('loginform').submit();
-	}
-</script>
 <html>
 <head>
 <title>Talend MDM</title>
@@ -86,7 +81,7 @@
                         </tr>
                         <tr>
                             <td/>
-                            <td align="left"><input type="button" name="login" value="<%=_LOGIN_%>" onclick="JavaScript:return login();"/></td>
+                            <td align="left"><input type="button" name="login" value="<%=_LOGIN_%>" onclick="document.getElementById('loginform').submit();"/></td>
                         </tr>
                     </table>
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />

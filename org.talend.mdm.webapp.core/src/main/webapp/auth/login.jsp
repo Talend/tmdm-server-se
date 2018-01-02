@@ -36,7 +36,7 @@
     String version=Version.getSimpleVersionAsString(this.getClass());
 %>
 <script>
-	function save(){
+	function login(){
 	  document.getElementById('loginform').submit();
 	}
 </script>
@@ -86,7 +86,7 @@
                         </tr>
                         <tr>
                             <td/>
-                            <td align="left"><input type="button" name="login" value="<%=_LOGIN_%>" onclick="JavaScript:return save();"/></td>
+                            <td align="left"><input type="button" name="login" value="<%=_LOGIN_%>" onclick="JavaScript:return login();"/></td>
                         </tr>
                     </table>
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />

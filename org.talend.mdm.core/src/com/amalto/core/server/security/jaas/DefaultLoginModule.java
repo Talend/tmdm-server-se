@@ -22,7 +22,6 @@ import org.apache.commons.lang.StringUtils;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.util.core.Crypt;
 
-import com.amalto.core.audit.MDMAuditLogger;
 import com.amalto.core.query.user.UserQueryBuilder;
 import com.amalto.core.server.ServerContext;
 import com.amalto.core.server.StorageAdmin;

@@ -143,7 +143,6 @@ public abstract class AbstractLoginModule implements LoginModule {
                 MDMAuditLogger.loginFail(username, ex);
                 throw ex;
             }
-            MDMAuditLogger.loginSuccess(username);
         }
         return succeeded;
     }

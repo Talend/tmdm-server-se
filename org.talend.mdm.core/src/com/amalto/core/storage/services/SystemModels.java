@@ -230,7 +230,7 @@ public class SystemModels {
                 // Add audit log
                 DataModelPOJO newdataModelPOJO = new DataModelPOJO(modelName);
                 newdataModelPOJO.setSchema(content);
-                MDMAuditLogger.dataModelModified(user, oldDataModel, newdataModelPOJO);
+                MDMAuditLogger.dataModelModified(user, oldDataModel, newdataModelPOJO, true);
             } catch (Exception e) {
                 systemStorage.rollback();
                 MDMAuditLogger.dataModelModificationFailed(user, modelName, e);

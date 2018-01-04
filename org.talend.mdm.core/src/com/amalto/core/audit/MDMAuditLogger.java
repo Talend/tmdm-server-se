@@ -63,7 +63,7 @@ public class MDMAuditLogger {
     public static void viewDeleted(String user, String viewName) {
     }
 
-    public static void viewlDeletionFailed(String user, String viewName, Exception e) {
+    public static void viewDeletionFailed(String user, String viewName, Exception e) {
     }
 
     public static void dataModelCreated(String user, DataModelPOJO dataModel) {
@@ -73,6 +73,9 @@ public class MDMAuditLogger {
     }
 
     public static void dataModelModified(String user, DataModelPOJO oldDataModel, DataModelPOJO newDataModel) {
+    }
+
+    public static void dataModelModified(String user, DataModelPOJO oldDataModel, DataModelPOJO newDataModel, boolean schemaChanged) {
     }
 
     public static void dataModelCreationOrModificationFailed(String user, String dataModelName, Exception ex) {

@@ -302,9 +302,9 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
     public WSDataModelPK deleteDataModel(WSDeleteDataModel wsDeleteDataModel) throws RemoteException {
         String user = null;
         try {
+            user = LocalUser.getLocalUser().getUsername();
             DataModelPOJOPK dataModelPK = Util.getDataModelCtrlLocal()
                     .removeDataModel(new DataModelPOJOPK(wsDeleteDataModel.getWsDataModelPK().getPk()));
-            user = LocalUser.getLocalUser().getUsername();
             MDMAuditLogger.dataModelDeleted(user, dataModelPK.getUniqueId());
             return new WSDataModelPK(dataModelPK.getUniqueId());
         } catch (Exception e) {
@@ -579,7 +579,7 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
             return wsViewPK;
         } catch (Exception e) {
             RemoteException ex = new RemoteException((e.getCause() == null ? e.getLocalizedMessage() : e.getCause().getLocalizedMessage()), e);
-            MDMAuditLogger.viewlDeletionFailed(user, wsDeleteView.getWsViewPK().getPk(), e);
+            MDMAuditLogger.viewDeletionFailed(user, wsDeleteView.getWsViewPK().getPk(), e);
             throw ex;
         }
     }

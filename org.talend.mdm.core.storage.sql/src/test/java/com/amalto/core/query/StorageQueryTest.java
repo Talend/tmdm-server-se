@@ -4839,6 +4839,34 @@ public class StorageQueryTest extends StorageTestCase {
         assertEquals(9, results.getCount());
     }
 
+    public void testGetRecordContainsCompositeFK() throws Exception {
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(DataRecordCreationTest.class.getResourceAsStream("CompositeForeignKey.xsd"));
+        Storage storage = new HibernateStorage("H2-DS1", StorageType.MASTER);
+        storage.init(ServerContext.INSTANCE.get().getDefinition("H2-DS1", "MDM"));
+        storage.prepare(repository, true);
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+        
+        List<DataRecord> records = new LinkedList<DataRecord>();
+        records.add(factory.read(repository, repository.getComplexType("REGION"), "<REGION><REGIONId>REGIONId 1</REGIONId><NAME>NAME 1</NAME><CODE>1</CODE></REGION>"));
+        records.add(factory.read(repository, repository.getComplexType("DEPARTEMENT"), "<DEPARTEMENT><DEPARTEMENTId>DEPARTEMENTId 1</DEPARTEMENTId><NAME>name1</NAME><REGION_REF>[1][REGIONId 1][NAME 1]</REGION_REF><DONNEES>DONNEES1</DONNEES><DONNEES2>21</DONNEES2></DEPARTEMENT>"));
+        
+        storage.begin();
+        storage.update(records);
+        storage.commit();
+        
+        storage.begin();
+        ComplexTypeMetadata department = repository.getComplexType("DEPARTEMENT");
+        UserQueryBuilder qb = from(department).select(department.getField("DEPARTEMENTId")).select(department.getField("REGION_REF"))
+                .select(department.getField("DONNEES")).select(department.getField("DONNEES2"));
+        StorageResults results = storage.fetch(qb.getSelect());
+        assertEquals(1, results.getCount());
+        for (DataRecord record : results) {
+            assertEquals("DONNEES1", record.get("DONNEES"));
+            assertEquals(21, record.get("DONNEES2"));
+        }
+    }
+    
     private static class TestUserDelegator implements SecuredStorage.UserDelegator {
 
         boolean isActive = true;

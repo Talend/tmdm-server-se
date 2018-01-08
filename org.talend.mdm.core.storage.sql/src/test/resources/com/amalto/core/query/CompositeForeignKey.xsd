@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">  
+  <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/>  
+  <xsd:element name="DEPARTEMENT"> 
+    <xsd:annotation> 
+      <xsd:appinfo source="X_Write">CRE_ROLE</xsd:appinfo> 
+    </xsd:annotation>  
+    <xsd:complexType> 
+      <xsd:all> 
+        <xsd:element name="DEPARTEMENTId" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_Write">CRE_ROLE</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element>  
+        <xsd:element maxOccurs="1" minOccurs="0" name="NAME" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_Write">CRE_ROLE</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element>  
+        <xsd:element maxOccurs="1" minOccurs="0" name="REGION_REF" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_Write">CRE_ROLE</xsd:appinfo>  
+            <xsd:appinfo source="X_ForeignKey">REGION/REGIONId</xsd:appinfo>  
+            <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element>  
+        <xsd:element maxOccurs="1" minOccurs="0" name="DONNEES" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_Write">CRE_ROLE</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element>  
+        <xsd:element maxOccurs="1" minOccurs="0" name="DONNEES2" type="xsd:int"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_Write">CRE_ROLE</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element> 
+      </xsd:all> 
+    </xsd:complexType>  
+    <xsd:unique name="DEPARTEMENT"> 
+      <xsd:selector xpath="."/>  
+      <xsd:field xpath="DEPARTEMENTId"/> 
+    </xsd:unique> 
+  </xsd:element>  
+  <xsd:element name="REGION"> 
+    <xsd:complexType> 
+      <xsd:all> 
+        <xsd:element name="REGIONId" type="xsd:string"/>  
+        <xsd:element maxOccurs="1" minOccurs="1" name="NAME" type="xsd:string"/>  
+        <xsd:element maxOccurs="1" minOccurs="1" name="CODE" type="xsd:int"/> 
+      </xsd:all> 
+    </xsd:complexType>  
+    <xsd:unique name="REGION"> 
+      <xsd:selector xpath="."/>  
+      <xsd:field xpath="CODE"/>  
+      <xsd:field xpath="REGIONId"/>  
+      <xsd:field xpath="NAME"/> 
+    </xsd:unique> 
+  </xsd:element> 
+</xsd:schema>

@@ -342,7 +342,7 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
                 MDMAuditLogger.dataModelCreationOrModificationFailed(user, wsDataModel.getWsDataModel().getName(), e);
             } else if (isUpdate) {
                 MDMAuditLogger.dataModelModificationFailed(user, wsDataModel.getWsDataModel().getName(), e);
-            } else if (isUpdate) {
+            } else if (!isUpdate) {
                 MDMAuditLogger.dataModelCreationFailed(user, wsDataModel.getWsDataModel().getName(), e);
             }
             throw RemoteExceptionFactory.aggregateCauses(e, true);

@@ -75,7 +75,7 @@ public class MDMAuditLogger {
     public static void dataModelModified(String user, DataModelPOJO oldDataModel, DataModelPOJO newDataModel) {
     }
 
-    public static void dataModelModified(String user, DataModelPOJO oldDataModel, DataModelPOJO newDataModel, boolean schemaChanged) {
+    public static void dataModelModified(String user, DataModelPOJO oldDataModel, DataModelPOJO newDataModel, boolean structureChanged) {
     }
 
     public static void dataModelCreationOrModificationFailed(String user, String dataModelName, Exception ex) {

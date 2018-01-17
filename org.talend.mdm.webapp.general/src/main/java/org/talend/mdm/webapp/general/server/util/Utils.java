@@ -193,6 +193,9 @@ public class Utils {
                         imports.add("<script type=\"text/javascript\" src=\"secure/js/ImprovedDWRProxy.js\"></script>\n"); //$NON-NLS-1$
                         imports.add("<script type=\"text/javascript\" src=\"secure/js/SearchEntityPanel.js\"></script>\n"); //$NON-NLS-1$
                         imports.add("<script type=\"text/javascript\" src=\"secure/js/DataNavigatorPanel.js\"></script>\n"); //$NON-NLS-1$
+                    } else if (com.amalto.core.util.Util.isEnterprise() && "welcomeportal".equals(context) //$NON-NLS-1$
+                            && "welcomeportal".equals(gxtEntryModule)) { //$NON-NLS-1$
+                        imports.add("<script type=\"text/javascript\" src=\"secure/js/BonitaWorkflowTasks.js\"></script>\n"); //$NON-NLS-1$
                     }
                     if (!imports.contains(tmp)) {
                         imports.add(tmp);

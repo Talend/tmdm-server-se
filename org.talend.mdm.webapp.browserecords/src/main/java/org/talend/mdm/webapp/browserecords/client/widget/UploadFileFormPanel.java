@@ -225,6 +225,7 @@ public class UploadFileFormPanel extends FormPanel implements Listener<FormEvent
         multipleValueSeparatorField.setName("multipleValueSeparator"); //$NON-NLS-1$
         multipleValueSeparatorField.setMaxLength(1);
         multipleValueSeparatorField.setValue("|"); //$NON-NLS-1$
+        multipleValueSeparatorField.setAllowBlank(false);
         MultiField<String> multipleValueField = new MultiField<String>();
         LabelField lf = new LabelField();
         multipleValueField.setFieldLabel(MessagesFactory.getMessages().multiple_value_separator_field_label());

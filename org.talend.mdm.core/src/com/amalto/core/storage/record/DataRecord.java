@@ -204,14 +204,14 @@ public class DataRecord {
         return currentValue;
     }
 
-    public boolean isExixedInValueList(FieldMetadata field) {
+    public boolean containsFieldToValue(FieldMetadata field) {
         if (field == null) {
             return false;
         }
         return fieldToValue.containsKey(field);
     }
 
-    public boolean isExixedInValueList(String fieldName) {
+    public boolean containsFieldToValue(String fieldName) {
         StringTokenizer tokenizer = new StringTokenizer(fieldName, "/"); //$NON-NLS-1$
         DataRecord current = this;
         while (tokenizer.hasMoreTokens()) {

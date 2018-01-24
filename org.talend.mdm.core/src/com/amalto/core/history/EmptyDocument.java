@@ -46,7 +46,7 @@ public class EmptyDocument implements MutableDocument {
     }
 
     @Override
-    public String exportToStringContainsEmptyLabel() {
+    public String exportToStringContainsNullValueField() {
         return exportToString();
     }
 

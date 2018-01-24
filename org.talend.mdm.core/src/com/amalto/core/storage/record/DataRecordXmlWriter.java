@@ -53,9 +53,12 @@ public class DataRecordXmlWriter implements DataRecordWriter {
 
     protected SecuredStorage.UserDelegator delegator = SecuredStorage.UNSECURED;
 
+    protected boolean isNeedContainsNullValueField;
+
     public DataRecordXmlWriter() {
         rootElementName = null;
         includeMetadata = false;
+        isNeedContainsNullValueField = false;
     }
 
     public DataRecordXmlWriter(boolean includeMetadata) {
@@ -82,7 +85,7 @@ public class DataRecordXmlWriter implements DataRecordWriter {
 
     @Override
     public void write(DataRecord record, Writer writer) throws IOException {
-        DefaultMetadataVisitor<Void> fieldPrinter = new FieldPrinter(record, writer);
+        DefaultMetadataVisitor<Void> fieldPrinter = new FieldPrinter(record, writer, isNeedContainsNullValueField);
         Collection<FieldMetadata> fields = type == null ? record.getType().getFields() : type.getFields();
         if (includeMetadata) {
             writer.write("<" + getRootElementName(record) + " xmlns:metadata=\"" + DataRecordReader.METADATA_NAMESPACE + "\">"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -109,7 +112,7 @@ public class DataRecordXmlWriter implements DataRecordWriter {
 
     @Override
     public void setSecurityDelegator(SecuredStorage.UserDelegator delegator) {
-        if(delegator == null) {
+        if (delegator == null) {
             throw new IllegalArgumentException("Delegator cannot be null.");
         }
         this.delegator = delegator;
@@ -126,14 +129,22 @@ public class DataRecordXmlWriter implements DataRecordWriter {
         return rootElementName == null ? record.getType().getName() : rootElementName;
     }
 
+    public void setNeedContainsNullValueField(boolean isNeedContainsNullValueField) {
+        this.isNeedContainsNullValueField = isNeedContainsNullValueField;
+    }
+
     class FieldPrinter extends DefaultMetadataVisitor<Void> {
 
         protected final DataRecord record;
+
         protected final Writer out;
 
-        public FieldPrinter(DataRecord record, Writer out) {
+        protected final boolean isNeedContainsNullValueField;
+
+        public FieldPrinter(DataRecord record, Writer out, boolean isNeedContainsNullValueField) {
             this.record = record;
             this.out = out;
+            this.isNeedContainsNullValueField = isNeedContainsNullValueField;
         }
 
         @Override
@@ -143,6 +154,7 @@ public class DataRecordXmlWriter implements DataRecordWriter {
             }
             try {
                 Object value = record.get(referenceField);
+                boolean containsFieldToValue = record.containsFieldToValue(referenceField);
                 if (value != null) {
                     if (!referenceField.isMany()) {
                         DataRecord referencedRecord = (DataRecord) record.get(referenceField);
@@ -156,9 +168,16 @@ public class DataRecordXmlWriter implements DataRecordWriter {
                                 writeReferenceElement(referenceField, currentValue);
                                 out.write(StorageMetadataUtils.toString(currentValue));
                                 out.write("</" + referenceField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
+                            } else if (isNeedContainsNullValueField) {
+                                out.write("<" + referenceField.getName() + "/>"); //$NON-NLS-1$ //$NON-NLS-2$
                             }
                         }
+                        if (valueAsList.size() == 0 && isNeedContainsNullValueField) {
+                            out.write("<" + referenceField.getName() + "/>"); //$NON-NLS-1$ //$NON-NLS-2$
+                        }
                     }
+                } else if (containsFieldToValue && isNeedContainsNullValueField) {
+                    out.write("<" + referenceField.getName() + "/>"); //$NON-NLS-1$ //$NON-NLS-2$
                 }
                 return null;
             } catch (IOException e) {
@@ -171,7 +190,8 @@ public class DataRecordXmlWriter implements DataRecordWriter {
             if (currentValue.getType().equals(referenceField.getReferencedType())) {
                 out.write("<" + referenceField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
             } else {
-                out.write("<" + referenceField.getName() + " xmlns:tmdm=\"" + SkipAttributeDocumentBuilder.TALEND_NAMESPACE + "\" tmdm:type=\"" + currentValue.getType().getName() + "\">"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                out.write("<" + referenceField.getName() + " xmlns:tmdm=\"" + SkipAttributeDocumentBuilder.TALEND_NAMESPACE //$NON-NLS-1$ //$NON-NLS-2$
+                        + "\" tmdm:type=\"" + currentValue.getType().getName() + "\">"); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
 
@@ -182,33 +202,46 @@ public class DataRecordXmlWriter implements DataRecordWriter {
             }
             try {
                 if (!containedField.isMany()) {
+                    boolean containsFieldToValue = record.containsFieldToValue(containedField);
                     DataRecord containedRecord = (DataRecord) record.get(containedField);
                     // TMDM-6232 Unable to save reusable type value
                     if (containedRecord != null) {
                         // TODO Limit new field printer instances
-                        DefaultMetadataVisitor<Void> fieldPrinter = new FieldPrinter(containedRecord, out);
+                        DefaultMetadataVisitor<Void> fieldPrinter = new FieldPrinter(containedRecord, out,
+                                isNeedContainsNullValueField);
                         Collection<FieldMetadata> fields = containedRecord.getType().getFields();
                         writeContainedField(containedField, containedRecord);
                         for (FieldMetadata field : fields) {
                             field.accept(fieldPrinter);
                         }
                         out.write("</" + containedField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
+                    } else if (containsFieldToValue && isNeedContainsNullValueField) {
+                        out.write("<" + containedField.getName() + "/>"); //$NON-NLS-1$ //$NON-NLS-2$
                     }
                 } else {
+                    boolean containsFieldToValue = record.containsFieldToValue(containedField);
                     List<DataRecord> recordList = (List<DataRecord>) record.get(containedField);
                     if (recordList != null) {
                         for (DataRecord dataRecord : recordList) {
                             if (!dataRecord.isEmpty()) {
                                 // TODO Limit new field printer instances
-                                DefaultMetadataVisitor<Void> fieldPrinter = new FieldPrinter(dataRecord, out);
+                                DefaultMetadataVisitor<Void> fieldPrinter = new FieldPrinter(dataRecord, out,
+                                        isNeedContainsNullValueField);
                                 Collection<FieldMetadata> fields = dataRecord.getType().getFields();
                                 writeContainedField(containedField, dataRecord);
                                 for (FieldMetadata field : fields) {
                                     field.accept(fieldPrinter);
                                 }
                                 out.write("</" + containedField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
+                            } else if (isNeedContainsNullValueField) {
+                                out.write("<" + containedField.getName() + "/>"); //$NON-NLS-1$ //$NON-NLS-2$
                             }
                         }
+                        if (recordList.size() == 0 && isNeedContainsNullValueField) {
+                            out.write("<" + containedField.getName() + "/>"); //$NON-NLS-1$ //$NON-NLS-2$
+                        }
+                    } else if (containsFieldToValue && isNeedContainsNullValueField) {
+                        out.write("<" + containedField.getName() + "/>"); //$NON-NLS-1$ //$NON-NLS-2$
                     }
                 }
                 return null;
@@ -218,11 +251,13 @@ public class DataRecordXmlWriter implements DataRecordWriter {
             }
         }
 
-        private void writeContainedField(ContainedTypeFieldMetadata containedField, DataRecord currentValue) throws IOException {
+        private void writeContainedField(ContainedTypeFieldMetadata containedField, DataRecord currentValue)
+                throws IOException {
             if (containedField.getContainedType().getSubTypes().size() == 0) {
-                out.write("<" + containedField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$    
+                out.write("<" + containedField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
             } else {
-                out.write("<" + containedField.getName() + " xmlns:xsi=\"" + XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI + "\" xsi:type=\"" + currentValue.getType().getName() + "\">"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                out.write("<" + containedField.getName() + " xmlns:xsi=\"" + XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI //$NON-NLS-1$ //$NON-NLS-2$
+                        + "\" xsi:type=\"" + currentValue.getType().getName() + "\">"); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
 
@@ -232,6 +267,7 @@ public class DataRecordXmlWriter implements DataRecordWriter {
                 return null;
             }
             try {
+                boolean containsFieldToValue = record.containsFieldToValue(simpleField);
                 Object value = record.get(simpleField);
                 if (value != null) {
                     if (!simpleField.isMany()) {
@@ -245,9 +281,16 @@ public class DataRecordXmlWriter implements DataRecordWriter {
                                 out.write("<" + simpleField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
                                 handleSimpleValue(simpleField, currentValue);
                                 out.write("</" + simpleField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
+                            } else if (isNeedContainsNullValueField) {
+                                out.write("<" + simpleField.getName() + "/>"); //$NON-NLS-1$ //$NON-NLS-2$
                             }
                         }
+                        if (valueAsList.size() == 0 && isNeedContainsNullValueField) {
+                            out.write("<" + simpleField.getName() + "/>"); //$NON-NLS-1$ //$NON-NLS-2$
+                        }
                     }
+                } else if (containsFieldToValue && isNeedContainsNullValueField) {
+                    out.write("<" + simpleField.getName() + "/>"); //$NON-NLS-1$ //$NON-NLS-2$
                 }
                 return null;
             } catch (IOException e) {
@@ -262,6 +305,7 @@ public class DataRecordXmlWriter implements DataRecordWriter {
                 return null;
             }
             try {
+                boolean containsFieldToValue = record.containsFieldToValue(enumField);
                 Object value = record.get(enumField);
                 if (value != null) {
                     if (!enumField.isMany()) {
@@ -276,13 +320,18 @@ public class DataRecordXmlWriter implements DataRecordWriter {
                                 handleSimpleValue(enumField, currentValue);
                                 out.write("</" + enumField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
                             }
+                            if (currentValue == null && isNeedContainsNullValueField) {
+                                out.write("<" + enumField.getName() + "/>"); //$NON-NLS-1$ //$NON-NLS-2$
+                            }
                         }
                     }
+                } else if (containsFieldToValue && isNeedContainsNullValueField) {
+                    out.write("<" + enumField.getName() + "/>"); //$NON-NLS-1$ //$NON-NLS-2$
                 }
                 return null;
             } catch (IOException e) {
-                throw new RuntimeException("Could not serialize XML for enumeration field '" + enumField.getName()
-                        + "' of type '" + enumField.getContainingType().getName() + "'.", e);
+                throw new RuntimeException("Could not serialize XML for enumeration field '" + enumField.getName() + "' of type '"
+                        + enumField.getContainingType().getName() + "'.", e);
             }
         }
 

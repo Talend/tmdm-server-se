@@ -202,9 +202,10 @@ public class StorageDocument implements MutableDocument {
     }
 
     @Override
-    public String exportToStringContainsEmptyLabel() {
+    public String exportToStringContainsNullValueField() {
         StringWriter output = new StringWriter();
-        DataRecordWriter writer = new DataRecordEmptyLabelXmlWriter();
+        DataRecordXmlWriter writer = new DataRecordXmlWriter();
+        writer.setNeedContainsNullValueField(true);
         try {
             writer.write(dataRecord, output);
         } catch (IOException e) {

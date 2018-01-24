@@ -3844,10 +3844,7 @@ public class DocumentSaveTest extends TestCase {
 
         public TestSaverSource(MetadataRepository repository, boolean exist, String originalDocumentFileName,
                 String schemaFileName, String userName) {
-            this.repository = repository;
-            this.exist = exist;
-            this.originalDocumentFileName = originalDocumentFileName;
-            this.schemaFileName = schemaFileName;
+            this(repository, exist, originalDocumentFileName, schemaFileName);
             this.userName = userName;
         }
 

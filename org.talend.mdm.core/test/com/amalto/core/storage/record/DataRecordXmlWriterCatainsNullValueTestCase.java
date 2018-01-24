@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2017 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -26,14 +26,15 @@ import org.talend.mdm.commmon.metadata.FieldMetadata;
 
 import com.amalto.core.load.io.ResettableStringWriter;
 
-public class DataRecordEmptyLabelXmlWriterTestCase extends DataRecordDataWriterTestCase {
+public class DataRecordXmlWriterCatainsNullValueTestCase extends DataRecordDataWriterTestCase {
 
-    private DataRecordEmptyLabelXmlWriter writer;
+    private DataRecordXmlWriter writer;
 
     @Before
     public void setup() throws Exception {
         super.setup();
-        writer = new DataRecordEmptyLabelXmlWriter();
+        writer = new DataRecordXmlWriter();
+        writer.setNeedContainsNullValueField(true);
         writer.setSecurityDelegator(delegate);
         repository.load(this.getClass().getResourceAsStream("metadata.xsd"));
     }

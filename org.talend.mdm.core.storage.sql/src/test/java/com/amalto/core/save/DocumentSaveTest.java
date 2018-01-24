@@ -1717,7 +1717,7 @@ public class DocumentSaveTest extends TestCase {
         repository.load(DocumentSaveTest.class.getResourceAsStream("metadata1.xsd"));
         MockMetadataRepositoryAdmin.INSTANCE.register("DStar", repository);
 
-        //
+        // create record
         boolean isOK = true;
         boolean newOutput = true;
         SaverSource source = new AlterRecordTestSaverSource(repository, false, "test1_original.xml", isOK, newOutput);
@@ -1732,6 +1732,32 @@ public class DocumentSaveTest extends TestCase {
         MockCommitter committer = new MockCommitter();
         session.end(committer);
         assertTrue(committer.hasSaved());
+
+        assertEquals("beforeSaving_Agency", evaluate(committer.getCommittedElement(), "/Agency/Name"));
+        assertEquals("Chicago", evaluate(committer.getCommittedElement(), "/Agency/City"));
+        assertEquals("http://www.newSite.org", evaluate(committer.getCommittedElement(), "/Agency/Information/MoreInfo"));
+
+        // alter data record
+        isOK = true;
+        newOutput = true;
+        source = new AlterRecordTestSaverSource(repository, true, "test1_original.xml", isOK, newOutput, "System_Admin");
+
+        session = SaverSession.newSession(source);
+        recordXml = DocumentSaveTest.class.getResourceAsStream("test1.xml");
+        context = session.getContextFactory().create("MDM", "DStar", "Source", recordXml, false, true, true, true, false);
+        saver = context.createSaver();
+        saver.save(session, context);
+        assertEquals("change the value successfully!", saver.getBeforeSavingMessage());
+        committer = new MockCommitter();
+        session.end(committer);
+        assertTrue(committer.hasSaved());
+
+        assertEquals("beforeSaving_Agency", evaluate(committer.getCommittedElement(), "/Agency/Name"));
+        assertEquals("Chicago", evaluate(committer.getCommittedElement(), "/Agency/City"));
+        assertEquals("", evaluate(committer.getCommittedElement(), "/Agency/State"));
+        assertEquals("04102", evaluate(committer.getCommittedElement(), "/Agency/Zip"));
+        assertEquals("EAST", evaluate(committer.getCommittedElement(), "/Agency/Region"));
+        assertEquals("http://www.newSite.org", evaluate(committer.getCommittedElement(), "/Agency/Information/MoreInfo"));
 
         //
         isOK = false;
@@ -3805,7 +3831,7 @@ public class DocumentSaveTest extends TestCase {
         private boolean hasCalledInitAutoIncrement;
 
         private final Map<String, String> schemasAsString = new HashMap<String, String>();
-        
+
         private final Map<String, Integer> AUTO_INCREMENT_ID_MAP = new HashMap<String, Integer>();
 
         public TestSaverSource(MetadataRepository repository, boolean exist, String originalDocumentFileName,
@@ -3816,14 +3842,23 @@ public class DocumentSaveTest extends TestCase {
             this.schemaFileName = schemaFileName;
         }
 
+        public TestSaverSource(MetadataRepository repository, boolean exist, String originalDocumentFileName,
+                String schemaFileName, String userName) {
+            this.repository = repository;
+            this.exist = exist;
+            this.originalDocumentFileName = originalDocumentFileName;
+            this.schemaFileName = schemaFileName;
+            this.userName = userName;
+        }
+
         @Override
         public MutableDocument get(String dataClusterName, String dataModelName, String typeName, String[] key) {
             try {
                 ComplexTypeMetadata type = repository.getComplexType(typeName);
                 DocumentBuilder documentBuilder;
                 documentBuilder = new SkipAttributeDocumentBuilder(SaverContextFactory.DOCUMENT_BUILDER, false);
-                Document databaseDomDocument = documentBuilder.parse(DocumentSaveTest.class
-                        .getResourceAsStream(originalDocumentFileName));
+                Document databaseDomDocument = documentBuilder
+                        .parse(DocumentSaveTest.class.getResourceAsStream(originalDocumentFileName));
                 Element userXmlElement = getUserXmlElement(databaseDomDocument);
                 if (USE_STORAGE_OPTIMIZATIONS) {
                     DataRecordReader<String> reader = new XmlStringDataRecordReader();
@@ -3975,6 +4010,13 @@ public class DocumentSaveTest extends TestCase {
         public AlterRecordTestSaverSource(MetadataRepository repository, boolean exist, String fileName, boolean OK,
                 boolean newOutput) {
             super(repository, exist, fileName, "metadata1.xsd");
+            this.OK = OK;
+            this.newOutput = newOutput;
+        }
+
+        public AlterRecordTestSaverSource(MetadataRepository repository, boolean exist, String fileName, boolean OK,
+                boolean newOutput, String userName) {
+            super(repository, exist, fileName, "metadata1.xsd", userName);
             this.OK = OK;
             this.newOutput = newOutput;
         }

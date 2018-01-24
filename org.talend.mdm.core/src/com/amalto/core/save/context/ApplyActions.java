@@ -43,7 +43,10 @@ class ApplyActions implements DocumentSaver {
         for (Action action : context.getActions()) {
             action.perform(databaseDocument);
         }
-        databaseDocument.clean();
+
+        if (!(next instanceof BeforeSaving)) {
+            databaseDocument.clean();
+        }
         next.save(session, context);
     }
 

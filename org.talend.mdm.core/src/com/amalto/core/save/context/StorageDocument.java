@@ -202,6 +202,18 @@ public class StorageDocument implements MutableDocument {
     }
 
     @Override
+    public String exportToStringContainsEmptyLabel() {
+        StringWriter output = new StringWriter();
+        DataRecordWriter writer = new DataRecordEmptyLabelXmlWriter();
+        try {
+            writer.write(dataRecord, output);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return output.toString();
+    }
+
+    @Override
     public com.amalto.core.history.Document transform(DocumentTransformer transformer) {
         return transformer.transform(this);
     }

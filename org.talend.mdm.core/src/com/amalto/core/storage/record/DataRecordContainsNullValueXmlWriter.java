@@ -20,27 +20,18 @@ import javax.xml.XMLConstants;
 
 import com.amalto.core.query.user.metadata.*;
 import com.amalto.core.storage.StagingStorage;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
 import org.talend.mdm.commmon.metadata.DefaultMetadataVisitor;
 import org.talend.mdm.commmon.metadata.EnumerationFieldMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
-import org.talend.mdm.commmon.metadata.MetadataUtils;
 import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
 import org.talend.mdm.commmon.metadata.SimpleTypeFieldMetadata;
-import org.talend.mdm.commmon.metadata.TypeMetadata;
-import org.talend.mdm.commmon.metadata.Types;
 
-import com.amalto.core.query.user.DateConstant;
-import com.amalto.core.query.user.DateTimeConstant;
-import com.amalto.core.query.user.TimeConstant;
-import com.amalto.core.schema.validation.SkipAttributeDocumentBuilder;
 import com.amalto.core.storage.StorageMetadataUtils;
 import com.amalto.core.storage.record.metadata.DataRecordMetadata;
 
 public class DataRecordContainsNullValueXmlWriter extends DataRecordXmlWriter {
-
 
     public DataRecordContainsNullValueXmlWriter() {
         super();
@@ -57,7 +48,6 @@ public class DataRecordContainsNullValueXmlWriter extends DataRecordXmlWriter {
     public DataRecordContainsNullValueXmlWriter(ComplexTypeMetadata type) {
         super(type);
     }
-
 
     @Override
     public void write(DataRecord record, Writer writer) throws IOException {
@@ -89,7 +79,7 @@ public class DataRecordContainsNullValueXmlWriter extends DataRecordXmlWriter {
     class ContainsNullValueFieldPrinter extends DataRecordXmlWriter.FieldPrinter {
 
         public ContainsNullValueFieldPrinter(DataRecord record, Writer out) {
-           super(record, out);
+            super(record, out);
         }
 
         @Override
@@ -117,7 +107,7 @@ public class DataRecordContainsNullValueXmlWriter extends DataRecordXmlWriter {
                                 out.write("<" + referenceField.getName() + "/>"); //$NON-NLS-1$ //$NON-NLS-2$
                             }
                         }
-                        if(valueAsList.size() == 0) {
+                        if (valueAsList.size() == 0) {
                             out.write("<" + referenceField.getName() + "/>"); //$NON-NLS-1$ //$NON-NLS-2$
                         }
                     }
@@ -128,15 +118,6 @@ public class DataRecordContainsNullValueXmlWriter extends DataRecordXmlWriter {
             } catch (IOException e) {
                 throw new RuntimeException("Could not serialize XML for reference field '" + referenceField.getName()
                         + "' of type '" + referenceField.getContainingType().getName() + "'.", e);
-            }
-        }
-
-        private void writeReferenceElement(ReferenceFieldMetadata referenceField, DataRecord currentValue) throws IOException {
-            if (currentValue.getType().equals(referenceField.getReferencedType())) {
-                out.write("<" + referenceField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
-            } else {
-                out.write("<" + referenceField.getName() + " xmlns:tmdm=\"" + SkipAttributeDocumentBuilder.TALEND_NAMESPACE //$NON-NLS-1$ //$NON-NLS-2$
-                        + "\" tmdm:type=\"" + currentValue.getType().getName() + "\">"); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
 
@@ -227,7 +208,7 @@ public class DataRecordContainsNullValueXmlWriter extends DataRecordXmlWriter {
                                 out.write("<" + simpleField.getName() + "/>"); //$NON-NLS-1$ //$NON-NLS-2$
                             }
                         }
-                        if(valueAsList.size() == 0) {
+                        if (valueAsList.size() == 0) {
                             out.write("<" + simpleField.getName() + "/>"); //$NON-NLS-1$ //$NON-NLS-2$
                         }
                     }
@@ -274,32 +255,6 @@ public class DataRecordContainsNullValueXmlWriter extends DataRecordXmlWriter {
             } catch (IOException e) {
                 throw new RuntimeException("Could not serialize XML for enumeration field '" + enumField.getName() + "' of type '"
                         + enumField.getContainingType().getName() + "'.", e);
-            }
-        }
-
-        private void handleSimpleValue(FieldMetadata simpleField, Object value) throws IOException {
-            if (value == null) {
-                throw new IllegalArgumentException("Not supposed to write null values to XML.");
-            }
-            TypeMetadata type = MetadataUtils.getSuperConcreteType(simpleField.getType());
-            if (!(value instanceof String)) {
-                if (Types.DATE.equals(type.getName())) {
-                    synchronized (DateConstant.DATE_FORMAT) {
-                        out.write((DateConstant.DATE_FORMAT).format(value));
-                    }
-                } else if (Types.DATETIME.equals(type.getName())) {
-                    synchronized (DateTimeConstant.DATE_FORMAT) {
-                        out.write((DateTimeConstant.DATE_FORMAT).format(value));
-                    }
-                } else if (Types.TIME.equals(type.getName())) {
-                    synchronized (TimeConstant.TIME_FORMAT) {
-                        out.write((TimeConstant.TIME_FORMAT).format(value));
-                    }
-                } else {
-                    out.write(StringEscapeUtils.escapeXml(value.toString()));
-                }
-            } else {
-                out.write(StringEscapeUtils.escapeXml(value.toString()));
             }
         }
     }

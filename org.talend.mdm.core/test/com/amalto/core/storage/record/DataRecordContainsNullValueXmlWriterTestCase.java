@@ -26,7 +26,6 @@ import org.talend.mdm.commmon.metadata.FieldMetadata;
 
 import com.amalto.core.load.io.ResettableStringWriter;
 
-
 public class DataRecordContainsNullValueXmlWriterTestCase extends DataRecordDataWriterTestCase {
 
     private DataRecordXmlWriter writer;

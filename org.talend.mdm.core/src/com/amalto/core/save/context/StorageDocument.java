@@ -19,6 +19,7 @@ import com.amalto.core.history.accessor.record.DataRecordAccessor;
 import com.amalto.core.schema.validation.SkipAttributeDocumentBuilder;
 import com.amalto.core.storage.record.*;
 import com.amalto.core.storage.record.metadata.DataRecordMetadataImpl;
+
 import org.apache.commons.collections.map.LRUMap;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedComplexTypeMetadata;
@@ -204,8 +205,7 @@ public class StorageDocument implements MutableDocument {
     @Override
     public String exportToStringContainsNullValueField() {
         StringWriter output = new StringWriter();
-        DataRecordXmlWriter writer = new DataRecordXmlWriter();
-        writer.setNeedToContainsNullValueField(true);
+        DataRecordXmlWriter writer = new DataRecordContainsNullValueXmlWriter();
         try {
             writer.write(dataRecord, output);
         } catch (IOException e) {

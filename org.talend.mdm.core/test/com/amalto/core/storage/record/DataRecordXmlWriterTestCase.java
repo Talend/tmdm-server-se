@@ -93,15 +93,6 @@ public class DataRecordXmlWriterTestCase extends DataRecordDataWriterTestCase {
     }
 
     @Test
-    public void testTypeWithComplexType() throws Exception {
-        DataRecord record = createDataRecord(repository.getComplexType("Customer"));
-        setDataRecordField(record, "Id", "12345");
-        setDataRecordField(record, "Name", "Name");
-        String result = toXmlString(record);
-        Assert.assertEquals("<Customer><Id>12345</Id><Name>Name</Name></Customer>", result);
-    }
-
-    @Test
     public void testTypeWithComplexTypeOfReference() throws Exception {
         ComplexTypeMetadata type = repository.getComplexType("Customer");
         DataRecord record = createDataRecord(type);
@@ -256,62 +247,6 @@ public class DataRecordXmlWriterTestCase extends DataRecordDataWriterTestCase {
 
         Assert.assertEquals(
                 "<WithMultiContained><Id>ABCD</Id><Contained><ContainedId>CID1</ContainedId><ContainedName>CName1</ContainedName></Contained><Contained><ContainedId>CID2</ContainedId><ContainedName>CName2</ContainedName></Contained></WithMultiContained>",
-                result);
-    }
-
-    @Test
-    public void testMultiContainedTypeContainsNull() throws Exception {
-        ComplexTypeMetadata type = repository.getComplexType("WithMultiContained");
-        DataRecord record = createDataRecord(type);
-        setDataRecordField(record, "Id", "ABCD");
-        FieldMetadata field = type.getField("Contained");
-        Assert.assertTrue(field instanceof ContainedTypeFieldMetadata);
-        ContainedTypeFieldMetadata containedField = (ContainedTypeFieldMetadata) field;
-        ContainedComplexTypeMetadata tm = (ContainedComplexTypeMetadata) containedField.getType();
-        List<DataRecord> list = new ArrayList<DataRecord>();
-        DataRecord contained1 = createDataRecord(tm);
-        setDataRecordField(contained1, "ContainedId", "CID1");
-        setDataRecordField(contained1, "ContainedName", null);
-        list.add(contained1);
-
-        DataRecord contained2 = createDataRecord(tm);
-        setDataRecordField(contained2, "ContainedId", "CID2");
-        setDataRecordField(contained2, "ContainedName", "CName2");
-        list.add(contained2);
-
-        setDataRecordField(record, "Contained", list);
-
-        String result = toXmlString(record);
-
-        Assert.assertEquals(
-                "<WithMultiContained><Id>ABCD</Id><Contained><ContainedId>CID1</ContainedId></Contained><Contained><ContainedId>CID2</ContainedId><ContainedName>CName2</ContainedName></Contained></WithMultiContained>",
-                result);
-    }
-
-    @Test
-    public void testMultiContainedTypeContainsNull2() throws Exception {
-        ComplexTypeMetadata type = repository.getComplexType("WithMultiContained");
-        DataRecord record = createDataRecord(type);
-        setDataRecordField(record, "Id", "ABCD");
-        FieldMetadata field = type.getField("Contained");
-        Assert.assertTrue(field instanceof ContainedTypeFieldMetadata);
-        ContainedTypeFieldMetadata containedField = (ContainedTypeFieldMetadata) field;
-        ContainedComplexTypeMetadata tm = (ContainedComplexTypeMetadata) containedField.getType();
-        List<DataRecord> list = new ArrayList<DataRecord>();
-        DataRecord contained1 = createDataRecord(tm);
-        setDataRecordField(contained1, "ContainedId", "CID1");
-        setDataRecordField(contained1, "ContainedName", null);
-        list.add(contained1);
-
-        DataRecord contained2 = createDataRecord(tm);
-        list.add(contained2);
-
-        setDataRecordField(record, "Contained", list);
-
-        String result = toXmlString(record);
-
-        Assert.assertEquals(
-                "<WithMultiContained><Id>ABCD</Id><Contained><ContainedId>CID1</ContainedId></Contained></WithMultiContained>",
                 result);
     }
 

@@ -26,15 +26,15 @@ import org.talend.mdm.commmon.metadata.FieldMetadata;
 
 import com.amalto.core.load.io.ResettableStringWriter;
 
-public class DataRecordXmlWriterContainsNullValueTestCase extends DataRecordDataWriterTestCase {
+
+public class DataRecordContainsNullValueXmlWriterTestCase extends DataRecordDataWriterTestCase {
 
     private DataRecordXmlWriter writer;
 
     @Before
     public void setup() throws Exception {
         super.setup();
-        writer = new DataRecordXmlWriter();
-        writer.setNeedToContainsNullValueField(true);
+        writer = new DataRecordContainsNullValueXmlWriter();
         writer.setSecurityDelegator(delegate);
         repository.load(this.getClass().getResourceAsStream("metadata.xsd"));
     }
@@ -91,15 +91,6 @@ public class DataRecordXmlWriterContainsNullValueTestCase extends DataRecordData
         String result = toXmlString(record);
         Assert.assertEquals("<SimpleProduct><Id>12345</Id><Name/><Description>Desc</Description><Availability/></SimpleProduct>",
                 result);
-    }
-
-    @Test
-    public void testTypeWithComplexType() throws Exception {
-        DataRecord record = createDataRecord(repository.getComplexType("Customer"));
-        setDataRecordField(record, "Id", "12345");
-        setDataRecordField(record, "Name", "Name");
-        String result = toXmlString(record);
-        Assert.assertEquals("<Customer><Id>12345</Id><Name>Name</Name></Customer>", result);
     }
 
     @Test

@@ -26,7 +26,7 @@ import org.talend.mdm.commmon.metadata.FieldMetadata;
 
 import com.amalto.core.load.io.ResettableStringWriter;
 
-public class DataRecordXmlWriterCatainsNullValueTestCase extends DataRecordDataWriterTestCase {
+public class DataRecordXmlWriterContainsNullValueTestCase extends DataRecordDataWriterTestCase {
 
     private DataRecordXmlWriter writer;
 
@@ -34,7 +34,7 @@ public class DataRecordXmlWriterCatainsNullValueTestCase extends DataRecordDataW
     public void setup() throws Exception {
         super.setup();
         writer = new DataRecordXmlWriter();
-        writer.setNeedContainsNullValueField(true);
+        writer.setNeedToContainsNullValueField(true);
         writer.setSecurityDelegator(delegate);
         repository.load(this.getClass().getResourceAsStream("metadata.xsd"));
     }

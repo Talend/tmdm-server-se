@@ -53,12 +53,12 @@ public class DataRecordXmlWriter implements DataRecordWriter {
 
     protected SecuredStorage.UserDelegator delegator = SecuredStorage.UNSECURED;
 
-    protected boolean isNeedContainsNullValueField;
+    protected boolean isNeedToContainsNullValueField;
 
     public DataRecordXmlWriter() {
         rootElementName = null;
         includeMetadata = false;
-        isNeedContainsNullValueField = false;
+        isNeedToContainsNullValueField = false;
     }
 
     public DataRecordXmlWriter(boolean includeMetadata) {
@@ -85,7 +85,7 @@ public class DataRecordXmlWriter implements DataRecordWriter {
 
     @Override
     public void write(DataRecord record, Writer writer) throws IOException {
-        DefaultMetadataVisitor<Void> fieldPrinter = new FieldPrinter(record, writer, isNeedContainsNullValueField);
+        DefaultMetadataVisitor<Void> fieldPrinter = new FieldPrinter(record, writer, isNeedToContainsNullValueField);
         Collection<FieldMetadata> fields = type == null ? record.getType().getFields() : type.getFields();
         if (includeMetadata) {
             writer.write("<" + getRootElementName(record) + " xmlns:metadata=\"" + DataRecordReader.METADATA_NAMESPACE + "\">"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -129,8 +129,8 @@ public class DataRecordXmlWriter implements DataRecordWriter {
         return rootElementName == null ? record.getType().getName() : rootElementName;
     }
 
-    public void setNeedContainsNullValueField(boolean isNeedContainsNullValueField) {
-        this.isNeedContainsNullValueField = isNeedContainsNullValueField;
+    public void setNeedToContainsNullValueField(boolean isNeedToContainsNullValueField) {
+        this.isNeedToContainsNullValueField = isNeedToContainsNullValueField;
     }
 
     class FieldPrinter extends DefaultMetadataVisitor<Void> {
@@ -139,12 +139,12 @@ public class DataRecordXmlWriter implements DataRecordWriter {
 
         protected final Writer out;
 
-        protected final boolean isNeedContainsNullValueField;
+        protected final boolean isNeedToContainsNullValueField;
 
-        public FieldPrinter(DataRecord record, Writer out, boolean isNeedContainsNullValueField) {
+        public FieldPrinter(DataRecord record, Writer out, boolean isNeedToContainsNullValueField) {
             this.record = record;
             this.out = out;
-            this.isNeedContainsNullValueField = isNeedContainsNullValueField;
+            this.isNeedToContainsNullValueField = isNeedToContainsNullValueField;
         }
 
         @Override
@@ -168,15 +168,15 @@ public class DataRecordXmlWriter implements DataRecordWriter {
                                 writeReferenceElement(referenceField, currentValue);
                                 out.write(StorageMetadataUtils.toString(currentValue));
                                 out.write("</" + referenceField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
-                            } else if (isNeedContainsNullValueField) {
+                            } else if (isNeedToContainsNullValueField) {
                                 out.write("<" + referenceField.getName() + "/>"); //$NON-NLS-1$ //$NON-NLS-2$
                             }
                         }
-                        if (valueAsList.size() == 0 && isNeedContainsNullValueField) {
+                        if (valueAsList.size() == 0 && isNeedToContainsNullValueField) {
                             out.write("<" + referenceField.getName() + "/>"); //$NON-NLS-1$ //$NON-NLS-2$
                         }
                     }
-                } else if (containsFieldToValue && isNeedContainsNullValueField) {
+                } else if (containsFieldToValue && isNeedToContainsNullValueField) {
                     out.write("<" + referenceField.getName() + "/>"); //$NON-NLS-1$ //$NON-NLS-2$
                 }
                 return null;
@@ -208,14 +208,14 @@ public class DataRecordXmlWriter implements DataRecordWriter {
                     if (containedRecord != null) {
                         // TODO Limit new field printer instances
                         DefaultMetadataVisitor<Void> fieldPrinter = new FieldPrinter(containedRecord, out,
-                                isNeedContainsNullValueField);
+                                isNeedToContainsNullValueField);
                         Collection<FieldMetadata> fields = containedRecord.getType().getFields();
                         writeContainedField(containedField, containedRecord);
                         for (FieldMetadata field : fields) {
                             field.accept(fieldPrinter);
                         }
                         out.write("</" + containedField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
-                    } else if (containsFieldToValue && isNeedContainsNullValueField) {
+                    } else if (containsFieldToValue && isNeedToContainsNullValueField) {
                         out.write("<" + containedField.getName() + "/>"); //$NON-NLS-1$ //$NON-NLS-2$
                     }
                 } else {
@@ -226,21 +226,21 @@ public class DataRecordXmlWriter implements DataRecordWriter {
                             if (!dataRecord.isEmpty()) {
                                 // TODO Limit new field printer instances
                                 DefaultMetadataVisitor<Void> fieldPrinter = new FieldPrinter(dataRecord, out,
-                                        isNeedContainsNullValueField);
+                                        isNeedToContainsNullValueField);
                                 Collection<FieldMetadata> fields = dataRecord.getType().getFields();
                                 writeContainedField(containedField, dataRecord);
                                 for (FieldMetadata field : fields) {
                                     field.accept(fieldPrinter);
                                 }
                                 out.write("</" + containedField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
-                            } else if (isNeedContainsNullValueField) {
+                            } else if (isNeedToContainsNullValueField) {
                                 out.write("<" + containedField.getName() + "/>"); //$NON-NLS-1$ //$NON-NLS-2$
                             }
                         }
-                        if (recordList.size() == 0 && isNeedContainsNullValueField) {
+                        if (recordList.size() == 0 && isNeedToContainsNullValueField) {
                             out.write("<" + containedField.getName() + "/>"); //$NON-NLS-1$ //$NON-NLS-2$
                         }
-                    } else if (containsFieldToValue && isNeedContainsNullValueField) {
+                    } else if (containsFieldToValue && isNeedToContainsNullValueField) {
                         out.write("<" + containedField.getName() + "/>"); //$NON-NLS-1$ //$NON-NLS-2$
                     }
                 }
@@ -281,15 +281,15 @@ public class DataRecordXmlWriter implements DataRecordWriter {
                                 out.write("<" + simpleField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
                                 handleSimpleValue(simpleField, currentValue);
                                 out.write("</" + simpleField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
-                            } else if (isNeedContainsNullValueField) {
+                            } else if (isNeedToContainsNullValueField) {
                                 out.write("<" + simpleField.getName() + "/>"); //$NON-NLS-1$ //$NON-NLS-2$
                             }
                         }
-                        if (valueAsList.size() == 0 && isNeedContainsNullValueField) {
+                        if (valueAsList.size() == 0 && isNeedToContainsNullValueField) {
                             out.write("<" + simpleField.getName() + "/>"); //$NON-NLS-1$ //$NON-NLS-2$
                         }
                     }
-                } else if (containsFieldToValue && isNeedContainsNullValueField) {
+                } else if (containsFieldToValue && isNeedToContainsNullValueField) {
                     out.write("<" + simpleField.getName() + "/>"); //$NON-NLS-1$ //$NON-NLS-2$
                 }
                 return null;
@@ -320,12 +320,12 @@ public class DataRecordXmlWriter implements DataRecordWriter {
                                 handleSimpleValue(enumField, currentValue);
                                 out.write("</" + enumField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
                             }
-                            if (currentValue == null && isNeedContainsNullValueField) {
+                            if (currentValue == null && isNeedToContainsNullValueField) {
                                 out.write("<" + enumField.getName() + "/>"); //$NON-NLS-1$ //$NON-NLS-2$
                             }
                         }
                     }
-                } else if (containsFieldToValue && isNeedContainsNullValueField) {
+                } else if (containsFieldToValue && isNeedToContainsNullValueField) {
                     out.write("<" + enumField.getName() + "/>"); //$NON-NLS-1$ //$NON-NLS-2$
                 }
                 return null;

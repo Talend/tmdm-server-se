@@ -4000,28 +4000,28 @@ public class DocumentSaveTest extends TestCase {
 
     private static class AlterRecordTestSaverSource extends DocumentSaveTest.TestSaverSource {
 
-        private final boolean OK;
+        private final boolean ok;
 
         private final boolean newOutput;
 
-        public AlterRecordTestSaverSource(MetadataRepository repository, boolean exist, String fileName, boolean OK,
+        public AlterRecordTestSaverSource(MetadataRepository repository, boolean exist, String fileName, boolean ok,
                 boolean newOutput) {
             super(repository, exist, fileName, "metadata1.xsd");
-            this.OK = OK;
+            this.ok = ok;
             this.newOutput = newOutput;
         }
 
-        public AlterRecordTestSaverSource(MetadataRepository repository, boolean exist, String fileName, boolean OK,
+        public AlterRecordTestSaverSource(MetadataRepository repository, boolean exist, String fileName, boolean ok,
                 boolean newOutput, String userName) {
             super(repository, exist, fileName, "metadata1.xsd", userName);
-            this.OK = OK;
+            this.ok = ok;
             this.newOutput = newOutput;
         }
 
         @Override
         public OutputReport invokeBeforeSaving(DocumentSaverContext context, MutableDocument updateReportDocument) {
             String message = "<report><message type=\"info\">change the value successfully!</message></report>";
-            if (!OK) {
+            if (!ok) {
                 message = "<report><message type=\"error\">change the value failed!</message></report>";
             }
             String item = null;

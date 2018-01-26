@@ -14,12 +14,9 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import javax.xml.XMLConstants;
 
-import com.amalto.core.query.user.metadata.*;
-import com.amalto.core.storage.StagingStorage;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
 import org.talend.mdm.commmon.metadata.DefaultMetadataVisitor;
@@ -29,8 +26,8 @@ import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
 import org.talend.mdm.commmon.metadata.SimpleTypeFieldMetadata;
 
 import com.amalto.core.storage.StorageMetadataUtils;
-import com.amalto.core.storage.record.metadata.DataRecordMetadata;
 
+@SuppressWarnings("nls")
 public class DataRecordWithNullFieldsXmlWriter extends DataRecordXmlWriter {
 
     public DataRecordWithNullFieldsXmlWriter() {
@@ -74,24 +71,24 @@ public class DataRecordWithNullFieldsXmlWriter extends DataRecordXmlWriter {
                         DataRecord referencedRecord = (DataRecord) record.get(referenceField);
                         writeReferenceElement(referenceField, referencedRecord);
                         out.write(StorageMetadataUtils.toString(referencedRecord));
-                        out.write("</" + referenceField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
+                        out.write("</" + referenceField.getName() + ">");
                     } else {
                         List<DataRecord> valueAsList = (List<DataRecord>) value;
                         for (DataRecord currentValue : valueAsList) {
                             if (currentValue != null) {
                                 writeReferenceElement(referenceField, currentValue);
                                 out.write(StorageMetadataUtils.toString(currentValue));
-                                out.write("</" + referenceField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
+                                out.write("</" + referenceField.getName() + ">");
                             } else {
-                                out.write("<" + referenceField.getName() + "/>"); //$NON-NLS-1$ //$NON-NLS-2$
+                                out.write("<" + referenceField.getName() + "/>");
                             }
                         }
                         if (valueAsList.isEmpty()) {
-                            out.write("<" + referenceField.getName() + "/>"); //$NON-NLS-1$ //$NON-NLS-2$
+                            out.write("<" + referenceField.getName() + "/>");
                         }
                     }
                 } else if (containsFieldToValue) {
-                    out.write("<" + referenceField.getName() + "/>"); //$NON-NLS-1$ //$NON-NLS-2$
+                    out.write("<" + referenceField.getName() + "/>");
                 }
                 return null;
             } catch (IOException e) {
@@ -118,9 +115,9 @@ public class DataRecordWithNullFieldsXmlWriter extends DataRecordXmlWriter {
                         for (FieldMetadata field : fields) {
                             field.accept(fieldPrinter);
                         }
-                        out.write("</" + containedField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
+                        out.write("</" + containedField.getName() + ">");
                     } else if (containsFieldToValue) {
-                        out.write("<" + containedField.getName() + "/>"); //$NON-NLS-1$ //$NON-NLS-2$
+                        out.write("<" + containedField.getName() + "/>");
                     }
                 } else {
                     boolean containsFieldToValue = record.containsFieldToValue(containedField);
@@ -134,13 +131,13 @@ public class DataRecordWithNullFieldsXmlWriter extends DataRecordXmlWriter {
                             for (FieldMetadata field : fields) {
                                 field.accept(fieldPrinter);
                             }
-                            out.write("</" + containedField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
+                            out.write("</" + containedField.getName() + ">");
                         }
                         if (recordList.isEmpty()) {
-                            out.write("<" + containedField.getName() + "/>"); //$NON-NLS-1$ //$NON-NLS-2$
+                            out.write("<" + containedField.getName() + "/>");
                         }
                     } else if (containsFieldToValue) {
-                        out.write("<" + containedField.getName() + "/>"); //$NON-NLS-1$ //$NON-NLS-2$
+                        out.write("<" + containedField.getName() + "/>");
                     }
                 }
                 return null;
@@ -152,13 +149,13 @@ public class DataRecordWithNullFieldsXmlWriter extends DataRecordXmlWriter {
 
         private void writeContainedField(ContainedTypeFieldMetadata containedField, DataRecord currentValue) throws IOException {
             if (containedField.getContainedType().getSubTypes().size() == 0) {
-                out.write("<" + containedField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
+                out.write("<" + containedField.getName() + ">");
             } else {
                 if (currentValue == null) {
-                    out.write("<" + containedField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
+                    out.write("<" + containedField.getName() + ">");
                 } else {
-                    out.write("<" + containedField.getName() + " xmlns:xsi=\"" + XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI //$NON-NLS-1$ //$NON-NLS-2$
-                            + "\" xsi:type=\"" + currentValue.getType().getName() + "\">"); //$NON-NLS-1$ //$NON-NLS-2$
+                    out.write("<" + containedField.getName() + " xmlns:xsi=\"" + XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI
+                            + "\" xsi:type=\"" + currentValue.getType().getName() + "\">");
                 }
             }
         }
@@ -173,26 +170,26 @@ public class DataRecordWithNullFieldsXmlWriter extends DataRecordXmlWriter {
                 Object value = record.get(simpleField);
                 if (value != null) {
                     if (!simpleField.isMany()) {
-                        out.write("<" + simpleField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
+                        out.write("<" + simpleField.getName() + ">");
                         handleSimpleValue(simpleField, value);
-                        out.write("</" + simpleField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
+                        out.write("</" + simpleField.getName() + ">");
                     } else {
                         List valueAsList = (List) value;
                         for (Object currentValue : valueAsList) {
                             if (currentValue != null) {
-                                out.write("<" + simpleField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
+                                out.write("<" + simpleField.getName() + ">");
                                 handleSimpleValue(simpleField, currentValue);
-                                out.write("</" + simpleField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
+                                out.write("</" + simpleField.getName() + ">");
                             } else {
-                                out.write("<" + simpleField.getName() + "/>"); //$NON-NLS-1$ //$NON-NLS-2$
+                                out.write("<" + simpleField.getName() + "/>");
                             }
                         }
                         if (valueAsList.isEmpty()) {
-                            out.write("<" + simpleField.getName() + "/>"); //$NON-NLS-1$ //$NON-NLS-2$
+                            out.write("<" + simpleField.getName() + "/>");
                         }
                     }
                 } else if (containsFieldToValue) {
-                    out.write("<" + simpleField.getName() + "/>"); //$NON-NLS-1$ //$NON-NLS-2$
+                    out.write("<" + simpleField.getName() + "/>");
                 }
                 return null;
             } catch (IOException e) {
@@ -211,23 +208,23 @@ public class DataRecordWithNullFieldsXmlWriter extends DataRecordXmlWriter {
                 Object value = record.get(enumField);
                 if (value != null) {
                     if (!enumField.isMany()) {
-                        out.write("<" + enumField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
+                        out.write("<" + enumField.getName() + ">");
                         handleSimpleValue(enumField, value);
-                        out.write("</" + enumField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
+                        out.write("</" + enumField.getName() + ">");
                     } else {
                         List valueAsList = (List) value;
                         for (Object currentValue : valueAsList) {
                             if (currentValue != null) {
-                                out.write("<" + enumField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
+                                out.write("<" + enumField.getName() + ">");
                                 handleSimpleValue(enumField, currentValue);
-                                out.write("</" + enumField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
+                                out.write("</" + enumField.getName() + ">");
                             } else {
-                                out.write("<" + enumField.getName() + "/>"); //$NON-NLS-1$ //$NON-NLS-2$
+                                out.write("<" + enumField.getName() + "/>");
                             }
                         }
                     }
                 } else if (containsFieldToValue) {
-                    out.write("<" + enumField.getName() + "/>"); //$NON-NLS-1$ //$NON-NLS-2$
+                    out.write("<" + enumField.getName() + "/>");
                 }
                 return null;
             } catch (IOException e) {

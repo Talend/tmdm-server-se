@@ -26,20 +26,20 @@ import org.talend.mdm.commmon.metadata.FieldMetadata;
 
 import com.amalto.core.load.io.ResettableStringWriter;
 
-public class DataRecordContainsNullValueXmlWriterTestCase extends DataRecordDataWriterTestCase {
+public class DataRecordWithNullFieldsXmlWriterTestCase extends DataRecordDataWriterTestCase {
 
     private DataRecordXmlWriter writer;
 
     @Before
     public void setup() throws Exception {
         super.setup();
-        writer = new DataRecordContainsNullValueXmlWriter();
+        writer = new DataRecordWithNullFieldsXmlWriter();
         writer.setSecurityDelegator(delegate);
         repository.load(this.getClass().getResourceAsStream("metadata.xsd"));
     }
 
     @Test
-    public void testSimpleComplexType() throws Exception {
+    public void testComplexType() throws Exception {
         DataRecord record = createDataRecord(repository.getComplexType("SimpleProduct"));
         setDataRecordField(record, "Id", "12345");
         setDataRecordField(record, "Name", "Name");
@@ -52,7 +52,7 @@ public class DataRecordContainsNullValueXmlWriterTestCase extends DataRecordData
     }
 
     @Test
-    public void testSimpleTypeWithArray() throws Exception {
+    public void testComplexTypeWithArray() throws Exception {
         DataRecord record = createDataRecord(repository.getComplexType("WithArray"));
         setDataRecordField(record, "Id", "12345");
         setDataRecordField(record, "Repeat", "ABC");
@@ -62,7 +62,7 @@ public class DataRecordContainsNullValueXmlWriterTestCase extends DataRecordData
     }
 
     @Test
-    public void testSimpleTypeWithArrayContainsNull() throws Exception {
+    public void testComplexTypeWithArrayContainsNull() throws Exception {
         DataRecord record = createDataRecord(repository.getComplexType("WithArray"));
         setDataRecordField(record, "Id", "12345");
         setDataRecordField(record, "Repeat", "ABC");
@@ -72,7 +72,7 @@ public class DataRecordContainsNullValueXmlWriterTestCase extends DataRecordData
     }
 
     @Test
-    public void testSimpleTypeWithEmptyArray() throws Exception {
+    public void testComplexTypeWithEmptyArray() throws Exception {
         DataRecord record = createDataRecord(repository.getComplexType("WithArray"));
         setDataRecordField(record, "Id", "12345");
         setDataRecordField(record, "Repeat", new ArrayList<String>());
@@ -81,7 +81,7 @@ public class DataRecordContainsNullValueXmlWriterTestCase extends DataRecordData
     }
 
     @Test
-    public void testSimpleComplexTypeWithNull() throws Exception {
+    public void testComplexTypeContainsNull() throws Exception {
         DataRecord record = createDataRecord(repository.getComplexType("SimpleProduct"));
         setDataRecordField(record, "Id", "12345");
         setDataRecordField(record, "Name", null);
@@ -93,7 +93,7 @@ public class DataRecordContainsNullValueXmlWriterTestCase extends DataRecordData
     }
 
     @Test
-    public void testTypeWithComplexTypeOfReference() throws Exception {
+    public void testComplexTypeWithReferencedField() throws Exception {
         ComplexTypeMetadata type = repository.getComplexType("Customer");
         DataRecord record = createDataRecord(type);
         setDataRecordField(record, "Id", "12345");
@@ -115,7 +115,7 @@ public class DataRecordContainsNullValueXmlWriterTestCase extends DataRecordData
     }
 
     @Test
-    public void testTypeWithComplexTypeOfReferenceContainsNull() throws Exception {
+    public void testComplexTypeWithReferencedFieldContainsNull() throws Exception {
         ComplexTypeMetadata type = repository.getComplexType("Customer");
         DataRecord record = createDataRecord(type);
         setDataRecordField(record, "Id", "12345");
@@ -137,7 +137,7 @@ public class DataRecordContainsNullValueXmlWriterTestCase extends DataRecordData
     }
 
     @Test
-    public void testTypeWithComplexTypeOfReferenceContainsNullReference() throws Exception {
+    public void testComplexTypeWithEmptyReferencedField() throws Exception {
         ComplexTypeMetadata type = repository.getComplexType("Customer");
         DataRecord record = createDataRecord(type);
         setDataRecordField(record, "Id", "12345");
@@ -154,7 +154,7 @@ public class DataRecordContainsNullValueXmlWriterTestCase extends DataRecordData
     }
 
     @Test
-    public void testContainedType() throws Exception {
+    public void testComplexTypeWithContainedField() throws Exception {
         ComplexTypeMetadata type = repository.getComplexType("WithContained");
         DataRecord record = createDataRecord(type);
         setDataRecordField(record, "Id", "ABCD");
@@ -178,7 +178,7 @@ public class DataRecordContainsNullValueXmlWriterTestCase extends DataRecordData
     }
 
     @Test
-    public void testContainedTypeContainsNull() throws Exception {
+    public void testComplexTypeWithContainedFieldContainsNull() throws Exception {
         ComplexTypeMetadata type = repository.getComplexType("WithContained");
         DataRecord record = createDataRecord(type);
         setDataRecordField(record, "Id", "ABCD");
@@ -202,7 +202,7 @@ public class DataRecordContainsNullValueXmlWriterTestCase extends DataRecordData
     }
 
     @Test
-    public void testNullContainedType() throws Exception {
+    public void testComplexTypeWithNullContainedField() throws Exception {
         ComplexTypeMetadata type = repository.getComplexType("WithContained");
         DataRecord record = createDataRecord(type);
         setDataRecordField(record, "Id", "ABCD");
@@ -222,7 +222,7 @@ public class DataRecordContainsNullValueXmlWriterTestCase extends DataRecordData
     }
 
     @Test
-    public void testMultiContainedType() throws Exception {
+    public void testComplexTypeWithMultiContainedField() throws Exception {
         ComplexTypeMetadata type = repository.getComplexType("WithMultiContained");
         DataRecord record = createDataRecord(type);
         setDataRecordField(record, "Id", "ABCD");
@@ -251,36 +251,7 @@ public class DataRecordContainsNullValueXmlWriterTestCase extends DataRecordData
     }
 
     @Test
-    public void testMultiContainedTypeContainsNull() throws Exception {
-        ComplexTypeMetadata type = repository.getComplexType("WithMultiContained");
-        DataRecord record = createDataRecord(type);
-        setDataRecordField(record, "Id", "ABCD");
-        FieldMetadata field = type.getField("Contained");
-        Assert.assertTrue(field instanceof ContainedTypeFieldMetadata);
-        ContainedTypeFieldMetadata containedField = (ContainedTypeFieldMetadata) field;
-        ContainedComplexTypeMetadata tm = (ContainedComplexTypeMetadata) containedField.getType();
-        List<DataRecord> list = new ArrayList<DataRecord>();
-        DataRecord contained1 = createDataRecord(tm);
-        setDataRecordField(contained1, "ContainedId", "CID1");
-        setDataRecordField(contained1, "ContainedName", null);
-        list.add(contained1);
-
-        DataRecord contained2 = createDataRecord(tm);
-        setDataRecordField(contained2, "ContainedId", "CID2");
-        setDataRecordField(contained2, "ContainedName", "CName2");
-        list.add(contained2);
-
-        setDataRecordField(record, "Contained", list);
-
-        String result = toXmlString(record);
-
-        Assert.assertEquals(
-                "<WithMultiContained><Id>ABCD</Id><Contained><ContainedId>CID1</ContainedId><ContainedName/></Contained><Contained><ContainedId>CID2</ContainedId><ContainedName>CName2</ContainedName></Contained></WithMultiContained>",
-                result);
-    }
-
-    @Test
-    public void testMultiContainedTypeContainsNull2() throws Exception {
+    public void testComplexTypeWithMultiContainedFieldContainsNull() throws Exception {
         ComplexTypeMetadata type = repository.getComplexType("WithMultiContained");
         DataRecord record = createDataRecord(type);
         setDataRecordField(record, "Id", "ABCD");
@@ -307,7 +278,7 @@ public class DataRecordContainsNullValueXmlWriterTestCase extends DataRecordData
     }
 
     @Test
-    public void testMultiContainedTypeWithEmptyList() throws Exception {
+    public void testComplexTypeWithEmptyMultiContainedField() throws Exception {
         ComplexTypeMetadata type = repository.getComplexType("WithMultiContained");
         DataRecord record = createDataRecord(type);
         setDataRecordField(record, "Id", "ABCD");
@@ -324,7 +295,7 @@ public class DataRecordContainsNullValueXmlWriterTestCase extends DataRecordData
     }
 
     @Test
-    public void testEnumType() throws Exception {
+    public void testComplexTypeWithEnum() throws Exception {
         DataRecord record = createDataRecord(repository.getComplexType("WithEnum"));
         setDataRecordField(record, "Id", "12345");
         setDataRecordField(record, "Color", "White");

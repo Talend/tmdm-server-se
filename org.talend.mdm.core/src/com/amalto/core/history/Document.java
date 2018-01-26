@@ -20,7 +20,7 @@ public interface Document {
      */
     String exportToString();
 
-    String exportToStringContainsNullValueField();
+    String exportToStringWithNullFields();
 
     /**
      * Transforms the document into a new one. Instance passed as parameter of {@link DocumentTransformer} is <code>this</code>,

@@ -203,9 +203,9 @@ public class StorageDocument implements MutableDocument {
     }
 
     @Override
-    public String exportToStringContainsNullValueField() {
+    public String exportToStringWithNullFields() {
         StringWriter output = new StringWriter();
-        DataRecordXmlWriter writer = new DataRecordContainsNullValueXmlWriter();
+        DataRecordXmlWriter writer = new DataRecordWithNullFieldsXmlWriter();
         try {
             writer.write(dataRecord, output);
         } catch (IOException e) {

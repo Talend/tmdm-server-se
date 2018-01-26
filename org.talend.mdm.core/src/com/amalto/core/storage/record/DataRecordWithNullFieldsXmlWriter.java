@@ -31,33 +31,33 @@ import org.talend.mdm.commmon.metadata.SimpleTypeFieldMetadata;
 import com.amalto.core.storage.StorageMetadataUtils;
 import com.amalto.core.storage.record.metadata.DataRecordMetadata;
 
-public class DataRecordContainsNullValueXmlWriter extends DataRecordXmlWriter {
+public class DataRecordWithNullFieldsXmlWriter extends DataRecordXmlWriter {
 
-    public DataRecordContainsNullValueXmlWriter() {
+    public DataRecordWithNullFieldsXmlWriter() {
         super();
     }
 
-    public DataRecordContainsNullValueXmlWriter(boolean includeMetadata) {
+    public DataRecordWithNullFieldsXmlWriter(boolean includeMetadata) {
         super(includeMetadata);
     }
 
-    public DataRecordContainsNullValueXmlWriter(String rootElementName) {
+    public DataRecordWithNullFieldsXmlWriter(String rootElementName) {
         super(rootElementName);
     }
 
-    public DataRecordContainsNullValueXmlWriter(ComplexTypeMetadata type) {
+    public DataRecordWithNullFieldsXmlWriter(ComplexTypeMetadata type) {
         super(type);
     }
 
     @Override
     public void write(DataRecord record, Writer writer) throws IOException {
-        DefaultMetadataVisitor<Void> fieldPrinter = new ContainsNullValueFieldPrinter(record, writer);
+        DefaultMetadataVisitor<Void> fieldPrinter = new FieldWithNullValuePrinter(record, writer);
         write(record, writer, fieldPrinter);
     }
 
-    class ContainsNullValueFieldPrinter extends DataRecordXmlWriter.FieldPrinter {
+    class FieldWithNullValuePrinter extends DataRecordXmlWriter.FieldPrinter {
 
-        public ContainsNullValueFieldPrinter(DataRecord record, Writer out) {
+        public FieldWithNullValuePrinter(DataRecord record, Writer out) {
             super(record, out);
         }
 
@@ -112,7 +112,7 @@ public class DataRecordContainsNullValueXmlWriter extends DataRecordXmlWriter {
                     // TMDM-6232 Unable to save reusable type value
                     if (containedRecord != null) {
                         // TODO Limit new field printer instances
-                        DefaultMetadataVisitor<Void> fieldPrinter = new ContainsNullValueFieldPrinter(containedRecord, out);
+                        DefaultMetadataVisitor<Void> fieldPrinter = new FieldWithNullValuePrinter(containedRecord, out);
                         Collection<FieldMetadata> fields = containedRecord.getType().getFields();
                         writeContainedField(containedField, containedRecord);
                         for (FieldMetadata field : fields) {
@@ -128,7 +128,7 @@ public class DataRecordContainsNullValueXmlWriter extends DataRecordXmlWriter {
                     if (recordList != null) {
                         for (DataRecord dataRecord : recordList) {
                             // TODO Limit new field printer instances
-                            DefaultMetadataVisitor<Void> fieldPrinter = new ContainsNullValueFieldPrinter(dataRecord, out);
+                            DefaultMetadataVisitor<Void> fieldPrinter = new FieldWithNullValuePrinter(dataRecord, out);
                             Collection<FieldMetadata> fields = dataRecord.getType().getFields();
                             writeContainedField(containedField, dataRecord);
                             for (FieldMetadata field : fields) {

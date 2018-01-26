@@ -153,7 +153,7 @@ public class DOMDocument implements DOMMutableDocument {
     }
 
     @Override
-    public String exportToStringContainsNullValueField() {
+    public String exportToStringWithNullFields() {
         return exportToString();
     }
 

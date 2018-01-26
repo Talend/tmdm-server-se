@@ -86,7 +86,7 @@ public class DataRecordWithNullFieldsXmlWriter extends DataRecordXmlWriter {
                                 out.write("<" + referenceField.getName() + "/>"); //$NON-NLS-1$ //$NON-NLS-2$
                             }
                         }
-                        if (valueAsList.size() == 0) {
+                        if (valueAsList.isEmpty()) {
                             out.write("<" + referenceField.getName() + "/>"); //$NON-NLS-1$ //$NON-NLS-2$
                         }
                     }
@@ -136,7 +136,7 @@ public class DataRecordWithNullFieldsXmlWriter extends DataRecordXmlWriter {
                             }
                             out.write("</" + containedField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
                         }
-                        if (recordList.size() == 0) {
+                        if (recordList.isEmpty()) {
                             out.write("<" + containedField.getName() + "/>"); //$NON-NLS-1$ //$NON-NLS-2$
                         }
                     } else if (containsFieldToValue) {
@@ -187,7 +187,7 @@ public class DataRecordWithNullFieldsXmlWriter extends DataRecordXmlWriter {
                                 out.write("<" + simpleField.getName() + "/>"); //$NON-NLS-1$ //$NON-NLS-2$
                             }
                         }
-                        if (valueAsList.size() == 0) {
+                        if (valueAsList.isEmpty()) {
                             out.write("<" + simpleField.getName() + "/>"); //$NON-NLS-1$ //$NON-NLS-2$
                         }
                     }
@@ -221,8 +221,7 @@ public class DataRecordWithNullFieldsXmlWriter extends DataRecordXmlWriter {
                                 out.write("<" + enumField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
                                 handleSimpleValue(enumField, currentValue);
                                 out.write("</" + enumField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
-                            }
-                            if (currentValue != null) {
+                            } else {
                                 out.write("<" + enumField.getName() + "/>"); //$NON-NLS-1$ //$NON-NLS-2$
                             }
                         }

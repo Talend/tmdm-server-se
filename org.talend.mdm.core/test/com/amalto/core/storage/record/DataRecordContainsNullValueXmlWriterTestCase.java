@@ -302,7 +302,7 @@ public class DataRecordContainsNullValueXmlWriterTestCase extends DataRecordData
         String result = toXmlString(record);
 
         Assert.assertEquals(
-                "<WithMultiContained><Id>ABCD</Id><Contained><ContainedId>CID1</ContainedId><ContainedName/></Contained><Contained/></WithMultiContained>",
+                "<WithMultiContained><Id>ABCD</Id><Contained><ContainedId>CID1</ContainedId><ContainedName/></Contained><Contained></Contained></WithMultiContained>",
                 result);
     }
 

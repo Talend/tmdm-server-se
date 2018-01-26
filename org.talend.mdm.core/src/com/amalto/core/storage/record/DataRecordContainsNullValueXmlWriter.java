@@ -52,28 +52,7 @@ public class DataRecordContainsNullValueXmlWriter extends DataRecordXmlWriter {
     @Override
     public void write(DataRecord record, Writer writer) throws IOException {
         DefaultMetadataVisitor<Void> fieldPrinter = new ContainsNullValueFieldPrinter(record, writer);
-        Collection<FieldMetadata> fields = type == null ? record.getType().getFields() : type.getFields();
-        if (includeMetadata) {
-            writer.write("<" + getRootElementName(record) + " xmlns:metadata=\"" + DataRecordReader.METADATA_NAMESPACE + "\">"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        } else {
-            writer.write("<" + getRootElementName(record) + ">"); //$NON-NLS-1$ //$NON-NLS-2$
-        }
-        // Includes metadata in serialized XML (if requested).
-        if (includeMetadata) {
-            DataRecordMetadata recordMetadata = record.getRecordMetadata();
-            Map<String, String> properties = recordMetadata.getRecordProperties();
-            writeMetadataField(writer, Timestamp.INSTANCE, recordMetadata.getLastModificationTime());
-            writeMetadataField(writer, TaskId.INSTANCE, recordMetadata.getTaskId());
-            writeMetadataField(writer, StagingBlockKey.INSTANCE, properties.get(StagingStorage.METADATA_STAGING_BLOCK_KEY));
-        }
-        // Print record fields
-        if (!delegator.hide(record.getType())) {
-            for (FieldMetadata field : fields) {
-                field.accept(fieldPrinter);
-            }
-        }
-        writer.write("</" + getRootElementName(record) + ">"); //$NON-NLS-1$ //$NON-NLS-2$
-        writer.flush();
+        write(record, writer, fieldPrinter);
     }
 
     class ContainsNullValueFieldPrinter extends DataRecordXmlWriter.FieldPrinter {

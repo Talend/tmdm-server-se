@@ -83,6 +83,10 @@ public class DataRecordXmlWriter implements DataRecordWriter {
     @Override
     public void write(DataRecord record, Writer writer) throws IOException {
         DefaultMetadataVisitor<Void> fieldPrinter = new FieldPrinter(record, writer);
+        write(record, writer, fieldPrinter);
+    }
+
+    protected void write(DataRecord record, Writer writer, DefaultMetadataVisitor<Void> fieldPrinter) throws IOException {
         Collection<FieldMetadata> fields = type == null ? record.getType().getFields() : type.getFields();
         if (includeMetadata) {
             writer.write("<" + getRootElementName(record) + " xmlns:metadata=\"" + DataRecordReader.METADATA_NAMESPACE + "\">"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$

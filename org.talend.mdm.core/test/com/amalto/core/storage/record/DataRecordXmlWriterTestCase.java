@@ -137,7 +137,7 @@ public class DataRecordXmlWriterTestCase extends DataRecordDataWriterTestCase {
     }
 
     @Test
-    public void testComplexTypeWithEmptyReferencedField() throws Exception {
+    public void testComplexTypeWithEmptyReferencedFieldContainsNull() throws Exception {
         ComplexTypeMetadata type = repository.getComplexType("Customer");
         DataRecord record = createDataRecord(type);
         setDataRecordField(record, "Id", "12345");
@@ -265,6 +265,16 @@ public class DataRecordXmlWriterTestCase extends DataRecordDataWriterTestCase {
         String result = toXmlString(record);
 
         Assert.assertEquals("<WithMultiContained><Id>ABCD</Id></WithMultiContained>", result);
+    }
+
+    @Test
+    public void testComplexTypeWithEnumContainsNull() throws Exception {
+        DataRecord record = createDataRecord(repository.getComplexType("WithEnum"));
+        setDataRecordField(record, "Id", "12345");
+        setDataRecordField(record, "Color", "White");
+        setDataRecordField(record, "Color", null);
+        String result = toXmlString(record);
+        Assert.assertEquals("<WithEnum><Id>12345</Id><Color>White</Color><Color/></WithEnum>", result);
     }
 
     @Test

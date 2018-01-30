@@ -96,11 +96,14 @@ public class DefaultRole implements Role {
     public Collection<RolePOJOPK> getRolePKs(String regex) throws XtentisException {
         Collection<ObjectPOJOPK> c = ObjectPOJO.findAllPKs(RolePOJO.class, regex);
         ArrayList<RolePOJOPK> l = new ArrayList<RolePOJOPK>();
-        for (ObjectPOJOPK currentObject : c) {
-            if (currentObject.getIds().length > 0 && ICoreConstants.SYSTEM_ROLE_LIST.contains(currentObject.getIds()[0])) {
-                continue;
-            }
-            l.add(new RolePOJOPK(currentObject));
+        for (ObjectPOJOPK currentObject : c) {  
+            if (currentObject.getIds().length > 0){
+                String roleName = currentObject.getIds()[0];
+                if(roleName.startsWith(ICoreConstants.SYSTEM_ROLE_PREFIX) || ICoreConstants.ADMIN_PERMISSION.equals(roleName) ){
+                    continue;
+                }
+                l.add(new RolePOJOPK(currentObject));
+            }            
         }
 
         Collections.sort(l, new Comparator<RolePOJOPK>() {

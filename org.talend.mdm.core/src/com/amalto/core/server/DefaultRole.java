@@ -97,7 +97,7 @@ public class DefaultRole implements Role {
         Collection<ObjectPOJOPK> c = ObjectPOJO.findAllPKs(RolePOJO.class, regex);
         ArrayList<RolePOJOPK> l = new ArrayList<RolePOJOPK>();
         for (ObjectPOJOPK currentObject : c) {
-            if (currentObject.getIds().length > 0 && currentObject.getIds()[0].startsWith(ICoreConstants.SYSTEM_ROLE_PREFIX)) {
+            if (currentObject.getIds().length > 0 && ICoreConstants.SYSTEM_ROLE_LIST.contains(currentObject.getIds()[0])) {
                 continue;
             }
             l.add(new RolePOJOPK(currentObject));

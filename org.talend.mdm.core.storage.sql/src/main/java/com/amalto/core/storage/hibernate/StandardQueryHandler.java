@@ -261,7 +261,7 @@ class StandardQueryHandler extends AbstractQueryHandler {
     }
     
     private String getReferenceFieldJoinPath(ReferenceFieldMetadata previousRefFieldMetadata, FieldMetadata nextField, String aliasPathKey) {
-         if(previousRefFieldMetadata != null){
+        if(previousRefFieldMetadata != null){
             if(nextField instanceof ReferenceFieldMetadata){
                 ReferenceFieldMetadata referenceFieldMetadata = (ReferenceFieldMetadata)nextField;
                 if(previousRefFieldMetadata.getReferencedType().getName().equals(referenceFieldMetadata.getContainingType().getName())){

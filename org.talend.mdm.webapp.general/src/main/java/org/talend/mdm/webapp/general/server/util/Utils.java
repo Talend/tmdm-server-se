@@ -55,7 +55,7 @@ public class Utils {
     private static final Logger LOG = Logger.getLogger(Utils.class);
 
     private static final String WELCOMECONTEXT = "welcomeportal", WELCOMEAPP = "WelcomePortal",
-            DATASTEWARDSHIP_APP = "Datastewardship"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-2$
+            DATASTEWARDSHIP_CONTEXT = "datastewardship", DATASTEWARDSHIP_APP = "Datastewardship"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-1$ //$NON-NLS-2$
 
     private static final String DEFAULT_LANG = "en"; //$NON-NLS-1$
 
@@ -175,7 +175,7 @@ public class Utils {
                 String gxtEntryModule = GxtFactory.getInstance().getGxtEntryModule(context, application);
                 if (gxtEntryModule == null) {
                     // Other Application, direct js
-                    if (!DATASTEWARDSHIP_APP.equals(application)) {
+                    if (!(DATASTEWARDSHIP_CONTEXT.equals(context) && DATASTEWARDSHIP_APP.equals(application))) {
                         String tmp = "<script type=\"text/javascript\" src=\"secure/js/" //$NON-NLS-1$
                                 + application + ".js\"></script>\n"; //$NON-NLS-1$
                         if (!imports.contains(tmp)) {

@@ -203,7 +203,25 @@ public class DataRecord {
         }
         return currentValue;
     }
-    
+
+    public boolean containsFieldToValue(FieldMetadata field) {
+        if (field == null) {
+            return false;
+        }
+        return fieldToValue.containsKey(field);
+    }
+
+    public boolean containsFieldToValue(String fieldName) {
+        StringTokenizer tokenizer = new StringTokenizer(fieldName, "/"); //$NON-NLS-1$
+        DataRecord current = this;
+        while (tokenizer.hasMoreTokens()) {
+            String currentPathElement = tokenizer.nextToken();
+            FieldMetadata field = current.getType().getField(currentPathElement);
+            return fieldToValue.containsKey(field);
+        }
+        return false;
+    }
+
     public List<Object> find(FieldMetadata field) {
         // Build path elements
         String path = field.getPath();

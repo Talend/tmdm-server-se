@@ -11,6 +11,8 @@ public interface Document {
      */
     String exportToString();
 
+    String exportToStringWithNullFields();
+
     /**
      * Transforms the document into a new one. Instance passed as parameter of {@link DocumentTransformer} is <code>this</code>,
      * so any modification done to the document in the transformer is performed (i.e. transformation isn't necessarily

@@ -141,7 +141,7 @@ public class StorageSaverSource implements SaverSource {
     public OutputReport invokeBeforeSaving(DocumentSaverContext context, MutableDocument updateReportDocument) {
         try {
             return Util.beforeSaving(context.getUserDocument().getType().getName(),
-                    context.getDatabaseDocument().exportToString(),
+                    context.getDatabaseDocument().exportToStringWithNullFields(),
                     updateReportDocument.exportToString());
         } catch (Exception e) {
             throw new RuntimeException(e);

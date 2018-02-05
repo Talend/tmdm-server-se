@@ -45,6 +45,11 @@ public class EmptyDocument implements MutableDocument {
         return StringUtils.EMPTY;
     }
 
+    @Override
+    public String exportToStringWithNullFields() {
+        return exportToString();
+    }
+
     public Accessor createAccessor(String path) {
         return NoOpAccessor.INSTANCE;
     }

@@ -152,6 +152,11 @@ public class DOMDocument implements DOMMutableDocument {
         }
     }
 
+    @Override
+    public String exportToStringWithNullFields() {
+        return exportToString();
+    }
+
     public Document transform(DocumentTransformer transformer) {
         if (transformer == null) {
             throw new IllegalArgumentException("Transformer argument cannot be null");

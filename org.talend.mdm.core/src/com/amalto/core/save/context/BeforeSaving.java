@@ -138,6 +138,10 @@ public class BeforeSaving implements DocumentSaver {
             }
         }
 
+        MutableDocument databaseDocument = context.getDatabaseDocument();
+        if (databaseDocument != null) {
+            databaseDocument.clean();
+        }
         next.save(session, context);
     }
 

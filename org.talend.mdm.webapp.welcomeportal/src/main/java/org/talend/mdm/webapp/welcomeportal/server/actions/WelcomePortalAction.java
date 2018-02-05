@@ -268,8 +268,8 @@ public class WelcomePortalAction implements WelcomePortalService {
             Util.getPort()
                     .putItem(
                             new WSPutItem(
-                                    new WSDataClusterPK("PROVISIONING"), parsedUser.serialize(), new WSDataModelPK("PROVISIONING"), false)); //$NON-NLS-1$ //$NON-NLS-2$
-            user.setUserXML(parsedUser.serialize());
+                                    new WSDataClusterPK("PROVISIONING"), parsedUser.serialize(true), new WSDataModelPK("PROVISIONING"), false)); //$NON-NLS-1$ //$NON-NLS-2$
+            user.setUserXML(parsedUser.serialize(false));
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
             throw new ServiceException(MESSAGES.getMessage("save_portal_config_failed")); //$NON-NLS-1$
@@ -290,9 +290,10 @@ public class WelcomePortalAction implements WelcomePortalService {
             Util.getPort()
                     .putItem(
                             new WSPutItem(
-                                    new WSDataClusterPK("PROVISIONING"), parsedUser.serialize(), new WSDataModelPK("PROVISIONING"), false)); //$NON-NLS-1$ //$NON-NLS-2$
+                                    new WSDataClusterPK("PROVISIONING"), parsedUser.serialize(true), //$NON-NLS-1$
+                                    new WSDataModelPK("PROVISIONING"), false)); //$NON-NLS-1$
 
-            user.setUserXML(parsedUser.serialize());
+            user.setUserXML(parsedUser.serialize(false));
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
             throw new ServiceException(MESSAGES.getMessage("save_portal_config_failed")); //$NON-NLS-1$
@@ -317,9 +318,10 @@ public class WelcomePortalAction implements WelcomePortalService {
             Util.getPort()
                     .putItem(
                             new WSPutItem(
-                                    new WSDataClusterPK("PROVISIONING"), parsedUser.serialize(), new WSDataModelPK("PROVISIONING"), false)); //$NON-NLS-1$ //$NON-NLS-2$
+                                    new WSDataClusterPK("PROVISIONING"), parsedUser.serialize(true), //$NON-NLS-1$
+                                    new WSDataModelPK("PROVISIONING"), false)); //$NON-NLS-1$
 
-            user.setUserXML(parsedUser.serialize());
+            user.setUserXML(parsedUser.serialize(false));
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
             throw new ServiceException(MESSAGES.getMessage("save_portal_config_failed")); //$NON-NLS-1$
@@ -347,9 +349,10 @@ public class WelcomePortalAction implements WelcomePortalService {
             Util.getPort()
                     .putItem(
                             new WSPutItem(
-                                    new WSDataClusterPK("PROVISIONING"), parsedUser.serialize(), new WSDataModelPK("PROVISIONING"), false)); //$NON-NLS-1$ //$NON-NLS-2$
+                                    new WSDataClusterPK("PROVISIONING"), parsedUser.serialize(true), //$NON-NLS-1$
+                                    new WSDataModelPK("PROVISIONING"), false)); //$NON-NLS-1$
 
-            user.setUserXML(parsedUser.serialize());
+            user.setUserXML(parsedUser.serialize(false));
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
             throw new ServiceException(MESSAGES.getMessage("save_portal_config_failed")); //$NON-NLS-1$

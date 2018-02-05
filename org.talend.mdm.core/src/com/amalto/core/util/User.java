@@ -82,21 +82,29 @@ public class User implements Cloneable {
      * </application> </applications> </user>
      */
 
-    public String serialize() {
-        String user = "<User>" + "    <username>" + userName + "</username>" + "    <password>" + password + "</password>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-                + "    <givenname>" + (givenName == null ? "" : givenName) + "</givenname>" + "    <familyname>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-                + (familyName == null ? "" : familyName) + "</familyname>" + "    <phonenumber>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                + (phoneNumber == null ? "" : phoneNumber) + "</phonenumber>" + "    <company>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                + (company == null ? "" : company) + "</company>" + "    <id>" + id + "</id>" + "    <signature>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-                + (signature == null ? "" : signature) + "</signature>" + "    <realemail>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                + (realEmail == null ? "" : realEmail) + "</realemail>" + "    <fakeemail>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                + (fakeEmail == null ? "" : fakeEmail) + "</fakeemail>" + "    <viewrealemail>" + (viewRealEmail ? "yes" : "no") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-                + "</viewrealemail>" + "    <registrationdate>" //$NON-NLS-1$ //$NON-NLS-2$
-                + (registrationDateAsLong == 0 ? System.currentTimeMillis() : registrationDateAsLong) + "</registrationdate>" //$NON-NLS-1$
-                + "    <lastvisitdate>" + lastVisitDateAsLong + "</lastvisitdate>"  + "    <lastsynctime>" + lastSyncTimeAsLong + "</lastsynctime>"  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-                + "    <enabled>" + (enabled ? "yes" : "no") + "</enabled>" + "    <homepage>" + homePage + "</homepage>" + "    <universe>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
-                + (universe == null ? "" : universe) + "</universe>" + "    <language>" + (language == null ? "" : language) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-                + "</language>"; //$NON-NLS-1$
+    public String serialize(boolean toSave) {
+        String user = "<User>" //$NON-NLS-1$
+                + "    <id>" + id + "</id>" //$NON-NLS-1$ //$NON-NLS-2$
+                + "    <registrationdate>" + (registrationDateAsLong == 0 ? System.currentTimeMillis() : registrationDateAsLong) //$NON-NLS-1$
+                + "</registrationdate>" //$NON-NLS-1$
+                + "    <lastvisitdate>" + lastVisitDateAsLong + "</lastvisitdate>"//$NON-NLS-1$ //$NON-NLS-2$
+                + "    <lastsynctime>" + lastSyncTimeAsLong + "</lastsynctime>"//$NON-NLS-1$ //$NON-NLS-2$
+                + "    <language>" + (language == null ? "" : language) + "</language>"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+        if (!(Util.isEnterprise() && toSave)) {
+            user += "    <username>" + userName + "</username>" + "    <password>" + password + "</password>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                    + "    <givenname>" + (givenName == null ? "" : givenName) + "</givenname>" + "    <familyname>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                    + (familyName == null ? "" : familyName) + "</familyname>" + "    <phonenumber>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    + (phoneNumber == null ? "" : phoneNumber) + "</phonenumber>" + "    <company>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    + (company == null ? "" : company) + "</company>" + "    <signature>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    + (signature == null ? "" : signature) + "</signature>" + "    <realemail>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    + (realEmail == null ? "" : realEmail) + "</realemail>" + "    <fakeemail>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    + (fakeEmail == null ? "" : fakeEmail) + "</fakeemail>" + "    <viewrealemail>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    + (viewRealEmail ? "yes" : "no") //$NON-NLS-1$ //$NON-NLS-2$
+                    + "</viewrealemail>" + "    <enabled>" + (enabled ? "yes" : "no") + "</enabled>" + "    <homepage>" + homePage //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+                    + "</homepage>" + "    <universe>" //$NON-NLS-1$ //$NON-NLS-2$
+                    + (universe == null ? "" : universe) + "</universe>"; //$NON-NLS-1$ //$NON-NLS-2$
+        }
         user += "    <roles>"; //$NON-NLS-1$
         Iterator<String> iter;
         if (roleNames != null) {

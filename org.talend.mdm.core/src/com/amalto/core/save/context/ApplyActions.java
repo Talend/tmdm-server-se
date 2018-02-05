@@ -43,7 +43,15 @@ class ApplyActions implements DocumentSaver {
         for (Action action : context.getActions()) {
             action.perform(databaseDocument);
         }
-        databaseDocument.clean();
+
+        /* TMDM-11733, if next is BeforeSaving, invokeBeforeSaving() needs parameter of data record's XML,
+         * and it should contain the element even the field's value is NULL
+         * after invokeBeforeSaving(), the filed will be removed from data record
+         * So before BeforeSaving, element for field with NULL value should not removed
+         */
+        if (!(next instanceof BeforeSaving)) {
+            databaseDocument.clean();
+        }
         next.save(session, context);
     }
 

@@ -2486,8 +2486,7 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
     @Override
     public WSRolePK putRole(WSPutRole wsRole) throws RemoteException {
         String roleName = wsRole.getWsRole().getName();
-        if (roleName.toLowerCase().startsWith("system_")
-                || ICoreConstants.ADMIN_PERMISSION.equalsIgnoreCase(roleName)) {
+        if (roleName.startsWith(ICoreConstants.SYSTEM_ROLE_PREFIX) || ICoreConstants.ADMIN_PERMISSION.equals(roleName)) {
             throw new RemoteException("System roles are built-in and managed by TAC.");
         }
         String user = null;

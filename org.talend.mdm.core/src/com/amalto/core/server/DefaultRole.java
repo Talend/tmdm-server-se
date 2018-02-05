@@ -99,7 +99,7 @@ public class DefaultRole implements Role {
         for (ObjectPOJOPK currentObject : c) {  
             if (currentObject.getIds().length > 0){
                 String roleName = currentObject.getIds()[0];
-                if(roleName.startsWith(ICoreConstants.SYSTEM_ROLE_PREFIX) || ICoreConstants.ADMIN_PERMISSION.equals(roleName) ){
+                if (roleName.startsWith(ICoreConstants.SYSTEM_ROLE_PREFIX) || ICoreConstants.ADMIN_PERMISSION.equals(roleName)) {
                     continue;
                 }
                 l.add(new RolePOJOPK(currentObject));

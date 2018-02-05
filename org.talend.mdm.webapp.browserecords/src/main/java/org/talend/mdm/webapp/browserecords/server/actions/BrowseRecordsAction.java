@@ -37,6 +37,7 @@ import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.methods.HttpPatch;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.protocol.HTTP;
 import org.apache.log4j.Logger;
 import org.dom4j.DocumentHelper;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
@@ -1645,8 +1646,8 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             httpClient.getCredentialsProvider().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(
                     LocalUser.getLocalUser().getUsername(), LocalUser.getLocalUser().getCredentials()));
             HttpPatch httpPatch = new HttpPatch(url);
-            httpPatch.setHeader("Content-Type", "text/xml; charset=utf8");
-            HttpEntity entity = new StringEntity(xml);
+            httpPatch.setHeader("Content-Type", "application/xml; charset=utf-8"); //$NON-NLS-1$ //$NON-NLS-2$
+            HttpEntity entity = new StringEntity(xml, HTTP.UTF_8);
             httpPatch.setEntity(entity);
             HttpResponse response = httpClient.execute(httpPatch);
             if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {

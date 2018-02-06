@@ -44,6 +44,7 @@ import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.methods.HttpPatch;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.protocol.HTTP;
 import org.apache.log4j.Logger;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Namespace;
@@ -1841,8 +1842,8 @@ public class BrowseRecordsAction implements BrowseRecordsService {
                     new UsernamePasswordCredentials(LocalUser.getLocalUser().getUsername(), LocalUser.getLocalUser()
                             .getPassword()));
             HttpPatch httpPatch = new HttpPatch(url);
-            httpPatch.setHeader("Content-Type", "text/xml; charset=utf8"); //$NON-NLS-1$ //$NON-NLS-2$
-            HttpEntity entity = new StringEntity(xml);
+            httpPatch.setHeader("Content-Type", "application/xml; charset=utf-8"); //$NON-NLS-1$ //$NON-NLS-2$
+            HttpEntity entity = new StringEntity(xml, HTTP.UTF_8);
             httpPatch.setEntity(entity);
             HttpResponse response = httpClient.execute(httpPatch);
             return readRestErroMessage(response);

@@ -274,7 +274,7 @@ public class DataRecordXmlWriterTestCase extends DataRecordDataWriterTestCase {
         setDataRecordField(record, "Color", "White");
         setDataRecordField(record, "Color", null);
         String result = toXmlString(record);
-        Assert.assertEquals("<WithEnum><Id>12345</Id><Color>White</Color><Color/></WithEnum>", result);
+        Assert.assertEquals("<WithEnum><Id>12345</Id><Color>White</Color></WithEnum>", result);
     }
 
     @Test

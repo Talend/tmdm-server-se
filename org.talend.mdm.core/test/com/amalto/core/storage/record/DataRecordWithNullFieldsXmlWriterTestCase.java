@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2017 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2018 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -26,14 +26,14 @@ import org.talend.mdm.commmon.metadata.FieldMetadata;
 
 import com.amalto.core.load.io.ResettableStringWriter;
 
-public class DataRecordXmlWriterTestCase extends DataRecordDataWriterTestCase {
+public class DataRecordWithNullFieldsXmlWriterTestCase extends DataRecordDataWriterTestCase {
 
     private DataRecordXmlWriter writer;
 
     @Before
     public void setup() throws Exception {
         super.setup();
-        writer = new DataRecordXmlWriter();
+        writer = new DataRecordWithNullFieldsXmlWriter();
         writer.setSecurityDelegator(delegate);
         repository.load(this.getClass().getResourceAsStream("metadata.xsd"));
     }
@@ -68,7 +68,7 @@ public class DataRecordXmlWriterTestCase extends DataRecordDataWriterTestCase {
         setDataRecordField(record, "Repeat", "ABC");
         setDataRecordField(record, "Repeat", null);
         String result = toXmlString(record);
-        Assert.assertEquals("<WithArray><Id>12345</Id><Repeat>ABC</Repeat></WithArray>", result);
+        Assert.assertEquals("<WithArray><Id>12345</Id><Repeat>ABC</Repeat><Repeat/></WithArray>", result);
     }
 
     @Test
@@ -77,7 +77,7 @@ public class DataRecordXmlWriterTestCase extends DataRecordDataWriterTestCase {
         setDataRecordField(record, "Id", "12345");
         setDataRecordField(record, "Repeat", new ArrayList<String>());
         String result = toXmlString(record);
-        Assert.assertEquals("<WithArray><Id>12345</Id></WithArray>", result);
+        Assert.assertEquals("<WithArray><Id>12345</Id><Repeat/></WithArray>", result);
     }
 
     @Test
@@ -88,7 +88,7 @@ public class DataRecordXmlWriterTestCase extends DataRecordDataWriterTestCase {
         setDataRecordField(record, "Description", "Desc");
         setDataRecordField(record, "Availability", null);
         String result = toXmlString(record);
-        Assert.assertEquals("<SimpleProduct><Id>12345</Id><Description>Desc</Description></SimpleProduct>",
+        Assert.assertEquals("<SimpleProduct><Id>12345</Id><Name/><Description>Desc</Description><Availability/></SimpleProduct>",
                 result);
     }
 
@@ -132,12 +132,12 @@ public class DataRecordXmlWriterTestCase extends DataRecordDataWriterTestCase {
 
         String result = toXmlString(record);
         Assert.assertEquals(
-                "<Customer><Id>12345</Id><Address><Id>AddressId</Id><Street>AddressStreet</Street></Address></Customer>",
+                "<Customer><Id>12345</Id><Name/><Address><Id>AddressId</Id><Street>AddressStreet</Street><City/></Address></Customer>",
                 result);
     }
 
     @Test
-    public void testComplexTypeWithEmptyReferencedFieldContainsNull() throws Exception {
+    public void testComplexTypeWithEmptyReferencedField() throws Exception {
         ComplexTypeMetadata type = repository.getComplexType("Customer");
         DataRecord record = createDataRecord(type);
         setDataRecordField(record, "Id", "12345");
@@ -150,7 +150,7 @@ public class DataRecordXmlWriterTestCase extends DataRecordDataWriterTestCase {
         setDataRecordField(record, "Address", referenced);
 
         String result = toXmlString(record);
-        Assert.assertEquals("<Customer><Id>12345</Id><Address></Address></Customer>", result);
+        Assert.assertEquals("<Customer><Id>12345</Id><Name/><Address></Address></Customer>", result);
     }
 
     @Test
@@ -178,7 +178,7 @@ public class DataRecordXmlWriterTestCase extends DataRecordDataWriterTestCase {
     }
 
     @Test
-    public void testContainedTypeContainsNull() throws Exception {
+    public void testComplexTypeWithContainedFieldContainsNull() throws Exception {
         ComplexTypeMetadata type = repository.getComplexType("WithContained");
         DataRecord record = createDataRecord(type);
         setDataRecordField(record, "Id", "ABCD");
@@ -197,7 +197,7 @@ public class DataRecordXmlWriterTestCase extends DataRecordDataWriterTestCase {
         String result = toXmlString(record);
 
         Assert.assertEquals(
-                "<WithContained><Id>ABCD</Id><Contained><ContainedId>CID</ContainedId></Contained></WithContained>",
+                "<WithContained><Id>ABCD</Id><Contained><ContainedId>CID</ContainedId><ContainedName/></Contained></WithContained>",
                 result);
     }
 
@@ -251,6 +251,33 @@ public class DataRecordXmlWriterTestCase extends DataRecordDataWriterTestCase {
     }
 
     @Test
+    public void testComplexTypeWithMultiContainedFieldContainsNull() throws Exception {
+        ComplexTypeMetadata type = repository.getComplexType("WithMultiContained");
+        DataRecord record = createDataRecord(type);
+        setDataRecordField(record, "Id", "ABCD");
+        FieldMetadata field = type.getField("Contained");
+        Assert.assertTrue(field instanceof ContainedTypeFieldMetadata);
+        ContainedTypeFieldMetadata containedField = (ContainedTypeFieldMetadata) field;
+        ContainedComplexTypeMetadata tm = (ContainedComplexTypeMetadata) containedField.getType();
+        List<DataRecord> list = new ArrayList<DataRecord>();
+        DataRecord contained1 = createDataRecord(tm);
+        setDataRecordField(contained1, "ContainedId", "CID1");
+        setDataRecordField(contained1, "ContainedName", null);
+        list.add(contained1);
+
+        DataRecord contained2 = createDataRecord(tm);
+        list.add(contained2);
+
+        setDataRecordField(record, "Contained", list);
+
+        String result = toXmlString(record);
+
+        Assert.assertEquals(
+                "<WithMultiContained><Id>ABCD</Id><Contained><ContainedId>CID1</ContainedId><ContainedName/></Contained><Contained></Contained></WithMultiContained>",
+                result);
+    }
+
+    @Test
     public void testComplexTypeWithEmptyMultiContainedField() throws Exception {
         ComplexTypeMetadata type = repository.getComplexType("WithMultiContained");
         DataRecord record = createDataRecord(type);
@@ -264,17 +291,7 @@ public class DataRecordXmlWriterTestCase extends DataRecordDataWriterTestCase {
 
         String result = toXmlString(record);
 
-        Assert.assertEquals("<WithMultiContained><Id>ABCD</Id></WithMultiContained>", result);
-    }
-
-    @Test
-    public void testComplexTypeWithEnumContainsNull() throws Exception {
-        DataRecord record = createDataRecord(repository.getComplexType("WithEnum"));
-        setDataRecordField(record, "Id", "12345");
-        setDataRecordField(record, "Color", "White");
-        setDataRecordField(record, "Color", null);
-        String result = toXmlString(record);
-        Assert.assertEquals("<WithEnum><Id>12345</Id><Color>White</Color></WithEnum>", result);
+        Assert.assertEquals("<WithMultiContained><Id>ABCD</Id><Contained/></WithMultiContained>", result);
     }
 
     @Test
@@ -284,6 +301,16 @@ public class DataRecordXmlWriterTestCase extends DataRecordDataWriterTestCase {
         setDataRecordField(record, "Color", "White");
         String result = toXmlString(record);
         Assert.assertEquals("<WithEnum><Id>12345</Id><Color>White</Color></WithEnum>", result);
+    }
+
+    @Test
+    public void testComplexTypeWithEnumContainsNull() throws Exception {
+        DataRecord record = createDataRecord(repository.getComplexType("WithEnum"));
+        setDataRecordField(record, "Id", "12345");
+        setDataRecordField(record, "Color", "White");
+        setDataRecordField(record, "Color", null);
+        String result = toXmlString(record);
+        Assert.assertEquals("<WithEnum><Id>12345</Id><Color>White</Color><Color/></WithEnum>", result);
     }
 
     private String toXmlString(DataRecord record) throws Exception {

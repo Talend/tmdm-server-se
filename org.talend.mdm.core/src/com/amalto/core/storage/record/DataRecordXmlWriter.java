@@ -83,6 +83,10 @@ public class DataRecordXmlWriter implements DataRecordWriter {
     @Override
     public void write(DataRecord record, Writer writer) throws IOException {
         DefaultMetadataVisitor<Void> fieldPrinter = new FieldPrinter(record, writer);
+        write(record, writer, fieldPrinter);
+    }
+
+    protected void write(DataRecord record, Writer writer, DefaultMetadataVisitor<Void> fieldPrinter) throws IOException {
         Collection<FieldMetadata> fields = type == null ? record.getType().getFields() : type.getFields();
         if (includeMetadata) {
             writer.write("<" + getRootElementName(record) + " xmlns:metadata=\"" + DataRecordReader.METADATA_NAMESPACE + "\">"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -167,7 +171,7 @@ public class DataRecordXmlWriter implements DataRecordWriter {
             }
         }
 
-        private void writeReferenceElement(ReferenceFieldMetadata referenceField, DataRecord currentValue) throws IOException {
+        protected void writeReferenceElement(ReferenceFieldMetadata referenceField, DataRecord currentValue) throws IOException {
             if (currentValue.getType().equals(referenceField.getReferencedType())) {
                 out.write("<" + referenceField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
             } else {
@@ -286,7 +290,7 @@ public class DataRecordXmlWriter implements DataRecordWriter {
             }
         }
 
-        private void handleSimpleValue(FieldMetadata simpleField, Object value) throws IOException {
+        protected void handleSimpleValue(FieldMetadata simpleField, Object value) throws IOException {
             if (value == null) {
                 throw new IllegalArgumentException("Not supposed to write null values to XML.");
             }

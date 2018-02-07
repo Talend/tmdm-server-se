@@ -1,4 +1,4 @@
-**What is the current behavior?** (You can also link to an open issue here)
+**What is the current behavior?** (You should also link to an open issue here)
 
 
 

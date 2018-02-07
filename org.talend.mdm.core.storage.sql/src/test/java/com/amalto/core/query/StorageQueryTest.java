@@ -20,6 +20,7 @@ import static com.amalto.core.query.user.UserQueryBuilder.eq;
 import static com.amalto.core.query.user.UserQueryBuilder.from;
 import static com.amalto.core.query.user.UserQueryBuilder.gt;
 import static com.amalto.core.query.user.UserQueryBuilder.gte;
+import static com.amalto.core.query.user.UserQueryBuilder.in;
 import static com.amalto.core.query.user.UserQueryBuilder.index;
 import static com.amalto.core.query.user.UserQueryBuilder.isEmpty;
 import static com.amalto.core.query.user.UserQueryBuilder.isNull;
@@ -33,7 +34,6 @@ import static com.amalto.core.query.user.UserQueryBuilder.or;
 import static com.amalto.core.query.user.UserQueryBuilder.startsWith;
 import static com.amalto.core.query.user.UserQueryBuilder.taskId;
 import static com.amalto.core.query.user.UserQueryBuilder.timestamp;
-import static com.amalto.core.query.user.UserQueryBuilder.in;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -5511,6 +5511,48 @@ public class StorageQueryTest extends StorageTestCase {
         }
     }
     
+    public void testJoinQueryWithForeignKey() throws Exception {
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(DataRecordCreationTest.class.getResourceAsStream("MultipleJoinQuery.xsd"));
+        Storage storage = new HibernateStorage("H2-DS1", StorageType.MASTER);
+        storage.init(ServerContext.INSTANCE.get().getDefinition("H2-DS1", "MDM"));
+        storage.prepare(repository, true);
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+
+        List<DataRecord> records = new LinkedList<DataRecord>();
+        records.add(factory.read(repository, repository.getComplexType("Partner_Relation_Type"),
+                "<Partner_Relation_Type><Code>ZG</Code><Name>[EN:ZG]</Name><Is_Active>true</Is_Active><Is_Technical>false</Is_Technical></Partner_Relation_Type>"));
+        records.add(factory.read(repository, repository.getComplexType("Account_Group"),
+                "<Account_Group><Code>Account2</Code><Name>[EN:name2]</Name><Is_Active>true</Is_Active><Is_Technical>false</Is_Technical></Account_Group>"));
+        records.add(factory.read(repository, repository.getComplexType("Partner"),
+                "<Partner><Code>partner1</Code><Name>name1</Name><FK_Account_Group>[Account2]</FK_Account_Group><FK_Account_Group>[Account2]</FK_Account_Group><Is_Active>true</Is_Active><Is_Public>true</Is_Public><Is_Technical>false</Is_Technical></Partner>"));
+        records.add(factory.read(repository, repository.getComplexType("Partner_Relation"),
+                "<Partner_Relation><Code>relation1</Code><FK_Partner_Relation_Type>[ZG]</FK_Partner_Relation_Type><FK_Partner>[partner1]</FK_Partner><Is_Validated>true</Is_Validated><Is_Active>true</Is_Active><Is_Public>true</Is_Public><Is_Technical>false</Is_Technical></Partner_Relation>"));
+
+        storage.begin();
+        storage.update(records);
+        storage.commit();
+
+        storage.begin();
+        ComplexTypeMetadata partner_relation = repository.getComplexType("Partner_Relation");
+        ComplexTypeMetadata partner = repository.getComplexType("Partner");
+        ComplexTypeMetadata account_group = repository.getComplexType("Account_Group");
+        UserQueryBuilder qb = from(partner_relation).select(partner_relation.getField("Code")).select(partner.getField("Code"))
+                .select(partner_relation.getField("FK_Partner_Relation_Type")).select(partner.getField("FK_Account_Group"))
+                .select(account_group.getField("Code")).select(account_group.getField("Name"))
+                .join(partner_relation.getField("FK_Partner"), partner.getField("Code"))
+                .join(partner.getField("FK_Account_Group"), account_group.getField("Code"));
+
+        StorageResults results = storage.fetch(qb.getSelect());
+        assertEquals(1, results.getCount());
+        for (DataRecord record : results) {
+            assertEquals("Account2", record.get("Code"));
+            assertEquals("ZG", record.get("FK_Partner_Relation_Type"));
+            assertEquals("Account2", record.get("FK_Account_Group"));
+            assertEquals("[EN:name2]", record.get("Name"));
+        }
+    }
+
     private static class TestUserDelegator implements SecuredStorage.UserDelegator {
 
         boolean isActive = true;

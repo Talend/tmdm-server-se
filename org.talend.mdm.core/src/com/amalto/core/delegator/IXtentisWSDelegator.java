@@ -208,15 +208,6 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
 
     @Override
     public WSString ping(WSPing wsPing) throws RemoteException {
-        if ("Studio".equals(wsPing.getEcho())) {//$NON-NLS-1$ check view user can't use studio 
-            try {
-                if (LocalUser.getLocalUser().getRoles().contains(XSystemObjects.ROLE_DEFAULT_VIEWER.getName())) {
-                    throw new RemoteException("Viewer user can't use MDM Studio!"); //$NON-NLS-1$
-                }
-            } catch (Exception e) {
-                throw new RemoteException(e.getLocalizedMessage(), e);
-            }
-        }
         return new WSString(wsPing.getEcho());
     }
 

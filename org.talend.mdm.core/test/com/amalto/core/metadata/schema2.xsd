@@ -2123,7 +2123,6 @@
             <xsd:element maxOccurs="1" minOccurs="1" name="key" type="UUID">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Hide">System_Web</xsd:appinfo>
-                    <xsd:appinfo source="X_Hide">System_View</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">System_Admin</xsd:appinfo>
                     <xsd:appinfo source="X_Workflow">System_Admin#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
@@ -3291,7 +3290,6 @@
         <xsd:all maxOccurs="1" minOccurs="1">
             <xsd:element maxOccurs="1" minOccurs="1" name="key" type="UUID">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Hide">System_View</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">System_Admin</xsd:appinfo>
                     <xsd:appinfo source="X_Workflow">System_Admin#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
@@ -3385,7 +3383,6 @@
         <xsd:all maxOccurs="1" minOccurs="1">
             <xsd:element maxOccurs="1" minOccurs="1" name="key" type="UUID">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Hide">System_View</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">System_Admin</xsd:appinfo>
                     <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
                 </xsd:annotation>

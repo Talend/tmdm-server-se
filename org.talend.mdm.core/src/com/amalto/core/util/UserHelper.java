@@ -63,15 +63,6 @@ public final class UserHelper {
     }
 
     /**
-     * get viewer users.
-     * 
-     * @return
-     */
-    public int getViewerUsers() {
-        return um.getViewerUsers();
-    }
-
-    /**
      * get the number of normal users.
      * 
      * @return

@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.HashSet;
 
 import org.apache.commons.io.IOUtils;
+import org.talend.mdm.commmon.util.core.ICoreConstants;
 
 import com.amalto.core.delegator.BeanDelegatorContainer;
 import com.amalto.core.delegator.ILocalUser;
@@ -83,7 +84,7 @@ public class DefaultDataModelTest extends TestCase {
         @Override
         public HashSet<String> getRoles() {
             HashSet<String> roleSet = new HashSet<String>();
-            roleSet.add("System_View"); //$NON-NLS-1$
+            roleSet.add(ICoreConstants.SYSTEM_WEB_ROLE); // $NON-NLS-1$
             return roleSet;
         }
 

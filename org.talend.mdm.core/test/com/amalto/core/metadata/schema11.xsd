@@ -31,7 +31,6 @@
                     <xsd:annotation>
                         <xsd:appinfo source="X_Hide">System_Admin</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">System_Interactive</xsd:appinfo>
-                        <xsd:appinfo source="X_Hide">System_View</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">System_Web</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">Admin_ASF</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">Administrators</xsd:appinfo>

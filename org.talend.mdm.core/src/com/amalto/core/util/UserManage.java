@@ -19,10 +19,6 @@ public abstract class UserManage {
 
     public static final String USER_CONCEPT = "User"; //$NON-NLS-1$
 
-    public final int getViewerUsers() {
-        return getUserCount(XSystemObjects.ROLE_DEFAULT_VIEWER.getName());
-    }
-
     public final int getNormalUsers() {
         return getUserCount(XSystemObjects.ROLE_DEFAULT_USER.getName()) + getUserCount(XSystemObjects.ROLE_DEFAULT_WEB.getName());
     }

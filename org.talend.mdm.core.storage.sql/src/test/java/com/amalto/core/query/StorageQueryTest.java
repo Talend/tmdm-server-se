@@ -20,7 +20,6 @@ import static com.amalto.core.query.user.UserQueryBuilder.eq;
 import static com.amalto.core.query.user.UserQueryBuilder.from;
 import static com.amalto.core.query.user.UserQueryBuilder.gt;
 import static com.amalto.core.query.user.UserQueryBuilder.gte;
-import static com.amalto.core.query.user.UserQueryBuilder.in;
 import static com.amalto.core.query.user.UserQueryBuilder.index;
 import static com.amalto.core.query.user.UserQueryBuilder.isEmpty;
 import static com.amalto.core.query.user.UserQueryBuilder.isNull;

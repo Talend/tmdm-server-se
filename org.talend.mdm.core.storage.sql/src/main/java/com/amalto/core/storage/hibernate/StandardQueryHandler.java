@@ -15,7 +15,6 @@ import static org.hibernate.criterion.Restrictions.eq;
 import static org.hibernate.criterion.Restrictions.ge;
 import static org.hibernate.criterion.Restrictions.gt;
 import static org.hibernate.criterion.Restrictions.ilike;
-import static org.hibernate.criterion.Restrictions.in;
 import static org.hibernate.criterion.Restrictions.isNull;
 import static org.hibernate.criterion.Restrictions.le;
 import static org.hibernate.criterion.Restrictions.like;

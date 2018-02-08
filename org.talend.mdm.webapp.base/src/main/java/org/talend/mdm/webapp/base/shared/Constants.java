@@ -17,7 +17,7 @@ public class Constants {
 
     public static final String TDS_ACCESSTASK = "/#/accesstasks/"; //$NON-NLS-1$
 
-    public static final String TDS_NAME = "DataStewardship"; //$NON-NLS-1$
+    public static final String TDS_NAME = "DataStewardship",TDS_CONTEXT = "datastewardship", TDS_APP = "Datastewardship"; //$NON-NLS-1$ //$NON-NLS-1$ //$NON-NLS-2$
 
     public static final String HAS_MATCH_GROUP = "HAS_MATCH_GROUP"; //$NON-NLS-1$
 

@@ -81,8 +81,8 @@ public class WelcomePortalAction implements WelcomePortalService {
      * @return
      */
     @Override
-    public boolean isHiddenDSCTask() throws ServiceException {
-        return isHiddenMenu(WelcomePortal.DSC_TASKAPP);
+    public boolean isHiddenTDSTask() throws ServiceException {
+        return isHiddenMenu(Constants.TDS_APP);
     }
 
     /**

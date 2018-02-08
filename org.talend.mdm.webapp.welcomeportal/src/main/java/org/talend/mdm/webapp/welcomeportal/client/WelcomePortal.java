@@ -45,8 +45,6 @@ public class WelcomePortal implements EntryPoint {
 
     public final static String WORKFLOW_TASKCONTEXT = "workflowtasks", WORKFLOW_TASKAPP = "BonitaWorkflowTasks";//$NON-NLS-1$ //$NON-NLS-2$
 
-    public final static String DSC_TASKAPP = "Datastewardship"; //$NON-NLS-1$
-
     public final static String WELCOMEPORTAL_ID = "Welcome"; //$NON-NLS-1$
 
     public static final String SEARCHCONTEXT = "search"; //$NON-NLS-1$

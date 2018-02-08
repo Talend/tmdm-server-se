@@ -33,7 +33,7 @@ public interface WelcomePortalServiceAsync {
 
     void isHiddenWorkFlowTask(AsyncCallback<Boolean> callback);
 
-    void isHiddenDSCTask(AsyncCallback<Boolean> callback);
+    void isHiddenTDSTask(AsyncCallback<Boolean> callback);
 
     void getWorkflowTaskMsg(AsyncCallback<Integer> callback);
 

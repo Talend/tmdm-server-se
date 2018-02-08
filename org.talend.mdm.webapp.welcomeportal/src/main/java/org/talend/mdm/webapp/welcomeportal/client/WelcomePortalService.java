@@ -27,7 +27,7 @@ public interface WelcomePortalService extends RemoteService {
 
     public boolean isHiddenWorkFlowTask() throws ServiceException;
 
-    public boolean isHiddenDSCTask() throws ServiceException;
+    public boolean isHiddenTDSTask() throws ServiceException;
 
     public int getWorkflowTaskMsg() throws ServiceException;
 

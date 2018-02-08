@@ -691,7 +691,7 @@ public class MainFramePanel extends Portal {
             public void onSuccess(Boolean hideMe) {
                 setHiddenWorkFlowTask(hideMe);
 
-                service.isHiddenDSCTask(new SessionAwareAsyncCallback<Boolean>() {
+                service.isHiddenTDSTask(new SessionAwareAsyncCallback<Boolean>() {
 
                     @Override
                     public void onSuccess(Boolean hideMeToo) {

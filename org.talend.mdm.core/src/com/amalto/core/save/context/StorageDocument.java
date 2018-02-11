@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2017 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
  *
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -19,6 +19,7 @@ import com.amalto.core.history.accessor.record.DataRecordAccessor;
 import com.amalto.core.schema.validation.SkipAttributeDocumentBuilder;
 import com.amalto.core.storage.record.*;
 import com.amalto.core.storage.record.metadata.DataRecordMetadataImpl;
+
 import org.apache.commons.collections.map.LRUMap;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedComplexTypeMetadata;
@@ -193,6 +194,18 @@ public class StorageDocument implements MutableDocument {
     public String exportToString() {
         StringWriter output = new StringWriter();
         DataRecordWriter writer = new DataRecordXmlWriter();
+        try {
+            writer.write(dataRecord, output);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return output.toString();
+    }
+
+    @Override
+    public String exportToStringWithNullFields() {
+        StringWriter output = new StringWriter();
+        DataRecordXmlWriter writer = new DataRecordWithNullFieldsXmlWriter();
         try {
             writer.write(dataRecord, output);
         } catch (IOException e) {

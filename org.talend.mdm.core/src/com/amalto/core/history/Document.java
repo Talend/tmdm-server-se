@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2017 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -19,6 +19,8 @@ public interface Document {
      * @return Returns the document as string (only the user's document, not the MDM specific XML header).
      */
     String exportToString();
+
+    String exportToStringWithNullFields();
 
     /**
      * Transforms the document into a new one. Instance passed as parameter of {@link DocumentTransformer} is <code>this</code>,

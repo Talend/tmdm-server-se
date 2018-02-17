@@ -134,7 +134,7 @@
             		<plugin>
                         <artifactId>maven-war-plugin</artifactId>
                         <configuration>
-                        <warSourceExcludes>auth/error.jsp,auth/favicon.ico,auth/fond_gris.png,auth/login.jsp,auth/loginPage.css,auth/logo.png</warSourceExcludes>
+                        <warSourceExcludes>auth/error.jsp,auth/fond_gris.png,auth/login.jsp,auth/loginPage.css,auth/logo.png</warSourceExcludes>
                         </configuration>
             		</plugin>
             	</plugins>

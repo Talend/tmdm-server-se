@@ -55,7 +55,9 @@ public class Utils {
 
     private static final Logger LOG = Logger.getLogger(Utils.class);
 
-    private static final String WELCOMECONTEXT = "welcomeportal", WELCOMEAPP = "WelcomePortal"; //$NON-NLS-1$ //$NON-NLS-2$
+    private static final String WELCOMECONTEXT = "welcomeportal"; // $NON-NLS-2$
+
+    private static final String WELCOMEAPP = "WelcomePortal"; //$NON-NLS-1$
 
     private static final String DEFAULT_LANG = "en"; //$NON-NLS-1$
 

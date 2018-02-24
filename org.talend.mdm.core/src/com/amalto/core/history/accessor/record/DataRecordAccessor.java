@@ -225,13 +225,18 @@ public class DataRecordAccessor implements Accessor {
                             if (field instanceof ContainedTypeFieldMetadata) {
                                 DataRecord record = new DataRecord((ComplexTypeMetadata) field.getType(),
                                         UnsupportedDataRecordMetadata.INSTANCE);
-                                list.add(record);
+
+                                addNewValue(current, field, list, record);
+                                list = (List) current.get(field);
                             } else if (field instanceof ReferenceFieldMetadata) {
                                 DataRecord record = new DataRecord(((ReferenceFieldMetadata) field).getReferencedType(),
                                         UnsupportedDataRecordMetadata.INSTANCE);
-                                list.add(record);
+
+                                addNewValue(current, field, list, record);
+                                list = (List) current.get(field);
                             } else {
-                                list.add(null);
+                                addNewValue(current, field, list, null);
+                                list = (List) current.get(field);
                             }
                         }
                         if (newList) {
@@ -262,6 +267,13 @@ public class DataRecordAccessor implements Accessor {
         }
     }
 
+    protected void addNewValue(DataRecord current, FieldMetadata field, List list, DataRecord record) {
+        List newValueList = new ArrayList(list);
+        newValueList.add(record);
+        current.remove(field);
+        current.set(field, newValueList);
+    }
+
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public void insert() {
@@ -289,7 +301,10 @@ public class DataRecordAccessor implements Accessor {
                 }
                 if (pathElement != null && pathElement.field.isMany()) {
                     List list = (List) current.get(pathElement.field);
-                    list.add(pathElement.index, null);
+                    List newValueList = new ArrayList(list);
+                    newValueList.add(pathElement.index, null);
+                    current.remove(pathElement.field);
+                    current.set(pathElement.field, newValueList);
                 }
             }
         } finally {
@@ -340,9 +355,13 @@ public class DataRecordAccessor implements Accessor {
             if (pathElement != null) {
                 if (pathElement.field.isMany()) {
                     if (pathElement.index < 0) {
-                        ((List) current.get(pathElement.field)).clear();
+                        current.set(pathElement.field, null);
                     } else {
-                        ((List) current.get(pathElement.field)).remove(pathElement.index);
+                        List originList = ((List) current.get(pathElement.field));
+                        List newValueList = new ArrayList(originList);
+                        newValueList.remove(pathElement.index);
+                        current.remove(pathElement.field);
+                        current.set(pathElement.field, newValueList);
                     }
                 } else {
                     current.set(pathElement.field, null);
@@ -409,7 +428,8 @@ public class DataRecordAccessor implements Accessor {
                         if (value instanceof DataRecord) {
                             current = (DataRecord) value;
                         }
-                    // We can't get sub element value of ReferenceFieldMetadata,like Product/Family/Name.Because we can't use path Product/Family/Name to retrieve value from Product document.
+                        // We can't get sub element value of ReferenceFieldMetadata,like Product/Family/Name.Because we
+                        // can't use path Product/Family/Name to retrieve value from Product document.
                     } else if (field instanceof ReferenceFieldMetadata && tokenizer.hasMoreElements()) {
                         cachedExist = false;
                         return false;

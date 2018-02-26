@@ -225,18 +225,25 @@ public class DataRecordAccessor implements Accessor {
                             if (field instanceof ContainedTypeFieldMetadata) {
                                 DataRecord record = new DataRecord((ComplexTypeMetadata) field.getType(),
                                         UnsupportedDataRecordMetadata.INSTANCE);
-
-                                addNewValue(current, field, list, record);
-                                list = (List) current.get(field);
+                                try {
+                                    list.add(record);
+                                } catch (UnsupportedOperationException e) {
+                                    list = addFieldValueToNewList(current, field, list, record);
+                                }
                             } else if (field instanceof ReferenceFieldMetadata) {
                                 DataRecord record = new DataRecord(((ReferenceFieldMetadata) field).getReferencedType(),
                                         UnsupportedDataRecordMetadata.INSTANCE);
-
-                                addNewValue(current, field, list, record);
-                                list = (List) current.get(field);
+                                try {
+                                    list.add(record);
+                                } catch (UnsupportedOperationException e) {
+                                    list = addFieldValueToNewList(current, field, list, record);
+                                }
                             } else {
-                                addNewValue(current, field, list, null);
-                                list = (List) current.get(field);
+                                try {
+                                    list.add(null);
+                                } catch (UnsupportedOperationException e) {
+                                    list = addFieldValueToNewList(current, field, list, null);
+                                }
                             }
                         }
                         if (newList) {
@@ -267,11 +274,12 @@ public class DataRecordAccessor implements Accessor {
         }
     }
 
-    protected void addNewValue(DataRecord current, FieldMetadata field, List list, DataRecord record) {
+    protected List addFieldValueToNewList(DataRecord current, FieldMetadata field, List list, DataRecord record) {
         List newValueList = new ArrayList(list);
         newValueList.add(record);
         current.remove(field);
         current.set(field, newValueList);
+        return (List) current.get(field);
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -301,10 +309,14 @@ public class DataRecordAccessor implements Accessor {
                 }
                 if (pathElement != null && pathElement.field.isMany()) {
                     List list = (List) current.get(pathElement.field);
-                    List newValueList = new ArrayList(list);
-                    newValueList.add(pathElement.index, null);
-                    current.remove(pathElement.field);
-                    current.set(pathElement.field, newValueList);
+                    try {
+                        list.add(pathElement.index, null);
+                    } catch (UnsupportedOperationException e) {
+                        List newValueList = new ArrayList(list);
+                        newValueList.add(pathElement.index, null);
+                        current.remove(pathElement.field);
+                        current.set(pathElement.field, newValueList);
+                    }
                 }
             }
         } finally {
@@ -355,13 +367,21 @@ public class DataRecordAccessor implements Accessor {
             if (pathElement != null) {
                 if (pathElement.field.isMany()) {
                     if (pathElement.index < 0) {
-                        current.set(pathElement.field, null);
+                        try {
+                            ((List) current.get(pathElement.field)).clear();
+                        } catch (UnsupportedOperationException e) {
+                            current.set(pathElement.field, null);
+                        }
                     } else {
-                        List originList = ((List) current.get(pathElement.field));
-                        List newValueList = new ArrayList(originList);
-                        newValueList.remove(pathElement.index);
-                        current.remove(pathElement.field);
-                        current.set(pathElement.field, newValueList);
+                        try {
+                            ((List) current.get(pathElement.field)).remove(pathElement.index);
+                        } catch (UnsupportedOperationException e) {
+                            List originList = ((List) current.get(pathElement.field));
+                            List newValueList = new ArrayList(originList);
+                            newValueList.remove(pathElement.index);
+                            current.remove(pathElement.field);
+                            current.set(pathElement.field, newValueList);
+                        }
                     }
                 } else {
                     current.set(pathElement.field, null);

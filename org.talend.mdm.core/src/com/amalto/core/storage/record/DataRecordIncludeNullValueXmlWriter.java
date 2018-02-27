@@ -115,7 +115,7 @@ public class DataRecordIncludeNullValueXmlWriter extends DataRecordXmlWriter {
                     out.write(StorageMetadataUtils.toString(referencedRecord));
                     out.write("</" + referenceField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
                 } else {
-                    if (value != null) {
+                    if (value != null && !((List<DataRecord>) value).isEmpty()) {
                         List<DataRecord> valueAsList = (List<DataRecord>) value;
                         for (DataRecord currentValue : valueAsList) {
                             if (currentValue != null) {

@@ -9,6 +9,10 @@
  */
 package org.talend.mdm.webapp.general.server.servlet;
 
+import static com.amalto.core.util.Util.ROOT_LOCATION_KEY;
+import static com.amalto.core.util.Util.ROOT_LOCATION_PARAM;
+import static com.amalto.core.util.Util.ROOT_LOCATION_URL_KEY;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
@@ -22,12 +26,6 @@ import org.springframework.util.ResourceUtils;
 import org.springframework.web.util.ServletContextPropertyUtils;
 
 public class MDMContextListener implements ServletContextListener {
-
-    public static final String ROOT_LOCATION_PARAM = "mdmRootLocation"; //$NON-NLS-1$
-
-    public static final String ROOT_LOCATION_KEY = "mdm.root"; //$NON-NLS-1$
-
-    public static final String ROOT_LOCATION_URL_KEY = "mdm.root.url"; //$NON-NLS-1$
 
     @Override
     public void contextInitialized(ServletContextEvent event) {

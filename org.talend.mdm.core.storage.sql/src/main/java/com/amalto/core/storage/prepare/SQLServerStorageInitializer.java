@@ -11,12 +11,17 @@
 
 package com.amalto.core.storage.prepare;
 
-import com.amalto.core.storage.Storage;
-import com.amalto.core.storage.datasource.DataSource;
-import com.amalto.core.storage.datasource.RDBMSDataSource;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 import org.apache.log4j.Logger;
 
-import java.sql.*;
+import com.amalto.core.storage.Storage;
+import com.amalto.core.storage.StorageType;
+import com.amalto.core.storage.datasource.DataSource;
+import com.amalto.core.storage.datasource.RDBMSDataSource;
 
 class SQLServerStorageInitializer implements StorageInitializer {
 
@@ -51,6 +56,13 @@ class SQLServerStorageInitializer implements StorageInitializer {
                 try {
                     statement.execute("USE master;"); //$NON-NLS-1$
                     statement.execute("CREATE DATABASE " + dataSource.getDatabaseName() + ";"); //$NON-NLS-1$ //$NON-NLS-2$
+                    if (storage.getType() == StorageType.MASTER || storage.getType() == StorageType.STAGING) {
+                        // The default isolation level of SQL Server database is READ_COMMITTED. When transaction 1
+                        // update table A without commit, transaction 2 that selects table A will be paused. We need to
+                        // set READ_COMMITTED_SNAPSHOT as "ON" to run transaction 2 .
+                        statement.execute("ALTER DATABASE " + dataSource.getDatabaseName() + " SET ALLOW_SNAPSHOT_ISOLATION ON;"); //$NON-NLS-1$ //$NON-NLS-2$
+                        statement.execute("ALTER DATABASE " + dataSource.getDatabaseName() + " SET READ_COMMITTED_SNAPSHOT ON;"); //$NON-NLS-1$ //$NON-NLS-2$
+                    }
                 } catch (SQLException e) {
                     // Assumes database is already created.
                     LOGGER.warn("Exception occurred during CREATE DATABASE statement.", e);

@@ -585,7 +585,7 @@ public class UploadService {
                                 if (index + j >= currentElement.content().size()
                                         || currentElement.content().get(currentElement.content().indexOf(element) + j) != element) {
                                     Element createCopy = element.createCopy();
-                                    currentElement.content().add(createCopy);
+                                    currentElement.content().add(currentElement.content().indexOf(element) + j, createCopy);
                                     multiNodeList.add(createCopy);
                                 } else {
                                     multiNodeList.add(element);

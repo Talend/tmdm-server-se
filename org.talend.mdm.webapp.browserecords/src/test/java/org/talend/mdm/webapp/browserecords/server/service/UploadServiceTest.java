@@ -212,6 +212,28 @@ public class UploadServiceTest extends TestCase {
                 .replaceAll("")); //$NON-NLS-1$
     }
 
+    public void testMultiNodeWithForeignKey() throws Exception {
+        String expectedResult = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Contact xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><ContactId>Contact1</ContactId><name>Contact1</name><firstname>firstname</firstname><firstname>firstname2</firstname><emailsList><email><adress/><adresscategory/></email></emailsList><company>[CompanyName1]</company></Contact>"; //$NON-NLS-1$
+        fileType = "xls"; //$NON-NLS-1$
+        String[] keys = { "Contact/ContactId" }; //$NON-NLS-1$
+        headerVisibleMap = new HashMap<String, Boolean>();
+        headerVisibleMap.put("Contact/ContactId", true); //$NON-NLS-1$
+        headerVisibleMap.put("Contact/name", true); //$NON-NLS-1$
+        headerVisibleMap.put("Contact/firstname", true); //$NON-NLS-1$
+        headerVisibleMap.put("Contact/emailsList", true); //$NON-NLS-1$
+        headerVisibleMap.put("Contact/company", true); //$NON-NLS-1$
+        multipleValueSeparator = "|"; //$NON-NLS-1$
+        entityModel = getEntityModel("TestMultiNodeWithForeignKey.xsd", "TestMultiNodeWithForeignKey", //$NON-NLS-1$ //$NON-NLS-2$
+                "Contact", keys); //$NON-NLS-1$
+        UploadService service = new TestUploadService(entityModel, fileType, isPartialUpdate, headersOnFirstLine,
+                headerVisibleMap,
+                inheritanceNodePathList, multipleValueSeparator, seperator, encoding, textDelimiter, language);
+        file = new File(this.getClass().getResource("Contact.xls").getFile()); //$NON-NLS-1$
+        List<WSPutItemWithReport> wsPutItemWithReportList = service.readUploadFile(file);
+        assertEquals(expectedResult, removeFormatPattern.matcher(wsPutItemWithReportList.get(0).getWsPutItem().getXmlString())
+                .replaceAll("")); //$NON-NLS-1$
+    }
+
     public void testGetExcelFieldValue() throws Exception {
         boolean partialUpdateFlag = true;
         String[] keys = { "EntityA/EntityAId" }; //$NON-NLS-1$

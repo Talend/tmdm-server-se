@@ -171,6 +171,14 @@ public class UploadServiceTest extends TestCase {
         wsPutItemWithReportList = service.readUploadFile(file);
         assertEquals(expectedResult, removeFormatPattern.matcher(wsPutItemWithReportList.get(0).getWsPutItem().getXmlString())
                 .replaceAll("")); //$NON-NLS-1$
+
+        expectedResult = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Entity xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><field1>a</field1><field2><atr1>1test</atr1><atr2>2</atr2><atr3>3</atr3></field2><field2><atr1>4test</atr1><atr2>5</atr2><atr3>6</atr3></field2></Entity>"; //$NON-NLS-1$
+        file = new File(this.getClass().getResource("Entity_partialupdate.xls").getFile()); //$NON-NLS-1$
+        service = new TestUploadService(entityModel, fileType, true, headersOnFirstLine, headerVisibleMap,
+                inheritanceNodePathList, multipleValueSeparator, seperator, encoding, textDelimiter, language);
+        wsPutItemWithReportList = service.readUploadFile(file);
+        assertEquals(expectedResult,
+                removeFormatPattern.matcher(wsPutItemWithReportList.get(0).getWsPutItem().getXmlString()).replaceAll("")); //$NON-NLS-1$
     }
 
     public void testMultiNode2() throws Exception {
@@ -1513,7 +1521,12 @@ public class UploadServiceTest extends TestCase {
 
         @Override
         protected Document getItemForPartialUpdate(EntityModel model, String[] keys, int rowNumber) throws RemoteException, XtentisWebappException, Exception {
-            String expectedResult = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Product xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><Picture/><Id>i</Id><Name>1</Name><Description>1</Description><Features><Sizes><Size>Medium</Size><Size>Small</Size></Sizes><Colors><Color>White</Color><Color>Light Blue</Color><Color>Lemon</Color></Colors></Features><Availability/><Price>1.00</Price><Family/><OnlineStore/><Stores><Store/></Stores></Product>"; //$NON-NLS-1$
+            String expectedResult = null;
+            if ("Product".equals(model.getConceptName())) {
+                expectedResult = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Product xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><Picture/><Id>i</Id><Name>1</Name><Description>1</Description><Features><Sizes><Size>Medium</Size><Size>Small</Size></Sizes><Colors><Color>White</Color><Color>Light Blue</Color><Color>Lemon</Color></Colors></Features><Availability/><Price>1.00</Price><Family/><OnlineStore/><Stores><Store/></Stores></Product>"; //$NON-NLS-1$
+            } else if ("Entity".equals(model.getConceptName())) {
+                expectedResult = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Entity xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><field1>a</field1><field2><atr1>1</atr1><atr2>2</atr2><atr3>3</atr3></field2><field2><atr1>4</atr1><atr2>5</atr2><atr3>6</atr3></field2></Entity>"; //$NON-NLS-1$
+            }
             Document document = DocumentHelper.parseText(expectedResult);
             return document;
         }

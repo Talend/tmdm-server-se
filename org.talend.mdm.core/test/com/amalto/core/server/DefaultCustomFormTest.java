@@ -223,7 +223,6 @@ public class DefaultCustomFormTest extends TestCase {
 
     protected ILocalUser mockLocalUser(String[] roles) throws XtentisException {
         HashSet<String> roleNames = new HashSet<>(Arrays.asList(roles));
-        // role System_Interactive
         PowerMockito.mockStatic(LocalUser.class);
         ILocalUser mockUser = PowerMockito.mock(ILocalUser.class);
         PowerMockito.when(mockUser.getRoles()).thenReturn(roleNames);
@@ -232,7 +231,6 @@ public class DefaultCustomFormTest extends TestCase {
     }
 
     protected ILocalUser mockLocalUser(HashSet<String> roleNames) throws XtentisException {
-        // role System_Interactive
         PowerMockito.mockStatic(LocalUser.class);
         ILocalUser mockUser = PowerMockito.mock(ILocalUser.class);
         PowerMockito.when(mockUser.getRoles()).thenReturn(roleNames);

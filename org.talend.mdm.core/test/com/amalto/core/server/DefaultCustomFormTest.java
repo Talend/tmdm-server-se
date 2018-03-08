@@ -133,13 +133,6 @@ public class DefaultCustomFormTest extends TestCase {
 
         // only Administration role, can't get the any customer layout
         CustomFormPOJO userCustomForm = defaultCustomForm.getUserCustomForm(cfpk);
-        assertNull(userCustomForm);
-
-        // add the DEMO_MANAGER role for local user
-        roleNames.add(DEMO_MANAGER);
-        PowerMockito.when(mockUser.getRoles()).thenReturn(roleNames);
-
-        userCustomForm = defaultCustomForm.getUserCustomForm(cfpk);
         assertNotNull(userCustomForm);
         assertEquals(customFormPojo, userCustomForm);
     }

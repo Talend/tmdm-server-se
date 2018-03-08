@@ -93,9 +93,7 @@ public class DefaultCustomForm implements CustomForm {
             HashSet<String> roleNames = user.getRoles();
             boolean allCustomFormPermitted = false;
 
-            boolean isSuperAdmin = roleNames.contains(ICoreConstants.ADMIN_PERMISSION)
-                    && roleNames.contains(ICoreConstants.SYSTEM_ADMIN_ROLE);
-            if (isSuperAdmin) {
+            if (roleNames.contains(ICoreConstants.ADMIN_PERMISSION)) {
                 allCustomFormPermitted = true;
             } else {
                 for (String roleName : roleNames) {

@@ -368,7 +368,11 @@ class ProjectionIterator implements CloseableIterator<DataRecord> {
             FieldMetadata fieldMetadata = field.getFieldMetadata();
             if (!isAlias) {
                 if (fieldMetadata instanceof ReferenceFieldMetadata) {
-                    createReferenceElement(((ReferenceFieldMetadata) fieldMetadata));
+                    FieldMetadata referencedField = ((ReferenceFieldMetadata)mappingMetadataRepository.getMappingFromUser(fieldMetadata.getContainingType()).getDatabase(fieldMetadata)).getReferencedField();
+                    if (referencedField instanceof CompoundFieldMetadata) {
+                        ((ReferenceFieldMetadata)fieldMetadata).setReferencedField(referencedField);
+                    }
+                    createReferenceElement((ReferenceFieldMetadata) fieldMetadata);
                 } else {
                     TypeMetadata type = fieldMetadata.getType();
                     if (fieldMetadata instanceof SimpleTypeFieldMetadata) {
@@ -377,7 +381,6 @@ class ProjectionIterator implements CloseableIterator<DataRecord> {
                     } else {
                         createElement(type.getName(), fieldMetadata.getName());
                     }
-                    
                 }
             }
             if (fieldMetadata instanceof ReferenceFieldMetadata

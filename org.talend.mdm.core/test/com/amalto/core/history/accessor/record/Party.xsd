@@ -5,7 +5,7 @@
         <xsd:sequence>
             <xsd:element maxOccurs="1" minOccurs="1" name="code" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
         </xsd:sequence>
@@ -16,12 +16,12 @@
                 <xsd:sequence>
                     <xsd:element maxOccurs="1" minOccurs="1" name="firstName" type="xsd:string">
                         <xsd:annotation>
-                            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="1" name="lastName" type="xsd:string">
                         <xsd:annotation>
-                            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                 </xsd:sequence>
@@ -34,7 +34,7 @@
                 <xsd:sequence>
                     <xsd:element maxOccurs="1" minOccurs="1" name="name" type="xsd:string">
                         <xsd:annotation>
-                            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                 </xsd:sequence>
@@ -44,7 +44,7 @@
     <xsd:element name="PartyCompany" type="CompanyType">
         <xsd:annotation>
             <xsd:appinfo source="X_PrimaryKeyInfo">PartyCompany/name</xsd:appinfo>
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
         </xsd:annotation>
         <xsd:unique name="PartyCompany">
             <xsd:selector xpath="." />
@@ -53,7 +53,7 @@
     </xsd:element>
     <xsd:element name="PartyIndividual" type="IndividualType">
         <xsd:annotation>
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
         </xsd:annotation>
         <xsd:unique name="PartyIndividual">
             <xsd:selector xpath="." />
@@ -63,27 +63,27 @@
     <xsd:element name="PartyProduct">
         <xsd:annotation>
             <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:all>
                 <xsd:element maxOccurs="1" minOccurs="1" name="id" type="xsd:string">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="1" name="name" type="xsd:string">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="supplier" type="xsd:string">
                     <xsd:annotation>
                         <xsd:appinfo source="X_ForeignKey">Party/code</xsd:appinfo>
                         <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
             </xsd:all>
@@ -95,7 +95,7 @@
     </xsd:element>
     <xsd:element name="Party" type="PartyType">
         <xsd:annotation>
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
         </xsd:annotation>
         <xsd:unique name="Party">
             <xsd:selector xpath="." />

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2017 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -16,11 +16,11 @@ import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import junit.framework.TestCase;
-
 import org.w3c.dom.Document;
 
 import com.amalto.commons.core.utils.XMLUtils;
+
+import junit.framework.TestCase;
 
 /**
  * created by talend2 on 2013-6-13
@@ -29,7 +29,7 @@ import com.amalto.commons.core.utils.XMLUtils;
  */
 public class DataModelAccessorTest extends TestCase {
     
-    private static final List<String> ROLES = Arrays.asList("System_Admin"); //$NON-NLS-1$
+    private static final List<String> ROLES = Arrays.asList("Demo_Manager"); //$NON-NLS-1$
 
     public void testCheckRestoreAccessHelper() throws Exception {
         String modelXSD = getXSDModel("DataModelAccessorTest.xsd"); //$NON-NLS-1$

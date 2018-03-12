@@ -2,33 +2,33 @@
     <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/>
     <xsd:element name="Person">
         <xsd:annotation>
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:all>
                 <xsd:element name="PersonId" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="icon" type="PICTURE">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="1" name="name" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="1" name="age" type="xsd:int">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="address" type="ChineseAddress">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
             </xsd:all>
@@ -42,17 +42,17 @@
         <xsd:sequence>
             <xsd:element maxOccurs="1" minOccurs="0" name="city" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="street" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="1" name="road" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
         </xsd:sequence>
@@ -63,12 +63,12 @@
                 <xsd:sequence>
                     <xsd:element maxOccurs="1" minOccurs="1" name="xiaoqu" type="xsd:string">
                         <xsd:annotation>
-                            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="1" name="menpai" type="xsd:int">
                         <xsd:annotation>
-                            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                 </xsd:sequence>

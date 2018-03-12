@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2017 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -129,7 +129,7 @@ public class MetadataValidationTest extends TestCase {
         }
         assertEquals(1, handler.getErrorCount());
         assertTrue(handler.getMessages().contains(ValidationError.TYPE_DOES_NOT_EXIST));
-        assertTrue(handler.getLineNumbers().contains(193));
+        assertTrue(handler.getLineNumbers().contains(181));
         assertFalse(handler.getLineNumbers().contains(null));
     }
 
@@ -288,7 +288,7 @@ public class MetadataValidationTest extends TestCase {
         assertEquals(1, handler.getErrorCount());
         assertEquals(0, handler.getWarningCount());
         assertTrue(handler.getMessages().contains(ValidationError.TYPE_DOES_NOT_OWN_FIELD));
-        assertTrue(handler.getLineNumbers().contains(228));
+        assertTrue(handler.getLineNumbers().contains(213));
         assertFalse(handler.getLineNumbers().contains(null));
     }
     
@@ -305,7 +305,7 @@ public class MetadataValidationTest extends TestCase {
         assertEquals(1, handler.getErrorCount());
         assertEquals(0, handler.getWarningCount());
         assertTrue(handler.getMessages().contains(ValidationError.FOREIGN_KEY_INFO_NOT_REFERENCING_FK_TYPE));
-        assertTrue(handler.getLineNumbers().contains(195));
+        assertTrue(handler.getLineNumbers().contains(183));
         assertFalse(handler.getLineNumbers().contains(null));
     }
 
@@ -459,10 +459,10 @@ public class MetadataValidationTest extends TestCase {
         }
         assertEquals(2, handler.getErrorCount());
         assertTrue(handler.getMessages().contains(ValidationError.TYPE_DOES_NOT_OWN_FIELD));
-        assertTrue(handler.getLineNumbers().contains(193));
-        assertTrue(handler.getLineNumbers().contains(248));
-        assertTrue(handler.getLineNumbers().contains(398));
-        assertTrue(handler.getLineNumbers().contains(411));
+        assertTrue(handler.getLineNumbers().contains(181));
+        assertTrue(handler.getLineNumbers().contains(232));
+        assertTrue(handler.getLineNumbers().contains(375));
+        assertTrue(handler.getLineNumbers().contains(388));
         assertFalse(handler.getLineNumbers().contains(null));
     }
 
@@ -478,9 +478,9 @@ public class MetadataValidationTest extends TestCase {
         }
         assertEquals(3, handler.getErrorCount());
         assertTrue(handler.getMessages().contains(ValidationError.TYPE_DOES_NOT_OWN_FIELD));
-        assertTrue(handler.getLineNumbers().contains(22));
-        assertTrue(handler.getLineNumbers().contains(203));
-        assertTrue(handler.getLineNumbers().contains(338));
+        assertTrue(handler.getLineNumbers().contains(21));
+        assertTrue(handler.getLineNumbers().contains(190));
+        assertTrue(handler.getLineNumbers().contains(318));
         assertFalse(handler.getLineNumbers().contains(null));
     }
 
@@ -578,7 +578,7 @@ public class MetadataValidationTest extends TestCase {
         assertEquals(6, handler.getWarningCount());
         assertTrue(handler.getMessages().contains(ValidationError.TYPE_USE_XSD_ATTRIBUTES));
         assertTrue(handler.getLineNumbers().contains(63));
-        assertTrue(handler.getLineNumbers().contains(114));
+        assertTrue(handler.getLineNumbers().contains(113));
         assertFalse(handler.getLineNumbers().contains(null));
     }
 

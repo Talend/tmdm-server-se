@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2017 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -121,6 +121,12 @@ import com.sun.xml.xsom.util.DomAnnotationParserFactory;
 public class Util {
 
     private static final Logger LOGGER = Logger.getLogger(Util.class);
+
+    public static final String ROOT_LOCATION_PARAM = "mdmRootLocation";
+
+    public static final String ROOT_LOCATION_KEY = "mdm.root";
+
+    public static final String ROOT_LOCATION_URL_KEY = "mdm.root.url";
 
     private static final String USER_PROPERTY_PREFIX = "${user_context";
 

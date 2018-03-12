@@ -21,7 +21,6 @@
       <xsd:appinfo source="X_Label_FR">Produit</xsd:appinfo>  
         
         
-      <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
       <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
       <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo> 
     
@@ -40,7 +39,6 @@
           <xsd:annotation> 
             <xsd:appinfo source="X_Label_EN">Picture</xsd:appinfo>  
             <xsd:appinfo source="X_Label_FR">Image</xsd:appinfo>  
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
             <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
             <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo> 
           </xsd:annotation> 
@@ -49,7 +47,6 @@
           <xsd:annotation> 
             <xsd:appinfo source="X_Label_EN">Unique Id</xsd:appinfo>  
             <xsd:appinfo source="X_Label_FR">Id unique</xsd:appinfo>  
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
             <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
             <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo> 
           </xsd:annotation> 
@@ -58,7 +55,6 @@
           <xsd:annotation> 
             <xsd:appinfo source="X_Label_EN">Name</xsd:appinfo>  
             <xsd:appinfo source="X_Label_FR">Nom</xsd:appinfo>  
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
             <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
             <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo> 
           </xsd:annotation> 
@@ -67,7 +63,6 @@
           <xsd:annotation> 
             <xsd:appinfo source="X_Label_EN">Description</xsd:appinfo>  
             <xsd:appinfo source="X_Label_FR">Description</xsd:appinfo>  
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
             <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
             <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo> 
           </xsd:annotation> 
@@ -76,7 +71,6 @@
           <xsd:annotation> 
             <xsd:appinfo source="X_Label_EN">Features</xsd:appinfo>  
             <xsd:appinfo source="X_Label_FR">Caractéristiques</xsd:appinfo>  
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
             <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
             <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo> 
           </xsd:annotation>  
@@ -88,7 +82,6 @@
                   <xsd:appinfo source="X_Label_FR">Tailles</xsd:appinfo>  
                   <xsd:appinfo source="X_Description_EN">A product may be available in more than one size.</xsd:appinfo>  
                   <xsd:appinfo source="X_Description_FR">Un produit peut être disponible dans plusieurs tailles.</xsd:appinfo>  
-                  <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
                   <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
                   <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo> 
                 </xsd:annotation>  
@@ -98,7 +91,6 @@
                       <xsd:annotation> 
                         <xsd:appinfo source="X_Label_EN">Size</xsd:appinfo>  
                         <xsd:appinfo source="X_Label_FR">Taille</xsd:appinfo>  
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
                         <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
                         <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo> 
                       </xsd:annotation> 
@@ -112,7 +104,6 @@
                   <xsd:appinfo source="X_Label_FR">Couleurs</xsd:appinfo>  
                   <xsd:appinfo source="X_Description_EN">A product can be available in more than one color.</xsd:appinfo>  
                   <xsd:appinfo source="X_Description_FR">Un produit peut être disponible dans plusieurs couleurs.</xsd:appinfo>  
-                  <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
                   <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
                   <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo> 
                 </xsd:annotation>  
@@ -122,7 +113,6 @@
                       <xsd:annotation> 
                         <xsd:appinfo source="X_Label_EN">Color</xsd:appinfo>  
                         <xsd:appinfo source="X_Label_FR">Couleur</xsd:appinfo>  
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
                         <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
                         <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo> 
                       </xsd:annotation> 
@@ -137,7 +127,6 @@
           <xsd:annotation> 
             <xsd:appinfo source="X_Label_EN">Availability</xsd:appinfo>  
             <xsd:appinfo source="X_Label_FR">Disponibilité</xsd:appinfo>  
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
             <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
             <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo> 
           </xsd:annotation> 
@@ -151,7 +140,7 @@
               
               
              
-          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation> 
         </xsd:element>  
@@ -162,7 +151,6 @@
             <xsd:appinfo source="X_Label_FR">Famille</xsd:appinfo>  
             <xsd:appinfo source="X_ForeignKeyInfo">ProductFamily/Name</xsd:appinfo>  
             <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>  
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
             <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
             <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo> 
           </xsd:annotation> 
@@ -172,13 +160,12 @@
               
               
              
-          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation> 
         </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="Stores"> 
           <xsd:annotation> 
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
             <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
             <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>  
             <xsd:appinfo source="X_Label_EN">Stores</xsd:appinfo>  
@@ -229,7 +216,6 @@
     <xsd:annotation> 
       <xsd:appinfo source="X_Label_EN">Product Family</xsd:appinfo>  
       <xsd:appinfo source="X_Label_FR">Famille Produit</xsd:appinfo>  
-      <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
       <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
       <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo> 
     <xsd:appinfo source="X_PrimaryKeyInfo">ProductFamily/Name</xsd:appinfo>
@@ -240,7 +226,6 @@
           <xsd:annotation> 
             <xsd:appinfo source="X_Label_EN">Id (sequence)</xsd:appinfo>  
             <xsd:appinfo source="X_Label_FR">Id (séquence)</xsd:appinfo>  
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
             <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
             <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo> 
           </xsd:annotation> 
@@ -249,7 +234,6 @@
           <xsd:annotation> 
             <xsd:appinfo source="X_Label_EN">Name</xsd:appinfo>  
             <xsd:appinfo source="X_Label_FR">Nom</xsd:appinfo>  
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
             <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
             <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo> 
           </xsd:annotation> 
@@ -257,7 +241,6 @@
         <xsd:element maxOccurs="1" minOccurs="0" name="ChangeStatus" type="Status"> 
           <xsd:annotation> 
             <xsd:appinfo source="X_Hide">Demo_User</xsd:appinfo>  
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
             <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
             <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo> 
           </xsd:annotation> 
@@ -287,7 +270,7 @@
   </xsd:simpleType>  
   <xsd:element name="Store"> 
     <xsd:annotation> 
-      <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
+      <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
       <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>  
       <xsd:appinfo source="X_Label_EN">Store</xsd:appinfo>  
       <xsd:appinfo source="X_Label_FR">Magasin</xsd:appinfo> 
@@ -297,7 +280,7 @@
       <xsd:all> 
         <xsd:element maxOccurs="1" minOccurs="1" name="Id" type="xsd:string"> 
           <xsd:annotation> 
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
             <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>  
             <xsd:appinfo source="X_Label_EN">Store Id</xsd:appinfo>  
             <xsd:appinfo source="X_Label_FR">Id Magasin</xsd:appinfo> 
@@ -305,7 +288,7 @@
         </xsd:element>  
         <xsd:element maxOccurs="1" minOccurs="0" name="Address" type="xsd:string"> 
           <xsd:annotation> 
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
             <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>  
             <xsd:appinfo source="X_Label_EN">Address</xsd:appinfo>  
             <xsd:appinfo source="X_Label_FR">Addresse</xsd:appinfo>  
@@ -316,7 +299,6 @@
                 <xsd:element maxOccurs="1" minOccurs="0" name="Lat" type="xsd:double">
 <xsd:annotation>
 <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">Latitude</xsd:appinfo>
 <xsd:appinfo source="X_Label_FR">Latitude</xsd:appinfo>
 </xsd:annotation>
@@ -324,7 +306,6 @@
                 <xsd:element maxOccurs="1" minOccurs="0" name="Long" type="xsd:double">
 <xsd:annotation>
 <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">Longitude</xsd:appinfo>
 <xsd:appinfo source="X_Label_FR">Longitude</xsd:appinfo>
 </xsd:annotation>
@@ -334,7 +315,7 @@
             <xsd:appinfo source="X_Label_EN">Location</xsd:appinfo>  
             <xsd:appinfo source="X_Label_FR">Localisation</xsd:appinfo>  
              
-          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation> 
         </xsd:element> 

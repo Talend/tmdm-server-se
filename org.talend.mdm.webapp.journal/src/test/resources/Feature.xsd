@@ -12,25 +12,25 @@
                 <xsd:element maxOccurs="1" minOccurs="1" name="ProductID" type="UUID">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="1" name="ShortDescription" type="xsd:string">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="LongDescription" type="xsd:string">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="1" name="Features">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
                     </xsd:annotation>
                     <xsd:complexType>
                         <xsd:sequence>
@@ -42,7 +42,7 @@
                                     <xsd:appinfo source="X_ForeignKeyInfo">Feature/Name</xsd:appinfo>
                                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
                         </xsd:sequence>
@@ -61,27 +61,27 @@
     <xsd:element name="Feature">
         <xsd:annotation>
             <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:all>
                 <xsd:element maxOccurs="1" minOccurs="1" name="FeatureCode" type="xsd:integer">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="1" name="Name" type="xsd:string">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="1" name="Value" type="AbstractValueType">
                     <xsd:annotation>
                         <xsd:appinfo source="X_AutoExpand">false</xsd:appinfo>
                         <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
             </xsd:all>
@@ -98,7 +98,7 @@
                     <xsd:element maxOccurs="1" minOccurs="1" name="EnumType" type="xsd:string">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
-                            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                            <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="1" name="EnumFK" type="xsd:string">
@@ -107,7 +107,7 @@
                             <xsd:appinfo source="X_ForeignKey">EnumValue/EnumValID</xsd:appinfo>
                             <xsd:appinfo source="X_ForeignKey_Filter">EnumValue/EnumType$$=$$Feature/Value/EnumType$$#</xsd:appinfo>
                             <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
-                            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                            <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
                             <xsd:appinfo source="X_ForeignKeyInfo">EnumValue/EnumValID</xsd:appinfo>
                             <xsd:appinfo source="X_ForeignKeyInfo">EnumValue/Value</xsd:appinfo>
                             <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
@@ -120,26 +120,26 @@
     <xsd:element name="EnumValue">
         <xsd:annotation>
             <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:all>
                 <xsd:element maxOccurs="1" minOccurs="1" name="EnumValID" type="AUTO_INCREMENT">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="1" name="EnumType" type="xsd:string">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="1" name="Value" type="xsd:string">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
             </xsd:all>

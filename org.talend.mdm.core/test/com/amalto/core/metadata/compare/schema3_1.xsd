@@ -14,7 +14,7 @@
     <xsd:element name="JobGroup" type="JobGroupType">
         <xsd:annotation>
             <xsd:appinfo source="X_Write">General_Manager</xsd:appinfo>
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
         </xsd:annotation>
         <xsd:unique name="JobGroup">
             <xsd:selector xpath="."/>
@@ -26,13 +26,13 @@
             <xsd:element maxOccurs="1" minOccurs="1" name="JobGroup" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Write">General_Manager</xsd:appinfo>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="IsComposedOf" type="IsLinkedTo">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Write">General_Manager</xsd:appinfo>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
         </xsd:all>
@@ -42,7 +42,7 @@
             <xsd:element maxOccurs="1" minOccurs="1" name="JobCategory" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Write">General_Manager</xsd:appinfo>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
         </xsd:sequence>

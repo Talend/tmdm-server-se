@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2017 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -137,7 +137,7 @@ public class SecuredStorageTest extends StorageTestCase {
                 .where(eq(person.getField("Status"), "Customer"));
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(3, results.getCount());
+            assertEquals(1, results.getCount());
             for (DataRecord result : results) {
                 assertNotNull(result.get("id"));
                 assertNotNull(result.get("firstname"));
@@ -171,7 +171,7 @@ public class SecuredStorageTest extends StorageTestCase {
                 .where(and(eq(person.getField("Status"), "Customer"), eq(person.getField("middlename"), "John")));
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(3, results.getCount());
+            assertEquals(1, results.getCount());
             for (DataRecord result : results) {
                 assertNotNull(result.get("id"));
                 assertNotNull(result.get("firstname"));

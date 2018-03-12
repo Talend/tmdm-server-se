@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2017 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
  *
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -205,7 +205,7 @@ public class StorageDocument implements MutableDocument {
     @Override
     public String exportToStringWithNullFields() {
         StringWriter output = new StringWriter();
-        DataRecordXmlWriter writer = new DataRecordWithNullFieldsXmlWriter();
+        DataRecordXmlWriter writer = new DataRecordIncludeNullValueXmlWriter();
         try {
             writer.write(dataRecord, output);
         } catch (IOException e) {

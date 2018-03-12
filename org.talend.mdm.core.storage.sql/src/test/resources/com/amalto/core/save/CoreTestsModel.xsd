@@ -277,27 +277,27 @@
         <xsd:sequence>
             <xsd:element maxOccurs="1" minOccurs="1" name="mandatory1" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="optional2" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="unbounded" minOccurs="0" name="optionalUbounded3" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="unbounded" minOccurs="1" name="mandatoryUbounded4" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="optional5">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
                 <xsd:complexType>
                     <xsd:all>
@@ -308,7 +308,7 @@
             </xsd:element>
             <xsd:element maxOccurs="unbounded" minOccurs="0" name="optionalUbounded6">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
                 <xsd:complexType>
                     <xsd:all>

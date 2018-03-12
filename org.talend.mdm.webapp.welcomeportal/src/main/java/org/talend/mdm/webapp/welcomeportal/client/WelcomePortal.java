@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2017 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -39,13 +39,17 @@ public class WelcomePortal implements EntryPoint {
      */
     public final static String WELCOMEPORTAL_SERVICE = "WelcomePortalService"; //$NON-NLS-1$
 
-    public final static String BROWSECONTEXT = "browserecords", BROWSEAPP = "BrowseRecords"; //$NON-NLS-1$//$NON-NLS-2$
+    public final static String BROWSECONTEXT = "browserecords"; // $NON-NLS-2$
 
-    public final static String JOURNALCONTEXT = "journal", JOURNALAPP = "Journal"; //$NON-NLS-1$ //$NON-NLS-2$
+    public final static String BROWSEAPP = "BrowseRecords"; //$NON-NLS-1$
 
-    public final static String WORKFLOW_TASKCONTEXT = "workflowtasks", WORKFLOW_TASKAPP = "BonitaWorkflowTasks";//$NON-NLS-1$ //$NON-NLS-2$
+    public final static String JOURNALCONTEXT = "journal"; //$NON-NLS-2$
+    
+    public final static String JOURNALAPP = "Journal"; //$NON-NLS-1$
 
-    public final static String DSC_TASKAPP = "Datastewardship"; //$NON-NLS-1$
+    public final static String WORKFLOW_TASKCONTEXT = "workflowtasks"; // $NON-NLS-2$
+
+    public final static String WORKFLOW_TASKAPP = "BonitaWorkflowTasks";//$NON-NLS-1$
 
     public final static String WELCOMEPORTAL_ID = "Welcome"; //$NON-NLS-1$
 

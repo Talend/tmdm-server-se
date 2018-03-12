@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2017 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -10,8 +10,7 @@
 
 package com.amalto.core.save;
 
-import static com.amalto.core.query.user.UserQueryBuilder.eq;
-import static com.amalto.core.query.user.UserQueryBuilder.from;
+import static com.amalto.core.query.user.UserQueryBuilder.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -304,7 +303,7 @@ public class DocumentSaveTest extends TestCase {
         MockMetadataRepositoryAdmin.INSTANCE.register("Vinci", repository);
 
         SaverSource source = new TestSaverSource(repository, false, "", "Personne.xsd");
-        ((TestSaverSource) source).setUserName("System_Admin");
+        ((TestSaverSource) source).setUserName("Demo_Manager");
 
         SaverSession session = SaverSession.newSession(source);
         InputStream recordXml = DocumentSaveTest.class.getResourceAsStream("Personne.xml");
@@ -341,7 +340,7 @@ public class DocumentSaveTest extends TestCase {
         MockMetadataRepositoryAdmin.INSTANCE.register("MultiOccurrenceUUID", repository);
 
         TestSaverSource source = new TestSaverSource(repository, false, "", "MultiOccurrenceUUID.xsd");
-        source.setUserName("System_Admin");
+        source.setUserName("Demo_Manager");
 
         SaverSession session = SaverSession.newSession(source);
         InputStream recordXml = DocumentSaveTest.class.getResourceAsStream("NewMultiOccurrenceUUID.xml");
@@ -427,7 +426,7 @@ public class DocumentSaveTest extends TestCase {
         MockMetadataRepositoryAdmin.INSTANCE.register("Vinci", repository);
 
         SaverSource source = new TestSaverSource(repository, false, "", "personWithAddressOfAutoIncrement.xsd");
-        ((TestSaverSource) source).setUserName("System_Admin");
+        ((TestSaverSource) source).setUserName("Demo_Manager");
 
         SaverSession session = SaverSession.newSession(source);
         InputStream recordXml = DocumentSaveTest.class.getResourceAsStream("personWithAddressOfAutoIncrement_1.xml");
@@ -461,7 +460,7 @@ public class DocumentSaveTest extends TestCase {
 
         source = new TestSaverSource(repository, true, "personWithAddressOfAutoIncrement_origin.xml",
                 "personWithAddressOfAutoIncrement.xsd");
-        ((TestSaverSource) source).setUserName("System_Admin");
+        ((TestSaverSource) source).setUserName("Demo_Manager");
 
         session = SaverSession.newSession(source);
         recordXml = DocumentSaveTest.class.getResourceAsStream("personWithAddressOfAutoIncrement_2.xml");
@@ -504,7 +503,7 @@ public class DocumentSaveTest extends TestCase {
 
         source = new TestSaverSource(repository, true, "personWithAddressOfAutoIncrement_origin.xml",
                 "personWithAddressOfAutoIncrement.xsd");
-        ((TestSaverSource) source).setUserName("System_Admin");
+        ((TestSaverSource) source).setUserName("Demo_Manager");
 
         session = SaverSession.newSession(source);
         recordXml = DocumentSaveTest.class.getResourceAsStream("personWithAddressOfAutoIncrement_3.xml");
@@ -549,7 +548,7 @@ public class DocumentSaveTest extends TestCase {
         MockMetadataRepositoryAdmin.INSTANCE.register("Vinci", repository);
 
         SaverSource source = new TestSaverSource(repository, false, "", "personWithAddressOfUUID.xsd");
-        ((TestSaverSource) source).setUserName("System_Admin");
+        ((TestSaverSource) source).setUserName("Demo_Manager");
 
         SaverSession session = SaverSession.newSession(source);
         InputStream recordXml = DocumentSaveTest.class.getResourceAsStream("personWithAddressOfUUID_1.xml");
@@ -594,7 +593,7 @@ public class DocumentSaveTest extends TestCase {
         assertEquals("pccSignBoard", Util.getFirstTextNode(committedElement, "/person/dwellingAddresses/address[5]/type"));
 
         source = new TestSaverSource(repository, true, "personWithAddressOfUUID_origin.xml", "personWithAddressOfUUID.xsd");
-        ((TestSaverSource) source).setUserName("System_Admin");
+        ((TestSaverSource) source).setUserName("Demo_Manager");
 
         session = SaverSession.newSession(source);
         recordXml = DocumentSaveTest.class.getResourceAsStream("personWithAddressOfUUID_2.xml");
@@ -1017,7 +1016,7 @@ public class DocumentSaveTest extends TestCase {
         MockMetadataRepositoryAdmin.INSTANCE.register("DStar", repository);
 
         TestSaverSource source = new TestSaverSource(repository, true, "test1_original.xml", "metadata1.xsd");
-        source.setUserName("System_Admin");
+        source.setUserName("Demo_Manager");
 
         SaverSession session = SaverSession.newSession(source);
         InputStream recordXml = DocumentSaveTest.class.getResourceAsStream("test1.xml");
@@ -2869,7 +2868,7 @@ public class DocumentSaveTest extends TestCase {
         MockMetadataRepositoryAdmin.INSTANCE.register("Vinci", repository);
 
         TestSaverSource source = new TestSaverSource(repository, false, "", "Personne.xsd");
-        source.setUserName("System_Admin");
+        source.setUserName("Demo_Manager");
 
         // 1. /Personne/Contextes/Contexte all of nodes are empty(including Polymorphism node:
         // SpecialisationContactType)
@@ -3171,7 +3170,7 @@ public class DocumentSaveTest extends TestCase {
         MockMetadataRepositoryAdmin.INSTANCE.register("metadata20.xsd", repository);
 
         SaverSource source = new TestSaverSource(repository, true, "test69_original.xml", "metadata20.xsd");
-        ((TestSaverSource) source).setUserName("System_Admin");
+        ((TestSaverSource) source).setUserName("Demo_Manager");
 
         SaverSession session = SaverSession.newSession(source);
         InputStream recordXml = DocumentSaveTest.class.getResourceAsStream("test69.xml");
@@ -3193,7 +3192,7 @@ public class DocumentSaveTest extends TestCase {
         MockMetadataRepositoryAdmin.INSTANCE.register("DStar", repository);
 
         SaverSource source = new TestSaverSource(repository, true, "test55_original.xml", "metadata13.xsd");
-        ((TestSaverSource) source).setUserName("System_Admin");
+        ((TestSaverSource) source).setUserName("Demo_Manager");
         SaverSession session = SaverSession.newSession(source);
         InputStream recordXml = DocumentSaveTest.class.getResourceAsStream("test55.xml");
         DocumentSaverContext context = session.getContextFactory().create("MDM", "DStar", "Source", recordXml, false, false,
@@ -3272,7 +3271,7 @@ public class DocumentSaveTest extends TestCase {
         MockMetadataRepositoryAdmin.INSTANCE.register("test61", repository);
 
         SaverSource source = new TestSaverSource(repository, false, null, "metadata15.xsd");
-        ((TestSaverSource) source).setUserName("System_Admin");
+        ((TestSaverSource) source).setUserName("Demo_Manager");
         SaverSession session = SaverSession.newSession(source);
         InputStream recordXml = DocumentSaveTest.class.getResourceAsStream("test61_1.xml");
         DocumentSaverContext context = session.getContextFactory().create("MDM", "test61", "Source", recordXml, true, true, true,
@@ -3758,7 +3757,7 @@ public class DocumentSaveTest extends TestCase {
 
         @Override
         public Set<String> getCurrentUserRoles() {
-            return Collections.singleton("System_Admin");
+            return Collections.singleton("Demo_Manager");
         }
 
         @Override
@@ -3795,7 +3794,7 @@ public class DocumentSaveTest extends TestCase {
         @Override
         public HashSet<String> getRoles() {
             HashSet<String> roleSet = new HashSet<String>();
-            roleSet.add("System_Admin");
+            roleSet.add("Demo_Manager");
             return roleSet;
         }
 
@@ -3921,7 +3920,7 @@ public class DocumentSaveTest extends TestCase {
             if ("User".equals(userName)) {
                 return Collections.singleton("User");
             } else {
-                return Collections.singleton("System_Admin");
+                return Collections.singleton("Demo_Manager");
             }
         }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2017 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -171,6 +171,27 @@ public class UploadServiceTest extends TestCase {
         wsPutItemWithReportList = service.readUploadFile(file);
         assertEquals(expectedResult, removeFormatPattern.matcher(wsPutItemWithReportList.get(0).getWsPutItem().getXmlString())
                 .replaceAll("")); //$NON-NLS-1$
+
+        // <Entity><field1>a</field1><field2><atr1>1test</atr1><atr2>2</atr2><atr3>3</atr3></field2><field2><atr1>4test</atr1><atr2>5</atr2><atr3>6</atr3></field2></Entity>
+        // Test case for TMDM-9866,check result when update one element of atr1,atr2,atr3 or update all
+        service = new TestUploadService(entityModel, fileType, true, headersOnFirstLine, headerVisibleMap,
+                inheritanceNodePathList, multipleValueSeparator, seperator, encoding, textDelimiter, language);
+        expectedResult = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Entity xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><field1>a</field1><field2><atr1>1test</atr1><atr2>2</atr2><atr3>3</atr3></field2><field2><atr1>4test</atr1><atr2>5</atr2><atr3>6</atr3></field2></Entity>"; //$NON-NLS-1$
+        file = new File(this.getClass().getResource("Entity_partialupdate.xls").getFile()); //$NON-NLS-1$
+        wsPutItemWithReportList = service.readUploadFile(file);
+        assertEquals(expectedResult,
+                removeFormatPattern.matcher(wsPutItemWithReportList.get(0).getWsPutItem().getXmlString()).replaceAll("")); //$NON-NLS-1$
+        expectedResult = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Entity xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><field1>a</field1><field2><atr1>1test</atr1><atr2>2test</atr2><atr3>3</atr3></field2><field2><atr1>4test</atr1><atr2>5test</atr2><atr3>6</atr3></field2></Entity>"; //$NON-NLS-1$
+        file = new File(this.getClass().getResource("Entity_partialupdate2.xls").getFile()); //$NON-NLS-1$
+        wsPutItemWithReportList = service.readUploadFile(file);
+        assertEquals(expectedResult,
+                removeFormatPattern.matcher(wsPutItemWithReportList.get(0).getWsPutItem().getXmlString()).replaceAll("")); //$NON-NLS-1$
+        expectedResult = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Entity xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><field1>a</field1><field2><atr1>1test</atr1><atr2>2</atr2><atr3>3test</atr3></field2><field2><atr1>4test</atr1><atr2>5</atr2><atr3>6test</atr3></field2></Entity>"; //$NON-NLS-1$
+        file = new File(this.getClass().getResource("Entity_partialupdate3.xls").getFile()); //$NON-NLS-1$
+        wsPutItemWithReportList = service.readUploadFile(file);
+        assertEquals(expectedResult,
+                removeFormatPattern.matcher(wsPutItemWithReportList.get(0).getWsPutItem().getXmlString()).replaceAll("")); //$NON-NLS-1$
+
     }
 
     public void testMultiNode2() throws Exception {
@@ -208,6 +229,30 @@ public class UploadServiceTest extends TestCase {
         service = new TestUploadService(entityModel, fileType, isPartialUpdate, headersOnFirstLine, headerVisibleMap, inheritanceNodePathList,
                 multipleValueSeparator, seperator, encoding, textDelimiter, language);
         wsPutItemWithReportList = service.readUploadFile(file);
+        assertEquals(expectedResult, removeFormatPattern.matcher(wsPutItemWithReportList.get(0).getWsPutItem().getXmlString())
+                .replaceAll("")); //$NON-NLS-1$
+    }
+
+    public void testMultiNodeWithForeignKey() throws Exception {
+        // <Entity><E1>a1</A><E1><E1>a2</A><E1><E2>b1</E2></Entity>
+        // Test case for TMDM-11858,check element E1 order is correct.
+        String expectedResult = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Contact xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><ContactId>Contact1</ContactId><name>Contact1</name><firstname>firstname</firstname><firstname>firstname2</firstname><emailsList><email><adress/><adresscategory/></email></emailsList><company>[CompanyName1]</company></Contact>"; //$NON-NLS-1$
+        fileType = "xls"; //$NON-NLS-1$
+        String[] keys = { "Contact/ContactId" }; //$NON-NLS-1$
+        headerVisibleMap = new HashMap<String, Boolean>();
+        headerVisibleMap.put("Contact/ContactId", true); //$NON-NLS-1$
+        headerVisibleMap.put("Contact/name", true); //$NON-NLS-1$
+        headerVisibleMap.put("Contact/firstname", true); //$NON-NLS-1$
+        headerVisibleMap.put("Contact/emailsList", true); //$NON-NLS-1$
+        headerVisibleMap.put("Contact/company", true); //$NON-NLS-1$
+        multipleValueSeparator = "|"; //$NON-NLS-1$
+        entityModel = getEntityModel("TestMultiNodeWithForeignKey.xsd", "TestMultiNodeWithForeignKey", //$NON-NLS-1$ //$NON-NLS-2$
+                "Contact", keys); //$NON-NLS-1$
+        UploadService service = new TestUploadService(entityModel, fileType, isPartialUpdate, headersOnFirstLine,
+                headerVisibleMap,
+                inheritanceNodePathList, multipleValueSeparator, seperator, encoding, textDelimiter, language);
+        file = new File(this.getClass().getResource("Contact.xls").getFile()); //$NON-NLS-1$
+        List<WSPutItemWithReport> wsPutItemWithReportList = service.readUploadFile(file);
         assertEquals(expectedResult, removeFormatPattern.matcher(wsPutItemWithReportList.get(0).getWsPutItem().getXmlString())
                 .replaceAll("")); //$NON-NLS-1$
     }
@@ -1491,7 +1536,12 @@ public class UploadServiceTest extends TestCase {
 
         @Override
         protected Document getItemForPartialUpdate(EntityModel model, String[] keys, int rowNumber) throws RemoteException, XtentisWebappException, Exception {
-            String expectedResult = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Product xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><Picture/><Id>i</Id><Name>1</Name><Description>1</Description><Features><Sizes><Size>Medium</Size><Size>Small</Size></Sizes><Colors><Color>White</Color><Color>Light Blue</Color><Color>Lemon</Color></Colors></Features><Availability/><Price>1.00</Price><Family/><OnlineStore/><Stores><Store/></Stores></Product>"; //$NON-NLS-1$
+            String expectedResult = null;
+            if ("Product".equals(model.getConceptName())) { //$NON-NLS-1$
+                expectedResult = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Product xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><Picture/><Id>i</Id><Name>1</Name><Description>1</Description><Features><Sizes><Size>Medium</Size><Size>Small</Size></Sizes><Colors><Color>White</Color><Color>Light Blue</Color><Color>Lemon</Color></Colors></Features><Availability/><Price>1.00</Price><Family/><OnlineStore/><Stores><Store/></Stores></Product>"; //$NON-NLS-1$
+            } else if ("Entity".equals(model.getConceptName())) { //$NON-NLS-1$
+                expectedResult = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Entity xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><field1>a</field1><field2><atr1>1</atr1><atr2>2</atr2><atr3>3</atr3></field2><field2><atr1>4</atr1><atr2>5</atr2><atr3>6</atr3></field2></Entity>"; //$NON-NLS-1$
+            }
             Document document = DocumentHelper.parseText(expectedResult);
             return document;
         }

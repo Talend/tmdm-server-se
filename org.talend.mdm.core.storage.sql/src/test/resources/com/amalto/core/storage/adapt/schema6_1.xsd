@@ -7,13 +7,13 @@
   </xsd:simpleType>  
   <xsd:element name="MST_Notice"> 
     <xsd:annotation> 
-      <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo> 
+      <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo> 
     </xsd:annotation>  
     <xsd:complexType> 
       <xsd:sequence> 
         <xsd:element maxOccurs="1" minOccurs="1" name="idNotice" type="MANU_INCREMENT"> 
           <xsd:annotation> 
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
             <xsd:appinfo source="X_Label_FR">Identifiant du message interne</xsd:appinfo> 
           </xsd:annotation> 
         </xsd:element>  
@@ -21,7 +21,7 @@
           <xsd:annotation> 
             <xsd:appinfo source="X_ForeignKey">MST_Organisation/idOrganisation</xsd:appinfo>  
             <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>  
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo> 
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo> 
           </xsd:annotation> 
         </xsd:element> 
       </xsd:sequence> 
@@ -41,13 +41,13 @@
     <xsd:sequence> 
       <xsd:element maxOccurs="1" minOccurs="1" name="idOrganisation" type="MANU_INCREMENT"> 
         <xsd:annotation> 
-          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
           <xsd:appinfo source="X_Label_FR">Identifiant interne de l’entreprise</xsd:appinfo> 
         </xsd:annotation> 
       </xsd:element>  
       <xsd:element maxOccurs="unbounded" minOccurs="0" name="ctOrganisationReplacement"> 
         <xsd:annotation> 
-          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
           <xsd:appinfo source="X_Label_FR">Entreprise remplaçante</xsd:appinfo> 
         </xsd:annotation>  
         <xsd:complexType> 
@@ -56,13 +56,13 @@
               <xsd:annotation> 
                 <xsd:appinfo source="X_ForeignKey">MST_Organisation/idOrganisation</xsd:appinfo>  
                 <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>  
-                <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
+                <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
                 <xsd:appinfo source="X_Label_FR">Identifiant de l'entreprise remplaçante</xsd:appinfo> 
               </xsd:annotation> 
             </xsd:element>  
             <xsd:element maxOccurs="1" minOccurs="1" name="syOrganisationReplacementSrc" type="SourceEnum"> 
               <xsd:annotation> 
-                <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
+                <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
                 <xsd:appinfo source="X_Label_FR">Source de l'identifiant de l'entreprise remplaçante</xsd:appinfo> 
               </xsd:annotation> 
             </xsd:element> 
@@ -73,14 +73,14 @@
         <xsd:annotation> 
           <xsd:appinfo source="X_ForeignKey">MST_Notice/idNotice</xsd:appinfo>  
           <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo> 
+          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo> 
         </xsd:annotation> 
       </xsd:element> 
     </xsd:sequence> 
   </xsd:complexType>  
   <xsd:element name="MST_Organisation" type="OrganisationType"> 
     <xsd:annotation> 
-      <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo> 
+      <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo> 
     </xsd:annotation>  
     <xsd:unique name="MST_Organisation"> 
       <xsd:selector xpath="."/>  

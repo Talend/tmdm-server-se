@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2017 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -585,7 +585,7 @@ public class UploadService {
                                 if (index + j >= currentElement.content().size()
                                         || currentElement.content().get(currentElement.content().indexOf(element) + j) != element) {
                                     Element createCopy = element.createCopy();
-                                    currentElement.content().add(createCopy);
+                                    currentElement.content().add(currentElement.content().indexOf(element) + j, createCopy);
                                     multiNodeList.add(createCopy);
                                 } else {
                                     multiNodeList.add(element);

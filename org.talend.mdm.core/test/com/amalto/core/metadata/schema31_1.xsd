@@ -10,7 +10,7 @@
       <xsd:appinfo source="X_Deny_Create">pcube_ha_normal_user</xsd:appinfo>  
       <xsd:appinfo source="X_Deny_LogicalDelete">pcube_ha_admin</xsd:appinfo>  
       <xsd:appinfo source="X_Deny_LogicalDelete">pcube_ha_normal_user</xsd:appinfo>  
-      <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo> 
+      <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo> 
     </xsd:annotation>  
     <xsd:complexType> 
       <xsd:all> 
@@ -18,7 +18,7 @@
           <xsd:annotation> 
             <xsd:appinfo source="X_Deny_Create">pcube_ha_admin</xsd:appinfo>  
             <xsd:appinfo source="X_Deny_Create">pcube_ha_normal_user</xsd:appinfo>  
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo> 
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo> 
           </xsd:annotation>  
           <xsd:simpleType> 
             <xsd:restriction base="xsd:string"> 
@@ -32,7 +32,7 @@
             <xsd:appinfo source="X_ForeignKeyInfo">T_LOCAL_FOURNISSEUR/LOCAL_SOURCE_ID</xsd:appinfo>  
             <xsd:appinfo source="X_ForeignKey">T_LOCAL_FOURNISSEUR</xsd:appinfo>  
             <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>  
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo> 
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo> 
           </xsd:annotation> 
         </xsd:element>  
         <xsd:element maxOccurs="1" minOccurs="0" name="LOCAL_FO_ID" type="xsd:string"> 
@@ -41,7 +41,7 @@
             <xsd:appinfo source="X_ForeignKeyInfo">T_LOCAL_FOURNISSEUR/LOCAL_FO_ID</xsd:appinfo>  
             <xsd:appinfo source="X_ForeignKey">T_LOCAL_FOURNISSEUR</xsd:appinfo>  
             <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>  
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo> 
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo> 
           </xsd:annotation> 
         </xsd:element> 
       </xsd:all> 
@@ -58,14 +58,14 @@
       <xsd:appinfo source="X_Deny_Create">pcube_ha_admin</xsd:appinfo>  
       <xsd:appinfo source="X_Deny_LogicalDelete">pcube_ha_admin</xsd:appinfo>  
       <xsd:appinfo source="X_Deny_LogicalDelete">pcube_ha_normal_user</xsd:appinfo>  
-      <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo> 
+      <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo> 
     </xsd:annotation>  
     <xsd:complexType> 
       <xsd:all> 
         <xsd:element maxOccurs="1" minOccurs="1" name="LOCAL_SOURCE_ID"> 
           <xsd:annotation> 
             <xsd:appinfo source="X_Deny_Create">pcube_ha_admin</xsd:appinfo>  
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo> 
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo> 
           </xsd:annotation>  
           <xsd:simpleType> 
             <xsd:restriction base="xsd:string"> 
@@ -76,7 +76,7 @@
         <xsd:element maxOccurs="1" minOccurs="1" name="LOCAL_FO_ID"> 
           <xsd:annotation> 
             <xsd:appinfo source="X_Deny_Create">pcube_ha_admin</xsd:appinfo>  
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo> 
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo> 
           </xsd:annotation>  
           <xsd:simpleType> 
             <xsd:restriction base="xsd:string"> 

@@ -4,24 +4,24 @@
 		<xsd:all>
 			<xsd:element maxOccurs="1" minOccurs="1" name="id" type="xsd:string">
 				<xsd:annotation>
-					<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+					<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element maxOccurs="1" minOccurs="1" name="mandatory11" type="xsd:string">
 				<xsd:annotation>
-					<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+					<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element maxOccurs="1" minOccurs="1" name="nestedType2" type="NestedType2">
 				<xsd:annotation>
-					<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+					<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
 		</xsd:all>
 	</xsd:complexType>
 	<xsd:element name="TestEntity_Nested" type="TestType_Nested">
 		<xsd:annotation>
-			<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+			<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 		</xsd:annotation>
 		<xsd:unique name="TestEntityNested">
 			<xsd:selector xpath="."/>
@@ -32,12 +32,12 @@
 		<xsd:all>
 			<xsd:element maxOccurs="1" minOccurs="1" name="mandatory21" type="xsd:string">
 				<xsd:annotation>
-					<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+					<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element maxOccurs="1" minOccurs="1" name="nestedType3" type="NestedType3">
 				<xsd:annotation>
-					<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+					<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
 		</xsd:all>
@@ -46,7 +46,7 @@
 		<xsd:all>
 			<xsd:element maxOccurs="1" minOccurs="1" name="mandatory31" type="xsd:string">
 				<xsd:annotation>
-					<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+					<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
 		</xsd:all>

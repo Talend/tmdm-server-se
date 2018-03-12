@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2017 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -691,7 +691,7 @@ public class MainFramePanel extends Portal {
             public void onSuccess(Boolean hideMe) {
                 setHiddenWorkFlowTask(hideMe);
 
-                service.isHiddenDSCTask(new SessionAwareAsyncCallback<Boolean>() {
+                service.isHiddenTDSTask(new SessionAwareAsyncCallback<Boolean>() {
 
                     @Override
                     public void onSuccess(Boolean hideMeToo) {

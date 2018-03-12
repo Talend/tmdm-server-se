@@ -2,25 +2,25 @@
 <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/>
 <xsd:element name="MainEntity">
 <xsd:annotation>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 <xsd:complexType>
 <xsd:all>
 <xsd:element name="MainEntityId" type="xsd:string">
 <xsd:annotation>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="0" name="fkField1" type="xsd:string">
 <xsd:annotation>
 <xsd:appinfo source="X_ForeignKey">Person</xsd:appinfo>
 <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="0" name="field2" type="xsd:string">
 <xsd:annotation>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 </xsd:all>
@@ -34,12 +34,12 @@
 <xsd:sequence>
 <xsd:element maxOccurs="1" minOccurs="1" name="id" type="xsd:string">
 <xsd:annotation>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="0" name="name" type="xsd:string">
 <xsd:annotation>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 </xsd:sequence>
@@ -50,7 +50,7 @@
 <xsd:sequence>
 <xsd:element maxOccurs="1" minOccurs="0" name="title" type="xsd:string">
 <xsd:annotation>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 </xsd:sequence>
@@ -63,7 +63,7 @@
 <xsd:sequence>
 <xsd:element maxOccurs="1" minOccurs="0" name="role" type="xsd:string">
 <xsd:annotation>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 </xsd:sequence>
@@ -72,7 +72,7 @@
 </xsd:complexType>
 <xsd:element name="Person" type="Person">
 <xsd:annotation>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 <xsd:unique name="Person">
 <xsd:selector xpath="."/>
@@ -81,7 +81,7 @@
 </xsd:element>
 <xsd:element name="Manager" type="Manager">
 <xsd:annotation>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 <xsd:unique name="Manager">
 <xsd:selector xpath="."/>
@@ -90,7 +90,7 @@
 </xsd:element>
 <xsd:element name="Employee" type="Employee">
 <xsd:annotation>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 <xsd:unique name="Employee">
 <xsd:selector xpath="."/>

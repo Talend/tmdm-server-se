@@ -13,22 +13,22 @@
     <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/>
     <xsd:element name="EntityA">
         <xsd:annotation>
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
-            <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
             <xsd:appinfo source="X_Deny_LogicalDelete">Demo_User</xsd:appinfo>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:all>
                 <xsd:element name="EntityAId" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="Name" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
             </xsd:all>
@@ -40,22 +40,22 @@
     </xsd:element>
     <xsd:element name="EntityB">
         <xsd:annotation>
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
-            <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
             <xsd:appinfo source="X_Deny_PhysicalDelete">Demo_User</xsd:appinfo>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:all>
                 <xsd:element name="EntityBId" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="Name" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
             </xsd:all>

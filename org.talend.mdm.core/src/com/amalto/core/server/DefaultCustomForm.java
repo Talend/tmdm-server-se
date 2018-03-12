@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2017 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -17,6 +17,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.talend.mdm.commmon.util.core.ICoreConstants;
 
 import com.amalto.core.delegator.ILocalUser;
 import com.amalto.core.objects.ObjectPOJO;
@@ -91,21 +92,26 @@ public class DefaultCustomForm implements CustomForm {
             ILocalUser user = LocalUser.getLocalUser();
             HashSet<String> roleNames = user.getRoles();
             boolean allCustomFormPermitted = false;
-            for (String roleName : roleNames) {
-                if (SecurityConfig.isSecurityPermission(roleName)) {
-                    continue;
-                }
-                //load Role
-                RolePOJO role = ObjectPOJO.load(RolePOJO.class, new RolePOJOPK(roleName));
-                //get Specifications for the View Object
-                RoleSpecification specification = role.getRoleSpecifications().get(objectType);
-                if (specification != null) {
-                    if (specification.isAdmin()) {
-                        allCustomFormPermitted = true;
+
+            if (roleNames.contains(ICoreConstants.ADMIN_PERMISSION)) {
+                allCustomFormPermitted = true;
+            } else {
+                for (String roleName : roleNames) {
+                    if (SecurityConfig.isSecurityPermission(roleName)) {
+                        continue;
                     }
-                    Set<String> keys = specification.getInstances().keySet();
-                    for (String id : keys) {
-                        ids.add(id);
+                    // load Role
+                    RolePOJO role = ObjectPOJO.load(RolePOJO.class, new RolePOJOPK(roleName));
+                    // get Specifications for the View Object
+                    RoleSpecification specification = role.getRoleSpecifications().get(objectType);
+                    if (specification != null) {
+                        if (specification.isAdmin()) {
+                            allCustomFormPermitted = true;
+                        }
+                        Set<String> keys = specification.getInstances().keySet();
+                        for (String id : keys) {
+                            ids.add(id);
+                        }
                     }
                 }
             }

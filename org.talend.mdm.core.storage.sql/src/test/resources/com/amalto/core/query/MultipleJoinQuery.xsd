@@ -4089,7 +4089,7 @@
             </xsd:appinfo>
             <xsd:appinfo source="X_Deny_PhysicalDelete">ChiefDataSteward_PARTNER_Group
             </xsd:appinfo>
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:all>
@@ -4115,7 +4115,7 @@
                         </xsd:appinfo>
                         <xsd:appinfo source="X_Deny_Create">ChiefDataSteward_PARTNER_Group
                         </xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin
+                        <xsd:appinfo source="X_Write">Demo_Manager
                         </xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
@@ -4141,7 +4141,7 @@
                         </xsd:appinfo>
                         <xsd:appinfo source="X_Deny_Create">ChiefDataSteward_PARTNER_Group
                         </xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin
+                        <xsd:appinfo source="X_Write">Demo_Manager
                         </xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
@@ -4169,7 +4169,7 @@
                         </xsd:appinfo>
                         <xsd:appinfo source="X_Deny_Create">ChiefDataSteward_PARTNER_Group
                         </xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin
+                        <xsd:appinfo source="X_Write">Demo_Manager
                         </xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
@@ -4212,7 +4212,7 @@
                         </xsd:appinfo>
                         <xsd:appinfo source="X_Hide">ChiefDataSteward_PARTNER_Group
                         </xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin
+                        <xsd:appinfo source="X_Write">Demo_Manager
                         </xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
@@ -4298,7 +4298,7 @@
             <xsd:appinfo source="X_Deny_PhysicalDelete">Admin_MDM</xsd:appinfo>
             <xsd:appinfo source="X_Deny_PhysicalDelete">ChiefDataSteward_PARTNER_Group
             </xsd:appinfo>
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:all>
@@ -4345,7 +4345,7 @@
                         </xsd:appinfo>
                         <xsd:appinfo source="X_Deny_Create">ChiefDataSteward_PARTNER_Group
                         </xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin
+                        <xsd:appinfo source="X_Write">Demo_Manager
                         </xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
@@ -4378,7 +4378,7 @@
                         </xsd:appinfo>
                         <xsd:appinfo source="X_Deny_Create">ChiefDataSteward_PARTNER_Group
                         </xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin
+                        <xsd:appinfo source="X_Write">Demo_Manager
                         </xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
@@ -4423,7 +4423,7 @@
                         </xsd:appinfo>
                         <xsd:appinfo source="X_Deny_Create">ChiefDataSteward_PARTNER_Group
                         </xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin
+                        <xsd:appinfo source="X_Write">Demo_Manager
                         </xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
@@ -4447,7 +4447,7 @@
                         </xsd:appinfo>
                         <xsd:appinfo source="X_Deny_Create">ChiefDataSteward_PARTNER_Group
                         </xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin
+                        <xsd:appinfo source="X_Write">Demo_Manager
                         </xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
@@ -4471,7 +4471,7 @@
                         </xsd:appinfo>
                         <xsd:appinfo source="X_Deny_Create">ChiefDataSteward_PARTNER_Group
                         </xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin
+                        <xsd:appinfo source="X_Write">Demo_Manager
                         </xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
@@ -4495,7 +4495,7 @@
                         </xsd:appinfo>
                         <xsd:appinfo source="X_Deny_Create">ChiefDataSteward_PARTNER_Group
                         </xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin
+                        <xsd:appinfo source="X_Write">Demo_Manager
                         </xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
@@ -4519,7 +4519,7 @@
                         </xsd:appinfo>
                         <xsd:appinfo source="X_Deny_Create">ChiefDataSteward_PARTNER_Group
                         </xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin
+                        <xsd:appinfo source="X_Write">Demo_Manager
                         </xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
@@ -4543,7 +4543,7 @@
                         </xsd:appinfo>
                         <xsd:appinfo source="X_Deny_Create">ChiefDataSteward_PARTNER_Group
                         </xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin
+                        <xsd:appinfo source="X_Write">Demo_Manager
                         </xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
@@ -4590,7 +4590,7 @@
                         </xsd:appinfo>
                         <xsd:appinfo source="X_Deny_Create">ChiefDataSteward_PARTNER_Group
                         </xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin
+                        <xsd:appinfo source="X_Write">Demo_Manager
                         </xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
@@ -4631,7 +4631,7 @@
                         </xsd:appinfo>
                         <xsd:appinfo source="X_Deny_Create">ChiefDataSteward_PARTNER_Group
                         </xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin
+                        <xsd:appinfo source="X_Write">Demo_Manager
                         </xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
@@ -4665,7 +4665,7 @@
                         </xsd:appinfo>
                         <xsd:appinfo source="X_Deny_Create">ChiefDataSteward_PARTNER_Group
                         </xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin
+                        <xsd:appinfo source="X_Write">Demo_Manager
                         </xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
@@ -4702,7 +4702,7 @@
                         </xsd:appinfo>
                         <xsd:appinfo source="X_Deny_Create">ChiefDataSteward_PARTNER_Group
                         </xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin
+                        <xsd:appinfo source="X_Write">Demo_Manager
                         </xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
@@ -4744,7 +4744,7 @@
                         </xsd:appinfo>
                         <xsd:appinfo source="X_Deny_Create">ChiefDataSteward_PARTNER_Group
                         </xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin
+                        <xsd:appinfo source="X_Write">Demo_Manager
                         </xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
@@ -4800,7 +4800,7 @@
                         </xsd:appinfo>
                         <xsd:appinfo source="X_Hide">ChiefDataSteward_PARTNER_Group
                         </xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin
+                        <xsd:appinfo source="X_Write">Demo_Manager
                         </xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
@@ -5515,7 +5515,7 @@
             <xsd:appinfo source="X_Write">Admin_MDM</xsd:appinfo>
             <xsd:appinfo source="X_Write">DataSteward_PARTNER_Group
             </xsd:appinfo>
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:all>
@@ -5545,7 +5545,7 @@
                         </xsd:appinfo>
                         <xsd:appinfo source="X_Write">DataSteward_PARTNER_Group
                         </xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin
+                        <xsd:appinfo source="X_Write">Demo_Manager
                         </xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
@@ -5575,7 +5575,7 @@
                         </xsd:appinfo>
                         <xsd:appinfo source="X_Write">DataSteward_PARTNER_Group
                         </xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin
+                        <xsd:appinfo source="X_Write">Demo_Manager
                         </xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
@@ -5607,7 +5607,7 @@
                         </xsd:appinfo>
                         <xsd:appinfo source="X_Write">DataSteward_PARTNER_Group
                         </xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin
+                        <xsd:appinfo source="X_Write">Demo_Manager
                         </xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
@@ -5658,7 +5658,7 @@
                         </xsd:appinfo>
                         <xsd:appinfo source="X_Write">DataSteward_PARTNER_Group
                         </xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin
+                        <xsd:appinfo source="X_Write">Demo_Manager
                         </xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
@@ -5725,7 +5725,7 @@
             </xsd:appinfo>
             <xsd:appinfo source="X_Deny_PhysicalDelete">ChiefDataSteward_PARTNER_Group
             </xsd:appinfo>
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:all>
@@ -5756,7 +5756,7 @@
                         </xsd:appinfo>
                         <xsd:appinfo source="X_Deny_Create">ChiefDataSteward_PARTNER_Group
                         </xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin
+                        <xsd:appinfo source="X_Write">Demo_Manager
                         </xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
@@ -5811,7 +5811,7 @@
                         </xsd:appinfo>
                         <xsd:appinfo source="X_Deny_Create">ChiefDataSteward_PARTNER_Group
                         </xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin
+                        <xsd:appinfo source="X_Write">Demo_Manager
                         </xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
@@ -5854,7 +5854,7 @@
                         </xsd:appinfo>
                         <xsd:appinfo source="X_Deny_Create">ChiefDataSteward_PARTNER_Group
                         </xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin
+                        <xsd:appinfo source="X_Write">Demo_Manager
                         </xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
@@ -5910,7 +5910,7 @@
                         </xsd:appinfo>
                         <xsd:appinfo source="X_Deny_Create">ChiefDataSteward_PARTNER_Group
                         </xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin
+                        <xsd:appinfo source="X_Write">Demo_Manager
                         </xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
@@ -5948,7 +5948,7 @@
                         </xsd:appinfo>
                         <xsd:appinfo source="X_Deny_Create">ChiefDataSteward_PARTNER_Group
                         </xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin
+                        <xsd:appinfo source="X_Write">Demo_Manager
                         </xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
@@ -5980,7 +5980,7 @@
                         </xsd:appinfo>
                         <xsd:appinfo source="X_Deny_Create">ChiefDataSteward_PARTNER_Group
                         </xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin
+                        <xsd:appinfo source="X_Write">Demo_Manager
                         </xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
@@ -6015,7 +6015,7 @@
                         </xsd:appinfo>
                         <xsd:appinfo source="X_Deny_Create">ChiefDataSteward_PARTNER_Group
                         </xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin
+                        <xsd:appinfo source="X_Write">Demo_Manager
                         </xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
@@ -6055,7 +6055,7 @@
                         </xsd:appinfo>
                         <xsd:appinfo source="X_Deny_Create">ChiefDataSteward_PARTNER_Group
                         </xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin
+                        <xsd:appinfo source="X_Write">Demo_Manager
                         </xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
@@ -6106,7 +6106,7 @@
                         </xsd:appinfo>
                         <xsd:appinfo source="X_Hide">ChiefDataSteward_PARTNER_Group
                         </xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin
+                        <xsd:appinfo source="X_Write">Demo_Manager
                         </xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>

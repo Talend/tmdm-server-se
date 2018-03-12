@@ -15,7 +15,7 @@
 			<xsd:appinfo source="X_Label_EN">Point of sale</xsd:appinfo>
 			<xsd:appinfo source="X_Label_FR">Point de vente</xsd:appinfo>
 			<xsd:appinfo source="X_Label_RU">Торговая точка</xsd:appinfo>		
-			<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+			<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 			<xsd:appinfo source="X_Description_EN">Point of Sale Desc</xsd:appinfo>
 			<xsd:appinfo source="X_Description_FR">Point de vente Desc</xsd:appinfo>
 		</xsd:annotation>
@@ -23,14 +23,14 @@
 			<xsd:all>
 				<xsd:element maxOccurs="1" minOccurs="1" name="PointOfSaleId" type="AUTO_INCREMENT">
 					<xsd:annotation>
-						<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+						<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 					</xsd:annotation>
 				</xsd:element>
 				<xsd:element maxOccurs="1" minOccurs="0" name="Name" type="MULTI_LINGUAL">
 					<xsd:annotation>				
 						<xsd:appinfo source="X_Label_EN">POS Name</xsd:appinfo>
 						<xsd:appinfo source="X_Label_FR">Nom PV</xsd:appinfo>				
-						<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+						<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 						<xsd:appinfo source="X_Description_EN">Name Desc</xsd:appinfo>
 						<xsd:appinfo source="X_Description_FR">Nom Desc</xsd:appinfo>
 					</xsd:annotation>
@@ -43,7 +43,7 @@
 						<xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>						
 						<xsd:appinfo source="X_Label_EN">Brand</xsd:appinfo>
 						<xsd:appinfo source="X_Label_FR">Marque</xsd:appinfo>					
-						<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+						<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 						<xsd:appinfo source="X_Description_EN">Brand Desc</xsd:appinfo>
 						<xsd:appinfo source="X_Description_FR">Marque Desc</xsd:appinfo>
 					</xsd:annotation>
@@ -54,12 +54,12 @@
 						<xsd:appinfo source="X_Label_EN">SAP Code 1</xsd:appinfo>
 						<xsd:appinfo source="X_Label_FR">SAP Code 1</xsd:appinfo>
 						
-						<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+						<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 					</xsd:annotation>
 				</xsd:element>
 				<xsd:element maxOccurs="1" minOccurs="0" name="SAP2" type="String50Type">
 					<xsd:annotation>
-						<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+						<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 					</xsd:annotation>
 				</xsd:element>
 				<xsd:element maxOccurs="1" minOccurs="0" name="StatusFk" type="xsd:string">
@@ -72,7 +72,7 @@
 						<xsd:appinfo source="X_Label_EN">Status</xsd:appinfo>
 						<xsd:appinfo source="X_Label_FR">Status</xsd:appinfo>
 						
-						<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+						<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 					</xsd:annotation>
 				</xsd:element>
 				<xsd:element maxOccurs="1" minOccurs="0" name="Address" type="AddressType">
@@ -81,7 +81,7 @@
 						<xsd:appinfo source="X_Label_EN">Address</xsd:appinfo>
 						<xsd:appinfo source="X_Label_FR">Adresse</xsd:appinfo>
 						<xsd:appinfo source="X_Label_RU">адрес</xsd:appinfo>						
-						<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+						<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 						<xsd:appinfo source="X_Description_EN">Address Desc</xsd:appinfo>  
             			<xsd:appinfo source="X_Description_FR">Adresse Desc</xsd:appinfo> 
 					</xsd:annotation>
@@ -93,7 +93,7 @@
 						<xsd:appinfo source="X_Label_EN">Contact Details</xsd:appinfo>
 						<xsd:appinfo source="X_Label_FR">Détails du contact</xsd:appinfo>
 						
-						<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+						<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 					</xsd:annotation>
 				</xsd:element>
 				<xsd:element maxOccurs="1" minOccurs="0" name="ManagerContactDetails" type="ManagerContactDetailsType2">
@@ -103,7 +103,7 @@
 						<xsd:appinfo source="X_Label_EN">Manager Details</xsd:appinfo>
 						<xsd:appinfo source="X_Label_FR">Informations sur le gérant</xsd:appinfo>
 						
-						<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+						<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 					</xsd:annotation>
 				</xsd:element>
             </xsd:all>
@@ -128,14 +128,14 @@
 <xsd:appinfo source="X_Label_FR">Marque</xsd:appinfo>
 <xsd:appinfo source="X_Label_RU">бренд</xsd:appinfo>
 
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 <xsd:complexType>
 <xsd:all>
 <xsd:element name="BrandId" type="AUTO_INCREMENT">
 
 <xsd:annotation>
-	<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+	<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 	<xsd:appinfo source="X_Label_EN">BrandId</xsd:appinfo>  
     <xsd:appinfo source="X_Label_FR">MarqueId</xsd:appinfo>
 </xsd:annotation>
@@ -147,7 +147,7 @@
 <xsd:appinfo source="X_Label_EN">Name</xsd:appinfo>
 <xsd:appinfo source="X_Label_RU">имя</xsd:appinfo>
 
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 </xsd:all>
@@ -173,14 +173,14 @@
 <xsd:appinfo source="X_Label_EN">Status</xsd:appinfo>
 <xsd:appinfo source="X_Label_FR">Statut</xsd:appinfo>
 
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 <xsd:complexType>
 <xsd:all>
 <xsd:element name="StatusId" type="xsd:string">
 <xsd:annotation>
 
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="0" name="Name" type="xsd:string">
@@ -189,7 +189,7 @@
 <xsd:appinfo source="X_Label_EN">Name</xsd:appinfo>
 <xsd:appinfo source="X_Label_FR">Nom</xsd:appinfo>
 
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 </xsd:all>
@@ -244,7 +244,7 @@
 <xsd:appinfo source="X_Label_EN">Address 1</xsd:appinfo>
 <xsd:appinfo source="X_Label_FR">Adresse 1</xsd:appinfo>
 
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="0" name="Address2" type="String255Type">
@@ -253,7 +253,7 @@
 <xsd:appinfo source="X_Label_EN">Address 2</xsd:appinfo>
 <xsd:appinfo source="X_Label_FR">Adresse 2</xsd:appinfo>
 
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="0" name="Town" type="String255Type">
@@ -262,7 +262,7 @@
 <xsd:appinfo source="X_Label_EN">Town</xsd:appinfo>
 <xsd:appinfo source="X_Label_FR">Ville</xsd:appinfo>
 
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="0" name="State" type="String255Type">
@@ -272,7 +272,7 @@
 <xsd:appinfo source="X_Label_FR">Région</xsd:appinfo>
 <xsd:appinfo source="X_Label_RU">область</xsd:appinfo>
 
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="0" name="Postcode" type="String50Type">
@@ -281,7 +281,7 @@
 <xsd:appinfo source="X_Label_EN">Zip Code</xsd:appinfo>
 <xsd:appinfo source="X_Label_FR">Code Postal</xsd:appinfo>
 
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="0" name="CountryFk" type="String10Type">
@@ -295,19 +295,19 @@
 <xsd:appinfo source="X_Label_FR">Pays</xsd:appinfo>
 <xsd:appinfo source="X_Label_RU">страна</xsd:appinfo>
 
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="Long" type="xsd:string">
 <xsd:annotation>
 
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="Lat" type="xsd:string">
 <xsd:annotation>
 
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
         </xsd:all>
@@ -328,7 +328,7 @@
 <xsd:appinfo source="X_Label_EN">Informations</xsd:appinfo>
 <xsd:appinfo source="X_Label_FR">Informations</xsd:appinfo>
 
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 </xsd:sequence>
@@ -341,7 +341,7 @@
 <xsd:appinfo source="X_Label_EN">Method</xsd:appinfo>
 <xsd:appinfo source="X_Label_FR">Méthode</xsd:appinfo>
 
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="1" name="Value" type="String255Type">
@@ -350,7 +350,7 @@
 <xsd:appinfo source="X_Label_EN">Value</xsd:appinfo>
 <xsd:appinfo source="X_Label_FR">Valeur</xsd:appinfo>
 
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 </xsd:sequence>
@@ -369,14 +369,14 @@
 <xsd:appinfo source="X_Label_EN">Products</xsd:appinfo>
 <xsd:appinfo source="X_Label_FR">Produits</xsd:appinfo>
 
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 <xsd:complexType>
 <xsd:all>
 <xsd:element name="ProductId" type="AUTO_INCREMENT">
 <xsd:annotation>
 
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="1" name="Name" type="String255Type">
@@ -385,7 +385,7 @@
 <xsd:appinfo source="X_Label_EN">Name</xsd:appinfo>
 <xsd:appinfo source="X_Label_FR">Nom</xsd:appinfo>
 
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="1" name="Family" type="FamilyType">
@@ -394,7 +394,7 @@
 <xsd:appinfo source="X_Label_EN">Family</xsd:appinfo>
 <xsd:appinfo source="X_Label_FR">Famille</xsd:appinfo>
 
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 </xsd:all>
@@ -410,14 +410,14 @@
 <xsd:appinfo source="X_Label_EN">POS Product Price</xsd:appinfo>
 <xsd:appinfo source="X_Label_FR">Prix Produit par PV</xsd:appinfo>
 
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 <xsd:complexType>
 <xsd:all>
 <xsd:element name="POS_ProductId" type="AUTO_INCREMENT">
 <xsd:annotation>
 
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="1" name="POSFk" type="String10Type">
@@ -430,7 +430,7 @@
 	<xsd:appinfo source="X_Label_EN">Point of Sale</xsd:appinfo>
 	<xsd:appinfo source="X_Label_FR">Point de vente</xsd:appinfo>
 	
-	<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>		
+	<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>		
 </xsd:annotation>
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="1" name="ProductFk" type="String10Type">
@@ -443,7 +443,7 @@
 <xsd:appinfo source="X_Label_EN">Product</xsd:appinfo>
 <xsd:appinfo source="X_Label_FR">Produit</xsd:appinfo>
 
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="0" name="Price" type="xsd:decimal">
@@ -452,7 +452,7 @@
 <xsd:appinfo source="X_Label_EN">Price</xsd:appinfo>
 <xsd:appinfo source="X_Label_FR">Prix</xsd:appinfo>
 
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 </xsd:all>
@@ -483,13 +483,13 @@
 <xsd:element maxOccurs="1" minOccurs="1" name="ManagerName" type="xsd:string">
 <xsd:annotation>
 
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="0" name="ContactDetails" type="ContactDetailsType">
 <xsd:annotation>
 
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 </xsd:all>

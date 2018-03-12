@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2017 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -22,6 +22,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.log4j.Logger;
 import org.talend.mdm.webapp.base.client.exception.ServiceException;
+import org.talend.mdm.webapp.base.shared.Constants;
 import org.talend.mdm.webapp.general.model.GroupItem;
 import org.talend.mdm.webapp.general.model.LanguageBean;
 import org.talend.mdm.webapp.general.model.MenuBean;
@@ -54,7 +55,9 @@ public class Utils {
 
     private static final Logger LOG = Logger.getLogger(Utils.class);
 
-    private static final String WELCOMECONTEXT = "welcomeportal", WELCOMEAPP = "WelcomePortal";//$NON-NLS-1$ //$NON-NLS-2$
+    private static final String WELCOMECONTEXT = "welcomeportal"; // $NON-NLS-2$
+
+    private static final String WELCOMEAPP = "WelcomePortal"; //$NON-NLS-1$
 
     private static final String DEFAULT_LANG = "en"; //$NON-NLS-1$
 
@@ -174,10 +177,12 @@ public class Utils {
                 String gxtEntryModule = GxtFactory.getInstance().getGxtEntryModule(context, application);
                 if (gxtEntryModule == null) {
                     // Other Application, direct js
-                    String tmp = "<script type=\"text/javascript\" src=\"secure/js/" //$NON-NLS-1$
-                            + application + ".js\"></script>\n"; //$NON-NLS-1$
-                    if (!imports.contains(tmp)) {
-                        imports.add(tmp);
+                    if (!(Constants.TDS_CONTEXT.equals(context) && Constants.TDS_APP.equals(application))) {
+                        String tmp = "<script type=\"text/javascript\" src=\"secure/js/" //$NON-NLS-1$
+                                + application + ".js\"></script>\n"; //$NON-NLS-1$
+                        if (!imports.contains(tmp)) {
+                            imports.add(tmp);
+                        }
                     }
                 } else {
                     String tmp = "<script type=\"text/javascript\" src=\"" + gxtEntryModule + "/" //$NON-NLS-1$ //$NON-NLS-2$ 
@@ -188,6 +193,9 @@ public class Utils {
                         imports.add("<script type=\"text/javascript\" src=\"secure/js/ImprovedDWRProxy.js\"></script>\n"); //$NON-NLS-1$
                         imports.add("<script type=\"text/javascript\" src=\"secure/js/SearchEntityPanel.js\"></script>\n"); //$NON-NLS-1$
                         imports.add("<script type=\"text/javascript\" src=\"secure/js/DataNavigatorPanel.js\"></script>\n"); //$NON-NLS-1$
+                    } else if (com.amalto.core.util.Util.isEnterprise() && "welcomeportal".equals(context) //$NON-NLS-1$
+                            && "welcomeportal".equals(gxtEntryModule)) { //$NON-NLS-1$
+                        imports.add("<script type=\"text/javascript\" src=\"secure/js/BonitaWorkflowTasks.js\"></script>\n"); //$NON-NLS-1$
                     }
                     if (!imports.contains(tmp)) {
                         imports.add(tmp);

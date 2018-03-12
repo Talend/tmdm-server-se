@@ -2,34 +2,34 @@
     <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/>
     <xsd:element name="Contract">
         <xsd:annotation>
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
-            <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
             <xsd:appinfo source="X_Write">User</xsd:appinfo>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:sequence>
                 <xsd:element maxOccurs="1" minOccurs="1" name="id" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="2" minOccurs="0" name="comment" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="5" minOccurs="0" name="detail" type="ContractDetailType">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="enumEle" type="ComStatus">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
             </xsd:sequence>
@@ -43,8 +43,8 @@
         <xsd:sequence>
             <xsd:element maxOccurs="1" minOccurs="0" name="code" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
-                    <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -56,27 +56,27 @@
                 <xsd:sequence>
                     <xsd:element maxOccurs="1" minOccurs="1" name="features">
                         <xsd:annotation>
-                            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
-                            <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>
+                            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                            <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
                         </xsd:annotation>
                         <xsd:complexType>
                             <xsd:sequence>
                                 <xsd:element maxOccurs="1" minOccurs="1" name="actor" type="xsd:string">
                                     <xsd:annotation>
-                                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
-                                        <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>
+                                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                                        <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
                                     </xsd:annotation>
                                 </xsd:element>
                                 <xsd:element maxOccurs="unbounded" minOccurs="0" name="vendor" type="xsd:string">
                                     <xsd:annotation>
-                                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
-                                        <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>
+                                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                                        <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
                                     </xsd:annotation>
                                 </xsd:element>
                                 <xsd:element maxOccurs="1" minOccurs="0" name="boolValue" type="xsd:boolean">
                                     <xsd:annotation>
-                                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
-                                        <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>
+                                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                                        <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
                                     </xsd:annotation>
                                 </xsd:element>
                             </xsd:sequence>
@@ -84,13 +84,13 @@
                     </xsd:element>
                     <xsd:element maxOccurs="3" minOccurs="0" name="ReadOnlyEle" type="xsd:string">
                         <xsd:annotation>
-                            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="boolTest" type="xsd:boolean">
                         <xsd:annotation>
-                            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                 </xsd:sequence>

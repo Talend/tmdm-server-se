@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2017 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -8,6 +8,10 @@
  * 92150 Suresnes, France
  */
 package org.talend.mdm.webapp.general.server.servlet;
+
+import static com.amalto.core.util.Util.ROOT_LOCATION_KEY;
+import static com.amalto.core.util.Util.ROOT_LOCATION_PARAM;
+import static com.amalto.core.util.Util.ROOT_LOCATION_URL_KEY;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -22,12 +26,6 @@ import org.springframework.util.ResourceUtils;
 import org.springframework.web.util.ServletContextPropertyUtils;
 
 public class MDMContextListener implements ServletContextListener {
-
-    public static final String ROOT_LOCATION_PARAM = "mdmRootLocation"; //$NON-NLS-1$
-
-    public static final String ROOT_LOCATION_KEY = "mdm.root"; //$NON-NLS-1$
-
-    public static final String ROOT_LOCATION_URL_KEY = "mdm.root.url"; //$NON-NLS-1$
 
     @Override
     public void contextInitialized(ServletContextEvent event) {

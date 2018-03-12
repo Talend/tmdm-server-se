@@ -13,32 +13,32 @@
     <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/>
     <xsd:element name="testImport">
         <xsd:annotation>
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
             <xsd:appinfo source="X_Write">User</xsd:appinfo>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:sequence>
                 <xsd:element maxOccurs="1" minOccurs="1" name="Marke" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Write">User</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="1" name="ArtikeLnummer" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Write">User</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="KeyMapping" type="KeyMappingListe">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Write">User</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="Class" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Write">User</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
@@ -56,25 +56,25 @@
                     <xsd:appinfo source="X_ForeignKey">linkTo/Id</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">linkTo/Name</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="Line1" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="L2" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="L3" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -103,18 +103,18 @@
     </xsd:simpleType>
     <xsd:element name="linkTo">
         <xsd:annotation>
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:all>
                 <xsd:element maxOccurs="1" minOccurs="1" name="Id" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="Name" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
             </xsd:all>
@@ -128,7 +128,7 @@
         <xsd:sequence>
             <xsd:element maxOccurs="unbounded" minOccurs="0" name="Komponenten" type="StueckListenKomponenten">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -138,7 +138,7 @@
         <xsd:all>
             <xsd:element maxOccurs="1" minOccurs="1" name="Artikel" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKey">linkTo/Id</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">linkTo/Name</xsd:appinfo>
@@ -147,13 +147,13 @@
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="Anzahl" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="Sortnummer" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -163,7 +163,7 @@
         <xsd:sequence>
             <xsd:element maxOccurs="unbounded" minOccurs="1" name="Keys" type="KeyMappingStruktur">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -173,13 +173,13 @@
         <xsd:all>
             <xsd:element maxOccurs="1" minOccurs="1" name="System" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="1" name="Key" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2017 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -27,7 +27,7 @@ public interface WelcomePortalService extends RemoteService {
 
     public boolean isHiddenWorkFlowTask() throws ServiceException;
 
-    public boolean isHiddenDSCTask() throws ServiceException;
+    public boolean isHiddenTDSTask() throws ServiceException;
 
     public int getWorkflowTaskMsg() throws ServiceException;
 

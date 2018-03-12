@@ -4,32 +4,32 @@
 		<xsd:sequence>
 			<xsd:element maxOccurs="1" minOccurs="1" name="IdMDM" type="AttrTypeText255">
 				<xsd:annotation>
-					<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+					<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element maxOccurs="1" minOccurs="1" name="LibelleMDM" type="AttrTypeText255">
 				<xsd:annotation>
-					<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+					<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element maxOccurs="1" minOccurs="1" name="NomApplication" type="AttrTypeCode35">
 				<xsd:annotation>
-					<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+					<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element maxOccurs="1" minOccurs="1" name="BddSource" type="AttrTypeCode35">
 				<xsd:annotation>
-					<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+					<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element maxOccurs="1" minOccurs="1" name="NumeroBdd" type="xsd:int">
 				<xsd:annotation>
-					<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+					<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element maxOccurs="unbounded" minOccurs="1" name="DonneeSource" type="ApplicationType">
 				<xsd:annotation>
-					<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+					<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
 		</xsd:sequence>
@@ -38,12 +38,12 @@
 		<xsd:sequence>
 			<xsd:element maxOccurs="1" minOccurs="1" name="IdDonneeSource" type="AttrTypeText255">
 				<xsd:annotation>
-					<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+					<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element maxOccurs="1" minOccurs="1" name="LibelleDonneeSource" type="AttrTypeText255">
 				<xsd:annotation>
-					<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+					<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
 		</xsd:sequence>
@@ -60,7 +60,7 @@
 	</xsd:simpleType>
 	<xsd:element name="XrefAgence" type="XrefGeneriqueType">
 		<xsd:annotation>
-			<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+			<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 		</xsd:annotation>
 		<xsd:unique name="XrefAgence">
 			<xsd:selector xpath="." />

@@ -4,33 +4,33 @@
     <xsd:element name="Citizen">
         <xsd:annotation>
             <xsd:appinfo source="X_Write">NavRole</xsd:appinfo>
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:sequence>
                 <xsd:element name="CitizenId" type="xsd:string">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Write">NavRole</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="name" type="xsd:string">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Write">NavRole</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="unbounded" minOccurs="0" name="identity">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Write">NavRole</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     </xsd:annotation>
                     <xsd:complexType>
                         <xsd:all>
                             <xsd:element maxOccurs="1" minOccurs="1" name="type" type="xsd:string">
                                 <xsd:annotation>
                                     <xsd:appinfo source="X_Write">NavRole</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
                             <xsd:element maxOccurs="1" minOccurs="1" name="nationality" type="xsd:string">
@@ -38,7 +38,7 @@
                                     <xsd:appinfo source="X_ForeignKey">Nationality/NationalityId</xsd:appinfo>
                                     <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">NavRole</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
                         </xsd:all>
@@ -47,7 +47,7 @@
                 <xsd:element maxOccurs="unbounded" minOccurs="0" name="aa" type="M2">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Write">NavRole</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
             </xsd:sequence>
@@ -66,13 +66,13 @@
                 <xsd:element name="CountryId" type="xsd:string">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Write">NavRole</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="name" type="xsd:string">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Write">NavRole</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
             </xsd:all>
@@ -85,20 +85,20 @@
     <xsd:element name="Nationality">
         <xsd:annotation>
             <xsd:appinfo source="X_Write">NavRole</xsd:appinfo>
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:all>
                 <xsd:element name="NationalityId" type="xsd:string">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Write">NavRole</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="name" type="xsd:string">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Write">NavRole</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
             </xsd:all>
@@ -113,13 +113,13 @@
             <xsd:element name="subelement" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Write">NavRole</xsd:appinfo>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="name" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Write">NavRole</xsd:appinfo>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="n2" type="xsd:string">
@@ -127,7 +127,7 @@
                     <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKey">Nationality</xsd:appinfo>
                     <xsd:appinfo source="X_Write">NavRole</xsd:appinfo>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
         </xsd:all>
@@ -135,19 +135,19 @@
     <xsd:complexType name="M2">
         <xsd:annotation>
             <xsd:appinfo source="X_Write">NavRole</xsd:appinfo>
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
         </xsd:annotation>
         <xsd:sequence>
             <xsd:element name="subelement" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Write">NavRole</xsd:appinfo>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="unbounded" minOccurs="0" name="n3" type="M1">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Write">NavRole</xsd:appinfo>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
         </xsd:sequence>

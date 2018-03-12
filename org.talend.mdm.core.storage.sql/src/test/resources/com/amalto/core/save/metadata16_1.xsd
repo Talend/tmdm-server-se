@@ -8,7 +8,7 @@
 <xsd:appinfo source="X_Workflow">moaREF#EOR_1.0#Read-only</xsd:appinfo>
 <xsd:appinfo source="X_Workflow">consultation#EOR_1.0#Writable</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">Unit Code</xsd:appinfo>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 <xsd:simpleType>
 <xsd:restriction base="xsd:string">
@@ -23,7 +23,7 @@
 <xsd:appinfo source="X_Workflow">moaREF#EOR_1.0#Read-only</xsd:appinfo>
 <xsd:appinfo source="X_Workflow">consultation#EOR_1.0#Writable</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">Entity type</xsd:appinfo>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="1" name="L_TYP_EOR" type="xsd:string">
@@ -32,7 +32,7 @@
 <xsd:appinfo source="X_Workflow">moaREF#EOR_1.0#Read-only</xsd:appinfo>
 <xsd:appinfo source="X_Workflow">consultation#EOR_1.0#Writable</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">Label EOR type</xsd:appinfo>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="1" name="CAT_TYP_EOR" type="xsd:string">
@@ -41,7 +41,7 @@
 <xsd:appinfo source="X_Workflow">moaREF#EOR_1.0#Read-only</xsd:appinfo>
 <xsd:appinfo source="X_Workflow">consultation#EOR_1.0#Writable</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">Label EOR type</xsd:appinfo>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="0" name="SIGLE_EOR">
@@ -50,7 +50,7 @@
 <xsd:appinfo source="X_Workflow">moaREF#EOR_1.0#Read-only</xsd:appinfo>
 <xsd:appinfo source="X_Workflow">consultation#EOR_1.0#Writable</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">Entity sigle</xsd:appinfo>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 <xsd:simpleType>
 <xsd:restriction base="xsd:string">
@@ -64,7 +64,7 @@
 <xsd:appinfo source="X_Workflow">moaREF#EOR_1.0#Read-only</xsd:appinfo>
 <xsd:appinfo source="X_Workflow">consultation#EOR_1.0#Writable</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">Entity label</xsd:appinfo>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 <xsd:simpleType>
 <xsd:restriction base="xsd:string">
@@ -78,7 +78,7 @@
 <xsd:appinfo source="X_Workflow">moaREF#EOR_1.0#Read-only</xsd:appinfo>
 <xsd:appinfo source="X_Workflow">consultation#EOR_1.0#Writable</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">Entity short label</xsd:appinfo>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 <xsd:simpleType>
 <xsd:restriction base="xsd:string">
@@ -92,7 +92,7 @@
 <xsd:appinfo source="X_Workflow">moaREF#EOR_1.0#Read-only</xsd:appinfo>
 <xsd:appinfo source="X_Workflow">consultation#EOR_1.0#Writable</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">AdministrativeReference</xsd:appinfo>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 <xsd:simpleType>
 <xsd:restriction base="xsd:string">
@@ -106,7 +106,7 @@
 <xsd:appinfo source="X_Workflow">moaREF#EOR_1.0#Read-only</xsd:appinfo>
 <xsd:appinfo source="X_Workflow">consultation#EOR_1.0#Writable</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">Compatibility reference</xsd:appinfo>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 <xsd:simpleType>
 <xsd:restriction base="xsd:string">
@@ -120,7 +120,7 @@
 <xsd:appinfo source="X_Workflow">moaREF#EOR_1.0#Read-only</xsd:appinfo>
 <xsd:appinfo source="X_Workflow">consultation#EOR_1.0#Writable</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">Comment</xsd:appinfo>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 <xsd:simpleType>
 <xsd:restriction base="xsd:string">
@@ -136,7 +136,7 @@
 <xsd:appinfo source="X_Workflow">consultation#EOR_1.0#Writable</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">RG type of the EOR</xsd:appinfo>
 <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="1" name="D_DEB_EOR" type="xsd:date">
@@ -145,7 +145,7 @@
 <xsd:appinfo source="X_Workflow">moaREF#EOR_1.0#Read-only</xsd:appinfo>
 <xsd:appinfo source="X_Workflow">consultation#EOR_1.0#Writable</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">Start date of validity</xsd:appinfo>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="0" name="D_CRE_EOR" type="xsd:string">
@@ -154,7 +154,7 @@
 <xsd:appinfo source="X_Workflow">moaREF#EOR_1.0#Read-only</xsd:appinfo>
 <xsd:appinfo source="X_Workflow">consultation#EOR_1.0#Writable</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">Creation date</xsd:appinfo>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="0" name="D_MOD_EOR" type="xsd:string">
@@ -163,7 +163,7 @@
 <xsd:appinfo source="X_Workflow">moaREF#EOR_1.0#Read-only</xsd:appinfo>
 <xsd:appinfo source="X_Workflow">consultation#EOR_1.0#Writable</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">Modification date</xsd:appinfo>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="0" name="D_FIN_EOR" type="xsd:date">
@@ -172,7 +172,7 @@
 <xsd:appinfo source="X_Workflow">moaREF#EOR_1.0#Read-only</xsd:appinfo>
 <xsd:appinfo source="X_Workflow">consultation#EOR_1.0#Writable</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">End of validity</xsd:appinfo>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="0" name="UG_EOR_FILLES">
@@ -182,7 +182,7 @@
 <xsd:appinfo source="X_Workflow">consultation#EOR_1.0#Writable</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">Low level</xsd:appinfo>
 <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 <xsd:complexType>
 <xsd:sequence>
@@ -195,7 +195,7 @@
 <xsd:appinfo source="X_Workflow">moaREF#EOR_1.0#Read-only</xsd:appinfo>
 <xsd:appinfo source="X_Workflow">consultation#EOR_1.0#Writable</xsd:appinfo>
 <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 </xsd:sequence>
@@ -208,7 +208,7 @@
 <xsd:appinfo source="X_Workflow">consultation#EOR_1.0#Writable</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">Sup entities</xsd:appinfo>
 <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 <xsd:complexType>
 <xsd:sequence>
@@ -221,7 +221,7 @@
 <xsd:appinfo source="X_Workflow">moaREF#EOR_1.0#Read-only</xsd:appinfo>
 <xsd:appinfo source="X_Workflow">consultation#EOR_1.0#Writable</xsd:appinfo>
 <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 </xsd:sequence>
@@ -233,7 +233,7 @@
 <xsd:appinfo source="X_Workflow">moaREF#EOR_1.0#Read-only</xsd:appinfo>
 <xsd:appinfo source="X_Workflow">consultation#EOR_1.0#Writable</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">Attached station</xsd:appinfo>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 <xsd:complexType>
 <xsd:sequence>
@@ -249,7 +249,7 @@
 <xsd:appinfo source="X_Workflow">consultation#EOR_1.0#Writable</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">Station</xsd:appinfo>
 <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 <xsd:appinfo source="X_FKIntegrity">true</xsd:appinfo>
 <xsd:appinfo source="X_FKIntegrity_Override">false</xsd:appinfo>
 <xsd:appinfo source="X_ForeignKeyInfo">GARE/CAT_ETFE</xsd:appinfo>
@@ -273,7 +273,7 @@
 &lt;rule context="."&gt;&lt;assert test="translate(D_FIN_EOR,&amp;quot; &amp;quot;,&amp;quot;&amp;quot;)=&amp;quot;&amp;quot; or number(translate(D_DEB_EOR,&amp;quot;-&amp;quot;,&amp;quot;&amp;quot;))&amp;lt;=number(translate(D_FIN_EOR,&amp;quot;-&amp;quot;,&amp;quot;&amp;quot;))"&gt;&lt;![CDATA[[FR:Date de fin de validité doit être vide ou supérieure à date de début]]]&gt;&lt;/assert&gt;&lt;/rule&gt;
 &lt;/pattern&gt;
 </xsd:appinfo>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 <xsd:unique name="EOR">
 <xsd:selector xpath="."/>
@@ -288,23 +288,23 @@
 &lt;rule context="."&gt;&lt;assert test="translate(D_FIN_EOR,&amp;quot; &amp;quot;,&amp;quot;&amp;quot;)=&amp;quot;&amp;quot; or number(translate(D_DEB_EOR,&amp;quot;-&amp;quot;,&amp;quot;&amp;quot;))&amp;lt;=number(translate(D_FIN_EOR,&amp;quot;-&amp;quot;,&amp;quot;&amp;quot;))"&gt;&lt;![CDATA[[FR:Date de fin de validité doit être vide ou supérieure à date de début]]]&gt;&lt;/assert&gt;&lt;/rule&gt;
 &lt;/pattern&gt;
 </xsd:appinfo>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 <xsd:complexType>
 <xsd:all>
 <xsd:element maxOccurs="1" minOccurs="1" name="ID_AUTO" type="AUTO_INCREMENT">
 <xsd:annotation>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="1" name="TALEND_CDC_DATE" type="xsd:string">
 <xsd:annotation>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="1" name="UG_EOR">
 <xsd:annotation>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 <xsd:simpleType>
 <xsd:restriction base="xsd:string">
@@ -315,7 +315,7 @@
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="1" name="TYP_EOR">
 <xsd:annotation>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 <xsd:simpleType>
 <xsd:restriction base="xsd:string">
@@ -325,17 +325,17 @@
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="0" name="L_TYP_EOR" type="xsd:string">
 <xsd:annotation>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="1" name="CAT_TYP_EOR" type="xsd:string">
 <xsd:annotation>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="0" name="SIGLE_EOR">
 <xsd:annotation>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 <xsd:simpleType>
 <xsd:restriction base="xsd:string">
@@ -345,7 +345,7 @@
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="0" name="L_EOR">
 <xsd:annotation>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 <xsd:simpleType>
 <xsd:restriction base="xsd:string">
@@ -355,7 +355,7 @@
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="0" name="LR_EOR">
 <xsd:annotation>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 <xsd:simpleType>
 <xsd:restriction base="xsd:string">
@@ -365,7 +365,7 @@
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="0" name="SERIE_CODE_UCA">
 <xsd:annotation>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 <xsd:simpleType>
 <xsd:restriction base="xsd:string">
@@ -375,7 +375,7 @@
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="0" name="SERIE_CODE_CPTA">
 <xsd:annotation>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 <xsd:simpleType>
 <xsd:restriction base="xsd:string">
@@ -385,7 +385,7 @@
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="0" name="COMT_EOR">
 <xsd:annotation>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 <xsd:simpleType>
 <xsd:restriction base="xsd:string">
@@ -397,27 +397,27 @@
 <xsd:annotation>
 <xsd:appinfo source="X_ForeignKey">REF_TYPRG/RG</xsd:appinfo>
 <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="1" name="D_DEB_EOR" type="xsd:date">
 <xsd:annotation>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="1" name="D_CRE_EOR" type="xsd:string">
 <xsd:annotation>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="1" name="D_MOD_EOR" type="xsd:string">
 <xsd:annotation>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="1" name="TALEND_CDC_TYPE">
 <xsd:annotation>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 <xsd:simpleType>
 <xsd:restriction base="xsd:string">
@@ -429,7 +429,7 @@
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="0" name="D_FIN_EOR" type="xsd:date">
 <xsd:annotation>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 </xsd:all>
@@ -445,7 +445,7 @@
 <xsd:annotation>
 <xsd:appinfo source="X_Label_FR">Intervenant ferroviaire</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">Railway worker</xsd:appinfo>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 <xsd:simpleType>
 <xsd:restriction base="xsd:string">
@@ -457,7 +457,7 @@
 <xsd:annotation>
 <xsd:appinfo source="X_Label_FR">Etablissement ferroviaire</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">Railway</xsd:appinfo>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 <xsd:simpleType>
 <xsd:restriction base="xsd:string">
@@ -469,7 +469,7 @@
 <xsd:annotation>
 <xsd:appinfo source="X_Label_FR">Categorie ETFE</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">Category ETFE</xsd:appinfo>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 <xsd:simpleType>
 <xsd:restriction base="xsd:string">
@@ -481,7 +481,7 @@
 <xsd:annotation>
 <xsd:appinfo source="X_Label_FR">Pays Iso ETFE</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">ETFE Country</xsd:appinfo>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 <xsd:simpleType>
 <xsd:restriction base="xsd:string">
@@ -493,7 +493,7 @@
 <xsd:annotation>
 <xsd:appinfo source="X_Label_FR">Nom principal ETFE</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">ETFE principal name</xsd:appinfo>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 <xsd:simpleType>
 <xsd:restriction base="xsd:string">
@@ -517,35 +517,35 @@
 <xsd:appinfo source="X_ForeignKey">EOR</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">UG of EOR</xsd:appinfo>
 <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="0" name="D_DEB_EOR_EFE" type="xsd:date">
 <xsd:annotation>
 <xsd:appinfo source="X_Label_FR">Date de début de validité du lien</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">Start date ofvalidity of the link</xsd:appinfo>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="0" name="D_CRE_EOR_EFE" type="xsd:string">
 <xsd:annotation>
 <xsd:appinfo source="X_Label_FR">Date de création du lien</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">Creation date of the link</xsd:appinfo>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="0" name="D_MOD_EOR_EFE" type="xsd:string">
 <xsd:annotation>
 <xsd:appinfo source="X_Label_FR">Date de modification du lien</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">Modification date of the link</xsd:appinfo>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="0" name="D_FIN_EOR_EFE" type="xsd:date">
 <xsd:annotation>
 <xsd:appinfo source="X_Label_FR">Date de fin de validité du lien</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">End date of validity of the link</xsd:appinfo>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 </xsd:all>
@@ -556,7 +556,7 @@
 &lt;rule context="."&gt;&lt;assert test="translate(D_FIN_EOR_EFE,&amp;quot; &amp;quot;,&amp;quot;&amp;quot;)=&amp;quot;&amp;quot; or number(translate(D_DEB_EOR_EFE,&amp;quot;-&amp;quot;,&amp;quot;&amp;quot;))&amp;lt;=number(translate(D_FIN_EOR_EFE,&amp;quot;-&amp;quot;,&amp;quot;&amp;quot;))"&gt;&lt;![CDATA[Date de fin doit être supérieur à la date de début de validité]]&gt;&lt;/assert&gt;&lt;/rule&gt;
 &lt;/pattern&gt;
 </xsd:appinfo>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 <xsd:unique name="GARE">
 <xsd:selector xpath="."/>
@@ -568,23 +568,23 @@
 <xsd:annotation>
 <xsd:appinfo source="X_Label_FR">Gare</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">Station</xsd:appinfo>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 <xsd:complexType>
 <xsd:all>
 <xsd:element maxOccurs="1" minOccurs="1" name="ID_AUTO" type="AUTO_INCREMENT">
 <xsd:annotation>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="1" name="TALEND_CDC_DATE" type="xsd:string">
 <xsd:annotation>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="1" name="IFE">
 <xsd:annotation>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 <xsd:simpleType>
 <xsd:restriction base="xsd:string">
@@ -594,7 +594,7 @@
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="0" name="ETFE">
 <xsd:annotation>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 <xsd:simpleType>
 <xsd:restriction base="xsd:string">
@@ -604,7 +604,7 @@
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="0" name="CAT_ETFE">
 <xsd:annotation>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 <xsd:simpleType>
 <xsd:restriction base="xsd:string">
@@ -614,7 +614,7 @@
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="0" name="PAYS_ISO">
 <xsd:annotation>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 <xsd:simpleType>
 <xsd:restriction base="xsd:string">
@@ -624,7 +624,7 @@
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="0" name="NOM_PRINC_ETFE">
 <xsd:annotation>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 <xsd:simpleType>
 <xsd:restriction base="xsd:string">
@@ -634,32 +634,32 @@
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="0" name="UG_EOR" type="xsd:string">
 <xsd:annotation>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="1" name="D_DEB_EOR_EFE" type="xsd:date">
 <xsd:annotation>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="1" name="D_CRE_EOR_EFE" type="xsd:string">
 <xsd:annotation>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="1" name="D_MOD_EOR_EFE" type="xsd:string">
 <xsd:annotation>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="0" name="D_FIN_EOR_EFE" type="xsd:date">
 <xsd:annotation>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="1" name="TALEND_CDC_TYPE" type="xsd:string">
 <xsd:annotation>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 </xsd:all>
@@ -673,19 +673,19 @@
 <xsd:all>
 <xsd:element maxOccurs="1" minOccurs="1" name="RG" type="xsd:string">
 <xsd:annotation>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="0" name="L_RG" type="xsd:string">
 <xsd:annotation>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 </xsd:all>
 </xsd:complexType>
 <xsd:element name="REF_TYPRG" type="REF_TYPRG">
 <xsd:annotation>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 <xsd:unique name="REF_TYPRG">
 <xsd:selector xpath="."/>
@@ -698,21 +698,21 @@
 <xsd:annotation>
 <xsd:appinfo source="X_Label_FR">Entité</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">Entity</xsd:appinfo>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 <xsd:element maxOccurs="1" minOccurs="0" name="Count" type="xsd:string">
 <xsd:annotation>
 <xsd:appinfo source="X_Label_FR">Nombre d'occurences</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">Number of recors</xsd:appinfo>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 </xsd:element>
 </xsd:all>
 </xsd:complexType>
 <xsd:element name="statEntities" type="result">
 <xsd:annotation>
-<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
 <xsd:unique name="statEntities">
 <xsd:selector xpath="."/>

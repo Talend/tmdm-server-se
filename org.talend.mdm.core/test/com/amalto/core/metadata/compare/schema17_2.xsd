@@ -9,20 +9,20 @@
 	</xsd:simpleType>
 	<xsd:element name="Goods">
 		<xsd:annotation>
-			<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+			<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:all>
 				<xsd:element maxOccurs="1" minOccurs="1" name="Id"
 					type="xsd:string">
 					<xsd:annotation>
-						<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+						<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 					</xsd:annotation>
 				</xsd:element>
 				<xsd:element maxOccurs="1" minOccurs="1" name="Price"
 					type="PRICE">
 					<xsd:annotation>
-						<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+						<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 					</xsd:annotation>
 				</xsd:element>
 			</xsd:all>

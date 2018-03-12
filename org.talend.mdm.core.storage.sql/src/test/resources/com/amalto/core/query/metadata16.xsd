@@ -13,23 +13,23 @@
   </xsd:simpleType>  
   <xsd:element name="DateTimeInKey"> 
     <xsd:annotation> 
-      <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo> 
+      <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo> 
     </xsd:annotation>  
     <xsd:complexType> 
       <xsd:all> 
         <xsd:element maxOccurs="1" minOccurs="1" name="code" type="xsd:string"> 
           <xsd:annotation> 
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo> 
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo> 
           </xsd:annotation> 
         </xsd:element>  
         <xsd:element maxOccurs="1" minOccurs="1" name="db1" type="xsd:dateTime"> 
           <xsd:annotation> 
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo> 
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo> 
           </xsd:annotation> 
         </xsd:element>  
         <xsd:element maxOccurs="1" minOccurs="0" name="aaa" type="xsd:string"> 
           <xsd:annotation> 
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo> 
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo> 
           </xsd:annotation> 
         </xsd:element> 
       </xsd:all> 
@@ -42,23 +42,23 @@
   </xsd:element>  
   <xsd:element name="DateInKey"> 
     <xsd:annotation> 
-      <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo> 
+      <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo> 
     </xsd:annotation>  
     <xsd:complexType> 
       <xsd:all> 
         <xsd:element maxOccurs="1" minOccurs="1" name="id" type="xsd:string"> 
           <xsd:annotation> 
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo> 
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo> 
           </xsd:annotation> 
         </xsd:element>  
         <xsd:element maxOccurs="1" minOccurs="0" name="name" type="xsd:string"> 
           <xsd:annotation> 
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo> 
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo> 
           </xsd:annotation> 
         </xsd:element>  
         <xsd:element maxOccurs="1" minOccurs="1" name="date1" type="xsd:date"> 
           <xsd:annotation> 
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo> 
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo> 
           </xsd:annotation> 
         </xsd:element> 
       </xsd:all> 

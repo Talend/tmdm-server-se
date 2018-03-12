@@ -15,19 +15,19 @@
     </xsd:simpleType>
     <xsd:element name="EntiteA">
         <xsd:annotation>
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:all>
                 <xsd:element maxOccurs="1" minOccurs="1" name="codeA" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="format" type="Format_Caracteristique">
                     <xsd:annotation>
                         <xsd:appinfo source="X_AutoExpand">true</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
             </xsd:all>
@@ -39,18 +39,18 @@
     </xsd:element>
     <xsd:element name="UniteMesure">
         <xsd:annotation>
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:all>
                 <xsd:element maxOccurs="1" minOccurs="1" name="CodeUniteMesure" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="1" name="LibelleUniteMesure" type="MULTI_LINGUAL">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
             </xsd:all>
@@ -64,7 +64,7 @@
         <xsd:sequence>
             <xsd:element maxOccurs="1" minOccurs="0" name="SysFormat" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
         </xsd:sequence>
@@ -75,7 +75,7 @@
                 <xsd:sequence>
                     <xsd:element maxOccurs="1" minOccurs="0" name="ValeurEntiere" type="xsd:integer">
                         <xsd:annotation>
-                            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                             <xsd:appinfo source="X_Visible_Rule">fn:false()</xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
@@ -85,7 +85,7 @@
                             <xsd:appinfo source="X_ForeignKeyInfo">UniteMesure/LibelleUniteMesure</xsd:appinfo>
                             <xsd:appinfo source="X_ForeignKey">UniteMesure/CodeUniteMesure</xsd:appinfo>
                             <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
-                            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                 </xsd:sequence>
@@ -98,7 +98,7 @@
                 <xsd:sequence>
                     <xsd:element maxOccurs="1" minOccurs="0" name="ValeurDate" type="xsd:date">
                         <xsd:annotation>
-                            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                 </xsd:sequence>
@@ -111,7 +111,7 @@
                 <xsd:sequence>
                     <xsd:element maxOccurs="1" minOccurs="0" name="ValeurNumerique" type="xsd:decimal">
                         <xsd:annotation>
-                            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="CodeUniteMesure" type="xsd:string">
@@ -120,7 +120,7 @@
                             <xsd:appinfo source="X_ForeignKey">UniteMesure/CodeUniteMesure</xsd:appinfo>
                             <xsd:appinfo source="X_ForeignKeyInfo">UniteMesure/LibelleUniteMesure</xsd:appinfo>
                             <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
-                            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                 </xsd:sequence>
@@ -129,18 +129,18 @@
     </xsd:complexType>
     <xsd:element name="Entity">
         <xsd:annotation>
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:all>
                 <xsd:element maxOccurs="1" minOccurs="1" name="id" type="AUTO_INCREMENT">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="name" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
             </xsd:all>

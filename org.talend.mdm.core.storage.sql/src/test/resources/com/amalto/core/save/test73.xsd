@@ -2,7 +2,7 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 	<xsd:element name="WorkingDraftsObj" type="nsi_WorkingDraftsType">
 		<xsd:annotation>
-			<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+			<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 		</xsd:annotation>
 		<xsd:unique name="WorkingDraftsObj">
 			<xsd:selector xpath="." />
@@ -14,14 +14,14 @@
 			<xsd:element maxOccurs="1" minOccurs="1" name="Id"
 				type="AUTO_INCREMENT">
 				<xsd:annotation>
-					<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+					<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element maxOccurs="unbounded" minOccurs="0" name="Dictionary"
 				type="nsi_DictionaryType">
 				<xsd:annotation>
 					<xsd:appinfo source="X_AutoExpand">true</xsd:appinfo>
-					<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+					<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
 		</xsd:sequence>
@@ -31,7 +31,7 @@
 			<xsd:element maxOccurs="1" minOccurs="0" name="AutoField"
 				type="xsd:string">
 				<xsd:annotation>
-					<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+					<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
 		</xsd:sequence>
@@ -44,7 +44,7 @@
 					<xsd:element maxOccurs="unbounded" minOccurs="0"
 						name="CustomsPreferentialDuty" type="opnsi_draft_CustomsPreferentialDutyType">
 						<xsd:annotation>
-							<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+							<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 						</xsd:annotation>
 					</xsd:element>
 				</xsd:sequence>
@@ -58,7 +58,7 @@
 					<xsd:element maxOccurs="unbounded" minOccurs="0" name="Currency"
 						type="opnsi_draft_CurrencyType">
 						<xsd:annotation>
-							<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+							<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 						</xsd:annotation>
 					</xsd:element>
 				</xsd:sequence>
@@ -70,13 +70,13 @@
 			<xsd:element maxOccurs="1" minOccurs="1" name="Name"
 				type="xsd:string">
 				<xsd:annotation>
-					<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+					<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element maxOccurs="1" minOccurs="1" name="DictRecordDetails"
 				type="nsi_DictRecordDetailsDraftType">
 				<xsd:annotation>
-					<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+					<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
 		</xsd:sequence>
@@ -86,13 +86,13 @@
 			<xsd:element maxOccurs="1" minOccurs="1" name="Code"
 				type="xsd:string">
 				<xsd:annotation>
-					<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+					<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element maxOccurs="1" minOccurs="1" name="DictRecordDetails"
 				type="nsi_DictRecordDetailsDraftType">
 				<xsd:annotation>
-					<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+					<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
 		</xsd:sequence>
@@ -103,7 +103,7 @@
 			<xsd:element maxOccurs="1" minOccurs="1" name="Action"
 				type="xsd:string">
 				<xsd:annotation>
-					<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+					<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
 		</xsd:all>

@@ -2,7 +2,7 @@
     <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/>
     <xsd:element name="Person" type="Person">
         <xsd:annotation>
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
         </xsd:annotation>
         <xsd:unique name="Person">
             <xsd:selector xpath="."/>
@@ -13,27 +13,27 @@
         <xsd:sequence>
             <xsd:element maxOccurs="1" minOccurs="1" name="Id" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
         </xsd:sequence>
     </xsd:complexType>
     <xsd:element name="FKChangeTest">
         <xsd:annotation>
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:all>
                 <xsd:element maxOccurs="1" minOccurs="1" name="Id" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="PersonFK" type="xsd:string">
                     <xsd:annotation>
                         <xsd:appinfo source="X_ForeignKey">Person/Id</xsd:appinfo>
                         <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
@@ -46,7 +46,7 @@
     </xsd:element>
     <xsd:element name="Employee" type="Employee">
         <xsd:annotation>
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
         </xsd:annotation>
         <xsd:unique name="Employee">
             <xsd:selector xpath="."/>
@@ -59,7 +59,7 @@
                 <xsd:sequence>
                     <xsd:element maxOccurs="1" minOccurs="1" name="Title" type="xsd:string">
                         <xsd:annotation>
-                            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                 </xsd:sequence>

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2017 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -18,6 +18,10 @@ public class Constants {
     public static final String TDS_ACCESSTASK = "/#/accesstasks/"; //$NON-NLS-1$
 
     public static final String TDS_NAME = "DataStewardship"; //$NON-NLS-1$
+
+    public static final String TDS_CONTEXT = "datastewardship"; // $NON-NLS-2$
+
+    public static final String TDS_APP = "Datastewardship"; //$NON-NLS-1$
 
     public static final String HAS_MATCH_GROUP = "HAS_MATCH_GROUP"; //$NON-NLS-1$
 

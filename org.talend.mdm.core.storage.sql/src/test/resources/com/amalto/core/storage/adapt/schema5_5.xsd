@@ -4,19 +4,19 @@
 			<xsd:element maxOccurs="1" minOccurs="1" name="id"
 				type="xsd:string">
 				<xsd:annotation>
-					<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+					<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element maxOccurs="1" minOccurs="1" name="mandatory11"
 				type="xsd:string">
 				<xsd:annotation>
-					<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+					<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element maxOccurs="1" minOccurs="1" name="testEntity2"
 				type="xsd:string">
 				<xsd:annotation>
-				    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+				    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 					<xsd:appinfo source="X_ForeignKey">TestEntity2_Reference/id</xsd:appinfo>
 					<xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
 				</xsd:annotation>
@@ -24,7 +24,7 @@
 			<xsd:element maxOccurs="unbounded" minOccurs="1" name="testEntity3"
 				type="xsd:string">
 				<xsd:annotation>
-				    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+				    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 					<xsd:appinfo source="X_ForeignKey">TestEntity3_Reference/id</xsd:appinfo>
 					<xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
 				</xsd:annotation>
@@ -36,19 +36,19 @@
 			<xsd:element maxOccurs="1" minOccurs="1" name="id"
 				type="xsd:string">
 				<xsd:annotation>
-					<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+					<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element maxOccurs="1" minOccurs="1" name="mandatory21"
 				type="xsd:string">
 				<xsd:annotation>
-					<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+					<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element maxOccurs="unbounded" minOccurs="0" name="testEntity4"
 				type="xsd:string">
 				<xsd:annotation>
-				    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+				    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 					<xsd:appinfo source="X_ForeignKey">TestEntity4_Reference/id</xsd:appinfo>
 					<xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
 				</xsd:annotation>
@@ -56,7 +56,7 @@
 			<xsd:element maxOccurs="1" minOccurs="0" name="testEntity5"
 				type="xsd:string">
 				<xsd:annotation>
-				    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+				    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 					<xsd:appinfo source="X_ForeignKey">TestEntity5_Reference/id</xsd:appinfo>
 					<xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
 				</xsd:annotation>
@@ -68,19 +68,19 @@
 			<xsd:element maxOccurs="1" minOccurs="1" name="id"
 				type="xsd:string">
 				<xsd:annotation>
-					<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+					<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element maxOccurs="1" minOccurs="1" name="mandatory31"
 				type="xsd:string">
 				<xsd:annotation>
-					<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+					<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element maxOccurs="1" minOccurs="1" name="testEntity4"
 				type="xsd:string">
 				<xsd:annotation>
-				    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+				    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 					<xsd:appinfo source="X_ForeignKey">TestEntity4_Reference/id</xsd:appinfo>
 					<xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
 				</xsd:annotation>
@@ -88,7 +88,7 @@
 			<xsd:element maxOccurs="unbounded" minOccurs="1" name="testEntity5"
 				type="xsd:string">
 				<xsd:annotation>
-				    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+				    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 					<xsd:appinfo source="X_ForeignKey">TestEntity5_Reference/id</xsd:appinfo>
 					<xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
 				</xsd:annotation>
@@ -100,13 +100,13 @@
 			<xsd:element maxOccurs="1" minOccurs="1" name="id"
 				type="xsd:string">
 				<xsd:annotation>
-					<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+					<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element maxOccurs="1" minOccurs="1" name="mandatory41"
 				type="xsd:string">
 				<xsd:annotation>
-					<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+					<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
 		</xsd:sequence>
@@ -116,19 +116,19 @@
 			<xsd:element maxOccurs="1" minOccurs="1" name="id"
 				type="xsd:string">
 				<xsd:annotation>
-					<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+					<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element maxOccurs="1" minOccurs="1" name="mandatory51"
 				type="xsd:string">
 				<xsd:annotation>
-					<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+					<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element maxOccurs="1" minOccurs="1" name="mandatory52"
 				type="xsd:string">
 				<xsd:annotation>
-					<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+					<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
 		</xsd:sequence>

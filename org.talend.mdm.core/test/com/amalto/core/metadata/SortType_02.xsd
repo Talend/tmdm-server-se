@@ -5,8 +5,8 @@
     <xsd:annotation> 
       <xsd:appinfo source="X_Description_FR">Le type de voie, qui n’est pas une mention obligatoire, permet de décrire et catégoriser une voie</xsd:appinfo>  
       <xsd:appinfo source="X_Label_FR">Type de voie</xsd:appinfo>  
-      <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
-      <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>  
+      <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
+      <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>  
       <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo> 
     </xsd:annotation>  
     <xsd:unique name="A_TypeVoie"> 
@@ -16,8 +16,8 @@
   </xsd:element>
   <xsd:element name="BB_Hexavia" type="HexaviaType"> 
     <xsd:annotation> 
-      <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
-      <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>  
+      <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
+      <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>  
       <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo> 
     </xsd:annotation>  
     <xsd:unique name="BB_Hexavia"> 
@@ -28,8 +28,8 @@
   <xsd:element name="BA_Adresse" type="AdresseType"> 
     <xsd:annotation> 
       <xsd:appinfo source="X_Description_FR">Une adresse postale permet de disposer de la localisation complète du destinataire d’un courrier où colis.</xsd:appinfo>  
-      <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
-      <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>  
+      <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
+      <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>  
       <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo> 
     </xsd:annotation>  
     <xsd:unique name="BA_Adresse"> 
@@ -41,8 +41,8 @@
     <xsd:all> 
       <xsd:element maxOccurs="1" minOccurs="1" name="IdAdresse" type="AUTO_INCREMENT"> 
         <xsd:annotation> 
-          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>  
           <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo>  
           <xsd:appinfo source="X_Retrieve_FKinfos">false</xsd:appinfo> 
         </xsd:annotation> 
@@ -51,8 +51,8 @@
         <xsd:annotation> 
           <xsd:appinfo source="X_Description_FR">Numéro de la voie</xsd:appinfo>  
           <xsd:appinfo source="X_Label_FR">Numéro</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>  
           <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo> 
         </xsd:annotation> 
       </xsd:element>  
@@ -60,8 +60,8 @@
         <xsd:annotation> 
           <xsd:appinfo source="X_Description_FR">Raccourci du l’extension du numéro de voie</xsd:appinfo>  
           <xsd:appinfo source="X_Label_FR">Extension</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>  
           <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo> 
         </xsd:annotation> 
       </xsd:element>  
@@ -69,8 +69,8 @@
         <xsd:annotation> 
           <xsd:appinfo source="X_Description_FR">La mention spéciale de distribution correspond aux mentions comme BP, TSA, Poste restante.</xsd:appinfo>  
           <xsd:appinfo source="X_Label_FR">Mention spéciale de distribution</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>  
           <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo> 
         </xsd:annotation> 
       </xsd:element>  
@@ -78,8 +78,8 @@
         <xsd:annotation> 
           <xsd:appinfo source="X_Description_FR">Libellé ligne 3 correspondant à l’identification du point géographique : Entrée, Tour, Bâtiment, Résidence, Zone Industrielle</xsd:appinfo>  
           <xsd:appinfo source="X_Label_FR">Libellé Ligne 3</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>  
           <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo> 
         </xsd:annotation> 
       </xsd:element>  
@@ -105,8 +105,8 @@
         <xsd:annotation> 
           <xsd:appinfo source="X_Description_FR">La longitude est une coordonnée géographique représentant le positionnement est – ouest d’un point sur terre, exprimée ici dans la projection WGS 84.</xsd:appinfo>  
           <xsd:appinfo source="X_Label_FR">Longitude W</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>  
           <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo> 
         </xsd:annotation> 
       </xsd:element>  
@@ -114,8 +114,8 @@
         <xsd:annotation> 
           <xsd:appinfo source="X_Description_FR">La latitude est une coordonnée géographique représentant le positionnement nord – sud d’un point sur terre, exprimée ici dans la projection WGS 84</xsd:appinfo>  
           <xsd:appinfo source="X_Label_FR">Latitude W</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>  
           <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo> 
         </xsd:annotation> 
       </xsd:element>  
@@ -123,8 +123,8 @@
         <xsd:annotation> 
           <xsd:appinfo source="X_Description_FR">La longitude est une coordonnée géographique représentant le positionnement est – ouest d’un point sur terre, exprimée ici dans la projection Lambert II étendu</xsd:appinfo>  
           <xsd:appinfo source="X_Label_FR">Longitude L</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>  
           <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo> 
         </xsd:annotation> 
       </xsd:element>  
@@ -132,8 +132,8 @@
         <xsd:annotation> 
           <xsd:appinfo source="X_Description_FR">La latitude est une coordonnée géographique représentant le positionnement nord – sud d’un point sur terre, exprimée ici dans la projection WGS 84</xsd:appinfo>  
           <xsd:appinfo source="X_Label_FR">Latitude L</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>  
           <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo> 
         </xsd:annotation> 
       </xsd:element>  
@@ -141,8 +141,8 @@
         <xsd:annotation> 
           <xsd:appinfo source="X_Description_FR">Date à partir de laquelle l‘adresse est mise à disposition des applications</xsd:appinfo>  
           <xsd:appinfo source="X_Label_FR">Date de début validité</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>  
           <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo> 
         </xsd:annotation> 
       </xsd:element>  
@@ -150,8 +150,8 @@
         <xsd:annotation> 
           <xsd:appinfo source="X_Description_FR">Date à partir de laquelle l’adresse n’est plus utilisable par les applications</xsd:appinfo>  
           <xsd:appinfo source="X_Label_FR">Date de fin validité</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>  
           <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo> 
         </xsd:annotation> 
       </xsd:element>  
@@ -159,8 +159,8 @@
         <xsd:annotation> 
           <xsd:appinfo source="X_ForeignKey">A_TypeVoie/IdTypeVoie</xsd:appinfo>  
           <xsd:appinfo source="X_Label_FR">Type de voie</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>  
           <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo>  
           <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>  
           <xsd:appinfo source="X_ForeignKeyInfo">A_TypeVoie/LibelleLong</xsd:appinfo>  
@@ -170,8 +170,8 @@
       <xsd:element maxOccurs="1" minOccurs="1" name="BB_Hexavia" type="xsd:string"> 
         <xsd:annotation> 
           <xsd:appinfo source="X_ForeignKey">BB_Hexavia/IdHexavia</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>  
           <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo>  
           <xsd:appinfo source="X_ForeignKeyInfo">BB_Hexavia/LibelleVoie</xsd:appinfo>  
           <xsd:appinfo source="X_ForeignKeyInfo">BB_Hexavia/LibelleComplet</xsd:appinfo>  
@@ -187,24 +187,24 @@
         <xsd:annotation> 
           <xsd:appinfo source="X_Description_FR">Code numérique permettant une identification unique de la voie</xsd:appinfo>  
           <xsd:appinfo source="X_Label_FR">CodeHexavia</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>  
           <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo> 
         </xsd:annotation> 
       </xsd:element>  
       <xsd:element maxOccurs="1" minOccurs="1" name="Categorie" type="CategorieHexaviaEnum"> 
         <xsd:annotation> 
           <xsd:appinfo source="X_Label_FR">Catégorie</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>  
           <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo> 
         </xsd:annotation> 
       </xsd:element>  
       <xsd:element maxOccurs="1" minOccurs="0" name="TypeCategorie" type="xsd:int"> 
         <xsd:annotation> 
           <xsd:appinfo source="X_Label_FR">Type de catégorie</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>  
           <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo> 
         </xsd:annotation> 
       </xsd:element>  
@@ -212,160 +212,160 @@
         <xsd:annotation> 
           <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>  
           <xsd:appinfo source="X_Label_FR">Code Insee</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>  
           <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo> 
         </xsd:annotation> 
       </xsd:element>  
       <xsd:element maxOccurs="1" minOccurs="1" name="DernierElementVoie" type="xsd:string"> 
         <xsd:annotation> 
           <xsd:appinfo source="X_Label_FR">Dernier Element</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>  
           <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo> 
         </xsd:annotation> 
       </xsd:element>  
       <xsd:element maxOccurs="1" minOccurs="1" name="LibelleVoie" type="xsd:string"> 
         <xsd:annotation> 
           <xsd:appinfo source="X_Label_FR">Libellé voie</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>  
           <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo> 
         </xsd:annotation> 
       </xsd:element>  
       <xsd:element maxOccurs="1" minOccurs="0" name="LibelleComplet" type="xsd:string"> 
         <xsd:annotation> 
           <xsd:appinfo source="X_Label_FR">Libellé complet</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>  
           <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo> 
         </xsd:annotation> 
       </xsd:element>  
       <xsd:element maxOccurs="1" minOccurs="1" name="DescripteurLibelleVoie" type="xsd:string"> 
         <xsd:annotation> 
           <xsd:appinfo source="X_Label_FR">Descripteur</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>  
           <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo> 
         </xsd:annotation> 
       </xsd:element>  
       <xsd:element maxOccurs="1" minOccurs="1" name="IndicateurStandardisation" type="xsd:boolean"> 
         <xsd:annotation> 
           <xsd:appinfo source="X_Label_FR">Standardisation</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>  
           <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo> 
         </xsd:annotation> 
       </xsd:element>  
       <xsd:element maxOccurs="1" minOccurs="1" name="IndicateurScindage" type="xsd:boolean"> 
         <xsd:annotation> 
           <xsd:appinfo source="X_Label_FR">Scindage</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>  
           <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo> 
         </xsd:annotation> 
       </xsd:element>  
       <xsd:element maxOccurs="1" minOccurs="1" name="IndicateurVoieHomonyme" type="xsd:boolean"> 
         <xsd:annotation> 
           <xsd:appinfo source="X_Label_FR">Homonyme</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>  
           <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo> 
         </xsd:annotation> 
       </xsd:element>  
       <xsd:element maxOccurs="1" minOccurs="1" name="CodePostal" type="xsd:string"> 
         <xsd:annotation> 
           <xsd:appinfo source="X_Label_FR">CP</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>  
           <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo> 
         </xsd:annotation> 
       </xsd:element>  
       <xsd:element maxOccurs="1" minOccurs="1" name="BorneImpaireInferieure" type="xsd:string"> 
         <xsd:annotation> 
           <xsd:appinfo source="X_Label_FR">BII</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>  
           <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo> 
         </xsd:annotation> 
       </xsd:element>  
       <xsd:element maxOccurs="1" minOccurs="0" name="ExtensionAbregeeBII" type="xsd:string"> 
         <xsd:annotation> 
           <xsd:appinfo source="X_Label_FR">BIIE</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>  
           <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo> 
         </xsd:annotation> 
       </xsd:element>  
       <xsd:element maxOccurs="1" minOccurs="1" name="BorneImpaireSuperieure" type="xsd:string"> 
         <xsd:annotation> 
           <xsd:appinfo source="X_Label_FR">BIS</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>  
           <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo> 
         </xsd:annotation> 
       </xsd:element>  
       <xsd:element maxOccurs="1" minOccurs="0" name="ExtensionAbregeeBIS" type="xsd:string"> 
         <xsd:annotation> 
           <xsd:appinfo source="X_Label_FR">BISE</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>  
           <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo> 
         </xsd:annotation> 
       </xsd:element>  
       <xsd:element maxOccurs="1" minOccurs="1" name="BornePaireInferieure" type="xsd:string"> 
         <xsd:annotation> 
           <xsd:appinfo source="X_Label_FR">BPI</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>  
           <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo> 
         </xsd:annotation> 
       </xsd:element>  
       <xsd:element maxOccurs="1" minOccurs="0" name="ExtensionAbregeeBPI" type="xsd:string"> 
         <xsd:annotation> 
           <xsd:appinfo source="X_Label_FR">BPIE</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>  
           <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo> 
         </xsd:annotation> 
       </xsd:element>  
       <xsd:element maxOccurs="1" minOccurs="1" name="BornePaireSuperieure" type="xsd:string"> 
         <xsd:annotation> 
           <xsd:appinfo source="X_Label_FR">BPS</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>  
           <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo> 
         </xsd:annotation> 
       </xsd:element>  
       <xsd:element maxOccurs="1" minOccurs="0" name="ExtensionAbregeeBPS" type="xsd:string"> 
         <xsd:annotation> 
           <xsd:appinfo source="X_Label_FR">BPSE</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>  
           <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo> 
         </xsd:annotation> 
       </xsd:element>  
       <xsd:element maxOccurs="1" minOccurs="0" name="MatriculeROUDIS" type="xsd:string"> 
         <xsd:annotation> 
           <xsd:appinfo source="X_Label_FR">ROUDIS</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>  
           <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo> 
         </xsd:annotation> 
       </xsd:element>  
       <xsd:element maxOccurs="1" minOccurs="1" name="DebutValidite" type="xsd:date"> 
         <xsd:annotation> 
           <xsd:appinfo source="X_Label_FR">Date de début validité</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>  
           <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo> 
         </xsd:annotation> 
       </xsd:element>  
       <xsd:element maxOccurs="1" minOccurs="0" name="FinValidite" type="xsd:date"> 
         <xsd:annotation> 
           <xsd:appinfo source="X_Label_FR">Date de fin d’activité</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>  
           <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo> 
         </xsd:annotation> 
       </xsd:element>  
@@ -377,8 +377,8 @@
           <xsd:appinfo source="X_ForeignKeyInfo">Hexaposte/LibelleCommune</xsd:appinfo>  
           <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>  
           <xsd:appinfo source="X_Label_FR">Lien Hexaposte</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>  
           <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo> 
         </xsd:annotation> 
       </xsd:element>   -->  
@@ -389,8 +389,8 @@
           <xsd:appinfo source="X_ForeignKeyInfo">BB_Hexavia/LibelleVoie</xsd:appinfo>  
           <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>  
           <xsd:appinfo source="X_Label_FR">Lien Hexavia</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>  
           <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo> 
         </xsd:annotation> 
       </xsd:element> 
@@ -398,8 +398,8 @@
         <xsd:annotation> 
           <xsd:appinfo source="X_ForeignKey">A_TypeVoie/IdTypeVoie</xsd:appinfo>  
           <xsd:appinfo source="X_Label_FR">Type de voie</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>  
           <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo>  
           <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>  
           <xsd:appinfo source="X_ForeignKeyInfo">A_TypeVoie/LibelleLong</xsd:appinfo>  
@@ -414,8 +414,8 @@
       <xsd:element maxOccurs="1" minOccurs="1" name="IdTypeVoie" type="AUTO_INCREMENT"> 
         <xsd:annotation> 
           <xsd:appinfo source="X_Label_FR">Identifiant</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>  
           <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo> 
         </xsd:annotation> 
       </xsd:element>  
@@ -423,8 +423,8 @@
         <xsd:annotation> 
           <xsd:appinfo source="X_Label_FR">Libellé court</xsd:appinfo>  
           <xsd:appinfo source="X_Description_FR">Libellé raccourci du type de voie</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>  
           <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo> 
         </xsd:annotation> 
       </xsd:element>  
@@ -432,8 +432,8 @@
         <xsd:annotation> 
           <xsd:appinfo source="X_Description_FR">Libellé long du type de voie</xsd:appinfo>  
           <xsd:appinfo source="X_Label_FR">Libellé long</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>  
           <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo> 
         </xsd:annotation> 
       </xsd:element>  
@@ -441,8 +441,8 @@
         <xsd:annotation> 
           <xsd:appinfo source="X_Description_FR">Définition permettant de comprendre quelle réalité est représentée par le chaque type de voie</xsd:appinfo>  
           <xsd:appinfo source="X_Label_FR">Définition</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>  
           <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo> 
         </xsd:annotation> 
       </xsd:element>  
@@ -450,8 +450,8 @@
         <xsd:annotation> 
           <xsd:appinfo source="X_Description_FR">Date à partir de laquelle le type de voie est mis à disposition des applications</xsd:appinfo>  
           <xsd:appinfo source="X_Label_FR">Date de début de validité</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>  
           <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo> 
         </xsd:annotation> 
       </xsd:element>  
@@ -459,8 +459,8 @@
         <xsd:annotation> 
           <xsd:appinfo source="X_Label_FR">Date de fin de validité</xsd:appinfo>  
           <xsd:appinfo source="X_Description_FR">Date à partir de laquelle le type de voie n’est plus utilisable par les applications</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
-          <xsd:appinfo source="X_Write">System_Interactive</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
+          <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>  
           <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo> 
         </xsd:annotation> 
       </xsd:element> 

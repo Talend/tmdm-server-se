@@ -13,39 +13,39 @@
     <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/>
     <xsd:element name="Test">
         <xsd:annotation>
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
             <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:all>
                 <xsd:element maxOccurs="1" minOccurs="1" name="Id" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="Name" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="1" name="Address" type="AddressType">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="Address2">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                     <xsd:complexType>
                         <xsd:choice>
                             <xsd:element maxOccurs="1" minOccurs="1" name="USAddr">
                                 <xsd:annotation>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                                 </xsd:annotation>
                                 <xsd:complexType>
@@ -54,7 +54,7 @@
                                             <xsd:sequence>
                                                 <xsd:element name="subelement" type="xsd:string">
                                                     <xsd:annotation>
-                                                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                                                     </xsd:annotation>
                                                 </xsd:element>
@@ -65,7 +65,7 @@
                             </xsd:element>
                             <xsd:element maxOccurs="1" minOccurs="1" name="EUAddr">
                                 <xsd:annotation>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                                 </xsd:annotation>
                                 <xsd:complexType>
@@ -74,7 +74,7 @@
                                             <xsd:sequence>
                                                 <xsd:element name="subelement" type="xsd:string">
                                                     <xsd:annotation>
-                                                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                                                     </xsd:annotation>
                                                 </xsd:element>
@@ -93,13 +93,13 @@
                         <xsd:appinfo source="X_ForeignKeyInfo">Test/Name</xsd:appinfo>
                         <xsd:appinfo source="X_ForeignKeyInfo">Test/Id</xsd:appinfo>
                         <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="asdfg" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
@@ -114,13 +114,13 @@
         <xsd:sequence>
             <xsd:element maxOccurs="1" minOccurs="1" name="Thoroughfare" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="City" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -132,7 +132,7 @@
                 <xsd:sequence>
                     <xsd:element maxOccurs="1" minOccurs="1" name="PostCode" type="xsd:string">
                         <xsd:annotation>
-                            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                             <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
@@ -146,7 +146,7 @@
                 <xsd:sequence>
                     <xsd:element maxOccurs="1" minOccurs="1" name="zip" type="xsd:string">
                         <xsd:annotation>
-                            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                             <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
@@ -156,14 +156,14 @@
     </xsd:complexType>
     <xsd:element name="Supplier_Master">
         <xsd:annotation>
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
             <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:all>
                 <xsd:element maxOccurs="1" minOccurs="1" name="MDM_SM_Id" type="AUTO_INCREMENT">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                         <xsd:appinfo source="X_Label_EN">MDM Supplier Master Id</xsd:appinfo>
                     </xsd:annotation>
@@ -176,7 +176,7 @@
                         <xsd:appinfo source="X_ForeignKeyInfo">AddressBook/MDM_AB_Id</xsd:appinfo>
                         <xsd:appinfo source="X_ForeignKeyInfo">AddressBook/JDE_Address_Number</xsd:appinfo>
                         <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                         <xsd:appinfo source="X_Label_EN">MDM Address Book Id</xsd:appinfo>
                     </xsd:annotation>
@@ -185,13 +185,13 @@
                     <xsd:annotation>
                         <xsd:appinfo source="X_Description_EN">AN8</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Default_Value_Rule">'JDE Address Number'</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="PaymentData">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                     <xsd:complexType>
@@ -199,28 +199,28 @@
                             <xsd:element maxOccurs="1" minOccurs="0" name="PaymentTerms" type="xsd:string">
                                 <xsd:annotation>
                                     <xsd:appinfo source="X_Description_EN">TRAP</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
                             <xsd:element maxOccurs="1" minOccurs="0" name="PaymentInstrument" type="xsd:string">
                                 <xsd:annotation>
                                     <xsd:appinfo source="X_Description_EN">PYIN</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
                             <xsd:element maxOccurs="1" minOccurs="0" name="CurrencyCode" type="xsd:string">
                                 <xsd:annotation>
                                     <xsd:appinfo source="X_Description_EN">CCRP</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
                             <xsd:element maxOccurs="1" minOccurs="0" name="HoldPayment" type="xsd:string">
                                 <xsd:annotation>
                                     <xsd:appinfo source="X_Description_EN">HDPY</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
@@ -228,7 +228,7 @@
                                          type="xsd:string">
                                 <xsd:annotation>
                                     <xsd:appinfo source="X_Description_EN">AN85</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
@@ -237,7 +237,7 @@
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="Purchasing">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                     <xsd:complexType>
@@ -245,35 +245,35 @@
                             <xsd:element maxOccurs="1" minOccurs="0" name="FreightHandlingCode" type="xsd:string">
                                 <xsd:annotation>
                                     <xsd:appinfo source="X_Description_EN">FRTH</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
                             <xsd:element maxOccurs="1" minOccurs="0" name="DeliveryInstructions1" type="xsd:string">
                                 <xsd:annotation>
                                     <xsd:appinfo source="X_Description_EN">DEL1</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
                             <xsd:element maxOccurs="1" minOccurs="0" name="DeliveryInstructions2" type="xsd:string">
                                 <xsd:annotation>
                                     <xsd:appinfo source="X_Description_EN">DEL2</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
                             <xsd:element maxOccurs="1" minOccurs="0" name="SupplierParentRebateLevel" type="xsd:string">
                                 <xsd:annotation>
                                     <xsd:appinfo source="X_Description_EN">VI01</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
                             <xsd:element maxOccurs="1" minOccurs="0" name="SupplierRebateCode" type="xsd:string">
                                 <xsd:annotation>
                                     <xsd:appinfo source="X_Description_EN">VI02</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
@@ -282,7 +282,7 @@
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="GL_Postings">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                     <xsd:complexType>
@@ -290,14 +290,14 @@
                             <xsd:element maxOccurs="1" minOccurs="0" name="GL_Class" type="xsd:string">
                                 <xsd:annotation>
                                     <xsd:appinfo source="X_Description_EN">APC</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
                             <xsd:element maxOccurs="1" minOccurs="0" name="GL_AccountNumber" type="xsd:string">
                                 <xsd:annotation>
                                     <xsd:appinfo source="X_Description_EN">AN1</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
@@ -306,7 +306,7 @@
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="TaxInformation">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                     <xsd:complexType>
@@ -314,21 +314,21 @@
                             <xsd:element maxOccurs="1" minOccurs="0" name="TaxArea" type="xsd:string">
                                 <xsd:annotation>
                                     <xsd:appinfo source="X_Description_EN">TXA2</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
                             <xsd:element maxOccurs="1" minOccurs="0" name="TaxAuthority" type="xsd:string">
                                 <xsd:annotation>
                                     <xsd:appinfo source="X_Description_EN">TAWH</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
                             <xsd:element maxOccurs="1" minOccurs="0" name="TaxWithholdingPercent" type="xsd:string">
                                 <xsd:annotation>
                                     <xsd:appinfo source="X_Description_EN">PCWH</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
@@ -337,7 +337,7 @@
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="Billing">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                     <xsd:complexType>
@@ -345,14 +345,14 @@
                             <xsd:element maxOccurs="1" minOccurs="0" name="BillingAddressType" type="xsd:string">
                                 <xsd:annotation>
                                     <xsd:appinfo source="X_Description_EN">BADT</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
                             <xsd:element maxOccurs="1" minOccurs="0" name="MinimumCheckCode" type="xsd:string">
                                 <xsd:annotation>
                                     <xsd:appinfo source="X_Description_EN">MNSC</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
@@ -361,7 +361,7 @@
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="Hierarchy">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                     <xsd:complexType>
@@ -371,25 +371,25 @@
                                     <xsd:appinfo source="X_ForeignKey">AddressBook/MDM_AB_Id</xsd:appinfo>
                                     <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
                                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
                             <xsd:element maxOccurs="1" minOccurs="0" name="AddressBookCategoryCode23" type="xsd:string">
                                 <xsd:annotation>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
                             <xsd:element maxOccurs="1" minOccurs="0" name="AddressBookCategoryCode24" type="xsd:string">
                                 <xsd:annotation>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
                             <xsd:element maxOccurs="1" minOccurs="0" name="AddressBookCategoryCode25" type="xsd:string">
                                 <xsd:annotation>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
@@ -398,7 +398,7 @@
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="VersionControl" type="VCType">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
@@ -416,31 +416,31 @@
         <xsd:all>
             <xsd:element maxOccurs="1" minOccurs="0" name="Created" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="Updated" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="Deleted" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="CreatedBy" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="UpdatedBy" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -448,35 +448,35 @@
     </xsd:complexType>
     <xsd:element name="AddressBook">
         <xsd:annotation>
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
             <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:all>
                 <xsd:element maxOccurs="1" minOccurs="1" name="MDM_AB_Id" type="AUTO_INCREMENT">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="JDE_Address_Number" type="xsd:string">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Description_EN">AN8</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="AlphaName" type="xsd:string">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Description_EN">ALPH</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="SearchType" type="xsd:string">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Description_EN">AT1</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
@@ -484,27 +484,27 @@
                     <xsd:annotation>
                         <xsd:appinfo source="X_Description_EN">BCU</xsd:appinfo>
                         <xsd:appinfo source="X_AutoExpand">false</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="IndustryClassification" type="xsd:string">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Description_EN">SIC</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="CategoryCodes">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                     <xsd:complexType>
                         <xsd:all>
                             <xsd:element maxOccurs="1" minOccurs="0" name="Level1Category" type="xsd:string">
                                 <xsd:annotation>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_ForeignKey">PurCatLevel1_Ref/PurCatLevel1_Code</xsd:appinfo>
                                     <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
                                     <xsd:appinfo source="X_ForeignKeyInfo">PurCatLevel1_Ref/PurCatLevel1_Code
@@ -516,26 +516,26 @@
                             <xsd:element maxOccurs="1" minOccurs="0" name="Level2Category" type="xsd:string">
                                 <xsd:annotation>
                                     <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
                             <xsd:element maxOccurs="1" minOccurs="0" name="Level3Category" type="xsd:string">
                                 <xsd:annotation>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
                             <xsd:element maxOccurs="1" minOccurs="0" name="SupplierStatus" type="xsd:string">
                                 <xsd:annotation>
                                     <xsd:appinfo source="X_Description_EN">AC23</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
                             <xsd:element maxOccurs="1" minOccurs="0" name="CISVendor">
                                 <xsd:annotation>
                                     <xsd:appinfo source="X_Description_EN">AC24</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                                 </xsd:annotation>
                                 <xsd:simpleType>
@@ -549,7 +549,7 @@
                             <xsd:element maxOccurs="1" minOccurs="0" name="VendorUltimateParent" type="xsd:string">
                                 <xsd:annotation>
                                     <xsd:appinfo source="X_Description_EN">AC25</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
@@ -558,7 +558,7 @@
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="Tax">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                     <xsd:complexType>
@@ -566,21 +566,21 @@
                             <xsd:element maxOccurs="1" minOccurs="0" name="TaxID" type="xsd:string">
                                 <xsd:annotation>
                                     <xsd:appinfo source="X_Description_EN">TAX</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
                             <xsd:element maxOccurs="1" minOccurs="0" name="TaxCertificate" type="xsd:string">
                                 <xsd:annotation>
                                     <xsd:appinfo source="X_Description_EN">TXCT</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
                             <xsd:element maxOccurs="1" minOccurs="0" name="AdditionalIndTaxID" type="xsd:string">
                                 <xsd:annotation>
                                     <xsd:appinfo source="X_Description_EN">TX2</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
@@ -589,7 +589,7 @@
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="RelatedAddresses">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                     <xsd:complexType>
@@ -597,7 +597,7 @@
                             <xsd:element maxOccurs="1" minOccurs="0" name="FirstAddressNumber" type="xsd:string">
                                 <xsd:annotation>
                                     <xsd:appinfo source="X_Description_EN">AN81</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_ForeignKey">Address/MDM_Address_Id</xsd:appinfo>
                                     <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
                                     <xsd:appinfo source="X_FKIntegrity">false</xsd:appinfo>
@@ -613,28 +613,28 @@
                             <xsd:element maxOccurs="1" minOccurs="0" name="SecondAddressNumber" type="xsd:string">
                                 <xsd:annotation>
                                     <xsd:appinfo source="X_Description_EN">AN82</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
                             <xsd:element maxOccurs="1" minOccurs="0" name="ThirdAddressNumber" type="xsd:string">
                                 <xsd:annotation>
                                     <xsd:appinfo source="X_Description_EN">AN83</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
                             <xsd:element maxOccurs="1" minOccurs="0" name="FourthAddressNumber" type="xsd:string">
                                 <xsd:annotation>
                                     <xsd:appinfo source="X_Description_EN">AN84</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
                             <xsd:element maxOccurs="1" minOccurs="0" name="FifthAddressNumber" type="xsd:string">
                                 <xsd:annotation>
                                     <xsd:appinfo source="X_Description_EN">AN85</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
@@ -644,7 +644,7 @@
                 <xsd:element maxOccurs="1" minOccurs="0" name="Preferred_Supplier" type="xsd:boolean">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
             </xsd:all>
@@ -656,14 +656,14 @@
     </xsd:element>
     <xsd:element name="Contact">
         <xsd:annotation>
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
             <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:sequence>
                 <xsd:element maxOccurs="1" minOccurs="1" name="MDM_Contact_Id" type="AUTO_INCREMENT">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
@@ -674,14 +674,14 @@
                         <xsd:appinfo source="X_ForeignKeyInfo">AddressBook/MDM_AB_Id</xsd:appinfo>
                         <xsd:appinfo source="X_ForeignKeyInfo">AddressBook/JDE_Address_Number</xsd:appinfo>
                         <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                         <xsd:appinfo source="X_Label_EN">Address Book Id</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="MailingName" type="String40">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                         <xsd:appinfo source="X_Label_EN">Mailing name</xsd:appinfo>
                         <xsd:appinfo source="X_Description_EN">'Mail to' name or description</xsd:appinfo>
@@ -689,7 +689,7 @@
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="ProfessionalTitle" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                         <xsd:appinfo source="X_Label_EN">Title</xsd:appinfo>
                     </xsd:annotation>
@@ -697,28 +697,28 @@
                 <xsd:element maxOccurs="1" minOccurs="0" name="FirstName" type="xsd:string">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Label_EN">First name</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="Surname" type="xsd:string">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Label_EN">Surname</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="Description" type="xsd:string">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Label_EN">Contact Description</xsd:appinfo>
                         <xsd:appinfo source="X_Description_EN">Text to describe or identitify the contact</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="Remark">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                     <xsd:simpleType>
@@ -729,14 +729,14 @@
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="SecondaryAlphaName" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="3" minOccurs="0" name="Telephone">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Write">User</xsd:appinfo>
                         <xsd:appinfo source="X_Label_EN">Telephone Details</xsd:appinfo>
                         <xsd:appinfo source="X_AutoExpand">false</xsd:appinfo>
@@ -747,7 +747,7 @@
                                 <xsd:annotation>
                                     <xsd:appinfo source="X_Description_EN">Telephone, Fax or Mobile</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
                                     <xsd:appinfo source="X_Label_EN">Line Type</xsd:appinfo>
                                 </xsd:annotation>
@@ -763,7 +763,7 @@
                                 <xsd:annotation>
                                     <xsd:appinfo source="X_Description_EN">Dialling prefix</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
                                     <xsd:appinfo source="X_Label_EN">Prefix</xsd:appinfo>
                                 </xsd:annotation>
@@ -772,7 +772,7 @@
                                 <xsd:annotation>
                                     <xsd:appinfo source="X_Description_EN">Local dialling number</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
                                     <xsd:appinfo source="X_Label_EN">Local number</xsd:appinfo>
                                 </xsd:annotation>
@@ -780,7 +780,7 @@
                             <xsd:element maxOccurs="1" minOccurs="0" name="extension" type="xsd:string">
                                 <xsd:annotation>
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
                                     <xsd:appinfo source="X_Label_EN">Extension</xsd:appinfo>
                                 </xsd:annotation>
@@ -790,27 +790,27 @@
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="EmailAddresses">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                     <xsd:complexType>
                         <xsd:sequence>
                             <xsd:element maxOccurs="unbounded" minOccurs="0" name="EmailAddress">
                                 <xsd:annotation>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                                 </xsd:annotation>
                                 <xsd:complexType>
                                     <xsd:all>
                                         <xsd:element maxOccurs="1" minOccurs="0" name="Email" type="xsd:string">
                                             <xsd:annotation>
-                                                <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                                <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                                 <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                                             </xsd:annotation>
                                         </xsd:element>
                                         <xsd:element maxOccurs="1" minOccurs="0" name="EmailType" type="xsd:string">
                                             <xsd:annotation>
-                                                <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                                <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                                 <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                                             </xsd:annotation>
                                         </xsd:element>
@@ -829,14 +829,14 @@
     </xsd:element>
     <xsd:element name="Address">
         <xsd:annotation>
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
             <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:all>
                 <xsd:element maxOccurs="1" minOccurs="1" name="MDM_Address_Id" type="AUTO_INCREMENT">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
@@ -849,73 +849,73 @@
                         <xsd:appinfo source="X_ForeignKeyInfo">AddressBook/MDM_AB_Id</xsd:appinfo>
                         <xsd:appinfo source="X_ForeignKeyInfo">AddressBook/JDE_Address_Number</xsd:appinfo>
                         <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="StartEffectiveDate" type="xsd:date">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="EffectiveDateExistance" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="Address_Line_1" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="Address_Line_2" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="Address_Line_3" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="Address_Line_4" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="PostalCode" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="City" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="County" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="State" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="Country" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Label_EN">Country Code</xsd:appinfo>
                         <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
                         <xsd:appinfo source="X_Description_EN">2 character Country Code e.g. GB</xsd:appinfo>
@@ -932,69 +932,69 @@
     </xsd:element>
     <xsd:element name="Supplier_Search">
         <xsd:annotation>
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:all>
                 <xsd:element maxOccurs="1" minOccurs="1" name="Id" type="AUTO_INCREMENT">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="SupplierName" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="PostCode" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="VAT_RegNumber" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="AddressLine1" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="AddressLine2" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="AddressLine3" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="AddressLine4" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="City" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="CountryCode" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="PotentialMatches" type="pmtype">
                     <xsd:annotation>
                         <xsd:appinfo source="X_AutoExpand">true</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="1" name="NoMatchesFoundFK" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Default_Value_Rule">false</xsd:appinfo>
                         <xsd:appinfo source="X_Label_EN">Start creation of new supplier</xsd:appinfo>
                         <xsd:appinfo source="X_Visible_Rule">/Supplier_Search/SearchDone</xsd:appinfo>
@@ -1009,7 +1009,7 @@
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="1" name="SearchDone" type="xsd:boolean">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Visible_Rule">false</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
@@ -1025,7 +1025,7 @@
             <xsd:element maxOccurs="unbounded" minOccurs="0" name="PM">
                 <xsd:annotation>
                     <xsd:appinfo source="X_AutoExpand">true</xsd:appinfo>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
                 <xsd:complexType>
                     <xsd:all>
@@ -1036,12 +1036,12 @@
                                 <xsd:appinfo source="X_ForeignKeyInfo">AddressBook/MDM_AB_Id</xsd:appinfo>
                                 <xsd:appinfo source="X_ForeignKeyInfo">AddressBook/AlphaName</xsd:appinfo>
                                 <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
-                                <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                             </xsd:annotation>
                         </xsd:element>
                         <xsd:element maxOccurs="1" minOccurs="0" name="Score" type="xsd:string">
                             <xsd:annotation>
-                                <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                             </xsd:annotation>
                         </xsd:element>
                     </xsd:all>
@@ -1051,40 +1051,40 @@
     </xsd:complexType>
     <xsd:element name="VisibleRule">
         <xsd:annotation>
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
             <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:all>
                 <xsd:element maxOccurs="1" minOccurs="1" name="id" type="AUTO_INCREMENT">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="1" name="a" type="xsd:boolean">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="b" type="xsd:boolean">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Visible_Rule">VisibleRule/a = 'true'</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="c" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="d" type="xsd:string">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Visible_Rule">../c = 'adam'</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
@@ -1097,23 +1097,23 @@
     </xsd:element>
     <xsd:element name="SupplierCreationYesNo">
         <xsd:annotation>
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:all>
                 <xsd:element maxOccurs="1" minOccurs="1" name="Id" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="1" name="SearchDone" type="xsd:boolean">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="1" name="SearchFilter" type="xsd:boolean">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
             </xsd:all>
@@ -1127,7 +1127,7 @@
         <xsd:annotation>
             <xsd:appinfo source="X_Workflow">JuniorManager#JDE_Type_model_workflowExample_1.0#Read-only</xsd:appinfo>
             <xsd:appinfo source="X_Workflow">SeniorManager#JDE_Type_model_workflowExample_1.0#Read-only</xsd:appinfo>
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
             <xsd:appinfo source="X_Write">User</xsd:appinfo>
         </xsd:annotation>
         <xsd:complexType>
@@ -1139,7 +1139,7 @@
                         </xsd:appinfo>
                         <xsd:appinfo source="X_Workflow">SeniorManager#JDE_Type_model_workflowExample_1.0#Read-only
                         </xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Write">User</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
@@ -1150,7 +1150,7 @@
                         </xsd:appinfo>
                         <xsd:appinfo source="X_Workflow">SeniorManager#JDE_Type_model_workflowExample_1.0#Read-only
                         </xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Write">User</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
@@ -1161,7 +1161,7 @@
                         </xsd:appinfo>
                         <xsd:appinfo source="X_Workflow">SeniorManager#JDE_Type_model_workflowExample_1.0#Read-only
                         </xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Write">User</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
@@ -1172,7 +1172,7 @@
                         </xsd:appinfo>
                         <xsd:appinfo source="X_Workflow">SeniorManager#JDE_Type_model_workflowExample_1.0#Read-only
                         </xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Write">User</xsd:appinfo>
                     </xsd:annotation>
                     <xsd:complexType>
@@ -1186,7 +1186,7 @@
                                     <xsd:appinfo source="X_Workflow">
                                         SeniorManager#JDE_Type_model_workflowExample_1.0#Read-only
                                     </xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
@@ -1200,7 +1200,7 @@
                                     <xsd:appinfo source="X_Workflow">
                                         SeniorManager#JDE_Type_model_workflowExample_1.0#Writable
                                     </xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
@@ -1233,7 +1233,7 @@
         <xsd:sequence>
             <xsd:element maxOccurs="unbounded" minOccurs="1" name="BusinessUnit" type="BUType">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -1257,26 +1257,26 @@
     </xsd:complexType>
     <xsd:element name="ForeignKeyFilterReference">
         <xsd:annotation>
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
             <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:all>
                 <xsd:element maxOccurs="1" minOccurs="1" name="ForeignKeyFilterReferencePK" type="AUTO_INCREMENT">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="1" name="Country" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="1" name="Town" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
@@ -1289,20 +1289,20 @@
     </xsd:element>
     <xsd:element name="FKFilterExample">
         <xsd:annotation>
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
             <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:all>
                 <xsd:element maxOccurs="1" minOccurs="1" name="FKFilterExamplePK" type="AUTO_INCREMENT">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="1" name="Country" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
@@ -1314,7 +1314,7 @@
                         <xsd:appinfo source="X_ForeignKey_Filter">
                             ForeignKeyFilterReference/Country$$=$$FKFilterExample/Country$$#
                         </xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_ForeignKeyInfo">ForeignKeyFilterReference/Town</xsd:appinfo>
                         <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
@@ -1331,7 +1331,7 @@
         <xsd:annotation>
             <xsd:appinfo source="X_PrimaryKeyInfo">PurCat_Hierarchy_Ref/SupCatCodePK</xsd:appinfo>
             <xsd:appinfo source="X_Label_EN">Purchasing Category Codes</xsd:appinfo>
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
             <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
         </xsd:annotation>
         <xsd:complexType>
@@ -1339,25 +1339,25 @@
                 <xsd:element maxOccurs="1" minOccurs="1" name="SupCatCodePK" type="AUTO_INCREMENT">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Label_EN">LineID</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="1" name="Level1Category" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="1" name="Level2Category" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="1" name="Level3Category" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
@@ -1370,14 +1370,14 @@
     </xsd:element>
     <xsd:element name="Bank">
         <xsd:annotation>
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
             <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:all>
                 <xsd:element maxOccurs="1" minOccurs="1" name="MDM_Bank_Id" type="AUTO_INCREMENT">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Label_EN">MDM Bank Id</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
@@ -1386,7 +1386,7 @@
                     <xsd:annotation>
                         <xsd:appinfo source="X_ForeignKey">AddressBook/MDM_AB_Id</xsd:appinfo>
                         <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Label_EN">Account Address Number</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
@@ -1394,7 +1394,7 @@
                 <xsd:element maxOccurs="1" minOccurs="1" name="Bank_Type">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     </xsd:annotation>
                     <xsd:simpleType>
                         <xsd:restriction base="xsd:string">
@@ -1406,7 +1406,7 @@
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="Bank_Description" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Label_EN">Bank Name</xsd:appinfo>
                         <xsd:appinfo source="X_Description_EN">Bank Description</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
@@ -1414,7 +1414,7 @@
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="1" name="Bank_Transit_Code" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Label_EN">Bank Transit Code</xsd:appinfo>
                         <xsd:appinfo source="X_Description_EN">Bank Transit / Sort Code</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
@@ -1422,7 +1422,7 @@
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="1" name="Account_Number" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Label_EN">Bank Account number</xsd:appinfo>
                         <xsd:appinfo source="X_Description_EN">Bank Account number (8 digits)</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
@@ -1431,7 +1431,7 @@
                 <xsd:element maxOccurs="1" minOccurs="0" name="Account_Id" type="xsd:string">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Label_EN">Account ID</xsd:appinfo>
                         <xsd:appinfo source="X_Description_EN">Identifying name or code for the Account</xsd:appinfo>
                     </xsd:annotation>
@@ -1439,12 +1439,12 @@
                 <xsd:element maxOccurs="1" minOccurs="0" name="Bank_Country" type="xsd:string">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="Currency_Code" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Label_EN">Currency Code</xsd:appinfo>
                         <xsd:appinfo source="X_Description_EN">ISO 3 character Currency Code</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
@@ -1453,13 +1453,13 @@
                 <xsd:element maxOccurs="1" minOccurs="0" name="SWIFT_Code" type="xsd:string">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="IBAN" type="xsd:string">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
             </xsd:all>
@@ -1471,32 +1471,32 @@
     </xsd:element>
     <xsd:element name="CountryCode_Ref">
         <xsd:annotation>
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
             <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:all>
                 <xsd:element maxOccurs="1" minOccurs="1" name="Country_Number" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="1" name="CountryCode_A2" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="1" name="CountryCode_A3" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="1" name="Country_Name" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
@@ -1512,16 +1512,16 @@
             <xsd:appinfo source="X_Label_EN">Create Supplier Request</xsd:appinfo>
             <xsd:appinfo source="X_Description_EN">Create New Supplier</xsd:appinfo>
             <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-            <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
+            <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:sequence>
                 <xsd:element maxOccurs="1" minOccurs="1" name="Request_Status" type="xsd:string">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Write">User</xsd:appinfo>
                         <xsd:appinfo source="X_ForeignKey">Request_Status</xsd:appinfo>
                         <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
@@ -1530,7 +1530,7 @@
                         </xsd:appinfo>
                         <xsd:appinfo source="X_ForeignKeyInfo">Request_Status/Request_Option</xsd:appinfo>
                         <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
+                        <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="1" name="Request_Id_PK" type="AUTO_INCREMENT">
@@ -1539,17 +1539,17 @@
                         <xsd:appinfo source="X_Description_EN">Reference number for the Create Supplier request
                         </xsd:appinfo>
                         <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
+                        <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="1" name="Requester_Details">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
+                        <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                     </xsd:annotation>
                     <xsd:complexType>
                         <xsd:all>
@@ -1557,9 +1557,9 @@
                                 <xsd:annotation>
                                     <xsd:appinfo source="X_Label_EN">Requester name</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only
+                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
                                     </xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
@@ -1567,9 +1567,9 @@
                                 <xsd:annotation>
                                     <xsd:appinfo source="X_Label_EN">Requester Site</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only
+                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
                                     </xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
@@ -1577,9 +1577,9 @@
                                 <xsd:annotation>
                                     <xsd:appinfo source="X_Label_EN">Requester email address</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only
+                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
                                     </xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
@@ -1587,9 +1587,9 @@
                                 <xsd:annotation>
                                     <xsd:appinfo source="X_Label_EN">Requester contact phone</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only
+                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
                                     </xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
@@ -1597,9 +1597,9 @@
                                 <xsd:annotation>
                                     <xsd:appinfo source="X_Label_EN">Request date</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only
+                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
                                     </xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
@@ -1611,10 +1611,10 @@
                         <xsd:appinfo source="X_Label_EN">Supplier Name</xsd:appinfo>
                         <xsd:appinfo source="X_Description_EN">Supplier's trading name</xsd:appinfo>
                         <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Write">User</xsd:appinfo>
                         <xsd:appinfo source="X_Default_Value_Rule">'bob'</xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
+                        <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="Supplier_Country" type="xsd:string">
@@ -1626,18 +1626,18 @@
                         <xsd:appinfo source="X_Label_EN">Supplier Country</xsd:appinfo>
                         <xsd:appinfo source="X_Description_EN">Country in which the supplier is located</xsd:appinfo>
                         <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
+                        <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="Company_RegNbr" type="xsd:string">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Label_EN">Company Registration Number</xsd:appinfo>
                         <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
+                        <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="Supplier_Details">
@@ -1646,9 +1646,9 @@
                         <xsd:appinfo source="X_Label_EN">Supplier Request details</xsd:appinfo>
                         <xsd:appinfo source="X_AutoExpand">false</xsd:appinfo>
                         <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
+                        <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                     </xsd:annotation>
                     <xsd:complexType>
                         <xsd:all>
@@ -1659,9 +1659,9 @@
                                     </xsd:appinfo>
                                     <xsd:appinfo source="X_Label_EN">Type of Goods / Service</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only
+                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
                                     </xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
@@ -1672,9 +1672,9 @@
                                         in the EU
                                     </xsd:appinfo>
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only
+                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
                                     </xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
@@ -1685,9 +1685,9 @@
                                     </xsd:appinfo>
                                     <xsd:appinfo source="X_Label_EN">Registered for VAT in Ireland?</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only
+                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
                                     </xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
@@ -1698,9 +1698,9 @@
                                     </xsd:appinfo>
                                     <xsd:appinfo source="X_Label_EN">Registered for VAT in the UK?</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only
+                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
                                     </xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
@@ -1712,9 +1712,9 @@
                                     <xsd:appinfo source="X_Label_EN">Constuction Industry Scheme (CIS) registered?
                                     </xsd:appinfo>
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only
+                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
                                     </xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
@@ -1723,9 +1723,9 @@
                                     <xsd:appinfo source="X_Description_EN">Warehouse self-bill supplier?</xsd:appinfo>
                                     <xsd:appinfo source="X_Label_EN">Warehouse self-bill supplier?</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only
+                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
                                     </xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
@@ -1734,9 +1734,9 @@
                                     <xsd:appinfo source="X_Description_EN">Haulier self-bill supplier?</xsd:appinfo>
                                     <xsd:appinfo source="X_Label_EN">Haulier self-bill supplier?</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only
+                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
                                     </xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
@@ -1746,9 +1746,9 @@
                 <xsd:element maxOccurs="1" minOccurs="0" name="Supplier_Address">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
+                        <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                     </xsd:annotation>
                     <xsd:complexType>
                         <xsd:all>
@@ -1756,9 +1756,9 @@
                                 <xsd:annotation>
                                     <xsd:appinfo source="X_Label_EN">Unit / Building</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only
+                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
                                     </xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
@@ -1766,9 +1766,9 @@
                                 <xsd:annotation>
                                     <xsd:appinfo source="X_Label_EN">Building number / Street</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only
+                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
                                     </xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
@@ -1776,9 +1776,9 @@
                                 <xsd:annotation>
                                     <xsd:appinfo source="X_Label_EN">Locality / Sub District</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only
+                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
                                     </xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
@@ -1786,9 +1786,9 @@
                                 <xsd:annotation>
                                     <xsd:appinfo source="X_Label_EN">District</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only
+                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
                                     </xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
@@ -1796,9 +1796,9 @@
                                 <xsd:annotation>
                                     <xsd:appinfo source="X_Label_EN">Town / City</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only
+                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
                                     </xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
@@ -1806,9 +1806,9 @@
                                 <xsd:annotation>
                                     <xsd:appinfo source="X_Label_EN">Post Code</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only
+                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
                                     </xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
@@ -1818,9 +1818,9 @@
                                     <xsd:appinfo source="X_Visible_Rule">/Create_Supplier/Supplier_Details/uk = 'true'
                                     </xsd:appinfo>
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only
+                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
                                     </xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
@@ -1830,17 +1830,17 @@
                 <xsd:element maxOccurs="unbounded" minOccurs="0" name="Contact_Details" type="Contacts">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
+                        <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="Payment_Details">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
+                        <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                     </xsd:annotation>
                     <xsd:complexType>
                         <xsd:all>
@@ -1854,9 +1854,9 @@
                                     </xsd:appinfo>
                                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only
+                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
                                     </xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
@@ -1868,9 +1868,9 @@
                                     <xsd:appinfo source="X_Facet_EN">Required if selecting non-standard payment terms
                                     </xsd:appinfo>
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only
+                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
                                     </xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
@@ -1880,18 +1880,18 @@
                 <xsd:element maxOccurs="1" minOccurs="0" name="PurCategories">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
+                        <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                     </xsd:annotation>
                     <xsd:complexType>
                         <xsd:all>
                             <xsd:element maxOccurs="1" minOccurs="1" name="purcat_level_1">
                                 <xsd:annotation>
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only
+                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
                                     </xsd:appinfo>
                                 </xsd:annotation>
                                 <xsd:simpleType>
@@ -1942,18 +1942,18 @@
                                     </xsd:appinfo>
                                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only
+                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
                                     </xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
                             <xsd:element maxOccurs="1" minOccurs="1" name="purcat_level_3" type="xsd:string">
                                 <xsd:annotation>
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only
+                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
                                     </xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
@@ -1963,21 +1963,21 @@
                 <xsd:element maxOccurs="1" minOccurs="0" name="Bank" type="BankType">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
+                        <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="ABC_information">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Write">User</xsd:appinfo>
                         <xsd:appinfo source="X_Label_EN">Anti Bribery and Corruption</xsd:appinfo>
                         <xsd:appinfo source="X_Description_EN">The questions in this section must be answered yes or
                             no
                         </xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
+                        <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                     </xsd:annotation>
                     <xsd:complexType>
                         <xsd:all>
@@ -1986,9 +1986,9 @@
                                     <xsd:appinfo source="X_Label_EN">Is the supplier registered outside of the UK?
                                     </xsd:appinfo>
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only
+                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
                                     </xsd:appinfo>
                                 </xsd:annotation>
                                 <xsd:simpleType>
@@ -2005,9 +2005,9 @@
                                         business for British Sugar, Silver Spoon or AB Sugar?
                                     </xsd:appinfo>
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only
+                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
                                     </xsd:appinfo>
                                 </xsd:annotation>
                                 <xsd:simpleType>
@@ -2023,9 +2023,9 @@
                                         behalf of British Sugar, Silver Spoon or AB Sugar?
                                     </xsd:appinfo>
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only
+                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
                                     </xsd:appinfo>
                                 </xsd:annotation>
                                 <xsd:simpleType>
@@ -2041,9 +2041,9 @@
                                         Sugar, Silver Spoon or AB Sugar?
                                     </xsd:appinfo>
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only
+                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
                                     </xsd:appinfo>
                                 </xsd:annotation>
                                 <xsd:simpleType>
@@ -2059,9 +2059,9 @@
                                         that is not publically available?
                                     </xsd:appinfo>
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only
+                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
                                     </xsd:appinfo>
                                 </xsd:annotation>
                                 <xsd:simpleType>
@@ -2078,9 +2078,9 @@
                                         Spoon or AB Sugar?
                                     </xsd:appinfo>
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only
+                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
                                     </xsd:appinfo>
                                 </xsd:annotation>
                                 <xsd:simpleType>
@@ -2096,9 +2096,9 @@
                                         that mean you would like further due diligence to be undertaken?
                                     </xsd:appinfo>
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only
+                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
                                     </xsd:appinfo>
                                 </xsd:annotation>
                                 <xsd:simpleType>
@@ -2116,10 +2116,10 @@
                         <xsd:appinfo source="X_Visible_Rule">/Create_Supplier/Supplier_Details/cis_supplier = 'true'
                         </xsd:appinfo>
                         <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Write">User</xsd:appinfo>
                         <xsd:appinfo source="X_Label_EN">CIS Information</xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
+                        <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                     </xsd:annotation>
                     <xsd:complexType>
                         <xsd:all>
@@ -2127,9 +2127,9 @@
                                 <xsd:annotation>
                                     <xsd:appinfo source="X_Label_EN">Unique Tax Reference</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only
+                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
                                     </xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
@@ -2137,9 +2137,9 @@
                                 <xsd:annotation>
                                     <xsd:appinfo source="X_Label_EN">CIS Document Type</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only
+                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
                                     </xsd:appinfo>
                                 </xsd:annotation>
                                 <xsd:simpleType>
@@ -2158,9 +2158,9 @@
                                     </xsd:appinfo>
                                     <xsd:appinfo source="X_Label_EN">National Insurance number</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only
+                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
                                     </xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
@@ -2170,9 +2170,9 @@
                 <xsd:element maxOccurs="1" minOccurs="0" name="Letterhead">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
+                        <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                     </xsd:annotation>
                     <xsd:complexType>
                         <xsd:all>
@@ -2182,9 +2182,9 @@
                                     <xsd:appinfo source="X_Description_EN">Link to web address or sharedrive
                                     </xsd:appinfo>
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only
+                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
                                     </xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
@@ -2195,12 +2195,12 @@
                     <xsd:annotation>
                         <xsd:appinfo source="X_AutoExpand">true</xsd:appinfo>
                         <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Write">User</xsd:appinfo>
                         <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
                         <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
                         <xsd:appinfo source="X_Visible_Rule">false</xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
+                        <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
             </xsd:sequence>
@@ -2212,20 +2212,20 @@
     </xsd:element>
     <xsd:element name="PaymentTerms_Ref">
         <xsd:annotation>
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
             <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:all>
                 <xsd:element maxOccurs="1" minOccurs="1" name="payterms_code" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="1" name="payterms_description" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
@@ -2242,9 +2242,9 @@
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Contact Role</xsd:appinfo>
                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
+                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                 </xsd:annotation>
                 <xsd:simpleType>
                     <xsd:restriction base="xsd:string">
@@ -2258,9 +2258,9 @@
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Title</xsd:appinfo>
                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
+                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                 </xsd:annotation>
                 <xsd:simpleType>
                     <xsd:restriction base="xsd:string">
@@ -2276,18 +2276,18 @@
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">First name</xsd:appinfo>
                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
+                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="surname" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Surname</xsd:appinfo>
                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
+                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="3" minOccurs="0" name="telephone">
@@ -2295,9 +2295,9 @@
                     <xsd:appinfo source="X_AutoExpand">false</xsd:appinfo>
                     <xsd:appinfo source="X_Label_EN">Telephone Details</xsd:appinfo>
                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
+                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                 </xsd:annotation>
                 <xsd:complexType>
                     <xsd:all>
@@ -2306,9 +2306,9 @@
                                 <xsd:appinfo source="X_Label_EN">Line Type</xsd:appinfo>
                                 <xsd:appinfo source="X_Description_EN">Telephone, Fax or Mobile</xsd:appinfo>
                                 <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                                <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                 <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only
+                                <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
                                 </xsd:appinfo>
                             </xsd:annotation>
                             <xsd:simpleType>
@@ -2324,9 +2324,9 @@
                                 <xsd:appinfo source="X_Label_EN">Prefix</xsd:appinfo>
                                 <xsd:appinfo source="X_Description_EN">Dialling prefix</xsd:appinfo>
                                 <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                                <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                 <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only
+                                <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
                                 </xsd:appinfo>
                             </xsd:annotation>
                         </xsd:element>
@@ -2335,9 +2335,9 @@
                                 <xsd:appinfo source="X_Label_EN">Local number</xsd:appinfo>
                                 <xsd:appinfo source="X_Description_EN">Local dialling number</xsd:appinfo>
                                 <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                                <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                 <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only
+                                <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
                                 </xsd:appinfo>
                             </xsd:annotation>
                         </xsd:element>
@@ -2345,9 +2345,9 @@
                             <xsd:annotation>
                                 <xsd:appinfo source="X_Label_EN">Extension</xsd:appinfo>
                                 <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                                <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                                <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                 <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only
+                                <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
                                 </xsd:appinfo>
                             </xsd:annotation>
                         </xsd:element>
@@ -2358,9 +2358,9 @@
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Email address</xsd:appinfo>
                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
+                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
         </xsd:sequence>
@@ -2374,9 +2374,9 @@
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Is the bank outside of the UK?</xsd:appinfo>
                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
+                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="sort_code" type="xsd:string">
@@ -2385,36 +2385,36 @@
                     <xsd:appinfo source="X_Label_EN">Sort Code</xsd:appinfo>
                     <xsd:appinfo source="X_Visible_Rule">/Create_Supplier/Bank/nonuk_bank = 'false'</xsd:appinfo>
                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
+                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="1" name="account_number" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Account Number</xsd:appinfo>
                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
+                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="1" name="account_currency" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Account Currency</xsd:appinfo>
                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
+                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="1" name="bank_name" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Bank Name</xsd:appinfo>
                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
+                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="bank_country" type="xsd:string">
@@ -2427,9 +2427,9 @@
                     <xsd:appinfo source="X_Label_EN">Bank Country</xsd:appinfo>
                     <xsd:appinfo source="X_Visible_Rule">/Create_Supplier/Bank/nonuk_bank = 'true'</xsd:appinfo>
                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
+                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="swift_code" type="xsd:string">
@@ -2437,9 +2437,9 @@
                     <xsd:appinfo source="X_Label_EN">SWIFT Code</xsd:appinfo>
                     <xsd:appinfo source="X_Visible_Rule">/Create_Supplier/Bank/nonuk_bank = 'true'</xsd:appinfo>
                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
+                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="iban" type="xsd:string">
@@ -2448,9 +2448,9 @@
                     <xsd:appinfo source="X_Description_EN">IBAN number</xsd:appinfo>
                     <xsd:appinfo source="X_Visible_Rule">/Create_Supplier/Bank/nonuk_bank = 'true'</xsd:appinfo>
                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
+                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
         </xsd:all>
@@ -2493,7 +2493,7 @@
                 <xsd:element maxOccurs="1" minOccurs="1" name="UniqueTaxReference" type="xsd:string">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Write">User</xsd:appinfo>
                         <xsd:appinfo source="X_Label_EN">Unique Tax Reference</xsd:appinfo>
                     </xsd:annotation>
@@ -2501,7 +2501,7 @@
                 <xsd:element maxOccurs="1" minOccurs="0" name="Company_RegNbr" type="xsd:string">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Write">User</xsd:appinfo>
                         <xsd:appinfo source="X_Label_EN">Company Registration Number</xsd:appinfo>
                     </xsd:annotation>
@@ -2511,7 +2511,7 @@
                         <xsd:appinfo source="X_Visible_Rule">../CIS_doc_type = 'CIS4T' or ../CIS_doc_type = 'CIS6'
                         </xsd:appinfo>
                         <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Write">User</xsd:appinfo>
                         <xsd:appinfo source="X_Label_EN">National Insurance number</xsd:appinfo>
                     </xsd:annotation>
@@ -2528,19 +2528,19 @@
     <xsd:element name="PurCatLevel1_Ref">
         <xsd:annotation>
             <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:all>
                 <xsd:element maxOccurs="1" minOccurs="1" name="PurCatLevel1_Code" type="xsd:string">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="1" name="PurCatLevel1_Desc" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
@@ -2553,21 +2553,21 @@
     </xsd:element>
     <xsd:element name="PurCatLevel3_Ref">
         <xsd:annotation>
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
             <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:all>
                 <xsd:element maxOccurs="1" minOccurs="1" name="PurCatLevel3_Code" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="1" name="PurCatLevel3_Desc" type="xsd:string">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
             </xsd:all>
@@ -2579,7 +2579,7 @@
     </xsd:element>
     <xsd:element name="PurCatLevel2_Ref">
         <xsd:annotation>
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
             <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
         </xsd:annotation>
         <xsd:complexType>
@@ -2587,19 +2587,19 @@
                 <xsd:element maxOccurs="1" minOccurs="1" name="PurCatLevel2_Id" type="AUTO_INCREMENT">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="1" name="PurCatLevel2_Code" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="1" name="PurCatLevel2_Desc" type="xsd:string">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Hide">MDM_Requester</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Label_EN">Purchasing Category Level 2</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
@@ -2615,19 +2615,19 @@
             <xsd:element maxOccurs="1" minOccurs="1" name="WF_In_Progress" type="xsd:boolean">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
                     <xsd:appinfo source="X_Default_Value_Rule">true</xsd:appinfo>
 
-                    <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
+                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="ProcurementApproval" type="WF_APPROVAL_TYPE">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">System_Admin#Create_Supplier_WF_1.0#Writable</xsd:appinfo>
+                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Default_Value_Rule">'Rejected'</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -2635,23 +2635,23 @@
     </xsd:complexType>
     <xsd:element name="Request_Status">
         <xsd:annotation>
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:all>
                 <xsd:element maxOccurs="1" minOccurs="1" name="RS_ID" type="AUTO_INCREMENT">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="1" name="Submitted" type="xsd:boolean">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="1" name="Request_Option" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
             </xsd:all>

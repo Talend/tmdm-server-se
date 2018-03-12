@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2017 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -10,30 +10,7 @@
 
 package com.amalto.core.query;
 
-import static com.amalto.core.query.user.UserQueryBuilder.alias;
-import static com.amalto.core.query.user.UserQueryBuilder.and;
-import static com.amalto.core.query.user.UserQueryBuilder.contains;
-import static com.amalto.core.query.user.UserQueryBuilder.count;
-import static com.amalto.core.query.user.UserQueryBuilder.distinct;
-import static com.amalto.core.query.user.UserQueryBuilder.emptyOrNull;
-import static com.amalto.core.query.user.UserQueryBuilder.eq;
-import static com.amalto.core.query.user.UserQueryBuilder.from;
-import static com.amalto.core.query.user.UserQueryBuilder.gt;
-import static com.amalto.core.query.user.UserQueryBuilder.gte;
-import static com.amalto.core.query.user.UserQueryBuilder.in;
-import static com.amalto.core.query.user.UserQueryBuilder.index;
-import static com.amalto.core.query.user.UserQueryBuilder.isEmpty;
-import static com.amalto.core.query.user.UserQueryBuilder.isNull;
-import static com.amalto.core.query.user.UserQueryBuilder.lt;
-import static com.amalto.core.query.user.UserQueryBuilder.lte;
-import static com.amalto.core.query.user.UserQueryBuilder.max;
-import static com.amalto.core.query.user.UserQueryBuilder.min;
-import static com.amalto.core.query.user.UserQueryBuilder.neq;
-import static com.amalto.core.query.user.UserQueryBuilder.not;
-import static com.amalto.core.query.user.UserQueryBuilder.or;
-import static com.amalto.core.query.user.UserQueryBuilder.startsWith;
-import static com.amalto.core.query.user.UserQueryBuilder.taskId;
-import static com.amalto.core.query.user.UserQueryBuilder.timestamp;
+import static com.amalto.core.query.user.UserQueryBuilder.*;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -4681,11 +4658,11 @@ public class StorageQueryTest extends StorageTestCase {
             String expectedXml = "<Person><id>1</id><firstname>Julien</firstname><middlename>John</middlename><lastname>"
                     + "Dupond</lastname><resume>[EN:my splendid resume, splendid isn&apos;t it][FR:mon magnifique resume, n&apos;est ce pas ?]</resume>"
                     + "<age>10</age><score>130000.00</score><Available>true</Available><addresses><address>[2&amp;2][true]</address><address>"
-                    + "[1][false]</address></addresses></Person>";
+                    + "[1][false]</address></addresses><Status>Employee</Status></Person>";
             String expectedXml2 = "<Person><id>1</id><firstname>Julien</firstname><middlename>John</middlename><lastname>"
                     + "Dupond</lastname><resume>[EN:my splendid resume, splendid isn&apos;t it][FR:mon magnifique resume, n&apos;est ce pas ?]</resume>"
                     + "<age>10</age><score>130000</score><Available>true</Available><addresses><address>[2&amp;2][true]</address><address>"
-                    + "[1][false]</address></addresses></Person>";
+                    + "[1][false]</address></addresses><Status>Employee</Status></Person>";
             ByteArrayOutputStream output = new ByteArrayOutputStream();
             for (DataRecord result : results) {
                 try {

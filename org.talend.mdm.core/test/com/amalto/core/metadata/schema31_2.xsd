@@ -3,14 +3,14 @@
     <xsd:import namespace="http://www.w3.org/2001/XMLSchema" />
     <xsd:element name="EA">
         <xsd:annotation>
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:all>
                 <xsd:element name="EAId" type="xsd:string" />
                 <xsd:element maxOccurs="1" minOccurs="0" name="FK1ToEB" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
                         <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
                         <xsd:appinfo source="X_ForeignKey">EB</xsd:appinfo>
@@ -20,7 +20,7 @@
                 <xsd:element maxOccurs="1" minOccurs="0" name="FK4ToEBName" type="xsd:string">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
                         <xsd:appinfo source="X_ForeignKey">EB</xsd:appinfo>
                         <xsd:appinfo source="X_ForeignKeyInfo">EB/name</xsd:appinfo>
@@ -35,14 +35,14 @@
     </xsd:element>
     <xsd:element name="EB">
         <xsd:annotation>
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:all>
                 <xsd:element name="EBId" type="xsd:string" />
                 <xsd:element maxOccurs="1" minOccurs="1" name="name" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
             </xsd:all>

@@ -349,7 +349,7 @@
                 <xsd:all>
                     <xsd:element maxOccurs="1" minOccurs="1" name="NatureEmailFk" type="xsd:string">
                         <xsd:annotation>
-                            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                             <xsd:appinfo source="X_Label_FR">Nature de l'email</xsd:appinfo>
                             <xsd:appinfo source="X_ForeignKey">NatureEmail/IdNatureEmail</xsd:appinfo>
                             <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
@@ -359,7 +359,7 @@
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="Email" type="EmailType">
                         <xsd:annotation>
-                            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                             <xsd:appinfo source="X_Facet_FR">[FR:L'email est invalide]</xsd:appinfo>
                             <xsd:appinfo source="X_Facet_EN">Email invalide</xsd:appinfo>
                             <xsd:appinfo source="X_Label_FR">Adresse email</xsd:appinfo>
@@ -376,7 +376,7 @@
                     <xsd:element maxOccurs="1" minOccurs="1" name="NatureTelephoneFk" type="xsd:string">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Label_FR">Nature du numÃ©ro</xsd:appinfo>
-                            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                             <xsd:appinfo source="X_ForeignKey">NatureTelephone/IdNatureTelephone</xsd:appinfo>
                             <xsd:appinfo source="X_ForeignKeyInfo">NatureTelephone/Libelle</xsd:appinfo>
                             <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
@@ -385,7 +385,7 @@
                     <xsd:element maxOccurs="1" minOccurs="1" name="Numero" type="xsd:string">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Label_FR">NumÃ©ro de tÃ©lÃ©phone</xsd:appinfo>
-                            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                 </xsd:all>
@@ -797,7 +797,7 @@
                 <xsd:annotation>
                     <xsd:appinfo source="X_ForeignKey">ElementOrganisationPj/IdElementOrganisation</xsd:appinfo>
                     <xsd:appinfo source="X_Label_FR">ElÃ©ment d'organisation</xsd:appinfo>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">ElementOrganisationPj/Nom</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
                 </xsd:annotation>
@@ -921,7 +921,7 @@
                 <xsd:all>
                     <xsd:element maxOccurs="1" minOccurs="1" name="Organisations" type="OrganisationListe">
                         <xsd:annotation>
-                            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                 </xsd:all>
@@ -934,7 +934,7 @@
                 <xsd:all>
                     <xsd:element maxOccurs="1" minOccurs="0" name="Enfants" type="EnfantListe">
                         <xsd:annotation>
-                            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                 </xsd:all>
@@ -985,7 +985,7 @@
                 <xsd:annotation>
                     <xsd:appinfo source="X_ForeignKey">Organisation/IdOrganisation</xsd:appinfo>
                     <xsd:appinfo source="X_Label_FR">Organisation</xsd:appinfo>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">Organisation/Nom</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
                 </xsd:annotation>
@@ -999,7 +999,7 @@
                     <xsd:element maxOccurs="1" minOccurs="1" name="NatureLocalisationFk" type="xsd:string">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Label_FR">Nature Localisation</xsd:appinfo>
-                            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                             <xsd:appinfo source="X_ForeignKey">NatureLocalisation/IdNatureLocalisation</xsd:appinfo>
                             <xsd:appinfo source="X_ForeignKeyInfo">NatureLocalisation/Libelle</xsd:appinfo>
                             <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
@@ -1008,7 +1008,7 @@
                     <xsd:element maxOccurs="1" minOccurs="0" name="AdressePostale" type="AdressePostale"/>
                     <xsd:element maxOccurs="1" minOccurs="0" name="AdresseGeocodee" type="AdresseGeocodee">
                         <xsd:annotation>
-                            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                             <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
                             <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
                         </xsd:annotation>
@@ -1122,7 +1122,7 @@
                     <xsd:element maxOccurs="1" minOccurs="1" name="Societes" type="SocieteListe">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Label_FR">SociÃ©tÃ©s</xsd:appinfo>
-                            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                             <xsd:appinfo source="X_FKIntegrity">false</xsd:appinfo>
                             <xsd:appinfo source="X_FKIntegrity_Override">false</xsd:appinfo>
                             <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
@@ -1140,7 +1140,7 @@
                     <xsd:appinfo source="X_ForeignKeyInfo">Societe/Nom</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
                     <xsd:appinfo source="X_Label_FR">SociÃ©tÃ©</xsd:appinfo>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
         </xsd:sequence>
@@ -1152,7 +1152,7 @@
                     <xsd:appinfo source="X_ForeignKey">ElementArborescence/IdElementArborescence</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">ElementArborescence/Nom</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
         </xsd:sequence>
@@ -1169,7 +1169,7 @@
                 <xsd:sequence>
                     <xsd:element maxOccurs="1" minOccurs="1" name="Enfants" type="EnfantAborescenceListe">
                         <xsd:annotation>
-                            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                             <xsd:appinfo source="X_FKIntegrity">true</xsd:appinfo>
                             <xsd:appinfo source="X_FKIntegrity_Override">false</xsd:appinfo>
                             <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
@@ -1721,37 +1721,37 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="Adresse1" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_FR">Adresse 1</xsd:appinfo>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="Adresse2" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_FR">Adresse 2</xsd:appinfo>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="Adresse3" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_FR">Adresse 3</xsd:appinfo>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="CodePostal" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_FR">Code postal</xsd:appinfo>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="Ville" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_FR">Ville</xsd:appinfo>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="Region" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_FR">RÃ©gion</xsd:appinfo>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="Etat" type="xsd:string"/>
@@ -1762,7 +1762,7 @@
                     <xsd:appinfo source="X_ForeignKeyInfo">Pays/Libelle</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">Pays/CodeIsoAlpha2</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKey">Pays/CodeIsoAlpha2</xsd:appinfo>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -1826,14 +1826,14 @@
             <xsd:element maxOccurs="1" minOccurs="1" name="AdresseFk" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_ForeignKey">AdresseGeocodee/IdAdresse</xsd:appinfo>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">AdresseGeocodee/AdresseNormalisee</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="Etat" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
         </xsd:all>

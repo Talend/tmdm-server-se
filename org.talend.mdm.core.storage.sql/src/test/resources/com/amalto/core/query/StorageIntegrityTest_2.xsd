@@ -14,21 +14,21 @@
 
     <xsd:element name="Metadata3_Main_2">
         <xsd:annotation>
-            <xsd:appinfo source="X_Create">System_Admin</xsd:appinfo>
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Create">Demo_Manager</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:sequence maxOccurs="1" minOccurs="1">
                 <xsd:element maxOccurs="1" minOccurs="1" name="Id" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Create">System_Admin</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Create">Demo_Manager</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="1" name="ref" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Create">System_Admin</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Create">Demo_Manager</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_ForeignKey">Metadata3_Referenced_2/Id</xsd:appinfo>
                         <xsd:appinfo source="X_FKIntegrity">true</xsd:appinfo>
                         <xsd:appinfo source="X_FKIntegrity_Override">true</xsd:appinfo>
@@ -44,21 +44,21 @@
 
     <xsd:element name="Metadata3_Referenced_2">
         <xsd:annotation>
-            <xsd:appinfo source="X_Create">System_Admin</xsd:appinfo>
-            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Create">Demo_Manager</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:sequence maxOccurs="1" minOccurs="1">
                 <xsd:element maxOccurs="1" minOccurs="1" name="Id" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Create">System_Admin</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Create">Demo_Manager</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="1" name="field" type="xsd:string">
                     <xsd:annotation>
-                        <xsd:appinfo source="X_Create">System_Admin</xsd:appinfo>
-                        <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+                        <xsd:appinfo source="X_Create">Demo_Manager</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
             </xsd:sequence>

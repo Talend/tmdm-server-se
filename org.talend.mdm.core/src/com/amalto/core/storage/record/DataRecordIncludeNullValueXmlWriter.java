@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2017 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -115,7 +115,7 @@ public class DataRecordIncludeNullValueXmlWriter extends DataRecordXmlWriter {
                     out.write(StorageMetadataUtils.toString(referencedRecord));
                     out.write("</" + referenceField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
                 } else {
-                    if (value != null) {
+                    if (value != null && !((List<DataRecord>) value).isEmpty()) {
                         List<DataRecord> valueAsList = (List<DataRecord>) value;
                         for (DataRecord currentValue : valueAsList) {
                             if (currentValue != null) {

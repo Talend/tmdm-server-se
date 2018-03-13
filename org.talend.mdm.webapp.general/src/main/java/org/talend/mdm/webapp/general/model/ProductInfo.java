@@ -23,6 +23,8 @@ public class ProductInfo implements Serializable, IsSerializable {
 
     private String productEdition;
 
+    private String productVersion;
+
     public ProductInfo() {
 
     }
@@ -51,4 +53,11 @@ public class ProductInfo implements Serializable, IsSerializable {
         this.productEdition = productEdition;
     }
 
+    public String getProductVersion() {
+        return this.productVersion;
+    }
+
+    public void setProductVersion(String productVersion) {
+        this.productVersion = productVersion;
+    }
 }

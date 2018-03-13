@@ -29,6 +29,10 @@
 	color: #EE0000;
 }
 
+.version-label:hover {
+    cursor: help;
+}
+
 .language-box{
 	font: normal 11px tahoma, verdana, helvetica;
 	right: 5px;

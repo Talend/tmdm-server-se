@@ -85,6 +85,7 @@ public class GeneralAction implements GeneralService {
                 info.setProductKey(serverInfo.getProductKey());
                 info.setProductName(serverInfo.getProductName());
                 info.setProductEdition(serverInfo.getProductEdition());
+                info.setProductVersion(com.amalto.core.util.Version.getSimpleVersionAsString(this.getClass()));
                 return info;
             }
         }

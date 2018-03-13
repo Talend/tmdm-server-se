@@ -149,6 +149,7 @@ public class BrandingBar extends ContentPanel {
 
     public void setProductInfo(ProductInfo info) {
         if (info != null && info.getProductName() != null) {
+            versionLabel.setTitle(info.getProductVersion());
             versionLabel.setHTML(info.getProductName() + " " + info.getProductEdition()); //$NON-NLS-1$
         } else {
             UserBean userBean = Registry.get(General.USER_BEAN);

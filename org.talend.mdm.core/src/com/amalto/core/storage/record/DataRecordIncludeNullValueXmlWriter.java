@@ -217,7 +217,7 @@ public class DataRecordIncludeNullValueXmlWriter extends DataRecordXmlWriter {
                     }
                     out.write("</" + simpleField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
                 } else {
-                    if (value != null) {
+                    if (value != null && !((List) value).isEmpty()) {
                         List valueAsList = (List) value;
                         for (Object currentValue : valueAsList) {
                             if (currentValue != null) {

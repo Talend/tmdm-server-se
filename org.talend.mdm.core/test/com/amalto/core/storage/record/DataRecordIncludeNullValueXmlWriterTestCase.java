@@ -88,7 +88,7 @@ public class DataRecordIncludeNullValueXmlWriterTestCase extends DataRecordDataW
         setDataRecordField(record, "Id", "12345");
         setDataRecordField(record, "Repeat", new ArrayList<String>());
         String result = toXmlString(record);
-        Assert.assertEquals("<WithArray><Id>12345</Id></WithArray>", result);
+        Assert.assertEquals("<WithArray><Id>12345</Id><Repeat></Repeat></WithArray>", result);
     }
 
     @Test

@@ -161,7 +161,12 @@ public class BrandingBar extends ContentPanel {
     private void buildBar() {
         UserBean userBean = Registry.get(General.USER_BEAN);
         bar.add(new Image("secure/img/header-back-title.png")); //$NON-NLS-1$
-        versionLabel.setStyleName("version-label"); //$NON-NLS-1$
+        if (userBean.isEnterprise()) {
+            versionLabel.setStyleName("version-label help"); //$NON-NLS-1$
+        } else {
+            versionLabel.setStyleName("version-label"); //$NON-NLS-1$
+        }
+
         bar.add(versionLabel);
 
         hp.getElement().getStyle().setProperty("position", "absolute"); //$NON-NLS-1$ //$NON-NLS-2$

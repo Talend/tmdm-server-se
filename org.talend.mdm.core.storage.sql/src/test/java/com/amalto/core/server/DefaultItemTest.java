@@ -10,11 +10,6 @@
  */
 package com.amalto.core.server;
 
-import static com.amalto.core.query.user.UserQueryBuilder.eq;
-import static com.amalto.core.query.user.UserQueryBuilder.from;
-
-import java.io.IOException;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -36,15 +31,11 @@ import com.amalto.core.delegator.ILocalUser;
 import com.amalto.core.objects.datacluster.DataClusterPOJOPK;
 import com.amalto.core.objects.view.ViewPOJO;
 import com.amalto.core.objects.view.ViewPOJOPK;
-import com.amalto.core.query.user.UserQueryBuilder;
 import com.amalto.core.server.api.Item;
 import com.amalto.core.storage.Storage;
-import com.amalto.core.storage.StorageResults;
 import com.amalto.core.storage.StorageType;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.record.DataRecordReader;
-import com.amalto.core.storage.record.DataRecordWriter;
-import com.amalto.core.storage.record.DataRecordXmlWriter;
 import com.amalto.core.storage.record.XmlStringDataRecordReader;
 import com.amalto.core.util.ArrayListHolder;
 import com.amalto.core.util.Util;

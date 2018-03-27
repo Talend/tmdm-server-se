@@ -225,7 +225,7 @@ public class DataRecordIncludeNullValueXmlWriterTestCase extends DataRecordDataW
     }
 
     @Test
-    public void testMultiContainedTypeWithEmptyDataRecord() throws Exception {
+    public void testMultiContainedTypeWithOneDataRecord() throws Exception {
         ComplexTypeMetadata type = repository.getComplexType("WithMultiContained");
         DataRecord record = createDataRecord(type);
         setDataRecordField(record, "Id", "ABCD");
@@ -251,6 +251,34 @@ public class DataRecordIncludeNullValueXmlWriterTestCase extends DataRecordDataW
 
         Assert.assertEquals(
                 "<WithMultiContained><Id>ABCD</Id><Contained><ContainedId>CID2</ContainedId><ContainedName></ContainedName></Contained></WithMultiContained>",
+                result);
+    }
+
+    @Test
+    public void testMultiContainedTypeWithEmptyDataRecord() throws Exception {
+        ComplexTypeMetadata type = repository.getComplexType("WithMultiContained");
+        DataRecord record = createDataRecord(type);
+        setDataRecordField(record, "Id", "ABCD");
+        FieldMetadata field = type.getField("Contained");
+        Assert.assertTrue(field instanceof ContainedTypeFieldMetadata);
+        ContainedTypeFieldMetadata containedField = (ContainedTypeFieldMetadata) field;
+        ContainedComplexTypeMetadata tm = (ContainedComplexTypeMetadata) containedField.getType();
+        List<DataRecord> list = new ArrayList<DataRecord>();
+        DataRecord contained1 = createDataRecord(tm);
+        list.add(contained1);
+
+        DataRecord contained2 = createDataRecord(tm);
+        list.add(contained2);
+
+        DataRecord contained3 = createDataRecord(tm);
+        list.add(contained3);
+
+        setDataRecordField(record, "Contained", list);
+
+        String result = toXmlString(record);
+
+        Assert.assertEquals(
+                "<WithMultiContained><Id>ABCD</Id><Contained><ContainedId></ContainedId><ContainedName></ContainedName></Contained></WithMultiContained>",
                 result);
     }
 

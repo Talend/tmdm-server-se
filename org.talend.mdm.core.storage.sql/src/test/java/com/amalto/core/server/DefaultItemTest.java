@@ -20,6 +20,7 @@ import javax.xml.xpath.XPathFactory;
 
 import junit.framework.TestCase;
 
+import org.apache.commons.lang.StringUtils;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.w3c.dom.Document;
@@ -312,6 +313,11 @@ public class DefaultItemTest extends TestCase {
         @Override
         public boolean isAdmin(Class<?> objectTypeClass) throws XtentisException {
             return true;
+        }
+
+        @Override
+        public String getUserXML() {
+            return StringUtils.EMPTY;
         }
     }
 }

@@ -283,7 +283,7 @@ public class WelcomePortalAction implements WelcomePortalService {
             if (!user.userCanWrite()) {
                 return;
             }
-            User parsedUser = User.parse(user.getUserXML());
+            User parsedUser = user.parseWithoutSystemRoles();
             Map<String, String> properties = parsedUser.getProperties();
 
             properties.put(key, value);
@@ -307,7 +307,7 @@ public class WelcomePortalAction implements WelcomePortalService {
             if (!user.userCanWrite()) {
                 return;
             }
-            User parsedUser = User.parse(user.getUserXML());
+            User parsedUser = user.parseWithoutSystemRoles();
             Map<String, String> properties = parsedUser.getProperties();
 
             portalConfig = new PortalProperties(getPortalPreferences(parsedUser.getProperties()));
@@ -336,7 +336,7 @@ public class WelcomePortalAction implements WelcomePortalService {
             if (!user.userCanWrite()) {
                 return;
             }
-            User parsedUser = User.parse(user.getUserXML());
+            User parsedUser = user.parseWithoutSystemRoles();
             Map<String, String> properties = parsedUser.getProperties();
 
             portalConfig = new PortalProperties(getPortalPreferences(parsedUser.getProperties()));

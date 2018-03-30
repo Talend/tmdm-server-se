@@ -27,7 +27,6 @@ import com.amalto.core.objects.datamodel.DataModelPOJO;
 import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.StorageType;
 import com.amalto.core.storage.datasource.DataSourceFactory;
-import com.amalto.core.util.MDMEhCacheUtil;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
@@ -95,7 +94,6 @@ public class StorageAdminImpl implements StorageAdmin {
             if (getRegisteredStorage(SYSTEM_STORAGE, StorageType.SYSTEM) != null) {
                 DataClusterPOJO dataClusterPOJO = new DataClusterPOJO(storageName);
                 ObjectPOJO.remove(DataClusterPOJO.class, dataClusterPOJO.getPK());
-                MDMEhCacheUtil.clearCache(DefaultDataCluster.DATA_CLUSTER_CACHE_NAME);
             }
             
         } catch (Exception e) {

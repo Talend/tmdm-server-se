@@ -34,7 +34,7 @@ public class DefaultDataCluster implements DataCluster {
 
     private static final Logger LOGGER = Logger.getLogger(DefaultDataCluster.class);
 
-    public static final String DATA_CLUSTER_CACHE_NAME = "dataCluster";
+
 
     /**
      * Creates or updates a data cluster
@@ -72,9 +72,6 @@ public class DefaultDataCluster implements DataCluster {
                 }
                 throw new XtentisException(err, e);
             }
-
-            MDMEhCacheUtil.clearCache(DATA_CLUSTER_CACHE_NAME);
-
             return new DataClusterPOJOPK(pk);
         } catch (XtentisException e) {
             throw (e);
@@ -99,21 +96,12 @@ public class DefaultDataCluster implements DataCluster {
                 pk = new DataClusterPOJOPK(StringUtils.substringBeforeLast(pk.getUniqueId(), "#"));
             }
 
-            DataClusterPOJO value = MDMEhCacheUtil.getCache(DATA_CLUSTER_CACHE_NAME, pk.getUniqueId());
-
-            if (value != null) {
-                return value;
-            }
-
             DataClusterPOJO dataCluster = ObjectPOJO.load(DataClusterPOJO.class, pk);
             if (dataCluster == null) {
                 String err = "The Data Cluster " + pk.getUniqueId() + " does not exist.";
                 LOGGER.error(err);
                 throw new XtentisException(err);
             }
-
-            MDMEhCacheUtil.addCache(DATA_CLUSTER_CACHE_NAME, pk.getUniqueId(), dataCluster);
-
             return dataCluster;
         } catch (XtentisException e) {
             throw (e);
@@ -153,16 +141,7 @@ public class DefaultDataCluster implements DataCluster {
                 throw new XtentisException(err);
             }
 
-            DataClusterPOJO value = MDMEhCacheUtil.getCache(DATA_CLUSTER_CACHE_NAME, pk.getUniqueId());
-
-            if (value != null) {
-                return value;
-            }
-
             DataClusterPOJO dataCluster = ObjectPOJO.load(DataClusterPOJO.class, pk);
-
-            MDMEhCacheUtil.addCache(DATA_CLUSTER_CACHE_NAME, pk.getUniqueId(), dataCluster);
-
             return dataCluster;
         } catch (XtentisException e) {
             if (LOGGER.isDebugEnabled()) {
@@ -200,8 +179,6 @@ public class DefaultDataCluster implements DataCluster {
             throw new XtentisException(err, e);
         }
         ObjectPOJOPK objectPOJOPK = ObjectPOJO.remove(DataClusterPOJO.class, pk);
-
-        MDMEhCacheUtil.clearCache(DATA_CLUSTER_CACHE_NAME);
 
         return new DataClusterPOJOPK(objectPOJOPK);
     }

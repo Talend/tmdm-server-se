@@ -23,6 +23,16 @@ public class MDMEhCacheUtil {
 
     public static final String MDM_CACHE_MANAGER = "mdmCacheManager"; //$NON-NLS-1$
 
+    public static final String TRANSFORMER_CACHE_NAME = "transformer"; //$NON-NLS-1$
+
+    public static final String TRANSFORMER_PKS_CACHE_NAME = "transformerPKs"; //$NON-NLS-1$
+
+    public static final String ROUTING_RULE_CACHE_NAME = "routingRules"; //$NON-NLS-1$
+
+    public static final String ROUTING_RULE_PK_CACHE_NAME = "routingRulePKs"; //$NON-NLS-1$
+
+    public static final String DATA_CLUSTER_CACHE_NAME = "dataCluster"; //$NON-NLS-1$
+
     @SuppressWarnings("unchecked")
     public static <K, V> V getCache(String cacheName, K key) {
         EhCacheCacheManager mdmEhcache = MDMContextAccessor.getApplicationContext().getBean(MDM_CACHE_MANAGER,

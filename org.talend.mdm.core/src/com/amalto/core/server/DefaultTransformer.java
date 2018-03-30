@@ -45,7 +45,6 @@ import com.amalto.core.objects.transformers.util.TypedContent_Use_Default;
 import com.amalto.core.query.user.DateTimeConstant;
 import com.amalto.core.server.api.Transformer;
 import com.amalto.core.util.JobActionInfo;
-import com.amalto.core.util.MDMEhCacheUtil;
 import com.amalto.core.util.PluginRegistry;
 import com.amalto.core.util.Util;
 import com.amalto.core.util.XtentisException;
@@ -57,10 +56,6 @@ public class DefaultTransformer implements TransformerPluginCallBack, com.amalto
     public static final Logger LOGGER = Logger.getLogger(DefaultTransformer.class);
 
     protected final static SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd'T'HH:mm:ss-SSS z");
-
-    private static final String TRANSFORMER_CACHE_NAME = "transformer";
-
-    private static final String TRANSFORMER_PKS_CACHE_NAME = "transformerPKs";
 
     /**
      * Creates or updates a Transformer
@@ -78,10 +73,6 @@ public class DefaultTransformer implements TransformerPluginCallBack, com.amalto
                 TransformerPluginV2LocalInterface plugin = getPlugin(step.getPluginJNDI());
                 step.setCompiledParameters(plugin.compileParameters(step.getParameters()));
             }
-
-            MDMEhCacheUtil.clearCache(TRANSFORMER_CACHE_NAME);
-            MDMEhCacheUtil.clearCache(TRANSFORMER_PKS_CACHE_NAME);
-
             return new TransformerV2POJOPK(transformer.store());
         } catch (Exception e) {
             String err = "Unable to create/update the Transfomer '" + transformer.getName() + "'"; //$NON-NLS-1$ //$NON-NLS-2$
@@ -96,21 +87,12 @@ public class DefaultTransformer implements TransformerPluginCallBack, com.amalto
     @Override
     public TransformerV2POJO getTransformer(TransformerV2POJOPK pk) throws XtentisException {
         try {
-            TransformerV2POJO value = MDMEhCacheUtil.getCache(TRANSFORMER_CACHE_NAME, pk.getUniqueId());
-
-            if (value != null) {
-                return value;
-            }
-
             TransformerV2POJO transformer = ObjectPOJO.load(TransformerV2POJO.class, pk);
             if (transformer == null) {
                 String err = "The Transformer '" + pk.getUniqueId() + "' does not exist."; //$NON-NLS-1$ //$NON-NLS-2$
                 LOGGER.error(err);
                 throw new XtentisException(err);
             }
-
-            MDMEhCacheUtil.addCache(TRANSFORMER_CACHE_NAME, pk.getUniqueId(), transformer);
-
             return transformer;
         } catch (Exception e) {
             String err = "Unable to get the Transformer '" + pk.toString() + "'"; //$NON-NLS-1$ //$NON-NLS-2$
@@ -143,10 +125,6 @@ public class DefaultTransformer implements TransformerPluginCallBack, com.amalto
         }
         try {
             TransformerV2POJOPK transformerV2POJOPK = new TransformerV2POJOPK(ObjectPOJO.remove(TransformerV2POJO.class, pk));
-
-            MDMEhCacheUtil.clearCache(TRANSFORMER_CACHE_NAME);
-            MDMEhCacheUtil.clearCache(TRANSFORMER_PKS_CACHE_NAME);
-
             return transformerV2POJOPK;
         } catch (Exception e) {
             String err = "Unable to remove the Transformer '" + pk.toString() + "'"; //$NON-NLS-1$ //$NON-NLS-2$
@@ -160,20 +138,11 @@ public class DefaultTransformer implements TransformerPluginCallBack, com.amalto
      */
     @Override
     public Collection<TransformerV2POJOPK> getTransformerPKs(String regex) throws XtentisException {
-
-        Collection<TransformerV2POJOPK> value = MDMEhCacheUtil.getCache(TRANSFORMER_PKS_CACHE_NAME, regex);
-
-        if (value != null && !value.isEmpty()) {
-            return value;
-        }
-
         Collection<ObjectPOJOPK> c = ObjectPOJO.findAllPKs(TransformerV2POJO.class, regex);
         ArrayList<TransformerV2POJOPK> l = new ArrayList<TransformerV2POJOPK>();
         for (ObjectPOJOPK objectPOJOPK : c) {
             l.add(new TransformerV2POJOPK(objectPOJOPK));
         }
-
-        MDMEhCacheUtil.addCache(TRANSFORMER_PKS_CACHE_NAME, regex, l);
         return l;
     }
 

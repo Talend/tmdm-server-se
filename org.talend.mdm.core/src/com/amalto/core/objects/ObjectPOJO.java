@@ -17,16 +17,15 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.events.XMLEvent;
 
+import com.amalto.core.util.*;
 import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.util.core.ICoreConstants;
 
@@ -50,10 +49,6 @@ import com.amalto.core.objects.transformers.TransformerV2POJO;
 import com.amalto.core.objects.view.ViewPOJO;
 import com.amalto.core.server.api.Item;
 import com.amalto.core.server.api.XmlServer;
-import com.amalto.core.util.BAMLogger;
-import com.amalto.core.util.LocalUser;
-import com.amalto.core.util.Util;
-import com.amalto.core.util.XtentisException;
 import com.amalto.xmlserver.interfaces.IWhereItem;
 import com.amalto.xmlserver.interfaces.IXmlServerSLWrapper;
 import com.amalto.xmlserver.interfaces.WhereAnd;
@@ -205,20 +200,26 @@ public abstract class ObjectPOJO implements Serializable {
      * @throws XtentisException
      */
     public static <T extends ObjectPOJO> T load(Class<T> objectClass, ObjectPOJOPK objectPOJOPK) throws XtentisException {
+        String uniqueId = objectPOJOPK.getUniqueId();
         if (LOG.isTraceEnabled()) {
-            LOG.trace("load() " + objectClass + " [" + objectPOJOPK.getUniqueId() + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            LOG.trace("load() " + getObjectName(objectClass) + " [" + uniqueId + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
-        String url = objectPOJOPK.getUniqueId();
-        try {
-            // retrieve the item
-            XmlServer server = Util.getXmlServerCtrlLocal();
-            return unmarshal(objectClass, server.getDocumentAsString(getCluster(objectClass), url, null));
-        } catch (Exception e) {
-            String err = "Unable to load the Object  " + objectClass.getName() + "[" + objectPOJOPK.getUniqueId()
-                    + "] in Cluster " + getCluster(objectClass) + ": " + e.getClass().getName() + ": " + e.getLocalizedMessage();
-            LOG.error(err, e);
-            throw new XtentisException(err, e);
+
+        T value = getFromCache(objectClass, uniqueId);
+        if (value == null) {
+            try {
+                // retrieve the item
+                XmlServer server = Util.getXmlServerCtrlLocal();
+                value = unmarshal(objectClass, server.getDocumentAsString(getCluster(objectClass), uniqueId, null));
+                addToCache(objectClass, uniqueId, value);
+            } catch (Exception e) {
+                String err = "Unable to load the Object  " + getObjectName(objectClass) + "[" + uniqueId
+                        + "] in Container " + getCluster(objectClass) + ": " + e.getClass().getName() + ": " + e.getLocalizedMessage();
+                LOG.error(err, e);
+                throw new XtentisException(err, e);
+            }
         }
+        return value;
     }
 
     /**
@@ -228,12 +229,14 @@ public abstract class ObjectPOJO implements Serializable {
      * @throws XtentisException
      */
     public static ObjectPOJOPK remove(Class<? extends ObjectPOJO> objectClass, ObjectPOJOPK objectPOJOPK) throws XtentisException {
-        if (LOG.isTraceEnabled()) {
-            LOG.trace("remove() " + objectPOJOPK.getUniqueId()); //$NON-NLS-1$
-        }
         if (objectPOJOPK == null) {
             return null;
         }
+        String uniqueId = objectPOJOPK.getUniqueId();
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("remove() " + getObjectName(objectClass) + " [" + uniqueId + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        }
+
         try {
             // for delete we need to be admin, or have a role of admin , or role of write on instance
             boolean authorized = false;
@@ -244,27 +247,28 @@ public abstract class ObjectPOJO implements Serializable {
                 authorized = true;
             } else if (user.isAdmin(objectClass)) {
                 authorized = true;
-            } else if (user.userCanWrite(objectClass, objectPOJOPK.getUniqueId())) {
+            } else if (user.userCanWrite(objectClass, uniqueId)) {
                 authorized = true;
             }
             if (!authorized) {
                 String err = "Unauthorized access on delete for " + "user " + user.getUsername() + " of object "
-                        + ObjectPOJO.getObjectName(objectClass) + " [" + objectPOJOPK.getUniqueId() + "] ";
+                        + ObjectPOJO.getObjectName(objectClass) + " [" + uniqueId + "] ";
                 LOG.error(err);
                 throw new XtentisException(err);
             }
             // get the xml server wrapper
             XmlServer server = Util.getXmlServerCtrlLocal();
             // remove the doc
-            long res = server.deleteDocument(getCluster(objectClass), objectPOJOPK.getUniqueId());
+            long res = server.deleteDocument(getCluster(objectClass), uniqueId);
             if (res == -1) {
                 return null;
             }
+            clearCaches(objectClass);
             return objectPOJOPK;
         } catch (XtentisException e) {
             throw (e);
         } catch (Exception e) {
-            String err = "Unable to remove the Object  " + objectPOJOPK.getUniqueId() + " from Cluster "
+            String err = "Unable to remove the Object  " + uniqueId + " from Cluster "
                     + getCluster(objectClass) + ": " + e.getClass().getName() + ": " + e.getLocalizedMessage();
             LOG.error(err, e);
             throw new XtentisException(err, e);
@@ -280,47 +284,60 @@ public abstract class ObjectPOJO implements Serializable {
     public static ArrayList<ObjectPOJOPK> findAllPKs(Class<? extends ObjectPOJO> objectClass, String regex)
             throws XtentisException {
         try {
-            int numItems = 0;
-            // check if we are admin
-            ILocalUser user = LocalUser.getLocalUser();
-            if ("".equals(regex) || "*".equals(regex) || ".*".equals(regex)) {//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            if (LOG.isTraceEnabled()) {
+                LOG.trace("findAllPKs() " + getObjectName(objectClass) +  " using regex [" + regex + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            }
+            if ("".equals(regex) || "*".equals(regex) || ".*".equals(regex)) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 regex = null;
             }
-            // get the xml server wrapper
-            XmlServer server = Util.getXmlServerCtrlLocal();
+            String[] ids = getPKListFromCache(objectClass);
+            if (ids == null) {
+                // get the xml server wrapper
+                XmlServer server = Util.getXmlServerCtrlLocal();
 
-            String cluster = getCluster(objectClass);
-            // retrieve the item
-            String[] ids = server.getAllDocumentsUniqueID(cluster);
-            // see 0013859
-            if (ids == null || ids.length == 0) {
-                ids = new String[0];
+                String cluster = getCluster(objectClass);
+                // retrieve the item
+                ids = server.getAllDocumentsUniqueID(cluster);
+                // see 0013859
+                if (ids == null || ids.length == 0) {
+                    ids = new String[0];
+                }
+                addPKListToCache(objectClass, ids);
             }
-            // add system default object ids
-            Set<String> allId = new HashSet<String>();
-            allId.addAll(Arrays.asList(ids));
 
-            ids = allId.toArray(new String[allId.size()]);
-            // build PKs collection
+            // build PKs list based on the user rights
+            ILocalUser user = LocalUser.getLocalUser();
             ArrayList<ObjectPOJOPK> list = new ArrayList<ObjectPOJOPK>();
+            int numItems = 0;
+
             for (String id : ids) {
                 if (LOG.isTraceEnabled()) {
-                    LOG.trace("findAllPKs() matching " + id); //$NON-NLS-1$
+                    LOG.trace("Does " + getObjectName(objectClass) + " using regex [" + regex + "] match " + id + " ?"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                 }
                 boolean match = true;
                 if (regex != null) {
                     match = id.matches(regex);
                 }
                 if (match) {
+                    if (LOG.isTraceEnabled()) {
+                        LOG.trace(getObjectName(objectClass) + " using regex [" + regex + "] matches with " + id); //$NON-NLS-1$ //$NON-NLS-2$
+                    }
                     if (user.userCanRead(objectClass, id)) {
-                        if (LOG.isTraceEnabled()) {
-                            LOG.trace("findAllPKs() Adding PK"); //$NON-NLS-1$
-                        }
                         list.add(new ObjectPOJOPK(id));
                         numItems++;
+                    } else {
+                        match = false;
+                    }
+                }
+                if (LOG.isTraceEnabled()) {
+                    if(match) {
+                        LOG.trace(getObjectName(objectClass) + " [" + id + "] available for user [" + user.getUsername() + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    } else {
+                        LOG.trace(getObjectName(objectClass) + " [" + id + "] NOT available for user [" + user.getUsername() + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                     }
                 }
             }
+
             if (BAMLogger.log) {
                 BAMLogger
                         .log("DATA MANAGER", user.getUsername(), "find all", objectClass, new ObjectPOJOPK(numItems + " Items"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -499,8 +516,9 @@ public abstract class ObjectPOJO implements Serializable {
      * @throws XtentisException
      */
     public ObjectPOJOPK store() throws XtentisException {
+        String uniqueId = getPK().getUniqueId();
         if (LOG.isTraceEnabled()) {
-            LOG.trace("store() " + getPK().getUniqueId()); //$NON-NLS-1$
+            LOG.trace("store() " + getObjectName(this.getClass()) + " [" + uniqueId + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
         try {
             // for storing we need to be admin, or have a role of admin , or role of write on instance
@@ -508,17 +526,14 @@ public abstract class ObjectPOJO implements Serializable {
             ILocalUser user = LocalUser.getLocalUser();
             if (LocalUser.isAdminUser(user.getUsername())) {
                 authorized = true;
-            } else if (user.userCanWrite(this.getClass(), this.getPK().getUniqueId())) {
+            } else if (user.userCanWrite(this.getClass(), uniqueId)) {
                 authorized = true;
             }
             if (!authorized) {
                 String err = "Unauthorized write access by " + "user " + user.getUsername() + " on object "
-                        + ObjectPOJO.getObjectName(this.getClass()) + " [" + getPK().getUniqueId() + "] ";
+                        + ObjectPOJO.getObjectName(this.getClass()) + " [" + uniqueId + "] ";
                 LOG.error(err);
                 throw new XtentisException(err);
-            }
-            if (getPK() == null) {
-                return null;
             }
             try {
                 // get the xml server wrapper
@@ -534,6 +549,7 @@ public abstract class ObjectPOJO implements Serializable {
                     return null;
                 }
                 server.commit(dataClusterName);
+                clearCaches(this.getClass());
                 return getPK();
             } catch (XtentisException e) {
                 throw (e);
@@ -586,4 +602,83 @@ public abstract class ObjectPOJO implements Serializable {
         return sw.toString();
     }
 
+    private static <T extends ObjectPOJO> String getCacheName(Class<T> objectClass) {
+        String cacheName;
+        if(objectClass == TransformerV2POJO.class) {
+            cacheName = MDMEhCacheUtil.TRANSFORMER_CACHE_NAME;
+        } else if(objectClass == RoutingRulePOJO.class) {
+            cacheName = MDMEhCacheUtil.ROUTING_RULE_CACHE_NAME;
+        } else if(objectClass == DataClusterPOJO.class) {
+            cacheName = MDMEhCacheUtil.DATA_CLUSTER_CACHE_NAME;
+        } else {
+            cacheName = null;
+        }
+        return cacheName;
+    }
+
+    private static <T extends ObjectPOJO> String getPKListCacheName(Class<T> objectClass) {
+        String cacheName;
+        if(objectClass == TransformerV2POJO.class) {
+            cacheName = MDMEhCacheUtil.TRANSFORMER_PKS_CACHE_NAME;
+        } else if(objectClass == RoutingRulePOJO.class) {
+            cacheName = MDMEhCacheUtil.ROUTING_RULE_PK_CACHE_NAME;
+        } else {
+            cacheName = null;
+        }
+        return cacheName;
+    }
+
+    private static <T extends ObjectPOJO> T getFromCache(Class<T> objectClass, String uniqueId) {
+        String cacheName = getCacheName(objectClass);
+        if(cacheName == null) {
+            return null;
+        } else {
+            T value = MDMEhCacheUtil.getCache(cacheName, uniqueId);
+            if (value != null && LOG.isTraceEnabled()) {
+                LOG.trace(getObjectName(objectClass) + " [" + uniqueId + "] found in cache"); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+            return value;
+        }
+    }
+
+    private static <T extends ObjectPOJO> void addToCache(Class<T> objectClass, String uniqueId, T value) {
+        String cacheName = getCacheName(objectClass);
+        if(cacheName != null) {
+            MDMEhCacheUtil.addCache(cacheName, uniqueId, value);
+        }
+    }
+
+    private static <T extends ObjectPOJO> String[] getPKListFromCache(Class<T> objectClass) {
+        String cacheName = getPKListCacheName(objectClass);
+        if(cacheName == null) {
+            return null;
+        } else {
+            String[] ids = MDMEhCacheUtil.getCache(cacheName, ""); //$NON-NLS-1$
+            if (ids != null && LOG.isTraceEnabled()) {
+                LOG.trace(getObjectName(objectClass) + " found in cache"); //$NON-NLS-1$
+            }
+            return ids;
+        }
+    }
+
+    private static <T extends ObjectPOJO> void addPKListToCache(Class<T> objectClass, String[] ids) {
+        String cacheName = getPKListCacheName(objectClass);
+        if(cacheName != null) {
+            MDMEhCacheUtil.addCache(cacheName, "", ids); //$NON-NLS-1$
+        }
+    }
+
+    private static <T extends ObjectPOJO> void clearCaches(Class<T> objectClass) {
+        String cacheName = getCacheName(objectClass);
+        if(cacheName != null) {
+            MDMEhCacheUtil.clearCache(cacheName);
+        }
+        cacheName = getPKListCacheName(objectClass);
+        if(cacheName != null) {
+            MDMEhCacheUtil.clearCache(cacheName);
+        }
+        if (LOG.isTraceEnabled()) {
+            LOG.trace(getObjectName(objectClass) + " caches cleared" ); //$NON-NLS-1$
+        }
+    }
 }

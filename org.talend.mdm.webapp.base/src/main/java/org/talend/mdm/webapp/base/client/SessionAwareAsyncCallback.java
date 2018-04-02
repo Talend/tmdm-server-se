@@ -95,7 +95,7 @@ public abstract class SessionAwareAsyncCallback<T> implements AsyncCallback<T> {
                     public void handleEvent(MessageBoxEvent be) {
                         Cookies.removeCookie("JSESSIONID"); //$NON-NLS-1$
                         Cookies.removeCookie("JSESSIONIDSSO"); //$NON-NLS-1$
-                        Window.Location.replace(GWT.getHostPageBaseURL());
+                        Window.Location.replace(GWT.getHostPageBaseURL() + "/logout"); //$NON-NLS-1$
 
                     }
                 });

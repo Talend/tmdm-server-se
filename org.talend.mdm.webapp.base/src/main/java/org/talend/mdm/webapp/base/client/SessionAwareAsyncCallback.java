@@ -30,6 +30,12 @@ import com.google.gwt.user.client.rpc.StatusCodeException;
 
 public abstract class SessionAwareAsyncCallback<T> implements AsyncCallback<T> {
 
+    final private String LOGIN_TITLE = "<title>Talend - Login</title>"; //$NON-NLS-1$
+
+    final private String LOGIN_META = "<meta name=\"description\" content=\"Talend MDM login page\"/>"; //$NON-NLS-1$
+
+    final private String STATUS_CODE_EXCEPTION = "0"; //$NON-NLS-1$
+
     public final void onFailure(Throwable caught) {
         if (Log.isErrorEnabled()) {
             Log.error(caught.toString());
@@ -45,13 +51,13 @@ public abstract class SessionAwareAsyncCallback<T> implements AsyncCallback<T> {
     protected void doOnFailure(Throwable caught) {
         if (caught instanceof StatusCodeException) {
             RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, GWT.getHostPageBaseURL());
-            builder.setHeader("Accept", "text/plain");
+            builder.setHeader("Accept", "text/plain"); //$NON-NLS-1$ //$NON-NLS-2$
             try {
-                builder.sendRequest("", new RequestCallback() {
+                builder.sendRequest("", new RequestCallback() { //$NON-NLS-1$
 
                     @Override
                     public void onResponseReceived(Request request, Response response) {
-                        if (response.getText().contains("<title>Talend MDM</title>")) {
+                        if (response.getText().contains(LOGIN_TITLE)) {
                             // TMDM-11334 After use IAM,we can not receive a InvocationException exception to determine
                             // session expired.
                             handleSessionExpired();
@@ -77,15 +83,19 @@ public abstract class SessionAwareAsyncCallback<T> implements AsyncCallback<T> {
     }
 
     private boolean sessionExpired(Throwable caught) {
+        boolean isExpired = false;
         if (caught instanceof InvocationException) {
-            String msg = caught.getMessage();
+            String msg = caught.getMessage().trim();
             // FIXME Is there a better way to detect session expiration?
             // When session expires container will use a configured expired Url to return the content of the login page
             // However, since an GWT RPC response cannot be of HTML text, the InvocationException is thrown with the
             // HTML content as the message.
-            return msg == null ? false : (msg.contains("<meta name=\"description\" content=\"Talend MDM login page\"/>") || msg.contains("<title>Talend - Login</title>")); //$NON-NLS-1$
-        } else
-            return false;
+            if (msg != null && (STATUS_CODE_EXCEPTION.equals(msg) || msg.contains(LOGIN_TITLE)
+                    || msg.contains(LOGIN_META))) {
+                isExpired = true;
+            }
+        }
+        return isExpired;
     }
 
     private void handleSessionExpired() {

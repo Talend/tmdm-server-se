@@ -30,11 +30,11 @@ import com.google.gwt.user.client.rpc.StatusCodeException;
 
 public abstract class SessionAwareAsyncCallback<T> implements AsyncCallback<T> {
 
-    final private String LOGIN_TITLE = "<title>Talend - Login</title>"; //$NON-NLS-1$
+    final private String OIDC_LOGIN_TITLE = "<title>Talend - Login</title>"; //$NON-NLS-1$
 
-    final private String LOGIN_META = "<meta name=\"description\" content=\"Talend MDM login page\"/>"; //$NON-NLS-1$
+    final private String OIDC_OPTIONS_RESPONSE = "0"; //$NON-NLS-1$
 
-    final private String STATUS_CODE_EXCEPTION = "0"; //$NON-NLS-1$
+    final private String MDM_LOGIN_META = "<meta name=\"description\" content=\"Talend MDM login page\"/>"; //$NON-NLS-1$
 
     public final void onFailure(Throwable caught) {
         if (Log.isErrorEnabled()) {
@@ -57,7 +57,7 @@ public abstract class SessionAwareAsyncCallback<T> implements AsyncCallback<T> {
 
                     @Override
                     public void onResponseReceived(Request request, Response response) {
-                        if (response.getText().contains(LOGIN_TITLE)) {
+                        if (response.getText().contains(OIDC_LOGIN_TITLE)) {
                             // TMDM-11334 After use IAM,we can not receive a InvocationException exception to determine
                             // session expired.
                             handleSessionExpired();
@@ -85,14 +85,13 @@ public abstract class SessionAwareAsyncCallback<T> implements AsyncCallback<T> {
     private boolean sessionExpired(Throwable caught) {
         boolean isExpired = false;
         if (caught instanceof InvocationException) {
-            String msg = caught.getMessage().trim();
-            // FIXME Is there a better way to detect session expiration?
-            // When session expires container will use a configured expired Url to return the content of the login page
-            // However, since an GWT RPC response cannot be of HTML text, the InvocationException is thrown with the
-            // HTML content as the message.
-            if (msg != null && (STATUS_CODE_EXCEPTION.equals(msg) || msg.contains(LOGIN_TITLE)
-                    || msg.contains(LOGIN_META))) {
-                isExpired = true;
+            String msg = caught.getMessage();
+            if (msg != null) {
+                // CE, Redirected to MDM Login Page
+                boolean mdmExpired = msg.contains(MDM_LOGIN_META);
+                // EE, Redirected to OIDC Login page, or OPTIONS invoke oidc/idp/logout
+                boolean ssoExpired = msg.contains(OIDC_LOGIN_TITLE) || OIDC_OPTIONS_RESPONSE.equals(msg.trim());
+                isExpired = mdmExpired || ssoExpired;
             }
         }
         return isExpired;
@@ -106,7 +105,6 @@ public abstract class SessionAwareAsyncCallback<T> implements AsyncCallback<T> {
                         Cookies.removeCookie("JSESSIONID"); //$NON-NLS-1$
                         Cookies.removeCookie("JSESSIONIDSSO"); //$NON-NLS-1$
                         Window.Location.replace(GWT.getHostPageBaseURL() + "/logout"); //$NON-NLS-1$
-
                     }
                 });
     }

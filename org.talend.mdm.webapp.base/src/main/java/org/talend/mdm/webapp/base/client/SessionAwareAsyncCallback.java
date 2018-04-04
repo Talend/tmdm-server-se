@@ -59,7 +59,7 @@ public abstract class SessionAwareAsyncCallback<T> implements AsyncCallback<T> {
                     public void onResponseReceived(Request request, Response response) {
                         String resp = response.getText();
                         if (resp.contains(MDM_LOGIN_META) || resp.contains(OIDC_LOGIN_TITLE)) {
-                            // Will be redirected login page with/without SSO
+                            // Will be redirected to Login Page with/without SSO
                             handleSessionExpired();
                         } else {
                             // see TMDM-4411 if call async method,StatusCodeException will be thrown when mdmserver down

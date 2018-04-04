@@ -139,9 +139,15 @@ http://www.hazelcast.com/schema/spring http://www.hazelcast.com/schema/spring/ha
         <property name="defaultFailureUrl" value="/auth/login.jsp?auth=fail" />
     </bean>
 
+    <bean id="sessionRegistry" class="org.springframework.security.core.session.SessionRegistryImpl" />
+
+    <bean id="redirectSessionInformationExpiredStrategy" class="org.springframework.security.web.session.SimpleRedirectSessionInformationExpiredStrategy">
+        <constructor-arg name="invalidSessionUrl" value="/auth/login.jsp" />
+    </bean>
+
     <bean id="concurrencySessionFilter" class="org.springframework.security.web.session.ConcurrentSessionFilter">
         <constructor-arg name="sessionRegistry" ref="sessionRegistry" />
-        <constructor-arg name="expiredUrl" value="/auth/login.jsp" />
+        <constructor-arg name="sessionInformationExpiredStrategy" ref="redirectSessionInformationExpiredStrategy" />
     </bean>
 
     <bean id="sessionAuthenticationStrategy" class="org.springframework.security.web.authentication.session.CompositeSessionAuthenticationStrategy">
@@ -160,7 +166,5 @@ http://www.hazelcast.com/schema/spring http://www.hazelcast.com/schema/spring/ha
             </list>
         </constructor-arg>
     </bean>
-
-    <bean id="sessionRegistry" class="org.springframework.security.core.session.SessionRegistryImpl" />
 
 </beans>

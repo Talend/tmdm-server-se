@@ -50,16 +50,16 @@ public abstract class SessionAwareAsyncCallback<T> implements AsyncCallback<T> {
 
     protected void doOnFailure(Throwable caught) {
         if (caught instanceof StatusCodeException) {
-            RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, GWT.getHostPageBaseURL());
+            RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, GWT.getHostPageBaseURL() + "/logout"); //$NON-NLS-1$
             builder.setHeader("Accept", "text/plain"); //$NON-NLS-1$ //$NON-NLS-2$
             try {
                 builder.sendRequest("", new RequestCallback() { //$NON-NLS-1$
 
                     @Override
                     public void onResponseReceived(Request request, Response response) {
-                        if (response.getText().contains(OIDC_LOGIN_TITLE)) {
-                            // TMDM-11334 After use IAM,we can not receive a InvocationException exception to determine
-                            // session expired.
+                        String resp = response.getText();
+                        if (resp.contains(MDM_LOGIN_META) || resp.contains(OIDC_LOGIN_TITLE)) {
+                            // Will be redirected login page with/without SSO
                             handleSessionExpired();
                         } else {
                             // see TMDM-4411 if call async method,StatusCodeException will be thrown when mdmserver down

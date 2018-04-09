@@ -23,13 +23,13 @@ import com.google.gwt.user.client.rpc.InvocationException;
 
 public abstract class SessionAwareAsyncCallback<T> implements AsyncCallback<T> {
 
-    final private String OIDC_LOGIN_TITLE = "<title>Talend - Login</title>"; //$NON-NLS-1$
+    final private static String OIDC_LOGIN_TITLE = "<title>Talend - Login</title>"; //$NON-NLS-1$
 
-    final private String OIDC_OPTIONS_RESPONSE = "0"; //$NON-NLS-1$
+    final private static String OIDC_OPTIONS_RESPONSE = "0"; //$NON-NLS-1$
 
-    final private String MDM_LOGIN_META = "<meta name=\"description\" content=\"Talend MDM login page\"/>"; //$NON-NLS-1$
+    final private static String MDM_LOGIN_META = "<meta name=\"description\" content=\"Talend MDM login page\"/>"; //$NON-NLS-1$
 
-    final private String OIDC_REDIRECTION_META = "<meta name=\"description\" content=\"Redirection to UI site\" />"; //$NON-NLS-1$
+    final private static String OIDC_REDIRECTION_META = "<meta name=\"description\" content=\"Redirection to UI site\" />"; //$NON-NLS-1$
 
     public final void onFailure(Throwable caught) {
         if (Log.isErrorEnabled()) {

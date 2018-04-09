@@ -14,19 +14,12 @@ import org.talend.mdm.webapp.base.client.i18n.BaseMessagesFactory;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
-import com.extjs.gxt.ui.client.util.Format;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.http.client.Request;
-import com.google.gwt.http.client.RequestBuilder;
-import com.google.gwt.http.client.RequestCallback;
-import com.google.gwt.http.client.RequestException;
-import com.google.gwt.http.client.Response;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.InvocationException;
-import com.google.gwt.user.client.rpc.StatusCodeException;
 
 public abstract class SessionAwareAsyncCallback<T> implements AsyncCallback<T> {
 
@@ -36,50 +29,33 @@ public abstract class SessionAwareAsyncCallback<T> implements AsyncCallback<T> {
 
     final private String MDM_LOGIN_META = "<meta name=\"description\" content=\"Talend MDM login page\"/>"; //$NON-NLS-1$
 
+    final private String OIDC_REDIRECTION_META = "<meta name=\"description\" content=\"Redirection to UI site\" />"; //$NON-NLS-1$
+
     public final void onFailure(Throwable caught) {
         if (Log.isErrorEnabled()) {
             Log.error(caught.toString());
         }
-
         if (sessionExpired(caught)) {
-            handleSessionExpired();
+            MessageBox.alert(BaseMessagesFactory.getMessages().warning_title(),
+                    BaseMessagesFactory.getMessages().session_timeout_error(), new Listener<MessageBoxEvent>() {
+
+                        public void handleEvent(MessageBoxEvent be) {
+                            Cookies.removeCookie("JSESSIONID"); //$NON-NLS-1$
+                            Cookies.removeCookie("JSESSIONIDSSO"); //$NON-NLS-1$
+                            Window.Location.replace(GWT.getHostPageBaseURL() + "/logout"); //$NON-NLS-1$
+                        }
+                    });
         } else {
             doOnFailure(caught);
         }
     }
 
     protected void doOnFailure(Throwable caught) {
-        if (caught instanceof StatusCodeException) {
-            RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, GWT.getHostPageBaseURL() + "/logout"); //$NON-NLS-1$
-            builder.setHeader("Accept", "text/plain"); //$NON-NLS-1$ //$NON-NLS-2$
-            try {
-                builder.sendRequest("", new RequestCallback() { //$NON-NLS-1$
-
-                    @Override
-                    public void onResponseReceived(Request request, Response response) {
-                        String resp = response.getText();
-                        if (resp.contains(MDM_LOGIN_META) || resp.contains(OIDC_LOGIN_TITLE)) {
-                            // Will be redirected login page with/without SSO
-                            handleSessionExpired();
-                        } else {
-                            // see TMDM-4411 if call async method,StatusCodeException will be thrown when mdmserver down
-                            MessageBox.alert(BaseMessagesFactory.getMessages().error_title(),
-                                    BaseMessagesFactory.getMessages().server_unavailable_error(), null);
-                        }
-                    }
-
-                    @Override
-                    public void onError(Request request, Throwable exception) {
-                        handleException(exception);
-                    }
-
-                });
-            } catch (RequestException exception) {
-                handleException(exception);
-            }
-        } else {
-            handleException(caught);
+        String errorMsg = BaseMessagesFactory.getMessages().unknown_error();
+        if (Log.isDebugEnabled()) {
+            errorMsg = caught.getLocalizedMessage();
         }
+        MessageBox.alert(BaseMessagesFactory.getMessages().error_title(), errorMsg, null);
     }
 
     private boolean sessionExpired(Throwable caught) {
@@ -90,33 +66,11 @@ public abstract class SessionAwareAsyncCallback<T> implements AsyncCallback<T> {
                 // CE, Redirected to MDM Login Page
                 boolean mdmExpired = msg.contains(MDM_LOGIN_META);
                 // EE, Redirected to OIDC Login page, or OPTIONS invoke oidc/idp/logout
-                boolean ssoExpired = msg.contains(OIDC_LOGIN_TITLE) || OIDC_OPTIONS_RESPONSE.equals(msg.trim());
+                boolean ssoExpired = msg.contains(OIDC_LOGIN_TITLE)
+                        || OIDC_OPTIONS_RESPONSE.equals(msg.trim()) || msg.contains(OIDC_REDIRECTION_META);
                 isExpired = mdmExpired || ssoExpired;
             }
         }
         return isExpired;
-    }
-
-    private void handleSessionExpired() {
-        MessageBox.alert(BaseMessagesFactory.getMessages().warning_title(),
-                BaseMessagesFactory.getMessages().session_timeout_error(), new Listener<MessageBoxEvent>() {
-
-                    public void handleEvent(MessageBoxEvent be) {
-                        Cookies.removeCookie("JSESSIONID"); //$NON-NLS-1$
-                        Cookies.removeCookie("JSESSIONIDSSO"); //$NON-NLS-1$
-                        Window.Location.replace(GWT.getHostPageBaseURL() + "/logout"); //$NON-NLS-1$
-                    }
-                });
-    }
-
-    private void handleException(Throwable caught) {
-        if (Log.isDebugEnabled()) {
-            MessageBox.alert(BaseMessagesFactory.getMessages().error_title(), caught.toString(), null);// for debugging
-        } else {
-            String message = caught.getLocalizedMessage();
-            String errorMessage = (message != null && !message.isEmpty()) ? message
-                    : BaseMessagesFactory.getMessages().unknown_error();
-            MessageBox.alert(BaseMessagesFactory.getMessages().error_title(), Format.htmlEncode(errorMessage), null);
-        }
     }
 }

@@ -266,7 +266,7 @@ public class NavigatorPanel extends ContentPanel {
             public void handleEvent(MessageBoxEvent be) {
                 Cookies.removeCookie("JSESSIONID"); //$NON-NLS-1$
                 Cookies.removeCookie("JSESSIONIDSSO"); //$NON-NLS-1$
-                com.google.gwt.user.client.Window.Location.replace(GWT.getHostPageBaseURL());
+                com.google.gwt.user.client.Window.Location.replace(GWT.getHostPageBaseURL() + "/logout"); //$NON-NLS-1$
             }
         });
     }

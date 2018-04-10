@@ -21,6 +21,7 @@ import org.w3c.dom.NodeList;
 import com.amalto.commons.core.utils.XMLUtils;
 import com.amalto.core.delegator.ILocalUser;
 import com.amalto.core.util.LocalUser;
+import com.amalto.core.util.SessionContextHolder;
 import com.amalto.core.webservice.WSBoolean;
 import com.amalto.core.webservice.WSDataClusterPK;
 import com.amalto.core.webservice.WSDataModelPK;
@@ -30,7 +31,6 @@ import com.amalto.core.webservice.WSGetItem;
 import com.amalto.core.webservice.WSItemPK;
 import com.amalto.core.webservice.WSPutItem;
 import com.amalto.webapp.core.dwr.CommonDWR;
-import com.amalto.webapp.core.util.SessionContextHolder;
 import com.amalto.webapp.core.util.Util;
 
 public class Configuration {

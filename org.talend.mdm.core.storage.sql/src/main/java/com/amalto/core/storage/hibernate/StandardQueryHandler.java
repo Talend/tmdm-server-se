@@ -752,12 +752,14 @@ class StandardQueryHandler extends AbstractQueryHandler {
     private ProjectionList optimizeProjectionList(ComplexTypeMetadata mainType, ProjectionList oldProjectionList) {
         ProjectionList newProjectionList = null;
         RDBMSDataSource dataSource = (RDBMSDataSource) storage.getDataSource();
-        if (dataSource.getDialectName() != RDBMSDataSource.DataSourceDialect.ORACLE_10G) {
+        if (dataSource.getDialectName() != RDBMSDataSource.DataSourceDialect.ORACLE_10G 
+                && dataSource.getDialectName() != RDBMSDataSource.DataSourceDialect.POSTGRES
+                && dataSource.getDialectName() != RDBMSDataSource.DataSourceDialect.SQL_SERVER) {
             newProjectionList = oldProjectionList;
             for (FieldMetadata keyField : mainType.getKeyFields()) {
                 newProjectionList.add(Projections.groupProperty(keyField.getName()));
             }
-        } else { // ORACLE need to GROUP BY all selected fields
+        } else { // ORACLE, POSTGRES and SQLSERVER need to GROUP BY all selected fields
             newProjectionList = Projections.projectionList();
             Set<String> groupBys = new LinkedHashSet<String>();// GROUP BY fields
             ProjectionList extraProjectionList = Projections.projectionList();

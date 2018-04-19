@@ -1968,6 +1968,160 @@ public class StorageAdaptTest extends TestCase {
         }
     }
 
+    // TMDM-10613
+    public void test19_addOptionalComplexField() throws Exception {
+        setMDMRootURL();
+
+        DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
+        Storage storage = new HibernateStorage("Person", StorageType.MASTER);
+        storage.init(dataSource);
+        String[] typeNames = { "Test" };
+        String[] tables = { "Test" };
+        String[] columns = { "", "X_ID", "X_NAME", "X_DESC", "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" };
+
+        int[] isNullable = { 0, 0, 0, 0, 0, 1 };
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+        MetadataRepository repository1 = new MetadataRepository();
+        repository1.load(StorageAdaptTest.class.getResourceAsStream("schema19_1.xsd"));
+        storage.prepare(repository1, true);
+        try {
+            assertColumnNullAble(dataSource, tables, columns, isNullable);
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+
+        // create record before change, second_name, married is null
+
+        String input1 = "<Test><id>1</id><name>person-name</name><desc>desc</desc></Test>";
+        try {
+            createRecord(storage, factory, repository1, typeNames, new String[] { input1 });
+        } catch (Exception e1) {
+            assertNull(e1);
+        }
+
+        storage.begin();
+        ComplexTypeMetadata objectType = repository1.getComplexType("Test");//$NON-NLS-1$
+        UserQueryBuilder qb = from(objectType);
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+            for (DataRecord result : results) {
+                assertEquals(3, result.getSetFields().size());
+                assertEquals("1", result.get("id"));
+                assertEquals("person-name", result.get("name"));
+                assertEquals("desc", result.get("desc"));
+            }
+        } finally {
+            results.close();
+        }
+        storage.commit();
+
+        MetadataRepository repository2 = new MetadataRepository();
+        repository2.load(StorageAdaptTest.class.getResourceAsStream("schema19_2.xsd"));
+        try {
+            storage.adapt(repository2, false);
+        } catch (Exception e2) {
+            assertNull(e2);
+        }
+
+        int[] isNullableUpdated = { 0, 0, 0, 0, 0, 1, 1, 1 };
+        String[] updatedColumns = { "", "X_ID", "X_NAME", "X_DESC", "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID", "X_DO_X_TALEND_ID",
+                "X_DO2_X_TALEND_ID" };
+        try {
+            assertColumnNullAble(dataSource, tables, updatedColumns, isNullableUpdated);
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+
+        String[] aaTablesUpdated = { "X_AA" };
+        String[] aaColumnsUpdated = { "", "X_TALEND_ID", "X_SUBELEMENT" };
+        int[] aaIsNullableUpdated = { 0, 0, 1 };
+        try {
+            assertColumnNullAble(dataSource, aaTablesUpdated, aaColumnsUpdated, aaIsNullableUpdated);
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+
+        String[] anonymousTablesUpdated = { "X_ANONYMOUS0" };
+        String[] anonymous0ColumnsUpdated = { "", "X_TALEND_ID", "X_SUBELEMENT", "X_THRID" };
+        int[] anonymous0IsNullableUpdated = { 0, 0, 1, 1 };
+        try {
+            assertColumnNullAble(dataSource, anonymousTablesUpdated, anonymous0ColumnsUpdated, anonymous0IsNullableUpdated);
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+
+        String[] anonymous1TablesUpdated = { "X_ANONYMOUS1" };
+        String[] anonymous1ColumnsUpdated = { "", "X_TALEND_ID", "X_SUBELEMENT", "X_SECOND" };
+        int[] anonymous1IsNullableUpdated = { 0, 0, 1, 1 };
+        try {
+            assertColumnNullAble(dataSource, anonymous1TablesUpdated, anonymous1ColumnsUpdated, anonymous1IsNullableUpdated);
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+
+        String[] do2Anonymous1TablesUpdated = { "TEST_X_DO2_X_ANONYMOUS1" };
+        String[] do2Anonymous1ColumnsUpdated = { "", "X_ID", "X_DO2_X_TALEND_ID", "POS" };
+        int[] do2Anonymous1IsNullableUpdated = { 0, 0, 1, 0 };
+        try {
+            assertColumnNullAble(dataSource, do2Anonymous1TablesUpdated, do2Anonymous1ColumnsUpdated,
+                    do2Anonymous1IsNullableUpdated);
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+
+        storage.begin();
+        objectType = repository2.getComplexType("Test");//$NON-NLS-1$
+        qb = from(objectType);
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+            for (DataRecord result : results) {
+                assertEquals(3, result.getSetFields().size());
+            }
+        } finally {
+            results.close();
+        }
+        storage.commit();
+
+        String input2 = "<Test><id>2</id><name>name2</name><desc>desc2</desc><do><subelement>do-sub</subelement></do><do1><subelement>do1-sub</subelement></do1><do2><subelement>do2-sub</subelement><thrid>do2-thrid</thrid></do2><do3><subelement>do3-sub</subelement><second>do3-second</second></do3></Test>";
+        try {
+            createRecord(storage, factory, repository2, typeNames, new String[] { input2 });
+        } catch (Exception e1) {
+            assertNull(e1);
+        }
+
+        storage.begin();
+        qb = from(objectType);
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(2, results.getCount());
+            int i = 0;
+            for (DataRecord result : results) {
+                // assertEquals(7, result.getSetFields().size());
+                if (i == 0) {
+                    assertEquals("1", result.get("id"));
+                    assertEquals("person-name", result.get("name"));
+                    assertEquals("desc", result.get("desc"));
+                } else if (i == 1) {
+                    assertEquals("2", result.get("id"));
+                    assertEquals("name2", result.get("name"));
+                    assertEquals("desc2", result.get("desc"));
+                    assertEquals("do-sub", result.get("do/subelement"));
+                    assertEquals("do1-sub", result.get("do1/subelement"));
+                    assertEquals("do2-sub", result.get("do2/subelement"));
+                    assertEquals("do2-thrid", result.get("do2/thrid"));
+                    assertEquals("do3-sub", result.get("do3/subelement"));
+                    assertEquals("do3-second", result.get("do3/second"));
+                }
+                i++;
+            }
+        } finally {
+            results.close();
+        }
+        storage.commit();
+    }
+
     private void assertColumnLengthChange(DataSourceDefinition dataSource, String tables, String columns, int expectedLength)
             throws SQLException {
         DataSource master = dataSource.getMaster();

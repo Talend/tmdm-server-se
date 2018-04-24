@@ -753,7 +753,7 @@ class StandardQueryHandler extends AbstractQueryHandler {
         ProjectionList newProjectionList = null;
         RDBMSDataSource dataSource = (RDBMSDataSource) storage.getDataSource();
         if (dataSource.getDialectName() == RDBMSDataSource.DataSourceDialect.H2
-                && dataSource.getDialectName() == RDBMSDataSource.DataSourceDialect.MYSQL) {
+                || dataSource.getDialectName() == RDBMSDataSource.DataSourceDialect.MYSQL) {
             newProjectionList = oldProjectionList;
             for (FieldMetadata keyField : mainType.getKeyFields()) {
                 newProjectionList.add(Projections.groupProperty(keyField.getName()));

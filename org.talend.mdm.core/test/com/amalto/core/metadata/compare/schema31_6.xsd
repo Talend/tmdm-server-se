@@ -50,8 +50,6 @@
 						</xsd:sequence>
 					</xsd:complexType>
 				</xsd:element>
-				<xsd:element maxOccurs="1" minOccurs="0" name="do2"
-					type="do2" />
 				<xsd:element maxOccurs="1" minOccurs="0" name="do3">
 					<xsd:complexType>
 						<xsd:sequence>
@@ -91,101 +89,6 @@
 			</xsd:all>
 		</xsd:complexType>
 		<xsd:unique name="Test">
-			<xsd:selector xpath="." />
-			<xsd:field xpath="id" />
-		</xsd:unique>
-	</xsd:element>
-	<xsd:element name="Test2">
-		<xsd:annotation />
-		<xsd:complexType>
-			<xsd:all>
-				<xsd:element maxOccurs="1" minOccurs="1" name="id"
-					type="xsd:string">
-					<xsd:annotation />
-				</xsd:element>
-				<xsd:element maxOccurs="1" minOccurs="1" name="name"
-					type="xsd:string">
-					<xsd:annotation />
-				</xsd:element>
-				<xsd:element maxOccurs="1" minOccurs="1" name="desc"
-					type="xsd:string">
-					<xsd:annotation />
-				</xsd:element>
-				<xsd:element maxOccurs="1" minOccurs="0" name="do1">
-					<xsd:complexType>
-						<xsd:sequence>
-							<xsd:element maxOccurs="1" minOccurs="1" name="do1-subelement"
-								type="xsd:string" />
-							<xsd:element maxOccurs="1" minOccurs="1" name="do2-subelement"
-								type="xsd:string" />
-							<xsd:element maxOccurs="1" minOccurs="0" name="aa1">
-								<xsd:complexType>
-									<xsd:all>
-										<xsd:element maxOccurs="1" minOccurs="1"
-											name="aa1-subelement" type="xsd:string" />
-									</xsd:all>
-								</xsd:complexType>
-							</xsd:element>
-							<xsd:element maxOccurs="unbounded" minOccurs="1"
-								name="aa2">
-								<xsd:annotation>
-									<xsd:appinfo source="X_AutoExpand">false</xsd:appinfo>
-								</xsd:annotation>
-								<xsd:complexType>
-									<xsd:all>
-										<xsd:element maxOccurs="1" minOccurs="1"
-											name="aa2-subelement" type="xsd:string" />
-									</xsd:all>
-								</xsd:complexType>
-							</xsd:element>
-							<xsd:element maxOccurs="1" minOccurs="0" name="aa3"
-								type="aa3" />
-							<xsd:element maxOccurs="1" minOccurs="1" name="aa4"
-								type="aa4" />
-						</xsd:sequence>
-					</xsd:complexType>
-				</xsd:element>
-				<xsd:element maxOccurs="1" minOccurs="0" name="do2"
-					type="do2" />
-				<xsd:element maxOccurs="1" minOccurs="0" name="do3">
-					<xsd:complexType>
-						<xsd:sequence>
-							<xsd:element maxOccurs="1" minOccurs="1" name="do1-subelement"
-								type="xsd:string" />
-							<xsd:element maxOccurs="1" minOccurs="1" name="do2-subelement"
-								type="xsd:string" />
-							<xsd:element maxOccurs="1" minOccurs="0" name="aa1">
-								<xsd:complexType>
-									<xsd:all>
-										<xsd:element maxOccurs="1" minOccurs="1"
-											name="aa1-subelement" type="xsd:string" />
-									</xsd:all>
-								</xsd:complexType>
-							</xsd:element>
-							<xsd:element maxOccurs="unbounded" minOccurs="1"
-								name="aa2">
-								<xsd:annotation>
-									<xsd:appinfo source="X_AutoExpand">false</xsd:appinfo>
-								</xsd:annotation>
-								<xsd:complexType>
-									<xsd:all>
-										<xsd:element maxOccurs="1" minOccurs="1"
-											name="aa2-subelement" type="xsd:string" />
-									</xsd:all>
-								</xsd:complexType>
-							</xsd:element>
-							<xsd:element maxOccurs="1" minOccurs="0" name="aa3"
-								type="aa3" />
-							<xsd:element maxOccurs="1" minOccurs="1" name="aa4"
-								type="aa4" />
-						</xsd:sequence>
-					</xsd:complexType>
-				</xsd:element>
-				<xsd:element maxOccurs="1" minOccurs="0" name="do4"
-					type="do2" />
-			</xsd:all>
-		</xsd:complexType>
-		<xsd:unique name="Test2">
 			<xsd:selector xpath="." />
 			<xsd:field xpath="id" />
 		</xsd:unique>

@@ -930,16 +930,16 @@ public class CompareTest extends TestCase {
         MetadataRepository updated2 = new MetadataRepository();
         updated2.load(CompareTest.class.getResourceAsStream("schema31_6.xsd")); //$NON-NLS-1$
         Compare.DiffResults diffResults = Compare.compare(original, updated2);
-        assertEquals(36, diffResults.getActions().size());
+        assertEquals(34, diffResults.getActions().size());
         assertEquals(0, diffResults.getModifyChanges().size());
         assertEquals(0, diffResults.getRemoveChanges().size());
-        assertEquals(36, diffResults.getAddChanges().size());
+        assertEquals(34, diffResults.getAddChanges().size());
 
         ImpactAnalyzer analyzer = new HibernateStorageImpactAnalyzer();
         Map<ImpactAnalyzer.Impact, List<Change>> sort = analyzer.analyzeImpacts(diffResults);
         assertEquals(0, sort.get(ImpactAnalyzer.Impact.HIGH).size());
         assertEquals(0, sort.get(ImpactAnalyzer.Impact.MEDIUM).size());
-        assertEquals(36, sort.get(ImpactAnalyzer.Impact.LOW).size());
+        assertEquals(34, sort.get(ImpactAnalyzer.Impact.LOW).size());
     }
 
     @SuppressWarnings("rawtypes")

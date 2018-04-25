@@ -10,20 +10,10 @@
 					type="xsd:string">
 					<xsd:annotation />
 				</xsd:element>
-				<xsd:element maxOccurs="1" minOccurs="1" name="name"
-					type="xsd:string">
-					<xsd:annotation />
-				</xsd:element>
-				<xsd:element maxOccurs="1" minOccurs="1" name="desc"
-					type="xsd:string">
-					<xsd:annotation />
-				</xsd:element>
 				<xsd:element maxOccurs="1" minOccurs="0" name="do1">
 					<xsd:complexType>
 						<xsd:sequence>
 							<xsd:element maxOccurs="1" minOccurs="1" name="do1-subelement"
-								type="xsd:string" />
-							<xsd:element maxOccurs="1" minOccurs="1" name="do2-subelement"
 								type="xsd:string" />
 							<xsd:element maxOccurs="1" minOccurs="0" name="aa1">
 								<xsd:complexType>

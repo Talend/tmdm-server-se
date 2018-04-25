@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<xsd:import namespace="http://www.w3.org/2001/XMLSchema" />
+	<xsd:element name="Test">
+		<xsd:annotation />
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element maxOccurs="1" minOccurs="1" name="id"
+					type="xsd:string">
+					<xsd:annotation />
+				</xsd:element>
+				<xsd:element maxOccurs="1" minOccurs="0" name="do" type="aa">
+					<xsd:annotation />
+				</xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+		<xsd:unique name="Test">
+			<xsd:selector xpath="." />
+			<xsd:field xpath="id" />
+		</xsd:unique>
+	</xsd:element>
+	<xsd:complexType name="aa">
+		<xsd:all>
+			<xsd:element name="subelement-aa" type="xsd:string">
+				<xsd:annotation />
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="bb" type="bb" />
+		</xsd:all>
+	</xsd:complexType>
+	<xsd:complexType name="bb">
+		<xsd:all>
+			<xsd:element maxOccurs="1" minOccurs="0" name="bb-subelement"
+				type="xsd:string" />
+		</xsd:all>
+	</xsd:complexType>
+</xsd:schema>

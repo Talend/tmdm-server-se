@@ -290,18 +290,21 @@ public class Utils {
         Element root = doc.getDocumentElement();
         NodeList nodes = root.getChildNodes();
         List<GroupItem> giList = new ArrayList<GroupItem>();
+        String IdAttribute = "id"; //$NON-NLS-1$
+        String itemNode = "item"; //$NON-NLS-1$
+        String groupItemNode = "groupitem"; //$NON-NLS-1$
         for (int i = 0; i < nodes.getLength(); i++) {
             Node node = nodes.item(i);
             if (node.getNodeType() == Node.ELEMENT_NODE) {
-                if (node.getNodeName().equals("groupitem")) { //$NON-NLS-1$ 
+                if (node.getNodeName().equals(groupItemNode)) {
                     GroupItem giNew = new GroupItem();
-                    Node idNode = node.getAttributes().getNamedItem("id");
+                    Node idNode = node.getAttributes().getNamedItem(IdAttribute);
                     giNew.setGroupHeader(MENU_GROUP_MESSAGES.getMessage(new Locale(language), idNode.getNodeValue()));
                     NodeList items = node.getChildNodes();
                     List<String> menuItems = new ArrayList<String>();
                     for (int k = 0; k < items.getLength(); k++) {
                         Node item = items.item(k);
-                        if (item.getNodeName().equals("item")) { //$NON-NLS-1$
+                        if (item.getNodeName().equals(itemNode)) {
                             menuItems.add(item.getTextContent());
                         }
                     }

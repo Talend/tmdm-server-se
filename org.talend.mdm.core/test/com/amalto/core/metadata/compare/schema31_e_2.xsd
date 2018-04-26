@@ -10,12 +10,12 @@
 					type="xsd:string">
 					<xsd:annotation />
 				</xsd:element>
-				<xsd:element maxOccurs="1" minOccurs="0" name="do1">
+				<xsd:element maxOccurs="1" minOccurs="0" name="do1-anonymous">
 					<xsd:complexType>
 						<xsd:sequence>
 							<xsd:element maxOccurs="1" minOccurs="1" name="do1-subelement"
 								type="xsd:string" />
-							<xsd:element maxOccurs="1" minOccurs="0" name="aa1">
+							<xsd:element maxOccurs="1" minOccurs="0" name="aa1-anonymous">
 								<xsd:complexType>
 									<xsd:all>
 										<xsd:element maxOccurs="1" minOccurs="1"
@@ -24,7 +24,7 @@
 								</xsd:complexType>
 							</xsd:element>
 							<xsd:element maxOccurs="unbounded" minOccurs="1"
-								name="aa2">
+								name="aa2-anonymous">
 								<xsd:annotation>
 									<xsd:appinfo source="X_AutoExpand">false</xsd:appinfo>
 								</xsd:annotation>
@@ -35,19 +35,19 @@
 									</xsd:all>
 								</xsd:complexType>
 							</xsd:element>
-							<xsd:element maxOccurs="1" minOccurs="0" name="aa3"
+							<xsd:element maxOccurs="1" minOccurs="0" name="aa3-non-anonymous"
 								type="aa3" />
-							<xsd:element maxOccurs="1" minOccurs="1" name="aa4"
+							<xsd:element maxOccurs="1" minOccurs="1" name="aa4-non-anonymous"
 								type="aa4" />
 						</xsd:sequence>
 					</xsd:complexType>
 				</xsd:element>
-				<xsd:element maxOccurs="1" minOccurs="0" name="do3">
+				<xsd:element maxOccurs="1" minOccurs="0" name="do3-anonymous">
 					<xsd:complexType>
 						<xsd:sequence>
 							<xsd:element maxOccurs="1" minOccurs="1" name="do1-subelement"
 								type="xsd:string" />
-							<xsd:element maxOccurs="1" minOccurs="0" name="aa1">
+							<xsd:element maxOccurs="1" minOccurs="0" name="aa1-anonymous">
 								<xsd:complexType>
 									<xsd:all>
 										<xsd:element maxOccurs="1" minOccurs="1"
@@ -56,7 +56,7 @@
 								</xsd:complexType>
 							</xsd:element>
 							<xsd:element maxOccurs="unbounded" minOccurs="1"
-								name="aa2">
+								name="aa2-anonymous">
 								<xsd:annotation>
 									<xsd:appinfo source="X_AutoExpand">false</xsd:appinfo>
 								</xsd:annotation>
@@ -67,14 +67,14 @@
 									</xsd:all>
 								</xsd:complexType>
 							</xsd:element>
-							<xsd:element maxOccurs="1" minOccurs="0" name="aa3"
+							<xsd:element maxOccurs="1" minOccurs="0" name="aa3-non-anonymous"
 								type="aa3" />
-							<xsd:element maxOccurs="1" minOccurs="1" name="aa4"
+							<xsd:element maxOccurs="1" minOccurs="1" name="aa4-non-anonymous"
 								type="aa4" />
 						</xsd:sequence>
 					</xsd:complexType>
 				</xsd:element>
-				<xsd:element maxOccurs="1" minOccurs="0" name="do4"
+				<xsd:element maxOccurs="1" minOccurs="0" name="do4-non-anonymous"
 					type="do2" />
 			</xsd:all>
 		</xsd:complexType>
@@ -99,7 +99,7 @@
 		<xsd:sequence>
 			<xsd:element maxOccurs="1" minOccurs="1" name="do2-subelement"
 				type="xsd:string" />
-			<xsd:element maxOccurs="1" minOccurs="0" name="bb1">
+			<xsd:element maxOccurs="1" minOccurs="0" name="bb1-anonymous">
 				<xsd:complexType>
 					<xsd:all>
 						<xsd:element maxOccurs="1" minOccurs="1" name="bb1-subelement"
@@ -107,7 +107,7 @@
 					</xsd:all>
 				</xsd:complexType>
 			</xsd:element>
-			<xsd:element maxOccurs="unbounded" minOccurs="1" name="bb2">
+			<xsd:element maxOccurs="unbounded" minOccurs="1" name="bb2-anonymous">
 				<xsd:complexType>
 					<xsd:all>
 						<xsd:element maxOccurs="1" minOccurs="1" name="bb2-subelement"
@@ -115,8 +115,8 @@
 					</xsd:all>
 				</xsd:complexType>
 			</xsd:element>
-			<xsd:element maxOccurs="1" minOccurs="0" name="bb3" type="bb3" />
-			<xsd:element maxOccurs="unbounded" minOccurs="1" name="bb4"
+			<xsd:element maxOccurs="1" minOccurs="0" name="bb3-non-anonymous" type="bb3" />
+			<xsd:element maxOccurs="unbounded" minOccurs="1" name="bb4-non-anonymous"
 				type="bb4" />
 		</xsd:sequence>
 	</xsd:complexType>

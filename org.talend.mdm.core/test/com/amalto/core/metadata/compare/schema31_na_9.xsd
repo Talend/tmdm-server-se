@@ -10,7 +10,7 @@
 					type="xsd:string">
 					<xsd:annotation />
 				</xsd:element>
-				<xsd:element maxOccurs="1" minOccurs="0" name="do" type="aa">
+				<xsd:element maxOccurs="1" minOccurs="0" name="do-non-anonymous" type="aa">
 					<xsd:annotation />
 				</xsd:element>
 			</xsd:sequence>
@@ -25,7 +25,7 @@
 			<xsd:element name="subelement-aa" type="xsd:string">
 				<xsd:annotation />
 			</xsd:element>
-			<xsd:element maxOccurs="1" minOccurs="1" name="bb" type="bb" />
+			<xsd:element maxOccurs="1" minOccurs="1" name="bb-non-anonymous" type="bb" />
 		</xsd:all>
 	</xsd:complexType>
 	<xsd:complexType name="bb">

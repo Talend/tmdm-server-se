@@ -10,7 +10,7 @@
 					type="xsd:string">
 					<xsd:annotation></xsd:annotation>
 				</xsd:element>
-				<xsd:element maxOccurs="unbounded" minOccurs="0" name="do1"
+				<xsd:element maxOccurs="unbounded" minOccurs="0" name="do-non-anonymous"
 					type="aa">
 					<xsd:annotation></xsd:annotation>
 				</xsd:element>

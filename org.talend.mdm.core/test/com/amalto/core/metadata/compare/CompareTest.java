@@ -869,8 +869,8 @@ public class CompareTest extends TestCase {
     public void test31_addOptionalComplexField_non_anonymous_1() throws Exception {
         /*
          * Entity                                             Entity
-         *   |__id (SimpleField)      ===============>           |__id (SimpleField)
-         *                                                       |__do (non-anonymous) (complex type) (0-1)
+         *   |__id (SimpleField) (1-1)    ===========>           |__id (SimpleField) (1-1)
+         *                                                       |__do-non-anonymous (ComplexType) (0-1)
          *                                                          |__do-subelement (SimpleField) (0-1)
          */
         MetadataRepository original = new MetadataRepository();
@@ -894,8 +894,8 @@ public class CompareTest extends TestCase {
     public void test31_addOptionalComplexField_non_anonymous_2() throws Exception {
         /*
          * Entity                                             Entity
-         *   |__id (SimpleField)      ===============>           |__id (SimpleField)
-         *                                                       |__do (non-anonymous) (complex type) (0-1)
+         *   |__id (SimpleField) (1-1)    ===========>           |__id (SimpleField) (1-1)
+         *                                                       |__do-non-anonymous (ComplexType) (0-1)
          *                                                          |__do-subelement (SimpleField) (1-1)
          */
         MetadataRepository original = new MetadataRepository();
@@ -919,9 +919,9 @@ public class CompareTest extends TestCase {
     public void test31_addOptionalComplexField_non_anonymous_3() throws Exception {
         /*
          * Entity                                             Entity
-         *   |__id (SimpleField)      ===============>           |__id (SimpleField)
-         *                                                       |__do (non-anonymous) (complex type) (0-many)
-         *                                                          |__do-subelement (SimpleField)(0-1)
+         *   |__id (SimpleField) (1-1)    ===========>           |__id (SimpleField) (1-1)
+         *                                                       |__do-non-anonymous (ComplexType) (0-many)
+         *                                                          |__do-subelement (SimpleField) (0-1)
          */
         MetadataRepository original = new MetadataRepository();
         original.load(CompareTest.class.getResourceAsStream("schema31_1.xsd")); //$NON-NLS-1$
@@ -944,9 +944,9 @@ public class CompareTest extends TestCase {
     public void test31_addOptionalComplexField_non_anonymous_4() throws Exception {
         /*
          * Entity                                             Entity
-         *   |__id (SimpleField)      ===============>           |__id (SimpleField)
-         *                                                       |__do (non-anonymous) (complex type) (0-many)
-         *                                                          |__do-subelement (SimpleField)(1-1)
+         *   |__id (SimpleField) (1-1)    ===========>           |__id (SimpleField) (1-1)
+         *                                                       |__do-non-anonymous (ComplexType) (0-many)
+         *                                                          |__do-subelement (SimpleField) (1-1)
          */
         MetadataRepository original = new MetadataRepository();
         original.load(CompareTest.class.getResourceAsStream("schema31_1.xsd")); //$NON-NLS-1$
@@ -969,10 +969,10 @@ public class CompareTest extends TestCase {
     public void test31_addOptionalComplexField_non_anonymous_5() throws Exception {
         /*
          * Entity                                             Entity
-         *   |__id (SimpleField)      ===============>           |__id (SimpleField)
-         *                                                       |__do (non-anonymous) (complex type) (0-1)
-         *                                                          |__do-subelement (SimpleField)
-         *                                                          |__bb (anonymous) (complex type) (0-1)
+         *   |__id (SimpleField) (1-1)    ===========>           |__id (SimpleField) (1-1)
+         *                                                       |__do-non-anonymous (ComplexType) (0-1)
+         *                                                          |__do-subelement (SimpleField) (1-1)
+         *                                                          |__bb-anonymous (ComplexType) (0-1)
          *                                                             |__bb-subelement (SimpleField) (0-1)
          */
         MetadataRepository original = new MetadataRepository();
@@ -996,10 +996,10 @@ public class CompareTest extends TestCase {
     public void test31_addOptionalComplexField_non_anonymous_6() throws Exception {
         /*
          * Entity                                             Entity
-         *   |__id (SimpleField)      ===============>           |__id (SimpleField)
-         *                                                       |__do (non-anonymous) (complex type) (0-1)
-         *                                                          |__do-subelement (SimpleField)
-         *                                                          |__bb (anonymous) (complex type) (0-1)
+         *   |__id (SimpleField) (1-1)    ===========>           |__id (SimpleField) (1-1)
+         *                                                       |__do-non-anonymous (ComplexType) (0-1)
+         *                                                          |__do-subelement (SimpleField) (1-1)
+         *                                                          |__bb-anonymous (ComplexType) (0-1)
          *                                                             |__bb-subelement (SimpleField) (1-1)
          */
         MetadataRepository original = new MetadataRepository();
@@ -1023,10 +1023,10 @@ public class CompareTest extends TestCase {
     public void test31_addOptionalComplexField_non_anonymous_7() throws Exception {
         /*
          * Entity                                             Entity
-         *   |__id (SimpleField)      ===============>           |__id (SimpleField)
-         *                                                       |__do (non-anonymous) (complex type) (0-1)
-         *                                                          |__do-subelement (SimpleField)
-         *                                                          |__bb (non-anonymous) (complex type) (0-1)
+         *   |__id (SimpleField) (1-1)    ===========>           |__id (SimpleField) (1-1)
+         *                                                       |__do-non-anonymous (ComplexType) (0-1)
+         *                                                          |__do-subelement (SimpleField) (1-1)
+         *                                                          |__bb-non-anonymous (ComplexType) (0-1)
          *                                                             |__bb-subelement (SimpleField) (0-1)
          */
         MetadataRepository original = new MetadataRepository();
@@ -1050,10 +1050,10 @@ public class CompareTest extends TestCase {
     public void test31_addOptionalComplexField_non_anonymous_8() throws Exception {
         /*
          * Entity                                             Entity
-         *   |__id (SimpleField)      ===============>           |__id (SimpleField)
-         *                                                       |__do (non-anonymous) (complex type) (0-1)
-         *                                                          |__do-subelement (SimpleField)
-         *                                                          |__bb (non-anonymous) (complex type) (0-1)
+         *   |__id (SimpleField) (1-1)    ===========>           |__id (SimpleField) (1-1)
+         *                                                       |__do-non-anonymous (ComplexType) (0-1)
+         *                                                          |__do-subelement (SimpleField) (1-1)
+         *                                                          |__bb-non-anonymous (ComplexType) (0-1)
          *                                                             |__bb-subelement (SimpleField) (1-1)
          */
         MetadataRepository original = new MetadataRepository();
@@ -1077,10 +1077,10 @@ public class CompareTest extends TestCase {
     public void test31_addOptionalComplexField_non_anonymous_9() throws Exception {
         /*
          * Entity                                             Entity
-         *   |__id (SimpleField)      ===============>           |__id (SimpleField)
-         *                                                       |__do (non-anonymous) (complex type) (0-1)
-         *                                                          |__do-subelement (SimpleField)
-         *                                                          |__bb (non-anonymous) (complex type) (1-1)
+         *   |__id (SimpleField) (1-1)    ===========>           |__id (SimpleField) (1-1)
+         *                                                       |__do-non-anonymous (ComplexType) (0-1)
+         *                                                          |__do-subelement (SimpleField) (1-1)
+         *                                                          |__bb-non-anonymous (ComplexType) (1-1)
          *                                                             |__bb-subelement (SimpleField) (0-1)
          */
         MetadataRepository original = new MetadataRepository();
@@ -1104,10 +1104,10 @@ public class CompareTest extends TestCase {
     public void test31_addOptionalComplexField_non_anonymous_10() throws Exception {
         /*
          * Entity                                             Entity
-         *   |__id (SimpleField)      ===============>           |__id (SimpleField)
-         *                                                       |__do (non-anonymous) (complex type) (0-1)
-         *                                                          |__do-subelement (SimpleField)
-         *                                                          |__bb (anonymous) (complex type) (1-1)
+         *   |__id (SimpleField) (1-1)    ===========>           |__id (SimpleField) (1-1)
+         *                                                       |__do-non-anonymous (ComplexType) (0-1)
+         *                                                          |__do-subelement (SimpleField) (1-1)
+         *                                                          |__bb-anonymous (ComplexType) (1-1)
          *                                                             |__bb-subelement (SimpleField) (0-1)
          */
         MetadataRepository original = new MetadataRepository();
@@ -1131,8 +1131,8 @@ public class CompareTest extends TestCase {
     public void test31_addOptionalComplexField_anonymous_1() throws Exception {
         /*
          * Entity                                             Entity
-         *   |__id (SimpleField)      ===============>           |__id (SimpleField)
-         *                                                       |__do (anonymous) (complex type) (0-1)
+         *   |__id (SimpleField) (1-1)    ===========>           |__id (SimpleField) (1-1)
+         *                                                       |__do-anonymous (ComplexType) (0-1)
          *                                                          |__do-subelement (SimpleField) (0-1)
          */
         MetadataRepository original = new MetadataRepository();
@@ -1156,8 +1156,8 @@ public class CompareTest extends TestCase {
     public void test31_addOptionalComplexField_anonymous_2() throws Exception {
         /*
          * Entity                                             Entity
-         *   |__id (SimpleField)      ===============>           |__id (SimpleField)
-         *                                                       |__do (anonymous) (complex type) (0-1)
+         *   |__id (SimpleField) (1-1)    ===========>           |__id (SimpleField) (1-1)
+         *                                                       |__do-anonymous (ComplexType) (0-1)
          *                                                          |__do-subelement (SimpleField) (1-1)
          */
         MetadataRepository original = new MetadataRepository();
@@ -1181,9 +1181,9 @@ public class CompareTest extends TestCase {
     public void test31_addOptionalComplexField_anonymous_3() throws Exception {
         /*
          * Entity                                             Entity
-         *   |__id (SimpleField)      ===============>           |__id (SimpleField)
-         *                                                       |__do (anonymous) (complex type) (0-many)
-         *                                                          |__do-subelement (SimpleField)(0-1)
+         *   |__id (SimpleField) (1-1)    ===========>           |__id (SimpleField) (1-1)
+         *                                                       |__do-anonymous (ComplexType) (0-many)
+         *                                                          |__do-subelement (SimpleField) (0-1)
          */
 
         MetadataRepository original = new MetadataRepository();
@@ -1207,9 +1207,9 @@ public class CompareTest extends TestCase {
     public void test31_addOptionalComplexField_anonymous_4() throws Exception {
         /*
          * Entity                                             Entity
-         *   |__id (SimpleField)      ===============>           |__id (SimpleField)
-         *                                                       |__do (anonymous) (complex type) (0-many)
-         *                                                          |__do-subelement (SimpleField)(1-1)
+         *   |__id (SimpleField) (1-1)    ===========>           |__id (SimpleField) (1-1)
+         *                                                       |__do-anonymous (ComplexType) (0-many)
+         *                                                          |__do-subelement (SimpleField) (1-1)
          */
 
         MetadataRepository original = new MetadataRepository();
@@ -1233,10 +1233,10 @@ public class CompareTest extends TestCase {
     public void test31_addOptionalComplexField_anonymous_5() throws Exception {
         /*
          * Entity                                             Entity
-         *   |__id (SimpleField)      ===============>           |__id (SimpleField)
-         *                                                       |__do (anonymous) (complex type) (0-1)
-         *                                                          |__do-subelement (SimpleField)
-         *                                                          |__bb (anonymous) (complex type) (0-1)
+         *   |__id (SimpleField) (1-1)    ===========>           |__id (SimpleField) (1-1)
+         *                                                       |__do-anonymous (ComplexType) (0-1)
+         *                                                          |__do-subelement (SimpleField) (1-1)
+         *                                                          |__bb-anonymous (ComplexType) (0-1)
          *                                                             |__bb-subelement (SimpleField) (0-1)
          */
 
@@ -1261,10 +1261,10 @@ public class CompareTest extends TestCase {
     public void test31_addOptionalComplexField_anonymous_6() throws Exception {
         /*
          * Entity                                             Entity
-         *   |__id (SimpleField)      ===============>           |__id (SimpleField)
-         *                                                       |__do (anonymous) (complex type) (0-1)
-         *                                                          |__do-subelement (SimpleField)
-         *                                                          |__bb (anonymous) (complex type) (0-1)
+         *   |__id (SimpleField) (1-1)    ===========>           |__id (SimpleField) (1-1)
+         *                                                       |__do-anonymous (ComplexType) (0-1)
+         *                                                          |__do-subelement (SimpleField) (1-1)
+         *                                                          |__bb-anonymous (ComplexType) (0-1)
          *                                                             |__bb-subelement (SimpleField) (1-1)
          */
 
@@ -1289,10 +1289,10 @@ public class CompareTest extends TestCase {
     public void test31_addOptionalComplexField_anonymous_7() throws Exception {
         /*
          * Entity                                             Entity
-         *   |__id (SimpleField)      ===============>           |__id (SimpleField)
-         *                                                       |__do (anonymous) (complex type) (0-1)
-         *                                                          |__do-subelement (SimpleField)
-         *                                                          |__bb (non-anonymous) (complex type) (0-1)
+         *   |__id (SimpleField) (1-1)    ===========>           |__id (SimpleField) (1-1)
+         *                                                       |__do-anonymous (ComplexType) (0-1)
+         *                                                          |__do-subelement (SimpleField) (1-1)
+         *                                                          |__bb-non-anonymous (ComplexType) (0-1)
          *                                                             |__bb-subelement (SimpleField) (0-1)
          */
 
@@ -1317,10 +1317,10 @@ public class CompareTest extends TestCase {
     public void test31_addOptionalComplexField_anonymous_8() throws Exception {
         /*
          * Entity                                             Entity
-         *   |__id (SimpleField)      ===============>           |__id (SimpleField)
-         *                                                       |__do (anonymous) (complex type) (0-1)
-         *                                                          |__do-subelement (SimpleField)
-         *                                                          |__bb (non-anonymous) (complex type) (0-1)
+         *   |__id (SimpleField) (1-1)    ===========>           |__id (SimpleField) (1-1)
+         *                                                       |__do-anonymous (ComplexType) (0-1)
+         *                                                          |__do-subelement (SimpleField) (1-1)
+         *                                                          |__bb-non-anonymous (ComplexType) (0-1)
          *                                                             |__bb-subelement (SimpleField) (1-1)
          */
 
@@ -1345,10 +1345,10 @@ public class CompareTest extends TestCase {
     public void test31_addOptionalComplexField_anonymous_9() throws Exception {
         /*
          * Entity                                             Entity
-         *   |__id (SimpleField)      ===============>           |__id (SimpleField)
-         *                                                       |__do (anonymous) (complex type) (0-1)
-         *                                                          |__do-subelement (SimpleField)
-         *                                                          |__bb (non-anonymous) (complex type) (1-1)
+         *   |__id (SimpleField) (1-1)    ===========>           |__id (SimpleField) (1-1)
+         *                                                       |__do-anonymous (ComplexType) (0-1)
+         *                                                          |__do-subelement (SimpleField) (1-1)
+         *                                                          |__bb-non-anonymous (ComplexType) (1-1)
          *                                                             |__bb-subelement (SimpleField) (0-1)
          */
 
@@ -1373,10 +1373,10 @@ public class CompareTest extends TestCase {
     public void test31_addOptionalComplexField_anonymous_10() throws Exception {
         /*
          * Entity                                             Entity
-         *   |__id (SimpleField)      ===============>           |__id (SimpleField)
-         *                                                       |__do (anonymous) (complex type) (0-1)
-         *                                                          |__do-subelement (SimpleField)
-         *                                                          |__bb (anonymous) (complex type) (1-1)
+         *   |__id (SimpleField) (1-1)    ===========>           |__id (SimpleField) (1-1)
+         *                                                       |__do-anonymous (ComplexType) (0-1)
+         *                                                          |__do-subelement (SimpleField) (1-1)
+         *                                                          |__bb-anonymous (ComplexType) (1-1)
          *                                                             |__bb-subelement (SimpleField) (0-1)
          */
 
@@ -1401,36 +1401,36 @@ public class CompareTest extends TestCase {
     public void test31_addOptionalComplexField_existed_1() throws Exception {
         /*
          * Entity                                                                 Entity
-         *   |__id (SimpleField)                                                    |__id (SimpleField)
-         *   |__do1 (anonymous) (complex type) (0-1)                                |__do1 (anonymous) (complex type) (0-1)
+         *   |__id (SimpleField) (1-1)                                              |__id (SimpleField) (1-1)
+         *   |__do1-anonymous (ComplexType) (0-1)                                   |__do1-anonymous (ComplexType) (0-1)
          *      |__do1-subelement (SimpleField) (1-1)                                  |__do1-subelement (SimpleField) (1-1)
-         *      |__aa1 (anonymous) (complex type) (0-1)                                |__aa1 (anonymous) (complex type) (0-1)
+         *      |__aa1-anonymous (ComplexType) (0-1)                                   |__aa1-anonymous (ComplexType) (0-1)
          *           |__aa1-subelement (SimpleField) (1-1)                                  |__aa1-subelement (SimpleField) (1-1)
-         *      |__aa2 (anonymous) (complex type) (1-many)                             |__aa2 (anonymous) (complex type) (1-many)
+         *      |__aa2-anonymous (ComplexType) (1-many)                                |__aa2-anonymous (ComplexType) (1-many)
          *           |__aa2-subelement (SimpleField) (1-1)                                  |__aa2-subelement (SimpleField) (1-1)
-         *      |__aa3 (non-anonymous) (complex type) (0-1)                            |__aa3 (non-anonymous) (complex type) (0-1)
+         *      |__aa3-non-anonymous (ComplexType) (0-1)                               |__aa3-non-anonymous (ComplexType) (0-1)
          *           |__aa3-subelement (SimpleField) (1-1)                                  |__aa3-subelement (SimpleField) (1-1)
-         *      |__aa4 (non-anonymous) (complex type) (1-1)                            |__aa4 (non-anonymous) (complex type) (1-1)
+         *      |__aa4-non-anonymous (ComplexType) (1-1)                               |__aa4-non-anonymous (ComplexType) (1-1)
          *           |__aa4-subelement (SimpleField) (1-1)     =====>                       |__aa4-subelement (SimpleField) (1-1)
-         *                                                                          |__do3 (anonymous) (complex type) (0-1)
+         *                                                                          |__do3-anonymous (ComplexType) (0-1)
          *                                                                             |__do1-subelement (SimpleField) (1-1)
-         *                                                                             |__aa1 (anonymous) (complex type) (0-1)
+         *                                                                             |__aa1-anonymous (ComplexType) (0-1)
          *                                                                                  |__aa1-subelement (SimpleField) (1-1)
-         *                                                                             |__aa2 (anonymous) (complex type) (1-many)
+         *                                                                             |__aa2-anonymous (ComplexType) (1-many)
          *                                                                                  |__aa2-subelement (SimpleField) (1-1)
-         *                                                                             |__aa3 (non-anonymous) (complex type) (0-1)
+         *                                                                             |__aa3-non-anonymous (ComplexType) (0-1)
          *                                                                                  |__aa3-subelement (SimpleField) (1-1)
-         *                                                                             |__aa4 (non-anonymous) (complex type) (1-1)
+         *                                                                             |__aa4-non-anonymous (ComplexType) (1-1)
          *                                                                                  |__aa4-subelement (SimpleField) (1-1)
-         *                                                                          |__do4 (non-anonymous) (complex type) (0-1)
+         *                                                                          |__do4-non-anonymous (ComplexType) (0-1)
          *                                                                             |__do2-subelement (SimpleField) (1-1)
-         *                                                                             |__bb1 (anonymous) (complex type) (0-1)
+         *                                                                             |__bb1-anonymous (ComplexType) (0-1)
          *                                                                                  |__bb1-subelement (SimpleField) (1-1)
-         *                                                                             |__bb2 (anonymous) (complex type) (1-many)
+         *                                                                             |__bb2-anonymous (ComplexType) (1-many)
          *                                                                                  |__aa2-subelement (SimpleField) (1-1)
-         *                                                                             |__bb3 (non-anonymous) (complex type) (0-1)
+         *                                                                             |__bb3-non-anonymous (ComplexType) (0-1)
          *                                                                                  |__aa3-subelement (SimpleField) (1-1)
-         *                                                                             |__bb4 (non-anonymous) (complex type) (1-1)
+         *                                                                             |__bb4-non-anonymous (ComplexType) (1-1)
          *                                                                                  |__aa4-subelement (SimpleField) (1-1)
         */
 

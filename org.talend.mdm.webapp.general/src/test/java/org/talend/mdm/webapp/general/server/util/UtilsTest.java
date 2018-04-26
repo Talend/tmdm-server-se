@@ -23,6 +23,7 @@ import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit3.PowerMockSuite;
+import org.talend.mdm.webapp.general.model.GroupItem;
 import org.talend.mdm.webapp.general.model.LanguageBean;
 import org.talend.mdm.webapp.general.server.actions.GeneralAction;
 import org.w3c.dom.DOMException;
@@ -116,5 +117,60 @@ public class UtilsTest extends TestCase {
         }
         assertEquals("en", lang);
         assertEquals(result.size(), 2);
+    }
+
+    public void testGetGroupItems() throws Exception {
+        List<GroupItem> menuList = Utils.getGroupItems("en");
+        assertEquals(5, menuList.size());
+        String[] menuHeader = { "Home", "Browse", "Govern", "Administration", "Tools" };
+        assertMenu(menuHeader, menuList);
+
+        menuList = Utils.getGroupItems("fr");
+        String[] frMenuHeader = { "Accueil", "Consultation", "Govern", "Administration", "Tools" };
+        assertEquals(5, menuList.size());
+        assertMenu(frMenuHeader, menuList);
+
+        menuList = Utils.getGroupItems("ru");
+        String[] ruMenuHeader = { "Домашняя страница", "Просмотр", "Управление", "Администрирование", "Tools" };
+        assertEquals(5, menuList.size());
+        assertMenu(ruMenuHeader, menuList);
+    }
+
+    protected void assertMenu(String[] expectedHeader, List<GroupItem> menuList) {
+        // assert home
+        assertEquals(expectedHeader[0], menuList.get(0).getGroupHeader());
+        assertEquals(2, menuList.get(0).getMenuItems().size());
+        assertEquals("welcomeportal.WelcomePortal", menuList.get(0).getMenuItems().get(0));
+        assertEquals("browserecords.BrowseRecords", menuList.get(0).getMenuItems().get(1));
+
+        // assert browse
+        assertEquals(expectedHeader[1], menuList.get(1).getGroupHeader());
+        assertEquals(6, menuList.get(1).getMenuItems().size());
+        assertEquals("browserecords.BrowseRecords", menuList.get(1).getMenuItems().get(0));
+        assertEquals("browserecords.BrowseRecordsInStaging", menuList.get(1).getMenuItems().get(1));
+        assertEquals("hierarchy.Hierarchy", menuList.get(1).getMenuItems().get(2));
+        assertEquals("journal.Journal", menuList.get(1).getMenuItems().get(3));
+        assertEquals("search.Search", menuList.get(1).getMenuItems().get(4));
+        assertEquals("recyclebin.RecycleBin", menuList.get(1).getMenuItems().get(5));
+
+        // assert gouvern
+        assertEquals(expectedHeader[2], menuList.get(2).getGroupHeader());
+        assertEquals(4, menuList.get(2).getMenuItems().size());
+        assertEquals("stagingarea.Stagingarea", menuList.get(2).getMenuItems().get(0));
+        assertEquals("datastewardship.Datastewardship", menuList.get(2).getMenuItems().get(1));
+        assertEquals("workflowtasks.BonitaWorkflowTasks", menuList.get(2).getMenuItems().get(2));
+        assertEquals("crossreference.CrossReference", menuList.get(2).getMenuItems().get(3));
+
+        // assert administration
+        assertEquals(expectedHeader[3], menuList.get(3).getGroupHeader());
+        assertEquals(1, menuList.get(3).getMenuItems().size());
+        assertEquals("usermanager.UserManager", menuList.get(3).getMenuItems().get(0));
+
+        // assert tools
+        assertEquals(expectedHeader[4], menuList.get(4).getGroupHeader());
+        assertEquals(3, menuList.get(4).getMenuItems().size());
+        assertEquals("logviewer.LogViewer", menuList.get(4).getMenuItems().get(0));
+        assertEquals("h2console.H2Console", menuList.get(4).getMenuItems().get(1));
+        assertEquals("apidoc.RestApiDoc", menuList.get(4).getMenuItems().get(2));
     }
 }

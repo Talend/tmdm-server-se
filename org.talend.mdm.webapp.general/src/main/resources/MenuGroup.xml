@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <menugroup defaultLang="en">
-    <groupitem en="Home" fr="Accueil" ru="Домашняя страница">
+    <groupitem id="menugroup.home">
         <item>welcomeportal.WelcomePortal</item>
         <item>browserecords.BrowseRecords</item>
     </groupitem>
-    <groupitem en="Browse" fr="Consultation" ru="Просмотр">
+    <groupitem id="menugroup.browse">
         <item>browserecords.BrowseRecords</item>
         <item>browserecords.BrowseRecordsInStaging</item>
         <item>hierarchy.Hierarchy</item>
@@ -12,16 +12,16 @@
         <item>search.Search</item>
         <item>recyclebin.RecycleBin</item>
     </groupitem>
-    <groupitem en="Govern" fr="Gouvernance" ru="Управление">
+    <groupitem id="menugroup.gouvernance">
         <item>stagingarea.Stagingarea</item>
         <item>datastewardship.Datastewardship</item>
         <item>workflowtasks.BonitaWorkflowTasks</item>
         <item>crossreference.CrossReference</item>
     </groupitem>
-    <groupitem en="Administration" fr="Administration" ru="Администрирование">
+    <groupitem id="menugroup.administration">
         <item>usermanager.UserManager</item>
     </groupitem>
-    <groupitem en="Tools" fr="Outils">
+    <groupitem id="menugroup.tools">
         <item>logviewer.LogViewer</item>
         <item>h2console.H2Console</item>
         <item>apidoc.RestApiDoc</item>

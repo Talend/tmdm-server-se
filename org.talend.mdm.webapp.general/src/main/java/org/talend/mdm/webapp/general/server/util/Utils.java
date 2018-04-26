@@ -65,8 +65,11 @@ public class Utils {
 
     private static final String DATACLUSTER_PK = "PROVISIONING"; //$NON-NLS-1$
 
-    private static final Messages MESSAGES = MessagesFactory.getMessages(
-            "org.talend.mdm.webapp.general.client.i18n.GeneralMessages", Utils.class.getClassLoader()); //$NON-NLS-1$
+    private static final Messages MESSAGES = MessagesFactory
+            .getMessages("org.talend.mdm.webapp.general.client.i18n.GeneralMessages", Utils.class.getClassLoader()); //$NON-NLS-1$
+
+    private static final Messages MENU_GROUP_MESSAGES = MessagesFactory
+            .getMessages("org.talend.mdm.webapp.general.client.i18n.MenuGroups", Utils.class.getClassLoader()); //$NON-NLS-1$
 
     public static int getSubMenus(Menu menu, String language, List<MenuBean> rows, int level, int i) {
         for (String key : menu.getSubMenus().keySet()) {
@@ -285,7 +288,6 @@ public class Utils {
         DocumentBuilder builder = factory.newDocumentBuilder();
         Document doc = builder.parse(is);
         Element root = doc.getDocumentElement();
-        String defaultLang = root.getAttribute("defaultLang"); //$NON-NLS-1$
         NodeList nodes = root.getChildNodes();
         List<GroupItem> giList = new ArrayList<GroupItem>();
         for (int i = 0; i < nodes.getLength(); i++) {
@@ -293,11 +295,8 @@ public class Utils {
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 if (node.getNodeName().equals("groupitem")) { //$NON-NLS-1$ 
                     GroupItem giNew = new GroupItem();
-                    Node langNode = node.getAttributes().getNamedItem(language);
-                    if (langNode == null) {
-                        langNode = node.getAttributes().getNamedItem(defaultLang);
-                    }
-                    giNew.setGroupHeader(langNode.getNodeValue());
+                    Node idNode = node.getAttributes().getNamedItem("id");
+                    giNew.setGroupHeader(MENU_GROUP_MESSAGES.getMessage(new Locale(language), idNode.getNodeValue()));
                     NodeList items = node.getChildNodes();
                     List<String> menuItems = new ArrayList<String>();
                     for (int k = 0; k < items.getLength(); k++) {

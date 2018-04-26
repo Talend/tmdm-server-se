@@ -1975,16 +1975,16 @@ public class StorageAdaptTest extends TestCase {
          *   |__id (SimpleField) (1-1)                           |__id (SimpleField) (1-1)
          *   |__name (SimpleField) (1-1)                         |__name (SimpleField) (1-1)
          *   |__desc (SimpleField) (1-1)     ===========>            |__desc (SimpleField) (1-1)
-         *                                                       |__do (ComplexField) (non-anonymous) (0-1)
+         *                                                       |__do (ComplexField) (non-anonymous of: aa) (0-1)
          *                                                           |__subelement (SimpleField) (1-1)
-         *                                                       |__do1 (ComplexField) (non-anonymous) (0-many)
+         *                                                       |__do1 (ComplexField) (non-anonymous of: aa) (0-many)
          *                                                           |__subelement (SimpleField) (1-1)
          *                                                       |__do2 (ComplexField) (anonymous) (0-1)
          *                                                           |__subelement (SimpleField) (1-1)
-         *                                                           |__thrid (SimpleField) (0-1)
+         *                                                           |__second (SimpleField) (0-1)
          *                                                       |__do3 (ComplexField) (anonymous) (0-many)
          *                                                           |__subelement (SimpleField) (1-1)
-         *                                                           |__second (SimpleField) (1-1)
+         *                                                           |__third (SimpleField) (1-1)
          */
         setMDMRootURL();
 
@@ -2058,7 +2058,7 @@ public class StorageAdaptTest extends TestCase {
         }
 
         String[] anonymousTablesUpdated = { "X_ANONYMOUS0" };
-        String[] anonymous0ColumnsUpdated = { "", "X_TALEND_ID", "X_SUBELEMENT", "X_THRID" };
+        String[] anonymous0ColumnsUpdated = { "", "X_TALEND_ID", "X_SUBELEMENT", "X_SECOND" };
         int[] anonymous0IsNullableUpdated = { 0, 0, 1, 1 };
         try {
             assertColumnNullAble(dataSource, anonymousTablesUpdated, anonymous0ColumnsUpdated, anonymous0IsNullableUpdated);
@@ -2067,7 +2067,7 @@ public class StorageAdaptTest extends TestCase {
         }
 
         String[] anonymous1TablesUpdated = { "X_ANONYMOUS1" };
-        String[] anonymous1ColumnsUpdated = { "", "X_TALEND_ID", "X_SUBELEMENT", "X_SECOND" };
+        String[] anonymous1ColumnsUpdated = { "", "X_TALEND_ID", "X_SUBELEMENT", "X_THIRD" };
         int[] anonymous1IsNullableUpdated = { 0, 0, 1, 1 };
         try {
             assertColumnNullAble(dataSource, anonymous1TablesUpdated, anonymous1ColumnsUpdated, anonymous1IsNullableUpdated);
@@ -2099,7 +2099,7 @@ public class StorageAdaptTest extends TestCase {
         }
         storage.commit();
 
-        String input2 = "<Test><id>2</id><name>name2</name><desc>desc2</desc><do><subelement>do-sub</subelement></do><do1><subelement>do1-sub</subelement></do1><do2><subelement>do2-sub</subelement><thrid>do2-thrid</thrid></do2><do3><subelement>do3-sub</subelement><second>do3-second</second></do3></Test>";
+        String input2 = "<Test><id>2</id><name>name2</name><desc>desc2</desc><do><subelement>do-sub</subelement></do><do1><subelement>do1-sub</subelement></do1><do2><subelement>do2-sub</subelement><second>do2-second</second></do2><do3><subelement>do3-sub</subelement><third>do3-third</third></do3></Test>";
         try {
             createRecord(storage, factory, repository2, typeNames, new String[] { input2 });
         } catch (Exception e1) {
@@ -2125,9 +2125,9 @@ public class StorageAdaptTest extends TestCase {
                     assertEquals("do-sub", result.get("do/subelement"));
                     assertEquals("do1-sub", result.get("do1/subelement"));
                     assertEquals("do2-sub", result.get("do2/subelement"));
-                    assertEquals("do2-thrid", result.get("do2/thrid"));
+                    assertEquals("do2-second", result.get("do2/second"));
                     assertEquals("do3-sub", result.get("do3/subelement"));
-                    assertEquals("do3-second", result.get("do3/second"));
+                    assertEquals("do3-third", result.get("do3/third"));
                 }
                 i++;
             }

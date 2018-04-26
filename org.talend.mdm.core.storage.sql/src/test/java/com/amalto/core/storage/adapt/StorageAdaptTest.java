@@ -1970,6 +1970,22 @@ public class StorageAdaptTest extends TestCase {
 
     // TMDM-10613
     public void test19_addOptionalComplexField() throws Exception {
+        /*
+         * Test                                                 Test
+         *   |__id (SimpleField) (1-1)                           |__id (SimpleField) (1-1)
+         *   |__name (SimpleField) (1-1)                         |__name (SimpleField) (1-1)
+         *   |__desc (SimpleField) (1-1)     ===========>            |__desc (SimpleField) (1-1)
+         *                                                       |__do (ComplexField) (non-anonymous) (0-1)
+         *                                                           |__subelement (SimpleField) (1-1)
+         *                                                       |__do1 (ComplexField) (non-anonymous) (0-many)
+         *                                                           |__subelement (SimpleField) (1-1)
+         *                                                       |__do2 (ComplexField) (anonymous) (0-1)
+         *                                                           |__subelement (SimpleField) (1-1)
+         *                                                           |__thrid (SimpleField) (0-1)
+         *                                                       |__do3 (ComplexField) (anonymous) (0-many)
+         *                                                           |__subelement (SimpleField) (1-1)
+         *                                                           |__second (SimpleField) (1-1)
+         */
         setMDMRootURL();
 
         DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
@@ -1991,7 +2007,6 @@ public class StorageAdaptTest extends TestCase {
         }
 
         // create record before change, second_name, married is null
-
         String input1 = "<Test><id>1</id><name>person-name</name><desc>desc</desc></Test>";
         try {
             createRecord(storage, factory, repository1, typeNames, new String[] { input1 });

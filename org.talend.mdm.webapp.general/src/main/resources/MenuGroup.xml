@@ -12,7 +12,7 @@
         <item>search.Search</item>
         <item>recyclebin.RecycleBin</item>
     </groupitem>
-    <groupitem id="menugroup.gouvernance">
+    <groupitem id="menugroup.govern">
         <item>stagingarea.Stagingarea</item>
         <item>datastewardship.Datastewardship</item>
         <item>workflowtasks.BonitaWorkflowTasks</item>

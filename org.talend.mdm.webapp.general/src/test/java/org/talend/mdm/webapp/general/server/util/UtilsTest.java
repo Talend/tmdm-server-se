@@ -126,7 +126,7 @@ public class UtilsTest extends TestCase {
         assertMenu(menuHeader, menuList);
 
         menuList = Utils.getGroupItems("fr");
-        String[] frMenuHeader = { "Accueil", "Consultation", "Govern", "Administration", "Tools" };
+        String[] frMenuHeader = { "Accueil", "Consultation", "Gouvernance", "Administration", "Outils" };
         assertEquals(5, menuList.size());
         assertMenu(frMenuHeader, menuList);
 

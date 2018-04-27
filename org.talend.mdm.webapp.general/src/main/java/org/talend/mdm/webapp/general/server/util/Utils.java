@@ -65,10 +65,10 @@ public class Utils {
 
     private static final String DATACLUSTER_PK = "PROVISIONING"; //$NON-NLS-1$
 
-    private static final Messages MESSAGES = MessagesFactory
+    private static final Messages GENERAL_MESSAGES = MessagesFactory
             .getMessages("org.talend.mdm.webapp.general.client.i18n.GeneralMessages", Utils.class.getClassLoader()); //$NON-NLS-1$
 
-    private static final Messages MENU_GROUP_MESSAGES = MessagesFactory
+    private static final Messages MENU_GROUPS_MESSAGES = MessagesFactory
             .getMessages("org.talend.mdm.webapp.general.client.i18n.MenuGroups", Utils.class.getClassLoader()); //$NON-NLS-1$
 
     public static int getSubMenus(Menu menu, String language, List<MenuBean> rows, int level, int i) {
@@ -106,7 +106,7 @@ public class Utils {
 
     private static void disabledMenuItemIf(Menu menu, MenuBean menuBean, String language) {
         if ("stagingarea".equals(menu.getContext()) && "Stagingarea".equals(menu.getApplication())) { //$NON-NLS-1$ //$NON-NLS-2$
-            menuBean.setDisabledDesc(MESSAGES.getMessage(new Locale(language), "stagingarea_unavailable")); //$NON-NLS-1$
+            menuBean.setDisabledDesc(GENERAL_MESSAGES.getMessage(new Locale(language), "stagingarea_unavailable")); //$NON-NLS-1$
             boolean disabled = true;
             try {
                 WSDataClusterPK wsDataClusterPK = new WSDataClusterPK(Configuration.getConfiguration().getCluster());
@@ -290,21 +290,18 @@ public class Utils {
         Element root = doc.getDocumentElement();
         NodeList nodes = root.getChildNodes();
         List<GroupItem> giList = new ArrayList<GroupItem>();
-        String IdAttribute = "id"; //$NON-NLS-1$
-        String itemNode = "item"; //$NON-NLS-1$
-        String groupItemNode = "groupitem"; //$NON-NLS-1$
         for (int i = 0; i < nodes.getLength(); i++) {
             Node node = nodes.item(i);
             if (node.getNodeType() == Node.ELEMENT_NODE) {
-                if (node.getNodeName().equals(groupItemNode)) {
+                if (node.getNodeName().equals("groupitem")) { //$NON-NLS-1$
                     GroupItem giNew = new GroupItem();
-                    Node idNode = node.getAttributes().getNamedItem(IdAttribute);
-                    giNew.setGroupHeader(MENU_GROUP_MESSAGES.getMessage(new Locale(language), idNode.getNodeValue()));
+                    Node idNode = node.getAttributes().getNamedItem("id"); //$NON-NLS-1$
+                    giNew.setGroupHeader(MENU_GROUPS_MESSAGES.getMessage(new Locale(language), idNode.getNodeValue()));
                     NodeList items = node.getChildNodes();
                     List<String> menuItems = new ArrayList<String>();
                     for (int k = 0; k < items.getLength(); k++) {
                         Node item = items.item(k);
-                        if (item.getNodeName().equals(itemNode)) {
+                        if (item.getNodeName().equals("item")) { //$NON-NLS-1$
                             menuItems.add(item.getTextContent());
                         }
                     }

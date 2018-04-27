@@ -153,7 +153,7 @@ public class UtilsTest extends TestCase {
         assertEquals("search.Search", menuList.get(1).getMenuItems().get(4));
         assertEquals("recyclebin.RecycleBin", menuList.get(1).getMenuItems().get(5));
 
-        // assert gouvern
+        // assert govern
         assertEquals(expectedHeader[2], menuList.get(2).getGroupHeader());
         assertEquals(4, menuList.get(2).getMenuItems().size());
         assertEquals("stagingarea.Stagingarea", menuList.get(2).getMenuItems().get(0));

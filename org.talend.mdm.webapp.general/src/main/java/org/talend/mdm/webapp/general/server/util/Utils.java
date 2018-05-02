@@ -69,7 +69,7 @@ public class Utils {
             .getMessages("org.talend.mdm.webapp.general.client.i18n.GeneralMessages", Utils.class.getClassLoader()); //$NON-NLS-1$
 
     private static final Messages MENU_GROUPS_MESSAGES = MessagesFactory
-            .getMessages("org.talend.mdm.webapp.general.server.util.MenuGroups", Utils.class.getClassLoader()); //$NON-NLS-1$
+            .getMessages("menugroups", Utils.class.getClassLoader()); //$NON-NLS-1$
 
     public static int getSubMenus(Menu menu, String language, List<MenuBean> rows, int level, int i) {
         for (String key : menu.getSubMenus().keySet()) {

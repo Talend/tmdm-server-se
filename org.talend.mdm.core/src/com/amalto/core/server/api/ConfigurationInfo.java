@@ -11,12 +11,11 @@
 
 package com.amalto.core.server.api;
 
-import com.amalto.core.objects.configurationinfo.assemble.AssembleProc;
+import java.util.Collection;
+
 import com.amalto.core.objects.configurationinfo.ConfigurationInfoPOJO;
 import com.amalto.core.objects.configurationinfo.ConfigurationInfoPOJOPK;
 import com.amalto.core.util.XtentisException;
-
-import java.util.Collection;
 
 /**
  *
@@ -57,24 +56,4 @@ public interface ConfigurationInfo {
      */
     Collection<ConfigurationInfoPOJOPK> getConfigurationInfoPKs(String regex) throws XtentisException;
 
-    /**
-     * Auto Upgrades the core
-     *
-     * @throws XtentisException
-     */
-    void autoUpgrade() throws XtentisException;
-
-    /**
-     * Auto Upgrades the core in the background- called on startup
-     *
-     * @throws XtentisException
-     */
-    void autoUpgradeInBackground() throws XtentisException;
-
-    /**
-     * Auto Upgrades the core in the background- called by servlet
-     *
-     * @throws XtentisException
-     */
-    void autoUpgradeInBackground(AssembleProc assembleProc) throws XtentisException;
 }

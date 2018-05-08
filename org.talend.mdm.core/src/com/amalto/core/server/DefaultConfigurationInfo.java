@@ -11,21 +11,17 @@
 
 package com.amalto.core.server;
 
-import com.amalto.core.objects.ObjectPOJO;
-import com.amalto.core.objects.ObjectPOJOPK;
-import com.amalto.core.objects.configurationinfo.assemble.AssembleConcreteBuilder;
-import com.amalto.core.objects.configurationinfo.assemble.AssembleDirector;
-import com.amalto.core.objects.configurationinfo.assemble.AssembleProc;
-import com.amalto.core.objects.configurationinfo.ConfigurationInfoPOJO;
-import com.amalto.core.objects.configurationinfo.ConfigurationInfoPOJOPK;
-import com.amalto.core.objects.configurationinfo.CoreUpgrades;
-import com.amalto.core.util.Util;
-import com.amalto.core.util.XtentisException;
-import org.apache.log4j.Logger;
-import com.amalto.core.server.api.ConfigurationInfo;
-
 import java.util.ArrayList;
 import java.util.Collection;
+
+import org.apache.log4j.Logger;
+
+import com.amalto.core.objects.ObjectPOJO;
+import com.amalto.core.objects.ObjectPOJOPK;
+import com.amalto.core.objects.configurationinfo.ConfigurationInfoPOJO;
+import com.amalto.core.objects.configurationinfo.ConfigurationInfoPOJOPK;
+import com.amalto.core.server.api.ConfigurationInfo;
+import com.amalto.core.util.XtentisException;
 
 public class DefaultConfigurationInfo implements ConfigurationInfo {
 
@@ -119,34 +115,5 @@ public class DefaultConfigurationInfo implements ConfigurationInfo {
             l.add(new ConfigurationInfoPOJOPK(configuration));
         }
         return l;
-    }
-
-    @Override
-    public void autoUpgrade() throws XtentisException {
-        if (LOGGER.isTraceEnabled()) {
-            LOGGER.trace("autoUpgrade ");
-        }
-        try {
-            ConfigurationInfo ctrl = Util.getConfigurationInfoCtrlLocal();
-            CoreUpgrades.autoUpgrade(ctrl);
-        } catch (Exception e) {
-            String err = "Unable to upgrade in the background" + ": " + e.getClass().getName() + ": " + e.getLocalizedMessage();
-            LOGGER.error(err, e);
-            throw new XtentisException(err, e);
-        }
-    }
-
-    @Override
-    public void autoUpgradeInBackground() throws XtentisException {
-        AssembleConcreteBuilder concreteBuilder = new AssembleConcreteBuilder();
-        AssembleDirector director = new AssembleDirector(concreteBuilder);
-        director.constructAll();
-        AssembleProc assembleProc = concreteBuilder.getAssembleProc();
-        autoUpgradeInBackground(assembleProc);
-    }
-
-    @Override
-    public void autoUpgradeInBackground(AssembleProc assembleProc) throws XtentisException {
-        assembleProc.run();
     }
 }

@@ -28,10 +28,6 @@ public class AssembleConcreteBuilder implements AssembleBuilder {
         assembleProc.add(new InitDataSubProc());
     }
 
-    public void buildPartMigrateVersion() {
-        assembleProc.add(new MigrateVersionSubProc());
-    }
-
     public void buildPartStartEngine() {
         assembleProc.add(new StartEngineSubProc());
     }

@@ -33,12 +33,15 @@ import org.talend.mdm.commmon.util.core.MDMConfiguration;
 
 import com.amalto.core.jobox.properties.ThreadIsolatedSystemProperties;
 import com.amalto.core.metadata.ClassRepository;
+import com.amalto.core.objects.configurationinfo.ConfigurationInfoPOJO;
+import com.amalto.core.objects.configurationinfo.ConfigurationInfoPOJOPK;
 import com.amalto.core.objects.configurationinfo.assemble.AssembleConcreteBuilder;
 import com.amalto.core.objects.configurationinfo.assemble.AssembleDirector;
 import com.amalto.core.objects.configurationinfo.assemble.AssembleProc;
 import com.amalto.core.objects.datacluster.DataClusterPOJO;
 import com.amalto.core.query.user.UserQueryBuilder;
 import com.amalto.core.save.generator.AutoIncrementGenerator;
+import com.amalto.core.server.api.ConfigurationInfo;
 import com.amalto.core.server.security.SecurityConfig;
 import com.amalto.core.storage.DispatchWrapper;
 import com.amalto.core.storage.Storage;
@@ -48,6 +51,7 @@ import com.amalto.core.storage.datasource.DataSourceDefinition;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.util.Util;
 import com.amalto.core.util.Version;
+import com.amalto.core.util.XtentisException;
 
 public class Initialization implements ApplicationListener<ContextRefreshedEvent>, InitializingBean, DisposableBean, ApplicationEventPublisherAware {
 
@@ -124,7 +128,16 @@ public class Initialization implements ApplicationListener<ContextRefreshedEvent
         } else {
             LOGGER.info("System storage started."); //$NON-NLS-1$
         }
-        // Migration
+
+        // Check if the version in system db match the current product version
+        SecurityConfig.invokeSynchronousPrivateInternal(new Runnable() {
+            @Override
+            public void run() {
+                checkProductVersion();
+            }
+        });
+
+        // Initialize
         LOGGER.info("Initialization and migration of system database..."); //$NON-NLS-1$
         AssembleConcreteBuilder concreteBuilder = new AssembleConcreteBuilder();
         AssembleDirector director = new AssembleDirector(concreteBuilder);
@@ -137,7 +150,7 @@ public class Initialization implements ApplicationListener<ContextRefreshedEvent
                 assembleProc.run();
             }
         });
-        LOGGER.info("Initialization and migration done."); //$NON-NLS-1$
+        LOGGER.info("Initialization done."); //$NON-NLS-1$
         // Initialize autoincrement id generator
         LOGGER.info("Initializing autoincrement id generator..."); //$NON-NLS-1$
         SecurityConfig.invokeSynchronousPrivateInternal(new Runnable() {
@@ -218,5 +231,67 @@ public class Initialization implements ApplicationListener<ContextRefreshedEvent
     @Override
     public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
         this.applicationEventPublisher = applicationEventPublisher;
+    }
+
+    /**
+     * Returns the previously run Core Configuration
+     * 
+     * @return a {@link ConfigurationInfoPOJO} cntainin the core Configuration
+     */
+    private static ConfigurationInfoPOJO getPreviousCoreConfigurationInfo(ConfigurationInfo ctrl) throws XtentisException {
+        ConfigurationInfoPOJO coreConfigurationInfo = ctrl.existsConfigurationInfo(new ConfigurationInfoPOJOPK("Core")); //$NON-NLS-1$
+        if (coreConfigurationInfo == null) {
+            coreConfigurationInfo = new ConfigurationInfoPOJO("Core"); //$NON-NLS-1$
+            coreConfigurationInfo.setMajor(-1);
+            coreConfigurationInfo.setMinor(0);
+            coreConfigurationInfo.setRevision(0);
+            coreConfigurationInfo.setReleaseNote(""); //$NON-NLS-1$
+            try {
+                Properties properties = MDMConfiguration.getConfiguration(true);
+                Set<Object> keys = properties.keySet();
+                for (Object key1 : keys) {
+                    String key = (String) key1;
+                    coreConfigurationInfo.setProperty(key, properties.getProperty(key));
+                }
+            } catch (Exception e) {
+                String err = "Unable to read mdm.conf and assign the properties to the core" + e.getClass().getName() + ": " //$NON-NLS-1$ //$NON-NLS-2$
+                        + e.getMessage();
+                LOGGER.error(err, e);
+                throw new XtentisException(err);
+            }
+        }
+        return coreConfigurationInfo;
+    }
+
+    private void checkProductVersion() {
+        ConfigurationInfo ctrl = Util.getConfigurationInfoCtrlLocal();
+        ConfigurationInfoPOJO previousCoreConf = null;
+        try {
+            previousCoreConf = getPreviousCoreConfigurationInfo(ctrl);
+        } catch (XtentisException e1) {
+            throw new IllegalStateException(e1.getMessage());
+        }
+        Version thisVersion = Version.getVersion(ConfigurationInfo.class);
+        if (previousCoreConf.getMajor() != -1) {
+            LOGGER.info("Version in system db is " + previousCoreConf.getVersionString() + "..."); //$NON-NLS-1$//$NON-NLS-2$
+            LOGGER.info("The product version is " + thisVersion.toString() + "..."); //$NON-NLS-1$ //$NON-NLS-2$
+            if (previousCoreConf.getMajor() != thisVersion.getMajor() || previousCoreConf.getMinor() != thisVersion.getMinor()) {
+                LOGGER.error("Use dbmigration tool is mandatory for a version upgrade."); //$NON-NLS-1$
+                throw new IllegalStateException("Version in system db doesn't match the current product version."); //$NON-NLS-1$
+            }
+        } else {
+            // update saved core conf
+            previousCoreConf.setMajor(thisVersion.getMajor());
+            previousCoreConf.setMinor(thisVersion.getMinor());
+            previousCoreConf.setRevision(thisVersion.getRevision());
+            previousCoreConf.setBuild(thisVersion.getBuild());
+            previousCoreConf.setReleaseNote(thisVersion.getDescription());
+            previousCoreConf.setDate(thisVersion.getDate());
+            try {
+                ctrl.putConfigurationInfo(previousCoreConf);
+            } catch (XtentisException e) {
+                LOGGER.error("Could not save configuration.", e); //$NON-NLS-1$
+            }
+        }
     }
 }

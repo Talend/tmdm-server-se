@@ -18,15 +18,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.talend.mdm.commmon.util.core.MDMConfiguration;
-
 import com.amalto.core.objects.configurationinfo.assemble.AssembleConcreteBuilder;
 import com.amalto.core.objects.configurationinfo.assemble.AssembleDirector;
 import com.amalto.core.objects.configurationinfo.assemble.AssembleProc;
 import com.amalto.core.server.ServerContext;
 import com.amalto.core.server.StorageAdmin;
 import com.amalto.core.storage.Storage;
-import com.amalto.core.util.Util;
 
 @SuppressWarnings("nls")
 public class RunServlet extends HttpServlet {
@@ -59,8 +56,6 @@ public class RunServlet extends HttpServlet {
                 director.constructCleanPart();
                 AssembleProc assembleProc = concreteBuilder.getAssembleProc();
 
-                Util.getConfigurationInfoCtrlLocal().autoUpgradeInBackground(assembleProc);
-
             } else if ("init".equals(action)) {
                 writer.write("<p><b>Initialize the clusters and build-in data</b><br/>"
                         + "Check server output to determine when init is completed</b></p>");
@@ -69,20 +64,6 @@ public class RunServlet extends HttpServlet {
                 final AssembleDirector director = new AssembleDirector(concreteBuilder);
                 director.constructInitPart();
                 AssembleProc assembleProc = concreteBuilder.getAssembleProc();
-
-                Util.getConfigurationInfoCtrlLocal().autoUpgradeInBackground(assembleProc);
-
-            } else if ("migrate".equals(action)) {
-                MDMConfiguration.getConfiguration(true);
-                writer.write("<p><b>Migrate data to the new revision</b><br/>"
-                        + "Check server output to determine when migrate is completed</b></p>");
-
-                final AssembleConcreteBuilder concreteBuilder = new AssembleConcreteBuilder();
-                final AssembleDirector director = new AssembleDirector(concreteBuilder);
-                director.constructMigratePart();
-                AssembleProc assembleProc = concreteBuilder.getAssembleProc();
-
-                Util.getConfigurationInfoCtrlLocal().autoUpgradeInBackground(assembleProc);
 
             } else if ("reindex".equals(action)) {
                 String container = req.getParameter("container");

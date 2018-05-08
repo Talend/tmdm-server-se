@@ -32,7 +32,6 @@ public class AssembleDirector {
 	public void constructAll() {
 		fBuilder.buildPartCleanJob();
 		fBuilder.buildPartInitData();
-		fBuilder.buildPartMigrateVersion();
 		fBuilder.buildPartStartEngine();
 		fBuilder.buildStartService();
 		fBuilder.buildInitJobox();
@@ -45,10 +44,6 @@ public class AssembleDirector {
 	
 	public void constructInitPart() {
 		fBuilder.buildPartInitData();
-	}
-	
-	public void constructMigratePart() {
-		fBuilder.buildPartMigrateVersion();
 	}
 
 }

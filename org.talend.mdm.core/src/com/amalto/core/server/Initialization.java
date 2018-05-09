@@ -138,7 +138,7 @@ public class Initialization implements ApplicationListener<ContextRefreshedEvent
         });
 
         // Initialize
-        LOGGER.info("Initialization and migration of system database..."); //$NON-NLS-1$
+        LOGGER.info("Initialization of system database..."); //$NON-NLS-1$
         AssembleConcreteBuilder concreteBuilder = new AssembleConcreteBuilder();
         AssembleDirector director = new AssembleDirector(concreteBuilder);
         director.constructAll();

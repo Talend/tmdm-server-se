@@ -1452,6 +1452,96 @@ public class CompareTest extends TestCase {
         assertEquals(33, sort.get(ImpactAnalyzer.Impact.LOW).size());
     }
 
+    public void test32_1() throws Exception {
+        /*
+         * Entity                                                                 Entity
+         *   |__id (SimpleField) (1-1)                                              |__id (SimpleField) (1-1)
+         *   |__aa-non-anonymous (ComplexType) (0-1)                                   |__aa-non-anonymous (ComplexType) (0-1)
+         *           |__aa-sub (SimpleField) (1-1)                                            |__aa-sub (SimpleField) (1-1)
+         *           |__bb-anonymous (ComplexType) (1-1)                                      |__bb-anonymous (ComplexType) (1-1)
+         *                  |__bb-anonymous (SimpleField) (1-1)                                        |__bb-anonymous (SimpleField) (1-1)
+         *                                                                             |__do-anonymous (ComplexType) (0-1)
+         *                                                                                    |__do-sub (SimpleField) (1-1)
+        */
+
+        MetadataRepository original = new MetadataRepository();
+        original.load(CompareTest.class.getResourceAsStream("schema32_1.xsd")); //$NON-NLS-1$
+        original = original.copy();
+        MetadataRepository updated2 = new MetadataRepository();
+        updated2.load(CompareTest.class.getResourceAsStream("schema32_2.xsd")); //$NON-NLS-1$
+        Compare.DiffResults diffResults = Compare.compare(original, updated2);
+        assertEquals(3, diffResults.getActions().size());
+        assertEquals(0, diffResults.getModifyChanges().size());
+        assertEquals(0, diffResults.getRemoveChanges().size());
+        assertEquals(3, diffResults.getAddChanges().size());
+
+        ImpactAnalyzer analyzer = new HibernateStorageImpactAnalyzer();
+        Map<ImpactAnalyzer.Impact, List<Change>> sort = analyzer.analyzeImpacts(diffResults);
+        assertEquals(0, sort.get(ImpactAnalyzer.Impact.HIGH).size());
+        assertEquals(0, sort.get(ImpactAnalyzer.Impact.MEDIUM).size());
+        assertEquals(3, sort.get(ImpactAnalyzer.Impact.LOW).size());
+    }
+
+    public void test32_2() throws Exception {
+        /*
+         * Entity                                                                 Entity
+         *   |__id (SimpleField) (1-1)                                              |__id (SimpleField) (1-1)
+         *   |__aa-anonymous (ComplexType) (0-1)                                    |__aa-anonymous (ComplexType) (0-1)
+         *           |__aa-sub (SimpleField) (1-1)                                            |__aa-sub (SimpleField) (1-1)
+         *           |__bb-anonymous (ComplexType) (1-1)                                      |__bb-anonymous (ComplexType) (1-1)
+         *                  |__bb-anonymous (SimpleField) (1-1)                                        |__bb-anonymous (SimpleField) (1-1)
+         *                                                                          |__do-anonymous (ComplexType) (0-1)
+         *                                                                                    |__do-sub (SimpleField) (1-1)
+        */
+
+        MetadataRepository original = new MetadataRepository();
+        original.load(CompareTest.class.getResourceAsStream("schema32_3.xsd")); //$NON-NLS-1$
+        original = original.copy();
+        MetadataRepository updated2 = new MetadataRepository();
+        updated2.load(CompareTest.class.getResourceAsStream("schema32_4.xsd")); //$NON-NLS-1$
+        Compare.DiffResults diffResults = Compare.compare(original, updated2);
+        assertEquals(3, diffResults.getActions().size());
+        assertEquals(0, diffResults.getModifyChanges().size());
+        assertEquals(0, diffResults.getRemoveChanges().size());
+        assertEquals(3, diffResults.getAddChanges().size());
+
+        ImpactAnalyzer analyzer = new HibernateStorageImpactAnalyzer();
+        Map<ImpactAnalyzer.Impact, List<Change>> sort = analyzer.analyzeImpacts(diffResults);
+        assertEquals(0, sort.get(ImpactAnalyzer.Impact.HIGH).size());
+        assertEquals(0, sort.get(ImpactAnalyzer.Impact.MEDIUM).size());
+        assertEquals(3, sort.get(ImpactAnalyzer.Impact.LOW).size());
+    }
+
+    public void test32_3() throws Exception {
+        /*
+         * Entity                                                                 Entity
+         *   |__id (SimpleField) (1-1)                                              |__id (SimpleField) (1-1)
+         *   |__aa-anonymous (ComplexType) (1-1)                                    |__aa-anonymous (ComplexType) (1-1)
+         *           |__aa-sub (SimpleField) (1-1)                                            |__aa-sub (SimpleField) (1-1)
+         *           |__bb-anonymous (ComplexType) (1-1)                                      |__bb-anonymous (ComplexType) (1-1)
+         *                  |__bb-anonymous (SimpleField) (1-1)                                        |__bb-anonymous (SimpleField) (1-1)
+         *                                                                          |__do-anonymous (ComplexType) (0-1)
+         *                                                                                    |__do-sub (SimpleField) (1-1)
+        */
+
+        MetadataRepository original = new MetadataRepository();
+        original.load(CompareTest.class.getResourceAsStream("schema32_5.xsd")); //$NON-NLS-1$
+        original = original.copy();
+        MetadataRepository updated2 = new MetadataRepository();
+        updated2.load(CompareTest.class.getResourceAsStream("schema32_6.xsd")); //$NON-NLS-1$
+        Compare.DiffResults diffResults = Compare.compare(original, updated2);
+        assertEquals(3, diffResults.getActions().size());
+        assertEquals(0, diffResults.getModifyChanges().size());
+        assertEquals(0, diffResults.getRemoveChanges().size());
+        assertEquals(3, diffResults.getAddChanges().size());
+
+        ImpactAnalyzer analyzer = new HibernateStorageImpactAnalyzer();
+        Map<ImpactAnalyzer.Impact, List<Change>> sort = analyzer.analyzeImpacts(diffResults);
+        assertEquals(0, sort.get(ImpactAnalyzer.Impact.HIGH).size());
+        assertEquals(0, sort.get(ImpactAnalyzer.Impact.MEDIUM).size());
+        assertEquals(3, sort.get(ImpactAnalyzer.Impact.LOW).size());
+    }
+
     @SuppressWarnings("rawtypes")
     private ClassRepository buildRepository() {
         ClassRepository repository = new ClassRepository();

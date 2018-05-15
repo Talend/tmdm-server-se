@@ -210,14 +210,30 @@ public class LiquibaseSchemaAdapter  {
                 String tableName = getTableName(field);
                 String columnName = getColumnName(field);
 
-                if (element instanceof ReferenceFieldMetadata && !dataSource.getDatabaseName().endsWith("_STAGING")) {
+                // Need remove the FK constraint first before remove a reference field.
+                // FK constraint only exists in master DB.
+                boolean isStaging;
+                DataSourceDialect dialect = dataSource.getDialectName();
+                if (dialect == DataSourceDialect.ORACLE_10G || dialect == DataSourceDialect.DB2) {
+                    isStaging = dataSource.getAdvancedProperties().get("hibernate.default_schema").toLowerCase() //$NON-NLS-1$
+                            .contains("staging"); //$NON-NLS-1$
+                } else if (dialect == DataSourceDialect.H2) {
+                    isStaging = dataSource.getConnectionURL().toUpperCase().contains("_STAGING"); //$NON-NLS-1$
+                } else {
+                    isStaging = dataSource.getDatabaseName().toUpperCase().endsWith("_STAGING"); //$NON-NLS-1$
+                }
+
+                if (element instanceof ReferenceFieldMetadata && !isStaging) {
                     ReferenceFieldMetadata referenceField = (ReferenceFieldMetadata) element;
                     String fkName = tableResolver.getFkConstraintName(referenceField);
                     if (fkName.isEmpty()) {
                         List<Column> columns = new ArrayList<>();
-                        columns.add(new Column(columnName));
-                        fkName = Constraint.generateName(new ForeignKey().generatedConstraintNamePrefix(), new Table(tableName),
-                                columns);
+                        columns.add(new Column(columnName.toLowerCase()));
+                        fkName = Constraint.generateName(new ForeignKey().generatedConstraintNamePrefix(),
+                                new Table(tableResolver.get(field.getContainingType().getEntity())), columns);
+                        if (dataSource.getDialectName() == DataSourceDialect.POSTGRES) {
+                            fkName = fkName.toLowerCase();
+                        }
                     }
                     List<String> fkList = dropFKMap.get(tableName);
                     if (fkList == null) {

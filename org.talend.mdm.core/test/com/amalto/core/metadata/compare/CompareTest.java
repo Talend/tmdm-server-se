@@ -1488,8 +1488,8 @@ public class CompareTest extends TestCase {
          *   |__id (SimpleField) (1-1)                                              |__id (SimpleField) (1-1)
          *   |__aa-anonymous (ComplexType) (0-1)                                    |__aa-anonymous (ComplexType) (0-1)
          *           |__aa-sub (SimpleField) (1-1)                                            |__aa-sub (SimpleField) (1-1)
-         *           |__bb-anonymous (ComplexType) (1-1)     ======>                             |__bb-anonymous (ComplexType) (1-1)
-         *                  |__bb-sub (SimpleField) (1-1)                                        |__bb-sub (SimpleField) (1-1)
+         *           |__bb-anonymous (ComplexType) (1-1)     ======>                          |__bb-anonymous (ComplexType) (1-1)
+         *                  |__bb-sub (SimpleField) (1-1)                                            |__bb-sub (SimpleField) (1-1)
          *                                                                          |__do-anonymous (ComplexType) (0-1)
          *                                                                                    |__do-sub (SimpleField) (1-1)
         */
@@ -1518,8 +1518,8 @@ public class CompareTest extends TestCase {
          *   |__id (SimpleField) (1-1)                                              |__id (SimpleField) (1-1)
          *   |__aa-anonymous (ComplexType) (1-1)                                    |__aa-anonymous (ComplexType) (1-1)
          *           |__aa-sub (SimpleField) (1-1)                                            |__aa-sub (SimpleField) (1-1)
-         *           |__bb-s (ComplexType) (1-1)              =======>                           |__bb-anonymous (ComplexType) (1-1)
-         *                  |__bb-sub (SimpleField) (1-1)                                        |__bb-sub (SimpleField) (1-1)
+         *           |__bb-anonymous (ComplexType) (1-1)              =======>                |__bb-anonymous (ComplexType) (1-1)
+         *                  |__bb-sub (SimpleField) (1-1)                                         |__bb-sub (SimpleField) (1-1)
          *                                                                          |__do-anonymous (ComplexType) (0-1)
          *                                                                                    |__do-sub (SimpleField) (1-1)
         */

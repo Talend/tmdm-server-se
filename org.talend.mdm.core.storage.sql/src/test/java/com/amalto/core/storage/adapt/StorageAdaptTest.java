@@ -27,8 +27,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import junit.framework.TestCase;
-
 import org.apache.log4j.Logger;
 import org.h2.jdbc.JdbcSQLException;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
@@ -51,6 +49,8 @@ import com.amalto.core.storage.hibernate.LiquibaseSchemaAdapter;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.record.DataRecordReader;
 import com.amalto.core.storage.record.XmlStringDataRecordReader;
+
+import junit.framework.TestCase;
 
 @SuppressWarnings("nls")
 public class StorageAdaptTest extends TestCase {
@@ -1919,7 +1919,8 @@ public class StorageAdaptTest extends TestCase {
         storage.init(dataSource);
         String[] typeNames = { "Person" };
         String[] tables = { "Person" };
-        String[] columns = { "", "X_ID", "X_BB_X_TALEND_ID", "X_EE", "X_UU_X_TALEND_ID", "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" };
+        String[] columns = { "", "X_ID", "X_BB_X_TALEND_ID", "X_EE", "X_UU_X_TALEND_ID", "X_ADDRESS_X_ID", "X_TALEND_TIMESTAMP",
+                "X_TALEND_TASK_ID" };
 
         int[] isNullable = { 0, 0, 0, 0, 0, 0, 1 };
         DataRecordReader<String> factory = new XmlStringDataRecordReader();

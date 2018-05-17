@@ -146,10 +146,10 @@ public class LiquibaseSchemaAdapter  {
     private String getColumnName(FieldMetadata field) {
         String columnName = tableResolver.get(field);
         if (field instanceof ContainedTypeFieldMetadata) {
-            columnName += "_x_talend_id";
+            columnName += "_x_talend_id"; //$NON-NLS-1$
         }
         if (field instanceof ReferenceFieldMetadata) {
-            columnName += "_"+tableResolver.get(((ReferenceFieldMetadata) field).getReferencedField());
+            columnName += "_" + tableResolver.get(((ReferenceFieldMetadata) field).getReferencedField()); //$NON-NLS-1$
         }
         if (dataSource.getDialectName() == DataSourceDialect.ORACLE_10G) {
             columnName = columnName.toUpperCase();

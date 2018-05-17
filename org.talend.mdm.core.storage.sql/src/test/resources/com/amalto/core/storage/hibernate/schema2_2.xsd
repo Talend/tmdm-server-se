@@ -73,15 +73,15 @@
     </xsd:all> 
   </xsd:complexType>  
     <xsd:element name="Address">
-		<xsd:complexType>
-			<xsd:all>
-				<xsd:element name="AddressId" type="xsd:string"/>
-				<xsd:element maxOccurs="1" minOccurs="0" name="name" type="xsd:string"/>
-			</xsd:all>
-		</xsd:complexType>
-		<xsd:unique name="Address">
-			<xsd:selector xpath="."/>
-			<xsd:field xpath="AddressId"/>
-		</xsd:unique>
-	</xsd:element>
+      <xsd:complexType>
+      <xsd:all>
+          <xsd:element name="AddressId" type="xsd:string"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="name" type="xsd:string"/>
+      </xsd:all>
+      </xsd:complexType>
+      <xsd:unique name="Address">
+          <xsd:selector xpath="."/>
+          <xsd:field xpath="AddressId"/>
+      </xsd:unique>
+    </xsd:element>
 </xsd:schema>

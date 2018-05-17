@@ -68,9 +68,11 @@ public class LiquibaseSchemaAdapter  {
 
     private static final String SEPARATOR = "-"; //$NON-NLS-1$
 
-    public static final String DATA_LIQUIBASE_CHANGELOG_PATH = "/data/liquibase-changelog/";
+    public static final String DATA_LIQUIBASE_CHANGELOG_PATH = "/data/liquibase-changelog/"; //$NON-NLS-1$
 
-    public static final String MDM_ROOT = "mdm.root";
+    public static final String MDM_ROOT = "mdm.root"; //$NON-NLS-1$
+
+    public static final String STAGING = "_STAGING"; //$NON-NLS-1$
 
     private static final Logger LOGGER = Logger.getLogger(LiquibaseSchemaAdapter.class);
 
@@ -198,6 +200,17 @@ public class LiquibaseSchemaAdapter  {
     protected List<AbstractChange> analyzeRemoveChange(DiffResults diffResults) {
         List<AbstractChange> changeActionList = new ArrayList<AbstractChange>();
 
+        boolean isStaging;
+        DataSourceDialect dialect = dataSource.getDialectName();
+        if (dialect == DataSourceDialect.ORACLE_10G || dialect == DataSourceDialect.DB2) {
+            isStaging = dataSource.getAdvancedProperties().get("hibernate.default_schema").toUpperCase() //$NON-NLS-1$
+                    .contains(STAGING);
+        } else if (dialect == DataSourceDialect.H2) {
+            isStaging = dataSource.getConnectionURL().toUpperCase().contains(STAGING);
+        } else {
+            isStaging = dataSource.getDatabaseName().toUpperCase().endsWith(STAGING);
+        }
+
         Map<String, List<String>> dropColumnMap = new HashMap<String, List<String>>();
         Map<String, List<String>> dropFKMap = new HashMap<String, List<String>>();
         for (RemoveChange removeAction : diffResults.getRemoveChanges()) {
@@ -212,17 +225,6 @@ public class LiquibaseSchemaAdapter  {
 
                 // Need remove the FK constraint first before remove a reference field.
                 // FK constraint only exists in master DB.
-                boolean isStaging;
-                DataSourceDialect dialect = dataSource.getDialectName();
-                if (dialect == DataSourceDialect.ORACLE_10G || dialect == DataSourceDialect.DB2) {
-                    isStaging = dataSource.getAdvancedProperties().get("hibernate.default_schema").toLowerCase() //$NON-NLS-1$
-                            .contains("staging"); //$NON-NLS-1$
-                } else if (dialect == DataSourceDialect.H2) {
-                    isStaging = dataSource.getConnectionURL().toUpperCase().contains("_STAGING"); //$NON-NLS-1$
-                } else {
-                    isStaging = dataSource.getDatabaseName().toUpperCase().endsWith("_STAGING"); //$NON-NLS-1$
-                }
-
                 if (element instanceof ReferenceFieldMetadata && !isStaging) {
                     ReferenceFieldMetadata referenceField = (ReferenceFieldMetadata) element;
                     String fkName = tableResolver.getFkConstraintName(referenceField);
@@ -231,7 +233,7 @@ public class LiquibaseSchemaAdapter  {
                         columns.add(new Column(columnName.toLowerCase()));
                         fkName = Constraint.generateName(new ForeignKey().generatedConstraintNamePrefix(),
                                 new Table(tableResolver.get(field.getContainingType().getEntity())), columns);
-                        if (dataSource.getDialectName() == DataSourceDialect.POSTGRES) {
+                        if (dialect == DataSourceDialect.POSTGRES) {
                             fkName = fkName.toLowerCase();
                         }
                     }

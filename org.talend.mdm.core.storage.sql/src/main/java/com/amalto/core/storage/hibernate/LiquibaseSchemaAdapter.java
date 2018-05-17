@@ -72,8 +72,6 @@ public class LiquibaseSchemaAdapter  {
 
     public static final String MDM_ROOT = "mdm.root"; //$NON-NLS-1$
 
-    public static final String STAGING = "_STAGING"; //$NON-NLS-1$
-
     private static final Logger LOGGER = Logger.getLogger(LiquibaseSchemaAdapter.class);
 
     private TableResolver tableResolver;
@@ -200,17 +198,6 @@ public class LiquibaseSchemaAdapter  {
     protected List<AbstractChange> analyzeRemoveChange(DiffResults diffResults) {
         List<AbstractChange> changeActionList = new ArrayList<AbstractChange>();
 
-        boolean isStaging;
-        DataSourceDialect dialect = dataSource.getDialectName();
-        if (dialect == DataSourceDialect.ORACLE_10G || dialect == DataSourceDialect.DB2) {
-            isStaging = dataSource.getAdvancedProperties().get("hibernate.default_schema").toUpperCase() //$NON-NLS-1$
-                    .contains(STAGING);
-        } else if (dialect == DataSourceDialect.H2) {
-            isStaging = dataSource.getConnectionURL().toUpperCase().contains(STAGING);
-        } else {
-            isStaging = dataSource.getDatabaseName().toUpperCase().endsWith(STAGING);
-        }
-
         Map<String, List<String>> dropColumnMap = new HashMap<String, List<String>>();
         Map<String, List<String>> dropFKMap = new HashMap<String, List<String>>();
         for (RemoveChange removeAction : diffResults.getRemoveChanges()) {
@@ -225,7 +212,7 @@ public class LiquibaseSchemaAdapter  {
 
                 // Need remove the FK constraint first before remove a reference field.
                 // FK constraint only exists in master DB.
-                if (element instanceof ReferenceFieldMetadata && !isStaging) {
+                if (element instanceof ReferenceFieldMetadata && storageType == StorageType.MASTER) {
                     ReferenceFieldMetadata referenceField = (ReferenceFieldMetadata) element;
                     String fkName = tableResolver.getFkConstraintName(referenceField);
                     if (fkName.isEmpty()) {
@@ -233,7 +220,7 @@ public class LiquibaseSchemaAdapter  {
                         columns.add(new Column(columnName.toLowerCase()));
                         fkName = Constraint.generateName(new ForeignKey().generatedConstraintNamePrefix(),
                                 new Table(tableResolver.get(field.getContainingType().getEntity())), columns);
-                        if (dialect == DataSourceDialect.POSTGRES) {
+                        if (dataSource.getDialectName() == DataSourceDialect.POSTGRES) {
                             fkName = fkName.toLowerCase();
                         }
                     }

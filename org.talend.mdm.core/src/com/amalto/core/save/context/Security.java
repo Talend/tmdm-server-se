@@ -11,21 +11,22 @@
 
 package com.amalto.core.save.context;
 
-import com.amalto.core.history.Action;
-import com.amalto.core.history.MutableDocument;
-import com.amalto.core.save.DocumentSaverContext;
-import com.amalto.core.save.SaverSession;
-import com.amalto.core.save.UserAction;
-import org.apache.log4j.Logger;
-import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
-import org.talend.mdm.commmon.util.core.ICoreConstants;
-import org.talend.mdm.commmon.util.core.MDMConfiguration;
-
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
+import org.apache.log4j.Logger;
+import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
+import org.talend.mdm.commmon.util.core.ICoreConstants;
+import org.talend.mdm.commmon.util.core.MDMConfiguration;
+
+import com.amalto.core.history.Action;
+import com.amalto.core.history.MutableDocument;
+import com.amalto.core.save.DocumentSaverContext;
+import com.amalto.core.save.SaverSession;
+import com.amalto.core.save.UserAction;
 
 class Security implements DocumentSaver {
 
@@ -128,6 +129,10 @@ class Security implements DocumentSaver {
 
     public String getBeforeSavingMessage() {
         return next.getBeforeSavingMessage();
+    }
+
+    public int getBeforeSavingMessageType() {
+        return next.getBeforeSavingMessageType();
     }
 
     // Special action implementation for reverting an underlying action when perform() is called.

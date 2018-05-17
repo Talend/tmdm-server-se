@@ -241,4 +241,9 @@ class GenerateActions implements DocumentSaver {
         return next.getBeforeSavingMessage();
     }
 
+    @Override
+    public int getBeforeSavingMessageType() {
+        return next.getBeforeSavingMessageType();
+    }
+
 }

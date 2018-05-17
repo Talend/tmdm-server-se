@@ -13,6 +13,10 @@ package com.amalto.core.save.context;
 import java.io.StringReader;
 import java.util.Collection;
 
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
+
 import org.apache.commons.lang.StringUtils;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.util.core.EUUIDCustomType;
@@ -26,6 +30,7 @@ import org.xml.sax.InputSource;
 import com.amalto.core.history.MutableDocument;
 import com.amalto.core.save.DOMDocument;
 import com.amalto.core.save.DocumentSaverContext;
+import com.amalto.core.save.SaverHelper;
 import com.amalto.core.save.SaverSession;
 import com.amalto.core.save.UserAction;
 import com.amalto.core.schema.validation.SkipAttributeDocumentBuilder;
@@ -34,17 +39,21 @@ import com.amalto.core.util.BeforeSavingFormatException;
 import com.amalto.core.util.OutputReport;
 import com.amalto.core.util.Util;
 
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathFactory;
-
 public class BeforeSaving implements DocumentSaver {
 
     private static final XPath XPATH = XPathFactory.newInstance().newXPath();
 
+    private final String TYPE_INFO = "info"; //$NON-NLS-1$
+
+    private final String TYPE_WARN = "warning"; //$NON-NLS-1$
+
+    private final String TYPE_ERROR = "error"; //$NON-NLS-1$
+
     private DocumentSaver next;
 
     private String message = StringUtils.EMPTY;
+
+    private int messageType;
 
     BeforeSaving(DocumentSaver next) {
         this.next = next;
@@ -84,7 +93,17 @@ public class BeforeSaving implements DocumentSaver {
                     }
                 }
 
-                if (!"info".equals(errorCode)) { //$NON-NLS-1$
+                if (TYPE_INFO.equals(errorCode)) {
+                    messageType = MESSAGE_TYPE_INFO;
+                } else if (TYPE_WARN.equals(errorCode)) {
+                    if (SaverHelper.ApproveWarnBeforeSaveing.get()) {
+                        messageType = MESSAGE_TYPE_INFO;
+                    } else {
+                        messageType = MESSAGE_TYPE_WARNING;
+                        return;
+                    }
+                    SaverHelper.ApproveWarnBeforeSaveing.remove();
+                } else if (TYPE_ERROR.equals(errorCode)) {
                     throw new BeforeSavingErrorException(message);
                 }
 
@@ -157,6 +176,10 @@ public class BeforeSaving implements DocumentSaver {
         return message;
     }
     
+    public int getBeforeSavingMessageType() {
+        return messageType;
+    }
+    
     public boolean validateFormat(String msg) {
         NodeList nodeList;
         try {
@@ -177,7 +200,8 @@ public class BeforeSaving implements DocumentSaver {
         if (attribute == null) {
             return false;
         }
-        if (!"info".equalsIgnoreCase(attribute.getNodeValue()) && !"error".equalsIgnoreCase(attribute.getNodeValue())) { //$NON-NLS-1$ //$NON-NLS-2$
+        if (!(TYPE_INFO.equalsIgnoreCase(attribute.getNodeValue()) || TYPE_WARN.equalsIgnoreCase(attribute.getNodeValue())
+                || TYPE_ERROR.equalsIgnoreCase(attribute.getNodeValue()))) {
             return false;
         }
         NodeList messageNodeList = reportNode.getChildNodes();

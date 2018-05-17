@@ -11,10 +11,11 @@
 
 package com.amalto.core.save.context;
 
-import com.amalto.core.save.DocumentSaverContext;
-import com.amalto.core.save.SaverSession;
 import org.apache.commons.lang.StringUtils;
 import org.talend.mdm.commmon.util.webapp.XSystemObjects;
+
+import com.amalto.core.save.DocumentSaverContext;
+import com.amalto.core.save.SaverSession;
 
 public class AutoCommit implements DocumentSaver {
 
@@ -58,5 +59,10 @@ public class AutoCommit implements DocumentSaver {
     @Override
     public String getBeforeSavingMessage() {
         return StringUtils.EMPTY;
+    }
+
+    @Override
+    public int getBeforeSavingMessageType() {
+        return MESSAGE_TYPE_INFO;
     }
 }

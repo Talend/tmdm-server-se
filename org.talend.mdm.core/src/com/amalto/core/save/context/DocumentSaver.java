@@ -19,6 +19,10 @@ import com.amalto.core.save.SaverSession;
  */
 public interface DocumentSaver {
 
+    public static final int MESSAGE_TYPE_INFO = 0;
+
+    public static final int MESSAGE_TYPE_WARNING = 1;
+
     void save(SaverSession session, DocumentSaverContext context);
 
     String[] getSavedId();
@@ -26,4 +30,6 @@ public interface DocumentSaver {
     String getSavedConceptName();
 
     String getBeforeSavingMessage();
+
+    int getBeforeSavingMessageType();
 }

@@ -11,14 +11,15 @@
 
 package com.amalto.core.save.context;
 
+import java.lang.reflect.Constructor;
+
+import org.w3c.dom.Element;
+
 import com.amalto.core.save.DocumentSaverContext;
 import com.amalto.core.save.SaverSession;
 import com.amalto.core.schema.validation.Validator;
 import com.amalto.core.schema.validation.XmlSchemaValidator;
 import com.amalto.core.util.ValidateException;
-import org.w3c.dom.Element;
-
-import java.lang.reflect.Constructor;
 
 class Validation implements DocumentSaver {
 
@@ -73,6 +74,10 @@ class Validation implements DocumentSaver {
 
     public String getBeforeSavingMessage() {
         return next.getBeforeSavingMessage();
+    }
+
+    public int getBeforeSavingMessageType() {
+        return next.getBeforeSavingMessageType();
     }
 
 }

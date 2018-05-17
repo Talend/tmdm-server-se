@@ -82,4 +82,8 @@ class Delete implements DocumentSaver {
     public String getBeforeSavingMessage() {
         return StringUtils.EMPTY;
     }
+
+    public int getBeforeSavingMessageType() {
+        return MESSAGE_TYPE_INFO;
+    }
 }

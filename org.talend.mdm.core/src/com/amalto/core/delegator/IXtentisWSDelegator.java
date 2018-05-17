@@ -1014,8 +1014,8 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
                 try {
                     saver = SaverHelper.saveItemWithReport(wsPutItem, session, dataClusterName, dataModelName, source,
                             item.getInvokeBeforeSaving());
-                    // Expected (legacy) behavior: set the before saving message as source.
-                    item.setSource(saver.getBeforeSavingMessage());
+                    item.setMessageType(saver.getBeforeSavingMessageType());
+                    item.setMessage(saver.getBeforeSavingMessage());
                 } catch (SaveException e) {
                     try {
                         session.abort();
@@ -1059,10 +1059,11 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
             SaverSession session = SaverSession.newSession();
             DocumentSaver saver;
             try {
+                SaverHelper.ApproveWarnBeforeSaveing.set(wsPutItemWithReport.isApproveWarnBeforeSaving());
                 saver = SaverHelper.saveItemWithReport(wsPutItem, session, dataClusterName, dataModelName,
                         wsPutItemWithReport.getSource(), wsPutItemWithReport.getInvokeBeforeSaving());
-                // Expected (legacy) behavior: set the before saving message as source.
-                wsPutItemWithReport.setSource(saver.getBeforeSavingMessage());
+                wsPutItemWithReport.setMessageType(saver.getBeforeSavingMessageType());
+                wsPutItemWithReport.setMessage(saver.getBeforeSavingMessage());
             } catch (SaveException e) {
                 try {
                     session.abort();
@@ -1110,8 +1111,8 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
             try {
                 saver = SaverHelper.saveItemWithReport(wsPutItem, session, dataClusterName, dataModelName,
                         wsPutItemWithReport.getSource(), wsPutItemWithReport.getInvokeBeforeSaving());
-                // Expected (legacy) behavior: set the before saving message as source.
-                wsPutItemWithReport.setSource(saver.getBeforeSavingMessage());
+                wsPutItemWithReport.setMessageType(saver.getBeforeSavingMessageType());
+                wsPutItemWithReport.setMessage(saver.getBeforeSavingMessage());
                 // Cause items being saved to be committed to database.
                 session.end();
             } catch (SaveException e) {

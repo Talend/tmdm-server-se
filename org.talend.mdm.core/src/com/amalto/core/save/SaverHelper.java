@@ -11,14 +11,15 @@
 
 package com.amalto.core.save;
 
+import java.io.ByteArrayInputStream;
+import java.io.UnsupportedEncodingException;
+
+import org.talend.mdm.commmon.util.webapp.XSystemObjects;
+
 import com.amalto.core.save.context.DocumentSaver;
 import com.amalto.core.save.context.SaverContextFactory;
 import com.amalto.core.webservice.WSPartialPutItem;
 import com.amalto.core.webservice.WSPutItem;
-import org.talend.mdm.commmon.util.webapp.XSystemObjects;
-
-import java.io.ByteArrayInputStream;
-import java.io.UnsupportedEncodingException;
 
 public class SaverHelper {
     public static DocumentSaver saveItem(WSPutItem wsPutItem,
@@ -90,5 +91,30 @@ public class SaverHelper {
         DocumentSaver saver = context.createSaver();
         saver.save(session, context);
         return saver;
+    }
+
+    public static class ApproveWarnBeforeSaveing {
+
+        private static ThreadLocal<Boolean> threadLocal = new ThreadLocal<Boolean>() {
+
+            public Boolean initialValue() {
+                return Boolean.FALSE;
+            }
+        };
+
+        private ApproveWarnBeforeSaveing() {
+        }
+
+        public static void set(boolean value) {
+            threadLocal.set(value);
+        }
+
+        public static boolean get() {
+            return threadLocal.get();
+        }
+
+        public static void remove() {
+            threadLocal.remove();
+        }
     }
 }

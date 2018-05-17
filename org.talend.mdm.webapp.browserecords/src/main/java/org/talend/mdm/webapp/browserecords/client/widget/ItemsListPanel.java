@@ -45,6 +45,7 @@ import org.talend.mdm.webapp.browserecords.client.mvc.BrowseRecordsView;
 import org.talend.mdm.webapp.browserecords.client.resources.icon.Icons;
 import org.talend.mdm.webapp.browserecords.client.util.DateUtil;
 import org.talend.mdm.webapp.browserecords.client.util.Locale;
+import org.talend.mdm.webapp.browserecords.client.util.MessageUtil;
 import org.talend.mdm.webapp.browserecords.client.util.UserSession;
 import org.talend.mdm.webapp.browserecords.client.widget.treedetail.ForeignKeyTreeDetail;
 import org.talend.mdm.webapp.browserecords.client.widget.treedetail.TreeDetailUtil;
@@ -194,11 +195,11 @@ public class ItemsListPanel extends ContentPanel {
     };
 
     private native String getDataContainer(JavaScriptObject stagingAreaConfig)/*-{
-		return stagingAreaConfig.dataContainer;
+        return stagingAreaConfig.dataContainer;
     }-*/;
 
     private native String getCriteria(JavaScriptObject stagingAreaConfig)/*-{
-		return stagingAreaConfig.criteria;
+        return stagingAreaConfig.criteria;
     }-*/;
 
     private RecordsPagingConfig copyPgLoad(PagingLoadConfig pconfig) {
@@ -567,14 +568,12 @@ public class ItemsListPanel extends ContentPanel {
                                 if (record != null) {
                                     record.commit(false);
                                 }
-                                final MessageBox msgBox = new MessageBox();
-                                String msg = MultilanguageMessageParser.pickOutISOMessage(result.getDescription());
+                                final MessageBox msgBox = MessageUtil.generateMessageBox(result);
+                                String message = msgBox.getMessage();
                                 if (result.getStatus() == ItemResult.FAILURE) {
-                                    msgBox.setTitle(MessagesFactory.getMessages().error_title());
-                                    msgBox.setButtons(MessageBox.OK);
-                                    msgBox.setIcon(MessageBox.ERROR);
-                                    msgBox.setMessage(msg == null || msg.isEmpty() ? MessagesFactory.getMessages()
-                                            .output_report_null() : msg);
+                                    if (message == null || "".equals(message)) { //$NON-NLS-1$
+                                        msgBox.setMessage(MessagesFactory.getMessages().output_report_null());
+                                    }
                                     msgBox.addCallback(new Listener<MessageBoxEvent>() {
 
                                         @Override
@@ -584,11 +583,10 @@ public class ItemsListPanel extends ContentPanel {
                                     });
                                     msgBox.show();
                                 } else {
-                                    msgBox.setTitle(MessagesFactory.getMessages().info_title());
                                     msgBox.setButtons(""); //$NON-NLS-1$
-                                    msgBox.setIcon(MessageBox.INFO);
-                                    msgBox.setMessage(msg == null || msg.isEmpty() ? MessagesFactory.getMessages().save_success()
-                                            : msg);
+                                    if (message == null || "".equals(message)) { //$NON-NLS-1$
+                                        msgBox.setMessage(MessagesFactory.getMessages().save_success());
+                                    }
                                     msgBox.show();
                                     Timer timer = new Timer() {
 

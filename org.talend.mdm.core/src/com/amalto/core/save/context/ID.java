@@ -11,20 +11,21 @@
 
 package com.amalto.core.save.context;
 
-import com.amalto.core.history.MutableDocument;
-import com.amalto.core.history.accessor.Accessor;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
+import org.talend.mdm.commmon.util.core.EUUIDCustomType;
+
+import com.amalto.core.history.MutableDocument;
+import com.amalto.core.history.accessor.Accessor;
 import com.amalto.core.save.DOMDocument;
 import com.amalto.core.save.DocumentSaverContext;
 import com.amalto.core.save.SaverSession;
 import com.amalto.core.save.UserAction;
-import org.talend.mdm.commmon.util.core.EUUIDCustomType;
-
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
 
 class ID implements DocumentSaver {
 
@@ -134,5 +135,9 @@ class ID implements DocumentSaver {
 
     public String getBeforeSavingMessage() {
         return next.getBeforeSavingMessage();
+    }
+
+    public int getBeforeSavingMessageType() {
+        return next.getBeforeSavingMessageType();
     }
 }

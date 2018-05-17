@@ -106,7 +106,7 @@ public class ForeignKeyUtil {
         if (validateSuccess) {
             BrowseRecordsServiceAsync service = (BrowseRecordsServiceAsync) Registry.get(BrowseRecords.BROWSERECORDS_SERVICE);
             service.saveItem(viewBean, itemBean.getIds(),
-                    (new ItemTreeHandler(model, viewBean, ItemTreeHandlingStatus.ToSave)).serializeItem(), isCreate,
+                    (new ItemTreeHandler(model, viewBean, ItemTreeHandlingStatus.ToSave)).serializeItem(), isCreate, false,
                     Locale.getLanguage(), new SessionAwareAsyncCallback<ItemResult>() {
 
                         @Override

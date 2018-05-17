@@ -53,8 +53,6 @@ public interface BrowseRecordsServiceAsync {
     void queryItemBeanById(String dataClusterPK, ViewBean viewBean, EntityModel entityModel, String id, String language,
             AsyncCallback<ItemBean> callback);
 
-    void saveItemBean(ItemBean item, String language, AsyncCallback<String> callback);
-
     void bulkUpdateItem(String baseUrl, String concept, String xml, String language, AsyncCallback<String> callback);
 
     void getItem(ItemBean itemBean, String viewPK, EntityModel entityModel, boolean isStaging, String language,
@@ -100,9 +98,12 @@ public interface BrowseRecordsServiceAsync {
 
     void getMandatoryFieldList(String tableName, AsyncCallback<List<String>> callback);
 
-    void saveItem(ViewBean viewBean, String ids, String xml, boolean isCreate, String language, AsyncCallback<ItemResult> callback);
+    void saveItem(ViewBean viewBean, String ids, String xml, boolean isCreate, boolean isApproveWarnBeforeSaveing,
+            String language,
+            AsyncCallback<ItemResult> callback);
 
-    void saveItem(String concept, String ids, String xml, boolean isCreate, String language, AsyncCallback<ItemResult> callback);
+    void saveItem(String concept, String ids, String xml, boolean isCreate, boolean isApproveWarnBeforeSaveing, String language,
+            AsyncCallback<ItemResult> callback);
 
     void getColumnTreeLayout(String concept, String customFormName, ViewBean vBean,
             AsyncCallback<ColumnTreeLayoutModel> callback);

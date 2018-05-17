@@ -27,33 +27,37 @@ public class ItemResult extends BaseModel implements IsSerializable, Serializabl
 
     public static final int UNCHANGED = 2;
 
+    public static final int WARNING = 3;
+
     private int status;
 
     private long insertionTime;
-
-    private String description;
 
     private String returnValue;
 
     public ItemResult() {
     }
 
+    public ItemResult(String key) {
+        setKey(key);
+    }
+
     public ItemResult(int status) {
-        this(status, null);
-    }
-
-    public ItemResult(int status, String description) {
         setStatus(status);
-        setDescription(description);
     }
 
-    public ItemResult(int status, String description, String returnValue) {
-        this(status, description);
+    public ItemResult(int status, String message) {
+        setStatus(status);
+        setMessage(message);
+    }
+
+    public ItemResult(int status, String message, String returnValue) {
+        this(status, message);
         setReturnValue(returnValue);
     }
 
-    public ItemResult(int status, String description, String returnValue, long insertionTime) {
-        this(status, description, returnValue);
+    public ItemResult(int status, String message, String returnValue, long insertionTime) {
+        this(status, message, returnValue);
         setInsertionTime(insertionTime);
     }
 
@@ -63,14 +67,6 @@ public class ItemResult extends BaseModel implements IsSerializable, Serializabl
 
     public int getStatus() {
         return this.status;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getDescription() {
-        return this.description;
     }
 
     public String getReturnValue() {

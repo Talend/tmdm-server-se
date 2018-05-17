@@ -29,6 +29,7 @@ import org.talend.mdm.webapp.browserecords.client.model.ForeignKeyModel;
 import org.talend.mdm.webapp.browserecords.client.model.ItemBean;
 import org.talend.mdm.webapp.browserecords.client.model.ItemNodeModel;
 import org.talend.mdm.webapp.browserecords.client.util.Locale;
+import org.talend.mdm.webapp.browserecords.client.util.MessageUtil;
 import org.talend.mdm.webapp.browserecords.client.util.UserSession;
 import org.talend.mdm.webapp.browserecords.client.widget.BulkUpdatePanel;
 import org.talend.mdm.webapp.browserecords.client.widget.ItemDetailToolBar;
@@ -48,6 +49,7 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.mvc.AppEvent;
 import com.extjs.gxt.ui.client.mvc.Controller;
+import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.core.client.GWT;
 
@@ -142,146 +144,18 @@ public class BrowseRecordsController extends Controller {
         final ItemsDetailPanel itemsDetailPanel = event.getData(BrowseRecordsView.ITEMS_DETAIL_PANEL);
         final MessageBox progressBar = MessageBox.wait(MessagesFactory.getMessages().save_progress_bar_title(), MessagesFactory
                 .getMessages().save_progress_bar_message(), MessagesFactory.getMessages().please_wait());
+        final Boolean isApproveWarnBeforeSaveing = false;
         final BrowseRecordsServiceAsync browseRecordsService;
         if (isStaging) {
             browseRecordsService = ServiceFactory.getInstance().getStagingService();
         } else {
             browseRecordsService = ServiceFactory.getInstance().getMasterService();
         }
-        browseRecordsService.saveItem(viewBean, itemBean.getIds(), (new ItemTreeHandler(model, viewBean, itemBean,
-                ItemTreeHandlingStatus.ToSave)).serializeItem(), isCreate, Locale.getLanguage(),
-                new SessionAwareAsyncCallback<ItemResult>() {
-
-                    @Override
-                    protected void doOnFailure(Throwable caught) {
-                        progressBar.close();
-                        String err = caught.getMessage();
-                        if (err != null) {
-                            MessageBox
-                                    .alert(MessagesFactory.getMessages().error_title(), XmlUtil.transformXmlToString(err), null)
-                                    .setIcon(MessageBox.ERROR);
-                        } else {
-                            super.doOnFailure(caught);
-                        }
-                    }
-
-                    @Override
-                    public void onSuccess(ItemResult result) {
-                        // backend return null value for an update to existing record
-                        // only if save succeeds, update item bean's id and lastUpdateTime
-                        if (result.getReturnValue() != null) {
-                            itemBean.setIds(result.getReturnValue());
-                            itemBean.setLastUpdateTime(result);
-                        }
-                        progressBar.close();
-                        MessageBox msgBox;
-                        if (result.getStatus() == ItemResult.FAILURE) {
-                            MessageBox
-                                    .alert(MessagesFactory.getMessages().error_title(),
-                                            "".equals(MultilanguageMessageParser.pickOutISOMessage(result.getDescription())) ? MessagesFactory.getMessages().output_report_null() : MultilanguageMessageParser.pickOutISOMessage(result.getDescription()), null).setIcon( //$NON-NLS-1$
-                                            MessageBox.ERROR);
-                            return;
-                        }
-                        msgBox = new MessageBox();
-                        msgBox.setTitle(MessagesFactory.getMessages().info_title());
-                        msgBox.setButtons(""); //$NON-NLS-1$
-                        msgBox.setIcon(MessageBox.INFO);
-                        String message = result.getDescription();
-                        if (message != null && !message.isEmpty()) {
-                            msgBox.setMessage(MultilanguageMessageParser.pickOutISOMessage(message));
-                        } else {
-                            msgBox.setMessage(MessagesFactory.getMessages().save_success());
-                        }
-                        msgBox.show();
-                        setTimeout(msgBox, 1000);
-
-                        if (!detailToolBar.isOutMost() && (isClose || isCreate)) {
-                            if (!ItemsListPanel.getInstance().isSaveCurrentChangeBeforeSwitching()) {
-                                if ((ItemsListPanel.getInstance().getCurrentQueryModel() != null
-                                        && ItemsListPanel.getInstance().getCurrentQueryModel().getModel().getConceptName()
-                                                .equals(itemBean.getConcept()) && detailToolBar.getType() == ItemDetailToolBar.TYPE_DEFAULT)
-                                        || isClose) {
-                                    ItemsMainTabPanel.getInstance().remove(ItemsMainTabPanel.getInstance().getSelectedItem());
-                                }
-                            }
-                        }
-                        if (detailToolBar.isOutMost()) {
-                            detailToolBar.refreshNodeStatus();
-                        }
-                        if (isClose) {
-                            if (detailToolBar.isOutMost()) {
-                                detailToolBar.closeOutTabPanel();
-                            }
-                        } else {
-                            if (detailToolBar.isOutMost()) {
-                                TypeModel typeModel = viewBean.getBindingEntityModel().getMetaDataTypes()
-                                        .get(itemBean.getConcept());
-                                String tabText = typeModel.getLabel(Locale.getLanguage()) + " " + result.getReturnValue(); //$NON-NLS-1$
-                                detailToolBar.updateOutTabPanel(tabText);
-                            }
-                        }
-                        // TMDM-7366 If open or duplicate record in new tab,don't refresh LineageListPanel after save
-                        // action.
-                        if (isStaging && !detailToolBar.isOutMost()
-                                && detailToolBar.getViewCode() == BrowseRecordsView.LINEAGE_VIEW_CODE) {
-                            LineageListPanel.getInstance().refresh();
-                        }
-                        // TMDM-3349 button 'save and close' function
-                        if (!detailToolBar.isOutMost() && !detailToolBar.isHierarchyCall()) {
-                            ItemsListPanel.getInstance().setDefaultSelectionModel(!isClose);
-                        }
-
-                        boolean isSameConcept = ItemsListPanel.getInstance().getCurrentQueryModel() != null
-                                && ItemsListPanel.getInstance().getCurrentQueryModel().getModel().getConceptName()
-                                        .equals(itemBean.getConcept());
-
-                        // ItemsListPanel need to refresh when only isOutMost = false and isHierarchyCall = false
-                        if (!detailToolBar.isOutMost() && !detailToolBar.isHierarchyCall()) {
-                            if (isSameConcept && detailToolBar.getType() == ItemDetailToolBar.TYPE_DEFAULT) {
-                                ItemsListPanel.getInstance().refreshGrid(itemBean);
-                            }
-                        }
-
-                        // TMDM-4814, TMDM-4815 (reload data to refresh ui)
-                        if ((detailToolBar.isFkToolBar() || detailToolBar.isOutMost()) && !isClose) {
-                            detailToolBar.refresh(result.getReturnValue());
-                        }
-
-                        // TMDM-7678 refresh detail panel after save in duplicate operation
-                        if (detailToolBar.isOutMost()
-                                && ItemDetailToolBar.DUPLICATE_OPERATION.equals(detailToolBar.getOperation()) && !isClose) {
-                            detailToolBar.refresh(result.getReturnValue());
-                        }
-
-                        // TMDM-7372 refresh fk panel after create fk record.
-                        if (detailToolBar.isFkToolBar() && detailToolBar.getReturnCriteriaFK() != null) {
-                            ReturnCriteriaFK returnCriteriaFK = detailToolBar.getReturnCriteriaFK();
-                            if (returnCriteriaFK instanceof ForeignKeyTablePanel) {
-                                ForeignKeyTablePanel foreignKeyTablePanel = (ForeignKeyTablePanel) returnCriteriaFK;
-                                foreignKeyTablePanel.setCriteriaFK(result.getReturnValue());
-                            } else if (returnCriteriaFK instanceof ForeignKeySelector) {
-                                ForeignKeySelector foreignKeySelector = (ForeignKeySelector) returnCriteriaFK;
-                                foreignKeySelector.setCriteriaFK(result.getReturnValue());
-                            }
-                        }
-                        // Only Hierarchy call the next method
-                        // TMDM-4112 : JavaScript Error on IE8
-                        if (detailToolBar.isHierarchyCall() && !detailToolBar.isOutMost()) {
-                            CallbackAction.getInstance().doAction(CallbackAction.HIERARCHY_SAVEITEM_CALLBACK,
-                                    viewBean.getBindingEntityModel().getConceptName(), result.getReturnValue(), isClose);
-                        }
-
-                        browseRecordsService.getItemBeanById(itemBean.getConcept(), itemBean.getIds(), Locale.getLanguage(),
-                                new SessionAwareAsyncCallback<ItemBean>() {
-
-                                    @Override
-                                    public void onSuccess(final ItemBean item) {
-                                        itemsDetailPanel.initBanner(item.getPkInfoList(), item.getDescription());
-                                    }
-                                });
-                    }
-                });
+        saveItem(model, viewBean, itemBean, isCreate, isClose, isApproveWarnBeforeSaveing, isStaging, detailToolBar,
+                itemsDetailPanel, progressBar,
+                browseRecordsService);
     }
+
 
     private void onBulkUpdateItem(AppEvent event) {
         // TODO the following code need to be refactor, it is the demo code
@@ -343,17 +217,17 @@ public class BrowseRecordsController extends Controller {
     }
 
     private native void selectBrowseRecordsTab()/*-{
-		var tabPanel = $wnd.amalto.core.getTabPanel();
-		var panel = tabPanel.getItem("Browse Records");
-		if (panel != undefined) {
-			tabPanel.setSelection(panel.getItemId());
-		}
+        var tabPanel = $wnd.amalto.core.getTabPanel();
+        var panel = tabPanel.getItem("Browse Records");
+        if (panel != undefined) {
+            tabPanel.setSelection(panel.getItemId());
+        }
     }-*/;
 
     private native void setTimeout(MessageBox msgBox, int millisecond)/*-{
-		$wnd.setTimeout(function() {
-			msgBox.@com.extjs.gxt.ui.client.widget.MessageBox::close()();
-		}, millisecond);
+        $wnd.setTimeout(function() {
+            msgBox.@com.extjs.gxt.ui.client.widget.MessageBox::close()();
+        }, millisecond);
     }-*/;
 
     private void onViewForeignKey(final AppEvent event) {
@@ -520,5 +394,155 @@ public class BrowseRecordsController extends Controller {
                         }
                     });
         }
+    }
+
+    private void saveItem(final ItemNodeModel model, final ViewBean viewBean, final ItemBean itemBean, final Boolean isCreate,
+            final Boolean isClose, final Boolean isApproveWarnBeforeSaveing, final Boolean isStaging,
+            final ItemDetailToolBar detailToolBar, final ItemsDetailPanel itemsDetailPanel, final MessageBox progressBar,
+            final BrowseRecordsServiceAsync browseRecordsService) {
+        browseRecordsService.saveItem(viewBean, itemBean.getIds(),
+                (new ItemTreeHandler(model, viewBean, itemBean, ItemTreeHandlingStatus.ToSave)).serializeItem(), isCreate,
+                isApproveWarnBeforeSaveing,
+                Locale.getLanguage(), new SessionAwareAsyncCallback<ItemResult>() {
+
+                    @Override
+                    protected void doOnFailure(Throwable caught) {
+                        progressBar.close();
+                        String err = caught.getMessage();
+                        if (err != null) {
+                            MessageBox.alert(MessagesFactory.getMessages().error_title(), XmlUtil.transformXmlToString(err), null)
+                                    .setIcon(MessageBox.ERROR);
+                        } else {
+                            super.doOnFailure(caught);
+                        }
+                    }
+
+                    @Override
+                    public void onSuccess(ItemResult result) {
+                        // backend return null value for an update to existing record
+                        // only if save succeeds, update item bean's id and lastUpdateTime
+                        if (result.getReturnValue() != null) {
+                            itemBean.setIds(result.getReturnValue());
+                            itemBean.setLastUpdateTime(result);
+                        }
+                        progressBar.close();
+                        MessageBox messageBox = MessageUtil.generateMessageBox(result);
+                        String message = messageBox.getMessage();
+                        if (result.getStatus() == ItemResult.FAILURE) {
+                            if (message == null || "".equals(messageBox.getMessage())) { //$NON-NLS-1$
+                                messageBox.setMessage(MessagesFactory.getMessages().output_report_null());
+                            }
+                            messageBox.show();
+                            return;
+                        } else {
+                            if (ItemResult.WARNING == result.getStatus()) {
+                                messageBox.addCallback(new Listener<MessageBoxEvent>() {
+
+                                    @Override
+                                    public void handleEvent(MessageBoxEvent event) {
+                                        if (event.getButtonClicked().getItemId().equals(Dialog.OK)) {
+                                            saveItem(model, viewBean, itemBean, isCreate, isClose, true, isStaging, detailToolBar,
+                                                    itemsDetailPanel, progressBar, browseRecordsService);
+                                        }
+                                    }
+                                });
+                                messageBox.show();
+                                return;
+                            } else {
+                                messageBox.show();
+                                setTimeout(messageBox, 1000);
+                            }
+
+                            if (message == null || "".equals(messageBox.getMessage())) { //$NON-NLS-1$
+                                messageBox.setMessage(MessagesFactory.getMessages().save_success());
+                            }
+
+                        }
+
+                        if (!detailToolBar.isOutMost() && (isClose || isCreate)) {
+                            if (!ItemsListPanel.getInstance().isSaveCurrentChangeBeforeSwitching()) {
+                                if ((ItemsListPanel.getInstance().getCurrentQueryModel() != null
+                                        && ItemsListPanel.getInstance().getCurrentQueryModel().getModel().getConceptName()
+                                                .equals(itemBean.getConcept())
+                                        && detailToolBar.getType() == ItemDetailToolBar.TYPE_DEFAULT) || isClose) {
+                                    ItemsMainTabPanel.getInstance().remove(ItemsMainTabPanel.getInstance().getSelectedItem());
+                                }
+                            }
+                        }
+                        if (detailToolBar.isOutMost()) {
+                            detailToolBar.refreshNodeStatus();
+                        }
+                        if (isClose) {
+                            if (detailToolBar.isOutMost()) {
+                                detailToolBar.closeOutTabPanel();
+                            }
+                        } else {
+                            if (detailToolBar.isOutMost()) {
+                                TypeModel typeModel = viewBean.getBindingEntityModel().getMetaDataTypes()
+                                        .get(itemBean.getConcept());
+                                String tabText = typeModel.getLabel(Locale.getLanguage()) + " " + result.getReturnValue(); //$NON-NLS-1$
+                                detailToolBar.updateOutTabPanel(tabText);
+                            }
+                        }
+                        // TMDM-7366 If open or duplicate record in new tab,don't refresh LineageListPanel after save
+                        // action.
+                        if (isStaging && !detailToolBar.isOutMost()
+                                && detailToolBar.getViewCode() == BrowseRecordsView.LINEAGE_VIEW_CODE) {
+                            LineageListPanel.getInstance().refresh();
+                        }
+                        // TMDM-3349 button 'save and close' function
+                        if (!detailToolBar.isOutMost() && !detailToolBar.isHierarchyCall()) {
+                            ItemsListPanel.getInstance().setDefaultSelectionModel(!isClose);
+                        }
+
+                        boolean isSameConcept = ItemsListPanel.getInstance().getCurrentQueryModel() != null && ItemsListPanel
+                                .getInstance().getCurrentQueryModel().getModel().getConceptName().equals(itemBean.getConcept());
+
+                        // ItemsListPanel need to refresh when only isOutMost = false and isHierarchyCall = false
+                        if (!detailToolBar.isOutMost() && !detailToolBar.isHierarchyCall()) {
+                            if (isSameConcept && detailToolBar.getType() == ItemDetailToolBar.TYPE_DEFAULT) {
+                                ItemsListPanel.getInstance().refreshGrid(itemBean);
+                            }
+                        }
+
+                        // TMDM-4814, TMDM-4815 (reload data to refresh ui)
+                        if ((detailToolBar.isFkToolBar() || detailToolBar.isOutMost()) && !isClose) {
+                            detailToolBar.refresh(result.getReturnValue());
+                        }
+
+                        // TMDM-7678 refresh detail panel after save in duplicate operation
+                        if (detailToolBar.isOutMost()
+                                && ItemDetailToolBar.DUPLICATE_OPERATION.equals(detailToolBar.getOperation()) && !isClose) {
+                            detailToolBar.refresh(result.getReturnValue());
+                        }
+
+                        // TMDM-7372 refresh fk panel after create fk record.
+                        if (detailToolBar.isFkToolBar() && detailToolBar.getReturnCriteriaFK() != null) {
+                            ReturnCriteriaFK returnCriteriaFK = detailToolBar.getReturnCriteriaFK();
+                            if (returnCriteriaFK instanceof ForeignKeyTablePanel) {
+                                ForeignKeyTablePanel foreignKeyTablePanel = (ForeignKeyTablePanel) returnCriteriaFK;
+                                foreignKeyTablePanel.setCriteriaFK(result.getReturnValue());
+                            } else if (returnCriteriaFK instanceof ForeignKeySelector) {
+                                ForeignKeySelector foreignKeySelector = (ForeignKeySelector) returnCriteriaFK;
+                                foreignKeySelector.setCriteriaFK(result.getReturnValue());
+                            }
+                        }
+                        // Only Hierarchy call the next method
+                        // TMDM-4112 : JavaScript Error on IE8
+                        if (detailToolBar.isHierarchyCall() && !detailToolBar.isOutMost()) {
+                            CallbackAction.getInstance().doAction(CallbackAction.HIERARCHY_SAVEITEM_CALLBACK,
+                                    viewBean.getBindingEntityModel().getConceptName(), result.getReturnValue(), isClose);
+                        }
+
+                        browseRecordsService.getItemBeanById(itemBean.getConcept(), itemBean.getIds(), Locale.getLanguage(),
+                                new SessionAwareAsyncCallback<ItemBean>() {
+
+                                    @Override
+                                    public void onSuccess(final ItemBean item) {
+                                        itemsDetailPanel.initBanner(item.getPkInfoList(), item.getDescription());
+                                    }
+                                });
+                    }
+                });
     }
 }

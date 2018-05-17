@@ -303,7 +303,7 @@ public class MockGridRefreshGWTTest extends GWTTestCase {
 
         final ItemDetailToolBar detailToolBar = event.getData("itemDetailToolBar");
 
-        service.saveItem(new ViewBean(), "", "", false, "en", new SessionAwareAsyncCallback<ItemResult>() {
+        service.saveItem(new ViewBean(), "", "", false, true, "en", new SessionAwareAsyncCallback<ItemResult>() {
 
             @Override
             public void onSuccess(ItemResult result) {
@@ -399,7 +399,8 @@ public class MockGridRefreshGWTTest extends GWTTestCase {
     class MockBrowseRecordsServiceAsync implements BrowseRecordsServiceAsync {
 
         @Override
-        public void saveItem(ViewBean viewBean, String ids, String xml, boolean isCreate, String language,
+        public void saveItem(ViewBean viewBean, String ids, String xml, boolean isCreate, boolean isApproveWarnBeforeSaveing,
+                String language,
                 AsyncCallback<ItemResult> callback) {
             callback.onSuccess(new ItemResult(ItemResult.SUCCESS));
         }
@@ -415,10 +416,6 @@ public class MockGridRefreshGWTTest extends GWTTestCase {
 
         @Override
         public void queryItemBeans(QueryModel config, String language, AsyncCallback<ItemBasePageLoadResult<ItemBean>> callback) {
-        }
-
-        @Override
-        public void saveItemBean(ItemBean item, String language, AsyncCallback<String> callback) {
         }
 
         @Override
@@ -496,7 +493,8 @@ public class MockGridRefreshGWTTest extends GWTTestCase {
         }
 
         @Override
-        public void saveItem(String concept, String ids, String xml, boolean isCreate, String language,
+        public void saveItem(String concept, String ids, String xml, boolean isCreate, boolean isApproveWarnBeforeSaveing,
+                String language,
                 AsyncCallback<ItemResult> callback) {
         }
 

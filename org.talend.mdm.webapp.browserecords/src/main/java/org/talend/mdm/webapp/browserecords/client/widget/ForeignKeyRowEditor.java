@@ -18,13 +18,13 @@ import org.talend.mdm.webapp.browserecords.client.ServiceFactory;
 import org.talend.mdm.webapp.browserecords.client.i18n.MessagesFactory;
 import org.talend.mdm.webapp.browserecords.client.model.ItemNodeModel;
 import org.talend.mdm.webapp.browserecords.client.util.Locale;
+import org.talend.mdm.webapp.browserecords.client.util.MessageUtil;
 
 import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.store.Record;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.grid.RowEditor;
-import com.google.gwt.user.client.Timer;
 
 public class ForeignKeyRowEditor extends RowEditor<ItemNodeModel> {
 
@@ -113,14 +113,12 @@ public class ForeignKeyRowEditor extends RowEditor<ItemNodeModel> {
                                             ((ItemNodeModel)record.getModel()).setChangeValue(true);
                                         }
 
-                                        final MessageBox msgBox = new MessageBox();
-                                        String msg = MultilanguageMessageParser.pickOutISOMessage(result.getDescription());
                                         if (result.getStatus() == ItemResult.FAILURE) {
-                                            msgBox.setTitle(MessagesFactory.getMessages().error_title());
-                                            msgBox.setButtons(MessageBox.OK);
-                                            msgBox.setIcon(MessageBox.ERROR);
-                                            msgBox.setMessage(msg == null || msg.isEmpty() ? MessagesFactory.getMessages()
-                                                    .output_report_null() : msg);
+                                            MessageBox msgBox = MessageUtil.generateMessageBox(result);
+                                            String message = msgBox.getMessage();
+                                            if (message == null || "".equals(message)) { //$NON-NLS-1$
+                                                msgBox.setMessage(MessagesFactory.getMessages().output_report_null());
+                                            }
                                             msgBox.show();
                                         }
                                     }

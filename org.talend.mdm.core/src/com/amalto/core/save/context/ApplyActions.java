@@ -66,4 +66,8 @@ class ApplyActions implements DocumentSaver {
     public String getBeforeSavingMessage() {
         return next.getBeforeSavingMessage();
     }
+
+    public int getBeforeSavingMessageType() {
+        return next.getBeforeSavingMessageType();
+    }
 }

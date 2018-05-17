@@ -11,13 +11,13 @@
 
 package com.amalto.core.save.context;
 
+import java.io.InputStream;
+
 import com.amalto.core.load.action.LoadAction;
 import com.amalto.core.save.DocumentSaverContext;
 import com.amalto.core.save.SaverSession;
 import com.amalto.core.server.api.XmlServer;
 import com.amalto.core.util.XSDKey;
-
-import java.io.InputStream;
 
 class BulkLoadSaver implements DocumentSaver {
 
@@ -53,6 +53,10 @@ class BulkLoadSaver implements DocumentSaver {
     }
 
     public String getBeforeSavingMessage() {
+        throw new UnsupportedOperationException();
+    }
+
+    public int getBeforeSavingMessageType() {
         throw new UnsupportedOperationException();
     }
 }

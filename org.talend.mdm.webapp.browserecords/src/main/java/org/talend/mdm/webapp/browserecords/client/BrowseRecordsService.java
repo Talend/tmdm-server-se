@@ -51,8 +51,6 @@ public interface BrowseRecordsService extends RemoteService {
     ItemBean getItem(ItemBean itemBean, String viewPK, EntityModel entityModel, boolean isStaging, String language)
             throws ServiceException;
 
-    String saveItemBean(ItemBean item, String language) throws ServiceException;
-
     String bulkUpdateItem(String baseUrl, String concept, String xml, String language) throws ServiceException;
 
     ItemBasePageLoadResult<ForeignKeyBean> getForeignKeyList(BasePagingLoadConfigImpl config, TypeModel model,
@@ -110,9 +108,11 @@ public interface BrowseRecordsService extends RemoteService {
 
     List<String> getMandatoryFieldList(String tableName) throws ServiceException;
 
-    ItemResult saveItem(ViewBean viewBean, String ids, String xml, boolean isCreate, String language) throws ServiceException;
+    ItemResult saveItem(ViewBean viewBean, String ids, String xml, boolean isCreate, boolean isApproveWarnBeforeSaveing,
+            String language) throws ServiceException;
 
-    ItemResult saveItem(String concept, String ids, String xml, boolean isCreate, String language) throws ServiceException;
+    ItemResult saveItem(String concept, String ids, String xml, boolean isCreate, boolean isApproveWarnBeforeSaveing,
+            String language) throws ServiceException;
 
     ItemResult updateItem(String concept, String ids, Map<String, String> changedNodes, String xml, EntityModel entityModel,
             String language) throws ServiceException;

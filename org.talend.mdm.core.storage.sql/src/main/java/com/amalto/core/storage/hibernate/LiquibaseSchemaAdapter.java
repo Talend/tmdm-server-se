@@ -22,22 +22,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import liquibase.Liquibase;
-import liquibase.change.AbstractChange;
-import liquibase.change.ColumnConfig;
-import liquibase.change.core.AddDefaultValueChange;
-import liquibase.change.core.AddNotNullConstraintChange;
-import liquibase.change.core.DropColumnChange;
-import liquibase.change.core.DropNotNullConstraintChange;
-import liquibase.database.DatabaseConnection;
-import liquibase.resource.FileSystemResourceAccessor;
-import liquibase.serializer.core.xml.XMLChangeLogSerializer;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.tools.ant.util.DateUtils;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.mapping.Column;
+import org.hibernate.mapping.Constraint;
+import org.hibernate.mapping.ForeignKey;
+import org.hibernate.mapping.Table;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
@@ -45,12 +37,13 @@ import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.metadata.MetadataUtils;
 import org.talend.mdm.commmon.metadata.MetadataVisitable;
+import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
 import org.talend.mdm.commmon.metadata.SimpleTypeFieldMetadata;
 import org.talend.mdm.commmon.metadata.SimpleTypeMetadata;
 import org.talend.mdm.commmon.metadata.TypeMetadata;
 import org.talend.mdm.commmon.metadata.compare.Compare;
-import org.talend.mdm.commmon.metadata.compare.ModifyChange;
 import org.talend.mdm.commmon.metadata.compare.Compare.DiffResults;
+import org.talend.mdm.commmon.metadata.compare.ModifyChange;
 import org.talend.mdm.commmon.metadata.compare.RemoveChange;
 import org.talend.mdm.commmon.util.core.CommonUtil;
 
@@ -59,13 +52,25 @@ import com.amalto.core.storage.StorageType;
 import com.amalto.core.storage.datasource.RDBMSDataSource;
 import com.amalto.core.storage.datasource.RDBMSDataSource.DataSourceDialect;
 
+import liquibase.Liquibase;
+import liquibase.change.AbstractChange;
+import liquibase.change.ColumnConfig;
+import liquibase.change.core.AddDefaultValueChange;
+import liquibase.change.core.AddNotNullConstraintChange;
+import liquibase.change.core.DropColumnChange;
+import liquibase.change.core.DropForeignKeyConstraintChange;
+import liquibase.change.core.DropNotNullConstraintChange;
+import liquibase.database.DatabaseConnection;
+import liquibase.resource.FileSystemResourceAccessor;
+import liquibase.serializer.core.xml.XMLChangeLogSerializer;
+
 public class LiquibaseSchemaAdapter  {
 
     private static final String SEPARATOR = "-"; //$NON-NLS-1$
 
-    public static final String DATA_LIQUIBASE_CHANGELOG_PATH = "/data/liquibase-changelog/";
+    public static final String DATA_LIQUIBASE_CHANGELOG_PATH = "/data/liquibase-changelog/"; //$NON-NLS-1$
 
-    public static final String MDM_ROOT = "mdm.root";
+    public static final String MDM_ROOT = "mdm.root"; //$NON-NLS-1$
 
     private static final Logger LOGGER = Logger.getLogger(LiquibaseSchemaAdapter.class);
 
@@ -141,7 +146,10 @@ public class LiquibaseSchemaAdapter  {
     private String getColumnName(FieldMetadata field) {
         String columnName = tableResolver.get(field);
         if (field instanceof ContainedTypeFieldMetadata) {
-            columnName += "_x_talend_id";
+            columnName += "_x_talend_id"; //$NON-NLS-1$
+        }
+        if (field instanceof ReferenceFieldMetadata) {
+            columnName += "_" + tableResolver.get(((ReferenceFieldMetadata) field).getReferencedField()); //$NON-NLS-1$
         }
         if (dataSource.getDialectName() == DataSourceDialect.ORACLE_10G) {
             columnName = columnName.toUpperCase();
@@ -158,7 +166,7 @@ public class LiquibaseSchemaAdapter  {
                 FieldMetadata previous = (FieldMetadata) modifyAction.getPrevious();
                 FieldMetadata current = (FieldMetadata) modifyAction.getCurrent();
 
-                String defaultValueRule = ((FieldMetadata) current).getData(MetadataRepository.DEFAULT_VALUE_RULE);
+                String defaultValueRule = current.getData(MetadataRepository.DEFAULT_VALUE_RULE);
                 defaultValueRule = HibernateStorageUtils.convertedDefaultValue(dataSource.getDialectName(), defaultValueRule, StringUtils.EMPTY);
                 String tableName = getTableName(current);
                 String columnDataType = getColumnTypeName(current);
@@ -191,6 +199,7 @@ public class LiquibaseSchemaAdapter  {
         List<AbstractChange> changeActionList = new ArrayList<AbstractChange>();
 
         Map<String, List<String>> dropColumnMap = new HashMap<String, List<String>>();
+        Map<String, List<String>> dropFKMap = new HashMap<String, List<String>>();
         for (RemoveChange removeAction : diffResults.getRemoveChanges()) {
 
             MetadataVisitable element = removeAction.getElement();
@@ -201,12 +210,43 @@ public class LiquibaseSchemaAdapter  {
                 String tableName = getTableName(field);
                 String columnName = getColumnName(field);
 
+                // Need remove the FK constraint first before remove a reference field.
+                // FK constraint only exists in master DB.
+                if (element instanceof ReferenceFieldMetadata && storageType == StorageType.MASTER) {
+                    ReferenceFieldMetadata referenceField = (ReferenceFieldMetadata) element;
+                    String fkName = tableResolver.getFkConstraintName(referenceField);
+                    if (fkName.isEmpty()) {
+                        List<Column> columns = new ArrayList<>();
+                        columns.add(new Column(columnName.toLowerCase()));
+                        fkName = Constraint.generateName(new ForeignKey().generatedConstraintNamePrefix(),
+                                new Table(tableResolver.get(field.getContainingType().getEntity())), columns);
+                        if (dataSource.getDialectName() == DataSourceDialect.POSTGRES) {
+                            fkName = fkName.toLowerCase();
+                        }
+                    }
+                    List<String> fkList = dropFKMap.get(tableName);
+                    if (fkList == null) {
+                        fkList = new ArrayList<String>();
+                    }
+                    fkList.add(fkName);
+                    dropFKMap.put(tableName, fkList);
+                }
                 List<String> columnList = dropColumnMap.get(tableName);
                 if (columnList == null) {
                     columnList = new ArrayList<String>();
                 }
                 columnList.add(columnName);
                 dropColumnMap.put(tableName, columnList);
+            }
+        }
+
+        for (Map.Entry<String, List<String>> entry : dropFKMap.entrySet()) {
+            List<String> fks = entry.getValue();
+            for (String fk : fks) {
+                DropForeignKeyConstraintChange dropFKChange = new DropForeignKeyConstraintChange();
+                dropFKChange.setBaseTableName(entry.getKey());
+                dropFKChange.setConstraintName(fk);
+                changeActionList.add(dropFKChange);
             }
         }
 

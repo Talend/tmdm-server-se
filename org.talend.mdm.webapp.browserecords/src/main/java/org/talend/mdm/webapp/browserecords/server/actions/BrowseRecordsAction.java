@@ -1676,18 +1676,23 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             int status = ItemResult.SUCCESS;
             WSItemPK wsi = CommonUtil.getPort().putItemWithReport(wsPutItemWithReport);
             String message = wsPutItemWithReport.getMessage();
-            if (DocumentSaver.MESSAGE_TYPE_WARNING == wsPutItemWithReport.getMessageType()) {
+            boolean isWarningBeforeSavingProcess = DocumentSaver.MESSAGE_TYPE_WARNING == wsPutItemWithReport.getMessageType();
+            if (isWarningBeforeSavingProcess) {
                 status = ItemResult.WARNING;
             }
             if (hasBeforeSavingProcess) {
                 // No message from beforeSaving process,
                 if (message == null || message.length() == 0) {
-                    message = MESSAGES.getMessage(locale, "save_process_validation_success"); //$NON-NLS-1$
+                    if (isWarningBeforeSavingProcess) {
+                        message = MESSAGES.getMessage(locale, "save_process_validation_warning"); //$NON-NLS-1$
+                    } else {
+                        message = MESSAGES.getMessage(locale, "save_process_validation_success"); //$NON-NLS-1$
+                    }
                 }
             } else {
                 message = MESSAGES.getMessage(locale, "save_record_success"); //$NON-NLS-1$
             }
-            if (wsi == null) {
+            if (wsi == null || (isWarningBeforeSavingProcess && !isApproveWarnBeforeSaveing)) {
                 return new ItemResult(status, message, ids);
             } else {
                 String[] pk = wsi.getIds();

@@ -27,6 +27,7 @@ import org.talend.mdm.webapp.browserecords.client.model.ItemBean;
 import org.talend.mdm.webapp.browserecords.client.model.ItemNodeModel;
 import org.talend.mdm.webapp.browserecords.client.mvc.BrowseRecordsView;
 import org.talend.mdm.webapp.browserecords.client.util.Locale;
+import org.talend.mdm.webapp.browserecords.client.util.MessageUtil;
 import org.talend.mdm.webapp.browserecords.client.util.UserSession;
 import org.talend.mdm.webapp.browserecords.client.widget.ItemDetailToolBar;
 import org.talend.mdm.webapp.browserecords.client.widget.ItemPanel;
@@ -66,7 +67,7 @@ public class ForeignKeyUtil {
                 @Override
                 public void handleEvent(MessageBoxEvent be) {
                     if (Dialog.YES.equals(be.getButtonClicked().getItemId())) {
-                        saveItem(root, isCreateForeignKey, foreignKeyName, ids, itemsDetailPanel);
+                        saveItem(root, isCreateForeignKey, foreignKeyName, ids, itemsDetailPanel, false);
                     } else if (Dialog.NO.equals(be.getButtonClicked().getItemId())) {
                         displayForeignKey(isCreateForeignKey, foreignKeyName, ids, itemsDetailPanel);
                     }
@@ -80,8 +81,8 @@ public class ForeignKeyUtil {
 
     }
 
-    private static void saveItem(ItemNodeModel model, final boolean isCreateForeignKey, final String foreignKeyName,
-            final String ids, final ItemsDetailPanel itemsDetailPanel) {
+    private static void saveItem(final ItemNodeModel model, final boolean isCreateForeignKey, final String foreignKeyName,
+            final String ids, final ItemsDetailPanel itemsDetailPanel, final boolean isApproveWarnBeforeSaveing) {
         final Widget widget = itemsDetailPanel.getFirstTabWidget();
         ViewBean viewBean = null;
         ItemBean itemBean = null;
@@ -106,7 +107,8 @@ public class ForeignKeyUtil {
         if (validateSuccess) {
             BrowseRecordsServiceAsync service = (BrowseRecordsServiceAsync) Registry.get(BrowseRecords.BROWSERECORDS_SERVICE);
             service.saveItem(viewBean, itemBean.getIds(),
-                    (new ItemTreeHandler(model, viewBean, ItemTreeHandlingStatus.ToSave)).serializeItem(), isCreate, false,
+                    (new ItemTreeHandler(model, viewBean, ItemTreeHandlingStatus.ToSave)).serializeItem(), isCreate,
+                    isApproveWarnBeforeSaveing,
                     Locale.getLanguage(), new SessionAwareAsyncCallback<ItemResult>() {
 
                         @Override
@@ -122,10 +124,25 @@ public class ForeignKeyUtil {
 
                         @Override
                         public void onSuccess(ItemResult result) {
-                            MessageBox.alert(MessagesFactory.getMessages().info_title(), MessagesFactory.getMessages()
-                                    .save_success(), null);
-                            if (widget instanceof ItemPanel && isCreated) {
-                                ItemsListPanel.getInstance().lastPage();
+                            MessageBox messageBox = MessageUtil.generateMessageBox(result);
+                            if (ItemResult.WARNING == result.getStatus()) {
+                                messageBox.addCallback(new Listener<MessageBoxEvent>() {
+
+                                    @Override
+                                    public void handleEvent(MessageBoxEvent event) {
+                                        if (event.getButtonClicked().getItemId().equals(Dialog.OK)) {
+                                            saveItem(model, isCreateForeignKey, foreignKeyName, ids, itemsDetailPanel, true);
+                                        }
+                                    }
+                                });
+                                messageBox.show();
+                                return;
+                            } else {
+                                MessageBox.alert(MessagesFactory.getMessages().info_title(),
+                                        MessagesFactory.getMessages().save_success(), null);
+                                if (widget instanceof ItemPanel && isCreated) {
+                                    ItemsListPanel.getInstance().lastPage();
+                                }
                             }
                             displayForeignKey(isCreateForeignKey, foreignKeyName, ids, itemsDetailPanel);
                         }

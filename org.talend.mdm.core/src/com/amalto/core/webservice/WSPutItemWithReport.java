@@ -16,7 +16,6 @@ public class WSPutItemWithReport {
     protected com.amalto.core.webservice.WSPutItem wsPutItem;
     protected java.lang.String source;
     protected java.lang.Boolean invokeBeforeSaving;
-
     protected java.lang.Boolean approveWarnBeforeSaving;
     protected int messageType;
     protected java.lang.String message;

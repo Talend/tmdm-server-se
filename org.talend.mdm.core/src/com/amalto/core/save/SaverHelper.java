@@ -93,7 +93,7 @@ public class SaverHelper {
         return saver;
     }
 
-    public static class ApproveWarningBeforeSave {
+    public static class WarningApprovedBeforeSave {
 
         private static ThreadLocal<Boolean> threadLocal = new ThreadLocal<Boolean>() {
 
@@ -102,7 +102,7 @@ public class SaverHelper {
             }
         };
 
-        private ApproveWarningBeforeSave() {
+        private WarningApprovedBeforeSave() {
         }
 
         public static void set(boolean value) {

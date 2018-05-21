@@ -96,13 +96,13 @@ public class BeforeSaving implements DocumentSaver {
                 if (TYPE_INFO.equals(errorCode)) {
                     messageType = TYPE_INFO;
                 } else if (TYPE_WARNING.equals(errorCode)) {
-                    if (SaverHelper.ApproveWarningBeforeSave.get()) {
+                    if (SaverHelper.WarningApprovedBeforeSave.get()) {
                         messageType = TYPE_INFO;
                     } else {
                         messageType = TYPE_WARNING;
                         return;
                     }
-                    SaverHelper.ApproveWarningBeforeSave.remove();
+                    SaverHelper.WarningApprovedBeforeSave.remove();
                 } else if (TYPE_ERROR.equals(errorCode)) {
                     throw new BeforeSavingErrorException(message);
                 }

@@ -144,14 +144,14 @@ public class BrowseRecordsController extends Controller {
         final ItemsDetailPanel itemsDetailPanel = event.getData(BrowseRecordsView.ITEMS_DETAIL_PANEL);
         final MessageBox progressBar = MessageBox.wait(MessagesFactory.getMessages().save_progress_bar_title(), MessagesFactory
                 .getMessages().save_progress_bar_message(), MessagesFactory.getMessages().please_wait());
-        final Boolean isApproveWarnBeforeSaveing = false;
+        final Boolean isWarningApprovedBeforeSave = false;
         final BrowseRecordsServiceAsync browseRecordsService;
         if (isStaging) {
             browseRecordsService = ServiceFactory.getInstance().getStagingService();
         } else {
             browseRecordsService = ServiceFactory.getInstance().getMasterService();
         }
-        saveItem(model, viewBean, itemBean, isCreate, isClose, isApproveWarnBeforeSaveing, isStaging, detailToolBar,
+        saveItem(model, viewBean, itemBean, isCreate, isClose, isWarningApprovedBeforeSave, isStaging, detailToolBar,
                 itemsDetailPanel, progressBar, browseRecordsService);
     }
 
@@ -395,12 +395,12 @@ public class BrowseRecordsController extends Controller {
     }
 
     private void saveItem(final ItemNodeModel model, final ViewBean viewBean, final ItemBean itemBean, final Boolean isCreate,
-            final Boolean isClose, final Boolean isApproveWarnBeforeSaveing, final Boolean isStaging,
+            final Boolean isClose, final Boolean isWarningApprovedBeforeSave, final Boolean isStaging,
             final ItemDetailToolBar detailToolBar, final ItemsDetailPanel itemsDetailPanel, final MessageBox progressBar,
             final BrowseRecordsServiceAsync browseRecordsService) {
         browseRecordsService.saveItem(viewBean, itemBean.getIds(),
                 (new ItemTreeHandler(model, viewBean, itemBean, ItemTreeHandlingStatus.ToSave)).serializeItem(), isCreate,
-                isApproveWarnBeforeSaveing, Locale.getLanguage(), new SessionAwareAsyncCallback<ItemResult>() {
+                isWarningApprovedBeforeSave, Locale.getLanguage(), new SessionAwareAsyncCallback<ItemResult>() {
 
                     @Override
                     protected void doOnFailure(Throwable caught) {

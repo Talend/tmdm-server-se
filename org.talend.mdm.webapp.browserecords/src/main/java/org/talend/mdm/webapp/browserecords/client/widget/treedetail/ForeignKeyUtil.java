@@ -82,7 +82,7 @@ public class ForeignKeyUtil {
     }
 
     private static void saveItem(final ItemNodeModel model, final boolean isCreateForeignKey, final String foreignKeyName,
-            final String ids, final ItemsDetailPanel itemsDetailPanel, final boolean isApproveWarnBeforeSaveing) {
+            final String ids, final ItemsDetailPanel itemsDetailPanel, final boolean isWarningApprovedBeforeSave) {
         final Widget widget = itemsDetailPanel.getFirstTabWidget();
         ViewBean viewBean = null;
         ItemBean itemBean = null;
@@ -108,7 +108,7 @@ public class ForeignKeyUtil {
             BrowseRecordsServiceAsync service = (BrowseRecordsServiceAsync) Registry.get(BrowseRecords.BROWSERECORDS_SERVICE);
             service.saveItem(viewBean, itemBean.getIds(),
                     (new ItemTreeHandler(model, viewBean, ItemTreeHandlingStatus.ToSave)).serializeItem(), isCreate,
-                    isApproveWarnBeforeSaveing, Locale.getLanguage(), new SessionAwareAsyncCallback<ItemResult>() {
+                    isWarningApprovedBeforeSave, Locale.getLanguage(), new SessionAwareAsyncCallback<ItemResult>() {
 
                         @Override
                         protected void doOnFailure(Throwable caught) {

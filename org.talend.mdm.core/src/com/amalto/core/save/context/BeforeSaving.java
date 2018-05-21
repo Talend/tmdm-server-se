@@ -200,7 +200,7 @@ public class BeforeSaving implements DocumentSaver {
         if (attribute == null) {
             return false;
         }
-        if (!validateMessageType(attribute.getNodeValue())) {
+        if (!isValidatedMessageType(attribute.getNodeValue())) {
             return false;
         }
         NodeList messageNodeList = reportNode.getChildNodes();
@@ -214,7 +214,7 @@ public class BeforeSaving implements DocumentSaver {
         return messageNode.getNodeType() == Node.TEXT_NODE;
     }
     
-    private boolean validateMessageType(String type) {
+    private boolean isValidatedMessageType(String type) {
         return TYPE_INFO.equalsIgnoreCase(type) || TYPE_WARNING.equalsIgnoreCase(type) || TYPE_ERROR.equalsIgnoreCase(type);
     }
 }

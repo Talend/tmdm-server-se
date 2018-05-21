@@ -108,10 +108,10 @@ public interface BrowseRecordsService extends RemoteService {
 
     List<String> getMandatoryFieldList(String tableName) throws ServiceException;
 
-    ItemResult saveItem(ViewBean viewBean, String ids, String xml, boolean isCreate, boolean isApproveWarningBeforeSave,
+    ItemResult saveItem(ViewBean viewBean, String ids, String xml, boolean isCreate, boolean isWarningApprovedBeforeSave,
             String language) throws ServiceException;
 
-    ItemResult saveItem(String concept, String ids, String xml, boolean isCreate, boolean isApproveWarningBeforeSave,
+    ItemResult saveItem(String concept, String ids, String xml, boolean isCreate, boolean isWarningApprovedBeforeSave,
             String language) throws ServiceException;
 
     ItemResult updateItem(String concept, String ids, Map<String, String> changedNodes, String xml, EntityModel entityModel,

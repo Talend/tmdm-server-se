@@ -98,10 +98,10 @@ public interface BrowseRecordsServiceAsync {
 
     void getMandatoryFieldList(String tableName, AsyncCallback<List<String>> callback);
 
-    void saveItem(ViewBean viewBean, String ids, String xml, boolean isCreate, boolean isApproveWarningBeforeSave,
+    void saveItem(ViewBean viewBean, String ids, String xml, boolean isCreate, boolean isWarningApprovedBeforeSave,
             String language, AsyncCallback<ItemResult> callback);
             
-    void saveItem(String concept, String ids, String xml, boolean isCreate, boolean isApproveWarningBeforeSave, String language,
+    void saveItem(String concept, String ids, String xml, boolean isCreate, boolean isWarningApprovedBeforeSave, String language,
             AsyncCallback<ItemResult> callback);
 
     void getColumnTreeLayout(String concept, String customFormName, ViewBean vBean,

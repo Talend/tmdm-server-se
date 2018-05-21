@@ -108,7 +108,6 @@ import com.amalto.core.objects.customform.CustomFormPOJO;
 import com.amalto.core.objects.customform.CustomFormPOJOPK;
 import com.amalto.core.objects.datacluster.DataClusterPOJOPK;
 import com.amalto.core.save.context.BeforeSaving;
-import com.amalto.core.save.context.DocumentSaver;
 import com.amalto.core.server.ServerContext;
 import com.amalto.core.server.StorageAdmin;
 import com.amalto.core.storage.Storage;
@@ -1656,7 +1655,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
     }
 
     @Override
-    public ItemResult saveItem(String concept, String ids, String xml, boolean isCreate, boolean isApproveWarningBeforeSave,
+    public ItemResult saveItem(String concept, String ids, String xml, boolean isCreate, boolean isWarningApprovedBeforeSave,
             String language) throws ServiceException {
         Locale locale = new Locale(language);
 
@@ -1673,7 +1672,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             WSDataModelPK wsDataModelPK = new WSDataModelPK(getCurrentDataModel());
             WSPutItemWithReport wsPutItemWithReport = new WSPutItemWithReport(new WSPutItem(wsDataClusterPK, xml, wsDataModelPK,
                     !isCreate), UpdateReportPOJO.GENERIC_UI_SOURCE, true);
-            wsPutItemWithReport.setApproveWarnBeforeSaving(isApproveWarningBeforeSave);
+            wsPutItemWithReport.setApproveWarnBeforeSaving(isWarningApprovedBeforeSave);
             int status = ItemResult.SUCCESS;
             WSItemPK wsi = CommonUtil.getPort().putItemWithReport(wsPutItemWithReport);
             String message = wsPutItemWithReport.getMessage();
@@ -1693,7 +1692,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             } else {
                 message = MESSAGES.getMessage(locale, "save_record_success"); //$NON-NLS-1$
             }
-            if (wsi == null || (isWarningBeforeSavingProcess && !isApproveWarningBeforeSave)) {
+            if (wsi == null || (isWarningBeforeSavingProcess && !isWarningApprovedBeforeSave)) {
                 return new ItemResult(status, message, ids);
             } else {
                 String[] pk = wsi.getIds();
@@ -1745,12 +1744,12 @@ public class BrowseRecordsAction implements BrowseRecordsService {
     }
 
     @Override
-    public ItemResult saveItem(ViewBean viewBean, String ids, String xml, boolean isCreate, boolean isApproveWarningBeforeSave,
+    public ItemResult saveItem(ViewBean viewBean, String ids, String xml, boolean isCreate, boolean isWarningApprovedBeforeSave,
             String language)
             throws ServiceException {
         EntityModel entityModel = viewBean.getBindingEntityModel();
         String concept = entityModel.getConceptName();
-        return saveItem(concept, ids, xml, isCreate, isApproveWarningBeforeSave, language);
+        return saveItem(concept, ids, xml, isCreate, isWarningApprovedBeforeSave, language);
     }
 
     @SuppressWarnings("deprecation")

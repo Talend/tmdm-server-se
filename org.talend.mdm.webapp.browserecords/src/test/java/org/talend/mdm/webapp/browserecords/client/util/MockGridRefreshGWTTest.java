@@ -399,9 +399,8 @@ public class MockGridRefreshGWTTest extends GWTTestCase {
     class MockBrowseRecordsServiceAsync implements BrowseRecordsServiceAsync {
 
         @Override
-        public void saveItem(ViewBean viewBean, String ids, String xml, boolean isCreate, boolean isApproveWarnBeforeSaveing,
-                String language,
-                AsyncCallback<ItemResult> callback) {
+        public void saveItem(ViewBean viewBean, String ids, String xml, boolean isCreate, boolean isWarningApprovedBeforeSave,
+                String language, AsyncCallback<ItemResult> callback) {
             callback.onSuccess(new ItemResult(ItemResult.SUCCESS));
         }
 
@@ -493,9 +492,8 @@ public class MockGridRefreshGWTTest extends GWTTestCase {
         }
 
         @Override
-        public void saveItem(String concept, String ids, String xml, boolean isCreate, boolean isApproveWarnBeforeSaveing,
-                String language,
-                AsyncCallback<ItemResult> callback) {
+        public void saveItem(String concept, String ids, String xml, boolean isCreate, boolean isWarningApprovedBeforeSave,
+                String language, AsyncCallback<ItemResult> callback) {
         }
 
         @Override

@@ -1745,8 +1745,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
 
     @Override
     public ItemResult saveItem(ViewBean viewBean, String ids, String xml, boolean isCreate, boolean isWarningApprovedBeforeSave,
-            String language)
-            throws ServiceException {
+            String language) throws ServiceException {
         EntityModel entityModel = viewBean.getBindingEntityModel();
         String concept = entityModel.getConceptName();
         return saveItem(concept, ids, xml, isCreate, isWarningApprovedBeforeSave, language);

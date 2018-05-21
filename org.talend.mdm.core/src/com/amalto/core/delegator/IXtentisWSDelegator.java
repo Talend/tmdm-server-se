@@ -1059,7 +1059,7 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
             SaverSession session = SaverSession.newSession();
             DocumentSaver saver;
             try {
-                SaverHelper.ApproveWarnBeforeSaveing.set(wsPutItemWithReport.isApproveWarnBeforeSaving());
+                SaverHelper.ApproveWarningBeforeSave.set(wsPutItemWithReport.isApproveWarnBeforeSaving());
                 saver = SaverHelper.saveItemWithReport(wsPutItem, session, dataClusterName, dataModelName,
                         wsPutItemWithReport.getSource(), wsPutItemWithReport.getInvokeBeforeSaving());
                 wsPutItemWithReport.setMessageType(saver.getBeforeSavingMessageType());

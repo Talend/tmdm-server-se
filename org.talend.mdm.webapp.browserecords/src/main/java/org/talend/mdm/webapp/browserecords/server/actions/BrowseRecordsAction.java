@@ -107,6 +107,7 @@ import com.amalto.core.objects.UpdateReportPOJO;
 import com.amalto.core.objects.customform.CustomFormPOJO;
 import com.amalto.core.objects.customform.CustomFormPOJOPK;
 import com.amalto.core.objects.datacluster.DataClusterPOJOPK;
+import com.amalto.core.save.context.BeforeSaving;
 import com.amalto.core.save.context.DocumentSaver;
 import com.amalto.core.server.ServerContext;
 import com.amalto.core.server.StorageAdmin;
@@ -1676,7 +1677,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             int status = ItemResult.SUCCESS;
             WSItemPK wsi = CommonUtil.getPort().putItemWithReport(wsPutItemWithReport);
             String message = wsPutItemWithReport.getMessage();
-            boolean isWarningBeforeSavingProcess = DocumentSaver.MESSAGE_TYPE_WARNING == wsPutItemWithReport.getMessageType();
+            boolean isWarningBeforeSavingProcess = BeforeSaving.TYPE_WARNING == wsPutItemWithReport.getMessageType();
             if (isWarningBeforeSavingProcess) {
                 status = ItemResult.WARNING;
             }

@@ -19,15 +19,24 @@ public class BeforeSavingTest extends TestCase {
 
         String message = "<report type=\"info\">[EN:1111][FR:222]</report1>";
         assertFalse(bs.validateFormat(message));
+        
+        message = "<report type=\"warning\">[EN:1111][FR:222]</report1>";
+        assertFalse(bs.validateFormat(message));
 
         message = "<report type=\"info\">[EN:1111][FR:222]</report>";
+        assertFalse(bs.validateFormat(message));
+        
+        message = "<report type=\"warning\">[EN:1111][FR:222]</report>";
         assertFalse(bs.validateFormat(message));
 
         message = "<report><message>[EN:1111][FR:222]</message></report>";
         assertFalse(bs.validateFormat(message));
 
+        message = "<report><message type=\"info\">[EN:1111][FR:222]</message></report>";
+        assertTrue(bs.validateFormat(message));
+        
         message = "<report><message type=\"warning\">[EN:1111][FR:222]</message></report>";
-        assertFalse(bs.validateFormat(message));
+        assertTrue(bs.validateFormat(message));
 
         message = "<report><message type=\"info\"><aaa/></message></report>";
         assertFalse(bs.validateFormat(message));

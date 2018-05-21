@@ -40,20 +40,20 @@ import com.amalto.core.util.OutputReport;
 import com.amalto.core.util.Util;
 
 public class BeforeSaving implements DocumentSaver {
+    
+    public static final String TYPE_INFO = "info"; //$NON-NLS-1$
+
+    public static final String TYPE_WARNING = "warning"; //$NON-NLS-1$
+
+    public static final String TYPE_ERROR = "error"; //$NON-NLS-1$
 
     private static final XPath XPATH = XPathFactory.newInstance().newXPath();
-
-    private final String TYPE_INFO = "info"; //$NON-NLS-1$
-
-    private final String TYPE_WARN = "warning"; //$NON-NLS-1$
-
-    private final String TYPE_ERROR = "error"; //$NON-NLS-1$
 
     private DocumentSaver next;
 
     private String message = StringUtils.EMPTY;
 
-    private int messageType;
+    private String messageType;
 
     BeforeSaving(DocumentSaver next) {
         this.next = next;
@@ -94,15 +94,15 @@ public class BeforeSaving implements DocumentSaver {
                 }
 
                 if (TYPE_INFO.equals(errorCode)) {
-                    messageType = MESSAGE_TYPE_INFO;
-                } else if (TYPE_WARN.equals(errorCode)) {
-                    if (SaverHelper.ApproveWarnBeforeSaveing.get()) {
-                        messageType = MESSAGE_TYPE_INFO;
+                    messageType = TYPE_INFO;
+                } else if (TYPE_WARNING.equals(errorCode)) {
+                    if (SaverHelper.ApproveWarningBeforeSave.get()) {
+                        messageType = TYPE_INFO;
                     } else {
-                        messageType = MESSAGE_TYPE_WARNING;
+                        messageType = TYPE_WARNING;
                         return;
                     }
-                    SaverHelper.ApproveWarnBeforeSaveing.remove();
+                    SaverHelper.ApproveWarningBeforeSave.remove();
                 } else if (TYPE_ERROR.equals(errorCode)) {
                     throw new BeforeSavingErrorException(message);
                 }
@@ -176,7 +176,7 @@ public class BeforeSaving implements DocumentSaver {
         return message;
     }
     
-    public int getBeforeSavingMessageType() {
+    public String getBeforeSavingMessageType() {
         return messageType;
     }
     
@@ -200,8 +200,7 @@ public class BeforeSaving implements DocumentSaver {
         if (attribute == null) {
             return false;
         }
-        if (!(TYPE_INFO.equalsIgnoreCase(attribute.getNodeValue()) || TYPE_WARN.equalsIgnoreCase(attribute.getNodeValue())
-                || TYPE_ERROR.equalsIgnoreCase(attribute.getNodeValue()))) {
+        if (!validateMessageType(attribute.getNodeValue())) {
             return false;
         }
         NodeList messageNodeList = reportNode.getChildNodes();
@@ -213,5 +212,9 @@ public class BeforeSaving implements DocumentSaver {
         }
         Node messageNode = messageNodeList.item(0);
         return messageNode.getNodeType() == Node.TEXT_NODE;
+    }
+    
+    private boolean validateMessageType(String type) {
+        return (TYPE_INFO.equalsIgnoreCase(type) || TYPE_WARNING.equalsIgnoreCase(type) || TYPE_ERROR.equalsIgnoreCase(type));
     }
 }

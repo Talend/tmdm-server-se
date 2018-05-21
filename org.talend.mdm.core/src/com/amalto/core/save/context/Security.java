@@ -131,7 +131,7 @@ class Security implements DocumentSaver {
         return next.getBeforeSavingMessage();
     }
 
-    public int getBeforeSavingMessageType() {
+    public String getBeforeSavingMessageType() {
         return next.getBeforeSavingMessageType();
     }
 

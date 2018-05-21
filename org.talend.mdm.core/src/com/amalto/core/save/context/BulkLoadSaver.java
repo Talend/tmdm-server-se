@@ -56,7 +56,7 @@ class BulkLoadSaver implements DocumentSaver {
         throw new UnsupportedOperationException();
     }
 
-    public int getBeforeSavingMessageType() {
+    public String getBeforeSavingMessageType() {
         throw new UnsupportedOperationException();
     }
 }

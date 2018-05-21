@@ -130,7 +130,7 @@ class UpdateReport implements DocumentSaver {
     }
 
     @Override
-    public int getBeforeSavingMessageType() {
+    public String getBeforeSavingMessageType() {
         return next.getBeforeSavingMessageType();
     }
 }

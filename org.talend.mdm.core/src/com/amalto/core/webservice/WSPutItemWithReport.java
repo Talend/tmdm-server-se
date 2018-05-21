@@ -17,7 +17,7 @@ public class WSPutItemWithReport {
     protected java.lang.String source;
     protected java.lang.Boolean invokeBeforeSaving;
     protected java.lang.Boolean approveWarnBeforeSaving;
-    protected int messageType;
+    protected String messageType;
     protected java.lang.String message;
     
     public WSPutItemWithReport() {
@@ -61,11 +61,11 @@ public class WSPutItemWithReport {
         this.approveWarnBeforeSaving = approveWarnBeforeSaving;
     }
 
-    public int getMessageType() {
+    public String getMessageType() {
         return messageType;
     }
 
-    public void setMessageType(int messageType) {
+    public void setMessageType(String messageType) {
         this.messageType = messageType;
     }
 

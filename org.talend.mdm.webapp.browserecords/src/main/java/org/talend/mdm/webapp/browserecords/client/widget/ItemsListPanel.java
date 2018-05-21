@@ -571,7 +571,7 @@ public class ItemsListPanel extends ContentPanel {
                                 final MessageBox msgBox = MessageUtil.generateMessageBox(result);
                                 String message = msgBox.getMessage();
                                 if (result.getStatus() == ItemResult.FAILURE) {
-                                    if (message == null || "".equals(message)) { //$NON-NLS-1$
+                                    if (message == null || message.isEmpty()) {
                                         msgBox.setMessage(MessagesFactory.getMessages().output_report_null());
                                     }
                                     msgBox.addCallback(new Listener<MessageBoxEvent>() {
@@ -584,7 +584,7 @@ public class ItemsListPanel extends ContentPanel {
                                     msgBox.show();
                                 } else {
                                     msgBox.setButtons(""); //$NON-NLS-1$
-                                    if (message == null || "".equals(message)) { //$NON-NLS-1$
+                                    if (message == null || message.isEmpty()) {
                                         msgBox.setMessage(MessagesFactory.getMessages().save_success());
                                     }
                                     msgBox.show();

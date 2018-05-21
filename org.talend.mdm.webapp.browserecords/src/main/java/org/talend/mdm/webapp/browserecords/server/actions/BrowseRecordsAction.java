@@ -1656,7 +1656,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
     }
 
     @Override
-    public ItemResult saveItem(String concept, String ids, String xml, boolean isCreate, boolean isApproveWarnBeforeSaveing,
+    public ItemResult saveItem(String concept, String ids, String xml, boolean isCreate, boolean isApproveWarningBeforeSave,
             String language) throws ServiceException {
         Locale locale = new Locale(language);
 
@@ -1673,7 +1673,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             WSDataModelPK wsDataModelPK = new WSDataModelPK(getCurrentDataModel());
             WSPutItemWithReport wsPutItemWithReport = new WSPutItemWithReport(new WSPutItem(wsDataClusterPK, xml, wsDataModelPK,
                     !isCreate), UpdateReportPOJO.GENERIC_UI_SOURCE, true);
-            wsPutItemWithReport.setApproveWarnBeforeSaving(isApproveWarnBeforeSaveing);
+            wsPutItemWithReport.setApproveWarnBeforeSaving(isApproveWarningBeforeSave);
             int status = ItemResult.SUCCESS;
             WSItemPK wsi = CommonUtil.getPort().putItemWithReport(wsPutItemWithReport);
             String message = wsPutItemWithReport.getMessage();
@@ -1693,7 +1693,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             } else {
                 message = MESSAGES.getMessage(locale, "save_record_success"); //$NON-NLS-1$
             }
-            if (wsi == null || (isWarningBeforeSavingProcess && !isApproveWarnBeforeSaveing)) {
+            if (wsi == null || (isWarningBeforeSavingProcess && !isApproveWarningBeforeSave)) {
                 return new ItemResult(status, message, ids);
             } else {
                 String[] pk = wsi.getIds();
@@ -1745,12 +1745,12 @@ public class BrowseRecordsAction implements BrowseRecordsService {
     }
 
     @Override
-    public ItemResult saveItem(ViewBean viewBean, String ids, String xml, boolean isCreate, boolean isApproveWarnBeforeSaveing,
+    public ItemResult saveItem(ViewBean viewBean, String ids, String xml, boolean isCreate, boolean isApproveWarningBeforeSave,
             String language)
             throws ServiceException {
         EntityModel entityModel = viewBean.getBindingEntityModel();
         String concept = entityModel.getConceptName();
-        return saveItem(concept, ids, xml, isCreate, isApproveWarnBeforeSaveing, language);
+        return saveItem(concept, ids, xml, isCreate, isApproveWarningBeforeSave, language);
     }
 
     @SuppressWarnings("deprecation")

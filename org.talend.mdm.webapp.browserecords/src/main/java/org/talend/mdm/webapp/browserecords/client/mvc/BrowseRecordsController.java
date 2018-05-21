@@ -152,10 +152,8 @@ public class BrowseRecordsController extends Controller {
             browseRecordsService = ServiceFactory.getInstance().getMasterService();
         }
         saveItem(model, viewBean, itemBean, isCreate, isClose, isApproveWarnBeforeSaveing, isStaging, detailToolBar,
-                itemsDetailPanel, progressBar,
-                browseRecordsService);
+                itemsDetailPanel, progressBar, browseRecordsService);
     }
-
 
     private void onBulkUpdateItem(AppEvent event) {
         // TODO the following code need to be refactor, it is the demo code
@@ -402,8 +400,7 @@ public class BrowseRecordsController extends Controller {
             final BrowseRecordsServiceAsync browseRecordsService) {
         browseRecordsService.saveItem(viewBean, itemBean.getIds(),
                 (new ItemTreeHandler(model, viewBean, itemBean, ItemTreeHandlingStatus.ToSave)).serializeItem(), isCreate,
-                isApproveWarnBeforeSaveing,
-                Locale.getLanguage(), new SessionAwareAsyncCallback<ItemResult>() {
+                isApproveWarnBeforeSaveing, Locale.getLanguage(), new SessionAwareAsyncCallback<ItemResult>() {
 
                     @Override
                     protected void doOnFailure(Throwable caught) {
@@ -429,7 +426,7 @@ public class BrowseRecordsController extends Controller {
                         MessageBox messageBox = MessageUtil.generateMessageBox(result);
                         String message = messageBox.getMessage();
                         if (result.getStatus() == ItemResult.FAILURE) {
-                            if (message == null || "".equals(messageBox.getMessage())) { //$NON-NLS-1$
+                            if (message == null || message.isEmpty()) {
                                 messageBox.setMessage(MessagesFactory.getMessages().output_report_null());
                             }
                             messageBox.show();
@@ -453,7 +450,7 @@ public class BrowseRecordsController extends Controller {
                                 setTimeout(messageBox, 1000);
                             }
 
-                            if (message == null || "".equals(messageBox.getMessage())) { //$NON-NLS-1$
+                            if (message == null || message.isEmpty()) {
                                 messageBox.setMessage(MessagesFactory.getMessages().save_success());
                             }
 

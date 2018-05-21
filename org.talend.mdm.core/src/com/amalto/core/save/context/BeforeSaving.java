@@ -215,6 +215,6 @@ public class BeforeSaving implements DocumentSaver {
     }
     
     private boolean validateMessageType(String type) {
-        return (TYPE_INFO.equalsIgnoreCase(type) || TYPE_WARNING.equalsIgnoreCase(type) || TYPE_ERROR.equalsIgnoreCase(type));
+        return TYPE_INFO.equalsIgnoreCase(type) || TYPE_WARNING.equalsIgnoreCase(type) || TYPE_ERROR.equalsIgnoreCase(type);
     }
 }

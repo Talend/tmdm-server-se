@@ -116,7 +116,7 @@ public class ForeignKeyRowEditor extends RowEditor<ItemNodeModel> {
                                         if (result.getStatus() == ItemResult.FAILURE) {
                                             MessageBox msgBox = MessageUtil.generateMessageBox(result);
                                             String message = msgBox.getMessage();
-                                            if (message == null || "".equals(message)) { //$NON-NLS-1$
+                                            if (message == null || message.isEmpty()) { // $NON-NLS-1$
                                                 msgBox.setMessage(MessagesFactory.getMessages().output_report_null());
                                             }
                                             msgBox.show();

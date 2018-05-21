@@ -16,7 +16,7 @@ public class WSPutItemWithReport {
     protected com.amalto.core.webservice.WSPutItem wsPutItem;
     protected java.lang.String source;
     protected java.lang.Boolean invokeBeforeSaving;
-    protected java.lang.Boolean approveWarnBeforeSaving;
+    protected java.lang.Boolean warningApprovedBeforeSave = false;
     protected String messageType;
     protected java.lang.String message;
     
@@ -53,12 +53,12 @@ public class WSPutItemWithReport {
         this.invokeBeforeSaving = invokeBeforeSaving;
     }
 
-    public java.lang.Boolean isApproveWarnBeforeSaving() {
-        return approveWarnBeforeSaving;
+    public java.lang.Boolean isWarningApprovedBeforeSave() {
+        return warningApprovedBeforeSave;
     }
 
-    public void setApproveWarnBeforeSaving(java.lang.Boolean approveWarnBeforeSaving) {
-        this.approveWarnBeforeSaving = approveWarnBeforeSaving;
+    public void setWarningApprovedBeforeSave(java.lang.Boolean warningApprovedBeforeSave) {
+        this.warningApprovedBeforeSave = warningApprovedBeforeSave;
     }
 
     public String getMessageType() {

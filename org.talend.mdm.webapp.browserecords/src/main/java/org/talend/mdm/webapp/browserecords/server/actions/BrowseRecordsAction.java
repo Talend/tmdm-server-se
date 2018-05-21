@@ -1672,7 +1672,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             WSDataModelPK wsDataModelPK = new WSDataModelPK(getCurrentDataModel());
             WSPutItemWithReport wsPutItemWithReport = new WSPutItemWithReport(new WSPutItem(wsDataClusterPK, xml, wsDataModelPK,
                     !isCreate), UpdateReportPOJO.GENERIC_UI_SOURCE, true);
-            wsPutItemWithReport.setApproveWarnBeforeSaving(isWarningApprovedBeforeSave);
+            wsPutItemWithReport.setWarningApprovedBeforeSave(isWarningApprovedBeforeSave);
             int status = ItemResult.SUCCESS;
             WSItemPK wsi = CommonUtil.getPort().putItemWithReport(wsPutItemWithReport);
             String message = wsPutItemWithReport.getMessage();

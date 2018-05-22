@@ -17,7 +17,7 @@ public class WSPutItemWithReport {
     protected java.lang.String source;
     protected java.lang.Boolean invokeBeforeSaving;
     protected java.lang.Boolean warningApprovedBeforeSave = false;
-    protected String messageType;
+    protected java.lang.String messageType;
     protected java.lang.String message;
     
     public WSPutItemWithReport() {

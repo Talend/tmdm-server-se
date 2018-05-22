@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-    <xsd:import namespace="http://www.w3.org/2001/XMLSchema" />
+    <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/>
     <xsd:element name="Person">
         <xsd:annotation>
             <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -52,11 +51,18 @@
 		            </xsd:all> 
 		          </xsd:complexType> 
 		        </xsd:element> 
+		        <xsd:element maxOccurs="1" minOccurs="0" name="address" type="xsd:string">
+		          <xsd:annotation>
+		            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+		            <xsd:appinfo source="X_ForeignKey">Address/AddressId</xsd:appinfo>
+		            <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
+		          </xsd:annotation>
+		        </xsd:element>
             </xsd:sequence>
         </xsd:complexType>
         <xsd:unique name="Person">
-            <xsd:selector xpath="." />
-            <xsd:field xpath="Id" />
+            <xsd:selector xpath="."/>
+            <xsd:field xpath="Id"/>
         </xsd:unique>
     </xsd:element>
     <xsd:complexType name="Boy"> 
@@ -73,4 +79,16 @@
       </xsd:element> 
     </xsd:all> 
   </xsd:complexType>  
+  <xsd:element name="Address">
+	<xsd:complexType>
+		<xsd:all>
+			<xsd:element name="AddressId" type="xsd:string"/>
+			<xsd:element maxOccurs="1" minOccurs="0" name="name" type="xsd:string"/>
+		</xsd:all>
+	</xsd:complexType>
+	<xsd:unique name="Address">
+		<xsd:selector xpath="."/>
+		<xsd:field xpath="AddressId"/>
+	</xsd:unique>
+  </xsd:element>
 </xsd:schema>

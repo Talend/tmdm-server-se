@@ -770,4 +770,23 @@ public class MetadataRepositoryTest extends TestCase {
         assertEquals(20,
                 Integer.parseInt(entityType.getField("name").getType().getData(MetadataRepository.DATA_MIN_LENGTH).toString()));
     }
+
+    public void test_35() throws Exception {
+        MetadataRepository repository = new MetadataRepository();
+        InputStream stream = getClass().getResourceAsStream("schema35.xsd");
+        repository.load(stream);
+
+        ComplexTypeMetadata entityType = repository.getComplexType("Entity");
+        assertNotNull(entityType);
+        assertTrue(entityType.hasField("Id"));
+        assertTrue(entityType.hasField("aa-non-anonymous"));
+        assertTrue(entityType.hasField("aa-non-anonymous/aa-sub"));
+        assertTrue(entityType.hasField("aa-non-anonymous/bb-anonymous"));
+        assertTrue(entityType.hasField("aa-non-anonymous/bb-anonymous/bb-sub"));
+        assertTrue(entityType.hasField("do"));
+        assertTrue(entityType.hasField("do/do-sub"));
+
+        assertEquals("X_ANONYMOUS0", entityType.getField("aa-non-anonymous/bb-anonymous").getType().getName());
+        assertEquals("X_ANONYMOUS1", entityType.getField("do").getType().getName());
+    }
 }

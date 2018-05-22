@@ -164,9 +164,8 @@ public class LiquibaseSchemaAdapterTest {
         updated2.load(LiquibaseSchemaAdapterTest.class.getResourceAsStream("schema2_2.xsd")); //$NON-NLS-1$
         Compare.DiffResults diffResults = Compare.compare(original, updated2);
 
-        assertEquals(7, diffResults.getActions().size());
+        assertEquals(8, diffResults.getActions().size());
         assertEquals(7, diffResults.getModifyChanges().size());
-        assertEquals(0, diffResults.getRemoveChanges().size());
         assertEquals(0, diffResults.getAddChanges().size());
 
         List<AbstractChange> changeList = adapter.analyzeModifyChange(diffResults);
@@ -179,6 +178,23 @@ public class LiquibaseSchemaAdapterTest {
         assertEquals("x_bb_x_talend_id", ((DropNotNullConstraintChange) changeList.get(0)).getColumnName());
         assertEquals("x_ee", ((DropNotNullConstraintChange) changeList.get(1)).getColumnName());
         assertEquals("x_uu_x_talend_id", ((DropNotNullConstraintChange) changeList.get(2)).getColumnName());
+    }
+
+    @Test
+    public void testAnalyzeRemoveChange_FK() throws Exception {
+        MetadataRepository original = new MetadataRepository();
+        original.load(LiquibaseSchemaAdapterTest.class.getResourceAsStream("schema2_1.xsd")); //$NON-NLS-1$
+        original = original.copy();
+        MetadataRepository updated2 = new MetadataRepository();
+        updated2.load(LiquibaseSchemaAdapterTest.class.getResourceAsStream("schema2_2.xsd")); //$NON-NLS-1$
+
+        Compare.DiffResults diffResults = Compare.compare(original, updated2);
+        assertEquals(1, diffResults.getRemoveChanges().size());
+
+        List<AbstractChange> removeChangeList = adapter.analyzeRemoveChange(diffResults);
+        assertEquals(2, removeChangeList.size());
+        assertEquals("liquibase.change.core.DropForeignKeyConstraintChange", removeChangeList.get(0).getClass().getName());
+        assertEquals("liquibase.change.core.DropColumnChange", removeChangeList.get(1).getClass().getName());
     }
 
     @Test

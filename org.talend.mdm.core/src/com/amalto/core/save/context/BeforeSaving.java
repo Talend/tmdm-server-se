@@ -45,6 +45,8 @@ public class BeforeSaving implements DocumentSaver {
 
     public static final String TYPE_WARNING = "warning"; //$NON-NLS-1$
 
+    public static final String TYPE_WARNING_APPROVED = "approved"; //$NON-NLS-1$
+
     public static final String TYPE_ERROR = "error"; //$NON-NLS-1$
 
     private static final XPath XPATH = XPathFactory.newInstance().newXPath();
@@ -97,7 +99,7 @@ public class BeforeSaving implements DocumentSaver {
                     messageType = TYPE_INFO;
                 } else if (TYPE_WARNING.equals(errorCode)) {
                     if (SaverHelper.WarningApprovedBeforeSave.get()) {
-                        messageType = TYPE_INFO;
+                        messageType = TYPE_WARNING_APPROVED;
                     } else {
                         messageType = TYPE_WARNING;
                         return;

@@ -1681,6 +1681,9 @@ public class BrowseRecordsAction implements BrowseRecordsService {
                 status = ItemResult.WARNING;
             }
             if (hasBeforeSavingProcess) {
+                if (BeforeSaving.TYPE_WARNING_APPROVED == wsPutItemWithReport.getMessageType()) {
+                    message = MESSAGES.getMessage(locale, "save_record_success"); //$NON-NLS-1$
+                }
                 // No message from beforeSaving process,
                 if (message == null || message.length() == 0) {
                     if (isWarningBeforeSavingProcess) {

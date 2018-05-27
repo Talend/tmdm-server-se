@@ -9,6 +9,7 @@
     <!-- GWT locale -->
     <extend-property name="locale" values="fr" />
     <extend-property name="locale" values="ru" />
+    <extend-property name="locale" values="sk" />
 
     <!-- GWT log -->
     <inherits name="com.allen_sauer.gwt.log.gwt-log-OFF" />

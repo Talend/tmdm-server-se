@@ -317,7 +317,8 @@ public class FormatDateFieldGWTTest extends GWTTestCase {
         }
 
         @Override
-        public void updateItems(List<UpdateItemModel> updateItems, String language, AsyncCallback<List<ItemResult>> callback) {
+        public void updateItems(List<UpdateItemModel> updateItems, boolean isWarningApprovedBeforeSave, String language,
+                AsyncCallback<List<ItemResult>> callback) {
 
         }
 

@@ -528,77 +528,7 @@ public class ItemsListPanel extends ContentPanel {
                 }
                 ViewBean viewBean = (ViewBean) BrowseRecords.getSession().get(UserSession.CURRENT_VIEW);
                 String xml = (new ItemTreeHandler(model, viewBean, ItemTreeHandlingStatus.ToSave)).serializeItem();
-
-                service.updateItem(itemBean.getConcept(), itemBean.getIds(), changedField, xml, entityModel,
-                        Locale.getLanguage(), new SessionAwareAsyncCallback<ItemResult>() {
-
-                            @Override
-                            protected void doOnFailure(Throwable caught) {
-                                Record record;
-                                Store<ItemBean> store = grid.getStore();
-                                if (store != null) {
-                                    record = store.getRecord(itemBean);
-                                } else {
-                                    record = null;
-                                }
-
-                                if (record != null) {
-                                    record.reject(false);
-                                }
-
-                                String err = caught.getLocalizedMessage();
-                                if (err != null) {
-                                    MessageBox.alert(MessagesFactory.getMessages().error_title(),
-                                            MultilanguageMessageParser.pickOutISOMessage(err), null);
-                                } else {
-                                    super.doOnFailure(caught);
-                                }
-                            }
-
-                            @Override
-                            public void onSuccess(ItemResult result) {
-                                Record record;
-                                Store<ItemBean> store = grid.getStore();
-                                if (store != null) {
-                                    record = store.getRecord(itemBean);
-                                } else {
-                                    record = null;
-                                }
-
-                                if (record != null) {
-                                    record.commit(false);
-                                }
-                                final MessageBox msgBox = MessageUtil.generateMessageBox(result);
-                                String message = msgBox.getMessage();
-                                if (result.getStatus() == ItemResult.FAILURE) {
-                                    if (message == null || message.isEmpty()) {
-                                        msgBox.setMessage(MessagesFactory.getMessages().output_report_null());
-                                    }
-                                    msgBox.addCallback(new Listener<MessageBoxEvent>() {
-
-                                        @Override
-                                        public void handleEvent(MessageBoxEvent be) {
-                                            refreshOnSaveCompleted(itemBean);
-                                        }
-                                    });
-                                    msgBox.show();
-                                } else {
-                                    msgBox.setButtons(""); //$NON-NLS-1$
-                                    if (message == null || message.isEmpty()) {
-                                        msgBox.setMessage(MessagesFactory.getMessages().save_success());
-                                    }
-                                    msgBox.show();
-                                    Timer timer = new Timer() {
-
-                                        public void run() {
-                                            msgBox.close();
-                                            refreshOnSaveCompleted(itemBean);
-                                        }
-                                    };
-                                    timer.schedule(1000);
-                                }
-                            }
-                        });
+                updateItem(itemBean, changedField, xml, entityModel, false);
             }
 
         });
@@ -948,5 +878,96 @@ public class ItemsListPanel extends ContentPanel {
 
     protected Boolean isStaging() {
         return false;
+    }
+
+    private void updateItem(final ItemBean itemBean, final Map<String, String> changedField, final String xml,
+            final EntityModel entityModel, final boolean isWarningApprovedBeforeSave) {
+        service.updateItem(itemBean.getConcept(), itemBean.getIds(), changedField, xml, entityModel, isWarningApprovedBeforeSave,
+                Locale.getLanguage(),
+                new SessionAwareAsyncCallback<ItemResult>() {
+
+                    @Override
+                    protected void doOnFailure(Throwable caught) {
+                        Record record;
+                        Store<ItemBean> store = grid.getStore();
+                        if (store != null) {
+                            record = store.getRecord(itemBean);
+                        } else {
+                            record = null;
+                        }
+
+                        if (record != null) {
+                            record.reject(false);
+                        }
+
+                        String err = caught.getLocalizedMessage();
+                        if (err != null) {
+                            MessageBox.alert(MessagesFactory.getMessages().error_title(),
+                                    MultilanguageMessageParser.pickOutISOMessage(err), null);
+                        } else {
+                            super.doOnFailure(caught);
+                        }
+                    }
+
+                    @Override
+                    public void onSuccess(ItemResult result) {
+                        Record record;
+                        Store<ItemBean> store = grid.getStore();
+                        if (store != null) {
+                            record = store.getRecord(itemBean);
+                        } else {
+                            record = null;
+                        }
+
+                        if (record != null) {
+                            record.commit(false);
+                        }
+                        final MessageBox msgBox = MessageUtil.generateMessageBox(result);
+                        String message = msgBox.getMessage();
+                        if (result.getStatus() == ItemResult.FAILURE) {
+                            if (message == null || message.isEmpty()) {
+                                msgBox.setMessage(MessagesFactory.getMessages().output_report_null());
+                            }
+                            msgBox.addCallback(new Listener<MessageBoxEvent>() {
+
+                                @Override
+                                public void handleEvent(MessageBoxEvent be) {
+                                    refreshOnSaveCompleted(itemBean);
+                                }
+                            });
+                            msgBox.show();
+                        } else {
+                            MessageBox messageBox = MessageUtil.generateMessageBox(result);
+                            if (ItemResult.WARNING == result.getStatus()) {
+                                messageBox.addCallback(new Listener<MessageBoxEvent>() {
+
+                                    @Override
+                                    public void handleEvent(MessageBoxEvent event) {
+                                        if (event.getButtonClicked().getItemId().equals(Dialog.OK)) {
+                                            updateItem(itemBean, changedField, xml, entityModel, true);
+                                        } else {
+                                            ItemsListPanel.getInstance().refreshGrid(itemBean);
+                                        }
+                                    }
+                                });
+                                messageBox.show();
+                                return;
+                            }
+                            msgBox.setButtons(""); //$NON-NLS-1$
+                            if (message == null || message.isEmpty()) {
+                                msgBox.setMessage(MessagesFactory.getMessages().save_success());
+                            }
+                            msgBox.show();
+                            Timer timer = new Timer() {
+
+                                public void run() {
+                                    msgBox.close();
+                                    refreshOnSaveCompleted(itemBean);
+                                }
+                            };
+                            timer.schedule(1000);
+                        }
+                    }
+                });
     }
 }

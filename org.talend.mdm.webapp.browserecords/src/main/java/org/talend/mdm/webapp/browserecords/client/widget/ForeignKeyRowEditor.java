@@ -73,7 +73,7 @@ public class ForeignKeyRowEditor extends RowEditor<ItemNodeModel> {
                         .getInstance()
                         .getService(staging)
                         .updateItem(
-                                fkTypeModel.getForeignkey().split("/")[0], ids, null, null, null, Locale.getLanguage(), //$NON-NLS-1$
+                                fkTypeModel.getForeignkey().split("/")[0], ids, null, null, null, false, Locale.getLanguage(), //$NON-NLS-1$
                                 new SessionAwareAsyncCallback<ItemResult>() {
 
                                     @Override

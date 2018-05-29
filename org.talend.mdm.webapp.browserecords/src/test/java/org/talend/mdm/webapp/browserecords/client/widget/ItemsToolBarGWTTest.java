@@ -368,7 +368,7 @@ public class ItemsToolBarGWTTest extends GWTTestCase {
 
         @Override
         public void updateItem(String concept, String ids, Map<String, String> changedNodes, String xml, EntityModel entityModel,
-                String language, AsyncCallback<ItemResult> callback) {
+                boolean isWarningApprovedBeforeSave, String language, AsyncCallback<ItemResult> callback) {
 
         }
 

@@ -1803,11 +1803,13 @@ public class BrowseRecordsAction implements BrowseRecordsService {
     }
 
     @Override
-    public List<ItemResult> updateItems(List<UpdateItemModel> updateItems, String language) throws ServiceException {
+    public List<ItemResult> updateItems(List<UpdateItemModel> updateItems, boolean isWarningApprovedBeforeSave, String language)
+            throws ServiceException {
         List<ItemResult> resultes = new ArrayList<ItemResult>();
         for (UpdateItemModel item : updateItems) {
             try {
-                resultes.add(updateItem(item.getConcept(), item.getIds(), item.getChangedNodes(), null, null, false, language));
+                resultes.add(updateItem(item.getConcept(), item.getIds(), item.getChangedNodes(), null, null,
+                        isWarningApprovedBeforeSave, language));
             } catch (Exception e) {
                 LOG.error(e.getMessage(), e);
             }

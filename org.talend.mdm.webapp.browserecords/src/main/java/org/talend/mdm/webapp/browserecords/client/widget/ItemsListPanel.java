@@ -883,8 +883,7 @@ public class ItemsListPanel extends ContentPanel {
     private void updateItem(final ItemBean itemBean, final Map<String, String> changedField, final String xml,
             final EntityModel entityModel, final boolean isWarningApprovedBeforeSave) {
         service.updateItem(itemBean.getConcept(), itemBean.getIds(), changedField, xml, entityModel, isWarningApprovedBeforeSave,
-                Locale.getLanguage(),
-                new SessionAwareAsyncCallback<ItemResult>() {
+                Locale.getLanguage(), new SessionAwareAsyncCallback<ItemResult>() {
 
                     @Override
                     protected void doOnFailure(Throwable caught) {
@@ -922,46 +921,43 @@ public class ItemsListPanel extends ContentPanel {
                         if (record != null) {
                             record.commit(false);
                         }
-                        final MessageBox msgBox = MessageUtil.generateMessageBox(result);
-                        String message = msgBox.getMessage();
+                        final MessageBox messageBox = MessageUtil.generateMessageBox(result);
+                        String message = messageBox.getMessage();
                         if (result.getStatus() == ItemResult.FAILURE) {
                             if (message == null || message.isEmpty()) {
-                                msgBox.setMessage(MessagesFactory.getMessages().output_report_null());
+                                messageBox.setMessage(MessagesFactory.getMessages().output_report_null());
                             }
-                            msgBox.addCallback(new Listener<MessageBoxEvent>() {
+                            messageBox.addCallback(new Listener<MessageBoxEvent>() {
 
                                 @Override
                                 public void handleEvent(MessageBoxEvent be) {
                                     refreshOnSaveCompleted(itemBean);
                                 }
                             });
-                            msgBox.show();
-                        } else {
-                            MessageBox messageBox = MessageUtil.generateMessageBox(result);
-                            if (ItemResult.WARNING == result.getStatus()) {
-                                messageBox.addCallback(new Listener<MessageBoxEvent>() {
+                            messageBox.show();
+                        } else if (ItemResult.WARNING == result.getStatus()) {
+                            messageBox.addCallback(new Listener<MessageBoxEvent>() {
 
-                                    @Override
-                                    public void handleEvent(MessageBoxEvent event) {
-                                        if (event.getButtonClicked().getItemId().equals(Dialog.OK)) {
-                                            updateItem(itemBean, changedField, xml, entityModel, true);
-                                        } else {
-                                            ItemsListPanel.getInstance().refreshGrid(itemBean);
-                                        }
+                                @Override
+                                public void handleEvent(MessageBoxEvent event) {
+                                    if (event.getButtonClicked().getItemId().equals(Dialog.OK)) {
+                                        updateItem(itemBean, changedField, xml, entityModel, true);
+                                    } else {
+                                        ItemsListPanel.getInstance().refreshGrid(itemBean);
                                     }
-                                });
-                                messageBox.show();
-                                return;
-                            }
-                            msgBox.setButtons(""); //$NON-NLS-1$
+                                }
+                            });
+                            messageBox.show();
+                            return;
+                        } else {
                             if (message == null || message.isEmpty()) {
-                                msgBox.setMessage(MessagesFactory.getMessages().save_success());
+                                messageBox.setMessage(MessagesFactory.getMessages().save_success());
                             }
-                            msgBox.show();
+                            messageBox.show();
                             Timer timer = new Timer() {
 
                                 public void run() {
-                                    msgBox.close();
+                                    messageBox.close();
                                     refreshOnSaveCompleted(itemBean);
                                 }
                             };

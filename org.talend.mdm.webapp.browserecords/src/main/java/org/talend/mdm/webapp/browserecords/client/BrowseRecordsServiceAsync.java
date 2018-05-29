@@ -135,7 +135,8 @@ public interface BrowseRecordsServiceAsync {
     void updateItem(String concept, String ids, Map<String, String> changedNodes, String xml, EntityModel entityModel,
             boolean isWarningApprovedBeforeSave, String language, AsyncCallback<ItemResult> callback);
 
-    void updateItems(List<UpdateItemModel> updateItems, String language, AsyncCallback<List<ItemResult>> callback);
+    void updateItems(List<UpdateItemModel> updateItems, boolean isWarningApprovedBeforeSave, String language,
+            AsyncCallback<List<ItemResult>> callback);
 
     void getGoldenRecordIdByGroupId(String dataClusterPK, String viewPK, String concept, String[] keys, String groupId,
             AsyncCallback<String> callback);

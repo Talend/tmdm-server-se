@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 import liquibase.change.AbstractChange;
+import liquibase.change.core.DropColumnChange;
 import liquibase.change.core.DropNotNullConstraintChange;
 
 import org.apache.log4j.Logger;
@@ -178,6 +179,41 @@ public class LiquibaseSchemaAdapterTest {
         assertEquals("x_bb_x_talend_id", ((DropNotNullConstraintChange) changeList.get(0)).getColumnName());
         assertEquals("x_ee", ((DropNotNullConstraintChange) changeList.get(1)).getColumnName());
         assertEquals("x_uu_x_talend_id", ((DropNotNullConstraintChange) changeList.get(2)).getColumnName());
+    }
+
+    @Test
+    public void testAnalyzeDeleteSimpleFieldInComplexType() throws Exception {
+        MetadataRepository original = new MetadataRepository();
+        original.load(LiquibaseSchemaAdapterTest.class.getResourceAsStream("schema3_1.xsd")); //$NON-NLS-1$
+        original = original.copy();
+        MetadataRepository updated2 = new MetadataRepository();
+        updated2.load(LiquibaseSchemaAdapterTest.class.getResourceAsStream("schema3_2.xsd")); //$NON-NLS-1$
+        Compare.DiffResults diffResults = Compare.compare(original, updated2);
+
+        assertEquals(6, diffResults.getActions().size());
+        assertEquals(0, diffResults.getModifyChanges().size());
+        assertEquals(0, diffResults.getAddChanges().size());
+        assertEquals(6, diffResults.getRemoveChanges().size());
+
+        List<AbstractChange> changeList = adapter.findChangeFiles(diffResults);
+
+        assertEquals(3, changeList.size());
+        assertEquals("liquibase.change.core.DropColumnChange", changeList.get(0).getClass().getName());
+        assertEquals("liquibase.change.core.DropColumnChange", changeList.get(1).getClass().getName());
+        assertEquals("liquibase.change.core.DropColumnChange", changeList.get(2).getClass().getName());
+
+        assertEquals("X_do_non_anonymous", ((DropColumnChange) changeList.get(0)).getTableName());
+        assertEquals(2, ((DropColumnChange) changeList.get(0)).getColumns().size());
+        assertEquals("x_do1_name", ((DropColumnChange) changeList.get(0)).getColumns().get(0).getName());
+        assertEquals("x_do1_age", ((DropColumnChange) changeList.get(0)).getColumns().get(1).getName());
+        assertEquals("X_ANONYMOUS1", ((DropColumnChange) changeList.get(1)).getTableName());
+        assertEquals(2, ((DropColumnChange) changeList.get(1)).getColumns().size());
+        assertEquals("x_do3_name", ((DropColumnChange) changeList.get(1)).getColumns().get(0).getName());
+        assertEquals("x_do3_age", ((DropColumnChange) changeList.get(01)).getColumns().get(1).getName());
+        assertEquals("X_ANONYMOUS0", ((DropColumnChange) changeList.get(2)).getTableName());
+        assertEquals(2, ((DropColumnChange) changeList.get(2)).getColumns().size());
+        assertEquals("x_do2_name", ((DropColumnChange) changeList.get(2)).getColumns().get(0).getName());
+        assertEquals("x_do2_age", ((DropColumnChange) changeList.get(2)).getColumns().get(1).getName());
     }
 
     @Test

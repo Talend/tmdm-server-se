@@ -368,8 +368,8 @@ public class CompareTest extends TestCase {
 
         ImpactAnalyzer analyzer = new HibernateStorageImpactAnalyzer();
         Map<ImpactAnalyzer.Impact, List<Change>> sort = analyzer.analyzeImpacts(diffResults);
-        assertEquals(3, sort.get(ImpactAnalyzer.Impact.HIGH).size());
-        assertEquals(0, sort.get(ImpactAnalyzer.Impact.MEDIUM).size());
+        assertEquals(1, sort.get(ImpactAnalyzer.Impact.HIGH).size());
+        assertEquals(2, sort.get(ImpactAnalyzer.Impact.MEDIUM).size());
         assertEquals(3, sort.get(ImpactAnalyzer.Impact.LOW).size());
     }
     
@@ -861,8 +861,8 @@ public class CompareTest extends TestCase {
 
         ImpactAnalyzer analyzer = new HibernateStorageImpactAnalyzer();
         Map<ImpactAnalyzer.Impact, List<Change>> sort = analyzer.analyzeImpacts(diffResults);
-        assertEquals(20, sort.get(ImpactAnalyzer.Impact.HIGH).size());
-        assertEquals(5, sort.get(ImpactAnalyzer.Impact.MEDIUM).size());
+        assertEquals(8, sort.get(ImpactAnalyzer.Impact.HIGH).size());
+        assertEquals(17, sort.get(ImpactAnalyzer.Impact.MEDIUM).size());
         assertEquals(0, sort.get(ImpactAnalyzer.Impact.LOW).size());
     }
 

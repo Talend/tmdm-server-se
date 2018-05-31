@@ -3264,7 +3264,40 @@ public class DocumentSaveTest extends TestCase {
         assertEquals("System_Interactive", evaluate(committer.getCommittedElement(), "/User/roles/role[1]"));
         assertEquals("Demo_User", evaluate(committer.getCommittedElement(), "/User/roles/role[2]"));
     }
+    
+	public void testUpdateProvisioning() throws Exception {
+		MetadataRepository repository = ServerContext.INSTANCE.get().getStorageAdmin()
+				.get(StorageAdmin.SYSTEM_STORAGE, StorageType.SYSTEM).getMetadataRepository();
+		repository.load(DocumentSaveTest.class.getResourceAsStream("PROVISIONING.xsd"));
+		MockMetadataRepositoryAdmin.INSTANCE.register("PROVISIONING", repository);
 
+		TestSaverSource source = new TestSaverSource(repository, true, "provisioning_demo_manager_1.xml",
+				"PROVISIONING.xsd") {
+			@Override
+			protected Element getUserXmlElement(Document databaseDomDocument) {
+				return databaseDomDocument.getDocumentElement();
+			}
+
+		};
+		source.setUserName("admin");
+		final MockCommitter committer = new MockCommitter();
+		SaverSession session = new SaverSession(source) {
+
+			@Override
+			protected Committer getDefaultCommitter() {
+				return committer;
+			}
+		};
+		InputStream newRoleInputStream = DocumentSaveTest.class.getResourceAsStream("provisioning_demo_manager_2.xml");
+		DocumentSaverContext context = session.getContextFactory().create("PROVISIONING", "PROVISIONING", "",
+				newRoleInputStream, true, true, false, false, true);
+		DocumentSaver saver = context.createSaver();
+		saver.save(session, context);
+		session.end(committer);
+		assertTrue(committer.hasSaved());
+		assertEquals("Demo_Manager2", evaluate(committer.getCommittedElement(), "/role-pOJO/name"));
+	}
+	
     public void test61() throws Exception {
         MetadataRepository repository = new MetadataRepository();
         repository.load(DocumentSaveTest.class.getResourceAsStream("metadata15.xsd"));
@@ -3868,7 +3901,7 @@ public class DocumentSaveTest extends TestCase {
             }
         }
 
-        private static Element getUserXmlElement(Document databaseDomDocument) {
+        protected Element getUserXmlElement(Document databaseDomDocument) {
             NodeList userXmlPayloadElement = databaseDomDocument.getElementsByTagName("p"); //$NON-NLS-1$
             if (userXmlPayloadElement.getLength() > 1) {
                 throw new IllegalStateException("Document has multiple payload elements.");

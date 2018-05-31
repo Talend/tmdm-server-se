@@ -11,19 +11,12 @@
 
 package com.amalto.core.save.context;
 
-import com.amalto.core.history.MutableDocument;
-import com.amalto.core.load.action.LoadAction;
-import com.amalto.core.save.*;
-import com.amalto.core.schema.validation.SkipAttributeDocumentBuilder;
-import com.amalto.core.server.MetadataRepositoryAdmin;
-import com.amalto.core.server.Server;
-import com.amalto.core.server.ServerContext;
-import com.amalto.core.server.StorageAdmin;
-import com.amalto.core.server.api.XmlServer;
-import com.amalto.core.storage.Storage;
-import com.amalto.core.storage.StorageType;
-import com.amalto.core.util.Util;
-import com.amalto.core.util.XSDKey;
+import java.io.InputStream;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
@@ -32,12 +25,26 @@ import org.talend.mdm.commmon.util.webapp.XSystemObjects;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
+import com.amalto.core.history.MutableDocument;
+import com.amalto.core.load.action.LoadAction;
+import com.amalto.core.save.AutoCommitSaverContext;
+import com.amalto.core.save.DOMDocument;
+import com.amalto.core.save.DocumentSaverContext;
+import com.amalto.core.save.PartialUpdateSaverContext;
+import com.amalto.core.save.ReportDocumentSaverContext;
+import com.amalto.core.save.SaverSession;
+import com.amalto.core.save.UserAction;
+import com.amalto.core.schema.validation.SkipAttributeDocumentBuilder;
+import com.amalto.core.server.MetadataRepositoryAdmin;
+import com.amalto.core.server.Server;
+import com.amalto.core.server.ServerContext;
+import com.amalto.core.server.StorageAdmin;
+import com.amalto.core.server.api.XmlServer;
+import com.amalto.core.storage.DispatchWrapper;
+import com.amalto.core.storage.Storage;
+import com.amalto.core.storage.StorageType;
+import com.amalto.core.util.Util;
+import com.amalto.core.util.XSDKey;
 
 public class SaverContextFactory {
 
@@ -147,51 +154,56 @@ public class SaverContextFactory {
      * @param autoCommit         <code>true</code> to perform a call to {@link SaverSession#end()} when a record is ready for save.
      * @return A context configured to save a record in MDM.
      */
-    public DocumentSaverContext create(String dataCluster,
-                                       String dataModelName,
-                                       String changeSource,
-                                       InputStream documentStream,
-                                       boolean isReplace,
-                                       boolean validate,
-                                       boolean updateReport,
-                                       boolean invokeBeforeSaving,
-                                       boolean autoCommit) {
-        if (invokeBeforeSaving && !updateReport) {
-            throw new IllegalArgumentException("Must generate update report to invoke before saving."); //$NON-NLS-1$
-        }
-        Server server = ServerContext.INSTANCE.get();
-        // Parsing
-        MutableDocument userDocument;
-        try {
-            // Don't ignore talend internal attributes when parsing this document
-            DocumentBuilder documentBuilder = new SkipAttributeDocumentBuilder(DOCUMENT_BUILDER, false);
-            InputSource source = new InputSource(documentStream);
-            Document userDomDocument = documentBuilder.parse(source);
-            final MetadataRepositoryAdmin admin = server.getMetadataRepositoryAdmin();
-            String typeName = userDomDocument.getDocumentElement().getNodeName();
-            MetadataRepository repository;
-            if (dataModelName.startsWith("amaltoOBJECTS") || !admin.exist(dataModelName)) {
-                final Storage systemStorage = server.getStorageAdmin().get(StorageAdmin.SYSTEM_STORAGE, StorageType.SYSTEM);
-                final MetadataRepository systemRepository = systemStorage.getMetadataRepository();
-                if (systemRepository.getComplexType(typeName) != null) {
-                    // Record to save is a system object!
-                    return new DirectWriteContext(dataCluster, Util.nodeToString(userDomDocument));
-                } else {
-                    throw new IllegalArgumentException("Data model '" + dataModelName + "' does not exist."); //$NON-NLS-1$ //$NON-NLS-2$
-                }
-            } else {
-                repository = admin.get(dataModelName);
-            }
-            ComplexTypeMetadata type = repository.getComplexType(typeName);
-            if (type == null) {
-                throw new IllegalArgumentException("Type '" + typeName + "' does not exist in data model '" + dataModelName + "'."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            }
-            userDocument = new DOMDocument(userDomDocument.getDocumentElement(), type, dataCluster, dataModelName);
-        } catch (Exception e) {
-            throw new RuntimeException("Unable to parse document to save.", e); //$NON-NLS-1$
-        }
-       return create(dataCluster, dataModelName, changeSource, userDocument, isReplace, validate, updateReport, invokeBeforeSaving, autoCommit);
-    }
+	public DocumentSaverContext create(String dataCluster, String dataModelName, String changeSource,
+			InputStream documentStream, boolean isReplace, boolean validate, boolean updateReport,
+			boolean invokeBeforeSaving, boolean autoCommit) {
+		if (invokeBeforeSaving && !updateReport) {
+			throw new IllegalArgumentException("Must generate update report to invoke before saving."); //$NON-NLS-1$
+		}
+		Server server = ServerContext.INSTANCE.get();
+		// Parsing
+		MutableDocument userDocument;
+		try {
+			// Don't ignore talend internal attributes when parsing this
+			// document
+			DocumentBuilder documentBuilder = new SkipAttributeDocumentBuilder(DOCUMENT_BUILDER, false);
+			InputSource source = new InputSource(documentStream);
+			Document userDomDocument = documentBuilder.parse(source);
+			final MetadataRepositoryAdmin admin = server.getMetadataRepositoryAdmin();
+			String typeName = userDomDocument.getDocumentElement().getNodeName();
+			MetadataRepository repository;
+			if (dataModelName.startsWith("amaltoOBJECTS") || !admin.exist(dataModelName)) {
+				final Storage systemStorage = server.getStorageAdmin().get(StorageAdmin.SYSTEM_STORAGE,
+						StorageType.SYSTEM);
+				final MetadataRepository systemRepository = systemStorage.getMetadataRepository();
+				if (systemRepository.getComplexType(typeName) != null) {
+					// Record to save is a system object!
+					return new DirectWriteContext(dataCluster, Util.nodeToString(userDomDocument));
+				} else {
+					throw new IllegalArgumentException("Data model '" + dataModelName + "' does not exist."); //$NON-NLS-1$ //$NON-NLS-2$
+				}
+
+			} else {
+				if (DispatchWrapper.isMDMInternal(dataCluster)) {
+					final StorageAdmin storageAdmin = server.getStorageAdmin();
+					Storage storage = storageAdmin.get(StorageAdmin.SYSTEM_STORAGE, StorageType.SYSTEM);
+					repository = storage.getMetadataRepository();
+				} else {
+					repository = admin.get(dataModelName);
+				}
+			}
+			ComplexTypeMetadata type = repository.getComplexType(typeName);
+			if (type == null) {
+				throw new IllegalArgumentException(
+						"Type '" + typeName + "' does not exist in data model '" + dataModelName + "'."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			}
+			userDocument = new DOMDocument(userDomDocument.getDocumentElement(), type, dataCluster, dataModelName);
+		} catch (Exception e) {
+			throw new RuntimeException("Unable to parse document to save.", e); //$NON-NLS-1$
+		}
+		return create(dataCluster, dataModelName, changeSource, userDocument, isReplace, validate, updateReport,
+				invokeBeforeSaving, autoCommit);
+	}
 
     /**
      * Creates a {@link DocumentSaverContext} to save a unique record in MDM, with update report/before saving options.

@@ -135,7 +135,7 @@ public class LiquibaseSchemaAdapter  {
         return changeActionList;
     }
 
-    private String getTableName(FieldMetadata field) {
+    protected String getTableName(FieldMetadata field) {
         String tableName = StringUtils.EMPTY;
         if (isContainedComplexFieldTypeMetadata(field) || isContainedComplexType(field)) {
             tableName = tableResolver.get(field.getContainingType());
@@ -149,7 +149,7 @@ public class LiquibaseSchemaAdapter  {
         return tableName;
     }
 
-    private String getColumnName(FieldMetadata field) {
+    protected String getColumnName(FieldMetadata field) {
         String columnName = tableResolver.get(field);
         if (field instanceof ContainedTypeFieldMetadata) {
             columnName += "_x_talend_id"; //$NON-NLS-1$

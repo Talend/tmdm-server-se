@@ -256,4 +256,15 @@ public class LiquibaseSchemaAdapterTest {
         assertTrue(changeLogFile.getName().endsWith(".xml"));
         assertEquals(changeLogDir.getAbsolutePath(), changeLogFile.getParentFile().getParentFile().getAbsolutePath());
     }
+
+    @Test
+    public void testGetTableName() throws Exception {
+        ComplexTypeMetadata person = repository.getComplexType("Person");
+        ComplexTypeMetadata allType = repository.getComplexType("allType");
+
+        assertEquals("allType", adapter.getTableName(allType.getField("strField")));
+        assertEquals("Person", adapter.getTableName(person.getField("status")));
+        assertEquals("Person", adapter.getTableName(person.getField("boy")));
+        assertEquals("X_Boy", adapter.getTableName(person.getField("boy/name")));
+    }
 }

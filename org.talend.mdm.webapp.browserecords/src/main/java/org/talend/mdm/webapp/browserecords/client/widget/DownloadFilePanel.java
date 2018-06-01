@@ -31,6 +31,7 @@ import org.talend.mdm.webapp.browserecords.client.util.CommonUtil;
 import org.talend.mdm.webapp.browserecords.shared.Constants;
 import org.talend.mdm.webapp.browserecords.shared.ViewBean;
 
+import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -47,6 +48,8 @@ import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.Radio;
+import com.extjs.gxt.ui.client.widget.form.RadioGroup;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
@@ -76,6 +79,10 @@ public class DownloadFilePanel extends FormPanel {
     private Map<String, List<String>> inheritanceNodeMap = null;
 
     private int defaultMaxExportRecordsCount;
+
+    private Radio csvTypeRadio;
+
+    private Radio excelTypeRadio;
 
     public DownloadFilePanel(ViewBean viewBean, QueryModel queryModel, Window window) {
         defaultMaxExportRecordsCount =  BrowseRecords.getSession().getAppHeader().getExportRecordsDefaultCount();
@@ -145,6 +152,19 @@ public class DownloadFilePanel extends FormPanel {
         fkDisplayCombo.setEnabled(false);
         fkDisplayCombo.setSelection(fkDisplayList);
         this.add(fkDisplayCombo, new FormData("90%")); //$NON-NLS-1$
+
+        RadioGroup colRadioGroup = new RadioGroup();
+        colRadioGroup.setFieldLabel(MessagesFactory.getMessages().file_type());
+        colRadioGroup.setOrientation(Orientation.HORIZONTAL);
+
+        csvTypeRadio = new Radio();
+        csvTypeRadio.setBoxLabel(MessagesFactory.getMessages().file_type_csv());
+        csvTypeRadio.setValue(true);
+        colRadioGroup.add(csvTypeRadio);
+        excelTypeRadio = new Radio();
+        excelTypeRadio.setBoxLabel(MessagesFactory.getMessages().file_type_excel());
+        colRadioGroup.add(excelTypeRadio);
+        add(colRadioGroup, new FormData("90%")); //$NON-NLS-1$
 
         exportBtn = new Button(MessagesFactory.getMessages().export_btn());
         exportBtn.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -263,6 +283,7 @@ public class DownloadFilePanel extends FormPanel {
         param.put("multipleValueSeparator", multipleValueSeparatorField.getValue()); //$NON-NLS-1$
         param.put("fkResovled", fkResovled.getValue().toString()); //$NON-NLS-1$
         param.put("fkDisplay", fkDisplayCombo.getValue().get("key").toString()); //$NON-NLS-1$ //$NON-NLS-2$
+        param.put("fileType", csvTypeRadio.getValue() ? Constants.FILE_TYPE_CSV : Constants.FILE_TYPE_EXCEL); //$NON-NLS-1$
         param.put("tableName", viewBean.getViewPK()); //$NON-NLS-1$
         param.put("header", CommonUtil.convertList2Xml(headerList, "header")); //$NON-NLS-1$ //$NON-NLS-2$
         param.put("xpath", CommonUtil.convertList2Xml(xPathList, "xpath")); //$NON-NLS-1$ //$NON-NLS-2$

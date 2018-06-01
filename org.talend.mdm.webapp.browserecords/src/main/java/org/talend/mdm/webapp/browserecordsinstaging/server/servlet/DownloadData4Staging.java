@@ -9,21 +9,42 @@
  */
 package org.talend.mdm.webapp.browserecordsinstaging.server.servlet;
 
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.ServletException;
+
 import org.talend.mdm.webapp.browserecords.server.servlet.DownloadData;
+import org.talend.mdm.webapp.browserecords.server.util.DownloadWriter;
+import org.talend.mdm.webapp.browserecords.shared.Constants;
+import org.talend.mdm.webapp.browserecordsinstaging.server.util.CSVWriterForStaging;
+import org.talend.mdm.webapp.browserecordsinstaging.server.util.ExcelWriterForStaging;
+
+import com.amalto.core.util.Messages;
+import com.amalto.core.util.MessagesFactory;
 
 public class DownloadData4Staging extends DownloadData {
 
+    private Messages messages = MessagesFactory.getMessages(
+            "org.talend.mdm.webapp.browserecords.client.i18n.BrowseRecordsMessages", DownloadData4Staging.class.getClassLoader()); //$NON-NLS-1$
+
     private static final long serialVersionUID = 6201136236958671070L;
 
-    private final String STAGING_SUFFIX_NAME = "-Staging"; //$NON-NLS-1$
-
     @Override
-    protected void generateFileName(String name) {
-        fileName = name + STAGING_SUFFIX_NAME + DOWNLOADFILE_EXTEND_NAME;
-    }
-
-    @Override
-    protected String getCurrentDataCluster() throws Exception {
-        return org.talend.mdm.webapp.browserecords.server.util.CommonUtil.getCurrentDataCluster(true);
+    protected DownloadWriter generateWriter(String concept, String viewPk, List<String> idsList, String[] headerArray,
+            String[] xpathArray, String criteria, String multipleValueSeparator, String fkDisplay, boolean fkResovled,
+            Map<String, String> colFkMap, Map<String, List<String>> fkMap, String language, String fileType)
+            throws ServletException {
+        if (Constants.FILE_TYPE_CSV.equals(fileType)) {
+            return new CSVWriterForStaging(concept, viewPk, idsList, headerArray, xpathArray, criteria, multipleValueSeparator,
+                    fkDisplay,
+                    fkResovled, colFkMap, fkMap, language);
+        } else if (Constants.FILE_TYPE_EXCEL.equals(fileType)) {
+            return new ExcelWriterForStaging(concept, viewPk, idsList, headerArray, xpathArray, criteria, multipleValueSeparator,
+                    fkDisplay,
+                    fkResovled, colFkMap, fkMap, language);
+        } else {
+            throw new ServletException(messages.getMessage("unspport_file_type", fileType)); //$NON-NLS-1$
+        }
     }
 }

@@ -527,7 +527,7 @@ public class ItemsToolBar extends ToolBar {
                 final QueryModel queryModel = ItemsListPanel.getInstance().getCurrentQueryModel();
                 if (queryModel != null) {
                     final Window window = new Window();
-                    window.setSize(480, 220);
+                    window.setSize(480, 260);
                     window.setPlain(true);
                     window.setModal(true);
                     window.setBlinkModal(true);
@@ -1392,45 +1392,45 @@ public class ItemsToolBar extends ToolBar {
     }
 
     protected native void openBulkUpdatePanel(String id, BulkUpdatePanel bulkUpdatePanel)/*-{
-		var tabPanel = $wnd.amalto.core.getTabPanel();
-		var panel = tabPanel.getItem(id);
-		if (panel == undefined) {
-			var panel = @org.talend.mdm.webapp.browserecords.client.widget.ItemsToolBar::convertBulkUpdatePanel(Lorg/talend/mdm/webapp/browserecords/client/widget/BulkUpdatePanel;)(bulkUpdatePanel);
-			tabPanel.add(panel);
-		}
-		tabPanel.setSelection(id);
+        var tabPanel = $wnd.amalto.core.getTabPanel();
+        var panel = tabPanel.getItem(id);
+        if (panel == undefined) {
+            var panel = @org.talend.mdm.webapp.browserecords.client.widget.ItemsToolBar::convertBulkUpdatePanel(Lorg/talend/mdm/webapp/browserecords/client/widget/BulkUpdatePanel;)(bulkUpdatePanel);
+            tabPanel.add(panel);
+        }
+        tabPanel.setSelection(id);
     }-*/;
 
     private native static JavaScriptObject convertBulkUpdatePanel(BulkUpdatePanel bulkUpdatePanel)/*-{
-		var panel = {
-			// imitate extjs's render method, really call gxt code.
-			render : function(el) {
-				var rootPanel = @com.google.gwt.user.client.ui.RootPanel::get(Ljava/lang/String;)(el.id);
-				rootPanel.@com.google.gwt.user.client.ui.RootPanel::add(Lcom/google/gwt/user/client/ui/Widget;)(bulkUpdatePanel);
-			},
-			// imitate extjs's setSize method, really call gxt code.
-			setSize : function(width, height) {
-				bulkUpdatePanel.@org.talend.mdm.webapp.browserecords.client.widget.BulkUpdatePanel::setSize(II)(width, height);
-			},
-			// imitate extjs's getItemId, really return itemId of ContentPanel of GXT.
-			getItemId : function() {
-				return bulkUpdatePanel.@org.talend.mdm.webapp.browserecords.client.widget.BulkUpdatePanel::getItemId()();
-			},
-			// imitate El object of extjs
-			getEl : function() {
-				var el = bulkUpdatePanel.@org.talend.mdm.webapp.browserecords.client.widget.BulkUpdatePanel::getElement()();
-				return {
-					dom : el
-				};
-			},
-			// imitate extjs's doLayout method, really call gxt code.
-			doLayout : function() {
-				return bulkUpdatePanel.@org.talend.mdm.webapp.browserecords.client.widget.BulkUpdatePanel::doLayout()();
-			},
-			title : function() {
-				return bulkUpdatePanel.@org.talend.mdm.webapp.browserecords.client.widget.BulkUpdatePanel::getHeading()();
-			}
-		};
-		return panel;
+        var panel = {
+            // imitate extjs's render method, really call gxt code.
+            render : function(el) {
+                var rootPanel = @com.google.gwt.user.client.ui.RootPanel::get(Ljava/lang/String;)(el.id);
+                rootPanel.@com.google.gwt.user.client.ui.RootPanel::add(Lcom/google/gwt/user/client/ui/Widget;)(bulkUpdatePanel);
+            },
+            // imitate extjs's setSize method, really call gxt code.
+            setSize : function(width, height) {
+                bulkUpdatePanel.@org.talend.mdm.webapp.browserecords.client.widget.BulkUpdatePanel::setSize(II)(width, height);
+            },
+            // imitate extjs's getItemId, really return itemId of ContentPanel of GXT.
+            getItemId : function() {
+                return bulkUpdatePanel.@org.talend.mdm.webapp.browserecords.client.widget.BulkUpdatePanel::getItemId()();
+            },
+            // imitate El object of extjs
+            getEl : function() {
+                var el = bulkUpdatePanel.@org.talend.mdm.webapp.browserecords.client.widget.BulkUpdatePanel::getElement()();
+                return {
+                    dom : el
+                };
+            },
+            // imitate extjs's doLayout method, really call gxt code.
+            doLayout : function() {
+                return bulkUpdatePanel.@org.talend.mdm.webapp.browserecords.client.widget.BulkUpdatePanel::doLayout()();
+            },
+            title : function() {
+                return bulkUpdatePanel.@org.talend.mdm.webapp.browserecords.client.widget.BulkUpdatePanel::getHeading()();
+            }
+        };
+        return panel;
     }-*/;
 }

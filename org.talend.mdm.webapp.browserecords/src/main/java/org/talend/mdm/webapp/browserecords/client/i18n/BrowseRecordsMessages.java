@@ -591,4 +591,12 @@ public interface BrowseRecordsMessages extends Messages {
     String navigator_detailPanel_label();
 
     String setting_window_title();
+
+    String file_type();
+
+    String file_type_csv();
+
+    String file_type_excel();
+
+    String unspport_file_type(String fileType);
 }

@@ -13,6 +13,12 @@ public class Constants {
 
     public static final String FileType_Imported = "csv,xls,xlsx"; //$NON-NLS-1$
 
+    public static final String FILE_TYPE_CSV = "csv"; //$NON-NLS-1$
+
+    public static final String FILE_TYPE_EXCEL = "xlsx"; //$NON-NLS-1$
+
+    public static final String STAGING_SUFFIX_NAME = "-Staging"; //$NON-NLS-1$
+
     public static final String FILE_EXPORT_IMPORT_SEPARATOR = "@"; //$NON-NLS-1$
 
     public static final String HEADER_VISIBILITY_SEPARATOR = "="; //$NON-NLS-1$

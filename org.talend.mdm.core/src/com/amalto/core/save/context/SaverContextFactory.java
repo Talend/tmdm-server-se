@@ -63,6 +63,7 @@ public class SaverContextFactory {
             } catch (ClassNotFoundException e) {
                 Logger.getLogger(UserContext.class).warn("No extension found for save."); //$NON-NLS-1$
                 saverExtension = new DocumentSaverExtension() {
+                    @Override
                     public DocumentSaver invokeSaverExtension(DocumentSaver saver) {
                         return saver;
                     }
@@ -154,56 +155,55 @@ public class SaverContextFactory {
      * @param autoCommit         <code>true</code> to perform a call to {@link SaverSession#end()} when a record is ready for save.
      * @return A context configured to save a record in MDM.
      */
-	public DocumentSaverContext create(String dataCluster, String dataModelName, String changeSource,
-			InputStream documentStream, boolean isReplace, boolean validate, boolean updateReport,
-			boolean invokeBeforeSaving, boolean autoCommit) {
-		if (invokeBeforeSaving && !updateReport) {
-			throw new IllegalArgumentException("Must generate update report to invoke before saving."); //$NON-NLS-1$
-		}
-		Server server = ServerContext.INSTANCE.get();
-		// Parsing
-		MutableDocument userDocument;
-		try {
-			// Don't ignore talend internal attributes when parsing this
-			// document
-			DocumentBuilder documentBuilder = new SkipAttributeDocumentBuilder(DOCUMENT_BUILDER, false);
-			InputSource source = new InputSource(documentStream);
-			Document userDomDocument = documentBuilder.parse(source);
-			final MetadataRepositoryAdmin admin = server.getMetadataRepositoryAdmin();
-			String typeName = userDomDocument.getDocumentElement().getNodeName();
-			MetadataRepository repository;
-			if (dataModelName.startsWith("amaltoOBJECTS") || !admin.exist(dataModelName)) {
-				final Storage systemStorage = server.getStorageAdmin().get(StorageAdmin.SYSTEM_STORAGE,
-						StorageType.SYSTEM);
-				final MetadataRepository systemRepository = systemStorage.getMetadataRepository();
-				if (systemRepository.getComplexType(typeName) != null) {
-					// Record to save is a system object!
-					return new DirectWriteContext(dataCluster, Util.nodeToString(userDomDocument));
-				} else {
-					throw new IllegalArgumentException("Data model '" + dataModelName + "' does not exist."); //$NON-NLS-1$ //$NON-NLS-2$
-				}
-
-			} else {
-				if (DispatchWrapper.isMDMInternal(dataCluster)) {
-					final StorageAdmin storageAdmin = server.getStorageAdmin();
-					Storage storage = storageAdmin.get(StorageAdmin.SYSTEM_STORAGE, StorageType.SYSTEM);
-					repository = storage.getMetadataRepository();
-				} else {
-					repository = admin.get(dataModelName);
-				}
-			}
-			ComplexTypeMetadata type = repository.getComplexType(typeName);
-			if (type == null) {
-				throw new IllegalArgumentException(
-						"Type '" + typeName + "' does not exist in data model '" + dataModelName + "'."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			}
-			userDocument = new DOMDocument(userDomDocument.getDocumentElement(), type, dataCluster, dataModelName);
-		} catch (Exception e) {
-			throw new RuntimeException("Unable to parse document to save.", e); //$NON-NLS-1$
-		}
-		return create(dataCluster, dataModelName, changeSource, userDocument, isReplace, validate, updateReport,
-				invokeBeforeSaving, autoCommit);
-	}
+    public DocumentSaverContext create(String dataCluster,
+                                       String dataModelName,
+                                       String changeSource,
+                                       InputStream documentStream,
+                                       boolean isReplace,
+                                       boolean validate,
+                                       boolean updateReport,
+                                       boolean invokeBeforeSaving,
+                                       boolean autoCommit) {
+        if (invokeBeforeSaving && !updateReport) {
+            throw new IllegalArgumentException("Must generate update report to invoke before saving."); //$NON-NLS-1$
+        }
+        Server server = ServerContext.INSTANCE.get();
+        // Parsing
+        MutableDocument userDocument;
+        try {
+            // Don't ignore talend internal attributes when parsing this document
+            DocumentBuilder documentBuilder = new SkipAttributeDocumentBuilder(DOCUMENT_BUILDER, false);
+            InputSource source = new InputSource(documentStream);
+            Document userDomDocument = documentBuilder.parse(source);
+            final MetadataRepositoryAdmin admin = server.getMetadataRepositoryAdmin();
+            String typeName = userDomDocument.getDocumentElement().getNodeName();
+            MetadataRepository repository;
+            if (dataModelName.startsWith("amaltoOBJECTS") || !admin.exist(dataModelName)) {
+                final Storage systemStorage = server.getStorageAdmin().get(StorageAdmin.SYSTEM_STORAGE, StorageType.SYSTEM);
+                final MetadataRepository systemRepository = systemStorage.getMetadataRepository();
+                if (systemRepository.getComplexType(typeName) != null) {
+                    // Record to save is a system object!
+                    return new DirectWriteContext(dataCluster, Util.nodeToString(userDomDocument));
+                } else {
+                    throw new IllegalArgumentException("Data model '" + dataModelName + "' does not exist."); //$NON-NLS-1$ //$NON-NLS-2$
+                }
+            } else if (DispatchWrapper.isMDMInternal(dataCluster)) {
+                final StorageAdmin storageAdmin = server.getStorageAdmin();
+                Storage storage = storageAdmin.get(StorageAdmin.SYSTEM_STORAGE, StorageType.SYSTEM);
+                repository = storage.getMetadataRepository();
+            } else {
+                repository = admin.get(dataModelName);
+            }
+            ComplexTypeMetadata type = repository.getComplexType(typeName);
+            if (type == null) {
+                throw new IllegalArgumentException("Type '" + typeName + "' does not exist in data model '" + dataModelName + "'."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            }
+            userDocument = new DOMDocument(userDomDocument.getDocumentElement(), type, dataCluster, dataModelName);
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to parse document to save.", e); //$NON-NLS-1$
+        }
+       return create(dataCluster, dataModelName, changeSource, userDocument, isReplace, validate, updateReport, invokeBeforeSaving, autoCommit);
+    }
 
     /**
      * Creates a {@link DocumentSaverContext} to save a unique record in MDM, with update report/before saving options.

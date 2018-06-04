@@ -188,9 +188,8 @@ public class SaverContextFactory {
                     throw new IllegalArgumentException("Data model '" + dataModelName + "' does not exist."); //$NON-NLS-1$ //$NON-NLS-2$
                 }
             } else if (DispatchWrapper.isMDMInternal(dataCluster)) {
-                final StorageAdmin storageAdmin = server.getStorageAdmin();
-                Storage storage = storageAdmin.get(StorageAdmin.SYSTEM_STORAGE, StorageType.SYSTEM);
-                repository = storage.getMetadataRepository();
+				final Storage systemStorage = server.getStorageAdmin().get(StorageAdmin.SYSTEM_STORAGE, StorageType.SYSTEM);
+				repository = systemStorage.getMetadataRepository();
             } else {
                 repository = admin.get(dataModelName);
             }

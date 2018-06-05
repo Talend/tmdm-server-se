@@ -15,10 +15,10 @@ import java.util.Map;
 import javax.servlet.ServletException;
 
 import org.talend.mdm.webapp.browserecords.server.servlet.DownloadData;
+import org.talend.mdm.webapp.browserecords.server.util.CSVWriter;
 import org.talend.mdm.webapp.browserecords.server.util.DownloadWriter;
+import org.talend.mdm.webapp.browserecords.server.util.ExcelWriter;
 import org.talend.mdm.webapp.browserecords.shared.Constants;
-import org.talend.mdm.webapp.browserecordsinstaging.server.util.CSVWriterForStaging;
-import org.talend.mdm.webapp.browserecordsinstaging.server.util.ExcelWriterForStaging;
 
 import com.amalto.core.util.Messages;
 import com.amalto.core.util.MessagesFactory;
@@ -36,13 +36,13 @@ public class DownloadData4Staging extends DownloadData {
             Map<String, String> colFkMap, Map<String, List<String>> fkMap, String language, String fileType)
             throws ServletException {
         if (Constants.FILE_TYPE_CSV.equals(fileType)) {
-            return new CSVWriterForStaging(concept, viewPk, idsList, headerArray, xpathArray, criteria, multipleValueSeparator,
+            return new CSVWriter(concept, viewPk, idsList, headerArray, xpathArray, criteria, multipleValueSeparator,
                     fkDisplay,
-                    fkResovled, colFkMap, fkMap, language);
+                    fkResovled, colFkMap, fkMap, true, language);
         } else if (Constants.FILE_TYPE_EXCEL.equals(fileType)) {
-            return new ExcelWriterForStaging(concept, viewPk, idsList, headerArray, xpathArray, criteria, multipleValueSeparator,
+            return new ExcelWriter(concept, viewPk, idsList, headerArray, xpathArray, criteria, multipleValueSeparator,
                     fkDisplay,
-                    fkResovled, colFkMap, fkMap, language);
+                    fkResovled, colFkMap, fkMap, true, language);
         } else {
             throw new ServletException(messages.getMessage("unspport_file_type", fileType)); //$NON-NLS-1$
         }

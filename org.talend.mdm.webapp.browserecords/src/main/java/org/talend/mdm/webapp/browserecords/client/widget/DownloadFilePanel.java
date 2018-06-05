@@ -153,18 +153,18 @@ public class DownloadFilePanel extends FormPanel {
         fkDisplayCombo.setSelection(fkDisplayList);
         this.add(fkDisplayCombo, new FormData("90%")); //$NON-NLS-1$
 
-        RadioGroup colRadioGroup = new RadioGroup();
-        colRadioGroup.setFieldLabel(MessagesFactory.getMessages().file_type());
-        colRadioGroup.setOrientation(Orientation.HORIZONTAL);
+        RadioGroup fileTypeRadioGroup = new RadioGroup();
+        fileTypeRadioGroup.setFieldLabel(MessagesFactory.getMessages().file_type());
+        fileTypeRadioGroup.setOrientation(Orientation.HORIZONTAL);
 
-        csvTypeRadio = new Radio();
-        csvTypeRadio.setBoxLabel(MessagesFactory.getMessages().file_type_csv());
-        csvTypeRadio.setValue(true);
-        colRadioGroup.add(csvTypeRadio);
         excelTypeRadio = new Radio();
         excelTypeRadio.setBoxLabel(MessagesFactory.getMessages().file_type_excel());
-        colRadioGroup.add(excelTypeRadio);
-        add(colRadioGroup, new FormData("90%")); //$NON-NLS-1$
+        excelTypeRadio.setValue(true);
+        fileTypeRadioGroup.add(excelTypeRadio);
+        csvTypeRadio = new Radio();
+        csvTypeRadio.setBoxLabel(MessagesFactory.getMessages().file_type_csv());
+        fileTypeRadioGroup.add(csvTypeRadio);
+        add(fileTypeRadioGroup, new FormData("90%")); //$NON-NLS-1$
 
         exportBtn = new Button(MessagesFactory.getMessages().export_btn());
         exportBtn.addSelectionListener(new SelectionListener<ButtonEvent>() {

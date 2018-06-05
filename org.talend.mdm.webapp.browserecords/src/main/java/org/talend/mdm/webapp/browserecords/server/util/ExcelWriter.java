@@ -23,6 +23,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.talend.mdm.webapp.browserecords.shared.Constants;
 
+@SuppressWarnings("nls")
 public class ExcelWriter extends DownloadWriter {
 
     private final static String SHEET_LABEL = "Talend MDM"; //$NON-NLS-1$
@@ -39,9 +40,9 @@ public class ExcelWriter extends DownloadWriter {
 
     public ExcelWriter(String concept, String viewPk, List<String> idsList, String[] headerArray, String[] xpathArray,
             String criteria, String multipleValueSeparator, String fkDisplay, boolean fkResovled, Map<String, String> colFkMap,
-            Map<String, List<String>> fkMap, String language) {
+            Map<String, List<String>> fkMap, boolean isStaging, String language) {
         super(concept, viewPk, idsList, headerArray, xpathArray, criteria, multipleValueSeparator, fkDisplay, fkResovled,
-                colFkMap, fkMap, language);
+                colFkMap, fkMap, isStaging, language);
     }
 
     @Override
@@ -84,6 +85,6 @@ public class ExcelWriter extends DownloadWriter {
 
     @Override
     public String generateFileName(String name) {
-        return name + "." + Constants.FILE_TYPE_EXCEL; //$NON-NLS-1$
+        return super.generateFileName(name) + "." + Constants.FILE_TYPE_EXCEL;
     }
 }

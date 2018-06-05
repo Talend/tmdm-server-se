@@ -44,6 +44,7 @@ import com.amalto.core.webservice.WSWhereOperator;
 import com.amalto.core.webservice.WSWhereOr;
 import com.amalto.webapp.core.util.Util;
 
+@SuppressWarnings("nls")
 public abstract class DownloadWriter {
 
     private static final int FETCH_SIZE = 100;
@@ -80,9 +81,11 @@ public abstract class DownloadWriter {
 
     private int defaultMaxExportCount;
 
+    private boolean isStaging;
+
     public DownloadWriter(String concept, String viewPk, List<String> idsList, String[] headerArray, String[] xpathArray,
             String criteria, String multipleValueSeparator, String fkDisplay, boolean fkResovled, Map<String, String> colFkMap,
-            Map<String, List<String>> fkMap, String language) {
+            Map<String, List<String>> fkMap, boolean isStaging, String language) {
         this.concept = concept;
         this.viewPk = viewPk;
         this.idsList = idsList;
@@ -94,9 +97,10 @@ public abstract class DownloadWriter {
         this.fkResovled = fkResovled;
         this.colFkMap = colFkMap;
         this.fkMap = fkMap;
+        this.isStaging = isStaging;
         this.language = language;
         this.defaultMaxExportCount = Integer.parseInt(
-                MDMConfiguration.getConfiguration().getProperty("max.export.browserecord", MDMConfiguration.MAX_EXPORT_COUNT)); //$NON-NLS-1$
+                MDMConfiguration.getConfiguration().getProperty("max.export.browserecord", MDMConfiguration.MAX_EXPORT_COUNT));
     }
 
     abstract void generateFile();
@@ -106,8 +110,6 @@ public abstract class DownloadWriter {
     abstract void generateLine() throws Exception;
 
     abstract void writeValue(String value);
-
-    public abstract String generateFileName(String name);
 
     public abstract void write(OutputStream out) throws IOException;
 
@@ -160,7 +162,7 @@ public abstract class DownloadWriter {
         Map<String, EntityModel> entityMaps = new HashMap<String, EntityModel>();
         for (String xpath : xpathArray) {
             String cellValue = null;
-            String joinEntityCluster = xpath.substring(0, xpath.indexOf("/")); //$NON-NLS-1$
+            String joinEntityCluster = xpath.substring(0, xpath.indexOf("/"));
             if (DownloadUtil.isJoinField(xpath, concept)) {
                 cellValue = getNodeValue(document, xpath);
                 if (fkResovled) {
@@ -180,8 +182,8 @@ public abstract class DownloadWriter {
 
             if (cellValue != null) {
                 cellValue = cellValue.trim();
-                cellValue = cellValue.replaceAll("__h", ""); //$NON-NLS-1$ //$NON-NLS-2$
-                cellValue = cellValue.replaceAll("h__", ""); //$NON-NLS-1$//$NON-NLS-2$
+                cellValue = cellValue.replaceAll("__h", "");
+                cellValue = cellValue.replaceAll("h__", "");
             } else {
                 cellValue = ""; //$NON-NLS-1$
             }
@@ -191,7 +193,7 @@ public abstract class DownloadWriter {
             }
             if (entity.getTypeModel(xpath).getMaxOccurs() != 1 && StringUtils.isNotEmpty(cellValue)
                     && multipleValueSeparator != null) {
-                cellValue = cellValue.replace(",", multipleValueSeparator); //$NON-NLS-1$
+                cellValue = cellValue.replace(",", multipleValueSeparator);
             }
             writeValue(cellValue);
             columnIndex++;
@@ -270,9 +272,9 @@ public abstract class DownloadWriter {
         selectNodes = document.selectNodes(xpath);
 
         if (selectNodes == null || selectNodes.isEmpty()) {
-            String str = xpath.substring(xpath.lastIndexOf("/") + 1, xpath.length()); //$NON-NLS-1$
+            String str = xpath.substring(xpath.lastIndexOf("/") + 1, xpath.length());
             if (str.startsWith(Constants.FILE_EXPORT_IMPORT_SEPARATOR)) {
-                str = str.replace(Constants.FILE_EXPORT_IMPORT_SEPARATOR, ""); //$NON-NLS-1$
+                str = str.replace(Constants.FILE_EXPORT_IMPORT_SEPARATOR, "");
             }
             selectNodes = document.getRootElement().selectNodes(str);
         }
@@ -289,7 +291,7 @@ public abstract class DownloadWriter {
         }
 
         if (valueList == null || valueList.size() == 0) {
-            return ""; //$NON-NLS-1$
+            return "";
         }
 
         if (valueList.size() > 1) {
@@ -302,15 +304,15 @@ public abstract class DownloadWriter {
     private String wrapFkResovledValue(String xpath, String value) throws Exception {
         if (colFkMap.containsKey(xpath)) {
             List<String> fkinfoList = fkMap.get(xpath);
-            if (!fkinfoList.get(0).trim().equalsIgnoreCase("") && !value.equalsIgnoreCase("")) { //$NON-NLS-1$ //$NON-NLS-2$
+            if (!fkinfoList.get(0).trim().equalsIgnoreCase("") && !value.equalsIgnoreCase("")) {
                 List<String> infoList = getFKInfo(colFkMap.get(xpath), fkinfoList, value);
-                if (fkDisplay.equalsIgnoreCase("Id-FKInfo")) { //$NON-NLS-1$
+                if (fkDisplay.equalsIgnoreCase("Id-FKInfo")) {
                     infoList.add(0, value);
                 }
                 if (multipleValueSeparator != null && multipleValueSeparator.length() > 0) {
                     value = LabelUtil.convertList2String(infoList, multipleValueSeparator);
                 } else {
-                    value = LabelUtil.convertList2String(infoList, "-"); //$NON-NLS-1$
+                    value = LabelUtil.convertList2String(infoList, "-");
                 }
             }
         }
@@ -319,7 +321,7 @@ public abstract class DownloadWriter {
 
     private List<String> getFKInfo(String fk, List<String> fkInfoList, String fkValue) throws Exception {
         List<String> infoList = new ArrayList<String>();
-        String conceptName = fk.substring(0, fk.indexOf("/")); //$NON-NLS-1$
+        String conceptName = fk.substring(0, fk.indexOf("/"));
         String value = LabelUtil.removeBrackets(fkValue);
         String ids[] = { value };
         WSItem wsItem = Util.getPort()
@@ -331,7 +333,11 @@ public abstract class DownloadWriter {
         return infoList;
     }
 
+    public String generateFileName(String name) {
+        return name + (isStaging ? Constants.STAGING_SUFFIX_NAME : "");
+    }
+
     protected String getCurrentDataCluster() throws Exception {
-        return org.talend.mdm.webapp.browserecords.server.util.CommonUtil.getCurrentDataCluster(false);
+        return org.talend.mdm.webapp.browserecords.server.util.CommonUtil.getCurrentDataCluster(isStaging);
     }
 }

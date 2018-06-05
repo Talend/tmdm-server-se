@@ -104,10 +104,10 @@ public class DownloadData extends HttpServlet {
             throws ServletException {
         if (Constants.FILE_TYPE_CSV.equals(fileType)) {
             return new CSVWriter(concept, viewPk, idsList, headerArray, xpathArray, criteria, multipleValueSeparator, fkDisplay,
-                    fkResovled, colFkMap, fkMap, language);
+                    fkResovled, colFkMap, fkMap, false, language);
         } else if (Constants.FILE_TYPE_EXCEL.equals(fileType)) {
             return new ExcelWriter(concept, viewPk, idsList, headerArray, xpathArray, criteria, multipleValueSeparator,
-                    fkDisplay, fkResovled, colFkMap, fkMap, language);
+                    fkDisplay, fkResovled, colFkMap, fkMap, false, language);
         } else {
             throw new ServletException(messages.getMessage("unspport_file_type", fileType)); //$NON-NLS-1$
         }

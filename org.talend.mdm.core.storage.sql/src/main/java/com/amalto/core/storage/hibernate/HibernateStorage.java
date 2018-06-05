@@ -405,11 +405,12 @@ public class HibernateStorage implements Storage {
                         }
 
                         Iterator subIter = table.getIndexIterator();
+                        Map<String, IndexMetadata> dbIndexes = getIndexes(tableInfo);
                         while (subIter.hasNext()) {
                             final Index index = (Index) subIter.next();
                             // Skip if index already exists
                             if (tableInfo != null && StringHelper.isNotEmpty(index.getName())) {
-                                if (isIndexExist(tableInfo, index)) {
+                                if (isIndexExist(dbIndexes, index)) {
                                     continue;
                                 }
                             }
@@ -461,42 +462,41 @@ public class HibernateStorage implements Storage {
                 return scripts;
             }
 
+            @SuppressWarnings("unchecked")
+            private Map<String, IndexMetadata> getIndexes(TableMetadata tableInfo) {
+                Map<String, IndexMetadata> dataBaseIndexes = new HashMap<>();
+                try {
+                    Field field = TableMetadata.class.getDeclaredField("indexes"); //$NON-NLS-1$
+                    field.setAccessible(true);
+                    dataBaseIndexes = (Map<String, IndexMetadata>) field.get(tableInfo);
+                } catch (Exception e) {
+                    LOGGER.error("Can't get the indexes from " + tableInfo.getName(), e); //$NON-NLS-1$
+                }
+                return dataBaseIndexes;
+            }
             /**
              * For 6.4 only, caused by different index naming policy
              * To check existence, besides checking the index's name, we also need to check index's column
              */
-            @SuppressWarnings("unchecked")
-            protected boolean isIndexExist(TableMetadata tableInfo, final Index index) {
-                boolean isIndexExist = false;
-                final IndexMetadata meta = tableInfo.getIndexMetadata(index.getName());
-                if (meta != null) {
-                    isIndexExist = true;
-                } else {
+            private boolean isIndexExist(Map<String, IndexMetadata> dbIndexes, final Index index) {
+                boolean isIndexExist = dbIndexes.containsKey(index.getName());
+                if(!isIndexExist) {
                     Iterator<Column> hibernateIndexColumn = index.getColumnIterator();
                     List<String> hibernateIndexColumnName = new ArrayList<>();
                     while (hibernateIndexColumn.hasNext()) {
                         hibernateIndexColumnName.add(hibernateIndexColumn.next().getName().toLowerCase());
                     }
 
-                    Map<String, IndexMetadata> dataBaseIndexes = new HashMap<>();
-                    try {
-                        Field field = TableMetadata.class.getDeclaredField("indexes");//$NON-NLS-1$
-                        field.setAccessible(true);
-                        dataBaseIndexes = (Map<String, IndexMetadata>) field.get(tableInfo);
-                    } catch (Exception e) {
-                        LOGGER.error("Can't get the indexes from " + tableInfo.getName(), e);
-                    }
-
-                    Iterator<Map.Entry<String, IndexMetadata>> indexesIterator = dataBaseIndexes.entrySet().iterator();
+                    Iterator<Map.Entry<String, IndexMetadata>> indexesIterator = dbIndexes.entrySet().iterator();
                     while (indexesIterator.hasNext()) {
                         Map.Entry<String, IndexMetadata> entry = (Map.Entry<String, IndexMetadata>) indexesIterator.next();
                         ColumnMetadata[] columnList = entry.getValue().getColumns();
-                        List<String> dataBaseIndexColumnName = new ArrayList<>();
+                        List<String> dbIndexColumnName = new ArrayList<>();
 
                         for (ColumnMetadata columnMetadata : columnList) {
-                            dataBaseIndexColumnName.add(columnMetadata.getName().toLowerCase());
+                            dbIndexColumnName.add(columnMetadata.getName().toLowerCase());
                         }
-                        if (hibernateIndexColumnName.equals(dataBaseIndexColumnName)) {
+                        if (hibernateIndexColumnName.equals(dbIndexColumnName)) {
                             isIndexExist = true;
                             break;
                         }

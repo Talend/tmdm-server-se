@@ -34,5 +34,4 @@ public class ExcelWriterForStaging extends ExcelWriter {
     public String generateFileName(String name) {
         return name + Constants.STAGING_SUFFIX_NAME + "." + Constants.FILE_TYPE_EXCEL; //$NON-NLS-1$
     }
-
 }

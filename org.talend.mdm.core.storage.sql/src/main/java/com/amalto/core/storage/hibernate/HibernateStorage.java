@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -64,15 +65,20 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
 import org.hibernate.cfg.Mappings;
 import org.hibernate.dialect.Dialect;
+import org.hibernate.dialect.MySQLDialect;
 import org.hibernate.engine.spi.Mapping;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.exception.ConstraintViolationException;
+import org.hibernate.id.PersistentIdentifierGenerator;
+import org.hibernate.internal.util.StringHelper;
 import org.hibernate.internal.util.config.ConfigurationHelper;
 import org.hibernate.mapping.Any;
 import org.hibernate.mapping.Array;
 import org.hibernate.mapping.Bag;
+import org.hibernate.mapping.Column;
 import org.hibernate.mapping.Component;
 import org.hibernate.mapping.DependantValue;
+import org.hibernate.mapping.ForeignKey;
 import org.hibernate.mapping.IdentifierBag;
 import org.hibernate.mapping.Index;
 import org.hibernate.mapping.JoinedSubclass;
@@ -90,14 +96,21 @@ import org.hibernate.mapping.Subclass;
 import org.hibernate.mapping.Table;
 import org.hibernate.mapping.ToOne;
 import org.hibernate.mapping.UnionSubclass;
+import org.hibernate.mapping.UniqueKey;
 import org.hibernate.mapping.Value;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.MassIndexer;
 import org.hibernate.search.Search;
 import org.hibernate.service.ServiceRegistry;
+import org.hibernate.tool.hbm2ddl.ColumnMetadata;
+import org.hibernate.tool.hbm2ddl.DatabaseMetadata;
+import org.hibernate.tool.hbm2ddl.IndexMetadata;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.hibernate.tool.hbm2ddl.SchemaUpdate;
+import org.hibernate.tool.hbm2ddl.SchemaUpdateScript;
 import org.hibernate.tool.hbm2ddl.SchemaValidator;
+import org.hibernate.tool.hbm2ddl.TableMetadata;
+import org.hibernate.tool.hbm2ddl.UniqueConstraintSchemaUpdateStrategy;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.CompoundFieldMetadata;
 import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
@@ -148,7 +161,6 @@ import com.amalto.core.storage.StorageType;
 import com.amalto.core.storage.datasource.DataSource;
 import com.amalto.core.storage.datasource.DataSourceDefinition;
 import com.amalto.core.storage.datasource.RDBMSDataSource;
-import com.amalto.core.storage.datasource.RDBMSDataSource.DataSourceDialect;
 import com.amalto.core.storage.hibernate.mapping.MDMDenormalizedTable;
 import com.amalto.core.storage.hibernate.mapping.MDMTable;
 import com.amalto.core.storage.prepare.FullTextIndexCleaner;
@@ -306,9 +318,191 @@ public class HibernateStorage implements Storage {
 
             protected transient Mapping mapping = buildMapping();
 
+            private Properties properties;
+
             @Override
             public Mappings createMappings() {
                 return new MDMMappingsImpl();
+            }
+
+            /**
+             * Override to add logic for checking existence of Index with column, reference {@link #isIndexExist()}
+             */
+            @SuppressWarnings({ "rawtypes", "unchecked" })
+            @Override
+            public List<SchemaUpdateScript> generateSchemaUpdateScriptList(Dialect dialect, DatabaseMetadata databaseMetadata)
+                    throws HibernateException {
+                secondPassCompile();
+
+                properties = Environment.getProperties();
+
+                String defaultCatalog = properties.getProperty(Environment.DEFAULT_CATALOG);
+                String defaultSchema = properties.getProperty(Environment.DEFAULT_SCHEMA);
+                UniqueConstraintSchemaUpdateStrategy constraintMethod = UniqueConstraintSchemaUpdateStrategy
+                        .interpret(properties.get(Environment.UNIQUE_CONSTRAINT_SCHEMA_UPDATE_STRATEGY));
+
+                List<SchemaUpdateScript> scripts = new ArrayList<SchemaUpdateScript>();
+
+                Iterator iter = getTableMappings();
+                while (iter.hasNext()) {
+                    Table table = (Table) iter.next();
+                    String tableSchema = (table.getSchema() == null) ? defaultSchema : table.getSchema();
+                    String tableCatalog = (table.getCatalog() == null) ? defaultCatalog : table.getCatalog();
+                    if (table.isPhysicalTable()) {
+
+                        TableMetadata tableInfo = databaseMetadata.getTableMetadata(table.getName(), tableSchema, tableCatalog,
+                                table.isQuoted());
+                        if (tableInfo == null) {
+                            scripts.add(new SchemaUpdateScript(table.sqlCreateString(dialect, mapping, tableCatalog, tableSchema),
+                                    false));
+                        } else {
+                            Iterator<String> subiter = table.sqlAlterStrings(dialect, mapping, tableInfo, tableCatalog,
+                                    tableSchema);
+                            while (subiter.hasNext()) {
+                                scripts.add(new SchemaUpdateScript(subiter.next(), false));
+                            }
+                        }
+
+                        Iterator<String> comments = table.sqlCommentStrings(dialect, defaultCatalog, defaultSchema);
+                        while (comments.hasNext()) {
+                            scripts.add(new SchemaUpdateScript(comments.next(), false));
+                        }
+
+                    }
+                }
+
+                iter = getTableMappings();
+                while (iter.hasNext()) {
+                    Table table = (Table) iter.next();
+                    String tableSchema = (table.getSchema() == null) ? defaultSchema : table.getSchema();
+                    String tableCatalog = (table.getCatalog() == null) ? defaultCatalog : table.getCatalog();
+                    if (table.isPhysicalTable()) {
+
+                        TableMetadata tableInfo = databaseMetadata.getTableMetadata(table.getName(), tableSchema, tableCatalog,
+                                table.isQuoted());
+
+                        if (!constraintMethod.equals(UniqueConstraintSchemaUpdateStrategy.SKIP)) {
+                            Iterator uniqueIter = table.getUniqueKeyIterator();
+                            while (uniqueIter.hasNext()) {
+                                final UniqueKey uniqueKey = (UniqueKey) uniqueIter.next();
+                                // Skip if index already exists. Most of the time, this
+                                // won't work since most Dialects use Constraints. However,
+                                // keep it for the few that do use Indexes.
+                                if (tableInfo != null && StringHelper.isNotEmpty(uniqueKey.getName())) {
+                                    final IndexMetadata meta = tableInfo.getIndexMetadata(uniqueKey.getName());
+                                    if (meta != null) {
+                                        continue;
+                                    }
+                                }
+                                String constraintString = uniqueKey.sqlCreateString(dialect, mapping, tableCatalog, tableSchema);
+                                if (constraintString != null && !constraintString.isEmpty())
+                                    if (constraintMethod.equals(UniqueConstraintSchemaUpdateStrategy.DROP_RECREATE_QUIETLY)) {
+                                        String constraintDropString = uniqueKey.sqlDropString(dialect, tableCatalog, tableSchema);
+                                        scripts.add(new SchemaUpdateScript(constraintDropString, true));
+                                    }
+                                scripts.add(new SchemaUpdateScript(constraintString, true));
+                            }
+                        }
+
+                        Iterator subIter = table.getIndexIterator();
+                        Map<String, IndexMetadata> dbIndexes = getIndexes(tableInfo);
+                        while (subIter.hasNext()) {
+                            final Index index = (Index) subIter.next();
+                            // Skip if index already exists
+                            if (tableInfo != null && StringHelper.isNotEmpty(index.getName())) {
+                                if (isIndexExist(dbIndexes, index)) {
+                                    continue;
+                                }
+                            }
+                            scripts.add(new SchemaUpdateScript(index.sqlCreateString(dialect, mapping, tableCatalog, tableSchema),
+                                    false));
+                        }
+                    }
+                }
+
+                // Foreign keys must be created *after* unique keys for numerous DBs. See HH-8390.
+                iter = getTableMappings();
+                while (iter.hasNext()) {
+                    Table table = (Table) iter.next();
+                    String tableSchema = (table.getSchema() == null) ? defaultSchema : table.getSchema();
+                    String tableCatalog = (table.getCatalog() == null) ? defaultCatalog : table.getCatalog();
+                    if (table.isPhysicalTable()) {
+
+                        TableMetadata tableInfo = databaseMetadata.getTableMetadata(table.getName(), tableSchema, tableCatalog,
+                                table.isQuoted());
+
+                        if (dialect.hasAlterTable()) {
+                            Iterator subIter = table.getForeignKeyIterator();
+                            while (subIter.hasNext()) {
+                                ForeignKey fk = (ForeignKey) subIter.next();
+                                if (fk.isPhysicalConstraint()) {
+                                    boolean create = tableInfo == null || (tableInfo.getForeignKeyMetadata(fk) == null && (
+                                    // Icky workaround for MySQL bug:
+                                    !(dialect instanceof MySQLDialect) || tableInfo.getIndexMetadata(fk.getName()) == null));
+                                    if (create) {
+                                        scripts.add(new SchemaUpdateScript(
+                                                fk.sqlCreateString(dialect, mapping, tableCatalog, tableSchema), false));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                iter = iterateGenerators(dialect);
+                while (iter.hasNext()) {
+                    PersistentIdentifierGenerator generator = (PersistentIdentifierGenerator) iter.next();
+                    Object key = generator.generatorKey();
+                    if (!databaseMetadata.isSequence(key) && !databaseMetadata.isTable(key)) {
+                        String[] lines = generator.sqlCreateStrings(dialect);
+                        scripts.addAll(SchemaUpdateScript.fromStringArray(lines, false));
+                    }
+                }
+
+                return scripts;
+            }
+
+            @SuppressWarnings("unchecked")
+            private Map<String, IndexMetadata> getIndexes(TableMetadata tableInfo) {
+                Map<String, IndexMetadata> dbIndexes = new HashMap<>();
+                try {
+                    Field field = TableMetadata.class.getDeclaredField("indexes"); //$NON-NLS-1$
+                    field.setAccessible(true);
+                    dbIndexes = (Map<String, IndexMetadata>) field.get(tableInfo);
+                } catch (Exception e) {
+                    LOGGER.error("Can't get the indexes from " + tableInfo.getName(), e); //$NON-NLS-1$
+                }
+                return dbIndexes;
+            }
+            /**
+             * For 6.4 only, caused by different index naming policy
+             * To check existence, besides checking the index's name, we also need to check index's column
+             */
+            private boolean isIndexExist(Map<String, IndexMetadata> dbIndexes, final Index index) {
+                boolean isIndexExist = dbIndexes.containsKey(index.getName());
+                if(!isIndexExist) {
+                    Iterator<Column> hibernateIndexColumn = index.getColumnIterator();
+                    List<String> hibernateIndexColumnName = new ArrayList<>();
+                    while (hibernateIndexColumn.hasNext()) {
+                        hibernateIndexColumnName.add(hibernateIndexColumn.next().getName().toLowerCase());
+                    }
+
+                    Iterator<Map.Entry<String, IndexMetadata>> indexesIterator = dbIndexes.entrySet().iterator();
+                    while (indexesIterator.hasNext()) {
+                        Map.Entry<String, IndexMetadata> entry = (Map.Entry<String, IndexMetadata>) indexesIterator.next();
+                        ColumnMetadata[] columnList = entry.getValue().getColumns();
+                        List<String> dbIndexColumnName = new ArrayList<>();
+
+                        for (ColumnMetadata columnMetadata : columnList) {
+                            dbIndexColumnName.add(columnMetadata.getName().toLowerCase());
+                        }
+                        if (hibernateIndexColumnName.equals(dbIndexColumnName)) {
+                            isIndexExist = true;
+                            break;
+                        }
+                    }
+                }
+                return isIndexExist;
             }
 
             class MDMMappingsImpl extends MappingsImpl {

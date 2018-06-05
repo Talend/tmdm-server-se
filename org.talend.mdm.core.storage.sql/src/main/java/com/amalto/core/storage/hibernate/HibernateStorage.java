@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -172,7 +173,6 @@ import com.amalto.core.storage.record.DataRecordConverter;
 import com.amalto.core.storage.record.metadata.DataRecordMetadata;
 import com.amalto.core.storage.transaction.StorageTransaction;
 import com.amalto.core.storage.transaction.TransactionManager;
-import com.amalto.core.util.PrivateUtil;
 
 public class HibernateStorage implements Storage {
 
@@ -326,16 +326,9 @@ public class HibernateStorage implements Storage {
             }
 
             /**
-             * @param dialect The dialect for which to generate the creation script
-             * @param databaseMetadata The database catalog information for the database to be updated; needed to work out what
-             * should be created/altered
-             *
-             * @return The sequence of DDL commands to apply the schema objects
-             *
-             * @throws HibernateException Generally indicates a problem calling {@link #buildMappings()}
-             *
-             * @see org.hibernate.tool.hbm2ddl.SchemaUpdate
+             * Override to add logic for checking existence of Index with column, reference {@link #isIndexExist()}
              */
+            @SuppressWarnings({ "rawtypes", "unchecked" })
             @Override
             public List<SchemaUpdateScript> generateSchemaUpdateScriptList(Dialect dialect, DatabaseMetadata databaseMetadata)
                     throws HibernateException {
@@ -343,72 +336,71 @@ public class HibernateStorage implements Storage {
 
                 properties = Environment.getProperties();
 
-                String defaultCatalog = properties.getProperty( Environment.DEFAULT_CATALOG );
-                String defaultSchema = properties.getProperty( Environment.DEFAULT_SCHEMA );
-                UniqueConstraintSchemaUpdateStrategy constraintMethod = UniqueConstraintSchemaUpdateStrategy.interpret( properties
-                        .get( Environment.UNIQUE_CONSTRAINT_SCHEMA_UPDATE_STRATEGY ) );
+                String defaultCatalog = properties.getProperty(Environment.DEFAULT_CATALOG);
+                String defaultSchema = properties.getProperty(Environment.DEFAULT_SCHEMA);
+                UniqueConstraintSchemaUpdateStrategy constraintMethod = UniqueConstraintSchemaUpdateStrategy
+                        .interpret(properties.get(Environment.UNIQUE_CONSTRAINT_SCHEMA_UPDATE_STRATEGY));
 
                 List<SchemaUpdateScript> scripts = new ArrayList<SchemaUpdateScript>();
 
                 Iterator iter = getTableMappings();
-                while ( iter.hasNext() ) {
+                while (iter.hasNext()) {
                     Table table = (Table) iter.next();
-                    String tableSchema = ( table.getSchema() == null ) ? defaultSchema : table.getSchema();
-                    String tableCatalog = ( table.getCatalog() == null ) ? defaultCatalog : table.getCatalog();
-                    if ( table.isPhysicalTable() ) {
+                    String tableSchema = (table.getSchema() == null) ? defaultSchema : table.getSchema();
+                    String tableCatalog = (table.getCatalog() == null) ? defaultCatalog : table.getCatalog();
+                    if (table.isPhysicalTable()) {
 
-                        TableMetadata tableInfo = databaseMetadata.getTableMetadata( table.getName(), tableSchema,
-                                tableCatalog, table.isQuoted() );
-                        if ( tableInfo == null ) {
-                            scripts.add( new SchemaUpdateScript( table.sqlCreateString( dialect, mapping, tableCatalog,
-                                    tableSchema ), false ) );
-                        }
-                        else {
-                            Iterator<String> subiter = table.sqlAlterStrings( dialect, mapping, tableInfo, tableCatalog,
-                                    tableSchema );
-                            while ( subiter.hasNext() ) {
-                                scripts.add( new SchemaUpdateScript( subiter.next(), false ) );
+                        TableMetadata tableInfo = databaseMetadata.getTableMetadata(table.getName(), tableSchema, tableCatalog,
+                                table.isQuoted());
+                        if (tableInfo == null) {
+                            scripts.add(new SchemaUpdateScript(table.sqlCreateString(dialect, mapping, tableCatalog, tableSchema),
+                                    false));
+                        } else {
+                            Iterator<String> subiter = table.sqlAlterStrings(dialect, mapping, tableInfo, tableCatalog,
+                                    tableSchema);
+                            while (subiter.hasNext()) {
+                                scripts.add(new SchemaUpdateScript(subiter.next(), false));
                             }
                         }
 
-                        Iterator<String> comments = table.sqlCommentStrings( dialect, defaultCatalog, defaultSchema );
-                        while ( comments.hasNext() ) {
-                            scripts.add( new SchemaUpdateScript( comments.next(), false ) );
+                        Iterator<String> comments = table.sqlCommentStrings(dialect, defaultCatalog, defaultSchema);
+                        while (comments.hasNext()) {
+                            scripts.add(new SchemaUpdateScript(comments.next(), false));
                         }
 
                     }
                 }
 
                 iter = getTableMappings();
-                while ( iter.hasNext() ) {
+                while (iter.hasNext()) {
                     Table table = (Table) iter.next();
-                    String tableSchema = ( table.getSchema() == null ) ? defaultSchema : table.getSchema();
-                    String tableCatalog = ( table.getCatalog() == null ) ? defaultCatalog : table.getCatalog();
-                    if ( table.isPhysicalTable() ) {
+                    String tableSchema = (table.getSchema() == null) ? defaultSchema : table.getSchema();
+                    String tableCatalog = (table.getCatalog() == null) ? defaultCatalog : table.getCatalog();
+                    if (table.isPhysicalTable()) {
 
-                        TableMetadata tableInfo =databaseMetadata.getTableMetadata( table.getName(), tableSchema,
-                                tableCatalog, table.isQuoted() );
+                        TableMetadata tableInfo = databaseMetadata.getTableMetadata(table.getName(), tableSchema, tableCatalog,
+                                table.isQuoted());
 
-                        if (! constraintMethod.equals( UniqueConstraintSchemaUpdateStrategy.SKIP )) {
+                        if (!constraintMethod.equals(UniqueConstraintSchemaUpdateStrategy.SKIP)) {
                             Iterator uniqueIter = table.getUniqueKeyIterator();
-                            while ( uniqueIter.hasNext() ) {
+                            while (uniqueIter.hasNext()) {
                                 final UniqueKey uniqueKey = (UniqueKey) uniqueIter.next();
                                 // Skip if index already exists. Most of the time, this
                                 // won't work since most Dialects use Constraints. However,
                                 // keep it for the few that do use Indexes.
-                                if ( tableInfo != null && StringHelper.isNotEmpty( uniqueKey.getName() ) ) {
-                                    final IndexMetadata meta = tableInfo.getIndexMetadata( uniqueKey.getName() );
-                                    if ( meta != null ) {
+                                if (tableInfo != null && StringHelper.isNotEmpty(uniqueKey.getName())) {
+                                    final IndexMetadata meta = tableInfo.getIndexMetadata(uniqueKey.getName());
+                                    if (meta != null) {
                                         continue;
                                     }
                                 }
-                                String constraintString = uniqueKey.sqlCreateString( dialect, mapping, tableCatalog, tableSchema );
-                                if ( constraintString != null && !constraintString.isEmpty() )
-                                    if ( constraintMethod.equals( UniqueConstraintSchemaUpdateStrategy.DROP_RECREATE_QUIETLY ) ) {
-                                        String constraintDropString = uniqueKey.sqlDropString( dialect, tableCatalog, tableSchema );
-                                        scripts.add( new SchemaUpdateScript( constraintDropString, true) );
+                                String constraintString = uniqueKey.sqlCreateString(dialect, mapping, tableCatalog, tableSchema);
+                                if (constraintString != null && !constraintString.isEmpty())
+                                    if (constraintMethod.equals(UniqueConstraintSchemaUpdateStrategy.DROP_RECREATE_QUIETLY)) {
+                                        String constraintDropString = uniqueKey.sqlDropString(dialect, tableCatalog, tableSchema);
+                                        scripts.add(new SchemaUpdateScript(constraintDropString, true));
                                     }
-                                    scripts.add( new SchemaUpdateScript( constraintString, true) );
+                                scripts.add(new SchemaUpdateScript(constraintString, true));
                             }
                         }
 
@@ -417,36 +409,8 @@ public class HibernateStorage implements Storage {
                             final Index index = (Index) subIter.next();
                             // Skip if index already exists
                             if (tableInfo != null && StringHelper.isNotEmpty(index.getName())) {
-                                final IndexMetadata meta = tableInfo.getIndexMetadata(index.getName());
-                                if (meta != null) {
+                                if (isIndexExist(tableInfo, index)) {
                                     continue;
-                                } else {
-                                    boolean isIndexExist = false;
-                                    Iterator<Column> hibernateIndexColumn = index.getColumnIterator();
-                                    List<String> hibernateIndexColumnName = new ArrayList<>();
-                                    while (hibernateIndexColumn.hasNext()) {
-                                        hibernateIndexColumnName.add(hibernateIndexColumn.next().getName().toLowerCase());
-                                    }
-                                    Map<String, List<Object>> dataBaseIndexes = (Map) PrivateUtil.getPrivateField(tableInfo, TableMetadata.class, "indexes");
-                                    Iterator indexesIterator = dataBaseIndexes.entrySet().iterator();
-                                    while (indexesIterator.hasNext()) {
-                                        Map.Entry<String, IndexMetadata> entry = (Map.Entry<String, IndexMetadata>) indexesIterator
-                                                .next();
-                                        ColumnMetadata[] columnList = entry.getValue().getColumns();
-                                        List<String> dataBaseIndexColumnName = new ArrayList<>();
-
-                                        for (ColumnMetadata columnMetadata : columnList) {
-                                            dataBaseIndexColumnName.add(columnMetadata.getName().toLowerCase());
-                                        }
-                                        if (hibernateIndexColumnName.equals(dataBaseIndexColumnName)) {
-                                            isIndexExist = true;
-                                            break;
-                                        }
-                                    }
-
-                                    if (isIndexExist) {
-                                        continue;
-                                    }
                                 }
                             }
                             scripts.add(new SchemaUpdateScript(index.sqlCreateString(dialect, mapping, tableCatalog, tableSchema),
@@ -455,28 +419,28 @@ public class HibernateStorage implements Storage {
                     }
                 }
 
-                // Foreign keys must be created *after* unique keys for numerous DBs.  See HH-8390.
+                // Foreign keys must be created *after* unique keys for numerous DBs. See HH-8390.
                 iter = getTableMappings();
-                while ( iter.hasNext() ) {
+                while (iter.hasNext()) {
                     Table table = (Table) iter.next();
-                    String tableSchema = ( table.getSchema() == null ) ? defaultSchema : table.getSchema();
-                    String tableCatalog = ( table.getCatalog() == null ) ? defaultCatalog : table.getCatalog();
-                    if ( table.isPhysicalTable() ) {
+                    String tableSchema = (table.getSchema() == null) ? defaultSchema : table.getSchema();
+                    String tableCatalog = (table.getCatalog() == null) ? defaultCatalog : table.getCatalog();
+                    if (table.isPhysicalTable()) {
 
-                        TableMetadata tableInfo = databaseMetadata.getTableMetadata( table.getName(), tableSchema,
-                                tableCatalog, table.isQuoted() );
+                        TableMetadata tableInfo = databaseMetadata.getTableMetadata(table.getName(), tableSchema, tableCatalog,
+                                table.isQuoted());
 
-                        if ( dialect.hasAlterTable() ) {
+                        if (dialect.hasAlterTable()) {
                             Iterator subIter = table.getForeignKeyIterator();
-                            while ( subIter.hasNext() ) {
+                            while (subIter.hasNext()) {
                                 ForeignKey fk = (ForeignKey) subIter.next();
-                                if ( fk.isPhysicalConstraint() ) {
-                                    boolean create = tableInfo == null || ( tableInfo.getForeignKeyMetadata( fk ) == null && (
+                                if (fk.isPhysicalConstraint()) {
+                                    boolean create = tableInfo == null || (tableInfo.getForeignKeyMetadata(fk) == null && (
                                     // Icky workaround for MySQL bug:
-                                            !( dialect instanceof MySQLDialect ) || tableInfo.getIndexMetadata( fk.getName() ) == null ) );
-                                    if ( create ) {
-                                        scripts.add( new SchemaUpdateScript( fk.sqlCreateString( dialect, mapping,
-                                                tableCatalog, tableSchema ), false ) );
+                                    !(dialect instanceof MySQLDialect) || tableInfo.getIndexMetadata(fk.getName()) == null));
+                                    if (create) {
+                                        scripts.add(new SchemaUpdateScript(
+                                                fk.sqlCreateString(dialect, mapping, tableCatalog, tableSchema), false));
                                     }
                                 }
                             }
@@ -484,17 +448,52 @@ public class HibernateStorage implements Storage {
                     }
                 }
 
-                iter = iterateGenerators( dialect );
-                while ( iter.hasNext() ) {
+                iter = iterateGenerators(dialect);
+                while (iter.hasNext()) {
                     PersistentIdentifierGenerator generator = (PersistentIdentifierGenerator) iter.next();
                     Object key = generator.generatorKey();
-                    if ( !databaseMetadata.isSequence( key ) && !databaseMetadata.isTable( key ) ) {
-                        String[] lines = generator.sqlCreateStrings( dialect );
-                        scripts.addAll( SchemaUpdateScript.fromStringArray( lines, false ) );
+                    if (!databaseMetadata.isSequence(key) && !databaseMetadata.isTable(key)) {
+                        String[] lines = generator.sqlCreateStrings(dialect);
+                        scripts.addAll(SchemaUpdateScript.fromStringArray(lines, false));
                     }
                 }
 
                 return scripts;
+            }
+
+            /**
+             * For 6.4 only, caused by different index naming policy
+             * To check existence, besides checking the index's name, we also need to check index's column
+             */
+            @SuppressWarnings({ "unchecked", "rawtypes" })
+            protected boolean isIndexExist(TableMetadata tableInfo, final Index index) {
+                boolean isIndexExist = false;
+                final IndexMetadata meta = tableInfo.getIndexMetadata(index.getName());
+                if (meta != null) {
+                    isIndexExist = true;
+                } else {
+                    Iterator<Column> hibernateIndexColumn = index.getColumnIterator();
+                    List<String> hibernateIndexColumnName = new ArrayList<>();
+                    while (hibernateIndexColumn.hasNext()) {
+                        hibernateIndexColumnName.add(hibernateIndexColumn.next().getName().toLowerCase());
+                    }
+                    Map<String, List<Object>> dataBaseIndexes = (Map) getPrivateField(tableInfo, TableMetadata.class, "indexes"); //$NON-NLS-1$
+                    Iterator indexesIterator = dataBaseIndexes.entrySet().iterator();
+                    while (indexesIterator.hasNext()) {
+                        Map.Entry<String, IndexMetadata> entry = (Map.Entry<String, IndexMetadata>) indexesIterator.next();
+                        ColumnMetadata[] columnList = entry.getValue().getColumns();
+                        List<String> dataBaseIndexColumnName = new ArrayList<>();
+
+                        for (ColumnMetadata columnMetadata : columnList) {
+                            dataBaseIndexColumnName.add(columnMetadata.getName().toLowerCase());
+                        }
+                        if (hibernateIndexColumnName.equals(dataBaseIndexColumnName)) {
+                            isIndexExist = true;
+                            break;
+                        }
+                    }
+                }
+                return isIndexExist;
             }
 
             class MDMMappingsImpl extends MappingsImpl {
@@ -1956,6 +1955,19 @@ public class HibernateStorage implements Storage {
     @Override
     public String toString() {
         return storageName + '(' + storageType + ')';
+    }
+
+    public Object getPrivateField(Object paramInstance, Class paramClass, String paramString) {
+        Field field = null;
+        Object object = null;
+        try {
+            field = paramClass.getDeclaredField(paramString);
+            field.setAccessible(true);
+            object = field.get(paramInstance);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return object;
     }
 
     private static class MetadataChecker extends DefaultMetadataVisitor<Object> {

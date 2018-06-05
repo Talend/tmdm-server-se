@@ -464,15 +464,15 @@ public class HibernateStorage implements Storage {
 
             @SuppressWarnings("unchecked")
             private Map<String, IndexMetadata> getIndexes(TableMetadata tableInfo) {
-                Map<String, IndexMetadata> dataBaseIndexes = new HashMap<>();
+                Map<String, IndexMetadata> dbIndexes = new HashMap<>();
                 try {
                     Field field = TableMetadata.class.getDeclaredField("indexes"); //$NON-NLS-1$
                     field.setAccessible(true);
-                    dataBaseIndexes = (Map<String, IndexMetadata>) field.get(tableInfo);
+                    dbIndexes = (Map<String, IndexMetadata>) field.get(tableInfo);
                 } catch (Exception e) {
                     LOGGER.error("Can't get the indexes from " + tableInfo.getName(), e); //$NON-NLS-1$
                 }
-                return dataBaseIndexes;
+                return dbIndexes;
             }
             /**
              * For 6.4 only, caused by different index naming policy

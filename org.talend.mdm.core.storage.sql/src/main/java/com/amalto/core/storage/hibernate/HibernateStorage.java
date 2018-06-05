@@ -465,7 +465,7 @@ public class HibernateStorage implements Storage {
              * For 6.4 only, caused by different index naming policy
              * To check existence, besides checking the index's name, we also need to check index's column
              */
-            @SuppressWarnings({ "unchecked", "rawtypes" })
+            @SuppressWarnings("unchecked")
             protected boolean isIndexExist(TableMetadata tableInfo, final Index index) {
                 boolean isIndexExist = false;
                 final IndexMetadata meta = tableInfo.getIndexMetadata(index.getName());
@@ -477,8 +477,17 @@ public class HibernateStorage implements Storage {
                     while (hibernateIndexColumn.hasNext()) {
                         hibernateIndexColumnName.add(hibernateIndexColumn.next().getName().toLowerCase());
                     }
-                    Map<String, List<Object>> dataBaseIndexes = (Map) getPrivateField(tableInfo, TableMetadata.class, "indexes"); //$NON-NLS-1$
-                    Iterator indexesIterator = dataBaseIndexes.entrySet().iterator();
+
+                    Map<String, IndexMetadata> dataBaseIndexes = new HashMap<>();
+                    try {
+                        Field field = TableMetadata.class.getDeclaredField("indexes");//$NON-NLS-1$
+                        field.setAccessible(true);
+                        dataBaseIndexes = (Map<String, IndexMetadata>) field.get(tableInfo);
+                    } catch (Exception e) {
+                        LOGGER.error("Can't get the indexes from " + tableInfo.getName(), e);
+                    }
+
+                    Iterator<Map.Entry<String, IndexMetadata>> indexesIterator = dataBaseIndexes.entrySet().iterator();
                     while (indexesIterator.hasNext()) {
                         Map.Entry<String, IndexMetadata> entry = (Map.Entry<String, IndexMetadata>) indexesIterator.next();
                         ColumnMetadata[] columnList = entry.getValue().getColumns();
@@ -1955,19 +1964,6 @@ public class HibernateStorage implements Storage {
     @Override
     public String toString() {
         return storageName + '(' + storageType + ')';
-    }
-
-    public Object getPrivateField(Object paramInstance, Class paramClass, String paramString) {
-        Field field = null;
-        Object object = null;
-        try {
-            field = paramClass.getDeclaredField(paramString);
-            field.setAccessible(true);
-            object = field.get(paramInstance);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return object;
     }
 
     private static class MetadataChecker extends DefaultMetadataVisitor<Object> {

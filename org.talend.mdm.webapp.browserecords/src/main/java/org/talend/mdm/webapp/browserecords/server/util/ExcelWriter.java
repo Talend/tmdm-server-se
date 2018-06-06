@@ -26,7 +26,7 @@ import org.talend.mdm.webapp.browserecords.shared.Constants;
 @SuppressWarnings("nls")
 public class ExcelWriter extends DownloadWriter {
 
-    private final static String SHEET_LABEL = "Talend MDM"; //$NON-NLS-1$
+    private final static String SHEET_LABEL = "Talend MDM";
 
     private XSSFWorkbook workbook = null;
 

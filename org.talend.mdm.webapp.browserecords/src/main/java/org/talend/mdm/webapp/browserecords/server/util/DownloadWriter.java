@@ -42,7 +42,6 @@ import com.amalto.core.webservice.WSWhereCondition;
 import com.amalto.core.webservice.WSWhereItem;
 import com.amalto.core.webservice.WSWhereOperator;
 import com.amalto.core.webservice.WSWhereOr;
-import com.amalto.webapp.core.util.Util;
 
 @SuppressWarnings("nls")
 public abstract class DownloadWriter {
@@ -103,8 +102,6 @@ public abstract class DownloadWriter {
                 MDMConfiguration.getConfiguration().getProperty("max.export.browserecord", MDMConfiguration.MAX_EXPORT_COUNT));
     }
 
-    abstract void generateFile();
-
     abstract void writeHeader();
 
     abstract void generateLine() throws Exception;
@@ -118,6 +115,9 @@ public abstract class DownloadWriter {
         writeHeader();
         generateResult();
         writeContent();
+    }
+
+    protected void generateFile() {
     }
 
     private void generateResult() throws Exception {
@@ -324,7 +324,7 @@ public abstract class DownloadWriter {
         String conceptName = fk.substring(0, fk.indexOf("/"));
         String value = LabelUtil.removeBrackets(fkValue);
         String ids[] = { value };
-        WSItem wsItem = Util.getPort()
+        WSItem wsItem = CommonUtil.getPort()
                 .getItem(new WSGetItem(new WSItemPK(new WSDataClusterPK(getCurrentDataCluster()), conceptName, ids)));
         Document doc = XmlUtil.parseText(wsItem.getContent());
         for (String xpath : fkInfoList) {

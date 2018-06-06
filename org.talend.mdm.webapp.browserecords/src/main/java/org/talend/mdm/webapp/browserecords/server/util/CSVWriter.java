@@ -29,11 +29,6 @@ public class CSVWriter extends DownloadWriter {
     }
 
     @Override
-    public void generateFile() {
-
-    }
-
-    @Override
     public void writeHeader() {
         for (int i = 0; i < headerArray.length; i++) {
             content.append(headerArray[i]);

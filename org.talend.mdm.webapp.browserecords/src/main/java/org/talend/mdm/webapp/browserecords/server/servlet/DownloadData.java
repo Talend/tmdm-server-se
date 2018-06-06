@@ -98,18 +98,22 @@ public class DownloadData extends HttpServlet {
         this.doGet(request, response);
     }
 
-    protected DownloadWriter generateWriter(String concept, String viewPk, List<String> idsList, String[] headerArray,
+    private DownloadWriter generateWriter(String concept, String viewPk, List<String> idsList, String[] headerArray,
             String[] xpathArray, String criteria, String multipleValueSeparator, String fkDisplay, boolean fkResovled,
             Map<String, String> colFkMap, Map<String, List<String>> fkMap, String language, String fileType)
             throws ServletException {
         if (Constants.FILE_TYPE_CSV.equals(fileType)) {
             return new CSVWriter(concept, viewPk, idsList, headerArray, xpathArray, criteria, multipleValueSeparator, fkDisplay,
-                    fkResovled, colFkMap, fkMap, false, language);
+                    fkResovled, colFkMap, fkMap, isStaging(), language);
         } else if (Constants.FILE_TYPE_EXCEL.equals(fileType)) {
             return new ExcelWriter(concept, viewPk, idsList, headerArray, xpathArray, criteria, multipleValueSeparator,
                     fkDisplay, fkResovled, colFkMap, fkMap, false, language);
         } else {
             throw new ServletException(messages.getMessage("unspport_file_type", fileType)); //$NON-NLS-1$
         }
+    }
+
+    protected boolean isStaging() {
+        return false;
     }
 }

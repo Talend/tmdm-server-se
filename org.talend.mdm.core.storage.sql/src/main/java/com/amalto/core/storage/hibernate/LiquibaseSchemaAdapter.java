@@ -135,21 +135,15 @@ public class LiquibaseSchemaAdapter  {
         return changeActionList;
     }
 
-    protected String getTableName(FieldMetadata field) {
-        String tableName = StringUtils.EMPTY;
-        if (isContainedComplexFieldTypeMetadata(field) || isContainedComplexType(field)) {
-            tableName = tableResolver.get(field.getContainingType());
-        } else {
-            tableName = tableResolver.get(field.getContainingType().getEntity());
-        }
-
+    private String getTableName(FieldMetadata field) {
+        String tableName = tableResolver.get(field.getContainingType().getEntity());
         if (dataSource.getDialectName() == DataSourceDialect.POSTGRES) {
             tableName = tableName.toLowerCase();
         }
         return tableName;
     }
 
-    protected String getColumnName(FieldMetadata field) {
+    private String getColumnName(FieldMetadata field) {
         String columnName = tableResolver.get(field);
         if (field instanceof ContainedTypeFieldMetadata) {
             columnName += "_x_talend_id"; //$NON-NLS-1$
@@ -209,39 +203,41 @@ public class LiquibaseSchemaAdapter  {
         for (RemoveChange removeAction : diffResults.getRemoveChanges()) {
 
             MetadataVisitable element = removeAction.getElement();
+            if (element instanceof FieldMetadata && (!isContainedComplexFieldTypeMetadata((FieldMetadata) element)
+                    || isSimpleTypeFieldMetadata((FieldMetadata) element) || isContainedComplexType((FieldMetadata) element))) {
+                FieldMetadata field = (FieldMetadata) element;
 
-            FieldMetadata field = (FieldMetadata) element;
+                String tableName = getTableName(field);
+                String columnName = getColumnName(field);
 
-            String tableName = getTableName(field);
-            String columnName = getColumnName(field);
-
-            // Need remove the FK constraint first before remove a reference field.
-            // FK constraint only exists in master DB.
-            if (element instanceof ReferenceFieldMetadata && storageType == StorageType.MASTER) {
-                ReferenceFieldMetadata referenceField = (ReferenceFieldMetadata) element;
-                String fkName = tableResolver.getFkConstraintName(referenceField);
-                if (fkName.isEmpty()) {
-                    List<Column> columns = new ArrayList<>();
-                    columns.add(new Column(columnName.toLowerCase()));
-                    fkName = Constraint.generateName(new ForeignKey().generatedConstraintNamePrefix(),
-                            new Table(tableResolver.get(field.getContainingType().getEntity())), columns);
-                    if (dataSource.getDialectName() == DataSourceDialect.POSTGRES) {
-                        fkName = fkName.toLowerCase();
+                // Need remove the FK constraint first before remove a reference field.
+                // FK constraint only exists in master DB.
+                if (element instanceof ReferenceFieldMetadata && storageType == StorageType.MASTER) {
+                    ReferenceFieldMetadata referenceField = (ReferenceFieldMetadata) element;
+                    String fkName = tableResolver.getFkConstraintName(referenceField);
+                    if (fkName.isEmpty()) {
+                        List<Column> columns = new ArrayList<>();
+                        columns.add(new Column(columnName.toLowerCase()));
+                        fkName = Constraint.generateName(new ForeignKey().generatedConstraintNamePrefix(),
+                                new Table(tableResolver.get(field.getContainingType().getEntity())), columns);
+                        if (dataSource.getDialectName() == DataSourceDialect.POSTGRES) {
+                            fkName = fkName.toLowerCase();
+                        }
                     }
+                    List<String> fkList = dropFKMap.get(tableName);
+                    if (fkList == null) {
+                        fkList = new ArrayList<String>();
+                    }
+                    fkList.add(fkName);
+                    dropFKMap.put(tableName, fkList);
                 }
-                List<String> fkList = dropFKMap.get(tableName);
-                if (fkList == null) {
-                    fkList = new ArrayList<String>();
+                List<String> columnList = dropColumnMap.get(tableName);
+                if (columnList == null) {
+                    columnList = new ArrayList<String>();
                 }
-                fkList.add(fkName);
-                dropFKMap.put(tableName, fkList);
+                columnList.add(columnName);
+                dropColumnMap.put(tableName, columnList);
             }
-            List<String> columnList = dropColumnMap.get(tableName);
-            if (columnList == null) {
-                columnList = new ArrayList<String>();
-            }
-            columnList.add(columnName);
-            dropColumnMap.put(tableName, columnList);
         }
 
         for (Map.Entry<String, List<String>> entry : dropFKMap.entrySet()) {

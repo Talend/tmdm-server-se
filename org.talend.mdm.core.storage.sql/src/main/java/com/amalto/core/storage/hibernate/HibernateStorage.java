@@ -465,12 +465,14 @@ public class HibernateStorage implements Storage {
             @SuppressWarnings("unchecked")
             private Map<String, IndexMetadata> getIndexes(TableMetadata tableInfo) {
                 Map<String, IndexMetadata> dbIndexes = new HashMap<>();
-                try {
-                    Field field = TableMetadata.class.getDeclaredField("indexes"); //$NON-NLS-1$
-                    field.setAccessible(true);
-                    dbIndexes = (Map<String, IndexMetadata>) field.get(tableInfo);
-                } catch (Exception e) {
-                    LOGGER.error("Can't get the indexes from " + tableInfo.getName(), e); //$NON-NLS-1$
+                if (tableInfo != null) {
+                    try {
+                        Field field = TableMetadata.class.getDeclaredField("indexes"); //$NON-NLS-1$
+                        field.setAccessible(true);
+                        dbIndexes = (Map<String, IndexMetadata>) field.get(tableInfo);
+                    } catch (Exception e) {
+                        LOGGER.error("Can't get the indexes from " + tableInfo.getName(), e); //$NON-NLS-1$
+                    }
                 }
                 return dbIndexes;
             }

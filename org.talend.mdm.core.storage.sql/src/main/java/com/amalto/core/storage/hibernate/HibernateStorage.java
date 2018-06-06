@@ -465,6 +465,9 @@ public class HibernateStorage implements Storage {
             @SuppressWarnings("unchecked")
             private Map<String, IndexMetadata> getIndexes(TableMetadata tableInfo) {
                 Map<String, IndexMetadata> dbIndexes = new HashMap<>();
+                if(tableInfo == null) {
+                    return dbIndexes;
+                }
                 try {
                     Field field = TableMetadata.class.getDeclaredField("indexes"); //$NON-NLS-1$
                     field.setAccessible(true);

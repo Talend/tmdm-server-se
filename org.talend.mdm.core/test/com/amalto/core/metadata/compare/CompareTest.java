@@ -368,8 +368,8 @@ public class CompareTest extends TestCase {
 
         ImpactAnalyzer analyzer = new HibernateStorageImpactAnalyzer();
         Map<ImpactAnalyzer.Impact, List<Change>> sort = analyzer.analyzeImpacts(diffResults);
-        assertEquals(1, sort.get(ImpactAnalyzer.Impact.HIGH).size());
-        assertEquals(2, sort.get(ImpactAnalyzer.Impact.MEDIUM).size());
+        assertEquals(3, sort.get(ImpactAnalyzer.Impact.HIGH).size());
+        assertEquals(0, sort.get(ImpactAnalyzer.Impact.MEDIUM).size());
         assertEquals(3, sort.get(ImpactAnalyzer.Impact.LOW).size());
     }
     
@@ -1540,112 +1540,6 @@ public class CompareTest extends TestCase {
         assertEquals(0, sort.get(ImpactAnalyzer.Impact.HIGH).size());
         assertEquals(0, sort.get(ImpactAnalyzer.Impact.MEDIUM).size());
         assertEquals(3, sort.get(ImpactAnalyzer.Impact.LOW).size());
-    }
-
-    public void test33_1() throws Exception {
-        /*
-         * Entity                                                                 Entity
-         *   |__id (SimpleField) (1-1)                                              |__id (SimpleField) (1-1)
-         *   |__aa-anonymous (ComplexType) (1-1)
-         *           |__aa-sub (SimpleField) (1-1)
-        */
-
-        MetadataRepository original = new MetadataRepository();
-        original.load(CompareTest.class.getResourceAsStream("schema33_1.xsd")); //$NON-NLS-1$
-        original = original.copy();
-        MetadataRepository updated2 = new MetadataRepository();
-        updated2.load(CompareTest.class.getResourceAsStream("schema33_2.xsd")); //$NON-NLS-1$
-        Compare.DiffResults diffResults = Compare.compare(original, updated2);
-        assertEquals(2, diffResults.getActions().size());
-        assertEquals(0, diffResults.getModifyChanges().size());
-        assertEquals(2, diffResults.getRemoveChanges().size());
-        assertEquals(0, diffResults.getAddChanges().size());
-
-        ImpactAnalyzer analyzer = new HibernateStorageImpactAnalyzer();
-        Map<ImpactAnalyzer.Impact, List<Change>> sort = analyzer.analyzeImpacts(diffResults);
-        assertEquals(2, sort.get(ImpactAnalyzer.Impact.HIGH).size());
-        assertEquals(0, sort.get(ImpactAnalyzer.Impact.MEDIUM).size());
-        assertEquals(0, sort.get(ImpactAnalyzer.Impact.LOW).size());
-    }
-
-    public void test33_2() throws Exception {
-        /*
-         * Entity                                                                 Entity
-         *   |__id (SimpleField) (1-1)                                              |__id (SimpleField) (1-1)
-         *   |__aa-non-anonymous (ComplexType) (1-1)
-         *           |__aa-sub (SimpleField) (1-1)
-        */
-
-        MetadataRepository original = new MetadataRepository();
-        original.load(CompareTest.class.getResourceAsStream("schema33_3.xsd")); //$NON-NLS-1$
-        original = original.copy();
-        MetadataRepository updated2 = new MetadataRepository();
-        updated2.load(CompareTest.class.getResourceAsStream("schema33_4.xsd")); //$NON-NLS-1$
-        Compare.DiffResults diffResults = Compare.compare(original, updated2);
-        assertEquals(3, diffResults.getActions().size());
-        assertEquals(0, diffResults.getModifyChanges().size());
-        assertEquals(3, diffResults.getRemoveChanges().size());
-        assertEquals(0, diffResults.getAddChanges().size());
-
-        ImpactAnalyzer analyzer = new HibernateStorageImpactAnalyzer();
-        Map<ImpactAnalyzer.Impact, List<Change>> sort = analyzer.analyzeImpacts(diffResults);
-        assertEquals(2, sort.get(ImpactAnalyzer.Impact.HIGH).size());
-        assertEquals(1, sort.get(ImpactAnalyzer.Impact.MEDIUM).size());
-        assertEquals(0, sort.get(ImpactAnalyzer.Impact.LOW).size());
-    }
-
-    public void test33_3() throws Exception {
-        /*
-         * Entity                                                                 Entity
-         *   |__id (SimpleField) (1-1)                                              |__id (SimpleField) (1-1)
-         *   |__aa-non-anonymous (ComplexType) (1-1)                                |__aa-non-anonymous (ComplexType) (1-1)
-         *           |__aa-sub (SimpleField) (1-1)
-         *           |__aa-age (SimpleField) (0-1)
-        */
-
-        MetadataRepository original = new MetadataRepository();
-        original.load(CompareTest.class.getResourceAsStream("schema33_5.xsd")); //$NON-NLS-1$
-        original = original.copy();
-        MetadataRepository updated2 = new MetadataRepository();
-        updated2.load(CompareTest.class.getResourceAsStream("schema33_6.xsd")); //$NON-NLS-1$
-        Compare.DiffResults diffResults = Compare.compare(original, updated2);
-        assertEquals(2, diffResults.getActions().size());
-        assertEquals(0, diffResults.getModifyChanges().size());
-        assertEquals(2, diffResults.getRemoveChanges().size());
-        assertEquals(0, diffResults.getAddChanges().size());
-
-        ImpactAnalyzer analyzer = new HibernateStorageImpactAnalyzer();
-        Map<ImpactAnalyzer.Impact, List<Change>> sort = analyzer.analyzeImpacts(diffResults);
-        assertEquals(0, sort.get(ImpactAnalyzer.Impact.HIGH).size());
-        assertEquals(2, sort.get(ImpactAnalyzer.Impact.MEDIUM).size());
-        assertEquals(0, sort.get(ImpactAnalyzer.Impact.LOW).size());
-    }
-
-    public void test33_4() throws Exception {
-        /*
-         * Entity                                                                 Entity
-         *   |__id (SimpleField) (1-1)                                              |__id (SimpleField) (1-1)
-         *   |__aa-anonymous (ComplexType) (1-1)                                    |__aa-anonymous (ComplexType) (1-1)
-         *           |__aa-sub (SimpleField) (1-1)
-         *           |__aa-age (SimpleField) (0-1)
-        */
-
-        MetadataRepository original = new MetadataRepository();
-        original.load(CompareTest.class.getResourceAsStream("schema33_7.xsd")); //$NON-NLS-1$
-        original = original.copy();
-        MetadataRepository updated2 = new MetadataRepository();
-        updated2.load(CompareTest.class.getResourceAsStream("schema33_8.xsd")); //$NON-NLS-1$
-        Compare.DiffResults diffResults = Compare.compare(original, updated2);
-        assertEquals(2, diffResults.getActions().size());
-        assertEquals(0, diffResults.getModifyChanges().size());
-        assertEquals(2, diffResults.getRemoveChanges().size());
-        assertEquals(0, diffResults.getAddChanges().size());
-
-        ImpactAnalyzer analyzer = new HibernateStorageImpactAnalyzer();
-        Map<ImpactAnalyzer.Impact, List<Change>> sort = analyzer.analyzeImpacts(diffResults);
-        assertEquals(0, sort.get(ImpactAnalyzer.Impact.HIGH).size());
-        assertEquals(2, sort.get(ImpactAnalyzer.Impact.MEDIUM).size());
-        assertEquals(0, sort.get(ImpactAnalyzer.Impact.LOW).size());
     }
 
     @SuppressWarnings("rawtypes")

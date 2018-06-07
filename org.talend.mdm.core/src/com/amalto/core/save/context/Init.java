@@ -11,14 +11,13 @@
 
 package com.amalto.core.save.context;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.util.webapp.XObjectType;
 import org.talend.mdm.commmon.util.webapp.XSystemObjects;
 
 import com.amalto.core.save.DocumentSaverContext;
 import com.amalto.core.save.SaverSession;
-import com.amalto.core.util.ValidateException;
+import com.amalto.core.util.BeforeSavingErrorException;
 
 class Init implements DocumentSaver {
 
@@ -52,14 +51,11 @@ class Init implements DocumentSaver {
                     LOGGER.debug("Exception occurred during save.", e); //$NON-NLS-1$
                 }
             }
-            if (e instanceof ValidateException) {
-                // In case of validation issue, don't include a potential before saving message in exception.
-                throw new com.amalto.core.save.SaveException(e.getMessage(), e);
+            String message = e.getMessage();
+            if (e.getCause() instanceof BeforeSavingErrorException) {
+                message = getBeforeSavingMessage();
             }
-            if (StringUtils.isEmpty(getBeforeSavingMessage())) {
-                throw new com.amalto.core.save.SaveException(e.getMessage(), e);
-            }
-            throw new com.amalto.core.save.SaveException(getBeforeSavingMessage(), e);
+            throw new com.amalto.core.save.SaveException(message, e);
         }
     }
 

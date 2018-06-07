@@ -179,14 +179,14 @@ public class CSVReader {
                         }
                     }
                 } else if (c == separator && !inQuotes) {
-                    tokensOnThisLine.add(sb.toString());
+                    tokensOnThisLine.add(decodeValue(sb.toString()));
                     sb = new StringBuffer();
                 } else {
                     sb.append(c);
                 }
             }
         } while (inQuotes);
-        tokensOnThisLine.add(sb.toString());
+        tokensOnThisLine.add(decodeValue(sb.toString()));
         return (String[]) tokensOnThisLine.toArray(new String[0]);
 
     }
@@ -198,6 +198,10 @@ public class CSVReader {
      */
     public void close() throws IOException {
         br.close();
+    }
+
+    private String decodeValue(String value) {
+        return value.replace("&#44;", ",").replace("&#34;", "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     }
 
 }

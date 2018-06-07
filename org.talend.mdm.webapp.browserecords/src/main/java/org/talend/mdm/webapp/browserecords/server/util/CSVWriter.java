@@ -45,7 +45,7 @@ public class CSVWriter extends DownloadWriter {
 
     @Override
     public void writeValue(String value) {
-        content.append(value);
+        content.append(encodeValue(value));
         if (columnIndex < headerArray.length - 1) {
             content.append(","); //$NON-NLS-1$
         }
@@ -59,5 +59,9 @@ public class CSVWriter extends DownloadWriter {
     @Override
     public String generateFileName(String name) {
         return super.generateFileName(name) + "." + Constants.FILE_TYPE_CSV;
+    }
+
+    private String encodeValue(String value) {
+        return value.replace(",", "&#44;").replace("\"", "&#34;"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     }
 }

@@ -11,19 +11,12 @@
 
 package com.amalto.core.save.context;
 
-import com.amalto.core.history.MutableDocument;
-import com.amalto.core.load.action.LoadAction;
-import com.amalto.core.save.*;
-import com.amalto.core.schema.validation.SkipAttributeDocumentBuilder;
-import com.amalto.core.server.MetadataRepositoryAdmin;
-import com.amalto.core.server.Server;
-import com.amalto.core.server.ServerContext;
-import com.amalto.core.server.StorageAdmin;
-import com.amalto.core.server.api.XmlServer;
-import com.amalto.core.storage.Storage;
-import com.amalto.core.storage.StorageType;
-import com.amalto.core.util.Util;
-import com.amalto.core.util.XSDKey;
+import java.io.InputStream;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
@@ -32,12 +25,26 @@ import org.talend.mdm.commmon.util.webapp.XSystemObjects;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
+import com.amalto.core.history.MutableDocument;
+import com.amalto.core.load.action.LoadAction;
+import com.amalto.core.save.AutoCommitSaverContext;
+import com.amalto.core.save.DOMDocument;
+import com.amalto.core.save.DocumentSaverContext;
+import com.amalto.core.save.PartialUpdateSaverContext;
+import com.amalto.core.save.ReportDocumentSaverContext;
+import com.amalto.core.save.SaverSession;
+import com.amalto.core.save.UserAction;
+import com.amalto.core.schema.validation.SkipAttributeDocumentBuilder;
+import com.amalto.core.server.MetadataRepositoryAdmin;
+import com.amalto.core.server.Server;
+import com.amalto.core.server.ServerContext;
+import com.amalto.core.server.StorageAdmin;
+import com.amalto.core.server.api.XmlServer;
+import com.amalto.core.storage.DispatchWrapper;
+import com.amalto.core.storage.Storage;
+import com.amalto.core.storage.StorageType;
+import com.amalto.core.util.Util;
+import com.amalto.core.util.XSDKey;
 
 public class SaverContextFactory {
 
@@ -56,6 +63,7 @@ public class SaverContextFactory {
             } catch (ClassNotFoundException e) {
                 Logger.getLogger(UserContext.class).warn("No extension found for save."); //$NON-NLS-1$
                 saverExtension = new DocumentSaverExtension() {
+                    @Override
                     public DocumentSaver invokeSaverExtension(DocumentSaver saver) {
                         return saver;
                     }
@@ -179,6 +187,9 @@ public class SaverContextFactory {
                 } else {
                     throw new IllegalArgumentException("Data model '" + dataModelName + "' does not exist."); //$NON-NLS-1$ //$NON-NLS-2$
                 }
+            } else if (DispatchWrapper.isMDMInternal(dataCluster)) {
+                final Storage systemStorage = server.getStorageAdmin().get(StorageAdmin.SYSTEM_STORAGE, StorageType.SYSTEM);
+                repository = systemStorage.getMetadataRepository();
             } else {
                 repository = admin.get(dataModelName);
             }

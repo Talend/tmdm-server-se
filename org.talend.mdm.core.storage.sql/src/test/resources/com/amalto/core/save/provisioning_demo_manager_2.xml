@@ -1,0 +1,10 @@
+<role-pOJO>
+  <unique-id>Demo_Manager</unique-id>
+  <description>[EN:Demo Manager User][FR:Utilisateur Manager Démo]</description>
+  <digest>a4a053849d8183d6ea28b09631b33faa</digest>
+  <name>Demo_Manager2</name>
+  <PK>
+    <ids>Demo_Manager</ids>
+    <unique-id>Demo_Manager</unique-id>
+  </PK>
+</role-pOJO>

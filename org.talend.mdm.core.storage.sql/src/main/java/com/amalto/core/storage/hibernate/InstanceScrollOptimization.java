@@ -16,7 +16,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import com.amalto.core.storage.CloseableIterator;
 import org.apache.commons.collections.IteratorUtils;
 import org.apache.commons.collections.Predicate;
 import org.hibernate.Criteria;
@@ -25,6 +24,7 @@ import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 
 import com.amalto.core.query.user.*;
+import com.amalto.core.storage.CloseableIterator;
 import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.StorageResults;
 import com.amalto.core.storage.record.DataRecord;
@@ -57,7 +57,11 @@ public class InstanceScrollOptimization extends StandardQueryHandler {
         Select copy = select.copy();
         Collection<FieldMetadata> keyFields = mainType.getKeyFields();
         for (FieldMetadata keyField : keyFields) {
-            copy.addOrderBy(new OrderBy(new Field(keyField), OrderBy.Direction.ASC));
+            OrderBy orderByASC = new OrderBy(new Field(keyField), OrderBy.Direction.ASC);
+            if (!copy.getOrderBy().contains(orderByASC)
+                    && !copy.getOrderBy().contains(new OrderBy(new Field(keyField), OrderBy.Direction.DESC))) {
+                copy.addOrderBy(orderByASC);
+            }
         }
         Criteria criteria = createCriteria(copy); // Perform the query with order by id.
         // Create the filtered result iterator
@@ -106,10 +110,12 @@ public class InstanceScrollOptimization extends StandardQueryHandler {
             nonFilteredIterator.close();
         }
 
+        @Override
         public boolean hasNext() {
             return !isClosed && filteredIterator.hasNext();
         }
 
+        @Override
         public DataRecord next() {
             if (isClosed) {
                 throw new IllegalStateException("Can not move to next: iterator is closed.");
@@ -117,6 +123,7 @@ public class InstanceScrollOptimization extends StandardQueryHandler {
             return (DataRecord) filteredIterator.next();
         }
 
+        @Override
         public void remove() {
             if (isClosed) {
                 throw new IllegalStateException("Can not remove: iterator is closed.");

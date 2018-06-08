@@ -11,7 +11,7 @@ package com.amalto.core.storage.services;
 
 public interface BulkUpdate {
 
-    public static final String FAILUE = "failue"; //$NON-NLS-1$
+    public static final String FAILURE = "failure"; //$NON-NLS-1$
 
     public static final String SUCCESS = "success"; //$NON-NLS-1$
 

@@ -107,7 +107,7 @@ public class DownloadData extends HttpServlet {
                     fkResovled, colFkMap, fkMap, isStaging(), language);
         } else if (Constants.FILE_TYPE_EXCEL.equals(fileType)) {
             return new ExcelWriter(concept, viewPk, idsList, headerArray, xpathArray, criteria, multipleValueSeparator,
-                    fkDisplay, fkResovled, colFkMap, fkMap, false, language);
+                    fkDisplay, fkResovled, colFkMap, fkMap, isStaging(), language);
         } else {
             throw new ServletException(messages.getMessage("unspport_file_type", fileType)); //$NON-NLS-1$
         }

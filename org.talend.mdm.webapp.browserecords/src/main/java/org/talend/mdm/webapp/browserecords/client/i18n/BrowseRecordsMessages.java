@@ -598,5 +598,5 @@ public interface BrowseRecordsMessages extends Messages {
 
     String file_type_excel();
 
-    String unspport_file_type(String fileType);
+    String unsupported_file_type(String fileType);
 }

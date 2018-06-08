@@ -164,7 +164,7 @@ public class BrowseRecordsController extends Controller {
                 .getMessages().save_progress_bar_message(), MessagesFactory.getMessages().please_wait());
         final BrowseRecordsServiceAsync browseRecordsService = ServiceFactory.getInstance().getMasterService();
         final BulkUpdatePanel bulkUpdatePanel = Registry.get(BrowseRecords.BULK_UPDATE_PANEL);
-        browseRecordsService.bulkUpdateItem(GWT.getHostPageBaseURL(), concept, (new ItemTreeHandler(model, viewBean,
+        browseRecordsService.bulkUpdateItem(concept, (new ItemTreeHandler(model, viewBean,
                 bulkUpdatePanel.getKeyMapList(), ItemTreeHandlingStatus.BulkUpdate)).serializeItem(), Locale
                 .getLanguage(), new SessionAwareAsyncCallback<String>() {
 

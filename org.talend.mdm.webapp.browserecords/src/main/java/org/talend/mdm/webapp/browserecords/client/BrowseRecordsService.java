@@ -51,7 +51,7 @@ public interface BrowseRecordsService extends RemoteService {
     ItemBean getItem(ItemBean itemBean, String viewPK, EntityModel entityModel, boolean isStaging, String language)
             throws ServiceException;
 
-    String bulkUpdateItem(String baseUrl, String concept, String xml, String language) throws ServiceException;
+    String bulkUpdateItem(String concept, String xml, String language) throws ServiceException;
 
     ItemBasePageLoadResult<ForeignKeyBean> getForeignKeyList(BasePagingLoadConfigImpl config, TypeModel model,
             String foreignKeyFilterValue, String dataClusterPK, String language) throws ServiceException;

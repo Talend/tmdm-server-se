@@ -53,7 +53,7 @@ public interface BrowseRecordsServiceAsync {
     void queryItemBeanById(String dataClusterPK, ViewBean viewBean, EntityModel entityModel, String id, String language,
             AsyncCallback<ItemBean> callback);
 
-    void bulkUpdateItem(String baseUrl, String concept, String xml, String language, AsyncCallback<String> callback);
+    void bulkUpdateItem(String concept, String xml, String language, AsyncCallback<String> callback);
 
     void getItem(ItemBean itemBean, String viewPK, EntityModel entityModel, boolean isStaging, String language,
             AsyncCallback<ItemBean> callback);

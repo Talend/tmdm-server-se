@@ -54,8 +54,8 @@ public interface BrowseRecordsServiceAsync {
             AsyncCallback<ItemBean> callback);
 
     void saveItemBean(ItemBean item, String language, AsyncCallback<String> callback);
-
-    void bulkUpdateItem(String baseUrl, String concept, String xml, String language, AsyncCallback<String> callback);
+    
+    void bulkUpdateItem(String concept, String xml, String language, AsyncCallback<String> callback);
 
     void getItem(ItemBean itemBean, String viewPK, EntityModel entityModel, boolean isStaging, String language,
             AsyncCallback<ItemBean> callback);

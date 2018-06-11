@@ -1345,7 +1345,7 @@ public class TreeDetailGWTTest extends GWTTestCase {
         }
 
         @Override
-        public void bulkUpdateItem(String baseUrl, String concept, String xml, String language, AsyncCallback<String> callback) {
+        public void bulkUpdateItem(String concept, String xml, String language, AsyncCallback<String> callback) {
         }
     }
 }

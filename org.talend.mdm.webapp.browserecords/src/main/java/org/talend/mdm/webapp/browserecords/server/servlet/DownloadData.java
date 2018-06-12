@@ -11,6 +11,7 @@ package org.talend.mdm.webapp.browserecords.server.servlet;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,8 @@ import com.amalto.core.util.Messages;
 import com.amalto.core.util.MessagesFactory;
 
 public class DownloadData extends HttpServlet {
+
+    private String encoding = "UTF-8"; //$NON-NLS-1$
 
     private Messages messages = MessagesFactory.getMessages(
             "org.talend.mdm.webapp.browserecords.client.i18n.BrowseRecordsMessages", DownloadData.class.getClassLoader()); //$NON-NLS-1$
@@ -78,12 +81,21 @@ public class DownloadData extends HttpServlet {
                 fkInfo = request.getParameter("fkInfo"); //$NON-NLS-1$
                 DownloadUtil.assembleFkMap(colFkMap, fkMap, fkColXPath, fkInfo);
             }
-
-            writer = generateWriter(concept, viewPk, idsList, headerArray, xpathArray, criteria, multipleValueSeparator,
-                    fkDisplay, fkResovled, colFkMap, fkMap, language, fileType);
             response.reset();
-            response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"); //$NON-NLS-1$
-            response.setHeader("Content-Disposition", "attachment; filename=\"" + writer.generateFileName(name) + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            if (Constants.FILE_TYPE_CSV.equals(fileType)) {
+                response.setContentType("text/csv"); //$NON-NLS-1$
+                writer = new CSVWriter(concept, viewPk, idsList, headerArray, xpathArray, criteria, multipleValueSeparator,
+                        fkDisplay, fkResovled, colFkMap, fkMap, isStaging(), language);
+            } else if (Constants.FILE_TYPE_EXCEL.equals(fileType)) {
+                response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"); //$NON-NLS-1$
+                writer = new ExcelWriter(concept, viewPk, idsList, headerArray, xpathArray, criteria, multipleValueSeparator,
+                        fkDisplay, fkResovled, colFkMap, fkMap, isStaging(), language);
+            } else {
+                throw new ServletException(messages.getMessage("unsupported_file_type", fileType)); //$NON-NLS-1$
+            }
+            response.setHeader("Content-Disposition", //$NON-NLS-1$
+                    "attachment; filename=\"" + URLEncoder.encode(writer.generateFileName(name), encoding) + "\""); //$NON-NLS-1$ //$NON-NLS-2$
+            response.setCharacterEncoding(encoding);
             OutputStream out = response.getOutputStream();
             writer.writeFile();
             writer.write(out);
@@ -96,21 +108,6 @@ public class DownloadData extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         this.doGet(request, response);
-    }
-
-    private DownloadWriter generateWriter(String concept, String viewPk, List<String> idsList, String[] headerArray,
-            String[] xpathArray, String criteria, String multipleValueSeparator, String fkDisplay, boolean fkResovled,
-            Map<String, String> colFkMap, Map<String, List<String>> fkMap, String language, String fileType)
-            throws ServletException {
-        if (Constants.FILE_TYPE_CSV.equals(fileType)) {
-            return new CSVWriter(concept, viewPk, idsList, headerArray, xpathArray, criteria, multipleValueSeparator, fkDisplay,
-                    fkResovled, colFkMap, fkMap, isStaging(), language);
-        } else if (Constants.FILE_TYPE_EXCEL.equals(fileType)) {
-            return new ExcelWriter(concept, viewPk, idsList, headerArray, xpathArray, criteria, multipleValueSeparator,
-                    fkDisplay, fkResovled, colFkMap, fkMap, isStaging(), language);
-        } else {
-            throw new ServletException(messages.getMessage("unspport_file_type", fileType)); //$NON-NLS-1$
-        }
     }
 
     protected boolean isStaging() {

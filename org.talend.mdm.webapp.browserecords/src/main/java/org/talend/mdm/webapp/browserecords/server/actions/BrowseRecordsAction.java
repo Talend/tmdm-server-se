@@ -1831,7 +1831,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
         try {
             BulkUpdate bulkUpdate = (BulkUpdate) MDMContextAccessor.getApplicationContext().getBean("navigatorDataService"); //$NON-NLS-1$
 
-            String result = bulkUpdate.bulkUpdate(getCurrentDataCluster(), concept, "MASTER", true, xml); //$NON-NLS-1$
+            String result = bulkUpdate.bulkUpdate(getCurrentDataCluster(), concept, "MASTER", xml); //$NON-NLS-1$
             if (result.equals(BulkUpdate.SUCCESS)) {
                 return StringUtils.EMPTY;
             } else {

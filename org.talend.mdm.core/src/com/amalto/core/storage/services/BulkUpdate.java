@@ -15,5 +15,5 @@ public interface BulkUpdate {
 
     public static final String SUCCESS = "success"; //$NON-NLS-1$
 
-    String bulkUpdate(String storageName, String typeName, String storageType, boolean createUpdateReport, String content);
+    String bulkUpdate(String storageName, String typeName, String storageType, String content);
 }

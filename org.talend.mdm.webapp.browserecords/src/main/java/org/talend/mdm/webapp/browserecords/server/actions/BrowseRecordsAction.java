@@ -98,11 +98,7 @@ import com.amalto.core.objects.UpdateReportPOJO;
 import com.amalto.core.objects.customform.CustomFormPOJO;
 import com.amalto.core.objects.customform.CustomFormPOJOPK;
 import com.amalto.core.objects.datacluster.DataClusterPOJOPK;
-<<<<<<< HEAD
-=======
-import com.amalto.core.save.context.BeforeSaving;
 import com.amalto.core.server.MDMContextAccessor;
->>>>>>> 3fa4cff8fc... TMDM-12040 Bulk update issue when SSL is configured (#560)
 import com.amalto.core.server.ServerContext;
 import com.amalto.core.server.StorageAdmin;
 import com.amalto.core.storage.Storage;

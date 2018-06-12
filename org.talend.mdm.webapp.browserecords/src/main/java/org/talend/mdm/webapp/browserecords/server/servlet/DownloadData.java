@@ -33,8 +33,6 @@ import com.amalto.core.util.MessagesFactory;
 
 public class DownloadData extends HttpServlet {
 
-    private String encoding = "UTF-8"; //$NON-NLS-1$
-
     private Messages messages = MessagesFactory.getMessages(
             "org.talend.mdm.webapp.browserecords.client.i18n.BrowseRecordsMessages", DownloadData.class.getClassLoader()); //$NON-NLS-1$
 
@@ -94,8 +92,8 @@ public class DownloadData extends HttpServlet {
                 throw new ServletException(messages.getMessage("unsupported_file_type", fileType)); //$NON-NLS-1$
             }
             response.setHeader("Content-Disposition", //$NON-NLS-1$
-                    "attachment; filename=\"" + URLEncoder.encode(writer.generateFileName(name), encoding) + "\""); //$NON-NLS-1$ //$NON-NLS-2$
-            response.setCharacterEncoding(encoding);
+                    "attachment; filename=\"" + URLEncoder.encode(writer.generateFileName(name), "UTF-8") + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            response.setCharacterEncoding("UTF-8"); //$NON-NLS-1$
             OutputStream out = response.getOutputStream();
             writer.writeFile();
             writer.write(out);

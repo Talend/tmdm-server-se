@@ -29,15 +29,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.methods.HttpPatch;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.protocol.HTTP;
 import org.apache.log4j.Logger;
 import org.dom4j.DocumentHelper;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
@@ -107,6 +98,7 @@ import com.amalto.core.objects.UpdateReportPOJO;
 import com.amalto.core.objects.customform.CustomFormPOJO;
 import com.amalto.core.objects.customform.CustomFormPOJOPK;
 import com.amalto.core.objects.datacluster.DataClusterPOJOPK;
+import com.amalto.core.server.MDMContextAccessor;
 import com.amalto.core.server.ServerContext;
 import com.amalto.core.server.StorageAdmin;
 import com.amalto.core.storage.Storage;
@@ -117,6 +109,7 @@ import com.amalto.core.util.FieldNotFoundException;
 import com.amalto.core.util.LocalUser;
 import com.amalto.core.util.Messages;
 import com.amalto.core.util.MessagesFactory;
+import com.amalto.core.storage.services.BulkUpdate;
 import com.amalto.core.webservice.WSBoolean;
 import com.amalto.core.webservice.WSByteArray;
 import com.amalto.core.webservice.WSConceptKey;
@@ -1638,19 +1631,12 @@ public class BrowseRecordsAction implements BrowseRecordsService {
         return saveItem(item.getConcept(), item.getIds(), item.getItemXml(), true, language).getDescription();
     }
 
-    @Override
-    public String bulkUpdateItem(String baseUrl, String concept, String xml, String language) throws ServiceException {
+    public String bulkUpdateItem(String concept, String xml, String language) throws ServiceException {
         try {
-            String url = baseUrl + "services/rest/data/" + getCurrentDataCluster() + "/" + concept + "/bulk";
-            DefaultHttpClient httpClient = new DefaultHttpClient();
-            httpClient.getCredentialsProvider().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(
-                    LocalUser.getLocalUser().getUsername(), LocalUser.getLocalUser().getCredentials()));
-            HttpPatch httpPatch = new HttpPatch(url);
-            httpPatch.setHeader("Content-Type", "application/xml; charset=utf-8"); //$NON-NLS-1$ //$NON-NLS-2$
-            HttpEntity entity = new StringEntity(xml, HTTP.UTF_8);
-            httpPatch.setEntity(entity);
-            HttpResponse response = httpClient.execute(httpPatch);
-            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+            BulkUpdate bulkUpdate = (BulkUpdate) MDMContextAccessor.getApplicationContext().getBean("navigatorDataService"); //$NON-NLS-1$
+
+            String result = bulkUpdate.bulkUpdate(getCurrentDataCluster(), concept, "MASTER", true, xml); //$NON-NLS-1$
+            if (result.equals(BulkUpdate.SUCCESS)) {
                 return StringUtils.EMPTY;
             } else {
                 return MESSAGES.getMessage("bulkUpdate_error");

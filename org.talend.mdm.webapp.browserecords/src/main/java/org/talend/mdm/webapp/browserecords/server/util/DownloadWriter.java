@@ -188,16 +188,19 @@ public abstract class DownloadWriter {
                 cellValue = ""; //$NON-NLS-1$
             }
 
-            if (entity == null || entity.getTypeModel(xpath) == null) {
-                return;
-            }
-            if (entity.getTypeModel(xpath).getMaxOccurs() != 1 && StringUtils.isNotEmpty(cellValue)
-                    && multipleValueSeparator != null) {
-                cellValue = cellValue.replace(",", multipleValueSeparator);
-            }
-            writeValue(cellValue);
+            writeCell(entityMaps.get(joinEntityCluster), xpath, cellValue);
             columnIndex++;
         }
+    }
+
+    private void writeCell(EntityModel entity, String xpath, String value) {
+        if (entity == null || entity.getTypeModel(xpath) == null) {
+            return;
+        }
+        if (entity.getTypeModel(xpath).getMaxOccurs() != 1 && StringUtils.isNotEmpty(value) && multipleValueSeparator != null) {
+            value = value.replace(",", multipleValueSeparator);
+        }
+        writeValue(value);
     }
 
     private String[] fetchResultWithIdList(WSViewPK wsViewPK, WSView wsView, List<String> idsList) throws Exception {

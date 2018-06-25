@@ -157,6 +157,8 @@ class StandardQueryHandler extends AbstractQueryHandler {
 
     private int countAggregateIndex = 0;
 
+    private boolean isCountQuery = false;
+
     public StandardQueryHandler(Storage storage, MappingRepository mappings, TableResolver resolver,
             StorageClassLoader storageClassLoader, Session session, Select select, List<TypedExpression> selectedFields,
             Set<ResultsCallback> callbacks) {
@@ -670,13 +672,13 @@ class StandardQueryHandler extends AbstractQueryHandler {
             join.accept(this);
         }
         // If select is not a projection, selecting root type is enough, otherwise add projection for selected fields.
+        isCountQuery = false;
         boolean toDistinct = true;
         if (select.isProjection()) {
 
             projectionList = Projections.projectionList();
             {
                 List<TypedExpression> queryFields = select.getSelectedFields();
-                boolean isCountQuery = false;
                 boolean hasGroupSize = false;
                 for (Expression selectedField : queryFields) {
                     if (selectedField instanceof GroupSize) {
@@ -1268,7 +1270,9 @@ class StandardQueryHandler extends AbstractQueryHandler {
                 // TODO Ugly code path to fix once test coverage is ok.
                 if (leftFieldCondition.position < 0
                         && (!mainType.equals(fieldMetadata.getContainingType()) || fieldMetadata instanceof ReferenceFieldMetadata)) {
-                    leftField.accept(StandardQueryHandler.this);
+                    if(!isCountQuery){
+                        leftField.accept(StandardQueryHandler.this);
+                    }
                     aliases = getAliases(mainType, leftField);
                     if (!fieldMetadata.isMany()) {
                         leftFieldCondition.criterionFieldNames.clear();

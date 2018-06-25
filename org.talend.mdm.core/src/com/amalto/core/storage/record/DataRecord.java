@@ -12,6 +12,7 @@ package com.amalto.core.storage.record;
 
 import java.util.*;
 
+import org.apache.commons.lang3.StringUtils;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
@@ -395,7 +396,7 @@ public class DataRecord {
             threadLocal.remove();
         }
     }
-    
+
     /**
      * Used to control if only validate a record but not save it.
      *
@@ -417,6 +418,33 @@ public class DataRecord {
         }
 
         public static boolean get() {
+            return threadLocal.get();
+        }
+
+        public static void remove() {
+            threadLocal.remove();
+        }
+    }
+
+    /**
+     * Used to store sort language if use multilingual field sort.
+     *
+     */
+    public static class SortLanguage {
+
+        private static ThreadLocal<String> threadLocal = new ThreadLocal<String>() {
+
+            public String initialValue() {
+                return StringUtils.EMPTY;
+            }
+        };
+
+
+        public static void set(String value) {
+            threadLocal.set(value);
+        }
+
+        public static String get() {
             return threadLocal.get();
         }
 

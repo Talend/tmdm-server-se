@@ -203,7 +203,17 @@ public class StorageQueryTest extends StorageTestCase {
                         .read(repository,
                                 person,
                                 "<Person><id>4</id><score>200000.00</score><lastname>Leblanc</lastname><middlename>John</middlename><firstname>Julien</firstname><age>30</age><Status>Friend</Status></Person>"));
-        allRecords.add(factory.read(repository, b, "<B><id>1</id><textB>TextB</textB></B>"));
+        allRecords
+                .add(factory
+                        .read(repository,
+                                person,
+                                "<Person><id>5</id><score>140000.00</score><lastname>John</lastname><resume>[EN:apple][FR:pomme]</resume><middlename>Mike</middlename><firstname>Bill</firstname><addresses><address>[2&amp;2][true]</address><address>[1][false]</address></addresses><age>10</age><Status>Employee</Status><Available>true</Available></Person>"));
+        allRecords
+                .add(factory
+                        .read(repository,
+                                person,
+                                "<Person><id>6</id><score>150000.00</score><lastname>Eric</lastname><resume>[EN:jelle][FR:gelee]</resume><middlename>Mike</middlename><firstname>Binary</firstname><addresses><address>[2&amp;2][true]</address><address>[1][false]</address></addresses><age>10</age><Status>Employee</Status><Available>true</Available></Person>"));
+ allRecords.add(factory.read(repository, b, "<B><id>1</id><textB>TextB</textB></B>"));
         allRecords.add(factory.read(repository, d, "<D><id>2</id><textB>TextBD</textB><textD>TextDD</textD></D>"));
         allRecords.add(factory.read(repository, a, "<A><id>1</id><textA>TextA</textA><nestedB><text>Text1</text></nestedB></A>"));
         allRecords.add(factory.read(repository, a,
@@ -584,7 +594,7 @@ public class StorageQueryTest extends StorageTestCase {
         UserQueryBuilder qb = from(person).isa(person);
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(4, results.getCount());
+            assertEquals(6, results.getCount());
         } finally {
             results.close();
         }
@@ -658,8 +668,8 @@ public class StorageQueryTest extends StorageTestCase {
 
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(4, results.getSize());
-            assertEquals(4, results.getCount());
+            assertEquals(6, results.getSize());
+            assertEquals(6, results.getCount());
             for (DataRecord result : results) {
                 assertNotNull(result.get(keyField));
             }
@@ -854,8 +864,8 @@ public class StorageQueryTest extends StorageTestCase {
 
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(3, results.getSize());
-            assertEquals(3, results.getCount());
+            assertEquals(5, results.getSize());
+            assertEquals(5, results.getCount());
             for (DataRecord result : results) {
                 assertNotNull(result.get(keyField));
             }
@@ -889,12 +899,12 @@ public class StorageQueryTest extends StorageTestCase {
         FieldMetadata personId = person.getField("id");
         UserQueryBuilder qb = from(person).orderBy(personLastName, OrderBy.Direction.ASC).orderBy(personId,
                 OrderBy.Direction.DESC);
-        String[] ascExpectedValues = { "Dupond", "Dupont", "Leblanc", "Leblanc" };
+        String[] ascExpectedValues = { "Dupond", "Dupont", "Eric", "John", "Leblanc", "Leblanc" };
 
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(4, results.getSize());
-            assertEquals(4, results.getCount());
+            assertEquals(6, results.getSize());
+            assertEquals(6, results.getCount());
             int i = 0;
             for (DataRecord result : results) {
                 assertEquals(ascExpectedValues[i++], result.get(personLastName));
@@ -955,12 +965,12 @@ public class StorageQueryTest extends StorageTestCase {
         // Test ASC direction
         FieldMetadata personLastName = person.getField("lastname");
         UserQueryBuilder qb = from(person).select(personLastName).orderBy(person.getField("id"), OrderBy.Direction.ASC);
-        String[] ascExpectedValues = { "Dupond", "Dupont", "Leblanc", "Leblanc" };
+        String[] ascExpectedValues = { "Dupond", "Dupont", "Leblanc", "Leblanc", "John", "Eric"};
 
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(4, results.getSize());
-            assertEquals(4, results.getCount());
+            assertEquals(6, results.getSize());
+            assertEquals(6, results.getCount());
 
             int i = 0;
             for (DataRecord result : results) {
@@ -987,12 +997,12 @@ public class StorageQueryTest extends StorageTestCase {
         // Test ASC direction
         FieldMetadata personLastName = person.getField("lastname");
         UserQueryBuilder qb = from(person).orderBy(personLastName, OrderBy.Direction.ASC);
-        String[] ascExpectedValues = { "Dupond", "Dupont", "Leblanc", "Leblanc" };
+        String[] ascExpectedValues = { "Dupond", "Dupont", "Eric", "John", "Leblanc", "Leblanc" };
 
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(4, results.getSize());
-            assertEquals(4, results.getCount());
+            assertEquals(6, results.getSize());
+            assertEquals(6, results.getCount());
 
             int i = 0;
             for (DataRecord result : results) {
@@ -1007,12 +1017,12 @@ public class StorageQueryTest extends StorageTestCase {
     public void testOrderByDESC() throws Exception {
         FieldMetadata personLastName = person.getField("lastname");
         UserQueryBuilder qb = from(person).orderBy(personLastName, OrderBy.Direction.DESC);
-        String[] descExpectedValues = { "Leblanc", "Leblanc", "Dupont", "Dupond" };
+        String[] descExpectedValues = { "Leblanc", "Leblanc", "John", "Eric", "Dupont", "Dupond" };
 
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(4, results.getSize());
-            assertEquals(4, results.getCount());
+            assertEquals(6, results.getSize());
+            assertEquals(6, results.getCount());
 
             int i = 0;
             for (DataRecord result : results) {
@@ -1028,8 +1038,8 @@ public class StorageQueryTest extends StorageTestCase {
         UserQueryBuilder qb = from(person);
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(4, results.getSize());
-            assertEquals(4, results.getCount());
+            assertEquals(6, results.getSize());
+            assertEquals(6, results.getCount());
         } finally {
             results.close();
         }
@@ -1128,8 +1138,8 @@ public class StorageQueryTest extends StorageTestCase {
         UserQueryBuilder qb = from(person).where(neq(person.getField("lastname"), "Dupond"));
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(3, results.getSize());
-            assertEquals(3, results.getCount());
+            assertEquals(5, results.getSize());
+            assertEquals(5, results.getCount());
         } finally {
             results.close();
         }
@@ -1172,8 +1182,8 @@ public class StorageQueryTest extends StorageTestCase {
         UserQueryBuilder qb = from(person).where(gt(person.getField("score"), "100000"));
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(4, results.getSize());
-            assertEquals(4, results.getCount());
+            assertEquals(6, results.getSize());
+            assertEquals(6, results.getCount());
         } finally {
             results.close();
         }
@@ -1183,8 +1193,8 @@ public class StorageQueryTest extends StorageTestCase {
         UserQueryBuilder qb = from(person).where(lt(person.getField("age"), "20"));
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(1, results.getSize());
-            assertEquals(1, results.getCount());
+            assertEquals(3, results.getSize());
+            assertEquals(3, results.getCount());
         } finally {
             results.close();
         }
@@ -1216,8 +1226,8 @@ public class StorageQueryTest extends StorageTestCase {
         UserQueryBuilder qb = from(person).where(lt(person.getField("score"), "1000000"));
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(4, results.getSize());
-            assertEquals(4, results.getCount());
+            assertEquals(6, results.getSize());
+            assertEquals(6, results.getCount());
         } finally {
             results.close();
         }
@@ -1227,8 +1237,8 @@ public class StorageQueryTest extends StorageTestCase {
         UserQueryBuilder qb = from(person).where(gte(person.getField("age"), "10"));
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(4, results.getSize());
-            assertEquals(4, results.getCount());
+            assertEquals(6, results.getSize());
+            assertEquals(6, results.getCount());
         } finally {
             results.close();
         }
@@ -1238,8 +1248,8 @@ public class StorageQueryTest extends StorageTestCase {
         UserQueryBuilder qb = from(person).where(gte(person.getField("age"), "10")).where(lte(person.getField("age"), "30"));
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(4, results.getSize());
-            assertEquals(4, results.getCount());
+            assertEquals(6, results.getSize());
+            assertEquals(6, results.getCount());
         } finally {
             results.close();
         }
@@ -1282,8 +1292,8 @@ public class StorageQueryTest extends StorageTestCase {
         UserQueryBuilder qb = from(person).where(lte(person.getField("age"), "20"));
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(2, results.getSize());
-            assertEquals(2, results.getCount());
+            assertEquals(4, results.getSize());
+            assertEquals(4, results.getCount());
         } finally {
             results.close();
         }
@@ -1315,8 +1325,8 @@ public class StorageQueryTest extends StorageTestCase {
         UserQueryBuilder qb = from(person).where(lte(person.getField("score"), "170000"));
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(2, results.getSize());
-            assertEquals(2, results.getCount());
+            assertEquals(4, results.getSize());
+            assertEquals(4, results.getCount());
         } finally {
             results.close();
         }
@@ -1476,8 +1486,8 @@ public class StorageQueryTest extends StorageTestCase {
                 .join(person.getField("addresses/address"));
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(6, results.getSize());
-            assertEquals(6, results.getCount());
+            assertEquals(10, results.getSize());
+            assertEquals(10, results.getCount());
         } finally {
             results.close();
         }
@@ -1528,8 +1538,8 @@ public class StorageQueryTest extends StorageTestCase {
                 .join(person.getField("addresses/address"));
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(6, results.getSize());
-            assertEquals(6, results.getCount());
+            assertEquals(10, results.getSize());
+            assertEquals(10, results.getCount());
         } finally {
             results.close();
         }
@@ -1580,8 +1590,8 @@ public class StorageQueryTest extends StorageTestCase {
         StorageResults results = storage.fetch(qb.getSelect());
 
         try {
-            assertEquals(6, results.getSize());
-            assertEquals(6, results.getCount());
+            assertEquals(10, results.getSize());
+            assertEquals(10, results.getCount());
         } finally {
             results.close();
         }
@@ -1605,7 +1615,7 @@ public class StorageQueryTest extends StorageTestCase {
         StorageResults results = storage.fetch(qb.getSelect());
         try {
             assertEquals(1, results.getSize());
-            assertEquals(4, results.getCount());
+            assertEquals(6, results.getCount());
             for (DataRecord result : results) {
                 assertNotNull(result.get("id"));
             }
@@ -1615,26 +1625,26 @@ public class StorageQueryTest extends StorageTestCase {
         qb = from(person).limit(-1);
         results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(4, results.getSize());
-            assertEquals(4, results.getCount());
+            assertEquals(6, results.getSize());
+            assertEquals(6, results.getCount());
             int actualCount = 0;
             for (DataRecord result : results) {
                 actualCount++;
             }
-            assertEquals(4, actualCount);
+            assertEquals(6, actualCount);
         } finally {
             results.close();
         }
         qb = from(person);
         results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(4, results.getSize());
-            assertEquals(4, results.getCount());
+            assertEquals(6, results.getSize());
+            assertEquals(6, results.getCount());
             int actualCount = 0;
             for (DataRecord result : results) {
                 actualCount++;
             }
-            assertEquals(4, actualCount);
+            assertEquals(6, actualCount);
         } finally {
             results.close();
         }
@@ -1642,7 +1652,7 @@ public class StorageQueryTest extends StorageTestCase {
         results = storage.fetch(qb.getSelect());
         try {
             assertEquals(1, results.getSize());
-            assertEquals(4, results.getCount());
+            assertEquals(6, results.getCount());
         } finally {
             results.close();
         }
@@ -1650,16 +1660,15 @@ public class StorageQueryTest extends StorageTestCase {
         results = storage.fetch(qb.getSelect());
         try {
             assertEquals(1, results.getSize());
-            assertEquals(4, results.getCount());
-            assertFalse(results.iterator().hasNext());
+            assertEquals(6, results.getCount());
         } finally {
             results.close();
         }
         qb = from(person).selectId(person).limit(-1);
         results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(4, results.getSize());
-            assertEquals(4, results.getCount());
+            assertEquals(6, results.getSize());
+            assertEquals(6, results.getCount());
         } finally {
             results.close();
         }
@@ -1756,7 +1765,7 @@ public class StorageQueryTest extends StorageTestCase {
 
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(4, results.getCount());
+            assertEquals(6, results.getCount());
             for (DataRecord result : results) {
                 assertNotNull(result.get("timestamp"));
                 assertNull(result.get("taskid"));
@@ -2002,7 +2011,7 @@ public class StorageQueryTest extends StorageTestCase {
         UserQueryBuilder qb = from(person).selectId(person).where(lte(person.getField("id"), person.getField("score")));
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(4, results.getCount());
+            assertEquals(6, results.getCount());
         } finally {
             results.close();
         }
@@ -2102,7 +2111,7 @@ public class StorageQueryTest extends StorageTestCase {
                 and(gte(timestamp(), "0"), lte(timestamp(), String.valueOf(System.currentTimeMillis()))));
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(4, results.getCount());
+            assertEquals(6, results.getCount());
         } finally {
             results.close();
         }
@@ -2114,7 +2123,7 @@ public class StorageQueryTest extends StorageTestCase {
                         eq(person.getField("id"), "1")));
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(4, results.getCount());
+            assertEquals(6, results.getCount());
         } finally {
             results.close();
         }
@@ -2571,8 +2580,8 @@ public class StorageQueryTest extends StorageTestCase {
     public void testNativeQueryWithReturn() throws Exception {
         UserQueryBuilder qb = from("SELECT * FROM PERSON;");
         StorageResults results = storage.fetch(qb.getExpression());
-        assertEquals(4, results.getCount());
-        assertEquals(4, results.getSize());
+        assertEquals(6, results.getCount());
+        assertEquals(6, results.getSize());
         for (DataRecord result : results) {
             assertNotNull(result.get("col0") != null);
         }
@@ -2597,7 +2606,7 @@ public class StorageQueryTest extends StorageTestCase {
         qb = from(person).where(eq(person.getField("firstname"), "My SQL modified firstname"));
         results = storage.fetch(qb.getExpression());
         try {
-            assertEquals(4, results.getCount());
+            assertEquals(6, results.getCount());
         } finally {
             results.close();
         }
@@ -2643,13 +2652,122 @@ public class StorageQueryTest extends StorageTestCase {
         }
     }
 
+    public void testMultiLingualSearchSort() throws Exception {
+        DataRecord.SortLanguage.set("EN");
+        UserQueryBuilder qb = from(person).select(person.getField("id")).select(person.getField("resume"))
+                .orderBy(person.getField("resume"), Direction.ASC);
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(6, results.getCount());
+            int i = 1;
+            for (DataRecord result : results) {
+                if (i == 1) {
+                    assertEquals("2", result.get(person.getField("id")));
+                } else if (i == 2) {
+                    assertEquals("3", result.get(person.getField("id")));
+                } else if (i == 3) {
+                    assertEquals("4", result.get(person.getField("id")));
+                } else if (i == 4) {
+                    assertEquals("5", result.get(person.getField("id")));
+                } else if (i == 5) {
+                    assertEquals("6", result.get(person.getField("id")));
+                } else if (i == 6) {
+                    assertEquals("1", result.get(person.getField("id")));
+                }
+                i++;
+            }
+        } finally {
+            results.close();
+        }
+
+        qb = from(person).select(person.getField("resume")).select(person.getField("id"))
+                .orderBy(person.getField("resume"), Direction.DESC);
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(6, results.getCount());
+            int i = 1;
+            for (DataRecord result : results) {
+                if (i == 1) {
+                    assertEquals("1", result.get(person.getField("id")));
+                } else if (i == 2) {
+                    assertEquals("6", result.get(person.getField("id")));
+                } else if (i == 3) {
+                    assertEquals("5", result.get(person.getField("id")));
+                } else if (i == 4) {
+                    assertEquals("2", result.get(person.getField("id")));
+                } else if (i == 5) {
+                    assertEquals("3", result.get(person.getField("id")));
+                } else if (i == 6) {
+                    assertEquals("4", result.get(person.getField("id")));
+                }
+                i++;
+            }
+        } finally {
+            results.close();
+        }
+
+        DataRecord.SortLanguage.set("FR");
+        qb = from(person).select(person.getField("resume")).select(person.getField("id"))
+                .orderBy(person.getField("resume"), Direction.ASC);
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(6, results.getCount());
+            assertEquals(6, results.getCount());
+            int i = 1;
+            for (DataRecord result : results) {
+                if (i == 1) {
+                    assertEquals("2", result.get(person.getField("id")));
+                } else if (i == 2) {
+                    assertEquals("3", result.get(person.getField("id")));
+                } else if (i == 3) {
+                    assertEquals("4", result.get(person.getField("id")));
+                } else if (i == 4) {
+                    assertEquals("6", result.get(person.getField("id")));
+                } else if (i == 5) {
+                    assertEquals("1", result.get(person.getField("id")));
+                } else if (i == 6) {
+                    assertEquals("5", result.get(person.getField("id")));
+                }
+                i++;
+            }
+        } finally {
+            results.close();
+        }
+
+        qb = from(person).select(person.getField("resume")).select(person.getField("id"))
+                .orderBy(person.getField("resume"), Direction.DESC);
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(6, results.getCount());
+            int i = 1;
+            for (DataRecord result : results) {
+                if (i == 1) {
+                    assertEquals("5", result.get(person.getField("id")));
+                } else if (i == 2) {
+                    assertEquals("1", result.get(person.getField("id")));
+                } else if (i == 3) {
+                    assertEquals("6", result.get(person.getField("id")));
+                } else if (i == 4) {
+                    assertEquals("2", result.get(person.getField("id")));
+                } else if (i == 5) {
+                    assertEquals("3", result.get(person.getField("id")));
+                } else if (i == 6) {
+                    assertEquals("4", result.get(person.getField("id")));
+                }
+                i++;
+            }
+        } finally {
+            results.close();
+        }
+    }
+
     public void testSortOnXPath() throws Exception {
         UserQueryBuilder qb = from(person).selectId(person);
         TypedExpression sortField = UserQueryHelper.getFields(person, "../../i").get(0);
         qb.orderBy(sortField, OrderBy.Direction.DESC);
 
         StorageResults storageResults = storage.fetch(qb.getSelect());
-        String[] expected = { "4", "3", "2", "1" };
+        String[] expected = { "6", "5", "4", "3", "2", "1" };
         int i = 0;
         for (DataRecord result : storageResults) {
             assertEquals(expected[i++], result.get("id"));
@@ -4013,7 +4131,7 @@ public class StorageQueryTest extends StorageTestCase {
         try {
             for (DataRecord result : results) {
                 assertNotNull(result.get("count"));
-                assertEquals(4l, result.get("count"));
+                assertEquals(6l, result.get("count"));
             }
         } finally {
             results.close();

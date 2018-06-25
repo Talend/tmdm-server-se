@@ -62,6 +62,7 @@ import org.talend.mdm.commmon.metadata.EnumerationFieldMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
 import org.talend.mdm.commmon.metadata.SimpleTypeFieldMetadata;
+import org.talend.mdm.commmon.metadata.Types;
 
 import com.amalto.core.query.user.Alias;
 import com.amalto.core.query.user.BigDecimalConstant;
@@ -669,8 +670,9 @@ class StandardQueryHandler extends AbstractQueryHandler {
             join.accept(this);
         }
         // If select is not a projection, selecting root type is enough, otherwise add projection for selected fields.
+        boolean toDistinct = true;
         if (select.isProjection()) {
-            boolean toDistinct = true;
+
             projectionList = Projections.projectionList();
             {
                 List<TypedExpression> queryFields = select.getSelectedFields();
@@ -714,18 +716,14 @@ class StandardQueryHandler extends AbstractQueryHandler {
                     break;
                 }
             }
-            if (select.getOrderBy().size() > 0 && toDistinct) {
-                criteria.setProjection(Projections.distinct(projectionList));
-            } else {
-                criteria.setProjection(projectionList);
-            }
         } else {
             // TMDM-5388: Hibernate sometimes returns duplicate results (like for User stored in System storage), this
             // line avoids this situation.
             criteria.setResultTransformer(DistinctRootEntityResultTransformer.INSTANCE);
         }
-        // Make projection read only in case code tries to modify it later (see code that handles condition).
-        projectionList = ReadOnlyProjectionList.makeReadOnly(projectionList);
+        if (projectionList == null) {
+            projectionList = Projections.projectionList();
+        }
         // Handle condition (if there's any condition to handle).
         Condition condition = select.getCondition();
         if (condition != null) {
@@ -746,6 +744,15 @@ class StandardQueryHandler extends AbstractQueryHandler {
             }
             current.accept(this);
         }
+        if(select.isProjection()){
+            if (select.getOrderBy().size() > 0 && toDistinct) {
+                criteria.setProjection(Projections.distinct(projectionList));
+            } else {
+                criteria.setProjection(projectionList);
+            }
+        }
+        // Make projection read only in case code tries to modify it later (see code that handles condition).
+        projectionList = ReadOnlyProjectionList.makeReadOnly(projectionList);
         return criteria;
     }
 
@@ -823,6 +830,14 @@ class StandardQueryHandler extends AbstractQueryHandler {
         if (orderByExpression instanceof Field) {
             Field field = (Field) orderByExpression;
             FieldMetadata userFieldMetadata = field.getFieldMetadata();
+
+            String language = DataRecord.SortLanguage.get();
+            if (StringUtils.isNotBlank(language)) {
+                MultilingualProjection multiProjection = new MultilingualProjection(language, userFieldMetadata,
+                        ((RDBMSDataSource) storage.getDataSource()).getDialectName(), resolver);
+                projectionList.add(multiProjection.as(Types.MULTI_LINGUAL + "_" + Thread.currentThread().getId()));
+            }
+
             ComplexTypeMetadata containingType = getContainingType(userFieldMetadata);
             Set<String> aliases = getAliases(containingType, field);
             condition.criterionFieldNames = new ArrayList<>(aliases.size());
@@ -1624,7 +1639,12 @@ class StandardQueryHandler extends AbstractQueryHandler {
         } else if (fieldMetadata instanceof ReferenceFieldMetadata && mainType.equals(fieldMetadata.getContainingType())) {
             condition.criterionFieldNames.add(getFieldName(fieldMetadata, true));
         } else {
-            condition.criterionFieldNames.add(alias + '.' + fieldMetadata.getName());
+            String language = DataRecord.SortLanguage.get();
+            if (StringUtils.isNotBlank(language)) {
+                condition.criterionFieldNames.add(Types.MULTI_LINGUAL + "_" + Thread.currentThread().getId());
+            } else {
+                condition.criterionFieldNames.add(alias + '.' + fieldMetadata.getName());
+            }
         }
     }
 

@@ -827,6 +827,10 @@ class StandardQueryHandler extends AbstractQueryHandler {
             Field field = (Field) orderByExpression;
             FieldMetadata userFieldMetadata = field.getFieldMetadata();
 
+            /**
+             * If get none blank value from thread local of SortLanguage, means sort on MULTI_LINGUAL field.
+             * Should sort by the field's value of coresponding language.
+             */
             String language = DataRecord.SortLanguage.get();
             if (StringUtils.isNotBlank(language)) {
                 ProjectionList copyProjectionList = Projections.projectionList();

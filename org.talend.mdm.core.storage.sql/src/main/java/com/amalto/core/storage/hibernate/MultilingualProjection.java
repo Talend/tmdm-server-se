@@ -23,7 +23,7 @@ import org.talend.mdm.commmon.metadata.FieldMetadata;
 
 import com.amalto.core.storage.datasource.RDBMSDataSource.DataSourceDialect;
 
-@SuppressWarnings("serial")
+@SuppressWarnings({ "nls", "serial" })
 public class MultilingualProjection extends SimpleProjection {
 
     private final String language;
@@ -48,7 +48,7 @@ public class MultilingualProjection extends SimpleProjection {
         String columnName = resolver.get(field);
         String containerTable = resolver.get(containingType);
 
-        final String colName = criteriaQuery.getColumn(criteria, containerTable + "." + columnName); //$NON-NLS-1$
+        final String colName = criteriaQuery.getColumn(criteria, containerTable + "." + columnName);
         
         if (dataSourceDialect == DataSourceDialect.ORACLE_10G) {
             columnName = columnName.toUpperCase();
@@ -61,27 +61,25 @@ public class MultilingualProjection extends SimpleProjection {
         switch (dataSourceDialect) {
         case H2:
         case MYSQL:
-            sql = "SUBSTRING(" + colName + ", LOCATE('" + language + "', " + colName; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            sql = "SUBSTRING(" + colName + ", LOCATE('" + language + "', " + colName + "))";
             break;
         case SQL_SERVER:
-            sql = "SUBSTRING(" + colName + ", CHARINDEX('" + language + "', " + colName + "), LEN(" + colName; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            sql = "SUBSTRING(" + colName + ", CHARINDEX('" + language + "', " + colName + "), LEN(" + colName + "))";
             break;
         case POSTGRES:
-            sql = "SUBSTRING(" + colName + ", POSITION('" + language + "' IN " + colName; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            sql = "SUBSTRING(" + colName + ", POSITION('" + language + "' IN " + colName + "))";
             break;
         case ORACLE_10G:
-            sql = "SUBSTR(" + colName + ", INSTR(" + colName + ", '" + language + "'"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            sql = "SUBSTR(" + colName + ", INSTR(" + colName + ", '" + language + "'))";
             break;
         case DB2:
-            sql = "SUBSTR(" + colName + ", LOCATE('" + language + "', " + colName; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            sql = "SUBSTR(" + colName + ", LOCATE('" + language + "', " + colName + "))";
             break;
         default:
-            throw new NotImplementedException("Support for repeatable element not implemented for dialect '" + dataSourceDialect //$NON-NLS-1$
-                    + "'.");//$NON-NLS-1$
+            throw new NotImplementedException("DB type not supported: " + dataSourceDialect);
         }
 
-        sql += "))"; //$NON-NLS-1$
-        sqlFragment.append(sql).append(" as y").append(position).append('_'); //$NON-NLS-1$ //$NON-NLS-2$
+        sqlFragment.append(sql).append(" as y").append(position).append('_');
 
         return sqlFragment.toString();
     }

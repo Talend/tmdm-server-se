@@ -91,7 +91,7 @@ public class DownloadWriterTest extends TestCase {
         idsList.add("1");
         String[] headerArray = { "Id", "Name", "Family", "Price", "Availability", "Description", "Features", "Features/Sizes",
                 "Features/Colors", "Features/Sizes/Size", "Features/Colors/Color" };
-        String xpathArray[] = { "Product/Id", "Product/Name", "Product/Family", "Product/Price", "Product/Availability",
+        String[] xpathArray = { "Product/Id", "Product/Name", "Product/Family", "Product/Price", "Product/Availability",
                 "Product/Description", "Product/Features", "Product/Features/Sizes", "Product/Features/Colors",
                 "Product/Features/Sizes/Size", "Product/Features/Colors/Color" };
         String criteria = "Product/Id CONTAINS *";
@@ -171,6 +171,40 @@ public class DownloadWriterTest extends TestCase {
         writer = new ExcelWriter(concept, viewPk, idsList, headerArray, xpathArray, criteria, multipleValueSeparator, fkDisplay,
                 fkResovled, colFkMap, fkMap, true, language);
         assertEquals("Product-Staging.xlsx", writer.generateFileName("Product"));
+
+        // Test export CSV File that contains title @xsi:type
+        entity = new EntityModel();
+        stream = BrowseRecordsActionTest.class.getResourceAsStream("../../ContractInheritance.xsd");
+        xsd = inputStream2String(stream);
+        DataModelHelper.parseSchema("Contract", "Contract", DataModelHelper.convertXsd2ElDecl("Contract", xsd), new String[] {},
+                entity, Arrays.asList(roles));
+        entity.setKeys(new String[] { "Contract/id" });
+        concept = "Contract";
+        viewPk = "Browse_items_Contract";
+        String[] headerArray2 = { "id", "comment", "detail/@xsi:type", "enumEle", "detail/code" };
+        String[] xpathArray2 = { "Contract/id", "Contract/comment", "Contract/detail/@xsi:type", "Contract/enumEle",
+                "Contract/detail/code" };
+        criteria = "Contract/id CONTAINS *";
+        fkResovled = false;
+        colFkMap = null;
+        fkMap = null;
+        String[] stringArray2 = { "<totalCount>2</totalCount>",
+                "<result xmlns:metadata=\"http://www.talend.com/mdm/metadata\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><id>2</id><comment>2</comment><xsi:type>ContractDetailSubType</xsi:type><enumEle>pending</enumEle><code>2</code><taskId/></result>",
+                "<result xmlns:metadata=\"http://www.talend.com/mdm/metadata\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><id>1</id><comment>1</comment><xsi:type>ContractDetailType</xsi:type><enumEle>pending</enumEle><code>1</code><taskId/></result>" };
+        wsStringArray = new WSStringArray(stringArray2);
+
+        Mockito.when(port.viewSearch(Mockito.any(WSViewSearch.class))).thenReturn(wsStringArray);
+        Mockito.when(org.talend.mdm.webapp.browserecords.server.util.CommonUtil.getEntityModel(Mockito.anyString(),
+                Mockito.anyString())).thenReturn(entity);
+
+        expectedResult = "id,comment,detail/@xsi:type,enumEle,detail/code" + System.getProperty("line.separator")
+                + "2,2,,pending,2" + System.getProperty("line.separator") + "1,1,,pending,1";
+        writer = new CSVWriter(concept, viewPk, idsList, headerArray2, xpathArray2, criteria, multipleValueSeparator, fkDisplay,
+                fkResovled, colFkMap, fkMap, false, language);
+        writer.writeFile();
+        out = new ByteArrayOutputStream();
+        writer.write(out);
+        assertEquals(expectedResult, out.toString());
     }
 
     private String inputStream2String(InputStream is) throws IOException {

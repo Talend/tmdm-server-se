@@ -157,8 +157,6 @@ class StandardQueryHandler extends AbstractQueryHandler {
 
     private int countAggregateIndex = 0;
 
-    private boolean isCountQuery = false;
-
     public StandardQueryHandler(Storage storage, MappingRepository mappings, TableResolver resolver,
             StorageClassLoader storageClassLoader, Session session, Select select, List<TypedExpression> selectedFields,
             Set<ResultsCallback> callbacks) {
@@ -672,13 +670,12 @@ class StandardQueryHandler extends AbstractQueryHandler {
             join.accept(this);
         }
         // If select is not a projection, selecting root type is enough, otherwise add projection for selected fields.
-        isCountQuery = false;
         boolean toDistinct = true;
         if (select.isProjection()) {
-
             projectionList = Projections.projectionList();
             {
                 List<TypedExpression> queryFields = select.getSelectedFields();
+                boolean isCountQuery = false;
                 boolean hasGroupSize = false;
                 for (Expression selectedField : queryFields) {
                     if (selectedField instanceof GroupSize) {
@@ -723,9 +720,8 @@ class StandardQueryHandler extends AbstractQueryHandler {
             // line avoids this situation.
             criteria.setResultTransformer(DistinctRootEntityResultTransformer.INSTANCE);
         }
-        if (projectionList == null) {
-            projectionList = Projections.projectionList();
-        }
+        // Make projection read only in case code tries to modify it later (see code that handles condition).
+        projectionList = ReadOnlyProjectionList.makeReadOnly(projectionList);
         // Handle condition (if there's any condition to handle).
         Condition condition = select.getCondition();
         if (condition != null) {
@@ -746,15 +742,13 @@ class StandardQueryHandler extends AbstractQueryHandler {
             }
             current.accept(this);
         }
-        if(select.isProjection()){
+        if (select.isProjection()) {
             if (select.getOrderBy().size() > 0 && toDistinct) {
                 criteria.setProjection(Projections.distinct(projectionList));
             } else {
                 criteria.setProjection(projectionList);
             }
         }
-        // Make projection read only in case code tries to modify it later (see code that handles condition).
-        projectionList = ReadOnlyProjectionList.makeReadOnly(projectionList);
         return criteria;
     }
 
@@ -835,9 +829,15 @@ class StandardQueryHandler extends AbstractQueryHandler {
 
             String language = DataRecord.SortLanguage.get();
             if (StringUtils.isNotBlank(language)) {
+                ProjectionList copyProjectionList = Projections.projectionList();
+                for (int i = 0; i < projectionList.getLength(); i++) {
+                    copyProjectionList.add(projectionList.getProjection(i));
+                }
+
                 MultilingualProjection multiProjection = new MultilingualProjection(language, userFieldMetadata,
                         ((RDBMSDataSource) storage.getDataSource()).getDialectName(), resolver);
-                projectionList.add(multiProjection.as(Types.MULTI_LINGUAL + "_"));
+                copyProjectionList.add(multiProjection.as(Types.MULTI_LINGUAL + "_" + Thread.currentThread().getId()));
+                projectionList = ReadOnlyProjectionList.makeReadOnly(copyProjectionList);
             }
 
             ComplexTypeMetadata containingType = getContainingType(userFieldMetadata);
@@ -1270,9 +1270,7 @@ class StandardQueryHandler extends AbstractQueryHandler {
                 // TODO Ugly code path to fix once test coverage is ok.
                 if (leftFieldCondition.position < 0
                         && (!mainType.equals(fieldMetadata.getContainingType()) || fieldMetadata instanceof ReferenceFieldMetadata)) {
-                    if(!isCountQuery){
-                        leftField.accept(StandardQueryHandler.this);
-                    }
+                    leftField.accept(StandardQueryHandler.this);
                     aliases = getAliases(mainType, leftField);
                     if (!fieldMetadata.isMany()) {
                         leftFieldCondition.criterionFieldNames.clear();
@@ -1645,7 +1643,7 @@ class StandardQueryHandler extends AbstractQueryHandler {
         } else {
             String language = DataRecord.SortLanguage.get();
             if (StringUtils.isNotBlank(language)) {
-                condition.criterionFieldNames.add(Types.MULTI_LINGUAL + "_");
+                condition.criterionFieldNames.add(Types.MULTI_LINGUAL + "_" + Thread.currentThread().getId());
             } else {
                 condition.criterionFieldNames.add(alias + '.' + fieldMetadata.getName());
             }

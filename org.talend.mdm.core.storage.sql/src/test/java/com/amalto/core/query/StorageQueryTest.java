@@ -2678,8 +2678,10 @@ public class StorageQueryTest extends StorageTestCase {
             }
         } finally {
             results.close();
+            DataRecord.SortLanguage.remove();
         }
 
+        DataRecord.SortLanguage.set("EN");
         qb = from(person).select(person.getField("resume")).select(person.getField("id"))
                 .orderBy(person.getField("resume"), Direction.DESC);
         results = storage.fetch(qb.getSelect());
@@ -2704,6 +2706,7 @@ public class StorageQueryTest extends StorageTestCase {
             }
         } finally {
             results.close();
+            DataRecord.SortLanguage.remove();
         }
 
         DataRecord.SortLanguage.set("FR");
@@ -2732,8 +2735,10 @@ public class StorageQueryTest extends StorageTestCase {
             }
         } finally {
             results.close();
+            DataRecord.SortLanguage.remove();
         }
 
+        DataRecord.SortLanguage.set("FR");
         qb = from(person).select(person.getField("resume")).select(person.getField("id"))
                 .orderBy(person.getField("resume"), Direction.DESC);
         results = storage.fetch(qb.getSelect());
@@ -2758,6 +2763,7 @@ public class StorageQueryTest extends StorageTestCase {
             }
         } finally {
             results.close();
+            DataRecord.SortLanguage.remove();
         }
     }
 

@@ -34,7 +34,6 @@ import org.dom4j.DocumentHelper;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
-import org.talend.mdm.commmon.metadata.Types;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
 import org.talend.mdm.commmon.util.datamodel.management.BusinessConcept;
 import org.talend.mdm.commmon.util.datamodel.management.ReusableType;

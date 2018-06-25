@@ -221,7 +221,9 @@ public class ForeignKeyHelper {
                             .getStrings();
                 }
             } finally {
-                DataRecord.SortLanguage.remove();
+                if (isSrotLanguage) {
+                    DataRecord.SortLanguage.remove();
+                }
             }
         }
         if (results != null) {

@@ -839,7 +839,7 @@ class StandardQueryHandler extends AbstractQueryHandler {
 
                 MultilingualProjection multiProjection = new MultilingualProjection(language, userFieldMetadata,
                         ((RDBMSDataSource) storage.getDataSource()).getDialectName(), resolver);
-                copyProjectionList.add(multiProjection.as(MultilingualProjection.getMultiLingualAlias()));
+                copyProjectionList.add(multiProjection.as(MultilingualProjection.getAlias()));
                 projectionList = ReadOnlyProjectionList.makeReadOnly(copyProjectionList);
             }
 
@@ -1646,7 +1646,7 @@ class StandardQueryHandler extends AbstractQueryHandler {
         } else {
             String language = DataRecord.SortLanguage.get();
             if (StringUtils.isNotBlank(language)) {
-                condition.criterionFieldNames.add(MultilingualProjection.getMultiLingualAlias());
+                condition.criterionFieldNames.add(MultilingualProjection.getAlias());
             } else {
                 condition.criterionFieldNames.add(alias + '.' + fieldMetadata.getName());
             }

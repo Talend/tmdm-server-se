@@ -100,7 +100,7 @@ public class MultilingualProjection extends SimpleProjection {
         return new Type[] { new StringType() };
     }
 
-    public static String getMultiLingualAlias() {
+    public static String getAlias() {
         return Types.MULTI_LINGUAL + '_' + Thread.currentThread().getId();
     }
 }

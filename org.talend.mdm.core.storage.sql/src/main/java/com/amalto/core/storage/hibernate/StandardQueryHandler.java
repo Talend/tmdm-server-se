@@ -62,7 +62,6 @@ import org.talend.mdm.commmon.metadata.EnumerationFieldMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
 import org.talend.mdm.commmon.metadata.SimpleTypeFieldMetadata;
-import org.talend.mdm.commmon.metadata.Types;
 
 import com.amalto.core.query.user.Alias;
 import com.amalto.core.query.user.BigDecimalConstant;
@@ -840,7 +839,7 @@ class StandardQueryHandler extends AbstractQueryHandler {
 
                 MultilingualProjection multiProjection = new MultilingualProjection(language, userFieldMetadata,
                         ((RDBMSDataSource) storage.getDataSource()).getDialectName(), resolver);
-                copyProjectionList.add(multiProjection.as(getMultiLingualAlias()));
+                copyProjectionList.add(multiProjection.as(MultilingualProjection.getMultiLingualAlias()));
                 projectionList = ReadOnlyProjectionList.makeReadOnly(copyProjectionList);
             }
 
@@ -1647,15 +1646,11 @@ class StandardQueryHandler extends AbstractQueryHandler {
         } else {
             String language = DataRecord.SortLanguage.get();
             if (StringUtils.isNotBlank(language)) {
-                condition.criterionFieldNames.add(getMultiLingualAlias());
+                condition.criterionFieldNames.add(MultilingualProjection.getMultiLingualAlias());
             } else {
                 condition.criterionFieldNames.add(alias + '.' + fieldMetadata.getName());
             }
         }
-    }
-
-    private String getMultiLingualAlias() {
-        return Types.MULTI_LINGUAL + '_' + Thread.currentThread().getId();
     }
 
     private void addCondition(FieldCondition condition, FieldMetadata fieldMetadata) {

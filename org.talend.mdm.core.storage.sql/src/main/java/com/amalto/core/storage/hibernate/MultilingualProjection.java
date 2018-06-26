@@ -20,6 +20,7 @@ import org.hibernate.type.StringType;
 import org.hibernate.type.Type;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
+import org.talend.mdm.commmon.metadata.Types;
 
 import com.amalto.core.storage.datasource.RDBMSDataSource.DataSourceDialect;
 
@@ -98,5 +99,8 @@ public class MultilingualProjection extends SimpleProjection {
     public Type[] getTypes(String alias, Criteria criteria, CriteriaQuery criteriaQuery) {
         return new Type[] { new StringType() };
     }
-    
+
+    public static String getMultiLingualAlias() {
+        return Types.MULTI_LINGUAL + '_' + Thread.currentThread().getId();
+    }
 }

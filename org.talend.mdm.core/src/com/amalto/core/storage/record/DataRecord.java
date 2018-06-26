@@ -427,7 +427,7 @@ public class DataRecord {
     }
 
     /**
-     * Used to store sort language if use multilingual field sort.
+     * Used to store language if sort on multilingual field.
      *
      */
     public static class SortLanguage {

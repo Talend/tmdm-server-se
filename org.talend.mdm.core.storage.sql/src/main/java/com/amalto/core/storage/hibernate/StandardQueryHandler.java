@@ -828,7 +828,7 @@ class StandardQueryHandler extends AbstractQueryHandler {
             FieldMetadata userFieldMetadata = field.getFieldMetadata();
 
             /**
-             * If get none blank value from thread local of SortLanguage, means sort on MULTI_LINGUAL field.
+             * If get non-blank value from thread local of SortLanguage, means sort on MULTI_LINGUAL field.
              * Should sort by the field's value of coresponding language.
              */
             String language = DataRecord.SortLanguage.get();

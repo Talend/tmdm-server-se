@@ -196,8 +196,8 @@ public class ForeignKeyHelper {
                 xpath = null;
             }
 
-            boolean isSrotLanguage = isSortByMultilingualField(entityModel, xpath);
-            if (isSrotLanguage) {
+            boolean isSortByLanguage = isSortByMultilingualField(entityModel, xpath);
+            if (isSortByLanguage) {
                 DataRecord.SortLanguage.set(language.toUpperCase());
             }
 
@@ -221,7 +221,7 @@ public class ForeignKeyHelper {
                             .getStrings();
                 }
             } finally {
-                if (isSrotLanguage) {
+                if (isSortByLanguage) {
                     DataRecord.SortLanguage.remove();
                 }
             }
@@ -248,7 +248,7 @@ public class ForeignKeyHelper {
         if (StringUtils.isNotEmpty(sortCol)) {
             Map<String, TypeModel> entityField = entityModel.getMetaDataTypes();
             for (Map.Entry<String, TypeModel> entry : entityField.entrySet()) {
-                if (entry.getValue().getType().getTypeName().equals(Types.MULTI_LINGUAL) && sortCol.equals(entry.getKey())) {
+                if (sortCol.equals(entry.getKey()) && Types.MULTI_LINGUAL.equals(entry.getValue().getType().getTypeName())) {
                     return true;
                 }
             }

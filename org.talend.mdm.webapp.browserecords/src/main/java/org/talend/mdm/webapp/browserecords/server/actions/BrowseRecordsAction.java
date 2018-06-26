@@ -822,8 +822,8 @@ public class BrowseRecordsAction implements BrowseRecordsService {
         if (criteria != null) {
             wi = CommonUtil.buildWhereItems(criteria);
         }
-        boolean isSrotLanguage = ForeignKeyHelper.isSortByMultilingualField(entityModel, sortCol);
-        if (isSrotLanguage) {
+        boolean isSortByLanguage = ForeignKeyHelper.isSortByMultilingualField(entityModel, sortCol);
+        if (isSortByLanguage) {
             DataRecord.SortLanguage.set(language.toUpperCase());
         }
         String[] results;
@@ -834,7 +834,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
                             new WSViewSearch(new WSDataClusterPK(dataClusterPK), new WSViewPK(viewBean.getViewPK()), wi, -1,
                                     skip, max, sortCol, sortDir)).getStrings();
         } finally {
-            if (isSrotLanguage) {
+            if (isSortByLanguage) {
                 DataRecord.SortLanguage.remove();
             }
         }

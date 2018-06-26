@@ -43,6 +43,10 @@ public abstract class TypeModel implements Serializable, IsSerializable {
 
     private boolean readOnly = false;
 
+    private boolean addPermission = true;
+
+    private boolean removePermission = true;
+
     private boolean visible = true;
 
     private boolean hide = false ;
@@ -193,6 +197,22 @@ public abstract class TypeModel implements Serializable, IsSerializable {
 
     public void setReadOnly(boolean readOnly) {
         this.readOnly = readOnly;
+    }
+
+    public boolean getAddPermission() {
+        return addPermission;
+    }
+
+    public void setAddPermission(boolean addPermission) {
+        this.addPermission = addPermission;
+    }
+
+    public boolean getRemovePermission() {
+        return removePermission;
+    }
+
+    public void setRemovePermission(boolean removePermission) {
+        this.removePermission = removePermission;
     }
 
     public boolean isVisible() {

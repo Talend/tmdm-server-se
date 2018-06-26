@@ -152,7 +152,9 @@ public class ForeignKeyTablePanel extends ContentPanel implements ReturnCriteria
 
     private boolean enable = false;
 
-    public ForeignKeyTablePanel(String panelName, boolean staging, boolean isBulkUpdate) {
+    private TypeModel typeModel;
+
+    public ForeignKeyTablePanel(String panelName, TypeModel typeModel, boolean staging, boolean isBulkUpdate) {
         super();
         this.setHeaderVisible(false);
         this.setLayout(new FitLayout());
@@ -161,41 +163,30 @@ public class ForeignKeyTablePanel extends ContentPanel implements ReturnCriteria
         this.panelName = panelName;
         this.staging = staging;
         this.isBulkUpdate = isBulkUpdate;
+        this.typeModel = typeModel;
         initBaseComponent();
-    }
-
-    public ForeignKeyTablePanel(final EntityModel entityModel, ItemNodeModel parent, final List<ItemNodeModel> fkModels,
-            final TypeModel fkTypeModel, Map<String, Field<?>> fieldMap, ItemsDetailPanel itemsDetailPanel) {
-        this(entityModel, parent, fkModels, fkTypeModel, fieldMap, itemsDetailPanel, null);
-    }
-
-    public ForeignKeyTablePanel(final EntityModel entityModel, ItemNodeModel parent, final List<ItemNodeModel> fkModels,
-            final TypeModel fkTypeModel, Map<String, Field<?>> fieldMap, ItemsDetailPanel itemsDetailPanel,
-            ViewBean originalViewBean) {
-        initContent(entityModel, parent, fkModels, fkTypeModel, fieldMap, itemsDetailPanel, originalViewBean);
     }
 
     private void initBaseComponent() {
         // topComponent
-
+        boolean isMultiOccurrence = typeModel.getMaxOccurs() < 0 || typeModel.getMaxOccurs() > 1;
+        if (isMultiOccurrence && !typeModel.getAddPermission()) {
+            addFkButton.setEnabled(false);
+        }
+        toolBar.add(addFkButton);
+        toolBar.add(new SeparatorToolItem());
+        if (isMultiOccurrence && !typeModel.getRemovePermission()) {
+            removeFkButton.setEnabled(false);
+        }
+        toolBar.add(removeFkButton);
+        toolBar.add(new SeparatorToolItem());
+        toolBar.add(createFkButton);
+        toolBar.add(new SeparatorToolItem());
         if (isBulkUpdate) {
             addFkButton.setEnabled(false);
-            toolBar.add(addFkButton);
-            toolBar.add(new SeparatorToolItem());
             removeFkButton.setEnabled(false);
-            toolBar.add(removeFkButton);
-            toolBar.add(new SeparatorToolItem());
             createFkButton.setEnabled(false);
-            toolBar.add(createFkButton);
-            toolBar.add(new SeparatorToolItem());
             toolBar.add(editFkButton);
-            toolBar.add(new SeparatorToolItem());
-        } else {
-            toolBar.add(addFkButton);
-            toolBar.add(new SeparatorToolItem());
-            toolBar.add(removeFkButton);
-            toolBar.add(new SeparatorToolItem());
-            toolBar.add(createFkButton);
             toolBar.add(new SeparatorToolItem());
         }
         this.setTopComponent(toolBar);

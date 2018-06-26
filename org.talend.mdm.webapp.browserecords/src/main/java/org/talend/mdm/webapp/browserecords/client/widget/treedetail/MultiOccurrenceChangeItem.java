@@ -221,26 +221,29 @@ public class MultiOccurrenceChangeItem extends HorizontalPanel {
         }
 
         if (typeModel.getMaxOccurs() < 0 || typeModel.getMaxOccurs() > 1) {
-            addNodeImg = new Image("secure/img/genericUI/add.png"); //$NON-NLS-1$
-            addNodeImg.getElement().setId("Add"); //$NON-NLS-1$
-            addNodeImg.setTitle(MessagesFactory.getMessages().clone_title());
-            addNodeImg.getElement().getStyle().setMarginLeft(20D, Unit.PX);
-            addNodeImg.getElement().getStyle().setMarginTop(5D, Unit.PX);
-            if (!typeModel.isReadOnly()) {
-                addNodeImg.addClickHandler(handler);
+            if (!(typeModel.getForeignkey() != null && !typeModel.getAddPermission())) {
+                addNodeImg = new Image("secure/img/genericUI/add.png"); //$NON-NLS-1$
+                addNodeImg.getElement().setId("Add"); //$NON-NLS-1$
+                addNodeImg.setTitle(MessagesFactory.getMessages().clone_title());
+                addNodeImg.getElement().getStyle().setMarginLeft(20D, Unit.PX);
+                addNodeImg.getElement().getStyle().setMarginTop(5D, Unit.PX);
+                if (!typeModel.isReadOnly()) {
+                    addNodeImg.addClickHandler(handler);
+                }
+                this.add(addNodeImg);
+                this.setCellVerticalAlignment(addNodeImg, VerticalPanel.ALIGN_BOTTOM);
             }
-            removeNodeImg = new Image("secure/img/genericUI/delete.png"); //$NON-NLS-1$
-            removeNodeImg.getElement().setId("Remove"); //$NON-NLS-1$
-            removeNodeImg.setTitle(MessagesFactory.getMessages().remove_title());
-            removeNodeImg.getElement().getStyle().setMarginLeft(5.0, Unit.PX);
-            addNodeImg.getElement().getStyle().setMarginTop(5D, Unit.PX);
-            if (!typeModel.isReadOnly()) {
-                removeNodeImg.addClickHandler(handler);
+            if (!(typeModel.getForeignkey() != null && !typeModel.getRemovePermission())) {
+                removeNodeImg = new Image("secure/img/genericUI/delete.png"); //$NON-NLS-1$
+                removeNodeImg.getElement().setId("Remove"); //$NON-NLS-1$
+                removeNodeImg.setTitle(MessagesFactory.getMessages().remove_title());
+                removeNodeImg.getElement().getStyle().setMarginLeft(5.0, Unit.PX);
+                if (!typeModel.isReadOnly()) {
+                    removeNodeImg.addClickHandler(handler);
+                }
+                this.add(removeNodeImg);
+                this.setCellVerticalAlignment(removeNodeImg, VerticalPanel.ALIGN_BOTTOM);
             }
-            this.add(addNodeImg);
-            this.setCellVerticalAlignment(addNodeImg, VerticalPanel.ALIGN_BOTTOM);
-            this.add(removeNodeImg);
-            this.setCellVerticalAlignment(removeNodeImg, VerticalPanel.ALIGN_BOTTOM);
             if (!typeModel.isSimpleType() && itemNode.getParent() != null) {
                 cloneNodeImg = new Image("secure/img/genericUI/add-group.png"); //$NON-NLS-1$
                 cloneNodeImg.getElement().setId("Clone"); //$NON-NLS-1$

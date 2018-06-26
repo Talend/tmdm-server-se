@@ -822,7 +822,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
         if (criteria != null) {
             wi = CommonUtil.buildWhereItems(criteria);
         }
-        boolean isSortByLanguage = ForeignKeyHelper.isSortByMultilingualField(entityModel, sortCol);
+        boolean isSortByLanguage = CommonUtil.isSortByMultilingualField(entityModel, sortCol);
         if (isSortByLanguage) {
             DataRecord.SortLanguage.set(language.toUpperCase());
         }

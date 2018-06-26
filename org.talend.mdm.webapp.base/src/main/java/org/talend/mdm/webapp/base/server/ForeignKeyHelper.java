@@ -196,7 +196,7 @@ public class ForeignKeyHelper {
                 xpath = null;
             }
 
-            boolean isSortByLanguage = isSortByMultilingualField(entityModel, xpath);
+            boolean isSortByLanguage = CommonUtil.isSortByMultilingualField(entityModel, xpath);
             if (isSortByLanguage) {
                 DataRecord.SortLanguage.set(language.toUpperCase());
             }
@@ -242,18 +242,6 @@ public class ForeignKeyHelper {
         } else {
             return new ItemBasePageLoadResult<ForeignKeyBean>(new ArrayList<ForeignKeyBean>(), config.getOffset(), 0);
         }
-    }
-
-    public static boolean isSortByMultilingualField(EntityModel entityModel, String sortCol) {
-        if (StringUtils.isNotBlank(sortCol)) {
-            Map<String, TypeModel> entityField = entityModel.getMetaDataTypes();
-            for (Map.Entry<String, TypeModel> entry : entityField.entrySet()) {
-                if (sortCol.equals(entry.getKey()) && Types.MULTI_LINGUAL.equals(entry.getValue().getType().getTypeName())) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     private static List<ForeignKeyBean> convertForeignKeyBeanList(String[] results, TypeModel model, EntityModel entityModel,

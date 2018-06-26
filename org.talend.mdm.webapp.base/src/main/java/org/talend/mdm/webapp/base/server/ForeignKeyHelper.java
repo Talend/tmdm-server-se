@@ -245,7 +245,7 @@ public class ForeignKeyHelper {
     }
 
     public static boolean isSortByMultilingualField(EntityModel entityModel, String sortCol) {
-        if (StringUtils.isNotEmpty(sortCol)) {
+        if (StringUtils.isNotBlank(sortCol)) {
             Map<String, TypeModel> entityField = entityModel.getMetaDataTypes();
             for (Map.Entry<String, TypeModel> entry : entityField.entrySet()) {
                 if (sortCol.equals(entry.getKey()) && Types.MULTI_LINGUAL.equals(entry.getValue().getType().getTypeName())) {

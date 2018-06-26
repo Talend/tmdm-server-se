@@ -840,7 +840,7 @@ class StandardQueryHandler extends AbstractQueryHandler {
 
                 MultilingualProjection multiProjection = new MultilingualProjection(language, userFieldMetadata,
                         ((RDBMSDataSource) storage.getDataSource()).getDialectName(), resolver);
-                copyProjectionList.add(multiProjection.as(Types.MULTI_LINGUAL + "_" + Thread.currentThread().getId()));
+                copyProjectionList.add(multiProjection.as(getMultiLingualAlias()));
                 projectionList = ReadOnlyProjectionList.makeReadOnly(copyProjectionList);
             }
 
@@ -1647,11 +1647,15 @@ class StandardQueryHandler extends AbstractQueryHandler {
         } else {
             String language = DataRecord.SortLanguage.get();
             if (StringUtils.isNotBlank(language)) {
-                condition.criterionFieldNames.add(Types.MULTI_LINGUAL + "_" + Thread.currentThread().getId());
+                condition.criterionFieldNames.add(getMultiLingualAlias());
             } else {
                 condition.criterionFieldNames.add(alias + '.' + fieldMetadata.getName());
             }
         }
+    }
+
+    private String getMultiLingualAlias() {
+        return Types.MULTI_LINGUAL + '_' + Thread.currentThread().getId();
     }
 
     private void addCondition(FieldCondition condition, FieldMetadata fieldMetadata) {

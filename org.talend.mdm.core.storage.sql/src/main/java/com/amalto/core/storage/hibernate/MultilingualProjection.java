@@ -49,7 +49,7 @@ public class MultilingualProjection extends SimpleProjection {
         String columnName = resolver.get(field);
         String containerTable = resolver.get(containingType);
 
-        final String colName = criteriaQuery.getColumn(criteria, containerTable + "." + columnName);
+        final String colName = criteriaQuery.getColumn(criteria, containerTable + '.' + columnName);
         
         if (dataSourceDialect == DataSourceDialect.ORACLE_10G) {
             columnName = columnName.toUpperCase();

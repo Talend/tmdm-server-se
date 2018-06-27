@@ -221,7 +221,7 @@ public class MultiOccurrenceChangeItem extends HorizontalPanel {
         }
 
         if (typeModel.getMaxOccurs() < 0 || typeModel.getMaxOccurs() > 1) {
-            if (!(typeModel.getForeignkey() != null && !typeModel.getAddPermission())) {
+            if (typeModel.getForeignkey() == null || typeModel.getAddPermission()) {
                 addNodeImg = new Image("secure/img/genericUI/add.png"); //$NON-NLS-1$
                 addNodeImg.getElement().setId("Add"); //$NON-NLS-1$
                 addNodeImg.setTitle(MessagesFactory.getMessages().clone_title());
@@ -233,7 +233,7 @@ public class MultiOccurrenceChangeItem extends HorizontalPanel {
                 this.add(addNodeImg);
                 this.setCellVerticalAlignment(addNodeImg, VerticalPanel.ALIGN_BOTTOM);
             }
-            if (!(typeModel.getForeignkey() != null && !typeModel.getRemovePermission())) {
+            if (typeModel.getForeignkey() == null || typeModel.getRemovePermission()) {
                 removeNodeImg = new Image("secure/img/genericUI/delete.png"); //$NON-NLS-1$
                 removeNodeImg.getElement().setId("Remove"); //$NON-NLS-1$
                 removeNodeImg.setTitle(MessagesFactory.getMessages().remove_title());

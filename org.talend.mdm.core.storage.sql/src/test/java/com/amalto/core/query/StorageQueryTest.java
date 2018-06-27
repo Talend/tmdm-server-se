@@ -2653,7 +2653,7 @@ public class StorageQueryTest extends StorageTestCase {
     }
 
     public void testMultiLingualSearchSort() throws Exception {
-        DataRecord.SortLanguage.set("EN");
+        OrderBy.SortLanguage.set("EN");
         UserQueryBuilder qb = from(person).select(person.getField("id")).select(person.getField("resume"))
                 .orderBy(person.getField("resume"), Direction.ASC);
         StorageResults results = storage.fetch(qb.getSelect());
@@ -2678,10 +2678,10 @@ public class StorageQueryTest extends StorageTestCase {
             }
         } finally {
             results.close();
-            DataRecord.SortLanguage.remove();
+            OrderBy.SortLanguage.remove();
         }
 
-        DataRecord.SortLanguage.set("EN");
+        OrderBy.SortLanguage.set("EN");
         qb = from(person).select(person.getField("resume")).select(person.getField("id"))
                 .orderBy(person.getField("resume"), Direction.DESC);
         results = storage.fetch(qb.getSelect());
@@ -2706,10 +2706,10 @@ public class StorageQueryTest extends StorageTestCase {
             }
         } finally {
             results.close();
-            DataRecord.SortLanguage.remove();
+            OrderBy.SortLanguage.remove();
         }
 
-        DataRecord.SortLanguage.set("FR");
+        OrderBy.SortLanguage.set("FR");
         qb = from(person).select(person.getField("resume")).select(person.getField("id"))
                 .orderBy(person.getField("resume"), Direction.ASC);
         results = storage.fetch(qb.getSelect());
@@ -2735,10 +2735,10 @@ public class StorageQueryTest extends StorageTestCase {
             }
         } finally {
             results.close();
-            DataRecord.SortLanguage.remove();
+            OrderBy.SortLanguage.remove();
         }
 
-        DataRecord.SortLanguage.set("FR");
+        OrderBy.SortLanguage.set("FR");
         qb = from(person).select(person.getField("resume")).select(person.getField("id"))
                 .orderBy(person.getField("resume"), Direction.DESC);
         results = storage.fetch(qb.getSelect());
@@ -2763,7 +2763,7 @@ public class StorageQueryTest extends StorageTestCase {
             }
         } finally {
             results.close();
-            DataRecord.SortLanguage.remove();
+            OrderBy.SortLanguage.remove();
         }
     }
 

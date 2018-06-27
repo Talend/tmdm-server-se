@@ -54,8 +54,8 @@ import org.w3c.dom.NodeList;
 import com.amalto.core.objects.ItemPOJO;
 import com.amalto.core.objects.ItemPOJOPK;
 import com.amalto.core.objects.datacluster.DataClusterPOJOPK;
+import com.amalto.core.query.user.OrderBy;
 import com.amalto.core.storage.StorageMetadataUtils;
-import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.webservice.WSDataClusterPK;
 import com.amalto.core.webservice.WSGetItemsByCustomFKFilters;
 import com.amalto.core.webservice.WSInt;
@@ -198,7 +198,7 @@ public class ForeignKeyHelper {
 
             boolean isSortByLanguage = CommonUtil.isSortByMultilingualField(entityModel, xpath);
             if (isSortByLanguage) {
-                DataRecord.SortLanguage.set(language.toUpperCase());
+                OrderBy.SortLanguage.set(language.toUpperCase());
             }
 
             try {
@@ -222,7 +222,7 @@ public class ForeignKeyHelper {
                 }
             } finally {
                 if (isSortByLanguage) {
-                    DataRecord.SortLanguage.remove();
+                    OrderBy.SortLanguage.remove();
                 }
             }
         }

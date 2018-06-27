@@ -98,6 +98,7 @@ import com.amalto.core.objects.UpdateReportPOJO;
 import com.amalto.core.objects.customform.CustomFormPOJO;
 import com.amalto.core.objects.customform.CustomFormPOJOPK;
 import com.amalto.core.objects.datacluster.DataClusterPOJOPK;
+import com.amalto.core.query.user.OrderBy;
 import com.amalto.core.save.context.BeforeSaving;
 import com.amalto.core.server.MDMContextAccessor;
 import com.amalto.core.server.ServerContext;
@@ -110,7 +111,6 @@ import com.amalto.core.util.FieldNotFoundException;
 import com.amalto.core.util.LocalUser;
 import com.amalto.core.util.Messages;
 import com.amalto.core.util.MessagesFactory;
-import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.services.BulkUpdate;
 import com.amalto.core.webservice.WSBoolean;
 import com.amalto.core.webservice.WSByteArray;
@@ -822,10 +822,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
         if (criteria != null) {
             wi = CommonUtil.buildWhereItems(criteria);
         }
-        boolean isSortByLanguage = CommonUtil.isSortByMultilingualField(entityModel, sortCol);
-        if (isSortByLanguage) {
-            DataRecord.SortLanguage.set(language.toUpperCase());
-        }
+        OrderBy.SortLanguage.set(language.toUpperCase());
         String[] results;
         try {
             results = CommonUtil
@@ -834,9 +831,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
                             new WSViewSearch(new WSDataClusterPK(dataClusterPK), new WSViewPK(viewBean.getViewPK()), wi, -1,
                                     skip, max, sortCol, sortDir)).getStrings();
         } finally {
-            if (isSortByLanguage) {
-                DataRecord.SortLanguage.remove();
-            }
+            OrderBy.SortLanguage.remove();
         }
         // set foreignKey's EntityModel
         Map<String, EntityModel> map = new HashMap<String, EntityModel>();

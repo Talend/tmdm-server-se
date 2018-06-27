@@ -62,6 +62,7 @@ import org.talend.mdm.commmon.metadata.EnumerationFieldMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
 import org.talend.mdm.commmon.metadata.SimpleTypeFieldMetadata;
+import org.talend.mdm.commmon.metadata.Types;
 
 import com.amalto.core.query.user.Alias;
 import com.amalto.core.query.user.BigDecimalConstant;
@@ -826,12 +827,9 @@ class StandardQueryHandler extends AbstractQueryHandler {
             Field field = (Field) orderByExpression;
             FieldMetadata userFieldMetadata = field.getFieldMetadata();
 
-            /**
-             * If get non-blank value from thread local of SortLanguage, means sort on MULTI_LINGUAL field.
-             * Should sort by the field's value of coresponding language.
-             */
-            String language = DataRecord.SortLanguage.get();
-            if (StringUtils.isNotBlank(language)) {
+            // WebUI should take in account the language set to sort entities against MULTI_LINGUAL element
+            String language = OrderBy.SortLanguage.get();
+            if (StringUtils.isNotBlank(language) && Types.MULTI_LINGUAL.equals(userFieldMetadata.getType().getName())) {
                 ProjectionList copyProjectionList = Projections.projectionList();
                 for (int i = 0; i < projectionList.getLength(); i++) {
                     copyProjectionList.add(projectionList.getProjection(i));
@@ -1644,8 +1642,8 @@ class StandardQueryHandler extends AbstractQueryHandler {
         } else if (fieldMetadata instanceof ReferenceFieldMetadata && mainType.equals(fieldMetadata.getContainingType())) {
             condition.criterionFieldNames.add(getFieldName(fieldMetadata, true));
         } else {
-            String language = DataRecord.SortLanguage.get();
-            if (StringUtils.isNotBlank(language)) {
+            String language = OrderBy.SortLanguage.get();
+            if (StringUtils.isNotBlank(language) && Types.MULTI_LINGUAL.equals(fieldMetadata.getType().getName())) {
                 condition.criterionFieldNames.add(MultilingualProjection.getAlias());
             } else {
                 condition.criterionFieldNames.add(alias + '.' + fieldMetadata.getName());

@@ -74,10 +74,8 @@ public class MultilingualProjection extends SimpleProjection {
             sql = "SUBSTR(" + colName + ", INSTR(" + colName + ", '" + language + "'))";
             break;
         case DB2:
-            sql = "SUBSTR(" + colName + ", LOCATE('" + language + "', " + colName + "))";
-            break;
         default:
-            throw new NotImplementedException("DB type not supported: " + dataSourceDialect);
+            throw new NotImplementedException("Order by MULTI_LINGUAL field doesn't support database of: " + dataSourceDialect);
         }
 
         sqlFragment.append(sql).append(" as y").append(position).append('_');

@@ -12,14 +12,12 @@ package org.talend.mdm.webapp.base.server.util;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
-import org.talend.mdm.commmon.metadata.Types;
 import org.talend.mdm.commmon.util.datamodel.management.BusinessConcept;
 import org.talend.mdm.webapp.base.client.exception.ParserException;
 import org.talend.mdm.webapp.base.client.model.Criteria;
@@ -28,8 +26,6 @@ import org.talend.mdm.webapp.base.client.model.SimpleCriterion;
 import org.talend.mdm.webapp.base.client.util.Parser;
 import org.talend.mdm.webapp.base.server.exception.ExceptionConstants;
 import org.talend.mdm.webapp.base.server.exception.WebBaseException;
-import org.talend.mdm.webapp.base.shared.EntityModel;
-import org.talend.mdm.webapp.base.shared.TypeModel;
 
 import com.amalto.core.server.ServerContext;
 import com.amalto.core.util.Messages;
@@ -301,17 +297,5 @@ public class CommonUtil {
 
     public static MetadataRepository getCurrentRepository() throws Exception {
         return ServerContext.INSTANCE.get().getMetadataRepositoryAdmin().get(Configuration.getConfiguration().getModel());
-    }
-
-    public static boolean isSortByMultilingualField(EntityModel entityModel, String sortCol) {
-        if (StringUtils.isNotBlank(sortCol)) {
-            Map<String, TypeModel> entityField = entityModel.getMetaDataTypes();
-            for (Map.Entry<String, TypeModel> entry : entityField.entrySet()) {
-                if (sortCol.equals(entry.getKey()) && Types.MULTI_LINGUAL.equals(entry.getValue().getType().getTypeName())) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 }

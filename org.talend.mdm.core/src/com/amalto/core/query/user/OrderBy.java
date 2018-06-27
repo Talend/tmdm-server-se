@@ -13,9 +13,6 @@ package com.amalto.core.query.user;
 
 import org.apache.commons.lang3.StringUtils;
 
-/**
- *
- */
 public class OrderBy implements Expression {
     
     public static String NONE = "None";

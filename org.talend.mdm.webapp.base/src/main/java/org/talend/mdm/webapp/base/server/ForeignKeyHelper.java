@@ -196,10 +196,7 @@ public class ForeignKeyHelper {
                 xpath = null;
             }
 
-            boolean isSortByLanguage = CommonUtil.isSortByMultilingualField(entityModel, xpath);
-            if (isSortByLanguage) {
-                OrderBy.SortLanguage.set(language.toUpperCase());
-            }
+            OrderBy.SortLanguage.set(language.toUpperCase());
 
             try {
                 // Run the query
@@ -221,9 +218,7 @@ public class ForeignKeyHelper {
                             .getStrings();
                 }
             } finally {
-                if (isSortByLanguage) {
-                    OrderBy.SortLanguage.remove();
-                }
+                OrderBy.SortLanguage.remove();
             }
         }
         if (results != null) {

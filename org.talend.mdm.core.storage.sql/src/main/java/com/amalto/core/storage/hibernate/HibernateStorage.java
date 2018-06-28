@@ -1295,12 +1295,13 @@ public class HibernateStorage implements Storage {
                         "Unable to complete database schema update, have High impact change but not clean impacted tabled."); //$NON-NLS-1$
             }
 
+            Connection connection = null;
             try {
                 SessionFactoryImplementor sessionFactoryImplementor = (SessionFactoryImplementor) this.getCurrentSession()
                         .getSessionFactory();
 
                 Dialect dialect = sessionFactoryImplementor.getDialect();
-                Connection connection = sessionFactoryImplementor.getConnectionProvider().getConnection();
+                connection = sessionFactoryImplementor.getConnectionProvider().getConnection();
 
                 LiquibaseSchemaAdapter liquibaseChange = new LiquibaseSchemaAdapter(tableResolver, dialect,
                         (RDBMSDataSource) this.getDataSource(), this.getType());
@@ -1310,6 +1311,14 @@ public class HibernateStorage implements Storage {
             } catch (Exception e) {
                 LOGGER.error("execute liquibase update failure", e);
                 throw new RuntimeException("Unable to complete database schema update, execute liquibase failed.", e); //$NON-NLS-1$
+            } finally {
+                if(connection != null) {
+                    try {
+                        connection.close();
+                    } catch (SQLException e) {
+                        LOGGER.error("Failed close connection for liquibase", e);
+                    }
+                }
             }
         }
 

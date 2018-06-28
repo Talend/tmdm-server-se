@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.tools.ant.util.DateUtils;
@@ -59,6 +60,7 @@ import liquibase.change.core.AddDefaultValueChange;
 import liquibase.change.core.AddNotNullConstraintChange;
 import liquibase.change.core.DropColumnChange;
 import liquibase.change.core.DropForeignKeyConstraintChange;
+import liquibase.change.core.DropIndexChange;
 import liquibase.change.core.DropNotNullConstraintChange;
 import liquibase.database.DatabaseConnection;
 import liquibase.resource.FileSystemResourceAccessor;
@@ -82,6 +84,8 @@ public class LiquibaseSchemaAdapter  {
     
     private StorageType storageType;
 
+    private String catalogName = StringUtils.EMPTY;
+
     public LiquibaseSchemaAdapter(TableResolver tableResolver, Dialect dialect, RDBMSDataSource dataSource,
             StorageType storageType) {
         this.tableResolver = tableResolver;
@@ -91,6 +95,10 @@ public class LiquibaseSchemaAdapter  {
     }
 
     public void adapt(Connection connection, Compare.DiffResults diffResults) throws Exception {
+
+        if (dataSource.getDialectName() == DataSourceDialect.SQL_SERVER) {
+            catalogName = connection.getCatalog();
+        }
 
         List<AbstractChange> changeType = findChangeFiles(diffResults);
 
@@ -198,8 +206,10 @@ public class LiquibaseSchemaAdapter  {
     protected List<AbstractChange> analyzeRemoveChange(DiffResults diffResults) {
         List<AbstractChange> changeActionList = new ArrayList<AbstractChange>();
 
-        Map<String, List<String>> dropColumnMap = new HashMap<String, List<String>>();
-        Map<String, List<String>> dropFKMap = new HashMap<String, List<String>>();
+        Map<String, List<String>> dropColumnMap = new HashMap<>();
+        Map<String, List<String>> dropFKMap = new HashMap<>();
+        Map<String, List<String[]>> dropIndexMap = new HashMap<>();
+
         for (RemoveChange removeAction : diffResults.getRemoveChanges()) {
 
             MetadataVisitable element = removeAction.getElement();
@@ -237,6 +247,27 @@ public class LiquibaseSchemaAdapter  {
                 }
                 columnList.add(columnName);
                 dropColumnMap.put(tableName, columnList);
+
+                List<String[]> indexList = dropIndexMap.get(tableName);
+                if (indexList == null) {
+                    indexList = new ArrayList<String[]>();
+                }
+                if (dataSource.getDialectName() == DataSourceDialect.SQL_SERVER && storageType == StorageType.MASTER) {
+                    indexList.add(new String[] { "dbo", tableName, tableResolver.getIndex(columnName, tableName) });
+                    dropIndexMap.put(tableName, indexList);
+                }
+            }
+        }
+
+        for (Map.Entry<String, List<String[]>> entry : dropIndexMap.entrySet()) {
+            List<String[]> strs = entry.getValue();
+            for (String[] str : strs) {
+                DropIndexChange dropIndexChange = new DropIndexChange();
+                dropIndexChange.setSchemaName(str[0]);
+                dropIndexChange.setCatalogName(catalogName);
+                dropIndexChange.setTableName(str[1]);
+                dropIndexChange.setIndexName(str[2]);
+                changeActionList.add(dropIndexChange);
             }
         }
 

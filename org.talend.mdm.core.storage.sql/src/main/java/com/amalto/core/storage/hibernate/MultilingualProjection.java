@@ -62,16 +62,16 @@ public class MultilingualProjection extends SimpleProjection {
         switch (dataSourceDialect) {
         case H2:
         case MYSQL:
-            sql = "SUBSTRING(" + colName + ", LOCATE('" + language + "', " + colName + "))";
+            sql = "SUBSTRING(" + colName + ", LOCATE('[" + language + ":', " + colName + "))";
             break;
         case SQL_SERVER:
-            sql = "SUBSTRING(" + colName + ", CHARINDEX('" + language + "', " + colName + "), LEN(" + colName + "))";
+            sql = "SUBSTRING(" + colName + ", CHARINDEX('[" + language + ":', " + colName + "), LEN(" + colName + "))";
             break;
         case POSTGRES:
-            sql = "SUBSTRING(" + colName + ", POSITION('" + language + "' IN " + colName + "))";
+            sql = "SUBSTRING(" + colName + ", POSITION('[" + language + ":' IN " + colName + "))";
             break;
         case ORACLE_10G:
-            sql = "SUBSTR(" + colName + ", INSTR(" + colName + ", '" + language + "'))";
+            sql = "SUBSTR(" + colName + ", INSTR(" + colName + ", '[" + language + ":'))";
             break;
         case DB2:
         default:

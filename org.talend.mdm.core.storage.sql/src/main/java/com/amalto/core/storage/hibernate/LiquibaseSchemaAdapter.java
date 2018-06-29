@@ -62,6 +62,8 @@ import liquibase.change.core.DropForeignKeyConstraintChange;
 import liquibase.change.core.DropIndexChange;
 import liquibase.change.core.DropNotNullConstraintChange;
 import liquibase.database.DatabaseConnection;
+import liquibase.precondition.core.IndexExistsPrecondition;
+import liquibase.precondition.core.PreconditionContainer;
 import liquibase.resource.FileSystemResourceAccessor;
 import liquibase.serializer.core.xml.XMLChangeLogSerializer;
 
@@ -336,14 +338,31 @@ public class LiquibaseSchemaAdapter  {
         liquibase.changelog.DatabaseChangeLog databaseChangeLog = new liquibase.changelog.DatabaseChangeLog();
 
         for (AbstractChange change : changeType) {
+
             // create a changeset
             liquibase.changelog.ChangeSet changeSet = new liquibase.changelog.ChangeSet(UUID.randomUUID().toString(),
                     "administrator", false, false, StringUtils.EMPTY, null, null, true, null, databaseChangeLog); //$NON-NLS-1$
-
             changeSet.addChange(change);
 
             // add created changeset to changelog
             databaseChangeLog.addChangeSet(changeSet);
+            if (change instanceof DropIndexChange && dataSource.getDialectName() == DataSourceDialect.SQL_SERVER
+                    && storageType == StorageType.MASTER) {
+                PreconditionContainer preCondition = new PreconditionContainer();
+                preCondition.setOnFail(PreconditionContainer.FailOption.MARK_RAN.toString());
+
+                DropIndexChange dropIndexChange = (DropIndexChange) change;
+                IndexExistsPrecondition indexExistsPrecondition = new IndexExistsPrecondition();
+                indexExistsPrecondition.setSchemaName(dropIndexChange.getSchemaName());
+                indexExistsPrecondition.setCatalogName(dropIndexChange.getCatalogName());
+                indexExistsPrecondition.setTableName(dropIndexChange.getTableName());
+                indexExistsPrecondition.setIndexName(dropIndexChange.getIndexName());
+
+                preCondition.addNestedPrecondition(indexExistsPrecondition);
+                changeSet.setPreconditions(preCondition);
+
+            }
+
         }
 
         return generateChangeLogFile(databaseChangeLog);

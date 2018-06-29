@@ -83,7 +83,7 @@ public class LiquibaseSchemaAdapter  {
     
     private StorageType storageType;
 
-    private String catalogName = StringUtils.EMPTY;
+    private String catalogName;
 
     public LiquibaseSchemaAdapter(TableResolver tableResolver, Dialect dialect, RDBMSDataSource dataSource,
             StorageType storageType) {

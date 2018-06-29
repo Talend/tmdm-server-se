@@ -1306,8 +1306,6 @@ public class HibernateStorage implements Storage {
                 LiquibaseSchemaAdapter liquibaseChange = new LiquibaseSchemaAdapter(tableResolver, dialect,
                         (RDBMSDataSource) this.getDataSource(), this.getType());
                 liquibaseChange.adapt(connection, diffResults);
-                connection.close();
-
             } catch (Exception e) {
                 LOGGER.error("execute liquibase update failure", e);
                 throw new RuntimeException("Unable to complete database schema update, execute liquibase failed.", e); //$NON-NLS-1$

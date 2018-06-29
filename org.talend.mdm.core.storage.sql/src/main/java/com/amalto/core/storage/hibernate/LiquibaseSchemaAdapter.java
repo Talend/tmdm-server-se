@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.tools.ant.util.DateUtils;
@@ -96,9 +95,7 @@ public class LiquibaseSchemaAdapter  {
 
     public void adapt(Connection connection, Compare.DiffResults diffResults) throws Exception {
 
-        if (dataSource.getDialectName() == DataSourceDialect.SQL_SERVER) {
-            catalogName = connection.getCatalog();
-        }
+        catalogName = connection.getCatalog();
 
         List<AbstractChange> changeType = findChangeFiles(diffResults);
 

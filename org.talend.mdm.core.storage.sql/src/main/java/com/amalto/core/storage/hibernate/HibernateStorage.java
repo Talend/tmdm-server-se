@@ -1316,7 +1316,7 @@ public class HibernateStorage implements Storage {
                     try {
                         connection.close();
                     } catch (SQLException e) {
-                        LOGGER.error("Failed close connection for liquibase", e);
+                        LOGGER.error("Failed to close connection for liquibase", e);
                     }
                 }
             }

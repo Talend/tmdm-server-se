@@ -1307,10 +1307,11 @@ public class HibernateStorage implements Storage {
                         (RDBMSDataSource) this.getDataSource(), this.getType());
                 liquibaseChange.adapt(connection, diffResults);
             } catch (Exception e) {
-                LOGGER.error("execute liquibase update failure", e);
-                throw new RuntimeException("Unable to complete database schema update, execute liquibase failed.", e); //$NON-NLS-1$
+                String msg = "Unable to complete database schema update, execute liquibase failed."; //$NON-NLS-1$
+                LOGGER.error(msg, e);
+                throw new RuntimeException(msg, e);
             } finally {
-                if(connection != null) {
+                if (connection != null) {
                     try {
                         connection.close();
                     } catch (SQLException e) {

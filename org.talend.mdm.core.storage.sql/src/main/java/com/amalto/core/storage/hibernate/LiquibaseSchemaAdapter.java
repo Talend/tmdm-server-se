@@ -259,13 +259,13 @@ public class LiquibaseSchemaAdapter  {
         }
 
         for (Map.Entry<String, List<String[]>> entry : dropIndexMap.entrySet()) {
-            List<String[]> strs = entry.getValue();
-            for (String[] str : strs) {
+            List<String[]> dropIndexInfoList = entry.getValue();
+            for (String[] dropIndexInfo : dropIndexInfoList) {
                 DropIndexChange dropIndexChange = new DropIndexChange();
-                dropIndexChange.setSchemaName(str[0]);
+                dropIndexChange.setSchemaName(dropIndexInfo[0]);
                 dropIndexChange.setCatalogName(catalogName);
-                dropIndexChange.setTableName(str[1]);
-                dropIndexChange.setIndexName(str[2]);
+                dropIndexChange.setTableName(dropIndexInfo[1]);
+                dropIndexChange.setIndexName(dropIndexInfo[2]);
                 changeActionList.add(dropIndexChange);
             }
         }

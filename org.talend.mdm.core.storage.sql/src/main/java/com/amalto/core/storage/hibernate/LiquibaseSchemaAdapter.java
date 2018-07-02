@@ -348,8 +348,8 @@ public class LiquibaseSchemaAdapter  {
             databaseChangeLog.addChangeSet(changeSet);
             if (change instanceof DropIndexChange && dataSource.getDialectName() == DataSourceDialect.SQL_SERVER
                     && storageType == StorageType.MASTER) {
-                PreconditionContainer preCondition = new PreconditionContainer();
-                preCondition.setOnFail(PreconditionContainer.FailOption.MARK_RAN.toString());
+                PreconditionContainer preconditionContainer = new PreconditionContainer();
+                preconditionContainer.setOnFail(PreconditionContainer.FailOption.MARK_RAN.toString());
 
                 DropIndexChange dropIndexChange = (DropIndexChange) change;
                 IndexExistsPrecondition indexExistsPrecondition = new IndexExistsPrecondition();
@@ -358,11 +358,9 @@ public class LiquibaseSchemaAdapter  {
                 indexExistsPrecondition.setTableName(dropIndexChange.getTableName());
                 indexExistsPrecondition.setIndexName(dropIndexChange.getIndexName());
 
-                preCondition.addNestedPrecondition(indexExistsPrecondition);
-                changeSet.setPreconditions(preCondition);
-
+                preconditionContainer.addNestedPrecondition(indexExistsPrecondition);
+                changeSet.setPreconditions(preconditionContainer);
             }
-
         }
 
         return generateChangeLogFile(databaseChangeLog);

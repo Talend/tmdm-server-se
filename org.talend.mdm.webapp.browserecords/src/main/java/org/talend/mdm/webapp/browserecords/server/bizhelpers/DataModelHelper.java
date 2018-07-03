@@ -495,6 +495,10 @@ public class DataModelHelper {
         } else {
             typeModel.setReadOnly(!writable);
         }
+        if (!writable) {
+            typeModel.setAddPermission(false);
+            typeModel.setRemovePermission(false);
+        }
         typeModel.setForeignKeyInfo(fkInfoList);
         typeModel.setPrimaryKeyInfo(pkInfoList);
     }

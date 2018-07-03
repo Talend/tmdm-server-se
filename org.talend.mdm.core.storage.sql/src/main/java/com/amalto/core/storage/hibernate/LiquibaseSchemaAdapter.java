@@ -59,8 +59,11 @@ import liquibase.change.core.AddDefaultValueChange;
 import liquibase.change.core.AddNotNullConstraintChange;
 import liquibase.change.core.DropColumnChange;
 import liquibase.change.core.DropForeignKeyConstraintChange;
+import liquibase.change.core.DropIndexChange;
 import liquibase.change.core.DropNotNullConstraintChange;
 import liquibase.database.DatabaseConnection;
+import liquibase.precondition.core.IndexExistsPrecondition;
+import liquibase.precondition.core.PreconditionContainer;
 import liquibase.resource.FileSystemResourceAccessor;
 import liquibase.serializer.core.xml.XMLChangeLogSerializer;
 
@@ -82,6 +85,8 @@ public class LiquibaseSchemaAdapter  {
     
     private StorageType storageType;
 
+    private String catalogName;
+
     public LiquibaseSchemaAdapter(TableResolver tableResolver, Dialect dialect, RDBMSDataSource dataSource,
             StorageType storageType) {
         this.tableResolver = tableResolver;
@@ -91,6 +96,8 @@ public class LiquibaseSchemaAdapter  {
     }
 
     public void adapt(Connection connection, Compare.DiffResults diffResults) throws Exception {
+
+        catalogName = connection.getCatalog();
 
         List<AbstractChange> changeType = findChangeFiles(diffResults);
 
@@ -198,8 +205,10 @@ public class LiquibaseSchemaAdapter  {
     protected List<AbstractChange> analyzeRemoveChange(DiffResults diffResults) {
         List<AbstractChange> changeActionList = new ArrayList<AbstractChange>();
 
-        Map<String, List<String>> dropColumnMap = new HashMap<String, List<String>>();
-        Map<String, List<String>> dropFKMap = new HashMap<String, List<String>>();
+        Map<String, List<String>> dropColumnMap = new HashMap<>();
+        Map<String, List<String>> dropFKMap = new HashMap<>();
+        Map<String, List<String[]>> dropIndexMap = new HashMap<>();
+
         for (RemoveChange removeAction : diffResults.getRemoveChanges()) {
 
             MetadataVisitable element = removeAction.getElement();
@@ -237,6 +246,27 @@ public class LiquibaseSchemaAdapter  {
                 }
                 columnList.add(columnName);
                 dropColumnMap.put(tableName, columnList);
+
+                List<String[]> indexList = dropIndexMap.get(tableName);
+                if (indexList == null) {
+                    indexList = new ArrayList<String[]>();
+                }
+                if (dataSource.getDialectName() == DataSourceDialect.SQL_SERVER && storageType == StorageType.MASTER) {
+                    indexList.add(new String[] { "dbo", tableName, tableResolver.getIndex(columnName, tableName) });
+                    dropIndexMap.put(tableName, indexList);
+                }
+            }
+        }
+
+        for (Map.Entry<String, List<String[]>> entry : dropIndexMap.entrySet()) {
+            List<String[]> dropIndexInfoList = entry.getValue();
+            for (String[] dropIndexInfo : dropIndexInfoList) {
+                DropIndexChange dropIndexChange = new DropIndexChange();
+                dropIndexChange.setSchemaName(dropIndexInfo[0]);
+                dropIndexChange.setCatalogName(catalogName);
+                dropIndexChange.setTableName(dropIndexInfo[1]);
+                dropIndexChange.setIndexName(dropIndexInfo[2]);
+                changeActionList.add(dropIndexChange);
             }
         }
 
@@ -308,14 +338,29 @@ public class LiquibaseSchemaAdapter  {
         liquibase.changelog.DatabaseChangeLog databaseChangeLog = new liquibase.changelog.DatabaseChangeLog();
 
         for (AbstractChange change : changeType) {
+
             // create a changeset
             liquibase.changelog.ChangeSet changeSet = new liquibase.changelog.ChangeSet(UUID.randomUUID().toString(),
                     "administrator", false, false, StringUtils.EMPTY, null, null, true, null, databaseChangeLog); //$NON-NLS-1$
-
             changeSet.addChange(change);
 
             // add created changeset to changelog
             databaseChangeLog.addChangeSet(changeSet);
+            if (change instanceof DropIndexChange && dataSource.getDialectName() == DataSourceDialect.SQL_SERVER
+                    && storageType == StorageType.MASTER) {
+                PreconditionContainer preconditionContainer = new PreconditionContainer();
+                preconditionContainer.setOnFail(PreconditionContainer.FailOption.MARK_RAN.toString());
+
+                DropIndexChange dropIndexChange = (DropIndexChange) change;
+                IndexExistsPrecondition indexExistsPrecondition = new IndexExistsPrecondition();
+                indexExistsPrecondition.setSchemaName(dropIndexChange.getSchemaName());
+                indexExistsPrecondition.setCatalogName(dropIndexChange.getCatalogName());
+                indexExistsPrecondition.setTableName(dropIndexChange.getTableName());
+                indexExistsPrecondition.setIndexName(dropIndexChange.getIndexName());
+
+                preconditionContainer.addNestedPrecondition(indexExistsPrecondition);
+                changeSet.setPreconditions(preconditionContainer);
+            }
         }
 
         return generateChangeLogFile(databaseChangeLog);

@@ -213,11 +213,10 @@ public class StorageQueryTest extends StorageTestCase {
                         .read(repository,
                                 person,
                                 "<Person><id>6</id><score>150000.00</score><lastname>Eric</lastname><resume>[EN:jelle][FR:gelee]</resume><middlename>Mike</middlename><firstname>Binary</firstname><addresses><address>[2&amp;2][true]</address><address>[1][false]</address></addresses><age>10</age><Status>Employee</Status><Available>true</Available></Person>"));
- allRecords.add(factory.read(repository, b, "<B><id>1</id><textB>TextB</textB></B>"));
+        allRecords.add(factory.read(repository, b, "<B><id>1</id><textB>TextB</textB></B>"));
         allRecords.add(factory.read(repository, d, "<D><id>2</id><textB>TextBD</textB><textD>TextDD</textD></D>"));
         allRecords.add(factory.read(repository, a, "<A><id>1</id><textA>TextA</textA><nestedB><text>Text1</text></nestedB></A>"));
-        allRecords.add(factory.read(repository, a,
-                "<A><id>2</id><textA>TextA</textA><nestedB><text>Text2</text></nestedB><refA>[1]</refA></A>"));
+        allRecords.add(factory.read(repository, a, "<A><id>2</id><textA>TextA</textA><nestedB><text>Text2</text></nestedB><refA>[1]</refA></A>"));
         allRecords
                 .add(factory
                         .read(repository,
@@ -234,61 +233,23 @@ public class StorageQueryTest extends StorageTestCase {
                                 a,
                                 "<A xmlns:tmdm=\"http://www.talend.com/mdm\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><id>5</id><refB tmdm:type=\"B\">[2]</refB><textA>TextA</textA><nestedB xsi:type=\"Nested\"><text>Text</text></nestedB></A>"));
 
-        allRecords.add(factory.read(repository, supplier, "<Supplier>\n" + "    <Id>1</Id>\n"
-                + "    <SupplierName>Renault</SupplierName>\n" + "    <Contact>" + "        <Name>Jean Voiture</Name>\n"
-                + "        <Phone>33123456789</Phone>\n" + "        <Email>test@test.org</Email>\n" + "    </Contact>\n"
-                + "</Supplier>"));
-        allRecords.add(factory.read(repository, supplier, "<Supplier>\n" + "    <Id>.127</Id>\n"
-                + "    <SupplierName>Renault</SupplierName>\n" + "    <Contact>" + "        <Name>Jean Voiture</Name>\n"
-                + "        <Phone>33123456789</Phone>\n" + "        <Email>test@test.org</Email>\n" + "    </Contact>\n"
-                + "</Supplier>"));
-        allRecords.add(factory.read(repository, supplier, "<Supplier>\n" + "    <Id>127.</Id>\n"
-                + "    <SupplierName>Renault</SupplierName>\n" + "    <Contact>" + "        <Name>Jean Voiture</Name>\n"
-                + "        <Phone>33123456789</Phone>\n" + "        <Email>test@test.org</Email>\n" + "    </Contact>\n"
-                + "</Supplier>"));
-        allRecords.add(factory.read(repository, supplier, "<Supplier>\n" + "    <Id>127.0.0.1</Id>\n"
-                + "    <SupplierName>Renault</SupplierName>\n" + "    <Contact>" + "        <Name>Jean Voiture</Name>\n"
-                + "        <Phone>33123456789</Phone>\n" + "        <Email>test@test.org</Email>\n" + "    </Contact>\n"
-                + "</Supplier>"));
-        allRecords.add(factory.read(repository, supplier, "<Supplier>\n" + "    <Id>2</Id>\n"
-                + "    <SupplierName>Starbucks Talend</SupplierName>\n" + "    <Contact>" + "        <Name>Jean Cafe</Name>\n"
-                + "        <Phone>33234567890</Phone>\n" + "        <Email>test@testfactory.org</Email>\n" + "    </Contact>\n"
-                + "</Supplier>"));
-        allRecords.add(factory.read(repository, supplier, "<Supplier>\n" + "    <Id>3</Id>\n"
-                + "    <SupplierName>Talend</SupplierName>\n" + "    <Contact>" + "        <Name>Jean Paul</Name>\n"
-                + "        <Phone>33234567890</Phone>\n" + "        <Email>test@talend.com</Email>\n" + "    </Contact>\n"
-                + "</Supplier>"));
-        allRecords.add(factory.read(repository, productFamily, "<ProductFamily>\n" + "    <Id>1</Id>\n"
-                + "    <Name>Product family #1</Name>\n" + "</ProductFamily>"));
-        allRecords.add(factory.read(repository, productFamily, "<ProductFamily>\n" + "    <Id>2</Id>\n"
-                + "    <Name>Product family #2</Name>\n" + "</ProductFamily>"));
+        allRecords.add(factory.read(repository, supplier, "<Supplier><Id>1</Id><SupplierName>Renault</SupplierName><Contact><Name>Jean Voiture</Name><Phone>33123456789</Phone><Email>test@test.org</Email></Contact></Supplier>"));
+        allRecords.add(factory.read(repository, supplier, "<Supplier><Id>.127</Id><SupplierName>Renault</SupplierName><Contact><Name>Jean Voiture</Name><Phone>33123456789</Phone><Email>test@test.org</Email></Contact></Supplier>"));
+        allRecords.add(factory.read(repository, supplier, "<Supplier><Id>127.</Id><SupplierName>Renault</SupplierName><Contact><Name>Jean Voiture</Name><Phone>33123456789</Phone><Email>test@test.org</Email></Contact></Supplier>"));
+        allRecords.add(factory.read(repository, supplier, "<Supplier><Id>127.0.0.1</Id><SupplierName>Renault</SupplierName><Contact><Name>Jean Voiture</Name><Phone>33123456789</Phone><Email>test@test.org</Email></Contact></Supplier>"));
+        allRecords.add(factory.read(repository, supplier, "<Supplier><Id>2</Id><SupplierName>Starbucks Talend</SupplierName><Contact><Name>Jean Cafe</Name><Phone>33234567890</Phone><Email>test@testfactory.org</Email></Contact></Supplier>"));
+        allRecords.add(factory.read(repository, supplier, "<Supplier><Id>3</Id><SupplierName>Talend</SupplierName><Contact><Name>Jean Paul</Name><Phone>33234567890</Phone><Email>test@talend.com</Email></Contact></Supplier>"));
+        allRecords.add(factory.read(repository, productFamily, "<ProductFamily><Id>1</Id><Name>Product family #1</Name></ProductFamily>"));
+        allRecords.add(factory.read(repository, productFamily, "<ProductFamily><Id>2</Id><Name>Product family #2</Name></ProductFamily>"));
+        allRecords.add(factory.read(repository, productFamily, "<ProductFamily><Id>3</Id><Name>test name3</Name></ProductFamily>"));
+        allRecords.add(factory.read(repository, productFamily, "<ProductFamily><Id>4</Id><Name>test_name4</Name></ProductFamily>"));
+        allRecords.add(factory.read(repository, productFamily, "<ProductFamily><Id>5</Id><Name>test name5</Name></ProductFamily>"));
+        allRecords.add(factory.read(repository, productFamily, "<ProductFamily><Id>123 456</Id><Name>test name6</Name></ProductFamily>"));
+        allRecords.add(factory.read(repository, store, "<Store><Id>1</Id><Name>Store #1</Name></Store>"));
+        allRecords.add(factory.read(repository, product, "<Product><Id>1</Id><Name>Product name</Name><ShortDescription>Short description word</ShortDescription><LongDescription>Long description</LongDescription><Price>10</Price><Features><Sizes><Size>Small</Size><Size>Medium</Size><Size>Large</Size></Sizes><Colors><Color>Blue</Color><Color>Red</Color></Colors></Features><Status>Pending</Status><Family>[2]</Family><Supplier>[1]</Supplier></Product>"));
+        allRecords.add(factory.read(repository, product, "<Product><Id>2</Id><Name>Renault car</Name><ShortDescription>A car</ShortDescription><LongDescription>Long description 2</LongDescription><Price>10</Price><Features><Sizes><Size>Large</Size></Sizes><Colors><Color>Blue 2</Color><Color>Blue 1</Color><Color>Klein blue2</Color></Colors></Features><Family/><Status>Pending</Status><Supplier>[2]</Supplier><Supplier>[1]</Supplier><Stores><Store>[1]</Store></Stores></Product>"));
+        allRecords.add(factory.read(repository, product, "<Product><Id>3</Id><Name>Product evan</Name><ShortDescription>evan descn</ShortDescription><LongDescription>Evan test descn</LongDescription><Price>11</Price><Features><Sizes></Sizes><Colors></Colors></Features><Status>Pending</Status><Family>[123 456]</Family><Supplier/></Product>"));
         
-        allRecords.add(factory.read(repository, productFamily, "<ProductFamily>\n" + "    <Id>3</Id>\n"
-                + "    <Name>test name3</Name>\n" + "</ProductFamily>"));
-        allRecords.add(factory.read(repository, productFamily, "<ProductFamily>\n" + "    <Id>4</Id>\n"
-                + "    <Name>test_name4</Name>\n" + "</ProductFamily>"));
-        allRecords.add(factory.read(repository, productFamily, "<ProductFamily>\n" + "    <Id>5</Id>\n"
-                + "    <Name>test name5</Name>\n" + "</ProductFamily>"));
-               
-        allRecords.add(factory.read(repository, store, "<Store>\n" + "    <Id>1</Id>\n" + "    <Name>Store #1</Name>\n"
-                + "</Store>"));
-        allRecords.add(factory.read(repository, product, "<Product>\n" + "    <Id>1</Id>\n" + "    <Name>Product name</Name>\n"
-                + "    <ShortDescription>Short description word</ShortDescription>\n"
-                + "    <LongDescription>Long description</LongDescription>\n" + "    <Price>10</Price>\n" + "    <Features>\n"
-                + "        <Sizes>\n" + "            <Size>Small</Size>\n" + "            <Size>Medium</Size>\n"
-                + "            <Size>Large</Size>\n" + "        </Sizes>\n" + "        <Colors>\n"
-                + "            <Color>Blue</Color>\n" + "            <Color>Red</Color>\n" + "        </Colors>\n"
-                + "    </Features>\n" + "    <Status>Pending</Status>\n" + "    <Family>[2]</Family>\n"
-                + "    <Supplier>[1]</Supplier>\n" + "</Product>"));
-        allRecords.add(factory.read(repository, product, "<Product>\n" + "    <Id>2</Id>\n" + "    <Name>Renault car</Name>\n"
-                + "    <ShortDescription>A car</ShortDescription>\n"
-                + "    <LongDescription>Long description 2</LongDescription>\n" + "    <Price>10</Price>\n" + "    <Features>\n"
-                + "        <Sizes>\n" + "            <Size>Large</Size>\n" + "        </Sizes>\n" + "        <Colors>\n"
-                + "            <Color>Blue 2</Color>\n" + "            <Color>Blue 1</Color>\n"
-                + "            <Color>Klein blue2</Color>\n" + "        </Colors>\n" + "    </Features>\n" + "    <Family/>\n"
-                + "    <Status>Pending</Status>\n" + "    <Supplier>[2]</Supplier>\n" + "    <Supplier>[1]</Supplier>\n"
-                + "<Stores><Store>[1]</Store></Stores></Product>"));
-
         allRecords.add(factory.read(repository, e1, E1_Record1));
         allRecords.add(factory.read(repository, e1, E1_Record2));
         allRecords.add(factory.read(repository, e1, E1_Record3));
@@ -335,10 +296,8 @@ public class StorageQueryTest extends StorageTestCase {
                 .add(factory
                         .read(repository, ContainedEntityB,
                                 "<ContainedEntityB xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><id>B_record5</id></ContainedEntityB>"));
-        allRecords.add(factory.read(repository, city,
-                "<City xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><Code>BJ</Code><Name>Beijing</Name></City>"));
-        allRecords.add(factory.read(repository, city,
-                "<City xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><Code>SH</Code><Name>Shanghai</Name></City>"));
+        allRecords.add(factory.read(repository, city, "<City xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><Code>BJ</Code><Name>Beijing</Name></City>"));
+        allRecords.add(factory.read(repository, city, "<City xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><Code>SH</Code><Name>Shanghai</Name></City>"));
         allRecords
                 .add(factory
                         .read(repository,
@@ -1679,7 +1638,7 @@ public class StorageQueryTest extends StorageTestCase {
         StorageResults results = storage.fetch(qb.getSelect());
         try {
             assertEquals(2, results.getSize());
-            assertEquals(2, results.getCount());
+            assertEquals(3, results.getCount());
             int iteratorCount = 0;
             for (DataRecord result : results) {
                 assertNotNull(result.get("Id"));
@@ -1864,9 +1823,9 @@ public class StorageQueryTest extends StorageTestCase {
                 .orderBy(product.getField("Family"), OrderBy.Direction.ASC);
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(2, results.getCount());
+            assertEquals(3, results.getCount());
             int i = 0;
-            String[] expected = new String[] { null, "2" };
+            String[] expected = new String[] { null, "123 456", "2" };
             for (DataRecord result : results) {
                 String value = ((String) result.get(product.getField("Family")));
                 assertEquals(expected[i++], value);
@@ -1879,9 +1838,9 @@ public class StorageQueryTest extends StorageTestCase {
                 .orderBy(product.getField("Family"), OrderBy.Direction.DESC);
         results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(2, results.getCount());
+            assertEquals(3, results.getCount());
             int i = 0;
-            String[] expected = new String[] { "2", null };
+            String[] expected = new String[] { "2", "123 456", null };
             for (DataRecord result : results) {
                 String value = ((String) result.get(product.getField("Family")));
                 assertEquals(expected[i++], value);
@@ -1896,15 +1855,15 @@ public class StorageQueryTest extends StorageTestCase {
 
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(2, results.getCount());
+            assertEquals(3, results.getCount());
             int actualIterationCount = 0;
             ViewSearchResultsWriter writer = new ViewSearchResultsWriter();
             for (DataRecord result : results) {
-                assertTrue("2".equals(result.get("Family")) || result.get("Family") == null);
+                assertTrue("2".equals(result.get("Family")) || "123 456".equals(result.get("Family")) || result.get("Family") == null);
                 actualIterationCount++;
                 writer.write(result, new NullOutputStream());
             }
-            assertEquals(2, actualIterationCount);
+            assertEquals(3, actualIterationCount);
         } finally {
             results.close();
         }
@@ -3228,7 +3187,7 @@ public class StorageQueryTest extends StorageTestCase {
         }
 
         StorageResults results = storage.fetch(qb.getSelect());
-        assertEquals(2, results.getCount());
+        assertEquals(3, results.getCount());
 
         DataRecordWriter writer = new ViewSearchResultsWriter();
         ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -3243,7 +3202,7 @@ public class StorageQueryTest extends StorageTestCase {
                 throw new RuntimeException(e);
             }
         }
-        assertEquals(2, strings.size());
+        assertEquals(3, strings.size());
         assertEquals(
                 "<result xmlns:metadata=\"http://www.talend.com/mdm/metadata\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n\t<Id>1</Id>\n\t<Name>Product name</Name>\n\t<Family>[2]</Family>\n\t<Id>2</Id>\n\t<Name>Product family #2</Name>\n</result>",
                 strings.get(0));
@@ -3279,7 +3238,7 @@ public class StorageQueryTest extends StorageTestCase {
         qb.where(UserQueryHelper.buildCondition(qb, fullWhere, repository));
 
         StorageResults results = storage.fetch(qb.getSelect());
-        assertEquals(2, results.getCount());
+        assertEquals(3, results.getCount());
 
         DataRecordWriter writer = new ViewSearchResultsWriter();
         ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -3294,7 +3253,7 @@ public class StorageQueryTest extends StorageTestCase {
             resultsAsString.add(document);
             output.reset();
         }
-        assertEquals(2, resultsAsString.size());
+        assertEquals(3, resultsAsString.size());
 
         StringBuilder sb = new StringBuilder();
         sb.append("<result xmlns:metadata=\"http://www.talend.com/mdm/metadata\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n");
@@ -3855,7 +3814,7 @@ public class StorageQueryTest extends StorageTestCase {
 
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(3, results.getCount());
+            assertEquals(4, results.getCount());
         } finally {
             results.close();
         }
@@ -3876,7 +3835,7 @@ public class StorageQueryTest extends StorageTestCase {
 
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(2, results.getCount());
+            assertEquals(3, results.getCount());
         } finally {
             results.close();
         }
@@ -3892,10 +3851,18 @@ public class StorageQueryTest extends StorageTestCase {
             results.close();
         }
 
-        qb = from(product).where(contains(product.getField("Family"), "b"));
+        qb = from(product).where(neq(product.getField("Family"), "123 456"));
         results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(0, results.getCount());
+            assertEquals(1, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        qb = from(product).where(startsWith(product.getField("Family"), "123"));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
         } finally {
             results.close();
         }
@@ -4300,7 +4267,7 @@ public class StorageQueryTest extends StorageTestCase {
         storage.begin();
         results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(1, results.getCount());
+            assertEquals(2, results.getCount());
         } finally {
             results.close();
         }
@@ -4320,7 +4287,7 @@ public class StorageQueryTest extends StorageTestCase {
         storage.begin();
         results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(0, results.getCount());
+            assertEquals(1, results.getCount());
         } finally {
             results.close();
         }
@@ -4864,7 +4831,7 @@ public class StorageQueryTest extends StorageTestCase {
         qb = UserQueryBuilder.from(product);
 
         results = storage.fetch(qb.getSelect());
-        assertEquals(2, results.getCount());
+        assertEquals(3, results.getCount());
     }
 
     // TMDM-10244
@@ -5378,8 +5345,8 @@ public class StorageQueryTest extends StorageTestCase {
         UserQueryBuilder qb = UserQueryBuilder.from(product);
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(2, results.getSize());
-            assertEquals(2, results.getCount());
+            assertEquals(3, results.getSize());
+            assertEquals(3, results.getCount());
         } finally {
             results.close();
         }

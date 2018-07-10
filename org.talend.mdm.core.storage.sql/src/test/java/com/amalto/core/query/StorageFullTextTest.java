@@ -87,9 +87,13 @@ public class StorageFullTextTest extends StorageTestCase {
         allRecords.add(factory.read(repository, productFamily, "<ProductFamily><Id>2</Id><Name>ProductFamily2</Name></ProductFamily>"));
         allRecords.add(factory.read(repository, productFamily, "<ProductFamily><Id>3</Id><Name>ProductFamily3</Name></ProductFamily>"));
         allRecords.add(factory.read(repository, productFamily, "<ProductFamily><Id>4</Id><Name>test_name4</Name></ProductFamily>"));
+        allRecords.add(factory.read(repository, productFamily, "<ProductFamily><Id>721 345 123</Id><Name>test_name5</Name></ProductFamily>"));
+        allRecords.add(factory.read(repository, productFamily, "<ProductFamily><Id>123 345</Id><Name>test_name5</Name></ProductFamily>"));
         allRecords.add(factory.read(repository, product, "<Product><Id>1</Id><Name>talend</Name><ShortDescription>Short description word</ShortDescription><LongDescription>Long description</LongDescription><Price>10</Price><Features><Sizes><Size>Small</Size><Size>Medium</Size><Size>Large</Size></Sizes><Colors><Color>Blue</Color><Color>Red</Color></Colors></Features><Status>Pending</Status><Supplier>[1]</Supplier></Product>"));
         allRecords.add(factory.read(repository, product, "<Product><Id>2</Id><Name>Renault car</Name><ShortDescription>A car</ShortDescription><LongDescription>Long description 2</LongDescription><Price>10</Price><Features><Sizes><Size>Large</Size><Size>Large</Size></Sizes><Colors><Color>Blue 2</Color><Color>Blue 1</Color><Color>Klein blue2</Color></Colors></Features><Family>[1]</Family><Status>Pending</Status><Supplier>[2]</Supplier><Supplier>[1]</Supplier></Product>"));
         allRecords.add(factory.read(repository, product, "<Product><Id>3</Id><Name>kevin cui</Name><ShortDescription>A person</ShortDescription><LongDescription>Long description 3</LongDescription><Price>100</Price><Features><Sizes><Size>Large</Size><Size>Large</Size></Sizes><Colors><Color>Blue 3</Color><Color>Blue 4</Color><Color>Kevin blue3</Color></Colors></Features><Family></Family><Status>Pending</Status></Product>"));
+        allRecords.add(factory.read(repository, product, "<Product><Id>4</Id><Name>John zhou</Name><ShortDescription>Leader staff</ShortDescription><LongDescription>descn1</LongDescription><Price>101</Price><Features><Sizes></Sizes><Colors></Colors></Features><Family>[721 345 123]</Family><Status>Pending</Status></Product>"));
+        allRecords.add(factory.read(repository, product, "<Product><Id>5</Id><Name>Evan Lin</Name><ShortDescription>Sample developer</ShortDescription><LongDescription>descn2</LongDescription><Price>101</Price><Features><Sizes></Sizes><Colors></Colors></Features><Family>[123 345]</Family><Status>Pending</Status></Product>"));
         allRecords.add(factory.read(repository, supplier, "<Supplier><Id>1</Id><SupplierName>Renault</SupplierName><Contact><Name>Jean Voiture</Name><Phone>33123456789</Phone><Email>test@test.org</Email></Contact></Supplier>"));
         allRecords.add(factory.read(repository, supplier, "<Supplier><Id>2</Id><SupplierName>Starbucks Talend</SupplierName><Contact><Name>Jean Cafe</Name><Phone>33234567890</Phone><Email>test@testfactory.org</Email></Contact></Supplier>"));
         allRecords.add(factory.read(repository, supplier, "<Supplier><Id>3</Id><SupplierName>Talend</SupplierName><Contact><Name>Jean Paul</Name><Phone>33234567890</Phone><Email>test@talend.com</Email></Contact></Supplier>"));
@@ -591,12 +595,12 @@ public class StorageFullTextTest extends StorageTestCase {
         UserQueryBuilder qb = from(supplier).and(product).where(fullText("*"));
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(7, results.getCount());
+            assertEquals(9, results.getCount());
             int actualCount = 0;
             for (DataRecord result : results) {
                 actualCount++;
             }
-            assertEquals(7, actualCount);
+            assertEquals(9, actualCount);
         } finally {
             results.close();
         }
@@ -604,12 +608,12 @@ public class StorageFullTextTest extends StorageTestCase {
         qb = from(supplier).and(product).where(fullText("**"));
         results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(7, results.getCount());
+            assertEquals(9, results.getCount());
             int actualCount = 0;
             for (DataRecord result : results) {
                 actualCount++;
             }
-            assertEquals(7, actualCount);
+            assertEquals(9, actualCount);
         } finally {
             results.close();
         }
@@ -635,7 +639,7 @@ public class StorageFullTextTest extends StorageTestCase {
         qb = from(supplier).and(product).where(fullText("     "));
         results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(7, results.getCount());
+            assertEquals(9, results.getCount());
         } finally {
             results.close();
         }
@@ -1426,7 +1430,7 @@ public class StorageFullTextTest extends StorageTestCase {
 
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(1, results.getCount());
+            assertEquals(3, results.getCount());
         } finally {
             results.close();
         }
@@ -1621,7 +1625,31 @@ public class StorageFullTextTest extends StorageTestCase {
             results.close();
         }
     }
-    
+
+    public void testFKContainsAndContainsSentenceSearch() {
+        UserQueryBuilder qb = from(product).where(contains(product.getField("Family"), "345"));
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertTrue(results.getSize() == 2);
+            for (DataRecord result : results) {
+                assertTrue("4".equals(result.get("Id")) || "5".equals(result.get("Id")));
+            }
+        } finally {
+            results.close();
+        }
+
+        qb = from(product).where(contains(product.getField("Family"), "'345 123'"));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertTrue(results.getSize() == 1);
+            for (DataRecord result : results) {
+                assertEquals("4", result.get("Id"));
+            }
+        } finally {
+            results.close();
+        }
+    }
+
     public void testFullTextSearchResultContainsMultiOccurReferenceFields() throws Exception {
         UserQueryBuilder qb = from(product).select(product.getField("Name")).select(product.getField("Supplier")).where(fullText("car"));
         StorageResults results = storage.fetch(qb.getSelect());

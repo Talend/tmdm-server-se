@@ -80,6 +80,7 @@ public class TreeDetailGridFieldCreator {
             Map<String, Field<?>> fieldMap, String operation, final ItemsDetailPanel itemsDetailPanel) {
         // Field
 
+        boolean fieldReadOnly = dataType.isReadOnly() || !(dataType.getRemovePermission() || node.get("objectValue") == null);
         final Serializable value = node.getObjectValue();
         Field<?> field;
         boolean hasValue = value != null && !"".equals(value); //$NON-NLS-1$
@@ -93,8 +94,8 @@ public class TreeDetailGridFieldCreator {
                     fkField.setPropertyEditor(new FKPropertyEditor());
                 }
             }
-            fkField.setEnabled(!dataType.isReadOnly());
-            fkField.setReadOnly(dataType.isReadOnly());
+            fkField.setEnabled(!fieldReadOnly);
+            fkField.setReadOnly(fieldReadOnly);
             field = fkField;
         } else if (dataType.hasEnumeration()) {
             SimpleComboBoxField comboBox = new SimpleComboBoxField();
@@ -199,8 +200,8 @@ public class TreeDetailGridFieldCreator {
                 field.setReadOnly(true);
             } else {
                 boolean readOnly = dataType.isReadOnly();
-                field.setReadOnly(readOnly);
-                field.setEnabled(!readOnly);
+                field.setReadOnly(fieldReadOnly);
+                field.setEnabled(!fieldReadOnly);
             }
         }
 

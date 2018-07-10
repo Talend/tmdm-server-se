@@ -172,6 +172,7 @@ public class ForeignKeyTablePanel extends ContentPanel implements ReturnCriteria
         boolean isMultiOccurrence = typeModel.getMaxOccurs() < 0 || typeModel.getMaxOccurs() > 1;
         if (isMultiOccurrence && !typeModel.getAddPermission()) {
             addFkButton.setEnabled(false);
+            createFkButton.setEnabled(false);
         }
         toolBar.add(addFkButton);
         toolBar.add(new SeparatorToolItem());
@@ -347,8 +348,9 @@ public class ForeignKeyTablePanel extends ContentPanel implements ReturnCriteria
         grid.addPlugin(sm);
         grid.setStateId(panelName);
         grid.setStateful(true);
-        hookContextMenu(re);
-        if (!isReadonly(entityModel)) {
+        // If no remove permission, can't edit item by right click
+        if (!isReadonly(entityModel) && typeModel.getRemovePermission()) {
+            hookContextMenu(re);
             grid.addPlugin(re);
         }
 
@@ -373,7 +375,7 @@ public class ForeignKeyTablePanel extends ContentPanel implements ReturnCriteria
                 int rowIndex = be.getRowIndex();
                 if (be.getColIndex() == 1) {
                     ItemNodeModel m = be.getModel();
-                    if (m == null || m.getObjectValue() == null) {
+                    if (m == null || m.getObjectValue() == null || !typeModel.getRemovePermission()) {
                         return;
                     }
                     if (rowIndex != -1) {
@@ -504,7 +506,9 @@ public class ForeignKeyTablePanel extends ContentPanel implements ReturnCriteria
             }
         });
 
-        createFkButton.setEnabled(!entityModel.getTypeModel(entityModel.getConceptName()).isDenyCreatable() && !isBulkUpdate);
+        // Create button on FK tab will add a new FK item. If no add permission, Create button should be disabled
+        createFkButton.setEnabled(!entityModel.getTypeModel(entityModel.getConceptName()).isDenyCreatable() && !isBulkUpdate
+                && typeModel.getAddPermission());
 
         editFkButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
@@ -608,6 +612,13 @@ public class ForeignKeyTablePanel extends ContentPanel implements ReturnCriteria
         public Object render(final ItemNodeModel model, String property, ColumnData config, final int rowIndex, int colIndex,
                 final ListStore<ItemNodeModel> store, Grid<ItemNodeModel> grid) {
             ForeignKeySelector foreignKeySelector = new ForeignKeySelector(fkTypeModel, itemsDetailPanel, model);
+            // If use has no remove permission, can't edit existed fk items.
+            // When add a new item, the new item can be edited before save.
+            if (!fkTypeModel.getRemovePermission() && model.get("objectValue") != null && !model.isEdited()) { //$NON-NLS-1$
+                foreignKeySelector.setShowSelectButton(false);
+            } else {
+                model.setEdited(true);
+            }
             foreignKeySelector.setStaging(staging);
             foreignKeySelector.setShowInput(false);
             foreignKeySelector.setShowAddButton(false);

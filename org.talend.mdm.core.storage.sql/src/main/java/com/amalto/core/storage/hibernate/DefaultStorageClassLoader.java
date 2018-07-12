@@ -15,6 +15,9 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -31,6 +34,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.lang.NotImplementedException;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.w3c.dom.Attr;
@@ -90,6 +94,11 @@ public class DefaultStorageClassLoader extends StorageClassLoader {
             DocumentBuilder documentBuilder = factory.newDocumentBuilder();
             documentBuilder.setEntityResolver(HibernateStorage.ENTITY_RESOLVER);
             Document document = documentBuilder.parse(this.getClass().getResourceAsStream(HIBERNATE_MAPPING_TEMPLATE));
+            if (dataSource.getDialectName() == RDBMSDataSource.DataSourceDialect.MYSQL) {
+                Attr propertyCatelog = document.createAttribute("catalog"); //$NON-NLS-1$
+                propertyCatelog.setValue(getCatalog());
+                document.getDocumentElement().getAttributes().setNamedItem(propertyCatelog);
+            }
             MappingGenerator mappingGenerator = getMappingGenerator(document, resolver);
             for (Map.Entry<String, Class<? extends Wrapper>> classNameToClass : registeredClasses.entrySet()) {
                 ComplexTypeMetadata typeMetadata = knownTypes.get(classNameToClass.getKey());
@@ -104,6 +113,27 @@ public class DefaultStorageClassLoader extends StorageClassLoader {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    protected String getCatalog() {
+        String catalog = StringUtils.EMPTY;
+        Connection connection = null;
+        try {
+            connection = DriverManager.getConnection(dataSource.getConnectionURL(), dataSource.getUserName(),
+                    dataSource.getPassword());
+            catalog = connection.getCatalog().toLowerCase();
+        } catch (Exception e) {
+            LOGGER.error("Fialed to get the Connection for " + dataSource.getDatabaseName(), e);
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                LOGGER.error("Unexpected error on connection close.", e); //$NON-NLS-1$
+            }
+        }
+        return catalog;
     }
 
     public MappingGenerator getMappingGenerator(Document document, TableResolver resolver) {

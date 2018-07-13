@@ -33,8 +33,12 @@ public class ErrorFilter implements Filter {
             filterChain.doFilter(servletRequest, servletResponse);
         } catch (Throwable e) {
             if (servletResponse instanceof HttpServletResponse) {
-                // If response is an HTTP one, set it to 500 (Internal Error).
-                ((HttpServletResponse) servletResponse).setStatus(500);
+                HttpServletResponse httpServletResponse = ((HttpServletResponse) servletResponse);
+                if (httpServletResponse.getStatus() != 401) {
+                    // If response is an HTTP one, set it to 500 (Internal Error).
+                    ((HttpServletResponse) servletResponse).setStatus(500);
+
+                }
             }
             e.printStackTrace(servletResponse.getWriter());
 

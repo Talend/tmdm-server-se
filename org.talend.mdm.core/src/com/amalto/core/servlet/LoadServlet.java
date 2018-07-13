@@ -20,6 +20,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
@@ -29,11 +30,13 @@ import org.talend.mdm.commmon.util.core.EUUIDCustomType;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
 import org.talend.mdm.commmon.util.webapp.XSystemObjects;
 
+import com.amalto.core.delegator.ILocalUser;
 import com.amalto.core.load.action.DefaultLoadAction;
 import com.amalto.core.load.action.LoadAction;
 import com.amalto.core.load.action.OptimizedLoadAction;
 import com.amalto.core.objects.datacluster.DataClusterPOJO;
 import com.amalto.core.objects.datacluster.DataClusterPOJOPK;
+import com.amalto.core.objects.datamodel.DataModelPOJO;
 import com.amalto.core.save.DocumentSaverContext;
 import com.amalto.core.save.SaverSession;
 import com.amalto.core.save.context.DocumentSaver;
@@ -43,8 +46,10 @@ import com.amalto.core.server.ServerContext;
 import com.amalto.core.server.api.DataCluster;
 import com.amalto.core.server.api.XmlServer;
 import com.amalto.core.storage.record.DataRecord;
+import com.amalto.core.util.LocalUser;
 import com.amalto.core.util.Util;
 import com.amalto.core.util.XSDKey;
+import com.amalto.core.util.XtentisException;
 
 public class LoadServlet extends HttpServlet {
 
@@ -101,6 +106,22 @@ public class LoadServlet extends HttpServlet {
         boolean needValidate = Boolean.valueOf(request.getParameter(PARAMETER_VALIDATE));
         boolean needAutoGenPK = Boolean.valueOf(request.getParameter(PARAMETER_SMARTPK));
         boolean insertOnly = Boolean.valueOf(request.getParameter(PARAMETER_INSERTONLY));
+
+        try {
+            ILocalUser user = LocalUser.getLocalUser();
+            if (user != null && !user.userCanRead(DataClusterPOJO.class, dataClusterName)) {
+                response.setStatus(Response.Status.UNAUTHORIZED.getStatusCode());
+                throw new ServletException("Unauthorized read access by user '" + user.getUsername() + "' on cluster:"
+                        + dataClusterName);
+            }
+            if (user != null && !user.userCanRead(DataModelPOJO.class, dataModelName)) {
+                response.setStatus(Response.Status.UNAUTHORIZED.getStatusCode());
+                throw new ServletException("Unauthorized read access by user '" + user.getUsername() + "' on data model:"
+                        + dataModelName);
+            }
+        } catch (XtentisException e) {
+            LOG.error("Unable to check access for container/data model.", e);
+        }
 
         LoadAction loadAction = getLoadAction(dataClusterName, typeName, dataModelName, needValidate, needAutoGenPK);
         if (needValidate && !loadAction.supportValidation()) {

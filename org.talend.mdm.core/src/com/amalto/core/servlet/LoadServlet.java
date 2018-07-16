@@ -114,7 +114,7 @@ public class LoadServlet extends HttpServlet {
                 throw new ServletException("Unauthorized read access by user '" + user.getUsername() + "' on cluster:"
                         + dataClusterName);
             }
-            if (user != null && !user.userCanWrite(DataModelPOJO.class, dataModelName)) {
+            if (user != null && !user.userCanRead(DataModelPOJO.class, dataModelName)) {
                 response.setStatus(Response.Status.UNAUTHORIZED.getStatusCode());
                 throw new ServletException("Unauthorized read access by user '" + user.getUsername() + "' on data model:"
                         + dataModelName);

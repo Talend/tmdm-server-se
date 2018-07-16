@@ -15,6 +15,8 @@ import org.apache.log4j.Logger;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.Response;
+
 import java.io.IOException;
 
 /**
@@ -34,9 +36,9 @@ public class ErrorFilter implements Filter {
         } catch (Throwable e) {
             if (servletResponse instanceof HttpServletResponse) {
                 HttpServletResponse httpServletResponse = ((HttpServletResponse) servletResponse);
-                if (httpServletResponse.getStatus() != 401) {
+                if (httpServletResponse.getStatus() != Response.Status.UNAUTHORIZED.getStatusCode()) {
                     // If response is an HTTP one, set it to 500 (Internal Error).
-                    ((HttpServletResponse) servletResponse).setStatus(500);
+                    ((HttpServletResponse) servletResponse).setStatus(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
 
                 }
             }

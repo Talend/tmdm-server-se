@@ -110,14 +110,9 @@ public class LoadServlet extends HttpServlet {
         try {
             ILocalUser user = LocalUser.getLocalUser();
             if (user != null && !user.userCanRead(DataClusterPOJO.class, dataClusterName)) {
-                response.setStatus(Response.Status.UNAUTHORIZED.getStatusCode());
+                response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
                 throw new ServletException("Unauthorized read access by user '" + user.getUsername() + "' on cluster:"
                         + dataClusterName);
-            }
-            if (user != null && !user.userCanRead(DataModelPOJO.class, dataModelName)) {
-                response.setStatus(Response.Status.UNAUTHORIZED.getStatusCode());
-                throw new ServletException("Unauthorized read access by user '" + user.getUsername() + "' on data model:"
-                        + dataModelName);
             }
         } catch (XtentisException e) {
             LOG.error("Unable to check access for container/data model.", e);

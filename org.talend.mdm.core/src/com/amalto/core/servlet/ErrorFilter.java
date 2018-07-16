@@ -36,7 +36,7 @@ public class ErrorFilter implements Filter {
         } catch (Throwable e) {
             if (servletResponse instanceof HttpServletResponse) {
                 HttpServletResponse httpServletResponse = ((HttpServletResponse) servletResponse);
-                if (httpServletResponse.getStatus() != Response.Status.UNAUTHORIZED.getStatusCode()) {
+                if (httpServletResponse.getStatus() != Response.Status.FORBIDDEN.getStatusCode()) {
                     // If response is an HTTP one, set it to 500 (Internal Error).
                     ((HttpServletResponse) servletResponse).setStatus(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
 

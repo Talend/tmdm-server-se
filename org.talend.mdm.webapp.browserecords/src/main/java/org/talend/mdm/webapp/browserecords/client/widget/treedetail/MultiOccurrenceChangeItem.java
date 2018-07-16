@@ -191,6 +191,9 @@ public class MultiOccurrenceChangeItem extends HorizontalPanel {
                     });
                     this.add(editNodeImg);
                     this.setCellVerticalAlignment(editNodeImg, VerticalPanel.ALIGN_BOTTOM);
+                    if (!typeModel.getAddPermission() || !typeModel.getRemovePermission()) {
+                        setEditNodeButtonVisible(false);
+                    }
                 }
                 if (typeModel.getForeignkey() != null && typeModel.getForeignKeyFilter() != null && itemNode.isMassUpdate()) {
                     MessageBox.alert(MessagesFactory.getMessages().warning_title(),

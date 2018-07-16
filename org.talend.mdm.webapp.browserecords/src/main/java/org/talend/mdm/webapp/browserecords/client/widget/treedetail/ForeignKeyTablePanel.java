@@ -188,6 +188,9 @@ public class ForeignKeyTablePanel extends ContentPanel implements ReturnCriteria
             removeFkButton.setEnabled(false);
             createFkButton.setEnabled(false);
             toolBar.add(editFkButton);
+            if (!typeModel.getAddPermission() || !typeModel.getRemovePermission()) {
+                editFkButton.setEnabled(false);
+            }
             toolBar.add(new SeparatorToolItem());
         }
         this.setTopComponent(toolBar);

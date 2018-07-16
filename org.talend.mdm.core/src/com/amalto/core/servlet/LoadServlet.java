@@ -108,14 +108,14 @@ public class LoadServlet extends HttpServlet {
         boolean insertOnly = Boolean.valueOf(request.getParameter(PARAMETER_INSERTONLY));
 
         try {
-            ILocalUser user = LocalUser.getLocalUser();
-            if (user != null && !user.userCanRead(DataClusterPOJO.class, dataClusterName)) {
+            if (!LocalUser.getLocalUser().userCanRead(DataClusterPOJO.class, dataClusterName)) {
                 response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
-                throw new ServletException("Unauthorized read access by user '" + user.getUsername() + "' on cluster:"
-                        + dataClusterName);
+                throw new ServletException("User doesn't have 'read' access for container '" + dataClusterName + "'."); //$NON-NLS-1$ //$NON-NLS-2$
             }
         } catch (XtentisException e) {
-            LOG.error("Unable to check access for container/data model.", e);
+            String message = "Unable to check 'read' access for container '" + dataClusterName + "'."; //$NON-NLS-1$ //$NON-NLS-2$
+            LOG.warn(message);
+            throw new ServletException(message);
         }
 
         LoadAction loadAction = getLoadAction(dataClusterName, typeName, dataModelName, needValidate, needAutoGenPK);

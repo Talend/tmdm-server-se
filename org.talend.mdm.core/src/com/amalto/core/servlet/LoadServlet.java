@@ -20,6 +20,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
@@ -43,8 +44,10 @@ import com.amalto.core.server.ServerContext;
 import com.amalto.core.server.api.DataCluster;
 import com.amalto.core.server.api.XmlServer;
 import com.amalto.core.storage.record.DataRecord;
+import com.amalto.core.util.LocalUser;
 import com.amalto.core.util.Util;
 import com.amalto.core.util.XSDKey;
+import com.amalto.core.util.XtentisException;
 
 public class LoadServlet extends HttpServlet {
 
@@ -101,6 +104,17 @@ public class LoadServlet extends HttpServlet {
         boolean needValidate = Boolean.valueOf(request.getParameter(PARAMETER_VALIDATE));
         boolean needAutoGenPK = Boolean.valueOf(request.getParameter(PARAMETER_SMARTPK));
         boolean insertOnly = Boolean.valueOf(request.getParameter(PARAMETER_INSERTONLY));
+
+        try {
+            if (!LocalUser.getLocalUser().userCanRead(DataClusterPOJO.class, dataClusterName)) {
+                response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
+                throw new ServletException("User doesn't have 'read' access for container '" + dataClusterName + "'."); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+        } catch (XtentisException e) {
+            String message = "Unable to check 'read' access for container '" + dataClusterName + "'."; //$NON-NLS-1$ //$NON-NLS-2$
+            LOG.warn(message);
+            throw new ServletException(message);
+        }
 
         LoadAction loadAction = getLoadAction(dataClusterName, typeName, dataModelName, needValidate, needAutoGenPK);
         if (needValidate && !loadAction.supportValidation()) {

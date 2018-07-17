@@ -15,6 +15,8 @@ import org.apache.log4j.Logger;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.Response;
+
 import java.io.IOException;
 
 /**
@@ -33,8 +35,12 @@ public class ErrorFilter implements Filter {
             filterChain.doFilter(servletRequest, servletResponse);
         } catch (Throwable e) {
             if (servletResponse instanceof HttpServletResponse) {
-                // If response is an HTTP one, set it to 500 (Internal Error).
-                ((HttpServletResponse) servletResponse).setStatus(500);
+                HttpServletResponse httpServletResponse = ((HttpServletResponse) servletResponse);
+                if (httpServletResponse.getStatus() != Response.Status.FORBIDDEN.getStatusCode()) {
+                    // If response is an HTTP one, set it to 500 (Internal Error).
+                    ((HttpServletResponse) servletResponse).setStatus(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
+
+                }
             }
             e.printStackTrace(servletResponse.getWriter());
 

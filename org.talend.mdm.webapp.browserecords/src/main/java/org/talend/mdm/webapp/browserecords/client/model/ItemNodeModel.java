@@ -72,6 +72,8 @@ public class ItemNodeModel extends BaseTreeModel implements IsSerializable {
 
     private boolean isFieldMandatory = false;
 
+    private boolean isEditable = false;
+
     public String getTypeName() {
         return typeName;
     }
@@ -335,6 +337,14 @@ public class ItemNodeModel extends BaseTreeModel implements IsSerializable {
 
     public void setEdited(boolean isEdited) {
         this.isEdited = isEdited;
+    }
+
+    public boolean isEditable() {
+        return isEditable;
+    }
+
+    public void setEditable(boolean isEditable) {
+        this.isEditable = isEditable;
     }
 
     public boolean isFieldMandatory() {

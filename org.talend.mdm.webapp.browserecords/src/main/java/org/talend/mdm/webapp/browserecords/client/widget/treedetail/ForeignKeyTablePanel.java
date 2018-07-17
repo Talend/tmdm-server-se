@@ -617,10 +617,10 @@ public class ForeignKeyTablePanel extends ContentPanel implements ReturnCriteria
             ForeignKeySelector foreignKeySelector = new ForeignKeySelector(fkTypeModel, itemsDetailPanel, model);
             // If use has no remove permission, can't edit existed fk items.
             // When add a new item, the new item can be edited before save.
-            if (!fkTypeModel.getRemovePermission() && model.get("objectValue") != null && !model.isEdited()) { //$NON-NLS-1$
+            if (!fkTypeModel.getRemovePermission() && model.get("objectValue") != null && !model.isEditable()) { //$NON-NLS-1$
                 foreignKeySelector.setShowSelectButton(false);
             } else {
-                model.setEdited(true);
+                model.setEditable(true);
             }
             foreignKeySelector.setStaging(staging);
             foreignKeySelector.setShowInput(false);

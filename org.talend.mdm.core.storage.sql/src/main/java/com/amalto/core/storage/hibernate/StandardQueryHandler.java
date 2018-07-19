@@ -1067,7 +1067,8 @@ class StandardQueryHandler extends AbstractQueryHandler {
 
         @Override
         public Criterion visit(IsEmpty isEmpty) {
-            FieldCondition fieldCondition = isEmpty.getField().accept(visitor);
+            TypedExpression field = isEmpty.getField();
+            FieldCondition fieldCondition = field.accept(visitor);
             if (fieldCondition == null) {
                 return TRUE_CRITERION;
             }
@@ -1093,6 +1094,14 @@ class StandardQueryHandler extends AbstractQueryHandler {
                     // Criterion affect multiple fields
                     Criterion current = null;
                     for (String criterionFieldName : fieldCondition.criterionFieldNames) {
+                        if (field instanceof Field) {
+                            FieldMetadata fieldMetadata = ((Field) field).getFieldMetadata();
+                            if (fieldMetadata.getContainingType().isInstantiable()) {
+                                if (((Field) field).getFieldMetadata().getContainingType().isInstantiable()) {
+                                    criterionFieldName = fieldMetadata.getEntityTypeName() + '.' + fieldMetadata.getName();
+                                }
+                            }
+                        }
                         if (current == null) {
                             current = Restrictions.eq(criterionFieldName, StringUtils.EMPTY);
                         } else {
@@ -1416,6 +1425,12 @@ class StandardQueryHandler extends AbstractQueryHandler {
                                                                                                     // on CLOBs
                         Criterion current = null;
                         for (String fieldName : leftFieldCondition.criterionFieldNames) {
+                            if(leftFieldCondition.field instanceof Field){
+                                FieldMetadata fieldMetadata = leftFieldCondition.field.getFieldMetadata();
+                                if (fieldMetadata.getContainingType().isInstantiable()) {
+                                    fieldName = fieldMetadata.getEntityTypeName() + '.' + fieldMetadata.getName();
+                                }
+                            }                          
                             Criterion newCriterion = like(fieldName, databaseValue);
                             if (current == null) {
                                 current = newCriterion;

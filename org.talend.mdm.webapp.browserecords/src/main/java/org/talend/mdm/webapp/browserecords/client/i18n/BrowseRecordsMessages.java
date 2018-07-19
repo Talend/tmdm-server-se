@@ -92,8 +92,6 @@ public interface BrowseRecordsMessages extends Messages {
 
     String page_size_notice();
 
-    String page_displaying_records();
-
     String edititem();
 
     String openitem_tab();

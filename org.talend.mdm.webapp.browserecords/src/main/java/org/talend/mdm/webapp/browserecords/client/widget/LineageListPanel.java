@@ -240,11 +240,11 @@ public class LineageListPanel extends ContentPanel {
     }
 
     private native String getDataContainer(JavaScriptObject stagingAreaConfig)/*-{
-		return stagingAreaConfig.dataContainer;
+        return stagingAreaConfig.dataContainer;
     }-*/;
 
     private native String getCriteria(JavaScriptObject stagingAreaConfig)/*-{
-		return stagingAreaConfig.criteria;
+        return stagingAreaConfig.criteria;
     }-*/;
 
     private RecordsPagingConfig copyPgLoad(PagingLoadConfig pconfig) {
@@ -495,7 +495,6 @@ public class LineageListPanel extends ContentPanel {
         };
         pagingBar.setBrowseRecordsGridCall(true);
         pagingBar.setHideMode(HideMode.VISIBILITY);
-        pagingBar.getMessages().setDisplayMsg(MessagesFactory.getMessages().page_displaying_records());
 
         pagingBar.setVisible(false);
         pagingBar.bind(loader);
@@ -592,15 +591,15 @@ public class LineageListPanel extends ContentPanel {
     }
 
     private native void selectStagingGridPanel()/*-{
-		var tabPanel = $wnd.amalto.core.getTabPanel();
-		var panel = tabPanel.getItem("Staging Data Viewer");
-		if (panel != undefined) {
-			tabPanel.setSelection(panel.getItemId());
-		}
+        var tabPanel = $wnd.amalto.core.getTabPanel();
+        var panel = tabPanel.getItem("Staging Data Viewer");
+        if (panel != undefined) {
+            tabPanel.setSelection(panel.getItemId());
+        }
     }-*/;
 
     private native boolean initDSC(String taskId)/*-{
-		$wnd.amalto.datastewardship.Datastewardship.taskItem(taskId);
-		return true;
+        $wnd.amalto.datastewardship.Datastewardship.taskItem(taskId);
+        return true;
     }-*/;
 }

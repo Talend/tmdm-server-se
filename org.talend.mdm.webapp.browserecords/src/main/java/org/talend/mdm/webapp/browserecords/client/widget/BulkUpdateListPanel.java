@@ -325,7 +325,6 @@ public class BulkUpdateListPanel extends ContentPanel {
         };
         pagingBar.setBrowseRecordsGridCall(true);
         pagingBar.setHideMode(HideMode.VISIBILITY);
-        pagingBar.getMessages().setDisplayMsg(MessagesFactory.getMessages().page_displaying_records());
 
         pagingBar.setVisible(false);
         pagingBar.bind(loader);
@@ -431,10 +430,10 @@ public class BulkUpdateListPanel extends ContentPanel {
     }
 
     private native void selectBulkUpdateGridPanel()/*-{
-		var tabPanel = $wnd.amalto.core.getTabPanel();
-		var panel = tabPanel.getItem("Bulk Update");
-		if (panel != undefined) {
-			tabPanel.setSelection(panel.getItemId());
-		}
+        var tabPanel = $wnd.amalto.core.getTabPanel();
+        var panel = tabPanel.getItem("Bulk Update");
+        if (panel != undefined) {
+            tabPanel.setSelection(panel.getItemId());
+        }
     }-*/;
 }

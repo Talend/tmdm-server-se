@@ -351,7 +351,6 @@ public class ItemsListPanel extends ContentPanel {
         };
         pagingBar.setBrowseRecordsGridCall(true);
         pagingBar.setHideMode(HideMode.VISIBILITY);
-        pagingBar.getMessages().setDisplayMsg(MessagesFactory.getMessages().page_displaying_records());
 
         pagingBar.setVisible(false);
         pagingBar.bind(loader);

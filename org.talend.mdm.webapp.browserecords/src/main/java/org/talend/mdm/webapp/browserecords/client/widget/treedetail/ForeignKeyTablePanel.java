@@ -44,6 +44,7 @@ import org.talend.mdm.webapp.browserecords.shared.ViewBean;
 import com.extjs.gxt.ui.client.Style.HideMode;
 import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
 import com.extjs.gxt.ui.client.data.BasePagingLoader;
+import com.extjs.gxt.ui.client.data.LoadEvent;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
@@ -207,9 +208,16 @@ public class ForeignKeyTablePanel extends ContentPanel implements ReturnCriteria
         if (StateManager.get().get(panelName) != null) {
             PAGE_SIZE = Integer.valueOf(((Map<?, ?>) StateManager.get().get(panelName)).get("limit").toString()); //$NON-NLS-1$
         }
-        pagingBar = new PagingToolBarEx(PAGE_SIZE);
+        pagingBar = new PagingToolBarEx(PAGE_SIZE) {
+
+            @Override
+            protected void onLoad(LoadEvent event) {
+                String of_word = MessagesFactory.getMessages().of_word();
+                msgs.setDisplayMsg("{0} - {1} " + of_word + " {2}"); //$NON-NLS-1$ //$NON-NLS-2$ //
+                super.onLoad(event);
+            }
+        };
         pagingBar.setHideMode(HideMode.VISIBILITY);
-        pagingBar.getMessages().setDisplayMsg(MessagesFactory.getMessages().page_displaying_records());
         bottomPanel.add(pagingBar);
         this.setBottomComponent(new WidgetComponent(bottomPanel));
     }

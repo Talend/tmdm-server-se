@@ -54,6 +54,7 @@ import org.w3c.dom.NodeList;
 import com.amalto.core.objects.ItemPOJO;
 import com.amalto.core.objects.ItemPOJOPK;
 import com.amalto.core.objects.datacluster.DataClusterPOJOPK;
+import com.amalto.core.query.user.OrderBy;
 import com.amalto.core.storage.StorageMetadataUtils;
 import com.amalto.core.webservice.WSDataClusterPK;
 import com.amalto.core.webservice.WSGetItemsByCustomFKFilters;
@@ -157,13 +158,13 @@ public class ForeignKeyHelper {
     }
 
     public static ItemBasePageLoadResult<ForeignKeyBean> getForeignKeyList(BasePagingLoadConfigImpl config, TypeModel model,
-            EntityModel entityModel, String foreignKeyFilterValue, String dataClusterPK) throws Exception {
+            EntityModel entityModel, String foreignKeyFilterValue, String dataClusterPK, String language) throws Exception {
         ForeignKeyHolder holder = getForeignKeyHolder(model, foreignKeyFilterValue);
-        return _getForeignKeyList(config, model, entityModel, dataClusterPK, holder);
+        return _getForeignKeyList(config, model, entityModel, dataClusterPK, holder, language);
     }
 
     public static ItemBasePageLoadResult<ForeignKeyBean> _getForeignKeyList(BasePagingLoadConfigImpl config, TypeModel model,
-            EntityModel entityModel, String dataClusterPK, ForeignKeyHolder holder) throws Exception {
+            EntityModel entityModel, String dataClusterPK, ForeignKeyHolder holder, String language) throws Exception {
         List<String> foreignKeyInfo = model.getForeignKeyInfo();
         String[] results = null;
         if (holder != null) {
@@ -191,26 +192,33 @@ public class ForeignKeyHelper {
                 } else {
                     xpath = StringUtils.substringBefore(xPaths.get(0), "/") + "/../../i"; //$NON-NLS-1$ //$NON-NLS-2$
                 }
+                if (Types.MULTI_LINGUAL.equals(entityModel.getTypeModel(config.getSortField()).getType().getTypeName())) {
+                    OrderBy.SortLanguage.set(language.toUpperCase());
+                }
             } else {
                 xpath = null;
             }
-
-            // Run the query
-            if (!Util.isCustomFilter(fkFilter)) {
-                results = CommonUtil
-                        .getPort()
-                        .xPathsSearch(
-                                new WSXPathsSearch(new WSDataClusterPK(dataClusterPK), null, new WSStringArray(xPaths
-                                        .toArray(new String[xPaths.size()])), whereItem, -1, config.getOffset(), config
-                                        .getLimit(), xpath, sortDir, true)).getStrings();
-            } else {
-                String injectedXpath = Util.getInjectedXpath(fkFilter);
-                results = CommonUtil
-                        .getPort()
-                        .getItemsByCustomFKFilters(
-                                new WSGetItemsByCustomFKFilters(new WSDataClusterPK(dataClusterPK), conceptName,
-                                        new WSStringArray(xPaths.toArray(new String[xPaths.size()])), injectedXpath, config
-                                                .getOffset(), config.getLimit(), xpath, sortDir, true, whereItem)).getStrings();
+            try {
+                // Run the query
+                if (!Util.isCustomFilter(fkFilter)) {
+                    results = CommonUtil
+                            .getPort()
+                            .xPathsSearch(
+                                    new WSXPathsSearch(new WSDataClusterPK(dataClusterPK), null, new WSStringArray(xPaths
+                                            .toArray(new String[xPaths.size()])), whereItem, -1, config.getOffset(), config
+                                            .getLimit(), xpath, sortDir, true)).getStrings();
+                } else {
+                    String injectedXpath = Util.getInjectedXpath(fkFilter);
+                    results = CommonUtil
+                            .getPort()
+                            .getItemsByCustomFKFilters(
+                                    new WSGetItemsByCustomFKFilters(new WSDataClusterPK(dataClusterPK), conceptName,
+                                            new WSStringArray(xPaths.toArray(new String[xPaths.size()])), injectedXpath, config
+                                                    .getOffset(), config.getLimit(), xpath, sortDir, true, whereItem))
+                            .getStrings();
+                }
+            } finally {
+                OrderBy.SortLanguage.remove();
             }
         }
         if (results != null) {

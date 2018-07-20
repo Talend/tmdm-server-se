@@ -62,6 +62,7 @@ import org.talend.mdm.commmon.metadata.EnumerationFieldMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
 import org.talend.mdm.commmon.metadata.SimpleTypeFieldMetadata;
+import org.talend.mdm.commmon.metadata.Types;
 
 import com.amalto.core.query.user.Alias;
 import com.amalto.core.query.user.BigDecimalConstant;
@@ -669,8 +670,8 @@ class StandardQueryHandler extends AbstractQueryHandler {
             join.accept(this);
         }
         // If select is not a projection, selecting root type is enough, otherwise add projection for selected fields.
+        boolean toDistinct = true;
         if (select.isProjection()) {
-            boolean toDistinct = true;
             projectionList = Projections.projectionList();
             {
                 List<TypedExpression> queryFields = select.getSelectedFields();
@@ -714,11 +715,6 @@ class StandardQueryHandler extends AbstractQueryHandler {
                     break;
                 }
             }
-            if (select.getOrderBy().size() > 0 && toDistinct) {
-                criteria.setProjection(Projections.distinct(projectionList));
-            } else {
-                criteria.setProjection(projectionList);
-            }
         } else {
             // TMDM-5388: Hibernate sometimes returns duplicate results (like for User stored in System storage), this
             // line avoids this situation.
@@ -745,6 +741,13 @@ class StandardQueryHandler extends AbstractQueryHandler {
                 }
             }
             current.accept(this);
+        }
+        if (select.isProjection()) {
+            if (select.getOrderBy().size() > 0 && toDistinct) {
+                criteria.setProjection(Projections.distinct(projectionList));
+            } else {
+                criteria.setProjection(projectionList);
+            }
         }
         return criteria;
     }
@@ -823,6 +826,21 @@ class StandardQueryHandler extends AbstractQueryHandler {
         if (orderByExpression instanceof Field) {
             Field field = (Field) orderByExpression;
             FieldMetadata userFieldMetadata = field.getFieldMetadata();
+
+            // WebUI should take in account the language set to sort entities against MULTI_LINGUAL element
+            String language = OrderBy.SortLanguage.get();
+            if (StringUtils.isNotBlank(language) && Types.MULTI_LINGUAL.equals(userFieldMetadata.getType().getName())) {
+                ProjectionList copyProjectionList = Projections.projectionList();
+                for (int i = 0; i < projectionList.getLength(); i++) {
+                    copyProjectionList.add(projectionList.getProjection(i));
+                }
+
+                MultilingualProjection multiProjection = new MultilingualProjection(language, userFieldMetadata,
+                        ((RDBMSDataSource) storage.getDataSource()).getDialectName(), resolver);
+                copyProjectionList.add(multiProjection.as(MultilingualProjection.getAlias()));
+                projectionList = ReadOnlyProjectionList.makeReadOnly(copyProjectionList);
+            }
+
             ComplexTypeMetadata containingType = getContainingType(userFieldMetadata);
             Set<String> aliases = getAliases(containingType, field);
             condition.criterionFieldNames = new ArrayList<>(aliases.size());
@@ -1049,7 +1067,8 @@ class StandardQueryHandler extends AbstractQueryHandler {
 
         @Override
         public Criterion visit(IsEmpty isEmpty) {
-            FieldCondition fieldCondition = isEmpty.getField().accept(visitor);
+            TypedExpression field = isEmpty.getField();
+            FieldCondition fieldCondition = field.accept(visitor);
             if (fieldCondition == null) {
                 return TRUE_CRITERION;
             }
@@ -1075,6 +1094,14 @@ class StandardQueryHandler extends AbstractQueryHandler {
                     // Criterion affect multiple fields
                     Criterion current = null;
                     for (String criterionFieldName : fieldCondition.criterionFieldNames) {
+                        if (field instanceof Field) {
+                            FieldMetadata fieldMetadata = ((Field) field).getFieldMetadata();
+                            if (fieldMetadata.getContainingType().isInstantiable()) {
+                                if (((Field) field).getFieldMetadata().getContainingType().isInstantiable()) {
+                                    criterionFieldName = fieldMetadata.getEntityTypeName() + '.' + fieldMetadata.getName();
+                                }
+                            }
+                        }
                         if (current == null) {
                             current = Restrictions.eq(criterionFieldName, StringUtils.EMPTY);
                         } else {
@@ -1398,6 +1425,12 @@ class StandardQueryHandler extends AbstractQueryHandler {
                                                                                                     // on CLOBs
                         Criterion current = null;
                         for (String fieldName : leftFieldCondition.criterionFieldNames) {
+                            if(leftFieldCondition.field instanceof Field){
+                                FieldMetadata fieldMetadata = leftFieldCondition.field.getFieldMetadata();
+                                if (fieldMetadata.getContainingType().isInstantiable()) {
+                                    fieldName = fieldMetadata.getEntityTypeName() + '.' + fieldMetadata.getName();
+                                }
+                            }                          
                             Criterion newCriterion = like(fieldName, databaseValue);
                             if (current == null) {
                                 current = newCriterion;
@@ -1624,7 +1657,12 @@ class StandardQueryHandler extends AbstractQueryHandler {
         } else if (fieldMetadata instanceof ReferenceFieldMetadata && mainType.equals(fieldMetadata.getContainingType())) {
             condition.criterionFieldNames.add(getFieldName(fieldMetadata, true));
         } else {
-            condition.criterionFieldNames.add(alias + '.' + fieldMetadata.getName());
+            String language = OrderBy.SortLanguage.get();
+            if (StringUtils.isNotBlank(language) && Types.MULTI_LINGUAL.equals(fieldMetadata.getType().getName())) {
+                condition.criterionFieldNames.add(MultilingualProjection.getAlias());
+            } else {
+                condition.criterionFieldNames.add(alias + '.' + fieldMetadata.getName());
+            }
         }
     }
 

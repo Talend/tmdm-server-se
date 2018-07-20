@@ -11,9 +11,8 @@
 
 package com.amalto.core.query.user;
 
-/**
- *
- */
+import org.apache.commons.lang3.StringUtils;
+
 public class OrderBy implements Expression {
     
     public static String NONE = "None";
@@ -105,5 +104,30 @@ public class OrderBy implements Expression {
         int result = expression != null ? expression.hashCode() : 0;
         result = 31 * result + (direction != null ? direction.hashCode() : 0);
         return result;
+    }
+
+    /**
+     * Used to store language if sort on MULTI_LINGUAL field.
+     */
+    public static class SortLanguage {
+
+        private static ThreadLocal<String> threadLocal = new ThreadLocal<String>() {
+
+            public String initialValue() {
+                return StringUtils.EMPTY;
+            }
+        };
+
+        public static void set(String value) {
+            threadLocal.set(value);
+        }
+
+        public static String get() {
+            return threadLocal.get();
+        }
+
+        public static void remove() {
+            threadLocal.remove();
+        }
     }
 }

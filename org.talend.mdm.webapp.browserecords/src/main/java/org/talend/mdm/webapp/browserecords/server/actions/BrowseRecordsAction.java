@@ -98,6 +98,7 @@ import com.amalto.core.objects.UpdateReportPOJO;
 import com.amalto.core.objects.customform.CustomFormPOJO;
 import com.amalto.core.objects.customform.CustomFormPOJOPK;
 import com.amalto.core.objects.datacluster.DataClusterPOJOPK;
+import com.amalto.core.query.user.OrderBy;
 import com.amalto.core.save.context.BeforeSaving;
 import com.amalto.core.server.MDMContextAccessor;
 import com.amalto.core.server.ServerContext;
@@ -335,7 +336,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
         try {
             String foreignKeyConcept = model.getForeignkey().split("/")[0]; //$NON-NLS-1$
             return ForeignKeyHelper.getForeignKeyList(config, model, getEntityModel(foreignKeyConcept, language),
-                    foreignKeyFilterValue, dataClusterPK);
+                    foreignKeyFilterValue, dataClusterPK, language);
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
             throw new ServiceException(e.getLocalizedMessage());
@@ -821,11 +822,17 @@ public class BrowseRecordsAction implements BrowseRecordsService {
         if (criteria != null) {
             wi = CommonUtil.buildWhereItems(criteria);
         }
-        String[] results = CommonUtil
-                .getPort()
-                .viewSearch(
-                        new WSViewSearch(new WSDataClusterPK(dataClusterPK), new WSViewPK(viewBean.getViewPK()), wi, -1, skip,
-                                max, sortCol, sortDir)).getStrings();
+        OrderBy.SortLanguage.set(language.toUpperCase());
+        String[] results;
+        try {
+            results = CommonUtil
+                    .getPort()
+                    .viewSearch(
+                            new WSViewSearch(new WSDataClusterPK(dataClusterPK), new WSViewPK(viewBean.getViewPK()), wi, -1,
+                                    skip, max, sortCol, sortDir)).getStrings();
+        } finally {
+            OrderBy.SortLanguage.remove();
+        }
         // set foreignKey's EntityModel
         Map<String, EntityModel> map = new HashMap<String, EntityModel>();
         if (results.length > 0 && viewBean.getViewableXpaths() != null) {
@@ -2439,7 +2446,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             }
             model.setFilterValue(keyWords);
             ItemBasePageLoadResult<ForeignKeyBean> loadResult = ForeignKeyHelper.getForeignKeyList(config, model, entityModel,
-                    foreignKeyFilterValue, dataClusterPK);
+                    foreignKeyFilterValue, dataClusterPK, language);
             return loadResult.getData();
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);

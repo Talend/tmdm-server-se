@@ -395,7 +395,7 @@ public class DataRecord {
             threadLocal.remove();
         }
     }
-    
+
     /**
      * Used to control if only validate a record but not save it.
      *

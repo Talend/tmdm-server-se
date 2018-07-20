@@ -192,7 +192,7 @@ public class ForeignKeyHelper {
                 } else {
                     xpath = StringUtils.substringBefore(xPaths.get(0), "/") + "/../../i"; //$NON-NLS-1$ //$NON-NLS-2$
                 }
-                if ("MULTI_LINGUAL".equals(entityModel.getTypeModel(config.getSortField()).getType().getTypeName())) { //$NON-NLS-1$
+                if (Types.MULTI_LINGUAL.equals(entityModel.getTypeModel(config.getSortField()).getType().getTypeName())) {
                     OrderBy.SortLanguage.set(language.toUpperCase());
                 }
             } else {

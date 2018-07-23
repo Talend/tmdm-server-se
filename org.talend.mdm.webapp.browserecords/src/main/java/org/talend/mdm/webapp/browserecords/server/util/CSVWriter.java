@@ -14,6 +14,7 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.talend.mdm.webapp.browserecords.shared.Constants;
 
 @SuppressWarnings("nls")
@@ -57,7 +58,7 @@ public class CSVWriter extends DownloadWriter {
     private void writeLine() {
         for (int i = 0; i < lineDataArray.length; i++) {
             String value = lineDataArray[i];
-            content.append(value == null ? "" : value);
+            content.append(value == null ? StringUtils.EMPTY : value);
             if (i < lineDataArray.length - 1) {
                 content.append(","); //$NON-NLS-1$
             }

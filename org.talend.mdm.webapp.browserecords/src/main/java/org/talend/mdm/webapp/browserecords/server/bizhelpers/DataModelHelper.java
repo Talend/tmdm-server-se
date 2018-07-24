@@ -495,7 +495,7 @@ public class DataModelHelper {
         } else {
             typeModel.setReadOnly(!writable);
         }
-        if (!writable) {
+        if (typeModel.isReadOnly()) {
             typeModel.setAddPermission(false);
             typeModel.setRemovePermission(false);
         }

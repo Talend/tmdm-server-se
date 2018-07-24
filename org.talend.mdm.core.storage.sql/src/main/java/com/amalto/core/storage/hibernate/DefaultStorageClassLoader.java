@@ -123,14 +123,14 @@ public class DefaultStorageClassLoader extends StorageClassLoader {
                     dataSource.getPassword());
             catalog = connection.getCatalog().toLowerCase();
         } catch (Exception e) {
-            LOGGER.error("Fialed to get the Connection for " + dataSource.getDatabaseName(), e);
+            LOGGER.error("Failed to get connection of " + dataSource.getDatabaseName(), e);  //$NON-NLS-1$
         } finally {
             try {
                 if (connection != null) {
                     connection.close();
                 }
             } catch (SQLException e) {
-                LOGGER.error("Unexpected error on connection close.", e); //$NON-NLS-1$
+                LOGGER.error("Failed to close MySQL connection.", e); //$NON-NLS-1$
             }
         }
         return catalog;

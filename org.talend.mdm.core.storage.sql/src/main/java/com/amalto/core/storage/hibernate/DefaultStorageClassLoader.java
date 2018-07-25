@@ -121,7 +121,7 @@ public class DefaultStorageClassLoader extends StorageClassLoader {
         try {
             connection = DriverManager.getConnection(dataSource.getConnectionURL(), dataSource.getUserName(),
                     dataSource.getPassword());
-            catalog = connection.getCatalog().toLowerCase();
+            catalog = connection.getCatalog();
         } catch (Exception e) {
             LOGGER.error("Failed to get connection of " + dataSource.getDatabaseName(), e);  //$NON-NLS-1$
         } finally {

@@ -52,13 +52,12 @@ class MySQLStorageInitializer implements StorageInitializer {
         try {
             RDBMSDataSource dataSource = getDataSource(storage);
             Driver driver = (Driver) Class.forName(dataSource.getDriverClassName()).newInstance();
-            String url = dataSource.getInitConnectionURL();
-            if (dataSource.getInitConnectionURL().contains("useSSL")) {
-                url += "?user=" + dataSource.getInitUserName() + "&password=" + dataSource.getInitPassword(); //$NON-NLS-1$ //$NON-NLS-2$
-            } else {
-                url += "?useSSL=false&user=" + dataSource.getInitUserName() + "&password=" + dataSource.getInitPassword(); //$NON-NLS-1$ //$NON-NLS-2$
-            }
-            Connection connection = driver.connect(url, new Properties()); // $NON-NLS-1$ //$NON-NLS-2$
+
+            Properties properties = new Properties();
+            properties.put("user", dataSource.getInitUserName()); //$NON-NLS-1$
+            properties.put("password", dataSource.getInitPassword()); //$NON-NLS-1$
+
+            Connection connection = driver.connect(dataSource.getInitConnectionURL(), properties);
             try {
                 Statement statement = connection.createStatement();
                 try {

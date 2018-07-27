@@ -52,12 +52,18 @@ class MySQLStorageInitializer implements StorageInitializer {
         try {
             RDBMSDataSource dataSource = getDataSource(storage);
             Driver driver = (Driver) Class.forName(dataSource.getDriverClassName()).newInstance();
-            Connection connection = driver.connect(dataSource.getInitConnectionURL()
-                    + "?user=" + dataSource.getInitUserName() + "&password=" + dataSource.getInitPassword(), new Properties()); //$NON-NLS-1$ //$NON-NLS-2$
+            String url = dataSource.getInitConnectionURL();
+            if (dataSource.getInitConnectionURL().contains("useSSL")) {
+                url += "?user=" + dataSource.getInitUserName() + "&password=" + dataSource.getInitPassword(); //$NON-NLS-1$ //$NON-NLS-2$
+            } else {
+                url += "?useSSL=false&user=" + dataSource.getInitUserName() + "&password=" + dataSource.getInitPassword(); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+            Connection connection = driver.connect(url, new Properties()); // $NON-NLS-1$ //$NON-NLS-2$
             try {
                 Statement statement = connection.createStatement();
                 try {
-                    statement.execute("CREATE DATABASE " + dataSource.getDatabaseName() + " DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;"); //$NON-NLS-1$ //$NON-NLS-2$
+                    statement.execute("CREATE DATABASE IF NOT EXISTS " + dataSource.getDatabaseName() //$NON-NLS-1$
+                            + " DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;"); //$NON-NLS-1$
                 } catch (SQLException e) {
                     // Assumes database is already created.
                     LOGGER.warn("Exception occurred during CREATE DATABASE statement.", e);

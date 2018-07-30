@@ -286,7 +286,6 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
 
     @Override
     public void onDisable() {
-        addStyleName(disabledStyle);
     }
 
     public void setShowInput(boolean showInput) {

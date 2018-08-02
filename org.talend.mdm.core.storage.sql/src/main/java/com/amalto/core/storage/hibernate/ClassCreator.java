@@ -20,31 +20,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
-import javassist.CannotCompileException;
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtConstructor;
-import javassist.CtField;
-import javassist.CtMethod;
-import javassist.CtNewConstructor;
-import javassist.CtNewMethod;
-import javassist.LoaderClassPath;
-import javassist.Modifier;
-import javassist.NotFoundException;
-import javassist.bytecode.AnnotationsAttribute;
-import javassist.bytecode.ClassFile;
-import javassist.bytecode.ConstPool;
-import javassist.bytecode.annotation.Annotation;
-import javassist.bytecode.annotation.AnnotationMemberValue;
-import javassist.bytecode.annotation.ClassMemberValue;
-import javassist.bytecode.annotation.EnumMemberValue;
-
 import org.apache.log4j.Logger;
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.ProvidedId;
 import org.hibernate.search.annotations.Store;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
@@ -62,6 +44,27 @@ import org.talend.mdm.commmon.metadata.Types;
 
 import com.amalto.core.storage.HibernateMetadataUtils;
 import com.amalto.core.storage.Storage;
+
+import javassist.CannotCompileException;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtConstructor;
+import javassist.CtField;
+import javassist.CtMethod;
+import javassist.CtNewConstructor;
+import javassist.CtNewMethod;
+import javassist.LoaderClassPath;
+import javassist.Modifier;
+import javassist.NotFoundException;
+import javassist.bytecode.AnnotationsAttribute;
+import javassist.bytecode.ClassFile;
+import javassist.bytecode.ConstPool;
+import javassist.bytecode.annotation.Annotation;
+import javassist.bytecode.annotation.AnnotationMemberValue;
+import javassist.bytecode.annotation.BooleanMemberValue;
+import javassist.bytecode.annotation.ClassMemberValue;
+import javassist.bytecode.annotation.EnumMemberValue;
+import javassist.bytecode.annotation.IntegerMemberValue;
 
 class ClassCreator extends DefaultMetadataVisitor<Void> {
 
@@ -395,9 +398,23 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
         try {
             if (!existsInSuperTypes(referenceField)) {
                 CtClass currentClass = classCreationStack.peek();
+                ClassFile currentClassFile = currentClass.getClassFile();
                 referenceField.getReferencedType().accept(this); // Visit referenced type in case it hasn't been created.
                 CtClass fieldType = classPool.get(getClassName(referenceField.getReferencedType().getName()));
-                addNewField(referenceField.getName(), referenceField.isMany(), fieldType, currentClass);
+                CtField field = addNewField(referenceField.getName(), referenceField.isMany(), fieldType, currentClass);
+
+                //[TMDM-11878] added in 8/1/2018
+                ConstPool cpPool = currentClassFile.getConstPool();
+                AnnotationsAttribute annotations = (AnnotationsAttribute) field.getFieldInfo().getAttribute(AnnotationsAttribute.visibleTag);
+                if (annotations == null) {
+                    annotations = new AnnotationsAttribute(cpPool, AnnotationsAttribute.visibleTag);
+                    field.getFieldInfo().addAttribute(annotations);
+                }
+
+                if (!referenceField.isMany()) {
+                    SearchIndexHandler handler = getHandler(referenceField);
+                    handler.handle(annotations, cpPool);
+                }
             }
             return null;
         } catch (Exception e) {
@@ -539,6 +556,8 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
             }
             if (Types.MULTI_LINGUAL.equals(metadata.getType().getName())) {
                 return new MultiLingualIndexedHandler();
+            } else if (metadata instanceof ReferenceFieldMetadata) {
+                return new AssociatedEntitiesIndexedHandler();
             }
             return new BasicSearchIndexHandler();
         } else if (!validType) {
@@ -670,6 +689,18 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
             fieldBridge.addMemberValue("impl", new ClassMemberValue(MultiLingualIndexedBridge.class.getName(), pool)); //$NON-NLS-1$
             annotations.addAnnotation(fieldAnnotation);
             annotations.addAnnotation(fieldBridge);
+        }
+    }
+
+    private static class AssociatedEntitiesIndexedHandler implements SearchIndexHandler {
+
+        @Override
+        public void handle(AnnotationsAttribute annotations, ConstPool pool) {
+            //@IndexedEmbedded(depth = 1,includeEmbeddedObjectId=false)
+            Annotation fieldAnnotation = new Annotation(IndexedEmbedded.class.getName(), pool);
+            fieldAnnotation.addMemberValue("depth", new IntegerMemberValue(pool, 1)); //$NON-NLS-1$
+            fieldAnnotation.addMemberValue("includeEmbeddedObjectId", new BooleanMemberValue(false, pool)); //$NON-NLS-1$
+            annotations.addAnnotation(fieldAnnotation);
         }
     }
 }

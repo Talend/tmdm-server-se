@@ -408,9 +408,9 @@ public class CommonUtilTest extends TestCase {
         FieldMetadata keyField1 = new MockSimpleTypeFieldMetadata(null, true, false, false, "PK1", new SimpleTypeMetadata("", ""),
                 null, null, null, "");
         keyField1.getPath();
-        ComplexTypeMetadata testtypeype = new ComplexTypeMetadataImpl("", "TestEntity", true);
-        testtypeype.registerKey(keyField1);
-        repository.addTypeMetadata(testtypeype);
+        ComplexTypeMetadata testType = new ComplexTypeMetadataImpl("", "TestEntity", true);
+        testType.registerKey(keyField1);
+        repository.addTypeMetadata(testType);
 
         ids = CommonUtil.getItemId(repository, "1.2", "TestEntity");
         assertEquals(1, ids.length);
@@ -418,7 +418,7 @@ public class CommonUtilTest extends TestCase {
 
         FieldMetadata keyField2 = new MockSimpleTypeFieldMetadata(null, true, false, false, "PK2", new SimpleTypeMetadata("", ""),
                 null, null, null, "");
-        testtypeype.registerKey(keyField2);
+        testType.registerKey(keyField2);
         ids = CommonUtil.getItemId(repository, "1.2", "TestEntity");
         assertEquals(2, ids.length);
         assertEquals("1", ids[0]);

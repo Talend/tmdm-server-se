@@ -10,8 +10,23 @@
 
 package com.amalto.core.query;
 
-import static com.amalto.core.query.user.UserQueryBuilder.*;
-import static com.amalto.core.query.user.UserStagingQueryBuilder.*;
+import static com.amalto.core.query.user.UserQueryBuilder.alias;
+import static com.amalto.core.query.user.UserQueryBuilder.and;
+import static com.amalto.core.query.user.UserQueryBuilder.contains;
+import static com.amalto.core.query.user.UserQueryBuilder.eq;
+import static com.amalto.core.query.user.UserQueryBuilder.from;
+import static com.amalto.core.query.user.UserQueryBuilder.fullText;
+import static com.amalto.core.query.user.UserQueryBuilder.gt;
+import static com.amalto.core.query.user.UserQueryBuilder.gte;
+import static com.amalto.core.query.user.UserQueryBuilder.isEmpty;
+import static com.amalto.core.query.user.UserQueryBuilder.isNull;
+import static com.amalto.core.query.user.UserQueryBuilder.lt;
+import static com.amalto.core.query.user.UserQueryBuilder.lte;
+import static com.amalto.core.query.user.UserQueryBuilder.not;
+import static com.amalto.core.query.user.UserQueryBuilder.or;
+import static com.amalto.core.query.user.UserQueryBuilder.taskId;
+import static com.amalto.core.query.user.UserQueryBuilder.timestamp;
+import static com.amalto.core.query.user.UserStagingQueryBuilder.error;
 
 import java.io.ByteArrayOutputStream;
 import java.io.StringWriter;
@@ -1627,6 +1642,7 @@ public class StorageFullTextTest extends StorageTestCase {
     }
 
     public void testFKContainsAndContainsSentenceSearch() {
+        storage.init(getDatasource("H2-Default-CaseSensitive"));
         UserQueryBuilder qb = from(product).where(contains(product.getField("Family"), "345"));
         StorageResults results = storage.fetch(qb.getSelect());
         try {

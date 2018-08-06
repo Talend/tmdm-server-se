@@ -10,7 +10,30 @@
 
 package com.amalto.core.query;
 
-import static com.amalto.core.query.user.UserQueryBuilder.*;
+import static com.amalto.core.query.user.UserQueryBuilder.alias;
+import static com.amalto.core.query.user.UserQueryBuilder.and;
+import static com.amalto.core.query.user.UserQueryBuilder.contains;
+import static com.amalto.core.query.user.UserQueryBuilder.count;
+import static com.amalto.core.query.user.UserQueryBuilder.distinct;
+import static com.amalto.core.query.user.UserQueryBuilder.emptyOrNull;
+import static com.amalto.core.query.user.UserQueryBuilder.eq;
+import static com.amalto.core.query.user.UserQueryBuilder.from;
+import static com.amalto.core.query.user.UserQueryBuilder.gt;
+import static com.amalto.core.query.user.UserQueryBuilder.gte;
+import static com.amalto.core.query.user.UserQueryBuilder.in;
+import static com.amalto.core.query.user.UserQueryBuilder.index;
+import static com.amalto.core.query.user.UserQueryBuilder.isEmpty;
+import static com.amalto.core.query.user.UserQueryBuilder.isNull;
+import static com.amalto.core.query.user.UserQueryBuilder.lt;
+import static com.amalto.core.query.user.UserQueryBuilder.lte;
+import static com.amalto.core.query.user.UserQueryBuilder.max;
+import static com.amalto.core.query.user.UserQueryBuilder.min;
+import static com.amalto.core.query.user.UserQueryBuilder.neq;
+import static com.amalto.core.query.user.UserQueryBuilder.not;
+import static com.amalto.core.query.user.UserQueryBuilder.or;
+import static com.amalto.core.query.user.UserQueryBuilder.startsWith;
+import static com.amalto.core.query.user.UserQueryBuilder.taskId;
+import static com.amalto.core.query.user.UserQueryBuilder.timestamp;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -1292,6 +1315,7 @@ public class StorageQueryTest extends StorageTestCase {
     }
 
     public void testStartsWithCondition() throws Exception {
+        storage.init(getDatasource("H2-Default-CaseSensitive"));
         UserQueryBuilder qb = from(person).where(startsWith(person.getField("firstname"), "Ju"));
         StorageResults results = storage.fetch(qb.getSelect());
         try {
@@ -1306,6 +1330,15 @@ public class StorageQueryTest extends StorageTestCase {
         try {
             assertEquals(3, results.getSize());
             assertEquals(3, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        qb = from(product).where(startsWith(product.getField("Family"), "1"));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getSize());
+            assertEquals(1, results.getCount());
         } finally {
             results.close();
         }

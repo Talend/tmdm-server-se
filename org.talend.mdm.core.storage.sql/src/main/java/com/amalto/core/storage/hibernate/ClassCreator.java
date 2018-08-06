@@ -29,6 +29,7 @@ import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.ProvidedId;
 import org.hibernate.search.annotations.Store;
+import org.springframework.scripting.support.RefreshableScriptTargetSource;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
@@ -403,7 +404,6 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
                 CtClass fieldType = classPool.get(getClassName(referenceField.getReferencedType().getName()));
                 CtField field = addNewField(referenceField.getName(), referenceField.isMany(), fieldType, currentClass);
 
-                //[TMDM-11878] added in 8/1/2018
                 ConstPool cpPool = currentClassFile.getConstPool();
                 AnnotationsAttribute annotations = (AnnotationsAttribute) field.getFieldInfo().getAttribute(AnnotationsAttribute.visibleTag);
                 if (annotations == null) {
@@ -411,10 +411,8 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
                     field.getFieldInfo().addAttribute(annotations);
                 }
 
-                if (!referenceField.isMany()) {
-                    SearchIndexHandler handler = getHandler(referenceField);
-                    handler.handle(annotations, cpPool);
-                }
+                SearchIndexHandler handler = getHandler(referenceField);
+                handler.handle(annotations, cpPool);
             }
             return null;
         } catch (Exception e) {
@@ -557,13 +555,17 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
             if (Types.MULTI_LINGUAL.equals(metadata.getType().getName())) {
                 return new MultiLingualIndexedHandler();
             } else if (metadata instanceof ReferenceFieldMetadata) {
-                return new AssociatedEntitiesIndexedHandler();
+                return new AssociatedEntityIndexedHandler();
             }
             return new BasicSearchIndexHandler();
         } else if (!validType) {
             return new ToStringIndexHandler();
         } else { // metadata.isMany() returned true
-            return new ListFieldIndexHandler();
+            if (metadata instanceof ReferenceFieldMetadata) {
+                return new ReferenceEntityIndexHandler();
+            } else {
+                return new ListFieldIndexHandler();
+            }
         }
     }
     
@@ -692,15 +694,27 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
         }
     }
 
-    private static class AssociatedEntitiesIndexedHandler implements SearchIndexHandler {
+    private static class AssociatedEntityIndexedHandler implements SearchIndexHandler {
 
         @Override
         public void handle(AnnotationsAttribute annotations, ConstPool pool) {
             //@IndexedEmbedded(depth = 1,includeEmbeddedObjectId=false)
             Annotation fieldAnnotation = new Annotation(IndexedEmbedded.class.getName(), pool);
-            fieldAnnotation.addMemberValue("depth", new IntegerMemberValue(pool, 1)); //$NON-NLS-1$
-            fieldAnnotation.addMemberValue("includeEmbeddedObjectId", new BooleanMemberValue(false, pool)); //$NON-NLS-1$
+            fieldAnnotation.addMemberValue("depth", new IntegerMemberValue(pool, 3)); //$NON-NLS-1$
+            fieldAnnotation.addMemberValue("includeEmbeddedObjectId", new BooleanMemberValue(true, pool)); //$NON-NLS-1$
             annotations.addAnnotation(fieldAnnotation);
+        }
+    }
+
+    private static class ReferenceEntityIndexHandler implements SearchIndexHandler {
+
+        @Override
+        public void handle(AnnotationsAttribute annotations, ConstPool pool) {
+            Annotation fieldAnnotation = new Annotation(Field.class.getName(), pool);
+            Annotation fieldBridge = new Annotation(FieldBridge.class.getName(), pool);
+            fieldBridge.addMemberValue("impl", new ClassMemberValue(ReferenceEntityBridge.class.getName(), pool)); //$NON-NLS-1$
+            annotations.addAnnotation(fieldAnnotation);
+            annotations.addAnnotation(fieldBridge);
         }
     }
 }

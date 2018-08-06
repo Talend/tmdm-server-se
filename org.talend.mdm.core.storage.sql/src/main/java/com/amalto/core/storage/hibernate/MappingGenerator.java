@@ -311,9 +311,7 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
             if (!referenceField.isMany()) {
                 return newManyToOneElement(referenceField, enforceDataBaseIntegrity);
             } else if (!dataSource.getDatabaseName().equals("TMDM_DB_SYSTEM")
-                    && !this.entityComplexType.contains(referenceField.getReferencedField().getContainingType())
-                    && referenceField.getContainingType().getKeyFields().size() == 1
-                    && referenceField.getReferencedField().getContainingType().getKeyFields().size() == 1) {
+                    && !this.entityComplexType.contains(referenceField.getReferencedField().getContainingType())) {
                 Element setElement = document.createElement("list"); //$NON-NLS-1$
                 Attr name = document.createAttribute("name"); //$NON-NLS-1$
                 name.setValue(referenceField.getName());
@@ -324,20 +322,36 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
                 setElement.getAttributes().setNamedItem(cascade);
 
                 Element keyElement = document.createElement("key"); //$NON-NLS-1$
-                Attr column = document.createAttribute("column"); //$NON-NLS-1$
-                column.setValue(resolver.get(referenceField.getReferencedField(), referenceField.getReferencedField().getContainingType().getName()));
-                keyElement.getAttributes().setNamedItem(column);
+
+                Attr onDeleteAttr = document.createAttribute("on-delete"); //$NON-NLS-1$
+                onDeleteAttr.setValue("noaction"); //$NON-NLS-1$
+                keyElement.getAttributes().setNamedItem(onDeleteAttr);
+
+                if (referenceField.getContainingType().getKeyFields().size() > 1) {
+                    for (FieldMetadata fieldMetadata : referenceField.getContainingType().getKeyFields()) {
+                        Element columnElement = document.createElement("column"); //$NON-NLS-1$
+                        Attr nameAttr = document.createAttribute("name"); //$NON-NLS-1$
+                        nameAttr.setValue(resolver.get(fieldMetadata, referenceField.getContainingType().getName()));
+                        columnElement.getAttributes().setNamedItem(nameAttr);
+                        keyElement.appendChild(columnElement);
+                    }
+                } else {
+                    Element columnElement = document.createElement("column");
+                    Attr nameAttr = document.createAttribute("name"); //$NON-NLS-1$
+                    nameAttr.setValue(resolver.get(referenceField.getReferencedField(),
+                            referenceField.getReferencedField().getContainingType().getName()));
+                    columnElement.getAttributes().setNamedItem(nameAttr);
+                    keyElement.appendChild(columnElement);
+                }
+
                 setElement.appendChild(keyElement);
 
                 Element index = document.createElement("index"); //$NON-NLS-1$
                 Attr indexColumn = document.createAttribute("column"); //$NON-NLS-1$
                 indexColumn.setValue("pos"); //$NON-NLS-1$
-                Attr indextype = document.createAttribute("type"); //$NON-NLS-1$
-                indextype.setValue("java.lang.String"); //$NON-NLS-1$
                 index.getAttributes().setNamedItem(indexColumn);
-                index.getAttributes().setNamedItem(indextype);
                 setElement.appendChild(index);
-                
+
                 Element oneToManyElement = document.createElement("one-to-many"); //$NON-NLS-1$
                 Attr classAttr = document.createAttribute("class"); //$NON-NLS-1$
                 classAttr.setValue(ClassCreator.getClassName(referenceField.getReferencedType().getName()));

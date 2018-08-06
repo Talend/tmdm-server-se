@@ -397,6 +397,59 @@ public class StoragePrepareTest extends TestCase {
         storage.end();
     }
 
+    public void testOneToManyMappingForCompositeKey() throws Exception {
+        DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS2", STORAGE_NAME);
+        Storage storage = new HibernateStorage("Test", StorageType.MASTER);
+        storage.init(dataSource);
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(StoragePrepareTest.class.getResourceAsStream("User.xsd"));
+        storage.prepare(repository, true);
+
+        // test table created
+        String[] tables = { "X_USER", "X_ADDRESS" };
+        String[][] columns = { { "", "X_EMAIL", "X_NAME", "X_ID", "X_SEX", "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" }, { "",
+                "X_TALEND_ID", "X_CITY", "X_POSTCODE", "X_DETAIL", "X_USER_X_EMAIL", "X_USER_X_NAME", "X_USER_X_ID", "POS" } };
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+        try {
+            assertDatabaseChange(dataSource, tables, columns, new boolean[] { true, true, true });
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+
+        ComplexTypeMetadata product = repository.getComplexType("User");//$NON-NLS-1$
+
+        // test insert data
+        List<DataRecord> records = new ArrayList<DataRecord>();
+        records.add(factory.read(repository, product,
+                "<User><Id>1</Id><name>name1</name><sex>1</sex><email>aa</email><address><city>Beijing</city><postcode>100</postcode><detail>Beijing China</detail></address><address><city>Shanghai</city><postcode>200</postcode><detail>Shanghai China</detail></address></User>\r\n"
+                        + "")); //$NON-NLS-1$
+        try {
+            storage.begin();
+            storage.update(records);
+            storage.commit();
+        } catch (Exception e) {
+            fail("Faield to insert data");
+        } finally {
+            storage.end();
+        }
+
+        // test query data
+        UserQueryBuilder qb = from(product);
+        qb.getSelect().getPaging().setLimit(10);
+        storage.begin();
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+            for (DataRecord result : results) {
+                assertEquals("1", result.get("Id"));//$NON-NLS-1$ //$NON-NLS-2$
+            }
+
+        } finally {
+            results.close();
+        }
+        storage.end();
+    }
+
     private void assertDatabaseChange(DataSourceDefinition dataSource, String[] tables, String[][] columns, boolean[] exists)
             throws SQLException {
         DataSource master = dataSource.getMaster();

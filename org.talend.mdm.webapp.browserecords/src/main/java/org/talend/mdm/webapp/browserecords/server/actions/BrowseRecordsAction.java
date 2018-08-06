@@ -32,7 +32,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.dom4j.DocumentHelper;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
-import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
 import org.talend.mdm.commmon.util.datamodel.management.BusinessConcept;
@@ -104,6 +103,7 @@ import com.amalto.core.server.MDMContextAccessor;
 import com.amalto.core.server.ServerContext;
 import com.amalto.core.server.StorageAdmin;
 import com.amalto.core.storage.Storage;
+import com.amalto.core.storage.services.BulkUpdate;
 import com.amalto.core.storage.task.StagingConstants;
 import com.amalto.core.util.CoreException;
 import com.amalto.core.util.EntityNotFoundException;
@@ -111,7 +111,6 @@ import com.amalto.core.util.FieldNotFoundException;
 import com.amalto.core.util.LocalUser;
 import com.amalto.core.util.Messages;
 import com.amalto.core.util.MessagesFactory;
-import com.amalto.core.storage.services.BulkUpdate;
 import com.amalto.core.webservice.WSBoolean;
 import com.amalto.core.webservice.WSByteArray;
 import com.amalto.core.webservice.WSConceptKey;
@@ -210,9 +209,9 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             if (!records.contains(item.getIds())) {
                 Locale locale = new Locale(language);
                 try {
-                    MetadataRepository repository = CommonUtil.getCurrentRepository();
                     String dataClusterPK = getCurrentDataCluster();
-                    String[] ids = getItemId(repository, item.getIds(), concept);
+                    MetadataRepository repository = CommonUtil.getCurrentRepository();
+                    String[] ids = CommonUtil.getItemId(repository, item.getIds(), concept);
 
                     WSDeleteItemWithReport wsDeleteItem = new WSDeleteItemWithReport(new WSItemPK(new WSDataClusterPK(
                             dataClusterPK), concept, ids), UpdateReportPOJO.GENERIC_UI_SOURCE,
@@ -273,16 +272,6 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             return 3;
         }
         return status;
-    }
-
-    private String[] getItemId(MetadataRepository repository, String ids, String concept) throws WebBaseException {
-        ComplexTypeMetadata itemType = repository.getComplexType(concept);
-        String[] keyPaths = new String[itemType.getKeyFields().size()];
-        int i = 0;
-        for (FieldMetadata keyField : itemType.getKeyFields()) {
-            keyPaths[i++] = keyField.getPath();
-        }
-        return CommonUtil.extractIdWithDots(keyPaths, ids);
     }
 
     @Override
@@ -1257,16 +1246,18 @@ public class BrowseRecordsAction implements BrowseRecordsService {
     }
 
     @Override
-    public Map<String, List<String>> getForeignKeyValues(String concept, String[] ids, String language) throws ServiceException {
+    public Map<String, List<String>> getForeignKeyValues(String concept, String ids, String language) throws ServiceException {
         try {
             Map<ViewBean, Map<String, List<String>>> map = new HashMap<ViewBean, Map<String, List<String>>>();
+            MetadataRepository repository = CommonUtil.getCurrentRepository();
+            String[] idsArray = CommonUtil.getItemId(repository, ids, concept);
             // 1. getView
             String viewName = getExsitedViewName(concept);
             ViewBean viewBean = getView(viewName, language);
             Map<String, List<String>> fkValues = new HashMap<String, List<String>>();
             // 2. getItem
             WSItem wsItem = CommonUtil.getPort().getItem(
-                    new WSGetItem(new WSItemPK(new WSDataClusterPK(this.getCurrentDataCluster()), concept, ids)));
+                    new WSGetItem(new WSItemPK(new WSDataClusterPK(this.getCurrentDataCluster()), concept, idsArray)));
             org.dom4j.Document doc = org.talend.mdm.webapp.base.server.util.XmlUtil.parseText(wsItem.getContent());
             EntityModel entityModel = getEntityModel(concept, language);
             Map<String, TypeModel> metaData = entityModel.getMetaDataTypes();
@@ -2208,12 +2199,15 @@ public class BrowseRecordsAction implements BrowseRecordsService {
 
     @Override
     public ItemBean getItemBeanById(String concept, String ids, String language) throws ServiceException {
-        MetadataRepository repository = ServerContext.INSTANCE.get().getMetadataRepositoryAdmin().get(getCurrentDataModel());
         try {
-            String[] idsArray = getItemId(repository, ids, concept);
+            MetadataRepository repository = CommonUtil.getCurrentRepository();
+            String[] idsArray = CommonUtil.getItemId(repository, ids, concept);
             return getItemBeanById(concept, idsArray, language);
         } catch (WebBaseException e) {
             throw new ServiceException(BASEMESSAGE.getMessage(new Locale(language), e.getMessage(), e.getArgs()));
+        } catch (Exception e) {
+            LOG.error(e.getMessage(), e);
+            throw new ServiceException(e.getLocalizedMessage());
         }
     }
 

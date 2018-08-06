@@ -15,11 +15,19 @@ import java.util.List;
 import org.powermock.api.mockito.PowerMockito;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
+import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.ComplexTypeMetadataImpl;
+import org.talend.mdm.commmon.metadata.FieldMetadata;
+import org.talend.mdm.commmon.metadata.MetadataRepository;
+import org.talend.mdm.commmon.metadata.SimpleTypeFieldMetadata;
+import org.talend.mdm.commmon.metadata.SimpleTypeMetadata;
+import org.talend.mdm.commmon.metadata.TypeMetadata;
 import org.talend.mdm.webapp.base.client.exception.ParserException;
 import org.talend.mdm.webapp.base.client.i18n.BaseMessages;
 import org.talend.mdm.webapp.base.client.i18n.BaseMessagesFactory;
 import org.talend.mdm.webapp.base.client.model.Criteria;
 import org.talend.mdm.webapp.base.client.model.SimpleCriterion;
+import org.talend.mdm.webapp.base.server.exception.WebBaseException;
 
 import com.amalto.core.webservice.WSStringPredicate;
 import com.amalto.core.webservice.WSWhereAnd;
@@ -394,6 +402,29 @@ public class CommonUtilTest extends TestCase {
         assertEquals(s, result.get(0));
     }
 
+    public void testGetItemId() throws WebBaseException {
+        String[] ids;
+        MetadataRepository repository = new MetadataRepository();
+        FieldMetadata keyField1 = new MockSimpleTypeFieldMetadata(null, true, false, false, "PK1", new SimpleTypeMetadata("", ""),
+                null, null, null, "");
+        keyField1.getPath();
+        ComplexTypeMetadata testType = new ComplexTypeMetadataImpl("", "TestEntity", true);
+        testType.registerKey(keyField1);
+        repository.addTypeMetadata(testType);
+
+        ids = CommonUtil.getItemId(repository, "1.2", "TestEntity");
+        assertEquals(1, ids.length);
+        assertEquals("1.2", ids[0]);
+
+        FieldMetadata keyField2 = new MockSimpleTypeFieldMetadata(null, true, false, false, "PK2", new SimpleTypeMetadata("", ""),
+                null, null, null, "");
+        testType.registerKey(keyField2);
+        ids = CommonUtil.getItemId(repository, "1.2", "TestEntity");
+        assertEquals(2, ids.length);
+        assertEquals("1", ids[0]);
+        assertEquals("2", ids[1]);
+    }
+
     private class MockBaseMessages implements BaseMessages {
 
         @Override
@@ -598,6 +629,21 @@ public class CommonUtilTest extends TestCase {
 
         @Override
         public String server_unavailable_error() {
+            return "";
+        }
+    }
+
+    private class MockSimpleTypeFieldMetadata extends SimpleTypeFieldMetadata {
+
+        public MockSimpleTypeFieldMetadata(ComplexTypeMetadata containingType, boolean isKey, boolean isMany, boolean isMandatory,
+                String name, TypeMetadata fieldType, List<String> allowWriteUsers, List<String> hideUsers,
+                List<String> workflowAccessRights, String visibilityRule) {
+            super(containingType, isKey, isMany, isMandatory, name, fieldType, allowWriteUsers, hideUsers, workflowAccessRights,
+                    visibilityRule);
+        }
+
+        @Override
+        public String getPath() {
             return "";
         }
     }

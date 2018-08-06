@@ -17,6 +17,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
+import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.util.datamodel.management.BusinessConcept;
 import org.talend.mdm.webapp.base.client.exception.ParserException;
@@ -277,6 +279,16 @@ public class CommonUtil {
         }
         criteria.append(")"); //$NON-NLS-1$
         return criteria.toString();
+    }
+
+    public static String[] getItemId(MetadataRepository repository, String ids, String concept) throws WebBaseException {
+        ComplexTypeMetadata itemType = repository.getComplexType(concept);
+        String[] keyPaths = new String[itemType.getKeyFields().size()];
+        int i = 0;
+        for (FieldMetadata keyField : itemType.getKeyFields()) {
+            keyPaths[i++] = keyField.getPath();
+        }
+        return extractIdWithDots(keyPaths, ids);
     }
 
     public static String[] extractIdWithDots(String[] keys, String ids) throws WebBaseException {

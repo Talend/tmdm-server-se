@@ -432,6 +432,7 @@ public class HibernateStorage implements Storage {
             storageClassLoader = constructor.newInstance(contextClassLoader, storageName, storageType);
             storageClassLoader.setDataSourceConfiguration(dataSource);
             storageClassLoader.generateHibernateConfig(); // Checks if configuration can be generated.
+            storageClassLoader.setEntityComplexType(repository.getUserComplexTypes());
         } catch (Exception e) {
             throw new RuntimeException("Could not create storage class loader", e); //$NON-NLS-1$
         }

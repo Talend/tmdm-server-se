@@ -140,9 +140,9 @@ public class DefaultStorageClassLoader extends StorageClassLoader {
         switch (type) {
             case MASTER:
             case SYSTEM:
-                return new MappingGenerator(document, resolver, dataSource);
+                return new MappingGenerator(document, resolver, dataSource, entityComplexType);
             case STAGING:
-                return new MappingGenerator(document, resolver, dataSource, false);
+                return new MappingGenerator(document, resolver, dataSource, entityComplexType, false);
             default:
                 throw new NotImplementedException("No support for storage type '" + type + "'.");
         }

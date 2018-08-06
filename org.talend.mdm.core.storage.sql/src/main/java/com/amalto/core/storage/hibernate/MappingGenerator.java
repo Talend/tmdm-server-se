@@ -62,6 +62,8 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
 
     private final Stack<String> tableNames = new Stack<String>();
 
+    private final Collection<ComplexTypeMetadata> entityComplexType;
+
     private boolean compositeId;
 
     private Element parentElement;
@@ -74,18 +76,21 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
 
     private boolean generateConstrains;
 
-    public MappingGenerator(Document document, TableResolver resolver, RDBMSDataSource dataSource) {
-        this(document, resolver, dataSource, true);
+    public MappingGenerator(Document document, TableResolver resolver, RDBMSDataSource dataSource,
+            Collection<ComplexTypeMetadata> entityComplexType) {
+        this(document, resolver, dataSource, entityComplexType, true);
     }
 
     public MappingGenerator(Document document,
                             TableResolver resolver,
                             RDBMSDataSource dataSource,
+                            Collection<ComplexTypeMetadata> entityComplexType,
                             boolean generateConstrains) {
         this.document = document;
         this.resolver = resolver;
         this.dataSource = dataSource;
         this.generateConstrains = generateConstrains;
+        this.entityComplexType = entityComplexType;
     }
 
     @Override
@@ -305,6 +310,41 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
             boolean enforceDataBaseIntegrity = generateConstrains && (!referenceField.allowFKIntegrityOverride() && referenceField.isFKIntegrity());
             if (!referenceField.isMany()) {
                 return newManyToOneElement(referenceField, enforceDataBaseIntegrity);
+            } else if (!dataSource.getDatabaseName().equals("TMDM_DB_SYSTEM")
+                    && !this.entityComplexType.contains(referenceField.getReferencedField().getContainingType())
+                    && referenceField.getContainingType().getKeyFields().size() == 1
+                    && referenceField.getReferencedField().getContainingType().getKeyFields().size() == 1) {
+                Element setElement = document.createElement("list"); //$NON-NLS-1$
+                Attr name = document.createAttribute("name"); //$NON-NLS-1$
+                name.setValue(referenceField.getName());
+                setElement.getAttributes().setNamedItem(name);
+
+                Attr cascade = document.createAttribute("cascade"); //$NON-NLS-1$
+                cascade.setValue("all"); //$NON-NLS-1$
+                setElement.getAttributes().setNamedItem(cascade);
+
+                Element keyElement = document.createElement("key"); //$NON-NLS-1$
+                Attr column = document.createAttribute("column"); //$NON-NLS-1$
+                column.setValue(resolver.get(referenceField.getReferencedField(), referenceField.getReferencedField().getContainingType().getName()));
+                keyElement.getAttributes().setNamedItem(column);
+                setElement.appendChild(keyElement);
+
+                Element index = document.createElement("index"); //$NON-NLS-1$
+                Attr indexColumn = document.createAttribute("column"); //$NON-NLS-1$
+                indexColumn.setValue("pos"); //$NON-NLS-1$
+                Attr indextype = document.createAttribute("type"); //$NON-NLS-1$
+                indextype.setValue("java.lang.String"); //$NON-NLS-1$
+                index.getAttributes().setNamedItem(indexColumn);
+                index.getAttributes().setNamedItem(indextype);
+                setElement.appendChild(index);
+                
+                Element oneToManyElement = document.createElement("one-to-many"); //$NON-NLS-1$
+                Attr classAttr = document.createAttribute("class"); //$NON-NLS-1$
+                classAttr.setValue(ClassCreator.getClassName(referenceField.getReferencedType().getName()));
+                oneToManyElement.getAttributes().setNamedItem(classAttr);
+                setElement.appendChild(oneToManyElement);
+
+                return setElement;
             } else {
                 /*
                 <list name="bars" table="foo_bar">
@@ -350,8 +390,20 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
                     index.getAttributes().setNamedItem(indexColumn);
                     propertyElement.appendChild(index);
                     // many to many element
-                    Element manyToMany = newManyToManyElement(enforceDataBaseIntegrity, referenceField);
-                    propertyElement.appendChild(manyToMany);
+                    if (!dataSource.getDatabaseName().equals("TMDM_DB_SYSTEM")
+                            && !this.entityComplexType.contains(referenceField.getReferencedField().getContainingType())
+                            && referenceField.getContainingType().getKeyFields().size() == 1
+                            && referenceField.getReferencedField().getContainingType().getKeyFields().size() == 1) {
+                        Element oneToManyElement = document.createElement("one-to-many"); //$NON-NLS-1$
+                        Attr classAttr = document.createAttribute("class"); //$NON-NLS-1$
+                        classAttr.setValue(ClassCreator.getClassName(referenceField.getReferencedType().getName()));
+                        oneToManyElement.getAttributes().setNamedItem(classAttr);
+                        propertyElement.appendChild(oneToManyElement);
+                    }else {
+                        Element manyToMany = newManyToManyElement(enforceDataBaseIntegrity, referenceField);
+                        propertyElement.appendChild(manyToMany);
+                    }
+                    
                 }
                 return propertyElement;
             }

@@ -14,6 +14,7 @@ package com.amalto.core.storage.hibernate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.Stack;
 
 import org.apache.commons.lang.NotImplementedException;
@@ -25,6 +26,7 @@ import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
 import org.talend.mdm.commmon.metadata.DefaultMetadataVisitor;
 import org.talend.mdm.commmon.metadata.EnumerationFieldMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
+import org.talend.mdm.commmon.metadata.InboundReferences;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
 import org.talend.mdm.commmon.metadata.SimpleTypeFieldMetadata;
@@ -64,6 +66,8 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
 
     private final Collection<ComplexTypeMetadata> entityComplexType;
 
+    private InternalRepository typeMappingRepository;
+
     private boolean compositeId;
 
     private Element parentElement;
@@ -77,20 +81,22 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
     private boolean generateConstrains;
 
     public MappingGenerator(Document document, TableResolver resolver, RDBMSDataSource dataSource,
-            Collection<ComplexTypeMetadata> entityComplexType) {
-        this(document, resolver, dataSource, entityComplexType, true);
+            Collection<ComplexTypeMetadata> entityComplexType, InternalRepository typeMappingRepository) {
+        this(document, resolver, dataSource, entityComplexType, typeMappingRepository, true);
     }
 
     public MappingGenerator(Document document,
                             TableResolver resolver,
                             RDBMSDataSource dataSource,
                             Collection<ComplexTypeMetadata> entityComplexType,
+                            InternalRepository typeMappingRepository,
                             boolean generateConstrains) {
         this.document = document;
         this.resolver = resolver;
         this.dataSource = dataSource;
         this.generateConstrains = generateConstrains;
         this.entityComplexType = entityComplexType;
+        this.typeMappingRepository = typeMappingRepository;
     }
 
     @Override
@@ -307,11 +313,31 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
         if (referenceField.isKey()) {
             throw new UnsupportedOperationException("FK field '" + referenceField.getName() + "' cannot be key in type '" + referenceField.getDeclaringType().getName() + "'"); // Don't support FK as key //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         } else {
-            boolean enforceDataBaseIntegrity = generateConstrains && (!referenceField.allowFKIntegrityOverride() && referenceField.isFKIntegrity());
+            boolean enforceDataBaseIntegrity = generateConstrains
+                    && (!referenceField.allowFKIntegrityOverride() && referenceField.isFKIntegrity());
+
+            MetadataRepository internalRepository = typeMappingRepository.getInternalRepository();
+            InboundReferences inboundReferences = new InboundReferences(referenceField.getReferencedType());
+            Set<ReferenceFieldMetadata> references = internalRepository.accept(inboundReferences);
+            boolean isMany = false;
+            boolean isOne = false;
+            for (ReferenceFieldMetadata reference : references) {
+                if (reference.isMany()) {
+                    isMany = true;
+                    continue;
+                } else {
+                    isOne = true;
+                    continue;
+                }
+            }
+
+            boolean isSameExistedForOneAndMany = isMany && isOne;
+
             if (!referenceField.isMany()) {
                 return newManyToOneElement(referenceField, enforceDataBaseIntegrity);
             } else if (!dataSource.getDatabaseName().equals("TMDM_DB_SYSTEM")
-                    && !this.entityComplexType.contains(referenceField.getReferencedField().getContainingType())) {
+                    && !this.entityComplexType.contains(referenceField.getReferencedField().getContainingType())
+                    && !isSameExistedForOneAndMany) {
                 Element setElement = document.createElement("list"); //$NON-NLS-1$
                 Attr name = document.createAttribute("name"); //$NON-NLS-1$
                 name.setValue(referenceField.getName());
@@ -404,19 +430,8 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
                     index.getAttributes().setNamedItem(indexColumn);
                     propertyElement.appendChild(index);
                     // many to many element
-                    if (!dataSource.getDatabaseName().equals("TMDM_DB_SYSTEM")
-                            && !this.entityComplexType.contains(referenceField.getReferencedField().getContainingType())
-                            && referenceField.getContainingType().getKeyFields().size() == 1
-                            && referenceField.getReferencedField().getContainingType().getKeyFields().size() == 1) {
-                        Element oneToManyElement = document.createElement("one-to-many"); //$NON-NLS-1$
-                        Attr classAttr = document.createAttribute("class"); //$NON-NLS-1$
-                        classAttr.setValue(ClassCreator.getClassName(referenceField.getReferencedType().getName()));
-                        oneToManyElement.getAttributes().setNamedItem(classAttr);
-                        propertyElement.appendChild(oneToManyElement);
-                    }else {
-                        Element manyToMany = newManyToManyElement(enforceDataBaseIntegrity, referenceField);
-                        propertyElement.appendChild(manyToMany);
-                    }
+                    Element manyToMany = newManyToManyElement(enforceDataBaseIntegrity, referenceField);
+                    propertyElement.appendChild(manyToMany);
                     
                 }
                 return propertyElement;

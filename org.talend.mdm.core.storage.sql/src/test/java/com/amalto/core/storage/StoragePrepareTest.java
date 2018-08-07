@@ -421,8 +421,7 @@ public class StoragePrepareTest extends TestCase {
         // test insert data
         List<DataRecord> records = new ArrayList<DataRecord>();
         records.add(factory.read(repository, product,
-                "<User><Id>1</Id><name>name1</name><sex>1</sex><email>aa</email><address><city>Beijing</city><postcode>100</postcode><detail>Beijing China</detail></address><address><city>Shanghai</city><postcode>200</postcode><detail>Shanghai China</detail></address></User>\r\n"
-                        + "")); //$NON-NLS-1$
+                "<User><Id>1</Id><name>name1</name><sex>1</sex><email>aa</email><address><city>Beijing</city><postcode>100</postcode><detail>Beijing China</detail></address><address><city>Shanghai</city><postcode>200</postcode><detail>Shanghai China</detail></address></User>")); // $NON-NLS-1$
         try {
             storage.begin();
             storage.update(records);
@@ -448,6 +447,124 @@ public class StoragePrepareTest extends TestCase {
             results.close();
         }
         storage.end();
+    }
+
+    public void testManyToOneMappingOfCompositeKey() throws Exception {
+        DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS2", STORAGE_NAME);
+        Storage storage = new HibernateStorage("Test", StorageType.MASTER);
+        storage.init(dataSource);
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(StoragePrepareTest.class.getResourceAsStream("UserOfAddress.xsd"));
+        storage.prepare(repository, true);
+
+        // test table created
+        String[] tables = { "X_USER", "X_ADDRESS" };
+        String[][] columns = {
+                { "", "X_EMAIL", "X_NAME", "X_ID", "X_SEX", "X_ADDRESS_X_TALEND_ID", "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" },
+                { "", "X_TALEND_ID", "X_CITY", "X_POSTCODE", "X_DETAIL" } };
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+        try {
+            assertDatabaseChange(dataSource, tables, columns, new boolean[] { true, true, true });
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+
+        ComplexTypeMetadata product = repository.getComplexType("User");//$NON-NLS-1$
+
+        // test insert data
+        List<DataRecord> records = new ArrayList<DataRecord>();
+        records.add(factory.read(repository, product,
+                "<User><Id>1</Id><name>name1</name><sex>1</sex><email>aa</email><address><city>Beijing</city><postcode>100</postcode><detail>Beijing China</detail></address></User>")); // $NON-NLS-1$
+        try {
+            storage.begin();
+            storage.update(records);
+            storage.commit();
+        } catch (Exception e) {
+            fail("Faield to insert data");
+        } finally {
+            storage.end();
+        }
+
+        // test query data
+        UserQueryBuilder qb = from(product);
+        qb.getSelect().getPaging().setLimit(10);
+        storage.begin();
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+            for (DataRecord result : results) {
+                assertEquals("1", result.get("Id"));//$NON-NLS-1$ //$NON-NLS-2$
+            }
+
+        } finally {
+            results.close();
+        }
+        storage.end();
+    }
+
+
+    public void testOneAndManyMapping() throws Exception {
+        DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS2", STORAGE_NAME);
+        Storage storage = new HibernateStorage("Test", StorageType.MASTER);
+        storage.init(dataSource);
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(StoragePrepareTest.class.getResourceAsStream("Organization.xsd"));
+        storage.prepare(repository, true);
+
+        // test table created
+        String[] tables = { "CITY", "ORGANIZATION", "ORGANIZATION_X_POST_ADDRESS_X_ADDRESSDETAILTYPE", "X_ADDRESSDETAILTYPE", "X_COUNTRYTYPE " };
+        String[][] columns = { { "", "X_CODE", "X_NAME", "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" },
+                { "", "X_ORG_ID", "X_ORG_ADDRESS_X_TALEND_ID", "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" },
+                { "", "X_ORG_ID", "X_POST_ADDRESS_X_TALEND_ID", "POS", }, 
+                { "", "X_TALEND_ID", "X_STREET", "X_CITY_X_CODE", "X_CITY_X_CODE", "X_COUNTRY_X_TALEND_ID" },
+                { "", "X_TALEND_ID", "X_NAME", "X_CODE" } };
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+        try {
+            assertDatabaseChange(dataSource, tables, columns, new boolean[] { true, true, true, true, true });
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+
+        ComplexTypeMetadata organization = repository.getComplexType("Organization");//$NON-NLS-1$
+
+        // test insert data
+        List<DataRecord> records = new ArrayList<DataRecord>();
+        records.add(factory.read(repository, organization,
+                "<Organization><org_id>1</org_id><post_address><street>changan rd</street><city>[BJ]</city><country><name>cn</name><code></code></country></post_address><org_address><street>waitan rd</street><city>[SH]</city><country><name>fr</name><code>33</code></country></org_address></Organization>")); //$NON-NLS-1$
+        try {
+            storage.begin();
+            storage.update(records);
+            storage.commit();
+        } catch (Exception e) {
+            fail("Faield to insert data");
+        } finally {
+            storage.end();
+        }
+
+        // test query data
+        UserQueryBuilder qb = from(organization);
+        qb.getSelect().getPaging().setLimit(10);
+        storage.begin();
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+            for (DataRecord result : results) {
+                assertEquals("1", result.get("org_id"));//$NON-NLS-1$ //$NON-NLS-2$
+            }
+
+        } finally {
+            results.close();
+        }
+        storage.end();
+
+        try {
+            storage.begin();
+            qb = from(organization);
+            storage.delete(qb.getSelect());
+            storage.commit();
+        } finally {
+            storage.end();
+        }
     }
 
     private void assertDatabaseChange(DataSourceDefinition dataSource, String[] tables, String[][] columns, boolean[] exists)

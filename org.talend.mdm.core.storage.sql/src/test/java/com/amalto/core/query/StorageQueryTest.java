@@ -1072,6 +1072,14 @@ public class StorageQueryTest extends StorageTestCase {
             results.close();
         }
 
+        qb = from(product).where(eq(product.getField("Family"), "2"));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getSize());
+            assertEquals(1, results.getCount());
+        } finally {
+            results.close();
+        }
     }
 
     public void testEqualsDateCondition() throws Exception {
@@ -1122,6 +1130,15 @@ public class StorageQueryTest extends StorageTestCase {
         try {
             assertEquals(5, results.getSize());
             assertEquals(5, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        qb = from(product).where(neq(product.getField("Family"), "2"));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getSize());
+            assertEquals(1, results.getCount());
         } finally {
             results.close();
         }

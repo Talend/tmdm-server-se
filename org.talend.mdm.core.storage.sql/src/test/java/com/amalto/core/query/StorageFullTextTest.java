@@ -1743,7 +1743,6 @@ public class StorageFullTextTest extends StorageTestCase {
     }
 
     public void testFKContainsAndContainsSentenceSearch() {
-        storage.init(getDatasource("H2-Default-CaseSensitive"));
         UserQueryBuilder qb = from(product).where(contains(product.getField("Family"), "345"));
         StorageResults results = storage.fetch(qb.getSelect());
         try {

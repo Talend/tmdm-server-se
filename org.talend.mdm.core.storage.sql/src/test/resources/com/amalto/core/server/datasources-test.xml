@@ -55,7 +55,7 @@
                 <connection-driver-class>org.h2.Driver</connection-driver-class>
                 <connection-url>jdbc:h2:./data/h2_fulltext_master</connection-url>
                 <fulltext-index-directory>indexes/H2_FULLTEXT_MASTER</fulltext-index-directory>
-                <case-sensitive-search>false</case-sensitive-search>
+                <case-sensitive-search>true</case-sensitive-search>
                 <schema-generation>create</schema-generation>
                 <properties>
                     <property name="hibernate.dbcp.maxTotal">300</property>

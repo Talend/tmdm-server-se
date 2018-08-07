@@ -152,7 +152,7 @@ public interface BrowseRecordsService extends RemoteService {
 
     List<ItemBean> getRecords(String concept, List<String> idsList) throws ServiceException;
 
-    Map<String, List<String>> getForeignKeyValues(String concept, String[] ids, String language) throws ServiceException;
+    Map<String, List<String>> getForeignKeyValues(String concept, String ids, String language) throws ServiceException;
 
     boolean isExistId(String concept, String[] ids, String language) throws ServiceException;
 

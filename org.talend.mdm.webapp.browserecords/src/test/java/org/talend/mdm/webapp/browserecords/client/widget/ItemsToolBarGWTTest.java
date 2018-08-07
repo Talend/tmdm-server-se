@@ -395,7 +395,7 @@ public class ItemsToolBarGWTTest extends GWTTestCase {
         }
 
         @Override
-        public void getForeignKeyValues(String concept, String[] ids, String language,
+        public void getForeignKeyValues(String concept, String ids, String language,
                 AsyncCallback<Map<String, List<String>>> callback) {
 
         }

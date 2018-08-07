@@ -155,7 +155,7 @@ public interface BrowseRecordsServiceAsync {
     void createSubItemNodeModel(ViewBean viewBean, String xml, String typePath, String contextPath, String realType,
             boolean isStaging, String language, AsyncCallback<ItemNodeModel> callback);
 
-    void getForeignKeyValues(String concept, String[] ids, String language, AsyncCallback<Map<String, List<String>>> callback);
+    void getForeignKeyValues(String concept, String ids, String language, AsyncCallback<Map<String, List<String>>> callback);
 
     void isExistId(String concept, String[] ids, String language, AsyncCallback<Boolean> callback);
 

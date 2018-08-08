@@ -410,7 +410,6 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
                     annotations = new AnnotationsAttribute(cpPool, AnnotationsAttribute.visibleTag);
                     field.getFieldInfo().addAttribute(annotations);
                 }
-
                 SearchIndexHandler handler = getHandler(referenceField);
                 handler.handle(annotations, cpPool);
             }
@@ -698,7 +697,6 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
 
         @Override
         public void handle(AnnotationsAttribute annotations, ConstPool pool) {
-            //@IndexedEmbedded(depth = 1,includeEmbeddedObjectId=false)
             Annotation fieldAnnotation = new Annotation(IndexedEmbedded.class.getName(), pool);
             fieldAnnotation.addMemberValue("depth", new IntegerMemberValue(pool, 3)); //$NON-NLS-1$
             fieldAnnotation.addMemberValue("includeEmbeddedObjectId", new BooleanMemberValue(true, pool)); //$NON-NLS-1$

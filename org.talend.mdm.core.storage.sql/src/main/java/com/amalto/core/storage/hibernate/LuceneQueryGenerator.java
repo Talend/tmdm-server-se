@@ -475,7 +475,6 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
         for (TypedExpression expression : viewableFields) {
             boolean results = false;
             results = expression.accept(new VisitorAdapter<Boolean>() {
-
                 public Boolean visit(Field field) {
                     FieldMetadata fieldMetadata = ((Field) expression).getFieldMetadata();
                     return fieldMetadata.accept(new DefaultMetadataVisitor<Boolean>() {

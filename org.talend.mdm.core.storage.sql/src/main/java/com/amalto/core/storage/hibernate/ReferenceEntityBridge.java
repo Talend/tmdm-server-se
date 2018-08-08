@@ -31,10 +31,10 @@ import com.amalto.core.storage.Storage;
 /**
  * This Bridge providing bidirectional mapping capability for Reference fields.Likewise, we will splitting a complex
  * type into multiple fields, like Store.Implementations must provide a set method when insert/update reference type
- * index record. 
- * created by hwzhu on Aug 4, 2018
+ * index record. created by hwzhu on Aug 4, 2018
  *
  */
+@SuppressWarnings("nls")
 public class ReferenceEntityBridge implements TwoWayFieldBridge {
 
     private static final Logger LOGGER = Logger.getLogger(ReferenceEntityBridge.class);
@@ -77,20 +77,20 @@ public class ReferenceEntityBridge implements TwoWayFieldBridge {
             evaluateClass(name, dataObject, clazzs, document, luceneOptions);
         }
     }
-    
+
     private static void indexedMemberFields(String name, Object dataObject, Class<?> clazz, Document document,
             LuceneOptions luceneOptions) {
-        
+
         if (clazz.isPrimitive() || clazz.getName().startsWith("java.lang")) {
             luceneOptions.addFieldToDocument(name, dataObject.toString(), document);
             return;
-       }
+        }
         Field[] allFields = clazz.getFields();
         Method[] allMethod = clazz.getDeclaredMethods();
-
         for (Method method : allMethod) {
             String methodName = method.getName();
-            if (!StringUtils.startsWith(methodName, "get")) {
+            if (!StringUtils.startsWith(methodName, "get") || methodName.contains("x_talend_task_id")
+                    || methodName.contains("x_talend_timestamp")) {
                 continue;
             }
             for (Field field : allFields) {
@@ -111,42 +111,35 @@ public class ReferenceEntityBridge implements TwoWayFieldBridge {
                 if (value == null) {
                     break;
                 }
-                
+
                 IndexHandler handler = getHandler(field, value);
-                handler.handle(name, value, field, clazz, document, luceneOptions);
+                handler.handle(name, value, field, document, luceneOptions);
             }
         }
     }
 
     private static IndexHandler getHandler(Field culField, Object curVal) {
-        if (curVal == null 
-                || Storage.METADATA_TIMESTAMP.equals(culField.getName())
+        if (curVal == null || Storage.METADATA_TIMESTAMP.equals(culField.getName())
                 || Storage.METADATA_TASK_ID.equals(culField.getName())) {
             return new EmptyIndexHandler();
         }
         if (Collection.class.isAssignableFrom(culField.getType())) {
-            
             return new CollectionTypeIndexHandler();
         } else if (culField.getType().isArray()) {
-            
             return new ArrayTypeIndexHandler();
-        } else if (!culField.getType().isPrimitive() 
-                && !culField.getType().getName().startsWith("java.lang")
+        } else if (!culField.getType().isPrimitive() && !culField.getType().getName().startsWith("java.lang")
                 && !isDateType(culField)) {
-            
             return new ReferenceTypeIndexHandler();
         } else if (isDateType(culField)) {
-            
             return new DateTypeIndexHandler();
         } else {
             return new SimpleTypeIndexHandler();
         }
     }
-    
-    private static boolean isDateType (Field culField) {
-        if (culField.getType().getName().startsWith("java.util.Date")
-              || (culField.getType().getSuperclass() != null
-              && culField.getType().getSuperclass().getName().startsWith("java.util.Date"))) {
+
+    private static boolean isDateType(Field culField) {
+        if (culField.getType().getName().startsWith("java.util.Date") || (culField.getType().getSuperclass() != null
+                && culField.getType().getSuperclass().getName().startsWith("java.util.Date"))) {
             return true;
         } else {
             return false;
@@ -154,14 +147,12 @@ public class ReferenceEntityBridge implements TwoWayFieldBridge {
     }
 
     private static interface IndexHandler {
-        void handle(String name, Object dataObject, Field field, Class<?> clazz, Document document, LuceneOptions luceneOptions);
+        void handle(String name, Object dataObject, Field field, Document document, LuceneOptions luceneOptions);
     }
 
     private static class ArrayTypeIndexHandler implements IndexHandler {
-
         @Override
-        public void handle(String name, Object value, Field field, Class<?> clazz, Document document,
-                LuceneOptions luceneOptions) {
+        public void handle(String name, Object value, Field field, Document document, LuceneOptions luceneOptions) {
             Object[] objArray = null;
             try {
                 objArray = (Object[]) value;
@@ -179,32 +170,28 @@ public class ReferenceEntityBridge implements TwoWayFieldBridge {
                 }
                 luceneOptions.addFieldToDocument(name + "." + field.getName(), arrayStr, document);
             } else {
-                name += "." + field.getName(); //x_stores.store.name
+                name += "." + field.getName(); // x_stores.store.name
                 for (Object obj : objArray) {
                     evaluateClass(name, obj, sClass, document, luceneOptions);
                 }
             }
         }
     }
-    
-    private static class ReferenceTypeIndexHandler implements IndexHandler {
 
+    private static class ReferenceTypeIndexHandler implements IndexHandler {
         @Override
-        public void handle(String name, Object value, Field field, Class<?> clazz, Document document,
-                LuceneOptions luceneOptions) {
-            evaluateClass(name, value, clazz, document, luceneOptions);
+        public void handle(String name, Object value, Field field, Document document, LuceneOptions luceneOptions) {
+            evaluateClass(name, value, value.getClass(), document, luceneOptions);
         }
     }
 
     private static class CollectionTypeIndexHandler implements IndexHandler {
-
         @Override
-        public void handle(String name, Object value, Field field, Class<?> clazz, Document document,
-                LuceneOptions luceneOptions) {
+        public void handle(String name, Object value, Field field, Document document, LuceneOptions luceneOptions) {
             try {
 
-                Collection<? extends Object> valList = (Collection<?>) value;//field.get(dataObject);
-                name += "." + field.getName(); //x_stores.store.name
+                Collection<? extends Object> valList = (Collection<?>) value;// field.get(dataObject);
+                name += "." + field.getName(); // x_stores.store.name
                 for (Iterator<?> it = valList.iterator(); it.hasNext();) {
                     Object itemObj = it.next();
                     evaluateClass(name, itemObj, itemObj.getClass(), document, luceneOptions);
@@ -217,10 +204,8 @@ public class ReferenceEntityBridge implements TwoWayFieldBridge {
     }
 
     private static class DateTypeIndexHandler implements IndexHandler {
-        
         @Override
-        public void handle(String name, Object value, Field field, Class<?> clazz, Document document,
-                LuceneOptions luceneOptions) {
+        public void handle(String name, Object value, Field field, Document document, LuceneOptions luceneOptions) {
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("insert a new Date index record with key-value pair [ " + name + "." + field.getName() + ":"
                         + value.toString());
@@ -233,17 +218,16 @@ public class ReferenceEntityBridge implements TwoWayFieldBridge {
                 luceneOptions.addFieldToDocument(indexKey, cal.get(Calendar.YEAR) + "", document);
                 luceneOptions.addFieldToDocument(indexKey, cal.get(Calendar.MONTH) + 1 + "", document);
                 luceneOptions.addFieldToDocument(indexKey, cal.get(Calendar.DAY_OF_MONTH) + "", document);
-                luceneOptions.addFieldToDocument(indexKey, cal.get(Calendar.HOUR_OF_DAY) + "." + cal.get(Calendar.MINUTE), document);
+                luceneOptions.addFieldToDocument(indexKey, cal.get(Calendar.HOUR_OF_DAY) + "." + cal.get(Calendar.MINUTE),
+                        document);
                 luceneOptions.addFieldToDocument(indexKey, cal.get(Calendar.SECOND) + "", document);
             }
         }
     }
-    
-    private static class SimpleTypeIndexHandler implements IndexHandler {
 
+    private static class SimpleTypeIndexHandler implements IndexHandler {
         @Override
-        public void handle(String name, Object value, Field field, Class<?> clazz, Document document,
-                LuceneOptions luceneOptions) {
+        public void handle(String name, Object value, Field field, Document document, LuceneOptions luceneOptions) {
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("insert a new index record with key-value pair [ " + name + "." + field.getName() + ":"
                         + value.toString());
@@ -253,14 +237,12 @@ public class ReferenceEntityBridge implements TwoWayFieldBridge {
     }
 
     private static class EmptyIndexHandler implements IndexHandler {
-
         @Override
-        public void handle(String name, Object dataObject, Field field, Class<?> clazz, Document document,
-                LuceneOptions luceneOptions) {
+        public void handle(String name, Object dataObject, Field field, Document document, LuceneOptions luceneOptions) {
             LOGGER.info("nothing to do for field " + field.getName());
         }
     }
-    
+
     public static final Date convertStringToDate(String aMask, String strDate) {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("converting '" + strDate + "' to date with mask '" + aMask + "'");//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$

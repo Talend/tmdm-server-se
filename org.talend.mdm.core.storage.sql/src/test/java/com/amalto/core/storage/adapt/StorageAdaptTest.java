@@ -379,7 +379,6 @@ public class StorageAdaptTest extends TestCase {
         } catch (Exception e) {
             assertNull(e);
         }
-               
         MetadataRepository repository2 = new MetadataRepository();
         repository2.load(StorageAdaptTest.class.getResourceAsStream("schema5_2.xsd"));
         storage.adapt(repository2, true);

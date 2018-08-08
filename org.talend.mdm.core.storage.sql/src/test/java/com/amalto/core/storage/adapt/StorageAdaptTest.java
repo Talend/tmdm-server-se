@@ -2052,7 +2052,7 @@ public class StorageAdaptTest extends TestCase {
         }
 
         String[] aaTablesUpdated = { "X_AA" };
-        String[] aaColumnsUpdated = { "", "X_TALEND_ID", "X_SUBELEMENT", "X_AA_X_TALEND_ID", "POS" };
+        String[] aaColumnsUpdated = { "", "X_TALEND_ID", "X_SUBELEMENT" };
         int[] aaIsNullableUpdated = { 0, 0, 1 };
         try {
             assertColumnNullAble(dataSource, aaTablesUpdated, aaColumnsUpdated, aaIsNullableUpdated);

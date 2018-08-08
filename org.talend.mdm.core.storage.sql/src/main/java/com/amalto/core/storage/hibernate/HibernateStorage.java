@@ -1439,9 +1439,10 @@ public class HibernateStorage implements Storage {
                                             // No need to check for mandatory collections of references since constraint
                                             // cannot
                                             // be expressed in db schema
-                                            deleteDataForSubType(reference.getReferencedType(), new HashMap<String, List>(), typesToDelete, session);
+                                            deleteDataForSubType(reference.getReferencedType(), new HashMap<String, List>(),
+                                                    session);
                                             String formattedTableName = StringUtils.EMPTY;
-                                            if (!dataSource.getDatabaseName().equals("TMDM_DB_SYSTEM")
+                                            if (!dataSource.getDatabaseName().equals("TMDM_DB_SYSTEM") //$NON-NLS-1$
                                                     && !userMetadataRepository.getUserComplexTypes()
                                                             .contains(reference.getReferencedField().getContainingType())) {
                                                 formattedTableName = tableResolver.get(typeToDelete);
@@ -1449,8 +1450,7 @@ public class HibernateStorage implements Storage {
 
                                                 formattedTableName = tableResolver.getCollectionTable(reference);
                                             }
-                                            //String formattedTableName = tableResolver.get(typeToDelete);
-                                            session.createSQLQuery(DELETE_FROM_STR + formattedTableName).executeUpdate(); //$NON-NLS-1$
+                                            session.createSQLQuery(DELETE_FROM_STR + formattedTableName).executeUpdate();
                                         } else {
                                             String referenceTableName = tableResolver.get(reference.getContainingType());
                                             if (reference.getReferencedField() instanceof CompoundFieldMetadata) {
@@ -1539,7 +1539,7 @@ public class HibernateStorage implements Storage {
     private void deleteData(ComplexTypeMetadata typeToDelete, Map<String, List> condition, TypeMapping mapping, List<ComplexTypeMetadata> typesToDelete) {
         try {
             Session session = this.getCurrentSession();
-            deleteDataForSubType(typeToDelete, new HashMap<String, List>(), typesToDelete, session);
+            deleteDataForSubType(typeToDelete, new HashMap<String, List>(), session);
             // Delete the type instances
             String className = storageClassLoader.getClassFromType(typeToDelete).getName();
 
@@ -1565,13 +1565,12 @@ public class HibernateStorage implements Storage {
         }
     }
 
-    protected void deleteDataForSubType(ComplexTypeMetadata typeToDelete, Map<String, List> condition,
-            List<ComplexTypeMetadata> typesToDelete, Session session) {
+    protected void deleteDataForSubType(ComplexTypeMetadata typeToDelete, Map<String, List> condition, Session session) {
         for (FieldMetadata field : typeToDelete.getFields()) {
             if (field.isMany()) {
                 String formattedTableName = StringUtils.EMPTY;
-                if (field instanceof ReferenceFieldMetadata
-                        && this.userMetadataRepository.getUserComplexTypes().contains(((ReferenceFieldMetadata) field).getReferencedType())) {
+                if (field instanceof ReferenceFieldMetadata && this.userMetadataRepository.getUserComplexTypes()
+                        .contains(((ReferenceFieldMetadata) field).getReferencedType())) {
                     formattedTableName = tableResolver.getCollectionTable(field);
                 } else {
                     if (field instanceof ReferenceFieldMetadata) {
@@ -1580,7 +1579,7 @@ public class HibernateStorage implements Storage {
                         formattedTableName = tableResolver.getCollectionTable(field);
                     }
                 }
-                
+
                 String deleteFormattedTableSQL = DELETE_FROM_STR + formattedTableName; // $NON-NLS-1$
                 deleteDataWithConditionForRepeatedField(session, condition, deleteFormattedTableSQL);
             }

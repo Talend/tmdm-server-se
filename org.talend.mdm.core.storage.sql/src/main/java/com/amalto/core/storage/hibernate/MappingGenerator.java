@@ -309,24 +309,6 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
         } else {
             boolean enforceDataBaseIntegrity = generateConstrains
                     && (!referenceField.allowFKIntegrityOverride() && referenceField.isFKIntegrity());
-
-            /*MetadataRepository internalRepository = typeMappingRepository.getInternalRepository();
-            InboundReferences inboundReferences = new InboundReferences(referenceField.getReferencedType());
-            Set<ReferenceFieldMetadata> references = internalRepository.accept(inboundReferences);
-            boolean isMany = false;
-            boolean isOne = false;
-            for (ReferenceFieldMetadata reference : references) {
-                if (reference.isMany()) {
-                    isMany = true;
-                    continue;
-                } else {
-                    isOne = true;
-                    continue;
-                }
-            }
-
-            boolean isSameExistedForOneAndMany = isMany && isOne;
-*/
             if (!referenceField.isMany()) {
                 return newManyToOneElement(referenceField, enforceDataBaseIntegrity);
             } else if (!dataSource.getDatabaseName().equals("TMDM_DB_SYSTEM")
@@ -425,7 +407,6 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
                     // many to many element
                     Element manyToMany = newManyToManyElement(enforceDataBaseIntegrity, referenceField);
                     propertyElement.appendChild(manyToMany);
-                    
                 }
                 return propertyElement;
             }

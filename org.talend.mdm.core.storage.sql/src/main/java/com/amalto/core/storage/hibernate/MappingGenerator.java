@@ -14,7 +14,6 @@ package com.amalto.core.storage.hibernate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.Stack;
 
 import org.apache.commons.lang.NotImplementedException;
@@ -26,7 +25,6 @@ import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
 import org.talend.mdm.commmon.metadata.DefaultMetadataVisitor;
 import org.talend.mdm.commmon.metadata.EnumerationFieldMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
-import org.talend.mdm.commmon.metadata.InboundReferences;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
 import org.talend.mdm.commmon.metadata.SimpleTypeFieldMetadata;
@@ -66,8 +64,6 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
 
     private final Collection<ComplexTypeMetadata> entityComplexType;
 
-    private InternalRepository typeMappingRepository;
-
     private boolean compositeId;
 
     private Element parentElement;
@@ -81,22 +77,20 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
     private boolean generateConstrains;
 
     public MappingGenerator(Document document, TableResolver resolver, RDBMSDataSource dataSource,
-            Collection<ComplexTypeMetadata> entityComplexType, InternalRepository typeMappingRepository) {
-        this(document, resolver, dataSource, entityComplexType, typeMappingRepository, true);
+            Collection<ComplexTypeMetadata> entityComplexType) {
+        this(document, resolver, dataSource, entityComplexType, true);
     }
 
     public MappingGenerator(Document document,
                             TableResolver resolver,
                             RDBMSDataSource dataSource,
                             Collection<ComplexTypeMetadata> entityComplexType,
-                            InternalRepository typeMappingRepository,
                             boolean generateConstrains) {
         this.document = document;
         this.resolver = resolver;
         this.dataSource = dataSource;
         this.generateConstrains = generateConstrains;
         this.entityComplexType = entityComplexType;
-        this.typeMappingRepository = typeMappingRepository;
     }
 
     @Override
@@ -316,7 +310,7 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
             boolean enforceDataBaseIntegrity = generateConstrains
                     && (!referenceField.allowFKIntegrityOverride() && referenceField.isFKIntegrity());
 
-            MetadataRepository internalRepository = typeMappingRepository.getInternalRepository();
+            /*MetadataRepository internalRepository = typeMappingRepository.getInternalRepository();
             InboundReferences inboundReferences = new InboundReferences(referenceField.getReferencedType());
             Set<ReferenceFieldMetadata> references = internalRepository.accept(inboundReferences);
             boolean isMany = false;
@@ -332,12 +326,11 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
             }
 
             boolean isSameExistedForOneAndMany = isMany && isOne;
-
+*/
             if (!referenceField.isMany()) {
                 return newManyToOneElement(referenceField, enforceDataBaseIntegrity);
             } else if (!dataSource.getDatabaseName().equals("TMDM_DB_SYSTEM")
-                    && !this.entityComplexType.contains(referenceField.getReferencedField().getContainingType())
-                    && !isSameExistedForOneAndMany) {
+                    && !this.entityComplexType.contains(referenceField.getReferencedField().getContainingType())) {
                 Element setElement = document.createElement("list"); //$NON-NLS-1$
                 Attr name = document.createAttribute("name"); //$NON-NLS-1$
                 name.setValue(referenceField.getName());

@@ -54,8 +54,6 @@ public abstract class StorageClassLoader extends ClassLoader {
 
     protected Collection<ComplexTypeMetadata> entityComplexType;
 
-    protected InternalRepository typeMappingRepository;
-
     final String storageName;
 
     final StorageType type;
@@ -292,9 +290,5 @@ public abstract class StorageClassLoader extends ClassLoader {
 
     public void setEntityComplexType(Collection<ComplexTypeMetadata> entityComplexType) {
         this.entityComplexType = entityComplexType;
-    }
-
-    public void setTypeMappingRepository(InternalRepository typeMappingRepository) {
-        this.typeMappingRepository = typeMappingRepository;
     }
 }

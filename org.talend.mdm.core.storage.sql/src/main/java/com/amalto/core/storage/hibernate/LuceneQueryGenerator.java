@@ -322,9 +322,7 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
         final Map<String, Boolean> fieldsMap = new HashMap<String, Boolean>();
         for (final ComplexTypeMetadata type : types) {
             type.accept(new DefaultMetadataVisitor<Void>() {
-
-                private String prefix = "";
-
+                private String prefix = StringUtils.EMPTY;
                 @Override
                 public Void visit(ContainedComplexTypeMetadata containedType) {
                     super.visit(containedType);
@@ -342,7 +340,7 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
                         prefix = referenceField.getPath() + ".";
                     }
                     referencedType.accept(this);
-                    prefix = "";
+                    prefix = StringUtils.EMPTY;
                     return null;
                 }
 

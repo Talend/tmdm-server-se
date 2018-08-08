@@ -98,7 +98,6 @@ public class ReferenceEntityBridge implements TwoWayFieldBridge {
                 if (!StringUtils.equals(methodName, "get" + field.getName())) {
                     continue;
                 }
-
                 Object value = null;
                 try {
                     if (LOGGER.isDebugEnabled()) {
@@ -111,7 +110,6 @@ public class ReferenceEntityBridge implements TwoWayFieldBridge {
                 if (value == null) {
                     break;
                 }
-
                 IndexHandler handler = getHandler(field, value);
                 handler.handle(name, value, field, document, luceneOptions);
             }
@@ -189,7 +187,6 @@ public class ReferenceEntityBridge implements TwoWayFieldBridge {
         @Override
         public void handle(String name, Object value, Field field, Document document, LuceneOptions luceneOptions) {
             try {
-
                 Collection<? extends Object> valList = (Collection<?>) value;// field.get(dataObject);
                 name += "." + field.getName(); // x_stores.store.name
                 for (Iterator<?> it = valList.iterator(); it.hasNext();) {

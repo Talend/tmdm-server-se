@@ -1442,12 +1442,10 @@ public class HibernateStorage implements Storage {
                                             deleteDataForSubType(reference.getReferencedType(), new HashMap<String, List>(),
                                                     session);
                                             String formattedTableName = StringUtils.EMPTY;
-                                            if (!dataSource.getDatabaseName().equals("TMDM_DB_SYSTEM") //$NON-NLS-1$
-                                                    && !userMetadataRepository.getUserComplexTypes()
-                                                            .contains(reference.getReferencedField().getContainingType())) {
+                                            if (storageType != StorageType.SYSTEM && !userMetadataRepository.getUserComplexTypes()
+                                                    .contains(reference.getReferencedField().getContainingType())) {
                                                 formattedTableName = tableResolver.get(typeToDelete);
                                             } else {
-
                                                 formattedTableName = tableResolver.getCollectionTable(reference);
                                             }
                                             session.createSQLQuery(DELETE_FROM_STR + formattedTableName).executeUpdate();

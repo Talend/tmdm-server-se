@@ -38,6 +38,7 @@ import org.w3c.dom.Element;
 import com.amalto.core.metadata.LongString;
 import com.amalto.core.storage.HibernateMetadataUtils;
 import com.amalto.core.storage.HibernateStorageUtils;
+import com.amalto.core.storage.StorageType;
 import com.amalto.core.storage.datasource.RDBMSDataSource;
 
 // TODO Refactor (+ NON-NLS)
@@ -76,21 +77,25 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
 
     private boolean generateConstrains;
 
+    final StorageType type;
+
     public MappingGenerator(Document document, TableResolver resolver, RDBMSDataSource dataSource,
-            Collection<ComplexTypeMetadata> entityComplexType) {
-        this(document, resolver, dataSource, entityComplexType, true);
+            Collection<ComplexTypeMetadata> entityComplexType, StorageType type) {
+        this(document, resolver, dataSource, entityComplexType, type, true);
     }
 
     public MappingGenerator(Document document,
                             TableResolver resolver,
                             RDBMSDataSource dataSource,
                             Collection<ComplexTypeMetadata> entityComplexType,
+                            StorageType type,
                             boolean generateConstrains) {
         this.document = document;
         this.resolver = resolver;
         this.dataSource = dataSource;
         this.generateConstrains = generateConstrains;
         this.entityComplexType = entityComplexType;
+        this.type = type;
     }
 
     @Override
@@ -311,7 +316,7 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
                     && (!referenceField.allowFKIntegrityOverride() && referenceField.isFKIntegrity());
             if (!referenceField.isMany()) {
                 return newManyToOneElement(referenceField, enforceDataBaseIntegrity);
-            } else if (!dataSource.getDatabaseName().equals("TMDM_DB_SYSTEM")
+            } else if (type != StorageType.SYSTEM
                     && !this.entityComplexType.contains(referenceField.getReferencedField().getContainingType())) {
                 Element setElement = document.createElement("list"); //$NON-NLS-1$
                 Attr name = document.createAttribute("name"); //$NON-NLS-1$

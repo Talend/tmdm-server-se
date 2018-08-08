@@ -302,7 +302,7 @@ public class JournalDBService {
         model.setOperationDate(sdf.format(new Date(Long.parseLong(timeInMillis))));
         model.setSource(source);
         model.setUserName(checkNull(Util.getFirstTextNode(doc, "result/Update/UserName"))); //$NON-NLS-1$
-        model.setIds(Util.joinStrings(new String[] { source, timeInMillis }, ".")); //$NON-NLS-1$
+        model.setIds(Util.getFirstTextNode(doc, "result/Update/ID")); //$NON-NLS-1$
 
         String[] pathArray = Util.getTextNodes(doc, "result/Update/Item/path"); //$NON-NLS-1$
 

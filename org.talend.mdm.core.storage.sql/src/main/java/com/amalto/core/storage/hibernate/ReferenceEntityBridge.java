@@ -201,16 +201,13 @@ public class ReferenceEntityBridge implements TwoWayFieldBridge {
         @Override
         public void handle(String name, Object value, Field field, Class<?> clazz, Document document,
                 LuceneOptions luceneOptions) {
-            String genericStr = field.toGenericString();
-            String type = genericStr.split("\\<")[1].split("\\>")[0];
             try {
-                Class<?> subClazz = Class.forName(type);
 
-                Collection<?> valList = (Collection<?>) value;//field.get(dataObject);
+                Collection<? extends Object> valList = (Collection<?>) value;//field.get(dataObject);
                 name += "." + field.getName(); //x_stores.store.name
                 for (Iterator<?> it = valList.iterator(); it.hasNext();) {
                     Object itemObj = it.next();
-                    evaluateClass(name, itemObj, subClazz, document, luceneOptions);
+                    evaluateClass(name, itemObj, itemObj.getClass(), document, luceneOptions);
                 }
             } catch (Exception e) {
                 throw new UnsupportedOperationException(

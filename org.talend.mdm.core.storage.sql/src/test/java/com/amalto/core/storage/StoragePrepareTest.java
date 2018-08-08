@@ -351,7 +351,7 @@ public class StoragePrepareTest extends TestCase {
         repository.load(StoragePrepareTest.class.getResourceAsStream("Attribute.xsd"));
         storage.prepare(repository, true);
 
-        // test table created
+        // test table had been created
         String[] tables = { "PRODUCT", "X_ATTRIBUTESLIST_T", "X_ATTRIBUTEITEM_T" };
         String[][] columns = {
                 { "", "X_PRODUCTID", "X_NAME", "X_CATEGORYCODE", "X_ATTRIBUTESLIST_X_TALEND_ID", "X_TALEND_TIMESTAMP",
@@ -366,7 +366,7 @@ public class StoragePrepareTest extends TestCase {
 
         ComplexTypeMetadata product = repository.getComplexType("product");//$NON-NLS-1$
 
-        // test insert data
+        // test data had been added
         List<DataRecord> records = new ArrayList<DataRecord>();
         records.add(factory.read(repository, product,
                 "<product><productId>id1</productId><name>name1</name><categoryCode>234</categoryCode><attributesList><attrItem><name>123</name><value>1234</value></attrItem><attrItem><name>123</name><value>1234</value></attrItem></attributesList></product>")); //$NON-NLS-1$
@@ -405,7 +405,7 @@ public class StoragePrepareTest extends TestCase {
         repository.load(StoragePrepareTest.class.getResourceAsStream("User.xsd"));
         storage.prepare(repository, true);
 
-        // test table created
+        // test table had been created
         String[] tables = { "X_USER", "X_ADDRESS" };
         String[][] columns = { { "", "X_EMAIL", "X_NAME", "X_ID", "X_SEX", "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" }, { "",
                 "X_TALEND_ID", "X_CITY", "X_POSTCODE", "X_DETAIL", "X_USER_X_EMAIL", "X_USER_X_NAME", "X_USER_X_ID", "POS" } };
@@ -418,7 +418,7 @@ public class StoragePrepareTest extends TestCase {
 
         ComplexTypeMetadata product = repository.getComplexType("User");//$NON-NLS-1$
 
-        // test insert data
+        // test data had been added
         List<DataRecord> records = new ArrayList<DataRecord>();
         records.add(factory.read(repository, product,
                 "<User><Id>1</Id><name>name1</name><sex>1</sex><email>aa</email><address><city>Beijing</city><postcode>100</postcode><detail>Beijing China</detail></address><address><city>Shanghai</city><postcode>200</postcode><detail>Shanghai China</detail></address></User>")); // $NON-NLS-1$
@@ -457,7 +457,7 @@ public class StoragePrepareTest extends TestCase {
         repository.load(StoragePrepareTest.class.getResourceAsStream("UserOfAddress.xsd"));
         storage.prepare(repository, true);
 
-        // test table created
+        // test table had been created
         String[] tables = { "X_USER", "X_ADDRESS" };
         String[][] columns = {
                 { "", "X_EMAIL", "X_NAME", "X_ID", "X_SEX", "X_ADDRESS_X_TALEND_ID", "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" },
@@ -471,7 +471,7 @@ public class StoragePrepareTest extends TestCase {
 
         ComplexTypeMetadata product = repository.getComplexType("User");//$NON-NLS-1$
 
-        // test insert data
+        // test data had been added
         List<DataRecord> records = new ArrayList<DataRecord>();
         records.add(factory.read(repository, product,
                 "<User><Id>1</Id><name>name1</name><sex>1</sex><email>aa</email><address><city>Beijing</city><postcode>100</postcode><detail>Beijing China</detail></address></User>")); // $NON-NLS-1$

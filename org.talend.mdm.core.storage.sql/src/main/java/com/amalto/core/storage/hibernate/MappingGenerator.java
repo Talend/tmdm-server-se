@@ -316,16 +316,15 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
                     && (!referenceField.allowFKIntegrityOverride() && referenceField.isFKIntegrity());
             if (!referenceField.isMany()) {
                 return newManyToOneElement(referenceField, enforceDataBaseIntegrity);
-            } else if (type != StorageType.SYSTEM
-                    && !this.entityComplexType.contains(referenceField.getReferencedField().getContainingType())) {
-                Element setElement = document.createElement("list"); //$NON-NLS-1$
+            } else if (HibernateStorage.needSetOneToMany(type, entityComplexType, referenceField)) {
+                Element listElement = document.createElement("list"); //$NON-NLS-1$
                 Attr name = document.createAttribute("name"); //$NON-NLS-1$
                 name.setValue(referenceField.getName());
-                setElement.getAttributes().setNamedItem(name);
+                listElement.getAttributes().setNamedItem(name);
 
                 Attr cascade = document.createAttribute("cascade"); //$NON-NLS-1$
                 cascade.setValue("all"); //$NON-NLS-1$
-                setElement.getAttributes().setNamedItem(cascade);
+                listElement.getAttributes().setNamedItem(cascade);
 
                 Element keyElement = document.createElement("key"); //$NON-NLS-1$
 
@@ -342,7 +341,7 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
                         keyElement.appendChild(columnElement);
                     }
                 } else {
-                    Element columnElement = document.createElement("column");
+                    Element columnElement = document.createElement("column"); //$NON-NLS-1$
                     Attr nameAttr = document.createAttribute("name"); //$NON-NLS-1$
                     nameAttr.setValue(resolver.get(referenceField.getReferencedField(),
                             referenceField.getReferencedField().getContainingType().getName()));
@@ -350,21 +349,21 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
                     keyElement.appendChild(columnElement);
                 }
 
-                setElement.appendChild(keyElement);
+                listElement.appendChild(keyElement);
 
                 Element index = document.createElement("index"); //$NON-NLS-1$
                 Attr indexColumn = document.createAttribute("column"); //$NON-NLS-1$
                 indexColumn.setValue("pos"); //$NON-NLS-1$
                 index.getAttributes().setNamedItem(indexColumn);
-                setElement.appendChild(index);
+                listElement.appendChild(index);
 
                 Element oneToManyElement = document.createElement("one-to-many"); //$NON-NLS-1$
                 Attr classAttr = document.createAttribute("class"); //$NON-NLS-1$
                 classAttr.setValue(ClassCreator.getClassName(referenceField.getReferencedType().getName()));
                 oneToManyElement.getAttributes().setNamedItem(classAttr);
-                setElement.appendChild(oneToManyElement);
+                listElement.appendChild(oneToManyElement);
 
-                return setElement;
+                return listElement;
             } else {
                 /*
                 <list name="bars" table="foo_bar">

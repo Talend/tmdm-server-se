@@ -177,6 +177,14 @@ public class HibernateStorage implements Storage {
 
     private static final String DELETE_FROM_STR = "delete from ";
 
+    private static final String FROM_STR = " from "; //$NON-NLS-1$
+
+    private static final String SELECT_STR = "select "; //$NON-NLS-1$
+
+    private static final String SET_STR = " SET "; //$NON-NLS-1$
+
+    private static final String UPDATE_STR = "UPDATE "; //$NON-NLS-1$
+
     private static final Logger LOGGER = Logger.getLogger(HibernateStorage.class);
 
     private static final Optimizer[] OPTIMIZERS = new Optimizer[] { new RangeOptimizer(), // Transforms (value > n AND
@@ -1439,11 +1447,11 @@ public class HibernateStorage implements Storage {
                                             // No need to check for mandatory collections of references since constraint
                                             // cannot
                                             // be expressed in db schema
-                                            deleteDataForSubType(reference.getReferencedType(), new HashMap<String, List>(),
+                                            deleteSubMultipleFieldData(reference.getReferencedType(), new HashMap<String, List>(),
                                                     session);
                                             String formattedTableName = StringUtils.EMPTY;
-                                            if (storageType != StorageType.SYSTEM && !userMetadataRepository.getUserComplexTypes()
-                                                    .contains(reference.getReferencedField().getContainingType())) {
+                                            if (needSetOneToMany(storageType, userMetadataRepository.getUserComplexTypes(),
+                                                    reference)) {
                                                 formattedTableName = tableResolver.get(typeToDelete);
                                             } else {
                                                 formattedTableName = tableResolver.getCollectionTable(reference);
@@ -1456,8 +1464,9 @@ public class HibernateStorage implements Storage {
                                                         .getFields();
                                                 for (FieldMetadata field : fields) {
                                                     List list = session.createSQLQuery(
-                                                            "select " + tableResolver.get(field, reference.getName()) + " from " //$NON-NLS-1$ //$NON-NLS-2$
-                                                                    + referenceTableName).list();
+                                                            SELECT_STR + tableResolver.get(field, reference.getName()) + FROM_STR
+                                                                    + referenceTableName)
+                                                            .list();
                                                     if (list == null || list.isEmpty()) {
                                                         continue;
                                                     } else {
@@ -1466,20 +1475,20 @@ public class HibernateStorage implements Storage {
                                                     }
                                                 }
                                             } else {
-                                                List list = session.createSQLQuery("select " //$NON-NLS-1$
+                                                List list = session.createSQLQuery(SELECT_STR
                                                         + tableResolver.get(reference.getReferencedField(), reference.getName())
-                                                        + " from " + referenceTableName).list(); //$NON-NLS-1$
+                                                        + FROM_STR + referenceTableName).list();
                                                 if (list == null || list.isEmpty()) {
                                                     continue;
                                                 } else {
                                                     fieldsCondition.put(tableResolver.get(reference.getReferencedField()), list);
                                                     if (!reference.isMandatory()) {
-                                                        // update the reference field to null
-                                                        String updatToNullSql = "UPDATE "
-                                                                + referenceTableName + " SET " + tableResolver
+                                                        // set reference field to null
+                                                        String setToNullHql = UPDATE_STR
+                                                                + referenceTableName + SET_STR + tableResolver
                                                                         .get(reference.getReferencedField(), reference.getName())
                                                                 + " = NULL";
-                                                        session.createSQLQuery(updatToNullSql).executeUpdate();
+                                                        session.createSQLQuery(setToNullHql).executeUpdate();
                                                     }
                                                 }
                                             }
@@ -1489,10 +1498,10 @@ public class HibernateStorage implements Storage {
                                 }
                             }
                         }
-                        deleteData(mapping.getDatabase(), new HashMap<String, List>(), mapping, typesToDelete);
+                        deleteData(mapping.getDatabase(), new HashMap<String, List>(), mapping);
                         for (Map.Entry<ComplexTypeMetadata, Map<String, List>> entry : recordsToDeleteMap.entrySet()) {
                             // Empty values in type isMany=true reference
-                            deleteData(entry.getKey(), entry.getValue(), mapping, typesToDelete);
+                            deleteData(entry.getKey(), entry.getValue(), mapping);
                         }
                     } finally {
                         session.setFlushMode(previousFlushMode);
@@ -1534,14 +1543,14 @@ public class HibernateStorage implements Storage {
     }
 
     @SuppressWarnings("rawtypes")
-    private void deleteData(ComplexTypeMetadata typeToDelete, Map<String, List> condition, TypeMapping mapping, List<ComplexTypeMetadata> typesToDelete) {
+    private void deleteData(ComplexTypeMetadata typeToDelete, Map<String, List> condition, TypeMapping mapping) {
         try {
             Session session = this.getCurrentSession();
-            deleteDataForSubType(typeToDelete, new HashMap<String, List>(), session);
+            deleteSubMultipleFieldData(typeToDelete, new HashMap<String, List>(), session);
             // Delete the type instances
             String className = storageClassLoader.getClassFromType(typeToDelete).getName();
 
-            String hql = DELETE_FROM_STR + className; //$NON-NLS-1$
+            String hql = DELETE_FROM_STR + className;
             deleteDataWithCondition(session, condition, hql);
 
             // Clean up full text indexes
@@ -1563,7 +1572,8 @@ public class HibernateStorage implements Storage {
         }
     }
 
-    protected void deleteDataForSubType(ComplexTypeMetadata typeToDelete, Map<String, List> condition, Session session) {
+    @SuppressWarnings("rawtypes")
+    protected void deleteSubMultipleFieldData(ComplexTypeMetadata typeToDelete, Map<String, List> condition, Session session) {
         for (FieldMetadata field : typeToDelete.getFields()) {
             if (field.isMany()) {
                 String formattedTableName = StringUtils.EMPTY;
@@ -1578,7 +1588,7 @@ public class HibernateStorage implements Storage {
                     }
                 }
 
-                String deleteFormattedTableSQL = DELETE_FROM_STR + formattedTableName; // $NON-NLS-1$
+                String deleteFormattedTableSQL = DELETE_FROM_STR + formattedTableName;
                 deleteDataWithConditionForRepeatedField(session, condition, deleteFormattedTableSQL);
             }
         }
@@ -1836,6 +1846,11 @@ public class HibernateStorage implements Storage {
         com.amalto.core.storage.transaction.Transaction currentTransaction = transactionManager.currentTransaction();
         HibernateStorageTransaction storageTransaction = (HibernateStorageTransaction) currentTransaction.include(this);
         storageTransaction.releaseLock();
+    }
+
+    public static boolean needSetOneToMany(StorageType type, Collection<ComplexTypeMetadata> entityComplexType,
+            ReferenceFieldMetadata referenceField) {
+        return type != StorageType.SYSTEM && !entityComplexType.contains(referenceField.getReferencedField().getContainingType());
     }
 
     @Override

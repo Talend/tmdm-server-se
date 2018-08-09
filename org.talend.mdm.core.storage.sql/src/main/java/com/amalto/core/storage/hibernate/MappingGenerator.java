@@ -317,7 +317,7 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
             if (!referenceField.isMany()) {
                 return newManyToOneElement(referenceField, enforceDataBaseIntegrity);
             } else if (HibernateStorage.useOneToMany(type, entityComplexTypes, referenceField)) {
-                return newListOfOneToMany(referenceField);
+                return newOneToManyElement(referenceField);
             } else {
                 /*
                 <list name="bars" table="foo_bar">
@@ -371,7 +371,21 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
         }
     }
 
-    public Element newListOfOneToMany(ReferenceFieldMetadata referenceField) {
+    /**
+     * <pre>
+     *  &lt;list cascade="lock, save-update, delete" embed-xml="true" fetch="select" inverse="true" lazy="extra" mutable="true" name="x_attritem" optimistic-lock="true" table="X_attributesList_T_x_attritem_X_attributeItem_T"&gt;
+     *       &lt;key on-delete="noaction"&gt;
+     *           &lt;column name="x_attributeitem_t_x_talend_id" /&gt;
+     *       &lt;/key&gt;
+     *       &lt;index column="pos" /&gt;
+     *       &lt;one-to-many class="org.talend.mdm.storage.hibernate.X_attributeItem_T" embed-xml="true" not-found="exception" /&gt;
+     *   &lt;/list&gt;
+     * </pre>
+     *
+     * @param referenceField
+     * @return
+     */
+    private Element newOneToManyElement(ReferenceFieldMetadata referenceField) {
         Element listElement = document.createElement("list"); //$NON-NLS-1$
         Attr name = document.createAttribute("name"); //$NON-NLS-1$
         name.setValue(referenceField.getName());

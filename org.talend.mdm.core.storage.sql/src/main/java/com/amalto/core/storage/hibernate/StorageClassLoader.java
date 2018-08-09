@@ -52,7 +52,7 @@ public abstract class StorageClassLoader extends ClassLoader {
 
     final Map<String, Class<? extends Wrapper>> registeredClasses = new TreeMap<String, Class<? extends Wrapper>>();
 
-    protected Collection<ComplexTypeMetadata> entityComplexType;
+    protected Collection<ComplexTypeMetadata> entityComplexTypes;
 
     final String storageName;
 
@@ -288,7 +288,8 @@ public abstract class StorageClassLoader extends ClassLoader {
         }
     }
 
-    public void setEntityComplexType(Collection<ComplexTypeMetadata> entityComplexType) {
-        this.entityComplexType = entityComplexType;
+    public void setEntityComplexTypes(Collection<ComplexTypeMetadata> entityComplexTypes) {
+        this.entityComplexTypes = entityComplexTypes;
     }
+
 }

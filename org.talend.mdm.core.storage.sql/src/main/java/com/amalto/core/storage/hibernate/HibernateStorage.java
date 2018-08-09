@@ -440,7 +440,7 @@ public class HibernateStorage implements Storage {
             storageClassLoader = constructor.newInstance(contextClassLoader, storageName, storageType);
             storageClassLoader.setDataSourceConfiguration(dataSource);
             storageClassLoader.generateHibernateConfig(); // Checks if configuration can be generated.
-            storageClassLoader.setEntityComplexType(repository.getUserComplexTypes());
+            storageClassLoader.setEntityComplexTypes(repository.getUserComplexTypes());
         } catch (Exception e) {
             throw new RuntimeException("Could not create storage class loader", e); //$NON-NLS-1$
         }
@@ -1450,7 +1450,7 @@ public class HibernateStorage implements Storage {
                                             deleteSubMultipleFieldData(reference.getReferencedType(), new HashMap<String, List>(),
                                                     session);
                                             String formattedTableName = StringUtils.EMPTY;
-                                            if (needSetOneToMany(storageType, userMetadataRepository.getUserComplexTypes(),
+                                            if (useOneToMany(storageType, userMetadataRepository.getUserComplexTypes(),
                                                     reference)) {
                                                 formattedTableName = tableResolver.get(typeToDelete);
                                             } else {
@@ -1573,7 +1573,7 @@ public class HibernateStorage implements Storage {
     }
 
     @SuppressWarnings("rawtypes")
-    protected void deleteSubMultipleFieldData(ComplexTypeMetadata typeToDelete, Map<String, List> condition, Session session) {
+    protected void deleteSubMultipleFieldData(ComplexTypeMetadata typeToDelete, Map<String, List> conditions, Session session) {
         for (FieldMetadata field : typeToDelete.getFields()) {
             if (field.isMany()) {
                 String formattedTableName = StringUtils.EMPTY;
@@ -1589,7 +1589,7 @@ public class HibernateStorage implements Storage {
                 }
 
                 String deleteFormattedTableSQL = DELETE_FROM + formattedTableName;
-                deleteDataWithConditionForRepeatedField(session, condition, deleteFormattedTableSQL);
+                deleteDataWithConditionForRepeatedField(session, conditions, deleteFormattedTableSQL);
             }
         }
     }
@@ -1848,7 +1848,7 @@ public class HibernateStorage implements Storage {
         storageTransaction.releaseLock();
     }
 
-    public static boolean needSetOneToMany(StorageType type, Collection<ComplexTypeMetadata> entityComplexType,
+    public static boolean useOneToMany(StorageType type, Collection<ComplexTypeMetadata> entityComplexType,
             ReferenceFieldMetadata referenceField) {
         return type != StorageType.SYSTEM && !entityComplexType.contains(referenceField.getReferencedField().getContainingType());
     }

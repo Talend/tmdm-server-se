@@ -63,7 +63,7 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
 
     private final Stack<String> tableNames = new Stack<String>();
 
-    private final Collection<ComplexTypeMetadata> entityComplexType;
+    private final Collection<ComplexTypeMetadata> entityComplexTypes;
 
     private boolean compositeId;
 
@@ -80,21 +80,21 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
     final StorageType type;
 
     public MappingGenerator(Document document, TableResolver resolver, RDBMSDataSource dataSource,
-            Collection<ComplexTypeMetadata> entityComplexType, StorageType type) {
-        this(document, resolver, dataSource, entityComplexType, type, true);
+            Collection<ComplexTypeMetadata> entityComplexTypes, StorageType type) {
+        this(document, resolver, dataSource, entityComplexTypes, type, true);
     }
 
     public MappingGenerator(Document document,
                             TableResolver resolver,
                             RDBMSDataSource dataSource,
-                            Collection<ComplexTypeMetadata> entityComplexType,
+                            Collection<ComplexTypeMetadata> entityComplexTypes,
                             StorageType type,
                             boolean generateConstrains) {
         this.document = document;
         this.resolver = resolver;
         this.dataSource = dataSource;
         this.generateConstrains = generateConstrains;
-        this.entityComplexType = entityComplexType;
+        this.entityComplexTypes = entityComplexTypes;
         this.type = type;
     }
 
@@ -316,7 +316,7 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
                     && (!referenceField.allowFKIntegrityOverride() && referenceField.isFKIntegrity());
             if (!referenceField.isMany()) {
                 return newManyToOneElement(referenceField, enforceDataBaseIntegrity);
-            } else if (HibernateStorage.needSetOneToMany(type, entityComplexType, referenceField)) {
+            } else if (HibernateStorage.useOneToMany(type, entityComplexTypes, referenceField)) {
                 Element listElement = document.createElement("list"); //$NON-NLS-1$
                 Attr name = document.createAttribute("name"); //$NON-NLS-1$
                 name.setValue(referenceField.getName());

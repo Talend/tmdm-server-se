@@ -175,15 +175,15 @@ public class HibernateStorage implements Storage {
 
     private static final String ALTERNATE_CLASS_LOADER = "com.amalto.core.storage.hibernate.FullStorageClassLoader"; //$NON-NLS-1$
 
-    private static final String DELETE_FROM_STR = "delete from ";
+    private static final String DELETE_FROM = "delete from ";
 
-    private static final String FROM_STR = " from "; //$NON-NLS-1$
+    private static final String FROM = " from "; //$NON-NLS-1$
 
-    private static final String SELECT_STR = "select "; //$NON-NLS-1$
+    private static final String SELECT = "select "; //$NON-NLS-1$
 
-    private static final String SET_STR = " SET "; //$NON-NLS-1$
+    private static final String SET = " SET "; //$NON-NLS-1$
 
-    private static final String UPDATE_STR = "UPDATE "; //$NON-NLS-1$
+    private static final String UPDATE = "UPDATE "; //$NON-NLS-1$
 
     private static final Logger LOGGER = Logger.getLogger(HibernateStorage.class);
 
@@ -1431,11 +1431,11 @@ public class HibernateStorage implements Storage {
                                         // No need to check for mandatory collections of references since constraint
                                         // cannot be expressed in db schema
                                         String formattedTableName = tableResolver.getCollectionTable(reference);
-                                        session.createSQLQuery(DELETE_FROM_STR + formattedTableName).executeUpdate(); //$NON-NLS-1$
+                                        session.createSQLQuery(DELETE_FROM + formattedTableName).executeUpdate(); //$NON-NLS-1$
                                     } else {
                                         String referenceTableName = tableResolver.get(reference.getContainingType());
                                         if (referenceTableName.startsWith("X_ANONYMOUS")) { //$NON-NLS-1$
-                                            session.createSQLQuery(DELETE_FROM_STR + referenceTableName).executeUpdate(); // $NON-NLS-1$
+                                            session.createSQLQuery(DELETE_FROM + referenceTableName).executeUpdate(); // $NON-NLS-1$
                                         }
                                     }
                                 }
@@ -1456,16 +1456,16 @@ public class HibernateStorage implements Storage {
                                             } else {
                                                 formattedTableName = tableResolver.getCollectionTable(reference);
                                             }
-                                            session.createSQLQuery(DELETE_FROM_STR + formattedTableName).executeUpdate();
+                                            session.createSQLQuery(DELETE_FROM + formattedTableName).executeUpdate();
                                         } else {
                                             String referenceTableName = tableResolver.get(reference.getContainingType());
                                             if (reference.getReferencedField() instanceof CompoundFieldMetadata) {
                                                 FieldMetadata[] fields = ((CompoundFieldMetadata) reference.getReferencedField())
                                                         .getFields();
                                                 for (FieldMetadata field : fields) {
-                                                    List list = session.createSQLQuery(
-                                                            SELECT_STR + tableResolver.get(field, reference.getName()) + FROM_STR
-                                                                    + referenceTableName)
+                                                    List list = session
+                                                            .createSQLQuery(SELECT + tableResolver.get(field, reference.getName())
+                                                                    + FROM + referenceTableName)
                                                             .list();
                                                     if (list == null || list.isEmpty()) {
                                                         continue;
@@ -1475,17 +1475,17 @@ public class HibernateStorage implements Storage {
                                                     }
                                                 }
                                             } else {
-                                                List list = session.createSQLQuery(SELECT_STR
+                                                List list = session.createSQLQuery(SELECT
                                                         + tableResolver.get(reference.getReferencedField(), reference.getName())
-                                                        + FROM_STR + referenceTableName).list();
+                                                        + FROM + referenceTableName).list();
                                                 if (list == null || list.isEmpty()) {
                                                     continue;
                                                 } else {
                                                     fieldsCondition.put(tableResolver.get(reference.getReferencedField()), list);
                                                     if (!reference.isMandatory()) {
                                                         // set reference field to null
-                                                        String setToNullHql = UPDATE_STR
-                                                                + referenceTableName + SET_STR + tableResolver
+                                                        String setToNullHql = UPDATE
+                                                                + referenceTableName + SET + tableResolver
                                                                         .get(reference.getReferencedField(), reference.getName())
                                                                 + " = NULL";
                                                         session.createSQLQuery(setToNullHql).executeUpdate();
@@ -1550,7 +1550,7 @@ public class HibernateStorage implements Storage {
             // Delete the type instances
             String className = storageClassLoader.getClassFromType(typeToDelete).getName();
 
-            String hql = DELETE_FROM_STR + className;
+            String hql = DELETE_FROM + className;
             deleteDataWithCondition(session, condition, hql);
 
             // Clean up full text indexes
@@ -1588,7 +1588,7 @@ public class HibernateStorage implements Storage {
                     }
                 }
 
-                String deleteFormattedTableSQL = DELETE_FROM_STR + formattedTableName;
+                String deleteFormattedTableSQL = DELETE_FROM + formattedTableName;
                 deleteDataWithConditionForRepeatedField(session, condition, deleteFormattedTableSQL);
             }
         }

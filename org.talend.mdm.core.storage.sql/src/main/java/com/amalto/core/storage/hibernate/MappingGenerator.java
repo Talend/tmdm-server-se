@@ -317,53 +317,7 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
             if (!referenceField.isMany()) {
                 return newManyToOneElement(referenceField, enforceDataBaseIntegrity);
             } else if (HibernateStorage.useOneToMany(type, entityComplexTypes, referenceField)) {
-                Element listElement = document.createElement("list"); //$NON-NLS-1$
-                Attr name = document.createAttribute("name"); //$NON-NLS-1$
-                name.setValue(referenceField.getName());
-                listElement.getAttributes().setNamedItem(name);
-
-                Attr cascade = document.createAttribute("cascade"); //$NON-NLS-1$
-                cascade.setValue("all"); //$NON-NLS-1$
-                listElement.getAttributes().setNamedItem(cascade);
-
-                Element keyElement = document.createElement("key"); //$NON-NLS-1$
-
-                Attr onDeleteAttr = document.createAttribute("on-delete"); //$NON-NLS-1$
-                onDeleteAttr.setValue("noaction"); //$NON-NLS-1$
-                keyElement.getAttributes().setNamedItem(onDeleteAttr);
-
-                if (referenceField.getContainingType().getKeyFields().size() > 1) {
-                    for (FieldMetadata fieldMetadata : referenceField.getContainingType().getKeyFields()) {
-                        Element columnElement = document.createElement("column"); //$NON-NLS-1$
-                        Attr nameAttr = document.createAttribute("name"); //$NON-NLS-1$
-                        nameAttr.setValue(resolver.get(fieldMetadata, referenceField.getContainingType().getName()));
-                        columnElement.getAttributes().setNamedItem(nameAttr);
-                        keyElement.appendChild(columnElement);
-                    }
-                } else {
-                    Element columnElement = document.createElement("column"); //$NON-NLS-1$
-                    Attr nameAttr = document.createAttribute("name"); //$NON-NLS-1$
-                    nameAttr.setValue(resolver.get(referenceField.getReferencedField(),
-                            referenceField.getReferencedField().getContainingType().getName()));
-                    columnElement.getAttributes().setNamedItem(nameAttr);
-                    keyElement.appendChild(columnElement);
-                }
-
-                listElement.appendChild(keyElement);
-
-                Element index = document.createElement("index"); //$NON-NLS-1$
-                Attr indexColumn = document.createAttribute("column"); //$NON-NLS-1$
-                indexColumn.setValue("pos"); //$NON-NLS-1$
-                index.getAttributes().setNamedItem(indexColumn);
-                listElement.appendChild(index);
-
-                Element oneToManyElement = document.createElement("one-to-many"); //$NON-NLS-1$
-                Attr classAttr = document.createAttribute("class"); //$NON-NLS-1$
-                classAttr.setValue(ClassCreator.getClassName(referenceField.getReferencedType().getName()));
-                oneToManyElement.getAttributes().setNamedItem(classAttr);
-                listElement.appendChild(oneToManyElement);
-
-                return listElement;
+                return newListOfOneToMany(referenceField);
             } else {
                 /*
                 <list name="bars" table="foo_bar">
@@ -415,6 +369,56 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
                 return propertyElement;
             }
         }
+    }
+
+    public Element newListOfOneToMany(ReferenceFieldMetadata referenceField) {
+        Element listElement = document.createElement("list"); //$NON-NLS-1$
+        Attr name = document.createAttribute("name"); //$NON-NLS-1$
+        name.setValue(referenceField.getName());
+        listElement.getAttributes().setNamedItem(name);
+
+        Attr cascade = document.createAttribute("cascade"); //$NON-NLS-1$
+        cascade.setValue("all"); //$NON-NLS-1$
+        listElement.getAttributes().setNamedItem(cascade);
+
+        Element keyElement = document.createElement("key"); //$NON-NLS-1$
+
+        Attr onDeleteAttr = document.createAttribute("on-delete"); //$NON-NLS-1$
+        onDeleteAttr.setValue("noaction"); //$NON-NLS-1$
+        keyElement.getAttributes().setNamedItem(onDeleteAttr);
+
+        if (referenceField.getContainingType().getKeyFields().size() > 1) {
+            for (FieldMetadata fieldMetadata : referenceField.getContainingType().getKeyFields()) {
+                Element columnElement = document.createElement("column"); //$NON-NLS-1$
+                Attr nameAttr = document.createAttribute("name"); //$NON-NLS-1$
+                nameAttr.setValue(resolver.get(fieldMetadata, referenceField.getContainingType().getName()));
+                columnElement.getAttributes().setNamedItem(nameAttr);
+                keyElement.appendChild(columnElement);
+            }
+        } else {
+            Element columnElement = document.createElement("column"); //$NON-NLS-1$
+            Attr nameAttr = document.createAttribute("name"); //$NON-NLS-1$
+            nameAttr.setValue(resolver.get(referenceField.getReferencedField(),
+                    referenceField.getReferencedField().getContainingType().getName()));
+            columnElement.getAttributes().setNamedItem(nameAttr);
+            keyElement.appendChild(columnElement);
+        }
+
+        listElement.appendChild(keyElement);
+
+        Element index = document.createElement("index"); //$NON-NLS-1$
+        Attr indexColumn = document.createAttribute("column"); //$NON-NLS-1$
+        indexColumn.setValue("pos"); //$NON-NLS-1$
+        index.getAttributes().setNamedItem(indexColumn);
+        listElement.appendChild(index);
+
+        Element oneToManyElement = document.createElement("one-to-many"); //$NON-NLS-1$
+        Attr classAttr = document.createAttribute("class"); //$NON-NLS-1$
+        classAttr.setValue(ClassCreator.getClassName(referenceField.getReferencedType().getName()));
+        oneToManyElement.getAttributes().setNamedItem(classAttr);
+        listElement.appendChild(oneToManyElement);
+
+        return listElement;
     }
 
     private Element newManyToOneElement(ReferenceFieldMetadata referencedField, boolean enforceDataBaseIntegrity) {

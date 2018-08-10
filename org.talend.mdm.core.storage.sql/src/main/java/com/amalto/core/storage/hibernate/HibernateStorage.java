@@ -1848,9 +1848,9 @@ public class HibernateStorage implements Storage {
         storageTransaction.releaseLock();
     }
 
-    public static boolean useOneToMany(StorageType type, Collection<ComplexTypeMetadata> entityComplexType,
+    public static boolean useOneToMany(StorageType type, Collection<ComplexTypeMetadata> entityComplexTypes,
             ReferenceFieldMetadata referenceField) {
-        return type != StorageType.SYSTEM && !entityComplexType.contains(referenceField.getReferencedField().getContainingType());
+        return type != StorageType.SYSTEM && !entityComplexTypes.contains(referenceField.getReferencedField().getContainingType());
     }
 
     @Override

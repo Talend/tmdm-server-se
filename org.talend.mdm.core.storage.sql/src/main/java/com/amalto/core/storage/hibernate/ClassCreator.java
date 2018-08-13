@@ -400,6 +400,11 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
                 CtClass fieldType = classPool.get(getClassName(referenceField.getReferencedType().getName()));
                 CtField field = addNewField(referenceField.getName(), referenceField.isMany(), fieldType, currentClass);
 
+                if (referenceField.getReferencedType().getKeyFields() != null
+                        && referenceField.getReferencedType().getKeyFields().size() > 1) {
+                    LOGGER.warn("Composite key not be support in Lucene index!");//$NON-NLS-2$
+                    return null;
+                }
                 ConstPool cpPool = currentClassFile.getConstPool();
                 AnnotationsAttribute annotations = (AnnotationsAttribute) field.getFieldInfo().getAttribute(AnnotationsAttribute.visibleTag);
                 if (annotations == null) {

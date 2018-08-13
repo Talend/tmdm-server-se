@@ -26,7 +26,6 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.ProvidedId;
 import org.hibernate.search.annotations.Store;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
@@ -61,10 +60,8 @@ import javassist.bytecode.ClassFile;
 import javassist.bytecode.ConstPool;
 import javassist.bytecode.annotation.Annotation;
 import javassist.bytecode.annotation.AnnotationMemberValue;
-import javassist.bytecode.annotation.BooleanMemberValue;
 import javassist.bytecode.annotation.ClassMemberValue;
 import javassist.bytecode.annotation.EnumMemberValue;
-import javassist.bytecode.annotation.IntegerMemberValue;
 
 class ClassCreator extends DefaultMetadataVisitor<Void> {
 
@@ -553,7 +550,7 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
             if (Types.MULTI_LINGUAL.equals(metadata.getType().getName())) {
                 return new MultiLingualIndexedHandler();
             } else if (metadata instanceof ReferenceFieldMetadata) {
-                return new AssociatedEntityIndexedHandler();
+                return new ReferenceEntityIndexHandler();
             }
             return new BasicSearchIndexHandler();
         } else if (!validType) {
@@ -692,16 +689,6 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
         }
     }
 
-    private static class AssociatedEntityIndexedHandler implements SearchIndexHandler {
-
-        @Override
-        public void handle(AnnotationsAttribute annotations, ConstPool pool) {
-            Annotation fieldAnnotation = new Annotation(IndexedEmbedded.class.getName(), pool);
-            fieldAnnotation.addMemberValue("depth", new IntegerMemberValue(pool, 3)); //$NON-NLS-1$
-            fieldAnnotation.addMemberValue("includeEmbeddedObjectId", new BooleanMemberValue(true, pool)); //$NON-NLS-1$
-            annotations.addAnnotation(fieldAnnotation);
-        }
-    }
 
     private static class ReferenceEntityIndexHandler implements SearchIndexHandler {
 

@@ -597,9 +597,12 @@ class FullTextQueryHandler extends AbstractQueryHandler {
         @Override
         public Collection<? extends ComplexTypeMetadata> visit(FullText fullText) {
             if (closure != null && closure.size() > 0) {
+                Set<ComplexTypeMetadata> tempClosure = new HashSet<ComplexTypeMetadata>();
                 for (ComplexTypeMetadata ctm : closure) {
-                    closure.addAll(ctm.accept(new ComplexTypeMetadataOptimization(this.storage)));
+                    tempClosure.addAll(ctm.accept(new ComplexTypeMetadataOptimization(this.storage)));
                 }
+                closure.clear();
+                closure.addAll(tempClosure);
             }
             return closure;
         }

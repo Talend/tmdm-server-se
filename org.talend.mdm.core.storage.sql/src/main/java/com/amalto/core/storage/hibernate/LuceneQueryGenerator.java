@@ -321,6 +321,9 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
         // TODO Test me on conditions where many types share same field names.
         final Map<String, Boolean> fieldsMap = new HashMap<String, Boolean>();
         for (final ComplexTypeMetadata type : types) {
+            if (!type.isInstantiable()) {
+                continue;
+            }
             type.accept(new DefaultMetadataVisitor<Void>() {
                 private String prefix = StringUtils.EMPTY;
                 @Override
@@ -337,7 +340,7 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
                     ComplexTypeMetadata referencedType = referenceField.getReferencedType();
                     //to support associated entities lucene query
                     if (StringUtils.isNotEmpty(referenceField.getPath())) {
-                        prefix = referenceField.getPath() + ".";
+                        prefix = referenceField.getPath().replace("/", ".") + ".";
                     }
                     referencedType.accept(this);
                     prefix = StringUtils.EMPTY;
@@ -470,6 +473,9 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
     }
 
     private boolean isFieldSearchable(FieldMetadata currentField) {
+        if (viewableFields == null || viewableFields.isEmpty()) {//global search
+            return true;
+        }
         for (TypedExpression expression : viewableFields) {
             boolean results = false;
             results = expression.accept(new VisitorAdapter<Boolean>() {

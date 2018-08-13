@@ -58,12 +58,18 @@ public class ReferenceEntityBridge implements TwoWayFieldBridge {
         if (value == null) {
             return;
         }
-        List<? extends Object> curVal = (List<?>) value;
-        for (Iterator<? extends Object> iterator = curVal.iterator(); iterator.hasNext();) {
-            Object item = iterator.next();
-            Class<?> clazz = item.getClass();
-            evaluateClass(name, item, clazz, document, luceneOptions);
+        if (value instanceof Collection) {//oneToMany
+            List<? extends Object> curVal = (List<?>) value;
+            for (Iterator<? extends Object> iterator = curVal.iterator(); iterator.hasNext();) {
+                Object item = iterator.next();
+                Class<?> clazz = item.getClass();
+                evaluateClass(name, item, clazz, document, luceneOptions);
+            }
+        } else {//manyToOne
+            Class<?> clazz = value.getClass();
+            evaluateClass(name, value, clazz, document, luceneOptions);
         }
+
     }
 
     private static void evaluateClass(String name, Object dataObject, Class<?> clazz, Document document,
@@ -90,7 +96,8 @@ public class ReferenceEntityBridge implements TwoWayFieldBridge {
         for (Method method : allMethod) {
             String methodName = method.getName();
             if (!StringUtils.startsWith(methodName, "get") || methodName.contains("x_talend_task_id")
-                    || methodName.contains("x_talend_timestamp")) {
+                    || methodName.contains("x_talend_timestamp")
+                    || methodName.contains("x_talend_id")) {
                 continue;
             }
             for (Field field : allFields) {
@@ -179,7 +186,7 @@ public class ReferenceEntityBridge implements TwoWayFieldBridge {
     private static class ReferenceTypeIndexHandler implements IndexHandler {
         @Override
         public void handle(String name, Object value, Field field, Document document, LuceneOptions luceneOptions) {
-            evaluateClass(name, value, value.getClass(), document, luceneOptions);
+            evaluateClass(name + "." + field.getName(), value, value.getClass(), document, luceneOptions);
         }
     }
 

@@ -37,7 +37,9 @@ public class OperatorConstants implements Serializable, IsSerializable {
 
     public static Map<String, String> fullOperators = new LinkedHashMap<String, String>();
 
-    public static Map<String, String> foreignKeyOperators = new LinkedHashMap<String, String>();
+    public static Map<String, String> foreignKeyBeanOperators = new LinkedHashMap<String, String>();
+
+    public static Map<String, String> foreignKeyTextOperators = new LinkedHashMap<String, String>();
 
     public static Map<String, String> fulltextOperators = new LinkedHashMap<String, String>();
 
@@ -68,12 +70,16 @@ public class OperatorConstants implements Serializable, IsSerializable {
         fullOperators.put("STARTSWITH", MessagesFactory.getMessages().criteria_STARTSWITH()); //$NON-NLS-1$
         fullOperators.put("EMPTY_NULL", MessagesFactory.getMessages().criteria_EMPTY_NULL()); //$NON-NLS-1$
 
-        foreignKeyOperators.put("CONTAINS", MessagesFactory.getMessages().criteria_CONTAINS()); //$NON-NLS-1$
-        foreignKeyOperators.put("CONTAINS_SENTENCE", MessagesFactory.getMessages().criteria_CONTAINS_SENTENCE()); //$NON-NLS-1$
-        foreignKeyOperators.put(EQUALS_OPERATOR, MessagesFactory.getMessages().criteria_EQUALS());
-        foreignKeyOperators.put("NOT_EQUALS", MessagesFactory.getMessages().criteria_NOT_EQUALS()); //$NON-NLS-1$
-        foreignKeyOperators.put("STARTSWITH", MessagesFactory.getMessages().criteria_STARTSWITH()); //$NON-NLS-1$
-        foreignKeyOperators.put("EMPTY_NULL", MessagesFactory.getMessages().criteria_EMPTY_NULL()); //$NON-NLS-1$
+        foreignKeyBeanOperators.put(EQUALS_OPERATOR, MessagesFactory.getMessages().criteria_EQUALS());
+        foreignKeyBeanOperators.put("NOT_EQUALS", MessagesFactory.getMessages().criteria_NOT_EQUALS()); //$NON-NLS-1$
+        foreignKeyBeanOperators.put("EMPTY_NULL", MessagesFactory.getMessages().criteria_EMPTY_NULL()); //$NON-NLS-1$
+
+        foreignKeyTextOperators.put("CONTAINS", MessagesFactory.getMessages().criteria_CONTAINS()); //$NON-NLS-1$
+        foreignKeyTextOperators.put("CONTAINS_SENTENCE", MessagesFactory.getMessages().criteria_CONTAINS_SENTENCE()); //$NON-NLS-1$
+        foreignKeyTextOperators.put(EQUALS_OPERATOR, MessagesFactory.getMessages().criteria_EQUALS());
+        foreignKeyTextOperators.put("NOT_EQUALS", MessagesFactory.getMessages().criteria_NOT_EQUALS()); //$NON-NLS-1$
+        foreignKeyTextOperators.put("STARTSWITH", MessagesFactory.getMessages().criteria_STARTSWITH()); //$NON-NLS-1$
+        foreignKeyTextOperators.put("EMPTY_NULL", MessagesFactory.getMessages().criteria_EMPTY_NULL()); //$NON-NLS-1$
 
         fulltextOperators.put("FULLTEXTSEARCH", MessagesFactory.getMessages().criteria_FULLTEXTSEARCH()); //$NON-NLS-1$
 

@@ -13,7 +13,6 @@ package com.amalto.core.query.optimization;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
-import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
 
 import com.amalto.core.query.user.Alias;
 import com.amalto.core.query.user.BigDecimalConstant;
@@ -576,7 +575,7 @@ public class ConfigurableContainsOptimizer implements Optimizer {
 
         @Override
         public Boolean visit(Field field) {
-            return field.getFieldMetadata() instanceof ReferenceFieldMetadata;
+            return false;
         }
 
         @Override

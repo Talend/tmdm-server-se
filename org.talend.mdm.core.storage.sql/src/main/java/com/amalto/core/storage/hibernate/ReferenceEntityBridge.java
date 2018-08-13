@@ -14,8 +14,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -29,6 +27,7 @@ import org.hibernate.search.bridge.LuceneOptions;
 import org.hibernate.search.bridge.TwoWayFieldBridge;
 
 import com.amalto.core.storage.Storage;
+import com.amalto.core.storage.hibernate.MultiLingualIndexedBridge.MultilingualIndexHandler;
 
 /**
  * This Bridge providing bidirectional mapping capability for Reference fields.Likewise, we will splitting a complex
@@ -90,7 +89,7 @@ public class ReferenceEntityBridge implements TwoWayFieldBridge {
             LuceneOptions luceneOptions) {
 
         if (clazz.isPrimitive() || clazz.getName().startsWith("java.lang")) {
-            luceneOptions.addFieldToDocument(name, getMultiLingualIndexedContent(dataObject.toString()), document);
+            luceneOptions.addFieldToDocument(name, MultilingualIndexHandler.getIndexedContent(dataObject.toString()), document);
             return;
         }
         Field[] allFields = clazz.getFields();
@@ -175,7 +174,7 @@ public class ReferenceEntityBridge implements TwoWayFieldBridge {
                 for (Object obj : objArray) {
                     arrayStr += obj + " ";
                 }
-                luceneOptions.addFieldToDocument(name + "." + field.getName(), getMultiLingualIndexedContent(arrayStr), document);
+                luceneOptions.addFieldToDocument(name + "." + field.getName(), MultilingualIndexHandler.getIndexedContent(arrayStr), document);
             } else {
                 name += "." + field.getName(); // x_stores.store.name
                 for (Object obj : objArray) {
@@ -238,7 +237,7 @@ public class ReferenceEntityBridge implements TwoWayFieldBridge {
                 LOGGER.debug("insert a new index record with key-value pair [ " + name + "." + field.getName() + ":"
                         + value.toString());
             }
-            luceneOptions.addFieldToDocument(name + "." + field.getName(), getMultiLingualIndexedContent(value.toString()), document);
+            luceneOptions.addFieldToDocument(name + "." + field.getName(), MultilingualIndexHandler.getIndexedContent(value.toString()), document);
         }
     }
 
@@ -263,29 +262,5 @@ public class ReferenceEntityBridge implements TwoWayFieldBridge {
             LOGGER.error(e.getMessage(), e);
         }
         return (date);
-    }
-    
-    private static String getMultiLingualIndexedContent(String value) {
-        if (value.startsWith("[") && value.endsWith("]")) { //$NON-NLS-1$ //$NON-NLS-2$
-            List<String> blocks = new ArrayList<String>(Arrays.asList(value.split("]"))); //$NON-NLS-1$
-            List<String> newBlocks = new ArrayList<String>();
-            StringBuffer sb = new StringBuffer();
-
-            for (String block : blocks) {
-                if (block.startsWith("[") && block.contains(":")) { //$NON-NLS-1$ //$NON-NLS-2$
-                    newBlocks.add(block.substring(block.indexOf(":") + 1)); //$NON-NLS-1$
-                }
-            }
-
-            if (newBlocks != null && newBlocks.size() > 0) {
-                for (String block : newBlocks) {
-                    sb.append(block + " "); //$NON-NLS-1$
-                }
-                if (sb != null && sb.length() > 0) {
-                    return sb.toString();
-                }
-            }
-        }
-        return value;
     }
 }

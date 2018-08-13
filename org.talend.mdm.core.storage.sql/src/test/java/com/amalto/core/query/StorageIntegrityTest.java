@@ -65,10 +65,21 @@ public class StorageIntegrityTest extends TestCase {
     public void test2() throws Exception {
         MetadataRepository repository = prepareMetadata("StorageIntegrityTest_2.xsd");
         ComplexTypeMetadata type = repository.getComplexType("Metadata3_Main_2");
+        ComplexTypeMetadata ref_type = repository.getComplexType("Metadata3_Referenced_2");
         Storage storage = prepareStorage(repository);
 
         try {
             DataRecordReader<String> factory = new XmlStringDataRecordReader();
+
+            DataRecord referenceRecord = factory.read(repository, ref_type, "<Metadata3_Referenced_2><Id>999</Id><field>refField</field></Metadata3_Referenced_2>");
+            storage.begin();
+            try {
+                storage.update(referenceRecord);
+                storage.commit();
+            } catch (Exception e) {
+                storage.rollback();
+            }
+
             DataRecord record = factory.read(repository, type, "<Metadata3_Main_2><Id>1</Id><ref>[999]</ref></Metadata3_Main_2>");
             try {
                 storage.begin();
@@ -109,10 +120,24 @@ public class StorageIntegrityTest extends TestCase {
     public void test4() throws Exception {
         MetadataRepository repository = prepareMetadata("StorageIntegrityTest_4.xsd");
         ComplexTypeMetadata type = repository.getComplexType("Metadata3_Main_4");
+        ComplexTypeMetadata ref_type = repository.getComplexType("Metadata3_Referenced_4");
         Storage storage = prepareStorage(repository);
 
         try {
             DataRecordReader<String> factory = new XmlStringDataRecordReader();
+            List<DataRecord> allRecords = new LinkedList<DataRecord>();
+
+            allRecords.add(factory.read(repository, ref_type, "<Metadata3_Referenced_4><Id>999</Id><field>refField</field></Metadata3_Referenced_4>"));
+            allRecords.add(factory.read(repository, ref_type, "<Metadata3_Referenced_4><Id>1000</Id><field>refField</field></Metadata3_Referenced_4>"));
+
+            storage.begin();
+            try {
+                storage.update(allRecords);
+                storage.commit();
+            } catch (Exception e) {
+                storage.rollback();
+            }
+
             DataRecord record = factory.read(repository, type,
                     "<Metadata3_Main_4><Id>1</Id><ref>[999]</ref><ref>[1000]</ref></Metadata3_Main_4>");
             try {

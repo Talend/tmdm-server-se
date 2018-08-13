@@ -35,6 +35,7 @@ import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.DefaultMetadataVisitor;
 import org.talend.mdm.commmon.metadata.EnumerationFieldMetadata;
+import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
 import org.talend.mdm.commmon.metadata.SimpleTypeFieldMetadata;
 
@@ -59,6 +60,7 @@ import com.amalto.core.query.user.Range;
 import com.amalto.core.query.user.ShortConstant;
 import com.amalto.core.query.user.StringConstant;
 import com.amalto.core.query.user.TimeConstant;
+import com.amalto.core.query.user.TypedExpression;
 import com.amalto.core.query.user.UnaryLogicOperator;
 import com.amalto.core.query.user.VisitorAdapter;
 import com.amalto.core.query.user.metadata.MetadataField;
@@ -71,11 +73,14 @@ import com.amalto.core.query.user.metadata.TaskId;
 import com.amalto.core.query.user.metadata.Timestamp;
 import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.StorageMetadataUtils;
+import com.amalto.core.storage.exception.FullTextQueryCompositeKeyException;
 import com.amalto.core.storage.exception.UnsupportedFullTextQueryException;
 
 class LuceneQueryGenerator extends VisitorAdapter<Query> {
 
     private final Collection<ComplexTypeMetadata> types;
+
+    private List<TypedExpression> viewableFields;
 
     private String currentFieldName;
 
@@ -85,6 +90,11 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
 
     LuceneQueryGenerator(Collection<ComplexTypeMetadata> types) {
         this.types = types;
+    }
+
+    LuceneQueryGenerator(List<TypedExpression> viewableFields, Collection<ComplexTypeMetadata> types) {
+        this.types = types;
+        this.viewableFields = viewableFields;
     }
 
     @Override
@@ -312,8 +322,11 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
         // TODO Test me on conditions where many types share same field names.
         final Map<String, Boolean> fieldsMap = new HashMap<String, Boolean>();
         for (final ComplexTypeMetadata type : types) {
+            if (!type.isInstantiable()) {
+                continue;
+            }
             type.accept(new DefaultMetadataVisitor<Void>() {
-
+                private String prefix = StringUtils.EMPTY;
                 @Override
                 public Void visit(ContainedComplexTypeMetadata containedType) {
                     super.visit(containedType);
@@ -326,9 +339,12 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
                 @Override
                 public Void visit(ReferenceFieldMetadata referenceField) {
                     ComplexTypeMetadata referencedType = referenceField.getReferencedType();
-                    if (!referencedType.isInstantiable()) {
-                        referencedType.accept(this);
+                    //to support associated entities lucene query
+                    if (StringUtils.isNotEmpty(referenceField.getPath())) {
+                        prefix = referenceField.getPath().replace("/", ".") + ".";
                     }
+                    referencedType.accept(this);
+                    prefix = StringUtils.EMPTY;
                     return null;
                 }
 
@@ -336,8 +352,8 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
                 public Void visit(SimpleTypeFieldMetadata simpleField) {
                     if (!Storage.METADATA_TIMESTAMP.equals(simpleField.getName())
                             && !Storage.METADATA_TASK_ID.equals(simpleField.getName())) {
-                        if (StorageMetadataUtils.isValueSearchable(fullText.getValue(), simpleField)) {
-                            fieldsMap.put(simpleField.getName(), simpleField.isKey());
+                        if (StorageMetadataUtils.isValueSearchable(fullText.getValue(), simpleField) && isFieldSearchable(simpleField)) {
+                            fieldsMap.put(prefix + simpleField.getName(), simpleField.isKey());
                         }
                     }
                     return null;
@@ -345,8 +361,8 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
 
                 @Override
                 public Void visit(EnumerationFieldMetadata enumField) {
-                    if (StorageMetadataUtils.isValueAssignable(fullText.getValue(), enumField)) {
-                        fieldsMap.put(enumField.getName(), enumField.isKey());
+                    if (StorageMetadataUtils.isValueAssignable(fullText.getValue(), enumField) && isFieldSearchable(enumField)) {
+                        fieldsMap.put(prefix + enumField.getName(), enumField.isKey());
                     }
                     return null;
                 }
@@ -382,7 +398,16 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
 
     @Override
     public Query visit(FieldFullText fieldFullText) {
-        String fieldName = fieldFullText.getField().getFieldMetadata().getName();
+        FieldMetadata fieldMetadata = fieldFullText.getField().getFieldMetadata();
+        String fieldName = fieldMetadata.getName();
+        if (fieldMetadata instanceof ReferenceFieldMetadata) {
+            ReferenceFieldMetadata referenceFieldMetadata = ((ReferenceFieldMetadata) fieldMetadata);
+            if (referenceFieldMetadata.getReferencedType().getKeyFields().size() > 1) {
+                throw new FullTextQueryCompositeKeyException(referenceFieldMetadata.getReferencedType().getName());
+            } else {
+                fieldName = fieldName + "." + referenceFieldMetadata.getReferencedField().getName(); //$NON-NLS-1$
+            }
+        }
         String[] fieldsAsArray = new String[] { fieldName };
         String fullTextValue = getFullTextValue(fieldFullText);
         String fullTextQuery = fieldName + ':' + fullTextValue;
@@ -455,5 +480,53 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
             }
         }
         return sb.toString();
+    }
+
+    private boolean isFieldSearchable(FieldMetadata currentField) {
+        if (viewableFields == null || viewableFields.isEmpty()) {//global search
+            return true;
+        }
+        for (TypedExpression expression : viewableFields) {
+            boolean results = false;
+            results = expression.accept(new VisitorAdapter<Boolean>() {
+                public Boolean visit(Field field) {
+                    FieldMetadata fieldMetadata = ((Field) expression).getFieldMetadata();
+                    return fieldMetadata.accept(new DefaultMetadataVisitor<Boolean>() {
+
+                        public Boolean visit(ReferenceFieldMetadata referenceField) {
+                            if (referenceField.getReferencedType().getName().equals(currentField.getContainingType().getName())
+                                    && referenceField.getReferencedField().getName().equals(currentField.getName())) {
+                                return true;
+                            }
+                            return false;
+                        }
+
+                        public Boolean visit(SimpleTypeFieldMetadata simpleType) {
+                            if (simpleType.getContainingType().getName().equals(currentField.getContainingType().getName())
+                                    && simpleType.getName().equals(currentField.getName())) {
+                                return true;
+                            }
+                            return false;
+                        }
+                    });
+                }
+
+                public Boolean visit(Alias alias) {
+                    TypedExpression internalTypedExpression = ((Alias) expression).getTypedExpression();
+                    if (internalTypedExpression instanceof Field) {
+                        FieldMetadata fieldMetadata = ((Field) internalTypedExpression).getFieldMetadata();
+                        if (fieldMetadata.getContainingType().getName().equals(currentField.getContainingType().getName())
+                                && fieldMetadata.getName().equals(currentField.getName())) {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+            });
+            if (results) {
+                return true;
+            }
+        }
+        return false;
     }
 }

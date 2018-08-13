@@ -20,25 +20,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
-import javassist.CannotCompileException;
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtConstructor;
-import javassist.CtField;
-import javassist.CtMethod;
-import javassist.CtNewConstructor;
-import javassist.CtNewMethod;
-import javassist.LoaderClassPath;
-import javassist.Modifier;
-import javassist.NotFoundException;
-import javassist.bytecode.AnnotationsAttribute;
-import javassist.bytecode.ClassFile;
-import javassist.bytecode.ConstPool;
-import javassist.bytecode.annotation.Annotation;
-import javassist.bytecode.annotation.AnnotationMemberValue;
-import javassist.bytecode.annotation.ClassMemberValue;
-import javassist.bytecode.annotation.EnumMemberValue;
-
 import org.apache.log4j.Logger;
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
@@ -62,6 +43,25 @@ import org.talend.mdm.commmon.metadata.Types;
 
 import com.amalto.core.storage.HibernateMetadataUtils;
 import com.amalto.core.storage.Storage;
+
+import javassist.CannotCompileException;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtConstructor;
+import javassist.CtField;
+import javassist.CtMethod;
+import javassist.CtNewConstructor;
+import javassist.CtNewMethod;
+import javassist.LoaderClassPath;
+import javassist.Modifier;
+import javassist.NotFoundException;
+import javassist.bytecode.AnnotationsAttribute;
+import javassist.bytecode.ClassFile;
+import javassist.bytecode.ConstPool;
+import javassist.bytecode.annotation.Annotation;
+import javassist.bytecode.annotation.AnnotationMemberValue;
+import javassist.bytecode.annotation.ClassMemberValue;
+import javassist.bytecode.annotation.EnumMemberValue;
 
 class ClassCreator extends DefaultMetadataVisitor<Void> {
 
@@ -395,9 +395,24 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
         try {
             if (!existsInSuperTypes(referenceField)) {
                 CtClass currentClass = classCreationStack.peek();
+                ClassFile currentClassFile = currentClass.getClassFile();
                 referenceField.getReferencedType().accept(this); // Visit referenced type in case it hasn't been created.
                 CtClass fieldType = classPool.get(getClassName(referenceField.getReferencedType().getName()));
-                addNewField(referenceField.getName(), referenceField.isMany(), fieldType, currentClass);
+                CtField field = addNewField(referenceField.getName(), referenceField.isMany(), fieldType, currentClass);
+
+                if (referenceField.getReferencedType().getKeyFields() != null
+                        && referenceField.getReferencedType().getKeyFields().size() > 1) {
+                    LOGGER.warn("Composite key not be support in Lucene index!");//$NON-NLS-2$
+                    return null;
+                }
+                ConstPool cpPool = currentClassFile.getConstPool();
+                AnnotationsAttribute annotations = (AnnotationsAttribute) field.getFieldInfo().getAttribute(AnnotationsAttribute.visibleTag);
+                if (annotations == null) {
+                    annotations = new AnnotationsAttribute(cpPool, AnnotationsAttribute.visibleTag);
+                    field.getFieldInfo().addAttribute(annotations);
+                }
+                SearchIndexHandler handler = getHandler(referenceField);
+                handler.handle(annotations, cpPool);
             }
             return null;
         } catch (Exception e) {
@@ -539,12 +554,18 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
             }
             if (Types.MULTI_LINGUAL.equals(metadata.getType().getName())) {
                 return new MultiLingualIndexedHandler();
+            } else if (metadata instanceof ReferenceFieldMetadata) {
+                return new ReferenceEntityIndexHandler();
             }
             return new BasicSearchIndexHandler();
         } else if (!validType) {
             return new ToStringIndexHandler();
         } else { // metadata.isMany() returned true
-            return new ListFieldIndexHandler();
+            if (metadata instanceof ReferenceFieldMetadata) {
+                return new ReferenceEntityIndexHandler();
+            } else {
+                return new ListFieldIndexHandler();
+            }
         }
     }
     
@@ -668,6 +689,19 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
             Annotation fieldAnnotation = new Annotation(Field.class.getName(), pool);
             Annotation fieldBridge = new Annotation(FieldBridge.class.getName(), pool);
             fieldBridge.addMemberValue("impl", new ClassMemberValue(MultiLingualIndexedBridge.class.getName(), pool)); //$NON-NLS-1$
+            annotations.addAnnotation(fieldAnnotation);
+            annotations.addAnnotation(fieldBridge);
+        }
+    }
+
+
+    private static class ReferenceEntityIndexHandler implements SearchIndexHandler {
+
+        @Override
+        public void handle(AnnotationsAttribute annotations, ConstPool pool) {
+            Annotation fieldAnnotation = new Annotation(Field.class.getName(), pool);
+            Annotation fieldBridge = new Annotation(FieldBridge.class.getName(), pool);
+            fieldBridge.addMemberValue("impl", new ClassMemberValue(ReferenceEntityBridge.class.getName(), pool)); //$NON-NLS-1$
             annotations.addAnnotation(fieldAnnotation);
             annotations.addAnnotation(fieldBridge);
         }

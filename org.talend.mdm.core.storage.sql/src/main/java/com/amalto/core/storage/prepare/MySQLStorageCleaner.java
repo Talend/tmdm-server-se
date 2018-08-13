@@ -47,8 +47,13 @@ class MySQLStorageCleaner implements StorageCleaner {
             }
 
             Driver driver = (Driver) Class.forName(dataSource.getDriverClassName()).newInstance();
-            Connection connection = driver.connect(dataSource.getInitConnectionURL()
-                    + "?user=" + dataSource.getInitUserName() + "&password=" + dataSource.getInitPassword(), new Properties()); //$NON-NLS-1$ //$NON-NLS-2$
+
+            Properties properties = new Properties();
+            properties.put("user", dataSource.getInitUserName()); //$NON-NLS-1$
+            properties.put("password", dataSource.getInitPassword()); //$NON-NLS-1$
+
+            Connection connection = driver.connect(dataSource.getConnectionURL(), properties);
+
             try {
                 Statement statement = connection.createStatement();
                 try {

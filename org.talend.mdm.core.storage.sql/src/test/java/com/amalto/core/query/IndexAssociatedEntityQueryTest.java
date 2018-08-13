@@ -1,3 +1,13 @@
+/*
+ * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * 
+ * This source code is available under agreement available at
+ * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
+ * 
+ * You should have received a copy of the agreement along with this program; if not, write to Talend SA 9 rue Pages
+ * 92150 Suresnes, France
+ */
+
 package com.amalto.core.query;
 
 import static com.amalto.core.query.user.UserQueryBuilder.from;
@@ -34,9 +44,11 @@ import com.amalto.core.storage.record.XmlStringDataRecordReader;
 
 import junit.framework.TestCase;
 
+@SuppressWarnings("nls")
 public class IndexAssociatedEntityQueryTest extends TestCase {
-    
+
     protected static MockUserDelegator userSecurity = new MockUserDelegator();
+
     protected static final String STORAGE_NAME = "Test";
 
     public IndexAssociatedEntityQueryTest() {
@@ -44,15 +56,14 @@ public class IndexAssociatedEntityQueryTest extends TestCase {
     }
 
     public void test1() throws Exception {
-        
         DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS2", STORAGE_NAME);
         Storage storage = new HibernateStorage("Test", StorageType.MASTER);
         storage.init(dataSource);
         MetadataRepository repository = new MetadataRepository();
         repository.load(StoragePrepareTest.class.getResourceAsStream("ProductAttribute.xsd"));
         storage.prepare(repository, true);
-        
-         // test table had been created
+
+        // test table had been created
         String[] tables = { "PRODUCT", "X_ATTRIBUTESLIST_T", "X_ATTRIBUTEITEM_T" };
         String[][] columns = {
                 { "", "X_PRODUCTID", "X_NAME", "X_CATEGORYCODE", "X_ATTRIBUTESLIST_X_TALEND_ID", "X_TALEND_TIMESTAMP",
@@ -64,11 +75,11 @@ public class IndexAssociatedEntityQueryTest extends TestCase {
         } catch (SQLException e) {
             assertNull(e);
         }
-         ComplexTypeMetadata product = repository.getComplexType("product");//$NON-NLS-1$
-         // test data had been added
+        ComplexTypeMetadata product = repository.getComplexType("product");
+        // test data had been added
         List<DataRecord> records = new ArrayList<DataRecord>();
         records.add(factory.read(repository, product,
-                "<product><productId>id1</productId><name>name1</name><categoryCode>234</categoryCode><attributesList><attrItem><name>111</name><value>1111</value></attrItem><attrItem><name>222</name><value>2222</value></attrItem></attributesList></product>")); //$NON-NLS-1$
+                "<product><productId>id1</productId><name>name1</name><categoryCode>234</categoryCode><attributesList><attrItem><name>111</name><value>1111</value></attrItem><attrItem><name>222</name><value>2222</value></attrItem></attributesList></product>"));
         try {
             storage.begin();
             storage.update(records);
@@ -78,7 +89,7 @@ public class IndexAssociatedEntityQueryTest extends TestCase {
         } finally {
             storage.end();
         }
-         // test query data
+        // test query data
         UserQueryBuilder qb = from(product);
         qb.getSelect().getPaging().setLimit(10);
         storage.begin();
@@ -86,28 +97,25 @@ public class IndexAssociatedEntityQueryTest extends TestCase {
         try {
             assertEquals(1, results.getCount());
             for (DataRecord result : results) {
-                assertEquals("name1", result.get("name"));//$NON-NLS-1$ //$NON-NLS-2$
+                assertEquals("name1", result.get("name"));
             }
-         } finally {
+        } finally {
             results.close();
         }
-        
+
         UserQueryBuilder qb1 = from(product).select(product.getField("attributesList/attrItem/name")).where(fullText("111"));
         StorageResults results1 = storage.fetch(qb1.getSelect());
         try {
             assertEquals(1, results1.getCount());
             for (DataRecord result : results) {
-                assertEquals("name1", result.get("name"));//$NON-NLS-1$ //$NON-NLS-2$
+                assertEquals("name1", result.get("name"));
             }
         } finally {
             results.close();
         }
-        
-        
-        
         storage.end();
     }
-    
+
     private void assertDatabaseChange(DataSourceDefinition dataSource, String[] tables, String[][] columns, boolean[] exists)
             throws SQLException {
         DataSource master = dataSource.getMaster();
@@ -132,10 +140,11 @@ public class IndexAssociatedEntityQueryTest extends TestCase {
             connection.close();
         }
     }
-    
+
     protected static DataSourceDefinition getDatasource(String dataSourceName) {
         return ServerContext.INSTANCE.get().getDefinition(dataSourceName, "MDM");
     }
+
     protected static class MockUserDelegator implements SecuredStorage.UserDelegator {
 
         boolean isActive = true;

@@ -194,11 +194,11 @@ class ManyFieldCriterion extends SQLCriterion {
                     .append(resolver.get(simpleField));
 
             String queryValue = String.valueOf(getValue());
-            if (predicate == Predicate.EQUALS) {
-                query.append(" = "); //$NON-NLS-1$
-            } else if (predicate == Predicate.STARTS_WITH) {
+            if (Predicate.STARTS_WITH == predicate) {
                 query.append(" like "); //$NON-NLS-1$
                 queryValue = queryValue + "%"; //$NON-NLS-1$
+            } else {
+                query.append(" = "); //$NON-NLS-1$
             }
 
             String name = MetadataUtils.getSuperConcreteType(simpleField.getType()).getName();

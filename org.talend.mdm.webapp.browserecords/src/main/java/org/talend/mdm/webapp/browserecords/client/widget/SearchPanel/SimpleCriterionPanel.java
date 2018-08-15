@@ -243,9 +243,7 @@ public class SimpleCriterionPanel<T> extends HorizontalPanel implements ReturnCr
         if (typeModel == null) {
             TextField<String> textField = new TextField<String>();
             textField.setValue("*");//$NON-NLS-1$
-            setField(textField);
-            setOperatorComboBox(OperatorConstants.stringOperators);
-            adaptValueField();
+            adaptValueField(textField, OperatorConstants.stringOperators);
         } else if (typeModel.getForeignkey() != null) {
             String foreignConceptName = typeModel.getForeignkey().split("/")[0]; //$NON-NLS-1$
             ((BrowseRecordsServiceAsync) Registry.get(BrowseRecords.BROWSERECORDS_SERVICE)).getEntityModel(foreignConceptName,
@@ -258,15 +256,12 @@ public class SimpleCriterionPanel<T> extends HorizontalPanel implements ReturnCr
                                 ForeignKeyField fkField = new ForeignKeyField(typeModel);
                                 fkField.setUsageField("SearchFieldCreator"); //$NON-NLS-1$
                                 fkField.setStaging(staging);
-                                setField(fkField);
-                                setOperatorComboBox(OperatorConstants.foreignKeyBeanOperators);
+                                adaptValueField(fkField, OperatorConstants.foreignKeyBeanOperators);
                             } else {
                                 TextField<String> textField = new TextField<String>();
                                 textField.setValue("*");//$NON-NLS-1$
-                                setField(textField);
-                                setOperatorComboBox(OperatorConstants.foreignKeyTextOperators);
+                                adaptValueField(textField, OperatorConstants.foreignKeyTextOperators);
                             }
-                            adaptValueField();
                         }
                     });
         } else if (typeModel.hasEnumeration()) {
@@ -279,27 +274,23 @@ public class SimpleCriterionPanel<T> extends HorizontalPanel implements ReturnCr
             comboBox.setForceSelection(true);
             comboBox.setTriggerAction(TriggerAction.ALL);
             setEnumerationValues(typeModel, comboBox);
-            setField(comboBox);
-            setOperatorComboBox(OperatorConstants.enumOperators);
-            adaptValueField();
+            adaptValueField(comboBox, OperatorConstants.enumOperators);
         } else if (typeModel instanceof ComplexTypeModel) {
             TextField<String> textField = new TextField<String>();
             textField.setValue("*");//$NON-NLS-1$
-            setField(textField);
-            setOperatorComboBox(OperatorConstants.fulltextOperators);
-            adaptValueField();
+            adaptValueField(textField, OperatorConstants.fulltextOperators);
         } else {
             TypeFieldCreateContext context = new TypeFieldCreateContext(typeModel);
             TypeFieldSource typeFieldSource = new TypeFieldSource(TypeFieldSource.SEARCH_EDITOR);
             TypeFieldCreator typeFieldCreator = new TypeFieldCreator(typeFieldSource, context);
-            setField(typeFieldCreator.createField());
-            setOperatorComboBox(typeFieldSource.getOperatorMap());
-            adaptValueField();
+            adaptValueField(typeFieldCreator.createField(), typeFieldSource.getOperatorMap());
         }
         return typeModel;
     }
 
-    private void adaptValueField() {
+    private void adaptValueField(Field field, Map<String, String> operators) {
+        setField(field);
+        setOperatorComboBox(operators);
         field.setId("SimpleSearchValueFiled"); //$NON-NLS-1$
         content.add(field);
         field.addListener(Events.KeyDown, new Listener<FieldEvent>() {

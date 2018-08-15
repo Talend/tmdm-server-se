@@ -4547,45 +4547,6 @@ public class StorageQueryTest extends StorageTestCase {
         }
     }
     
-    @SuppressWarnings("unchecked")
-    public void testQueryWithFKContainsMultipleValues() throws Exception {
-        FieldMetadata field = personne.getField("Contextes/ContexteFk");
-        UserQueryBuilder qb = from(personne).where(contains(field, "111"));
-        storage.begin();
-        StorageResults results = storage.fetch(qb.getSelect());
-        try {
-            assertEquals(1, results.getCount());
-            List<Object> contextes = (List<Object>)results.iterator().next().get(field);
-            assertEquals(3, contextes.size());
-        } finally {
-            results.close();
-        }
-        
-        qb = from(personne).where(contains(field, "222"));
-        storage.begin();
-        results = storage.fetch(qb.getSelect());
-        try {
-            assertEquals(1, results.getCount());
-            List<Object> contextes = (List<Object>)results.iterator().next().get(field);
-            assertEquals(3, contextes.size());
-        } finally {
-            results.close();
-        }
-        
-        qb = from(personne).where(contains(field, "333"));
-        storage.begin();
-        results = storage.fetch(qb.getSelect());
-        try {
-            assertEquals(1, results.getCount());
-            List<Object> contextes = (List<Object>)results.iterator().next().get(field);
-            assertEquals(3, contextes.size());
-        } finally {
-            results.close();
-        }
-        
-        storage.commit();
-    }
-
     public void testIdContainsSlash() throws Exception {
         DataRecordReader<String> factory = new XmlStringDataRecordReader();
         DataRecord record1 = factory.read(repository, tt,

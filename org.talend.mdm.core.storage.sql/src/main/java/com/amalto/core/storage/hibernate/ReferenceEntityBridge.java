@@ -10,6 +10,7 @@
 
 package com.amalto.core.storage.hibernate;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.text.ParseException;
@@ -40,6 +41,10 @@ public class ReferenceEntityBridge implements TwoWayFieldBridge {
 
     private static final Logger LOGGER = Logger.getLogger(ReferenceEntityBridge.class);
 
+    public static final String ID_POSTFIX = "_lowercase_copy"; //$NON-NLS-1$
+    
+    public static final String TO_LOWER_CASE_FIELD_BRIDGE = "ToLowerCaseFieldBridge"; //$NON-NLS-1$
+    
     @Override
     public Object get(String name, Document document) {
         return document.get(name);
@@ -238,6 +243,12 @@ public class ReferenceEntityBridge implements TwoWayFieldBridge {
                         + value.toString());
             }
             luceneOptions.addFieldToDocument(name + "." + field.getName(), MultilingualIndexHandler.getIndexedContent(value.toString()), document);
+            for (Annotation annotationItem : field.getAnnotations()) {
+                if (annotationItem.toString().contains(TO_LOWER_CASE_FIELD_BRIDGE)) {
+                    luceneOptions.addFieldToDocument(name + "." + field.getName() + ID_POSTFIX, MultilingualIndexHandler.getIndexedContent(value.toString()), document); 
+                    break;
+                }   
+            }
         }
     }
 

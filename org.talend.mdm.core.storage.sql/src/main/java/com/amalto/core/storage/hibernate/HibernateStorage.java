@@ -1237,10 +1237,10 @@ public class HibernateStorage implements Storage {
         }
         return tablesToDrop;
     }
-    
-    private void setNocheckConstraint(Connection connection, Set<String> tablesToDrop) throws SQLException {
+
+    private void setConstraintCheck(Connection connection, Set<String> tablesToDrop) throws SQLException {
         if (dataSource.getDialectName() == DataSourceDialect.MYSQL) {
-            setConstraintCheckOfMySQL(connection, true);
+            setConstraintCheckForMySQL(connection, true);
         } else if (dataSource.getDialectName() == DataSourceDialect.SQL_SERVER) {
             for (String table : tablesToDrop) {
                 Statement statement = connection.createStatement();
@@ -1248,7 +1248,7 @@ public class HibernateStorage implements Storage {
                     ResultSet resultSet = statement.executeQuery(
                             "SELECT 'ALTER TABLE ' + b.name + ' DROP CONSTRAINT ' + a.name +';'  from sysobjects a ,sysobjects b where a.xtype ='f' and a.parent_obj = b.id and b.name='" //$NON-NLS-1$
                                     + table + "'; "); //$NON-NLS-1$
-                    while(resultSet.next()) {
+                    while (resultSet.next()) {
                         Statement setCheckConstraintStatement = connection.createStatement();
                         try {
                             setCheckConstraintStatement.executeUpdate(resultSet.getString(1));
@@ -1263,7 +1263,7 @@ public class HibernateStorage implements Storage {
         }
     }
 
-    public void setConstraintCheckOfMySQL(Connection connection, boolean noCheck) throws SQLException {
+    private void setConstraintCheckForMySQL(Connection connection, boolean noCheck) throws SQLException {
         Statement statement = connection.createStatement();
         try {
             String sql = "SET FOREIGN_KEY_CHECKS="; //$NON-NLS-1$
@@ -1287,7 +1287,7 @@ public class HibernateStorage implements Storage {
             Properties properties = dataSource.getAdvancedPropertiesIncludeUserInfo();
             connection = DriverManager.getConnection(dataSource.getConnectionURL(), properties);
             int successCount = 0;
-            setNocheckConstraint(connection, tablesToDrop);
+            setConstraintCheck(connection, tablesToDrop);
             while (successCount < totalCount && totalRound++ < totalCount) {
                 Set<String> dropedTables = new HashSet<String>();
                 for (String table : tablesToDrop) {
@@ -1299,7 +1299,7 @@ public class HibernateStorage implements Storage {
                         } else if (dataSource.getDialectName() == DataSourceDialect.ORACLE_10G) {
                             dropSql += " CASCADE CONSTRAINTS"; //$NON-NLS-1$
                         }
-                        statement.executeUpdate(dropSql); //$NON-NLS-1$
+                        statement.executeUpdate(dropSql);
                         dropedTables.add(table);
                         successCount++;
                     } catch (SQLException e) {
@@ -1318,7 +1318,7 @@ public class HibernateStorage implements Storage {
         } finally {
             try {
                 if (dataSource.getDialectName() == DataSourceDialect.MYSQL) {
-                    setConstraintCheckOfMySQL(connection, false);
+                    setConstraintCheckForMySQL(connection, false);
                 }
 
                 if (connection != null) {

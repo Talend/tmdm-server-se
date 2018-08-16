@@ -1238,9 +1238,9 @@ public class HibernateStorage implements Storage {
         return tablesToDrop;
     }
 
-    private void setConstraintCheck(Connection connection, Set<String> tablesToDrop) throws SQLException {
+    private void setForeignKeyChecks(Connection connection, Set<String> tablesToDrop) throws SQLException {
         if (dataSource.getDialectName() == DataSourceDialect.MYSQL) {
-            setConstraintCheckForMySQL(connection, true);
+            enableForeignKeyChecksForMySQL(connection, true);
         } else if (dataSource.getDialectName() == DataSourceDialect.SQL_SERVER) {
             for (String table : tablesToDrop) {
                 Statement statement = connection.createStatement();
@@ -1263,7 +1263,7 @@ public class HibernateStorage implements Storage {
         }
     }
 
-    private void setConstraintCheckForMySQL(Connection connection, boolean noCheck) throws SQLException {
+    private void enableForeignKeyChecksForMySQL(Connection connection, boolean noCheck) throws SQLException {
         Statement statement = connection.createStatement();
         try {
             String sql = "SET FOREIGN_KEY_CHECKS="; //$NON-NLS-1$
@@ -1287,7 +1287,7 @@ public class HibernateStorage implements Storage {
             Properties properties = dataSource.getAdvancedPropertiesIncludeUserInfo();
             connection = DriverManager.getConnection(dataSource.getConnectionURL(), properties);
             int successCount = 0;
-            setConstraintCheck(connection, tablesToDrop);
+            setForeignKeyChecks(connection, tablesToDrop);
             while (successCount < totalCount && totalRound++ < totalCount) {
                 Set<String> dropedTables = new HashSet<String>();
                 for (String table : tablesToDrop) {
@@ -1318,7 +1318,7 @@ public class HibernateStorage implements Storage {
         } finally {
             try {
                 if (dataSource.getDialectName() == DataSourceDialect.MYSQL) {
-                    setConstraintCheckForMySQL(connection, false);
+                    enableForeignKeyChecksForMySQL(connection, false);
                 }
 
                 if (connection != null) {

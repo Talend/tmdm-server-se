@@ -1240,7 +1240,7 @@ public class HibernateStorage implements Storage {
 
     private void setForeignKeyChecks(Connection connection, Set<String> tablesToDrop) throws SQLException {
         if (dataSource.getDialectName() == DataSourceDialect.MYSQL) {
-            enableForeignKeyChecksForMySQL(connection, true);
+            enableForeignKeyChecksForMySQL(connection, false);
         } else if (dataSource.getDialectName() == DataSourceDialect.SQL_SERVER) {
             for (String table : tablesToDrop) {
                 Statement statement = connection.createStatement();
@@ -1263,14 +1263,14 @@ public class HibernateStorage implements Storage {
         }
     }
 
-    private void enableForeignKeyChecksForMySQL(Connection connection, boolean noCheck) throws SQLException {
+    private void enableForeignKeyChecksForMySQL(Connection connection, boolean check) throws SQLException {
         Statement statement = connection.createStatement();
         try {
             String sql = "SET FOREIGN_KEY_CHECKS="; //$NON-NLS-1$
-            if (noCheck) {
-                sql += "0"; //$NON-NLS-1$
-            } else {
+            if (check) {
                 sql += "1"; //$NON-NLS-1$
+            } else {
+                sql += "0"; //$NON-NLS-1$
             }
             statement.executeUpdate(sql);
         } finally {
@@ -1318,7 +1318,7 @@ public class HibernateStorage implements Storage {
         } finally {
             try {
                 if (dataSource.getDialectName() == DataSourceDialect.MYSQL) {
-                    enableForeignKeyChecksForMySQL(connection, false);
+                    enableForeignKeyChecksForMySQL(connection, true);
                 }
 
                 if (connection != null) {

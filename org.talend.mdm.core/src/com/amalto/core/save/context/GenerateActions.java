@@ -66,7 +66,7 @@ class GenerateActions implements DocumentSaver {
         // Generate field update actions for UUID and AutoIncrement elements.
         UpdateActionCreator updateActions = new UpdateActionCreator(databaseDocument, userDocument, date, source, userName,
                 context.generateTouchActions(), metadataRepository, context.getDataCluster(), context.getDataModelName(),
-                saverSource);
+                saverSource, context.getUserAction());
         UserAction userAction = context.getUserAction();
         switch (userAction) {
         case CREATE_STRICT:
@@ -75,12 +75,12 @@ class GenerateActions implements DocumentSaver {
             if (userAction == UserAction.CREATE) {
                 // Create action will override provided ids values with generated values (if any)...
                 createActions = new CreateActions(userDocument, date, source, userName, context.getDataCluster(),
-                        context.getDataModelName(), saverSource);
+                        context.getDataModelName(), saverSource, userAction);
             } else {
                 // CASE_STRICT:
                 // ... and this will *not* override provided ids values with generated values (if any).
                 createActions = new CreateWithProvidedIdActions(userDocument, date, source, userName, context.getDataCluster(),
-                        context.getDataModelName(), saverSource);
+                        context.getDataModelName(), saverSource, userAction);
             }
             Action createAction = new OverrideCreateAction(date, source, userName, userDocument, type);
             Collection<FieldMetadata> keys = type.getKeyFields();
@@ -140,7 +140,7 @@ class GenerateActions implements DocumentSaver {
                     userDocument, date, context.preserveOldCollectionValues(), context.getPartialUpdateIndex(),
                     context.getPartialUpdatePivot(), context.getPartialUpdateKey(), source, userName,
                     context.generateTouchActions(), metadataRepository, context.getDataCluster(), context.getDataModelName(),
-                    saverSource);
+                    saverSource, userAction);
             actions = type.accept(partialUpdateActionCreator);
             break;
         case PARTIAL_DELETE:
@@ -148,7 +148,7 @@ class GenerateActions implements DocumentSaver {
                     context.getPartialUpdateKey()).simulateDelete();
             updateActions = new UpdateActionCreator(databaseDocument, userDocument, date, source, userName,
                     context.generateTouchActions(), metadataRepository,context.getDataCluster(),
-                    context.getDataModelName(), saverSource);
+                    context.getDataModelName(), saverSource, context.getUserAction());
             updateActions.setPartialDelete(true);
             actions = type.accept(updateActions);
             break;

@@ -10,29 +10,32 @@
 
 package com.amalto.core.save.context;
 
-import com.amalto.core.history.MutableDocument;
-import com.amalto.core.history.accessor.Accessor;
-import com.amalto.core.history.action.FieldUpdateAction;
+import java.util.Date;
+
 import org.apache.commons.lang.StringUtils;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 
-import java.util.Date;
+import com.amalto.core.history.MutableDocument;
+import com.amalto.core.history.accessor.Accessor;
+import com.amalto.core.history.action.FieldUpdateAction;
+import com.amalto.core.save.UserAction;
 
 public class CreateWithProvidedIdActions extends CreateActions {
 
-    CreateWithProvidedIdActions(MutableDocument document, Date date, String source, String userName, String dataCluster, String dataModel, SaverSource saverSource) {
-        super(document, date, source, userName, dataCluster, dataModel, saverSource);
+    CreateWithProvidedIdActions(MutableDocument document, Date date, String source, String userName, String dataCluster,
+            String dataModel, SaverSource saverSource, UserAction userAction) {
+        super(document, date, source, userName, dataCluster, dataModel, saverSource, userAction);
     }
 
     @Override
-    protected void handleField(FieldMetadata field, boolean doCreate, String currentPath) {
+    protected void handleField(FieldMetadata field, boolean doCreate, String currentPath, UserAction userAction) {
         if (field.isKey()) {
             Accessor accessor = document.createAccessor(currentPath);
             if (accessor.exist()) {
-                actions.add(new FieldUpdateAction(date, source, userName, currentPath, StringUtils.EMPTY, accessor.get(), field));
+                actions.add(new FieldUpdateAction(date, source, userName, currentPath, StringUtils.EMPTY, accessor.get(), field, userAction));
                 return;
             }
         }
-        super.handleField(field, doCreate, currentPath);
+        super.handleField(field, doCreate, currentPath, userAction);
     }
 }

@@ -25,9 +25,9 @@ import org.talend.mdm.commmon.metadata.FieldMetadata;
 import com.amalto.core.history.Action;
 import com.amalto.core.history.FieldAction;
 import com.amalto.core.history.MutableDocument;
-import com.amalto.core.history.accessor.Accessor;
 import com.amalto.core.history.action.FieldUpdateAction;
 import com.amalto.core.history.action.NoOpAction;
+import com.amalto.core.save.UserAction;
 
 abstract class AbstractChangeTypeAction implements FieldAction {
 
@@ -49,8 +49,10 @@ abstract class AbstractChangeTypeAction implements FieldAction {
 
     private final List<Action> impliedActions;
 
+    private final UserAction userAction;
+
     protected AbstractChangeTypeAction(MutableDocument document, Date date, String source, String userName, String path,
-            ComplexTypeMetadata previousType, ComplexTypeMetadata newType, FieldMetadata field) {
+            ComplexTypeMetadata previousType, ComplexTypeMetadata newType, FieldMetadata field, UserAction userAction) {
         this.source = source;
         this.date = date;
         this.userName = userName;
@@ -58,6 +60,7 @@ abstract class AbstractChangeTypeAction implements FieldAction {
         this.newType = newType;
         this.previousType = previousType;
         this.field = field;
+        this.userAction = userAction;
         // Compute paths to fields that changed from previous type (only if type changed).
         Set<String> pathToClean = new TreeSet<String>();
         hasChangedType = previousType != newType || !previousType.getName().equals(newType.getName());
@@ -76,7 +79,7 @@ abstract class AbstractChangeTypeAction implements FieldAction {
                     for (String currentPathToDelete : indexedPathToClean) {
                         String deletedPath = path + '/' + currentPathToDelete;
                         String oldValue = document.createAccessor(deletedPath).get();
-                        impliedActions.add(new FieldUpdateAction(date, source, userName, deletedPath, oldValue, null, field));
+                        impliedActions.add(new FieldUpdateAction(date, source, userName, deletedPath, oldValue, null, field, userAction));
                     }
                 }
             }

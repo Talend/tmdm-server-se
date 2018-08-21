@@ -12,18 +12,23 @@
 package com.amalto.core.save.context;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
 import org.talend.mdm.commmon.util.core.ICoreConstants;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
 
 import com.amalto.core.history.Action;
 import com.amalto.core.history.MutableDocument;
+import com.amalto.core.history.action.FieldUpdateAction;
 import com.amalto.core.save.DocumentSaverContext;
 import com.amalto.core.save.SaverSession;
 import com.amalto.core.save.UserAction;
@@ -31,6 +36,10 @@ import com.amalto.core.save.UserAction;
 class Security implements DocumentSaver {
 
     private static final Logger LOGGER = Logger.getLogger(Security.class);
+
+    private static final String NO_ADD = "X_No_Add"; //$NON-NLS-1$
+
+    private static final String NO_REMOVE = "X_No_Remove"; //$NON-NLS-1$
 
     private final DocumentSaver next;
 
@@ -81,9 +90,10 @@ class Security implements DocumentSaver {
 
             // Then check security on all actions (updates...)
             Set<Action> failedActions = new HashSet<Action>();
+            Map<String, ForeignKeyInfoWrapper> fkCheckMap = getFkStatusInfoMap(context);
             for (Action action : actions) {
                 // do not check replace action as it's an update.
-                if (!(action instanceof OverrideReplaceAction) && !action.isAllowed(currentUserRoles)) {
+                if (!(action instanceof OverrideReplaceAction) && (isFkUpdateDenied(action, fkCheckMap, currentUserRoles) || !action.isAllowed(currentUserRoles))) {
                     failedActions.add(action);
                 }
             }
@@ -119,6 +129,70 @@ class Security implements DocumentSaver {
         next.save(session, context);
     }
 
+    private boolean isFkUpdateDenied(Action action, Map<String, ForeignKeyInfoWrapper> fkCheckMap, Set<String> roles) {
+        if (action instanceof FieldUpdateAction) {
+            FieldUpdateAction entry = (FieldUpdateAction) action;
+            if (entry.getField() instanceof ReferenceFieldMetadata && entry.getField().isMany() && entry.getUserAction() != UserAction.UPDATE) {
+                String path = entry.getPath().replaceAll("\\[\\d*\\]", StringUtils.EMPTY);//$NON-NLS-1$
+                if (fkCheckMap.containsKey(path)) {
+                    ForeignKeyInfoWrapper fkItem = fkCheckMap.get(path);
+                    String denyRight = getDenyAddOrRemoveRight(entry, roles);
+                    int oldValueSize = fkItem.getOldValueSet().size();
+                    int newValueSize = fkItem.getNewValueSet().size();
+                    if (NO_ADD.equals(denyRight) && oldValueSize < newValueSize) {//$NON-NLS-1$
+                        return true;
+                    } else if (NO_REMOVE.equals(denyRight) && oldValueSize > newValueSize) {//$NON-NLS-1$
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private String getDenyAddOrRemoveRight(FieldUpdateAction updatedField, Set<String> roles) {
+        List<String> allowedUserRoles = updatedField.getField().getWriteUsers();
+        for (String role : roles) {
+            if (allowedUserRoles.contains(role)) {
+                List<String> noAddRoles = updatedField.getField().getNoAddRoles();
+                List<String> noRemoveRoles = updatedField.getField().getNoRemoveRoles();
+                if (noRemoveRoles != null && noRemoveRoles.contains(role)) {
+                    return NO_REMOVE;//$NON-NLS-1$
+                } else if (noAddRoles != null && noAddRoles.contains(role)) {
+                    return NO_ADD;//$NON-NLS-1$
+                }
+            }
+        }
+        return StringUtils.EMPTY;
+    }
+
+    private Map<String, ForeignKeyInfoWrapper> getFkStatusInfoMap(DocumentSaverContext context) {
+        Map<String, ForeignKeyInfoWrapper> fkCheckMap = new HashMap<>();
+        List<Action> actions = context.getActions();
+        for (Action item : actions) {
+            if (item instanceof FieldUpdateAction) {
+                FieldUpdateAction entry = (FieldUpdateAction) item;
+                String path = entry.getPath().replaceAll("\\[\\d*\\]", StringUtils.EMPTY);//$NON-NLS-1$
+                String oldValue = entry.getOldValue();
+                String newValue = entry.getNewValue();
+                ForeignKeyInfoWrapper fkItem = null;
+                if (fkCheckMap.containsKey(path)) {
+                    fkItem = fkCheckMap.get(path);
+                } else {
+                    fkItem = new ForeignKeyInfoWrapper(path);
+                    fkCheckMap.put(path, fkItem);
+                }
+                if (StringUtils.isNotEmpty(oldValue)) {
+                    fkItem.getOldValueSet().add(oldValue);
+                }
+                if (StringUtils.isNotEmpty(newValue)) {
+                    fkItem.getNewValueSet().add(newValue);
+                }
+            }
+        }
+        return fkCheckMap;
+    }
+
     public String[] getSavedId() {
         return next.getSavedId();
     }
@@ -133,6 +207,28 @@ class Security implements DocumentSaver {
 
     public String getBeforeSavingMessageType() {
         return next.getBeforeSavingMessageType();
+    }
+
+    private static class ForeignKeyInfoWrapper {
+
+        private final String key;
+
+        private Set<String> oldValueSet = new HashSet<>();
+
+        private Set<String> newValueSet = new HashSet<>();
+
+        public ForeignKeyInfoWrapper(String key) {
+            super();
+            this.key = key;
+        }
+
+        public Set<String> getOldValueSet() {
+            return oldValueSet;
+        }
+
+        public Set<String> getNewValueSet() {
+            return newValueSet;
+        }
     }
 
     // Special action implementation for reverting an underlying action when perform() is called.

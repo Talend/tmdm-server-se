@@ -11,20 +11,34 @@
 
 package com.amalto.core.save.context;
 
-import com.amalto.core.history.DOMMutableDocument;
-import com.amalto.core.load.io.ResettableStringWriter;
-import com.amalto.core.storage.StorageMetadataUtils;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
+import java.util.StringTokenizer;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.FieldMetadata;
+import org.talend.mdm.commmon.metadata.MetadataRepository;
+import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
+import org.talend.mdm.commmon.metadata.Types;
 import org.w3c.dom.Node;
+
 import com.amalto.core.history.Action;
+import com.amalto.core.history.DOMMutableDocument;
 import com.amalto.core.history.MutableDocument;
 import com.amalto.core.history.accessor.Accessor;
 import com.amalto.core.history.action.FieldInsertAction;
 import com.amalto.core.history.action.FieldUpdateAction;
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
-import org.talend.mdm.commmon.metadata.*;
-
-import java.util.*;
+import com.amalto.core.load.io.ResettableStringWriter;
+import com.amalto.core.save.UserAction;
+import com.amalto.core.storage.StorageMetadataUtils;
 
 public class PartialUpdateActionCreator extends UpdateActionCreator {
 
@@ -71,7 +85,8 @@ public class PartialUpdateActionCreator extends UpdateActionCreator {
                                       MetadataRepository repository,
                                       String dataCluster,
                                       String dataModel,
-                                      SaverSource saverSource) {
+                                      SaverSource saverSource,
+                                      UserAction userAction) {
         super(originalDocument,
                 newDocument,
                 date,
@@ -83,7 +98,8 @@ public class PartialUpdateActionCreator extends UpdateActionCreator {
                 repository,
                 dataCluster,
                 dataModel,
-                saverSource);
+                saverSource,
+                userAction);
         this.preserveCollectionOldValues = preserveCollectionOldValues;
         if (!pivot.isEmpty()) {
             // Pivot MUST NOT end with '/' and key MUST start with '/' (see TMDM-4381).
@@ -129,9 +145,9 @@ public class PartialUpdateActionCreator extends UpdateActionCreator {
 
     public PartialUpdateActionCreator(MutableDocument originalDocument, MutableDocument newDocument, Date date,
             boolean preserveCollectionOldValues, int insertIndex, String pivot, String key, String source, String userName,
-            boolean generateTouchActions, MetadataRepository repository) {
+            boolean generateTouchActions, MetadataRepository repository, UserAction userAction) {
         this(originalDocument, newDocument, date, preserveCollectionOldValues, insertIndex, pivot, key, source, userName,
-                generateTouchActions, repository, null, null, null);
+                generateTouchActions, repository, null, null, null, userAction);
     }
 
     @Override
@@ -351,9 +367,9 @@ public class PartialUpdateActionCreator extends UpdateActionCreator {
                 if (newValue != null && !newValue.isEmpty()) {
                     generateNoOp(lastMatchPath);
                     if (insertIndex < 0) {
-                        actions.add(new FieldUpdateAction(date, source, userName, leftPath, StringUtils.EMPTY, newValue, comparedField));
+                        actions.add(new FieldUpdateAction(date, source, userName, leftPath, StringUtils.EMPTY, newValue, comparedField, this.getUserAction()));
                     } else {
-                        actions.add(new FieldInsertAction(date, source, userName, leftPath, StringUtils.EMPTY, newValue, comparedField));
+                        actions.add(new FieldInsertAction(date, source, userName, leftPath, StringUtils.EMPTY, newValue, comparedField, this.getUserAction()));
                     }
                 }
             }
@@ -374,12 +390,12 @@ public class PartialUpdateActionCreator extends UpdateActionCreator {
                                 int newIndex = originalFieldToLastIndex.get(comparedField);
                                 enterLeft(comparedField, (newIndex + 1));
                                 actions.add(new FieldUpdateAction(date, source, userName, getLeftPath(), StringUtils.EMPTY,
-                                        newValue, comparedField));
+                                        newValue, comparedField, this.getUserAction()));
                                 originalFieldToLastIndex.put(comparedField, newIndex + 1);
                             } else {
                                 enterLeft(comparedField, insertIndex);
                                 actions.add(new FieldInsertAction(date, source, userName, getLeftPath(), StringUtils.EMPTY,
-                                        newValue, comparedField));
+                                        newValue, comparedField, this.getUserAction()));
                             }
                         }
                     } else if (oldValue != null && !oldValue.equals(newValue)) {
@@ -401,9 +417,9 @@ public class PartialUpdateActionCreator extends UpdateActionCreator {
                             }
                         }
                         if (insertIndex < 0) {
-                            actions.add(new FieldUpdateAction(date, source, userName, leftPath, oldValue, newValue, comparedField));
+                            actions.add(new FieldUpdateAction(date, source, userName, leftPath, oldValue, newValue, comparedField, this.getUserAction()));
                         } else {
-                            actions.add(new FieldInsertAction(date, source, userName, leftPath, oldValue, newValue, comparedField));
+                            actions.add(new FieldInsertAction(date, source, userName, leftPath, oldValue, newValue, comparedField, this.getUserAction()));
                         }
                     }
                 }

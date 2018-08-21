@@ -11,13 +11,17 @@
 
 package com.amalto.core.history.action;
 
-import com.amalto.core.history.MutableDocument;
-import com.amalto.core.history.accessor.Accessor;
-import org.talend.mdm.commmon.metadata.FieldMetadata;
-
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+
+import org.apache.commons.lang.StringUtils;
+import org.talend.mdm.commmon.metadata.FieldMetadata;
+import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
+
+import com.amalto.core.history.MutableDocument;
+import com.amalto.core.history.accessor.Accessor;
+import com.amalto.core.save.UserAction;
 
 /**
  * Action performed on a field with maxOccurs = 1.
@@ -38,18 +42,22 @@ public class FieldUpdateAction extends AbstractFieldAction {
 
     protected final FieldMetadata updatedField;
 
+    protected final UserAction userAction;
+
     public FieldUpdateAction(Date date,
                              String source,
                              String userName,
                              String path,
                              String oldValue,
                              String newValue,
-                             FieldMetadata updatedField) {
+                             FieldMetadata updatedField,
+                             UserAction userAction) {
         super(date, source, userName, updatedField);
         this.path = path;
         this.updatedField = updatedField;
         this.oldValue = oldValue;
         this.newValue = newValue;
+        this.userAction = userAction;
     }
 
     public MutableDocument perform(MutableDocument document) {
@@ -70,7 +78,7 @@ public class FieldUpdateAction extends AbstractFieldAction {
         return document;
     }
 
-    protected String getOldValue() {
+    public String getOldValue() {
         return oldValue;
     }
 
@@ -120,12 +128,46 @@ public class FieldUpdateAction extends AbstractFieldAction {
         boolean isAllowed = false;
         List<String> allowedUserRoles = updatedField.getWriteUsers();
         for (String role : roles) {
-            if (allowedUserRoles.contains(role)) {
+            if (allowedUserRoles.contains(role) && hasAddOrRemoveRights(role)) {
                 isAllowed = true;
                 break;
             }
         }
         return isAllowed;
+    }
+    
+    private boolean hasAddOrRemoveRights(String role) {
+        if (updatedField instanceof ReferenceFieldMetadata && updatedField.isMany()) {
+            List<String> noAddRoles = updatedField.getNoAddRoles();
+            List<String> noRemoveRoles = updatedField.getNoRemoveRoles();
+            if (noAddRoles == null || noAddRoles.isEmpty() || noRemoveRoles == null || noRemoveRoles.isEmpty()) {
+                return true;
+            }
+            switch (userAction) {
+            case CREATE:
+                if (noAddRoles.contains(role)) {
+                    return false;
+                }
+                break;
+            case REPLACE:
+                if (hasRemoveForeignKeyRight(noRemoveRoles, role)) {
+                    return false;
+                } else if (hasAddForeignKeyRight(noAddRoles, role)) {
+                    return false;
+                }
+                break;
+            default:
+            }
+        }
+        return true;
+    }
+
+    private boolean hasAddForeignKeyRight(List<String> noAddRoles, String role) {
+        return noAddRoles.contains(role) && StringUtils.isNotEmpty(newValue) && StringUtils.isEmpty(oldValue);
+    }
+
+    private boolean hasRemoveForeignKeyRight(List<String> noRemoveRoles, String role) {
+        return noRemoveRoles.contains(role) && StringUtils.isEmpty(newValue) && StringUtils.isNotEmpty(oldValue);
     }
 
     public String getDetails() {
@@ -139,6 +181,10 @@ public class FieldUpdateAction extends AbstractFieldAction {
                 ", oldValue='" + getOldValue() + '\'' + //$NON-NLS-1$
                 ", newValue='" + getNewValue() + '\'' + //$NON-NLS-1$
                 '}';
+    }
+
+    public UserAction getUserAction() {
+        return userAction;
     }
 
     @Override

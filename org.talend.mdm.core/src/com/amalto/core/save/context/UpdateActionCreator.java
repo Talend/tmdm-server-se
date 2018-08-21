@@ -45,6 +45,7 @@ import com.amalto.core.history.accessor.Accessor;
 import com.amalto.core.history.action.FieldInsertAction;
 import com.amalto.core.history.action.FieldUpdateAction;
 import com.amalto.core.query.user.UserQueryBuilder;
+import com.amalto.core.save.UserAction;
 import com.amalto.core.server.ServerContext;
 import com.amalto.core.server.StorageAdmin;
 import com.amalto.core.storage.Storage;
@@ -101,6 +102,8 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
 
     private boolean isCreateAction;
 
+    private UserAction userAction;
+
     public UpdateActionCreator(MutableDocument originalDocument,
                                MutableDocument newDocument,
                                Date date,
@@ -110,7 +113,8 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
                                MetadataRepository repository,
                                String dataCluster,
                                String dataModel,
-                               SaverSource saverSource) {
+                               SaverSource saverSource,
+                               UserAction userAction) {
         this(originalDocument,
                 newDocument,
                 date,
@@ -122,7 +126,8 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
                 repository,
                 dataCluster,
                 dataModel,
-                saverSource);
+                saverSource,
+                userAction);
     }
 
     public UpdateActionCreator(MutableDocument originalDocument,
@@ -135,7 +140,8 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
                                MetadataRepository repository,
                                String dataCluster,
                                String dataModel,
-                               SaverSource saverSource) {
+                               SaverSource saverSource,
+                               UserAction userAction) {
         this(originalDocument,
                 newDocument,
                 date,
@@ -147,7 +153,8 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
                 repository,
                 dataCluster,
                 dataModel,
-                saverSource);
+                saverSource,
+                userAction);
     }
 
     public UpdateActionCreator(MutableDocument originalDocument,
@@ -161,7 +168,8 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
                                MetadataRepository repository,
                                String dataCluster,
                                String dataModel,
-                               SaverSource saverSource) {
+                               SaverSource saverSource,
+                               UserAction userAction) {
         this.preserveCollectionOldValues = preserveCollectionOldValues;
         this.originalDocument = originalDocument;
         this.newDocument = newDocument;
@@ -174,6 +182,7 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
         this.dataCluster = dataCluster;
         this.dataModel = dataModel;
         this.saverSource = saverSource;
+        this.userAction = userAction;
     }
 
     @Override
@@ -313,19 +322,19 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
             if (newAccessor.exist()) { // new accessor exist
                 if (newAccessor.get() != null && !newAccessor.get().isEmpty()) { // Empty accessor means no op to ensure legacy behavior
                     generateNoOp(lastMatchPath);
-                    actions.add(new FieldUpdateAction(date, source, userName, path, StringUtils.EMPTY, newAccessor.get(), comparedField));
+                    actions.add(new FieldUpdateAction(date, source, userName, path, StringUtils.EMPTY, newAccessor.get(), comparedField, userAction));
                     generateNoOp(path);
                 } else if (EUUIDCustomType.AUTO_INCREMENT.getName().equalsIgnoreCase(comparedField.getType().getName())
                         && isCreateAction == false) {
                     generateNoOp(lastMatchPath);
                     String conceptName = rootTypeName + "." + comparedField.getName().replaceAll("/", "."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                     String autoIncrementValue = saverSource.nextAutoIncrementId(dataCluster, dataModel, conceptName);
-                    actions.add(new FieldUpdateAction(date, source, userName, path, StringUtils.EMPTY, autoIncrementValue, comparedField));
+                    actions.add(new FieldUpdateAction(date, source, userName, path, StringUtils.EMPTY, autoIncrementValue, comparedField, userAction));
                     generateNoOp(path);
                 } else if (EUUIDCustomType.UUID.getName().equalsIgnoreCase(comparedField.getType().getName())
                         && isCreateAction == false) {
                     String uuidValue = UUID.randomUUID().toString();
-                    actions.add(new FieldUpdateAction(date, source, userName, path, StringUtils.EMPTY, uuidValue, comparedField));
+                    actions.add(new FieldUpdateAction(date, source, userName, path, StringUtils.EMPTY, uuidValue, comparedField, userAction));
                 }
             }
         } else { // original accessor exist
@@ -352,17 +361,17 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
                         // TMDM-5257: RemoveSimpleTypeNodeWithOccurrence
                         // Null values may happen if accessor is targeting an element that contains other elements
                         actions.add(new FieldUpdateAction(date, source, userName, path, oldValue == null ? StringUtils.EMPTY
-                                : oldValue, null, comparedField));
+                                : oldValue, null, comparedField, userAction));
                     }
                 }
                 else if(!comparedField.isMany() && this.newDocument.considerMissingElementsAsEmpty()){
-                    actions.add(new FieldUpdateAction(date, source, userName, path, oldValue == null ? StringUtils.EMPTY : oldValue, StringUtils.EMPTY, comparedField));
+                    actions.add(new FieldUpdateAction(date, source, userName, path, oldValue == null ? StringUtils.EMPTY : oldValue, StringUtils.EMPTY, comparedField, userAction));
                 }
                 
                 if (isDeletingContainedElement) {
                     // Null values may happen if accessor is targeting an element that contains other elements
                     actions.add(new FieldUpdateAction(date, source, userName, path, oldValue == null ? StringUtils.EMPTY
-                            : oldValue, null, comparedField));
+                            : oldValue, null, comparedField, userAction));
                 }
             } else { // new accessor exist
                 String newValue = newAccessor.get();
@@ -375,7 +384,7 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
                         String previousPathElement = this.path.pop();
                         int insertIndex = getInsertIndex(comparedField);
                         this.path.push(comparedField.getName() + "[" + insertIndex + "]");
-                        actions.add(new FieldInsertAction(date, source, userName, getLeftPath(), StringUtils.EMPTY, newValue, comparedField));
+                        actions.add(new FieldInsertAction(date, source, userName, getLeftPath(), StringUtils.EMPTY, newValue, comparedField, userAction));
                         this.path.pop();
                         this.path.push(previousPathElement);
                     } else if (oldValue != null && !oldValue.equals(newValue)) {
@@ -404,7 +413,7 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
                                 newValue = UUID.randomUUID().toString();
                             }
                         }
-                        actions.add(new FieldUpdateAction(date, source, userName, path, oldValue, newValue.isEmpty() ? null : newValue, comparedField));
+                        actions.add(new FieldUpdateAction(date, source, userName, path, oldValue, newValue.isEmpty() ? null : newValue, comparedField, userAction));
                     } else if (oldValue != null && oldValue.equals(newValue)) {
                         generateNoOp(path);
                     }
@@ -442,6 +451,10 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
         this.isCreateAction = isCreateAction;
     }
 
+    public UserAction getUserAction() {
+        return userAction;
+    }
+
     private class ContainedTypeClosure implements Closure {
 
         private final ContainedTypeFieldMetadata containedField;
@@ -475,7 +488,7 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
                                 + "' is not assignable from type '" + newTypeMetadata.getName() + "'");
                     }
                     if (!newTypeMetadata.getSuperTypes().isEmpty() || !newTypeMetadata.getSubTypes().isEmpty()) {
-                        actions.addAll(ChangeTypeAction.create(originalDocument, date, source, userName, getLeftPath(), previousTypeMetadata, newTypeMetadata, field));
+                        actions.addAll(ChangeTypeAction.create(originalDocument, date, source, userName, getLeftPath(), previousTypeMetadata, newTypeMetadata, field, userAction));
                     } else if (LOGGER.isDebugEnabled()) {
                         LOGGER.debug("Ignore type change on '" + getLeftPath() + "': type '" + newTypeMetadata.getName() + "' does not belong to an inheritance tree.");
                     }
@@ -550,7 +563,7 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
                         // Record the type change information (if applicable).
                         if (!newTypeMetadata.getSuperTypes().isEmpty() || !newTypeMetadata.getSubTypes().isEmpty()) {
                             actions.addAll(ChangeReferenceTypeAction.create(originalDocument, date, source, userName,
-                                    getLeftPath(), previousTypeMetadata, newTypeMetadata, field));
+                                    getLeftPath(), previousTypeMetadata, newTypeMetadata, field, userAction));
                         } else if (LOGGER.isDebugEnabled()) {
                             LOGGER.debug("Ignore reference type change on '" + getLeftPath() + "': type '"
                                     + newTypeMetadata.getName() + "' does not belong to an inheritance tree.");

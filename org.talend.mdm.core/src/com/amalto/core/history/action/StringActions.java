@@ -52,7 +52,8 @@ public class StringActions {
                     delegate.path,
                     delegate.oldValue,
                     delegate.newValue,
-                    delegate.updatedField);
+                    delegate.updatedField,
+                    delegate.userAction);
             this.separator = separator;
         }
 
@@ -74,7 +75,8 @@ public class StringActions {
                     delegate.path,
                     delegate.oldValue,
                     delegate.newValue,
-                    delegate.updatedField);
+                    delegate.updatedField,
+                    delegate.userAction);
         }
 
         @Override
@@ -97,7 +99,8 @@ public class StringActions {
                     delegate.path,
                     delegate.oldValue,
                     delegate.newValue,
-                    delegate.updatedField);
+                    delegate.updatedField,
+                    delegate.userAction);
         }
 
         @Override
@@ -120,7 +123,8 @@ public class StringActions {
                     delegate.path,
                     delegate.oldValue,
                     mostCommonValue,
-                    delegate.updatedField);
+                    delegate.updatedField,
+                    delegate.userAction);
         }
 
         private static Action mostCommon(Collection<FieldUpdateAction> actions) {

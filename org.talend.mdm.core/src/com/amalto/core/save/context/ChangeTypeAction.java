@@ -23,19 +23,20 @@ import org.w3c.dom.Document;
 import com.amalto.core.history.Action;
 import com.amalto.core.history.MutableDocument;
 import com.amalto.core.history.accessor.Accessor;
+import com.amalto.core.save.UserAction;
 
 class ChangeTypeAction extends AbstractChangeTypeAction {
 
     private ChangeTypeAction(MutableDocument document, Date date, String source, String userName, String path, ComplexTypeMetadata previousType,
-            ComplexTypeMetadata newType, FieldMetadata field) {
-        super(document, date, source, userName, path, previousType, newType, field);
+            ComplexTypeMetadata newType, FieldMetadata field, UserAction userAction) {
+        super(document, date, source, userName, path, previousType, newType, field, userAction);
     }
 
     public static List<Action> create(MutableDocument document, Date date, String source, String userName, String path,
-            ComplexTypeMetadata previousType, ComplexTypeMetadata newType, FieldMetadata field) {
+            ComplexTypeMetadata previousType, ComplexTypeMetadata newType, FieldMetadata field, UserAction userAction) {
         // Create action
         List<Action> actions = new LinkedList<Action>();
-        ChangeTypeAction typeAction = new ChangeTypeAction(document, date, source, userName, path, previousType, newType, field);
+        ChangeTypeAction typeAction = new ChangeTypeAction(document, date, source, userName, path, previousType, newType, field, userAction);
         actions.addAll(typeAction.getImpliedActions());
         actions.add(typeAction);
         return actions;

@@ -25,6 +25,8 @@ import com.amalto.core.history.Action;
 import com.amalto.core.history.MutableDocument;
 import com.amalto.core.history.accessor.Accessor;
 import com.amalto.core.history.action.FieldUpdateAction;
+import com.amalto.core.save.UserAction;
+
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
@@ -62,6 +64,8 @@ class CreateActions extends DefaultMetadataVisitor<List<Action>> {
 
     private final String dataModel;
 
+    private final UserAction userAction;
+
     private String rootTypeName = null;
 
     private static class PathElement {
@@ -82,7 +86,8 @@ class CreateActions extends DefaultMetadataVisitor<List<Action>> {
                   String userName,
                   String dataCluster,
                   String dataModel,
-                  SaverSource saverSource) {
+                  SaverSource saverSource,
+                  UserAction userAction) {
         this.document = document;
         this.date = date;
         this.source = source;
@@ -90,6 +95,7 @@ class CreateActions extends DefaultMetadataVisitor<List<Action>> {
         this.dataCluster = dataCluster;
         this.dataModel = dataModel;
         this.saverSource = saverSource;
+        this.userAction = userAction;
     }
 
     private String getRealPath() {
@@ -173,12 +179,12 @@ class CreateActions extends DefaultMetadataVisitor<List<Action>> {
         if (enumField.isMany() && size > 1) {
             for (int i = 1; i <= size; i++) {
                 path.push(new PathElement(enumField, i));
-                handleField(enumField, doCreate, xpath);
+                handleField(enumField, doCreate, xpath, userAction);
                 path.pop();
             }
         } else {
             path.push(new PathElement(enumField, null));
-            handleField(enumField, doCreate, xpath);
+            handleField(enumField, doCreate, xpath, userAction);
             path.pop();
         }
         return actions;
@@ -194,12 +200,12 @@ class CreateActions extends DefaultMetadataVisitor<List<Action>> {
         if (simpleField.isMany() && size > 1) {
             for (int i = 1; i <= size; i++) {
                 path.push(new PathElement(simpleField, i));
-                handleField(simpleField, doCreate, xpath);
+                handleField(simpleField, doCreate, xpath, userAction);
                 path.pop();
             }
         } else {
             path.push(new PathElement(simpleField, null));
-            handleField(simpleField, doCreate, xpath);
+            handleField(simpleField, doCreate, xpath, userAction);
             path.pop();
         }
         return super.visit(simpleField);
@@ -236,7 +242,7 @@ class CreateActions extends DefaultMetadataVisitor<List<Action>> {
         return doCreate;
     }
 
-    protected void handleField(FieldMetadata field, boolean doCreate, String currentPath) {
+    protected void handleField(FieldMetadata field, boolean doCreate, String currentPath, UserAction userAction) {
         // Handle UUID and AutoIncrement elements (this code also ensures any previous value is overwritten, see
         // TMDM-3900).
         // Note #2: This code generate values even for non-mandatory fields (but this is expected behavior).
@@ -244,10 +250,10 @@ class CreateActions extends DefaultMetadataVisitor<List<Action>> {
             String conceptName = rootTypeName + "." + field.getName().replaceAll("/", "."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             String autoIncrementValue = saverSource.nextAutoIncrementId(dataCluster, dataModel, conceptName);
             actions.add(new FieldUpdateAction(date, source, userName, currentPath, StringUtils.EMPTY, autoIncrementValue,
-                    field));
+                    field, userAction));
         } else if (EUUIDCustomType.UUID.getName().equalsIgnoreCase(field.getType().getName()) && doCreate) {
             String uuidValue = UUID.randomUUID().toString();
-            actions.add(new FieldUpdateAction(date, source, userName, currentPath, StringUtils.EMPTY, uuidValue, field));
+            actions.add(new FieldUpdateAction(date, source, userName, currentPath, StringUtils.EMPTY, uuidValue, field, userAction));
         } else {
             if (field.isKey()) {
                 Accessor accessor = document.createAccessor(currentPath);

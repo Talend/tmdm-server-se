@@ -11,19 +11,21 @@
 
 package com.amalto.core.history.action;
 
-import com.amalto.core.history.MutableDocument;
-import com.amalto.core.history.accessor.Accessor;
+import java.util.Date;
+
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 
-import java.util.Date;
+import com.amalto.core.history.MutableDocument;
+import com.amalto.core.history.accessor.Accessor;
+import com.amalto.core.save.UserAction;
 
 /**
  * Action performed on a field with maxOccurs = 1.
  */
 public class FieldInsertAction extends FieldUpdateAction {
 
-    public FieldInsertAction(Date date, String source, String userName, String field, String oldValue, String newValue, FieldMetadata updatedField) {
-        super(date, source, userName, field, oldValue, newValue, updatedField);
+    public FieldInsertAction(Date date, String source, String userName, String field, String oldValue, String newValue, FieldMetadata updatedField, UserAction userAction) {
+        super(date, source, userName, field, oldValue, newValue, updatedField, userAction);
     }
 
     public MutableDocument perform(MutableDocument document) {

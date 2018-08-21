@@ -21,6 +21,7 @@ import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -148,6 +149,7 @@ import com.amalto.core.storage.StorageType;
 import com.amalto.core.storage.datasource.DataSource;
 import com.amalto.core.storage.datasource.DataSourceDefinition;
 import com.amalto.core.storage.datasource.RDBMSDataSource;
+import com.amalto.core.storage.datasource.RDBMSDataSource.DataSourceDialect;
 import com.amalto.core.storage.hibernate.mapping.MDMDenormalizedTable;
 import com.amalto.core.storage.hibernate.mapping.MDMTable;
 import com.amalto.core.storage.prepare.FullTextIndexCleaner;
@@ -1235,26 +1237,73 @@ public class HibernateStorage implements Storage {
         }
         return tablesToDrop;
     }
-    
+
+    private void setForeignKeyChecks(Connection connection, Set<String> tablesToDrop) throws SQLException {
+        if (dataSource.getDialectName() == DataSourceDialect.MYSQL) {
+            enableForeignKeyChecksForMySQL(connection, false);
+        } else if (dataSource.getDialectName() == DataSourceDialect.SQL_SERVER) {
+            for (String table : tablesToDrop) {
+                Statement statement = connection.createStatement();
+                try {
+                    ResultSet resultSet = statement.executeQuery(
+                            "SELECT 'ALTER TABLE ' + b.name + ' DROP CONSTRAINT ' + a.name +';'  from sysobjects a ,sysobjects b where a.xtype ='f' and a.parent_obj = b.id and b.name='" //$NON-NLS-1$
+                                    + table + "'; "); //$NON-NLS-1$
+                    while (resultSet.next()) {
+                        Statement setCheckConstraintStatement = connection.createStatement();
+                        try {
+                            setCheckConstraintStatement.executeUpdate(resultSet.getString(1));
+                        } finally {
+                            setCheckConstraintStatement.close();
+                        }
+                    }
+                } finally {
+                    statement.close();
+                }
+            }
+        }
+    }
+
+    private void enableForeignKeyChecksForMySQL(Connection connection, boolean check) throws SQLException {
+        Statement statement = connection.createStatement();
+        try {
+            String sql = "SET FOREIGN_KEY_CHECKS="; //$NON-NLS-1$
+            if (check) {
+                sql += "1"; //$NON-NLS-1$
+            } else {
+                sql += "0"; //$NON-NLS-1$
+            }
+            statement.executeUpdate(sql);
+        } finally {
+            statement.close();
+        }
+    }
+
     private void cleanImpactedTables(List<ComplexTypeMetadata> sortedTypesToDrop) {
         Set<String> tablesToDrop = findTablesToDrop(sortedTypesToDrop);
         int totalCount = tablesToDrop.size();
         int totalRound = 0;
         Connection connection = null;
         try {
-            connection = DriverManager.getConnection(dataSource.getConnectionURL(), dataSource.getUserName(),
-                    dataSource.getPassword());
+            Properties properties = dataSource.getAdvancedPropertiesIncludeUserInfo();
+            connection = DriverManager.getConnection(dataSource.getConnectionURL(), properties);
             int successCount = 0;
+            setForeignKeyChecks(connection, tablesToDrop);
             while (successCount < totalCount && totalRound++ < totalCount) {
                 Set<String> dropedTables = new HashSet<String>();
                 for (String table : tablesToDrop) {
                     Statement statement = connection.createStatement();
                     try {
-                        statement.executeUpdate("DROP TABLE " + table); //$NON-NLS-1$
+                        String dropSql = "DROP TABLE " + table; //$NON-NLS-1$
+                        if (dataSource.getDialectName() == DataSourceDialect.POSTGRES) {
+                            dropSql += " CASCADE"; //$NON-NLS-1$
+                        } else if (dataSource.getDialectName() == DataSourceDialect.ORACLE_10G) {
+                            dropSql += " CASCADE CONSTRAINTS"; //$NON-NLS-1$
+                        }
+                        statement.executeUpdate(dropSql);
                         dropedTables.add(table);
                         successCount++;
                     } catch (SQLException e) {
-                        LOGGER.warn("Could not delete '" + table + "' in round "+ totalRound + "."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                        LOGGER.warn("Could not delete '" + table + "' in round "+ totalRound + ".", e); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                     } finally {
                         statement.close();
                     }
@@ -1268,6 +1317,10 @@ public class HibernateStorage implements Storage {
             throw new RuntimeException("Could not acquire connection to database.", e); //$NON-NLS-1$
         } finally {
             try {
+                if (dataSource.getDialectName() == DataSourceDialect.MYSQL) {
+                    enableForeignKeyChecksForMySQL(connection, true);
+                }
+
                 if (connection != null) {
                     connection.close();
                 }

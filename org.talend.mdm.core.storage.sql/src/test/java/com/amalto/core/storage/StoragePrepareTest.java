@@ -273,7 +273,6 @@ public class StoragePrepareTest extends TestCase {
         ((MockStorageAdmin) ServerContext.INSTANCE.get().getStorageAdmin()).register(storage);
 
         ComplexTypeMetadata factFacturesStg = repository.getComplexType("FactFacturesStg");//$NON-NLS-1$
-        ComplexTypeMetadata Factures = repository.getComplexType("Factures");//$NON-NLS-1$
 
         List<DataRecord> records = new ArrayList<DataRecord>();
         DataRecordReader<String> factory = new XmlStringDataRecordReader();
@@ -500,6 +499,96 @@ public class StoragePrepareTest extends TestCase {
             results.close();
         }
         storage.end();
+    }
+
+    public void testOneToManyForTwoReference() throws Exception {
+        DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS2", STORAGE_NAME);
+        Storage storage = new HibernateStorage("Test", StorageType.MASTER);
+        storage.init(dataSource);
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(StoragePrepareTest.class.getResourceAsStream("Person.xsd"));
+        storage.prepare(repository, true);
+
+        // test table had been created
+        String[] tables = { "PERSON", "SVC_STOPLIST", "X_SYSTEM_XREF_LIST_TYPE", "X_SYSTEM_XREF_TYPE" };
+        String[][] columns = {
+                { "", "X_SVC_PERSON_ID", "X_DOB", "X_FIRST_NAMES", "X_LAST_NAME", "X_UPN", "X_GENDER", "X_ETHNICITY",
+                        "X_SYSTEM_XREF_LIST_X_TALEND_ID", "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" },
+                { "", "X_STOPLISTID", "X_STOP_REASON ", "X_MESSAGE", "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" },
+                { "", "X_TALEND_ID" }, { "", "X_TALEND_ID", "X_SRC_SYSTEM_FK", "X_SRC_KEY", "FK_JIIQNHQ5AHSK6CXHSO6KAK9OB", "POS",
+                        "FK_DPK0DL5HVKM0JSBYSX6P266BT" } };
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+        try {
+            assertDatabaseChange(dataSource, tables, columns, new boolean[] { true, true, true, true });
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+
+        ComplexTypeMetadata person = repository.getComplexType("PERSON");//$NON-NLS-1$
+        ComplexTypeMetadata svcStopList = repository.getComplexType("SVC_STOPLIST");//$NON-NLS-1$
+
+        // test data had been added
+        List<DataRecord> records = new ArrayList<DataRecord>();
+        records.add(factory.read(repository, person,
+                "<PERSON><SVC_PERSON_ID>001</SVC_PERSON_ID><DOB>2015-05-23</DOB><FIRST_NAMES>JOHN</FIRST_NAMES><LAST_NAME>SCODOR</LAST_NAME><GENDER>1</GENDER><SYSTEM_XREF_LIST><SYSTEM_XREF><SRC_SYSTEM_FK>KEYONE</SRC_SYSTEM_FK><SRC_KEY>KEYONE</SRC_KEY></SYSTEM_XREF><SYSTEM_XREF><SRC_SYSTEM_FK>KEYTWO</SRC_SYSTEM_FK><SRC_KEY>KEYTWO</SRC_KEY></SYSTEM_XREF></SYSTEM_XREF_LIST></PERSON>")); // $NON-NLS-1$
+        records.add(factory.read(repository, svcStopList,
+                "<SVC_STOPLIST><StopListId>1</StopListId><SYSTEM_AND_KEY><SRC_SYSTEM_FK>KENTHREE</SRC_SYSTEM_FK><SRC_KEY>KEYTHREE</SRC_KEY></SYSTEM_AND_KEY><SYSTEM_AND_KEY><SRC_SYSTEM_FK>KEYFOURE</SRC_SYSTEM_FK><SRC_KEY>KEYFORE</SRC_KEY></SYSTEM_AND_KEY><STOP_REASON>DONOTMATCH</STOP_REASON><MESSAGE>STOP</MESSAGE></SVC_STOPLIST>")); // $NON-NLS-1$
+
+        try {
+            storage.begin();
+            storage.update(records);
+            storage.commit();
+        } catch (Exception e) {
+            fail("Faield to insert data");
+        } finally {
+            storage.end();
+        }
+
+        // test query data
+        UserQueryBuilder qb = from(person);
+        qb.getSelect().getPaging().setLimit(10);
+        storage.begin();
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+            for (DataRecord result : results) {
+                assertEquals("001", result.get("SVC_PERSON_ID"));//$NON-NLS-1$ //$NON-NLS-2$
+            }
+
+        } finally {
+            results.close();
+        }
+        storage.end();
+
+        qb = from(svcStopList);
+        qb.getSelect().getPaging().setLimit(10);
+        storage.begin();
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+            for (DataRecord result : results) {
+                assertEquals("1", result.get("StopListId"));//$NON-NLS-1$ //$NON-NLS-2$
+            }
+
+        } finally {
+            results.close();
+        }
+        storage.end();
+
+        // delte data
+        try {
+            storage.begin();
+            {
+                qb = from(person);
+                storage.delete(qb.getSelect());
+                qb = from(svcStopList);
+                storage.delete(qb.getSelect());
+            }
+            storage.commit();
+        } finally {
+            storage.end();
+        }
+
     }
 
     private void assertDatabaseChange(DataSourceDefinition dataSource, String[] tables, String[][] columns, boolean[] exists)

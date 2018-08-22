@@ -193,7 +193,6 @@ public class JournalDBServiceTest extends TestCase {
         assertEquals("DStar", returnValue.getDataContainer());
         assertEquals("DStar", returnValue.getDataModel());
         assertEquals("Agency", returnValue.getEntity());
-        assertEquals("genericUI.1360032633336", returnValue.getIds());
         assertEquals("2", returnValue.getKey());
         assertEquals(UpdateReportPOJO.OPERATION_TYPE_UPDATE, returnValue.getOperationType());
         assertEquals("genericUI", returnValue.getSource());

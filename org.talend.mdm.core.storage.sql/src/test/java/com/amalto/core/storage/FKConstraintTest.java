@@ -52,7 +52,10 @@ public class FKConstraintTest extends TestCase {
     private static String ENTITY_C1 = "<Entity_C><C_Id>C1</C_Id><C_Name>C1 Name</C_Name></Entity_C>";
     
     private static String ENTITY_C2 = "<Entity_C><C_Id>C2</C_Id><C_Name>C2 Name</C_Name></Entity_C>";
-    
+
+    private static String ENTITY_C3 = "<Entity_C><C_Id>C3</C_Id><C_Name>C3 Name</C_Name></Entity_C>";
+
+    private static String ENTITY_C4 = "<Entity_C><C_Id>C4</C_Id><C_Name>C4 Name</C_Name></Entity_C>";
     
     public void testMaster(){
         LOG.info("Setting up MDM server environment...");
@@ -75,6 +78,7 @@ public class FKConstraintTest extends TestCase {
         List<DataRecord> recordCs = new LinkedList<DataRecord>();
         recordCs.add(factory.read(repository, entityC, ENTITY_C1));
         recordCs.add(factory.read(repository, entityC, ENTITY_C2));      
+        recordCs.add(factory.read(repository, entityC, ENTITY_C3));
         try {
             storage.begin();
             storage.update(recordCs);
@@ -109,6 +113,14 @@ public class FKConstraintTest extends TestCase {
         assertNotNull(e_a12);
         
         // Test insert without FK, Type_B2's usage size=2, won't create FK, so ENTITY_A2_1 will success, ENTITY_A2_2 will success too
+        try {
+            storage.begin();
+            storage.update(factory.read(repository, entityC, ENTITY_C4));
+            storage.commit();
+        } finally {
+            storage.end();
+        }
+        
         Exception e_a21 = null;
         try {
             storage.begin();

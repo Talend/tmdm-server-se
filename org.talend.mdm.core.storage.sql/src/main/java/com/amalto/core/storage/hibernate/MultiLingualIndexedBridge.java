@@ -35,32 +35,32 @@ public class MultiLingualIndexedBridge implements TwoWayFieldBridge {
 
     @Override
     public void set(String name, Object value, Document document, LuceneOptions luceneOptions) {
-        luceneOptions.addFieldToDocument(name, getMultiLingualIndexedContent(String.valueOf(value)), document);
+        luceneOptions.addFieldToDocument(name, MultilingualIndexHandler.getIndexedContent(String.valueOf(value)), document);
     }
 
+    protected static class MultilingualIndexHandler {
+        protected static String getIndexedContent(String value) {
+            if (value.startsWith("[") && value.endsWith("]")) { //$NON-NLS-1$ //$NON-NLS-2$
+                List<String> blocks = new ArrayList<String>(Arrays.asList(value.split("]"))); //$NON-NLS-1$
+                List<String> newBlocks = new ArrayList<String>();
+                StringBuffer sb = new StringBuffer();
 
-    @SuppressWarnings("unused")
-    private String getMultiLingualIndexedContent(String value) {
-        if (value.startsWith("[") && value.endsWith("]")) { //$NON-NLS-1$ //$NON-NLS-2$
-            List<String> blocks = new ArrayList<String>(Arrays.asList(value.split("]"))); //$NON-NLS-1$
-            List<String> newBlocks = new ArrayList<String>();
-            StringBuffer sb = new StringBuffer();
+                for (String block : blocks) {
+                    if (block.startsWith("[") && block.contains(":")) { //$NON-NLS-1$ //$NON-NLS-2$
+                        newBlocks.add(block.substring(block.indexOf(":") + 1)); //$NON-NLS-1$
+                    }
+                }
 
-            for (String block : blocks) {
-                if (block.startsWith("[") && block.contains(":")) { //$NON-NLS-1$ //$NON-NLS-2$
-                    newBlocks.add(block.substring(block.indexOf(":") + 1)); //$NON-NLS-1$
+                if (newBlocks != null && newBlocks.size() > 0) {
+                    for (String block : newBlocks) {
+                        sb.append(block + " "); //$NON-NLS-1$
+                    }
+                    if (sb != null && sb.length() > 0) {
+                        return sb.toString();
+                    }
                 }
             }
-
-            if (newBlocks != null && newBlocks.size() > 0) {
-                for (String block : newBlocks) {
-                    sb.append(block + " "); //$NON-NLS-1$
-                }
-                if (sb != null && sb.length() > 0) {
-                    return sb.toString();
-                }
-            }
+            return value;
         }
-        return value;
     }
 }

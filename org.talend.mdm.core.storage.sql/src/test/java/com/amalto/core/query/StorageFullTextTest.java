@@ -10,25 +10,45 @@
 
 package com.amalto.core.query;
 
-import static com.amalto.core.query.user.UserQueryBuilder.*;
-import static com.amalto.core.query.user.UserStagingQueryBuilder.*;
+import static com.amalto.core.query.user.UserQueryBuilder.alias;
+import static com.amalto.core.query.user.UserQueryBuilder.and;
+import static com.amalto.core.query.user.UserQueryBuilder.contains;
+import static com.amalto.core.query.user.UserQueryBuilder.eq;
+import static com.amalto.core.query.user.UserQueryBuilder.from;
+import static com.amalto.core.query.user.UserQueryBuilder.fullText;
+import static com.amalto.core.query.user.UserQueryBuilder.gt;
+import static com.amalto.core.query.user.UserQueryBuilder.gte;
+import static com.amalto.core.query.user.UserQueryBuilder.isEmpty;
+import static com.amalto.core.query.user.UserQueryBuilder.isNull;
+import static com.amalto.core.query.user.UserQueryBuilder.lt;
+import static com.amalto.core.query.user.UserQueryBuilder.lte;
+import static com.amalto.core.query.user.UserQueryBuilder.not;
+import static com.amalto.core.query.user.UserQueryBuilder.or;
+import static com.amalto.core.query.user.UserQueryBuilder.taskId;
+import static com.amalto.core.query.user.UserQueryBuilder.timestamp;
+import static com.amalto.core.query.user.UserStagingQueryBuilder.error;
 
 import java.io.ByteArrayOutputStream;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.FieldMetadata;
 
 import com.amalto.core.query.optimization.ConfigurableContainsOptimizer;
+import com.amalto.core.query.user.Alias;
 import com.amalto.core.query.user.BinaryLogicOperator;
 import com.amalto.core.query.user.Compare;
 import com.amalto.core.query.user.Condition;
@@ -330,7 +350,7 @@ public class StorageFullTextTest extends StorageTestCase {
     }
 
     public void testNumericQueryMix() throws Exception {
-        UserQueryBuilder qb = from(product).where(fullText("2"));
+        UserQueryBuilder qb = from(product).select(prepareSelectProductFields(product)).where(fullText("2"));
         StorageResults results = storage.fetch(qb.getSelect());
         try {
             for (DataRecord result : results) {
@@ -343,7 +363,7 @@ public class StorageFullTextTest extends StorageTestCase {
     }
 
     public void testMatchesInSameInstance() throws Exception {
-        UserQueryBuilder qb = from(country).where(fullText("2010"));
+        UserQueryBuilder qb = from(country).select(prepareSelectCountryFields(country)).where(fullText("2010"));
         StorageResults results = storage.fetch(qb.getSelect());
         try {
             for (DataRecord result : results) {
@@ -354,7 +374,7 @@ public class StorageFullTextTest extends StorageTestCase {
             results.close();
         }
 
-        qb = from(product).where(fullText("Large"));
+        qb = from(product).select(prepareSelectProductFields(product)).where(fullText("Large"));
         results = storage.fetch(qb.getSelect());
         try {
             for (DataRecord result : results) {
@@ -367,7 +387,7 @@ public class StorageFullTextTest extends StorageTestCase {
     }
 
     public void testSimpleSearch() throws Exception {
-        UserQueryBuilder qb = from(supplier).where(fullText("Renault"));
+        UserQueryBuilder qb = from(supplier).select(prepareSelectSupplierFields(supplier)).where(fullText("Renault"));
 
         StorageResults results = storage.fetch(qb.getSelect());
         try {
@@ -381,7 +401,7 @@ public class StorageFullTextTest extends StorageTestCase {
     }
 
     public void testSimpleSearchOrderBy() throws Exception {
-        UserQueryBuilder qb = from(supplier).select(supplier.getField("Id")).where(fullText("Talend"))
+        UserQueryBuilder qb = from(supplier).select(supplier.getField("Id")).select(prepareSelectSupplierFields(supplier)).where(fullText("Talend"))
                 .orderBy(supplier.getField("Id"), OrderBy.Direction.ASC);
 
         StorageResults records = storage.fetch(qb.getSelect());
@@ -397,7 +417,7 @@ public class StorageFullTextTest extends StorageTestCase {
             records.close();
         }
 
-        qb = from(supplier).select(supplier.getField("Id")).where(fullText("Talend"))
+        qb = from(supplier).select(supplier.getField("Id")).select(prepareSelectSupplierFields(supplier)).where(fullText("Talend"))
                 .orderBy(supplier.getField("Id"), OrderBy.Direction.DESC);
 
         records = storage.fetch(qb.getSelect());
@@ -416,7 +436,8 @@ public class StorageFullTextTest extends StorageTestCase {
 
     public void testSimpleSearchOrderByWithContainsCondition() throws Exception {
         // Order by "Id" field
-        UserQueryBuilder qb = from(productFamily).where(contains(productFamily.getField("Name"), "Product")).orderBy(
+        UserQueryBuilder qb = from(productFamily).select(prepareSelectProductFamilyFields(productFamily))
+                .where(contains(productFamily.getField("Name"), "Product")).orderBy(
                 productFamily.getField("Id"), OrderBy.Direction.DESC);
 
         StorageResults records = storage.fetch(qb.getSelect());
@@ -432,7 +453,8 @@ public class StorageFullTextTest extends StorageTestCase {
             records.close();
         }
         // Order by "Name" field
-        qb = from(productFamily).where(contains(productFamily.getField("Name"), "Product")).orderBy(
+        qb = from(productFamily).select(prepareSelectProductFamilyFields(productFamily))
+                .where(contains(productFamily.getField("Name"), "Product")).orderBy(
                 productFamily.getField("Name"), OrderBy.Direction.DESC);
 
         records = storage.fetch(qb.getSelect());
@@ -450,18 +472,21 @@ public class StorageFullTextTest extends StorageTestCase {
     }
 
     public void testMultipleTypesSearch() throws Exception {
-        UserQueryBuilder qb = from(supplier).and(product).where(fullText("Renault"));
+        UserQueryBuilder qb = from(supplier).and(product)
+               .select(supplier.getField("SupplierName"))
+                .select(prepareSelectProductFields(product))
+                .where(fullText("Renault"));
 
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(2, results.getCount());
+            assertEquals(3, results.getCount());
         } finally {
             results.close();
         }
     }
 
     public void testDateSearch() throws Exception {
-        UserQueryBuilder qb = from(country).where(fullText("2010")); // Default StandardAnalyzer will split text
+        UserQueryBuilder qb = from(country).select(prepareSelectCountryFields(country)).where(fullText("2010")); // Default StandardAnalyzer will split text
                                                                      // "2010-10-12" into "2010", "10", "12"
 
         StorageResults results = storage.fetch(qb.getSelect());
@@ -478,7 +503,7 @@ public class StorageFullTextTest extends StorageTestCase {
      * @throws Exception
      */
     public void testFullSearchCountry() throws Exception {
-        UserQueryBuilder qb = from(country).where(fullText("France"));
+        UserQueryBuilder qb = from(country).select(prepareSelectCountryFields(country)).where(fullText("France"));
         StorageResults results = storage.fetch(qb.getSelect());
         try {
             // debug code for unstable case
@@ -497,7 +522,7 @@ public class StorageFullTextTest extends StorageTestCase {
      * @throws Exception
      */
     public void testFullSearchCountryLong() throws Exception {
-        UserQueryBuilder qb = from(countryLong).where(fullText("F"));
+        UserQueryBuilder qb = from(countryLong).select(prepareSelectCountryLongFields(countryLong)).where(fullText("F"));
         qb.limit(2);
         StorageResults results = storage.fetch(qb.getSelect());
         try {
@@ -514,7 +539,7 @@ public class StorageFullTextTest extends StorageTestCase {
      * @throws Exception
      */
     public void testFullSearchCountryShort() throws Exception {
-        UserQueryBuilder qb = from(countryShort).where(fullText("F"));
+        UserQueryBuilder qb = from(countryShort).select(prepareSelectCountryShortFields(countryShort)).where(fullText("F"));
         qb.limit(2);
         StorageResults results = storage.fetch(qb.getSelect());
         try {
@@ -526,7 +551,7 @@ public class StorageFullTextTest extends StorageTestCase {
     }
 
     public void testCollectionSearch() throws Exception {
-        UserQueryBuilder qb = from(product).where(fullText("Blue"));
+        UserQueryBuilder qb = from(product).select(prepareSelectProductFields(product)).where(fullText("Blue"));
 
         StorageResults results = storage.fetch(qb.getSelect());
         try {
@@ -535,9 +560,98 @@ public class StorageFullTextTest extends StorageTestCase {
             results.close();
         }
     }
+    
+    private List<FieldMetadata> prepareSelectProductFamilyFields(ComplexTypeMetadata supplier) {
+        List<FieldMetadata> results = new ArrayList<>();
+        results.add(supplier.getField("Id"));
+        results.add(supplier.getField("Name"));
+        return results;
+    }
+    
+    private List<FieldMetadata> prepareSelectCountryShortFields(ComplexTypeMetadata countryShort) {
+        List<FieldMetadata> results = new ArrayList<>();
+        results.add(countryShort.getField("id"));
+        results.add(countryShort.getField("creationDate"));
+        results.add(countryShort.getField("creationTime"));
+        results.add(countryShort.getField("name"));
+        results.add(countryShort.getField("notes/note"));
+        results.add(countryShort.getField("notes/comment"));
+        return results;
+    }
+    
+    private List<FieldMetadata> prepareSelectCountryLongFields(ComplexTypeMetadata countryLong) {
+        List<FieldMetadata> results = new ArrayList<>();
+        results.add(countryLong.getField("id"));
+        results.add(countryLong.getField("creationDate"));
+        results.add(countryLong.getField("creationTime"));
+        results.add(countryLong.getField("name"));
+        results.add(countryLong.getField("notes/note"));
+        results.add(countryLong.getField("notes/comment"));
+        return results;
+    }
+    
+    private List<FieldMetadata> prepareSelectSupplierFields(ComplexTypeMetadata supplier) {
+        List<FieldMetadata> results = new ArrayList<>();
+        results.add(supplier.getField("Id"));
+        results.add(supplier.getField("SupplierName"));
+//        results.add(supplier.getField("Address"));
+        results.add(supplier.getField("Contact/Name"));
+        results.add(supplier.getField("Contact/Phone"));
+        results.add(supplier.getField("Contact/Email"));
+        return results;
+    }
+    
+    
+    private List<FieldMetadata> prepareSelectCountryFields(ComplexTypeMetadata country) {
+        List<FieldMetadata> results = new ArrayList<>();
+        results.add(country.getField("id"));
+        results.add(country.getField("creationDate"));
+        results.add(country.getField("creationTime"));
+        results.add(country.getField("name"));
+        results.add(country.getField("notes/note"));
+        results.add(country.getField("notes/comment"));
+        return results;
+    }
+
+    private List<FieldMetadata> prepareSelectEmployeeFields(ComplexTypeMetadata employ) {
+        List<FieldMetadata> results = new ArrayList<>();
+        results.add(employ.getField("name"));
+        return results;
+    }
+
+    private List<FieldMetadata> prepareSelectManagerFields(ComplexTypeMetadata manager) {
+        List<FieldMetadata> results = new ArrayList<>();
+        results.add(manager.getField("name"));
+        return results;
+    }
+
+    private List<FieldMetadata> prepareSelectPersonsFields(ComplexTypeMetadata persons) {
+        List<FieldMetadata> results = new ArrayList<>();
+        results.add(persons.getField("name"));
+        return results;
+    }
+
+    private List<FieldMetadata> prepareSelectProductFields(ComplexTypeMetadata product) {
+        List<FieldMetadata> results = new ArrayList<>();
+        results.add(product.getField("Family"));
+        results.add(product.getField("Stores/Store"));
+        results.add(product.getField("Supplier"));
+        results.add(product.getField("Id"));
+        results.add(product.getField("Availability"));
+        results.add(product.getField("Price"));
+        results.add(product.getField("Product"));
+        results.add(product.getField("ShortDescription"));
+        results.add(product.getField("Name"));
+        results.add(product.getField("ShortDescription"));
+        results.add(product.getField("RemovalDate"));
+        results.add(product.getField("CreationDate"));
+        results.add(product.getField("Features/Sizes/Size"));
+        results.add(product.getField("Features/Colors/Color"));
+        return results;
+    }
 
     public void testSimpleSearchWithCondition() throws Exception {
-        UserQueryBuilder qb = from(supplier).where(fullText("Renault")).where(
+        UserQueryBuilder qb = from(supplier).select(prepareSelectSupplierFields(supplier)).where(fullText("Renault")).where(
                 eq(supplier.getField("Contact/Name"), "Jean Voiture"));
         StorageResults results = storage.fetch(qb.getSelect());
         try {
@@ -546,7 +660,7 @@ public class StorageFullTextTest extends StorageTestCase {
             results.close();
         }
 
-        qb = from(supplier).where(fullText("Renault")).where(eq(supplier.getField("Id"), "1"));
+        qb = from(supplier).select(prepareSelectSupplierFields(supplier)).where(fullText("Renault")).where(eq(supplier.getField("Id"), "1"));
         results = storage.fetch(qb.getSelect());
         try {
             assertEquals(1, results.getCount());
@@ -554,7 +668,7 @@ public class StorageFullTextTest extends StorageTestCase {
             results.close();
         }
 
-        qb = from(supplier).where(fullText("Renault")).where(eq(supplier.getField("Id"), "2"));
+        qb = from(supplier).select(prepareSelectSupplierFields(supplier)).where(fullText("Renault")).where(eq(supplier.getField("Id"), "2"));
         results = storage.fetch(qb.getSelect());
         try {
             assertEquals(0, results.getCount());
@@ -564,7 +678,7 @@ public class StorageFullTextTest extends StorageTestCase {
     }
 
     public void testSimpleSearchWithWildcard() throws Exception {
-        UserQueryBuilder qb = from(supplier).where(fullText("*"));
+        UserQueryBuilder qb = from(supplier).select(prepareSelectSupplierFields(supplier)).where(fullText("*"));
         StorageResults results = storage.fetch(qb.getSelect());
         try {
             assertEquals(4, results.getCount());
@@ -577,7 +691,7 @@ public class StorageFullTextTest extends StorageTestCase {
             results.close();
         }
         //
-        qb = from(supplier).where(fullText("**"));
+        qb = from(supplier).select(prepareSelectSupplierFields(supplier)).where(fullText("**"));
         results = storage.fetch(qb.getSelect());
         try {
             assertEquals(4, results.getCount());
@@ -592,7 +706,9 @@ public class StorageFullTextTest extends StorageTestCase {
     }
 
     public void testSimpleSearchWithWildcardOnTypes() throws Exception {
-        UserQueryBuilder qb = from(supplier).and(product).where(fullText("*"));
+        UserQueryBuilder qb = from(supplier).and(product)
+                .select(prepareSelectProductFields(product))
+                .select(prepareSelectSupplierFields(supplier)).where(fullText("*"));
         StorageResults results = storage.fetch(qb.getSelect());
         try {
             assertEquals(9, results.getCount());
@@ -605,7 +721,10 @@ public class StorageFullTextTest extends StorageTestCase {
             results.close();
         }
         //
-        qb = from(supplier).and(product).where(fullText("**"));
+        qb = from(supplier).and(product)
+                .select(prepareSelectProductFields(product))
+                .select(prepareSelectSupplierFields(supplier))
+                .where(fullText("**"));
         results = storage.fetch(qb.getSelect());
         try {
             assertEquals(9, results.getCount());
@@ -620,7 +739,7 @@ public class StorageFullTextTest extends StorageTestCase {
     }
 
     public void testSimpleSearchWithSpace() throws Exception {
-        UserQueryBuilder qb = from(supplier).where(fullText(" "));
+        UserQueryBuilder qb = from(supplier).select(prepareSelectSupplierFields(supplier)).where(fullText(" "));
         StorageResults results = storage.fetch(qb.getSelect());
         try {
             assertEquals(4, results.getCount());
@@ -628,7 +747,7 @@ public class StorageFullTextTest extends StorageTestCase {
             results.close();
         }
 
-        qb = from(supplier).where(fullText("     "));
+        qb = from(supplier).select(prepareSelectSupplierFields(supplier)).where(fullText("     "));
         results = storage.fetch(qb.getSelect());
         try {
             assertEquals(4, results.getCount());
@@ -636,7 +755,9 @@ public class StorageFullTextTest extends StorageTestCase {
             results.close();
         }
 
-        qb = from(supplier).and(product).where(fullText("     "));
+        qb = from(supplier).and(product)
+                .select(prepareSelectProductFields(product))
+                .select(prepareSelectSupplierFields(supplier)).where(fullText("     "));
         results = storage.fetch(qb.getSelect());
         try {
             assertEquals(9, results.getCount());
@@ -646,7 +767,7 @@ public class StorageFullTextTest extends StorageTestCase {
     }
 
     public void testSimpleSearchWithContainsCondition() throws Exception {
-        UserQueryBuilder qb = from(supplier).where(fullText("Renault"))
+        UserQueryBuilder qb = from(supplier).select(prepareSelectSupplierFields(supplier)).where(fullText("Renault"))
                 .where(contains(supplier.getField("Contact/Name"), "Jean"));
         StorageResults results = storage.fetch(qb.getSelect());
         try {
@@ -655,7 +776,7 @@ public class StorageFullTextTest extends StorageTestCase {
             results.close();
         }
 
-        qb = from(supplier).where(fullText("Talend")).where(contains(supplier.getField("Contact/Name"), "Jean"));
+        qb = from(supplier).select(prepareSelectSupplierFields(supplier)).where(fullText("Talend")).where(contains(supplier.getField("Contact/Name"), "Jean"));
         results = storage.fetch(qb.getSelect());
         try {
             assertEquals(2, results.getCount());
@@ -665,7 +786,7 @@ public class StorageFullTextTest extends StorageTestCase {
     }
 
     public void testSimpleSearchWithContainsConditionAndNot() throws Exception {
-        UserQueryBuilder qb = from(supplier).where(fullText("Renault")).where(
+        UserQueryBuilder qb = from(supplier).select(prepareSelectSupplierFields(supplier)).where(fullText("Renault")).where(
                 and(contains(supplier.getField("Contact/Name"), "Jean"), not(eq(supplier.getField("Id"), "0"))));
         StorageResults results = storage.fetch(qb.getSelect());
         try {
@@ -679,7 +800,7 @@ public class StorageFullTextTest extends StorageTestCase {
     }
 
     public void testSimpleSearchWithGreaterThanCondition() throws Exception {
-        UserQueryBuilder qb = from(supplier).where(fullText("Renault")).where(gt(supplier.getField("Id"), "1"));
+        UserQueryBuilder qb = from(supplier).select(prepareSelectSupplierFields(supplier)).where(fullText("Renault")).where(gt(supplier.getField("Id"), "1"));
         try {
             storage.fetch(qb.getSelect());
             fail("Expected: not supported.");
@@ -687,7 +808,7 @@ public class StorageFullTextTest extends StorageTestCase {
             // Expected.
         }
 
-        qb = from(supplier).where(fullText("Renault")).where(gte(supplier.getField("Id"), "1"));
+        qb = from(supplier).select(prepareSelectSupplierFields(supplier)).where(fullText("Renault")).where(gte(supplier.getField("Id"), "1"));
         try {
             storage.fetch(qb.getSelect());
             fail("Expected: not supported.");
@@ -695,7 +816,7 @@ public class StorageFullTextTest extends StorageTestCase {
             // Expected.
         }
 
-        qb = from(supplier).where(fullText("Jean")).where(gte(supplier.getField("Id"), "2"));
+        qb = from(supplier).select(prepareSelectSupplierFields(supplier)).where(fullText("Jean")).where(gte(supplier.getField("Id"), "2"));
         try {
             storage.fetch(qb.getSelect());
             fail("Expected: not supported.");
@@ -705,7 +826,7 @@ public class StorageFullTextTest extends StorageTestCase {
     }
 
     public void testSimpleSearchWithContainsAndIsEmptyNullCondition() throws Exception {
-        UserQueryBuilder qb = from(supplier).where(
+        UserQueryBuilder qb = from(supplier).select(prepareSelectSupplierFields(supplier)).where(
                 and(contains(supplier.getField("Id"), "4"),
                         or(isEmpty(supplier.getField("Contact/Email")), isNull(supplier.getField("Contact/Email")))));
         StorageResults results = storage.fetch(qb.getSelect());
@@ -715,7 +836,7 @@ public class StorageFullTextTest extends StorageTestCase {
             results.close();
         }
 
-        qb = from(supplier).where(
+        qb = from(supplier).select(prepareSelectSupplierFields(supplier)).where(
                 and(contains(supplier.getField("Contact/Name"), "John"),
                         or(isNull(supplier.getField("Contact/Email")), isEmpty(supplier.getField("Contact/Email")))));
         results = storage.fetch(qb.getSelect());
@@ -727,7 +848,7 @@ public class StorageFullTextTest extends StorageTestCase {
     }
 
     public void testSimpleSearchWithLessThanCondition() throws Exception {
-        UserQueryBuilder qb = from(supplier).where(fullText("Renault")).where(lt(supplier.getField("Id"), "1"));
+        UserQueryBuilder qb = from(supplier).select(prepareSelectSupplierFields(supplier)).where(fullText("Renault")).where(lt(supplier.getField("Id"), "1"));
         try {
             storage.fetch(qb.getSelect());
             fail("Expected: not supported.");
@@ -735,7 +856,7 @@ public class StorageFullTextTest extends StorageTestCase {
             // Expected.
         }
 
-        qb = from(supplier).where(fullText("Renault")).where(lte(supplier.getField("Id"), "1"));
+        qb = from(supplier).select(prepareSelectSupplierFields(supplier)).where(fullText("Renault")).where(lte(supplier.getField("Id"), "1"));
         try {
             storage.fetch(qb.getSelect());
             fail("Expected: not supported.");
@@ -745,20 +866,24 @@ public class StorageFullTextTest extends StorageTestCase {
     }
 
     public void testSimpleSearchWithJoin() throws Exception {
-        UserQueryBuilder qb = from(product).and(productFamily).selectId(product).select(productFamily.getField("Name"))
+        UserQueryBuilder qb = from(product).and(productFamily)
+                .selectId(product).select(productFamily.getField("Name"))
+                .select(product.getField("Name"))
                 .where(fullText("Renault")).join(product.getField("Family"));
         StorageResults results = storage.fetch(qb.getSelect());
         try {
             assertEquals(1, results.getCount());
             for (DataRecord result : results) {
                 assertNotNull(result.get("Id"));
-                assertEquals("", result.get("Name"));
+                assertEquals("Renault car", result.get("Name"));
             }
         } finally {
             results.close();
         }
 
-        qb = from(product).and(productFamily).selectId(product).select(productFamily.getField("Name")).where(fullText("Renault"))
+        qb = from(product).and(productFamily)
+                .selectId(product).select(productFamily.getField("Name"))
+                .select(product.getField("Name")).where(fullText("Renault"))
                 .join(product.getField("Family")).limit(20);
 
         results = storage.fetch(qb.getSelect());
@@ -766,7 +891,7 @@ public class StorageFullTextTest extends StorageTestCase {
             assertEquals(1, results.getCount());
             for (DataRecord result : results) {
                 assertNotNull(result.get("Id"));
-                assertEquals("", result.get("Name"));
+                assertEquals("Renault car", result.get("Name"));
             }
         } finally {
             results.close();
@@ -774,13 +899,13 @@ public class StorageFullTextTest extends StorageTestCase {
     }
 
     public void testSimpleSearchWithProjection() throws Exception {
-        UserQueryBuilder qb = from(supplier).select(supplier.getField("Contact/Name")).where(fullText("Renault"));
+        UserQueryBuilder qb = from(supplier).select(supplier.getField("SupplierName")).select(supplier.getField("Contact/Name")).where(fullText("Renault"));
 
         StorageResults results = storage.fetch(qb.getSelect());
         try {
             assertEquals(1, results.getCount());
             for (DataRecord result : results) {
-                assertEquals(1, result.getSetFields().size());
+                assertEquals(2, result.getSetFields().size());
                 assertNotNull(result.get("Name"));
             }
         } finally {
@@ -789,26 +914,26 @@ public class StorageFullTextTest extends StorageTestCase {
     }
 
     public void testSimpleSearchWithProjectionAlias() throws Exception {
-        UserQueryBuilder qb = from(supplier).select(alias(supplier.getField("Contact/Name"), "element")).where(
+        UserQueryBuilder qb = from(supplier).select(supplier.getField("SupplierName")).select(alias(supplier.getField("Contact/Name"), "element")).where(
                 fullText("Renault"));
         StorageResults results = storage.fetch(qb.getSelect());
         try {
             assertEquals(1, results.getCount());
             for (DataRecord result : results) {
-                assertEquals(1, result.getSetFields().size());
+                assertEquals(2, result.getSetFields().size());
                 assertNotNull(result.get("element"));
             }
         } finally {
             results.close();
         }
 
-        qb = from(supplier).select(alias(supplier.getField("Contact/Name"), "element")).where(fullText("Renault")).start(0)
+        qb = from(supplier).select(supplier.getField("SupplierName")).select(alias(supplier.getField("Contact/Name"), "element")).where(fullText("Renault")).start(0)
                 .limit(20);
         results = storage.fetch(qb.getSelect());
         try {
             assertEquals(1, results.getCount());
             for (DataRecord result : results) {
-                assertEquals(1, result.getSetFields().size());
+                assertEquals(2, result.getSetFields().size());
                 assertNotNull(result.get("element"));
             }
         } finally {
@@ -817,7 +942,7 @@ public class StorageFullTextTest extends StorageTestCase {
     }
 
     public void testFKSearchWithProjection() throws Exception {
-        UserQueryBuilder qb = from(product).select(product.getField("Family")).where(fullText("car"));
+        UserQueryBuilder qb = from(product).select(product.getField("Name")).select(product.getField("Family")).where(fullText("car"));
 
         StorageResults results = storage.fetch(qb.getSelect());
         try {
@@ -828,7 +953,7 @@ public class StorageFullTextTest extends StorageTestCase {
                 writer.write(result, resultWriter);
             }
             assertEquals("<result xmlns:metadata=\"http://www.talend.com/mdm/metadata\" "
-                    + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n" + "\t<Family>[1]</Family>\n" + "</result>",
+                    + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n" + "\t<Name>Renault car</Name>\n" + "\t<Family>[1]</Family>\n" + "</result>",
                     resultWriter.toString());
         } finally {
             results.close();
@@ -836,7 +961,7 @@ public class StorageFullTextTest extends StorageTestCase {
     }
 
     public void testMultipleTypesSearchWithCondition() throws Exception {
-        UserQueryBuilder qb = from(supplier).where(fullText("Renault")).where(
+        UserQueryBuilder qb = from(supplier).select(prepareSelectSupplierFields(supplier)).where(fullText("Renault")).where(
                 eq(supplier.getField("Contact/Name"), "Jean Voiture"));
 
         StorageResults results = storage.fetch(qb.getSelect());
@@ -867,7 +992,7 @@ public class StorageFullTextTest extends StorageTestCase {
     }
 
     public void testFullTextResultsFormat() throws Exception {
-        UserQueryBuilder qb = from(product).where(fullText("Renault"));
+        UserQueryBuilder qb = from(product).select(prepareSelectProductFields(product)).where(fullText("Renault"));
 
         StorageResults results = null;
         try {
@@ -888,7 +1013,7 @@ public class StorageFullTextTest extends StorageTestCase {
     }
 
     public void testFullTextResultsInNestedFormat() throws Exception {
-        UserQueryBuilder qb = from(product).where(fullText("Klein"));
+        UserQueryBuilder qb = from(product).select(prepareSelectProductFields(product)).where(fullText("Klein"));
 
         StorageResults results = null;
         try {
@@ -913,7 +1038,7 @@ public class StorageFullTextTest extends StorageTestCase {
         try {
             storage.init(getDatasource("RDBMS-1-NO-FT"));
             storage.prepare(repository, Collections.<Expression> emptySet(), false, false);
-            UserQueryBuilder qb = from(product).where(fullText("Test"));
+            UserQueryBuilder qb = from(product).select(prepareSelectProductFields(product)).where(fullText("Test"));
 
             try {
                 storage.fetch(qb.getSelect());
@@ -927,7 +1052,7 @@ public class StorageFullTextTest extends StorageTestCase {
     }
 
     public void testSimpleWithoutFkValueSearch() throws Exception {
-        UserQueryBuilder qb = from(product).select(product.getField("Family")).where(fullText("talend")).limit(20);
+        UserQueryBuilder qb = from(product).select(prepareSelectProductFields(product)).select(product.getField("Family")).where(fullText("talend")).limit(20);
         StorageResults results = storage.fetch(qb.getSelect());
         try {
             assertEquals(1, results.getCount());
@@ -956,7 +1081,7 @@ public class StorageFullTextTest extends StorageTestCase {
     }
 
     public void testFieldFullText() throws Exception {
-        UserQueryBuilder qb = from(product).where(fullText(product.getField("ShortDescription"), "description")).limit(20);
+        UserQueryBuilder qb = from(product).select(prepareSelectProductFields(product)).where(fullText(product.getField("ShortDescription"), "description")).limit(20);
         StorageResults results = storage.fetch(qb.getSelect());
         try {
             assertEquals(1, results.getCount());
@@ -964,7 +1089,7 @@ public class StorageFullTextTest extends StorageTestCase {
             results.close();
         }
 
-        qb = from(product).where(fullText(product.getField("ShortDescription"), "long")).limit(20);
+        qb = from(product).select(prepareSelectProductFields(product)).where(fullText(product.getField("ShortDescription"), "long")).limit(20);
         results = storage.fetch(qb.getSelect());
         try {
             assertEquals(0, results.getCount());
@@ -976,7 +1101,7 @@ public class StorageFullTextTest extends StorageTestCase {
     public void testFullTextAndRangeTimeQuery() throws Exception {
         // Original case not working due to a issue in Lucene, where some collectors cannot accept out-of-order scoring.
         // should be fixed in Lucene 5.0, https://issues.apache.org/jira/browse/LUCENE-6179
-        UserQueryBuilder qb = from(product).where(
+        UserQueryBuilder qb = from(product).select(prepareSelectProductFields(product)).where(
                 or(fullText(product.getField("ShortDescription"), "description"),
                         and(gte(timestamp(), "0"), lte(timestamp(), String.valueOf(System.currentTimeMillis()))))).limit(20);
         StorageResults results = storage.fetch(qb.getSelect());
@@ -988,7 +1113,7 @@ public class StorageFullTextTest extends StorageTestCase {
     }
 
     public void testTaskIdProjection() throws Exception {
-        UserQueryBuilder qb = from(product).select(alias(taskId(), "taskId")).select(alias(error(), "error"))
+        UserQueryBuilder qb = from(product).select(prepareSelectProductFields(product)).select(alias(taskId(), "taskId")).select(alias(error(), "error"))
                 .where(fullText(product.getField("ShortDescription"), "description"));
         StorageResults results = storage.fetch(qb.getSelect());
         try {
@@ -1001,7 +1126,7 @@ public class StorageFullTextTest extends StorageTestCase {
             results.close();
         }
 
-        qb = from(product).select(alias(taskId(), "taskId")).select(alias(error(), "error"))
+        qb = from(product).select(prepareSelectProductFields(product)).select(alias(taskId(), "taskId")).select(alias(error(), "error"))
                 .where(fullText(product.getField("ShortDescription"), "description")).limit(20);
         results = storage.fetch(qb.getSelect());
         try {
@@ -1338,23 +1463,32 @@ public class StorageFullTextTest extends StorageTestCase {
     }
 
     public void testFullTextOnRepeatable() throws Exception {
-        UserQueryBuilder qb = UserQueryBuilder.from(country).where(fullText("repeatable"));
+        UserQueryBuilder qb = UserQueryBuilder.from(country).selectId(country)
+                .select(country.getField("notes/comment")).where(fullText("repeatable"));
         StorageResults results = storage.fetch(qb.getSelect());
         for (DataRecord result : results) {
-            assertEquals("Country", result.getType().getName());
+            assertNotNull(result.getType());
+            assertEquals("Country", result.getType().getField("comment").getEntityTypeName());
             assertEquals(2, result.get("id"));
         }
     }
 
     public void testFullText() throws Exception {
-        UserQueryBuilder qb = UserQueryBuilder.from(country).where(fullText("note"));
+        UserQueryBuilder qb = UserQueryBuilder.from(country).selectId(country)
+                .select(prepareSelectCountryFields(country)).where(fullText("note"));
         StorageResults results = storage.fetch(qb.getSelect());
         for (DataRecord result : results) {
-            assertEquals("Country", result.getType().getName());
+            assertNotNull(result.getType());
+            assertEquals("Country", result.getType().getField("comment").getEntityTypeName());
             assertEquals(2, result.get("id"));
         }
 
-        qb = UserQueryBuilder.from(fullTextSearchEntityA).where(fullText("city"));
+        qb = UserQueryBuilder.from(fullTextSearchEntityA)
+                .selectId(fullTextSearchEntityA)
+                .select(fullTextSearchEntityA.getField("Id"))
+                .select(fullTextSearchEntityA.getField("Address"))
+                .select(fullTextSearchEntityA.getField("Name"))
+                .where(fullText("id1 city"));
         results = storage.fetch(qb.getSelect());
         assertEquals(1, results.getCount());
         for (DataRecord result : results) {
@@ -1378,7 +1512,10 @@ public class StorageFullTextTest extends StorageTestCase {
 
     public void testTypeSplitWithPaging() throws Exception {
         // Build expected results
-        UserQueryBuilder qb = UserQueryBuilder.from(person).and(product).where(fullText("Julien"));
+        UserQueryBuilder qb = UserQueryBuilder.from(person)
+                .selectId(person)
+                .select(person.getField("firstname"))
+                .where(fullText("Julien"));
         List<String> expected = new LinkedList<String>();
         StorageResults records = storage.fetch(qb.getSelect());
         int count = records.getCount();
@@ -1393,11 +1530,13 @@ public class StorageFullTextTest extends StorageTestCase {
         }
         assertEquals(count, split.getCount());
         assertEquals(size, split.getSize());
+
     }
 
     public void testTypeSplit() throws Exception {
         // Build expected results
-        UserQueryBuilder qb = UserQueryBuilder.from(person).and(product).where(fullText("Julien"));
+        UserQueryBuilder qb = UserQueryBuilder.from(person)
+                .selectId(person).select(person.getField("firstname")).where(fullText("Julien"));
         List<DataRecord> expected = new LinkedList<DataRecord>();
         StorageResults records = storage.fetch(qb.getSelect());
         int count = records.getCount();
@@ -1614,7 +1753,7 @@ public class StorageFullTextTest extends StorageTestCase {
             results.close();
         }
 
-        qb = from(product).where(and(eq(product.getField("Id"), "2"), contains(product.getField("Name"), "'Renault car'"))).where(fullText("car"));
+        qb = from(product).select(prepareSelectProductFields(product)).where(and(eq(product.getField("Id"), "2"), contains(product.getField("Name"), "'Renault car'"))).where(fullText("car"));
         results = storage.fetch(qb.getSelect());
         try {
             assertTrue(results.getSize() == 1);
@@ -1677,7 +1816,7 @@ public class StorageFullTextTest extends StorageTestCase {
     }
     
     public void testFullTextSearchOnComplexType() throws Exception {
-        UserQueryBuilder qb = from(persons).where(fullText("1"));
+        UserQueryBuilder qb = from(persons).select(prepareSelectPersonsFields(persons)).where(fullText("1"));
         qb.limit(5);
         StorageResults results = storage.fetch(qb.getSelect());
         try {
@@ -1695,7 +1834,7 @@ public class StorageFullTextTest extends StorageTestCase {
             results.close();
         }
         
-        qb = from(employee).where(fullText("1"));
+        qb = from(employee).select(prepareSelectEmployeeFields(employee)).where(fullText("1"));
         results = storage.fetch(qb.getSelect());
         try {
             int recordCount = 0;
@@ -1712,7 +1851,7 @@ public class StorageFullTextTest extends StorageTestCase {
             results.close();
         }
         
-        qb = from(manager).where(fullText("1"));
+        qb = from(manager).select(prepareSelectManagerFields(manager)).where(fullText("1"));
         results = storage.fetch(qb.getSelect());
         try {
             int recordCount = 0;

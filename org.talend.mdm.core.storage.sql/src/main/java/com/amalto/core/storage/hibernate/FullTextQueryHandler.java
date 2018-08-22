@@ -11,28 +11,85 @@
 
 package com.amalto.core.storage.hibernate;
 
-import com.amalto.core.query.user.*;
-import com.amalto.core.query.user.metadata.*;
-import com.amalto.core.storage.CloseableIterator;
-import com.amalto.core.storage.Storage;
-import com.amalto.core.storage.StorageResults;
-import com.amalto.core.storage.exception.FullTextQueryCompositeKeyException;
-import com.amalto.core.storage.record.DataRecord;
-import com.amalto.core.storage.record.metadata.UnsupportedDataRecordMetadata;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import javax.xml.XMLConstants;
+
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
-import org.apache.lucene.search.*;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.Sort;
+import org.apache.lucene.search.SortField;
 import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
 import org.hibernate.search.FullTextQuery;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
-import org.talend.mdm.commmon.metadata.*;
+import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.ComplexTypeMetadataImpl;
+import org.talend.mdm.commmon.metadata.ContainedComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
+import org.talend.mdm.commmon.metadata.DefaultMetadataVisitor;
+import org.talend.mdm.commmon.metadata.FieldMetadata;
+import org.talend.mdm.commmon.metadata.MetadataUtils;
+import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
+import org.talend.mdm.commmon.metadata.SimpleTypeFieldMetadata;
+import org.talend.mdm.commmon.metadata.SimpleTypeMetadata;
+import org.talend.mdm.commmon.metadata.TypeMetadata;
+import org.talend.mdm.commmon.metadata.Types;
 
-import javax.xml.XMLConstants;
-import java.io.IOException;
-import java.util.*;
+import com.amalto.core.query.user.Alias;
+import com.amalto.core.query.user.BigDecimalConstant;
+import com.amalto.core.query.user.BinaryLogicOperator;
+import com.amalto.core.query.user.BooleanConstant;
+import com.amalto.core.query.user.ByteConstant;
+import com.amalto.core.query.user.Compare;
+import com.amalto.core.query.user.Condition;
+import com.amalto.core.query.user.ConstantCollection;
+import com.amalto.core.query.user.Count;
+import com.amalto.core.query.user.DateConstant;
+import com.amalto.core.query.user.DateTimeConstant;
+import com.amalto.core.query.user.DoubleConstant;
+import com.amalto.core.query.user.Field;
+import com.amalto.core.query.user.FieldFullText;
+import com.amalto.core.query.user.FloatConstant;
+import com.amalto.core.query.user.FullText;
+import com.amalto.core.query.user.IntegerConstant;
+import com.amalto.core.query.user.Join;
+import com.amalto.core.query.user.LongConstant;
+import com.amalto.core.query.user.OrderBy;
+import com.amalto.core.query.user.Paging;
+import com.amalto.core.query.user.Range;
+import com.amalto.core.query.user.Select;
+import com.amalto.core.query.user.ShortConstant;
+import com.amalto.core.query.user.StringConstant;
+import com.amalto.core.query.user.TimeConstant;
+import com.amalto.core.query.user.Type;
+import com.amalto.core.query.user.TypedExpression;
+import com.amalto.core.query.user.UnaryLogicOperator;
+import com.amalto.core.query.user.VisitorAdapter;
+import com.amalto.core.query.user.metadata.MetadataField;
+import com.amalto.core.query.user.metadata.StagingBlockKey;
+import com.amalto.core.query.user.metadata.StagingError;
+import com.amalto.core.query.user.metadata.StagingHasTask;
+import com.amalto.core.query.user.metadata.StagingSource;
+import com.amalto.core.query.user.metadata.StagingStatus;
+import com.amalto.core.query.user.metadata.TaskId;
+import com.amalto.core.query.user.metadata.Timestamp;
+import com.amalto.core.storage.CloseableIterator;
+import com.amalto.core.storage.Storage;
+import com.amalto.core.storage.StorageResults;
+import com.amalto.core.storage.exception.FullTextQueryCompositeKeyException;
+import com.amalto.core.storage.record.DataRecord;
+import com.amalto.core.storage.record.metadata.UnsupportedDataRecordMetadata;
 
 
 class FullTextQueryHandler extends AbstractQueryHandler {
@@ -87,22 +144,6 @@ class FullTextQueryHandler extends AbstractQueryHandler {
             for (ComplexTypeMetadata joinedType : joinedTypes) {
                 types.remove(joinedType);
             }
-            List<TypedExpression> filteredFields = new LinkedList<TypedExpression>();
-            for (TypedExpression expression : select.getSelectedFields()) {
-                if (expression instanceof Field) {
-                    FieldMetadata fieldMetadata = ((Field) expression).getFieldMetadata();
-                    if (joinedTypes.contains(fieldMetadata.getContainingType())) {
-                        TypeMapping mapping = mappings.getMappingFromDatabase(fieldMetadata.getContainingType());
-                        filteredFields.add(new Alias(new StringConstant(StringUtils.EMPTY), mapping.getUser(fieldMetadata).getName()));
-                    } else {
-                        filteredFields.add(expression);
-                    }
-                } else {
-                    filteredFields.add(expression);
-                }
-            }
-            selectedFields.clear();
-            selectedFields.addAll(filteredFields);
         }
         // Handle condition
         Condition condition = select.getCondition();
@@ -111,7 +152,7 @@ class FullTextQueryHandler extends AbstractQueryHandler {
         }
         // Create Lucene query (concatenates all sub queries together).
         FullTextSession fullTextSession = Search.getFullTextSession(session);
-        Query parsedQuery = select.getCondition().accept(new LuceneQueryGenerator(types));
+        Query parsedQuery = select.getCondition().accept(new LuceneQueryGenerator(select.getSelectedFields(), types));
         // Create Hibernate Search query
         Set<Class> classes = new HashSet<Class>();
         for (ComplexTypeMetadata type : types) {
@@ -556,9 +597,12 @@ class FullTextQueryHandler extends AbstractQueryHandler {
         @Override
         public Collection<? extends ComplexTypeMetadata> visit(FullText fullText) {
             if (closure != null && closure.size() > 0) {
+                Set<ComplexTypeMetadata> tempClosure = new HashSet<ComplexTypeMetadata>();
                 for (ComplexTypeMetadata ctm : closure) {
-                    closure.addAll(ctm.accept(new ComplexTypeMetadataOptimization(this.storage)));
+                    tempClosure.addAll(ctm.accept(new ComplexTypeMetadataOptimization(this.storage)));
                 }
+                closure.clear();
+                closure.addAll(tempClosure);
             }
             return closure;
         }

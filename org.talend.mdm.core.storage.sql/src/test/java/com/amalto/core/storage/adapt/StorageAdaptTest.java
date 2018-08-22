@@ -379,7 +379,6 @@ public class StorageAdaptTest extends TestCase {
         } catch (Exception e) {
             assertNull(e);
         }
-               
         MetadataRepository repository2 = new MetadataRepository();
         repository2.load(StorageAdaptTest.class.getResourceAsStream("schema5_2.xsd"));
         storage.adapt(repository2, true);
@@ -2052,7 +2051,7 @@ public class StorageAdaptTest extends TestCase {
         }
 
         String[] aaTablesUpdated = { "X_AA" };
-        String[] aaColumnsUpdated = { "", "X_TALEND_ID", "X_SUBELEMENT" };
+        String[] aaColumnsUpdated = { "", "X_TALEND_ID", "X_SUBELEMENT", "FK_SWPGIEUCKO96CKPDNH4JS5UUN", "POS" };
         int[] aaIsNullableUpdated = { 0, 0, 1 };
         try {
             assertColumnNullAble(dataSource, aaTablesUpdated, aaColumnsUpdated, aaIsNullableUpdated);
@@ -2070,7 +2069,7 @@ public class StorageAdaptTest extends TestCase {
         }
 
         String[] anonymous1TablesUpdated = { "X_ANONYMOUS1" };
-        String[] anonymous1ColumnsUpdated = { "", "X_TALEND_ID", "X_SUBELEMENT", "X_THIRD" };
+        String[] anonymous1ColumnsUpdated = { "", "X_TALEND_ID", "X_SUBELEMENT", "X_THIRD", "FK_BV7R6DIRHETKE21XI3Y7JWHOS", "POS" };
         int[] anonymous1IsNullableUpdated = { 0, 0, 1, 1 };
         try {
             assertColumnNullAble(dataSource, anonymous1TablesUpdated, anonymous1ColumnsUpdated, anonymous1IsNullableUpdated);

@@ -25,6 +25,8 @@ public class ForeignKeyCellField extends ForeignKeyField {
 
     public ForeignKeyCellField(ForeignKeyField foreignKeyField, String foreignKeyFilter) {
         super(foreignKeyField.getDataType());
+        super.setReadOnly(foreignKeyField.isReadOnly());
+        super.setEnabled(!foreignKeyField.isReadOnly());
         this.foreignKeyFilter = foreignKeyFilter;
     }
 

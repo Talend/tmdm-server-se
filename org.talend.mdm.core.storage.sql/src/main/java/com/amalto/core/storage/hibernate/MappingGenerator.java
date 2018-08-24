@@ -741,8 +741,13 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
         String defaultValueRule = field.getData(MetadataRepository.DEFAULT_VALUE_RULE);
         if (StringUtils.isNotBlank(defaultValueRule)) {
             Attr defaultValueAttr = document.createAttribute("default"); //$NON-NLS-1$
-            defaultValueAttr.setValue(HibernateStorageUtils.convertedDefaultValue(dataSource.getDialectName(), defaultValueRule, "'"));
-            columnElement.getAttributes().setNamedItem(defaultValueAttr);
+
+            if (!field.getType().getName().equals(TypeMapping.SQL_TYPE_BOOLEAN)
+                    || HibernateStorageUtils.isBooleanDefaultValue(field.getType().getName(), defaultValueRule)) {
+                defaultValueAttr.setValue(HibernateStorageUtils.convertedDefaultValue(field.getType().getName(),
+                        dataSource.getDialectName(), defaultValueRule, "'"));
+                columnElement.getAttributes().setNamedItem(defaultValueAttr);
+            }
         }
     }
 

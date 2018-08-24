@@ -3921,7 +3921,7 @@ public class StorageQueryTest extends StorageTestCase {
 
     public void testQueryWithIntFK() throws Exception {
         UserQueryBuilder qb = from(entityB).where(
-                or(contains(entityB.getField("A_FK"), "b"), contains(entityB.getField("IdB"), "b")));
+                or(contains(entityB.getField("A_FK"), "b"), contains(entityB.getField("IdB"), "B")));
         StorageResults results = storage.fetch(qb.getSelect());
         try {
             assertEquals(1, results.getCount());
@@ -4710,7 +4710,8 @@ public class StorageQueryTest extends StorageTestCase {
     }
     
     public void testAdvancedSearchWithMultiCondition() throws Exception {
-        UserQueryBuilder qb = from(person).where(and(contains(person.getField("lastname"), "Du*"), contains(person.getField("middlename"), "jo*")));
+        UserQueryBuilder qb = from(person)
+                .where(and(contains(person.getField("lastname"), "Du*"), contains(person.getField("middlename"), "Jo*")));
         StorageResults results = storage.fetch(qb.getSelect());
         List<String> ids = new ArrayList<String>();
         ids.add("1");

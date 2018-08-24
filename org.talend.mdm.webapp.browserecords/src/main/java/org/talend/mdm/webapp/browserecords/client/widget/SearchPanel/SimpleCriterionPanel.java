@@ -260,7 +260,11 @@ public class SimpleCriterionPanel<T> extends HorizontalPanel implements ReturnCr
                                 TypeModel keyTypeModel = entityModel.getTypeModel(keyPath);
                                 boolean isString = DataTypeConstants.STRING.getTypeName()
                                         .equals(keyTypeModel.getType().getTypeName());
-                                if (isString) {
+                                boolean isAutoIncrement = DataTypeConstants.AUTO_INCREMENT.getTypeName()
+                                        .equals(keyTypeModel.getType().getTypeName());
+                                boolean isUUID = DataTypeConstants.UUID.getTypeName()
+                                        .equals(keyTypeModel.getType().getTypeName());
+                                if (isString || isAutoIncrement || isUUID) {
                                     adaptTextField();
                                 } else {
                                     adaptForeignKeyField(typeModel);

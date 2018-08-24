@@ -38,16 +38,14 @@ public class NumberFieldCellEditor extends CellEditor {
             if (value != null && value instanceof String) {
                 String valueString = (String) value;
                 if (!valueString.isEmpty()) {
-                    if (!"".equals(valueString)) { //$NON-NLS-1$
-                        if (DataTypeConstants.INTEGER.getBaseTypeName().equals(numberType)) {
-                            num = Integer.parseInt(valueString);
-                        } else if (DataTypeConstants.FLOAT.getBaseTypeName().equals(numberType)) {
-                            num = Float.parseFloat(valueString);
-                        } else if (DataTypeConstants.DECIMAL.getBaseTypeName().equals(numberType)) {
-                            num = ((FormatNumberField) getField()).getDecimalValue(valueString);
-                        } else {
-                            num = Double.parseDouble(valueString);
-                        }
+                    if (DataTypeConstants.INTEGER.getBaseTypeName().equals(numberType)) {
+                        num = Integer.parseInt(valueString);
+                    } else if (DataTypeConstants.FLOAT.getBaseTypeName().equals(numberType)) {
+                        num = Float.parseFloat(valueString);
+                    } else if (DataTypeConstants.DECIMAL.getBaseTypeName().equals(numberType)) {
+                        num = ((FormatNumberField) getField()).getDecimalValue(valueString);
+                    } else {
+                        num = Double.parseDouble(valueString);
                     }
                 }
             }

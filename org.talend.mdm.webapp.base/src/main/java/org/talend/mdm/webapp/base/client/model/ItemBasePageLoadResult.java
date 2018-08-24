@@ -24,8 +24,6 @@ public class ItemBasePageLoadResult<Data> implements Serializable, IsSerializabl
 
     private int totalLength;
 
-    private boolean isPagingAccurate;
-
     public ItemBasePageLoadResult() {
 
     }
@@ -34,12 +32,6 @@ public class ItemBasePageLoadResult<Data> implements Serializable, IsSerializabl
         this.data = data;
         this.offset = offset;
         this.totalLength = totalLength;
-
-    }
-
-    public ItemBasePageLoadResult(List<Data> data, int offset, int totalLength, boolean isPagingAccurate) {
-        this(data, offset, totalLength);
-        this.isPagingAccurate = isPagingAccurate;
     }
 
     public List<Data> getData() {
@@ -64,13 +56,5 @@ public class ItemBasePageLoadResult<Data> implements Serializable, IsSerializabl
 
     public void setTotalLength(int totalLength) {
         this.totalLength = totalLength;
-    }
-
-    public boolean isPagingAccurate() {
-        return isPagingAccurate;
-    }
-
-    public void setPagingAccurate(boolean isPagingAccurate) {
-        this.isPagingAccurate = isPagingAccurate;
     }
 }

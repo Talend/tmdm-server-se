@@ -86,7 +86,6 @@ import com.amalto.core.webservice.WSGetItem;
 import com.amalto.core.webservice.WSGetTransformerV2PKs;
 import com.amalto.core.webservice.WSGetView;
 import com.amalto.core.webservice.WSGetViewPKs;
-import com.amalto.core.webservice.WSInt;
 import com.amalto.core.webservice.WSItem;
 import com.amalto.core.webservice.WSString;
 import com.amalto.core.webservice.WSStringArray;
@@ -285,7 +284,6 @@ public class BrowseRecordsActionTest extends TestCase {
         WSStringArray wsStringArray = new WSStringArray(results);
         Mockito.when(org.talend.mdm.webapp.base.server.util.CommonUtil.getPort()).thenReturn(port);
         Mockito.when(port.viewSearch(Mockito.any(WSViewSearch.class))).thenReturn(wsStringArray);
-        Mockito.when(port.isPagingAccurate(Mockito.any(WSInt.class))).thenReturn(new WSBoolean(true));
         // Mock get SmartViewDescriptions
         PowerMockito.mockStatic(SmartViewUtil.class);
         SmartViewDescriptions svd = PowerMockito.mock(SmartViewDescriptions.class);
@@ -405,7 +403,6 @@ public class BrowseRecordsActionTest extends TestCase {
         WSStringArray wsStringArray = new WSStringArray(results);
         Mockito.when(org.talend.mdm.webapp.base.server.util.CommonUtil.getPort()).thenReturn(port);
         Mockito.when(port.viewSearch(Mockito.any(WSViewSearch.class))).thenReturn(wsStringArray);
-        Mockito.when(port.isPagingAccurate(Mockito.any(WSInt.class))).thenReturn(new WSBoolean(true));
         // Mock get SmartViewDescriptions
         PowerMockito.mockStatic(SmartViewUtil.class);
         SmartViewDescriptions svd = PowerMockito.mock(SmartViewDescriptions.class);
@@ -528,7 +525,6 @@ public class BrowseRecordsActionTest extends TestCase {
 
         Mockito.when(org.talend.mdm.webapp.base.server.util.CommonUtil.getPort()).thenReturn(port);
         Mockito.when(port.viewSearch(Mockito.any(WSViewSearch.class))).thenReturn(wsStringArray);
-        Mockito.when(port.isPagingAccurate(Mockito.any(WSInt.class))).thenReturn(new WSBoolean(true));
         // Mock get SmartViewDescriptions
         PowerMockito.mockStatic(SmartViewUtil.class);
         SmartViewDescriptions svd = PowerMockito.mock(SmartViewDescriptions.class);

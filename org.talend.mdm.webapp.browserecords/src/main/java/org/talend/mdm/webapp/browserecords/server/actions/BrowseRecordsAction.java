@@ -130,7 +130,6 @@ import com.amalto.core.webservice.WSGetTransformerV2;
 import com.amalto.core.webservice.WSGetTransformerV2PKs;
 import com.amalto.core.webservice.WSGetView;
 import com.amalto.core.webservice.WSGetViewPKs;
-import com.amalto.core.webservice.WSInt;
 import com.amalto.core.webservice.WSItem;
 import com.amalto.core.webservice.WSItemPK;
 import com.amalto.core.webservice.WSPutItem;
@@ -747,8 +746,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             }
             @SuppressWarnings("unchecked")
             List<ItemBean> itemBeans = (List<ItemBean>) result[0];
-            boolean isPagingAccurate = CommonUtil.getPort().isPagingAccurate(new WSInt(totalSize)).is_true();
-            return new ItemBasePageLoadResult<ItemBean>(itemBeans, pagingLoad.getOffset(), totalSize, isPagingAccurate);
+            return new ItemBasePageLoadResult<ItemBean>(itemBeans, pagingLoad.getOffset(), totalSize);
         } catch (Exception exception) {
             Throwable cause = exception.getCause();
             if (cause != null && FieldNotFoundException.class.isInstance(cause.getCause())) {

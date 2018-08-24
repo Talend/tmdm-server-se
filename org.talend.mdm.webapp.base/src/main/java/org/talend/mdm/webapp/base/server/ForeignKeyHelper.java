@@ -33,8 +33,6 @@ import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
 import org.talend.mdm.commmon.metadata.SimpleTypeFieldMetadata;
 import org.talend.mdm.commmon.metadata.SimpleTypeMetadata;
 import org.talend.mdm.commmon.metadata.Types;
-import org.talend.mdm.commmon.util.core.EDBType;
-import org.talend.mdm.commmon.util.core.MDMConfiguration;
 import org.talend.mdm.commmon.util.datamodel.management.BusinessConcept;
 import org.talend.mdm.commmon.util.datamodel.management.ReusableType;
 import org.talend.mdm.webapp.base.client.model.BasePagingLoadConfigImpl;
@@ -58,7 +56,6 @@ import com.amalto.core.query.user.OrderBy;
 import com.amalto.core.storage.StorageMetadataUtils;
 import com.amalto.core.webservice.WSDataClusterPK;
 import com.amalto.core.webservice.WSGetItemsByCustomFKFilters;
-import com.amalto.core.webservice.WSInt;
 import com.amalto.core.webservice.WSStringArray;
 import com.amalto.core.webservice.WSWhereAnd;
 import com.amalto.core.webservice.WSWhereCondition;
@@ -230,10 +227,9 @@ public class ForeignKeyHelper {
             } else {
                 throw new IllegalArgumentException("Total count '" + results[0] + "' does not match expected format"); //$NON-NLS-1$ //$NON-NLS-2$
             }
-            boolean isPagingAccurate = CommonUtil.getPort().isPagingAccurate(new WSInt(Integer.valueOf(count))).is_true();
             return new ItemBasePageLoadResult<ForeignKeyBean>(convertForeignKeyBeanList(results, model, entityModel,
                     dataClusterPK, config.getOffset(), (String) config.get("language")), config.getOffset(), //$NON-NLS-1$
-                    Integer.valueOf(count), isPagingAccurate);
+                    Integer.valueOf(count));
         } else {
             return new ItemBasePageLoadResult<ForeignKeyBean>(new ArrayList<ForeignKeyBean>(), config.getOffset(), 0);
         }
@@ -388,16 +384,9 @@ public class ForeignKeyHelper {
             // add the key paths last, since there may be multiple keys
             xPaths.add(initxpathForeignKey + "/../../i"); //$NON-NLS-1$
             // order by
-            String orderbyPath = null;
-            if (!MDMConfiguration.getDBType().getName().equals(EDBType.QIZX.getName())) {
-                if (xpathInfoForeignKey.length() != 0) {
-                    orderbyPath = Util.getFormatedFKInfo(xpathInfos[0].replaceFirst(initxpathForeignKey, initxpathForeignKey),
-                            initxpathForeignKey);
-                }
-            }
             ForeignKeyHolder holder = new ForeignKeyHolder();
             holder.xpaths = xPaths;
-            holder.orderbyPath = orderbyPath;
+            holder.orderbyPath = null;
             holder.conceptName = conceptName;
             holder.whereItem = whereItem;
             holder.fkFilter = foreignKeyFilterValue;

@@ -109,8 +109,6 @@ public class LineageListPanel extends ContentPanel {
 
     private QueryModel currentQueryModel;
 
-    private boolean isPagingAccurate;
-
     private String taskId;
 
     private String cluster;
@@ -178,7 +176,6 @@ public class LineageListPanel extends ContentPanel {
                                     sortedData.add(itemBean);
                                 }
                             }
-                            isPagingAccurate = result.isPagingAccurate();
                             callback.onSuccess(new BasePagingLoadResult<ItemBean>(sortedData, result.getOffset(), result
                                     .getTotalLength()));
                             if (result.getTotalLength() == 0) {
@@ -484,7 +481,7 @@ public class LineageListPanel extends ContentPanel {
             @Override
             protected void onLoad(LoadEvent event) {
                 String of_word = MessagesFactory.getMessages().of_word();
-                msgs.setDisplayMsg("{0} - {1} " + of_word + " " + (isPagingAccurate ? "" : "~") + "{2}"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+                msgs.setDisplayMsg("{0} - {1} " + of_word + " " + "{2}"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 super.onLoad(event);
             }
         };

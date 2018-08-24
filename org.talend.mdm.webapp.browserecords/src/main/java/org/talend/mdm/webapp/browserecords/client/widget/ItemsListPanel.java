@@ -133,8 +133,6 @@ public class ItemsListPanel extends ContentPanel {
 
     private PagingLoadConfig pagingLoadConfig;
 
-    private boolean isPagingAccurate;
-
     BrowseRecordsServiceAsync service = (BrowseRecordsServiceAsync) Registry.get(BrowseRecords.BROWSERECORDS_SERVICE);
 
     RpcProxy<PagingLoadResult<ItemBean>> proxy = new RpcProxy<PagingLoadResult<ItemBean>>() {
@@ -175,7 +173,6 @@ public class ItemsListPanel extends ContentPanel {
 
                 @Override
                 public void onSuccess(ItemBasePageLoadResult<ItemBean> result) {
-                    isPagingAccurate = result.isPagingAccurate();
                     callback.onSuccess(new BasePagingLoadResult<ItemBean>(result.getData(), result.getOffset(), result
                             .getTotalLength()));
                     if (result.getTotalLength() == 0) {
@@ -345,7 +342,7 @@ public class ItemsListPanel extends ContentPanel {
             @Override
             protected void onLoad(LoadEvent event) {
                 String of_word = MessagesFactory.getMessages().of_word();
-                msgs.setDisplayMsg("{0} - {1} " + of_word + " " + (isPagingAccurate ? "" : "~") + "{2}"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+                msgs.setDisplayMsg("{0} - {1} " + of_word + " " + "{2}"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 super.onLoad(event);
             }
         };

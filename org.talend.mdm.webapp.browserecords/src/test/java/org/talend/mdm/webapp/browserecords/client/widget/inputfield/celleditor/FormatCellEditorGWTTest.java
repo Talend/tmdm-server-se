@@ -26,6 +26,7 @@ import org.talend.mdm.webapp.browserecords.client.model.ItemBean;
 import org.talend.mdm.webapp.browserecords.client.util.DateUtil;
 import org.talend.mdm.webapp.browserecords.client.util.UserSession;
 import org.talend.mdm.webapp.browserecords.client.widget.ItemsListPanel;
+import org.talend.mdm.webapp.browserecords.client.widget.ForeignKey.ForeignKeyCellField;
 import org.talend.mdm.webapp.browserecords.client.widget.ForeignKey.ForeignKeyField;
 import org.talend.mdm.webapp.browserecords.client.widget.inputfield.FormatDateField;
 
@@ -170,14 +171,14 @@ public class FormatCellEditorGWTTest extends GWTTestCase {
         assertEquals("2012-12-03T12:30:55", dateStr);
         assertEquals(DateUtil.tryConvertStringToDate("2012-12-03T12:30:55"), selectedItem.getOriginalMap().get(field.getName()));
     }
-    
+
     public void testFKCellEditor() {
         UserSession session = new UserSession();
         AppHeader appHeader = new AppHeader();
         appHeader.setAutoValidate(false);
         session.put(UserSession.APP_HEADER, appHeader);
         Registry.register(BrowseRecords.USER_SESSION, session);
-        
+
         List<String> foreignKeyInfo = new ArrayList<String>();
         foreignKeyInfo.add("ProductFamily/name");
         SimpleTypeModel simpleTypeModel = new SimpleTypeModel();
@@ -185,19 +186,26 @@ public class FormatCellEditorGWTTest extends GWTTestCase {
         simpleTypeModel.setMaxOccurs(-1);
         simpleTypeModel.setForeignkey("ProductFamily/Id");
         simpleTypeModel.setForeignKeyInfo(foreignKeyInfo);
-        
+        simpleTypeModel.setReadOnly(true);
+
         Map<String, String> fkInfo = new LinkedHashMap<String, String>();
         fkInfo.put("ProductFamily/Name", "f3");
-        
+
         foreignKeyField = new ForeignKeyField(simpleTypeModel);
         ForeignKeyBean fkBean = new ForeignKeyBean();
         fkBean.setForeignKeyInfo(fkInfo);
-        
+        foreignKeyField.setReadOnly(simpleTypeModel.isReadOnly());
+        foreignKeyField.setEnabled(!simpleTypeModel.isReadOnly());
+
         foreignKeyField.setValue(fkBean);
         FKCellEditor cellEditor = new FKCellEditor(foreignKeyField);
         cellEditor.preProcessValue("any string");
-        
+
         assertNull(foreignKeyField.getSuggestBox().getValue());
+        assertEquals(true, foreignKeyField.isReadOnly());
+        assertEquals(false, foreignKeyField.isEnabled());
+        assertEquals(false, foreignKeyField.getSuggestBox().isEnabled());
+        assertEquals(true, foreignKeyField.getSuggestBox().isReadOnly());
     }
 
     public void testForeignKeyCellEditor() {
@@ -228,6 +236,56 @@ public class FormatCellEditorGWTTest extends GWTTestCase {
         ForeignKeyBean foreignKeyBean = (ForeignKeyBean) result;
         assertEquals(1, foreignKeyBean.getForeignKeyInfo().size());
         assertEquals("TestFamily", foreignKeyBean.getDisplayInfo());
+    }
+
+    public void testForeignKeyCellField() {
+        UserSession session = new UserSession();
+        AppHeader appHeader = new AppHeader();
+        appHeader.setAutoValidate(false);
+        session.put(UserSession.APP_HEADER, appHeader);
+        Registry.register(BrowseRecords.USER_SESSION, session);
+
+        List<String> foreignKeyInfo = new ArrayList<String>();
+        foreignKeyInfo.add("ProductFamily/name");
+        SimpleTypeModel simpleTypeModel = new SimpleTypeModel();
+        simpleTypeModel.setAutoExpand(false);
+        simpleTypeModel.setMaxOccurs(-1);
+        simpleTypeModel.setForeignkey("ProductFamily/Id");
+        simpleTypeModel.setForeignKeyInfo(foreignKeyInfo);
+        simpleTypeModel.setReadOnly(true);
+
+        Map<String, String> fkInfo = new LinkedHashMap<String, String>();
+        fkInfo.put("ProductFamily/Name", "f3");
+
+        foreignKeyField = new ForeignKeyField(simpleTypeModel);
+        foreignKeyField.setReadOnly(simpleTypeModel.isReadOnly());
+        foreignKeyField.setEnabled(!simpleTypeModel.isReadOnly());
+        ForeignKeyBean fkBean = new ForeignKeyBean();
+        fkBean.setForeignKeyInfo(fkInfo);
+
+        foreignKeyField.setValue(fkBean);
+        ForeignKeyCellField cellEditor = new ForeignKeyCellField(foreignKeyField, "Family/Name");
+
+        assertEquals(true, cellEditor.isReadOnly());
+        assertEquals(false, cellEditor.isEnabled());
+        assertEquals(false, cellEditor.getSuggestBox().isEnabled());
+        assertEquals(true, cellEditor.getSuggestBox().isReadOnly());
+
+        // for read-only=false
+        simpleTypeModel.setReadOnly(false);
+        foreignKeyField = new ForeignKeyField(simpleTypeModel);
+        foreignKeyField.setReadOnly(simpleTypeModel.isReadOnly());
+        foreignKeyField.setEnabled(!simpleTypeModel.isReadOnly());
+        fkBean = new ForeignKeyBean();
+        fkBean.setForeignKeyInfo(fkInfo);
+
+        foreignKeyField.setValue(fkBean);
+        cellEditor = new ForeignKeyCellField(foreignKeyField, "Family/Name");
+
+        assertEquals(false, cellEditor.isReadOnly());
+        assertEquals(true, cellEditor.isEnabled());
+        assertEquals(true, cellEditor.getSuggestBox().isEnabled());
+        assertEquals(false, cellEditor.getSuggestBox().isReadOnly());
     }
 
     private void mockGrid() {

@@ -19,9 +19,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -44,6 +41,9 @@ import com.amalto.core.webservice.WSWhereCondition;
 import com.amalto.core.webservice.WSWhereItem;
 import com.amalto.core.webservice.WSWhereOperator;
 import com.amalto.webapp.core.util.Util;
+
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 @PrepareForTest({ ForeignKeyHelper.class, org.talend.mdm.webapp.base.server.util.CommonUtil.class })
 @SuppressWarnings("nls")
@@ -378,7 +378,6 @@ public class ForeignKeyHelperTest extends TestCase {
 
         ForeignKeyHelper.overrideSchemaManager(new SchemaMockAgent(xsd, new DataModelID("PolymorphismModel")));
 
-        MDMConfiguration.getConfiguration().setProperty("xmldb.type", EDBType.QIZX.getName()); //$NON-NLS-1$
         model.setFilterValue("");
         ForeignKeyHelper.ForeignKeyHolder result = ForeignKeyHelper.getForeignKeyHolder(model, "");
 
@@ -874,7 +873,6 @@ public class ForeignKeyHelperTest extends TestCase {
         ForeignKeyHelper.overrideSchemaManager(new SchemaMockAgent(xsd, new DataModelID("CURSUS")));
 
         // 1. ForeignKeyInfo = ProductFamily/Name
-        MDMConfiguration.getConfiguration().setProperty("xmldb.type", EDBType.QIZX.getName()); //$NON-NLS-1$
         model.setFilterValue(value);
         ForeignKeyHelper.ForeignKeyHolder result = ForeignKeyHelper.getForeignKeyHolder(model, "");
         WSWhereItem whereItem = result.whereItem;

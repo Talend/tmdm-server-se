@@ -24,7 +24,6 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit3.PowerMockSuite;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
-import org.talend.mdm.commmon.util.core.EDBType;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
 import org.talend.mdm.commmon.util.datamodel.management.DataModelID;
 import org.talend.mdm.webapp.base.client.model.DataTypeConstants;
@@ -87,7 +86,6 @@ public class ForeignKeyHelperTest extends TestCase {
         ForeignKeyHelper.overrideSchemaManager(new SchemaMockAgent(xsd, new DataModelID("Product")));
 
         // 1. ForeignKeyInfo = ProductFamily/Name
-        MDMConfiguration.getConfiguration().setProperty("xmldb.type", EDBType.QIZX.getName()); //$NON-NLS-1$
         String foreignKeyFilter = ForeignKeyHelper.getForeignKeyFilter(ifFKFilter,
                 currentXpath.split("/")[0], xml, currentXpath, model); //$NON-NLS-1$
         model.setFilterValue(value);

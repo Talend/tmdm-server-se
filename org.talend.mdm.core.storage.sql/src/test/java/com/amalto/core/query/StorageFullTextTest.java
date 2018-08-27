@@ -1765,30 +1765,6 @@ public class StorageFullTextTest extends StorageTestCase {
         }
     }
 
-    public void testFKContainsAndContainsSentenceSearch() {
-        UserQueryBuilder qb = from(product).where(contains(product.getField("Family"), "345"));
-        StorageResults results = storage.fetch(qb.getSelect());
-        try {
-            assertTrue(results.getSize() == 2);
-            for (DataRecord result : results) {
-                assertTrue("4".equals(result.get("Id")) || "5".equals(result.get("Id")));
-            }
-        } finally {
-            results.close();
-        }
-
-        qb = from(product).where(contains(product.getField("Family"), "'345 123'"));
-        results = storage.fetch(qb.getSelect());
-        try {
-            assertTrue(results.getSize() == 1);
-            for (DataRecord result : results) {
-                assertEquals("4", result.get("Id"));
-            }
-        } finally {
-            results.close();
-        }
-    }
-
     public void testFullTextSearchResultContainsMultiOccurReferenceFields() throws Exception {
         UserQueryBuilder qb = from(product).select(product.getField("Name")).select(product.getField("Supplier")).where(fullText("car"));
         StorageResults results = storage.fetch(qb.getSelect());
@@ -1884,6 +1860,30 @@ public class StorageFullTextTest extends StorageTestCase {
                     if ("tyu".equals(result.get("name"))) {
                     }
                 }
+            }
+        } finally {
+            results.close();
+        }
+    }
+
+    public void testFKContainsAndContainsSentenceSearch() {
+        UserQueryBuilder qb = from(product).where(contains(product.getField("Family"), "345"));
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertTrue(results.getSize() == 2);
+            for (DataRecord result : results) {
+                assertTrue("4".equals(result.get("Id")) || "5".equals(result.get("Id")));
+            }
+        } finally {
+            results.close();
+        }
+
+        qb = from(product).where(contains(product.getField("Family"), "'345 123'"));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertTrue(results.getSize() == 1);
+            for (DataRecord result : results) {
+                assertEquals("4", result.get("Id"));
             }
         } finally {
             results.close();

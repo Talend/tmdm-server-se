@@ -10,7 +10,30 @@
 
 package com.amalto.core.query;
 
-import static com.amalto.core.query.user.UserQueryBuilder.*;
+import static com.amalto.core.query.user.UserQueryBuilder.alias;
+import static com.amalto.core.query.user.UserQueryBuilder.and;
+import static com.amalto.core.query.user.UserQueryBuilder.contains;
+import static com.amalto.core.query.user.UserQueryBuilder.count;
+import static com.amalto.core.query.user.UserQueryBuilder.distinct;
+import static com.amalto.core.query.user.UserQueryBuilder.emptyOrNull;
+import static com.amalto.core.query.user.UserQueryBuilder.eq;
+import static com.amalto.core.query.user.UserQueryBuilder.from;
+import static com.amalto.core.query.user.UserQueryBuilder.gt;
+import static com.amalto.core.query.user.UserQueryBuilder.gte;
+import static com.amalto.core.query.user.UserQueryBuilder.in;
+import static com.amalto.core.query.user.UserQueryBuilder.index;
+import static com.amalto.core.query.user.UserQueryBuilder.isEmpty;
+import static com.amalto.core.query.user.UserQueryBuilder.isNull;
+import static com.amalto.core.query.user.UserQueryBuilder.lt;
+import static com.amalto.core.query.user.UserQueryBuilder.lte;
+import static com.amalto.core.query.user.UserQueryBuilder.max;
+import static com.amalto.core.query.user.UserQueryBuilder.min;
+import static com.amalto.core.query.user.UserQueryBuilder.neq;
+import static com.amalto.core.query.user.UserQueryBuilder.not;
+import static com.amalto.core.query.user.UserQueryBuilder.or;
+import static com.amalto.core.query.user.UserQueryBuilder.startsWith;
+import static com.amalto.core.query.user.UserQueryBuilder.taskId;
+import static com.amalto.core.query.user.UserQueryBuilder.timestamp;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -1049,6 +1072,14 @@ public class StorageQueryTest extends StorageTestCase {
             results.close();
         }
 
+        qb = from(product).where(eq(product.getField("Family"), "2"));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getSize());
+            assertEquals(1, results.getCount());
+        } finally {
+            results.close();
+        }
     }
 
     public void testEqualsDateCondition() throws Exception {
@@ -1099,6 +1130,15 @@ public class StorageQueryTest extends StorageTestCase {
         try {
             assertEquals(5, results.getSize());
             assertEquals(5, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        qb = from(product).where(neq(product.getField("Family"), "2"));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getSize());
+            assertEquals(1, results.getCount());
         } finally {
             results.close();
         }
@@ -1292,6 +1332,7 @@ public class StorageQueryTest extends StorageTestCase {
     }
 
     public void testStartsWithCondition() throws Exception {
+        storage.init(getDatasource("H2-Default-CaseSensitive"));
         UserQueryBuilder qb = from(person).where(startsWith(person.getField("firstname"), "Ju"));
         StorageResults results = storage.fetch(qb.getSelect());
         try {
@@ -1306,6 +1347,15 @@ public class StorageQueryTest extends StorageTestCase {
         try {
             assertEquals(3, results.getSize());
             assertEquals(3, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        qb = from(product).where(startsWith(product.getField("Family"), "1"));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getSize());
+            assertEquals(1, results.getCount());
         } finally {
             results.close();
         }
@@ -3871,7 +3921,7 @@ public class StorageQueryTest extends StorageTestCase {
 
     public void testQueryWithIntFK() throws Exception {
         UserQueryBuilder qb = from(entityB).where(
-                or(contains(entityB.getField("A_FK"), "b"), contains(entityB.getField("IdB"), "b")));
+                or(contains(entityB.getField("A_FK"), "b"), contains(entityB.getField("IdB"), "B")));
         StorageResults results = storage.fetch(qb.getSelect());
         try {
             assertEquals(1, results.getCount());
@@ -4497,45 +4547,6 @@ public class StorageQueryTest extends StorageTestCase {
         }
     }
     
-    @SuppressWarnings("unchecked")
-    public void testQueryWithFKContainsMultipleValues() throws Exception {
-        FieldMetadata field = personne.getField("Contextes/ContexteFk");
-        UserQueryBuilder qb = from(personne).where(contains(field, "111"));
-        storage.begin();
-        StorageResults results = storage.fetch(qb.getSelect());
-        try {
-            assertEquals(1, results.getCount());
-            List<Object> contextes = (List<Object>)results.iterator().next().get(field);
-            assertEquals(3, contextes.size());
-        } finally {
-            results.close();
-        }
-        
-        qb = from(personne).where(contains(field, "222"));
-        storage.begin();
-        results = storage.fetch(qb.getSelect());
-        try {
-            assertEquals(1, results.getCount());
-            List<Object> contextes = (List<Object>)results.iterator().next().get(field);
-            assertEquals(3, contextes.size());
-        } finally {
-            results.close();
-        }
-        
-        qb = from(personne).where(contains(field, "333"));
-        storage.begin();
-        results = storage.fetch(qb.getSelect());
-        try {
-            assertEquals(1, results.getCount());
-            List<Object> contextes = (List<Object>)results.iterator().next().get(field);
-            assertEquals(3, contextes.size());
-        } finally {
-            results.close();
-        }
-        
-        storage.commit();
-    }
-
     public void testIdContainsSlash() throws Exception {
         DataRecordReader<String> factory = new XmlStringDataRecordReader();
         DataRecord record1 = factory.read(repository, tt,
@@ -4699,7 +4710,8 @@ public class StorageQueryTest extends StorageTestCase {
     }
     
     public void testAdvancedSearchWithMultiCondition() throws Exception {
-        UserQueryBuilder qb = from(person).where(and(contains(person.getField("lastname"), "Du*"), contains(person.getField("middlename"), "jo*")));
+        UserQueryBuilder qb = from(person)
+                .where(and(contains(person.getField("lastname"), "Du*"), contains(person.getField("middlename"), "Jo*")));
         StorageResults results = storage.fetch(qb.getSelect());
         List<String> ids = new ArrayList<String>();
         ids.add("1");

@@ -13,7 +13,6 @@ package com.amalto.core.query.optimization;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
-import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
 
 import com.amalto.core.query.user.Alias;
 import com.amalto.core.query.user.BigDecimalConstant;
@@ -91,10 +90,6 @@ public class ConfigurableContainsOptimizer implements Optimizer {
                         // Don't do any optimization if full text is disabled on datasource.
                         LOGGER.warn("Cannot use '" + containsOptimization + "': datasource '" + dataSource.getName()
                                 + "' does not support full text search.");
-                    } else if (!select.getJoins().isEmpty()) {
-                        if (LOGGER.isDebugEnabled()) {
-                            LOGGER.debug("Cannot use '" + containsOptimization + "': query uses join clause.");
-                        }
                     } else if (hasForbiddenFullTextPredicates(condition)) {
                         if (LOGGER.isDebugEnabled()) {
                             LOGGER.debug("Cannot use '" + containsOptimization + "': query uses full text forbidden predicates.");
@@ -576,7 +571,7 @@ public class ConfigurableContainsOptimizer implements Optimizer {
 
         @Override
         public Boolean visit(Field field) {
-            return field.getFieldMetadata() instanceof ReferenceFieldMetadata;
+            return false;
         }
 
         @Override

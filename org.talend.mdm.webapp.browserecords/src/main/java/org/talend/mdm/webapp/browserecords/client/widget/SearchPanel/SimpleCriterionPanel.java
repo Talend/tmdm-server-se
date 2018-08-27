@@ -10,23 +10,36 @@
 package org.talend.mdm.webapp.browserecords.client.widget.SearchPanel;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.talend.mdm.webapp.base.client.SessionAwareAsyncCallback;
 import org.talend.mdm.webapp.base.client.model.DataTypeConstants;
 import org.talend.mdm.webapp.base.client.model.ForeignKeyBean;
 import org.talend.mdm.webapp.base.client.model.SimpleCriterion;
 import org.talend.mdm.webapp.base.client.widget.MultiLanguageField;
+import org.talend.mdm.webapp.base.shared.ComplexTypeModel;
+import org.talend.mdm.webapp.base.shared.EntityModel;
+import org.talend.mdm.webapp.base.shared.SimpleTypeModel;
 import org.talend.mdm.webapp.base.shared.TypeModel;
+import org.talend.mdm.webapp.browserecords.client.BrowseRecords;
+import org.talend.mdm.webapp.browserecords.client.BrowseRecordsServiceAsync;
+import org.talend.mdm.webapp.browserecords.client.model.OperatorConstants;
 import org.talend.mdm.webapp.browserecords.client.resources.icon.Icons;
+import org.talend.mdm.webapp.browserecords.client.util.Locale;
 import org.talend.mdm.webapp.browserecords.client.util.StagingConstant;
 import org.talend.mdm.webapp.browserecords.client.widget.ForeignKey.ForeignKeyField;
 import org.talend.mdm.webapp.browserecords.client.widget.ForeignKey.ReturnCriteriaFK;
 import org.talend.mdm.webapp.browserecords.client.widget.inputfield.ComboBoxField;
+import org.talend.mdm.webapp.browserecords.client.widget.inputfield.SimpleComboBoxField;
 import org.talend.mdm.webapp.browserecords.client.widget.inputfield.SpinnerField;
-import org.talend.mdm.webapp.browserecords.client.widget.inputfield.creator.SearchFieldCreator;
+import org.talend.mdm.webapp.browserecords.client.widget.typefield.TypeFieldCreateContext;
+import org.talend.mdm.webapp.browserecords.client.widget.typefield.TypeFieldCreator;
+import org.talend.mdm.webapp.browserecords.client.widget.typefield.TypeFieldSource;
 import org.talend.mdm.webapp.browserecords.shared.ViewBean;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.data.BaseModel;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FieldEvent;
@@ -44,6 +57,7 @@ import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.Radio;
 import com.extjs.gxt.ui.client.widget.form.RadioGroup;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
+import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -51,6 +65,7 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * DOC stephane class global comment. Detailled comment
@@ -218,33 +233,100 @@ public class SimpleCriterionPanel<T> extends HorizontalPanel implements ReturnCr
         operatorComboBox.setValue(operatorlist.getAt(0));
     }
 
-    private TypeModel adaptOperatorAndValue() {
-        content.removeAll();
-        TypeModel typeModel = itemsPredicates.get(getKey());
-        field = SearchFieldCreator.createField(typeModel);
-        if (field != null) {
-            field.setId("SimpleSearchValueFiled"); //$NON-NLS-1$
-            if (field instanceof ForeignKeyField) {
-                // ((FKSearchField) field).Update(getKey(), this);
-                ((ForeignKeyField) field).setStaging(staging);
-            }
-            content.add(field);
-            field.addListener(Events.KeyDown, new Listener<FieldEvent>() {
+    private void setField(Field field) {
+        this.field = field;
+    }
 
-                @Override
-                public void handleEvent(FieldEvent be) {
-                    if (be.getKeyCode() == KeyCodes.KEY_ENTER) {
-                        if (searchBut != null) {
-                            field.setValue(field.getValue());
-                            searchBut.fireEvent(Events.Select);
+
+    private TypeModel adaptSearchPanel() {
+        content.removeAll();
+        final TypeModel typeModel = itemsPredicates.get(getKey());
+        if (typeModel == null) {
+            TextField<String> textField = new TextField<String>();
+            textField.setValue("*");//$NON-NLS-1$
+            adaptOperatorAndValue(textField, OperatorConstants.stringOperators);
+        } else if (typeModel.getForeignkey() != null) {
+            String foreignConceptName = typeModel.getForeignkey().split("/")[0]; //$NON-NLS-1$
+            ((BrowseRecordsServiceAsync) Registry.get(BrowseRecords.BROWSERECORDS_SERVICE)).getEntityModel(foreignConceptName,
+                    Locale.getLanguage(), new SessionAwareAsyncCallback<EntityModel>() {
+
+                        @Override
+                        public void onSuccess(EntityModel entityModel) {
+                            boolean isCompositeKey = entityModel.getKeys().length > 1;
+                            if (isCompositeKey) {
+                                adaptForeignKeyField(typeModel);
+                            } else if (entityModel.getKeys().length == 1) {
+                                String keyPath = entityModel.getKeys()[0];
+                                TypeModel keyTypeModel = entityModel.getTypeModel(keyPath);
+                                boolean isString = DataTypeConstants.STRING.getTypeName()
+                                        .equals(keyTypeModel.getType().getTypeName());
+                                boolean isAutoIncrement = DataTypeConstants.AUTO_INCREMENT.getTypeName()
+                                        .equals(keyTypeModel.getType().getTypeName());
+                                boolean isUUID = DataTypeConstants.UUID.getTypeName()
+                                        .equals(keyTypeModel.getType().getTypeName());
+                                if (isString || isAutoIncrement || isUUID) {
+                                    adaptTextField();
+                                } else {
+                                    adaptForeignKeyField(typeModel);
+                                }
+                            }
                         }
+                    });
+        } else if (typeModel.hasEnumeration()) {
+            SimpleComboBoxField<String> comboBox = new SimpleComboBoxField<String>();
+            comboBox.setFireChangeEventOnSetValue(true);
+            if (typeModel.getMinOccurs() > 0) {
+                comboBox.setAllowBlank(false);
+            }
+            comboBox.setEditable(false);
+            comboBox.setForceSelection(true);
+            comboBox.setTriggerAction(TriggerAction.ALL);
+            setEnumerationValues(typeModel, comboBox);
+            adaptOperatorAndValue(comboBox, OperatorConstants.enumOperators);
+        } else if (typeModel instanceof ComplexTypeModel) {
+            TextField<String> textField = new TextField<String>();
+            textField.setValue("*");//$NON-NLS-1$
+            adaptOperatorAndValue(textField, OperatorConstants.fulltextOperators);
+        } else {
+            TypeFieldCreateContext context = new TypeFieldCreateContext(typeModel);
+            TypeFieldSource typeFieldSource = new TypeFieldSource(TypeFieldSource.SEARCH_EDITOR);
+            TypeFieldCreator typeFieldCreator = new TypeFieldCreator(typeFieldSource, context);
+            adaptOperatorAndValue(typeFieldCreator.createField(), typeFieldSource.getOperatorMap());
+        }
+        return typeModel;
+    }
+
+    private void adaptForeignKeyField(TypeModel typeModel) {
+        ForeignKeyField fkField = new ForeignKeyField(typeModel);
+        fkField.setUsageField("SearchFieldCreator"); //$NON-NLS-1$
+        fkField.setStaging(staging);
+        adaptOperatorAndValue(fkField, OperatorConstants.foreignKeyOperators);
+    }
+
+    private void adaptTextField() {
+        TextField<String> textField = new TextField<String>();
+        textField.setValue("*");//$NON-NLS-1$
+        adaptOperatorAndValue(textField, OperatorConstants.stringOperators);
+    }
+
+    private void adaptOperatorAndValue(final Field field, Map<String, String> operators) {
+        setField(field);
+        setOperatorComboBox(operators);
+        field.setId("SimpleSearchValueFiled"); //$NON-NLS-1$
+        content.add(field);
+        field.addListener(Events.KeyDown, new Listener<FieldEvent>() {
+
+            @Override
+            public void handleEvent(FieldEvent be) {
+                if (be.getKeyCode() == KeyCodes.KEY_ENTER) {
+                    if (searchBut != null) {
+                        field.setValue(field.getValue());
+                        searchBut.fireEvent(Events.Select);
                     }
                 }
-            });
-        }
-        setOperatorComboBox(SearchFieldCreator.cons);
+            }
+        });
         content.layout();
-        return typeModel;
     }
 
     public void focusField() {
@@ -311,7 +393,7 @@ public class SimpleCriterionPanel<T> extends HorizontalPanel implements ReturnCr
     public void setCriterion(SimpleCriterion criterion) {
         try {
             keyComboBox.setValue(list.findModel("value", criterion.getKey())); //$NON-NLS-1$
-            TypeModel typeModel = adaptOperatorAndValue();
+            TypeModel typeModel = adaptSearchPanel();
             operatorComboBox.setValue(operatorlist.findModel("value", criterion.getOperator())); //$NON-NLS-1$
             setField(criterion, typeModel);
         } catch (Exception e) {
@@ -389,7 +471,7 @@ public class SimpleCriterionPanel<T> extends HorizontalPanel implements ReturnCr
 
             @Override
             public void selectionChanged(SelectionChangedEvent<BaseModel> se) {
-                adaptOperatorAndValue();
+                adaptSearchPanel();
 
                 if (simpleCriterionPanel != null) {
                     addOperatorAndFieldListener(simpleCriterionPanel, false);
@@ -440,12 +522,22 @@ public class SimpleCriterionPanel<T> extends HorizontalPanel implements ReturnCr
         SimpleCriterionPanel<T> simpleCriterionPanel = new SimpleCriterionPanel<T>(searchBut, staging);
         if (view != null) {
             simpleCriterionPanel.updateFields(view);
-            simpleCriterionPanel.adaptOperatorAndValue();
+            simpleCriterionPanel.adaptSearchPanel();
         }
 
         simpleCriterionPanel.addKeyComboBoxListener(this);
         simpleCriterionPanel.setCriterion(this.getCriteria());
         simpleCriterionPanel.addOperatorAndFieldListener(this, true);
         return simpleCriterionPanel;
+    }
+
+    private static void setEnumerationValues(TypeModel typeModel, Widget w) {
+        List<String> enumeration = ((SimpleTypeModel) typeModel).getEnumeration();
+        if (enumeration != null && enumeration.size() > 0) {
+            SimpleComboBox<String> field = (SimpleComboBox<String>) w;
+            for (String value : enumeration) {
+                field.add(value);
+            }
+        }
     }
 }

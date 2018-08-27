@@ -1427,7 +1427,8 @@ class StandardQueryHandler extends AbstractQueryHandler {
                         for (String fieldName : leftFieldCondition.criterionFieldNames) {
                             if(leftFieldCondition.field instanceof Field){
                                 FieldMetadata fieldMetadata = leftFieldCondition.field.getFieldMetadata();
-                                if (fieldMetadata.getContainingType().isInstantiable()) {
+                                if (fieldMetadata.getContainingType().isInstantiable()
+                                        && !(fieldMetadata instanceof ReferenceFieldMetadata)) {
                                     fieldName = fieldMetadata.getEntityTypeName() + '.' + fieldMetadata.getName();
                                 }
                             }                          

@@ -55,7 +55,7 @@
                 <connection-driver-class>org.h2.Driver</connection-driver-class>
                 <connection-url>jdbc:h2:./data/h2_fulltext_master</connection-url>
                 <fulltext-index-directory>indexes/H2_FULLTEXT_MASTER</fulltext-index-directory>
-                <case-sensitive-search>false</case-sensitive-search>
+                <case-sensitive-search>true</case-sensitive-search>
                 <schema-generation>create</schema-generation>
                 <properties>
                     <property name="hibernate.dbcp.maxTotal">300</property>
@@ -183,6 +183,43 @@
                 <connection-driver-class>org.h2.Driver</connection-driver-class>
                 <connection-url>jdbc:h2:./data/rdbms_1_no_ft</connection-url>
                 <schema-generation>create</schema-generation>
+            </rdbms-configuration>
+        </system>
+    </datasource>
+    <datasource name="H2-Default-CaseSensitive">
+        <master>
+            <type>RDBMS</type>
+            <rdbms-configuration>
+                <dialect>H2</dialect>
+                <connection-driver-class>org.h2.Driver</connection-driver-class>
+                <connection-url>jdbc:h2:./data/h2_default_master</connection-url>
+                <case-sensitive-search>true</case-sensitive-search>
+                <schema-generation>create</schema-generation>
+                <properties>
+                    <property name="hibernate.dbcp.maxTotal">300</property>
+                </properties>
+            </rdbms-configuration>
+        </master>
+        <staging>
+            <type>RDBMS</type>
+            <rdbms-configuration>
+                <dialect>H2</dialect>
+                <connection-driver-class>org.h2.Driver</connection-driver-class>
+                <connection-url>jdbc:h2:./data/h2_default_staging</connection-url>
+                <schema-generation>create</schema-generation>
+            </rdbms-configuration>
+        </staging>
+        <system>
+            <type>RDBMS</type>
+            <rdbms-configuration>
+                <dialect>H2</dialect>
+                <connection-driver-class>org.h2.Driver</connection-driver-class>
+                <connection-url>jdbc:h2:./data/h2_default_system</connection-url>
+                <case-sensitive-search>false</case-sensitive-search>
+                <schema-generation>create</schema-generation>
+                <properties>
+                    <property name="hibernate.dbcp.maxTotal">300</property>
+                </properties>
             </rdbms-configuration>
         </system>
     </datasource>

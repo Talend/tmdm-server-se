@@ -113,6 +113,12 @@ public class FormatCellEditorGWTTest extends GWTTestCase {
         assertEquals("66.3600", numStr);
         assertEquals("66.3600", selectedItem.getOriginalMap().get(field.getName()).toString());
         
+        field.setName("FormatTest/test");
+        num = cellEditor.preProcessValue(null);
+        assertNull(num);
+
+        num = cellEditor.preProcessValue("");
+        assertNull(num);
     }
 
     public void testDateFieldCellEditor() {
@@ -314,7 +320,7 @@ public class FormatCellEditorGWTTest extends GWTTestCase {
     }
 
     private native void injectGrid(ItemsListPanel listPanel, Grid<ItemBean> grid)/*-{
-		listPanel.@org.talend.mdm.webapp.browserecords.client.widget.ItemsListPanel::grid = grid;
+        listPanel.@org.talend.mdm.webapp.browserecords.client.widget.ItemsListPanel::grid = grid;
     }-*/;
 
     public String getModuleName() {

@@ -35,14 +35,19 @@ public class NumberFieldCellEditor extends CellEditor {
         if (itemBean.getOriginalMap().containsKey(getField().getName())) {
             num = (Number) itemBean.getOriginalMap().get(getField().getName());
         } else {
-            if (DataTypeConstants.INTEGER.getBaseTypeName().equals(numberType)) {
-                num = Integer.parseInt((String) value);
-            } else if (DataTypeConstants.FLOAT.getBaseTypeName().equals(numberType)) {
-                num = Float.parseFloat((String) value);
-            } else if (DataTypeConstants.DECIMAL.getBaseTypeName().equals(numberType)) {
-                num = ((FormatNumberField)getField()).getDecimalValue((String)value) ;
-            } else {
-                num = Double.parseDouble((String) value);
+            if (value != null && value instanceof String) {
+                String valueString = (String) value;
+                if (!valueString.isEmpty()) {
+                    if (DataTypeConstants.INTEGER.getBaseTypeName().equals(numberType)) {
+                        num = Integer.parseInt(valueString);
+                    } else if (DataTypeConstants.FLOAT.getBaseTypeName().equals(numberType)) {
+                        num = Float.parseFloat(valueString);
+                    } else if (DataTypeConstants.DECIMAL.getBaseTypeName().equals(numberType)) {
+                        num = ((FormatNumberField) getField()).getDecimalValue(valueString);
+                    } else {
+                        num = Double.parseDouble(valueString);
+                    }
+                }
             }
         }
         return num;

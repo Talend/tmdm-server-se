@@ -73,6 +73,7 @@ import com.amalto.core.query.user.metadata.TaskId;
 import com.amalto.core.query.user.metadata.Timestamp;
 import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.StorageMetadataUtils;
+import com.amalto.core.storage.exception.FullTextQueryCompositeKeyException;
 import com.amalto.core.storage.exception.UnsupportedFullTextQueryException;
 
 class LuceneQueryGenerator extends VisitorAdapter<Query> {
@@ -397,7 +398,16 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
 
     @Override
     public Query visit(FieldFullText fieldFullText) {
-        String fieldName = fieldFullText.getField().getFieldMetadata().getName();
+        FieldMetadata fieldMetadata = fieldFullText.getField().getFieldMetadata();
+        String fieldName = fieldMetadata.getName();
+        if (fieldMetadata instanceof ReferenceFieldMetadata) {
+            ReferenceFieldMetadata referenceFieldMetadata = ((ReferenceFieldMetadata) fieldMetadata);
+            if (referenceFieldMetadata.getReferencedType().getKeyFields().size() > 1) {
+                throw new FullTextQueryCompositeKeyException(referenceFieldMetadata.getReferencedType().getName());
+            } else {
+                fieldName = fieldName + "." + referenceFieldMetadata.getReferencedField().getName(); //$NON-NLS-1$
+            }
+        }
         String[] fieldsAsArray = new String[] { fieldName };
         String fullTextValue = getFullTextValue(fieldFullText);
         String fullTextQuery = fieldName + ':' + fullTextValue;

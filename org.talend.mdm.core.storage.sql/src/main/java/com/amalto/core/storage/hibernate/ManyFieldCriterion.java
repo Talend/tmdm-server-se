@@ -191,7 +191,15 @@ class ManyFieldCriterion extends SQLCriterion {
             }
             query.append("(") //$NON-NLS-1$
                     .append(criteriaQuery.getSQLAlias(typeCriteria)).append(".") //$NON-NLS-1$
-                    .append(resolver.get(simpleField)).append(" = "); //$NON-NLS-1$
+                    .append(resolver.get(simpleField));
+
+            String queryValue = String.valueOf(getValue());
+            if (Predicate.STARTS_WITH == predicate) {
+                query.append(" like "); //$NON-NLS-1$
+                queryValue = queryValue + "%"; //$NON-NLS-1$
+            } else {
+                query.append(" = "); //$NON-NLS-1$
+            }
 
             String name = MetadataUtils.getSuperConcreteType(simpleField.getType()).getName();
             boolean isStringType = Types.STRING.equals(name);
@@ -207,7 +215,7 @@ class ManyFieldCriterion extends SQLCriterion {
             if (isStringType) {
                 query.append("'"); //$NON-NLS-1$
             }
-            query.append(String.valueOf(getValue()));
+            query.append(queryValue);
             if (isStringType) {
                 query.append("'"); //$NON-NLS-1$
             }

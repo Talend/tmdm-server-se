@@ -593,7 +593,7 @@ public class StoragePrepareTest extends TestCase {
 
     public void testBooleanDefaultValuePrepare() throws Exception {
         DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS2", STORAGE_NAME);
-  Storage storage = new HibernateStorage("Test", StorageType.MASTER);
+        Storage storage = new HibernateStorage("Test", StorageType.MASTER);
         storage.init(dataSource);
         MetadataRepository repository = new MetadataRepository();
         repository.load(StoragePrepareTest.class.getResourceAsStream("BooleanType.xsd"));
@@ -638,7 +638,7 @@ public class StoragePrepareTest extends TestCase {
                 assertEquals("123", result.get("Id"));//$NON-NLS-1$ //$NON-NLS-2$
                 assertEquals(true, result.get("a1"));//$NON-NLS-1$ //$NON-NLS-2$
                 assertEquals(true, result.get("a2"));//$NON-NLS-1$ //$NON-NLS-2$
-                assertEquals(null, result.get("a3"));//$NON-NLS-1$ //$NON-NLS-2$
+                assertEquals(false, result.get("a3"));//$NON-NLS-1$ //$NON-NLS-2$
                 assertEquals(true, result.get("a4"));//$NON-NLS-1$ //$NON-NLS-2$
                 assertEquals(null, result.get("a5"));//$NON-NLS-1$ //$NON-NLS-2$
                 assertEquals(false, result.get("a6"));//$NON-NLS-1$ //$NON-NLS-2$

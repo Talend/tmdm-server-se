@@ -341,7 +341,7 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
                     ComplexTypeMetadata referencedType = referenceField.getReferencedType();
                     //to support associated entities lucene query
                     if (StringUtils.isNotEmpty(referenceField.getPath())) {
-                        prefix = referenceField.getPath().replace("/", ".") + ".";
+                        prefix = prefix + referenceField.getName().replace("/", ".") + ".";
                     }
                     referencedType.accept(this);
                     prefix = StringUtils.EMPTY;

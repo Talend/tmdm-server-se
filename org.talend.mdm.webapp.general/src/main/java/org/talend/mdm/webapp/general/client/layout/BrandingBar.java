@@ -47,7 +47,9 @@ public class BrandingBar extends ContentPanel {
 
     private FlowPanel bar = new FlowPanel();
 
-    private HorizontalPanel hp = new HorizontalPanel();
+    private HorizontalPanel hp1 = new HorizontalPanel();
+
+    private HorizontalPanel hp2 = new HorizontalPanel();
 
     private HTML versionLabel = new HTML();
 
@@ -160,40 +162,57 @@ public class BrandingBar extends ContentPanel {
 
     private void buildBar() {
         UserBean userBean = Registry.get(General.USER_BEAN);
-        bar.add(new Image("secure/img/header-back-title.png")); //$NON-NLS-1$
+
+        hp1.getElement().getStyle().setProperty("position", "absolute"); //$NON-NLS-1$ //$NON-NLS-2$
+        hp2.getElement().getStyle().setProperty("top", "0px"); //$NON-NLS-1$ //$NON-NLS-2$
+        hp1.getElement().getStyle().setProperty("left", "10px"); //$NON-NLS-1$ //$NON-NLS-2$
+        hp1.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+
+        Image logoTalend = new Image("secure/img/header-back-talend.png"); //$NON-NLS-1$
+        logoTalend.setHeight("28px");
+        hp1.add(logoTalend);
+        hp1.add(new HTML("&nbsp;&nbsp;&nbsp;&nbsp;")); //$NON-NLS-1$
+        hp1.add(new Image("secure/img/header-back.png")); //$NON-NLS-1$
+        hp1.add(new HTML("&nbsp;&nbsp;&nbsp;&nbsp;")); //$NON-NLS-1$
+        Image logoMDM = new Image("secure/img/header-back-mdm.png"); //$NON-NLS-1$
+        logoMDM.setHeight("28px");
+        hp1.add(logoMDM);
+        hp1.add(new HTML("&nbsp;&nbsp;")); //$NON-NLS-1$
+        
         if (userBean.isEnterprise()) {
             versionLabel.setStyleName("version-label help"); //$NON-NLS-1$
         } else {
             versionLabel.setStyleName("version-label"); //$NON-NLS-1$
         }
+        hp1.add(versionLabel);
+        bar.add(hp1);
 
-        bar.add(versionLabel);
-
-        hp.getElement().getStyle().setProperty("position", "absolute"); //$NON-NLS-1$ //$NON-NLS-2$
-        hp.getElement().getStyle().setProperty("top", "6px"); //$NON-NLS-1$ //$NON-NLS-2$
-        hp.getElement().getStyle().setProperty("right", "1px"); //$NON-NLS-1$ //$NON-NLS-2$
-        hp.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+        hp2.getElement().getStyle().setProperty("position", "absolute"); //$NON-NLS-1$ //$NON-NLS-2$
+        hp2.getElement().getStyle().setProperty("top", "5px"); //$NON-NLS-1$ //$NON-NLS-2$
+        hp2.getElement().getStyle().setProperty("right", "1px"); //$NON-NLS-1$ //$NON-NLS-2$
+        hp2.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
         
         String html = userBean.getName();
         HTML userLabel = new HTML(html);
         userLabel.setStyleName("username"); //$NON-NLS-1$
         userLabel.getElement().setId("username-div"); //$NON-NLS-1$
-        hp.add(userLabel);      
-        hp.add(new HTML("&nbsp;&nbsp;")); //$NON-NLS-1$
+        hp2.add(userLabel);      
+        hp2.add(new HTML("&nbsp;&nbsp;")); //$NON-NLS-1$
 
         languageBox.getElement().setId("languageSelect"); //$NON-NLS-1$
         languageBox.setStyleName("language-box"); //$NON-NLS-1$
         // Enforce height
         languageBox.setHeight("20px"); //$NON-NLS-1$
-        hp.add(languageBox);
-        hp.add(new HTML("&nbsp;&nbsp;")); //$NON-NLS-1$
+        hp2.add(languageBox);
+        hp2.add(new HTML("&nbsp;&nbsp;")); //$NON-NLS-1$
         
-        hp.add(logout);
-        hp.add(new HTML("&nbsp;&nbsp;")); //$NON-NLS-1$
+        logout.setId("btn-logout"); //$NON-NLS-1$
+        hp2.add(logout);
+        hp2.add(new HTML("&nbsp;&nbsp;")); //$NON-NLS-1$
 
         bar.setSize("100%", "100%"); //$NON-NLS-1$ //$NON-NLS-2$
         bar.setStyleName("generic-header-background"); //$NON-NLS-1$
-        bar.add(hp);
+        bar.add(hp2);
 
         this.add(bar);
 

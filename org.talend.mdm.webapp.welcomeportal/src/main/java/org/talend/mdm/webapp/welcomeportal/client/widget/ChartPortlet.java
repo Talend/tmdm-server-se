@@ -54,9 +54,9 @@ import com.googlecode.gflot.client.options.PlotOptions;
 
 public abstract class ChartPortlet extends BasePortlet {
 
-    public static final String SERIES_1_COLOR = "#00a6ce"; //blue //$NON-NLS-1$
+    public static final String SERIES_1_COLOR = "#66BDFF"; //blue //$NON-NLS-1$
 
-    public static final String SERIES_2_COLOR = "#b6be00"; //dark-green //$NON-NLS-1$
+    public static final String SERIES_2_COLOR = "#82BD41"; //dark-green //$NON-NLS-1$
 
     public static final String SERIES_3_COLOR = "#f7a800"; //orange //$NON-NLS-1$
 

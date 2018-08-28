@@ -47,7 +47,7 @@
 </head>
 <body onload="document.loginform.j_username.focus();">
 <table width="100%" class="header1" border="0">
-      <tr><td height="128" width="50%" class="logo"><img src="<%= contextPath %>/auth/logo.png"></td><td class="version" id="loginVersion"><%=version%></td></tr>
+      <tr><td height="128" width="50%" class="logo"><img src="<%= contextPath %>/auth/logo.png" height="60px"></td><td class="version" id="loginVersion"><%=version%></td></tr>
       <tr><td class="suiteName" id="suiteName" colspan="2" height="56">Talend MDM</td></tr>
     </table>
 

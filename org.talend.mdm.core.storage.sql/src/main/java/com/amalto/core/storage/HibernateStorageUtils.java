@@ -9,7 +9,6 @@
  */
 package com.amalto.core.storage;
 
-import org.apache.commons.lang.StringUtils;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 
 import com.amalto.core.storage.datasource.RDBMSDataSource;
@@ -65,7 +64,7 @@ public abstract class HibernateStorageUtils {
         }
 
         String[] searchStrings = new String[] { "\"", "'" };
-        if (StringUtils.startsWithAny(defaultValue, searchStrings) && StringUtils.endsWithAny(defaultValue, searchStrings)) {
+        if (defaultValue.matches("('.*?'|\".*?\")")) {
             String lowerCaseDefaultValue = defaultValue.replaceAll("\"|'", "").toLowerCase();
             if (lowerCaseDefaultValue.equals(TRUE) || lowerCaseDefaultValue.equals(FALSE)) {
                 return true;

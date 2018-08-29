@@ -38,7 +38,7 @@ import org.hibernate.tool.hbm2ddl.TableMetadata;
 import com.amalto.core.storage.datasource.RDBMSDataSource;
 import com.amalto.core.storage.hibernate.OracleCustomDialect;
 
-@SuppressWarnings({"nls", "rawtypes", "deprecation", "serial"})
+@SuppressWarnings({ "nls", "rawtypes", "deprecation", "serial" })
 public class MDMTable extends Table {
 
     protected RDBMSDataSource dataSource;

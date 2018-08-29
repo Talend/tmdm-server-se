@@ -129,7 +129,11 @@ public class MDMTable extends Table {
             buf.append(dialect.getTableComment(getComment()));
         }
 
-        return buf.append(dialect.getTableTypeString()).toString();
+        String createSQL = buf.append(dialect.getTableTypeString()).toString();
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(createSQL);
+        }
+        return createSQL;
     }
 
     @Override
@@ -181,6 +185,9 @@ public class MDMTable extends Table {
 
                 alter.append(dialect.getAddColumnSuffixString());
 
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug(alter.toString());
+                }
                 results.add(alter.toString());
             } else if (MDMTableUtils.isAlterColumnField(column, columnInfo, dialect)) {
                 StringBuilder alter = new StringBuilder(root.toString());
@@ -224,7 +231,9 @@ public class MDMTable extends Table {
 
                 alter.append(dialect.getAddColumnSuffixString());
 
-                LOGGER.debug(alter.toString());
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug(alter.toString());
+                }
                 results.add(alter.toString());
             } else if (StringUtils.isNotBlank(defaultValue)) {
                 StringBuilder alter = new StringBuilder(root.toString());
@@ -241,7 +250,11 @@ public class MDMTable extends Table {
                                 + "where a.id=object_id('" + tableName + "') and b.name='" + columnName + '\'';
                         ResultSet rs = statement.executeQuery(sql);
                         while (rs.next()) {
-                            results.add("alter table Test drop constraint " + rs.getString(1));
+                            String alterDropConstraintSQL = "alter table Test drop constraint " + rs.getString(1);
+                            results.add(alterDropConstraintSQL);
+                            if (LOGGER.isDebugEnabled()) {
+                                LOGGER.debug(alterDropConstraintSQL);
+                            }
                         }
 
                     } catch (SQLException e) {
@@ -264,7 +277,9 @@ public class MDMTable extends Table {
                 }
                 alter.append(dialect.getAddColumnSuffixString());
 
-                LOGGER.debug(alter.toString());
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug(alter.toString());
+                }
                 results.add(alter.toString());
             }
 

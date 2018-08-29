@@ -340,8 +340,8 @@ public class HibernateStorage implements Storage {
 
                     if ( table == null ) {
                         table = new MDMTable();
-                        ((MDMTable)table).setDataSource(dataSource);
-                        table.setAbstract( isAbstract );
+                        ((MDMTable) table).setDataSource(dataSource);
+                        table.setAbstract(isAbstract);
                         table.setName( name );
                         table.setSchema( schema );
                         table.setCatalog( catalog );

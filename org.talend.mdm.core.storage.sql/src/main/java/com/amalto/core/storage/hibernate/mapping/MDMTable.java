@@ -72,7 +72,6 @@ public class MDMTable extends Table {
                 }
                 buf.append(' ').append(dialect.getIdentityColumnString(col.getSqlTypeCode(p)));
             } else {
-
                 String sqlType = col.getSqlType(dialect, p);
                 buf.append(sqlType);
 
@@ -249,7 +248,7 @@ public class MDMTable extends Table {
                             statement.close();
                             connection.close();
                         } catch (SQLException e) {
-                            LOGGER.error("Unexpected error on connection close.", e);
+                            LOGGER.error("Unexpected error when closing connection.", e);
                         }
                     }
                     alter.append("  ADD DEFAULT ").append(defaultValue).append(" FOR ").append(columnName);

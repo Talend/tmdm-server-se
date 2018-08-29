@@ -34,13 +34,13 @@ public abstract class HibernateStorageUtils {
                 if (isSQLServer(dialect) || isOracle(dialect) || isMySQL(dialect) || isDB2(dialect)) {
                     covertValue = "0";
                 } else {
-                    covertValue = Boolean.FALSE.toString();
+                    covertValue = FALSE;
                 }
             } else if (defaultValueRule.equalsIgnoreCase(MetadataRepository.FN_TRUE) || defaultValueRule.contains(TRUE)) {
                 if (isSQLServer(dialect) || isOracle(dialect) || isMySQL(dialect) || isDB2(dialect)) {
                     covertValue = "1";
                 } else {
-                    covertValue = Boolean.TRUE.toString();
+                    covertValue = TRUE;
                 }
             }
         } else if (defaultValueRule.startsWith("\"") && defaultValueRule.endsWith("\"")) {
@@ -50,7 +50,7 @@ public abstract class HibernateStorageUtils {
     }
 
     public static boolean isBooleanDefaultValue(String fieldType, String defaultValue) {
-        if (!fieldType.equals(TypeMapping.SQL_TYPE_BOOLEAN)) {
+        if (!TypeMapping.SQL_TYPE_BOOLEAN.equals(fieldType)) {
             return false;
         }
 
@@ -58,8 +58,8 @@ public abstract class HibernateStorageUtils {
     }
 
     public static boolean isBooleanDefaultValue(String defaultValue) {
-        if (defaultValue.equalsIgnoreCase(MetadataRepository.FN_FALSE)
-                || defaultValue.equalsIgnoreCase(MetadataRepository.FN_TRUE)) {
+        if (MetadataRepository.FN_FALSE.equalsIgnoreCase(defaultValue)
+                || MetadataRepository.FN_TRUE.equalsIgnoreCase(defaultValue)) {
             return true;
         }
 

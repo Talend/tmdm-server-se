@@ -45,6 +45,7 @@ public class MDMTable extends Table {
 
     private static final Logger LOGGER = Logger.getLogger(MDMTable.class);
 
+    @Override
     public String sqlCreateString(Dialect dialect, Mapping p, String defaultCatalog, String defaultSchema) {
         StringBuilder buf = new StringBuilder(hasPrimaryKey() ? dialect.getCreateTableString()
                 : dialect.getCreateMultisetTableString()).append(' ')
@@ -253,7 +254,7 @@ public class MDMTable extends Table {
                     }
                     alter.append("  ADD DEFAULT ").append(defaultValue).append(" FOR ").append(columnName);
                 } else {
-                    if (sqlType.equals("longtext") && (dialect instanceof MySQLDialect)) {
+                    if ("longtext".equals(sqlType) && (dialect instanceof MySQLDialect)) {
                     } else {
                         alter.append(" ALTER COLUMN ").append(columnName).append(" SET DEFAULT ").append(defaultValue);
                     }
@@ -272,7 +273,7 @@ public class MDMTable extends Table {
     private StringBuffer covertDefaultValue(Dialect dialect, String sqlType, String defaultValue) {
         StringBuffer sb = new StringBuffer();
         if (StringUtils.isNotBlank(defaultValue)) {
-            if (sqlType.equals("longtext") && (dialect instanceof MySQLDialect)) {
+            if ("longtext".equals(sqlType) && (dialect instanceof MySQLDialect)) {
             } else {
                 sb.append(" default ").append(defaultValue);
             }

@@ -18,9 +18,9 @@ import com.amalto.core.storage.hibernate.TypeMapping;
 @SuppressWarnings({ "nls"})
 public abstract class HibernateStorageUtils {
 
-    private static final String FALSE = Boolean.toString(false);
+    private static final String FALSE = Boolean.FALSE.toString();
 
-    private static final String TRUE = Boolean.toString(true);
+    private static final String TRUE = Boolean.TRUE.toString();
 
     public static String convertedDefaultValue(String fieldType, DataSourceDialect dialect, String defaultValueRule,
             String replexStr) {
@@ -63,7 +63,6 @@ public abstract class HibernateStorageUtils {
             return true;
         }
 
-        String[] searchStrings = new String[] { "\"", "'" };
         if (defaultValue.matches("('.*?'|\".*?\")")) {
             String lowerCaseDefaultValue = defaultValue.replaceAll("\"|'", "").toLowerCase();
             if (lowerCaseDefaultValue.equals(TRUE) || lowerCaseDefaultValue.equals(FALSE)) {

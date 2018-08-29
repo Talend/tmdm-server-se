@@ -46,45 +46,38 @@ public class MDMTable extends Table {
     private static final Logger LOGGER = Logger.getLogger(MDMTable.class);
 
     public String sqlCreateString(Dialect dialect, Mapping p, String defaultCatalog, String defaultSchema) {
-        StringBuilder buf = new StringBuilder( hasPrimaryKey() ? dialect.getCreateTableString() : dialect.getCreateMultisetTableString() )
-                .append( ' ' )
-                .append( getQualifiedName( dialect, defaultCatalog, defaultSchema ) )
-                .append( " (" );
+        StringBuilder buf = new StringBuilder(hasPrimaryKey() ? dialect.getCreateTableString()
+                : dialect.getCreateMultisetTableString()).append(' ')
+                .append(getQualifiedName(dialect, defaultCatalog, defaultSchema)).append(" (");
 
-        boolean identityColumn = getIdentifierValue() != null && getIdentifierValue().isIdentityColumn( p.getIdentifierGeneratorFactory(), dialect );
+        boolean identityColumn = getIdentifierValue() != null
+                && getIdentifierValue().isIdentityColumn(p.getIdentifierGeneratorFactory(), dialect);
 
         // Try to find out the name of the primary key to create it as identity if the IdentityGenerator is used
         String pkname = null;
-        if ( hasPrimaryKey() && identityColumn ) {
-            pkname = ( (Column) getPrimaryKey().getColumnIterator().next() ).getQuotedName( dialect );
+        if (hasPrimaryKey() && identityColumn) {
+            pkname = ((Column) getPrimaryKey().getColumnIterator().next()).getQuotedName(dialect);
         }
 
         Iterator iter = getColumnIterator();
-        while ( iter.hasNext() ) {
+        while (iter.hasNext()) {
             Column col = (Column) iter.next();
 
-            buf.append( col.getQuotedName( dialect ) )
-                    .append( ' ' );
+            buf.append(col.getQuotedName(dialect)).append(' ');
 
-            if ( identityColumn && col.getQuotedName( dialect ).equals( pkname ) ) {
+            if (identityColumn && col.getQuotedName(dialect).equals(pkname)) {
                 // to support dialects that have their own identity data type
-                if ( dialect.hasDataTypeInIdentityColumn() ) {
-                    buf.append( col.getSqlType( dialect, p ) );
+                if (dialect.hasDataTypeInIdentityColumn()) {
+                    buf.append(col.getSqlType(dialect, p));
                 }
-                buf.append( ' ' )
-                        .append( dialect.getIdentityColumnString( col.getSqlTypeCode( p ) ) );
+                buf.append(' ').append(dialect.getIdentityColumnString(col.getSqlTypeCode(p)));
             } else {
 
                 String sqlType = col.getSqlType(dialect, p);
                 buf.append(sqlType);
 
                 String defaultValue = col.getDefaultValue();
-                if (StringUtils.isNotBlank(defaultValue)) {
-                    if (sqlType.equals("longtext") && (dialect instanceof MySQLDialect)) {
-                    } else {
-                        buf.append(" default ").append(defaultValue);
-                    }
-                }
+                buf.append(covertDefaultValue(dialect, sqlType, defaultValue));
 
                 if (col.isNullable()) {
                     buf.append(dialect.getNullColumnString());
@@ -160,12 +153,7 @@ public class MDMTable extends Table {
                 StringBuilder alter = new StringBuilder(root.toString()).append(dialect.getAddColumnString()).append(' ')
                         .append(columnName).append(' ').append(sqlType);
 
-                if (StringUtils.isNotBlank(defaultValue)) {
-                    if (sqlType.equals("longtext") && (dialect instanceof MySQLDialect)) {
-                    } else {
-                        alter.append(" default ").append(defaultValue);
-                    }
-                }
+                alter.append(covertDefaultValue(dialect, sqlType, defaultValue));
 
                 if (column.isNullable()) {
                     alter.append(dialect.getNullColumnString());
@@ -208,12 +196,7 @@ public class MDMTable extends Table {
 
                 alter.append(sqlType);
 
-                if (StringUtils.isNotBlank(defaultValue)) {
-                    if (sqlType.equals("longtext") && (dialect instanceof MySQLDialect)) {
-                    } else {
-                        alter.append(" default ").append(defaultValue);
-                    }
-                }
+                alter.append(covertDefaultValue(dialect, sqlType, defaultValue));
 
                 if (column.isNullable()) {
                     alter.append(dialect.getNullColumnString());
@@ -285,6 +268,17 @@ public class MDMTable extends Table {
 
         }
         return results.iterator();
+    }
+
+    private StringBuffer covertDefaultValue(Dialect dialect, String sqlType, String defaultValue) {
+        StringBuffer sb = new StringBuffer();
+        if (StringUtils.isNotBlank(defaultValue)) {
+            if (sqlType.equals("longtext") && (dialect instanceof MySQLDialect)) {
+            } else {
+                sb.append(" default ").append(defaultValue);
+            }
+        }
+        return sb;
     }
 
     public void setDataSource(RDBMSDataSource dataSource) {

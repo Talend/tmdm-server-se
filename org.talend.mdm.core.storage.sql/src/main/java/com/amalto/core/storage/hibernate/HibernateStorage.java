@@ -386,7 +386,9 @@ public class HibernateStorage implements Storage {
                             return indexes.iterator();
                         }
                     };
-                    ((MDMTable)table).setDataSource(dataSource);
+                    if (table instanceof MDMTable) {
+                        ((MDMTable) table).setDataSource(dataSource);
+                    }
                     table.setAbstract(isAbstract);
                     table.setName(name);
                     table.setSchema(schema);

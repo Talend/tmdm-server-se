@@ -41,6 +41,8 @@ import com.amalto.core.storage.hibernate.OracleCustomDialect;
 @SuppressWarnings({ "nls", "rawtypes", "deprecation", "serial" })
 public class MDMTable extends Table {
 
+    private static final String LONGTEXT = "longtext";
+
     protected RDBMSDataSource dataSource;
 
     private static final Logger LOGGER = Logger.getLogger(MDMTable.class);
@@ -254,7 +256,7 @@ public class MDMTable extends Table {
                     }
                     alter.append("  ADD DEFAULT ").append(defaultValue).append(" FOR ").append(columnName);
                 } else {
-                    if ("longtext".equals(sqlType) && (dialect instanceof MySQLDialect)) {
+                    if (LONGTEXT.equals(sqlType) && (dialect instanceof MySQLDialect)) {
                     } else {
                         alter.append(" ALTER COLUMN ").append(columnName).append(" SET DEFAULT ").append(defaultValue);
                     }
@@ -273,9 +275,9 @@ public class MDMTable extends Table {
     private StringBuffer covertDefaultValue(Dialect dialect, String sqlType, String defaultValue) {
         StringBuffer sb = new StringBuffer();
         if (StringUtils.isNotBlank(defaultValue)) {
-            if ("longtext".equals(sqlType) && (dialect instanceof MySQLDialect)) {
+            if (LONGTEXT.equals(sqlType) && (dialect instanceof MySQLDialect)) {
             } else {
-                sb.append(" default ").append(defaultValue);
+                sb.append(" DEFAULT ").append(defaultValue);
             }
         }
         return sb;

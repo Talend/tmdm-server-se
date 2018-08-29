@@ -48,8 +48,6 @@ public class UpdateReportPOJO {
      */
     public static final String SERVICE_SOURCE = "service";
 
-    private String id;
-
     private String source;
 
     private long timeInMillis;
@@ -100,14 +98,6 @@ public class UpdateReportPOJO {
         } else {
             this.updateReportItemsMap = updateReportItemsMap;
         }
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getSource() {
@@ -194,7 +184,6 @@ public class UpdateReportPOJO {
         StringBuilder log = new StringBuilder();
 
         log.append("<Update>\n") //$NON-NLS-1$
-                .append("<ID>").append(StringEscapeUtils.escapeXml(this.id)).append("</ID>\n") //$NON-NLS-1$ //$NON-NLS-2$
                 .append("<UserName>").append(StringEscapeUtils.escapeXml(this.userName)).append("</UserName>\n") //$NON-NLS-1$ //$NON-NLS-2$
                 .append("<Source>").append(StringEscapeUtils.escapeXml(this.source)).append("</Source>\n") //$NON-NLS-1$ //$NON-NLS-2$
                 .append("<TimeInMillis>").append(this.timeInMillis).append("</TimeInMillis>\n") //$NON-NLS-1$ //$NON-NLS-2$

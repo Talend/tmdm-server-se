@@ -10,11 +10,8 @@
 
 package com.amalto.core.save.context;
 
-import java.util.Collection;
-
 import org.apache.commons.lang.StringUtils;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
-import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 
 import com.amalto.core.history.MutableDocument;
@@ -62,7 +59,7 @@ class Save implements DocumentSaver {
         
         long updateReportTime = 0;
         
-        Accessor updateTimeAccessor = updateReportDocument.createAccessor("TimeInMillis");
+        Accessor updateTimeAccessor = updateReportDocument.createAccessor("TimeInMillis"); //$NON-NLS-1$
         if (StringUtils.EMPTY.equals(updateTimeAccessor.get())) { // No update report need to save.
             return;
         } else {

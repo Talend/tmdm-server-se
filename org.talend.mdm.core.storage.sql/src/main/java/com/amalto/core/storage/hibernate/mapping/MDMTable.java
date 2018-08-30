@@ -24,6 +24,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.dialect.Dialect;
+import org.hibernate.dialect.MySQLDialect;
 import org.hibernate.dialect.PostgreSQLDialect;
 import org.hibernate.dialect.SQLServerDialect;
 import org.hibernate.engine.spi.Mapping;
@@ -297,7 +298,7 @@ public class MDMTable extends Table {
     }
 
     public static boolean isDefaultValueNeeded(String sqlType, Dialect dialect) {
-        if (LONGTEXT.equals(sqlType)) {
+        if (LONGTEXT.equals(sqlType) && dialect instanceof MySQLDialect) {
             return false;
         }
         return true;

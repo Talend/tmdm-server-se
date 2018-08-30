@@ -250,14 +250,14 @@ public class MDMTable extends Table {
                                 + "where a.id=object_id('" + tableName + "') and b.name='" + columnName + '\'';
                         ResultSet rs = statement.executeQuery(sql);
                         while (rs.next()) {
-                            String alterDropConstraintSQL = "alter table Test drop constraint " + rs.getString(1);
+                            String alterDropConstraintSQL = "alter table " + tableName + " drop constraint " + rs.getString(1);
                             results.add(alterDropConstraintSQL);
                             if (LOGGER.isDebugEnabled()) {
                                 LOGGER.debug(alterDropConstraintSQL);
                             }
                         }
                     } catch (SQLException e) {
-                        LOGGER.debug("Error to fetch SQLServer default value constraint to Fetching SQLServer default value constraint failed.", e);
+                        LOGGER.error("Fetching SQLServer default value constraint failed.", e);
                     } finally {
                         try {
                             statement.close();
@@ -268,7 +268,7 @@ public class MDMTable extends Table {
                     }
                     alter.append("  ADD DEFAULT ").append(defaultValue).append(" FOR ").append(columnName);
                 } else {
-                    if(!LONGTEXT.equals(sqlType) || !(dialect instanceof MySQLDialect)) {
+                    if (isDefaultValueNeeded(sqlType)) {
                         alter.append(" ALTER COLUMN ").append(columnName).append(" SET DEFAULT ").append(defaultValue);
                     }
                 }
@@ -283,16 +283,19 @@ public class MDMTable extends Table {
         return results.iterator();
     }
 
-    private StringBuffer covertDefaultValue(Dialect dialect, String sqlType, String defaultValue) {
-        StringBuffer sb = new StringBuffer();
-        if (StringUtils.isNotBlank(defaultValue)) {
-            if (StringUtils.isNotBlank(defaultValue) ) {
-                if(!LONGTEXT.equals(sqlType) || !(dialect instanceof MySQLDialect)) {
-                       sb.append(" DEFAULT ").append(defaultValue);
-                 }
-           }
+    private String covertDefaultValue(Dialect dialect, String sqlType, String defaultValue) {
+        String defaultSQL = StringUtils.EMPTY;
+        if (StringUtils.isNotBlank(defaultValue) && isDefaultValueNeeded(sqlType)) {
+            defaultSQL = " DEFAULT " + defaultValue;
         }
-        return sb;
+        return defaultSQL;
+    }
+
+    public static boolean isDefaultValueNeeded(String sqlType) {
+        if (LONGTEXT.equals(sqlType)) {
+            return false;
+        }
+        return true;
     }
 
     public void setDataSource(RDBMSDataSource dataSource) {

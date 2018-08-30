@@ -46,7 +46,7 @@ public class SearchFieldCreator {
         } else if (typeModel.getForeignkey() != null && entityModel != null) {
             boolean isCompositeKey = entityModel.getKeys().length > 1;
             if (isCompositeKey) {
-                field = createForeignKeyFiled(typeModel);
+                field = createForeignKeyField(typeModel);
             } else {
                 String keyPath = entityModel.getKeys()[0];
                 TypeModel keyTypeModel = entityModel.getTypeModel(keyPath);
@@ -60,7 +60,7 @@ public class SearchFieldCreator {
                     field = textField;
                     cons = OperatorConstants.stringOperators;
                 } else {
-                    field = createForeignKeyFiled(typeModel);
+                    field = createForeignKeyField(typeModel);
                 }
             }
         } else if (typeModel.hasEnumeration()) {
@@ -90,7 +90,7 @@ public class SearchFieldCreator {
         return field;
     }
 
-    private static Field createForeignKeyFiled(TypeModel typeModel) {
+    private static Field createForeignKeyField(TypeModel typeModel) {
         ForeignKeyField fkField = new ForeignKeyField(typeModel);
         fkField.setUsageField("SearchFieldCreator"); //$NON-NLS-1$
         cons = OperatorConstants.foreignKeyOperators;

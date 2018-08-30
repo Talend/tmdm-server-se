@@ -256,9 +256,8 @@ public class MDMTable extends Table {
                                 LOGGER.debug(alterDropConstraintSQL);
                             }
                         }
-
                     } catch (SQLException e) {
-                        LOGGER.debug("Error to fetch SQLServer default value constraint", e);
+                        LOGGER.debug("Error to fetch SQLServer default value constraint to Fetching SQLServer default value constraint failed.", e);
                     } finally {
                         try {
                             statement.close();
@@ -273,7 +272,6 @@ public class MDMTable extends Table {
                     } else {
                         alter.append(" ALTER COLUMN ").append(columnName).append(" SET DEFAULT ").append(defaultValue);
                     }
-
                 }
                 alter.append(dialect.getAddColumnSuffixString());
 
@@ -282,7 +280,6 @@ public class MDMTable extends Table {
                 }
                 results.add(alter.toString());
             }
-
         }
         return results.iterator();
     }

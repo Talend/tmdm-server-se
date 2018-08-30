@@ -268,8 +268,7 @@ public class MDMTable extends Table {
                     }
                     alter.append("  ADD DEFAULT ").append(defaultValue).append(" FOR ").append(columnName);
                 } else {
-                    if (LONGTEXT.equals(sqlType) && (dialect instanceof MySQLDialect)) {
-                    } else {
+                    if(!LONGTEXT.equals(sqlType) || !(dialect instanceof MySQLDialect)) {
                         alter.append(" ALTER COLUMN ").append(columnName).append(" SET DEFAULT ").append(defaultValue);
                     }
                 }
@@ -287,10 +286,11 @@ public class MDMTable extends Table {
     private StringBuffer covertDefaultValue(Dialect dialect, String sqlType, String defaultValue) {
         StringBuffer sb = new StringBuffer();
         if (StringUtils.isNotBlank(defaultValue)) {
-            if (LONGTEXT.equals(sqlType) && (dialect instanceof MySQLDialect)) {
-            } else {
-                sb.append(" DEFAULT ").append(defaultValue);
-            }
+            if (StringUtils.isNotBlank(defaultValue) ) {
+                if(!LONGTEXT.equals(sqlType) || !(dialect instanceof MySQLDialect)) {
+                       sb.append(" DEFAULT ").append(defaultValue);
+                 }
+           }
         }
         return sb;
     }

@@ -79,7 +79,7 @@ public class MDMTable extends Table {
                 buf.append(sqlType);
 
                 String defaultValue = col.getDefaultValue();
-                buf.append(covertDefaultValue(dialect, sqlType, defaultValue));
+                buf.append(convertDefaultValue(dialect, sqlType, defaultValue));
 
                 if (col.isNullable()) {
                     buf.append(dialect.getNullColumnString());
@@ -159,7 +159,7 @@ public class MDMTable extends Table {
                 StringBuilder alter = new StringBuilder(root.toString()).append(dialect.getAddColumnString()).append(' ')
                         .append(columnName).append(' ').append(sqlType);
 
-                alter.append(covertDefaultValue(dialect, sqlType, defaultValue));
+                alter.append(convertDefaultValue(dialect, sqlType, defaultValue));
 
                 if (column.isNullable()) {
                     alter.append(dialect.getNullColumnString());
@@ -205,7 +205,7 @@ public class MDMTable extends Table {
 
                 alter.append(sqlType);
 
-                alter.append(covertDefaultValue(dialect, sqlType, defaultValue));
+                alter.append(convertDefaultValue(dialect, sqlType, defaultValue));
 
                 if (column.isNullable()) {
                     alter.append(dialect.getNullColumnString());
@@ -283,7 +283,7 @@ public class MDMTable extends Table {
         return results.iterator();
     }
 
-    private String covertDefaultValue(Dialect dialect, String sqlType, String defaultValue) {
+    private String convertDefaultValue(Dialect dialect, String sqlType, String defaultValue) {
         String defaultSQL = StringUtils.EMPTY;
         if (StringUtils.isNotBlank(defaultValue) && isDefaultValueNeeded(sqlType)) {
             defaultSQL = " DEFAULT " + defaultValue;

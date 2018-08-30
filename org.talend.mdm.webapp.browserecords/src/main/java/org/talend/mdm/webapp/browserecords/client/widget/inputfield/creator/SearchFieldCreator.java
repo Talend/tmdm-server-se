@@ -55,7 +55,10 @@ public class SearchFieldCreator {
                         .equals(keyTypeModel.getType().getTypeName());
                 boolean isUUID = DataTypeConstants.UUID.getTypeName().equals(keyTypeModel.getType().getTypeName());
                 if (isString || isAutoIncrement || isUUID) {
-                    field = createDefaultFiled(typeModel);
+                    TextField<String> textField = new TextField<String>();
+                    textField.setValue("*");//$NON-NLS-1$
+                    field = textField;
+                    cons = OperatorConstants.stringOperators;
                 } else {
                     field = createForeignKeyFiled(typeModel);
                 }
@@ -78,18 +81,13 @@ public class SearchFieldCreator {
             field = textField;
             cons = OperatorConstants.fulltextOperators;
         } else {
-            field = createDefaultFiled(typeModel);
+            TypeFieldCreateContext context = new TypeFieldCreateContext(typeModel);
+            TypeFieldSource typeFieldSource = new TypeFieldSource(TypeFieldSource.SEARCH_EDITOR);
+            TypeFieldCreator typeFieldCreator = new TypeFieldCreator(typeFieldSource, context);
+            field = typeFieldCreator.createField();
+            cons = typeFieldSource.getOperatorMap();
         }
         return field;
-    }
-
-    private static Field createDefaultFiled(TypeModel typeModel) {
-        TypeFieldCreateContext context = new TypeFieldCreateContext(typeModel);
-        TypeFieldSource typeFieldSource = new TypeFieldSource(TypeFieldSource.SEARCH_EDITOR);
-        TypeFieldCreator typeFieldCreator = new TypeFieldCreator(typeFieldSource, context);
-        Field defaultFiled = typeFieldCreator.createField();
-        cons = typeFieldSource.getOperatorMap();
-        return defaultFiled;
     }
 
     private static Field createForeignKeyFiled(TypeModel typeModel) {

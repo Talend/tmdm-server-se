@@ -22,7 +22,7 @@ input[type="submit"] {
     font-size: 14px;
     width: 85px;
     height: 30px;
-    background-color: #00a6ce;
+    background-color: #66BDFF;
     border: 1px solid transparent;
 }
 
@@ -41,13 +41,13 @@ table.form {
 }
 
 .header1 {
-    background-color: black;
-    background-image: url(./fond_gris.png);
+    height: 200px;
+    background: linear-gradient(to right, #005F96 0%, #1C71A1 39.671%, #3B86A9 56.39%, #5599D8 100%);
 }
 
 .header2 {
-    background-color: #C2D72D;
-    height: 31px;
+    background-color: #82BD41;
+    height: 10px;
 }
 
 .logo {
@@ -68,16 +68,12 @@ table.form {
 
 .suiteName {
     font-size: 26px;
-    text-shadow: 0 1px 2px black;
     font-weight: bold;
     text-align: center;
-    color: #EBEBEB;
     vertical-align: middle;
 }
 
-.appName {
-    font-size: 20px;
-    font-weight: bold;
-    text-align: right;
-    padding-right: 10px;
+.appName{
+    font-size: 16px;
+    font-style: normal;
 }

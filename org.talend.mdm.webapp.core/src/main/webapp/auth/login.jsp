@@ -46,15 +46,24 @@
 
 </head>
 <body onload="document.loginform.j_username.focus();">
-<table width="100%" class="header1" border="0">
-      <tr><td height="128" width="50%" class="logo"><img src="<%= contextPath %>/auth/logo.png"></td><td class="version" id="loginVersion"><%=version%></td></tr>
-      <tr><td class="suiteName" id="suiteName" colspan="2" height="56">Talend MDM</td></tr>
+    <table width="100%" class="header1" border="0">
+      <tr height="50%">
+          <td width="50%" class="logo">
+              <img src="<%= contextPath %>/auth/logo.png" height="60px">
+          </td>
+          <td class="version" id="loginVersion"><%=version%></td>
+      </tr>
+      <tr>
+          <td class="suiteName" id="suiteName" colspan="2">
+              <span class="appName">Talend MDM</span>
+              <br>
+              <span><%=editionTitle%></span>
+          </td>
+      </tr>
     </table>
 
-    <table width="100%"  class="header2" border="0">
-      <tr><td class="appName" id="appName">
-      <%=editionTitle%>
-      </td></tr>
+    <table width="100%"  class="header2" border="0"/>
+      <tr></tr>
     </table>
     <table width="100%" height="65%" cellpadding="0" cellspacing="1">
         <tr>

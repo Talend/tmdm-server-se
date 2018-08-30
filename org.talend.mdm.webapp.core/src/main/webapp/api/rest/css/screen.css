@@ -1155,13 +1155,9 @@
   cursor: pointer;
 }
 .swagger-section #header {
-  background-image: url('../images/talend_logo.png');
-  	background-repeat: no-repeat;
-  	background-color: #555963;
-  	padding-left: 205px;
-  	padding-top: 10px;
-  	border: 0px;
-  	height: 60px;
+  background: linear-gradient(to right, #005F96 0%, #1C71A1 39.671%, #3B86A9 56.39%, #5599D8 100%);
+  border: 0px;
+  height: 40px;
 }
 .swagger-section #header div#title {
   font-size: 1.5em;

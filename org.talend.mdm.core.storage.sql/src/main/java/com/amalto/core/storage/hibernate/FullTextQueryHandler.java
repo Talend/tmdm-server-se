@@ -316,9 +316,12 @@ class FullTextQueryHandler extends AbstractQueryHandler {
                             SimpleTypeMetadata fieldType = new SimpleTypeMetadata(XMLConstants.W3C_XML_SCHEMA_NS_URI, Types.STRING);
                             SimpleTypeFieldMetadata aliasField = new SimpleTypeFieldMetadata(explicitProjectionType, false, false, false, aliasName, fieldType, Collections.<String>emptyList(), Collections.<String>emptyList(), Collections.<String>emptyList(), StringUtils.EMPTY);
                             explicitProjectionType.addField(aliasField);
-                            DataRecord dataRecord = (DataRecord) next.get(fieldMetadata.getName());
+                            Object dataRecord = next.get(fieldMetadata.getName());
                             if (dataRecord != null) {
-                                nextRecord.set(aliasField, dataRecord.getType().getName());
+                                if (dataRecord instanceof List) {
+                                    dataRecord = (DataRecord) ((List) dataRecord).get(0);
+                                }
+                                nextRecord.set(aliasField, ((DataRecord) dataRecord).getType().getName());
                             } else {
                                 nextRecord.set(aliasField, StringUtils.EMPTY);
                             }
@@ -388,7 +391,15 @@ class FullTextQueryHandler extends AbstractQueryHandler {
                                 nextRecord.set(newField, next.get(((Field) typedExpression).getFieldMetadata()));
                             } else if(typedExpression instanceof Type) {
                                 FieldMetadata fieldMetadata = ((Type) typedExpression).getField().getFieldMetadata();
-                                nextRecord.set(newField, ((DataRecord) next.get(fieldMetadata.getName())).getType().getName());
+                                Object dataRecord = next.get(fieldMetadata.getName());
+                                if (dataRecord != null) {
+                                    if (dataRecord instanceof List) {
+                                        dataRecord = (DataRecord) ((List) dataRecord).get(0);
+                                    }
+                                    nextRecord.set(newField, nextRecord.getType().getName());
+                                } else {
+                                    nextRecord.set(newField, StringUtils.EMPTY);
+                                }
                             } else if (typedExpression instanceof MetadataField) {
                                 nextRecord.set(newField, ((MetadataField) typedExpression).getReader().readValue(next));
                             } else {

@@ -158,6 +158,8 @@ public class StorageTestCase extends TestCase {
 
     protected static final ComplexTypeMetadata nn;
 
+    protected static final ComplexTypeMetadata contract;
+
     public static final String DATABASE = "H2";
     
     public static final String DATASOURCE_DEFAULT = DATABASE + "-Default";
@@ -229,6 +231,8 @@ public class StorageTestCase extends TestCase {
 
         mm = repository.getComplexType("MM");
         nn = repository.getComplexType("NN");
+
+        contract = repository.getComplexType("Contract");
 
         systemStorage = new SecuredStorage(new HibernateStorage("MDM", StorageType.SYSTEM), userSecurity);
         systemRepository = buildSystemRepository();

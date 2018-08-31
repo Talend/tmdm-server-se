@@ -396,7 +396,7 @@ class FullTextQueryHandler extends AbstractQueryHandler {
                                     if (dataRecord instanceof List) {
                                         dataRecord = (DataRecord) ((List) dataRecord).get(0);
                                     }
-                                    nextRecord.set(newField, nextRecord.getType().getName());
+                                    nextRecord.set(newField, ((DataRecord) dataRecord).getType().getName());
                                 } else {
                                     nextRecord.set(newField, StringUtils.EMPTY);
                                 }

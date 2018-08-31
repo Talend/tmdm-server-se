@@ -12,9 +12,9 @@ package com.amalto.core.storage.hibernate.mapping;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -264,15 +264,17 @@ public class MDMTable extends Table {
 
     private String generateAlterDefaultValueConstraintSQL(String tableName, String columnName) {
         Connection connection = null;
-        Statement statement = null;
+        PreparedStatement statement = null;
         String alterDropConstraintSQL = StringUtils.EMPTY;
         try {
             Properties properties = dataSource.getAdvancedPropertiesIncludeUserInfo();
             connection = DriverManager.getConnection(dataSource.getConnectionURL(), properties);
-            statement = connection.createStatement();
             String sql = "select c.name from sysconstraints a inner join syscolumns b on a.colid=b.colid inner join sysobjects c on a.constid=c.id "
-                    + "where a.id=object_id('" + tableName + "') and b.name='" + columnName + '\'';
-            ResultSet rs = statement.executeQuery(sql);
+                    + "where a.id=object_id(?) and b.name=?";
+            statement = connection.prepareStatement(sql);
+            statement.setString(1, tableName);
+            statement.setString(2, columnName);
+            ResultSet rs = statement.executeQuery();
             while (rs.next()) {
                 alterDropConstraintSQL = "alter table " + tableName + " drop constraint " + rs.getString(1);
             }

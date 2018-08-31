@@ -316,15 +316,7 @@ class FullTextQueryHandler extends AbstractQueryHandler {
                             SimpleTypeMetadata fieldType = new SimpleTypeMetadata(XMLConstants.W3C_XML_SCHEMA_NS_URI, Types.STRING);
                             SimpleTypeFieldMetadata aliasField = new SimpleTypeFieldMetadata(explicitProjectionType, false, false, false, aliasName, fieldType, Collections.<String>emptyList(), Collections.<String>emptyList(), Collections.<String>emptyList(), StringUtils.EMPTY);
                             explicitProjectionType.addField(aliasField);
-                            Object dataRecord = next.get(fieldMetadata.getName());
-                            if (dataRecord != null) {
-                                if (dataRecord instanceof List) {
-                                    dataRecord = (DataRecord) ((List) dataRecord).get(0);
-                                }
-                                nextRecord.set(aliasField, ((DataRecord) dataRecord).getType().getName());
-                            } else {
-                                nextRecord.set(aliasField, StringUtils.EMPTY);
-                            }
+                            nextRecord.set(aliasField, getTypeName(next.get(fieldMetadata.getName())));
                             return null;
                         }
                     };
@@ -336,6 +328,17 @@ class FullTextQueryHandler extends AbstractQueryHandler {
             };
         }
         return new FullTextStorageResults(pageSize, query.getResultSize(), iterator);
+    }
+
+    private String getTypeName(Object dataRecord) {
+        String typeName = StringUtils.EMPTY;
+        if (dataRecord != null) {
+            if (dataRecord instanceof List) {
+                dataRecord = (DataRecord) ((List) dataRecord).get(0);
+            }
+            typeName = ((DataRecord) dataRecord).getType().getName();
+        }
+        return typeName;
     }
 
     private StorageResults createResults(ScrollableResults scrollableResults) {
@@ -389,17 +392,9 @@ class FullTextQueryHandler extends AbstractQueryHandler {
                                 nextRecord.set(newField, ((StringConstant) typedExpression).getValue());
                             } else if(typedExpression instanceof Field) {
                                 nextRecord.set(newField, next.get(((Field) typedExpression).getFieldMetadata()));
-                            } else if(typedExpression instanceof Type) {
+                            } else if (typedExpression instanceof Type) {
                                 FieldMetadata fieldMetadata = ((Type) typedExpression).getField().getFieldMetadata();
-                                Object dataRecord = next.get(fieldMetadata.getName());
-                                if (dataRecord != null) {
-                                    if (dataRecord instanceof List) {
-                                        dataRecord = (DataRecord) ((List) dataRecord).get(0);
-                                    }
-                                    nextRecord.set(newField, ((DataRecord) dataRecord).getType().getName());
-                                } else {
-                                    nextRecord.set(newField, StringUtils.EMPTY);
-                                }
+                                nextRecord.set(newField, getTypeName(next.get(fieldMetadata.getName())));
                             } else if (typedExpression instanceof MetadataField) {
                                 nextRecord.set(newField, ((MetadataField) typedExpression).getReader().readValue(next));
                             } else {

@@ -1914,7 +1914,7 @@ public class StorageFullTextTest extends StorageTestCase {
         try {
             assertTrue(results.getSize() == 1);
             for (DataRecord result : results) {
-                assertTrue("1".equals(result.get("id")));
+                assertEquals("1", result.get("id"));
             }
         } finally {
             results.close();

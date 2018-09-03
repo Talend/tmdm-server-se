@@ -2793,19 +2793,19 @@
             </xsd:element>
         </xsd:all>
     </xsd:complexType>
-    <xsd:element name="Contract">
-    <xsd:complexType>
-        <xsd:sequence>
-            <xsd:element maxOccurs="1" minOccurs="1" name="id" type="xsd:string"></xsd:element>
-            <xsd:element maxOccurs="2" minOccurs="0" name="comment" type="xsd:string"></xsd:element>
-            <xsd:element maxOccurs="5" minOccurs="0" name="detail" type="ContractDetailType"></xsd:element>
-            <xsd:element maxOccurs="1" minOccurs="0" name="enumEle" type="ComStatus"></xsd:element>
-        </xsd:sequence>
-    </xsd:complexType>
-    <xsd:unique name="Contract">
-        <xsd:selector xpath="." />
-        <xsd:field xpath="id" />
-    </xsd:unique>
+	<xsd:element name="Contract">
+	    <xsd:complexType>
+	        <xsd:sequence>
+	            <xsd:element maxOccurs="1" minOccurs="1" name="id" type="xsd:string"></xsd:element>
+	            <xsd:element maxOccurs="2" minOccurs="0" name="comment" type="xsd:string"></xsd:element>
+	            <xsd:element maxOccurs="5" minOccurs="0" name="detail" type="ContractDetailType"></xsd:element>
+	            <xsd:element maxOccurs="1" minOccurs="0" name="enumEle" type="ComStatus"></xsd:element>
+	        </xsd:sequence>
+	    </xsd:complexType>
+	    <xsd:unique name="Contract">
+	        <xsd:selector xpath="." />
+	        <xsd:field xpath="id" />
+	    </xsd:unique>
 	</xsd:element>
 	<xsd:complexType name="ContractDetailType">
 	    <xsd:sequence>

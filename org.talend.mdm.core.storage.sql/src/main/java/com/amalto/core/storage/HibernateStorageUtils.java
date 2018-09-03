@@ -13,32 +13,87 @@ import org.talend.mdm.commmon.metadata.MetadataRepository;
 
 import com.amalto.core.storage.datasource.RDBMSDataSource;
 import com.amalto.core.storage.datasource.RDBMSDataSource.DataSourceDialect;
+import com.amalto.core.storage.hibernate.TypeMapping;
 
+@SuppressWarnings({ "nls"})
 public abstract class HibernateStorageUtils {
 
-    public static String convertedDefaultValue(DataSourceDialect dialect, String defaultValueRule, String replexStr) {
+    private static final String FALSE = Boolean.FALSE.toString();
+
+    private static final String TRUE = Boolean.TRUE.toString();
+
+    public static String convertedDefaultValue(String fieldType, DataSourceDialect dialect, String defaultValueRule,
+            String replexStr) {
         if (defaultValueRule == null) {
             return null;
         }
-        
+
         String covertValue = defaultValueRule;
-        if (defaultValueRule.equalsIgnoreCase(MetadataRepository.FN_FALSE)) {
-            if (dialect == RDBMSDataSource.DataSourceDialect.SQL_SERVER
-                    || dialect == RDBMSDataSource.DataSourceDialect.ORACLE_10G) {
-                covertValue = "0"; //$NON-NLS-1$
-            } else {
-                covertValue = Boolean.FALSE.toString();
+        if (isBooleanDefaultValue(fieldType, defaultValueRule)) {
+            if (defaultValueRule.equalsIgnoreCase(MetadataRepository.FN_FALSE) || defaultValueRule.contains(FALSE)) {
+                if (isSQLServer(dialect) || isOracle(dialect) || isMySQL(dialect) || isDB2(dialect)) {
+                    covertValue = "0";
+                } else {
+                    covertValue = FALSE;
+                }
+            } else if (defaultValueRule.equalsIgnoreCase(MetadataRepository.FN_TRUE) || defaultValueRule.contains(TRUE)) {
+                if (isSQLServer(dialect) || isOracle(dialect) || isMySQL(dialect) || isDB2(dialect)) {
+                    covertValue = "1";
+                } else {
+                    covertValue = TRUE;
+                }
             }
-        } else if (defaultValueRule.equalsIgnoreCase(MetadataRepository.FN_TRUE)) {
-            if (dialect == RDBMSDataSource.DataSourceDialect.SQL_SERVER
-                    || dialect == RDBMSDataSource.DataSourceDialect.ORACLE_10G) {
-                covertValue = "1"; //$NON-NLS-1$
-            } else {
-                covertValue = Boolean.TRUE.toString();
-            }
-        } else if (defaultValueRule.startsWith("\"") && defaultValueRule.endsWith("\"")) { //$NON-NLS-1$ //$NON-NLS-2$
-            covertValue = defaultValueRule.replace("\"", replexStr); //$NON-NLS-1$
+        } else if (defaultValueRule.startsWith("\"") && defaultValueRule.endsWith("\"")) {
+            covertValue = defaultValueRule.replace("\"", replexStr);
         }
         return covertValue;
+    }
+
+    public static boolean isBooleanDefaultValue(String fieldType, String defaultValue) {
+        if (!TypeMapping.SQL_TYPE_BOOLEAN.equals(fieldType)) {
+            return false;
+        }
+
+        return isBooleanDefaultValue(defaultValue);
+    }
+
+    public static boolean isBooleanDefaultValue(String defaultValue) {
+        if (MetadataRepository.FN_FALSE.equalsIgnoreCase(defaultValue)
+                || MetadataRepository.FN_TRUE.equalsIgnoreCase(defaultValue)) {
+            return true;
+        }
+
+        if (defaultValue.matches("('.*?'|\".*?\")")) {
+            String lowerCaseDefaultValue = defaultValue.replaceAll("\"|'", "").toLowerCase();
+            if (lowerCaseDefaultValue.equals(TRUE) || lowerCaseDefaultValue.equals(FALSE)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static boolean isOracle(DataSourceDialect dialect) {
+        return dialect == RDBMSDataSource.DataSourceDialect.ORACLE_10G;
+    }
+
+    public static boolean isSQLServer(DataSourceDialect dialect) {
+        return dialect == RDBMSDataSource.DataSourceDialect.SQL_SERVER;
+    }
+
+    public static boolean isMySQL(DataSourceDialect dialect) {
+        return dialect == RDBMSDataSource.DataSourceDialect.MYSQL;
+    }
+
+    public static boolean isH2(DataSourceDialect dialect) {
+        return dialect == RDBMSDataSource.DataSourceDialect.H2;
+    }
+
+    public static boolean isPostgres(DataSourceDialect dialect) {
+        return dialect == RDBMSDataSource.DataSourceDialect.POSTGRES;
+    }
+
+    public static boolean isDB2(DataSourceDialect dialect) {
+        return dialect == RDBMSDataSource.DataSourceDialect.DB2;
     }
 }

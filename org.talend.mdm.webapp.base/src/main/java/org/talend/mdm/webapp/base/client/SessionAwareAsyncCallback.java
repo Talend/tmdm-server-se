@@ -51,9 +51,13 @@ public abstract class SessionAwareAsyncCallback<T> implements AsyncCallback<T> {
     }
 
     protected void doOnFailure(Throwable caught) {
-        String errorMsg = BaseMessagesFactory.getMessages().unknown_error();
+        String errorMsg = caught.getLocalizedMessage();
         if (Log.isDebugEnabled()) {
-            errorMsg = caught.getLocalizedMessage();
+            errorMsg = caught.toString();
+        } else {
+            if (errorMsg == null || errorMsg.isEmpty()) {
+                errorMsg = BaseMessagesFactory.getMessages().unknown_error();
+            }
         }
         MessageBox.alert(BaseMessagesFactory.getMessages().error_title(), errorMsg, null);
     }

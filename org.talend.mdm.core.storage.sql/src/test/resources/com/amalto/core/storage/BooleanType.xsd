@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:import namespace="http://www.w3.org/2001/XMLSchema" />
+    <xsd:element name="BooleanType">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1" name="Id" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="a1" type="xsd:boolean">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Default_Value_Rule">fn:true()</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="a2" type="xsd:boolean">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Default_Value_Rule">"false"</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="a3" type="xsd:boolean">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Default_Value_Rule">'false'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="a4" type="xsd:boolean">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                        <xsd:appinfo source="X_Default_Value_Rule">"true"</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="a5" type="xsd:boolean">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                        <xsd:appinfo source="X_Default_Value_Rule">1</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="a6" type="xsd:boolean">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                        <xsd:appinfo source="X_Default_Value_Rule">'true'</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="BooleanType">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="Id" />
+        </xsd:unique>
+    </xsd:element>
+</xsd:schema>

@@ -641,7 +641,6 @@ public class StorageFullTextTest extends StorageTestCase {
         results.add(contract.getField("id"));
         results.add(contract.getField("comment"));
         results.add(contract.getField("enumEle"));
-        results.add(contract.getField("id"));
         return results;
     }
 

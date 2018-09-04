@@ -39,6 +39,7 @@ import com.amalto.core.query.user.Predicate;
 import com.amalto.core.query.user.Select;
 import com.amalto.core.query.user.Split;
 import com.amalto.core.query.user.StringConstant;
+import com.amalto.core.query.user.TypedExpression;
 import com.amalto.core.query.user.UserQueryBuilder;
 import com.amalto.core.query.user.UserQueryHelper;
 import com.amalto.core.storage.FullTextResultsWriter;
@@ -256,6 +257,7 @@ public class StorageFullTextTest extends StorageTestCase {
         allRecords.add(factory.read(repository, manager, "<Manager><name>manager 2</name><age>22</age><jobTitle>jobTitle 22</jobTitle><dept>dept 2</dept></Manager>"));
         allRecords.add(factory.read(repository, manager, "<Manager><name>manager 3</name><age>33</age><jobTitle>jobTitle 33</jobTitle><dept>dept 3</dept></Manager>"));
         allRecords.add(factory.read(repository, nn, "<NN><Id>pp</Id><name>tyu</name><sub><name>yu67</name><title>67</title></sub></NN>"));
+        allRecords.add(factory.read(repository, contract, "<Contract><id>1</id><comment>1</comment><detail xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"ContractDetailType\"></detail><detail xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"ContractDetailType\"><code>1</code></detail><detail xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"ContractDetailType\"><code>1</code></detail><detail xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"ContractDetailSubType\"><code>1</code><features><actor>1</actor><vendor>1</vendor></features></detail><enumEle>pending</enumEle></Contract>"));
         try {
             storage.begin();
             storage.update(allRecords);
@@ -315,6 +317,9 @@ public class StorageFullTextTest extends StorageTestCase {
             storage.delete(qb.getSelect());
 
             qb = from(nn);
+            storage.delete(qb.getSelect());
+
+            qb = from(contract);
             storage.delete(qb.getSelect());
         }
         storage.commit();
@@ -1717,6 +1722,27 @@ public class StorageFullTextTest extends StorageTestCase {
                     if ("tyu".equals(result.get("name"))) {
                     }
                 }
+            }
+        } finally {
+            results.close();
+        }
+    }
+
+    public void testInheritSearch() {
+        List<TypedExpression> fields = UserQueryHelper.getFields(contract, "detail/@xsi:type");
+        UserQueryBuilder qb = from(contract).where(fullText("1"));
+        for (TypedExpression field : fields) {
+            qb.select(field);
+        }
+        qb.select(contract.getField("id"));
+        qb.select(contract.getField("comment"));
+        qb.select(contract.getField("enumEle"));
+
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(4, results.getSize());
+            for (DataRecord result : results) {
+                assertEquals("1", result.get("id"));
             }
         } finally {
             results.close();

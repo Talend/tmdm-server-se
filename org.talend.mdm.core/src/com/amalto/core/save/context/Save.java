@@ -10,11 +10,8 @@
 
 package com.amalto.core.save.context;
 
-import java.util.Collection;
-
 import org.apache.commons.lang.StringUtils;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
-import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 
 import com.amalto.core.history.MutableDocument;
@@ -59,23 +56,16 @@ class Save implements DocumentSaver {
         if (updateReportType == null) {
             throw new IllegalStateException("Could not find UpdateReport type."); //$NON-NLS-1$
         }
-
-        Collection<FieldMetadata> keyFields = updateReportType.getKeyFields();
+        
         long updateReportTime = 0;
-        for (FieldMetadata keyField : keyFields) {
-            String keyFieldName = keyField.getName();
-            Accessor keyAccessor = updateReportDocument.createAccessor(keyFieldName);
-            if (!keyAccessor.exist()) {
-                throw new RuntimeException("Unexpected state: update report does not have value for key '" + keyFieldName + "'."); //$NON-NLS-1$ //$NON-NLS-2$
-            }
-            if ("TimeInMillis".equals(keyFieldName)) { //$NON-NLS-1$
-                if (StringUtils.EMPTY.equals(keyAccessor.get())) { // No update report need to save.
-                    return;
-                } else {
-                    updateReportTime = Long.parseLong(keyAccessor.get());
-                }
-            }
+        
+        Accessor updateTimeAccessor = updateReportDocument.createAccessor("TimeInMillis"); //$NON-NLS-1$
+        if (StringUtils.EMPTY.equals(updateTimeAccessor.get())) { // No update report need to save.
+            return;
+        } else {
+            updateReportTime = Long.parseLong(updateTimeAccessor.get());
         }
+
         if (updateReportTime < 1) { // This is unexpected (would mean update report "TimeInMillis" is not present).
             throw new IllegalStateException("Missing update report time value."); //$NON-NLS-1$
         }

@@ -285,8 +285,6 @@ public interface XtentisPort extends java.rmi.Remote {
 
     public WSRole getRole(WSGetRole wsGetRole) throws RemoteException;
 
-    public WSBoolean isPagingAccurate(WSInt wsInt) throws RemoteException;
-
     public WSBoolean supportStaging(WSDataClusterPK dataClusterPK) throws RemoteException;
 
     public FKIntegrityCheckResult checkFKIntegrity(WSDeleteItem deleteItem) throws RemoteException;

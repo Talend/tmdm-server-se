@@ -94,8 +94,6 @@ public class BulkUpdateListPanel extends ContentPanel {
 
     private QueryModel currentQueryModel;
 
-    private boolean isPagingAccurate;
-
     private String[] ids;
 
     private String cluster;
@@ -145,7 +143,6 @@ public class BulkUpdateListPanel extends ContentPanel {
 
                         @Override
                         public void onSuccess(ItemBasePageLoadResult<ItemBean> result) {
-                            isPagingAccurate = result.isPagingAccurate();
                             callback.onSuccess(new BasePagingLoadResult<ItemBean>(result.getData(), result.getOffset(), result
                                     .getTotalLength()));
                             if (result.getTotalLength() == 0) {
@@ -319,7 +316,7 @@ public class BulkUpdateListPanel extends ContentPanel {
             @Override
             protected void onLoad(LoadEvent event) {
                 String of_word = MessagesFactory.getMessages().of_word();
-                msgs.setDisplayMsg("{0} - {1} " + of_word + " " + (isPagingAccurate ? "" : "~") + "{2}"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+                msgs.setDisplayMsg("{0} - {1} " + of_word + " " + "{2}"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 super.onLoad(event);
             }
         };

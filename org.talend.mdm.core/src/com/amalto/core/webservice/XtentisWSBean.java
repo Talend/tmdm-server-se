@@ -690,11 +690,6 @@ public class XtentisWSBean implements XtentisPort {
     }
 
     @Override
-    public WSBoolean isPagingAccurate(WSInt wsInt) throws RemoteException {
-        return delegator.isPagingAccurate(wsInt);
-    }
-
-    @Override
     public WSBoolean supportStaging(WSDataClusterPK dataClusterPK) throws RemoteException {
         return delegator.supportStaging(dataClusterPK);
     }

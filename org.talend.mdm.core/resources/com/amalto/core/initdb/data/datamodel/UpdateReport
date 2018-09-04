@@ -4,8 +4,9 @@
 	&lt;xsd:element abstract="false" name="Update" nillable="false" type="Update"&gt;
 		&lt;xsd:unique name="Update"&gt;
 			&lt;xsd:selector xpath="."/&gt;
-			&lt;xsd:field xpath="Source"/&gt;
 			&lt;xsd:field xpath="TimeInMillis"/&gt;
+			&lt;xsd:field xpath="Concept"/&gt;
+			&lt;xsd:field xpath="Key"/&gt;
 		&lt;/xsd:unique&gt;
 	&lt;/xsd:element&gt;
 	&lt;xsd:complexType abstract="false" mixed="false" name="Update"&gt;

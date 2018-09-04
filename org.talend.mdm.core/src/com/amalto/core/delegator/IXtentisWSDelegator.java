@@ -2388,24 +2388,6 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
     }
 
     @Override
-    public WSBoolean isPagingAccurate(WSInt currentTotalSize) {
-        List<String> noSupportAccurateDbs = Arrays.asList("qizx");//$NON-NLS-1$
-        Properties props = MDMConfiguration.getConfiguration();
-        String dbName = props.getProperty("xmldb.type");//$NON-NLS-1$
-        WSBoolean result = new WSBoolean(true);
-        if (noSupportAccurateDbs.contains(dbName)) {
-            String countSampleSize = props.getProperty("xmldb.qizx.ecountsamplesize"); //$NON-NLS-1$
-            if (countSampleSize != null && countSampleSize.trim().length() > 0) {
-                int size = Integer.parseInt(countSampleSize);
-                if (currentTotalSize.getValue() > size) {
-                    result.set_true(false);
-                }
-            }
-        }
-        return result;
-    }
-
-    @Override
     public FKIntegrityCheckResult checkFKIntegrity(WSDeleteItem deleteItem) {
         try {
             WSItemPK wsItemPK = deleteItem.getWsItemPK();

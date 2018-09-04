@@ -174,7 +174,8 @@ public class LiquibaseSchemaAdapter  {
                 FieldMetadata current = (FieldMetadata) modifyAction.getCurrent();
 
                 String defaultValueRule = current.getData(MetadataRepository.DEFAULT_VALUE_RULE);
-                defaultValueRule = HibernateStorageUtils.convertedDefaultValue(dataSource.getDialectName(), defaultValueRule, StringUtils.EMPTY);
+                defaultValueRule = HibernateStorageUtils.convertedDefaultValue(current.getType().getName(),
+                        dataSource.getDialectName(), defaultValueRule, StringUtils.EMPTY);
                 String tableName = getTableName(current);
                 String columnDataType = getColumnTypeName(current);
                 String columnName = getColumnName(current);

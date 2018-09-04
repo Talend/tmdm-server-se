@@ -166,6 +166,7 @@ public class JournalDBService {
         return root;
     }
 
+    @SuppressWarnings("deprecation")
     private String formatValue(EntityModel entityModel, Map<String, String[]> formatMap, String path, String oldValue) {
         String formatValue = oldValue;
         for (Map.Entry<String, String[]> entry : formatMap.entrySet()) {
@@ -290,19 +291,20 @@ public class JournalDBService {
     private JournalGridModel parseString2Model(String xmlStr) throws Exception {
         JournalGridModel model = new JournalGridModel();
         Document doc = Util.parse(xmlStr);
-        String source = checkNull(Util.getFirstTextNode(doc, "result/Update/Source")); //$NON-NLS-1$
         String timeInMillis = checkNull(Util.getFirstTextNode(doc, "result/Update/TimeInMillis")); //$NON-NLS-1$
+        String concept = checkNull(Util.getFirstTextNode(doc, "result/Update/Concept")); //$NON-NLS-1$
+        String key = checkNull(Util.getFirstTextNode(doc, "result/Update/Key")); //$NON-NLS-1$
 
         model.setDataContainer(checkNull(Util.getFirstTextNode(doc, "result/Update/DataCluster"))); //$NON-NLS-1$
         model.setDataModel(checkNull(Util.getFirstTextNode(doc, "result/Update/DataModel"))); //$NON-NLS-1$
-        model.setEntity(checkNull(Util.getFirstTextNode(doc, "result/Update/Concept"))); //$NON-NLS-1$
-        model.setKey(checkNull(Util.getFirstTextNode(doc, "result/Update/Key"))); //$NON-NLS-1$
+        model.setEntity(concept);
+        model.setKey(key);
         model.setOperationType(checkNull(Util.getFirstTextNode(doc, "result/Update/OperationType"))); //$NON-NLS-1$
         model.setOperationTime(timeInMillis);
         model.setOperationDate(sdf.format(new Date(Long.parseLong(timeInMillis))));
-        model.setSource(source);
+        model.setSource(checkNull(Util.getFirstTextNode(doc, "result/Update/Source")));
         model.setUserName(checkNull(Util.getFirstTextNode(doc, "result/Update/UserName"))); //$NON-NLS-1$
-        model.setIds(Util.joinStrings(new String[] { source, timeInMillis }, ".")); //$NON-NLS-1$
+        model.setIds(Util.joinStrings(new String[] { timeInMillis, concept, key }, ".")); //$NON-NLS-1$
 
         String[] pathArray = Util.getTextNodes(doc, "result/Update/Item/path"); //$NON-NLS-1$
 

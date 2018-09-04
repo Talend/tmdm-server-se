@@ -18,54 +18,54 @@ import java.util.Set;
 
 public class UpdateReportPOJO {
 
-    public final static String                SOURCE_DATA_SYNCHRONIZATION    = "dataSynchronization"; //$NON-NLS-1$
+    public final static String SOURCE_DATA_SYNCHRONIZATION = "dataSynchronization"; //$NON-NLS-1$
 
-    public static final String                DATA_CLUSTER                   = "UpdateReport";       //$NON-NLS-1$
+    public static final String DATA_CLUSTER = "UpdateReport"; //$NON-NLS-1$
 
-    public static final String                DATA_MODEL                     = "UpdateReport";       //$NON-NLS-1$
+    public static final String DATA_MODEL = "UpdateReport"; //$NON-NLS-1$
 
-    public static final String                SOURCE_RESTORE                 = "restoreUI";          //$NON-NLS-1$
+    public static final String SOURCE_RESTORE = "restoreUI"; //$NON-NLS-1$
 
-    public final static String                OPERATION_TYPE_CREATE          = "CREATE";             //$NON-NLS-1$
+    public final static String OPERATION_TYPE_CREATE = "CREATE"; //$NON-NLS-1$
 
-    public final static String                OPERATION_TYPE_UPDATE          = "UPDATE";             //$NON-NLS-1$
+    public final static String OPERATION_TYPE_UPDATE = "UPDATE"; //$NON-NLS-1$
 
-    public static final String                OPERATION_TYPE_PHYSICAL_DELETE = "PHYSICAL_DELETE";    //$NON-NLS-1$
+    public static final String OPERATION_TYPE_PHYSICAL_DELETE = "PHYSICAL_DELETE"; //$NON-NLS-1$
 
-    public static final String                OPERATION_TYPE_LOGICAL_DELETE  = "LOGIC_DELETE";       //$NON-NLS-1$
+    public static final String OPERATION_TYPE_LOGICAL_DELETE = "LOGIC_DELETE"; //$NON-NLS-1$
 
-    public static final String                OPERATION_TYPE_RESTORED        = "RESTORED";           //$NON-NLS-1$
+    public static final String OPERATION_TYPE_RESTORED = "RESTORED"; //$NON-NLS-1$
 
-    public static final String                OPERATION_TYPE_ACTION          = "ACTION";             //$NON-NLS-1$
-    
+    public static final String OPERATION_TYPE_ACTION = "ACTION"; //$NON-NLS-1$
+
     /**
      * source value for genericUI
      */
-    public static final String                GENERIC_UI_SOURCE              = "genericUI";
-    
+    public static final String GENERIC_UI_SOURCE = "genericUI";
+
     /**
      * source value for service
      */
-    public static final String                SERVICE_SOURCE                 = "service";
+    public static final String SERVICE_SOURCE = "service";
 
-    private String                            source;
+    private String source;
 
-    private long                              timeInMillis;
+    private long timeInMillis;
 
-    private String                            operationType;
+    private String operationType;
 
-    private String                            concept;
+    private String concept;
 
-    private String                            key;
+    private String key;
 
     private Map<String, UpdateReportItemPOJO> updateReportItemsMap;
 
     // additional fields
-    private String                            dataCluster;
+    private String dataCluster;
 
-    private String                            dataModel;
+    private String dataModel;
 
-    private String                            userName;
+    private String userName;
 
     public UpdateReportPOJO(String concept, String key, String operationType, String source, long timeInMillis) {
         super();

@@ -340,7 +340,8 @@ public class HibernateStorage implements Storage {
 
                     if ( table == null ) {
                         table = new MDMTable();
-                        table.setAbstract( isAbstract );
+                        ((MDMTable) table).setDataSource(dataSource);
+                        table.setAbstract(isAbstract);
                         table.setName( name );
                         table.setSchema( schema );
                         table.setCatalog( catalog );
@@ -385,6 +386,9 @@ public class HibernateStorage implements Storage {
                             return indexes.iterator();
                         }
                     };
+                    if (table instanceof MDMTable) {
+                        ((MDMTable) table).setDataSource(dataSource);
+                    }
                     table.setAbstract(isAbstract);
                     table.setName(name);
                     table.setSchema(schema);

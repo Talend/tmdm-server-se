@@ -912,8 +912,9 @@
     <xsd:element abstract="false" name="Update" nillable="false" type="Update">
         <xsd:unique name="Update">
             <xsd:selector xpath="."/>
-            <xsd:field xpath="Source"/>
             <xsd:field xpath="TimeInMillis"/>
+            <xsd:field xpath="Concept"/>
+            <xsd:field xpath="Key"/>
         </xsd:unique>
     </xsd:element>
     <xsd:complexType abstract="false" mixed="false" name="Update">

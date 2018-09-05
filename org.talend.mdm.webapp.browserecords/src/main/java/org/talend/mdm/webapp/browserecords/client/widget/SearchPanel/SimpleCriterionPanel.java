@@ -423,7 +423,7 @@ public class SimpleCriterionPanel<T> extends HorizontalPanel implements ReturnCr
             @Override
             public void selectionChanged(SelectionChangedEvent<BaseModel> se) {
                 final TypeModel typeModel = itemsPredicates.get(getKey());
-                boolean isForeignkey = typeModel.getForeignkey() != null;
+                boolean isForeignkey = typeModel != null && typeModel.getForeignkey() != null;
                 if (isForeignkey) {
                     EntityModel entity = referenceEntityMap.get(getKey());
                     if (entity == null) {

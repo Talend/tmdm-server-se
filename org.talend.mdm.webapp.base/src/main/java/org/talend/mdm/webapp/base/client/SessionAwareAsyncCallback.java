@@ -53,9 +53,6 @@ public abstract class SessionAwareAsyncCallback<T> implements AsyncCallback<T> {
     }
 
     protected void doOnFailure(Throwable caught) {
-        if (Log.isErrorEnabled()) {
-            Log.error(caught.toString());
-        }
         String errorMsg = caught.getLocalizedMessage();
         if (errorMsg == null || errorMsg.isEmpty()) {
             errorMsg = BaseMessagesFactory.getMessages().unknown_error();

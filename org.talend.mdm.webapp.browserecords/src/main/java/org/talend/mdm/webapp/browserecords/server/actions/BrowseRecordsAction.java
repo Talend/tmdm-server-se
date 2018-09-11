@@ -24,6 +24,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.UUID;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -1937,7 +1938,8 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             Configuration config = Configuration.getConfiguration();
             String dataModelPK = config.getModel() == null ? StringUtils.EMPTY : config.getModel();
             String dataClusterPK = config.getCluster() == null ? StringUtils.EMPTY : config.getCluster();
-            UpdateReportPOJO updateReportPOJO = new UpdateReportPOJO(concept,
+            String uuid = UUID.randomUUID().toString();
+            UpdateReportPOJO updateReportPOJO = new UpdateReportPOJO(uuid, concept,
                     Util.joinStrings(ids, "."), UpdateReportPOJO.OPERATION_TYPE_ACTION, //$NON-NLS-1$
                     UpdateReportPOJO.GENERIC_UI_SOURCE, System.currentTimeMillis(), dataClusterPK, dataModelPK,
                     LocalUser.getLocalUser().getUsername(), null);

@@ -570,12 +570,12 @@ public class MetadataRepositoryTest extends TestCase {
     public void testCircleTypeModel() {
         MetadataRepository repository = new MetadataRepository();
         InputStream stream = getClass().getResourceAsStream("TMDM_3612.xsd");
-        repository.load(stream);
+        try {
+            repository.load(stream);
+            fail();
+        } catch (Exception e) {
+        }
 
-        ComplexTypeMetadata aa = repository.getComplexType("aa");
-        ComplexTypeMetadata bb = repository.getComplexType("bb");
-        assertNotNull(aa);
-        assertNotNull(bb);
     }
 
     public void testMetadataAnnotation() {

@@ -484,7 +484,7 @@ public class StorageFullTextTest extends StorageTestCase {
 
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(3, results.getCount());
+            assertEquals(2, results.getCount());
         } finally {
             results.close();
         }

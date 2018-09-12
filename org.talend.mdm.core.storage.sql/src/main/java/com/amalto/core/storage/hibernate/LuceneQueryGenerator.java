@@ -14,9 +14,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import org.apache.commons.lang.NotImplementedException;
@@ -321,9 +323,16 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
     public Query visit(final FullText fullText) {
         // TODO Test me on conditions where many types share same field names.
         final Map<String, Boolean> fieldsMap = new HashMap<String, Boolean>();
+        final Set<String> processedTypeNames = new HashSet<String>();
         for (final ComplexTypeMetadata type : types) {
             if (!type.isInstantiable()) {
                 continue;
+            }
+            String typeName = type.getName();
+            if (processedTypeNames.contains(typeName)) {
+                continue;
+            } else {
+                processedTypeNames.add(typeName);
             }
             type.accept(new DefaultMetadataVisitor<Void>() {
                 private String prefix = StringUtils.EMPTY;
@@ -339,6 +348,12 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
                 @Override
                 public Void visit(ReferenceFieldMetadata referenceField) {
                     ComplexTypeMetadata referencedType = referenceField.getReferencedType();
+                    String typeName = referencedType.getName();
+                    if (processedTypeNames.contains(typeName)) {
+                        return null;
+                    } else {
+                        processedTypeNames.add(typeName);
+                    }
                     //to support associated entities lucene query
                     if (StringUtils.isNotEmpty(referenceField.getPath())) {
                         prefix = referenceField.getPath().replace("/", ".") + ".";
@@ -369,6 +384,7 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
             });
         }
 
+        processedTypeNames.clear();
         String[] fieldsAsArray = fieldsMap.keySet().toArray(new String[fieldsMap.size()]);
         StringBuilder queryBuffer = new StringBuilder();
         Iterator<Map.Entry<String, Boolean>> fieldsIterator = fieldsMap.entrySet().iterator();

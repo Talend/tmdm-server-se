@@ -18,7 +18,9 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -40,6 +42,8 @@ public class ReferenceEntityBridge implements TwoWayFieldBridge {
 
     private static final Logger LOGGER = Logger.getLogger(ReferenceEntityBridge.class);
 
+    private static final Set<String> processedElementSet = new LinkedHashSet<String>();
+
     @Override
     public Object get(String name, Document document) {
         return document.get(name);
@@ -59,29 +63,51 @@ public class ReferenceEntityBridge implements TwoWayFieldBridge {
         if (value == null) {
             return;
         }
+        processedElementSet.clear();
         if (value instanceof Collection) {//oneToMany
             List<? extends Object> curVal = (List<?>) value;
             for (Iterator<? extends Object> iterator = curVal.iterator(); iterator.hasNext();) {
                 Object item = iterator.next();
                 Class<?> clazz = item.getClass();
-                evaluateClass(name, item, clazz, document, luceneOptions);
+                createEvaluationClassInternal(name, item, clazz, document, luceneOptions);
             }
         } else {//manyToOne
             Class<?> clazz = value.getClass();
-            evaluateClass(name, value, clazz, document, luceneOptions);
+            createEvaluationClassInternal(name, value, clazz, document, luceneOptions);
         }
-
     }
 
-    private static void evaluateClass(String name, Object dataObject, Class<?> clazz, Document document,
-            LuceneOptions luceneOptions) {
+    /* Literal name "X_" means current class is a complex type, like X_MyComplex.*/
+    private static void createEvaluationClassInternal(String name, Object dataObject, Class<?> clazz, Document document, LuceneOptions luceneOptions) {
+        String className = clazz.getName();
+        if (!clazz.getName().contains("X_")) { //$NON-NLS-2$
+            className = StringUtils.substringBefore(clazz.getName(), "_"); //$NON-NLS-2$
+        }
+        if (processedElementSet.contains(className)) {
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Collection processedElementSet have contained element " + className);//$NON-NLS-2$
+            }
+            return;
+        }
+        processedElementSet.add(className);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Right now, adds the specified element [" + className + "] to this processedElementSet");//$NON-NLS-2$
+        }
+        evaluateClass(name, dataObject, clazz, document, luceneOptions);
+        processedElementSet.remove(clazz.getName());
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Removes the given element [" + clazz.getName() + "] from processedElementSet sucessfully");//$NON-NLS-2$
+        }
+    }
+
+    private static void evaluateClass(String name, Object dataObject, Class<?> clazz, Document document, LuceneOptions luceneOptions) {
         if (clazz != Object.class) {
             indexedMemberFields(name, dataObject, clazz, document, luceneOptions);
             Class<?> clazzs = clazz.getSuperclass();
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Begin to evaluate all fields of parent class " + clazzs.getName());
             }
-            evaluateClass(name, dataObject, clazzs, document, luceneOptions);
+            createEvaluationClassInternal(name, dataObject, clazzs, document, luceneOptions);
         }
     }
 
@@ -178,7 +204,7 @@ public class ReferenceEntityBridge implements TwoWayFieldBridge {
             } else {
                 name += "." + field.getName(); // x_stores.store.name
                 for (Object obj : objArray) {
-                    evaluateClass(name, obj, sClass, document, luceneOptions);
+                    createEvaluationClassInternal(name, obj, sClass, document, luceneOptions);
                 }
             }
         }
@@ -187,7 +213,7 @@ public class ReferenceEntityBridge implements TwoWayFieldBridge {
     private static class ReferenceTypeIndexHandler implements IndexHandler {
         @Override
         public void handle(String name, Object value, Field field, Document document, LuceneOptions luceneOptions) {
-            evaluateClass(name + "." + field.getName(), value, value.getClass(), document, luceneOptions);
+            createEvaluationClassInternal(name + "." + field.getName(), value, value.getClass(), document, luceneOptions);
         }
     }
 
@@ -199,7 +225,7 @@ public class ReferenceEntityBridge implements TwoWayFieldBridge {
                 name += "." + field.getName(); // x_stores.store.name
                 for (Iterator<?> it = valList.iterator(); it.hasNext();) {
                     Object itemObj = it.next();
-                    evaluateClass(name, itemObj, itemObj.getClass(), document, luceneOptions);
+                    createEvaluationClassInternal(name, itemObj, itemObj.getClass(), document, luceneOptions);
                 }
             } catch (Exception e) {
                 throw new UnsupportedOperationException(

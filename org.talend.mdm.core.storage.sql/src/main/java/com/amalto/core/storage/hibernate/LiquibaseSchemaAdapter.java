@@ -142,8 +142,8 @@ public class LiquibaseSchemaAdapter  {
         return changeActionList;
     }
 
-    private String getTableName(FieldMetadata field) {
-        String tableName = tableResolver.get(field.getContainingType().getEntity());
+    protected String getTableName(FieldMetadata field) {
+        String tableName = tableResolver.get(field.getContainingType());
         if (dataSource.getDialectName() == DataSourceDialect.POSTGRES) {
             tableName = tableName.toLowerCase();
         }
@@ -168,8 +168,8 @@ public class LiquibaseSchemaAdapter  {
         List<AbstractChange> changeActionList = new ArrayList<AbstractChange>();
         for (ModifyChange modifyAction : diffResults.getModifyChanges()) {
             MetadataVisitable element = modifyAction.getElement();
-            if (!isContainedComplexFieldTypeMetadata((FieldMetadata) element) || isSimpleTypeFieldMetadata((FieldMetadata) element)
-                    || isContainedComplexType((FieldMetadata) element)) {
+            if (!isContainedComplexFieldTypeMetadata((FieldMetadata) element)
+                    || isSimpleTypeFieldMetadata((FieldMetadata) element) || isContainedComplexType((FieldMetadata) element)) {
                 FieldMetadata previous = (FieldMetadata) modifyAction.getPrevious();
                 FieldMetadata current = (FieldMetadata) modifyAction.getCurrent();
 
@@ -182,20 +182,25 @@ public class LiquibaseSchemaAdapter  {
 
                 if (current.isMandatory() && !previous.isMandatory() && !isModifyMinOccursForRepeatable(previous, current)) {
                     if (storageType == StorageType.MASTER) {
-                        changeActionList.add(generateAddNotNullConstraintChange(defaultValueRule, tableName, columnName,
-                                columnDataType));
+                        changeActionList
+                                .add(generateAddNotNullConstraintChange(defaultValueRule, tableName, columnName, columnDataType));
                     }
                     if (StringUtils.isNotBlank(defaultValueRule)) {
-                        changeActionList.add(generateAddDefaultValueChange(defaultValueRule, tableName, columnName,
-                                columnDataType));
+                        changeActionList
+                                .add(generateAddDefaultValueChange(defaultValueRule, tableName, columnName, columnDataType));
                     }
-                } else if (!current.isMandatory() && previous.isMandatory() && !isModifyMinOccursForRepeatable(previous, current)) {
-                    if (storageType == StorageType.MASTER) {
+                } else if (!current.isMandatory() && previous.isMandatory()) {
+                    if (dataSource.getDialectName() == DataSourceDialect.SQL_SERVER && storageType == StorageType.MASTER) {
+                        changeActionList
+                                .add(generateDropIndexChange("dbo", tableName, tableResolver.getIndex(columnName, tableName)));
+                    }
+                    if (storageType == StorageType.MASTER && !isModifyMinOccursForRepeatable(previous, current)) {
                         changeActionList.add(generateDropNotNullConstraintChange(tableName, columnName, columnDataType));
                     }
-                    if (StringUtils.isNotBlank(defaultValueRule) && dataSource.getDialectName() == DataSourceDialect.MYSQL) {
-                        changeActionList.add(generateAddDefaultValueChange(defaultValueRule, tableName, columnName,
-                                columnDataType));
+                    if (!isModifyMinOccursForRepeatable(previous, current) && StringUtils.isNotBlank(defaultValueRule)
+                            && HibernateStorageUtils.isMySQL(dataSource.getDialectName())) {
+                        changeActionList
+                                .add(generateAddDefaultValueChange(defaultValueRule, tableName, columnName, columnDataType));
                     }
                 }
             }
@@ -262,12 +267,7 @@ public class LiquibaseSchemaAdapter  {
         for (Map.Entry<String, List<String[]>> entry : dropIndexMap.entrySet()) {
             List<String[]> dropIndexInfoList = entry.getValue();
             for (String[] dropIndexInfo : dropIndexInfoList) {
-                DropIndexChange dropIndexChange = new DropIndexChange();
-                dropIndexChange.setSchemaName(dropIndexInfo[0]);
-                dropIndexChange.setCatalogName(catalogName);
-                dropIndexChange.setTableName(dropIndexInfo[1]);
-                dropIndexChange.setIndexName(dropIndexInfo[2]);
-                changeActionList.add(dropIndexChange);
+                changeActionList.add(generateDropIndexChange(dropIndexInfo[0], dropIndexInfo[1], dropIndexInfo[2]));
             }
         }
 
@@ -295,6 +295,15 @@ public class LiquibaseSchemaAdapter  {
             changeActionList.add(dropColumnChange);
         }
         return changeActionList;
+    }
+
+    public DropIndexChange generateDropIndexChange(String schemaName, String tableName, String indexName) {
+        DropIndexChange dropIndexChange = new DropIndexChange();
+        dropIndexChange.setSchemaName(schemaName);
+        dropIndexChange.setCatalogName(catalogName);
+        dropIndexChange.setTableName(tableName);
+        dropIndexChange.setIndexName(indexName);
+        return dropIndexChange;
     }
 
     protected DropNotNullConstraintChange generateDropNotNullConstraintChange(String tableName, String columnName,
@@ -465,7 +474,6 @@ public class LiquibaseSchemaAdapter  {
 
     protected boolean isSimpleTypeFieldMetadata(FieldMetadata fieldMetadata) {
         return fieldMetadata instanceof SimpleTypeFieldMetadata
-                && !(fieldMetadata.getContainingType() instanceof ContainedComplexTypeMetadata)
                 && (fieldMetadata.getType() instanceof SimpleTypeMetadata);
     }
 

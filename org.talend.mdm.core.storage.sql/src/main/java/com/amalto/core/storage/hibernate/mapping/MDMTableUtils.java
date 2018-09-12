@@ -39,4 +39,11 @@ public abstract class MDMTableUtils {
     public static boolean isIncreaseVarcharColumnLength(Column newColumn, ColumnMetadata oldColumnInfo, Dialect dialect) {
         return newColumn.getLength() > oldColumnInfo.getColumnSize();
     }
+
+    public static boolean isChangedToOptional(Column newColumn, ColumnMetadata oldColumnInfo) {
+        if (oldColumnInfo.getNullable().equals("NO") && newColumn.isNullable()) {
+            return true;
+        }
+        return false;
+    }
 }

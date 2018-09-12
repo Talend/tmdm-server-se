@@ -1396,10 +1396,10 @@ public class StorageAdaptTest extends TestCase {
         storage.init(dataSource);
         String[] typeNames = { "Person" };
         String[] tables = { "Person" };
-        String[] columns = { "", "X_ID", "X_FIRST_NAME", "X_SECOND_NAME", "X_FULL_NAME", "X_AGE", "X_MARRIED", "X_BIRTHDAY",
-                "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" };
+        String[][] columns = { { "", "X_ID", "X_FIRST_NAME", "X_SECOND_NAME", "X_FULL_NAME", "X_AGE", "X_MARRIED", "X_BIRTHDAY",
+                "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" } };
 
-        int[] isNullable = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 };
+        int[][] isNullable = { { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 } };
         DataRecordReader<String> factory = new XmlStringDataRecordReader();
         MetadataRepository repository1 = new MetadataRepository();
         repository1.load(StorageAdaptTest.class.getResourceAsStream("schema14_1.xsd"));
@@ -1415,7 +1415,7 @@ public class StorageAdaptTest extends TestCase {
         repository2.load(StorageAdaptTest.class.getResourceAsStream("schema14_2.xsd"));
         storage.adapt(repository2, false);
 
-        int[] isNullableUpdated = { 0, 0, 1, 1, 1, 1, 1, 1, 0, 1 };
+        int[][] isNullableUpdated = { { 0, 0, 1, 1, 1, 1, 1, 1, 0, 1 } };
         try {
             assertColumnNullAble(dataSource, tables, columns, isNullableUpdated);
         } catch (SQLException e) {
@@ -1460,10 +1460,10 @@ public class StorageAdaptTest extends TestCase {
         storage.init(dataSource);
         String[] typeNames = { "Person" };
         String[] tables = { "Person" };
-        String[] columns = { "", "X_ID", "X_FIRST_NAME", "X_SECOND_NAME", "X_FULL_NAME", "X_AGE", "X_MARRIED", "X_BIRTHDAY",
-                "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" };
+        String[][] columns = { { "", "X_ID", "X_FIRST_NAME", "X_SECOND_NAME", "X_FULL_NAME", "X_AGE", "X_MARRIED", "X_BIRTHDAY",
+                "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" } };
 
-        int[] isNullable = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 };
+        int[][] isNullable = { { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 } };
         DataRecordReader<String> factory = new XmlStringDataRecordReader();
         MetadataRepository repository1 = new MetadataRepository();
         repository1.load(StorageAdaptTest.class.getResourceAsStream("schema14_1.xsd"));
@@ -1500,7 +1500,7 @@ public class StorageAdaptTest extends TestCase {
         repository2.load(StorageAdaptTest.class.getResourceAsStream("schema14_2.xsd"));
         storage.adapt(repository2, false);
 
-        int[] isNullableUpdated = { 0, 0, 1, 1, 1, 1, 1, 1, 0, 1 };
+        int[][] isNullableUpdated = {{ 0, 0, 1, 1, 1, 1, 1, 1, 0, 1 }};
         try {
             assertColumnNullAble(dataSource, tables, columns, isNullableUpdated);
         } catch (SQLException e) {
@@ -1728,10 +1728,10 @@ public class StorageAdaptTest extends TestCase {
         storage.init(dataSource);
         String[] typeNames = { "Person" };
         String[] tables = { "Person" };
-        String[] columns = { "", "X_ID", "X_NAME", "X_BOY_X_TALEND_ID", "X_GIRL_X_TALEND_ID", "X_STATUS", "X_UU_X_TALEND_ID",
-                "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" };
+        String[][] columns = { { "", "X_ID", "X_NAME", "X_BOY_X_TALEND_ID", "X_GIRL_X_TALEND_ID", "X_STATUS", "X_UU_X_TALEND_ID",
+                "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" } };
 
-        int[] isNullable = { 0, 0, 0, 0, 1, 0, 0, 0, 1 };
+        int[][] isNullable = { { 0, 0, 0, 0, 1, 0, 0, 0, 1 } };
         DataRecordReader<String> factory = new XmlStringDataRecordReader();
         MetadataRepository repository1 = new MetadataRepository();
         repository1.load(StorageAdaptTest.class.getResourceAsStream("schema15_1.xsd"));
@@ -1742,26 +1742,17 @@ public class StorageAdaptTest extends TestCase {
             assertNull(e);
         }
 
-        String[] e2Tables = { "E2" };
-        String[] e2Columns = { "", "X_GRADE", "X_NAME", "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" };
-        int[] e2IsNullable = { 0, 0, 0, 0, 1 };
+        String[] e2Tables = { "E2", "X_ANONYMOUS0" };
+        String[][] e2Columns = { { "", "X_GRADE", "X_NAME", "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" },
+                { "", "X_TALEND_ID", "X_SUBELEMENT" } };
+        int[][] e2IsNullable = { { 0, 0, 0, 0, 1 }, { 0, 0, 0 } };
         try {
             assertColumnNullAble(dataSource, e2Tables, e2Columns, e2IsNullable);
         } catch (SQLException e) {
             assertNull(e);
         }
 
-        String[] anonymousTables = { "X_ANONYMOUS0" };
-        String[] anonymous0Columns = { "", "X_TALEND_ID", "X_SUBELEMENT" };
-        int[] anonymous0IsNullable = { 0, 0, 1 };
-        try {
-            assertColumnNullAble(dataSource, anonymousTables, anonymous0Columns, anonymous0IsNullable);
-        } catch (SQLException e) {
-            assertNull(e);
-        }
-
         // create record before change, second_name, married is null
-
         String input1 = "<Person><Id>1</Id><name>person-name</name><boy><name>boy_name</name><grade>1</grade></boy><girl><name>girl_name</name><grade>1</grade></girl><status>Approved</status><uu><subelement>uu-sub</subelement></uu></Person>";
         try {
             createRecord(storage, factory, repository1, typeNames, new String[] { input1 });
@@ -1814,27 +1805,19 @@ public class StorageAdaptTest extends TestCase {
             assertNull(e2);
         }
 
-        int[] isNullableUpdated = { 0, 0, 1, 1, 1, 1, 1, 0, 1 };
+        int[][] isNullableUpdated = { { 0, 0, 1, 1, 1, 1, 1, 0, 1 } };
         try {
             assertColumnNullAble(dataSource, tables, columns, isNullableUpdated);
         } catch (SQLException e) {
             assertNull(e);
         }
 
-        String[] e2TablesUpdated = { "E2" };
-        String[] e2ColumnsUpdated = { "", "X_GRADE", "X_NAME", "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" };
-        int[] e2IsNullableUpdated = { 0, 0, 1, 0, 1 };
+        String[] e2TablesUpdated = { "E2", "X_ANONYMOUS0" };
+        String[][] e2ColumnsUpdated = { { "", "X_GRADE", "X_NAME", "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" },
+                { "", "X_TALEND_ID", "X_SUBELEMENT" } };
+        int[][] e2IsNullableUpdated = { { 0, 0, 1, 0, 1 }, { 0, 0, 1 } };
         try {
             assertColumnNullAble(dataSource, e2TablesUpdated, e2ColumnsUpdated, e2IsNullableUpdated);
-        } catch (SQLException e) {
-            assertNull(e);
-        }
-
-        String[] anonymousTablesUpdated = { "X_ANONYMOUS0" };
-        String[] anonymous0ColumnsUpdated = { "", "X_TALEND_ID", "X_SUBELEMENT" };
-        int[] anonymous0IsNullableUpdated = { 0, 0, 1 };
-        try {
-            assertColumnNullAble(dataSource, anonymousTablesUpdated, anonymous0ColumnsUpdated, anonymous0IsNullableUpdated);
         } catch (SQLException e) {
             assertNull(e);
         }
@@ -1918,10 +1901,10 @@ public class StorageAdaptTest extends TestCase {
         storage.init(dataSource);
         String[] typeNames = { "Person" };
         String[] tables = { "Person" };
-        String[] columns = { "", "X_ID", "X_BB_X_TALEND_ID", "X_EE", "X_UU_X_TALEND_ID", "X_ADDRESS_X_ADDRESSID",
-                "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" };
+        String[][] columns = {{ "", "X_ID", "X_BB_X_TALEND_ID", "X_EE", "X_UU_X_TALEND_ID", "X_ADDRESS_X_ADDRESSID",
+                "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" }};
 
-        int[] isNullable = { 0, 0, 0, 0, 0, 1, 0, 1 };
+        int[][] isNullable = {{ 0, 0, 0, 0, 0, 1, 0, 1 }};
         DataRecordReader<String> factory = new XmlStringDataRecordReader();
         MetadataRepository repository1 = new MetadataRepository();
         repository1.load(StorageAdaptTest.class.getResourceAsStream("../hibernate/schema2_1.xsd"));
@@ -1941,9 +1924,9 @@ public class StorageAdaptTest extends TestCase {
             assertNull(e2);
         }
 
-        String[] columnsUpdated = { "", "X_ID", "X_BB_X_TALEND_ID", "X_EE", "X_UU_X_TALEND_ID", "X_TALEND_TIMESTAMP",
-                "X_TALEND_TASK_ID" };
-        int[] isNullableUpdated = { 0, 0, 1, 1, 1, 0, 1 };
+        String[][] columnsUpdated = {
+                { "", "X_ID", "X_BB_X_TALEND_ID", "X_EE", "X_UU_X_TALEND_ID", "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" } };
+        int[][] isNullableUpdated = { { 0, 0, 1, 1, 1, 0, 1 } };
         try {
             assertColumnNullAble(dataSource, tables, columnsUpdated, isNullableUpdated);
         } catch (SQLException e) {
@@ -1995,9 +1978,9 @@ public class StorageAdaptTest extends TestCase {
         storage.init(dataSource);
         String[] typeNames = { "Test" };
         String[] tables = { "Test" };
-        String[] columns = { "", "X_ID", "X_NAME", "X_DESC", "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" };
+        String[][] columns = { { "", "X_ID", "X_NAME", "X_DESC", "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" } };
 
-        int[] isNullable = { 0, 0, 0, 0, 0, 1 };
+        int[][] isNullable = { { 0, 0, 0, 0, 0, 1 } };
         DataRecordReader<String> factory = new XmlStringDataRecordReader();
         MetadataRepository repository1 = new MetadataRepository();
         repository1.load(StorageAdaptTest.class.getResourceAsStream("schema19_1.xsd"));
@@ -2041,48 +2024,23 @@ public class StorageAdaptTest extends TestCase {
             assertNull(e2);
         }
 
-        int[] isNullableUpdated = { 0, 0, 0, 0, 0, 1, 1, 1 };
-        String[] updatedColumns = { "", "X_ID", "X_NAME", "X_DESC", "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID", "X_DO_X_TALEND_ID",
-                "X_DO2_X_TALEND_ID" };
+        int[][] isNullableUpdated = { { 0, 0, 0, 0, 0, 1, 1, 1 } };
+        String[][] updatedColumns = { { "", "X_ID", "X_NAME", "X_DESC", "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID",
+                "X_DO_X_TALEND_ID", "X_DO2_X_TALEND_ID" } };
         try {
             assertColumnNullAble(dataSource, tables, updatedColumns, isNullableUpdated);
         } catch (SQLException e) {
             assertNull(e);
         }
 
-        String[] aaTablesUpdated = { "X_AA" };
-        String[] aaColumnsUpdated = { "", "X_TALEND_ID", "X_SUBELEMENT", "FK_SWPGIEUCKO96CKPDNH4JS5UUN", "POS" };
-        int[] aaIsNullableUpdated = { 0, 0, 1 };
+        String[] aaTablesUpdated = { "X_AA", "X_ANONYMOUS0", "X_ANONYMOUS1", "TEST_X_DO2_X_ANONYMOUS1" };
+        String[][] aaColumnsUpdated = { { "", "X_TALEND_ID", "X_SUBELEMENT", "FK_SWPGIEUCKO96CKPDNH4JS5UUN", "POS" },
+                { "", "X_TALEND_ID", "X_SUBELEMENT", "X_SECOND" },
+                { "", "X_TALEND_ID", "X_SUBELEMENT", "X_THIRD", "FK_BV7R6DIRHETKE21XI3Y7JWHOS", "POS" },
+                { "", "X_ID", "X_DO2_X_TALEND_ID", "POS" } };
+        int[][] aaIsNullableUpdated = { { 0, 0, 1 }, { 0, 0, 1, 1 }, { 0, 0, 1, 1 }, { 0, 0, 1, 0 } };
         try {
             assertColumnNullAble(dataSource, aaTablesUpdated, aaColumnsUpdated, aaIsNullableUpdated);
-        } catch (SQLException e) {
-            assertNull(e);
-        }
-
-        String[] anonymousTablesUpdated = { "X_ANONYMOUS0" };
-        String[] anonymous0ColumnsUpdated = { "", "X_TALEND_ID", "X_SUBELEMENT", "X_SECOND" };
-        int[] anonymous0IsNullableUpdated = { 0, 0, 1, 1 };
-        try {
-            assertColumnNullAble(dataSource, anonymousTablesUpdated, anonymous0ColumnsUpdated, anonymous0IsNullableUpdated);
-        } catch (SQLException e) {
-            assertNull(e);
-        }
-
-        String[] anonymous1TablesUpdated = { "X_ANONYMOUS1" };
-        String[] anonymous1ColumnsUpdated = { "", "X_TALEND_ID", "X_SUBELEMENT", "X_THIRD", "FK_BV7R6DIRHETKE21XI3Y7JWHOS", "POS" };
-        int[] anonymous1IsNullableUpdated = { 0, 0, 1, 1 };
-        try {
-            assertColumnNullAble(dataSource, anonymous1TablesUpdated, anonymous1ColumnsUpdated, anonymous1IsNullableUpdated);
-        } catch (SQLException e) {
-            assertNull(e);
-        }
-
-        String[] do2Anonymous1TablesUpdated = { "TEST_X_DO2_X_ANONYMOUS1" };
-        String[] do2Anonymous1ColumnsUpdated = { "", "X_ID", "X_DO2_X_TALEND_ID", "POS" };
-        int[] do2Anonymous1IsNullableUpdated = { 0, 0, 1, 0 };
-        try {
-            assertColumnNullAble(dataSource, do2Anonymous1TablesUpdated, do2Anonymous1ColumnsUpdated,
-                    do2Anonymous1IsNullableUpdated);
         } catch (SQLException e) {
             assertNull(e);
         }
@@ -2130,6 +2088,124 @@ public class StorageAdaptTest extends TestCase {
                     assertEquals("do2-second", result.get("do2/second"));
                     assertEquals("do3-sub", result.get("do3/subelement"));
                     assertEquals("do3-third", result.get("do3/third"));
+                }
+                i++;
+            }
+        } finally {
+            results.close();
+        }
+        storage.commit();
+    }
+
+    public void test20_ModifyMandatoryToOptionalOfComplexTypeField() throws Exception {
+        /*
+         * Test                                                  Test
+         *   |__id (SimpleField) (1-1)                             |__id (SimpleField) (1-1)
+         *   |__name (SimpleField) (1-1)                           |__name (SimpleField) (1-1)
+         *   |__address (ComplexField) (0-1)                        |__address(ComplexField) (0-1)
+         *        |__city (SimpleField) (1-1)   ==========>             |__city (SimpleField) (1-1)
+         *        |__detail (ComplexField) (1-1)                         |__detail(ComplexField) (0-1)
+         *              |__comment (SimpleField) (0-1)                        |__comment (SimpleField) (0-1)
+         */
+        setMDMRootURL();
+
+        DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
+        Storage storage = new HibernateStorage("Person", StorageType.MASTER);
+        storage.init(dataSource);
+        String[] typeNames = { "Test" };
+        String[] tables = { "Test", "X_COMPLEX1", "X_ANONYMOUS0" };
+        String[][] columns = { { "", "X_ID", "X_NAME", "X_ADDRESS_X_TALEND_ID", "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" },
+                { "", "X_TALEND_ID", "X_CITY", "X_DETAIL_X_TALEND_ID" }, { "", "X_TALEND_ID", "X_COMMENT" } };
+        int[][] isNullable = { { 0, 0, 0, 1, 0, 1 }, { 0, 0, 0, 0 }, { 0, 0, 0 } };
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+        MetadataRepository repository1 = new MetadataRepository();
+        repository1.load(StorageAdaptTest.class.getResourceAsStream("schema20_1.xsd"));
+        storage.prepare(repository1, true);
+        try {
+            assertColumnNullAble(dataSource, tables, columns, isNullable);
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+
+        // create record before change, second_name, married is null
+        String input1 = "<Test><id>1</id><name>John</name><address><city>Beijing</city><detail><comment>Beijing Address</comment></detail></address></Test>";
+        try {
+            createRecord(storage, factory, repository1, typeNames, new String[] { input1 });
+        } catch (Exception e1) {
+            assertNull(e1);
+        }
+
+        storage.begin();
+        ComplexTypeMetadata objectType = repository1.getComplexType("Test");//$NON-NLS-1$
+        UserQueryBuilder qb = from(objectType);
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+            for (DataRecord result : results) {
+                assertEquals("1", result.get("id"));
+                assertEquals("John", result.get("name"));
+                assertEquals("Beijing", result.get("address/city"));
+                assertEquals("Beijing Address", result.get("address/detail/comment"));
+            }
+        } finally {
+            results.close();
+        }
+        storage.commit();
+
+        MetadataRepository repository2 = new MetadataRepository();
+        repository2.load(StorageAdaptTest.class.getResourceAsStream("schema20_2.xsd"));
+        try {
+            storage.adapt(repository2, false);
+        } catch (Exception e2) {
+            assertNull(e2);
+        }
+
+        isNullable[1][2] = 1;
+        isNullable[1][3] = 1;
+        isNullable[2][2] = 1;
+        try {
+            assertColumnNullAble(dataSource, tables, columns, isNullable);
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+
+        storage.begin();
+        objectType = repository2.getComplexType("Test");
+        qb = from(objectType);
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+            for (DataRecord result : results) {
+                assertEquals(3, result.getSetFields().size());
+            }
+        } finally {
+            results.close();
+        }
+        storage.commit();
+
+        String input2 = "<Test><id>2</id><name>Jack</name></Test>";
+        try {
+            createRecord(storage, factory, repository2, typeNames, new String[] { input2 });
+        } catch (Exception e1) {
+            assertNull(e1);
+        }
+
+        storage.begin();
+        qb = from(objectType);
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(2, results.getCount());
+            int i = 0;
+            for (DataRecord result : results) {
+                // assertEquals(7, result.getSetFields().size());
+                if (i == 0) {
+                    assertEquals("1", result.get("id"));
+                    assertEquals("John", result.get("name"));
+                    assertEquals("Beijing", result.get("address/city"));
+                    assertEquals("Beijing Address", result.get("address/detail/comment"));
+                } else if (i == 1) {
+                    assertEquals("2", result.get("id"));
+                    assertEquals("Jack", result.get("name"));
                 }
                 i++;
             }
@@ -2188,7 +2264,7 @@ public class StorageAdaptTest extends TestCase {
         }
     }
 
-    private void assertColumnNullAble(DataSourceDefinition dataSource, String[] tables, String[] columns, int[] isNullAble)
+    private void assertColumnNullAble(DataSourceDefinition dataSource, String[] tables, String[][] columns, int[][] isNullAble)
             throws SQLException {
         DataSource master = dataSource.getMaster();
         assertTrue(master instanceof RDBMSDataSource);
@@ -2201,10 +2277,10 @@ public class StorageAdaptTest extends TestCase {
             for (int i = 0; i < tables.length; i++) {
                 ResultSet resultSet = statement.executeQuery("SELECT * FROM " + tables[i]);
                 ResultSetMetaData metaData = resultSet.getMetaData();
-                assertEquals(columns.length - 1, metaData.getColumnCount());
+                assertEquals(columns[i].length - 1, metaData.getColumnCount());
                 for (int j = 1; j <= metaData.getColumnCount(); j++) {
-                    assertEquals(columns[j], metaData.getColumnName(j));
-                    assertEquals(isNullAble[j], metaData.isNullable(j));
+                    assertEquals(columns[i][j], metaData.getColumnName(j));
+                    assertEquals(isNullAble[i][j], metaData.isNullable(j));
                 }
             }
         } catch(Exception e){

@@ -445,7 +445,6 @@ public class StorageAdaptTest extends TestCase {
         Storage storage = new HibernateStorage(STORAGE_NAME, StorageType.MASTER);
         storage.init(dataSource);
 
-        DataRecordReader<String> factory = new XmlStringDataRecordReader();
         MetadataRepository repository1 = new MetadataRepository();
         repository1.load(StorageAdaptTest.class.getResourceAsStream("schema6_1.xsd"));
         storage.prepare(repository1, true);
@@ -475,7 +474,6 @@ public class StorageAdaptTest extends TestCase {
         Storage storage = new HibernateStorage(STORAGE_NAME, StorageType.MASTER);
         storage.init(dataSource);
 
-        DataRecordReader<String> factory = new XmlStringDataRecordReader();
         MetadataRepository repository1 = new MetadataRepository();
         repository1.load(StorageAdaptTest.class.getResourceAsStream("schema7_1.xsd"));
         storage.prepare(repository1, true);
@@ -1500,7 +1498,7 @@ public class StorageAdaptTest extends TestCase {
         repository2.load(StorageAdaptTest.class.getResourceAsStream("schema14_2.xsd"));
         storage.adapt(repository2, false);
 
-        int[][] isNullableUpdated = {{ 0, 0, 1, 1, 1, 1, 1, 1, 0, 1 }};
+        int[][] isNullableUpdated = { { 0, 0, 1, 1, 1, 1, 1, 1, 0, 1 } };
         try {
             assertColumnNullAble(dataSource, tables, columns, isNullableUpdated);
         } catch (SQLException e) {
@@ -1899,13 +1897,11 @@ public class StorageAdaptTest extends TestCase {
         DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
         Storage storage = new HibernateStorage("Person", StorageType.MASTER);
         storage.init(dataSource);
-        String[] typeNames = { "Person" };
         String[] tables = { "Person" };
-        String[][] columns = {{ "", "X_ID", "X_BB_X_TALEND_ID", "X_EE", "X_UU_X_TALEND_ID", "X_ADDRESS_X_ADDRESSID",
-                "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" }};
+        String[][] columns = { { "", "X_ID", "X_BB_X_TALEND_ID", "X_EE", "X_UU_X_TALEND_ID", "X_ADDRESS_X_ADDRESSID",
+                "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" } };
 
-        int[][] isNullable = {{ 0, 0, 0, 0, 0, 1, 0, 1 }};
-        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+        int[][] isNullable = { { 0, 0, 0, 0, 0, 1, 0, 1 } };
         MetadataRepository repository1 = new MetadataRepository();
         repository1.load(StorageAdaptTest.class.getResourceAsStream("../hibernate/schema2_1.xsd"));
         storage.prepare(repository1, true);

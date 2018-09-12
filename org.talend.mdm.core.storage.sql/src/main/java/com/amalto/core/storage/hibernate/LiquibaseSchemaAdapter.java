@@ -69,6 +69,8 @@ import liquibase.serializer.core.xml.XMLChangeLogSerializer;
 
 public class LiquibaseSchemaAdapter  {
 
+    private static final String SQL_SERVER_SCHEMA = "dbo"; //$NON-NLS-1$
+
     private static final String SEPARATOR = "-"; //$NON-NLS-1$
 
     public static final String DATA_LIQUIBASE_CHANGELOG_PATH = "/data/liquibase-changelog/"; //$NON-NLS-1$
@@ -191,8 +193,8 @@ public class LiquibaseSchemaAdapter  {
                     }
                 } else if (!current.isMandatory() && previous.isMandatory()) {
                     if (dataSource.getDialectName() == DataSourceDialect.SQL_SERVER && storageType == StorageType.MASTER) {
-                        changeActionList
-                                .add(generateDropIndexChange("dbo", tableName, tableResolver.getIndex(columnName, tableName)));
+                        changeActionList.add(generateDropIndexChange(SQL_SERVER_SCHEMA, tableName,
+                                tableResolver.getIndex(columnName, tableName)));
                     }
                     if (storageType == StorageType.MASTER && !isModifyMinOccursForRepeatable(previous, current)) {
                         changeActionList.add(generateDropNotNullConstraintChange(tableName, columnName, columnDataType));
@@ -258,7 +260,7 @@ public class LiquibaseSchemaAdapter  {
                     indexList = new ArrayList<String[]>();
                 }
                 if (dataSource.getDialectName() == DataSourceDialect.SQL_SERVER && storageType == StorageType.MASTER) {
-                    indexList.add(new String[] { "dbo", tableName, tableResolver.getIndex(columnName, tableName) });
+                    indexList.add(new String[] { SQL_SERVER_SCHEMA, tableName, tableResolver.getIndex(columnName, tableName) });
                     dropIndexMap.put(tableName, indexList);
                 }
             }

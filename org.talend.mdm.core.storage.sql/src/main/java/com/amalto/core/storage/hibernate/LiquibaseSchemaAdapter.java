@@ -160,7 +160,7 @@ public class LiquibaseSchemaAdapter  {
         if (field instanceof ReferenceFieldMetadata) {
             columnName += "_" + tableResolver.get(((ReferenceFieldMetadata) field).getReferencedField()); //$NON-NLS-1$
         }
-        if (dataSource.getDialectName() == DataSourceDialect.ORACLE_10G) {
+        if (HibernateStorageUtils.isOracle(dataSource.getDialectName())) {
             columnName = columnName.toUpperCase();
         }
         return columnName;
@@ -192,7 +192,7 @@ public class LiquibaseSchemaAdapter  {
                                 .add(generateAddDefaultValueChange(defaultValueRule, tableName, columnName, columnDataType));
                     }
                 } else if (!current.isMandatory() && previous.isMandatory()) {
-                    if (dataSource.getDialectName() == DataSourceDialect.SQL_SERVER && storageType == StorageType.MASTER) {
+                    if (HibernateStorageUtils.isSQLServer(dataSource.getDialectName()) && storageType == StorageType.MASTER) {
                         changeActionList.add(generateDropIndexChange(SQL_SERVER_SCHEMA, tableName,
                                 tableResolver.getIndex(columnName, tableName)));
                     }
@@ -237,7 +237,7 @@ public class LiquibaseSchemaAdapter  {
                         columns.add(new Column(columnName.toLowerCase()));
                         fkName = Constraint.generateName(new ForeignKey().generatedConstraintNamePrefix(),
                                 new Table(tableResolver.get(field.getContainingType().getEntity())), columns);
-                        if (dataSource.getDialectName() == DataSourceDialect.POSTGRES) {
+                        if (HibernateStorageUtils.isPostgres(dataSource.getDialectName())) {
                             fkName = fkName.toLowerCase();
                         }
                     }
@@ -259,7 +259,7 @@ public class LiquibaseSchemaAdapter  {
                 if (indexList == null) {
                     indexList = new ArrayList<String[]>();
                 }
-                if (dataSource.getDialectName() == DataSourceDialect.SQL_SERVER && storageType == StorageType.MASTER) {
+                if (HibernateStorageUtils.isSQLServer(dataSource.getDialectName()) && storageType == StorageType.MASTER) {
                     indexList.add(new String[] { SQL_SERVER_SCHEMA, tableName, tableResolver.getIndex(columnName, tableName) });
                     dropIndexMap.put(tableName, indexList);
                 }
@@ -299,7 +299,7 @@ public class LiquibaseSchemaAdapter  {
         return changeActionList;
     }
 
-    public DropIndexChange generateDropIndexChange(String schemaName, String tableName, String indexName) {
+    protected DropIndexChange generateDropIndexChange(String schemaName, String tableName, String indexName) {
         DropIndexChange dropIndexChange = new DropIndexChange();
         dropIndexChange.setSchemaName(schemaName);
         dropIndexChange.setCatalogName(catalogName);
@@ -358,7 +358,7 @@ public class LiquibaseSchemaAdapter  {
 
             // add created changeset to changelog
             databaseChangeLog.addChangeSet(changeSet);
-            if (change instanceof DropIndexChange && dataSource.getDialectName() == DataSourceDialect.SQL_SERVER
+            if (change instanceof DropIndexChange && HibernateStorageUtils.isSQLServer(dataSource.getDialectName())
                     && storageType == StorageType.MASTER) {
                 PreconditionContainer preconditionContainer = new PreconditionContainer();
                 preconditionContainer.setOnFail(PreconditionContainer.FailOption.MARK_RAN.toString());

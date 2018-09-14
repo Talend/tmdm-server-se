@@ -137,11 +137,6 @@ public class ManyFieldCriterionTest extends TestCase {
             // TODO Auto-generated method stub
             return null;
         }
-
-        @Override
-        public String getHibernateFkConstrainName(ReferenceFieldMetadata referenceField) {
-            return null;
-        }
     }
 
     private class CriteriaQueryForTest implements CriteriaQuery {

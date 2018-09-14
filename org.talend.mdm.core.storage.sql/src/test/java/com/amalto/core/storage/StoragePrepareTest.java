@@ -272,6 +272,7 @@ public class StoragePrepareTest extends TestCase {
         ((MockStorageAdmin) ServerContext.INSTANCE.get().getStorageAdmin()).register(storage);
 
         ComplexTypeMetadata factFacturesStg = repository.getComplexType("FactFacturesStg");//$NON-NLS-1$
+        ComplexTypeMetadata Factures = repository.getComplexType("Factures");//$NON-NLS-1$
 
         List<DataRecord> records = new ArrayList<DataRecord>();
         DataRecordReader<String> factory = new XmlStringDataRecordReader();

@@ -12,9 +12,10 @@ package com.amalto.core.storage.hibernate;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -23,10 +24,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.hibernate.mapping.Column;
-import org.hibernate.mapping.Constraint;
-import org.hibernate.mapping.ForeignKey;
-import org.hibernate.mapping.Table;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
@@ -148,15 +145,6 @@ class StorageTableResolver implements TableResolver {
         } else {
             return StringUtils.EMPTY;
         }
-    }
-
-    @Override
-    public String getHibernateFkConstrainName(ReferenceFieldMetadata referenceField) {
-        String columnName = getXpath(referenceField, referenceField.getName());
-        List<Column> columns = new ArrayList<>();
-        columns.add(new Column(columnName.toLowerCase()));
-        return Constraint.generateName(new ForeignKey().generatedConstraintNamePrefix(),
-                new Table(get(referenceField.getContainingType().getEntity())), columns);
     }
 
     private String getXpath(FieldMetadata field, String name) {

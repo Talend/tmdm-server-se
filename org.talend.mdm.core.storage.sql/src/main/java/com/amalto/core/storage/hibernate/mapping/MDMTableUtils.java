@@ -15,6 +15,7 @@ import org.hibernate.dialect.SQLServerDialect;
 import org.hibernate.mapping.Column;
 import org.hibernate.tool.hbm2ddl.ColumnMetadata;
 
+@SuppressWarnings("nls")
 public abstract class MDMTableUtils {
 
     public static final String NO = "NO";

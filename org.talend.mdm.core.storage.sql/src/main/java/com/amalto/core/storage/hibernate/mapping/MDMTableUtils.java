@@ -44,7 +44,7 @@ public abstract class MDMTableUtils {
     }
 
     public static boolean isChangedToOptional(Column newColumn, ColumnMetadata oldColumnInfo) {
-        if (oldColumnInfo.getNullable().equals(NO) && newColumn.isNullable()) {
+        if (oldColumnInfo.getNullable().equalsIgnoreCase(NO) && newColumn.isNullable()) {
             return true;
         }
         return false;

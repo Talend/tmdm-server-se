@@ -17,6 +17,8 @@ import org.hibernate.tool.hbm2ddl.ColumnMetadata;
 
 public abstract class MDMTableUtils {
 
+    public static final String NO = "NO";
+
     public static boolean isAlterColumnField(Column newColumn, ColumnMetadata oldColumnInfo, Dialect dialect) {
         if (oldColumnInfo == null) {
             return Boolean.FALSE;
@@ -41,7 +43,7 @@ public abstract class MDMTableUtils {
     }
 
     public static boolean isChangedToOptional(Column newColumn, ColumnMetadata oldColumnInfo) {
-        if (oldColumnInfo.getNullable().equals("NO") && newColumn.isNullable()) {
+        if (oldColumnInfo.getNullable().equals(NO) && newColumn.isNullable()) {
             return true;
         }
         return false;

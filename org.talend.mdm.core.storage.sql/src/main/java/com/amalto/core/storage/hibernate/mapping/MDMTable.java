@@ -23,7 +23,9 @@ import java.util.Properties;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
+import org.hibernate.dialect.DB2Dialect;
 import org.hibernate.dialect.Dialect;
+import org.hibernate.dialect.H2Dialect;
 import org.hibernate.dialect.MySQLDialect;
 import org.hibernate.dialect.PostgreSQLDialect;
 import org.hibernate.dialect.SQLServerDialect;
@@ -253,6 +255,23 @@ public class MDMTable extends Table {
                 }
                 alter.append(dialect.getAddColumnSuffixString());
 
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug(alter.toString());
+                }
+                results.add(alter.toString());
+            } else if (MDMTableUtils.isChangedToOptional(column, columnInfo)) {
+                StringBuilder alter = new StringBuilder(root.toString());
+                if (dialect instanceof PostgreSQLDialect || dialect instanceof DB2Dialect) {
+                    alter.append(" ALTER COLUMN ").append(columnName).append(" DROP NOT NULL");
+                } else if (dialect instanceof H2Dialect) {
+                    alter.append(" ALTER COLUMN ").append(columnName).append(" SET NULL");
+                } else if (dialect instanceof MySQLDialect) {
+                    alter.append(" MODIFY COLUMN ").append(columnName).append(' ').append(sqlType).append(" DEFAULT NULL");
+                } else if (dialect instanceof SQLServerDialect) {
+                    alter.append(" ALTER COLUMN ").append(columnName).append(' ').append(sqlType).append(" NULL");
+                } else if (dialect instanceof OracleCustomDialect) {
+                    alter.append(" MODIFY ").append(columnName).append(" NULL");
+                }
                 if (LOGGER.isDebugEnabled()) {
                     LOGGER.debug(alter.toString());
                 }

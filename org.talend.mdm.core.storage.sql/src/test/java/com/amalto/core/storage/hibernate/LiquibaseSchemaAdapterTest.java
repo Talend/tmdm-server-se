@@ -88,7 +88,7 @@ public class LiquibaseSchemaAdapterTest {
         FieldMetadata personName = person.getField("name");
         
         assertTrue(adapter.isContainedComplexFieldTypeMetadata(personBoyNameType));
-        assertFalse(adapter.isSimpleTypeFieldMetadata(personBoyNameType));
+        assertTrue(adapter.isSimpleTypeFieldMetadata(personBoyNameType));
         assertFalse(adapter.isContainedComplexType(personBoyNameType));
         
         assertFalse(adapter.isContainedComplexFieldTypeMetadata(personBoyType));
@@ -219,5 +219,23 @@ public class LiquibaseSchemaAdapterTest {
         assertTrue(changeLogFile.isFile());
         assertTrue(changeLogFile.getName().endsWith(".xml"));
         assertEquals(changeLogDir.getAbsolutePath(), changeLogFile.getParentFile().getParentFile().getAbsolutePath());
+    }
+
+    @Test
+    public void testTableName() {
+        ComplexTypeMetadata person = repository.getComplexType("Person");
+        ComplexTypeMetadata e2 = repository.getComplexType("E2");
+        ComplexTypeMetadata allType = repository.getComplexType("allType");
+
+        assertEquals("Person", adapter.getTableName(person.getField("name")));
+        assertEquals("allType", adapter.getTableName(allType.getField("strField")));
+        assertEquals("E2", adapter.getTableName(repository.getComplexType("E2").getField("name")));
+
+        MetadataRepository repository2 = new MetadataRepository();
+        repository2.load(LiquibaseSchemaAdapterTest.class.getResourceAsStream("schema1.xsd"));
+
+        assertEquals("X_Boy",
+                adapter.getTableName(((ContainedTypeFieldMetadata) repository2.getComplexType("Person").getField("boy"))
+                        .getContainedType().getField("detail")));
     }
 }

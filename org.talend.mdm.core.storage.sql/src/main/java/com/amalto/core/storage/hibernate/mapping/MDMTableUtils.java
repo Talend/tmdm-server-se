@@ -15,7 +15,10 @@ import org.hibernate.dialect.SQLServerDialect;
 import org.hibernate.mapping.Column;
 import org.hibernate.tool.hbm2ddl.ColumnMetadata;
 
+@SuppressWarnings("nls")
 public abstract class MDMTableUtils {
+
+    public static final String NO = "NO";
 
     public static boolean isAlterColumnField(Column newColumn, ColumnMetadata oldColumnInfo, Dialect dialect) {
         if (oldColumnInfo == null) {
@@ -38,5 +41,12 @@ public abstract class MDMTableUtils {
 
     public static boolean isIncreaseVarcharColumnLength(Column newColumn, ColumnMetadata oldColumnInfo, Dialect dialect) {
         return newColumn.getLength() > oldColumnInfo.getColumnSize();
+    }
+
+    public static boolean isChangedToOptional(Column newColumn, ColumnMetadata oldColumnInfo) {
+        if (oldColumnInfo.getNullable().toUpperCase().equals(NO) && newColumn.isNullable()) {
+            return true;
+        }
+        return false;
     }
 }

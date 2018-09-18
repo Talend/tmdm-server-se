@@ -21,6 +21,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Spliterator;
 
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
@@ -161,6 +162,91 @@ public class IndexAssociatedEntityQueryTest extends TestCase {
         @Override
         public boolean hide(ComplexTypeMetadata type) {
             return isActive && type.getHideUsers().contains("System_Users");
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public void testForCyclicDependencyEntites() throws Exception {
+        DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS2", STORAGE_NAME);
+        Storage storage = new HibernateStorage("Test", StorageType.MASTER);
+        storage.init(dataSource);
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(StoragePrepareTest.class.getResourceAsStream("ProductAttribute_2.xsd"));
+        storage.prepare(repository, true);
+
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+        ComplexTypeMetadata product = repository.getComplexType("Product");
+        ComplexTypeMetadata storeItem = repository.getComplexType("StoreItem");
+        List<DataRecord> records = new ArrayList<DataRecord>();
+        records.add(factory.read(repository, product, "<Product><Id>11</Id><Name>name11</Name></Product>"));
+        records.add(factory.read(repository, storeItem,
+                "<StoreItem><StoreItemId>22</StoreItemId><StoreItemName>name22</StoreItemName><ProductId>[11]</ProductId></StoreItem>"));
+        records.add(factory.read(repository, storeItem,
+                "<StoreItem><StoreItemId>33</StoreItemId><StoreItemName>name33</StoreItemName><ProductId>[11]</ProductId></StoreItem>"));
+        records.add(factory.read(repository, product,
+                "<Product><Id>11</Id><Name>name11</Name><Items>[22]</Items><Items>[33]</Items></Product>"));
+        try {
+            storage.begin();
+            storage.update(records);
+            storage.commit();
+        } catch (Exception e) {
+            fail("Faield to insert data");
+        } finally {
+            storage.end();
+        }
+        // test query data
+        UserQueryBuilder qb = from(product).where(fullText("11"));
+        qb.getSelect().getPaging().setLimit(10);
+        storage.begin();
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+            for (DataRecord result : results) {
+                assertEquals("name11", result.get("Name"));
+                assertEquals("22", ((List<DataRecord>) result.get("Items")).get(0).get("StoreItemId"));
+                assertEquals("33", ((List<DataRecord>) result.get("Items")).get(1).get("StoreItemId"));
+            }
+        } finally {
+            results.close();
+        }
+
+        UserQueryBuilder qb1 = from(storeItem).select(storeItem.getField("StoreItemName")).where(fullText("name"));
+        StorageResults results1 = storage.fetch(qb1.getSelect());
+        try {
+            assertEquals(2, results1.getCount());
+            Spliterator<DataRecord> splitResults = results1.spliterator();
+            splitResults.forEachRemaining((DataRecord record) -> assertNotNull(record.get("StoreItemName")));
+        } finally {
+            results.close();
+        }
+        storage.end();
+    }
+
+    public void testForCyclicDependencyComplexType1() throws Exception {
+        DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS2", STORAGE_NAME);
+        Storage storage = new HibernateStorage("Test", StorageType.MASTER);
+        storage.init(dataSource);
+        MetadataRepository repository = new MetadataRepository();
+        try {
+            repository.load(StoragePrepareTest.class.getResourceAsStream("CyclicComplexType_1.xsd"));
+            fail();
+        } catch (Exception e) {
+        } finally {
+            storage.end();
+        }
+    }
+
+    public void testForCyclicDependencyComplexType2() throws Exception {
+        DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS2", STORAGE_NAME);
+        Storage storage = new HibernateStorage("Test", StorageType.MASTER);
+        storage.init(dataSource);
+        MetadataRepository repository = new MetadataRepository();
+        try {
+            repository.load(StoragePrepareTest.class.getResourceAsStream("CyclicComplexType_2.xsd"));
+            fail();
+        } catch (Exception e) {
+        } finally {
+            storage.end();
         }
     }
 }

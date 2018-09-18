@@ -1,0 +1,66 @@
+<!--
+  ~ Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+  ~
+  ~ This source code is available under agreement available at
+  ~ %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
+  ~
+  ~ You should have received a copy of the agreement
+  ~ along with this program; if not, write to Talend SA
+  ~ 9 rue Pages 92150 Suresnes, France
+  -->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<xsd:import namespace="http://www.w3.org/2001/XMLSchema" />
+	<!-- Type Contrat ComplexType-A -->
+	<xsd:complexType name="ComplexType-A">
+		<xsd:annotation>
+			<xsd:appinfo source="X_Label_FR">ComplexTypeA</xsd:appinfo>
+			<xsd:appinfo source="X_Order_Value">1</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element maxOccurs="1" minOccurs="0"
+				name="Caracteristiques">
+				<xsd:annotation>
+					<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:all>
+						<xsd:element maxOccurs="1" minOccurs="0"
+							name="SimpleType-A" type="SimpleType-A">
+							<xsd:annotation>
+								<xsd:appinfo source="X_Label_FR">SimpleType-A</xsd:appinfo>
+								<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element maxOccurs="1" minOccurs="0"
+							name="ComplexTypeB" type="ComplexType-B">
+							<xsd:annotation>
+								<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:all>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!-- Type Contrat ComplexType-B -->
+	<xsd:complexType name="ComplexType-B">
+		<xsd:sequence>
+			<xsd:element name="code-B" type="xsd:string">
+				<xsd:annotation>
+					<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0"
+				name="ComplexType-A" type="ComplexType-A">
+				<xsd:annotation>
+					<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:simpleType name="SimpleType-A">
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="10" />
+		</xsd:restriction>
+	</xsd:simpleType>
+</xsd:schema>

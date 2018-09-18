@@ -38,7 +38,6 @@ import org.w3c.dom.Element;
 import com.amalto.core.metadata.LongString;
 import com.amalto.core.storage.HibernateMetadataUtils;
 import com.amalto.core.storage.HibernateStorageUtils;
-import com.amalto.core.storage.StorageType;
 import com.amalto.core.storage.datasource.RDBMSDataSource;
 
 // TODO Refactor (+ NON-NLS)
@@ -63,8 +62,6 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
 
     private final Stack<String> tableNames = new Stack<String>();
 
-    private final Collection<ComplexTypeMetadata> entityComplexTypes;
-
     private boolean compositeId;
 
     private Element parentElement;
@@ -77,25 +74,18 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
 
     private boolean generateConstrains;
 
-    final StorageType type;
-
-    public MappingGenerator(Document document, TableResolver resolver, RDBMSDataSource dataSource,
-            Collection<ComplexTypeMetadata> entityComplexTypes, StorageType type) {
-        this(document, resolver, dataSource, entityComplexTypes, type, true);
+    public MappingGenerator(Document document, TableResolver resolver, RDBMSDataSource dataSource) {
+        this(document, resolver, dataSource, true);
     }
 
     public MappingGenerator(Document document,
                             TableResolver resolver,
                             RDBMSDataSource dataSource,
-                            Collection<ComplexTypeMetadata> entityComplexTypes,
-                            StorageType type,
                             boolean generateConstrains) {
         this.document = document;
         this.resolver = resolver;
         this.dataSource = dataSource;
         this.generateConstrains = generateConstrains;
-        this.entityComplexTypes = entityComplexTypes;
-        this.type = type;
     }
 
     @Override
@@ -312,12 +302,9 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
         if (referenceField.isKey()) {
             throw new UnsupportedOperationException("FK field '" + referenceField.getName() + "' cannot be key in type '" + referenceField.getDeclaringType().getName() + "'"); // Don't support FK as key //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         } else {
-            boolean enforceDataBaseIntegrity = generateConstrains
-                    && (!referenceField.allowFKIntegrityOverride() && referenceField.isFKIntegrity());
+            boolean enforceDataBaseIntegrity = generateConstrains && (!referenceField.allowFKIntegrityOverride() && referenceField.isFKIntegrity());
             if (!referenceField.isMany()) {
                 return newManyToOneElement(referenceField, enforceDataBaseIntegrity);
-            } else if (HibernateStorage.useOneToMany(type, entityComplexTypes, referenceField)) {
-                return newOneToManyElement(referenceField);
             } else {
                 /*
                 <list name="bars" table="foo_bar">
@@ -369,73 +356,6 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
                 return propertyElement;
             }
         }
-    }
-
-    /**
-     * <pre>
-     *  &lt;list cascade="lock, save-update, delete" embed-xml="true" fetch="select" inverse="true" lazy="extra" mutable="true" name="x_attritem" optimistic-lock="true" table="X_attributesList_T_x_attritem_X_attributeItem_T"&gt;
-     *       &lt;key on-delete="noaction"&gt;
-     *           &lt;column name="x_attributeitem_t_x_talend_id" /&gt;
-     *       &lt;/key&gt;
-     *       &lt;index column="pos" /&gt;
-     *       &lt;one-to-many class="org.talend.mdm.storage.hibernate.X_attributeItem_T" embed-xml="true" not-found="exception" /&gt;
-     *   &lt;/list&gt;
-     * </pre>
-     *
-     * @param referenceField
-     * @return
-     */
-    private Element newOneToManyElement(ReferenceFieldMetadata referenceField) {
-        Element listElement = document.createElement("list"); //$NON-NLS-1$
-        Attr name = document.createAttribute("name"); //$NON-NLS-1$
-        name.setValue(referenceField.getName());
-        listElement.getAttributes().setNamedItem(name);
-
-        Attr cascade = document.createAttribute("cascade"); //$NON-NLS-1$
-        cascade.setValue("all"); //$NON-NLS-1$
-        listElement.getAttributes().setNamedItem(cascade);
-
-        Element keyElement = document.createElement("key"); //$NON-NLS-1$
-
-        Attr onDeleteAttr = document.createAttribute("on-delete"); //$NON-NLS-1$
-        onDeleteAttr.setValue("noaction"); //$NON-NLS-1$
-        keyElement.getAttributes().setNamedItem(onDeleteAttr);
-
-        if (referenceField.getContainingType().getKeyFields().size() > 1) {
-            for (FieldMetadata fieldMetadata : referenceField.getContainingType().getKeyFields()) {
-                Element columnElement = document.createElement("column"); //$NON-NLS-1$
-                Attr nameAttr = document.createAttribute("name"); //$NON-NLS-1$
-                nameAttr.setValue(resolver.get(fieldMetadata, referenceField.getContainingType().getName()));
-                columnElement.getAttributes().setNamedItem(nameAttr);
-                keyElement.appendChild(columnElement);
-            }
-        } else {
-            Element columnElement = document.createElement("column"); //$NON-NLS-1$
-            Attr nameAttr = document.createAttribute("name"); //$NON-NLS-1$
-            String columnName = resolver.getFkConstraintName(referenceField);
-            if (columnName.isEmpty()) {
-                columnName = resolver.getHibernateFkConstrainName(referenceField);
-            }
-            nameAttr.setValue(columnName);
-            columnElement.getAttributes().setNamedItem(nameAttr);
-            keyElement.appendChild(columnElement);
-        }
-
-        listElement.appendChild(keyElement);
-
-        Element index = document.createElement("index"); //$NON-NLS-1$
-        Attr indexColumn = document.createAttribute("column"); //$NON-NLS-1$
-        indexColumn.setValue("pos"); //$NON-NLS-1$
-        index.getAttributes().setNamedItem(indexColumn);
-        listElement.appendChild(index);
-
-        Element oneToManyElement = document.createElement("one-to-many"); //$NON-NLS-1$
-        Attr classAttr = document.createAttribute("class"); //$NON-NLS-1$
-        classAttr.setValue(ClassCreator.getClassName(referenceField.getReferencedType().getName()));
-        oneToManyElement.getAttributes().setNamedItem(classAttr);
-        listElement.appendChild(oneToManyElement);
-
-        return listElement;
     }
 
     private Element newManyToOneElement(ReferenceFieldMetadata referencedField, boolean enforceDataBaseIntegrity) {

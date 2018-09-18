@@ -17,7 +17,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
@@ -51,8 +50,6 @@ public abstract class StorageClassLoader extends ClassLoader {
     final Map<String, ComplexTypeMetadata> knownTypes = new HashMap<String, ComplexTypeMetadata>();
 
     final Map<String, Class<? extends Wrapper>> registeredClasses = new TreeMap<String, Class<? extends Wrapper>>();
-
-    protected Collection<ComplexTypeMetadata> entityComplexTypes;
 
     final String storageName;
 
@@ -287,9 +284,4 @@ public abstract class StorageClassLoader extends ClassLoader {
             }
         }
     }
-
-    public void setEntityComplexTypes(Collection<ComplexTypeMetadata> entityComplexTypes) {
-        this.entityComplexTypes = entityComplexTypes;
-    }
-
 }

@@ -78,12 +78,6 @@ interface TableResolver {
     String getFkConstraintName(ReferenceFieldMetadata referenceField);
 
     /**
-     * @param referenceField A foreign key to generate in the database
-     * @return A unique identifier for the referenced field from hibernate generator.
-     */
-    public String getHibernateFkConstrainName(ReferenceFieldMetadata referenceField);
-
-    /**
      * Modify is needed the name passed as parameter to match max length limitations.
      * @param name A database object name.
      * @return The same name if shorter than max length or same name if already shorter than max length.

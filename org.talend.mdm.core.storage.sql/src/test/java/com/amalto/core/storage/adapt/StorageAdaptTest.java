@@ -2030,11 +2030,9 @@ public class StorageAdaptTest extends TestCase {
         }
 
         String[] aaTablesUpdated = { "X_AA", "X_ANONYMOUS0", "X_ANONYMOUS1", "TEST_X_DO2_X_ANONYMOUS1" };
-        String[][] aaColumnsUpdated = { { "", "X_TALEND_ID", "X_SUBELEMENT", "FK_SWPGIEUCKO96CKPDNH4JS5UUN", "POS" },
-                { "", "X_TALEND_ID", "X_SUBELEMENT", "X_SECOND" },
-                { "", "X_TALEND_ID", "X_SUBELEMENT", "X_THIRD", "FK_BV7R6DIRHETKE21XI3Y7JWHOS", "POS" },
-                { "", "X_ID", "X_DO2_X_TALEND_ID", "POS" } };
-        int[][] aaIsNullableUpdated = { { 0, 0, 1 }, { 0, 0, 1, 1 }, { 0, 0, 1, 1 }, { 0, 0, 1, 0 } };
+        String[][] aaColumnsUpdated = { { "", "X_TALEND_ID", "X_SUBELEMENT" }, { "", "X_TALEND_ID", "X_SUBELEMENT", "X_SECOND" },
+                { "", "X_TALEND_ID", "X_SUBELEMENT", "X_THIRD" }, { "", "X_ID", "X_DO2_X_TALEND_ID", "POS" } };
+        int[][] aaIsNullableUpdated = { { 0, 0, 1, 0, 0, 1, 1, 1 }, { 0, 0, 0 }, { 0, 0, 1, 1 }, { 0, 0, 1, 0 } };
         try {
             assertColumnNullAble(dataSource, aaTablesUpdated, aaColumnsUpdated, aaIsNullableUpdated);
         } catch (SQLException e) {

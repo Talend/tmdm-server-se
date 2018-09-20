@@ -493,9 +493,10 @@ public class ItemsListPanel extends ContentPanel {
                         }
                     } else {
                         if (changes.get(path) == null) {
-                            continue;
+                            value = ""; //$NON-NLS-1$
+                        } else {
+                            value = changes.get(path).toString();
                         }
-                        value = changes.get(path).toString();
                         if (originalMap.containsKey(path)) {
                             Object data = originalMap.get(path);
                             if (DataTypeConstants.DATE.getTypeName().equals(tm.getType().getBaseTypeName())) {

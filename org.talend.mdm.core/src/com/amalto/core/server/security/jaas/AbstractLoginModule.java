@@ -148,13 +148,14 @@ public abstract class AbstractLoginModule implements LoginModule {
             return false;
         }
         try {
+            principal = new MDMPrincipal(username);
             if (LocalUser.isAdminUser(username)) {
-                principal = new MDMPrincipal(username);
                 principal.addRole(ICoreConstants.ADMIN_PERMISSION);
+                principal.addRole(ICoreConstants.SYSTEM_ADMIN_ROLE);
             } else {
-                principal = doCommit();
                 // Any other user has access to the UI
                 principal.addRole(ICoreConstants.UI_AUTHENTICATED_PERMISSION);
+                principal.addRole(ICoreConstants.SYSTEM_INTERACTIVE_ROLE);
             }
             // Add authenticated role for all users
             principal.addRole(ICoreConstants.AUTHENTICATED_PERMISSION);
@@ -162,6 +163,7 @@ public abstract class AbstractLoginModule implements LoginModule {
             if (!principals.contains(principal)) {
                 subject.getPrincipals().add(principal);
             }
+
             // in any case, reset
             reset();
             commitSucceeded = true;

@@ -18,7 +18,7 @@ import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import java.util.Date;
 import java.util.Set;
 
-class OverrideReplaceAction extends CreateAction {
+public class OverrideReplaceAction extends CreateAction {
 
     private final MutableDocument userDocument;
 

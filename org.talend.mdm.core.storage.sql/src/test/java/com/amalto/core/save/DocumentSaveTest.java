@@ -46,6 +46,7 @@ import org.w3c.dom.NodeList;
 import com.amalto.commons.core.utils.XMLUtils;
 import com.amalto.core.delegator.BeanDelegatorContainer;
 import com.amalto.core.delegator.ILocalUser;
+import com.amalto.core.delegator.ISecurityCheck;
 import com.amalto.core.history.DeleteType;
 import com.amalto.core.history.MutableDocument;
 import com.amalto.core.objects.UpdateReportPOJO;
@@ -108,7 +109,15 @@ public class DocumentSaveTest extends TestCase {
         XPathFactory xPathFactory = XPathFactory.newInstance();
         xPath = xPathFactory.newXPath();
         xPath.setNamespaceContext(new TestNamespaceContext());
+        
+        Map<String, Object> delegatorInstancePool = new HashMap<String, Object>();
+        delegatorInstancePool.put("LocalUser", new MockILocalUser()); //$NON-NLS-1$
+        delegatorInstancePool.put("SecurityCheck", new MockISecurityCheck()); //$NON-NLS-1$
+        createBeanDelegatorContainer();
+        BeanDelegatorContainer.getInstance().setDelegatorInstancePool(delegatorInstancePool); 
     }
+
+    private static class MockISecurityCheck extends ISecurityCheck {}
 
     @Override
     public void tearDown() throws Exception {
@@ -151,6 +160,7 @@ public class DocumentSaveTest extends TestCase {
         assertEquals("testdata", source.getSchemasAsString().get(conceptName));
     }
 
+    
     public void testValidationWithXSINamespace() throws Exception {
         InputStream contractXML = DocumentSaveTest.class.getResourceAsStream("contract.xml");
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -1955,9 +1965,6 @@ public class DocumentSaveTest extends TestCase {
     }
     
     public void testUpdateAutoIncrementRecord() throws Exception {
-        createBeanDelegatorContainer();
-        BeanDelegatorContainer.getInstance().setDelegatorInstancePool(
-                Collections.<String, Object> singletonMap("LocalUser", new MockILocalUser()));
         MetadataRepository repository = new MetadataRepository();
         repository.load(DocumentSaveTest.class.getResourceAsStream("metadata1.xsd"));
         MockMetadataRepositoryAdmin.INSTANCE.register("DStar", repository);
@@ -1982,11 +1989,7 @@ public class DocumentSaveTest extends TestCase {
      * test for TMDM-9804 AUTO_INCREMENT issue in cluster enviroment
      */
     public void testUpdateAutoIncrementRecordForLongTransactionInCluster() throws Exception {
-
         MDMConfiguration.getConfiguration().setProperty("system.cluster", Boolean.TRUE.toString());
-        createBeanDelegatorContainer();
-        BeanDelegatorContainer.getInstance().setDelegatorInstancePool(
-                Collections.<String, Object> singletonMap("LocalUser", new MockILocalUser()));
         MetadataRepository repository = new MetadataRepository();
         repository.load(DocumentSaveTest.class.getResourceAsStream("metadata1.xsd"));
         MockMetadataRepositoryAdmin.INSTANCE.register("DStar", repository);
@@ -3541,13 +3544,10 @@ public class DocumentSaveTest extends TestCase {
         InputStream recordXml = new ByteArrayInputStream(updString.getBytes("UTF-8"));
         DocumentSaverContext context = session.getContextFactory().create("DStar", "DStar", "Source", recordXml, false, true,
                 true, false, false);
-
         DocumentSaver saver = context.createSaver();
         session.begin("DStar");
         saver.save(session, context);
-        createBeanDelegatorContainer();
-        BeanDelegatorContainer.getInstance().setDelegatorInstancePool(
-                Collections.<String, Object> singletonMap("LocalUser", new MockILocalUser()));
+
         session.end(new DefaultCommitter());
 
         UserQueryBuilder qb = from(test1).where(eq(test1.getField("id"), "a"));

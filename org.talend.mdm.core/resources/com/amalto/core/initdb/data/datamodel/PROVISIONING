@@ -25,7 +25,7 @@
 				&lt;xsd:element maxOccurs="1" minOccurs="0" name="roles" nillable="false"&gt;
 					&lt;xsd:complexType mixed="false"&gt;
 						&lt;xsd:sequence maxOccurs="1" minOccurs="1"&gt;
-							&lt;xsd:element maxOccurs="unbounded" minOccurs="1" name="role" nillable="false" type="xsd:string"/&gt;
+							&lt;xsd:element maxOccurs="unbounded" minOccurs="0" name="role" nillable="false" type="xsd:string"/&gt;
 						&lt;/xsd:sequence&gt;
 					&lt;/xsd:complexType&gt;
 				&lt;/xsd:element&gt;

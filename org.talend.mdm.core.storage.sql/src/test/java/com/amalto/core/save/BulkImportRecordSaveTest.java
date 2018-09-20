@@ -34,6 +34,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.amalto.core.delegator.BeanDelegatorContainer;
+import com.amalto.core.delegator.ISecurityCheck;
 import com.amalto.core.history.DeleteType;
 import com.amalto.core.history.MutableDocument;
 import com.amalto.core.save.context.DocumentSaver;
@@ -62,7 +64,14 @@ public class BulkImportRecordSaveTest extends TestCase {
     private XPath xPath = XPathFactory.newInstance().newXPath();
 
     private static boolean beanDelegatorContainerFlag = false;
-
+    
+    private static void createBeanDelegatorContainer(){
+        if(!beanDelegatorContainerFlag){
+            BeanDelegatorContainer.createInstance();
+            beanDelegatorContainerFlag = true;
+        }
+    }
+    
     @Override
     public void setUp() throws Exception {
         LOG.info("Setting up MDM server environment...");
@@ -73,7 +82,13 @@ public class BulkImportRecordSaveTest extends TestCase {
         XPathFactory xPathFactory = XPathFactory.newInstance();
         xPath = xPathFactory.newXPath();
         xPath.setNamespaceContext(new TestNamespaceContext());
+        
+        createBeanDelegatorContainer();
+        BeanDelegatorContainer.getInstance().setDelegatorInstancePool(
+                Collections.<String, Object> singletonMap("SecurityCheck", new MockISecurityCheck()));
     }
+
+    private static class MockISecurityCheck extends ISecurityCheck {}
 
     @Override
     public void tearDown() throws Exception {

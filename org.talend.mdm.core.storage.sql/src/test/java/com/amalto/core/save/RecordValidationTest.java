@@ -15,7 +15,9 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
@@ -31,6 +33,7 @@ import org.talend.utils.json.JSONObject;
 
 import com.amalto.core.delegator.BeanDelegatorContainer;
 import com.amalto.core.delegator.ILocalUser;
+import com.amalto.core.delegator.ISecurityCheck;
 import com.amalto.core.history.MutableDocument;
 import com.amalto.core.metadata.ClassRepository;
 import com.amalto.core.objects.ObjectPOJO;
@@ -90,6 +93,15 @@ public class RecordValidationTest extends TestCase {
 
     public static final String DATASOURCE = "H2-Fulltext";
 
+    private static boolean beanDelegatorContainerFlag = false;
+
+    private static void createBeanDelegatorContainer() {
+        if (!beanDelegatorContainerFlag) {
+            BeanDelegatorContainer.createInstance();
+            beanDelegatorContainerFlag = true;
+        }
+    }
+
     static {
         LOG.info("Setting up MDM server environment...");
         ServerContext.INSTANCE.get(new MockServerLifecycle());
@@ -125,13 +137,11 @@ public class RecordValidationTest extends TestCase {
         ((MockStorageAdmin) ServerContext.INSTANCE.get().getStorageAdmin()).register(stagingStorage);
         LOG.info("Staging storage prepared");
 
-        BeanDelegatorContainer.createInstance();
-
         new MDMContextAccessor().setApplicationContext(new ClassPathXmlApplicationContext("classpath:com/amalto/core/server/mdm-context.xml"));
         EhCacheCacheManager mdmEhcache = MDMContextAccessor.getApplicationContext().getBean(MDMEhCacheUtil.MDM_CACHE_MANAGER,EhCacheCacheManager.class);
         // CacheManager use the single instance, need reset the CacheManger
         mdmEhcache.setCacheManager(CacheManager.newInstance(RecordValidationTest.class.getResourceAsStream("../server/mdm-ehcache.xml")));
-    }
+     }
 
     @Override
     protected void setUp() throws Exception {
@@ -142,6 +152,8 @@ public class RecordValidationTest extends TestCase {
         createData("Product", true, xmlStore);
         createData("Product", true, xmlProduct);
     }
+
+    private static class MockISecurityCheck extends ISecurityCheck {}
 
     @Override
     protected void tearDown() throws Exception {
@@ -389,7 +401,12 @@ public class RecordValidationTest extends TestCase {
     
     // Simulate the Record Validation API of DataService#validateRecord() to test RecordValidationContext, RecordValidationCommitter, etc.
     protected static JSONObject validateRecord(String storageName, boolean isStaging, boolean isAdmin, boolean invokeBeforeSaving, String documentXml) throws Exception {
-        BeanDelegatorContainer.getInstance().setDelegatorInstancePool(Collections.<String, Object> singletonMap("LocalUser", isAdmin ? new MockAdmin() : new MockUser()));
+        Map<String, Object> delegatorInstancePool = new HashMap<String, Object>();
+        delegatorInstancePool.put("LocalUser", isAdmin ? new MockAdmin() : new MockUser()); //$NON-NLS-1$
+        delegatorInstancePool.put("SecurityCheck", new MockISecurityCheck()); //$NON-NLS-1$
+        createBeanDelegatorContainer();
+        BeanDelegatorContainer.getInstance().setDelegatorInstancePool(delegatorInstancePool); 
+
         String dataCluster = isStaging ? storageName + "#STAGING" : storageName;
         DataRecord.ValidateRecord.set(true);
         boolean isValid = true;
@@ -423,7 +440,12 @@ public class RecordValidationTest extends TestCase {
 
     // Create test data
     protected static void createData(String storageName, boolean isStaging, String documentXml) throws Exception {
-        BeanDelegatorContainer.getInstance().setDelegatorInstancePool(Collections.<String, Object> singletonMap("LocalUser", new MockAdmin()));
+        Map<String, Object> delegatorInstancePool = new HashMap<String, Object>();
+        delegatorInstancePool.put("LocalUser", new MockAdmin()); //$NON-NLS-1$
+        delegatorInstancePool.put("SecurityCheck", new MockISecurityCheck()); //$NON-NLS-1$
+        createBeanDelegatorContainer();
+        BeanDelegatorContainer.getInstance().setDelegatorInstancePool(delegatorInstancePool); 
+
         Util.getDataClusterCtrlLocal().putDataCluster(new DataClusterPOJO("UpdateReport"));
         Util.getDataClusterCtrlLocal().putDataCluster(new DataClusterPOJO("CONF"));
         Util.getDataClusterCtrlLocal().putDataCluster(new DataClusterPOJO("Product"));
@@ -539,6 +561,8 @@ public class RecordValidationTest extends TestCase {
 
     // Validate record contains AutoIncrement won't affect the value stored in system
     public void testNoAutoIncrementImpactValidation() throws Exception {
+    	createBeanDelegatorContainer();
+    	BeanDelegatorContainer.getInstance().setDelegatorInstancePool(Collections.<String, Object> singletonMap("SecurityCheck", new MockISecurityCheck()));
         String xmlFamily1 = "<ProductFamily><Name>test_product_family_1</Name><ChangeStatus>Approved</ChangeStatus></ProductFamily>";
         String xmlFamily2 = "<ProductFamily><Name>test_product_family_2</Name><ChangeStatus>Approved</ChangeStatus></ProductFamily>";
         String xmlForAutoIncrement= "<ProductFamily><Name>Test Product Family</Name><ChangeStatus>Approved</ChangeStatus></ProductFamily>";

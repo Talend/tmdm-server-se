@@ -16,6 +16,8 @@ public class BeanDelegatorContainer {
     private Map<String, Object> delegatorInstancePool;
 
     private static final String LOCAL_USER = "LocalUser"; //$NON-NLS-1$
+    
+    private static final String SECURITY_CHECK = "SecurityCheck"; //$NON-NLS-1$
 
     private static final String VALIDATION = "Validation"; //$NON-NLS-1$
 
@@ -50,6 +52,12 @@ public class BeanDelegatorContainer {
     public ILocalUser getLocalUserDelegator() {
         synchronized (delegatorInstancePool) {
             return (ILocalUser) delegatorInstancePool.get(LOCAL_USER);
+        }
+    }
+
+    public ISecurityCheck getSecurityCheckDelegator() {
+        synchronized (delegatorInstancePool) {
+            return (ISecurityCheck) delegatorInstancePool.get(SECURITY_CHECK);
         }
     }
 

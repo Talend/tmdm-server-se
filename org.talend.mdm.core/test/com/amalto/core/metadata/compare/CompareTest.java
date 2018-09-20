@@ -766,9 +766,9 @@ public class CompareTest extends TestCase {
 
         ImpactAnalyzer analyzer = new HibernateStorageImpactAnalyzer();
         Map<ImpactAnalyzer.Impact, List<Change>> sort = analyzer.analyzeImpacts(diffResults);
-        assertEquals(2, sort.get(ImpactAnalyzer.Impact.HIGH).size());
+        assertEquals(0, sort.get(ImpactAnalyzer.Impact.HIGH).size());
         assertEquals(0, sort.get(ImpactAnalyzer.Impact.MEDIUM).size());
-        assertEquals(6, sort.get(ImpactAnalyzer.Impact.LOW).size());
+        assertEquals(8, sort.get(ImpactAnalyzer.Impact.LOW).size());
     }
 
     public void test26_mantory_to_option_for_complexType() throws Exception {
@@ -785,9 +785,9 @@ public class CompareTest extends TestCase {
 
         ImpactAnalyzer analyzer = new HibernateStorageImpactAnalyzer();
         Map<ImpactAnalyzer.Impact, List<Change>> sort = analyzer.analyzeImpacts(diffResults);
-        assertEquals(1, sort.get(ImpactAnalyzer.Impact.HIGH).size());
+        assertEquals(0, sort.get(ImpactAnalyzer.Impact.HIGH).size());
         assertEquals(0, sort.get(ImpactAnalyzer.Impact.MEDIUM).size());
-        assertEquals(0, sort.get(ImpactAnalyzer.Impact.LOW).size());
+        assertEquals(1, sort.get(ImpactAnalyzer.Impact.LOW).size());
     }
 
     public void test27_mantory_to_option_for_complexType() throws Exception {

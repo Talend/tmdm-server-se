@@ -65,7 +65,7 @@ class UpdateReport implements DocumentSaver {
         boolean hasHeader = false;
         for (Action action : actions) {
             if (!hasHeader) {
-                setHeader(updateReportDocument, "ID", UUID.randomUUID().toString()); //$NON-NLS-1$
+                setHeader(updateReportDocument, "UUID", UUID.randomUUID().toString()); //$NON-NLS-1$
                 setHeader(updateReportDocument, "UserName", session.getSaverSource().getLegitimateUser()); //$NON-NLS-1$
                 setHeader(updateReportDocument, "Source", String.valueOf(action.getSource())); //$NON-NLS-1$
                 setHeader(updateReportDocument, "TimeInMillis", String.valueOf(action.getDate().getTime())); //$NON-NLS-1$

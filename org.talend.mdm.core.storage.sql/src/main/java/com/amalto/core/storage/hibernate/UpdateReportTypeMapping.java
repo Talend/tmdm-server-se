@@ -56,10 +56,10 @@ class UpdateReportTypeMapping extends TypeMapping {
         this.databaseUpdateReportType = databaseUpdateReportType;
         this.repository = repository;
 
-        map(updateReportType.getField("ID"), databaseUpdateReportType.getField("x_id")); //$NON-NLS-1$ //$NON-NLS-2$
+        map(updateReportType.getField("TimeInMillis"), databaseUpdateReportType.getField("x_time_in_millis")); //$NON-NLS-1$ //$NON-NLS-2$
+        map(updateReportType.getField("UUID"), databaseUpdateReportType.getField("x_uuid")); //$NON-NLS-1$ //$NON-NLS-2$
         map(updateReportType.getField("UserName"), databaseUpdateReportType.getField("x_user_name")); //$NON-NLS-1$ //$NON-NLS-2$
         map(updateReportType.getField("Source"), databaseUpdateReportType.getField("x_source")); //$NON-NLS-1$ //$NON-NLS-2$
-        map(updateReportType.getField("TimeInMillis"), databaseUpdateReportType.getField("x_time_in_millis")); //$NON-NLS-1$ //$NON-NLS-2$
         map(updateReportType.getField("OperationType"), databaseUpdateReportType.getField("x_operation_type")); //$NON-NLS-1$ //$NON-NLS-2$
         map(updateReportType.getField("RevisionID"), databaseUpdateReportType.getField("x_revision_id")); //$NON-NLS-1$ //$NON-NLS-2$
         map(updateReportType.getField("DataCluster"), databaseUpdateReportType.getField("x_data_cluster")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -81,7 +81,8 @@ class UpdateReportTypeMapping extends TypeMapping {
     @SuppressWarnings("unchecked")
     @Override
     public void setValues(Session session, DataRecord from, Wrapper to) {
-        to.set("x_id", from.get("ID")); //$NON-NLS-1$ //$NON-NLS-2$
+        to.set("x_time_in_millis", Long.parseLong(String.valueOf(from.get("TimeInMillis")))); //$NON-NLS-1$ //$NON-NLS-2$
+        to.set("x_uuid", from.get("UUID")); //$NON-NLS-1$ //$NON-NLS-2$
         to.set("x_user_name", from.get("UserName")); //$NON-NLS-1$ //$NON-NLS-2$
         Object source = from.get("Source"); //$NON-NLS-1$
         if (source == null) {
@@ -89,7 +90,6 @@ class UpdateReportTypeMapping extends TypeMapping {
             source = NO_SOURCE;
         }
         to.set("x_source", source); //$NON-NLS-1$ 
-        to.set("x_time_in_millis", Long.parseLong(String.valueOf(from.get("TimeInMillis")))); //$NON-NLS-1$ //$NON-NLS-2$
         to.set("x_operation_type", from.get("OperationType")); //$NON-NLS-1$ //$NON-NLS-2$
         to.set("x_revision_id", from.get("RevisionID")); //$NON-NLS-1$ //$NON-NLS-2$
         to.set("x_data_cluster", from.get("DataCluster")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -143,10 +143,10 @@ class UpdateReportTypeMapping extends TypeMapping {
         DataRecordReader<String> itemReader = new XmlStringDataRecordReader();
         DataRecord items = itemReader.read(repository, updateReportType, "<Update>" + getItemsXml(from) + "</Update>");  //$NON-NLS-1$ //$NON-NLS-2$
 
-        to.set(updateReportType.getField("ID"), from.get("x_id")); //$NON-NLS-1$ //$NON-NLS-2$
+        to.set(updateReportType.getField("TimeInMillis"), from.get("x_time_in_millis")); //$NON-NLS-1$ //$NON-NLS-2$
+        to.set(updateReportType.getField("UUID"), from.get("x_uuid")); //$NON-NLS-1$ //$NON-NLS-2$
         to.set(updateReportType.getField("UserName"), from.get("x_user_name")); //$NON-NLS-1$ //$NON-NLS-2$
         to.set(updateReportType.getField("Source"), from.get("x_source")); //$NON-NLS-1$ //$NON-NLS-2$
-        to.set(updateReportType.getField("TimeInMillis"), from.get("x_time_in_millis")); //$NON-NLS-1$ //$NON-NLS-2$
         to.set(updateReportType.getField("OperationType"), from.get("x_operation_type")); //$NON-NLS-1$ //$NON-NLS-2$
         to.set(updateReportType.getField("RevisionID"), from.get("x_revision_id")); //$NON-NLS-1$ //$NON-NLS-2$
         to.set(updateReportType.getField("DataCluster"), from.get("x_data_cluster")); //$NON-NLS-1$ //$NON-NLS-2$

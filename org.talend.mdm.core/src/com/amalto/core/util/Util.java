@@ -733,7 +733,7 @@ public class Util {
                         }
                     }
                 }
-                String resultUpdateReport = "" + "<Update><ID>" + UUID.randomUUID().toString() + "</ID><UserName>" + username + "</UserName>"
+                String resultUpdateReport = "" + "<Update><UUID>" + UUID.randomUUID().toString() + "</UUID><UserName>" + username + "</UserName>"
                         + "<Source>" + UpdateReportPOJO.GENERIC_UI_SOURCE +"</Source>" + "<TimeInMillis>" + System.currentTimeMillis() + "</TimeInMillis>"
                         + "<OperationType>" + StringEscapeUtils.escapeXml(operationType) + "</OperationType>" + "<DataCluster>"
                         + clusterName + "</DataCluster>" + "<DataModel>" + StringUtils.EMPTY + "</DataModel>" + "<Concept>"

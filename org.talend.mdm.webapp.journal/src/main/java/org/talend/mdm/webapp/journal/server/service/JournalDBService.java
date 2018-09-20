@@ -292,22 +292,20 @@ public class JournalDBService {
         JournalGridModel model = new JournalGridModel();
         Document doc = Util.parse(xmlStr);
         String timeInMillis = checkNull(Util.getFirstTextNode(doc, "result/Update/TimeInMillis")); //$NON-NLS-1$
-        String concept = checkNull(Util.getFirstTextNode(doc, "result/Update/Concept")); //$NON-NLS-1$
-        String key = checkNull(Util.getFirstTextNode(doc, "result/Update/Key")); //$NON-NLS-1$
+        String uuid = checkNull(Util.getFirstTextNode(doc, "result/Update/UUID")); //$NON-NLS-1$
 
         model.setDataContainer(checkNull(Util.getFirstTextNode(doc, "result/Update/DataCluster"))); //$NON-NLS-1$
         model.setDataModel(checkNull(Util.getFirstTextNode(doc, "result/Update/DataModel"))); //$NON-NLS-1$
-        model.setEntity(concept);
-        model.setKey(key);
+        model.setEntity(checkNull(Util.getFirstTextNode(doc, "result/Update/Concept")));
+        model.setKey(checkNull(Util.getFirstTextNode(doc, "result/Update/Key")));
         model.setOperationType(checkNull(Util.getFirstTextNode(doc, "result/Update/OperationType"))); //$NON-NLS-1$
         model.setOperationTime(timeInMillis);
         model.setOperationDate(sdf.format(new Date(Long.parseLong(timeInMillis))));
         model.setSource(checkNull(Util.getFirstTextNode(doc, "result/Update/Source")));
         model.setUserName(checkNull(Util.getFirstTextNode(doc, "result/Update/UserName"))); //$NON-NLS-1$
-        model.setIds(Util.joinStrings(new String[] { timeInMillis, Util.getFirstTextNode(doc, "result/Update/UUID") }, ".")); //$NON-NLS-1$
+        model.setIds(Util.joinStrings(new String[] { timeInMillis, uuid }, ".")); //$NON-NLS-1$
 
         String[] pathArray = Util.getTextNodes(doc, "result/Update/Item/path"); //$NON-NLS-1$
-
         List<String> changeNodeList = getChangeNodeList(model.getEntity(), pathArray);
 
         model.getChangeNodeList().addAll(changeNodeList);

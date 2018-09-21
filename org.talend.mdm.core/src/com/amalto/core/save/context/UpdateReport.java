@@ -65,7 +65,6 @@ class UpdateReport implements DocumentSaver {
         boolean hasHeader = false;
         for (Action action : actions) {
             if (!hasHeader) {
-                setHeader(updateReportDocument, "UUID", UUID.randomUUID().toString()); //$NON-NLS-1$
                 setHeader(updateReportDocument, "UserName", session.getSaverSource().getLegitimateUser()); //$NON-NLS-1$
                 setHeader(updateReportDocument, "Source", String.valueOf(action.getSource())); //$NON-NLS-1$
                 setHeader(updateReportDocument, "TimeInMillis", String.valueOf(action.getDate().getTime())); //$NON-NLS-1$
@@ -73,6 +72,7 @@ class UpdateReport implements DocumentSaver {
                 setHeader(updateReportDocument, "DataModel", String.valueOf(context.getDataModelName())); //$NON-NLS-1$
                 setHeader(updateReportDocument, "Concept", String.valueOf(type.getName())); //$NON-NLS-1$
                 setHeader(updateReportDocument, "Key", key.toString()); //$NON-NLS-1$
+                setHeader(updateReportDocument, "UUID", UUID.randomUUID().toString()); //$NON-NLS-1$
                 hasHeader = true;
                 updateReportDocument.enableRecordFieldChange();
             }

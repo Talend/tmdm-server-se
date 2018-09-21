@@ -10,7 +10,6 @@
   -->
 
 <Update>
-    <UUID/>
     <UserName/>
     <Source/>
     <TimeInMillis/>
@@ -20,4 +19,5 @@
     <DataModel/>
     <Concept/>
     <Key/>
+    <UUID/>
 </Update>

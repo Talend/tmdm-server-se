@@ -11,10 +11,9 @@ package com.amalto.core.delegator;
 
 import com.amalto.core.save.DocumentSaverContext;
 import com.amalto.core.save.SaverSession;
+import com.amalto.core.util.VetoException;
 
 public class BaseSecurityCheck {
-
-    public boolean isByPassSecurityChecks(SaverSession session, DocumentSaverContext context) {
-        return true;
+    public void vetoableSave(SaverSession session, DocumentSaverContext context) throws VetoException {
     }
 }

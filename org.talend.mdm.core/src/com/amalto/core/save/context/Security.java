@@ -13,6 +13,8 @@ package com.amalto.core.save.context;
 
 import com.amalto.core.save.DocumentSaverContext;
 import com.amalto.core.save.SaverSession;
+import com.amalto.core.util.BeforeSavingErrorException;
+import com.amalto.core.util.VetoException;
 import com.amalto.core.delegator.BeanDelegatorContainer;
 import com.amalto.core.delegator.BaseSecurityCheck;
 
@@ -26,8 +28,15 @@ class Security implements DocumentSaver {
 
     public void save(SaverSession session, DocumentSaverContext context) {
         BaseSecurityCheck securityCheckDelegator = BeanDelegatorContainer.getInstance().getSecurityCheckDelegator();
-        if (!securityCheckDelegator.isByPassSecurityChecks(session, context)) {
-        	return;
+        try {
+            securityCheckDelegator.vetoableSave(session, context);
+        } catch (VetoException e) {
+            try {
+                throw new VetoException("Failed to save document." + e.getMessage());
+            } catch (VetoException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
         }
 
         next.save(session, context);

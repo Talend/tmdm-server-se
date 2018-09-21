@@ -12,7 +12,7 @@ package com.amalto.core.delegator;
 import com.amalto.core.save.DocumentSaverContext;
 import com.amalto.core.save.SaverSession;
 
-public class ISecurityCheck {
+public class BaseSecurityCheck {
 
     public boolean isByPassSecurityChecks(SaverSession session, DocumentSaverContext context) {
         return true;

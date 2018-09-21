@@ -11,16 +11,12 @@
 
 package com.amalto.core.save.context;
 
-import org.apache.log4j.Logger;
-
 import com.amalto.core.save.DocumentSaverContext;
 import com.amalto.core.save.SaverSession;
 import com.amalto.core.delegator.BeanDelegatorContainer;
-import com.amalto.core.delegator.ISecurityCheck;
+import com.amalto.core.delegator.BaseSecurityCheck;
 
 class Security implements DocumentSaver {
-
-    private static final Logger LOGGER = Logger.getLogger(Security.class);
 
     private final DocumentSaver next;
 
@@ -29,7 +25,7 @@ class Security implements DocumentSaver {
     }
 
     public void save(SaverSession session, DocumentSaverContext context) {
-        ISecurityCheck securityCheckDelegator = BeanDelegatorContainer.getInstance().getSecurityCheckDelegator();
+        BaseSecurityCheck securityCheckDelegator = BeanDelegatorContainer.getInstance().getSecurityCheckDelegator();
         if (!securityCheckDelegator.isByPassSecurityChecks(session, context)) {
         	return;
         }

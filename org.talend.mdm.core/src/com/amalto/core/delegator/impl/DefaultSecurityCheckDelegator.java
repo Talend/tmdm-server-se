@@ -9,8 +9,8 @@
  */
 package com.amalto.core.delegator.impl;
 
-import com.amalto.core.delegator.ISecurityCheck;
+import com.amalto.core.delegator.BaseSecurityCheck;
 
-public class DefaultSecurityCheckDelegator extends ISecurityCheck {
+public class DefaultSecurityCheckDelegator extends BaseSecurityCheck {
 
 }

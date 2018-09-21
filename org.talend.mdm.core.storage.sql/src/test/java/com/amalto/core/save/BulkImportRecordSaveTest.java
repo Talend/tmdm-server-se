@@ -35,7 +35,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.amalto.core.delegator.BeanDelegatorContainer;
-import com.amalto.core.delegator.ISecurityCheck;
+import com.amalto.core.delegator.BaseSecurityCheck;
 import com.amalto.core.history.DeleteType;
 import com.amalto.core.history.MutableDocument;
 import com.amalto.core.save.context.DocumentSaver;
@@ -88,7 +88,7 @@ public class BulkImportRecordSaveTest extends TestCase {
                 Collections.<String, Object> singletonMap("SecurityCheck", new MockISecurityCheck()));
     }
 
-    private static class MockISecurityCheck extends ISecurityCheck {}
+    private static class MockISecurityCheck extends BaseSecurityCheck {}
 
     @Override
     public void tearDown() throws Exception {

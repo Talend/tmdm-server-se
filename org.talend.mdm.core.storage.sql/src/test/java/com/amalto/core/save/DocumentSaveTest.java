@@ -46,7 +46,7 @@ import org.w3c.dom.NodeList;
 import com.amalto.commons.core.utils.XMLUtils;
 import com.amalto.core.delegator.BeanDelegatorContainer;
 import com.amalto.core.delegator.ILocalUser;
-import com.amalto.core.delegator.ISecurityCheck;
+import com.amalto.core.delegator.BaseSecurityCheck;
 import com.amalto.core.history.DeleteType;
 import com.amalto.core.history.MutableDocument;
 import com.amalto.core.objects.UpdateReportPOJO;
@@ -117,7 +117,7 @@ public class DocumentSaveTest extends TestCase {
         BeanDelegatorContainer.getInstance().setDelegatorInstancePool(delegatorInstancePool); 
     }
 
-    private static class MockISecurityCheck extends ISecurityCheck {}
+    private static class MockISecurityCheck extends BaseSecurityCheck {}
 
     @Override
     public void tearDown() throws Exception {

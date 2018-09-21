@@ -19,6 +19,8 @@ public class BeanDelegatorContainer {
     
     private static final String SECURITY_CHECK = "SecurityCheck"; //$NON-NLS-1$
 
+    private static final String MENU_UTIL = "MenuUtil"; //$NON-NLS-1$
+
     private static final String VALIDATION = "Validation"; //$NON-NLS-1$
 
     private static final String ITEM_CTRL = "ItemCtrl"; //$NON-NLS-1$
@@ -55,9 +57,15 @@ public class BeanDelegatorContainer {
         }
     }
 
-    public ISecurityCheck getSecurityCheckDelegator() {
+    public BaseSecurityCheck getSecurityCheckDelegator() {
         synchronized (delegatorInstancePool) {
-            return (ISecurityCheck) delegatorInstancePool.get(SECURITY_CHECK);
+            return (BaseSecurityCheck) delegatorInstancePool.get(SECURITY_CHECK);
+        }
+    }
+
+    public BaseMenu getMenuUtilDelegator() {
+        synchronized (delegatorInstancePool) {
+            return (BaseMenu) delegatorInstancePool.get(MENU_UTIL);
         }
     }
 

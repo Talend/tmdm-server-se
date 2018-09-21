@@ -13,6 +13,7 @@ import java.util.HashMap;
 
 import junit.framework.TestCase;
 
+import com.amalto.core.util.Menu;
 import com.amalto.core.webservice.WSMenuEntry;
 import com.amalto.core.webservice.WSMenuMenuEntriesDescriptions;
 

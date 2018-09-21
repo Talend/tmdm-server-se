@@ -33,7 +33,7 @@ import org.talend.utils.json.JSONObject;
 
 import com.amalto.core.delegator.BeanDelegatorContainer;
 import com.amalto.core.delegator.ILocalUser;
-import com.amalto.core.delegator.ISecurityCheck;
+import com.amalto.core.delegator.BaseSecurityCheck;
 import com.amalto.core.history.MutableDocument;
 import com.amalto.core.metadata.ClassRepository;
 import com.amalto.core.objects.ObjectPOJO;
@@ -153,7 +153,7 @@ public class RecordValidationTest extends TestCase {
         createData("Product", true, xmlProduct);
     }
 
-    private static class MockISecurityCheck extends ISecurityCheck {}
+    private static class MockISecurityCheck extends BaseSecurityCheck {}
 
     @Override
     protected void tearDown() throws Exception {

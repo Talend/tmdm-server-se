@@ -47,7 +47,7 @@ import com.amalto.core.webservice.WSTransformerV2;
 import com.amalto.core.webservice.WSTransformerV2PK;
 import com.amalto.core.webservice.WSTypedContent;
 import com.amalto.webapp.core.bean.Configuration;
-import com.amalto.webapp.core.util.Menu;
+import com.amalto.core.util.Menu;
 import com.amalto.webapp.core.util.Util;
 import com.amalto.webapp.core.util.Webapp;
 

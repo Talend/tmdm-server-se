@@ -63,6 +63,7 @@ import com.amalto.core.storage.StorageResults;
 import com.amalto.core.storage.StorageType;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.util.LocalUser;
+import com.amalto.core.util.Util;
 import com.amalto.core.util.XtentisException;
 
 
@@ -211,26 +212,15 @@ public class SystemModels {
         // Update the system storage with the new data model (if there was any change).
         Compare.DiffResults diffResults = Compare.compare(previousRepository, newRepository);
         if (!diffResults.getActions().isEmpty()) {
-            UserQueryBuilder qb = from(dataModelType).where(eq(dataModelType.getField("name"), modelName)); //$NON-NLS-1$
-            systemStorage.begin();
+            DataModelPOJO updatedDataModelPOJO = new DataModelPOJO(modelName);
+            updatedDataModelPOJO.setDescription(oldDataModel.getDescription());
+            updatedDataModelPOJO.setDigest(oldDataModel.getDigest());
+            updatedDataModelPOJO.setName(oldDataModel.getName());
+            updatedDataModelPOJO.setSchema(content);
             try {
-                StorageResults results = systemStorage.fetch(qb.getSelect());
-                Iterator<DataRecord> iterator = results.iterator();
-                if (iterator.hasNext()) {
-                    // Updates the data model in system db
-                    DataRecord model = iterator.next();
-                    model.set(dataModelType.getField("schema"), content); //$NON-NLS-1$
-                    if (iterator.hasNext()) {
-                        throw new IllegalStateException("Found multiple data models for '" + modelName + "'."); //$NON-NLS-1$ //$NON-NLS-2$
-                    }
-                    systemStorage.update(model);
-                }
-                systemStorage.commit();
-                reloadDataModel(modelName);
+                Util.getDataModelCtrlLocal().putDataModel(updatedDataModelPOJO);
                 // Add audit log
-                DataModelPOJO newdataModelPOJO = new DataModelPOJO(modelName);
-                newdataModelPOJO.setSchema(content);
-                MDMAuditLogger.dataModelModified(user, oldDataModel, newdataModelPOJO, true);
+                MDMAuditLogger.dataModelModified(user, oldDataModel, updatedDataModelPOJO, true);
             } catch (Exception e) {
                 systemStorage.rollback();
                 MDMAuditLogger.dataModelModificationFailed(user, modelName, e);

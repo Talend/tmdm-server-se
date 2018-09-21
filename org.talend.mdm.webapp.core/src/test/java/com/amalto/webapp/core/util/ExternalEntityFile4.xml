@@ -1,0 +1,17 @@
+<Product>
+  <Id>1</Id>
+  <Name>name;</Name>
+  <Description>desc;</Description>
+  <Features>
+    <Sizes/>
+    <Colors/>
+  </Features>
+  <Price>1.00</Price>
+  <Family>[1]</Family>
+  <Availability></Availability>
+  <OnlineStore></OnlineStore>
+  <Stores>
+    <Store>[22]</Store>
+    <Store>[33]</Store>
+  </Stores>
+</Product>

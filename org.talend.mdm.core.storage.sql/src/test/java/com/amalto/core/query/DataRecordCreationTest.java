@@ -10,42 +10,58 @@
 
 package com.amalto.core.query;
 
-import static com.amalto.core.query.user.UserQueryBuilder.*;
+import static com.amalto.core.query.user.UserQueryBuilder.from;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
-import com.amalto.core.load.io.ResettableStringWriter;
-import com.amalto.core.server.ServerContext;
-import com.amalto.core.storage.*;
-import com.amalto.core.storage.hibernate.HibernateStorage;
-import com.amalto.core.storage.record.*;
-import com.amalto.core.util.Util;
-import com.amalto.xmlserver.interfaces.XmlServerException;
 import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
+import org.talend.mdm.commmon.util.core.MDMXMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
 
+import com.amalto.core.load.io.ResettableStringWriter;
 import com.amalto.core.query.user.UserQueryBuilder;
+import com.amalto.core.server.ServerContext;
+import com.amalto.core.storage.ItemPKCriteriaResultsWriter;
+import com.amalto.core.storage.StagingStorage;
+import com.amalto.core.storage.Storage;
+import com.amalto.core.storage.StorageMetadataUtils;
+import com.amalto.core.storage.StorageResults;
+import com.amalto.core.storage.StorageType;
+import com.amalto.core.storage.hibernate.HibernateStorage;
+import com.amalto.core.storage.record.DataRecord;
+import com.amalto.core.storage.record.DataRecordReader;
+import com.amalto.core.storage.record.DataRecordWriter;
+import com.amalto.core.storage.record.XmlDOMDataRecordReader;
+import com.amalto.core.storage.record.XmlSAXDataRecordReader;
+import com.amalto.core.storage.record.XmlStringDataRecordReader;
 import com.amalto.core.storage.record.metadata.DataRecordMetadata;
+import com.amalto.core.util.Util;
+import com.amalto.xmlserver.interfaces.XmlServerException;
 
 @SuppressWarnings("nls")
 public class DataRecordCreationTest extends StorageTestCase {
+
+    private static final Logger LOGGER = Logger.getLogger(DataRecordCreationTest.class);
 
     @Override
     public void tearDown() throws Exception {
@@ -92,7 +108,6 @@ public class DataRecordCreationTest extends StorageTestCase {
         assertEquals(1, results.getCount());
         DataRecord result = results.iterator().next();
     }
-
 
     public void __testDateTypeInForeignKey() throws Exception {
         MetadataRepository repository = new MetadataRepository();
@@ -165,7 +180,8 @@ public class DataRecordCreationTest extends StorageTestCase {
         }
         String recordStringValue = stringWriter.toString();
         XPath xpath = XPathFactory.newInstance().newXPath();
-        DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+
+        DocumentBuilder documentBuilder = MDMXMLUtils.getDocumentBuilder().get();
         Element r = documentBuilder.parse(new InputSource(new StringReader(recordStringValue))).getDocumentElement();
         NodeList idsList = (NodeList) xpath.evaluate("./ids/i", r, XPathConstants.NODESET); //$NON-NLS-1$
         List<String> keyStrValues = new ArrayList<String>();
@@ -276,6 +292,7 @@ public class DataRecordCreationTest extends StorageTestCase {
         performInheritanceAsserts(dataRecord);
     }
 
+
     public void testCreationFromSAX() throws Exception {
         MetadataRepository repository = new MetadataRepository();
         repository.load(this.getClass().getResourceAsStream("metadata.xsd"));
@@ -283,8 +300,7 @@ public class DataRecordCreationTest extends StorageTestCase {
         ComplexTypeMetadata product = repository.getComplexType("Product");
         assertNotNull(product);
 
-        XMLReader xmlReader = XMLReaderFactory.createXMLReader();
-
+        XMLReader xmlReader = MDMXMLUtils.getXMLReader();
         DataRecordReader<XmlSAXDataRecordReader.Input> dataRecordReader = new XmlSAXDataRecordReader();
         XmlSAXDataRecordReader.Input input = new XmlSAXDataRecordReader.Input(xmlReader, new InputSource(this.getClass()
                 .getResourceAsStream("DataRecordCreationTest_1.xml")));
@@ -299,8 +315,7 @@ public class DataRecordCreationTest extends StorageTestCase {
 
         ComplexTypeMetadata product = repository.getComplexType("Product");
         assertNotNull(product);
-
-        XMLReader xmlReader = XMLReaderFactory.createXMLReader();
+        XMLReader xmlReader = MDMXMLUtils.getXMLReader();
 
         DataRecordReader<XmlSAXDataRecordReader.Input> dataRecordReader = new XmlSAXDataRecordReader();
         XmlSAXDataRecordReader.Input input = new XmlSAXDataRecordReader.Input(xmlReader, new InputSource(this.getClass()
@@ -316,7 +331,8 @@ public class DataRecordCreationTest extends StorageTestCase {
         repository.load(this.getClass().getResourceAsStream("metadata.xsd"));
         ComplexTypeMetadata c = repository.getComplexType("C");
         assertNotNull(c);
-        XMLReader xmlReader = XMLReaderFactory.createXMLReader();
+        XMLReader xmlReader = MDMXMLUtils.getXMLReader();
+
         DataRecordReader<XmlSAXDataRecordReader.Input> dataRecordReader = new XmlSAXDataRecordReader();
         XmlSAXDataRecordReader.Input input = new XmlSAXDataRecordReader.Input(xmlReader, new InputSource(this.getClass()
                 .getResourceAsStream("DataRecordCreationTest_2.xml")));
@@ -341,7 +357,8 @@ public class DataRecordCreationTest extends StorageTestCase {
     private List<DataRecord> getDataRecords(String resourceName, ComplexTypeMetadata recordType) throws Exception {
         List<DataRecord> records = new LinkedList<DataRecord>();
         // Read using SAX
-        XMLReader xmlReader = XMLReaderFactory.createXMLReader();
+        XMLReader xmlReader = MDMXMLUtils.getXMLReader();
+
         DataRecordReader<XmlSAXDataRecordReader.Input> dataRecordReader = new XmlSAXDataRecordReader();
         XmlSAXDataRecordReader.Input input = new XmlSAXDataRecordReader.Input(xmlReader, new InputSource(this.getClass()
                 .getResourceAsStream(resourceName)));
@@ -422,7 +439,7 @@ public class DataRecordCreationTest extends StorageTestCase {
         ComplexTypeMetadata product = repository.getComplexType("Product");
         assertNotNull(product);
 
-        Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+        Document document = MDMXMLUtils.getDocumentBuilderWithNamespace().get()
                 .parse(this.getClass().getResourceAsStream("DataRecordCreationTest_1.xml"));
         DataRecordReader<Element> dataRecordReader = new XmlDOMDataRecordReader();
         DataRecord dataRecord = dataRecordReader.read(repository, product, document.getDocumentElement());
@@ -437,9 +454,7 @@ public class DataRecordCreationTest extends StorageTestCase {
         ComplexTypeMetadata product = repository.getComplexType("Product");
         assertNotNull(product);
 
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setNamespaceAware(true);
-        DocumentBuilder documentBuilder = factory.newDocumentBuilder();
+        DocumentBuilder documentBuilder = MDMXMLUtils.getDocumentBuilderWithNamespace().get();
         InputStream stream = this.getClass().getResourceAsStream("DataRecordCreationTest_3.xml");
         Document document = documentBuilder.parse(stream);
         DataRecordReader<Element> dataRecordReader = new XmlDOMDataRecordReader();
@@ -456,9 +471,7 @@ public class DataRecordCreationTest extends StorageTestCase {
         ComplexTypeMetadata c = repository.getComplexType("C");
         assertNotNull(c);
 
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setNamespaceAware(true);
-        DocumentBuilder documentBuilder = factory.newDocumentBuilder();
+        DocumentBuilder documentBuilder = MDMXMLUtils.getDocumentBuilderWithNamespace().get();
         Document document = documentBuilder.parse(this.getClass().getResourceAsStream("DataRecordCreationTest_2.xml"));
         DataRecordReader<Element> dataRecordReader = new XmlDOMDataRecordReader();
         DataRecord dataRecord = dataRecordReader.read(repository, c, document.getDocumentElement());

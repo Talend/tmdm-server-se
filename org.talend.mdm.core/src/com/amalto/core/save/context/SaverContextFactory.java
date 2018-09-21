@@ -11,9 +11,30 @@
 
 package com.amalto.core.save.context;
 
+import java.io.InputStream;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.MetadataRepository;
+import org.talend.mdm.commmon.util.core.MDMXMLUtils;
+import org.talend.mdm.commmon.util.webapp.XSystemObjects;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
+
 import com.amalto.core.history.MutableDocument;
 import com.amalto.core.load.action.LoadAction;
-import com.amalto.core.save.*;
+import com.amalto.core.save.AutoCommitSaverContext;
+import com.amalto.core.save.DOMDocument;
+import com.amalto.core.save.DocumentSaverContext;
+import com.amalto.core.save.PartialUpdateSaverContext;
+import com.amalto.core.save.ReportDocumentSaverContext;
+import com.amalto.core.save.SaverSession;
+import com.amalto.core.save.UserAction;
 import com.amalto.core.schema.validation.SkipAttributeDocumentBuilder;
 import com.amalto.core.server.MetadataRepositoryAdmin;
 import com.amalto.core.server.Server;
@@ -24,20 +45,6 @@ import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.StorageType;
 import com.amalto.core.util.Util;
 import com.amalto.core.util.XSDKey;
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
-import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
-import org.talend.mdm.commmon.metadata.MetadataRepository;
-import org.talend.mdm.commmon.util.webapp.XSystemObjects;
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 
 public class SaverContextFactory {
 
@@ -73,8 +80,10 @@ public class SaverContextFactory {
         factory.setNamespaceAware(true);
         factory.setIgnoringComments(true);
         factory.setValidating(false);
+        factory.setExpandEntityReferences(false);
         try {
-            factory.setFeature("http://apache.org/xml/features/dom/defer-node-expansion", false); //$NON-NLS-1$
+            factory.setFeature(MDMXMLUtils.FEATURE_DISALLOW_DOCTYPE, true);
+            factory.setFeature(MDMXMLUtils.FEATURE_DEFER_NODE_EXPANSION, false); //$NON-NLS-1$
             DOCUMENT_BUILDER = factory.newDocumentBuilder();
         } catch (ParserConfigurationException e) {
             throw new RuntimeException("Could not acquire a document builder.", e); //$NON-NLS-1$

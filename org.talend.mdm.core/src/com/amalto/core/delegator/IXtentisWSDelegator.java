@@ -24,7 +24,6 @@ import java.util.Map;
 import java.util.Properties;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
@@ -37,6 +36,7 @@ import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.util.core.ICoreConstants;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
+import org.talend.mdm.commmon.util.core.MDMXMLUtils;
 import org.talend.mdm.commmon.util.webapp.XSystemObjects;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -740,7 +740,7 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
             criteria.setUseFTSearch(useFTSearch);
             List<String> results = com.amalto.core.util.Util.getItemCtrl2Local().getItemPKsByCriteria(criteria);
             XPath xpath = XPathFactory.newInstance().newXPath();
-            DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            DocumentBuilder documentBuilder = MDMXMLUtils.getDocumentBuilder().get();
             WSItemPKsByCriteriaResponseResults[] res = new WSItemPKsByCriteriaResponseResults[results.size()];
             int i = 0;
             for (String result : results) {

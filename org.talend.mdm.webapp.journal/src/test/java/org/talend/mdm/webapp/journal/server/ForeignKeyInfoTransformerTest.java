@@ -21,16 +21,13 @@ import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit3.PowerMockSuite;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
+import org.talend.mdm.commmon.util.core.MDMXMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -47,11 +44,12 @@ import com.amalto.core.server.api.Item;
 import com.amalto.core.util.Util;
 import com.amalto.core.util.XtentisException;
 
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
 @SuppressWarnings("nls")
 @PrepareForTest({ DefaultItem.class, Util.class })
 public class ForeignKeyInfoTransformerTest extends TestCase {
-
-    private DocumentBuilderFactory documentBuilderFactory;
 
     final String clusterName = "TestFKs";
 
@@ -90,12 +88,8 @@ public class ForeignKeyInfoTransformerTest extends TestCase {
 
         initData();
 
-        documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        documentBuilderFactory.setNamespaceAware(true);
-        documentBuilderFactory.setValidating(false);
-
         InputStream dataExpectedStream = this.getClass().getResourceAsStream("/dataExpected.xml");
-        dataExpected = documentBuilderFactory.newDocumentBuilder().parse(new InputSource(dataExpectedStream));
+        dataExpected = MDMXMLUtils.getDocumentBuilderWithNamespace().get().parse(new InputSource(dataExpectedStream));
 
         InputStream dataModelStream = this.getClass().getResourceAsStream("/TestFKs.xsd");
         metadataRepository = new MetadataRepository();
@@ -232,7 +226,7 @@ public class ForeignKeyInfoTransformerTest extends TestCase {
         String conceptName = "Feature";
 
         InputStream dataExpectedStream = this.getClass().getResourceAsStream("/FeatureDataExpected.xml");
-        dataExpected = documentBuilderFactory.newDocumentBuilder().parse(new InputSource(dataExpectedStream));
+        dataExpected = MDMXMLUtils.getDocumentBuilder().get().parse(new InputSource(dataExpectedStream));
 
         InputStream dataModelStream = this.getClass().getResourceAsStream("/Feature.xsd");
         metadataRepository = new MetadataRepository();
@@ -307,7 +301,7 @@ public class ForeignKeyInfoTransformerTest extends TestCase {
         org.w3c.dom.Document documentAsDOM;
         if (xmlString != null) {
             try {
-                documentAsDOM = documentBuilderFactory.newDocumentBuilder().parse(new InputSource(new StringReader(xmlString)));
+                documentAsDOM = MDMXMLUtils.getDocumentBuilderWithNamespace().get().parse(new InputSource(new StringReader(xmlString)));
             } catch (Exception e) {
                 throw new RuntimeException("Exception during initial content build", e);
             }
@@ -353,12 +347,11 @@ public class ForeignKeyInfoTransformerTest extends TestCase {
     private Element getElement(String id) {
         String recordXML = xmlDomRecordInputs.get(id);
 
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = null;
         Document doc = null;
         Element root = null;
         try {
-            builder = factory.newDocumentBuilder();
+            builder = MDMXMLUtils.getDocumentBuilder().get();
             doc = builder.parse(new InputSource(new StringReader(recordXML)));
             root = doc.getDocumentElement();
         } catch (Exception e) {

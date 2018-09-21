@@ -16,13 +16,13 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
+import org.talend.mdm.commmon.util.core.MDMXMLUtils;
 import org.talend.mdm.commmon.util.webapp.XObjectType;
 import org.talend.mdm.commmon.util.webapp.XSystemObjects;
 import org.talend.mdm.webapp.base.client.exception.ServiceException;
@@ -211,8 +211,7 @@ public class GeneralAction implements GeneralService {
                 @Override
                 public void doInit() throws Exception {
                     InputStream is = XmlUtil.getXmlStream("languages.xml"); //$NON-NLS-1$
-                    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-                    DocumentBuilder builder = factory.newDocumentBuilder();
+                    DocumentBuilder builder = MDMXMLUtils.getDocumentBuilder().get();
                     Document doc = builder.parse(is);
                     Element root = doc.getDocumentElement();
 

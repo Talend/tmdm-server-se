@@ -14,16 +14,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.log4j.Logger;
+import org.talend.mdm.commmon.util.core.MDMXMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.amalto.core.objects.ItemPOJO;
-import com.amalto.core.objects.ObjectPOJO;
 import com.amalto.core.migration.MigrationRepository;
 import com.amalto.core.util.Util;
 
@@ -50,7 +48,7 @@ public class InitDbExtJobRepository {
         List<String> list = new ArrayList<String>();
         // look over the handlers dir, call up each handler to execute if it can
         try {
-            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            DocumentBuilder builder = MDMXMLUtils.getDocumentBuilder().get();
             InputStream in = MigrationRepository.class.getResourceAsStream("/com/amalto/core/initdb/extjob/initdb-extjb.xml");//$NON-NLS-1$
             parseConfigList(list, builder, in);
             // get the class definition and invoke the trigger function

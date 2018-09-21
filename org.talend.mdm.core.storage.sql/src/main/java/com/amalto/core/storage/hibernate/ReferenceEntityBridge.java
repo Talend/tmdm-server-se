@@ -94,9 +94,9 @@ public class ReferenceEntityBridge implements TwoWayFieldBridge {
             LOGGER.debug("Right now, adds the specified element [" + className + "] to this processedElementSet");//$NON-NLS-2$
         }
         evaluateClass(name, dataObject, clazz, document, luceneOptions);
-        processedElementSet.remove(clazz.getName());
+        processedElementSet.remove(className);
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Removes the given element [" + clazz.getName() + "] from processedElementSet sucessfully");//$NON-NLS-2$
+            LOGGER.debug("Removes the given element [" + className + "] from processedElementSet sucessfully");//$NON-NLS-2$
         }
     }
 

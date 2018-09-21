@@ -14,13 +14,13 @@ import java.util.Stack;
 
 import javax.xml.XMLConstants;
 
-import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
 import org.talend.mdm.commmon.metadata.TypeMetadata;
+import org.talend.mdm.commmon.util.core.MDMXMLUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
@@ -55,6 +55,10 @@ public class XmlSAXDataRecordReader implements DataRecordReader<XmlSAXDataRecord
         try {
             InputSource inputSource = input.input;
             XMLReader xmlReader = input.reader;
+            xmlReader.setFeature(MDMXMLUtils.FEATURE_DISALLOW_DOCTYPE, true);
+            xmlReader.setFeature(MDMXMLUtils.FEATURE_LOAD_EXTERNAL, false);
+            xmlReader.setFeature(MDMXMLUtils.FEATURE_EXTERNAL_GENERAL_ENTITIES, false);
+            xmlReader.setFeature(MDMXMLUtils.FEATURE_EXTERNAL_PARAM_ENTITIES, false);
             DataRecordContentHandler handler = new DataRecordContentHandler(type, repository);
             xmlReader.setContentHandler(handler);
             xmlReader.parse(inputSource);

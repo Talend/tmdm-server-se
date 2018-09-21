@@ -14,9 +14,6 @@ import java.util.List;
 import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import junit.framework.TestCase;
 
 import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
@@ -24,6 +21,7 @@ import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.metadata.compare.Compare.DiffResults;
 import org.talend.mdm.commmon.metadata.compare.HibernateStorageImpactAnalyzer;
 import org.talend.mdm.commmon.metadata.compare.ImpactAnalyzer;
+import org.talend.mdm.commmon.util.core.MDMXMLUtils;
 import org.w3c.dom.Document;
 
 import com.amalto.core.history.DeleteType;
@@ -49,6 +47,8 @@ import com.amalto.core.storage.datasource.DataSource;
 import com.amalto.core.storage.datasource.DataSourceDefinition;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.transaction.StorageTransaction;
+
+import junit.framework.TestCase;
 
 public class MetadataRepositoryTaskTest extends TestCase {
 
@@ -155,12 +155,11 @@ public class MetadataRepositoryTaskTest extends TestCase {
     private Filter getFilter() {
         Filter filter = null;
         try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Document doc = builder.parse(this.getClass().getResourceAsStream("filter.xml")); //$NON-NLS-1$
+            DocumentBuilder documentBuilder = MDMXMLUtils.getDocumentBuilder().get();
+            Document doc = documentBuilder.parse(this.getClass().getResourceAsStream("filter.xml")); //$NON-NLS-1$
             filter = new ConfigurableFilter(doc);
         } catch (Exception e) {
-            LOG.error(e.getMessage());
+            LOG.error("An unexpected exception occurred.", e);
         }
         return filter;
     }

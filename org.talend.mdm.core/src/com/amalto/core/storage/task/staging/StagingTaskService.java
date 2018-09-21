@@ -28,11 +28,11 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.springframework.http.HttpStatus;
+import org.talend.mdm.commmon.util.core.MDMXMLUtils;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
@@ -40,6 +40,7 @@ import com.amalto.core.storage.task.ConfigurableFilter;
 import com.amalto.core.storage.task.DefaultFilter;
 import com.amalto.core.storage.task.Filter;
 import com.amalto.core.util.Util;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -90,10 +91,9 @@ public class StagingTaskService {
     public String startValidation(@ApiParam(value="Container name") @PathParam("container") String dataContainer,
                                   @ApiParam(value="Model name") @QueryParam("model") String dataModel,
                                   @Context HttpServletRequest request) {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         Filter filter;
         try {
-            DocumentBuilder builder = factory.newDocumentBuilder();
+            DocumentBuilder builder = MDMXMLUtils.getDocumentBuilder().get();
             String content = IOUtils.toString(request.getInputStream());
             if (!content.isEmpty()) {
                 Document doc = builder.parse(new InputSource(new StringReader(content)));

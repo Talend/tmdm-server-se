@@ -9,20 +9,22 @@
  */
 package com.amalto.core.migration;
 
-import com.amalto.core.util.Util;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.parsers.DocumentBuilder;
+
 import org.apache.log4j.Logger;
+import org.talend.mdm.commmon.util.core.MDMXMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import com.amalto.core.util.Util;
 
 public class MigrationRepository {
 
@@ -48,7 +50,7 @@ public class MigrationRepository {
             List<String> list = new ArrayList<String>();
             // look over the handlers dir, call up each handler to execute if it can
             try {
-                DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+                DocumentBuilder builder = MDMXMLUtils.getDocumentBuilder().get();
                 InputStream in = MigrationRepository.class.getResourceAsStream("/com/amalto/core/migration/migration.xml"); //$NON-NLS-1$
                 InputStream extIn = MigrationRepository.class
                         .getResourceAsStream("/com/amalto/core/migration/migration-extension.xml"); //$NON-NLS-1$

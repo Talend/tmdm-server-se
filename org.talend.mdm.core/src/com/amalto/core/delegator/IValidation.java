@@ -9,12 +9,7 @@
  */
 package com.amalto.core.delegator;
 
-import com.amalto.core.util.CVCException;
-import com.amalto.core.util.SAXErrorHandler;
-import com.amalto.core.util.Util;
-import org.apache.log4j.Logger;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import java.io.ByteArrayInputStream;
 
 import javax.xml.XMLConstants;
 import javax.xml.transform.dom.DOMSource;
@@ -22,7 +17,15 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
-import java.io.ByteArrayInputStream;
+
+import org.apache.log4j.Logger;
+import org.talend.mdm.commmon.util.core.MDMXMLUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import com.amalto.core.util.CVCException;
+import com.amalto.core.util.SAXErrorHandler;
+import com.amalto.core.util.Util;
 
 public class IValidation {
 
@@ -33,6 +36,9 @@ public class IValidation {
     public Document validation(Element element, String schema) throws Exception {
         if (schema == null) {
             throw new IllegalArgumentException("Schema cannot be null.");
+        }
+        if (MDMXMLUtils.isExistExtEntity(schema)) {
+            throw new IllegalArgumentException("External entities are not allowed in Schema.");
         }
 		// Validate DOM element using javax.xml.validation.Schema API (avoid re-parse).
         SAXErrorHandler seh = new SAXErrorHandler();

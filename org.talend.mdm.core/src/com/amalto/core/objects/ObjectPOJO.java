@@ -22,13 +22,12 @@ import java.util.List;
 import java.util.Map;
 
 import javax.xml.stream.XMLEventReader;
-import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.events.XMLEvent;
 
-import com.amalto.core.util.*;
 import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.util.core.ICoreConstants;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
+import org.talend.mdm.commmon.util.core.MDMXMLUtils;
 
 import com.amalto.core.delegator.ILocalUser;
 import com.amalto.core.objects.backgroundjob.BackgroundJobPOJO;
@@ -50,6 +49,11 @@ import com.amalto.core.objects.transformers.TransformerV2POJO;
 import com.amalto.core.objects.view.ViewPOJO;
 import com.amalto.core.server.api.Item;
 import com.amalto.core.server.api.XmlServer;
+import com.amalto.core.util.BAMLogger;
+import com.amalto.core.util.LocalUser;
+import com.amalto.core.util.MDMEhCacheUtil;
+import com.amalto.core.util.Util;
+import com.amalto.core.util.XtentisException;
 import com.amalto.xmlserver.interfaces.IWhereItem;
 import com.amalto.xmlserver.interfaces.IXmlServerSLWrapper;
 import com.amalto.xmlserver.interfaces.WhereAnd;
@@ -59,8 +63,6 @@ public abstract class ObjectPOJO implements Serializable {
 
     // Don't change this id, it forces compatibility with pre-5.3 versions (even if structure slightly changed).
     public static final long serialVersionUID = 3157316606545297572l;
-
-    private static final XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
 
     private static final Map<Class<?>, String> OBJECTS_CLASSES_TO_NAMES_MAP = new HashMap<Class<?>, String>();
 
@@ -444,7 +446,7 @@ public abstract class ObjectPOJO implements Serializable {
             }
             List<ObjectPOJOPK> pojoPks = new LinkedList<ObjectPOJOPK>();
             for (String result : results) {
-                XMLEventReader reader = xmlInputFactory.createXMLEventReader(new StringReader(result));
+                XMLEventReader reader = MDMXMLUtils.createXMLEventReader(new StringReader(result));
                 XMLEvent xmlEvent = reader.nextEvent();
                 String[] idValues = new String[idsPaths.length];
                 int idIndex = 0;

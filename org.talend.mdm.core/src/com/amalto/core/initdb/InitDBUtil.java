@@ -19,11 +19,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
+import org.talend.mdm.commmon.util.core.MDMXMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -54,7 +54,7 @@ public class InitDBUtil {
         try {
             dbIn = InitDBUtil.class.getResourceAsStream(INIT_DB_CONFIG);
             edbIn = InitDBUtil.class.getResourceAsStream(INIT_DB_EXTENSION_CONFIG);
-            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            DocumentBuilder builder = MDMXMLUtils.getDocumentBuilder().get();
             parseInitMap(dbIn, builder, initDB);
             if (edbIn != null) {
                 useExtension = true;

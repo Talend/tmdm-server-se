@@ -32,6 +32,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.util.core.ICoreConstants;
+import org.talend.mdm.commmon.util.core.MDMXMLUtils;
 import org.talend.mdm.commmon.util.datamodel.management.BusinessConcept;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
@@ -412,9 +413,7 @@ public abstract class Util {
      */
     public static Element getRootElement(String elementName, String namespace, String prefix) throws Exception {
         try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            factory.setNamespaceAware(true);
-            DocumentBuilder builder = factory.newDocumentBuilder();
+            DocumentBuilder builder = MDMXMLUtils.getDocumentBuilderWithNamespace().get();
             DOMImplementation impl = builder.getDOMImplementation();
             Document namespaceHolder = impl.createDocument(namespace, (prefix == null ? "" : prefix + ":") + elementName, null); //$NON-NLS-1$ //$NON-NLS-2$
             Element rootNS = namespaceHolder.getDocumentElement();
@@ -439,6 +438,7 @@ public abstract class Util {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             // Schema validation based on schemaURL
             factory.setNamespaceAware(true);
+            factory.setExpandEntityReferences(false);
             factory.setValidating((schema != null));
             factory.setAttribute("http://java.sun.com/xml/jaxp/properties/schemaLanguage", "http://www.w3.org/2001/XMLSchema"); //$NON-NLS-1$ //$NON-NLS-2$
             if (schema != null) {

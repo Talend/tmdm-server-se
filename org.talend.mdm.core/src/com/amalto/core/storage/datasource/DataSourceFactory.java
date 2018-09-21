@@ -38,11 +38,11 @@ import java.util.*;
 @Component
 public class DataSourceFactory implements ApplicationContextAware {
 
-    public static final String             DB_DATASOURCES = "db.datasources"; //$NON-NLS-1$
+    public static final String DB_DATASOURCES = "db.datasources"; //$NON-NLS-1$
 
-    private static final Logger            LOGGER         = Logger.getLogger(DataSourceFactory.class);
+    private static final Logger LOGGER = Logger.getLogger(DataSourceFactory.class);
 
-    private static final XPath             xPath          = XPathFactory.newInstance().newXPath();
+    private static final XPath xPath = XPathFactory.newInstance().newXPath();
 
     private static DocumentBuilderFactory  factory = DocumentBuilderFactory.newInstance();
 

@@ -11,6 +11,8 @@ package org.talend.mdm.webapp.journal.server.service;
 
 import java.io.ByteArrayInputStream;
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,8 +22,8 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.dom4j.Attribute;
-import org.dom4j.DocumentException;
 import org.dom4j.io.SAXReader;
+import org.talend.mdm.commmon.util.core.MDMXMLUtils;
 import org.talend.mdm.commmon.util.webapp.XSystemObjects;
 import org.talend.mdm.webapp.base.server.util.Constants;
 import org.talend.mdm.webapp.journal.server.LocalLabelTransformer;
@@ -30,6 +32,7 @@ import org.talend.mdm.webapp.journal.shared.JournalSearchCriteria;
 import org.talend.mdm.webapp.journal.shared.JournalTreeModel;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import com.amalto.core.util.Util;
 import com.amalto.core.webservice.WSDataClusterPK;
@@ -158,18 +161,27 @@ public class JournalDBService {
         }
 
         SAXReader reader = new SAXReader();
+        setProtectRule(reader);
         org.dom4j.Document document = null;
         try {
             document = reader.read(new ByteArrayInputStream(xmlString.getBytes("UTF-8"))); //$NON-NLS-1$
             org.dom4j.Element rootElement = document.getRootElement();
             this.retrieveElement(rootElement, root);
-        } catch (DocumentException e) {
-            LOG.error(e.getMessage(), e);
-        } catch (UnsupportedEncodingException e) {
-            LOG.error(e.getMessage(), e);
+        } catch (Exception e) {
+            LOG.error("Failed to use the new feature while initializing SAXReader.", e);
         }
 
         return root;
+    }
+
+    private static void setProtectRule(SAXReader reader) {
+        try {
+            reader.setFeature(MDMXMLUtils.FEATURE_DISALLOW_DOCTYPE, true);
+            reader.setFeature(MDMXMLUtils.FEATURE_EXTERNAL_GENERAL_ENTITIES, false);
+            reader.setFeature(MDMXMLUtils.FEATURE_EXTERNAL_PARAM_ENTITIES, false);
+        } catch (SAXException e) {
+            throw new RuntimeException("Unable to initialize SAXReader", e);
+        }
     }
 
     private void retrieveElement(org.dom4j.Element element, JournalTreeModel root) {

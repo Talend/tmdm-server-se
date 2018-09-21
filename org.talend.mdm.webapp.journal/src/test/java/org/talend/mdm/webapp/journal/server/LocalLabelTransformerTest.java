@@ -12,11 +12,6 @@ package org.talend.mdm.webapp.journal.server;
 import java.io.InputStream;
 import java.util.Iterator;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
 import org.dom4j.DocumentHelper;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit3.PowerMockSuite;
@@ -26,10 +21,11 @@ import org.talend.mdm.commmon.metadata.MetadataRepository;
 import com.amalto.commons.core.utils.XMLUtils;
 import com.amalto.core.save.DOMDocument;
 
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
 @PrepareForTest({ com.amalto.core.util.LocaleUtil.class})
 public class LocalLabelTransformerTest extends TestCase{
-
-    private DocumentBuilderFactory documentBuilderFactory;
 
     private MetadataRepository metadataRepository;
 
@@ -60,10 +56,6 @@ public class LocalLabelTransformerTest extends TestCase{
         metadataRepository = new MetadataRepository();
         InputStream dataModelStream = this.getClass().getResourceAsStream("/Product.xsd");
         metadataRepository.load(dataModelStream);
-
-        documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        documentBuilderFactory.setNamespaceAware(true);
-        documentBuilderFactory.setValidating(false);
 
         typeMetadata = (ComplexTypeMetadata) metadataRepository.getType(concept);
 
@@ -118,10 +110,6 @@ public class LocalLabelTransformerTest extends TestCase{
         metadataRepository = new MetadataRepository();
         InputStream dataModelStream = this.getClass().getResourceAsStream("/Nationality.xsd");
         metadataRepository.load(dataModelStream);
-
-        documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        documentBuilderFactory.setNamespaceAware(true);
-        documentBuilderFactory.setValidating(false);
 
         typeMetadata = (ComplexTypeMetadata) metadataRepository.getType(concept);
 
@@ -191,10 +179,6 @@ public class LocalLabelTransformerTest extends TestCase{
         metadataRepository = new MetadataRepository();
         InputStream dataModelStream = this.getClass().getResourceAsStream("/Contract.xsd");
         metadataRepository.load(dataModelStream);
-
-        documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        documentBuilderFactory.setNamespaceAware(true);
-        documentBuilderFactory.setValidating(false);
 
         typeMetadata = (ComplexTypeMetadata) metadataRepository.getType(concept);
 

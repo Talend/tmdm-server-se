@@ -17,10 +17,10 @@ import java.util.Locale;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.log4j.Logger;
+import org.talend.mdm.commmon.util.core.MDMXMLUtils;
 import org.talend.mdm.webapp.base.client.exception.ServiceException;
 import org.talend.mdm.webapp.general.model.GroupItem;
 import org.talend.mdm.webapp.general.model.LanguageBean;
@@ -270,8 +270,7 @@ public class Utils {
 
     public static List<GroupItem> getGroupItems(String language) throws IOException, SAXException, ParserConfigurationException {
         InputStream is = Utils.class.getResourceAsStream("/MenuGroup.xml"); //$NON-NLS-1$
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
+        DocumentBuilder builder = MDMXMLUtils.getDocumentBuilder().get();
         Document doc = builder.parse(is);
         Element root = doc.getDocumentElement();
         String defaultLang = root.getAttribute("defaultLang"); //$NON-NLS-1$

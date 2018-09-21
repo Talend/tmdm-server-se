@@ -97,7 +97,38 @@ public class UtilTestCase extends TestCase {
         } catch (Exception e) {
             throw new SAXException(e);
         }
+    }
 
+    public void testDefaultValidateWithExtEntity() throws IOException, ParserConfigurationException, SAXException {
+        InputStream in = UtilTestCase.class.getResourceAsStream("Agency_ME02.xml");
+        String xml = getStringFromInputStream(in);
+        Element element = Util.parse(xml).getDocumentElement();
+        InputStream inxsd = UtilTestCase.class.getResourceAsStream("DStar.xsd");
+        String schema = getStringFromInputStream(inxsd);
+
+        // correct xmlstring
+        String xmlString = "<Agency xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">" + "<Name>Portland</Name>"
+                + "<City>Portland</City>" + "<State>ME</State>" + "<Zip>04102</Zip>" + "<Region>EAST</Region>" + "<Id>ME03</Id>"
+                + "</Agency>";
+        element = Util.parse(xmlString).getDocumentElement();
+        try {
+            validation.validation(element, schema);
+        } catch (Exception e) {
+            throw new SAXException(e);
+        }
+
+        inxsd = UtilTestCase.class.getResourceAsStream("DStar2.xsd");
+        schema = getStringFromInputStream(inxsd);
+        String xml1 = "<Product xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><Picture>htt:aa</Picture><Id>id1</Id><Name>name2</Name><Description>des1</Description>"
+                + "<Features><Sizes></Sizes><Colors><Color xsi:nil=\"1\"/></Colors></Features>"
+                + "<Availability>false</Availability><Price>0.0</Price><Family></Family><OnlineStore>gg2@d</OnlineStore></Product>";
+        element = Util.parse(xml1).getDocumentElement();
+        try {
+            validation.validation(element, schema);
+            fail("External entities are not allowed in Schema.");
+        } catch (Exception e) {
+            assertTrue(e.getMessage().contains("External entities are not allowed in Schema."));
+        }
     }
 
     private static String getStringFromInputStream(InputStream in) throws IOException {

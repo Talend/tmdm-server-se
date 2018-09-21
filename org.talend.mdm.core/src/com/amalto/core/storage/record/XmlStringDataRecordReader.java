@@ -11,19 +11,42 @@
 
 package com.amalto.core.storage.record;
 
-import static com.amalto.core.query.user.UserQueryBuilder.*;
+import static com.amalto.core.query.user.UserQueryBuilder.from;
+
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
+
+import javax.xml.XMLConstants;
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.events.Attribute;
+import javax.xml.stream.events.Characters;
+import javax.xml.stream.events.EndElement;
+import javax.xml.stream.events.StartElement;
+import javax.xml.stream.events.XMLEvent;
+
+import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.ContainedComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
+import org.talend.mdm.commmon.metadata.FieldMetadata;
+import org.talend.mdm.commmon.metadata.MetadataRepository;
+import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
+import org.talend.mdm.commmon.metadata.TypeMetadata;
+import org.talend.mdm.commmon.util.core.MDMXMLUtils;
 
 import com.amalto.core.load.io.ResettableStringWriter;
 import com.amalto.core.metadata.ClassRepository;
 import com.amalto.core.query.user.UserQueryBuilder;
 import com.amalto.core.query.user.UserQueryHelper;
+import com.amalto.core.schema.validation.SkipAttributeDocumentBuilder;
+import com.amalto.core.server.ServerContext;
+import com.amalto.core.server.StorageAdmin;
 import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.StorageMetadataUtils;
 import com.amalto.core.storage.StorageResults;
 import com.amalto.core.storage.StorageType;
-import com.amalto.core.schema.validation.SkipAttributeDocumentBuilder;
-import com.amalto.core.server.ServerContext;
-import com.amalto.core.server.StorageAdmin;
 import com.amalto.core.storage.record.metadata.DataRecordMetadata;
 import com.amalto.core.storage.record.metadata.DataRecordMetadataHelper;
 import com.amalto.core.storage.record.metadata.DataRecordMetadataImpl;
@@ -32,35 +55,9 @@ import com.amalto.xmlserver.interfaces.IWhereItem;
 import com.amalto.xmlserver.interfaces.WhereAnd;
 import com.amalto.xmlserver.interfaces.WhereCondition;
 
-import org.talend.mdm.commmon.metadata.*;
-
-import javax.xml.XMLConstants;
-import javax.xml.namespace.QName;
-import javax.xml.stream.XMLEventReader;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.events.*;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
-
 public class XmlStringDataRecordReader implements DataRecordReader<String> {
 
-    private static final XMLInputFactory xmlInputFactory;
-    
     private String storageName;
-
-    static {
-        /*
-         * FIXME The newInstance() is deprecated and the newFactory() method should be used instead. However since no
-         * changes in behavior are defined by this replacement method, keep deprecated method to ensure there's no
-         * classloading issues for now (see TMDM-3604).
-         */
-        xmlInputFactory = XMLInputFactory.newInstance();
-        xmlInputFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.TRUE);
-        xmlInputFactory.setProperty(XMLInputFactory.IS_VALIDATING, Boolean.FALSE);
-        xmlInputFactory.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, Boolean.TRUE);
-    }
 
     public DataRecord read(MetadataRepository repository, ComplexTypeMetadata type, String input) {
         return read(repository, type, input, false);
@@ -77,7 +74,7 @@ public class XmlStringDataRecordReader implements DataRecordReader<String> {
         FieldMetadata field = null;
         String firstWrongElementName = null;
         try {
-            XMLEventReader xmlEventReader = xmlInputFactory.createXMLEventReader(new StringReader(input));
+            XMLEventReader xmlEventReader = MDMXMLUtils.createXMLEventReader(new StringReader(input));
             ResettableStringWriter xmlAccumulator = new ResettableStringWriter();
             int skipLevel = Integer.MAX_VALUE;
             int xmlAccumulatorLevel = 0;

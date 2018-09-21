@@ -14,12 +14,12 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import junit.framework.TestCase;
 
 import org.talend.mdm.commmon.metadata.MetadataRepository;
+import org.talend.mdm.commmon.util.core.MDMXMLUtils;
 import org.w3c.dom.Document;
+
+import junit.framework.TestCase;
 
 @SuppressWarnings("nls")
 public class UtilTest extends TestCase {
@@ -27,8 +27,7 @@ public class UtilTest extends TestCase {
     private String getXSDModel(String filename) throws Exception {
         InputStream is = getClass().getClassLoader().getResourceAsStream(filename);
         assertNotNull(is);
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
+        DocumentBuilder builder = MDMXMLUtils.getDocumentBuilder().get();
         Document doc = builder.parse(is);
         String XSDModel = com.amalto.core.util.Util.nodeToString(doc);
         return XSDModel;

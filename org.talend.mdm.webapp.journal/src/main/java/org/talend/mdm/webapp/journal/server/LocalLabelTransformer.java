@@ -14,20 +14,18 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Locale;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-
 import org.dom4j.DocumentHelper;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
+import org.talend.mdm.commmon.util.core.MDMXMLUtils;
 import org.xml.sax.InputSource;
 
 import com.amalto.core.history.Document;
 import com.amalto.core.history.DocumentTransformer;
 import com.amalto.core.history.MutableDocument;
 import com.amalto.core.save.DOMDocument;
-import com.amalto.core.util.LocaleUtil;
 
 public class LocalLabelTransformer implements DocumentTransformer {
 
@@ -65,10 +63,7 @@ public class LocalLabelTransformer implements DocumentTransformer {
                     }
                 }
             }
-            DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-            documentBuilderFactory.setNamespaceAware(true);
-            documentBuilderFactory.setValidating(false);
-            org.w3c.dom.Document newW3cDocument = documentBuilderFactory.newDocumentBuilder().parse(
+            org.w3c.dom.Document newW3cDocument = MDMXMLUtils.getDocumentBuilderWithNamespace().get().parse(
                     new InputSource(new StringReader(newDcoument.asXML())));
             MutableDocument newDocument = new DOMDocument(newW3cDocument, typeMetadata, document.getDataCluster(),
                     document.getDataModel());

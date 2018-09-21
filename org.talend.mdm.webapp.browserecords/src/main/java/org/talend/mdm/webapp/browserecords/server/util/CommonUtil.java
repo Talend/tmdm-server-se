@@ -15,14 +15,14 @@ import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Namespace;
 import org.dom4j.QName;
+import org.talend.mdm.commmon.util.core.MDMXMLUtils;
+import org.talend.mdm.commmon.util.exception.XmlBeanDefinitionException;
 import org.talend.mdm.webapp.base.client.exception.ServiceException;
 import org.talend.mdm.webapp.base.client.model.DataTypeConstants;
 import org.talend.mdm.webapp.base.client.model.ForeignKeyBean;
@@ -65,18 +65,16 @@ public class CommonUtil {
 
     public static Document getSubXML(TypeModel typeModel, String realType, Map<String, List<String>> map, String language)
             throws ServiceException {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         try {
-            DocumentBuilder builder = factory.newDocumentBuilder();
+            DocumentBuilder builder = MDMXMLUtils.getDocumentBuilder().get();
             Document doc = builder.newDocument();
             List<Element> list = _getDefaultXML(typeModel, null, realType, doc, map, language);
             Element root = list.get(0);
             root.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance"); //$NON-NLS-1$//$NON-NLS-2$
             doc.appendChild(root);
             return doc;
-        } catch (ParserConfigurationException e) {
-            LOG.error(e.getMessage(), e);
-            throw new ServiceException(e.getMessage());
+        } catch (Exception e) {
+            throw new XmlBeanDefinitionException("An unexpected exception occurred.", e);
         }
     }
 

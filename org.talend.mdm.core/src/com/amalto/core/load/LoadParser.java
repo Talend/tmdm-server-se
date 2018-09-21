@@ -11,15 +11,19 @@
 
 package com.amalto.core.load;
 
-import com.amalto.core.load.context.*;
-import com.amalto.core.save.generator.AutoIdGenerator;
-import org.apache.log4j.Logger;
-
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 import java.io.InputStream;
 import java.net.URL;
+
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+
+import org.apache.log4j.Logger;
+import org.talend.mdm.commmon.util.core.MDMXMLUtils;
+
+import com.amalto.core.load.context.AutoGenStateContext;
+import com.amalto.core.load.context.DefaultStateContext;
+import com.amalto.core.load.context.StateContext;
+import com.amalto.core.save.generator.AutoIdGenerator;
 
 /**
  * <p>
@@ -44,15 +48,8 @@ import java.net.URL;
  * </p>
  */
 public class LoadParser {
-    private static final XMLInputFactory inputFactory = XMLInputFactory.newInstance();
 
     private static final Logger log = Logger.getLogger(LoadParser.class);
-
-    static {
-        inputFactory.setProperty(XMLInputFactory.IS_VALIDATING, Boolean.FALSE);
-        inputFactory.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, Boolean.TRUE);
-        inputFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.TRUE);
-    }
 
     private LoadParser() {
     }
@@ -106,7 +103,7 @@ public class LoadParser {
 
         XMLStreamReader reader = null;
         try {
-            reader = inputFactory.createXMLStreamReader(inputStream);
+            reader = MDMXMLUtils.createXMLStreamReader(inputStream);
 
             // Useful to know what implementation of StAX was actually chosen in app server context.
             if (log.isDebugEnabled()) {

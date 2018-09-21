@@ -165,6 +165,7 @@ public class Util {
             nonValidatingDocumentBuilderFactory = DocumentBuilderFactory.newInstance();
             nonValidatingDocumentBuilderFactory.setNamespaceAware(true);
             nonValidatingDocumentBuilderFactory.setValidating(false);
+            nonValidatingDocumentBuilderFactory.setExpandEntityReferences(false);
         }
         return nonValidatingDocumentBuilderFactory;
     }
@@ -172,6 +173,7 @@ public class Util {
     public static Document parse(String xmlString) throws ParserConfigurationException, IOException, SAXException {
         DocumentBuilderFactory factory;
         factory = getDocumentBuilderFactory();
+        factory.setExpandEntityReferences(false);
         DocumentBuilder builder = factory.newDocumentBuilder();
         SAXErrorHandler seh = new SAXErrorHandler();
         builder.setErrorHandler(seh);

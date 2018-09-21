@@ -11,19 +11,33 @@
 
 package com.amalto.core.schema.validation;
 
-import com.amalto.core.load.io.ResettableStringWriter;
-import org.apache.commons.lang.StringUtils;
-import org.w3c.dom.*;
-import org.xml.sax.*;
-import org.xml.sax.helpers.DefaultHandler;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.Stack;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-import java.io.IOException;
-import java.util.*;
+
+import org.apache.commons.lang.StringUtils;
+import org.talend.mdm.commmon.util.core.MDMXMLUtils;
+import org.w3c.dom.Attr;
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Text;
+import org.xml.sax.Attributes;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
+
+import com.amalto.core.load.io.ResettableStringWriter;
 
 public class SkipAttributeDocumentBuilder extends DocumentBuilder {
 
@@ -31,16 +45,9 @@ public class SkipAttributeDocumentBuilder extends DocumentBuilder {
 
     private static final Map<Thread, SAXParser> parserCache = new HashMap<Thread, SAXParser>();
 
-    private final static SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
-
     private final DocumentBuilder documentBuilder;
 
     private final boolean ignoreTalendNamespace;
-
-    static {
-        saxParserFactory.setNamespaceAware(true);
-        saxParserFactory.setValidating(false);
-    }
 
     public SkipAttributeDocumentBuilder(DocumentBuilder documentBuilder, boolean ignoreTalendNamespace) {
         this.documentBuilder = documentBuilder;
@@ -68,7 +75,7 @@ public class SkipAttributeDocumentBuilder extends DocumentBuilder {
         synchronized (parserCache) {
             SAXParser parser = parserCache.get(Thread.currentThread());
             if (parser == null) {
-                parser = saxParserFactory.newSAXParser();
+                parser = MDMXMLUtils.getSAXParser();
                 parserCache.put(Thread.currentThread(), parser);
             }
             return parser;

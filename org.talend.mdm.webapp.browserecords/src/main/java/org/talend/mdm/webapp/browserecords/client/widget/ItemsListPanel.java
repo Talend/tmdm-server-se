@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.talend.mdm.webapp.base.client.SessionAwareAsyncCallback;
 import org.talend.mdm.webapp.base.client.exception.ParserException;
 import org.talend.mdm.webapp.base.client.model.DataTypeConstants;
@@ -480,13 +481,11 @@ public class ItemsListPanel extends ContentPanel {
                 while (iterator.hasNext()) {
                     String path = iterator.next();
                     TypeModel tm = entityModel.getMetaDataTypes().get(path);
-                    String value;
+                    String value = StringUtils.EMPTY;
+                    if (changes.get(path) != null) {
+                        value = changes.get(path).toString();
+                    }
                     if (tm.getForeignkey() != null) {
-                        if (changes.get(path) == null) {
-                            value = ""; //$NON-NLS-1$
-                        } else {
-                            value = changes.get(path).toString();
-                        }
                         ForeignKeyBean fkBean = itemBean.getForeignkeyDesc(value);
                         if (fkBean != null) {
                             changedField.put(path, fkBean.getId());
@@ -494,10 +493,6 @@ public class ItemsListPanel extends ContentPanel {
                             changedField.put(path, ""); //$NON-NLS-1$
                         }
                     } else {
-                        if (changes.get(path) == null) {
-                            continue;
-                        }
-                        value = changes.get(path).toString();
                         if (originalMap.containsKey(path)) {
                             Object data = originalMap.get(path);
                             if (DataTypeConstants.DATE.getTypeName().equals(tm.getType().getBaseTypeName())) {
@@ -508,7 +503,7 @@ public class ItemsListPanel extends ContentPanel {
                                 value = String.valueOf(data);
                             }
                         }
-                        changedField.put(path, value != null ? value : ""); //$NON-NLS-1$                        
+                        changedField.put(path, value);
                     }
                 }
 

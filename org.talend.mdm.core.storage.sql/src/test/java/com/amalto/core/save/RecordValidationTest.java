@@ -552,11 +552,11 @@ public class RecordValidationTest extends TestCase {
         // MASTER
         JSONObject resp = validateRecord("Product", false, false, xmlForSecurity);// 'user' can write ProductFamily
         assertTrue(resp.getBoolean("isValid"));//  FAIL
-        assertTrue(resp.getString("message").equals("User 'user' is allowed to write to type 'ProductFamily'."));
+        assertFalse(resp.getString("message").equals("User 'user' is not allowed to write to type 'ProductFamily'."));
         // STAGING
         resp = validateRecord("Product", true, false, xmlForSecurity); // 'user' can write ProductFamily
         assertTrue(resp.getBoolean("isValid"));// FAIL
-        assertTrue(resp.getString("message").equals("User 'user' is allowed to write to type 'ProductFamily'."));
+        assertFalse(resp.getString("message").equals("User 'user' is not allowed to write to type 'ProductFamily'."));
     }
 
     // Validate record contains AutoIncrement won't affect the value stored in system

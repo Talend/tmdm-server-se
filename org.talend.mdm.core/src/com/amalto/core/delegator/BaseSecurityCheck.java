@@ -13,7 +13,7 @@ import com.amalto.core.save.DocumentSaverContext;
 import com.amalto.core.save.SaverSession;
 import com.amalto.core.util.VetoException;
 
-public class BaseSecurityCheck {
+public abstract class BaseSecurityCheck {
     public void vetoableSave(SaverSession session, DocumentSaverContext context) throws VetoException {
     }
 }

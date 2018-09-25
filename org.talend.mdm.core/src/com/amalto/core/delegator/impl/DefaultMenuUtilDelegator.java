@@ -15,6 +15,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.util.core.CommonUtil;
+import org.talend.mdm.commmon.util.webapp.XObjectType;
 
 import com.amalto.core.webservice.WSBoolean;
 import com.amalto.core.webservice.WSExistsMenu;
@@ -49,22 +50,39 @@ public class DefaultMenuUtilDelegator extends BaseMenu {
 
     private static Map<String, MenuParameters> menuParametersMap;
 
+    private static enum MenuItem {
+        BROWSERECORDS("BrowseRecords"), 
+        UPDATEREPORT("UpdateReport"), 
+        WELCOMEPORTAL("WelcomePortal"), 
+        RECYCLEBIN("RecycleBin");
+
+        private String label;
+
+        MenuItem(String label) {
+            this.label = label;
+        }
+
+        public String getLabel() {
+            return label;
+        }
+    }
+
     static {
         menuParametersMap = new HashMap<String, MenuParameters>();
-        menuParametersMap.put("BrowseRecords", new MenuParameters(1,""));
-        menuParametersMap.put("UpdateReport", new MenuParameters(4,""));
-        menuParametersMap.put("WelcomePortal", new MenuParameters(0,""));
-        menuParametersMap.put("RecycleBin", new MenuParameters(5,""));
+        menuParametersMap.put(MenuItem.BROWSERECORDS.getLabel(), new MenuParameters(1,""));
+        menuParametersMap.put(MenuItem.UPDATEREPORT.getLabel(), new MenuParameters(4,""));
+        menuParametersMap.put(MenuItem.WELCOMEPORTAL.getLabel(), new MenuParameters(0,""));
+        menuParametersMap.put(MenuItem.RECYCLEBIN.getLabel(), new MenuParameters(5,""));
     }
 
     @Override
-    public HashMap<String, Menu> getNotAdminMenuIndex(HashMap<String, Menu> menuIndex, HashSet<String> roles) throws Exception {
+    public Map<String, Menu> getNotAdminMenuIndex(Map<String, Menu> menuIndex, HashSet<String> roles) throws Exception {
         try {
             for (Map.Entry<String, MenuParameters> entry : menuParametersMap.entrySet()) {
                 try {
-                    addMenuEntries(menuIndex, entry);
+                    addMenuEntries(menuIndex, entry.getKey(), entry.getValue().getParentID(), entry.getValue().getPosition());
                 } catch (Exception e) {
-                    LOGGER.error(e.getMessage(), e);
+                    throw new Exception(CommonUtil.getErrMsgFromException(e));
                 }
             }
             return menuIndex;
@@ -73,11 +91,9 @@ public class DefaultMenuUtilDelegator extends BaseMenu {
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public void addMenuEntries(HashMap<String, Menu> index, Object entry)
+    protected void addMenuEntries(Map<String, Menu> index, String menuPK, String menuParentID, int menuPosition)
             throws Exception {
-        String menuPK = ((Map.Entry<String, MenuParameters>)entry).getKey();
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("addMenuEntries() " + menuPK); //$NON-NLS-1$
         }
@@ -85,7 +101,7 @@ public class DefaultMenuUtilDelegator extends BaseMenu {
             // check menu exist
             WSBoolean menuExist = getIXtentisWSDelegator().existsMenu(new WSExistsMenu(new WSMenuPK(menuPK)));
             if (menuExist.is_true()) {
-                addMenuEntry(index, new WSMenuPK(menuPK), ((Map.Entry<String, MenuParameters>)entry).getValue());
+                addMenuEntry(index, new WSMenuPK(menuPK), menuParentID, menuPosition);
             } else {
                 LOGGER.error("Menu '" + menuPK + "' does not exist."); //$NON-NLS-1$ //$NON-NLS-2$
             }
@@ -95,12 +111,12 @@ public class DefaultMenuUtilDelegator extends BaseMenu {
     }
 
     @Override
-    public void addMenuEntry(Map<String, Menu> index, WSMenuPK menuPK, Object params) throws Exception {
+    protected void addMenuEntry(Map<String, Menu> index, WSMenuPK menuPK, String menuParentID, int menuPosition) throws Exception {
         WSMenu wsMenu = getIXtentisWSDelegator().getMenu(new WSGetMenu(menuPK));
         WSMenuEntry[] wsEntries = wsMenu.getMenuEntries();
         if (wsEntries != null) {
             for (WSMenuEntry wsEntry : wsEntries) {
-                index.put(wsEntry.getId(), WsMenuUtil.wsMenu2Menu(index, wsEntry, null, ((MenuParameters)params).getParentID(), ((MenuParameters)params).getPosition()));
+                index.put(wsEntry.getId(), WsMenuUtil.wsMenu2Menu(index, wsEntry, null, menuParentID, menuPosition));
             }
         }
     }

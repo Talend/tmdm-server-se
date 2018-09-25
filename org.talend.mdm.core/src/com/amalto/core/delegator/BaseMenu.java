@@ -9,25 +9,24 @@
  */
 package com.amalto.core.delegator;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
 import com.amalto.core.util.Menu;
 import com.amalto.core.webservice.WSMenuPK;
 
-public class BaseMenu {
+public abstract class BaseMenu {
 
-    public HashMap<String, Menu> getNotAdminMenuIndex(HashMap<String, Menu> menuIndex, HashSet<String> roles) 
+    public Map<String, Menu> getNotAdminMenuIndex(Map<String, Menu> menuIndex, HashSet<String> roles) 
             throws Exception {
         return null;
     }
 
-    protected void addMenuEntries(HashMap<String, Menu> index, Object entry)
+    protected void addMenuEntries(Map<String, Menu> index, String menuPK, String menuParentID, int menuPosition)
             throws Exception {
     }
 
-    protected void addMenuEntry(Map<String, Menu> index, WSMenuPK menuPK, Object params) 
+    protected void addMenuEntry(Map<String, Menu> index, WSMenuPK menuPK, String menuParentID, int menuPosition)
             throws Exception {
     }
 

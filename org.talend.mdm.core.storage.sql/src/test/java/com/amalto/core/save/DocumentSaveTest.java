@@ -279,7 +279,7 @@ public class DocumentSaveTest extends TestCase {
 
         assertTrue(committer.hasSaved());
         Element committedElement = committer.getCommittedElement();
-        assertEquals("", evaluate(committedElement, "/Agency/Zip"));
+        assertEquals("04102", evaluate(committedElement, "/Agency/Zip"));
         assertEquals("", evaluate(committedElement, "/Agency/State"));
     }
 
@@ -1233,8 +1233,8 @@ public class DocumentSaveTest extends TestCase {
         MockCommitter committer = new MockCommitter();
         session.end(committer);
         Element committedElement = committer.getCommittedElement();
-        assertEquals("04102", evaluate(committedElement, "/Agency/Zip"));
-        assertEquals("ME", evaluate(committedElement, "/Agency/State"));
+        assertEquals("10001", evaluate(committedElement, "/Agency/Zip"));
+        assertEquals("NY", evaluate(committedElement, "/Agency/State"));
 
         // Test with replace.
         session = SaverSession.newSession(source);
@@ -1244,8 +1244,8 @@ public class DocumentSaveTest extends TestCase {
         saver.save(session, context);
         session.end(committer);
         committedElement = committer.getCommittedElement();
-        assertEquals("04102", evaluate(committedElement, "/Agency/Zip"));
-        assertEquals("ME", evaluate(committedElement, "/Agency/State"));
+        assertEquals("10001", evaluate(committedElement, "/Agency/Zip"));
+        assertEquals("NY", evaluate(committedElement, "/Agency/State"));
 
         // Test changing user name (and user's roles).
         source.setUserName("admin");
@@ -1278,8 +1278,8 @@ public class DocumentSaveTest extends TestCase {
         MockCommitter committer = new MockCommitter();
         session.end(committer);
         Element committedElement = committer.getCommittedElement();
-        assertEquals("04102", evaluate(committedElement, "/Agency/Zip"));
-        assertEquals("ME", evaluate(committedElement, "/Agency/State"));
+        assertEquals("10001", evaluate(committedElement, "/Agency/Zip"));
+        assertEquals("NY", evaluate(committedElement, "/Agency/State"));
     }
 
     public void testNoUpdate() throws Exception {
@@ -1892,16 +1892,16 @@ public class DocumentSaveTest extends TestCase {
         path = (String) evaluate(doc.getDocumentElement(), "Item[3]/path");
         oldValue = (String) evaluate(doc.getDocumentElement(), "Item[3]/oldValue");
         newValue = (String) evaluate(doc.getDocumentElement(), "Item[3]/newValue");
-        assertEquals("Information/MoreInfo[2]", path);
-        assertEquals("", oldValue);
-        assertEquals("http://www.newSite2.org", newValue);
+        assertEquals("State", path);
+        assertEquals("ME", oldValue);
+        assertEquals("", newValue);
 
         path = (String) evaluate(doc.getDocumentElement(), "Item[4]/path");
         oldValue = (String) evaluate(doc.getDocumentElement(), "Item[4]/oldValue");
         newValue = (String) evaluate(doc.getDocumentElement(), "Item[4]/newValue");
-        assertEquals("Information/MoreInfo[1]", path);
+        assertEquals("Information/MoreInfo[2]", path);
         assertEquals("", oldValue);
-        assertEquals("http://www.newSite.org", newValue);
+        assertEquals("http://www.newSite2.org", newValue);
 
         path = (String) evaluate(doc.getDocumentElement(), "OperationType");
         assertEquals("UPDATE", path);

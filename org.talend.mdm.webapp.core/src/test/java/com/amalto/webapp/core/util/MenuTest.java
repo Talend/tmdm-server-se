@@ -14,6 +14,7 @@ import java.util.HashMap;
 import junit.framework.TestCase;
 
 import com.amalto.core.util.Menu;
+import com.amalto.core.util.WsMenuUtil;
 import com.amalto.core.webservice.WSMenuEntry;
 import com.amalto.core.webservice.WSMenuMenuEntriesDescriptions;
 
@@ -47,7 +48,7 @@ public class MenuTest extends TestCase {
         subMenus[0] = new WSMenuEntry("Welcome", welcome_descriptions, "Welcome", "Welcome", null, null);
         subMenus[1] = new WSMenuEntry("Browser", browser_descriptions, "Browser", "Browser", null, null);
         WSMenuEntry menuEntry = new WSMenuEntry("Home", home_descriptions, "Home", "Home", null, subMenus);
-        Menu.wsMenu2Menu(menuIndex, menuEntry, null, "", 0);
+        WsMenuUtil.wsMenu2Menu(menuIndex, menuEntry, null, "", 0);
     }
 
     public void test_getMenuLabel() {

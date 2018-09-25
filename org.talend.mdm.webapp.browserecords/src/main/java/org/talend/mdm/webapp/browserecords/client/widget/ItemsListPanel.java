@@ -501,7 +501,7 @@ public class ItemsListPanel extends ContentPanel {
                                 value = String.valueOf(data);
                             }
                         }
-                        changedField.put(path, value); // $NON-NLS-1$
+                        changedField.put(path, value);
                     }
                 }
 

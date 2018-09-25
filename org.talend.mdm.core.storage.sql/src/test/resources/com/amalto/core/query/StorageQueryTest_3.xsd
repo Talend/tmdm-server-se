@@ -1,0 +1,107 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<xsd:import namespace="http://www.w3.org/2001/XMLSchema"/>
+<xsd:element name="OMSM_LegalEntity">
+	<xsd:annotation>
+		<xsd:appinfo source="X_Write">OMSM_Champion</xsd:appinfo>
+	</xsd:annotation>
+	<xsd:complexType>
+	<xsd:all>
+		<xsd:element maxOccurs="1" minOccurs="1" name="uuid" type="UUID">
+		<xsd:annotation>
+		<xsd:appinfo source="X_Write">OMSM_Champion</xsd:appinfo>
+		</xsd:annotation>
+		</xsd:element>
+	</xsd:all>
+	</xsd:complexType>
+	<xsd:unique name="OMSM_LegalEntity">
+		<xsd:selector xpath="."/>
+		<xsd:field xpath="uuid"/>
+	</xsd:unique>
+</xsd:element>
+<xsd:simpleType name="UUID">
+	<xsd:restriction base="xsd:string"/>
+</xsd:simpleType>
+
+<xsd:element name="OMSM_BFOEPrincipal">
+	<xsd:annotation>
+		<xsd:appinfo source="X_Write">OMSM_Champion</xsd:appinfo>
+	</xsd:annotation>
+	<xsd:complexType>
+		<xsd:all>
+		<xsd:element maxOccurs="1" minOccurs="1" name="uuid" type="UUID">
+			<xsd:annotation>
+			<xsd:appinfo source="X_Write">OMSM_Champion</xsd:appinfo>
+			</xsd:annotation>
+		</xsd:element>
+		<xsd:element maxOccurs="1" minOccurs="1" name="legalEntityUuid" type="xsd:string">
+			<xsd:annotation>
+			<xsd:appinfo source="X_ForeignKey">OMSM_LegalEntity/uuid</xsd:appinfo>
+			<xsd:appinfo source="X_Write">OMSM_Champion</xsd:appinfo>
+			</xsd:annotation>
+		</xsd:element>
+	</xsd:all>
+	</xsd:complexType>
+	<xsd:unique name="OMSM_BFOEPrincipal">
+	<xsd:selector xpath="."/>
+	<xsd:field xpath="uuid"/>
+	</xsd:unique>
+</xsd:element>
+
+<xsd:element name="OMSM_BFOESalesAgency">
+	<xsd:annotation>
+		<xsd:appinfo source="X_Write">OMSM_Champion</xsd:appinfo>
+	</xsd:annotation>
+	<xsd:complexType>
+	<xsd:all>
+	<xsd:element maxOccurs="1" minOccurs="1" name="uuid" type="UUID">
+	<xsd:annotation>
+		<xsd:appinfo source="X_Write">OMSM_Champion</xsd:appinfo>
+		<xsd:appinfo source="X_Label_EN">UUID</xsd:appinfo>
+	</xsd:annotation>
+</xsd:element>
+<xsd:element maxOccurs="1" minOccurs="1" name="legalEntityUuid" type="xsd:string">
+	<xsd:annotation>
+		<xsd:appinfo source="X_ForeignKey">OMSM_LegalEntity</xsd:appinfo>
+		<xsd:appinfo source="X_Write">OMSM_Champion</xsd:appinfo>
+	</xsd:annotation>
+	</xsd:element>
+	</xsd:all>
+	</xsd:complexType>
+	<xsd:unique name="OMSM_BFOESalesAgency">
+	<xsd:selector xpath="."/>
+	<xsd:field xpath="uuid"/>
+	</xsd:unique>
+</xsd:element>
+<xsd:element name="OMSM_PrincipalSalesAgencyMapping">
+	<xsd:annotation>
+		<xsd:appinfo source="X_Write">OMSM_Champion</xsd:appinfo>
+		<xsd:appinfo source="X_Label_EN">Principal-Sales Agency-Mapping</xsd:appinfo>
+	</xsd:annotation>
+	<xsd:complexType>
+	<xsd:all>
+	<xsd:element maxOccurs="1" minOccurs="1" name="uuid" type="UUID">
+		<xsd:annotation>
+		<xsd:appinfo source="X_Write">OMSM_Champion</xsd:appinfo>
+		<xsd:appinfo source="X_Label_EN">UUID</xsd:appinfo>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element maxOccurs="1" minOccurs="0" name="bfoePrincipalUuid" type="xsd:string">
+	<xsd:annotation>
+		<xsd:appinfo source="X_ForeignKey">OMSM_BFOEPrincipal</xsd:appinfo>
+		<xsd:appinfo source="X_Write">OMSM_Champion</xsd:appinfo>
+	</xsd:annotation>
+	</xsd:element>
+	<xsd:element maxOccurs="1" minOccurs="0" name="bfoeSalesAgencyUuid" type="xsd:string">
+		<xsd:annotation>
+			<xsd:appinfo source="X_ForeignKey">OMSM_BFOESalesAgency</xsd:appinfo>
+			<xsd:appinfo source="X_Write">OMSM_Champion</xsd:appinfo>
+		</xsd:annotation>
+	</xsd:element>
+	</xsd:all>
+	</xsd:complexType>
+	<xsd:unique name="OMSM_PrincipalSalesAgencyMapping">
+	<xsd:selector xpath="."/>
+	<xsd:field xpath="uuid"/>
+	</xsd:unique>
+</xsd:element>
+</xsd:schema>

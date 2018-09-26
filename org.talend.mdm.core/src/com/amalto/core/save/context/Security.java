@@ -33,10 +33,10 @@ class Security implements DocumentSaver {
         BaseSecurityCheck securityCheckDelegator = BeanDelegatorContainer.getInstance().getSecurityCheckDelegator();
         try {
             securityCheckDelegator.vetoableSave(session, context);
-        } catch (VetoException e) {
+        } catch (Exception e) {
             try {
-                throw new VetoException("Failed to save document." + e.getMessage());
-            } catch (VetoException e1) {
+                throw new RuntimeException("Failed to save document." + e.getMessage());
+            } catch (Exception e1) {
                 LOGGER.error("Failed to save document." + e.getMessage());
             }
         }

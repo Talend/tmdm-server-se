@@ -38,7 +38,18 @@ http://www.hazelcast.com/schema/spring http://www.hazelcast.com/schema/spring/ha
     </jaxrs:server>
 
     <!-- Legacy services -->
-    <jaxws:endpoint implementor="com.amalto.core.webservice.XtentisWSBean" address="/soap" />
+    <!-- jaxws:endpoint implementor="com.amalto.core.webservice.XtentisWSBean" address="/soap" /-->
+    <jaxws:endpoint implementor="#jaxwsBean" address="/soap">
+        <jaxws:inInterceptors>
+            <ref bean="wsAuthenticationInterceptor" />
+            <ref bean="wsAuthorizationInterceptor" />
+        </jaxws:inInterceptors>
+    </jaxws:endpoint>
+    <bean id="jaxwsBean" class="com.amalto.core.webservice.XtentisWSBean"/>
+    <bean id="wsAuthenticationInterceptor" class="com.amalto.core.server.security.ws.WSAuthenticationInterceptor" />
+    <bean id="wsAuthorizationInterceptor" class="com.amalto.core.server.security.ws.WSAuthorizationInterceptor">
+        <property name="securedObject" ref="jaxwsBean" />
+    </bean>
 
     <!-- JAAS -->
     <bean id="jaasAuthenticationProvider" class="org.springframework.security.authentication.jaas.JaasAuthenticationProvider">

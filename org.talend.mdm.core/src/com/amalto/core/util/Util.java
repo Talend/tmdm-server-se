@@ -733,12 +733,12 @@ public class Util {
                         }
                     }
                 }
-                String resultUpdateReport = "" + "<Update><ID>" + UUID.randomUUID().toString() + "</ID><UserName>" + username + "</UserName>"
+                String resultUpdateReport = "" + "<Update><UserName>" + username + "</UserName>"
                         + "<Source>" + UpdateReportPOJO.GENERIC_UI_SOURCE +"</Source>" + "<TimeInMillis>" + System.currentTimeMillis() + "</TimeInMillis>"
                         + "<OperationType>" + StringEscapeUtils.escapeXml(operationType) + "</OperationType>" + "<DataCluster>"
                         + clusterName + "</DataCluster>" + "<DataModel>" + StringUtils.EMPTY + "</DataModel>" + "<Concept>"
                         + StringEscapeUtils.escapeXml(concept) + "</Concept>" + "<Key>" + StringEscapeUtils.escapeXml(key)
-                        + "</Key>";
+                        + "</Key><UUID>" + UUID.randomUUID().toString() + "</UUID>";
                 resultUpdateReport += "</Update>";
                 // Proceed with execution
                 String exchangeData = mergeExchangeData(xml, resultUpdateReport);

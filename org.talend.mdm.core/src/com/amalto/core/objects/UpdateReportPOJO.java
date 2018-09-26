@@ -48,7 +48,7 @@ public class UpdateReportPOJO {
      */
     public static final String SERVICE_SOURCE = "service";
 
-    private String id;
+    private String uuid;
 
     private String source;
 
@@ -69,9 +69,9 @@ public class UpdateReportPOJO {
 
     private String userName;
 
-    public UpdateReportPOJO(String id, String concept, String key, String operationType, String source, long timeInMillis) {
+    public UpdateReportPOJO(String uuid, String concept, String key, String operationType, String source, long timeInMillis) {
         super();
-        this.id = id;
+        this.uuid = uuid;
         this.concept = concept;
         this.key = key;
         this.operationType = operationType;
@@ -79,9 +79,9 @@ public class UpdateReportPOJO {
         this.timeInMillis = timeInMillis;
     }
 
-    public UpdateReportPOJO(String id, String concept, String key, String operationType, String source, long timeInMillis,
+    public UpdateReportPOJO(String uuid, String concept, String key, String operationType, String source, long timeInMillis,
             Map<String, UpdateReportItemPOJO> updateReportItemsMap) {
-        this(id, concept, key, operationType, source, timeInMillis);
+        this(uuid, concept, key, operationType, source, timeInMillis);
         if (updateReportItemsMap == null) {
             this.updateReportItemsMap = new HashMap<String, UpdateReportItemPOJO>();
         } else {
@@ -89,10 +89,10 @@ public class UpdateReportPOJO {
         }
     }
 
-    public UpdateReportPOJO(String id, String concept, String key, String operationType, String source, long timeInMillis,
+    public UpdateReportPOJO(String uuid, String concept, String key, String operationType, String source, long timeInMillis,
                             String dataCluster, String dataModel, String userName,
                             Map<String, UpdateReportItemPOJO> updateReportItemsMap) {
-        this(id, concept, key, operationType, source, timeInMillis);
+        this(uuid, concept, key, operationType, source, timeInMillis);
         this.dataCluster = dataCluster;
         this.dataModel = dataModel;
         this.userName = userName;
@@ -103,12 +103,12 @@ public class UpdateReportPOJO {
         }
     }
 
-    public String getId() {
-        return id;
+    public String getUuid() {
+        return uuid;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     public String getSource() {
@@ -195,7 +195,6 @@ public class UpdateReportPOJO {
         StringBuilder log = new StringBuilder();
 
         log.append("<Update>\n") //$NON-NLS-1$
-                .append("<ID>").append(StringEscapeUtils.escapeXml(this.id)).append("</ID>\n") //$NON-NLS-1$ //$NON-NLS-2$
                 .append("<UserName>").append(StringEscapeUtils.escapeXml(this.userName)).append("</UserName>\n") //$NON-NLS-1$ //$NON-NLS-2$
                 .append("<Source>").append(StringEscapeUtils.escapeXml(this.source)).append("</Source>\n") //$NON-NLS-1$ //$NON-NLS-2$
                 .append("<TimeInMillis>").append(this.timeInMillis).append("</TimeInMillis>\n") //$NON-NLS-1$ //$NON-NLS-2$
@@ -203,7 +202,8 @@ public class UpdateReportPOJO {
                 .append("<DataCluster>").append(StringEscapeUtils.escapeXml(this.dataCluster)).append("</DataCluster>\n") //$NON-NLS-1$ //$NON-NLS-2$
                 .append("<DataModel>").append(StringEscapeUtils.escapeXml(this.dataModel)).append("</DataModel>\n") //$NON-NLS-1$ //$NON-NLS-2$
                 .append("<Concept>").append(StringEscapeUtils.escapeXml(this.concept)).append("</Concept>\n") //$NON-NLS-1$ //$NON-NLS-2$
-                .append("<Key>").append(StringEscapeUtils.escapeXml(this.key)).append("</Key>\n"); //$NON-NLS-1$ //$NON-NLS-2$
+                .append("<Key>").append(StringEscapeUtils.escapeXml(this.key)).append("</Key>\n") //$NON-NLS-1$ //$NON-NLS-2$
+                .append("<UUID>").append(StringEscapeUtils.escapeXml(this.uuid)).append("</UUID>\n"); //$NON-NLS-1$ //$NON-NLS-2$
 
         if (OPERATION_TYPE_UPDATE.equals(operationType)) {
             Map<String, UpdateReportItemPOJO> map = this.updateReportItemsMap == null ? new HashMap<String, UpdateReportItemPOJO>()

@@ -284,26 +284,26 @@ class StandardQueryHandler extends AbstractQueryHandler {
             FieldMetadata nextField = pathIterator.next();
             String newAlias = createNewAlias();
             aliasPathKey = getReferenceFieldJoinPath(previousRefFieldMetadata, nextField, aliasPathKey);
-            
+            String pathToAliasKey = previousAlias + "/" + aliasPathKey; //$NON-NLS-1$
             // TODO One interesting improvement here: can add conditions on rightTable when defining join.
             if (pathIterator.hasNext()) {
-                if (!pathToAlias.containsKey(aliasPathKey)) {
+                if (!pathToAlias.containsKey(pathToAliasKey)) {
                     criteria.createAlias(previousAlias + '.' + nextField.getName(), newAlias, joinType);
-                    pathToAlias.put(aliasPathKey, newAlias);
+                    pathToAlias.put(pathToAliasKey, newAlias);
                     previousAlias = newAlias;
                 } else {
-                    previousAlias = pathToAlias.get(aliasPathKey);
+                    previousAlias = pathToAlias.get(pathToAliasKey);
                 }
             } else {
-                if (!pathToAlias.containsKey(aliasPathKey)) {
+                if (!pathToAlias.containsKey(pathToAliasKey)) {
                     for (String rightTableAlias : rightTableAliases) {
                         criteria.createAlias(previousAlias + '.' + nextField.getName(), rightTableAlias, joinType);
-                        pathToAlias.put(aliasPathKey, rightTableAlias);
+                        pathToAlias.put(pathToAliasKey, rightTableAlias);
                         aliasToPath.put(rightTableAlias, aliasPathKey);
                     }
                     previousAlias = rightTableAliases.iterator().next();
                 } else {
-                    previousAlias = pathToAlias.get(aliasPathKey);
+                    previousAlias = pathToAlias.get(pathToAliasKey);
                 }
             }
             if(nextField instanceof ReferenceFieldMetadata){
@@ -570,7 +570,7 @@ class StandardQueryHandler extends AbstractQueryHandler {
                         alias = createNewAlias();
                         // Remembers aliases created for the next field in path (to prevent same alias name creation for
                         // field - in case of join, for example -)
-                        pathToAlias.put(aliasPathKey, alias);
+                        pathToAlias.put(previousAlias + "/" + aliasPathKey, alias); //$NON-NLS-1$
                         // TMDM-4866: Do a left join in case FK is not mandatory (only if there's one path).
                         // TMDM-7636: As soon as a left join is selected all remaining join should remain left outer.
                         if (next.isMandatory() && paths.size() == 1 && joinType != JoinType.LEFT_OUTER_JOIN) {
@@ -596,13 +596,13 @@ class StandardQueryHandler extends AbstractQueryHandler {
     }
 
     private String getAliasByPath(String previousAlias, String aliasPathKey) {
-        String alias = pathToAlias.get(aliasPathKey);
+        String alias = pathToAlias.get(previousAlias + "/" + aliasPathKey); //$NON-NLS-1$
         if (alias == null) {
             String path = aliasToPath.get(previousAlias);
             if (path != null) {
-                path = path + "/" + aliasPathKey;
+                path = path + "/" + aliasPathKey; //$NON-NLS-1$
             }
-            return pathToAlias.get(path);
+            return pathToAlias.get(previousAlias + "/" + path); //$NON-NLS-1$
         } else {
             return alias;
         }
@@ -1730,7 +1730,7 @@ class StandardQueryHandler extends AbstractQueryHandler {
                     List<FieldMetadata> path = field.getPath();
                     if (path.size() > 1) {
                         // For path with more than 1 element, the alias for the criterion is the *containing* one(s).
-                        String containerAlias = pathToAlias.get(path.get(path.size() - 2).getPath());
+                        String containerAlias = pathToAlias.get(mainType.getName() + "/" + path.get(path.size() - 2).getPath()); //$NON-NLS-1$
                         addCondition(condition, containerAlias, field.getFieldMetadata());
                     } else {
                         // For path with size 1, code did not generate an alias for field and returned containing alias.

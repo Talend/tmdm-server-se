@@ -4909,6 +4909,52 @@ public class StorageQueryTest extends StorageTestCase {
         }
     }
 
+    // TMDM-12572 Wrong value returned by MDM REST API select query when 2 fields with same name in 2 different
+    // entities.
+    public void testQueryFKFieldWithSameName() throws Exception {
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(DataRecordCreationTest.class.getResourceAsStream("StorageQueryTest_3.xsd"));
+        Storage storage = new HibernateStorage("H2-DS1", StorageType.MASTER);
+        storage.init(ServerContext.INSTANCE.get().getDefinition("H2-DS1", "MDM"));
+        storage.prepare(repository, true);
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+
+        ComplexTypeMetadata legalEntity = repository.getComplexType("OMSM_LegalEntity");
+        ComplexTypeMetadata salesAgency = repository.getComplexType("OMSM_BFOESalesAgency");
+        ComplexTypeMetadata bfoePrincipal = repository.getComplexType("OMSM_BFOEPrincipal");
+        ComplexTypeMetadata principalSalesAgencyMapping = repository.getComplexType("OMSM_PrincipalSalesAgencyMapping");
+
+        List<DataRecord> records = new LinkedList<DataRecord>();
+        records.add(factory.read(repository, legalEntity,
+                "<OMSM_LegalEntity><uuid>26160961-e4a7-438b-8c92-cae8340d8664</uuid></OMSM_LegalEntity>"));
+        records.add(factory.read(repository, legalEntity,
+                "<OMSM_LegalEntity><uuid>e37e995a-1389-4ad9-a37b-9a4b87f8bbe1</uuid></OMSM_LegalEntity>"));
+        records.add(factory.read(repository, salesAgency,
+                "<OMSM_BFOESalesAgency><uuid>3d52d92d-46bd-4484-a37e-fe7f791680dc</uuid><legalEntityUuid>[26160961-e4a7-438b-8c92-cae8340d8664]</legalEntityUuid></OMSM_BFOESalesAgency>"));
+        records.add(factory.read(repository, bfoePrincipal,
+                "<OMSM_BFOEPrincipal><uuid>5cfbe6eb-9a45-4034-9596-9634c27ffde3</uuid><legalEntityUuid>[e37e995a-1389-4ad9-a37b-9a4b87f8bbe1]</legalEntityUuid></OMSM_BFOEPrincipal>"));
+        records.add(factory.read(repository, principalSalesAgencyMapping,
+                "<OMSM_PrincipalSalesAgencyMapping><uuid>a4fb20e5-d763-4a1b-844a-b02009b58f17</uuid><bfoePrincipalUuid>[5cfbe6eb-9a45-4034-9596-9634c27ffde3]</bfoePrincipalUuid><bfoeSalesAgencyUuid>[3d52d92d-46bd-4484-a37e-fe7f791680dc]</bfoeSalesAgencyUuid></OMSM_PrincipalSalesAgencyMapping>"));
+
+        storage.begin();
+        storage.update(records);
+        storage.commit();
+
+        storage.begin();
+        UserQueryBuilder qb = from(principalSalesAgencyMapping)
+                .select(alias(bfoePrincipal.getField("legalEntityUuid"), "PrincipalLegalEntityUuid"))
+                .select(alias(salesAgency.getField("legalEntityUuid"), "SalesAgencyLegalEntityUuid"))
+                .join(principalSalesAgencyMapping.getField("bfoePrincipalUuid"), bfoePrincipal.getField("uuid"))
+                .join(principalSalesAgencyMapping.getField("bfoeSalesAgencyUuid"), salesAgency.getField("uuid"));
+
+        StorageResults results = storage.fetch(qb.getSelect());
+        assertEquals(1, results.getCount());
+        for (DataRecord record : results) {
+            assertEquals("e37e995a-1389-4ad9-a37b-9a4b87f8bbe1", record.get("PrincipalLegalEntityUuid"));
+            assertEquals("26160961-e4a7-438b-8c92-cae8340d8664", record.get("SalesAgencyLegalEntityUuid"));
+        }
+    }
+
     private static class TestUserDelegator implements SecuredStorage.UserDelegator {
 
         boolean isActive = true;

@@ -13,15 +13,10 @@ package com.amalto.core.save.context;
 
 import com.amalto.core.save.DocumentSaverContext;
 import com.amalto.core.save.SaverSession;
-import com.amalto.core.util.VetoException;
 import com.amalto.core.delegator.BeanDelegatorContainer;
-
-import org.apache.log4j.Logger;
-
 import com.amalto.core.delegator.BaseSecurityCheck;
 
 class Security implements DocumentSaver {
-    private static final Logger LOGGER = Logger.getLogger(Security.class);
 
     private final DocumentSaver next;
 
@@ -34,11 +29,7 @@ class Security implements DocumentSaver {
         try {
             securityCheckDelegator.vetoableSave(session, context);
         } catch (Exception e) {
-            try {
-                throw new RuntimeException("Failed to save document." + e.getMessage());
-            } catch (Exception e1) {
-                LOGGER.error("Failed to save document." + e.getMessage());
-            }
+            throw new RuntimeException("Failed to save document." + e.getMessage());
         }
 
         next.save(session, context);

@@ -40,6 +40,7 @@ import org.talend.mdm.commmon.metadata.EnumerationFieldMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
 import org.talend.mdm.commmon.metadata.SimpleTypeFieldMetadata;
+import org.talend.mdm.commmon.util.core.MDMConfiguration;
 
 import com.amalto.core.query.user.Alias;
 import com.amalto.core.query.user.BigDecimalConstant;
@@ -79,6 +80,8 @@ import com.amalto.core.storage.exception.FullTextQueryCompositeKeyException;
 import com.amalto.core.storage.exception.UnsupportedFullTextQueryException;
 
 class LuceneQueryGenerator extends VisitorAdapter<Query> {
+
+    private static final String FUZZY_SEARCH = "fuzzy.search"; //$NON-NLS-1$
 
     private final Collection<ComplexTypeMetadata> types;
 
@@ -455,8 +458,8 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
     private static String getFullTextValue(FullText fullText) {
         return getSearchTextValue(fullText.getValue().toLowerCase().trim());
     }
-    
-    private static String getSearchTextValue(String  value) {
+
+    private static String getSearchTextValue(String value) {
         int index = 0;
         while (value.charAt(index) == '*') { // Skip '*' characters at beginning.
             index++;
@@ -464,18 +467,25 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
         if (index > 0) {
             value = value.substring(index);
         }
-        char[] removes = new char[] { '[', ']', '+', '!', '(', ')', '^', '\"', '~', ':', ';', '\\', '-', '@', '#', '$', '%', '&', '=', ',', '.', '<', '>' }; // Removes reserved
-                                                                                                 // characters
+
+        boolean supportFuzzySearch = value.endsWith("~") //$NON-NLS-1$
+                && Boolean.parseBoolean(MDMConfiguration.getConfiguration().getProperty(FUZZY_SEARCH, "false")); //$NON-NLS-1$
+        char[] removes = new char[] { '[', ']', '+', '!', '(', ')', '^', '\"', '~', ':', ';', '\\', '-', '@', '#', '$', '%', '&',
+                '=', ',', '.', '<', '>' }; // Removes reserved
+        // characters
         for (char remove : removes) {
             value = value.replace(remove, ' ');
+        }
+        if (supportFuzzySearch) {
+            value = value.trim() + '~'; //$NON-NLS-1$
         }
         if (value != null && value.length() > 1 && value.startsWith("'") && value.endsWith("'")) { //$NON-NLS-1$//$NON-NLS-2$
             value = "\"" + value.substring(1, value.length() - 1) + "\""; //$NON-NLS-1$ //$NON-NLS-2$
         } else {
             if (value.contains(" ")) { //$NON-NLS-1$
-                return getMultiKeywords(value);
+                return getMultiKeywords(value, supportFuzzySearch);
             } else {
-                if (!value.endsWith("*")) { //$NON-NLS-1$
+                if (!value.endsWith("*") && !supportFuzzySearch) { //$NON-NLS-1$
                     value += '*';
                 }
             }
@@ -483,12 +493,12 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
         return value;
     }
 
-    private static String getMultiKeywords(String value) {
+    private static String getMultiKeywords(String value, boolean supportFuzzySearch) {
         List<String> blocks = new ArrayList<String>(Arrays.asList(value.split(" "))); //$NON-NLS-1$
         StringBuffer sb = new StringBuffer();
         for (String block : blocks) {
             if (StringUtils.isNotEmpty(block)) {
-                if (!block.endsWith("*")) { //$NON-NLS-1$
+                if (!block.endsWith("*") && !supportFuzzySearch) { //$NON-NLS-1$
                     sb.append(block + "* "); //$NON-NLS-1$
                 } else {
                     sb.append(block + " "); //$NON-NLS-1$

@@ -46,6 +46,7 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
+import org.talend.mdm.commmon.util.core.MDMConfiguration;
 
 import com.amalto.core.query.optimization.ConfigurableContainsOptimizer;
 import com.amalto.core.query.user.Alias;
@@ -184,6 +185,9 @@ public class StorageFullTextTest extends StorageTestCase {
                         .read(repository,
                                 country,
                                 "<Country><id>11</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France10</name></Country>"));
+
+        allRecords.add(factory.read(repository, country,
+                "<Country><id>12</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>Foances</name></Country>"));
 
         allRecords
                 .add(factory
@@ -374,7 +378,7 @@ public class StorageFullTextTest extends StorageTestCase {
             for (DataRecord result : results) {
                 LOG.info("result = " + result);
             }
-            assertEquals(11, results.getCount());
+            assertEquals(12, results.getCount());
         } finally {
             results.close();
         }
@@ -496,7 +500,7 @@ public class StorageFullTextTest extends StorageTestCase {
 
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(11, results.getCount());
+            assertEquals(12, results.getCount());
         } finally {
             results.close();
         }
@@ -1918,6 +1922,59 @@ public class StorageFullTextTest extends StorageTestCase {
         } finally {
             results.close();
         }
+    }
+
+    public void testFuzzySearchCountry() throws Exception {
+        UserQueryBuilder qb = from(country);
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(12, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        qb = from(country).select(prepareSelectCountryFields(country)).where(fullText("France~"));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(11, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        qb = from(country).select(prepareSelectCountryFields(country)).where(fullText("F~ce~"));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(12, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        MDMConfiguration.getConfiguration().setProperty("fuzzy.search", "true");
+        qb = from(country).select(prepareSelectCountryFields(country)).where(fullText("France~"));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(12, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        qb = from(country).select(prepareSelectCountryFields(country)).where(fullText("Fr~e"));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(11, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        qb = from(country).select(prepareSelectCountryFields(country)).where(fullText("F~ce~"));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(0, results.getSize());
+        } finally {
+            results.close();
+        }
+
+        MDMConfiguration.getConfiguration().setProperty("fuzzy.search", "false");
     }
 
     private static class TestRDBMSDataSource extends RDBMSDataSource {

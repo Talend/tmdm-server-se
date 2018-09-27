@@ -19,7 +19,6 @@ import io.swagger.annotations.ApiParam;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,7 +35,6 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -51,7 +49,6 @@ import org.talend.mdm.commmon.metadata.compare.Compare;
 import org.talend.mdm.commmon.metadata.compare.ImpactAnalyzer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.xml.sax.InputSource;
 
 import com.amalto.commons.core.datamodel.synchronization.DMUpdateEvent;
 import com.amalto.commons.core.datamodel.synchronization.DataModelChangeNotifier;
@@ -71,6 +68,7 @@ import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.record.DataRecordReader;
 import com.amalto.core.storage.record.XmlDOMDataRecordReader;
 import com.amalto.core.util.LocalUser;
+import com.amalto.core.util.Util;
 import com.amalto.core.util.XtentisException;
 
 
@@ -230,9 +228,7 @@ public class SystemModels {
                 // Marshal
                 StringWriter sw = new StringWriter();
                 MarshallingFactory.getInstance().getMarshaller(updatedDataModelPOJO.getClass()).marshal(updatedDataModelPOJO, sw);
-                DocumentBuilderFactory DOCUMENT_BUILDER_FACTORY = DocumentBuilderFactory.newInstance();
-                InputSource source = new InputSource(new StringReader(sw.toString()));
-                Document document = DOCUMENT_BUILDER_FACTORY.newDocumentBuilder().parse(source);
+                Document document = Util.parse(sw.toString());
                 DataRecordReader<Element> reader = new XmlDOMDataRecordReader();
                 DataRecord record = reader.read(newRepository, dataModelType, document.getDocumentElement());
                 record.set(dataModelType.getField("schema"), content); //$NON-NLS-1$

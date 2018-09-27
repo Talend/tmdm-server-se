@@ -1936,7 +1936,7 @@ public class StorageFullTextTest extends StorageTestCase {
         qb = from(country).select(prepareSelectCountryFields(country)).where(fullText("France~"));
         results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(11, results.getCount());
+            assertEquals(12, results.getCount());
         } finally {
             results.close();
         }
@@ -1944,7 +1944,7 @@ public class StorageFullTextTest extends StorageTestCase {
         qb = from(country).select(prepareSelectCountryFields(country)).where(fullText("F~ce~"));
         results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(12, results.getCount());
+            assertEquals(0, results.getCount());
         } finally {
             results.close();
         }

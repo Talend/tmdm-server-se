@@ -469,7 +469,7 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
         }
 
         boolean supportFuzzySearch = value.endsWith("~") //$NON-NLS-1$
-                && Boolean.parseBoolean(MDMConfiguration.getConfiguration().getProperty(FUZZY_SEARCH, "false")); //$NON-NLS-1$
+                && Boolean.parseBoolean(MDMConfiguration.getConfiguration().getProperty(FUZZY_SEARCH, "true")); //$NON-NLS-1$
         char[] removes = new char[] { '[', ']', '+', '!', '(', ')', '^', '\"', '~', ':', ';', '\\', '-', '@', '#', '$', '%', '&',
                 '=', ',', '.', '<', '>' }; // Removes reserved
         // characters

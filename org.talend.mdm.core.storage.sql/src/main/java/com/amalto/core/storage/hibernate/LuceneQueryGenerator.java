@@ -81,7 +81,7 @@ import com.amalto.core.storage.exception.UnsupportedFullTextQueryException;
 
 class LuceneQueryGenerator extends VisitorAdapter<Query> {
 
-    private static final String LUCENE_FUZZY_SEARCH = "lucene.fuzzy.search"; //$NON-NLS-1$
+    private static final String FUZZY_SEARCH = "lucene.fuzzy.search"; //$NON-NLS-1$
 
     private final Collection<ComplexTypeMetadata> types;
 
@@ -468,24 +468,24 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
             value = value.substring(index);
         }
 
-        boolean supportFuzzySearch = value.endsWith("~") //$NON-NLS-1$
-                && Boolean.parseBoolean(MDMConfiguration.getConfiguration().getProperty(LUCENE_FUZZY_SEARCH, "true")); //$NON-NLS-1$
+        boolean enableFuzzySearch = value.endsWith("~") //$NON-NLS-1$
+                && Boolean.parseBoolean(MDMConfiguration.getConfiguration().getProperty(FUZZY_SEARCH, "true")); //$NON-NLS-1$
         char[] removes = new char[] { '[', ']', '+', '!', '(', ')', '^', '\"', '~', ':', ';', '\\', '-', '@', '#', '$', '%', '&',
                 '=', ',', '.', '<', '>' }; // Removes reserved
         // characters
         for (char remove : removes) {
             value = value.replace(remove, ' ');
         }
-        if (supportFuzzySearch) {
+        if (enableFuzzySearch) {
             value = value.trim() + '~'; //$NON-NLS-1$
         }
         if (value != null && value.length() > 1 && value.startsWith("'") && value.endsWith("'")) { //$NON-NLS-1$//$NON-NLS-2$
             value = "\"" + value.substring(1, value.length() - 1) + "\""; //$NON-NLS-1$ //$NON-NLS-2$
         } else {
             if (value.contains(" ")) { //$NON-NLS-1$
-                return getMultiKeywords(value, supportFuzzySearch);
+                return getMultiKeywords(value, enableFuzzySearch);
             } else {
-                if (!value.endsWith("*") && !supportFuzzySearch) { //$NON-NLS-1$
+                if (!value.endsWith("*") && !enableFuzzySearch) { //$NON-NLS-1$
                     value += '*';
                 }
             }

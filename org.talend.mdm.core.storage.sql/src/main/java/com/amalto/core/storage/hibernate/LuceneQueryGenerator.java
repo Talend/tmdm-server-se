@@ -493,12 +493,12 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
         return value;
     }
 
-    private static String getMultiKeywords(String value, boolean supportFuzzySearch) {
+    private static String getMultiKeywords(String value, boolean enableFuzzySearch) {
         List<String> blocks = new ArrayList<String>(Arrays.asList(value.split(" "))); //$NON-NLS-1$
         StringBuffer sb = new StringBuffer();
         for (String block : blocks) {
             if (StringUtils.isNotEmpty(block)) {
-                if (!block.endsWith("*") && !supportFuzzySearch) { //$NON-NLS-1$
+                if (!block.endsWith("*") && !enableFuzzySearch) { //$NON-NLS-1$
                     sb.append(block + "* "); //$NON-NLS-1$
                 } else {
                     sb.append(block + " "); //$NON-NLS-1$

@@ -22,33 +22,19 @@ import org.talend.mdm.commmon.util.core.CommonUtil;
 import org.talend.mdm.commmon.util.core.ICoreConstants;
 
 import com.amalto.core.delegator.BaseMenu;
-import com.amalto.core.delegator.BaseSecurityCheck;
 import com.amalto.core.delegator.BeanDelegatorContainer;
-import com.amalto.core.server.security.SecurityConfig;
 import com.amalto.core.util.Menu;
-import com.amalto.core.webservice.WSBoolean;
-import com.amalto.core.webservice.WSExistsMenu;
-import com.amalto.core.webservice.WSGetMenu;
-import com.amalto.core.webservice.WSGetRole;
-import com.amalto.core.webservice.WSMenu;
-import com.amalto.core.webservice.WSMenuEntry;
-import com.amalto.core.webservice.WSMenuMenuEntriesDescriptions;
-import com.amalto.core.webservice.WSMenuPK;
-import com.amalto.core.webservice.WSRole;
-import com.amalto.core.webservice.WSRolePK;
-import com.amalto.core.webservice.WSRoleSpecification;
-import com.amalto.core.webservice.WSRoleSpecificationInstance;
 
 public class Menu {
 
     private static final Logger LOGGER = Logger.getLogger(Menu.class);
 
-    private static final DecimalFormat twoDigits = new DecimalFormat("00"); //$NON-NLS-1$
+    static final DecimalFormat TWO_DIGITS = new DecimalFormat("00"); //$NON-NLS-1$
 
     private static final Messages MESSAGES = MessagesFactory.getMessages(
             "com.amalto.webapp.core.util.messages", Menu.class.getClassLoader()); //$NON-NLS-1$
 
-    private HashMap<String, String> labels = new HashMap<String, String>();
+    private Map<String, String> labels = new HashMap<>();
 
     private String id;
 
@@ -72,7 +58,7 @@ public class Menu {
         this.icon = icon;
     }
 
-    private TreeMap<String, Menu> subMenus = new TreeMap<String, Menu>();
+    private Map<String, Menu> subMenus = new TreeMap<>();
 
     public Menu getParent() {
         return parent;
@@ -106,7 +92,7 @@ public class Menu {
         this.id = id;
     }
 
-    public HashMap<String, String> getLabels() {
+    public Map<String, String> getLabels() {
         return labels;
     }
 
@@ -130,7 +116,7 @@ public class Menu {
         this.position = position;
     }
 
-    public TreeMap<String, Menu> getSubMenus() {
+    public Map<String, Menu> getSubMenus() {
         return subMenus;
     }
 
@@ -152,7 +138,7 @@ public class Menu {
                     continue; // we are good keep going
                 if ((menu.getParentID() == null) || "".equals(menu.getParentID())) { //$NON-NLS-1$
                     // attach to root
-                    root.getSubMenus().put(twoDigits.format(menu.getPosition()) + " - " + menu.getId(), menu); //$NON-NLS-1$
+                    root.getSubMenus().put(TWO_DIGITS.format(menu.getPosition()) + " - " + menu.getId(), menu); //$NON-NLS-1$
                     // update parent with root
                     menu.setParent(root);
                     continue;// done
@@ -167,7 +153,7 @@ public class Menu {
                     continue;
                 }
                 // found - add it to parent
-                parentMenu.getSubMenus().put(twoDigits.format(menu.getPosition()) + " - " + menu.getId(), menu); //$NON-NLS-1$
+                parentMenu.getSubMenus().put(TWO_DIGITS.format(menu.getPosition()) + " - " + menu.getId(), menu); //$NON-NLS-1$
                 // update menu with parent ref
                 menu.setParent(parentMenu);
             }

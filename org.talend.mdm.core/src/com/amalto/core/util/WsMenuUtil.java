@@ -9,21 +9,15 @@
  */
 package com.amalto.core.util;
 
-import java.io.StringReader;
-import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.amalto.core.objects.marshalling.MarshallingException;
-import com.amalto.core.objects.marshalling.MarshallingFactory;
 import com.amalto.core.webservice.WSMenuEntry;
 import com.amalto.core.webservice.WSMenuMenuEntriesDescriptions;
 import org.talend.mdm.commmon.util.core.CommonUtil;
 
 public class WsMenuUtil {
-
-    private static final DecimalFormat twoDigits = new DecimalFormat("00"); //$NON-NLS-1$
 
     public static Menu wsMenu2Menu(Map<String, Menu> index, WSMenuEntry entry, Menu parent, String parentID, int position)
             throws Exception {
@@ -49,7 +43,7 @@ public class WsMenuUtil {
             TreeMap<String, Menu> subMenus = new TreeMap<String, Menu>();
             if (wsSubMenus != null) {
                 for (int i = 0; i < wsSubMenus.length; i++) {
-                    subMenus.put(twoDigits.format(i) + " - " + wsSubMenus[i].getId(), //$NON-NLS-1$
+                    subMenus.put(Menu.TWO_DIGITS.format(i) + " - " + wsSubMenus[i].getId(), //$NON-NLS-1$
                             wsMenu2Menu(index, wsSubMenus[i], menu, menu.getParentID(), i));
                 }
             }

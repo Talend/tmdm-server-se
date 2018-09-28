@@ -1949,7 +1949,8 @@ public class StorageFullTextTest extends StorageTestCase {
             results.close();
         }
 
-        MDMConfiguration.getConfiguration().setProperty("fuzzy.search", "true");
+        String luceneFuzzySearch = "lucene.fuzzy.search";
+        MDMConfiguration.getConfiguration().setProperty(luceneFuzzySearch, "true");
         qb = from(country).select(prepareSelectCountryFields(country)).where(fullText("France~"));
         results = storage.fetch(qb.getSelect());
         try {
@@ -1974,7 +1975,7 @@ public class StorageFullTextTest extends StorageTestCase {
             results.close();
         }
 
-        MDMConfiguration.getConfiguration().setProperty("fuzzy.search", "false");
+        MDMConfiguration.getConfiguration().setProperty(luceneFuzzySearch, "false");
     }
 
     private static class TestRDBMSDataSource extends RDBMSDataSource {

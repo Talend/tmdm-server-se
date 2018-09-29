@@ -468,24 +468,24 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
             value = value.substring(index);
         }
 
-        boolean enableFuzzySearch = value.endsWith("~") //$NON-NLS-1$
-                && Boolean.parseBoolean(MDMConfiguration.getConfiguration().getProperty(FUZZY_SEARCH, "true")); //$NON-NLS-1$
+        boolean isFuzzySearch = isFuzzySearch(value);
+
         char[] removes = new char[] { '[', ']', '+', '!', '(', ')', '^', '\"', '~', ':', ';', '\\', '-', '@', '#', '$', '%', '&',
-                '=', ',', '.', '<', '>' }; // Removes reserved
-        // characters
+                '=', ',', '.', '<', '>' }; // Removes reserved characters
+
         for (char remove : removes) {
             value = value.replace(remove, ' ');
         }
-        if (enableFuzzySearch) {
+        if (isFuzzySearch) {
             value = value.trim() + '~'; //$NON-NLS-1$
         }
         if (value != null && value.length() > 1 && value.startsWith("'") && value.endsWith("'")) { //$NON-NLS-1$//$NON-NLS-2$
             value = "\"" + value.substring(1, value.length() - 1) + "\""; //$NON-NLS-1$ //$NON-NLS-2$
         } else {
             if (value.contains(" ")) { //$NON-NLS-1$
-                return getMultiKeywords(value, enableFuzzySearch);
+                return getMultiKeywords(value, isFuzzySearch);
             } else {
-                if (!value.endsWith("*") && !enableFuzzySearch) { //$NON-NLS-1$
+                if (!value.endsWith("*") && !isFuzzySearch) { //$NON-NLS-1$
                     value += '*';
                 }
             }
@@ -493,12 +493,17 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
         return value;
     }
 
-    private static String getMultiKeywords(String value, boolean enableFuzzySearch) {
+    private static boolean isFuzzySearch(String value) {
+        boolean enableFuzzySearch = Boolean.parseBoolean(MDMConfiguration.getConfiguration().getProperty(FUZZY_SEARCH, "true")); //$NON-NLS-1$
+        return value.endsWith("~") && enableFuzzySearch;
+    }
+
+    private static String getMultiKeywords(String value, boolean isFuzzySearch) {
         List<String> blocks = new ArrayList<String>(Arrays.asList(value.split(" "))); //$NON-NLS-1$
         StringBuffer sb = new StringBuffer();
         for (String block : blocks) {
             if (StringUtils.isNotEmpty(block)) {
-                if (!block.endsWith("*") && !enableFuzzySearch) { //$NON-NLS-1$
+                if (!block.endsWith("*") && !isFuzzySearch) { //$NON-NLS-1$
                     sb.append(block + "* "); //$NON-NLS-1$
                 } else {
                     sb.append(block + " "); //$NON-NLS-1$

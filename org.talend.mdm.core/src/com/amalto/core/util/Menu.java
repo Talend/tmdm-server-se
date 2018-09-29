@@ -96,7 +96,7 @@ public class Menu {
         return labels;
     }
 
-    public void setLabels(HashMap<String, String> labels) {
+    public void setLabels(Map<String, String> labels) {
         this.labels = labels;
     }
 
@@ -120,14 +120,14 @@ public class Menu {
         return subMenus;
     }
 
-    public void setSubMenus(TreeMap<String, Menu> subMenus) {
+    public void setSubMenus(Map<String, Menu> subMenus) {
         this.subMenus = subMenus;
     }
 
     public static Menu getRootMenu() throws Exception {
         try {
             // first fetch the menu index
-            HashMap<String, Menu> menuIndex = getMenuIndex();
+            Map<String, Menu> menuIndex = getMenuIndex();
             // create a RootMenu Holder
             Menu root = new Menu();
             // go over all the Menu Entries that have a null parent an try to put them at the appropriate location
@@ -163,8 +163,8 @@ public class Menu {
         }
     }
 
-    private static HashMap<String, Menu> getMenuIndex() throws Exception {
-        HashMap<String, Menu> menuIndex = new HashMap<String, Menu>();
+    private static Map<String, Menu> getMenuIndex() throws Exception {
+        Map<String, Menu> menuIndex = new HashMap<>();
         try {
             HashSet<String> roles = LocalUser.getLocalUser().getRoles();
             if (roles.contains(ICoreConstants.ADMIN_PERMISSION)) {
@@ -178,14 +178,14 @@ public class Menu {
         }
     }
 
-    private static HashMap<String, Menu> getAdminMenuIndex(HashMap<String, Menu> menuIndex) throws Exception {
+    private static Map<String, Menu> getAdminMenuIndex(Map<String, Menu> menuIndex) throws Exception {
         try {
             // Add tool menus
             Menu menu = new Menu();
             menu.setApplication("H2Console"); //$NON-NLS-1$
             menu.setContext("h2console"); //$NON-NLS-1$
             menu.setId("H2Console"); //$NON-NLS-1$
-            HashMap<String, String> labels = new HashMap<String, String>() {
+            Map<String, String> labels = new HashMap<String, String>() {
 
                 private static final long serialVersionUID = 1L;
 
@@ -246,7 +246,7 @@ public class Menu {
     }
     
     public static String getMenuLabel(String language, String menuIndex) throws Exception {
-        HashMap<String, Menu> menus = getMenuIndex();
+        Map<String, Menu> menus = getMenuIndex();
         Menu menu = menus.get(menuIndex);
         if ((null == language) || (language.trim().equals(""))) { //$NON-NLS-1$
             language = "en"; //$NON-NLS-1$

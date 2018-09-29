@@ -11,21 +11,21 @@ package com.amalto.core.util;
 
 public class VetoException extends Exception {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 6057799391813209245L;
 
     public VetoException() {
-		super();
-	}
+        super();
+    }
 
-	public VetoException(String message) {
-		super(message);
-	}
+    public VetoException(String message) {
+        super(message);
+    }
 
-	public VetoException(String message, Throwable cause) {
-		super(message, cause);
-	}
+    public VetoException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
-	public VetoException(Throwable cause) {
-		super(cause);
-	}
+    public VetoException(Throwable cause) {
+        super(cause);
+    }
 }

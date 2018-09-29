@@ -28,7 +28,7 @@ public class WsMenuUtil {
             menu.setId(entry.getId());
             menu.setIcon(entry.getIcon());
             WSMenuMenuEntriesDescriptions[] descriptions = entry.getDescriptions();
-            HashMap<String, String> labels = new HashMap<String, String>();
+            Map<String, String> labels = new HashMap<>();
             if (descriptions != null) {
                 for (WSMenuMenuEntriesDescriptions description : descriptions) {
                     labels.put(description.getLanguage().toLowerCase(), description.getLabel());
@@ -40,7 +40,7 @@ public class WsMenuUtil {
             menu.setPosition(position);
             // recursively add the the submenus. These ones have a parent
             WSMenuEntry[] wsSubMenus = entry.getSubMenus();
-            TreeMap<String, Menu> subMenus = new TreeMap<String, Menu>();
+            Map<String, Menu> subMenus = new TreeMap<>();
             if (wsSubMenus != null) {
                 for (int i = 0; i < wsSubMenus.length; i++) {
                     subMenus.put(Menu.TWO_DIGITS.format(i) + " - " + wsSubMenus[i].getId(), //$NON-NLS-1$

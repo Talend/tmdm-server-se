@@ -562,7 +562,7 @@ public class RecordValidationTest extends TestCase {
     // Validate record contains AutoIncrement won't affect the value stored in system
     public void testNoAutoIncrementImpactValidation() throws Exception {
         createBeanDelegatorContainer();
-    	BeanDelegatorContainer.getInstance().setDelegatorInstancePool(Collections.<String, Object> singletonMap("SecurityCheck", new MockISecurityCheck()));
+        BeanDelegatorContainer.getInstance().setDelegatorInstancePool(Collections.<String, Object> singletonMap("SecurityCheck", new MockISecurityCheck()));
         String xmlFamily1 = "<ProductFamily><Name>test_product_family_1</Name><ChangeStatus>Approved</ChangeStatus></ProductFamily>";
         String xmlFamily2 = "<ProductFamily><Name>test_product_family_2</Name><ChangeStatus>Approved</ChangeStatus></ProductFamily>";
         String xmlForAutoIncrement= "<ProductFamily><Name>Test Product Family</Name><ChangeStatus>Approved</ChangeStatus></ProductFamily>";

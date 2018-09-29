@@ -24,7 +24,7 @@ public class RoleMenuParameters {
         return position;}
 
     // TODO: change this method signature to do not expose Castor Exception anymore
-    public static RoleMenuParameters unmarshalMenuParameters(String parameters) throws ValidateException, MarshallingException{
+    public static RoleMenuParameters unmarshalMenuParameters(String parameters) throws ValidateException, MarshallingException {
         try {
             return MarshallingFactory.getInstance().getUnmarshaller(RoleMenuParameters.class).unmarshal(new StringReader(parameters));
         } catch (MarshallingException e) {

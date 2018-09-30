@@ -100,7 +100,7 @@ public class WelcomePortalAction implements WelcomePortalService {
      */
     private boolean isHiddenMenu(String menu) throws ServiceException {
         try {
-            TreeMap<String, Menu> subMenus = Menu.getRootMenu().getSubMenus();
+            Map<String, Menu> subMenus = Menu.getRootMenu().getSubMenus();
             for (String key : subMenus.keySet()) {
                 Menu subMenu = subMenus.get(key);
 

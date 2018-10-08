@@ -499,7 +499,12 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
     }
 
     /**
-     * if the <i>value</i> ending ~ and ~0.8(less than 1 and include 0 and 1), <i>value</i>{@code .matches(}<i>\w*?~((0(\.\d)?)|1)?</i>{@code )} return {@code true}
+     * 1. default value for configuration <b>lucene.fuzzy.search</b> is {@code true}, if not configuration it, also
+     * return {@code true}, only specific configuration it to false, will return {@code false} <br/>
+     * 
+     * 2. if the <i>value</i> ending ~ and ~0.8(less than 1 and include 0 and 1),
+     * <i>value</i>{@code .matches(}<i>\w*?~((0(\.\d)?)|1)?</i>{@code )} return {@code true} <br/>
+     * 
      * <pre>
      * "roam~".matches("\\w*?~((0(\\.\\d)?)|1)?")       = true
      * "roam~ ".matches("\\w*?~((0(\\.\\d)?)|1)?")      = true
@@ -508,8 +513,12 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
      * "roam~0.5".matches("\\w*?~((0(\\.\\d)?)|1)?")    = true
      * "roam~2".matches("\\w*?~((0(\\.\\d)?)|1)?")      = false
      * </pre>
+     * 
+     * Only configuration of lucene.fuzzy.search is true and the <i>value</i> is ending ~ and ~decimal of less than 1,
+     * will return {@code true}
+     * 
      * @param value
-     * @return
+     * @return true if, value ending ~ and ~decimal of less than 1 and configuration of lucene.fuzzy.search is true
      */
     private static boolean isFuzzySearch(String value) {
         boolean enableFuzzySearch = Boolean.parseBoolean(MDMConfiguration.getConfiguration().getProperty(FUZZY_SEARCH, "true")); //$NON-NLS-1$

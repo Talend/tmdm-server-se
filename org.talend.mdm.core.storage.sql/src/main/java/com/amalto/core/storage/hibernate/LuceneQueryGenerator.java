@@ -483,7 +483,7 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
         for (char remove : removes) {
             queryTerm = queryTerm.replace(remove, ' '); //$NON-NLS-1$
         }
-        value = queryTerm.trim() + fuzzyTerm;;
+        value = queryTerm.trim() + fuzzyTerm;
         if (value != null && value.length() > 1 && value.startsWith("'") && value.endsWith("'")) { //$NON-NLS-1$//$NON-NLS-2$
             value = "\"" + value.substring(1, value.length() - 1) + "\""; //$NON-NLS-1$ //$NON-NLS-2$
         } else {
@@ -498,6 +498,19 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
         return value;
     }
 
+    /**
+     * if the <i>value</i> ending ~ and ~0.8(less than 1 and include 0 and 1), <i>value</i>{@code .matches(}<i>\w*?~((0(\.\d)?)|1)?</i>{@code )} return {@code true}
+     * <pre>
+     * "roam~".matches("\\w*?~((0(\\.\\d)?)|1)?")       = true
+     * "roam~ ".matches("\\w*?~((0(\\.\\d)?)|1)?")      = true
+     * "roam~1".matches("\\w*?~((0(\\.\\d)?)|1)?")      = true
+     * "roam~0".matches("\\w*?~((0(\\.\\d)?)|1)?")      = true
+     * "roam~0.5".matches("\\w*?~((0(\\.\\d)?)|1)?")    = true
+     * "roam~2".matches("\\w*?~((0(\\.\\d)?)|1)?")      = false
+     * </pre>
+     * @param value
+     * @return
+     */
     private static boolean isFuzzySearch(String value) {
         boolean enableFuzzySearch = Boolean.parseBoolean(MDMConfiguration.getConfiguration().getProperty(FUZZY_SEARCH, "true")); //$NON-NLS-1$
         return value.matches("\\w*?~((0(\\.\\d)?)|1)?") && enableFuzzySearch; //$NON-NLS-1$

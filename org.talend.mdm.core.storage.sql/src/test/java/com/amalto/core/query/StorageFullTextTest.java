@@ -1957,7 +1957,7 @@ public class StorageFullTextTest extends StorageTestCase {
             results.close();
         }
 
-        qb = from(country).select(prepareSelectCountryFields(country)).where(fullText("France~~~~~"));
+        qb = from(country).select(prepareSelectCountryFields(country)).where(fullText("France~0.5"));
         results = storage.fetch(qb.getSelect());
         try {
             assertEquals(12, results.getCount());
@@ -1965,10 +1965,42 @@ public class StorageFullTextTest extends StorageTestCase {
             results.close();
         }
 
-        qb = from(country).select(prepareSelectCountryFields(country)).where(fullText("France!^~"));
+        qb = from(country).select(prepareSelectCountryFields(country)).where(fullText("France~1"));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(10, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        qb = from(country).select(prepareSelectCountryFields(country)).where(fullText("France~0"));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        qb = from(country).select(prepareSelectCountryFields(country)).where(fullText("France~1.2"));
         results = storage.fetch(qb.getSelect());
         try {
             assertEquals(12, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        qb = from(country).select(prepareSelectCountryFields(country)).where(fullText("France~~~~~"));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(11, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        qb = from(country).select(prepareSelectCountryFields(country)).where(fullText("France!^~"));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(11, results.getCount());
         } finally {
             results.close();
         }
@@ -1984,7 +2016,7 @@ public class StorageFullTextTest extends StorageTestCase {
         qb = from(country).select(prepareSelectCountryFields(country)).where(fullText("F~ce~"));
         results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(0, results.getSize());
+            assertEquals(12, results.getSize());
         } finally {
             results.close();
         }
@@ -1992,7 +2024,7 @@ public class StorageFullTextTest extends StorageTestCase {
         qb = from(country).select(prepareSelectCountryFields(country)).where(fullText("F~c#e~"));
         results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(0, results.getSize());
+            assertEquals(12, results.getSize());
         } finally {
             results.close();
         }

@@ -470,15 +470,20 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
 
         boolean isFuzzySearch = isFuzzySearch(value);
 
-        char[] removes = new char[] { '[', ']', '+', '!', '(', ')', '^', '\"', '~', ':', ';', '\\', '-', '@', '#', '$', '%', '&',
+        char tilde = '~'; //$NON-NLS-1$
+        char[] removes = new char[] { '[', ']', '+', '!', '(', ')', '^', '\"', tilde, ':', ';', '\\', '-', '@', '#', '$', '%', '&',
                 '=', ',', '.', '<', '>' }; // Removes reserved characters
 
-        for (char remove : removes) {
-            value = value.replace(remove, ' ');
-        }
+        String fuzzyTerm = StringUtils.EMPTY;
+        String queryTerm = value;
         if (isFuzzySearch) {
-            value = value.trim() + '~'; //$NON-NLS-1$
+            fuzzyTerm = value.substring(value.lastIndexOf(tilde));
+            queryTerm = value.substring(0, value.lastIndexOf(tilde));
         }
+        for (char remove : removes) {
+            queryTerm = queryTerm.replace(remove, ' '); //$NON-NLS-1$
+        }
+        value = queryTerm.trim() + fuzzyTerm;;
         if (value != null && value.length() > 1 && value.startsWith("'") && value.endsWith("'")) { //$NON-NLS-1$//$NON-NLS-2$
             value = "\"" + value.substring(1, value.length() - 1) + "\""; //$NON-NLS-1$ //$NON-NLS-2$
         } else {
@@ -486,7 +491,7 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
                 return getMultiKeywords(value, isFuzzySearch);
             } else {
                 if (!value.endsWith("*") && !isFuzzySearch) { //$NON-NLS-1$
-                    value += '*';
+                    value += '*'; //$NON-NLS-1$
                 }
             }
         }
@@ -495,7 +500,7 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
 
     private static boolean isFuzzySearch(String value) {
         boolean enableFuzzySearch = Boolean.parseBoolean(MDMConfiguration.getConfiguration().getProperty(FUZZY_SEARCH, "true")); //$NON-NLS-1$
-        return value.endsWith("~") && enableFuzzySearch;
+        return value.matches("\\w*?~((0(\\.\\d)?)|1)?") && enableFuzzySearch; //$NON-NLS-1$
     }
 
     private static String getMultiKeywords(String value, boolean isFuzzySearch) {

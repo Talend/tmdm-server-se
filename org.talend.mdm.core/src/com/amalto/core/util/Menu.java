@@ -205,7 +205,7 @@ public class Menu {
             menu.setId("LogViewer"); //$NON-NLS-1$
             labels = new HashMap<String, String>() {
 
-                private static final long serialVersionUID = 1L;
+                private static final long serialVersionUID = -2150130501821941201L;
 
                 public String get(Object key) {
                     return MESSAGES.getMessage(new Locale(key.toString()), "menu.logviewer"); //$NON-NLS-1$
@@ -224,7 +224,7 @@ public class Menu {
             menu.setId("RestApiDoc"); //$NON-NLS-1$
             labels = new HashMap<String, String>() {
 
-                private static final long serialVersionUID = 1L;
+                private static final long serialVersionUID = -3990110074687049270L;
 
                 public String get(Object key) {
                     return MESSAGES.getMessage(new Locale(key.toString()), "menu.apidoc"); //$NON-NLS-1$

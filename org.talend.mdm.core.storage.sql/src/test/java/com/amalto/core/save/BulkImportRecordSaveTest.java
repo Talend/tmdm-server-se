@@ -64,7 +64,7 @@ public class BulkImportRecordSaveTest extends TestCase {
     private XPath xPath = XPathFactory.newInstance().newXPath();
 
     private static boolean beanDelegatorContainerFlag = false;
-    
+
     private static void createBeanDelegatorContainer(){
         if(!beanDelegatorContainerFlag){
             BeanDelegatorContainer.createInstance();

@@ -168,8 +168,6 @@ public class StorageMetadataUtilsTest {
 
         List<Date> listDate = new LinkedList<Date>();
         listDate.add(DATE_FORMAT.parse("2018-10-11")); //$NON-NLS-1$
-        listDate.add(DATE_FORMAT.parse("2018-11-12")); //$NON-NLS-1$
-        listDate.add(DATE_FORMAT.parse("2018-12-13")); //$NON-NLS-1$
 
         dateConstant = new DateConstant(listDate);
         Object dateStamps = StorageMetadataUtils.convert(dateConstant);
@@ -188,8 +186,6 @@ public class StorageMetadataUtilsTest {
 
         List<Date> listDateTime = new LinkedList<Date>();
         listDateTime.add(DATE_TIME_FORMAT.parse("2018-10-11T10:11:12")); //$NON-NLS-1$
-        listDateTime.add(DATE_TIME_FORMAT.parse("2018-11-12T10:11:12")); //$NON-NLS-1$
-        listDateTime.add(DATE_TIME_FORMAT.parse("2018-12-13T10:11:12")); //$NON-NLS-1$
 
         dateTimeConstant = new DateTimeConstant(listDateTime);
         Object dateTimeStamps = StorageMetadataUtils.convert(dateTimeConstant);
@@ -208,8 +204,6 @@ public class StorageMetadataUtilsTest {
 
         List<Date> listTime = new LinkedList<Date>();
         listTime.add(TIME_FORMAT.parse("12:11:16")); //$NON-NLS-1$
-        listTime.add(TIME_FORMAT.parse("12:12:26")); //$NON-NLS-1$
-        listTime.add(TIME_FORMAT.parse("12:13:36")); //$NON-NLS-1$
 
         timeConstant = new TimeConstant(listTime);
         Object timeStamps = StorageMetadataUtils.convert(timeConstant);

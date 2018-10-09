@@ -157,9 +157,9 @@ public class StorageQueryTest extends StorageTestCase {
     private final String COMPTE_Record2 = "<Compte><Level>Nature Comptable SF</Level><Code>11</Code><Label>11</Label><childOf>[Compte SF][1]</childOf></Compte>";
     
     private static boolean beanDelegatorContainerFlag = false;
-    
-    private static void createBeanDelegatorContainer(){
-        if(!beanDelegatorContainerFlag){
+
+    private static void createBeanDelegatorContainer() {
+        if (!beanDelegatorContainerFlag) {
             BeanDelegatorContainer.createInstance();
             beanDelegatorContainerFlag = true;
         }

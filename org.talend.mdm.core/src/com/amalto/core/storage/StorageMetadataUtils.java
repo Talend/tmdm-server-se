@@ -44,6 +44,7 @@ import org.talend.mdm.commmon.metadata.SimpleTypeFieldMetadata;
 import org.talend.mdm.commmon.metadata.TypeMetadata;
 import org.talend.mdm.commmon.metadata.Types;
 
+import com.amalto.core.query.user.ConstantExpression;
 import com.amalto.core.query.user.DateConstant;
 import com.amalto.core.query.user.DateTimeConstant;
 import com.amalto.core.query.user.TimeConstant;
@@ -661,6 +662,19 @@ public class StorageMetadataUtils {
             }
         } else {
             throw new NotImplementedException("No support for type '" + type + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+    }
+
+    public static Object convert(ConstantExpression<Date> constant) {
+        if (constant.isExpressionList()) {
+            CollectionUtils.transform(constant.getValueList(), new Transformer() {
+                public java.lang.Object transform(java.lang.Object input) {
+                        return new Timestamp(((Date)input).getTime());
+                    }
+                });
+            return constant.getValueList();
+        } else {
+            return new Timestamp(constant.getValue().getTime());
         }
     }
 

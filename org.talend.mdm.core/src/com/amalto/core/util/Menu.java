@@ -187,7 +187,7 @@ public class Menu {
             menu.setId("H2Console"); //$NON-NLS-1$
             Map<String, String> labels = new HashMap<String, String>() {
 
-                private static final long serialVersionUID = 1L;
+                private static final long serialVersionUID = 7313482133098607843L;
 
                 public String get(Object key) {
                     return MESSAGES.getMessage(new Locale(key.toString()), "menu.h2console"); //$NON-NLS-1$

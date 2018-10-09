@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:import namespace="http://www.w3.org/2001/XMLSchema" />
+    <xsd:element name="Product">
+        <xsd:annotation>
+            <xsd:appinfo source="X_PrimaryKeyInfo">Product/Name</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all maxOccurs="1" minOccurs="1">
+                <xsd:element maxOccurs="1" minOccurs="1" name="Id" type="xsd:string">
+                    <xsd:annotation></xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Family_Name" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_ForeignKey">ProductFamily/Id</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKeyInfo">ProductFamily/Name</xsd:appinfo>
+                        <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Name" type="xsd:string"></xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="Product">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="Id" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="ProductFamily">
+        <xsd:annotation>
+            <xsd:appinfo source="X_PrimaryKeyInfo">ProductFamily/Name</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all maxOccurs="1" minOccurs="1">
+                <xsd:element maxOccurs="1" minOccurs="1" name="Id" type="AUTO_INCREMENT"></xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="Name" type="xsd:string"></xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="ChangeStatus" type="Status"></xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="ProductFamily">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="Id" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:simpleType name="AUTO_INCREMENT">
+        <xsd:restriction base="xsd:string" />
+    </xsd:simpleType>
+    <xsd:simpleType name="URL">
+        <xsd:restriction base="xsd:string" />
+    </xsd:simpleType>
+    <xsd:simpleType name="UUID">
+        <xsd:restriction base="xsd:string" />
+    </xsd:simpleType>
+    <xsd:simpleType name="Status">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="Pending" />
+            <xsd:enumeration value="Rejected" />
+            <xsd:enumeration value="Approved" />
+        </xsd:restriction>
+    </xsd:simpleType>
+</xsd:schema>

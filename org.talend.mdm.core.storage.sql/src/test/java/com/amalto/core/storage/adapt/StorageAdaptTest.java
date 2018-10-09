@@ -2209,6 +2209,132 @@ public class StorageAdaptTest extends TestCase {
         storage.commit();
     }
 
+    public void test21_RenamedFKName() throws Exception {
+        setMDMRootURL();
+
+        DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
+        Storage storage = new HibernateStorage("Person", StorageType.MASTER);
+        storage.init(dataSource);
+        String[] typeNames = { "Product" };
+        String[] tables = { "Product", "PRODUCTFAMILY" };
+        String[][] columns = { { "", "X_ID", "X_NAME", "X_FAMILY_X_ID", "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" },
+                { "", "X_ID", "X_NAME", "X_CHANGESTATUS", "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" } };
+        int[][] isNullable = { { 0, 0, 1, 1, 0, 1 }, { 0, 0, 0, 1, 0, 1 } };
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+        MetadataRepository repository1 = new MetadataRepository();
+        repository1.load(StorageAdaptTest.class.getResourceAsStream("schema21_1.xsd"));
+        storage.prepare(repository1, true);
+        try {
+            assertColumnNullAble(dataSource, tables, columns, isNullable);
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+
+        // create record before change, second_name, married is null
+        String input1 = "<Product><Id>1</Id><Name>John</Name></Product>";
+        String input2 = "<ProductFamily><Id>1</Id><Name>Product family #1</Name></ProductFamily>";
+        try {
+            createRecord(storage, factory, repository1, typeNames, new String[] { input1 });
+            createRecord(storage, factory, repository1, new String[] { "ProductFamily" }, new String[] { input2 });
+        } catch (Exception e1) {
+            assertNull(e1);
+        }
+
+        storage.begin();
+        ComplexTypeMetadata objectType = repository1.getComplexType("Product");//$NON-NLS-1$
+        UserQueryBuilder qb = from(objectType);
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+            for (DataRecord result : results) {
+                assertEquals("1", result.get("Id"));
+                assertEquals("John", result.get("Name"));
+            }
+        } finally {
+            results.close();
+        }
+        storage.commit();
+
+        MetadataRepository repository2 = new MetadataRepository();
+        repository2.load(StorageAdaptTest.class.getResourceAsStream("schema21_2.xsd"));
+        try {
+            storage.adapt(repository2, false);
+        } catch (Exception e2) {
+            assertNull(e2);
+        }
+
+        columns[0][3] = "X_TALEND_TIMESTAMP";
+        columns[0][4] = "X_TALEND_TASK_ID";
+        columns[0][5] = "X_FAMILY_NAME_X_ID";
+        isNullable[0][3] = 0;
+        isNullable[0][4] = 1;
+        isNullable[0][5] = 1;
+        try {
+            assertColumnNullAble(dataSource, tables, columns, isNullable);
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+
+        storage.begin();
+        objectType = repository2.getComplexType("Product");
+        qb = from(objectType);
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+        } finally {
+            results.close();
+        }
+        storage.commit();
+
+        String input3 = input1 = "<Product><Id>2</Id><Name>John</Name><Family_Name>1</Family_Name></Product>";
+        try {
+            createRecord(storage, factory, repository2, typeNames, new String[] { input3 });
+        } catch (Exception e1) {
+            assertNull(e1);
+        }
+
+        storage.begin();
+        qb = from(objectType);
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(2, results.getCount());
+        } finally {
+            results.close();
+        }
+        storage.commit();
+
+        MetadataRepository repository3 = new MetadataRepository();
+        repository3.load(StorageAdaptTest.class.getResourceAsStream("schema21_1.xsd"));
+        try {
+            storage.adapt(repository3, true);
+        } catch (Exception e2) {
+            assertNull(e2);
+        }
+
+        columns[0][3] = "X_FAMILY_X_ID";
+        columns[0][4] = "X_TALEND_TIMESTAMP";
+        columns[0][5] = "X_TALEND_TASK_ID";
+        isNullable[0][3] = 1;
+        isNullable[0][4] = 0;
+        isNullable[0][5] = 1;
+        try {
+            assertColumnNullAble(dataSource, tables, columns, isNullable);
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+
+        storage.begin();
+        objectType = repository2.getComplexType("Product");
+        qb = from(objectType);
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(0, results.getCount());
+        } finally {
+            results.close();
+        }
+        storage.commit();
+    }
+
     private void assertColumnLengthChange(DataSourceDefinition dataSource, String tables, String columns, int expectedLength)
             throws SQLException {
         DataSource master = dataSource.getMaster();

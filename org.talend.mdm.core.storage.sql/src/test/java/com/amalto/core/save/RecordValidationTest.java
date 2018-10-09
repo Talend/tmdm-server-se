@@ -401,12 +401,6 @@ public class RecordValidationTest extends TestCase {
     
     // Simulate the Record Validation API of DataService#validateRecord() to test RecordValidationContext, RecordValidationCommitter, etc.
     protected static JSONObject validateRecord(String storageName, boolean isStaging, boolean isAdmin, boolean invokeBeforeSaving, String documentXml) throws Exception {
-        Map<String, Object> delegatorInstancePool = new HashMap<String, Object>();
-        delegatorInstancePool.put("LocalUser", isAdmin ? new MockAdmin() : new MockUser()); //$NON-NLS-1$
-        delegatorInstancePool.put("SecurityCheck", new MockISecurityCheck()); //$NON-NLS-1$
-        createBeanDelegatorContainer();
-        BeanDelegatorContainer.getInstance().setDelegatorInstancePool(delegatorInstancePool); 
-
         String dataCluster = isStaging ? storageName + "#STAGING" : storageName;
         DataRecord.ValidateRecord.set(true);
         boolean isValid = true;
@@ -561,8 +555,6 @@ public class RecordValidationTest extends TestCase {
 
     // Validate record contains AutoIncrement won't affect the value stored in system
     public void testNoAutoIncrementImpactValidation() throws Exception {
-        createBeanDelegatorContainer();
-        BeanDelegatorContainer.getInstance().setDelegatorInstancePool(Collections.<String, Object> singletonMap("SecurityCheck", new MockISecurityCheck()));
         String xmlFamily1 = "<ProductFamily><Name>test_product_family_1</Name><ChangeStatus>Approved</ChangeStatus></ProductFamily>";
         String xmlFamily2 = "<ProductFamily><Name>test_product_family_2</Name><ChangeStatus>Approved</ChangeStatus></ProductFamily>";
         String xmlForAutoIncrement= "<ProductFamily><Name>Test Product Family</Name><ChangeStatus>Approved</ChangeStatus></ProductFamily>";

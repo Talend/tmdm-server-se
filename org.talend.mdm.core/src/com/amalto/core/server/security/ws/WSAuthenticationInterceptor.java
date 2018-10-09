@@ -32,7 +32,7 @@ public class WSAuthenticationInterceptor extends AbstractPhaseInterceptor<Messag
         try {
             return new WSSecurityContext(LocalUser.getLocalUser());
         } catch (Exception e) {
-            throw new AuthenticationException(e.getMessage());
+            throw new AuthenticationException("Failed to create security context." + e.getMessage());
         }
     }
 }

@@ -73,6 +73,20 @@
 		</xsd:unique>
 	</xsd:element>
 
+    <xsd:element name="DateKey">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="id" type="xsd:string" />
+                <xsd:element name="day" type="xsd:date" />
+                <xsd:element name="name" type="xsd:string" />
+            </xsd:sequence>
+        </xsd:complexType>
+        <xsd:unique name="DateKey">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="day" />
+        </xsd:unique>
+    </xsd:element>
+
 	<xsd:complexType name="Address">
 		<xsd:sequence>
 			<xsd:element name="Street" type="xsd:string" />

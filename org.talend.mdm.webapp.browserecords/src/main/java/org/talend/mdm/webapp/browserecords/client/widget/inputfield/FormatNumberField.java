@@ -9,6 +9,7 @@
  */
 package org.talend.mdm.webapp.browserecords.client.widget.inputfield;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 
 import org.talend.mdm.webapp.base.client.SessionAwareAsyncCallback;
@@ -190,7 +191,12 @@ public class FormatNumberField extends NumberField {
     private void setFieldValue(String result){
         String displayValue = result;
         if (formatPattern == null) {
-            displayValue = FormatUtil.changeNumberToFormatedValue(result);
+            if (BigDecimal.class.getName().equals(getPropertyEditor().getType().getName())) {
+                BigDecimal number = new BigDecimal(result);
+                displayValue = number.toPlainString();
+            } else {
+                displayValue = FormatUtil.changeNumberToFormatedValue(result);
+            }
         }
         if (rendered) {
             if (isEditable()) {

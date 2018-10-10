@@ -30,6 +30,7 @@ import org.talend.mdm.commmon.metadata.compare.RemoveChange;
 import com.amalto.core.query.user.UserQueryBuilder;
 import com.amalto.core.storage.StorageResults;
 
+@SuppressWarnings("nls")
 public class HibernateStorageDataAnaylzer extends HibernateStorageImpactAnalyzer {
 
     private static final Logger LOGGER = Logger.getLogger(HibernateStorageDataAnaylzer.class);
@@ -40,8 +41,9 @@ public class HibernateStorageDataAnaylzer extends HibernateStorageImpactAnalyzer
         this.storage = storage;
     }
 
-    protected final String STRING_DEFAULT_LENGTH = "255"; //$NON-NLS-1$
+    protected final String STRING_DEFAULT_LENGTH = "255";
 
+    @Override
     public Map<Impact, List<Change>> analyzeImpacts(Compare.DiffResults diffResult) {
         // Modify actions
         for (ModifyChange modifyAction : diffResult.getModifyChanges()) {
@@ -51,66 +53,72 @@ public class HibernateStorageDataAnaylzer extends HibernateStorageImpactAnalyzer
                 FieldMetadata current = (FieldMetadata) modifyAction.getCurrent();
 
                 if (current.isMandatory() && !previous.isMandatory()) {
-                    try {
-                        storage.begin();
-                        ComplexTypeMetadata objectType = previous.getContainingType().getEntity();
-                        UserQueryBuilder qb = UserQueryBuilder.from(objectType).select(count()).where(emptyOrNull(previous));
-                        StorageResults results = storage.fetch(qb.getSelect());
-                        if (results.getCount() == 0) {
-                            modifyAction.setHasNullValue(false);
-                        } else {
-                            modifyAction.setHasNullValue(true);
-                        }
-                        results.close();
-                    } catch (Exception e) {
-                        LOGGER.error("Hibernate Storage query data anaylzer failure", e);
-                        storage.rollback();
-                    } finally {
-                        storage.commit();
+                    int count = fetchFieldCountOfNull(previous.getContainingType().getEntity(), previous);
+                    if (count == 0) {
+                        modifyAction.setHasNullValue(false);
+                    } else {
+                        modifyAction.setHasNullValue(true);
                     }
                 }
             }
         }
 
-        Map<FieldMetadata, RemoveChange> removeReference = new HashMap<>();
-        Map<RemoveChange, ComplexTypeMetadata> renamedReference = new HashMap<>();
+        Map<RemoveChange, ComplexTypeMetadata> renamedReferenceFieldMap = isFKRenamed(diffResult);
+        for (Map.Entry<RemoveChange, ComplexTypeMetadata> entry : renamedReferenceFieldMap.entrySet()) {
+            int count = fetchFieldCountOfNotNull(entry.getValue(), (FieldMetadata) entry.getKey().getElement());
+            if (count == 0) {
+                entry.getKey().setContainsData(false);
+            } else {
+                entry.getKey().setContainsData(true);
+            }
+        }
+        return super.analyzeImpacts(diffResult);
+    }
+
+    protected Map<RemoveChange, ComplexTypeMetadata> isFKRenamed(Compare.DiffResults diffResult) {
+        Map<FieldMetadata, RemoveChange> removeReferenceFieldMap = new HashMap<>();
+        Map<RemoveChange, ComplexTypeMetadata> renamedReferenceFieldMap = new HashMap<>();
         for (RemoveChange removeAction : diffResult.getRemoveChanges()) {
             MetadataVisitable element = removeAction.getElement();
             if (element instanceof ReferenceFieldMetadata) {
-                removeReference.put(((ReferenceFieldMetadata) element).getReferencedField(), removeAction);
+                removeReferenceFieldMap.put(((ReferenceFieldMetadata) element).getReferencedField(), removeAction);
             }
         }
         for (AddChange removeAction : diffResult.getAddChanges()) {
             MetadataVisitable element = removeAction.getElement();
             if (element instanceof ReferenceFieldMetadata) {
-                if (removeReference.containsKey(((ReferenceFieldMetadata) element).getReferencedField())) {
-                    renamedReference.put((removeReference.get(((ReferenceFieldMetadata) element).getReferencedField())),
+                if (removeReferenceFieldMap.containsKey(((ReferenceFieldMetadata) element).getReferencedField())) {
+                    renamedReferenceFieldMap.put((removeReferenceFieldMap.get(((ReferenceFieldMetadata) element).getReferencedField())),
                             ((ReferenceFieldMetadata) element).getContainingType().getEntity());
                 }
             }
         }
-        if (!renamedReference.isEmpty()) {
-            for (Map.Entry<RemoveChange, ComplexTypeMetadata> entry : renamedReference.entrySet()) {
-                try {
-                    storage.begin();
-                    ComplexTypeMetadata objectType = entry.getValue();
-                    UserQueryBuilder qb = UserQueryBuilder.from(objectType).select(count())
-                            .where(not(emptyOrNull((FieldMetadata) entry.getKey().getElement())));
-                    StorageResults results = storage.fetch(qb.getSelect());
-                    if (results.getCount() == 0) {
-                        entry.getKey().setContainsData(false);
-                    } else {
-                        entry.getKey().setContainsData(true);
-                    }
-                    results.close();
-                } catch (Exception e) {
-                    LOGGER.error("Hibernate Storage query data anaylzer failure", e);
-                    storage.rollback();
-                } finally {
-                    storage.commit();
-                }
-            }
+        return renamedReferenceFieldMap;
+    }
+
+    protected int fetchFieldCountOfNotNull(ComplexTypeMetadata entry, FieldMetadata field) {
+        UserQueryBuilder qb = UserQueryBuilder.from(entry).select(count()).where(not(emptyOrNull(field)));
+        return fetchFieldCountByUserQuery(qb);
+    }
+
+    protected int fetchFieldCountOfNull(ComplexTypeMetadata entry, FieldMetadata field) {
+        UserQueryBuilder qb = UserQueryBuilder.from(entry).select(count()).where(emptyOrNull(field));
+        return fetchFieldCountByUserQuery(qb);
+    }
+
+    protected int fetchFieldCountByUserQuery(UserQueryBuilder qb) {
+        int count = 0;
+        try {
+            storage.begin();
+            StorageResults results = storage.fetch(qb.getSelect());
+            count = results.getCount();
+            results.close();
+        } catch (Exception e) {
+            LOGGER.error("Hibernate Storage query data anaylzer failure", e);
+            storage.rollback();
+        } finally {
+            storage.commit();
         }
-        return super.analyzeImpacts(diffResult);
+        return count;
     }
 }

@@ -54,28 +54,21 @@ public class HibernateStorageDataAnaylzer extends HibernateStorageImpactAnalyzer
 
                 if (current.isMandatory() && !previous.isMandatory()) {
                     int count = fetchFieldCountOfNull(previous.getContainingType().getEntity(), previous);
-                    if (count == 0) {
-                        modifyAction.setHasNullValue(false);
-                    } else {
-                        modifyAction.setHasNullValue(true);
-                    }
+                    modifyAction.setHasNullValue(count > 0);
                 }
             }
         }
 
-        Map<RemoveChange, ComplexTypeMetadata> renamedReferenceFieldMap = isFKRenamed(diffResult);
+        Map<RemoveChange, ComplexTypeMetadata> renamedReferenceFieldMap = getRenamedFKFieldMap(diffResult);
         for (Map.Entry<RemoveChange, ComplexTypeMetadata> entry : renamedReferenceFieldMap.entrySet()) {
-            int count = fetchFieldCountOfNotNull(entry.getValue(), (FieldMetadata) entry.getKey().getElement());
-            if (count == 0) {
-                entry.getKey().setContainsData(false);
-            } else {
-                entry.getKey().setContainsData(true);
-            }
+            RemoveChange removeChange = entry.getKey();
+            int count = fetchFieldCountOfNotNull(entry.getValue(), (FieldMetadata) removeChange.getElement());
+            removeChange.setContainsData(count > 0);
         }
         return super.analyzeImpacts(diffResult);
     }
 
-    protected Map<RemoveChange, ComplexTypeMetadata> isFKRenamed(Compare.DiffResults diffResult) {
+    private Map<RemoveChange, ComplexTypeMetadata> getRenamedFKFieldMap(Compare.DiffResults diffResult) {
         Map<FieldMetadata, RemoveChange> removeReferenceFieldMap = new HashMap<>();
         Map<RemoveChange, ComplexTypeMetadata> renamedReferenceFieldMap = new HashMap<>();
         for (RemoveChange removeAction : diffResult.getRemoveChanges()) {
@@ -84,11 +77,15 @@ public class HibernateStorageDataAnaylzer extends HibernateStorageImpactAnalyzer
                 removeReferenceFieldMap.put(((ReferenceFieldMetadata) element).getReferencedField(), removeAction);
             }
         }
-        for (AddChange removeAction : diffResult.getAddChanges()) {
-            MetadataVisitable element = removeAction.getElement();
+        if (removeReferenceFieldMap.isEmpty()) {
+            return renamedReferenceFieldMap;
+        }
+        for (AddChange addAction : diffResult.getAddChanges()) {
+            MetadataVisitable element = addAction.getElement();
             if (element instanceof ReferenceFieldMetadata) {
-                if (removeReferenceFieldMap.containsKey(((ReferenceFieldMetadata) element).getReferencedField())) {
-                    renamedReferenceFieldMap.put((removeReferenceFieldMap.get(((ReferenceFieldMetadata) element).getReferencedField())),
+                FieldMetadata referenceField = ((ReferenceFieldMetadata) element).getReferencedField();
+                if (removeReferenceFieldMap.containsKey(referenceField)) {
+                    renamedReferenceFieldMap.put((removeReferenceFieldMap.get(referenceField)),
                             ((ReferenceFieldMetadata) element).getContainingType().getEntity());
                 }
             }
@@ -96,28 +93,23 @@ public class HibernateStorageDataAnaylzer extends HibernateStorageImpactAnalyzer
         return renamedReferenceFieldMap;
     }
 
-    protected int fetchFieldCountOfNotNull(ComplexTypeMetadata entry, FieldMetadata field) {
+    private int fetchFieldCountOfNotNull(ComplexTypeMetadata entry, FieldMetadata field) {
         UserQueryBuilder qb = UserQueryBuilder.from(entry).select(count()).where(not(emptyOrNull(field)));
         return fetchFieldCountByUserQuery(qb);
     }
 
-    protected int fetchFieldCountOfNull(ComplexTypeMetadata entry, FieldMetadata field) {
+    private int fetchFieldCountOfNull(ComplexTypeMetadata entry, FieldMetadata field) {
         UserQueryBuilder qb = UserQueryBuilder.from(entry).select(count()).where(emptyOrNull(field));
         return fetchFieldCountByUserQuery(qb);
     }
 
-    protected int fetchFieldCountByUserQuery(UserQueryBuilder qb) {
+    private int fetchFieldCountByUserQuery(UserQueryBuilder qb) {
         int count = 0;
+        StorageResults results = storage.fetch(qb.getSelect());
         try {
-            storage.begin();
-            StorageResults results = storage.fetch(qb.getSelect());
             count = results.getCount();
-            results.close();
-        } catch (Exception e) {
-            LOGGER.error("Hibernate Storage query data anaylzer failure", e);
-            storage.rollback();
         } finally {
-            storage.commit();
+            results.close();
         }
         return count;
     }

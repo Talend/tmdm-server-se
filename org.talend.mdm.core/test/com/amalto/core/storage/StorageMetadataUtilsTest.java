@@ -10,6 +10,14 @@
 package com.amalto.core.storage;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.junit.Assert;
@@ -20,6 +28,9 @@ import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
 
+import com.amalto.core.query.user.DateConstant;
+import com.amalto.core.query.user.DateTimeConstant;
+import com.amalto.core.query.user.TimeConstant;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.record.metadata.DataRecordMetadataImpl;
 
@@ -145,5 +156,59 @@ public class StorageMetadataUtilsTest {
                 assertEquals("ab7", idList.get(i)); //$NON-NLS-1$
             }
         }
+    }
+
+    @Test
+    public void testConvertConstantExpressionDate() throws ParseException {
+        DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd"); //$NON-NLS-1$
+
+        DateConstant dateConstant = new DateConstant("2018-10-06"); //$NON-NLS-1$
+        Object dateStamp = StorageMetadataUtils.convert(dateConstant);
+        assertTrue(dateStamp instanceof Timestamp);
+
+        List<Date> listDate = new LinkedList<Date>();
+        listDate.add(DATE_FORMAT.parse("2018-10-11")); //$NON-NLS-1$
+
+        dateConstant = new DateConstant(listDate);
+        Object dateStamps = StorageMetadataUtils.convert(dateConstant);
+        @SuppressWarnings("unchecked")
+        List<Timestamp> returnDateStamps = (List<Timestamp>)dateStamps;
+        assertTrue(returnDateStamps.get(0) instanceof Timestamp);
+    }
+
+    @Test
+    public void testConvertConstantExpressionDateTime() throws ParseException {
+        DateFormat DATE_TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"); //$NON-NLS-1$
+
+        DateTimeConstant dateTimeConstant = new DateTimeConstant("2018-10-06T10:11:12");//$NON-NLS-1$
+        Object dateTimeStamp = StorageMetadataUtils.convert(dateTimeConstant);
+        assertTrue(dateTimeStamp instanceof Timestamp);
+
+        List<Date> listDateTime = new LinkedList<Date>();
+        listDateTime.add(DATE_TIME_FORMAT.parse("2018-10-11T10:11:12")); //$NON-NLS-1$
+
+        dateTimeConstant = new DateTimeConstant(listDateTime);
+        Object dateTimeStamps = StorageMetadataUtils.convert(dateTimeConstant);
+        @SuppressWarnings("unchecked")
+        List<Timestamp> returnDateTimeStamps = (List<Timestamp>)dateTimeStamps;
+        assertTrue(returnDateTimeStamps.get(0) instanceof Timestamp);
+    }
+
+    @Test
+    public void testConvertConstantExpressionTime() throws ParseException {
+        DateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm:ss"); //$NON-NLS-1$
+
+        TimeConstant timeConstant = new TimeConstant("12:10:06"); //$NON-NLS-1$
+        Object timeStamp = StorageMetadataUtils.convert(timeConstant);
+        assertTrue(timeStamp instanceof Timestamp);
+
+        List<Date> listTime = new LinkedList<Date>();
+        listTime.add(TIME_FORMAT.parse("12:11:16")); //$NON-NLS-1$
+
+        timeConstant = new TimeConstant(listTime);
+        Object timeStamps = StorageMetadataUtils.convert(timeConstant);
+        @SuppressWarnings("unchecked")
+        List<Timestamp> returnTimeStamps = (List<Timestamp>)timeStamps;
+        assertTrue(returnTimeStamps.get(0) instanceof Timestamp);
     }
 }

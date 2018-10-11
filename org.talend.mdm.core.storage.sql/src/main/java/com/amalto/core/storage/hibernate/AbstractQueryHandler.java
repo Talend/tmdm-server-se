@@ -203,12 +203,12 @@ abstract class AbstractQueryHandler extends VisitorAdapter<StorageResults> {
 
         @Override
         public Object visit(DateConstant constant) {
-            return constant.getValueObject();
+            return StorageMetadataUtils.convert(constant);
         }
 
         @Override
         public Object visit(DateTimeConstant constant) {
-            return constant.getValueObject();
+            return StorageMetadataUtils.convert(constant);
         }
 
         @Override
@@ -223,7 +223,7 @@ abstract class AbstractQueryHandler extends VisitorAdapter<StorageResults> {
 
         @Override
         public Object visit(TimeConstant constant) {
-            return constant.getValueObject();
+            return StorageMetadataUtils.convert(constant);
         }
 
         @Override

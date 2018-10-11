@@ -61,6 +61,8 @@ public class StorageTestCase extends TestCase {
     protected static final ComplexTypeMetadata type;
 
     protected static final ComplexTypeMetadata person;
+    
+    protected static final ComplexTypeMetadata dateKey;
 
     protected static final ComplexTypeMetadata customer;
 
@@ -175,6 +177,7 @@ public class StorageTestCase extends TestCase {
 
         type = repository.getComplexType("TypeA");
         person = repository.getComplexType("Person");
+        dateKey = repository.getComplexType("DateKey");
         customer = repository.getComplexType("Customer");
         address = repository.getComplexType("Address");
         country = repository.getComplexType("Country");

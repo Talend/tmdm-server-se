@@ -15,15 +15,13 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 import javax.xml.XMLConstants;
 
-import com.amalto.core.query.user.metadata.*;
-import com.amalto.core.storage.SecuredStorage;
-import com.amalto.core.storage.StagingStorage;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
@@ -39,7 +37,13 @@ import org.talend.mdm.commmon.metadata.Types;
 import com.amalto.core.query.user.DateConstant;
 import com.amalto.core.query.user.DateTimeConstant;
 import com.amalto.core.query.user.TimeConstant;
+import com.amalto.core.query.user.metadata.MetadataField;
+import com.amalto.core.query.user.metadata.StagingBlockKey;
+import com.amalto.core.query.user.metadata.TaskId;
+import com.amalto.core.query.user.metadata.Timestamp;
 import com.amalto.core.schema.validation.SkipAttributeDocumentBuilder;
+import com.amalto.core.storage.SecuredStorage;
+import com.amalto.core.storage.StagingStorage;
 import com.amalto.core.storage.StorageMetadataUtils;
 import com.amalto.core.storage.record.metadata.DataRecordMetadata;
 
@@ -308,6 +312,8 @@ public class DataRecordXmlWriter implements DataRecordWriter {
                     synchronized (TimeConstant.TIME_FORMAT) {
                         out.write((TimeConstant.TIME_FORMAT).format(value));
                     }
+                } else if (Types.DECIMAL.equals(type.getName())) {
+                    out.write(((BigDecimal) value).toPlainString());
                 } else {
                     out.write(StringEscapeUtils.escapeXml(value.toString()));
                 }

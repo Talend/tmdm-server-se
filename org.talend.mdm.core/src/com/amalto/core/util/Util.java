@@ -29,7 +29,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.MissingResourceException;
 import java.util.Properties;
-import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
@@ -733,7 +732,7 @@ public class Util {
                         }
                     }
                 }
-                String resultUpdateReport = "" + "<Update><ID>" + UUID.randomUUID().toString() + "</ID><UserName>" + username + "</UserName>"
+                String resultUpdateReport = "" + "<Update>" + "<UserName>" + username + "</UserName>"
                         + "<Source>" + UpdateReportPOJO.GENERIC_UI_SOURCE +"</Source>" + "<TimeInMillis>" + System.currentTimeMillis() + "</TimeInMillis>"
                         + "<OperationType>" + StringEscapeUtils.escapeXml(operationType) + "</OperationType>" + "<DataCluster>"
                         + clusterName + "</DataCluster>" + "<DataModel>" + StringUtils.EMPTY + "</DataModel>" + "<Concept>"

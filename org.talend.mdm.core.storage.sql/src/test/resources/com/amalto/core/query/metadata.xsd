@@ -73,6 +73,20 @@
 		</xsd:unique>
 	</xsd:element>
 
+    <xsd:element name="DateKey">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="id" type="xsd:string" />
+                <xsd:element name="day" type="xsd:date" />
+                <xsd:element name="name" type="xsd:string" />
+            </xsd:sequence>
+        </xsd:complexType>
+        <xsd:unique name="DateKey">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="day" />
+        </xsd:unique>
+    </xsd:element>
+
 	<xsd:complexType name="Address">
 		<xsd:sequence>
 			<xsd:element name="Street" type="xsd:string" />
@@ -1048,12 +1062,12 @@
 		type="Update">
 		<xsd:unique name="Update">
 			<xsd:selector xpath="." />
-			<xsd:field xpath="ID"/>
+			<xsd:field xpath="Source" />
+			<xsd:field xpath="TimeInMillis" />
 		</xsd:unique>
 	</xsd:element>
 	<xsd:complexType abstract="false" mixed="false" name="Update">
 		<xsd:sequence maxOccurs="1" minOccurs="1">
-			<xsd:element maxOccurs="1" minOccurs="1" name="ID" nillable="false" type="xsd:string"/>
 			<xsd:element maxOccurs="1" minOccurs="0" name="UserName"
 				nillable="true" type="xsd:string" />
 			<xsd:element maxOccurs="1" minOccurs="1" name="Source"

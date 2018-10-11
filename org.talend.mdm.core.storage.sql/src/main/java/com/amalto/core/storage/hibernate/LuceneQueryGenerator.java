@@ -40,6 +40,7 @@ import org.talend.mdm.commmon.metadata.EnumerationFieldMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
 import org.talend.mdm.commmon.metadata.SimpleTypeFieldMetadata;
+import org.talend.mdm.commmon.util.core.MDMConfiguration;
 
 import com.amalto.core.query.user.Alias;
 import com.amalto.core.query.user.BigDecimalConstant;
@@ -79,6 +80,8 @@ import com.amalto.core.storage.exception.FullTextQueryCompositeKeyException;
 import com.amalto.core.storage.exception.UnsupportedFullTextQueryException;
 
 class LuceneQueryGenerator extends VisitorAdapter<Query> {
+
+    private static final String FUZZY_SEARCH = "lucene.fuzzy.search"; //$NON-NLS-1$
 
     private final Collection<ComplexTypeMetadata> types;
 
@@ -455,8 +458,8 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
     private static String getFullTextValue(FullText fullText) {
         return getSearchTextValue(fullText.getValue().toLowerCase().trim());
     }
-    
-    private static String getSearchTextValue(String  value) {
+
+    private static String getSearchTextValue(String value) {
         int index = 0;
         while (value.charAt(index) == '*') { // Skip '*' characters at beginning.
             index++;
@@ -464,31 +467,70 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
         if (index > 0) {
             value = value.substring(index);
         }
-        char[] removes = new char[] { '[', ']', '+', '!', '(', ')', '^', '\"', '~', ':', ';', '\\', '-', '@', '#', '$', '%', '&', '=', ',', '.', '<', '>' }; // Removes reserved
-                                                                                                 // characters
-        for (char remove : removes) {
-            value = value.replace(remove, ' ');
+
+        boolean isFuzzySearch = isFuzzySearch(value);
+
+        char tilde = '~'; //$NON-NLS-1$
+        char[] removes = new char[] { '[', ']', '+', '!', '(', ')', '^', '\"', tilde, ':', ';', '\\', '-', '@', '#', '$', '%', '&',
+                '=', ',', '.', '<', '>' }; // Removes reserved characters
+
+        String fuzzyTerm = StringUtils.EMPTY;
+        String queryTerm = value;
+        if (isFuzzySearch) {
+            fuzzyTerm = value.substring(value.lastIndexOf(tilde));
+            queryTerm = value.substring(0, value.lastIndexOf(tilde));
         }
+        for (char remove : removes) {
+            queryTerm = queryTerm.replace(remove, ' '); //$NON-NLS-1$
+        }
+        value = queryTerm.trim() + fuzzyTerm;
         if (value != null && value.length() > 1 && value.startsWith("'") && value.endsWith("'")) { //$NON-NLS-1$//$NON-NLS-2$
             value = "\"" + value.substring(1, value.length() - 1) + "\""; //$NON-NLS-1$ //$NON-NLS-2$
         } else {
             if (value.contains(" ")) { //$NON-NLS-1$
-                return getMultiKeywords(value);
+                return getMultiKeywords(value, isFuzzySearch);
             } else {
-                if (!value.endsWith("*")) { //$NON-NLS-1$
-                    value += '*';
+                if (!value.endsWith("*") && !isFuzzySearch) { //$NON-NLS-1$
+                    value += '*'; //$NON-NLS-1$
                 }
             }
         }
         return value;
     }
 
-    private static String getMultiKeywords(String value) {
+    /**
+     * 1. default value for configuration <b>lucene.fuzzy.search</b> is {@code true}, if not configuration it, also
+     * return {@code true}, only specific configuration it to false, will return {@code false} <br/>
+     * 
+     * 2. if the <i>value</i> ending ~ and ~0.8(less than 1 and include 0 and 1),
+     * <i>value</i>{@code .matches(}<i>\w*?~((0(\.\d)?)|1)?</i>{@code )} return {@code true} <br/>
+     * 
+     * <pre>
+     * "roam~".matches("\\w*?~((0(\\.\\d)?)|1)?")       = true
+     * "roam~ ".matches("\\w*?~((0(\\.\\d)?)|1)?")      = true
+     * "roam~1".matches("\\w*?~((0(\\.\\d)?)|1)?")      = true
+     * "roam~0".matches("\\w*?~((0(\\.\\d)?)|1)?")      = true
+     * "roam~0.5".matches("\\w*?~((0(\\.\\d)?)|1)?")    = true
+     * "roam~2".matches("\\w*?~((0(\\.\\d)?)|1)?")      = false
+     * </pre>
+     * 
+     * Only configuration of lucene.fuzzy.search is true and the <i>value</i> is ending ~ and ~decimal of less than 1,
+     * will return {@code true}
+     * 
+     * @param value
+     * @return true if, value ending ~ and ~decimal of less than 1 and configuration of lucene.fuzzy.search is true
+     */
+    private static boolean isFuzzySearch(String value) {
+        boolean enableFuzzySearch = Boolean.parseBoolean(MDMConfiguration.getConfiguration().getProperty(FUZZY_SEARCH, "true")); //$NON-NLS-1$
+        return value.matches("\\w*?~((0(\\.\\d)?)|1)?") && enableFuzzySearch; //$NON-NLS-1$
+    }
+
+    private static String getMultiKeywords(String value, boolean isFuzzySearch) {
         List<String> blocks = new ArrayList<String>(Arrays.asList(value.split(" "))); //$NON-NLS-1$
         StringBuffer sb = new StringBuffer();
         for (String block : blocks) {
             if (StringUtils.isNotEmpty(block)) {
-                if (!block.endsWith("*")) { //$NON-NLS-1$
+                if (!block.endsWith("*") && !isFuzzySearch) { //$NON-NLS-1$
                     sb.append(block + "* "); //$NON-NLS-1$
                 } else {
                     sb.append(block + " "); //$NON-NLS-1$

@@ -44,6 +44,12 @@ public class StorageRecordCreationTest extends StorageTestCase {
                                 repository,
                                 address,
                                 "<Address><id>1000</id><Street>Street1</Street><country>[1000]</country><ZipCode>10000</ZipCode><City>City1</City><enterprise>false</enterprise></Address>"));
+        allRecords
+                .add(factory
+                        .read(
+                                repository,
+                                dateKey,
+                                "<DateKey><id>1000</id><name>John</name><day>2010-05-10</day></DateKey>"));
         allRecords.add(factory.read(repository, product, "<Product>\n"
                 + "    <Id>1</Id>\n"
                 + "    <Name>Product name</Name>\n"
@@ -110,6 +116,13 @@ public class StorageRecordCreationTest extends StorageTestCase {
                 } catch (Exception e) {
                     // Ignored
                 }
+
+                qb = from(dateKey);
+                try {
+                    storage.delete(qb.getSelect());
+                } catch (Exception e) {
+                    // Ignored
+                }
             }
             storage.commit();
         } finally {
@@ -170,6 +183,66 @@ public class StorageRecordCreationTest extends StorageTestCase {
         results = storage.fetch(qb.getSelect());
         try {
             assertEquals(1, results.getCount());
+        } finally {
+            results.close();
+            storage.commit();
+        }
+    }
+
+    public void testGetWithDatePrimaryKey() throws Exception {
+        UserQueryBuilder qb = from(dateKey).where(eq(dateKey.getField("id"), "1000"));
+        storage.begin();
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+        } finally {
+            results.close();
+            storage.commit();
+        }
+    }
+
+    public void testInsertAndDeleteWithDatePrimaryKey() throws Exception {
+        UserQueryBuilder qb = from(dateKey).where(eq(dateKey.getField("id"), "1001"));
+        storage.begin();
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(0, results.getCount());
+        } finally {
+            results.close();
+            storage.commit();
+        }
+
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+        DataRecord record = factory
+                .read(
+                        repository,
+                        dateKey,
+                        "<DateKey><id>1001</id><name>Mark</name><day>2012-08-12</day></DateKey>");
+        storage.begin();
+        try {
+            storage.update(Collections.singletonList(record));
+            storage.commit();
+        } finally {
+            storage.end();
+        }
+
+        storage.begin();
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+        } finally {
+            results.close();
+            storage.commit();
+        }
+
+        storage.begin();
+        storage.delete(qb.getSelect());
+        storage.commit();
+        
+        storage.begin();
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(0, results.getCount());
         } finally {
             results.close();
             storage.commit();

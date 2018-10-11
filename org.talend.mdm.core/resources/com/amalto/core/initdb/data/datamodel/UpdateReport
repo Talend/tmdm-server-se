@@ -4,12 +4,12 @@
 	&lt;xsd:element abstract="false" name="Update" nillable="false" type="Update"&gt;
 		&lt;xsd:unique name="Update"&gt;
 			&lt;xsd:selector xpath="."/&gt;
-			&lt;xsd:field xpath="ID"/&gt;
+			&lt;xsd:field xpath="Source"/&gt;
+			&lt;xsd:field xpath="TimeInMillis"/&gt;
 		&lt;/xsd:unique&gt;
 	&lt;/xsd:element&gt;
 	&lt;xsd:complexType abstract="false" mixed="false" name="Update"&gt;
 		&lt;xsd:sequence maxOccurs="1" minOccurs="1"&gt;
-			&lt;xsd:element maxOccurs="1" minOccurs="1" name="ID" nillable="false" type="xsd:string"/&gt;
 			&lt;xsd:element maxOccurs="1" minOccurs="0" name="UserName" nillable="true" type="xsd:string"/&gt;
 			&lt;xsd:element maxOccurs="1" minOccurs="1" name="Source" nillable="false" type="xsd:string"/&gt;
 			&lt;xsd:element maxOccurs="1" minOccurs="1" name="TimeInMillis" nillable="false" type="xsd:string"/&gt;

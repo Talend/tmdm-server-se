@@ -10,6 +10,7 @@
 package org.talend.mdm.webapp.browserecords.client.handler;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -209,7 +210,11 @@ public class ItemTreeHandler implements IsSerializable {
                         elValue = getLookUpFieldValue(itemBean, currentNodeModel.getTypePath(), ((ForeignKeyBean) value).getId());
                         currentNodeModel.setTypeName(((ForeignKeyBean) value).getConceptName());
                     } else {
-                        elValue = getLookUpFieldValue(itemBean, currentNodeModel.getTypePath(), value.toString());
+                        String valueString = value.toString();
+                        if (value instanceof BigDecimal) {
+                            valueString = ((BigDecimal) value).toPlainString();
+                        }
+                        elValue = getLookUpFieldValue(itemBean, currentNodeModel.getTypePath(), valueString);
                     }
                     root.appendChild(doc.createTextNode(elValue));
 

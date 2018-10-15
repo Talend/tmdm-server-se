@@ -83,10 +83,11 @@ public class HibernateStorageDataAnaylzer extends HibernateStorageImpactAnalyzer
         for (AddChange addAction : diffResult.getAddChanges()) {
             MetadataVisitable element = addAction.getElement();
             if (element instanceof ReferenceFieldMetadata) {
-                FieldMetadata referenceField = ((ReferenceFieldMetadata) element).getReferencedField();
-                if (removeReferenceFieldMap.containsKey(referenceField)) {
-                    renamedReferenceFieldMap.put((removeReferenceFieldMap.get(referenceField)),
-                            ((ReferenceFieldMetadata) element).getContainingType().getEntity());
+                ReferenceFieldMetadata referenceField = ((ReferenceFieldMetadata) element);
+                FieldMetadata referencedField = referenceField.getReferencedField();
+                if (removeReferenceFieldMap.containsKey(referencedField)) {
+                    renamedReferenceFieldMap.put((removeReferenceFieldMap.get(referencedField)),
+                            referenceField.getContainingType().getEntity());
                 }
             }
         }

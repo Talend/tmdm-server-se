@@ -105,11 +105,13 @@ public class HibernateStorageDataAnaylzer extends HibernateStorageImpactAnalyzer
 
     private int fetchFieldCountByUserQuery(UserQueryBuilder qb) {
         int count = 0;
+        storage.begin();
         StorageResults results = storage.fetch(qb.getSelect());
         try {
             count = results.getCount();
         } finally {
             results.close();
+            storage.commit();
         }
         return count;
     }

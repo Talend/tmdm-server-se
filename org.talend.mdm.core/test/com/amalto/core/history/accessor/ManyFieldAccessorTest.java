@@ -20,25 +20,30 @@ import com.amalto.core.save.DOMDocument;
 import com.amalto.core.util.Util;
 
 public class ManyFieldAccessorTest {
-    
+
     @Test
     public void testCreateEmptyChildNode() throws Exception {
         DOMDocument document = getTypeWithNoElementContent();
-
         Accessor accessor = document.createAccessor("/Communications/TypeCommunication[1]"); //$NON-NLS-1$
         accessor.create();
-        
         Assert.assertNotNull(document);
     }
-    
+
     private DOMDocument getTypeWithNoElementContent() throws IOException, SAXException, ParserConfigurationException {
-        String xml = 
-                "<TI_Tiers xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r\n" +  //$NON-NLS-1$
-        		"   <Id>7</Id>\r\n" +  //$NON-NLS-1$
-        		"   <Communications>\r\n" +  //$NON-NLS-1$
-        		"      <TypeCommunication xsi:type=\"TI_TypeComType\"/>\r\n" +  //$NON-NLS-1$
-        		"   </Communications>\r\n" +   //$NON-NLS-1$
-        		"</TI_Tiers>"; //$NON-NLS-1$
+        String xml = "<TI_Tiers xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><Id>7</Id><Communications><TypeCommunication xsi:type=\"TI_TypeComType\"/></Communications></TI_Tiers>"; //$NON-NLS-1$
+        return new DOMDocument(Util.parse(xml), null, StringUtils.EMPTY, StringUtils.EMPTY);
+    }
+
+    @Test
+    public void testCreateSameNameChildNode() throws Exception {
+        DOMDocument document = getTypeWithSameNameElementContent();
+        Accessor accessor = document.createAccessor("Emails[10]/email"); //$NON-NLS-1$
+        accessor.create();
+        Assert.assertNotNull(document.getLastAccessedNode());
+    }
+
+    private DOMDocument getTypeWithSameNameElementContent() throws IOException, SAXException, ParserConfigurationException {
+        String xml = "<Product><Id>1</Id><Emails><email><email>a@talend.com</email><email>b@talend.com</email></email></Emails></Product>";
         return new DOMDocument(Util.parse(xml), null, StringUtils.EMPTY, StringUtils.EMPTY);
     }
 }

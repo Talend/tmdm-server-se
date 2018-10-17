@@ -312,8 +312,13 @@ public class DataRecordXmlWriter implements DataRecordWriter {
                     synchronized (TimeConstant.TIME_FORMAT) {
                         out.write((TimeConstant.TIME_FORMAT).format(value));
                     }
-                } else if (Types.DECIMAL.equals(type.getName())) {
-                    out.write(((BigDecimal) value).toPlainString());
+                } else if (Types.FLOAT.equals(type.getName()) || Types.DOUBLE.equals(type.getName())
+                        || Types.DECIMAL.equals(type.getName())) {
+                    String valueString = new BigDecimal(value.toString()).toPlainString();
+                    if (Types.FLOAT.equals(type.getName()) || Types.DOUBLE.equals(type.getName())) {
+                        valueString = StorageMetadataUtils.formatFranctionValue(valueString);
+                    }
+                    out.write(valueString);
                 } else {
                     out.write(StringEscapeUtils.escapeXml(value.toString()));
                 }

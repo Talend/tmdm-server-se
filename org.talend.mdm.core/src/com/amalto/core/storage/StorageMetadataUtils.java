@@ -914,11 +914,18 @@ public class StorageMetadataUtils {
                     throw new RuntimeException("Could not parse time '" + o + "'.", e);
                 }
             }
+        } else if (Types.FLOAT.equals(typeName) || Types.DOUBLE.equals(typeName) || Types.DECIMAL.equals(typeName)) {
+            String value = new BigDecimal(String.valueOf(o)).toPlainString();
+            if (Types.FLOAT.equals(typeName) || Types.DOUBLE.equals(typeName)) {
+                value = formatFranctionValue(value);
+            }
+            return value;
         } else {
             return String.valueOf(o);
         }
     }
     
+
     public static List<String> getIds(String dataAsString) {
         List<String> ids = new LinkedList<String>();
         if (dataAsString.startsWith("[")) { //$NON-NLS-1$
@@ -945,5 +952,22 @@ public class StorageMetadataUtils {
             ids.add(dataAsString);
         }
         return ids;
+    }
+
+    public static String formatFranctionValue(String value) {
+        if (value != null && value.contains(".")) { //$NON-NLS-1$
+            String[] numberArray = value.trim().split("\\."); //$NON-NLS-1$
+            String decimalValue = numberArray[1];
+            int fractionDigits = decimalValue.length();
+
+            for (int i = 0; i < decimalValue.length(); i++) {
+                if (!"0".equals(String.valueOf(decimalValue.charAt(i)))) { //$NON-NLS-1$
+                    fractionDigits = i + 1;
+                }
+            }
+            return numberArray[0] + "." + decimalValue.substring(0, fractionDigits); //$NON-NLS-1$
+        } else {
+            return value;
+        }
     }
 }

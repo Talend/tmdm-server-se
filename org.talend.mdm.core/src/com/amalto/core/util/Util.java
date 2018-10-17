@@ -9,6 +9,7 @@
  */
 package com.amalto.core.util;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileFilter;
@@ -47,6 +48,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -64,6 +66,7 @@ import org.xml.sax.SAXException;
 import com.amalto.commons.core.utils.XMLUtils;
 import com.amalto.core.delegator.BeanDelegatorContainer;
 import com.amalto.core.jobox.JobContainer;
+import com.amalto.core.load.exception.TrimSpecificationException;
 import com.amalto.core.objects.DroppedItemPOJO;
 import com.amalto.core.objects.DroppedItemPOJOPK;
 import com.amalto.core.objects.ItemPOJO;
@@ -1287,5 +1290,38 @@ public class Util {
             path = path.replaceAll("\\[\\d+\\]", "");
         }
         return path;
+    }
+
+    /**
+     *
+     * To delete a character with no visible representation, such as a control character, a backspace, newline, and so on.
+     * before:
+     * <pre>
+     * \n\n    <?xml version="1.0" encoding="UTF-8"?>\n<role-menu-parameters position="1">  <parent-iD></parent-iD></role-menu-parameters>\n\n
+     * </pre>
+     * after:
+     * <pre>
+     * <?xml version="1.0" encoding="UTF-8"?><role-menu-parameters position="1"><parent-iD></parent-iD></role-menu-parameters>
+     * </pre>
+     * @param source string
+     * @return
+     */
+    public static String trimSpecification(String input) {
+        if (StringUtils.isEmpty(input)) {
+            return input;
+        }
+        BufferedReader reader = new BufferedReader(new StringReader(input));
+        StringBuffer result = new StringBuffer();
+        try {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                result.append(line.trim());
+            }
+            return result.toString();
+        } catch (IOException e) {
+            throw new TrimSpecificationException("Error occurred while stripping whitespace and newlines from string " + input, e);
+        } finally {
+            IOUtils.closeQuietly(reader);
+        }
     }
 }

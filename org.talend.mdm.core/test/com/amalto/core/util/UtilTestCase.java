@@ -19,8 +19,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
-import junit.framework.TestCase;
-
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -41,6 +39,8 @@ import com.amalto.xmlserver.interfaces.IWhereItem;
 import com.amalto.xmlserver.interfaces.WhereAnd;
 import com.amalto.xmlserver.interfaces.WhereCondition;
 import com.amalto.xmlserver.interfaces.WhereLogicOperator;
+
+import junit.framework.TestCase;
 
 /**
  * DOC achen class global comment. Detailled comment
@@ -420,6 +420,32 @@ public class UtilTestCase extends TestCase {
         assertEquals("/detail/feature/actor[s]", Util.removeBracketWithNumber("/detail/feature/actor[s]"));
 
         assertNull(Util.removeBracketWithNumber(null));
+    }
+
+    //fixed TMDM-12549
+    public void testParseXMLWithNoVisibleChar() {
+        String expectedResult = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><role-where-condition><predicate></predicate><right-value-or-path>${user_context.properties[\"Zip\"]}</right-value-or-path><operator>=</operator><left-path>QACustomer/Address/Zip</left-path></role-where-condition>";
+        String input = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n" +
+                "          <role-where-condition><predicate></predicate><right-value-or-path>${user_context.properties[\"Zip\"]}</right-value-or-path><operator>=</operator><left-path>QACustomer/Address/Zip</left-path></role-where-condition>";
+        String formattedResults = Util.trimSpecification(input);
+        assertEquals(261, input.length());
+        assertEquals(expectedResult.length(), formattedResults.length());
+        input = "[\r\n" +
+                "                \r\n" +
+                "                <?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n" +
+                "<role-menu-parameters position=\"1\"><parent-iD></parent-iD></role-menu-parameters>\r\n" +
+                "\r\n" +
+                "]\r\n" +
+                "\r\n" +
+                "                \r\n" +
+                "                <?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n" +
+                "<role-menu-parameters position=\"1\"><parent-iD></parent-iD></role-menu-parameters>\r\n" +
+                "\r\n" +
+                "";
+        expectedResult = "[<?xml version=\"1.0\" encoding=\"UTF-8\"?><role-menu-parameters position=\"1\"><parent-iD></parent-iD></role-menu-parameters>]<?xml version=\"1.0\" encoding=\"UTF-8\"?><role-menu-parameters position=\"1\"><parent-iD></parent-iD></role-menu-parameters>";
+        formattedResults = Util.trimSpecification(input);
+        assertEquals(326, input.length());
+        assertEquals(expectedResult.length(), formattedResults.length());
     }
 
     private class TestClassLoader extends ClassLoader {

@@ -212,9 +212,9 @@ public class ItemTreeHandler implements IsSerializable {
                         currentNodeModel.setTypeName(((ForeignKeyBean) value).getConceptName());
                     } else {
                         String valueString = value.toString();
-                        if (value instanceof BigDecimal || value instanceof Float || value instanceof Double) {
+                        if (value instanceof Float || value instanceof Double || value instanceof BigDecimal) {
                             valueString = new BigDecimal(valueString).toPlainString();
-                            if (value instanceof BigDecimal || value instanceof Float) {
+                            if (value instanceof Float || value instanceof Double) {
                                 valueString = FormatUtil.formatFranctionValue(valueString);
                             }
                         }

@@ -67,7 +67,7 @@ public class ViewHelperTest extends TestCase {
         assertEquals(result, ViewHelper.getSearchables(wsView, dataModel, language, entityModel));
         result.clear();
         
-        result.put("ProductFamily", "Tout le contenu");
+        result.put("ProductFamily", "Contenu complet");
         result.put("ProductFamily/Id", "rf-id");
         result.put("ProductFamily/Name", "rf-name");
         result.put("ProductFamily/ChangeStatus", "rf-changeSatus");

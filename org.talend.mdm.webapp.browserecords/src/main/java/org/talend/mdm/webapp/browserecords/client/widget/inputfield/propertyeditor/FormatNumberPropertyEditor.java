@@ -113,9 +113,7 @@ public class FormatNumberPropertyEditor extends NumberPropertyEditor {
                 if (!valueString.contains(".")) { //$NON-NLS-1$
                     valueString = valueString + ".0"; //$NON-NLS-1$
                 } else {
-                    if (type == Float.class || type == Double.class) {
-                        valueString = FormatUtil.formatFranctionValue(valueString);
-                    }
+                    valueString = FormatUtil.formatFranctionValue(valueString);
                 }
             }
             return valueString;

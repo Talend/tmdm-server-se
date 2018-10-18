@@ -915,11 +915,7 @@ public class StorageMetadataUtils {
                 }
             }
         } else if (Types.FLOAT.equals(typeName) || Types.DOUBLE.equals(typeName) || Types.DECIMAL.equals(typeName)) {
-            String value = new BigDecimal(String.valueOf(o)).toPlainString();
-            if (Types.FLOAT.equals(typeName) || Types.DOUBLE.equals(typeName)) {
-                value = formatFranctionValue(value);
-            }
-            return value;
+            return getNumberValue(typeName, o);
         } else {
             return String.valueOf(o);
         }
@@ -969,5 +965,13 @@ public class StorageMetadataUtils {
         } else {
             return value;
         }
+    }
+
+    public static String getNumberValue(String type, Object value) {
+        String valueString = new BigDecimal(String.valueOf(value)).toPlainString();
+        if (Types.FLOAT.equals(type) || Types.DOUBLE.equals(type)) {
+            valueString = formatFranctionValue(valueString);
+        }
+        return valueString;
     }
 }

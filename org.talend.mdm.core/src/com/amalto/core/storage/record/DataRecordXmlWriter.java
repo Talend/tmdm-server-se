@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -314,10 +313,7 @@ public class DataRecordXmlWriter implements DataRecordWriter {
                     }
                 } else if (Types.FLOAT.equals(type.getName()) || Types.DOUBLE.equals(type.getName())
                         || Types.DECIMAL.equals(type.getName())) {
-                    String valueString = new BigDecimal(value.toString()).toPlainString();
-                    if (Types.FLOAT.equals(type.getName()) || Types.DOUBLE.equals(type.getName())) {
-                        valueString = StorageMetadataUtils.formatFranctionValue(valueString);
-                    }
+                    String valueString = StorageMetadataUtils.getNumberValue(type.getName(), value);
                     out.write(valueString);
                 } else {
                     out.write(StringEscapeUtils.escapeXml(value.toString()));

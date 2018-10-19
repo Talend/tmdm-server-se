@@ -118,6 +118,7 @@ public class CellRendererCreator {
                         ListStore<ModelData> store, Grid<ModelData> grid) {
                     if (((String) model.get(property)) != null && !((String) model.get(property)).equals("")) {
                         String value = ((String) model.get(property));
+                        value = FormatUtil.formatFranctionValue(new BigDecimal(value).toPlainString());
                         return Format.htmlEncode(FormatUtil.changeNumberToFormatedValue(value));
                     } else {
                         return Format.htmlEncode((String) model.get(property));
@@ -150,7 +151,7 @@ public class CellRendererCreator {
                         if (formats == null) {
                             BigDecimal numValue = (BigDecimal) FormatUtil.getDecimalValue((String) model.get(property),
                                     fractionDigits);
-                            return Format.htmlEncode(numValue.toPlainString());
+                            return Format.htmlEncode(FormatUtil.changeNumberToFormatedValue(numValue.toPlainString()));
                         } else {
                             int digitsLength = value.trim().split("\\.")[1].length();
                             BigDecimal numValue = (BigDecimal) FormatUtil.getDecimalValue((String) model.get(property),

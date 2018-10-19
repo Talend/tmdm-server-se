@@ -21,6 +21,7 @@ import org.talend.mdm.webapp.base.shared.EntityModel;
 import org.talend.mdm.webapp.base.shared.TypeModel;
 import org.talend.mdm.webapp.browserecords.client.model.ItemBean;
 import org.talend.mdm.webapp.browserecords.client.model.ItemNodeModel;
+import org.talend.mdm.webapp.browserecords.client.util.FormatUtil;
 import org.talend.mdm.webapp.browserecords.shared.ViewBean;
 
 import com.extjs.gxt.ui.client.data.ModelData;
@@ -211,8 +212,11 @@ public class ItemTreeHandler implements IsSerializable {
                         currentNodeModel.setTypeName(((ForeignKeyBean) value).getConceptName());
                     } else {
                         String valueString = value.toString();
-                        if (value instanceof BigDecimal) {
-                            valueString = ((BigDecimal) value).toPlainString();
+                        if (value instanceof Float || value instanceof Double || value instanceof BigDecimal) {
+                            valueString = new BigDecimal(valueString).toPlainString();
+                            if (value instanceof Float || value instanceof Double) {
+                                valueString = FormatUtil.formatFranctionValue(valueString);
+                            }
                         }
                         elValue = getLookUpFieldValue(itemBean, currentNodeModel.getTypePath(), valueString);
                     }

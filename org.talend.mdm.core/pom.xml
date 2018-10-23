@@ -16,7 +16,7 @@
         <jackson.version>2.8.11.1</jackson.version>
         <jackson.provider.version>2.9.7</jackson.provider.version>
         <activemq.version>5.14.5</activemq.version>
-        <woodstox.core.version>5.1.0</woodstox.core.version>
+        <woodstox.core.version>5.0.3</woodstox.core.version>
         <joda.time.version>2.10</joda.time.version>
     </properties>
 

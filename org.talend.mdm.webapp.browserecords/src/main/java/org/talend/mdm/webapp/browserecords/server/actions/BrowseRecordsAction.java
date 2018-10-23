@@ -44,6 +44,7 @@ import org.talend.mdm.webapp.base.client.model.ForeignKeyBean;
 import org.talend.mdm.webapp.base.client.model.ItemBaseModel;
 import org.talend.mdm.webapp.base.client.model.ItemBasePageLoadResult;
 import org.talend.mdm.webapp.base.client.model.ItemResult;
+import org.talend.mdm.webapp.base.client.util.LanguageUtil;
 import org.talend.mdm.webapp.base.client.util.MultilanguageMessageParser;
 import org.talend.mdm.webapp.base.server.ForeignKeyHelper;
 import org.talend.mdm.webapp.base.server.exception.WebBaseException;
@@ -109,6 +110,7 @@ import com.amalto.core.util.CoreException;
 import com.amalto.core.util.EntityNotFoundException;
 import com.amalto.core.util.FieldNotFoundException;
 import com.amalto.core.util.LocalUser;
+import com.amalto.core.util.LocaleUtil;
 import com.amalto.core.util.Messages;
 import com.amalto.core.util.MessagesFactory;
 import com.amalto.core.webservice.WSBoolean;
@@ -1639,7 +1641,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
     @Override
     public ItemResult saveItem(String concept, String ids, String xml, boolean isCreate, boolean isWarningApprovedBeforeSave,
             String language) throws ServiceException {
-        Locale locale = new Locale(language);
+        Locale locale = LocaleUtil.getLocal(language);
 
         boolean hasBeforeSavingProcess = Util.isTransformerExist("beforeSaving_" + concept); //$NON-NLS-1$
 

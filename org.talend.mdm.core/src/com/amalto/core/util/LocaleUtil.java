@@ -58,12 +58,12 @@ public class LocaleUtil {
         if (language == null) {
             locale = request.getLocale();
         } else {
-            locale = getLocal(language);
+            locale = getLocale(language);
         }
         return locale;
     }
 
-    public static Locale getLocal(String language) {
+    public static Locale getLocale(String language) {
         Locale locale;
         if (language.contains("_")) {
             String[] localeInfo = language.split("_");

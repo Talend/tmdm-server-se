@@ -208,7 +208,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             }
             records = deleteRecordMap.get(concept);
             if (!records.contains(item.getIds())) {
-                Locale locale = new Locale(language);
+                Locale locale = LocaleUtil.getLocale(language);
                 try {
                     String dataClusterPK = getCurrentDataCluster();
                     MetadataRepository repository = CommonUtil.getCurrentRepository();
@@ -428,6 +428,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
     @Override
     public ItemBean getItem(ItemBean itemBean, String viewPK, EntityModel entityModel, boolean staging, String language)
             throws ServiceException {
+        Locale locale = LocaleUtil.getLocale(language);
         try {
             String dataCluster = getCurrentDataCluster(staging);
             String dataModel = getCurrentDataModel();
@@ -464,13 +465,13 @@ public class BrowseRecordsAction implements BrowseRecordsService {
 
             return itemBean;
         } catch (WebBaseException e) {
-            throw new ServiceException(BASEMESSAGE.getMessage(new Locale(language), e.getMessage(), e.getArgs()));
+            throw new ServiceException(BASEMESSAGE.getMessage(locale, e.getMessage(), e.getArgs()));
         } catch (Exception exception) {
             String errorMessage;
             if (CoreException.class.isInstance(exception.getCause())) {
                 CoreException webCoreException = (CoreException) exception.getCause();
                 errorMessage = getErrorMessageFromWebCoreException(webCoreException, itemBean.getConcept(), itemBean.getIds(),
-                        new Locale(language));
+                        locale);
             } else {
                 errorMessage = exception.getLocalizedMessage();
             }
@@ -565,8 +566,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             return entityModel;
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
-            Locale locale = new Locale(language);
-            throw new ServiceException(MESSAGES.getMessage(locale, "parse_model_error")); //$NON-NLS-1$
+            throw new ServiceException(MESSAGES.getMessage(LocaleUtil.getLocale(language), "parse_model_error")); //$NON-NLS-1$
         }
     }
 
@@ -602,12 +602,12 @@ public class BrowseRecordsAction implements BrowseRecordsService {
 
     @Override
     public ViewBean getView(String viewPk, String language) throws ServiceException {
+        Locale locale = LocaleUtil.getLocale(language);
         String model = getCurrentDataModel();
         String concept = ViewHelper.getConceptFromDefaultViewName(viewPk);
         if (concept != null) {
             try {
                 if (Webapp.INSTANCE.isEnterpriseVersion() && !DataModelAccessor.getInstance().checkReadAccess(model, concept)) {
-                    Locale locale = new Locale(language);
                     throw new ServiceException(MESSAGES.getMessage(locale, "entity_no_access")); //$NON-NLS-1$
                 }
             } catch (Exception e) {
@@ -622,7 +622,6 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             wsView = CommonUtil.getPort().getView(new WSGetView(new WSViewPK(viewPk)));
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
-            Locale locale = new Locale(language);
             throw new ServiceException(MESSAGES.getMessage(locale, "find_view_error", viewPk)); //$NON-NLS-1$
         }
         EntityModel entityModel = null;
@@ -633,7 +632,6 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             setDefaultValueByExpression(entityModel, concept, language);
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
-            Locale locale = new Locale(language);
             throw new ServiceException(MESSAGES.getMessage(locale, "parse_model_error")); //$NON-NLS-1$
         }
         SimpleTypeModel stagingTaskidType = new SimpleTypeModel(StagingConstant.STAGING_TASKID, DataTypeConstants.STRING);
@@ -757,7 +755,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             String errorMessage;
             if (CoreException.class.isInstance(exception.getCause())) {
                 CoreException webCoreException = (CoreException) exception.getCause();
-                errorMessage = getErrorMessageFromWebCoreException(webCoreException, "", null, new Locale(language)); //$NON-NLS-1$
+                errorMessage = getErrorMessageFromWebCoreException(webCoreException, "", null, LocaleUtil.getLocale(language)); //$NON-NLS-1$
             } else {
                 errorMessage = exception.getLocalizedMessage();
             }
@@ -769,6 +767,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
     @Override
     public ItemBean queryItemBeanById(String dataClusterPK, ViewBean viewBean, EntityModel entityModel, String ids,
             String language) throws ServiceException {
+        Locale locale = LocaleUtil.getLocale(language);
         try {
             String[] idArr = StringUtils.splitPreserveAllTokens(ids, '.'); // String.split() omits the last '' if ends
                                                                            // with delimiter
@@ -783,12 +782,12 @@ public class BrowseRecordsAction implements BrowseRecordsService {
                 return null;
             }
         } catch (WebBaseException e) {
-            throw new ServiceException(BASEMESSAGE.getMessage(new Locale(language), e.getMessage(), e.getArgs()));
+            throw new ServiceException(BASEMESSAGE.getMessage(locale, e.getMessage(), e.getArgs()));
         } catch (Exception exception) {
             String errorMessage;
             if (CoreException.class.isInstance(exception.getCause())) {
                 CoreException webCoreException = (CoreException) exception.getCause();
-                errorMessage = getErrorMessageFromWebCoreException(webCoreException, "", null, new Locale(language)); //$NON-NLS-1$
+                errorMessage = getErrorMessageFromWebCoreException(webCoreException, "", null, locale); //$NON-NLS-1$
             } else {
                 errorMessage = exception.getLocalizedMessage();
             }
@@ -1641,7 +1640,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
     @Override
     public ItemResult saveItem(String concept, String ids, String xml, boolean isCreate, boolean isWarningApprovedBeforeSave,
             String language) throws ServiceException {
-        Locale locale = LocaleUtil.getLocal(language);
+        Locale locale = LocaleUtil.getLocale(language);
 
         boolean hasBeforeSavingProcess = Util.isTransformerExist("beforeSaving_" + concept); //$NON-NLS-1$
 
@@ -1708,7 +1707,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             LOG.error(e.getMessage(), e);
             throw e;
         } catch (WebBaseException e) {
-            throw new ServiceException(BASEMESSAGE.getMessage(new Locale(language), e.getMessage(), e.getArgs()));
+            throw new ServiceException(BASEMESSAGE.getMessage(locale, e.getMessage(), e.getArgs()));
         } catch (Exception exception) {
             String errorMessage;
             if (CoreException.class.isInstance(exception.getCause())) {
@@ -1779,7 +1778,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             }
             return saveItem(concept, ids, doc.asXML(), false, isWarningApprovedBeforeSave, language);
         } catch (WebBaseException e) {
-            throw new ServiceException(BASEMESSAGE.getMessage(new Locale(language), e.getMessage(), e.getArgs()));
+            throw new ServiceException(BASEMESSAGE.getMessage(LocaleUtil.getLocale(language), e.getMessage(), e.getArgs()));
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
             throw new ServiceException(e.getLocalizedMessage());
@@ -2203,7 +2202,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             String[] idsArray = CommonUtil.getItemId(repository, ids, concept);
             return getItemBeanById(concept, idsArray, language);
         } catch (WebBaseException e) {
-            throw new ServiceException(BASEMESSAGE.getMessage(new Locale(language), e.getMessage(), e.getArgs()));
+            throw new ServiceException(BASEMESSAGE.getMessage(LocaleUtil.getLocale(language), e.getMessage(), e.getArgs()));
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
             throw new ServiceException(e.getLocalizedMessage());
@@ -2236,7 +2235,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             return itemBean;
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
-            Locale locale = new Locale(language);
+            Locale locale = LocaleUtil.getLocale(language);
             Throwable cause = e.getCause();
             if (cause != null && cause instanceof CoreException) {
                 cause = cause.getCause();
@@ -2277,7 +2276,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
 
     @Override
     public String formatValue(FormatModel model) throws ServiceException {
-        Locale locale = new Locale(model.getLanguage());
+        Locale locale = LocaleUtil.getLocale(model.getLanguage());
         String dateValue = model.getObject().toString();
         if (model.isDate() || model.isDateTime()) {
             Date dataObject = DateUtil.convertStringToDate(model.isDateTime() ? DateUtil.DATE_TIME_FORMAT : DateUtil.DATE_FORMAT, dateValue);
@@ -2394,7 +2393,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
         try {
             return DataModelHelper.findTypeModelByTypePath(metaDataTypes, typePath);
         } catch (TypeModelNotFoundException e) {
-            throw new ServiceException(MESSAGES.getMessage(new Locale(language), "typemodel_notfound", e.getXpathNotFound())); //$NON-NLS-1$
+            throw new ServiceException(MESSAGES.getMessage(LocaleUtil.getLocale(language), "typemodel_notfound", e.getXpathNotFound())); //$NON-NLS-1$
         }
     }
 

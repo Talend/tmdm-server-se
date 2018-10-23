@@ -82,7 +82,8 @@ public class ItemsListPanel4Staging extends ItemsListPanel {
                 .getMessages().match_group(), 200);
         columnConfigList.add(groupColumn);
 
-        ColumnConfig statusColumn = new ColumnConfig(em.getConceptName() + StagingConstant.STAGING_STATUS, "Status", 200); //$NON-NLS-1$
+        ColumnConfig statusColumn = new ColumnConfig(em.getConceptName() + StagingConstant.STAGING_STATUS,
+                MessagesFactory.getMessages().status(), 200);
         statusColumn.setRenderer(new GridCellRenderer<ItemBean>() {
 
             @Override

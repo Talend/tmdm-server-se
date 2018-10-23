@@ -13,7 +13,8 @@
     <name>org.talend.mdm.core</name>
 
     <properties>
-        <jackson.version>2.7.9</jackson.version>
+        <jackson.version>2.8.11.1</jackson.version>
+        <jackson.provider.version>2.9.7</jackson.provider.version>
         <activemq.version>5.14.5</activemq.version>
     </properties>
 
@@ -224,22 +225,22 @@
 	                <artifactId>snakeyaml</artifactId>
 	            </exclusion>
             </exclusions>
-            <version>${jackson.version}</version>
+            <version>${jackson.provider.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-xml</artifactId>
-            <version>${jackson.version}</version>
+            <version>${jackson.provider.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-joda</artifactId>
-            <version>${jackson.version}</version>
+            <version>${jackson.provider.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
-            <version>${jackson.version}</version>
+            <version>${jackson.provider.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -249,12 +250,12 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
-            <version>${jackson.version}</version>
+            <version>${jackson.provider.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.jaxrs</groupId>
             <artifactId>jackson-jaxrs-json-provider</artifactId>
-            <version>${jackson.version}</version>
+            <version>${jackson.provider.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>

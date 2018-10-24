@@ -21,7 +21,6 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import com.amalto.core.objects.DroppedItemPOJO;
 import com.amalto.core.objects.DroppedItemPOJOPK;
@@ -767,7 +766,6 @@ public class XConverter {
             for (Iterator iterator = instanceIds.iterator(); iterator.hasNext(); wsInstances.add(wsInstance)) {
                 String id = (String) iterator.next();
                 RoleInstance instance = specification.getInstances().get(id);
-                instance.setParameters(instance.getParameters().stream().map((String input) -> Util.trimSpecification(input)).collect(Collectors.toCollection(LinkedHashSet::new)));
                 String wsParameters[] = instance.getParameters().toArray(new String[instance.getParameters().size()]);
                 wsInstance = new WSRoleSpecificationInstance(id, instance.isWriteable(), wsParameters);
             }

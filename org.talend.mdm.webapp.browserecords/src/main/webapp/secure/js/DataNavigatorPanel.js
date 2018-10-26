@@ -999,6 +999,9 @@ amalto.itemsbrowser.NavigatorPanel = function() {
 			concept = conceptParameter;
 			cluster = clusterParameter;
 			language = languageParameter;
+			if (language == 'zh') {
+				language = 'zh_CN';
+			}
 			amalto.itemsbrowser.NavigatorPanel.bundle = new Ext.i18n.Bundle({
 				bundle : 'Message',
 				path : 'secure/resources',

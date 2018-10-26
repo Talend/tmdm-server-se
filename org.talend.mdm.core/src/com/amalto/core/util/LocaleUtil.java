@@ -69,7 +69,12 @@ public class LocaleUtil {
             String[] localeInfo = language.split("_");
             locale = new Locale(localeInfo[0].toLowerCase(), localeInfo[1]);
         } else {
-            locale = new Locale(language.toLowerCase());
+            language = language.toLowerCase();
+            if (Locale.CHINESE.getLanguage().equals(language)) {
+                locale = Locale.SIMPLIFIED_CHINESE;
+            } else {
+                locale = new Locale(language);
+            }
         }
         return locale;
     }

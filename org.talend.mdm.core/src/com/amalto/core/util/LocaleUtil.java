@@ -64,13 +64,14 @@ public class LocaleUtil {
     }
 
     public static Locale getLocale(String language) {
-        Locale locale;
-        if (language.contains("_")) {
-            String[] localeInfo = language.split("_");
-            locale = new Locale(localeInfo[0].toLowerCase(), localeInfo[1]);
-        } else {
-            locale = new Locale(language.toLowerCase());
+        String localLanguage = language.toLowerCase();
+        if (localLanguage.contains("_")) {
+            String[] localeInfo = localLanguage.split("_");
+            localLanguage = localeInfo[0];
         }
-        return locale;
+        if (Locale.CHINESE.getLanguage().equals(localLanguage)) {
+            return Locale.SIMPLIFIED_CHINESE;
+        }
+        return new Locale(localLanguage);
     }
 }

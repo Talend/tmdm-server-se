@@ -1,0 +1,88 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">  
+  <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/>  
+  <xsd:element name="TestDecimal"> 
+    <xsd:annotation> 
+      <xsd:appinfo source="X_Write">TestRole</xsd:appinfo>  
+      <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo> 
+    </xsd:annotation>  
+    <xsd:complexType> 
+      <xsd:all> 
+        <xsd:element maxOccurs="1" minOccurs="1" name="Id" type="xsd:string"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_Write">TestRole</xsd:appinfo>  
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element>  
+        <xsd:element maxOccurs="1" minOccurs="0" name="testInt" type="xsd:int"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_Write">TestRole</xsd:appinfo>  
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element>  
+        <xsd:element maxOccurs="1" minOccurs="0" name="testLong" type="xsd:long"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_Write">TestRole</xsd:appinfo>  
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element>  
+        <xsd:element maxOccurs="1" minOccurs="0" name="testFloat" type="xsd:float"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_Write">TestRole</xsd:appinfo>  
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
+            <xsd:appinfo source="X_Display_Format_EN"/> 
+          </xsd:annotation> 
+        </xsd:element>  
+        <xsd:element maxOccurs="1" minOccurs="0" name="testCustomFloat" type="customefloate"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_Write">TestRole</xsd:appinfo>  
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element>
+        <xsd:element maxOccurs="1" minOccurs="0" name="testDouble" type="xsd:double"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_Write">TestRole</xsd:appinfo>  
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element>  
+        <xsd:element maxOccurs="1" minOccurs="0" name="testDecimal" type="xsd:decimal"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_Write">TestRole</xsd:appinfo>  
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element>  
+        <xsd:element maxOccurs="1" minOccurs="0" name="testCustomDecimal" type="customDecimal"> 
+          <xsd:annotation> 
+            <xsd:appinfo source="X_Write">TestRole</xsd:appinfo>  
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo> 
+          </xsd:annotation> 
+        </xsd:element>  
+      </xsd:all> 
+    </xsd:complexType>  
+    <xsd:unique name="TestDecimal"> 
+      <xsd:selector xpath="."/>  
+      <xsd:field xpath="Id"/> 
+    </xsd:unique> 
+  </xsd:element>  
+  <xsd:simpleType name="customString"> 
+    <xsd:restriction base="xsd:string"> 
+      <xsd:enumeration value="CREATE"/>  
+      <xsd:enumeration value="UPDATE"/>  
+      <xsd:enumeration value="LOGIC_DELETE"/>  
+      <xsd:enumeration value="PHYSICAL_DELETE"/>  
+      <xsd:enumeration value="RESTORED"/>  
+      <xsd:enumeration value="ACTION"/> 
+    </xsd:restriction> 
+  </xsd:simpleType>  
+  <xsd:simpleType name="customDecimal"> 
+    <xsd:restriction base="xsd:decimal"> 
+      <xsd:totalDigits value="18"/>  
+      <xsd:fractionDigits value="8"/> 
+    </xsd:restriction> 
+  </xsd:simpleType>  
+  <xsd:simpleType name="customefloate"> 
+    <xsd:restriction base="xsd:float"/> 
+  </xsd:simpleType>  
+  <xsd:simpleType name="custom1"> 
+    <xsd:restriction base="xsd:double"/> 
+  </xsd:simpleType> 
+</xsd:schema>

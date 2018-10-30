@@ -25,6 +25,7 @@ http://www.hazelcast.com/schema/spring http://www.hazelcast.com/schema/spring/ha
             <bean class="com.amalto.core.storage.task.staging.StagingTaskService" />
             <!-- Data related services -->
             <bean class="com.amalto.core.storage.services.SystemModels" />
+            <bean class="com.amalto.core.storage.services.SystemViews" />
             <bean class="com.amalto.core.storage.services.SystemContainers" />
             <!-- Statistics services -->
             <bean class="com.amalto.core.storage.services.JournalStatistics" />

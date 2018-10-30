@@ -21,9 +21,6 @@ import java.util.Map;
 
 import javax.xml.XMLConstants;
 
-import com.amalto.core.query.user.metadata.*;
-import com.amalto.core.storage.SecuredStorage;
-import com.amalto.core.storage.StagingStorage;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
@@ -39,7 +36,13 @@ import org.talend.mdm.commmon.metadata.Types;
 import com.amalto.core.query.user.DateConstant;
 import com.amalto.core.query.user.DateTimeConstant;
 import com.amalto.core.query.user.TimeConstant;
+import com.amalto.core.query.user.metadata.MetadataField;
+import com.amalto.core.query.user.metadata.StagingBlockKey;
+import com.amalto.core.query.user.metadata.TaskId;
+import com.amalto.core.query.user.metadata.Timestamp;
 import com.amalto.core.schema.validation.SkipAttributeDocumentBuilder;
+import com.amalto.core.storage.SecuredStorage;
+import com.amalto.core.storage.StagingStorage;
 import com.amalto.core.storage.StorageMetadataUtils;
 import com.amalto.core.storage.record.metadata.DataRecordMetadata;
 
@@ -308,6 +311,10 @@ public class DataRecordXmlWriter implements DataRecordWriter {
                     synchronized (TimeConstant.TIME_FORMAT) {
                         out.write((TimeConstant.TIME_FORMAT).format(value));
                     }
+                } else if (Types.FLOAT.equals(type.getName()) || Types.DOUBLE.equals(type.getName())
+                        || Types.DECIMAL.equals(type.getName())) {
+                    String valueString = StorageMetadataUtils.getNumberValue(type.getName(), value);
+                    out.write(valueString);
                 } else {
                     out.write(StringEscapeUtils.escapeXml(value.toString()));
                 }

@@ -174,15 +174,19 @@ public class CommonUtil {
         return parsedFkfilter;
     }
 
+    public static boolean isWrapedFkValue(String value) {
+        return value.startsWith("[") && value.endsWith("]"); // $NON-NLS-1$//$NON-NLS-2$
+    }
+
     public static String wrapFkValue(String value) {
-        if (value.startsWith("[") && value.endsWith("]")) { //$NON-NLS-1$//$NON-NLS-2$
+        if (isWrapedFkValue(value)) {
             return value;
         }
         return "[" + value + "]"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     public static String unwrapFkValue(String value) {
-        if (value.startsWith("[") && value.endsWith("]")) { //$NON-NLS-1$ //$NON-NLS-2$
+        if (isWrapedFkValue(value)) {
             if (value.contains("][")) { //$NON-NLS-1$
                 return value;
             } else {

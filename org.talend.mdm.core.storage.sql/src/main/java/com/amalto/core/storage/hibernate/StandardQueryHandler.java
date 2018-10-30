@@ -136,6 +136,8 @@ class StandardQueryHandler extends AbstractQueryHandler {
 
     private final Map<String, String> pathToAlias = new HashMap<>();
 
+    private final Map<String, String> aliasToPath = new HashMap<>();
+
     protected final MappingRepository mappings;
 
     protected final TableResolver resolver;
@@ -297,6 +299,7 @@ class StandardQueryHandler extends AbstractQueryHandler {
                     for (String rightTableAlias : rightTableAliases) {
                         criteria.createAlias(previousAlias + '.' + nextField.getName(), rightTableAlias, joinType);
                         pathToAlias.put(aliasPathKey, rightTableAlias);
+                        aliasToPath.put(rightTableAlias, aliasPathKey);
                     }
                     previousAlias = rightTableAliases.iterator().next();
                 } else {
@@ -562,7 +565,7 @@ class StandardQueryHandler extends AbstractQueryHandler {
                 FieldMetadata next = iterator.next();
                 if (next instanceof ReferenceFieldMetadata) {
                     aliasPathKey = getReferenceFieldJoinPath(previousRefFieldMetadata, next, aliasPathKey);
-                    String alias = pathToAlias.get(aliasPathKey);
+                    String alias = getAliasByPath(previousAlias, aliasPathKey);
                     if (alias == null) {
                         alias = createNewAlias();
                         // Remembers aliases created for the next field in path (to prevent same alias name creation for
@@ -590,6 +593,19 @@ class StandardQueryHandler extends AbstractQueryHandler {
 
         }
         return aliases;
+    }
+
+    private String getAliasByPath(String previousAlias, String aliasPathKey) {
+        String alias = pathToAlias.get(aliasPathKey);
+        if (alias == null) {
+            String path = aliasToPath.get(previousAlias);
+            if (path != null) {
+                path = path + "/" + aliasPathKey;
+            }
+            return pathToAlias.get(path);
+        } else {
+            return alias;
+        }
     }
 
     @Override

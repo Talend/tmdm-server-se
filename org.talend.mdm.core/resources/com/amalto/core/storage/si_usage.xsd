@@ -1,0 +1,1635 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:import namespace="http://www.w3.org/2001/XMLSchema" />
+    <xsd:element name="Nomenclature">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Label_FR">Nomenclature</xsd:appinfo>
+            <xsd:appinfo source="X_Label_ES">Nomenclatura</xsd:appinfo>
+            <xsd:appinfo source="X_PrimaryKeyInfo">Nomenclature/Libelle
+            </xsd:appinfo>
+            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element maxOccurs="1" minOccurs="1"
+                    name="CodeNomenclature" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Label_FR">Code
+                            Nomenclature</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKeyInfo">Nomenclature/Libelle
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Retrieve_FKinfos">true
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1"
+                    name="Libelle" type="MULTI_LINGUAL">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Label_FR">Description
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Label_ES">Nomenclatura lee
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0"
+                    name="CodeTypeNomenclature" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_ForeignKey">TypeNomenclature_Lkp/CodeTypeNomenclature
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">true
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKeyInfo">TypeNomenclature_Lkp/ValeurTypeNomenclature
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Retrieve_FKinfos">true
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Type de
+                            nomenclature</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0"
+                    name="DateDebut" type="xsd:date">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Label_FR">Date de début de
+                            validité</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0"
+                    name="DateEffet" type="xsd:date">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Label_FR">Date d'effet des
+                            modifications</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0"
+                    name="DateFin" type="xsd:date">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Label_FR">Date de fin de
+                            validité</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+        <xsd:unique name="Nomenclature">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="CodeNomenclature" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="TypeNomenclature_Lkp">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Label_FR">Type de nomenclature
+            </xsd:appinfo>
+            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1"
+                    name="CodeTypeNomenclature" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Label_FR">Identifiant
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1"
+                    name="ValeurTypeNomenclature" type="MULTI_LINGUAL">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Label_FR">Description
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="TypeNomenclature_Lkp">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="CodeTypeNomenclature" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:simpleType name="AUTO_INCREMENT">
+        <xsd:restriction base="xsd:string" />
+    </xsd:simpleType>
+    <xsd:simpleType name="MULTI_LINGUAL">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="(\[\w+\:[^\[\]]*\]){0,}" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:element name="Caracteristique">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1"
+                    name="IdCaracteristique" type="AUTO_INCREMENT">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0"
+                    name="IdTypeCaracteristique" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_ForeignKey">TypeCaracteristique_Lkp/IdTypeCaracteristique
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">true
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKeyInfo">TypeCaracteristique_Lkp/Valeur
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Retrieve_FKinfos">true
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1"
+                    name="Libelle" type="MULTI_LINGUAL">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0"
+                    name="Format_Caracteristique" type="Format_Caracteristique">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0"
+                    name="Obligatoire" type="xsd:boolean">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="Caracteristique">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="IdCaracteristique" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="TypeCaracteristique_Lkp">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1"
+                    name="IdTypeCaracteristique" type="AUTO_INCREMENT">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1"
+                    name="Valeur" type="MULTI_LINGUAL">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="TypeCaracteristique_Lkp">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="IdTypeCaracteristique" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="Avantage">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element maxOccurs="1" minOccurs="1"
+                    name="IdAvantage" type="AUTO_INCREMENT">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1"
+                    name="LibelleAvantage" type="MULTI_LINGUAL">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+        <xsd:unique name="Avantage">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="IdAvantage" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="UniteMesure">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1"
+                    name="CodeUniteMesure" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1"
+                    name="LibelleUniteMesure" type="MULTI_LINGUAL">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="UniteMesure">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="CodeUniteMesure" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="Produit">
+        <xsd:annotation>
+            <xsd:appinfo source="X_PrimaryKeyInfo">Produit/CodeProduit
+            </xsd:appinfo>
+            <xsd:appinfo source="X_PrimaryKeyInfo">Produit/LibelleInterne
+            </xsd:appinfo>
+            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element maxOccurs="1" minOccurs="1"
+                    name="CodeProduit" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0"
+                    name="LibelleInterne" type="MULTI_LINGUAL">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">Obligatoire pour
+                            Internet</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0"
+                    name="InformationsCommerciales">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Label_FR">Informations
+                            Commerciales</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                    <xsd:complexType>
+                        <xsd:all>
+                            <xsd:element maxOccurs="1"
+                                minOccurs="0" name="LibelleCommercial"
+                                type="MULTI_LINGUAL">
+                                <xsd:annotation>
+                                    <xsd:appinfo source="X_Hide">GestionNomenclature
+                                    </xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">System_Admin
+                                    </xsd:appinfo>
+                                </xsd:annotation>
+                            </xsd:element>
+                            <xsd:element maxOccurs="1"
+                                minOccurs="0" name="LibelleCaisse" type="MULTI_LINGUAL">
+                                <xsd:annotation>
+                                    <xsd:appinfo source="X_Hide">GestionNomenclature
+                                    </xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">System_Admin
+                                    </xsd:appinfo>
+                                </xsd:annotation>
+                            </xsd:element>
+                            <xsd:element maxOccurs="1"
+                                minOccurs="0" name="CodeStatutProduit"
+                                type="xsd:string">
+                                <xsd:annotation>
+                                    <xsd:appinfo source="X_Hide">GestionNomenclature
+                                    </xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">System_Admin
+                                    </xsd:appinfo>
+                                </xsd:annotation>
+                            </xsd:element>
+                            <xsd:element maxOccurs="1"
+                                minOccurs="0" name="DateAVS" type="xsd:date">
+                                <xsd:annotation>
+                                    <xsd:appinfo source="X_Hide">GestionNomenclature
+                                    </xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">System_Admin
+                                    </xsd:appinfo>
+                                </xsd:annotation>
+                            </xsd:element>
+                            <xsd:element maxOccurs="1"
+                                minOccurs="0" name="DateArret" type="xsd:date">
+                                <xsd:annotation>
+                                    <xsd:appinfo source="X_Hide">GestionNomenclature
+                                    </xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">System_Admin
+                                    </xsd:appinfo>
+                                </xsd:annotation>
+                            </xsd:element>
+                            <xsd:element maxOccurs="1"
+                                minOccurs="0" name="DateMiseSurMarche"
+                                type="xsd:date">
+                                <xsd:annotation>
+                                    <xsd:appinfo source="X_Hide">GestionNomenclature
+                                    </xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">System_Admin
+                                    </xsd:appinfo>
+                                </xsd:annotation>
+                            </xsd:element>
+                            <xsd:element maxOccurs="1"
+                                minOccurs="0" name="EanPrincipal" type="xsd:string">
+                                <xsd:annotation>
+                                    <xsd:appinfo source="X_Hide">GestionNomenclature
+                                    </xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">System_Admin
+                                    </xsd:appinfo>
+                                </xsd:annotation>
+                            </xsd:element>
+                            <xsd:element maxOccurs="1"
+                                minOccurs="0" name="CodeNoeud_Gestion"
+                                type="xsd:string">
+                                <xsd:annotation>
+                                    <xsd:appinfo source="X_Write">System_Admin
+                                    </xsd:appinfo>
+                                </xsd:annotation>
+                            </xsd:element>
+                            <xsd:element maxOccurs="1"
+                                minOccurs="0" name="CodeNoeud_International"
+                                type="xsd:string">
+                                <xsd:annotation>
+                                    <xsd:appinfo source="X_Write">System_Admin
+                                    </xsd:appinfo>
+                                </xsd:annotation>
+                            </xsd:element>
+                        </xsd:all>
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:element maxOccurs="unbounded"
+                    minOccurs="0" name="CodeNoeud" type="CT_CodeNoeud">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Label_FR">Éléments de
+                            nomenclature d'Usage</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="unbounded"
+                    minOccurs="0" name="Usages" type="CT_Produit_Usage">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0"
+                    name="Caracteristiques" type="CT_Caracteristiques">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+        <xsd:unique name="Produit">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="CodeProduit" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="Benefice">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Label_FR">Bénéfice Client
+            </xsd:appinfo>
+            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element maxOccurs="1" minOccurs="1"
+                    name="IdBenefice" type="AUTO_INCREMENT">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1"
+                    name="LibelleBenefice" type="MULTI_LINGUAL">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+        <xsd:unique name="Benefice">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="IdBenefice" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="Valeur_Caracteristique">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1"
+                    name="IdValeurCaracteristique" type="AUTO_INCREMENT">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1"
+                    name="IdTypeValeur" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_ForeignKey">TypeValeur_Lkp/IdTypeValeur
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">true
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKeyInfo">TypeValeur_Lkp/Valeur
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Retrieve_FKinfos">true
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0"
+                    name="ValeurCarateristique" type="MULTI_LINGUAL">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0"
+                    name="IdAvantage" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_ForeignKey">Avantage/IdAvantage
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">true
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKeyInfo">Avantage/LibelleAvantage
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Retrieve_FKinfos">true
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0"
+                    name="IdBenefice" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_ForeignKey">Benefice/IdBenefice
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">true
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKeyInfo">Benefice/LibelleBenefice
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Retrieve_FKinfos">true
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="Valeur_Caracteristique">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="IdValeurCaracteristique" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="ModeleCaracteristique">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element maxOccurs="1" minOccurs="1"
+                    name="IdModeleCaracteristique" type="AUTO_INCREMENT">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1"
+                    name="Libelle" type="MULTI_LINGUAL">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="unbounded"
+                    minOccurs="0" name="CaracteristiquesOrdonnees" type="CT_CaracteristiqueOrdonnee">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_AutoExpand">true
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+        <xsd:unique name="ModeleCaracteristique">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="IdModeleCaracteristique" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="TypeValeur_Lkp">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1"
+                    name="IdTypeValeur" type="AUTO_INCREMENT">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1"
+                    name="Valeur" type="MULTI_LINGUAL">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="TypeValeur_Lkp">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="IdTypeValeur" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:complexType name="CT_Caracteristiques">
+        <xsd:sequence>
+            <xsd:element maxOccurs="unbounded" minOccurs="0"
+                name="Caracteristique" type="Format_Caracteristique">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_AutoExpand">true</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="CT_ValeursCaracteristique">
+        <xsd:sequence>
+            <xsd:element maxOccurs="unbounded" minOccurs="0"
+                name="IdValeurCaracteristique" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKeyInfo">Valeur_Caracteristique/ValeurCarateristique
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey">Valeur_Caracteristique/IdValeurCaracteristique
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey_Filter">Valeur_Caracteristique/IdTypeValeur$$=$$Caracteristique/Format_Caracteristique/IdTypeValeur$$#
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Admin</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="CT_Avantages">
+        <xsd:sequence>
+            <xsd:element maxOccurs="unbounded" minOccurs="0"
+                name="IdAvantage" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKeyInfo">Avantage/LibelleAvantage
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey">Avantage/IdAvantage
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="CT_Benefices">
+        <xsd:sequence>
+            <xsd:element maxOccurs="unbounded" minOccurs="0"
+                name="IdBenefice" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKeyInfo">Benefice/LibelleBenefice
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey">Benefice/IdBenefice
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="Format_Caracteristique">
+        <xsd:sequence />
+    </xsd:complexType>
+    <xsd:complexType name="CT_Usage">
+        <xsd:sequence>
+            <xsd:element maxOccurs="1" minOccurs="0" name="IdUsage"
+                type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_FR">Caractéristique
+                        Usage</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey">Usage/IdUsage
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKeyInfo">Usage/Question
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">GestionNomenclature
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Visible_Rule">fn:boolean(fn:string-length(/NoeudNomenclature/Niveau))
+                        and
+                        fn:boolean(fn:compare(/NoeudNomenclature/Niveau,"1"))
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0"
+                name="IdValeurUsage" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_FR">Valeur de
+                        caractéristique</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey">ValeurUsage/IdValeurUsage
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKeyInfo">ValeurUsage/LibelleValeurUsage
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey_Filter">ValeurUsage/IdUsage$$=$$NoeudNomenclature/Usage/IdUsage$$#
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">GestionNomenclature
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Visible_Rule">fn:boolean(fn:string-length(/NoeudNomenclature/Niveau))
+                        and
+                        fn:boolean(fn:compare(/NoeudNomenclature/Niveau,"1"))
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="CT_CaracteristiqueOrdonnee">
+        <xsd:sequence>
+            <xsd:element maxOccurs="1" minOccurs="0" name="Ordre"
+                type="xsd:integer">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Label_FR">Numéro d'ordre
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0"
+                name="IdCaracteristique" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Label_FR">Caractéristique
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey">Caracteristique/IdCaracteristique
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKeyInfo">Caracteristique/Libelle
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKeyInfo">Caracteristique/Obligatoire
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_Retrieve_FKinfos">false</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="Caracteristique_Entier">
+        <xsd:complexContent>
+            <xsd:extension base="Format_Caracteristique">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="1" minOccurs="0"
+                        name="ValeurEntiere" type="xsd:integer">
+                        <xsd:annotation>
+                            <xsd:appinfo source="X_Write">Admin
+                            </xsd:appinfo>
+                            <xsd:appinfo source="X_Write">GestionNomenclature
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element maxOccurs="1" minOccurs="0"
+                        name="CodeUniteMesure" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo source="X_Retrieve_FKinfos">true
+                            </xsd:appinfo>
+                            <xsd:appinfo source="X_ForeignKeyInfo">UniteMesure/LibelleUniteMesure
+                            </xsd:appinfo>
+                            <xsd:appinfo source="X_ForeignKey">UniteMesure/CodeUniteMesure
+                            </xsd:appinfo>
+                            <xsd:appinfo source="X_Write">Admin
+                            </xsd:appinfo>
+                            <xsd:appinfo source="X_ForeignKey_NotSep">true
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="Caracteristique_Date">
+        <xsd:complexContent>
+            <xsd:extension base="Format_Caracteristique">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="1" minOccurs="0"
+                        name="ValeurDate" type="xsd:date">
+                        <xsd:annotation>
+                            <xsd:appinfo source="X_Write">Admin
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="CT_CodeNoeud">
+        <xsd:sequence>
+            <xsd:element maxOccurs="1" minOccurs="0" name="CodeNoeud"
+                type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Label_FR">Élément de
+                        nomenclature</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey">NoeudNomenclature/CodeNoeud
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey_Filter">NoeudNomenclature/Feuille$$=$$&amp;quot;true&amp;quot;$$#
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKeyInfo">NoeudNomenclature/LibelleNoeud
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="DateEffet"
+                type="xsd:date">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Write">System_Admin
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:element name="Parametrage">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1"
+                    name="Code" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0"
+                    name="Valeur" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="Parametrage">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="Code" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:complexType name="Caracteristique_Liste">
+        <xsd:complexContent>
+            <xsd:extension base="Format_Caracteristique">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="1" minOccurs="1"
+                        name="IdTypeValeur" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo source="X_Retrieve_FKinfos">true
+                            </xsd:appinfo>
+                            <xsd:appinfo source="X_ForeignKeyInfo">TypeValeur_Lkp/Valeur
+                            </xsd:appinfo>
+                            <xsd:appinfo source="X_ForeignKey">TypeValeur_Lkp/IdTypeValeur
+                            </xsd:appinfo>
+                            <xsd:appinfo source="X_ForeignKey_NotSep">true
+                            </xsd:appinfo>
+                            <xsd:appinfo source="X_Write">Admin
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element maxOccurs="1" minOccurs="0"
+                        name="ValeurCaracteristique" type="CT_ValeurCaracteristique">
+                        <xsd:annotation>
+                            <xsd:appinfo source="X_Write">Admin
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="Caracteristique_Numerique">
+        <xsd:complexContent>
+            <xsd:extension base="Format_Caracteristique">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="1" minOccurs="0"
+                        name="ValeurNumerique" type="xsd:decimal">
+                        <xsd:annotation>
+                            <xsd:appinfo source="X_Write">Admin
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element maxOccurs="1" minOccurs="0"
+                        name="CodeUniteMesure" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo source="X_Retrieve_FKinfos">true
+                            </xsd:appinfo>
+                            <xsd:appinfo source="X_ForeignKey">UniteMesure/CodeUniteMesure
+                            </xsd:appinfo>
+                            <xsd:appinfo source="X_ForeignKeyInfo">UniteMesure/LibelleUniteMesure
+                            </xsd:appinfo>
+                            <xsd:appinfo source="X_ForeignKey_NotSep">true
+                            </xsd:appinfo>
+                            <xsd:appinfo source="X_Write">Admin
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="Caracteristique_ListeMulti">
+        <xsd:complexContent>
+            <xsd:extension base="Format_Caracteristique">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="1" minOccurs="1"
+                        name="IdTypeValeur" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo source="X_Retrieve_FKinfos">true
+                            </xsd:appinfo>
+                            <xsd:appinfo source="X_ForeignKey">TypeValeur_Lkp/IdTypeValeur
+                            </xsd:appinfo>
+                            <xsd:appinfo source="X_ForeignKeyInfo">TypeValeur_Lkp/Valeur
+                            </xsd:appinfo>
+                            <xsd:appinfo source="X_ForeignKey_NotSep">true
+                            </xsd:appinfo>
+                            <xsd:appinfo source="X_Write">Admin
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element maxOccurs="1" minOccurs="0"
+                        name="ValeursCaracteristique" type="CT_ValeursCaracteristique">
+                        <xsd:annotation>
+                            <xsd:appinfo source="X_Write">Admin
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="Caracteristique_Texte">
+        <xsd:complexContent>
+            <xsd:extension base="Format_Caracteristique">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="1" minOccurs="0"
+                        name="ValeurTexte" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo source="X_Write">Admin
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="CT_ValeurCaracteristique">
+        <xsd:sequence>
+            <xsd:element maxOccurs="1" minOccurs="0"
+                name="IdValeurCaracteristique" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey">Valeur_Caracteristique/IdValeurCaracteristique
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKeyInfo">Valeur_Caracteristique/ValeurCarateristique
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey_Filter">Valeur_Caracteristique/IdTypeValeur$$=$$Caracteristique/Format_Caracteristique/IdTypeValeur$$#
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Admin</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="Caracteristique_Boolean">
+        <xsd:complexContent>
+            <xsd:extension base="Format_Caracteristique">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="1" minOccurs="0"
+                        name="ValeurBoolean" type="xsd:boolean">
+                        <xsd:annotation>
+                            <xsd:appinfo source="X_Write">Admin
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="CT_CaracteristiqueChoix">
+        <xsd:sequence>
+            <xsd:element maxOccurs="unbounded" minOccurs="0"
+                name="IdCaracteristiqueChoix" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Label_FR">Caractéristique
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey">Caracteristique/IdCaracteristique
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey_Filter">Caracteristique/IdTypeCaracteristique$$=$$&amp;quot;4&amp;quot;$$#
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_Hide">Admin</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="CT_ModeleCaracteristique">
+        <xsd:sequence>
+            <xsd:element maxOccurs="1" minOccurs="0"
+                name="IdModeleCaracteristique" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Label_FR">Modèle de
+                        caractéristique</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey">ModeleCaracteristique/IdModeleCaracteristique
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey_Filter">"true"$$=$$Noeud_nomenclature/Feuille$$#
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">GestionNomenclature
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Admin</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="unbounded" minOccurs="0"
+                name="CaracteristiquesOrdonnees" type="CT_Modele_CaracteristiqueOrdonnee">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Label_FR">Caractéristiques du
+                        modèle</xsd:appinfo>
+                    <xsd:appinfo source="X_AutoExpand">false</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">GestionNomenclature
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Admin</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:simpleType name="PATTERN_NOEUD">
+        <xsd:restriction base="xsd:string">
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:complexType name="CT_Modele_CaracteristiqueOrdonnee">
+        <xsd:sequence>
+            <xsd:element maxOccurs="1" minOccurs="0"
+                name="IdCaracteristiqueOrdonnee" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Retrieve_FKinfos">false</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_FR">Caractéristique
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKeyInfo">Caracteristique/Libelle
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey">Caracteristique/IdCaracteristique
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">GestionNomenclature
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Admin</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="Ordre"
+                type="xsd:integer">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Label_FR">Numéro d'ordre
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_Write">GestionNomenclature
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Admin</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="CT_CodesFils">
+        <xsd:sequence>
+            <xsd:element maxOccurs="unbounded" minOccurs="0"
+                name="CodeFils" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_ForeignKey">NoeudNomenclature/CodeNoeud
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">GestionNomenclature
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey_Filter">Noeud_nomenclature_old/Niveau$$Contains$$Noeud_nomenclature/Niveau$$Not#Noeud_nomenclature_old/CodeNoeud$$Starts
+                        With$$Noeud_nomenclature/CodeNoeud$$#
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_FR">Élément de
+                        nomenclature enfant</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKeyInfo">NoeudNomenclature/Chemin
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKeyInfo">NoeudNomenclature/Niveau
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="CT_Nomenclature_CodesFils">
+        <xsd:sequence>
+            <xsd:element maxOccurs="unbounded" minOccurs="0"
+                name="CodeFils" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_FR">Élément de
+                        nomenclature enfant</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKeyInfo">NoeudNomenclature/LibelleNoeud
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey">NoeudNomenclature/CodeNoeud
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">GestionNomenclature
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey_Filter">NoeudNomenclature/Niveau$$=$$&amp;quot;1&amp;quot;$$#
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:element name="Usage">
+        <xsd:annotation>
+            <xsd:appinfo source="X_PrimaryKeyInfo">Usage/Question</xsd:appinfo>
+            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1"
+                    name="IdUsage" type="AUTO_INCREMENT">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1"
+                    name="LibelleUsage" type="MULTI_LINGUAL">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0"
+                    name="Question" type="MULTI_LINGUAL">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Label_FR">Question
+                            relative</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="Usage">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="IdUsage" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="ValeurUsage">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1"
+                    name="IdValeurUsage" type="AUTO_INCREMENT">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1"
+                    name="IdUsage" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_ForeignKey">Usage/IdUsage
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">true
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKeyInfo">Usage/LibelleUsage
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Retrieve_FKinfos">true
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0"
+                    name="LibelleValeurUsage" type="MULTI_LINGUAL">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0"
+                    name="IdAvantage" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Retrieve_FKinfos">true
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKeyInfo">Avantage/LibelleAvantage
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey">Avantage/IdAvantage
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">true
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0"
+                    name="IdBenefice" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Retrieve_FKinfos">true
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKeyInfo">Benefice/LibelleBenefice
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey">Benefice/IdBenefice
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">true
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="ValeurUsage">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="IdValeurUsage" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:complexType name="CT_Pere">
+        <xsd:choice>
+            <xsd:element maxOccurs="1" minOccurs="0"
+                name="CodeNomenclature" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey">Nomenclature/CodeNomenclature
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKeyInfo">Nomenclature/Libelle
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_Write">GestionNomenclature
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0"
+                name="CodeNoeudPere" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_FR">Élément de
+                        nomenclature Père</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey">NoeudNomenclature/CodeNoeud
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKeyInfo">NoeudNomenclature/LibelleNoeud
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKeyInfo">NoeudNomenclature/Niveau
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_Write">GestionNomenclature
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:choice>
+    </xsd:complexType>
+    <xsd:element name="Racine">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Deny_Create">GestionNomenclature
+            </xsd:appinfo>
+            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1"
+                    name="IdRacine" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Deny_Create">GestionNomenclature
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0"
+                    name="CodePere" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Retrieve_FKinfos">true
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Élément de
+                            nomenclature Père</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKeyInfo">NoeudNomenclature/LibelleNoeud
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKeyInfo">NoeudNomenclature/Niveau
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey">NoeudNomenclature/CodeNoeud
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">true
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">GestionNomenclature
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="Racine">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="IdRacine" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:complexType name="CT_ModelesCaracteristique">
+        <xsd:sequence>
+            <xsd:element maxOccurs="unbounded" minOccurs="0"
+                name="IdModeleCaracteristique" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Label_FR">Modèle de
+                        caractéristique</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey">ModeleCaracteristique/IdModeleCaracteristique
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                    <xsd:appinfo source="X_Visible_Rule">fn:starts-with(../../Feuille,"true")
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKeyInfo">ModeleCaracteristique/Libelle
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKeyInfo">ModeleCaracteristique/CaracteristiquesOrdonnees/IdCaracteristique
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKeyInfo">ModeleCaracteristique/CaracteristiquesOrdonnees/Ordre
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="CT_Produit_Usage">
+        <xsd:sequence>
+            <xsd:element maxOccurs="1" minOccurs="0" name="IdUsage"
+                type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_FR">Caractéristique
+                        Usage</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKeyInfo">Usage/Question
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey">Usage/IdUsage
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0"
+                name="IdValeurUsage" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_FR">Valeur de
+                        caractéristique</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKeyInfo">ValeurUsage/LibelleValeurUsage
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey">ValeurUsage/IdValeurUsage
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey_Filter">ValeurUsage/IdUsage$$=$$NoeudNomenclature/Usage/IdUsage$$#
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0"
+                name="IdAvantage" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey">Avantage/IdAvantage
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKeyInfo">Avantage/LibelleAvantage
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0"
+                name="IdBenefice" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey">Benefice/IdBenefice
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKeyInfo">Benefice/LibelleBenefice
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:element name="NoeudNomenclature">
+        <xsd:annotation>
+            <xsd:appinfo source="X_PrimaryKeyInfo">NoeudNomenclature/Chemin
+            </xsd:appinfo>
+            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="0"
+                    name="NiveauPere" type="CT_NiveauPere">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_AutoExpand">true
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Niveau précédent
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1"
+                    name="CodeNoeud" type="PATTERN_NOEUD">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">Le format de
+                            l'élément doit être de la forme 00000.00.00
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Facet_FR">Le format
+                            attendu (00000.00.00) n'est pas respecté
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Code élément
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1"
+                    name="LibelleNoeud" type="MULTI_LINGUAL">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Label_FR">Description
+                            élément</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0"
+                    name="Reponse" type="MULTI_LINGUAL">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Visible_Rule">fn:boolean(fn:string-length(/NoeudNomenclature/NiveauPere/QuestionPere))
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0"
+                    name="LibelleAvantage" type="MULTI_LINGUAL">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Visible_Rule">fn:boolean(fn:string-length(/NoeudNomenclature/Reponse))
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0"
+                    name="LibelleBenefice" type="MULTI_LINGUAL">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Visible_Rule">fn:boolean(fn:string-length(/NoeudNomenclature/Reponse))
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0"
+                    name="Avantage" type="CT_Avantages">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Label_FR">Avantage
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Visible_Rule">fn:boolean(fn:string-length(/NoeudNomenclature/Reponse))
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0"
+                    name="Benefice" type="CT_Benefices">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Label_FR">Benefice
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Visible_Rule">fn:boolean(fn:string-length(/NoeudNomenclature/Reponse))
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0"
+                    name="Feuille" type="xsd:boolean">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Label_FR">Produit
+                            Generique</xsd:appinfo>
+                        <xsd:appinfo source="X_Visible_Rule">fn:boolean(fn:string-length(/NoeudNomenclature/Niveau))
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0"
+                    name="LibelleProduitGenerique" type="MULTI_LINGUAL">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Visible_Rule">fn:starts-with(../Feuille,"true")
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0"
+                    name="Question" type="MULTI_LINGUAL">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Visible_Rule">fn:boolean(fn:string-length(/NoeudNomenclature/Niveau))
+                            and
+                            fn:not(fn:starts-with(/NoeudNomenclature/Feuille,"true"))
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0"
+                    name="ModelesCaracteristiques" type="CT_ModelesCaracteristique">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Label_FR">Modèles de
+                            caracteristiques</xsd:appinfo>
+                        <xsd:appinfo source="X_AutoExpand">true
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Visible_Rule">fn:starts-with(../Feuille,"true")
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0"
+                    name="Niveau" type="xsd:integer">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Visible_Rule">fn:false()
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0"
+                    name="Chemin" type="MULTI_LINGUAL">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Label_FR">Chemin de
+                            l'élément</xsd:appinfo>
+                        <xsd:appinfo source="X_Visible_Rule">fn:false()
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">System_Admin
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="NoeudNomenclature">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="CodeNoeud" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:complexType abstract="false" name="CT_NiveauPere">
+        <xsd:sequence>
+            <xsd:element maxOccurs="1" minOccurs="0"
+                name="CodeNomenclature" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKeyInfo">Nomenclature/Libelle
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey">Nomenclature/CodeNomenclature
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0"
+                name="CodeNoeudPere" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Label_FR">Élément de
+                        nomenclature Père</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey">NoeudNomenclature/CodeNoeud
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKeyInfo">NoeudNomenclature/CodeNoeud
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKeyInfo">NoeudNomenclature/LibelleNoeud
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0"
+                name="QuestionPere" type="MULTI_LINGUAL">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Visible_Rule">fn:boolean(fn:string-length(/NoeudNomenclature/Niveau))
+                        and
+                        fn:boolean(fn:compare(/NoeudNomenclature/Niveau,"1"))
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_Label_FR">Question du père
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_Write">System_Admin
+                    </xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="CT_ProduitGenerique">
+        <xsd:all>
+            <xsd:element maxOccurs="1" minOccurs="1"
+                name="Description" type="MULTI_LINGUAL" />
+            <xsd:element maxOccurs="1" minOccurs="0"
+                name="ProduitGenerique" type="xsd:boolean">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Write">Admin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">GestionNomenclature
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:all>
+    </xsd:complexType>
+</xsd:schema>

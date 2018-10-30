@@ -11,13 +11,22 @@
 
 package com.amalto.core.history.accessor;
 
-import com.amalto.core.history.DOMMutableDocument;
-import com.amalto.core.history.action.FieldUpdateAction;
-
-import org.apache.commons.lang.StringUtils;
-import org.w3c.dom.*;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.xml.XMLConstants;
+
+import org.apache.commons.lang.StringUtils;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
+
+import com.amalto.core.history.DOMMutableDocument;
+import com.amalto.core.history.action.FieldUpdateAction;
 
 /**
  *
@@ -105,10 +114,17 @@ class ManyFieldAccessor implements DOMAccessor {
         Node node = getCollectionItemNode();
         if (node == null) {
             Element parentNode = (Element) parent.getNode();
-            NodeList children = parentNode.getElementsByTagName(fieldName);
-            int currentCollectionSize = children.getLength();
+            List<Node> childList = new LinkedList<>();
+            NodeList childNodeList = parentNode.getChildNodes();
+            for (int i = 0; i < childNodeList.getLength(); i++) {
+                if (fieldName.equals(childNodeList.item(i).getNodeName())) {
+                    childList.add(childNodeList.item(i));
+                }
+            }
+
+            int currentCollectionSize = childList.size();
             if (currentCollectionSize > 0) {
-                Node refNode = children.item(currentCollectionSize - 1).getNextSibling();
+                Node refNode = childList.get(currentCollectionSize - 1).getNextSibling();
                 while (currentCollectionSize <= index) {
                     node = domDocument.createElementNS(domDocument.getNamespaceURI(), fieldName);
                     parentNode.insertBefore(node, refNode);

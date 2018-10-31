@@ -167,9 +167,9 @@ public class FormatNumberField extends NumberField {
 
     @Override
     public void setRawValue(String value) {
-        if(value == null || "".equals(value)){
-            setFieldValue("") ;
-            return ;
+        if (value == null || "".equals(value)) {
+            setFieldValue("");
+            return;
         }
         if (formatPattern != null) {
             Number d = getPropertyEditor().convertStringValue(value);
@@ -179,16 +179,19 @@ public class FormatNumberField extends NumberField {
 
                 @Override
                 public void onSuccess(String result) {
-                    setFieldValue(result) ;
+                    setFieldValue(result);
                 }
             });
-        }else{
-            setFieldValue(value) ;
+        } else {
+            setFieldValue(value);
         }
     }
 
     private void setFieldValue(String result){
-        String displayValue = FormatUtil.changeNumberToFormatedValue(result);
+        String displayValue = result;
+        if (formatPattern == null) {
+            displayValue = FormatUtil.changeNumberToFormatedValue(displayValue);
+        }
         if (rendered) {
             if (isEditable()) {
                 getInputEl().setValue(displayValue == null ? "" : displayValue); //$NON-NLS-1$

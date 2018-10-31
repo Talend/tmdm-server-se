@@ -10,6 +10,7 @@
 package org.talend.mdm.webapp.browserecords.client.handler;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,7 @@ import org.talend.mdm.webapp.base.shared.EntityModel;
 import org.talend.mdm.webapp.base.shared.TypeModel;
 import org.talend.mdm.webapp.browserecords.client.model.ItemBean;
 import org.talend.mdm.webapp.browserecords.client.model.ItemNodeModel;
+import org.talend.mdm.webapp.browserecords.client.util.FormatUtil;
 import org.talend.mdm.webapp.browserecords.shared.ViewBean;
 
 import com.extjs.gxt.ui.client.data.ModelData;
@@ -209,7 +211,14 @@ public class ItemTreeHandler implements IsSerializable {
                         elValue = getLookUpFieldValue(itemBean, currentNodeModel.getTypePath(), ((ForeignKeyBean) value).getId());
                         currentNodeModel.setTypeName(((ForeignKeyBean) value).getConceptName());
                     } else {
-                        elValue = getLookUpFieldValue(itemBean, currentNodeModel.getTypePath(), value.toString());
+                        String valueString = value.toString();
+                        if (value instanceof Float || value instanceof Double || value instanceof BigDecimal) {
+                            valueString = new BigDecimal(valueString).toPlainString();
+                            if (value instanceof Float || value instanceof Double) {
+                                valueString = FormatUtil.formatFranctionValue(valueString);
+                            }
+                        }
+                        elValue = getLookUpFieldValue(itemBean, currentNodeModel.getTypePath(), valueString);
                     }
                     root.appendChild(doc.createTextNode(elValue));
 

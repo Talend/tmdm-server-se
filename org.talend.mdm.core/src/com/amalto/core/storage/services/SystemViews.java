@@ -18,7 +18,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.lang.StringUtils;
 
 import com.amalto.core.objects.ObjectPOJO;
 import com.amalto.core.objects.datamodel.DataModelPOJOPK;
@@ -60,10 +60,15 @@ public class SystemViews {
             for (ViewPOJOPK viewPOJOPK : viewCtrlLocal.getViewPKs(".*")) { //$NON-NLS-1$
                 ViewPOJO viewPOJO = ObjectPOJO.load(ViewPOJO.class, viewPOJOPK);
                 JSONObject viewObject = new JSONObject();
-                viewObject.put(NODE_NAME, viewPOJO.getName());
+                String viewName = viewPOJO.getName();
+                viewObject.put(NODE_NAME, viewName);
                 viewObject.put(NODE_DESCRIPTION, viewPOJO.getDescription());
-                String conceptName = getConceptNameFromViewName(viewPOJO.getName());
-                viewObject.put(NODE_DATA_MODEL_ID, getDataModelNameByEntityName(conceptName));
+                String entityName = getEntityNameByViewName(viewName);
+                String dataModelName = getDataModelNameByEntityName(entityName);
+                if (dataModelName.equals(StringUtils.EMPTY)) {
+                    continue;
+                }
+                viewObject.put(NODE_DATA_MODEL_ID, dataModelName);
                 viewObjectArray.put(viewObject);
             }
             return Response.ok(viewObjectArray.toString()).type(MediaType.APPLICATION_JSON_TYPE).build();
@@ -72,7 +77,7 @@ public class SystemViews {
         }
     }
 
-    private String getConceptNameFromViewName(String viewName) {
+    private String getEntityNameByViewName(String viewName) {
         return viewName.replaceAll(DEFAULT_VIEW_PREFIX + "_", "").replaceAll("#.*", "");//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     }
 
@@ -94,6 +99,6 @@ public class SystemViews {
         } catch (Exception e) {
             throw new RuntimeException("Could not get all user views.", e); //$NON-NLS-1$
         }
-        return "";
+        return StringUtils.EMPTY;
     }
 }

@@ -65,7 +65,7 @@ public class SystemViews {
                 viewObject.put(NODE_DESCRIPTION, viewPOJO.getDescription());
                 String entityName = getEntityNameByViewName(viewName);
                 String dataModelName = getDataModelNameByEntityName(entityName);
-                if (dataModelName.equals(StringUtils.EMPTY)) {
+                if (dataModelName.isEmpty()) {
                     continue;
                 }
                 viewObject.put(NODE_DATA_MODEL_ID, dataModelName);
@@ -78,7 +78,7 @@ public class SystemViews {
     }
 
     private String getEntityNameByViewName(String viewName) {
-        return viewName.replaceAll(DEFAULT_VIEW_PREFIX + "_", "").replaceAll("#.*", "");//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        return viewName.replaceAll(DEFAULT_VIEW_PREFIX + "_", StringUtils.EMPTY).replaceAll("#.*", StringUtils.EMPTY);//$NON-NLS-1$ //$NON-NLS-2$
     }
 
     private String getDataModelNameByEntityName(String conceptName) {

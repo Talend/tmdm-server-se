@@ -10,7 +10,9 @@
 
 package com.amalto.core.storage.services;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.GET;
@@ -36,17 +38,20 @@ import org.talend.mdm.commmon.util.webapp.XObjectType;
 import org.talend.mdm.commmon.util.webapp.XSystemObjects;
 import org.codehaus.jettison.json.JSONArray;
 
+@SuppressWarnings("nls")
 @Path("/system/views")
 @Api(value="Views management", tags="Administration")
 public class SystemViews {
 
-    private static final String NODE_NAME = "name"; //$NON-NLS-1$
+    private static final String NODE_NAME = "name";
 
-    private static final String NODE_DESCRIPTION = "description"; //$NON-NLS-1$
+    private static final String NODE_DESCRIPTION = "description";
 
-    private static final String NODE_DATA_MODEL_ID = "dataModelId"; //$NON-NLS-1$
+    private static final String NODE_DATA_MODEL_ID = "dataModelId";
 
-    private static final String DEFAULT_VIEW_PREFIX = "Browse_items";//$NON-NLS-1$
+    private static final String DEFAULT_VIEW_PREFIX = "Browse_items";
+
+    private static final MetadataRepositoryAdmin metadataRepositoryAdmin = ServerContext.INSTANCE.get().getMetadataRepositoryAdmin();
 
     public SystemViews() {
     }
@@ -57,48 +62,60 @@ public class SystemViews {
         try {
             JSONArray viewObjectArray = new JSONArray();
             View viewCtrlLocal = Util.getViewCtrlLocal();
-            for (ViewPOJOPK viewPOJOPK : viewCtrlLocal.getViewPKs(".*")) { //$NON-NLS-1$
+            List<String> dataModelNames = getDataModelNames();
+            for (ViewPOJOPK viewPOJOPK : viewCtrlLocal.getViewPKs(".*")) {
                 ViewPOJO viewPOJO = ObjectPOJO.load(ViewPOJO.class, viewPOJOPK);
-                JSONObject viewObject = new JSONObject();
                 String viewName = viewPOJO.getName();
-                viewObject.put(NODE_NAME, viewName);
-                viewObject.put(NODE_DESCRIPTION, viewPOJO.getDescription());
                 String entityName = getEntityNameByViewName(viewName);
-                String dataModelName = getDataModelNameByEntityName(entityName);
+                String dataModelName = getDataModelNameByEntityName(dataModelNames, entityName);
                 if (dataModelName.isEmpty()) {
                     continue;
                 }
+                JSONObject viewObject = new JSONObject();
+                viewObject.put(NODE_NAME, viewName);
+                viewObject.put(NODE_DESCRIPTION, viewPOJO.getDescription());
                 viewObject.put(NODE_DATA_MODEL_ID, dataModelName);
                 viewObjectArray.put(viewObject);
             }
             return Response.ok(viewObjectArray.toString()).type(MediaType.APPLICATION_JSON_TYPE).build();
         } catch (Exception e) {
-            throw new RuntimeException("Could not get all user views.", e); //$NON-NLS-1$
+            throw new RuntimeException("Could not get all user views.", e);
         }
     }
 
     private String getEntityNameByViewName(String viewName) {
-        return viewName.replaceAll(DEFAULT_VIEW_PREFIX + "_", StringUtils.EMPTY).replaceAll("#.*", StringUtils.EMPTY);//$NON-NLS-1$ //$NON-NLS-2$
+        return viewName.replaceAll(DEFAULT_VIEW_PREFIX + "_", StringUtils.EMPTY).replaceAll("#.*", StringUtils.EMPTY);
     }
 
-    private String getDataModelNameByEntityName(String conceptName) {
+    private String getDataModelNameByEntityName(List<String> dataModelNames, String entityName) {
         try {
-            MetadataRepositoryAdmin metadataRepositoryAdmin = ServerContext.INSTANCE.get().getMetadataRepositoryAdmin();
-            Collection<DataModelPOJOPK> allDataModelNames = Util.getDataModelCtrlLocal().getDataModelPKs(".*"); //$NON-NLS-1$
-            Map<String, XSystemObjects> xDataClustersMap = XSystemObjects.getXSystemObjects(XObjectType.DATA_MODEL);
-            for (DataModelPOJOPK dataModelPOJOPK : allDataModelNames) {
-                String dataModelName = dataModelPOJOPK.getUniqueId();
-                // XML Schema's schema is not aimed to be checked.
-                if (!"XMLSCHEMA---".equals(dataModelName) && !xDataClustersMap.containsKey(dataModelName)) { //$NON-NLS-1$
-                    MetadataRepository repository = metadataRepositoryAdmin.get(dataModelName);
-                    if (null != repository.getComplexType(conceptName)) {
-                        return dataModelName;
-                    }
+            for (String dataModelName : dataModelNames) {
+                MetadataRepository repository = metadataRepositoryAdmin.get(dataModelName);
+                if (null != repository.getComplexType(entityName)) {
+                    return dataModelName;
                 }
             }
         } catch (Exception e) {
-            throw new RuntimeException("Could not get all user views.", e); //$NON-NLS-1$
+            throw new RuntimeException("Failed to get data model name by entity name.", e);
         }
         return StringUtils.EMPTY;
+    }
+
+    private List<String> getDataModelNames() {
+        List<String> validDataModelNames = new ArrayList<>();
+        try {
+            Collection<DataModelPOJOPK> allDataModelPOJOPKs = Util.getDataModelCtrlLocal().getDataModelPKs(".*");
+            Map<String, XSystemObjects> xDataClustersMap = XSystemObjects.getXSystemObjects(XObjectType.DATA_MODEL);
+            for (DataModelPOJOPK dataModelPOJOPK : allDataModelPOJOPKs) {
+                String dataModelName = dataModelPOJOPK.getUniqueId();
+                // XML Schema's schema is not aimed to be checked.
+                if (!"XMLSCHEMA---".equals(dataModelName) && !xDataClustersMap.containsKey(dataModelName)) {
+                    validDataModelNames.add(dataModelName);
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to get data model names.", e);
+        }
+        return validDataModelNames;
     }
 }

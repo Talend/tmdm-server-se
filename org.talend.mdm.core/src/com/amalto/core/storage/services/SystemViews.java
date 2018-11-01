@@ -19,17 +19,23 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.xml.stream.XMLStreamException;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 
 import com.amalto.core.objects.ObjectPOJO;
 import com.amalto.core.objects.datamodel.DataModelPOJOPK;
 import com.amalto.core.objects.view.ViewPOJO;
 import com.amalto.core.objects.view.ViewPOJOPK;
+import com.amalto.core.save.MultiRecordsSaveException;
 import com.amalto.core.server.MetadataRepositoryAdmin;
 import com.amalto.core.server.ServerContext;
 import com.amalto.core.server.api.View;
+import com.amalto.core.storage.exception.ConstraintViolationException;
 import com.amalto.core.util.Util;
+import com.amalto.core.util.ValidateException;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.codehaus.jettison.json.JSONObject;
@@ -43,6 +49,8 @@ import org.codehaus.jettison.json.JSONArray;
 @Api(value="Views management", tags="Administration")
 public class SystemViews {
 
+    private static final Logger LOGGER = Logger.getLogger(SystemViews.class);
+
     private static final String NODE_NAME = "name";
 
     private static final String NODE_DESCRIPTION = "description";
@@ -50,8 +58,6 @@ public class SystemViews {
     private static final String NODE_DATA_MODEL_ID = "dataModelId";
 
     private static final String DEFAULT_VIEW_PREFIX = "Browse_items";
-
-    private static final MetadataRepositoryAdmin metadataRepositoryAdmin = ServerContext.INSTANCE.get().getMetadataRepositoryAdmin();
 
     public SystemViews() {
     }
@@ -63,11 +69,12 @@ public class SystemViews {
             JSONArray viewObjectArray = new JSONArray();
             View viewCtrlLocal = Util.getViewCtrlLocal();
             List<String> dataModelNames = getDataModelNames();
+            MetadataRepositoryAdmin metadataRepositoryAdmin = ServerContext.INSTANCE.get().getMetadataRepositoryAdmin();
             for (ViewPOJOPK viewPOJOPK : viewCtrlLocal.getViewPKs(".*")) {
                 ViewPOJO viewPOJO = ObjectPOJO.load(ViewPOJO.class, viewPOJOPK);
                 String viewName = viewPOJO.getName();
                 String entityName = getEntityNameByViewName(viewName);
-                String dataModelName = getDataModelNameByEntityName(dataModelNames, entityName);
+                String dataModelName = getDataModelNameByEntityName(metadataRepositoryAdmin, dataModelNames, entityName);
                 if (dataModelName.isEmpty()) {
                     continue;
                 }
@@ -79,7 +86,7 @@ public class SystemViews {
             }
             return Response.ok(viewObjectArray.toString()).type(MediaType.APPLICATION_JSON_TYPE).build();
         } catch (Exception e) {
-            throw new RuntimeException("Could not get all user views.", e);
+            return getErrorResponse(e, "Could not get all user views.");
         }
     }
 
@@ -87,16 +94,12 @@ public class SystemViews {
         return viewName.replaceAll(DEFAULT_VIEW_PREFIX + "_", StringUtils.EMPTY).replaceAll("#.*", StringUtils.EMPTY);
     }
 
-    private String getDataModelNameByEntityName(List<String> dataModelNames, String entityName) {
-        try {
-            for (String dataModelName : dataModelNames) {
-                MetadataRepository repository = metadataRepositoryAdmin.get(dataModelName);
-                if (null != repository.getComplexType(entityName)) {
-                    return dataModelName;
-                }
+    private String getDataModelNameByEntityName(MetadataRepositoryAdmin metadataRepositoryAdmin, List<String> dataModelNames, String entityName) {
+        for (String dataModelName : dataModelNames) {
+            MetadataRepository repository = metadataRepositoryAdmin.get(dataModelName);
+            if (null != repository.getComplexType(entityName)) {
+                return dataModelName;
             }
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to get data model name by entity name.", e);
         }
         return StringUtils.EMPTY;
     }
@@ -114,8 +117,25 @@ public class SystemViews {
                 }
             }
         } catch (Exception e) {
-            throw new RuntimeException("Failed to get data model names.", e);
+            LOGGER.error("Failed to get data model names.", e);
         }
         return validDataModelNames;
+    }
+
+    private Response getErrorResponse(Throwable e, String message) {
+        String responseMessage = message == null ? e.getMessage() : message;
+        if (e instanceof ConstraintViolationException) {
+            LOGGER.warn(responseMessage, e);
+            return Response.status(Response.Status.FORBIDDEN).entity(responseMessage).build();
+        } else if (e instanceof XMLStreamException
+                || e instanceof IllegalArgumentException || e instanceof MultiRecordsSaveException
+                || (e.getCause() != null && (e.getCause() instanceof IllegalArgumentException
+                || e.getCause() instanceof IllegalStateException || e.getCause() instanceof ValidateException))) {
+            LOGGER.warn(responseMessage, e);
+            return Response.status(Response.Status.BAD_REQUEST).entity(responseMessage).build();
+        } else {
+            LOGGER.error(responseMessage, e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(responseMessage).build();
+        }
     }
 }

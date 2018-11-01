@@ -62,16 +62,20 @@ public class MultilingualProjection extends SimpleProjection {
         switch (dataSourceDialect) {
         case H2:
         case MYSQL:
-            sql = "SUBSTRING(" + colName + ", LOCATE('[" + language + ":', " + colName + "))";
+            sql = "SUBSTRING(" + colName + ", LOCATE('[" + language + ":', " + colName + ")+4, LOCATE(']', " + colName
+                    + ", LOCATE('[" + language + ":', " + colName + ")) - LOCATE('[" + language + ":', " + colName + ") - 4)";
             break;
         case SQL_SERVER:
-            sql = "SUBSTRING(" + colName + ", CHARINDEX('[" + language + ":', " + colName + "), LEN(" + colName + "))";
+            sql = "SUBSTRING(" + colName + ", CHARINDEX('[" + language + ":', " + colName + ") + 4 , CHARINDEX(']', " + colName
+                    + ", CHARINDEX('[" + language + ":', " + colName + ")) -  CHARINDEX('" + language + ":', " + colName
+                    + ") - 3)";
             break;
         case POSTGRES:
-            sql = "SUBSTRING(" + colName + ", POSITION('[" + language + ":' IN " + colName + "))";
+            sql = "SUBSTRING(" + colName + ", '\\[" + language + ":(.*?)\\]')";
             break;
         case ORACLE_10G:
-            sql = "SUBSTR(" + colName + ", INSTR(" + colName + ", '[" + language + ":'))";
+            sql = "SUBSTR(" + colName + ", INSTR(" + colName + ", '[" + language + ":')+ 4, INSTR(" + colName + ", ']', INSTR("
+                    + colName + ", '[" + language + ":')) - INSTR(" + colName + ", '[" + language + ":') - 4)";
             break;
         case DB2:
         default:

@@ -95,11 +95,15 @@ public class SystemViews {
     }
 
     private String getDataModelNameByEntityName(MetadataRepositoryAdmin metadataRepositoryAdmin, List<String> dataModelNames, String entityName) {
-        for (String dataModelName : dataModelNames) {
-            MetadataRepository repository = metadataRepositoryAdmin.get(dataModelName);
-            if (null != repository.getComplexType(entityName)) {
-                return dataModelName;
+        try {
+            for (String dataModelName : dataModelNames) {
+                MetadataRepository repository = metadataRepositoryAdmin.get(dataModelName);
+                if (null != repository.getComplexType(entityName)) {
+                    return dataModelName;
+                }
             }
+        } catch (Exception e) {
+            LOGGER.warn("Failed to get data model name by entity name.", e);
         }
         return StringUtils.EMPTY;
     }
@@ -117,7 +121,7 @@ public class SystemViews {
                 }
             }
         } catch (Exception e) {
-            LOGGER.error("Failed to get data model names.", e);
+            throw new RuntimeException("Failed to get data model names.", e);
         }
         return validDataModelNames;
     }

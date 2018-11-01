@@ -62,7 +62,7 @@ public class MultilingualProjection extends SimpleProjection {
         switch (dataSourceDialect) {
         case H2:
         case MYSQL:
-            sql = "SUBSTRING(" + colName + ", LOCATE('[" + language + ":', " + colName + ")+4, LOCATE(']', " + colName
+            sql = "SUBSTRING(" + colName + ", LOCATE('[" + language + ":', " + colName + ") + 4, LOCATE(']', " + colName
                     + ", LOCATE('[" + language + ":', " + colName + ")) - LOCATE('[" + language + ":', " + colName + ") - 4)";
             break;
         case SQL_SERVER:
@@ -74,7 +74,7 @@ public class MultilingualProjection extends SimpleProjection {
             sql = "SUBSTRING(" + colName + ", '\\[" + language + ":(.*?)\\]')";
             break;
         case ORACLE_10G:
-            sql = "SUBSTR(" + colName + ", INSTR(" + colName + ", '[" + language + ":')+ 4, INSTR(" + colName + ", ']', INSTR("
+            sql = "SUBSTR(" + colName + ", INSTR(" + colName + ", '[" + language + ":') + 4, INSTR(" + colName + ", ']', INSTR("
                     + colName + ", '[" + language + ":')) - INSTR(" + colName + ", '[" + language + ":') - 4)";
             break;
         case DB2:

@@ -58,6 +58,13 @@ public class MultilingualProjection extends SimpleProjection {
 
         StringBuilder sqlFragment = new StringBuilder();
 
+        /**
+         * generate the sql for the different database, data: [ZH:xxxxx][EN:yyyyy][FR:zzzzz], will get 'xxxxx' for ZH
+         * H2 & MySQL: SUBSTRING(this_.x_name, LOCATE('[ZH:', this_.x_name) + 4, LOCATE(']', this_.x_name, LOCATE('[ZH:', this_.x_name)) - LOCATE('[ZH:', this_.x_name) - 4)
+         * SQL_SERVER: SUBSTRING(this_.x_name, CHARINDEX('[ZH:', this_.x_name) + 4 , CHARINDEX(']', this_.x_name, CHARINDEX('[ZH:', this_.x_name)) -  CHARINDEX('ZH:', this_.x_name) - 3)
+         * POSTGRES: SUBSTRING(this_.x_name, '\[ZH:(.*?)\]')
+         * ORACLE_10G: SUBSTR(this_.x_name, INSTR(this_.x_name, '[ZH:') + 4, INSTR(this_.x_name, ']', INSTR(this_.x_name, '[ZH:')) - INSTR(this_.x_name, '[ZH:') - 4) 
+         */
         String sql = StringUtils.EMPTY;
         switch (dataSourceDialect) {
         case H2:

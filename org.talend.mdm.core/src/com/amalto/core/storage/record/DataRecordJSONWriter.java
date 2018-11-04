@@ -17,11 +17,16 @@ import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.List;
 
-import com.amalto.core.storage.SecuredStorage;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONWriter;
-import org.talend.mdm.commmon.metadata.*;
+import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
+import org.talend.mdm.commmon.metadata.DefaultMetadataVisitor;
+import org.talend.mdm.commmon.metadata.EnumerationFieldMetadata;
+import org.talend.mdm.commmon.metadata.FieldMetadata;
+import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
+import org.talend.mdm.commmon.metadata.SimpleTypeFieldMetadata;
 
+import com.amalto.core.storage.SecuredStorage;
 import com.amalto.core.storage.StorageMetadataUtils;
 
 /**
@@ -30,7 +35,14 @@ import com.amalto.core.storage.StorageMetadataUtils;
  */
 public class DataRecordJSONWriter implements DataRecordWriter {
 
+    // Write attribute name use Camel-Case or LowerCase format
+    private boolean isCamelCase = false;
+
     private SecuredStorage.UserDelegator delegator = SecuredStorage.UNSECURED;
+
+    public DataRecordJSONWriter(boolean isCamelCase) {
+        this.isCamelCase = isCamelCase;
+    }
 
     private void writeRecord(final DataRecord record, final JSONWriter writer) throws JSONException {
         writer.object();
@@ -45,12 +57,12 @@ public class DataRecordJSONWriter implements DataRecordWriter {
                             }
                             try {
                                 if (!field.isMany()) {
-                                    writer.key(field.getName().toLowerCase()).value(
+                                    writer.key(generateAttributeName(field.getName())).value(
                                             StorageMetadataUtils.toString(record.get(field), false));
                                 } else {
                                     List<Object> values = (List<Object>) record.get(field);
                                     if (values != null) {
-                                        writer.key(field.getName().toLowerCase()).array();
+                                        writer.key(generateAttributeName(field.getName())).array();
                                         for (Object value : values) {
                                             writer.value(StorageMetadataUtils.toString(value, false));
                                         }
@@ -79,7 +91,7 @@ public class DataRecordJSONWriter implements DataRecordWriter {
                                 return null;
                             }
                             try {
-                                writer.key(containedField.getName().toLowerCase());
+                                writer.key(generateAttributeName(containedField.getName()));
                                 if (!containedField.isMany()) {
                                     writeRecord((DataRecord) record.get(containedField), writer);
                                 } else {
@@ -121,7 +133,7 @@ public class DataRecordJSONWriter implements DataRecordWriter {
     public void write(DataRecord record, Writer writer) throws IOException {
         JSONWriter jsonWriter = new JSONWriter(writer);
         try {
-            jsonWriter.object().key(record.getType().getName().toLowerCase());
+            jsonWriter.object().key(generateAttributeName(record.getType().getName()));
             {
                 if (!delegator.hide(record.getType())) {
                     writeRecord(record, jsonWriter);
@@ -140,5 +152,9 @@ public class DataRecordJSONWriter implements DataRecordWriter {
             throw new IllegalArgumentException("Delegator cannot be null.");
         }
         this.delegator = delegator;
+    }
+
+    private String generateAttributeName(String name) {
+        return isCamelCase ? name : name.toLowerCase();
     }
 }

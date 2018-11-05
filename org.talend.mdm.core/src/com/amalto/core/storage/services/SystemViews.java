@@ -68,7 +68,7 @@ public class SystemViews {
     }
 
     @GET
-    @ApiOperation("Get all views, not including the ones without data model deployed, a view is generated according one or some entities in data model, if the data model is missing, the view won't appear in the results.")
+    @ApiOperation("Get all views, not including the ones without data model deployed.")
     public Response getViewList(@ApiParam("Optional parameter of language to get localized result, default: EN")
                                 @QueryParam("lang") @DefaultValue("EN") String locale) {
         try {

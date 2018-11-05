@@ -17,6 +17,7 @@ import java.util.Map;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.stream.XMLStreamException;
@@ -33,11 +34,14 @@ import com.amalto.core.server.MetadataRepositoryAdmin;
 import com.amalto.core.server.ServerContext;
 import com.amalto.core.server.api.View;
 import com.amalto.core.storage.exception.ConstraintViolationException;
+import com.amalto.core.util.LocaleUtil;
 import com.amalto.core.util.Util;
 import com.amalto.core.util.ValidateException;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+
 import org.codehaus.jettison.json.JSONObject;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.util.webapp.XObjectType;
@@ -63,9 +67,13 @@ public class SystemViews {
     }
 
     @GET
-    @ApiOperation("Get all user views")
-    public Response getAllUserViews() {
+    @ApiOperation("Get all user views, a view is generated according one or some entities in data model, if the data model is missing, the view won't appear in the results.")
+    public Response getAllUserViews(@ApiParam("Optional language to get localized result") 
+                                    @QueryParam("lang") String locale) { 
         try {
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Request parameter lang = " + locale);
+            }
             JSONArray viewObjectArray = new JSONArray();
             View viewCtrlLocal = Util.getViewCtrlLocal();
             List<String> dataModelNames = getDataModelNames();
@@ -73,6 +81,12 @@ public class SystemViews {
             for (ViewPOJOPK viewPOJOPK : viewCtrlLocal.getViewPKs(".*")) {
                 ViewPOJO viewPOJO = ObjectPOJO.load(ViewPOJO.class, viewPOJOPK);
                 String viewName = viewPOJO.getName();
+                String description = viewPOJO.getDescription();
+                if (description.isEmpty()) {
+                    description = viewName;
+                } else {
+                    description = LocaleUtil.getLocaleValue(description, locale);
+                }
                 String entityName = getEntityNameByViewName(viewName);
                 String dataModelName = getDataModelNameByEntityName(metadataRepositoryAdmin, dataModelNames, entityName);
                 if (dataModelName.isEmpty()) {
@@ -80,7 +94,7 @@ public class SystemViews {
                 }
                 JSONObject viewObject = new JSONObject();
                 viewObject.put(NODE_NAME, viewName);
-                viewObject.put(NODE_DESCRIPTION, viewPOJO.getDescription());
+                viewObject.put(NODE_DESCRIPTION, description);
                 viewObject.put(NODE_DATA_MODEL_ID, dataModelName);
                 viewObjectArray.put(viewObject);
             }

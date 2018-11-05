@@ -35,13 +35,13 @@ import com.amalto.core.storage.StorageMetadataUtils;
  */
 public class DataRecordJSONWriter implements DataRecordWriter {
 
-    // Write attribute name use Camel-Case or LowerCase format
-    private boolean isCamelCase = false;
+    // Write attribute name use low case if ignoreCase is true
+    private boolean ignoreCase = true;
 
     private SecuredStorage.UserDelegator delegator = SecuredStorage.UNSECURED;
 
-    public DataRecordJSONWriter(boolean isCamelCase) {
-        this.isCamelCase = isCamelCase;
+    public DataRecordJSONWriter(boolean ignoreCase) {
+        this.ignoreCase = ignoreCase;
     }
 
     private void writeRecord(final DataRecord record, final JSONWriter writer) throws JSONException {
@@ -155,6 +155,6 @@ public class DataRecordJSONWriter implements DataRecordWriter {
     }
 
     private String generateAttributeName(String name) {
-        return isCamelCase ? name : name.toLowerCase();
+        return ignoreCase ? name.toLowerCase() : name;
     }
 }

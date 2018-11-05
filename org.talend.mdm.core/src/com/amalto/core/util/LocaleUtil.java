@@ -10,10 +10,14 @@
 package com.amalto.core.util;
 
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.LocaleUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -73,5 +77,34 @@ public class LocaleUtil {
             return Locale.SIMPLIFIED_CHINESE;
         }
         return new Locale(localLanguage);
+    }
+
+    /**
+     * According to language to get corresponding value, 
+     * @param value, like "[FR:Produit avec Magasins][EN:Product with Stores]"
+     * @param language, like "EN", if language is empty, assign to <b> EN </b> by default
+     * @return
+     *
+     * Please note that function getValueByLanguage(in class org.talend.mdm.webapp.base.client.util.MultilanguageMessageParser) 
+     * has same functionality as below function getLocaleValue, They should be consistent during change.
+     * 
+     */
+    public static String getLocaleValue(String value, String language) {
+        if (StringUtils.isEmpty(value)) {
+            return StringUtils.EMPTY;
+        }
+        if (StringUtils.isEmpty(language) || !LocaleUtils.isAvailableLocale(new Locale(language))) {
+            language = Locale.ENGLISH.getLanguage();
+        }
+        Pattern pattern = Pattern.compile("\\[(.*?)\\]");
+
+        Matcher matcher = pattern.matcher(value);
+        while (matcher.find()) {
+            String[] matcherPair = matcher.group().replaceAll("\\[|\\]", "").split(":", 2);
+            if (matcherPair[0].equalsIgnoreCase(language)) {
+                return matcherPair[1];
+            }
+        }
+        return value;
     }
 }

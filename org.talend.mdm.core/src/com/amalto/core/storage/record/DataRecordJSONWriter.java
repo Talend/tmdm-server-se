@@ -35,7 +35,7 @@ import com.amalto.core.storage.StorageMetadataUtils;
  */
 public class DataRecordJSONWriter implements DataRecordWriter {
 
-    // Write attribute name use low case if ignoreCase is true
+    // Controls attribute name to be low case or raw value defined in schema, default: true, low case
     private boolean ignoreCase = true;
 
     private SecuredStorage.UserDelegator delegator = SecuredStorage.UNSECURED;

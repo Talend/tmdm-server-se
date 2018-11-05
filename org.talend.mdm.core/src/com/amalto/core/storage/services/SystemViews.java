@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
@@ -67,9 +68,9 @@ public class SystemViews {
     }
 
     @GET
-    @ApiOperation("Get all user views, a view is generated according one or some entities in data model, if the data model is missing, the view won't appear in the results.")
-    public Response getAllUserViews(@ApiParam("Optional language to get localized result") 
-                                    @QueryParam("lang") String locale) { 
+    @ApiOperation("Get all views, not including the ones without data model deployed, a view is generated according one or some entities in data model, if the data model is missing, the view won't appear in the results.")
+    public Response getViewList(@ApiParam("Optional parameter of language to get localized result, default: EN")
+                                @QueryParam("lang") @DefaultValue("EN") String locale) {
         try {
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Request parameter lang = " + locale);
@@ -81,12 +82,7 @@ public class SystemViews {
             for (ViewPOJOPK viewPOJOPK : viewCtrlLocal.getViewPKs(".*")) {
                 ViewPOJO viewPOJO = ObjectPOJO.load(ViewPOJO.class, viewPOJOPK);
                 String viewName = viewPOJO.getName();
-                String description = viewPOJO.getDescription();
-                if (description.isEmpty()) {
-                    description = viewName;
-                } else {
-                    description = LocaleUtil.getLocaleValue(description, locale);
-                }
+                String description = getDescriptionValue(viewPOJO, locale);
                 String entityName = getEntityNameByViewName(viewName);
                 String dataModelName = getDataModelNameByEntityName(metadataRepositoryAdmin, dataModelNames, entityName);
                 if (dataModelName.isEmpty()) {
@@ -102,6 +98,16 @@ public class SystemViews {
         } catch (Exception e) {
             return getErrorResponse(e, "Could not get all user views.");
         }
+    }
+
+    private String getDescriptionValue(ViewPOJO viewPOJO, String locale) {
+        String description = viewPOJO.getDescription();
+        if (StringUtils.isEmpty(description)) {
+            description = viewPOJO.getName();
+        } else {
+            description = LocaleUtil.getLocaleValue(description, locale);
+        }
+        return description;
     }
 
     private String getEntityNameByViewName(String viewName) {

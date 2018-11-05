@@ -179,6 +179,22 @@ public class DataRecordJSONWriterTestCase extends DataRecordDataWriterTestCase {
                 + "[]}}", result);
     }
     
+    @Test
+    public void testIgnoreCase() throws Exception {
+        // Test IgnoreCase is false,attribute name to be raw value defined in schema
+        // Attribute name to be lower case when IgnoreCase is true, refer to Test case 'testSimpleComplexType'
+        writer = new DataRecordJSONWriter(false);
+        DataRecord record = createDataRecord(repository.getComplexType("SimpleProduct"));
+        setDataRecordField(record, "Id", "12345");
+        setDataRecordField(record, "Name", "Name");
+        setDataRecordField(record, "Description", "Desc");
+        setDataRecordField(record, "Availability", Boolean.FALSE);
+        String result = toJSON(record);
+        Assert.assertEquals(
+                "{\"SimpleProduct\":{\"Id\":\"12345\",\"Name\":\"Name\",\"Description\":\"Desc\",\"Availability\":\"false\"}}",
+                result);
+    }
+
     private String toJSON(DataRecord record) throws Exception {
         Writer w = new StringWriter();
         writer.write(record, w);

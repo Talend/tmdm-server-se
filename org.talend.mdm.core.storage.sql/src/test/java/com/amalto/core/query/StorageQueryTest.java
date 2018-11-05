@@ -2673,12 +2673,13 @@ public class StorageQueryTest extends StorageTestCase {
     }
 
     public void testMultiLingualSearchSort() throws Exception {
+        // 1. id (5, 6, 7, 8, 9, 10, 11, 12), field 'resume' is multilingual field, use English value to ASC sort.
         OrderBy.SortLanguage.set("EN");
         List<String> idList = getPersonIdList(5, 12);
         FieldMetadata idField = person.getField("id");
         FieldMetadata resumeField = person.getField("resume");
         FieldMetadata middlenameField = person.getField("middlename");
-        UserQueryBuilder qb = from(person).select(idField).select(resumeField).where(in(idField, getPersonIdList(5, 12)))
+        UserQueryBuilder qb = from(person).select(idField).select(resumeField).where(in(idField, idList))
                 .orderBy(resumeField, Direction.ASC);
         StorageResults results = storage.fetch(qb.getSelect());
         try {
@@ -2709,6 +2710,7 @@ public class StorageQueryTest extends StorageTestCase {
             OrderBy.SortLanguage.remove();
         }
 
+        // 2. id (5, 6, 7, 8, 9, 10, 11, 12), field 'resume' is multilingual field, use English value to DESC sort.
         OrderBy.SortLanguage.set("EN");
         qb = from(person).select(resumeField).select(idField).where(in(idField, idList))
                 .orderBy(resumeField, Direction.DESC);
@@ -2741,6 +2743,7 @@ public class StorageQueryTest extends StorageTestCase {
             OrderBy.SortLanguage.remove();
         }
 
+        // 3. id (5, 6, 7, 8, 9, 10, 11, 12), field 'resume' is multilingual field, use Franch value to ASC sort.
         OrderBy.SortLanguage.set("FR");
         qb = from(person).select(resumeField).select(idField).where(in(idField, idList))
                 .orderBy(resumeField, Direction.ASC);
@@ -2773,6 +2776,7 @@ public class StorageQueryTest extends StorageTestCase {
             OrderBy.SortLanguage.remove();
         }
 
+        // 4. id (5, 6, 7, 8, 9, 10, 11, 12), field 'resume' is multilingual field, use franch value to DESC sort.
         OrderBy.SortLanguage.set("FR");
         qb = from(person).select(resumeField).select(idField).where(in(idField, idList))
                 .orderBy(resumeField, Direction.DESC);
@@ -2804,6 +2808,9 @@ public class StorageQueryTest extends StorageTestCase {
             results.close();
             OrderBy.SortLanguage.remove();
         }
+
+        // 5. id in (7, 8, 9), the English value of multilingual field 'resume' is same with normal field 'middlename',
+        // when use 'EN' language sort, result of order by 'resume' is same with order by 'middlename'
         idList.clear();
         idList = getPersonIdList(7, 9);
 
@@ -2811,18 +2818,13 @@ public class StorageQueryTest extends StorageTestCase {
         qb = from(person).select(resumeField).select(idField).where(in(idField, idList))
                 .orderBy(resumeField, Direction.DESC);
         results = storage.fetch(qb.getSelect());
+        List<String> sortByResumeFieldResult = new ArrayList<>();
+        List<String> sortByMiddleNameFieldResult = new ArrayList<>();
         try {
             assertEquals(3, results.getCount());
             int i = 1;
             for (DataRecord result : results) {
-                if (i == 1) {
-                    assertEquals("9", result.get(idField));
-                } else if (i == 2) {
-                    assertEquals("8", result.get(idField));
-                } else if (i == 3) {
-                    assertEquals("7", result.get(idField));
-                }
-                i++;
+                sortByResumeFieldResult.add(result.get(idField).toString());
             }
         } finally {
             results.close();
@@ -2832,25 +2834,23 @@ public class StorageQueryTest extends StorageTestCase {
         OrderBy.SortLanguage.set("EN");
         qb = from(person).select(resumeField).select(idField).where(in(idField, idList))
                 .orderBy(middlenameField, Direction.DESC);
-        StorageResults resultsFR = storage.fetch(qb.getSelect());
+        results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(resultsFR.getCount(), results.getCount());
-            int i = 1;
-            for (DataRecord result : resultsFR) {
-                if (i == 1) {
-                    assertEquals("9", result.get(idField));
-                } else if (i == 2) {
-                    assertEquals("8", result.get(idField));
-                } else if (i == 3) {
-                    assertEquals("7", result.get(idField));
-                }
-                i++;
+            assertEquals(3, results.getCount());
+            for (DataRecord result : results) {
+                sortByMiddleNameFieldResult.add(result.get(idField).toString());
             }
         } finally {
             results.close();
             OrderBy.SortLanguage.remove();
         }
+        assertEquals(sortByResumeFieldResult.size(), sortByMiddleNameFieldResult.size());
+        assertEquals(sortByResumeFieldResult.get(0), sortByMiddleNameFieldResult.get(0));
+        assertEquals(sortByResumeFieldResult.get(1), sortByMiddleNameFieldResult.get(1));
+        assertEquals(sortByResumeFieldResult.get(2), sortByMiddleNameFieldResult.get(2));
 
+        // 6. id in (10, 11, 12), the Franch value of multilingual field 'resume' is same with normal field 'middlename',
+        // when use 'FR' language sort, result of order by 'resume' is same with order by 'middlename'
         idList.clear();
         idList = getPersonIdList(10, 12);
 
@@ -2858,18 +2858,12 @@ public class StorageQueryTest extends StorageTestCase {
         qb = from(person).select(resumeField).select(idField).where(in(idField, idList))
                 .orderBy(resumeField, Direction.DESC);
         results = storage.fetch(qb.getSelect());
+        sortByResumeFieldResult = new ArrayList<>();
+        sortByMiddleNameFieldResult = new ArrayList<>();
         try {
             assertEquals(3, results.getCount());
-            int i = 1;
             for (DataRecord result : results) {
-                if (i == 1) {
-                    assertEquals("11", result.get(idField));
-                } else if (i == 2) {
-                    assertEquals("12", result.get(idField));
-                } else if (i == 3) {
-                    assertEquals("10", result.get(idField));
-                }
-                i++;
+                sortByResumeFieldResult.add(result.get(idField).toString());
             }
         } finally {
             results.close();
@@ -2879,24 +2873,20 @@ public class StorageQueryTest extends StorageTestCase {
         OrderBy.SortLanguage.set("FR");
         qb = from(person).select(resumeField).select(idField).where(in(idField, idList))
                 .orderBy(middlenameField, Direction.DESC);
-        resultsFR = storage.fetch(qb.getSelect());
+        results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(resultsFR.getCount(), results.getCount());
-            int i = 1;
-            for (DataRecord result : resultsFR) {
-                if (i == 1) {
-                    assertEquals("11", result.get(idField));
-                } else if (i == 2) {
-                    assertEquals("12", result.get(idField));
-                } else if (i == 3) {
-                    assertEquals("10", result.get(idField));
-                }
-                i++;
+            assertEquals(3, results.getCount());
+            for (DataRecord result : results) {
+                sortByMiddleNameFieldResult.add(result.get(idField).toString());
             }
         } finally {
             results.close();
             OrderBy.SortLanguage.remove();
         }
+        assertEquals(sortByResumeFieldResult.size(), sortByMiddleNameFieldResult.size());
+        assertEquals(sortByResumeFieldResult.get(0), sortByMiddleNameFieldResult.get(0));
+        assertEquals(sortByResumeFieldResult.get(1), sortByMiddleNameFieldResult.get(1));
+        assertEquals(sortByResumeFieldResult.get(2), sortByMiddleNameFieldResult.get(2));
     }
 
     public void testSortOnXPath() throws Exception {

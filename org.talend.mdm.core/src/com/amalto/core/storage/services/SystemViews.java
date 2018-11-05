@@ -17,9 +17,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map.Entry;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -27,6 +31,12 @@ import javax.xml.stream.XMLStreamException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+import org.talend.mdm.commmon.metadata.MetadataRepository;
+import org.talend.mdm.commmon.util.webapp.XObjectType;
+import org.talend.mdm.commmon.util.webapp.XSystemObjects;
 
 import com.amalto.core.objects.ObjectPOJO;
 import com.amalto.core.objects.datamodel.DataModelPOJOPK;
@@ -40,20 +50,19 @@ import com.amalto.core.server.ServerContext;
 import com.amalto.core.server.api.Role;
 import com.amalto.core.server.api.View;
 import com.amalto.core.storage.exception.ConstraintViolationException;
+import com.amalto.core.storage.exception.ViewNotFoundException;
 import com.amalto.core.util.LocaleUtil;
 import com.amalto.core.util.RoleSpecification;
 import com.amalto.core.util.Util;
 import com.amalto.core.util.ValidateException;
+import com.amalto.xmlserver.interfaces.IWhereItem;
+import com.amalto.xmlserver.interfaces.WhereAnd;
+import com.amalto.xmlserver.interfaces.WhereCondition;
+import com.amalto.xmlserver.interfaces.WhereOr;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-
-import org.codehaus.jettison.json.JSONObject;
-import org.talend.mdm.commmon.metadata.MetadataRepository;
-import org.talend.mdm.commmon.util.webapp.XObjectType;
-import org.talend.mdm.commmon.util.webapp.XSystemObjects;
-import org.codehaus.jettison.json.JSONArray;
 
 @SuppressWarnings("nls")
 @Path("/system/views")
@@ -75,6 +84,32 @@ public class SystemViews {
     private static final String DEFAULT_VIEW_ALL = "Browse_items_.*";
 
     private static final String VIEW_OBJECT_NAME = "View";
+
+    private static final String SEARCHABLE_BUSINESS_ELEMENTS = "searchableBusinessElements";
+
+    private static final String VIEWABLE_BUSINESS_ELEMENTS = "viewableBusinessElementsJson";
+
+    private static final String WHERE_CONDITIONS = "whereConditions";
+
+    private static final String SORT_FIELD = "sortField";
+
+    private static final String CUSTOM_FORM = "customForm";
+
+    private static final String IS_ASC = "isAsc";
+
+    private static final String IS_TRANSFORMER_ACTIVE = "isTransformerActive";
+
+    private static final String LEFT_PATH = "leftPath";
+
+    private static final String OPERATOR = "operator";
+
+    private static final String RIGHT_VALUE_OR_PATH = "rightValueOrPath";
+
+    private static final String SPELL_CHECK = "spellCheck";
+
+    private static final String STRING_PREDICATE = "stringPredicate";
+
+    private List<Map<String, String>> whereConditions = new ArrayList<Map<String, String>>();
 
     public SystemViews() {
     }
@@ -114,11 +149,123 @@ public class SystemViews {
         }
     }
 
+    @GET
+    @Path("{id}")
+    @ApiOperation("Get view detail by view name and language.")
+    public Response getViewDetail(@ApiParam("a special view name") @PathParam("id") String viewPK,
+            @ApiParam("Optional parameter of language to get localized result, default: EN") @QueryParam("lang") String locale) {
+
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Request parameter id =" + viewPK + ", lang = " + locale);
+        }
+
+        MetadataRepositoryAdmin metadataRepositoryAdmin = ServerContext.INSTANCE.get().getMetadataRepositoryAdmin();
+        View viewCtrlLocal = Util.getViewCtrlLocal();
+        ViewPOJOPK currentViewPOJOPK = new ViewPOJOPK(viewPK);
+        ViewPOJO viewPOJO = null;
+        try {
+            viewPOJO = viewCtrlLocal.getView(currentViewPOJOPK);
+        } catch (Exception e) {
+            return getErrorResponse(new ViewNotFoundException(Response.Status.INTERNAL_SERVER_ERROR), "Error occurred while getting a special ViewPOJO with parameter viewId = " + viewPK);
+        }
+
+        if (viewPOJO == null) {
+            return getErrorResponse(new ViewNotFoundException(Response.Status.NOT_FOUND), "View ID '" + viewPK + "' is not found.");
+        }
+
+        List<String> dataModelNames;
+        try {
+            dataModelNames = getDataModelNames();
+        } catch (Exception e) {
+            return getErrorResponse(e, "Failed to get data model names.");
+        }
+        String entityName = getEntityNameByViewName(viewPOJO.getName());
+        String dataModelName = getDataModelNameByEntityName(metadataRepositoryAdmin, dataModelNames, entityName);
+
+        viewPOJO.setDescription(getDescriptionValue(viewPOJO.getDescription(), locale));
+        try {
+            JSONObject result = populatedResult(viewPOJO, dataModelName);
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("The result is " + result.toString());
+            }
+            return Response.ok(result.toString()).type(MediaType.APPLICATION_JSON_TYPE).build();
+        } catch (Exception e) {
+            return getErrorResponse(e, "Could not get user view.");
+        }
+    }
+
     private String getDescriptionValue(String description, String locale) {
         if (!StringUtils.isEmpty(description)) {
             description = LocaleUtil.getLocaleValue(description, locale);
         }
         return description;
+    }
+
+    private JSONObject populatedResult(ViewPOJO viewPOJO, String dataModelName) throws JSONException {
+        JSONObject viewObject = new JSONObject();
+        viewObject.put(NODE_NAME, viewPOJO.getName());
+        viewObject.put(NODE_DESCRIPTION, viewPOJO.getDescription());
+        viewObject.put(NODE_DATA_MODEL_ID, dataModelName);
+
+        JSONArray searchableBusinessElementsJson = new JSONArray();
+        for (Iterator<String> iterator = viewPOJO.getSearchableBusinessElements().getList().iterator(); iterator.hasNext();) {
+            String searchableItem = iterator.next();
+            searchableBusinessElementsJson.put(searchableItem);
+        }
+        viewObject.put(SEARCHABLE_BUSINESS_ELEMENTS, searchableBusinessElementsJson);
+
+        JSONArray viewableBusinessElementsJson = new JSONArray();
+        for (Iterator<String> iterator = viewPOJO.getViewableBusinessElements().getList().iterator(); iterator.hasNext();) {
+            String viewableItem = iterator.next();
+            viewableBusinessElementsJson.put(viewableItem);
+        }
+        viewObject.put(VIEWABLE_BUSINESS_ELEMENTS, viewableBusinessElementsJson);
+
+        ArrayList<IWhereItem> tempList = viewPOJO.getWhereConditions().getList();
+        whereConditions.clear();
+        formatWhereItem(tempList);
+
+        JSONArray whereConditionsJson = new JSONArray();
+        for (Iterator<Map<String, String>> iterator = whereConditions.iterator(); iterator.hasNext();) {
+            Map<String, String> whereConditionItem = iterator.next();
+
+            JSONObject whereConditionsObject = new JSONObject();
+            for (Iterator<Entry<String, String>> subIterator = whereConditionItem.entrySet().iterator(); subIterator.hasNext();) {
+                Entry<String, String> map = subIterator.next();
+                whereConditionsObject.put(map.getKey(), map.getValue());
+            }
+            whereConditionsJson.put(whereConditionsObject);
+        }
+        viewObject.put(WHERE_CONDITIONS, whereConditionsJson);
+
+        viewObject.put(SORT_FIELD, viewPOJO.getSortField());
+        viewObject.put(CUSTOM_FORM, viewPOJO.getCustomForm());
+        viewObject.put(IS_ASC, viewPOJO.getIsAsc());
+        viewObject.put(IS_TRANSFORMER_ACTIVE, viewPOJO.isTransformerActive());
+
+        return viewObject;
+    }
+
+    private void formatWhereItem(List<IWhereItem> tempList) {
+        for (IWhereItem item : tempList) {
+            if (item instanceof WhereAnd) {
+                List<IWhereItem> andList = ((WhereAnd) item).getItems();
+                formatWhereItem(andList);
+            } else if (item instanceof WhereOr) {
+                List<IWhereItem> orList = ((WhereOr) item).getItems();
+                formatWhereItem(orList);
+            } else if (item instanceof WhereCondition) {
+                WhereCondition currentWhereCon = ((WhereCondition) item);
+                Map<String, String> whereItem = new LinkedHashMap<>();
+                whereItem.put(LEFT_PATH, currentWhereCon.getLeftPath());
+                whereItem.put(OPERATOR, currentWhereCon.getOperator());
+                whereItem.put(RIGHT_VALUE_OR_PATH, currentWhereCon.getRightValueOrPath());
+                whereItem.put(SPELL_CHECK, currentWhereCon.isSpellCheck() == Boolean.TRUE ? "true" : "false");
+                whereItem.put(STRING_PREDICATE, currentWhereCon.getStringPredicate());
+
+                whereConditions.add(whereItem);
+            }
+        }
     }
 
     private String getEntityNameByViewName(String viewName) {
@@ -168,6 +315,8 @@ public class SystemViews {
                 || e.getCause() instanceof IllegalStateException || e.getCause() instanceof ValidateException))) {
             LOGGER.warn(responseMessage, e);
             return Response.status(Response.Status.BAD_REQUEST).entity(responseMessage).build();
+        } else if (e instanceof ViewNotFoundException) {
+            return Response.status(((ViewNotFoundException) e).getStatus()).entity(responseMessage).build();
         } else {
             LOGGER.error(responseMessage, e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(responseMessage).build();

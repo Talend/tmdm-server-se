@@ -175,10 +175,18 @@ public class SystemViews {
     }
 
     private Map<String, Set<String>> getViewRolesMap() {
-        Role roleCtrlLocal = Util.getRoleCtrlLocal();
         Map<String, Set<String>> viewRolesMap = new HashMap<String, Set<String>>();
-        Set<String> roleAllViewsSet = new HashSet<>();
+        Set<String> rolesForAllViewSet = new HashSet<>();
+
         try {
+            Role roleCtrlLocal = Util.getRoleCtrlLocal();
+            View viewCtrlLocal = Util.getViewCtrlLocal();
+            for (ViewPOJOPK viewPOJOPK : viewCtrlLocal.getViewPKs(".*")) {
+                ViewPOJO viewPOJO = ObjectPOJO.load(ViewPOJO.class, viewPOJOPK);
+                String viewName = viewPOJO.getName();
+                Set<String> rolesSet = new HashSet<>();
+                viewRolesMap.put(viewName, rolesSet);
+            }
             for (Object rolePOJOPK : roleCtrlLocal.getRolePKs(".*")) {
                 String roleName = ((RolePOJOPK) rolePOJOPK).getUniqueId();
                 RolePOJO role = ObjectPOJO.load(RolePOJO.class, new RolePOJOPK(roleName));
@@ -188,7 +196,7 @@ public class SystemViews {
                     Set<String> viewNames = specification.getInstances().keySet();
                     for (String viewName : viewNames) {
                         if (viewName.equals(DEFAULT_VIEW_ALL)) {
-                            roleAllViewsSet.add(roleName);
+                            rolesForAllViewSet.add(roleName);
                             continue;
                         }
                         Set<String> rolesSet = viewRolesMap.get(viewName);
@@ -202,14 +210,13 @@ public class SystemViews {
                     }
                 }
             }
-            if (roleAllViewsSet.size() > 0) {
+            if (rolesForAllViewSet.size() > 0) {
                 for (String viewName : viewRolesMap.keySet()) {
                     Set<String> rolesSet = viewRolesMap.get(viewName);
                     if (null == rolesSet) {
                         rolesSet = new HashSet<>();
-                    } else {
-                        rolesSet.addAll(roleAllViewsSet);
                     }
+                    rolesSet.addAll(rolesForAllViewSet);
                     viewRolesMap.put(viewName, rolesSet);
                 }
             }

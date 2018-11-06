@@ -102,7 +102,7 @@ public class DataRecordXmlWriter implements DataRecordWriter {
             Map<String, String> properties = recordMetadata.getRecordProperties();
             writeMetadataField(writer, Timestamp.INSTANCE, recordMetadata.getLastModificationTime());
             writeMetadataField(writer, TaskId.INSTANCE, recordMetadata.getTaskId());
-            writeMetadataField(writer, StagingBlockKey.INSTANCE, properties.get(StagingStorage.METADATA_STAGING_BLOCK_KEY));
+            writeMetadataField(writer, StagingBlockKey.INSTANCE, properties.get(StorageConstants.METADATA_STAGING_BLOCK_KEY));
         }
         // Print record fields
         if (!delegator.hide(record.getType())) {

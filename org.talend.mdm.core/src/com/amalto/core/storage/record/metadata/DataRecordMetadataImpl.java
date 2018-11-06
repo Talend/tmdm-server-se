@@ -11,7 +11,7 @@
 
 package com.amalto.core.storage.record.metadata;
 
-import com.amalto.core.storage.Storage;
+import com.amalto.core.storage.record.StorageConstants;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,7 +40,7 @@ public class DataRecordMetadataImpl implements DataRecordMetadata {
     public void setLastModificationTime(long lastModificationTime) {
         this.lastModificationTime = lastModificationTime;
         if (recordProperties != null) {
-            recordProperties.put(Storage.METADATA_TIMESTAMP, String.valueOf(lastModificationTime)); // Overrides timestamp in record properties (in case it was there).
+            recordProperties.put(StorageConstants.METADATA_TIMESTAMP, String.valueOf(lastModificationTime)); // Overrides timestamp in record properties (in case it was there).
         }
     }
 
@@ -51,7 +51,7 @@ public class DataRecordMetadataImpl implements DataRecordMetadata {
     public void setTaskId(String taskId) {
         this.taskId = taskId;
         if (recordProperties != null) {
-            recordProperties.put(Storage.METADATA_TASK_ID, taskId); // Overrides task id in record properties (in case it was there).
+            recordProperties.put(StorageConstants.METADATA_TASK_ID, taskId); // Overrides task id in record properties (in case it was there).
         }
     }
 

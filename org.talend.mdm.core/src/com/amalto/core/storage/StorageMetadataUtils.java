@@ -16,6 +16,7 @@ import com.amalto.core.query.user.DateTimeConstant;
 import com.amalto.core.query.user.TimeConstant;
 import com.amalto.core.storage.record.MetaDataUtils;
 import com.amalto.core.storage.record.DataRecord;
+import com.amalto.core.storage.record.StorageConstants;
 import com.amalto.core.storage.record.metadata.UnsupportedDataRecordMetadata;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
@@ -109,7 +110,7 @@ public class StorageMetadataUtils extends MetaDataUtils {
             
      private static void __paths(ComplexTypeMetadata type, FieldMetadata target, Stack<FieldMetadata> currentPath,
              Set<List<FieldMetadata>> foundPaths, Set<TypeMetadata> processedTypes) {
-        if (Storage.PROJECTION_TYPE.equals(type.getName()) && type.hasField(target.getName())) {
+        if (StorageConstants.PROJECTION_TYPE.equals(type.getName()) && type.hasField(target.getName())) {
             currentPath.push(type.getField(target.getName()));
         }
         Collection<FieldMetadata> fields = type.getFields();

@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
+import com.amalto.core.storage.record.StorageConstants;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.log4j.Logger;
 
@@ -181,7 +182,7 @@ class MDMTransaction implements Transaction {
     }
 
     public StorageTransaction include(Storage storage) {
-        if ((storage.getCapabilities() & Storage.CAP_TRANSACTION) != Storage.CAP_TRANSACTION) {
+        if ((storage.getCapabilities() & StorageConstants.CAP_TRANSACTION) != StorageConstants.CAP_TRANSACTION) {
             throw new IllegalArgumentException("Storage '" + storage.getName() + "' does not support transactions.");
         }
         StorageTransaction storageTransaction = null;

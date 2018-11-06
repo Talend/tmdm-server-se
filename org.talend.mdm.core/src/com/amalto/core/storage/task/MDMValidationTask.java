@@ -22,6 +22,7 @@ import com.amalto.core.save.context.StorageDocument;
 import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.StorageResults;
 import com.amalto.core.storage.record.DataRecord;
+import com.amalto.core.storage.record.StorageConstants;
 import com.amalto.core.util.User;
 import com.amalto.core.util.UserHelper;
 import org.apache.commons.lang.StringUtils;
@@ -222,8 +223,8 @@ public class MDMValidationTask extends MetadataRepositoryTask {
                 }
                 saver.save(session, context);
                 commitCount++;
-                recordProperties.put(Storage.METADATA_STAGING_STATUS, StagingConstants.SUCCESS_VALIDATE);
-                recordProperties.put(Storage.METADATA_STAGING_ERROR, StringUtils.EMPTY);
+                recordProperties.put(StorageConstants.METADATA_STAGING_STATUS, StagingConstants.SUCCESS_VALIDATE);
+                recordProperties.put(StorageConstants.METADATA_STAGING_ERROR, StringUtils.EMPTY);
                 storage.update(stagingRecord);
                 if(isResolve) {
                     session.end(committer);
@@ -241,7 +242,7 @@ public class MDMValidationTask extends MetadataRepositoryTask {
                 }
                 stats.reportSuccess();
             } catch (Exception e) {
-                recordProperties.put(Storage.METADATA_STAGING_STATUS, StagingConstants.FAIL_VALIDATE_VALIDATION);
+                recordProperties.put(StorageConstants.METADATA_STAGING_STATUS, StagingConstants.FAIL_VALIDATE_VALIDATION);
                 StringWriter exceptionMessages = new StringWriter();
                 Throwable current = e;
                 while (current != null) {
@@ -251,7 +252,7 @@ public class MDMValidationTask extends MetadataRepositoryTask {
                         exceptionMessages.append('\n');
                     }
                 }
-                recordProperties.put(Storage.METADATA_STAGING_ERROR, exceptionMessages.toString());                
+                recordProperties.put(StorageConstants.METADATA_STAGING_ERROR, exceptionMessages.toString());
                 storage.update(stagingRecord);
                 if (LOGGER.isDebugEnabled()) {
                     LOGGER.debug("Validation failed: record id #"

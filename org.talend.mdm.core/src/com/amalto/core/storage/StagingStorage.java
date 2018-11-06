@@ -10,16 +10,15 @@
 
 package com.amalto.core.storage;
 
-import static com.amalto.core.query.user.UserQueryBuilder.eq;
-import static com.amalto.core.query.user.UserQueryBuilder.from;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import com.amalto.core.query.user.Expression;
+import com.amalto.core.query.user.UserQueryBuilder;
+import com.amalto.core.storage.datasource.DataSource;
+import com.amalto.core.storage.datasource.DataSourceDefinition;
+import com.amalto.core.storage.record.DataRecord;
+import com.amalto.core.storage.record.StorageConstants;
+import com.amalto.core.storage.record.metadata.DataRecordMetadata;
+import com.amalto.core.storage.task.StagingConstants;
+import com.amalto.core.storage.transaction.StorageTransaction;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.iterators.TransformIterator;
 import org.apache.commons.lang.StringUtils;
@@ -29,14 +28,10 @@ import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.metadata.compare.Compare.DiffResults;
 import org.talend.mdm.commmon.metadata.compare.ImpactAnalyzer;
 
-import com.amalto.core.query.user.Expression;
-import com.amalto.core.query.user.UserQueryBuilder;
-import com.amalto.core.storage.datasource.DataSource;
-import com.amalto.core.storage.datasource.DataSourceDefinition;
-import com.amalto.core.storage.record.DataRecord;
-import com.amalto.core.storage.record.metadata.DataRecordMetadata;
-import com.amalto.core.storage.task.StagingConstants;
-import com.amalto.core.storage.transaction.StorageTransaction;
+import java.util.*;
+
+import static com.amalto.core.query.user.UserQueryBuilder.eq;
+import static com.amalto.core.query.user.UserQueryBuilder.from;
 
 public class StagingStorage implements Storage {
 
@@ -134,7 +129,7 @@ public class StagingStorage implements Storage {
                 DataRecordMetadata metadata = dataRecord.getRecordMetadata();
                 Map<String, String> recordProperties = metadata.getRecordProperties();
                 // Update on a record in staging reset all its match&merge information.
-                String status = recordProperties.get(METADATA_STAGING_STATUS);
+                String status = recordProperties.get(StorageConstants.METADATA_STAGING_STATUS);
                 StagingUpdateAction updateAction = updateActions.get(status);
                 if (updateAction == null) {
                     // Try to re-read status from database
@@ -146,7 +141,7 @@ public class StagingStorage implements Storage {
                         StorageResults refreshedRecord = delegate.fetch(readStatus.getSelect());
                         for (DataRecord record : refreshedRecord) {
                             Map<String, String> refreshedProperties = record.getRecordMetadata().getRecordProperties();
-                            updateAction = updateActions.get(refreshedProperties.get(METADATA_STAGING_STATUS));
+                            updateAction = updateActions.get(refreshedProperties.get(StorageConstants.METADATA_STAGING_STATUS));
                         }
                     }
                     // Database doesn't have any satisfying update action
@@ -154,8 +149,8 @@ public class StagingStorage implements Storage {
                         updateAction = defaultUpdateAction; // Covers cases where update action isn't specified.
                     }
                 }
-                recordProperties.put(Storage.METADATA_STAGING_STATUS, updateAction.value());
-                recordProperties.put(Storage.METADATA_STAGING_ERROR, StringUtils.EMPTY);
+                recordProperties.put(StorageConstants.METADATA_STAGING_STATUS, updateAction.value());
+                recordProperties.put(StorageConstants.METADATA_STAGING_ERROR, StringUtils.EMPTY);
                 if (updateAction.resetTaskId()) {
                     metadata.setTaskId(null);
                 }
@@ -176,7 +171,7 @@ public class StagingStorage implements Storage {
     public void delete(Expression userQuery) {
         StorageResults records = delegate.fetch(userQuery);
         for (DataRecord record : records) {
-            record.getRecordMetadata().getRecordProperties().put(Storage.METADATA_STAGING_STATUS, StagingConstants.DELETED);
+            record.getRecordMetadata().getRecordProperties().put(StorageConstants.METADATA_STAGING_STATUS, StagingConstants.DELETED);
             delegate.update(record);
         }
     }

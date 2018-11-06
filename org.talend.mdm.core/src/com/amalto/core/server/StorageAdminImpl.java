@@ -10,32 +10,32 @@
 
 package com.amalto.core.server;
 
+import com.amalto.core.metadata.ClassRepository;
 import com.amalto.core.objects.DroppedItemPOJO;
 import com.amalto.core.objects.ObjectPOJO;
-import com.amalto.core.metadata.ClassRepository;
+import com.amalto.core.objects.datacluster.DataClusterPOJO;
+import com.amalto.core.objects.datamodel.DataModelPOJO;
 import com.amalto.core.query.user.Expression;
 import com.amalto.core.storage.DispatchWrapper;
 import com.amalto.core.storage.StagingStorage;
-import com.amalto.core.storage.datasource.DataSourceDefinition;
-
-import org.apache.commons.collections.map.MultiKeyMap;
-import org.apache.commons.io.IOUtils;
-import org.talend.mdm.commmon.metadata.MetadataRepository;
-
-import com.amalto.core.objects.datacluster.DataClusterPOJO;
-import com.amalto.core.objects.datamodel.DataModelPOJO;
 import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.StorageType;
+import com.amalto.core.storage.datasource.DataSourceDefinition;
 import com.amalto.core.storage.datasource.DataSourceFactory;
-
+import com.amalto.core.storage.record.StorageConstants;
+import org.apache.commons.collections.map.MultiKeyMap;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
 import org.talend.mdm.commmon.util.webapp.XObjectType;
 import org.talend.mdm.commmon.util.webapp.XSystemObjects;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 public class StorageAdminImpl implements StorageAdmin {
@@ -78,7 +78,7 @@ public class StorageAdminImpl implements StorageAdmin {
     /**
      * Delete storages of the given container (storage name)
      * 
-     * @param String the storage name
+     * @param storageName the storage name
      * @param dropExistingData true to drop existing data
      */
     public void delete(String storageName, boolean dropExistingData) {
@@ -298,19 +298,19 @@ public class StorageAdminImpl implements StorageAdmin {
             StringBuilder capabilitiesAsString = new StringBuilder();
             int capabilities = dataModelStorage.getCapabilities();
             capabilitiesAsString.append(" TRANSACTION"); //$NON-NLS-1$
-            if ((capabilities & Storage.CAP_TRANSACTION) == Storage.CAP_TRANSACTION) {
+            if ((capabilities & StorageConstants.CAP_TRANSACTION) == StorageConstants.CAP_TRANSACTION) {
                 capabilitiesAsString.append("(+)"); //$NON-NLS-1$
             } else {
                 capabilitiesAsString.append("(-)"); //$NON-NLS-1$
             }
             capabilitiesAsString.append(" FULL TEXT"); //$NON-NLS-1$
-            if ((capabilities & Storage.CAP_FULL_TEXT) == Storage.CAP_FULL_TEXT) {
+            if ((capabilities & StorageConstants.CAP_FULL_TEXT) == StorageConstants.CAP_FULL_TEXT) {
                 capabilitiesAsString.append("(+)"); //$NON-NLS-1$
             } else {
                 capabilitiesAsString.append("(-)"); //$NON-NLS-1$
             }
             capabilitiesAsString.append(" INTEGRITY"); //$NON-NLS-1$
-            if ((capabilities & Storage.CAP_INTEGRITY) == Storage.CAP_INTEGRITY) {
+            if ((capabilities & StorageConstants.CAP_INTEGRITY) == StorageConstants.CAP_INTEGRITY) {
                 capabilitiesAsString.append("(+)"); //$NON-NLS-1$
             } else {
                 capabilitiesAsString.append("(-)"); //$NON-NLS-1$

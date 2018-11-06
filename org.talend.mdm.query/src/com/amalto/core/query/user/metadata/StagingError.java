@@ -14,7 +14,7 @@ import com.amalto.core.query.user.Expression;
 import com.amalto.core.query.user.TypedExpression;
 import com.amalto.core.query.user.UserStagingQueryBuilder;
 import com.amalto.core.query.user.Visitor;
-import com.amalto.core.storage.record.CommonStorage;
+import com.amalto.core.storage.record.StorageConstants;
 import org.talend.mdm.commmon.metadata.Types;
 
 import static com.amalto.core.query.user.UserQueryBuilder.alias;
@@ -27,7 +27,7 @@ public class StagingError implements MetadataField {
 
     private static final String[] STAGING_ERROR_FIELD = new String[] { "$staging_error$", "metadata:staging_error", "staging_error" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3
 
-    private final PropertyReader propertyReader = new PropertyReader(CommonStorage.METADATA_STAGING_ERROR);
+    private final PropertyReader propertyReader = new PropertyReader(StorageConstants.METADATA_STAGING_ERROR);
 
     private StagingError() {
     }

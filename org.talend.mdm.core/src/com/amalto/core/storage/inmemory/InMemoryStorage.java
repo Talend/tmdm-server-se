@@ -22,6 +22,7 @@ import java.util.Set;
 
 import javax.xml.XMLConstants;
 
+import com.amalto.core.storage.record.StorageConstants;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
@@ -103,7 +104,7 @@ public class InMemoryStorage implements Storage {
 
     @Override
     public int getCapabilities() {
-        return CAP_TRANSACTION;
+        return StorageConstants.CAP_TRANSACTION;
     }
 
     @Override
@@ -361,7 +362,7 @@ public class InMemoryStorage implements Storage {
                         @Override
                         public boolean match(DataRecord record) {
                             return record.getRecordMetadata().getRecordProperties()
-                                    .get(StagingStorage.METADATA_STAGING_BLOCK_KEY) == null;
+                                    .get(StorageConstants.METADATA_STAGING_BLOCK_KEY) == null;
                         }
                     };
                 }
@@ -559,7 +560,7 @@ public class InMemoryStorage implements Storage {
 
                 @Override
                 public Object getValue(DataRecord record) {
-                    return record.getRecordMetadata().getRecordProperties().get(StagingStorage.METADATA_STAGING_BLOCK_KEY);
+                    return record.getRecordMetadata().getRecordProperties().get(StorageConstants.METADATA_STAGING_BLOCK_KEY);
                 }
             });
             return records;

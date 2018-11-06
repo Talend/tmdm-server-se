@@ -13,7 +13,7 @@ package com.amalto.core.storage;
 import java.util.List;
 import java.util.Set;
 
-import com.amalto.core.storage.record.CommonStorage;
+import com.amalto.core.storage.record.StorageConstants;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.metadata.compare.Compare.DiffResults;
@@ -28,53 +28,7 @@ import com.amalto.core.storage.transaction.StorageTransaction;
 /**
  *
  */
-public interface Storage extends CommonStorage {
-
-    /**
-     * Indicates storage supports transactions.
-     */
-    byte   CAP_TRANSACTION            = 1;
-
-    /**
-     * Indicates storage supports full text queries.
-     */
-    byte   CAP_FULL_TEXT              = 2;
-
-    /**
-     * Indicate storage supports referential integrity.
-     */
-    byte   CAP_INTEGRITY              = 4;
-
-    /**
-     * Name of the column where MDM timestamp is stored.
-     */
-    String METADATA_TIMESTAMP         = "x_talend_timestamp";       //$NON-NLS-1$
-
-    /**
-     * Name of the column where MDM task id is stored.
-     */
-    String METADATA_TASK_ID           = "x_talend_task_id";         //$NON-NLS-1$
-
-    /**
-     * <p>
-     * Name of the column where previous values that built a golden record can be stored (for STAGING databases and
-     * golden records only).
-     * </p>
-     * <p>
-     * This columns contains a Base64-encoded ZIP content. To read the value, you first to decode the Base64 content
-     * <b>then</b> unzip it:
-     * 
-     * <pre>
-     * String value; // Value from database
-     * ZipInputStream in = new ZipInputStream(new Base64InputStream(new ByteArrayInputStream(value.getBytes())));
-     * in.getNextEntry();
-     * ObjectInputStream inputStream = new ObjectInputStream(in);
-     * Map o = (Map) inputStream.readObject();
-     * </pre>
-     * 
-     * </p>
-     */
-    String METADATA_STAGING_VALUES    = "x_talend_staging_values";  //$NON-NLS-1$
+public interface Storage {
 
     /**
      * @return A storage implementation that does not perform any on-the-fly data modification.
@@ -83,9 +37,9 @@ public interface Storage extends CommonStorage {
 
     /**
      * @return A bit mask of capabilities for this storage implementation.
-     * @see #CAP_TRANSACTION
-     * @see #CAP_INTEGRITY
-     * @see #CAP_FULL_TEXT
+     * @see com.amalto.core.storage.record.StorageConstants#CAP_TRANSACTION
+     * @see com.amalto.core.storage.record.StorageConstants#CAP_INTEGRITY
+     * @see com.amalto.core.storage.record.StorageConstants#CAP_FULL_TEXT
      */
     int getCapabilities();
 

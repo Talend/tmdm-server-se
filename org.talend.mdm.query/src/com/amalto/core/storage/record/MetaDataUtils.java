@@ -59,7 +59,7 @@ public class MetaDataUtils {
         if (target == null) {
             throw new IllegalArgumentException("Target field can not be null");
         }
-        if (CommonStorage.PROJECTION_TYPE.equals(type.getName()) && type.hasField(target.getName())) {
+        if (StorageConstants.PROJECTION_TYPE.equals(type.getName()) && type.hasField(target.getName())) {
             path.push(type.getField(target.getName()));
         }
         if (target.getContainingType() instanceof ContainedComplexTypeMetadata) {

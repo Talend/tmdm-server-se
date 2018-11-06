@@ -9,11 +9,10 @@
  */
 package com.amalto.core.storage.inmemory.matcher;
 
-import org.apache.commons.lang.NotImplementedException;
-
 import com.amalto.core.query.user.Predicate;
-import com.amalto.core.storage.StagingStorage;
 import com.amalto.core.storage.record.DataRecord;
+import com.amalto.core.storage.record.StorageConstants;
+import org.apache.commons.lang.NotImplementedException;
 
 public class BuiltInBlockKeyMatcher implements Matcher {
 
@@ -28,7 +27,7 @@ public class BuiltInBlockKeyMatcher implements Matcher {
 
     @Override
     public boolean match(DataRecord record) {
-        Object recordValue = record.getRecordMetadata().getRecordProperties().get(StagingStorage.METADATA_STAGING_BLOCK_KEY);
+        Object recordValue = record.getRecordMetadata().getRecordProperties().get(StorageConstants.METADATA_STAGING_BLOCK_KEY);
         if (recordValue == null) {
             return false;
         }

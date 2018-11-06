@@ -25,26 +25,20 @@ public class LocaleUtilTest extends TestCase {
         language = "zh";
         str1 = "[FR:Produit avec Magasins][EN:Product with Stores]";
         results = LocaleUtil.getLocaleValue(str1, language);
-        assertEquals("Product with Stores", results);
-        
+        assertEquals("[FR:Produit avec Magasins][EN:Product with Stores]", results);
+
         //case 3
         language = "ar";
         str1 = "[FR:Produit avec Magasins][EN:Product with Stores]";
         results = LocaleUtil.getLocaleValue(str1, language);
-        assertEquals("Product with Stores", results);
+        assertEquals("[FR:Produit avec Magasins][EN:Product with Stores]", results);
 
-        //case 4
-        language = "zh_CN";
-        str1 = "[FR:Produit avec Magasins][EN:Product with Stores]";
-        results = LocaleUtil.getLocaleValue(str1, language);
-        assertEquals("Product with Stores", results);
-        
         //case 5
         language = "fr";
         str1 = "";
         results = LocaleUtil.getLocaleValue(str1, language);
         assertEquals("", results);
-        
+
         //case 6
         language = "fr";
         str1 = "[FR:Produit avec Magasins]";
@@ -61,7 +55,7 @@ public class LocaleUtilTest extends TestCase {
         language = "";
         str1 = "[EN:Product with Stores]";
         results = LocaleUtil.getLocaleValue(str1, language);
-        assertEquals("Product with Stores", results);
+        assertEquals("[EN:Product with Stores]", results);
 
         //case 9
         language = "";
@@ -79,36 +73,36 @@ public class LocaleUtilTest extends TestCase {
         language = "zh_CN,en";
         str1 = "[FR:Produit avec Magasins][EN:Product with Stores]";
         results = LocaleUtil.getLocaleValue(str1, language);
-        assertEquals("Product with Stores", results);
+        assertEquals("[FR:Produit avec Magasins][EN:Product with Stores]", results);
 
         //case 12
         language = "fr_FR";
         str1 = "[FR:Produit avec Magasins][EN:Product with Stores]";
         results = LocaleUtil.getLocaleValue(str1, language);
-        assertEquals("Produit avec Magasins", results);
+        assertEquals("[FR:Produit avec Magasins][EN:Product with Stores]", results);
 
         //case 13
         language = "fr_FR_en";
         str1 = "[FR:Produit avec Magasins][EN:Product with Stores]";
         results = LocaleUtil.getLocaleValue(str1, language);
-        assertEquals("Product with Stores", results);
+        assertEquals("[FR:Produit avec Magasins][EN:Product with Stores]", results);
 
         //case 14
         language = "_________";
         str1 = "[FR:Produit avec Magasins][EN:Product with Stores]";
         results = LocaleUtil.getLocaleValue(str1, language);
-        assertEquals("Product with Stores", results);
+        assertEquals("[FR:Produit avec Magasins][EN:Product with Stores]", results);
 
         //case 15
         language = "_________fr";
         str1 = "[FR:Produit avec Magasins][EN:Product with Stores]";
         results = LocaleUtil.getLocaleValue(str1, language);
-        assertEquals("Product with Stores", results);
+        assertEquals("[FR:Produit avec Magasins][EN:Product with Stores]", results);
 
         //case 16
         language = "fr_________";
         str1 = "[FR:Produit avec Magasins][EN:Product with Stores]";
         results = LocaleUtil.getLocaleValue(str1, language);
-        assertEquals("Product with Stores", results);
+        assertEquals("[FR:Produit avec Magasins][EN:Product with Stores]", results);
     }
 }

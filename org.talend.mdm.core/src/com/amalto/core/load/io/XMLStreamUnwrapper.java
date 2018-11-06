@@ -18,7 +18,6 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
-import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -28,6 +27,7 @@ import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
 import org.apache.commons.lang.StringUtils;
+import org.talend.mdm.commmon.util.core.MDMXMLUtils;
 
 /**
  * A implementation of {@link Enumeration} that allows one to separately return XML fragments at a given level.
@@ -67,7 +67,7 @@ public class XMLStreamUnwrapper implements Enumeration<String> {
 
     public XMLStreamUnwrapper(InputStream stream) {
         try {
-            reader = XMLInputFactory.newFactory().createXMLEventReader(stream);
+            reader = MDMXMLUtils.createXMLEventReader(stream);
             // Skip to first record
             while (reader.hasNext() && level < RECORD_LEVEL) {
                 final XMLEvent event = reader.nextEvent();

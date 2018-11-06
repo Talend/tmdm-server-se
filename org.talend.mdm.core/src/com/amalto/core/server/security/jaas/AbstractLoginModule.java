@@ -162,6 +162,7 @@ public abstract class AbstractLoginModule implements LoginModule {
             if (!principals.contains(principal)) {
                 subject.getPrincipals().add(principal);
             }
+
             // in any case, reset
             reset();
             commitSucceeded = true;

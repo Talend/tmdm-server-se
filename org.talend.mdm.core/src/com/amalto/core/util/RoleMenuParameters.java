@@ -7,12 +7,9 @@
  * You should have received a copy of the agreement along with this program; if not, write to Talend SA 9 rue Pages
  * 92150 Suresnes, France
  */
-package com.amalto.webapp.core.util;
+package com.amalto.core.util;
 
 import java.io.StringReader;
-
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.ValidationException;
 
 import com.amalto.core.objects.marshalling.MarshallingException;
 import com.amalto.core.objects.marshalling.MarshallingFactory;
@@ -27,12 +24,11 @@ public class RoleMenuParameters {
         return position;}
 
     // TODO: change this method signature to do not expose Castor Exception anymore
-    public static RoleMenuParameters unmarshalMenuParameters(String parameters) throws ValidationException ,MarshalException{
+    public static RoleMenuParameters unmarshalMenuParameters(String parameters) throws ValidateException, MarshallingException {
         try {
             return MarshallingFactory.getInstance().getUnmarshaller(RoleMenuParameters.class).unmarshal(new StringReader(parameters));
         } catch (MarshallingException e) {
-            throw new MarshalException(e);
+            throw new MarshallingException(e);
         }
 	}
-
 }

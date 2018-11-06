@@ -11,13 +11,13 @@
 
 package com.amalto.core.history;
 
-import com.amalto.core.history.accessor.Accessor;
-import com.amalto.core.history.accessor.NoOpAccessor;
 import org.apache.commons.lang.StringUtils;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
+import org.talend.mdm.commmon.util.core.MDMXMLUtils;
+import org.talend.mdm.commmon.util.exception.XmlBeanDefinitionException;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+import com.amalto.core.history.accessor.Accessor;
+import com.amalto.core.history.accessor.NoOpAccessor;
 
 /**
 *
@@ -30,8 +30,8 @@ public class EmptyDocument implements MutableDocument {
 
     static {
         try {
-            EMPTY_DOCUMENT = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
-        } catch (ParserConfigurationException e) {
+            EMPTY_DOCUMENT = MDMXMLUtils.getDocumentBuilder().get().newDocument();
+        } catch (XmlBeanDefinitionException e) {
             throw new RuntimeException(e);
         }
     }

@@ -12,18 +12,18 @@ package com.amalto.core.ejb;
 import java.io.StringReader;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
-import junit.framework.TestCase;
-
+import org.talend.mdm.commmon.util.core.MDMXMLUtils;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
+
+import junit.framework.TestCase;
 
 @SuppressWarnings("nls")
 public class ObjectPOJOTest extends TestCase {
 
     public void testParsingTotalCount() throws Exception {
-        DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        DocumentBuilder builder = MDMXMLUtils.getDocumentBuilder().get();
         String string = "<totalCount>100</totalCount>";
         // rebuild IDs
         Document doc = builder.parse(new InputSource(new StringReader(string)));

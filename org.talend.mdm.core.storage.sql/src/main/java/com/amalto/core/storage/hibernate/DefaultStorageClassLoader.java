@@ -37,6 +37,7 @@ import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
+import org.talend.mdm.commmon.util.core.MDMXMLUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentType;
@@ -66,10 +67,7 @@ public class DefaultStorageClassLoader extends StorageClassLoader {
     @Override
     public InputStream generateEhCacheConfig() {
         try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            factory.setNamespaceAware(true);
-            factory.setExpandEntityReferences(false);
-            DocumentBuilder documentBuilder = factory.newDocumentBuilder();
+            DocumentBuilder documentBuilder = MDMXMLUtils.getDocumentBuilderWithNamespace().get();
             Document document = documentBuilder.parse(this.getClass().getResourceAsStream(EHCACHE_XML_CONFIG));
             // <diskStore path="java.io.tmpdir"/>
             XPathExpression compile = pathFactory.compile("ehcache/diskStore"); //$NON-NLS-1$

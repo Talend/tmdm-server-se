@@ -23,17 +23,15 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import junit.framework.TestCase;
-
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
+import org.talend.mdm.commmon.util.core.MDMXMLUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -56,6 +54,8 @@ import com.amalto.core.storage.record.XmlStringDataRecordReader;
 import com.amalto.core.util.XtentisException;
 import com.amalto.xmlserver.interfaces.ItemPKCriteria;
 import com.amalto.xmlserver.interfaces.XmlServerException;
+
+import junit.framework.TestCase;
 
 public class StorageWrapperTest extends TestCase {
     
@@ -174,7 +174,7 @@ public class StorageWrapperTest extends TestCase {
         }
         String recordStringValue = stringWriter.toString();
         XPath xpath = XPathFactory.newInstance().newXPath();
-        DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        DocumentBuilder documentBuilder = MDMXMLUtils.getDocumentBuilder().get();
         Element r = documentBuilder.parse(new InputSource(new StringReader(recordStringValue))).getDocumentElement();
         NodeList holiday = (NodeList) xpath.evaluate("./Holiday", r, XPathConstants.NODESET); //$NON-NLS-1$
         List<String> datetimeStrValues = new ArrayList<String>();

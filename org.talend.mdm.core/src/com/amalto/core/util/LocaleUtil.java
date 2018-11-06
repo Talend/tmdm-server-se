@@ -62,7 +62,7 @@ public class LocaleUtil {
         if (language == null) {
             locale = request.getLocale();
         } else {
-            locale = new Locale(language.toLowerCase());
+            locale = getLocale(language);
         }
         return locale;
     }
@@ -91,5 +91,17 @@ public class LocaleUtil {
         }
 
         return value;
+    }
+
+    public static Locale getLocale(String language) {
+        String localLanguage = language.toLowerCase();
+        if (localLanguage.contains("_")) {
+            String[] localeInfo = localLanguage.split("_");
+            localLanguage = localeInfo[0];
+        }
+        if (Locale.CHINESE.getLanguage().equals(localLanguage)) {
+            return Locale.SIMPLIFIED_CHINESE;
+        }
+        return new Locale(localLanguage);
     }
 }

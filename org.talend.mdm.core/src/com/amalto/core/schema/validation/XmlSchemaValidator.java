@@ -11,20 +11,22 @@
 
 package com.amalto.core.schema.validation;
 
-import com.amalto.core.util.SAXErrorHandler;
-import com.amalto.core.util.ValidateException;
-import org.apache.commons.collections.map.MultiKeyMap;
-import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.xml.XMLConstants;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
+
+import org.apache.commons.collections.map.MultiKeyMap;
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
+
+import com.amalto.core.util.SAXErrorHandler;
+import com.amalto.core.util.ValidateException;
 
 public class XmlSchemaValidator implements Validator {
 
@@ -48,6 +50,7 @@ public class XmlSchemaValidator implements Validator {
 
     public void validate(Element element) throws ValidateException {
         javax.xml.validation.Validator validator = getValidator();
+
         SAXErrorHandler errorHandler = new SAXErrorHandler();
         try {
             validator.setErrorHandler(errorHandler);
@@ -91,7 +94,7 @@ public class XmlSchemaValidator implements Validator {
             validatorCache.clear();
         }
     }
-    
+
     public static void invalidateCache(){
         synchronized (schemaCache) {
             schemaCache.clear();

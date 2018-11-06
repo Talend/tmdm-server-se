@@ -28,6 +28,8 @@ import javax.xml.xpath.XPathFactory;
 import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
+import org.talend.mdm.commmon.util.core.MDMXMLUtils;
+import org.talend.mdm.commmon.util.exception.XmlBeanDefinitionException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
@@ -57,7 +59,13 @@ public class DefaultDataModel implements DataModel {
             "</xsd:schema>";
 
     static {
-        DOCUMENT_BUILDER_FACTORY.setNamespaceAware(true);
+        try {
+            DOCUMENT_BUILDER_FACTORY.setNamespaceAware(true);
+            DOCUMENT_BUILDER_FACTORY.setExpandEntityReferences(false);
+            DOCUMENT_BUILDER_FACTORY.setFeature(MDMXMLUtils.FEATURE_DISALLOW_DOCTYPE, true);
+        } catch (Exception e) {
+            throw new XmlBeanDefinitionException("Error occurred to initialize DocumentBuilderFactory", e);
+        }
         X_PATH.setNamespaceContext(XSDNamespaceContext.INSTANCE);
     }
 

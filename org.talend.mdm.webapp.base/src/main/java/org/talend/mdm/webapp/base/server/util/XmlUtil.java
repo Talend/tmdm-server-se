@@ -22,7 +22,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.log4j.Logger;
 import org.dom4j.Attribute;
@@ -37,32 +36,47 @@ import org.dom4j.io.SAXReader;
 import org.dom4j.io.SAXValidator;
 import org.dom4j.io.XMLWriter;
 import org.dom4j.util.XMLErrorHandler;
+import org.talend.mdm.commmon.util.core.MDMXMLUtils;
 import org.talend.mdm.webapp.base.client.exception.ServiceException;
 import org.talend.mdm.webapp.base.server.util.callback.AttributeProcess;
 import org.talend.mdm.webapp.base.server.util.callback.DocumentCreate;
 import org.talend.mdm.webapp.base.server.util.callback.ElementProcess;
 import org.talend.mdm.webapp.base.server.util.callback.NodeProcess;
+import org.xml.sax.SAXException;
 
 public final class XmlUtil {
 
-    private static final Logger logger = Logger.getLogger(XmlUtil.class);
+    private static final Logger LOGGER = Logger.getLogger(XmlUtil.class);
 
     public static Document parse(URL url) throws DocumentException {
         SAXReader reader = new SAXReader();
+        setProtectRule(reader);
         Document document = reader.read(url);
         return document;
     }
 
     public static Document parse(File file) throws DocumentException {
         SAXReader reader = new SAXReader();
+        setProtectRule(reader);
         Document document = reader.read(file);
         return document;
     }
 
     public static Document parse(InputStream in) throws DocumentException {
         SAXReader reader = new SAXReader();
+        setProtectRule(reader);
         Document document = reader.read(in);
         return document;
+    }
+
+    private static void setProtectRule(SAXReader reader) {
+        try {
+            reader.setFeature(MDMXMLUtils.FEATURE_DISALLOW_DOCTYPE, true);
+            reader.setFeature(MDMXMLUtils.FEATURE_EXTERNAL_GENERAL_ENTITIES, false);
+            reader.setFeature(MDMXMLUtils.FEATURE_EXTERNAL_PARAM_ENTITIES, false);
+        } catch (SAXException e) {
+            LOGGER.error("Failed to populate feature when initializing SAXReader", e);
+        }
     }
 
     public static Document parse(String fileName) throws DocumentException {
@@ -80,8 +94,7 @@ public final class XmlUtil {
         try {
             return d4Writer.write(doc4j);
         } catch (DocumentException e) {
-            logger.error(e.getMessage(), e);
-            throw new ServiceException(e.getMessage());
+            throw new ServiceException("Error occurred while using DOMWriter to create a DOM document.", e);
         }
     }
 
@@ -248,8 +261,8 @@ public final class XmlUtil {
     public static Document createDocument(DocumentCreate documentCreate) {
         Document document = DocumentHelper.createDocument();
         documentCreate.create(document);
-        if (logger.isDebugEnabled()) {
-            logger.debug("New Document has bean created"); //$NON-NLS-1$
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("New Document has bean created"); //$NON-NLS-1$
         }
 
         return document;
@@ -274,8 +287,8 @@ public final class XmlUtil {
         writer.write(document);
         writer.close();
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("New xml file has bean exported on " + filePath); //$NON-NLS-1$
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("New xml file has bean exported on " + filePath); //$NON-NLS-1$
         }
     }
 
@@ -289,7 +302,7 @@ public final class XmlUtil {
 
     public static void print(Document document) {
         String text = toXml(document);
-        logger.info(text);
+        LOGGER.info(text);
     }
 
     public static String format(Document document, OutputFormat format, String encoding) {
@@ -302,7 +315,7 @@ public final class XmlUtil {
         try {
             xmlwriter.write(document);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            LOGGER.error("Failed to write XML file.", e);
         }
 
         return writer.toString().replaceAll("<\\?xml.*?\\?>", "").trim(); //$NON-NLS-1$ //$NON-NLS-2$
@@ -323,22 +336,14 @@ public final class XmlUtil {
         boolean isValidated = false;
         String xsdFileName = xsdFile.getAbsolutePath();
         try {
-
             XMLErrorHandler errorHandler = new XMLErrorHandler();
 
-            SAXParserFactory factory = SAXParserFactory.newInstance();
-
-            factory.setValidating(true);
-
-            factory.setNamespaceAware(true);
-
-            SAXParser parser = factory.newSAXParser();
-
+            SAXParser parser = MDMXMLUtils.getSAXParser();
             Document xmlDocument = DocumentHelper.parseText(inputXml);
 
             // [url]http://sax.sourceforge.net/?selected=get-set[/url]
-            parser.setProperty("http://java.sun.com/xml/jaxp/properties/schemaLanguage", "http://www.w3.org/2001/XMLSchema"); //$NON-NLS-1$ //$NON-NLS-2$
-            parser.setProperty("http://java.sun.com/xml/jaxp/properties/schemaSource", "file:" + xsdFileName); //$NON-NLS-1$ //$NON-NLS-2$
+            parser.setProperty(MDMXMLUtils.PROPERTY_SCHEMA_LANGUAGE, MDMXMLUtils.PROPERTY_XML_SCHEMA); //$NON-NLS-1$ //$NON-NLS-2$
+            parser.setProperty(MDMXMLUtils.PROPERTY_SCHEMA_SOURCE, "file:" + xsdFileName); //$NON-NLS-1$ //$NON-NLS-2$
 
             SAXValidator validator = new SAXValidator(parser.getXMLReader());
 
@@ -348,17 +353,17 @@ public final class XmlUtil {
 
             if (errorHandler.getErrors().hasContent()) {
                 isValidated = false;
-                logger.error("XML file validation failed! "); //$NON-NLS-1$
+                LOGGER.error("XML file validation failed! "); //$NON-NLS-1$
                 writer.write(errorHandler.getErrors());
             } else {
                 isValidated = true;
-                if (logger.isDebugEnabled()) {
-                    logger.debug("XML file validation succeeded! "); //$NON-NLS-1$
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("XML file validation succeeded! "); //$NON-NLS-1$
                 }
             }
-        } catch (Exception ex) {
+        } catch (Exception e) {
             isValidated = false;
-            logger.error("Failed to validate XML file through '" + xsdFileName, ex); //$NON-NLS-1$
+            LOGGER.error("Failed to validate XML file through '" + xsdFileName, e); //$NON-NLS-1$
         }
         return isValidated;
     }

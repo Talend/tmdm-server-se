@@ -15,17 +15,17 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import junit.framework.TestCase;
 
 import org.apache.commons.lang.StringUtils;
+import org.talend.mdm.commmon.util.core.MDMXMLUtils;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
 import com.amalto.core.history.MutableDocument;
 import com.amalto.core.schema.validation.SkipAttributeDocumentBuilder;
 import com.amalto.core.util.Util;
+
+import junit.framework.TestCase;
 
 @SuppressWarnings("nls")
 public class DOMDocumentTest extends TestCase {
@@ -55,13 +55,9 @@ public class DOMDocumentTest extends TestCase {
         InputStream documentStream = new ByteArrayInputStream(xml.getBytes("UTF-8"));
         // Parsing
         MutableDocument userDocument;
-        DocumentBuilderFactory DOM_PARSER_FACTORY = DocumentBuilderFactory.newInstance();
-        DOM_PARSER_FACTORY.setNamespaceAware(true);
-        DOM_PARSER_FACTORY.setIgnoringComments(true);
-        DOM_PARSER_FACTORY.setValidating(false);
         try {
             // Don't ignore talend internal attributes when parsing this document
-            DocumentBuilder documentBuilder = new SkipAttributeDocumentBuilder(DOM_PARSER_FACTORY.newDocumentBuilder(), false);
+            DocumentBuilder documentBuilder = new SkipAttributeDocumentBuilder(MDMXMLUtils.getDocumentBuilderWithNamespace().get(), false);
             InputSource source = new InputSource(documentStream);
             Document userDomDocument = documentBuilder.parse(source);
             userDocument = new DOMDocument(userDomDocument, null, StringUtils.EMPTY, StringUtils.EMPTY);

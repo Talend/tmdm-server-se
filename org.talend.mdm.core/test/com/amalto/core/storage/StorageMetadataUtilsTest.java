@@ -12,6 +12,7 @@ package com.amalto.core.storage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -75,6 +76,58 @@ public class StorageMetadataUtilsTest {
         setDataRecordField(record, "Id", "12345  é or ç > & >= 你好");
         setDataRecordField(record, "Name", "Name");
         assertEquals("[12345  é or ç > & >= 你好]", StorageMetadataUtils.toString(record, false));
+
+        repository.load(StorageMetadataUtilsTest.class.getResourceAsStream("../storage/record/TestDecimalMetadata.xsd")); //$NON-NLS-1$
+        ComplexTypeMetadata mainType = repository.getComplexType("TestDecimal"); //$NON-NLS-1$
+        // Test scientific notation convert to number on float type,like 7.0E-8 convert to 0.00000007 and 7.0E-7 convert
+        // to 0.0000007, shouldn't be 0.00000070
+        assertEquals("0.00000007", StorageMetadataUtils.toString(Float.parseFloat("0.00000007"), mainType.getField("testFloat"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        assertEquals("0.0000007", StorageMetadataUtils.toString(Float.parseFloat("0.0000007"), mainType.getField("testFloat"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        assertEquals("0.000007", StorageMetadataUtils.toString(Float.parseFloat("0.000007"), mainType.getField("testFloat"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        assertEquals("0.00007", StorageMetadataUtils.toString(Float.parseFloat("0.00007"), mainType.getField("testFloat"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        assertEquals("0.0007", StorageMetadataUtils.toString(Float.parseFloat("0.0007"), mainType.getField("testFloat"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        assertEquals("0.007", StorageMetadataUtils.toString(Float.parseFloat("0.007"), mainType.getField("testFloat"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        assertEquals("0.07", StorageMetadataUtils.toString(Float.parseFloat("0.07"), mainType.getField("testFloat"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        assertEquals("0.7", StorageMetadataUtils.toString(Float.parseFloat("0.7"), mainType.getField("testFloat"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        // Test scientific notation convert to number on custom float
+        assertEquals("0.00000007", //$NON-NLS-1$
+                StorageMetadataUtils.toString(Float.parseFloat("0.00000007"), mainType.getField("testCustomFloat"))); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals("0.0007", //$NON-NLS-1$
+                StorageMetadataUtils.toString(Float.parseFloat("0.0007"), mainType.getField("testCustomFloat"))); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals("0.7", //$NON-NLS-1$
+                StorageMetadataUtils.toString(Float.parseFloat("0.7"), mainType.getField("testCustomFloat"))); //$NON-NLS-1$ //$NON-NLS-2$
+        // Test scientific notation convert to number on double type
+        assertEquals("0.00000007", //$NON-NLS-1$
+                StorageMetadataUtils.toString(Double.parseDouble("0.00000007"), mainType.getField("testDouble"))); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals("0.0000007", //$NON-NLS-1$
+                StorageMetadataUtils.toString(Double.parseDouble("0.0000007"), mainType.getField("testDouble"))); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals("0.000007", //$NON-NLS-1$
+                StorageMetadataUtils.toString(Double.parseDouble("0.000007"), mainType.getField("testDouble"))); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals("0.00007", //$NON-NLS-1$
+                StorageMetadataUtils.toString(Double.parseDouble("0.00007"), mainType.getField("testDouble"))); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals("0.0007", //$NON-NLS-1$
+                StorageMetadataUtils.toString(Double.parseDouble("0.0007"), mainType.getField("testDouble"))); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals("0.007", //$NON-NLS-1$
+                StorageMetadataUtils.toString(Double.parseDouble("0.007"), mainType.getField("testDouble"))); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals("0.07", //$NON-NLS-1$
+                StorageMetadataUtils.toString(Double.parseDouble("0.07"), mainType.getField("testDouble"))); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals("0.7", //$NON-NLS-1$
+                StorageMetadataUtils.toString(Double.parseDouble("0.7"), mainType.getField("testDouble"))); //$NON-NLS-1$ //$NON-NLS-2$
+        // Test scientific notation convert to number on decimal type,like 7.0E-7 convert
+        // to 0.00000070, shouldn't be 0.0000007,because decimal type can set fraction digits.
+        assertEquals("0.00000007", StorageMetadataUtils.toString(new BigDecimal("0.00000007"), mainType.getField("testDecimal"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        assertEquals("0.0000007", StorageMetadataUtils.toString(new BigDecimal("0.0000007"), mainType.getField("testDecimal"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        assertEquals("0.00000070", StorageMetadataUtils.toString(new BigDecimal("0.00000070"), mainType.getField("testDecimal"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        assertEquals("0.000007", StorageMetadataUtils.toString(new BigDecimal("0.000007"), mainType.getField("testDecimal"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        assertEquals("0.00000700", StorageMetadataUtils.toString(new BigDecimal("0.00000700"), mainType.getField("testDecimal"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        assertEquals("0.00007", StorageMetadataUtils.toString(new BigDecimal("0.00007"), mainType.getField("testDecimal"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        assertEquals("0.0007", StorageMetadataUtils.toString(new BigDecimal("0.0007"), mainType.getField("testDecimal"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        assertEquals("0.007", StorageMetadataUtils.toString(new BigDecimal("0.007"), mainType.getField("testDecimal"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        assertEquals("0.07", StorageMetadataUtils.toString(new BigDecimal("0.07"), mainType.getField("testDecimal"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        assertEquals("0.7", StorageMetadataUtils.toString(new BigDecimal("0.7"), mainType.getField("testDecimal"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        // Test scientific notation convert to number on custom decimal type
+        assertEquals("0.00000007", //$NON-NLS-1$
+                StorageMetadataUtils.toString(new BigDecimal("0.00000007"), mainType.getField("testCustomDecimal"))); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Test

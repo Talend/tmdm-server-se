@@ -1,10 +1,35 @@
 <ii>
-    <c>PROVISIONING</c>	<n>User</n>	<dmn>PROVISIONING</dmn>	<dmr/>	<sp/>	<i>administrator</i>	<t>1257918097765</t>	<p>
+    <c>PROVISIONING</c>
+    <n>User</n>
+    <dmn>PROVISIONING</dmn>
+    <dmr />
+    <sp />
+    <i>administrator</i>
+    <t>1257918097765</t>
+    <p>
         <User>
-            <id>administrator</id><username>administrator</username>    <password>200ceb26807d6bf99fd6f4f0d1ca54d4</password>    <givenname>Default</givenname>    <familyname>Administrator</familyname>    <phonenumber/>    <company>Company</company>    <signature/>    <realemail>admin@company.com</realemail>    <fakeemail/>    <viewrealemail>no</viewrealemail>    <registrationdate>1245811154687</registrationdate>    <lastvisitdate>0</lastvisitdate>    <lastsynctime>0</lastsynctime>    <enabled>yes</enabled>    <homepage>Home</homepage>    <universe/>    <roles>
-                <role>administration</role> <role>System_Admin</role>    </roles>    <properties>
-
-            </properties>     <applications>    </applications>
-</User>
-</p>
+            <id>administrator</id>
+            <username>administrator</username>
+            <password>200ceb26807d6bf99fd6f4f0d1ca54d4</password>
+            <givenname>Default</givenname>
+            <familyname>Administrator</familyname>
+            <phonenumber />
+            <company>Company</company>
+            <signature />
+            <realemail>admin@company.com</realemail>
+            <fakeemail />
+            <viewrealemail>no</viewrealemail>
+            <registrationdate>1245811154687</registrationdate>
+            <lastvisitdate>0</lastvisitdate>
+            <lastsynctime>0</lastsynctime>
+            <enabled>yes</enabled>
+            <homepage>Home</homepage>
+            <universe />
+            <roles>
+                <role>administration</role>
+            </roles>
+            <properties />
+            <applications />
+        </User>
+    </p>
 </ii>

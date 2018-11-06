@@ -68,6 +68,7 @@ import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.record.DataRecordReader;
 import com.amalto.core.storage.record.XmlDOMDataRecordReader;
 import com.amalto.core.util.LocalUser;
+import com.amalto.core.util.LocaleUtil;
 import com.amalto.core.util.Util;
 import com.amalto.core.util.XtentisException;
 
@@ -320,7 +321,7 @@ public class SystemModels {
                                 if (StringUtils.isEmpty(locale)) {
                                     messageLocale = Locale.getDefault();
                                 } else {
-                                    messageLocale = new Locale(locale);
+                                    messageLocale = LocaleUtil.getLocale(locale);
                                 }
                                 writer.writeCharacters(change.getMessage(messageLocale));
                             }

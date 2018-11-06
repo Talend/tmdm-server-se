@@ -17,8 +17,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.talend.mdm.commmon.util.core.MDMXMLUtils;
 import org.talend.mdm.webapp.base.client.model.DataTypeConstants;
 import org.talend.mdm.webapp.base.client.model.DataTypeCustomized;
 import org.talend.mdm.webapp.base.shared.ComplexTypeModel;
@@ -71,8 +71,7 @@ public class TestData {
 
     public static Document getDocument() throws Exception {
         InputStream is = CommonUtilTest.class.getResourceAsStream("../../data.xml");
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
+        DocumentBuilder builder = MDMXMLUtils.getDocumentBuilder().get();
         Document doc = builder.parse(is);
         return doc;
 

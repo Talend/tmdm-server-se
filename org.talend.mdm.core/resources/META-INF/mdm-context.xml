@@ -89,6 +89,8 @@ http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/ac
                 <entry key="Validation" value-ref="validationDelegator" />
                 <entry key="ItemCtrl" value-ref="itemDelegator" />
                 <entry key="XtentisWS" value-ref="wsDelegator" />
+                <entry key="SecurityCheck" value-ref="securityCheckDelegator" />
+                <entry key="MenuUtil" value-ref="menuUtilDelegator" />
             </map>
         </property>
     </bean>
@@ -96,6 +98,8 @@ http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/ac
     <bean id="validationDelegator" class="com.amalto.core.delegator.impl.DefaultValidationDelegator" />
     <bean id="itemDelegator" class="com.amalto.core.delegator.impl.DefaultItemCtrlDelegator" />
     <bean id="wsDelegator" class="com.amalto.core.delegator.impl.DefaultXtentisWSDelegator" />
+    <bean id="securityCheckDelegator" class="com.amalto.core.delegator.impl.DefaultSecurityCheckDelegator" />
+    <bean id="menuUtilDelegator" class="com.amalto.core.delegator.impl.DefaultMenuUtilDelegator" />
 
     <!-- Plugins -->
     <bean id="pluginFactory" class="org.springframework.beans.factory.config.ServiceLocatorFactoryBean">

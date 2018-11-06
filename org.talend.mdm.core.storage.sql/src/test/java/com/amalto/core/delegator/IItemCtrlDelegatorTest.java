@@ -44,9 +44,9 @@ import junit.framework.TestCase;
 public class IItemCtrlDelegatorTest extends TestCase {
     
     private static boolean beanDelegatorContainerFlag = false;
-    
-    private static void createBeanDelegatorContainer(){
-        if(!beanDelegatorContainerFlag){
+
+    private static void createBeanDelegatorContainer() {
+        if (!beanDelegatorContainerFlag) {
             BeanDelegatorContainer.createInstance();
             beanDelegatorContainerFlag = true;
         }

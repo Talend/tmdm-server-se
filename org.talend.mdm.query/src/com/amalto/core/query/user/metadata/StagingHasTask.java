@@ -10,31 +10,31 @@
 
 package com.amalto.core.query.user.metadata;
 
-import static com.amalto.core.query.user.UserQueryBuilder.alias;
-
-import org.talend.mdm.commmon.metadata.Types;
-
 import com.amalto.core.query.user.Expression;
 import com.amalto.core.query.user.TypedExpression;
 import com.amalto.core.query.user.UserStagingQueryBuilder;
 import com.amalto.core.query.user.Visitor;
-import com.amalto.core.storage.Storage;
+import com.amalto.core.storage.record.CommonStorage;
+import org.talend.mdm.commmon.metadata.Types;
 
-public class StagingStatus implements MetadataField {
+import static com.amalto.core.query.user.UserQueryBuilder.alias;
 
-    public static final StagingStatus INSTANCE = new StagingStatus();
+@SuppressWarnings("nls")
+public class StagingHasTask implements MetadataField {
 
-    public static final String STAGING_STATUS_ALIAS = "staging_status"; //$NON-NLS-1$
+    public static final StagingHasTask INSTANCE = new StagingHasTask();
 
-    private static final String[] STAGING_STATUS_FIELD = new String[] { "$staging_status$", "metadata:staging_status", "staging_status" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3
+    public static final String STAGING_HAS_TASK_ALIAS = "staging_hastask"; //$NON-NLS-1$
 
-    private final PropertyReader propertyReader = new PropertyReader(Storage.METADATA_STAGING_STATUS);
+    private static final String[] STAGING_HAS_TASK_FIELD = new String[] { "$staging_hastask$", "metadata:staging_hastask", "staging_hastask" };
 
-    private StagingStatus() {
+    private final PropertyReader propertyReader = new PropertyReader(CommonStorage.METADATA_STAGING_HAS_TASK);
+
+    private StagingHasTask() {
     }
 
     public String getTypeName() {
-        return Types.INT;
+        return Types.BOOLEAN;
     }
 
     public Expression normalize() {
@@ -52,12 +52,12 @@ public class StagingStatus implements MetadataField {
 
     @Override
     public String getFieldName() {
-        return STAGING_STATUS_FIELD[1];
+        return STAGING_HAS_TASK_FIELD[1];
     }
 
     @Override
     public boolean matches(String path) {
-        for (String possibleStatus : STAGING_STATUS_FIELD) {
+        for (String possibleStatus : STAGING_HAS_TASK_FIELD) {
             if (possibleStatus.equals(path)) {
                 return true;
             }
@@ -77,11 +77,12 @@ public class StagingStatus implements MetadataField {
 
     @Override
     public TypedExpression getProjectionExpression() {
-        return alias(UserStagingQueryBuilder.status(), STAGING_STATUS_ALIAS);
+        return alias(UserStagingQueryBuilder.hasTask(), STAGING_HAS_TASK_ALIAS);
     }
 
     @Override
     public Reader getReader() {
         return propertyReader;
     }
+
 }

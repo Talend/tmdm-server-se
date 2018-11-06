@@ -10,31 +10,21 @@
 
 package com.amalto.core.query.user;
 
-import static com.amalto.core.query.user.UserQueryBuilder.*;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-
-import org.apache.commons.lang.NotImplementedException;
+import com.amalto.core.query.user.metadata.MetadataField;
+import com.amalto.core.util.FieldNotFoundException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
-import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
-import org.talend.mdm.commmon.metadata.SimpleTypeFieldMetadata;
 
-import com.amalto.core.query.user.metadata.MetadataField;
-import com.amalto.core.storage.StorageMetadataUtils;
-import com.amalto.core.util.FieldNotFoundException;
-import com.amalto.xmlserver.interfaces.IWhereItem;
-import com.amalto.xmlserver.interfaces.WhereAnd;
-import com.amalto.xmlserver.interfaces.WhereCondition;
-import com.amalto.xmlserver.interfaces.WhereLogicOperator;
-import com.amalto.xmlserver.interfaces.WhereOr;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+
+import static com.amalto.core.query.user.UserQueryBuilder.*;
 
 public class UserQueryHelper {
 
@@ -47,7 +37,8 @@ public class UserQueryHelper {
     private UserQueryHelper() {
     }
 
-    public static Condition buildCondition(UserQueryBuilder queryBuilder, IWhereItem whereItem, MetadataRepository repository) {
+    //TODO : yvinqueur : To delete, legacy
+    /*public static Condition buildCondition(UserQueryBuilder queryBuilder, IWhereItem whereItem, MetadataRepository repository) {
         if (whereItem == null) {
             return TRUE;
         }
@@ -234,7 +225,7 @@ public class UserQueryHelper {
         } else {
             throw new NotImplementedException("No support for where item of type " + whereItem.getClass().getName());
         }
-    }
+    }*/
 
     private static Boolean isRealXpath(MetadataRepository repository, String rightValueOrPath) {
         if (rightValueOrPath != null && rightValueOrPath.contains("/")) { //$NON-NLS-1$

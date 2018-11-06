@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import com.amalto.core.storage.record.StorageConstants;
 import junit.framework.TestCase;
 
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
@@ -194,9 +195,9 @@ public class TransactionTest extends TestCase {
 
         MockStorage(boolean supportTransactions) {
             if (supportTransactions) {
-                capabilities = CAP_TRANSACTION | CAP_FULL_TEXT | CAP_INTEGRITY;
+                capabilities = StorageConstants.CAP_TRANSACTION | StorageConstants.CAP_FULL_TEXT | StorageConstants.CAP_INTEGRITY;
             } else {
-                capabilities = CAP_FULL_TEXT | CAP_INTEGRITY;
+                capabilities = StorageConstants.CAP_FULL_TEXT | StorageConstants.CAP_INTEGRITY;
             }
         }
 

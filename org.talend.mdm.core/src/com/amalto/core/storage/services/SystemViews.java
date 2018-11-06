@@ -153,7 +153,7 @@ public class SystemViews {
     @Path("{id}")
     @ApiOperation("Get view detail by view name and language.")
     public Response getViewDetail(@ApiParam("a special view name") @PathParam("id") String viewPK,
-            @ApiParam("Optional parameter of language to get localized result, default: EN") @QueryParam("lang") String locale) {
+            @ApiParam("Optional parameter of language to get localized result.") @QueryParam("lang") String locale) {
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Request parameter id =" + viewPK + ", lang = " + locale);

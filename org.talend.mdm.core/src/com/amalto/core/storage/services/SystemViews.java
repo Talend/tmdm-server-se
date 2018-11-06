@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
@@ -82,8 +81,8 @@ public class SystemViews {
 
     @GET
     @ApiOperation("Get all views with roles allowed to access. Only views that correspond to deployed data models are returned.")
-    public Response getViewList(@ApiParam("Optional parameter of language to get localized result, default: en")
-                                @QueryParam("lang") @DefaultValue("en") String locale) {
+    public Response getViewList(@ApiParam("Optional parameter of language to get localized result.")
+                                @QueryParam("lang") String locale) {
         try {
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Request parameter lang = " + locale);
@@ -96,7 +95,7 @@ public class SystemViews {
             for (ViewPOJOPK viewPOJOPK : viewCtrlLocal.getViewPKs(".*")) {
                 ViewPOJO viewPOJO = ObjectPOJO.load(ViewPOJO.class, viewPOJOPK);
                 String viewName = viewPOJO.getName();
-                String description = getDescriptionValue(viewPOJO, locale);
+                String description = getDescriptionValue(viewPOJO.getDescription(), locale);
                 String entityName = getEntityNameByViewName(viewName);
                 String dataModelName = getDataModelNameByEntityName(metadataRepositoryAdmin, dataModelNames, entityName);
                 if (dataModelName.isEmpty()) {
@@ -115,11 +114,8 @@ public class SystemViews {
         }
     }
 
-    private String getDescriptionValue(ViewPOJO viewPOJO, String locale) {
-        String description = viewPOJO.getDescription();
-        if (StringUtils.isEmpty(description)) {
-            description = viewPOJO.getName();
-        } else {
+    private String getDescriptionValue(String description, String locale) {
+        if (!StringUtils.isEmpty(description)) {
             description = LocaleUtil.getLocaleValue(description, locale);
         }
         return description;

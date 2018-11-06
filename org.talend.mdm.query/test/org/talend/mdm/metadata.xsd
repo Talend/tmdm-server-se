@@ -1,0 +1,63 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/>
+    <xsd:element name="Type1">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="id" type="xsd:string"/>
+                <xsd:element name="value1" type="xsd:string"/>
+                <xsd:element name="field1" type="Contained1"/>
+                <xsd:element name="fk2" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_ForeignKey">Type2</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="fk3" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_ForeignKey">Type3</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+        <xsd:unique name="Type1">
+            <xsd:selector xpath="."/>
+            <xsd:field xpath="id"/>
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="Type2">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="id" type="xsd:string"/>
+                <xsd:element name="value1" type="xsd:string"/>
+            </xsd:sequence>
+        </xsd:complexType>
+        <xsd:unique name="Type2">
+            <xsd:selector xpath="."/>
+            <xsd:field xpath="id"/>
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="Type3">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="id" type="xsd:string"/>
+                <xsd:element name="value1" type="xsd:string"/>
+            </xsd:sequence>
+        </xsd:complexType>
+        <xsd:unique name="Type3">
+            <xsd:selector xpath="."/>
+            <xsd:field xpath="id"/>
+        </xsd:unique>
+    </xsd:element>
+    <xsd:complexType name="Contained1">
+        <xsd:sequence>
+            <xsd:element name="contained1" type="xsd:short"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="Contained2">
+        <xsd:complexContent>
+            <xsd:extension base="Contained1">
+                <xsd:element name="contained2" type="xsd:short"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+</xsd:schema>

@@ -14,7 +14,7 @@ import com.amalto.core.query.user.metadata.*;
 public class UserStagingQueryBuilder {
     /**
      * @return A {@link TypedExpression} that represents the staging area status of the record.
-     * @see com.amalto.core.storage.task.StagingConstants
+     * com.amalto.core.storage.task.StagingConstants
      */
     public static TypedExpression status() {
         return StagingStatus.INSTANCE;
@@ -52,7 +52,7 @@ public class UserStagingQueryBuilder {
 
     /**
      * @return A {@link TypedExpression} that represents the staging area task exists of the record.
-     * @see com.amalto.core.storage.task.StagingConstants
+     * com.amalto.core.storage.task.StagingConstants
      */
     public static TypedExpression hasTask() {
         return StagingHasTask.INSTANCE;

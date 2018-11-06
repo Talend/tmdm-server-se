@@ -80,5 +80,35 @@ public class LocaleUtilTest extends TestCase {
         str1 = "[FR:Produit avec Magasins][EN:Product with Stores]";
         results = LocaleUtil.getLocaleValue(str1, language);
         assertEquals("Product with Stores", results);
+
+        //case 12
+        language = "fr_FR";
+        str1 = "[FR:Produit avec Magasins][EN:Product with Stores]";
+        results = LocaleUtil.getLocaleValue(str1, language);
+        assertEquals("Produit avec Magasins", results);
+
+        //case 13
+        language = "fr_FR_en";
+        str1 = "[FR:Produit avec Magasins][EN:Product with Stores]";
+        results = LocaleUtil.getLocaleValue(str1, language);
+        assertEquals("Product with Stores", results);
+
+        //case 14
+        language = "_________";
+        str1 = "[FR:Produit avec Magasins][EN:Product with Stores]";
+        results = LocaleUtil.getLocaleValue(str1, language);
+        assertEquals("Product with Stores", results);
+
+        //case 15
+        language = "_________fr";
+        str1 = "[FR:Produit avec Magasins][EN:Product with Stores]";
+        results = LocaleUtil.getLocaleValue(str1, language);
+        assertEquals("Product with Stores", results);
+
+        //case 16
+        language = "fr_________";
+        str1 = "[FR:Produit avec Magasins][EN:Product with Stores]";
+        results = LocaleUtil.getLocaleValue(str1, language);
+        assertEquals("Product with Stores", results);
     }
 }

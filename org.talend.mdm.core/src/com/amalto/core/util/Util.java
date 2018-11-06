@@ -9,101 +9,18 @@
  */
 package com.amalto.core.util;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringReader;
-import java.lang.reflect.Method;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.MissingResourceException;
-import java.util.Properties;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.xml.XMLConstants;
-import javax.xml.namespace.NamespaceContext;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
-
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
-import org.talend.mdm.commmon.metadata.FieldMetadata;
-import org.talend.mdm.commmon.util.core.ITransformerConstants;
-import org.talend.mdm.commmon.util.core.MDMConfiguration;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-
 import com.amalto.commons.core.utils.XMLUtils;
 import com.amalto.core.delegator.BeanDelegatorContainer;
 import com.amalto.core.jobox.JobContainer;
-import com.amalto.core.objects.DroppedItemPOJO;
-import com.amalto.core.objects.DroppedItemPOJOPK;
-import com.amalto.core.objects.ItemPOJO;
-import com.amalto.core.objects.ItemPOJOPK;
-import com.amalto.core.objects.UpdateReportPOJO;
+import com.amalto.core.objects.*;
 import com.amalto.core.objects.datacluster.DataClusterPOJOPK;
 import com.amalto.core.objects.transformers.TransformerV2POJOPK;
 import com.amalto.core.objects.transformers.util.TransformerCallBack;
 import com.amalto.core.objects.transformers.util.TransformerContext;
 import com.amalto.core.objects.transformers.util.TypedContent;
-import com.amalto.core.server.DefaultBackgroundJob;
-import com.amalto.core.server.DefaultConfigurationInfo;
-import com.amalto.core.server.DefaultCustomForm;
-import com.amalto.core.server.DefaultDataCluster;
-import com.amalto.core.server.DefaultDataModel;
-import com.amalto.core.server.DefaultDroppedItem;
-import com.amalto.core.server.DefaultItem;
-import com.amalto.core.server.DefaultMenu;
-import com.amalto.core.server.DefaultRole;
-import com.amalto.core.server.DefaultRoutingOrder;
-import com.amalto.core.server.DefaultRoutingRule;
-import com.amalto.core.server.DefaultStoredProcedure;
-import com.amalto.core.server.DefaultTransformer;
-import com.amalto.core.server.DefaultView;
-import com.amalto.core.server.DefaultXmlServer;
-import com.amalto.core.server.ServerAccess;
-import com.amalto.core.server.api.BackgroundJob;
-import com.amalto.core.server.api.ConfigurationInfo;
-import com.amalto.core.server.api.CustomForm;
-import com.amalto.core.server.api.DataCluster;
-import com.amalto.core.server.api.DataModel;
-import com.amalto.core.server.api.DroppedItem;
-import com.amalto.core.server.api.Item;
+import com.amalto.core.server.*;
+import com.amalto.core.server.api.*;
 import com.amalto.core.server.api.Menu;
-import com.amalto.core.server.api.RoutingEngine;
-import com.amalto.core.server.api.RoutingOrder;
-import com.amalto.core.server.api.RoutingRule;
-import com.amalto.core.server.api.StoredProcedure;
-import com.amalto.core.server.api.View;
-import com.amalto.core.server.api.XmlServer;
 import com.amalto.core.server.routing.RoutingEngineFactory;
 import com.amalto.core.webservice.WSMDMJob;
 import com.amalto.xmlserver.interfaces.IWhereItem;
@@ -116,9 +33,36 @@ import com.sun.xml.xsom.XSSchemaSet;
 import com.sun.xml.xsom.XSType;
 import com.sun.xml.xsom.parser.XSOMParser;
 import com.sun.xml.xsom.util.DomAnnotationParserFactory;
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.talend.mdm.commmon.metadata.FieldMetadata;
+import org.talend.mdm.commmon.util.core.ITransformerConstants;
+import org.talend.mdm.commmon.util.core.MDMConfiguration;
+import org.w3c.dom.*;
+import org.xml.sax.SAXException;
+
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.xml.XMLConstants;
+import javax.xml.namespace.NamespaceContext;
+import javax.xml.transform.TransformerException;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+import java.io.*;
+import java.lang.reflect.Method;
+import java.text.MessageFormat;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 @SuppressWarnings({ "deprecation", "nls" })
-public class Util {
+public class Util extends CommonUtilXml {
 
     private static final Logger LOGGER = Logger.getLogger(Util.class);
 
@@ -135,8 +79,6 @@ public class Util {
     private static final Pattern extractCharsetPattern = Pattern.compile(".*charset\\s*=(.+)");
 
     private static final String[] INVALID_ID_CHARACTERS = { "'", "\"", "*", "[", "]" };
-    
-    private static DocumentBuilderFactory nonValidatingDocumentBuilderFactory;
 
     private static XmlServer defaultXmlServer;
 
@@ -168,97 +110,12 @@ public class Util {
 
     private static com.amalto.core.server.api.Transformer defaultTransformer;
 
-    private static synchronized DocumentBuilderFactory getDocumentBuilderFactory() {
-        if (nonValidatingDocumentBuilderFactory == null) {
-            nonValidatingDocumentBuilderFactory = DocumentBuilderFactory.newInstance();
-            nonValidatingDocumentBuilderFactory.setNamespaceAware(true);
-            nonValidatingDocumentBuilderFactory.setValidating(false);
-            nonValidatingDocumentBuilderFactory.setExpandEntityReferences(false);
-        }
-        return nonValidatingDocumentBuilderFactory;
-    }
-
-    public static Document parse(String xmlString) throws ParserConfigurationException, IOException, SAXException {
-        DocumentBuilderFactory factory;
-        factory = getDocumentBuilderFactory();
-        factory.setExpandEntityReferences(false);
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        SAXErrorHandler seh = new SAXErrorHandler();
-        builder.setErrorHandler(seh);
-        Document d = builder.parse(new InputSource(new StringReader(xmlString)));
-        // check if document parsed correctly against the schema
-        String errors = seh.getErrors();
-        if (errors.length() != 0) {
-            String err = "Document did not parse against schema: \n" + errors + "\n"
-                    + xmlString.substring(0, Math.min(100, xmlString.length()));
-            throw new SAXException(err);
-        }
-        return d;
-    }
-
     public static Document validate(Element element, String schema) throws Exception {
         return BeanDelegatorContainer.getInstance().getValidationDelegator().validation(element, schema);
     }
 
     public static String[] getTextNodes(Node contextNode, String xPath) throws TransformerException {
         return getTextNodes(contextNode, xPath, contextNode);
-    }
-
-    private static String[] getTextNodes(Node contextNode, String xPath, final Node namespaceNode) throws TransformerException {
-        String[] results;
-        // test for hard-coded values
-        if (xPath.startsWith("\"") && xPath.endsWith("\"")) {
-            return new String[] { xPath.substring(1, xPath.length() - 1) };
-        }
-        // test for incomplete path (elements missing /text())
-        if (!xPath.matches(".*@[^/\\]]+")) { // attribute
-            if (!xPath.endsWith(")")) { // function
-                xPath += "/text()";
-            }
-        }
-        try {
-            XPath path = XPathFactory.newInstance().newXPath();
-            path.setNamespaceContext(new NamespaceContext() {
-
-                @Override
-                public String getNamespaceURI(String s) {
-                    return namespaceNode.getNamespaceURI();
-                }
-
-                @Override
-                public String getPrefix(String s) {
-                    return namespaceNode.getPrefix();
-                }
-
-                @Override
-                public Iterator getPrefixes(String s) {
-                    return Collections.singleton(namespaceNode.getPrefix()).iterator();
-                }
-            });
-            NodeList xo = (NodeList) path.evaluate(xPath, contextNode, XPathConstants.NODESET);
-            results = new String[xo.getLength()];
-            for (int i = 0; i < xo.getLength(); i++) {
-                results[i] = xo.item(i).getTextContent();
-            }
-        } catch (Exception e) {
-            String err = "Unable to get the text node(s) of " + xPath + ": " + e.getClass().getName() + ": "
-                    + e.getLocalizedMessage();
-            throw new TransformerException(err);
-        }
-        return results;
-
-    }
-
-    private static String getFirstTextNode(Node contextNode, String xPath, Node namespaceNode) throws TransformerException {
-        String[] res = getTextNodes(contextNode, xPath, namespaceNode);
-        if (res.length == 0) {
-            return null;
-        }
-        return res[0];
-    }
-
-    public static String getFirstTextNode(Node contextNode, String xPath) throws TransformerException {
-        return getFirstTextNode(contextNode, xPath, contextNode);
     }
 
     /**

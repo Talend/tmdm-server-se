@@ -13,6 +13,7 @@ package com.amalto.core.storage;
 import java.util.List;
 import java.util.Set;
 
+import com.amalto.core.storage.record.CommonStorage;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.metadata.compare.Compare.DiffResults;

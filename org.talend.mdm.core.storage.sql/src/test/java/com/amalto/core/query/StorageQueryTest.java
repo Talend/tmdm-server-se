@@ -2673,9 +2673,16 @@ public class StorageQueryTest extends StorageTestCase {
     }
 
     public void testMultiLingualSearchSort() throws Exception {
-        // 1. id (5, 6, 7, 8, 9, 10, 11, 12), field 'resume' is multilingual field, use English value to ASC sort.
+        /**
+         * 1. Sort "ASC" on multilingual field of "resume" with "EN" value, expected results as bellow:
+         * id=7 resume=[EN:abdon][FR:convensation]
+         * id=5 resume=[EN:apple][FR:pomme]
+         * id=6 resume=[EN:jelle][FR:gelee]
+         * id=8 resume=[EN:mature][FR:tablet]
+         * id=9 resume=[EN:sandal][FR:facsimile]
+         */
         OrderBy.SortLanguage.set("EN");
-        List<String> idList = getPersonIdList(5, 12);
+        List<String> idList = getPersonIdList(5, 9);
         FieldMetadata idField = person.getField("id");
         FieldMetadata resumeField = person.getField("resume");
         FieldMetadata middlenameField = person.getField("middlename");
@@ -2683,24 +2690,18 @@ public class StorageQueryTest extends StorageTestCase {
                 .orderBy(resumeField, Direction.ASC);
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(8, results.getCount());
+            assertEquals(5, results.getCount());
             int i = 1;
             for (DataRecord result : results) {
                 if (i == 1) {
-                    assertEquals("10", result.get(idField));
-                } else if (i == 2) {
                     assertEquals("7", result.get(idField));
-                } else if (i == 3) {
+                } else if (i == 2) {
                     assertEquals("5", result.get(idField));
-                } else if (i == 4) {
+                } else if (i == 3) {
                     assertEquals("6", result.get(idField));
-                } else if (i == 5) {
-                    assertEquals("11", result.get(idField));
-                } else if (i == 6) {
+                } else if (i == 4) {
                     assertEquals("8", result.get(idField));
-                } else if (i == 7) {
-                    assertEquals("12", result.get(idField));
-                } else if (i == 8) {
+                } else if (i == 5) {
                     assertEquals("9", result.get(idField));
                 }
                 i++;
@@ -2710,30 +2711,31 @@ public class StorageQueryTest extends StorageTestCase {
             OrderBy.SortLanguage.remove();
         }
 
-        // 2. id (5, 6, 7, 8, 9, 10, 11, 12), field 'resume' is multilingual field, use English value to DESC sort.
+        /**
+         * 2. Sort "DESC" on multilingual field of "resume" with "EN" value, expected results as bellow:
+         * id=9 resume=[EN:sandal][FR:facsimile]
+         * id=8 resume=[EN:mature][FR:tablet]
+         * id=6 resume=[EN:jelle][FR:gelee]
+         * id=5 resume=[EN:apple][FR:pomme]
+         * id=7 resume=[EN:abdon][FR:convensation]
+         */
         OrderBy.SortLanguage.set("EN");
         qb = from(person).select(resumeField).select(idField).where(in(idField, idList))
                 .orderBy(resumeField, Direction.DESC);
         results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(8, results.getCount());
+            assertEquals(5, results.getCount());
             int i = 1;
             for (DataRecord result : results) {
                 if (i == 1) {
-                    assertEquals("12", result.get(idField));
-                } else if (i == 2) {
                     assertEquals("9", result.get(idField));
-                } else if (i == 3) {
-                    assertEquals("11", result.get(idField));
-                } else if (i == 4) {
+                } else if (i == 2) {
                     assertEquals("8", result.get(idField));
-                } else if (i == 5) {
+                } else if (i == 3) {
                     assertEquals("6", result.get(idField));
-                } else if (i == 6) {
+                } else if (i == 4) {
                     assertEquals("5", result.get(idField));
-                } else if (i == 7) {
-                    assertEquals("10", result.get(idField));
-                } else if (i == 8) {
+                } else if (i == 5) {
                     assertEquals("7", result.get(idField));
                 }
                 i++;
@@ -2743,30 +2745,31 @@ public class StorageQueryTest extends StorageTestCase {
             OrderBy.SortLanguage.remove();
         }
 
-        // 3. id (5, 6, 7, 8, 9, 10, 11, 12), field 'resume' is multilingual field, use Franch value to ASC sort.
+        /**
+         * 3. Sort "ASC" on multilingual field of "resume" with "FR" value, expected results as bellow:
+         * id=7 resume=[EN:abdon][FR:convensation]
+         * id=9 resume=[EN:sandal][FR:facsimile]
+         * id=6 resume=[EN:jelle][FR:gelee]
+         * id=5 resume=[EN:apple][FR:pomme]
+         * id=8 resume=[EN:mature][FR:tablet]
+         */
         OrderBy.SortLanguage.set("FR");
         qb = from(person).select(resumeField).select(idField).where(in(idField, idList))
                 .orderBy(resumeField, Direction.ASC);
         results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(8, results.getCount());
+            assertEquals(5, results.getCount());
             int i = 1;
             for (DataRecord result : results) {
                 if (i == 1) {
-                    assertEquals("10", result.get(idField));
-                } else if (i == 2) {
                     assertEquals("7", result.get(idField));
-                } else if (i == 3) {
-                    assertEquals("12", result.get(idField));
-                } else if (i == 4) {
+                } else if (i == 2) {
                     assertEquals("9", result.get(idField));
-                } else if (i == 5) {
+                } else if (i == 3) {
                     assertEquals("6", result.get(idField));
-                } else if (i == 6) {
+                } else if (i == 4) {
                     assertEquals("5", result.get(idField));
-                } else if (i == 7) {
-                    assertEquals("11", result.get(idField));
-                } else if (i == 8) {
+                } else if (i == 5) {
                     assertEquals("8", result.get(idField));
                 }
                 i++;
@@ -2776,30 +2779,31 @@ public class StorageQueryTest extends StorageTestCase {
             OrderBy.SortLanguage.remove();
         }
 
-        // 4. id (5, 6, 7, 8, 9, 10, 11, 12), field 'resume' is multilingual field, use franch value to DESC sort.
+        /**
+         * 4. Sort "DESC" on multilingual field of "resume" with "FR" value, expected results as bellow:
+         * id=8 resume=[EN:mature][FR:tablet]
+         * id=5 resume=[EN:apple][FR:pomme]
+         * id=6 resume=[EN:jelle][FR:gelee]
+         * id=9 resume=[EN:sandal][FR:facsimile]
+         * id=7 resume=[EN:abdon][FR:convensation]
+         */
         OrderBy.SortLanguage.set("FR");
         qb = from(person).select(resumeField).select(idField).where(in(idField, idList))
                 .orderBy(resumeField, Direction.DESC);
         results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(8, results.getCount());
+            assertEquals(5, results.getCount());
             int i = 1;
             for (DataRecord result : results) {
                 if (i == 1) {
-                    assertEquals("11", result.get(idField));
-                } else if (i == 2) {
                     assertEquals("8", result.get(idField));
-                } else if (i == 3) {
+                } else if (i == 2) {
                     assertEquals("5", result.get(idField));
-                } else if (i == 4) {
+                } else if (i == 3) {
                     assertEquals("6", result.get(idField));
-                } else if (i == 5) {
-                    assertEquals("12", result.get(idField));
-                } else if (i == 6) {
+                } else if (i == 4) {
                     assertEquals("9", result.get(idField));
-                } else if (i == 7) {
-                    assertEquals("10", result.get(idField));
-                } else if (i == 8) {
+                } else if (i == 5) {
                     assertEquals("7", result.get(idField));
                 }
                 i++;
@@ -2809,8 +2813,13 @@ public class StorageQueryTest extends StorageTestCase {
             OrderBy.SortLanguage.remove();
         }
 
-        // 5. id in (7, 8, 9), the English value of multilingual field 'resume' is same with normal field 'middlename',
-        // when use 'EN' language sort, result of order by 'resume' is same with order by 'middlename'
+        /**
+         * 5. English value of multilingual field 'resume' is same with ordinary field 'middlename',
+         *    Sort "DESC" on multilingual field of "resume" with "EN" value, and Sort "DESC" on ordinary field 'middlename', expected results as bellow:
+         * id=7 resume=[EN:abdon][FR:convensation], middlename=abdon
+         * id=8 resume=[EN:mature][FR:tablet], middlename=mature
+         * id=9 resume=[EN:sandal][FR:facsimile], middlename=sandal
+         */
         idList.clear();
         idList = getPersonIdList(7, 9);
 
@@ -2825,6 +2834,14 @@ public class StorageQueryTest extends StorageTestCase {
             int i = 1;
             for (DataRecord result : results) {
                 sortByResumeFieldResult.add(result.get(idField).toString());
+                if (i == 1) {
+                    assertEquals("9", result.get(idField));
+                } else if (i == 2) {
+                    assertEquals("8", result.get(idField));
+                } else if (i == 3) {
+                    assertEquals("7", result.get(idField));
+                }
+                i++;
             }
         } finally {
             results.close();
@@ -2837,8 +2854,17 @@ public class StorageQueryTest extends StorageTestCase {
         results = storage.fetch(qb.getSelect());
         try {
             assertEquals(3, results.getCount());
+            int i = 1;
             for (DataRecord result : results) {
                 sortByMiddleNameFieldResult.add(result.get(idField).toString());
+                if (i == 1) {
+                    assertEquals("9", result.get(idField));
+                } else if (i == 2) {
+                    assertEquals("8", result.get(idField));
+                } else if (i == 3) {
+                    assertEquals("7", result.get(idField));
+                }
+                i++;
             }
         } finally {
             results.close();
@@ -2849,8 +2875,13 @@ public class StorageQueryTest extends StorageTestCase {
         assertEquals(sortByResumeFieldResult.get(1), sortByMiddleNameFieldResult.get(1));
         assertEquals(sortByResumeFieldResult.get(2), sortByMiddleNameFieldResult.get(2));
 
-        // 6. id in (10, 11, 12), the Franch value of multilingual field 'resume' is same with normal field 'middlename',
-        // when use 'FR' language sort, result of order by 'resume' is same with order by 'middlename'
+        /**
+         * 6. Franch value of multilingual field 'resume' is same with ordinary field 'middlename',
+         *    Sort "DESC" on multilingual field of "resume" with "FR" value, and Sort "DESC" on ordinary field 'middlename', expected results as bellow:
+         * id=10 resume=[EN:abdon][FR:convensation], middlename=convensation
+         * id=11 resume=[EN:mature][FR:tablet], middlename=tablet
+         * id=12 resume=[EN:sandal][FR:facsimile], middlename=facsimile
+         */
         idList.clear();
         idList = getPersonIdList(10, 12);
 
@@ -2862,8 +2893,17 @@ public class StorageQueryTest extends StorageTestCase {
         sortByMiddleNameFieldResult = new ArrayList<>();
         try {
             assertEquals(3, results.getCount());
+            int i = 1;
             for (DataRecord result : results) {
                 sortByResumeFieldResult.add(result.get(idField).toString());
+                if (i == 1) {
+                    assertEquals("11", result.get(idField));
+                } else if (i == 2) {
+                    assertEquals("12", result.get(idField));
+                } else if (i == 3) {
+                    assertEquals("10", result.get(idField));
+                }
+                i++;
             }
         } finally {
             results.close();
@@ -2876,8 +2916,17 @@ public class StorageQueryTest extends StorageTestCase {
         results = storage.fetch(qb.getSelect());
         try {
             assertEquals(3, results.getCount());
+            int i = 1;
             for (DataRecord result : results) {
                 sortByMiddleNameFieldResult.add(result.get(idField).toString());
+                if (i == 1) {
+                    assertEquals("11", result.get(idField));
+                } else if (i == 2) {
+                    assertEquals("12", result.get(idField));
+                } else if (i == 3) {
+                    assertEquals("10", result.get(idField));
+                }
+                i++;
             }
         } finally {
             results.close();

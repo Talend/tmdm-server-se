@@ -1,0 +1,25 @@
+<!DOCTYPE test [
+	<!ENTITY name "cui">
+	<!ENTITY desc SYSTEM "pom.xml">
+]>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<xsd:import namespace="http://www.w3.org/2001/XMLSchema" />
+	<xsd:element name="Product">
+		<xsd:complexType>
+			<xsd:all>
+				<xsd:element name="Name" type="xsd:string">
+					<xsd:annotation>
+						<xsd:appinfo source="X_Label_EN">&name;
+						</xsd:appinfo>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="Description" type="xsd:string">
+					<xsd:annotation>
+						<xsd:appinfo source="X_Label_EN">&desc;
+						</xsd:appinfo>
+					</xsd:annotation>
+				</xsd:element>
+			</xsd:all>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>

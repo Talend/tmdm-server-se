@@ -10,7 +10,6 @@
 package org.talend.mdm.webapp.journal.server.service;
 
 import java.io.ByteArrayInputStream;
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -24,8 +23,8 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.dom4j.Attribute;
-import org.dom4j.DocumentException;
 import org.dom4j.io.SAXReader;
+import org.talend.mdm.commmon.util.core.MDMXMLUtils;
 import org.talend.mdm.commmon.util.webapp.XSystemObjects;
 import org.talend.mdm.webapp.base.client.model.DataTypeConstants;
 import org.talend.mdm.webapp.base.server.util.Constants;
@@ -39,6 +38,7 @@ import org.talend.mdm.webapp.journal.shared.JournalSearchCriteria;
 import org.talend.mdm.webapp.journal.shared.JournalTreeModel;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.amalto.core.util.Util;
@@ -166,7 +166,6 @@ public class JournalDBService {
         return root;
     }
 
-    @SuppressWarnings("deprecation")
     private String formatValue(EntityModel entityModel, Map<String, String[]> formatMap, String path, String oldValue) {
         String formatValue = oldValue;
         for (Map.Entry<String, String[]> entry : formatMap.entrySet()) {
@@ -233,18 +232,27 @@ public class JournalDBService {
         }
 
         SAXReader reader = new SAXReader();
+        setProtectRule(reader);
         org.dom4j.Document document = null;
         try {
             document = reader.read(new ByteArrayInputStream(xmlString.getBytes("UTF-8"))); //$NON-NLS-1$
             org.dom4j.Element rootElement = document.getRootElement();
             this.retrieveElement(rootElement, root);
-        } catch (DocumentException e) {
-            LOG.error(e.getMessage(), e);
-        } catch (UnsupportedEncodingException e) {
-            LOG.error(e.getMessage(), e);
+        } catch (Exception e) {
+            LOG.error("Failed to use the new feature while initializing SAXReader.", e);
         }
 
         return root;
+    }
+
+    private static void setProtectRule(SAXReader reader) {
+        try {
+            reader.setFeature(MDMXMLUtils.FEATURE_DISALLOW_DOCTYPE, true);
+            reader.setFeature(MDMXMLUtils.FEATURE_EXTERNAL_GENERAL_ENTITIES, false);
+            reader.setFeature(MDMXMLUtils.FEATURE_EXTERNAL_PARAM_ENTITIES, false);
+        } catch (SAXException e) {
+            throw new RuntimeException("Unable to initialize SAXReader", e);
+        }
     }
 
     private void retrieveElement(org.dom4j.Element element, JournalTreeModel root) {
@@ -291,20 +299,19 @@ public class JournalDBService {
     private JournalGridModel parseString2Model(String xmlStr) throws Exception {
         JournalGridModel model = new JournalGridModel();
         Document doc = Util.parse(xmlStr);
+        String source = checkNull(Util.getFirstTextNode(doc, "result/Update/Source")); //$NON-NLS-1$
         String timeInMillis = checkNull(Util.getFirstTextNode(doc, "result/Update/TimeInMillis")); //$NON-NLS-1$
-        String concept = checkNull(Util.getFirstTextNode(doc, "result/Update/Concept")); //$NON-NLS-1$
-        String key = checkNull(Util.getFirstTextNode(doc, "result/Update/Key")); //$NON-NLS-1$
 
         model.setDataContainer(checkNull(Util.getFirstTextNode(doc, "result/Update/DataCluster"))); //$NON-NLS-1$
         model.setDataModel(checkNull(Util.getFirstTextNode(doc, "result/Update/DataModel"))); //$NON-NLS-1$
-        model.setEntity(concept);
-        model.setKey(key);
+        model.setEntity(checkNull(Util.getFirstTextNode(doc, "result/Update/Concept"))); //$NON-NLS-1$
+        model.setKey(checkNull(Util.getFirstTextNode(doc, "result/Update/Key"))); //$NON-NLS-1$
         model.setOperationType(checkNull(Util.getFirstTextNode(doc, "result/Update/OperationType"))); //$NON-NLS-1$
         model.setOperationTime(timeInMillis);
         model.setOperationDate(sdf.format(new Date(Long.parseLong(timeInMillis))));
-        model.setSource(checkNull(Util.getFirstTextNode(doc, "result/Update/Source")));
+        model.setSource(source);
         model.setUserName(checkNull(Util.getFirstTextNode(doc, "result/Update/UserName"))); //$NON-NLS-1$
-        model.setIds(Util.getFirstTextNode(doc, "result/Update/ID")); //$NON-NLS-1$
+        model.setIds(Util.joinStrings(new String[] { source, timeInMillis }, ".")); //$NON-NLS-1$
 
         String[] pathArray = Util.getTextNodes(doc, "result/Update/Item/path"); //$NON-NLS-1$
 

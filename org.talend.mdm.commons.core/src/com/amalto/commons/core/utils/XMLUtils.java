@@ -224,6 +224,7 @@ public final class XMLUtils {
     	try {
 	    	DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 	        factory.setNamespaceAware(true);
+	        factory.setExpandEntityReferences(false);
 	        DocumentBuilder builder = factory.newDocumentBuilder();
 	    	DOMImplementation impl = builder.getDOMImplementation();
 	    	Document namespaceHolder = impl.createDocument(namespace,(prefix==null?"":prefix+":")+elementName, null);
@@ -311,6 +312,7 @@ public final class XMLUtils {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         // Schema validation based on schemaURL
         factory.setNamespaceAware(true);
+        factory.setExpandEntityReferences(false);
         factory.setValidating((schema != null));
         factory.setAttribute("http://java.sun.com/xml/jaxp/properties/schemaLanguage", "http://www.w3.org/2001/XMLSchema");
         if (schema != null) {

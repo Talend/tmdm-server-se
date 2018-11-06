@@ -185,7 +185,7 @@ public class JournalDBServiceTest extends TestCase {
 
     public void testParseString2Model() throws NoSuchMethodException, InvocationTargetException, IllegalArgumentException,
             IllegalAccessException {
-        String xmlString = "<result><Update><ID>5258f292-5670-473b-bc01-8b63434682d3</ID><UserName>Jennifer</UserName><Source>genericUI</Source><TimeInMillis>1360032633336</TimeInMillis><OperationType>UPDATE</OperationType><DataCluster>DStar</DataCluster><DataModel>DStar</DataModel><Concept>Agency</Concept><Key>2</Key><Item><path>Name</path><oldValue>23456</oldValue><newValue>34567</newValue><path>Feautres/Sizes/Size[3]</path><oldValue>ccc</oldValue><newValue>333</newValue><path>Feautres/Sizes/Size[2]</path><oldValue>bbb</oldValue><newValue>222</newValue><path>Feautres/Sizes/Size[1]</path><oldValue>aaa</oldValue><newValue>111</newValue></Item></Update></result>";
+        String xmlString = "<result><Update><UserName>Jennifer</UserName><Source>genericUI</Source><TimeInMillis>1360032633336</TimeInMillis><OperationType>UPDATE</OperationType><DataCluster>DStar</DataCluster><DataModel>DStar</DataModel><Concept>Agency</Concept><Key>2</Key><Item><path>Name</path><oldValue>23456</oldValue><newValue>34567</newValue><path>Feautres/Sizes/Size[3]</path><oldValue>ccc</oldValue><newValue>333</newValue><path>Feautres/Sizes/Size[2]</path><oldValue>bbb</oldValue><newValue>222</newValue><path>Feautres/Sizes/Size[1]</path><oldValue>aaa</oldValue><newValue>111</newValue></Item></Update></result>";
         Method method = journalDBService.getClass().getDeclaredMethod("parseString2Model", String.class);
         method.setAccessible(true);
         JournalGridModel returnValue = (JournalGridModel) method.invoke(journalDBService, new Object[] { xmlString });
@@ -193,8 +193,8 @@ public class JournalDBServiceTest extends TestCase {
         assertEquals("DStar", returnValue.getDataContainer());
         assertEquals("DStar", returnValue.getDataModel());
         assertEquals("Agency", returnValue.getEntity());
+        assertEquals("genericUI.1360032633336", returnValue.getIds());
         assertEquals("2", returnValue.getKey());
-        assertEquals("5258f292-5670-473b-bc01-8b63434682d3", returnValue.getIds());
         assertEquals(UpdateReportPOJO.OPERATION_TYPE_UPDATE, returnValue.getOperationType());
         assertEquals("genericUI", returnValue.getSource());
         assertEquals("1360032633336", returnValue.getOperationTime());

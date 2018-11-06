@@ -31,6 +31,7 @@ import org.talend.mdm.webapp.browserecords.shared.FKIntegrityResult;
 import org.talend.mdm.webapp.browserecords.shared.ViewBean;
 
 import com.amalto.core.server.StorageAdmin;
+import com.amalto.core.util.LocaleUtil;
 
 public class BrowseStagingRecordsAction extends BrowseRecordsAction implements BrowseStagingRecordsService {
 
@@ -58,7 +59,7 @@ public class BrowseStagingRecordsAction extends BrowseRecordsAction implements B
         metadatas.put(concept + StagingConstant.STAGING_SOURCE, stagingSourceType);
 
         Map<String, String> searchables = view.getSearchables();
-        Locale locale = new Locale(language);
+        Locale locale = LocaleUtil.getLocale(language);
 
         searchables.put(concept + StagingConstant.STAGING_TASKID, MESSAGES.getMessage(locale, "match_group")); //$NON-NLS-1$
         searchables.put(concept + StagingConstant.STAGING_STATUS, MESSAGES.getMessage(locale, "status")); //$NON-NLS-1$

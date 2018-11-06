@@ -95,9 +95,11 @@ public class DefaultLoginModule extends AbstractLoginModule {
         try {
             StorageResults users = systemStorage.fetch(qb.getSelect());
             DataRecord user = (DataRecord) users.iterator().next();
-            @SuppressWarnings("unchecked")
-            List<String> roles = (List<String>) ((DataRecord) user.get("roles")).get("role"); //$NON-NLS-1$ //$NON-NLS-2$
-            principal.addRoles(roles);
+            if (null != user.get("roles")) {
+                @SuppressWarnings("unchecked")
+                List<String> roles = (List<String>) ((DataRecord) user.get("roles")).get("role"); //$NON-NLS-1$ //$NON-NLS-2$
+                principal.addRoles(roles);
+            }
             systemStorage.commit();
         } catch (Exception e) {
             systemStorage.rollback();

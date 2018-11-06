@@ -168,6 +168,103 @@ public class HibernateCompareTest {
         qb = from(original.getComplexType("Person"));
         storage.delete(qb.getSelect());
     }
+
+    @Test
+    public void testRenameFKName_NoFKData() throws Exception {
+        DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
+        HibernateStorage storage = new HibernateStorage("Person", StorageType.MASTER);
+        storage.init(dataSource);
+        MetadataRepository original = new MetadataRepository();
+        original.load(HibernateCompareTest.class.getResourceAsStream("../adapt/schema21_1.xsd"));
+        storage.prepare(original, true);
+
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+        String typeName = "Product";
+        String[] typeNames = { typeName };
+
+        String input1 = "<Product><Id>1</Id><Name>John</Name></Product>";
+        createRecord(storage, factory, original, typeNames, new String[] { input1 });
+
+        ComplexTypeMetadata objectType = original.getComplexType(typeName);
+        UserQueryBuilder qb = from(objectType);
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+            for (DataRecord result : results) {
+                assertEquals("1", result.get("Id"));
+            }
+        } finally {
+            results.close();
+        }
+        storage.end();
+
+        MetadataRepository updated1 = new MetadataRepository();
+        updated1.load(HibernateCompareTest.class.getResourceAsStream("../adapt/schema21_2.xsd"));
+
+        Compare.DiffResults diffResults = Compare.compare(original, updated1);
+        assertEquals(2, diffResults.getActions().size());
+        assertEquals(0, diffResults.getModifyChanges().size());
+        assertEquals(1, diffResults.getRemoveChanges().size());
+        assertEquals(1, diffResults.getAddChanges().size());
+
+        ImpactAnalyzer analyzer = new HibernateStorageDataAnaylzer(storage);
+        Map<ImpactAnalyzer.Impact, List<Change>> sort = analyzer.analyzeImpacts(diffResults);
+        assertEquals(0, sort.get(ImpactAnalyzer.Impact.HIGH).size());
+        assertEquals(1, sort.get(ImpactAnalyzer.Impact.MEDIUM).size());
+        assertEquals(1, sort.get(ImpactAnalyzer.Impact.LOW).size());
+
+        qb = from(original.getComplexType(typeName));
+        storage.delete(qb.getSelect());
+    }
+
+    @Test
+    public void testRenameFKName_ContainsFKData() throws Exception {
+        DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
+        HibernateStorage storage = new HibernateStorage("Person", StorageType.MASTER);
+        storage.init(dataSource);
+        MetadataRepository original = new MetadataRepository();
+        original.load(HibernateCompareTest.class.getResourceAsStream("../adapt/schema21_1.xsd"));
+        storage.prepare(original, true);
+
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+        String typeName = "Product";
+        String[] typeNames = { "ProductFamily", typeName };
+
+        String input1 = "<ProductFamily><Id>1</Id><Name>Product family #1</Name></ProductFamily>";
+        String input2 = "<Product><Id>1</Id><Name>John</Name><Family>1</Family></Product>";
+        createRecord(storage, factory, original, typeNames, new String[] { input1, input2 });
+
+        ComplexTypeMetadata objectType = original.getComplexType(typeName);
+        UserQueryBuilder qb = from(objectType);
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+            for (DataRecord result : results) {
+                assertEquals("1", result.get("Id"));
+            }
+        } finally {
+            results.close();
+        }
+        storage.end();
+
+        MetadataRepository updated1 = new MetadataRepository();
+        updated1.load(HibernateCompareTest.class.getResourceAsStream("../adapt/schema21_2.xsd"));
+
+        Compare.DiffResults diffResults = Compare.compare(original, updated1);
+        assertEquals(2, diffResults.getActions().size());
+        assertEquals(0, diffResults.getModifyChanges().size());
+        assertEquals(1, diffResults.getRemoveChanges().size());
+        assertEquals(1, diffResults.getAddChanges().size());
+
+        ImpactAnalyzer analyzer = new HibernateStorageDataAnaylzer(storage);
+        Map<ImpactAnalyzer.Impact, List<Change>> sort = analyzer.analyzeImpacts(diffResults);
+        assertEquals(1, sort.get(ImpactAnalyzer.Impact.HIGH).size());
+        assertEquals(0, sort.get(ImpactAnalyzer.Impact.MEDIUM).size());
+        assertEquals(1, sort.get(ImpactAnalyzer.Impact.LOW).size());
+
+        qb = from(original.getComplexType(typeName));
+        storage.delete(qb.getSelect());
+    }
     
     private void createRecord(Storage storage, DataRecordReader<String> factory, MetadataRepository repository,  String[] typeNames, String[] inputs){
         List<DataRecord> records = new ArrayList<DataRecord>();

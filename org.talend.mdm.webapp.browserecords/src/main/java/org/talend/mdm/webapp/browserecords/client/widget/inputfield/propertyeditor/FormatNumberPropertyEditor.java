@@ -11,6 +11,8 @@ package org.talend.mdm.webapp.browserecords.client.widget.inputfield.propertyedi
 
 import java.math.BigDecimal;
 
+import org.talend.mdm.webapp.browserecords.client.util.FormatUtil;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.form.NumberPropertyEditor;
 import com.google.gwt.i18n.client.NumberFormat;
@@ -104,10 +106,17 @@ public class FormatNumberPropertyEditor extends NumberPropertyEditor {
             return format.format(value.doubleValue());
         }
 
-        if (type == Float.class || type == Double.class) {
-            if (!value.toString().contains(".")) {
-                return value.toString() + ".0";
+        if (type == Float.class || type == Double.class || type == BigDecimal.class) {
+            BigDecimal number = new BigDecimal(value.toString());
+            String valueString = number.toPlainString();
+            if (type == Float.class || type == Double.class) {
+                if (!valueString.contains(".")) { //$NON-NLS-1$
+                    valueString = valueString + ".0"; //$NON-NLS-1$
+                } else {
+                    valueString = FormatUtil.formatFranctionValue(valueString);
+                }
             }
+            return valueString;
         }
         return value.toString();
     }

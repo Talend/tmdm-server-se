@@ -37,9 +37,6 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import junit.framework.TestCase;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -47,11 +44,11 @@ import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
+import org.talend.mdm.commmon.util.core.MDMXMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 import com.amalto.core.delegator.BeanDelegatorContainer;
 import com.amalto.core.delegator.ILocalUser;
@@ -81,6 +78,8 @@ import com.amalto.core.storage.record.XmlDOMDataRecordReader;
 import com.amalto.core.storage.record.XmlSAXDataRecordReader;
 import com.amalto.core.storage.record.XmlStringDataRecordReader;
 import com.amalto.core.util.XtentisException;
+
+import junit.framework.TestCase;
 
 @SuppressWarnings("nls")
 public class SystemStorageTest extends TestCase {
@@ -255,6 +254,10 @@ public class SystemStorageTest extends TestCase {
         return repository;
     }
 
+    private DocumentBuilder getDocumentBuilder() {
+        return MDMXMLUtils.getDocumentBuilder().get();
+    }
+
     public void testGetAllDocumentsUniqueID() throws Exception {
         Map<String, Object> preparedItems = prepareRepositoryStorageWrapper();
         ClassRepository repository = (ClassRepository) preparedItems.get("repository"); //$NON-NLS-1$
@@ -265,7 +268,7 @@ public class SystemStorageTest extends TestCase {
         assertEquals(0, emptyIds.length);
         // Add a user (parse a user XML from a 5.0 install)
         XmlDOMDataRecordReader reader = new XmlDOMDataRecordReader();
-        DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        DocumentBuilder builder = getDocumentBuilder();
         Document document = builder.parse(SystemStorageTest.class.getResourceAsStream("SystemStorageTest_1.xml")); //$NON-NLS-1$
         Element element = (Element) document.getElementsByTagName("User").item(0); //$NON-NLS-1$
         final DataRecord user = reader.read(repository, repository.getComplexType("User"), element); //$NON-NLS-1$
@@ -295,7 +298,7 @@ public class SystemStorageTest extends TestCase {
         assertNull(emptyXmls[1]);
         // Add a user (parse a user XML from a 5.0 install)
         XmlDOMDataRecordReader reader = new XmlDOMDataRecordReader();
-        DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        DocumentBuilder builder = getDocumentBuilder();
         String[] datas = { "SystemStorageTest_2.xml", "SystemStorageTest_3.xml" }; //$NON-NLS-1$ //$NON-NLS-2$ 
         storage.begin();
         for (String data : datas) {
@@ -325,7 +328,7 @@ public class SystemStorageTest extends TestCase {
         assertNull(emptyXmls);
         // prepare storage data
         XmlDOMDataRecordReader reader = new XmlDOMDataRecordReader();
-        DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        DocumentBuilder builder = getDocumentBuilder();
         String[] datas = { "SystemStorageTest_4.xml", "SystemStorageTest_5.xml" };
         storage.begin();
 
@@ -361,7 +364,7 @@ public class SystemStorageTest extends TestCase {
         assertNull(emptyXmls);
         // prepare storage data
         XmlDOMDataRecordReader reader = new XmlDOMDataRecordReader();
-        DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        DocumentBuilder builder = getDocumentBuilder();
         String[] datas = { "SystemStorageTest_6.xml"};
         storage.begin();
 
@@ -395,9 +398,7 @@ public class SystemStorageTest extends TestCase {
         ClassRepository repository = buildRepository();
 
         DataRecordReader<Element> dataRecordReader = new XmlDOMDataRecordReader();
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setNamespaceAware(true);
-        DocumentBuilder documentBuilder = factory.newDocumentBuilder();
+        DocumentBuilder documentBuilder = MDMXMLUtils.getDocumentBuilderWithNamespace().get();
         int error = 0;
         for (String fis1 : files) {
             // FileInputStream fis1 = new FileInputStream(file);
@@ -428,10 +429,8 @@ public class SystemStorageTest extends TestCase {
         ClassRepository repository = buildRepository();
 
         DataRecordReader<XmlSAXDataRecordReader.Input> dataRecordReader = new XmlSAXDataRecordReader();
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setNamespaceAware(true);
-        DocumentBuilder documentBuilder = factory.newDocumentBuilder();
-        XMLReader reader = XMLReaderFactory.createXMLReader();
+        DocumentBuilder documentBuilder = MDMXMLUtils.getDocumentBuilderWithNamespace().get();
+        XMLReader reader = MDMXMLUtils.getXMLReader();
         int error = 0;
         for (String fis1 : files) {
             try {
@@ -457,9 +456,7 @@ public class SystemStorageTest extends TestCase {
         ClassRepository repository = buildRepository();
 
         DataRecordReader<String> dataRecordReader = new XmlStringDataRecordReader();
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setNamespaceAware(true);
-        DocumentBuilder documentBuilder = factory.newDocumentBuilder();
+        DocumentBuilder documentBuilder = MDMXMLUtils.getDocumentBuilderWithNamespace().get();
         int error = 0;
         for (String fis1 : files) {
             String typeName;
@@ -605,9 +602,7 @@ public class SystemStorageTest extends TestCase {
         Collection<String> files = getConfigFiles();
 
         DataRecordReader<Element> dataRecordReader = new XmlDOMDataRecordReader();
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setNamespaceAware(true);
-        DocumentBuilder documentBuilder = factory.newDocumentBuilder();
+        DocumentBuilder documentBuilder = MDMXMLUtils.getDocumentBuilderWithNamespace().get();
         int error = 0;
         int ignore = 0;
         List<DataRecord> records = new LinkedList<DataRecord>();
@@ -699,7 +694,7 @@ public class SystemStorageTest extends TestCase {
         }
         // Parse a user XML from a 5.0 install
         XmlDOMDataRecordReader reader = new XmlDOMDataRecordReader();
-        DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        DocumentBuilder builder = getDocumentBuilder();
         Document document = builder.parse(SystemStorageTest.class.getResourceAsStream("SystemStorageTest_1.xml")); //$NON-NLS-1$
         Element element = (Element) document.getElementsByTagName("User").item(0); //$NON-NLS-1$
         reader.read(repository, repository.getComplexType("User"), element); //$NON-NLS-1$
@@ -739,10 +734,8 @@ public class SystemStorageTest extends TestCase {
         LOG.info("Storage prepared."); //$NON-NLS-1$
         // Create users
         DataRecordReader<Element> dataRecordReader = new XmlDOMDataRecordReader();
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setNamespaceAware(true);
         List<DataRecord> records = new LinkedList<DataRecord>();
-        DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        DocumentBuilder builder = getDocumentBuilder();
         Document document = builder.parse(SystemStorageTest.class.getResourceAsStream("SystemStorageTest_2.xml")); //$NON-NLS-1$
         Element element = (Element) document.getElementsByTagName("User").item(0); //$NON-NLS-1$
         records.add(dataRecordReader.read(repository, repository.getComplexType("User"), element)); //$NON-NLS-1$

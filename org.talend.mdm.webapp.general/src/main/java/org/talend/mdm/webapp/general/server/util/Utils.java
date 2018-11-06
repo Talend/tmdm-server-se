@@ -17,10 +17,10 @@ import java.util.Locale;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.log4j.Logger;
+import org.talend.mdm.commmon.util.core.MDMXMLUtils;
 import org.talend.mdm.webapp.base.client.exception.ServiceException;
 import org.talend.mdm.webapp.base.shared.Constants;
 import org.talend.mdm.webapp.general.model.GroupItem;
@@ -35,6 +35,7 @@ import org.xml.sax.SAXException;
 import com.amalto.commons.core.utils.XMLUtils;
 import com.amalto.core.delegator.ILocalUser;
 import com.amalto.core.util.LocalUser;
+import com.amalto.core.util.Menu;
 import com.amalto.core.util.Messages;
 import com.amalto.core.util.MessagesFactory;
 import com.amalto.core.webservice.WSCount;
@@ -46,7 +47,6 @@ import com.amalto.core.webservice.WSPutItem;
 import com.amalto.core.webservice.WSString;
 import com.amalto.core.webservice.WSWhereItem;
 import com.amalto.webapp.core.bean.Configuration;
-import com.amalto.webapp.core.util.Menu;
 import com.amalto.webapp.core.util.SystemLocale;
 import com.amalto.webapp.core.util.SystemLocaleFactory;
 import com.amalto.webapp.core.util.Util;
@@ -284,8 +284,7 @@ public class Utils {
 
     public static List<GroupItem> getGroupItems(String language) throws IOException, SAXException, ParserConfigurationException {
         InputStream is = Utils.class.getResourceAsStream("/MenuGroup.xml"); //$NON-NLS-1$
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
+        DocumentBuilder builder = MDMXMLUtils.getDocumentBuilder().get();
         Document doc = builder.parse(is);
         Element root = doc.getDocumentElement();
         NodeList nodes = root.getChildNodes();

@@ -9,6 +9,7 @@
  */
 package org.talend.mdm.webapp.browserecords.client.creator;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.talend.mdm.webapp.base.client.model.DataTypeConstants;
@@ -117,6 +118,7 @@ public class CellRendererCreator {
                         ListStore<ModelData> store, Grid<ModelData> grid) {
                     if (((String) model.get(property)) != null && !((String) model.get(property)).equals("")) {
                         String value = ((String) model.get(property));
+                        value = FormatUtil.formatFranctionValue(new BigDecimal(value).toPlainString());
                         return Format.htmlEncode(FormatUtil.changeNumberToFormatedValue(value));
                     } else {
                         return Format.htmlEncode((String) model.get(property));
@@ -147,13 +149,14 @@ public class CellRendererCreator {
                         String value = valueResult.indexOf(".") > 0 ? valueResult: valueResult.replaceAll(valueResult, valueResult +".0") ;
 
                         if (formats == null) {
-                            Number numValue = FormatUtil.getDecimalValue((String) model.get(property), fractionDigits);
-                            return Format.htmlEncode(FormatUtil.changeNumberToFormatedValue(numValue.toString()));
+                            BigDecimal numValue = (BigDecimal) FormatUtil.getDecimalValue((String) model.get(property),
+                                    fractionDigits);
+                            return Format.htmlEncode(FormatUtil.changeNumberToFormatedValue(numValue.toPlainString()));
                         } else {
                             int digitsLength = value.trim().split("\\.")[1].length();
-                            Number numValue = FormatUtil.getDecimalValue((String) model.get(property),
+                            BigDecimal numValue = (BigDecimal) FormatUtil.getDecimalValue((String) model.get(property),
                                     String.valueOf(digitsLength));
-                            return Format.htmlEncode(FormatUtil.changeNumberToFormatedValue(numValue.toString()));
+                            return Format.htmlEncode(FormatUtil.changeNumberToFormatedValue(numValue.toPlainString()));
                         }
                     } else {
                         return Format.htmlEncode((String) model.get(property));

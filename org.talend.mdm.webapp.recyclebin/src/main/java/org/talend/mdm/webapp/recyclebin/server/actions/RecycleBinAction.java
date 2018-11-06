@@ -32,6 +32,7 @@ import org.talend.mdm.webapp.recyclebin.shared.NoPermissionException;
 import com.amalto.core.objects.datamodel.DataModelPOJO;
 import com.amalto.core.util.BeforeDeletingErrorException;
 import com.amalto.core.util.LocalUser;
+import com.amalto.core.util.LocaleUtil;
 import com.amalto.core.util.Messages;
 import com.amalto.core.util.MessagesFactory;
 import com.amalto.core.webservice.WSConceptKey;
@@ -146,7 +147,7 @@ public class RecycleBinAction implements RecycleBinService {
             WSDroppedItemPK wsDroppedItemPK = new WSDroppedItemPK(wsItemPK, "/"); //$NON-NLS-1$
             WSRemoveDroppedItem wsRemoveDroppedItem = new WSRemoveDroppedItem(wsDroppedItemPK);
             Util.getPort().removeDroppedItem(wsRemoveDroppedItem);
-            Locale locale = new Locale(language);
+            Locale locale = LocaleUtil.getLocale(language);
             return MESSAGES.getMessage(locale, "delete_process_validation_success"); //$NON-NLS-1$;
         } catch (RemoteException e) {
             if (e.getCause() != null && BeforeDeletingErrorException.class.isInstance(e.getCause())) {

@@ -10,7 +10,8 @@
 
 package com.amalto.core.save;
 
-import static com.amalto.core.query.user.UserQueryBuilder.*;
+import static com.amalto.core.query.user.UserQueryBuilder.eq;
+import static com.amalto.core.query.user.UserQueryBuilder.from;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -26,7 +27,6 @@ import java.util.Set;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
@@ -38,6 +38,7 @@ import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
+import org.talend.mdm.commmon.util.core.MDMXMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -46,6 +47,7 @@ import org.w3c.dom.NodeList;
 import com.amalto.commons.core.utils.XMLUtils;
 import com.amalto.core.delegator.BeanDelegatorContainer;
 import com.amalto.core.delegator.ILocalUser;
+import com.amalto.core.delegator.BaseSecurityCheck;
 import com.amalto.core.history.DeleteType;
 import com.amalto.core.history.MutableDocument;
 import com.amalto.core.objects.UpdateReportPOJO;
@@ -108,7 +110,15 @@ public class DocumentSaveTest extends TestCase {
         XPathFactory xPathFactory = XPathFactory.newInstance();
         xPath = xPathFactory.newXPath();
         xPath.setNamespaceContext(new TestNamespaceContext());
+        
+        Map<String, Object> delegatorInstancePool = new HashMap<String, Object>();
+        delegatorInstancePool.put("LocalUser", new MockILocalUser()); //$NON-NLS-1$
+        delegatorInstancePool.put("SecurityCheck", new MockISecurityCheck()); //$NON-NLS-1$
+        createBeanDelegatorContainer();
+        BeanDelegatorContainer.getInstance().setDelegatorInstancePool(delegatorInstancePool); 
     }
+
+    private static class MockISecurityCheck extends BaseSecurityCheck {}
 
     @Override
     public void tearDown() throws Exception {
@@ -151,11 +161,10 @@ public class DocumentSaveTest extends TestCase {
         assertEquals("testdata", source.getSchemasAsString().get(conceptName));
     }
 
+    
     public void testValidationWithXSINamespace() throws Exception {
         InputStream contractXML = DocumentSaveTest.class.getResourceAsStream("contract.xml");
-        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        documentBuilderFactory.setNamespaceAware(true);
-        Document contract = new SkipAttributeDocumentBuilder(documentBuilderFactory.newDocumentBuilder(), true)
+        Document contract = new SkipAttributeDocumentBuilder(MDMXMLUtils.getDocumentBuilderWithNamespace().get(), true)
                 .parse(contractXML);
 
         XmlSchemaValidator validator = new XmlSchemaValidator("", DocumentSaveTest.class.getResourceAsStream("metadata3.xsd"),
@@ -269,7 +278,7 @@ public class DocumentSaveTest extends TestCase {
 
         assertTrue(committer.hasSaved());
         Element committedElement = committer.getCommittedElement();
-        assertEquals("", evaluate(committedElement, "/Agency/Zip"));
+        assertEquals("04102", evaluate(committedElement, "/Agency/Zip"));
         assertEquals("", evaluate(committedElement, "/Agency/State"));
     }
 
@@ -1223,8 +1232,8 @@ public class DocumentSaveTest extends TestCase {
         MockCommitter committer = new MockCommitter();
         session.end(committer);
         Element committedElement = committer.getCommittedElement();
-        assertEquals("04102", evaluate(committedElement, "/Agency/Zip"));
-        assertEquals("ME", evaluate(committedElement, "/Agency/State"));
+        assertEquals("10001", evaluate(committedElement, "/Agency/Zip"));
+        assertEquals("NY", evaluate(committedElement, "/Agency/State"));
 
         // Test with replace.
         session = SaverSession.newSession(source);
@@ -1234,8 +1243,8 @@ public class DocumentSaveTest extends TestCase {
         saver.save(session, context);
         session.end(committer);
         committedElement = committer.getCommittedElement();
-        assertEquals("04102", evaluate(committedElement, "/Agency/Zip"));
-        assertEquals("ME", evaluate(committedElement, "/Agency/State"));
+        assertEquals("10001", evaluate(committedElement, "/Agency/Zip"));
+        assertEquals("NY", evaluate(committedElement, "/Agency/State"));
 
         // Test changing user name (and user's roles).
         source.setUserName("admin");
@@ -1268,8 +1277,8 @@ public class DocumentSaveTest extends TestCase {
         MockCommitter committer = new MockCommitter();
         session.end(committer);
         Element committedElement = committer.getCommittedElement();
-        assertEquals("04102", evaluate(committedElement, "/Agency/Zip"));
-        assertEquals("ME", evaluate(committedElement, "/Agency/State"));
+        assertEquals("10001", evaluate(committedElement, "/Agency/Zip"));
+        assertEquals("NY", evaluate(committedElement, "/Agency/State"));
     }
 
     public void testNoUpdate() throws Exception {
@@ -1882,16 +1891,16 @@ public class DocumentSaveTest extends TestCase {
         path = (String) evaluate(doc.getDocumentElement(), "Item[3]/path");
         oldValue = (String) evaluate(doc.getDocumentElement(), "Item[3]/oldValue");
         newValue = (String) evaluate(doc.getDocumentElement(), "Item[3]/newValue");
-        assertEquals("Information/MoreInfo[2]", path);
-        assertEquals("", oldValue);
-        assertEquals("http://www.newSite2.org", newValue);
+        assertEquals("State", path);
+        assertEquals("ME", oldValue);
+        assertEquals("", newValue);
 
         path = (String) evaluate(doc.getDocumentElement(), "Item[4]/path");
         oldValue = (String) evaluate(doc.getDocumentElement(), "Item[4]/oldValue");
         newValue = (String) evaluate(doc.getDocumentElement(), "Item[4]/newValue");
-        assertEquals("Information/MoreInfo[1]", path);
+        assertEquals("Information/MoreInfo[2]", path);
         assertEquals("", oldValue);
-        assertEquals("http://www.newSite.org", newValue);
+        assertEquals("http://www.newSite2.org", newValue);
 
         path = (String) evaluate(doc.getDocumentElement(), "OperationType");
         assertEquals("UPDATE", path);
@@ -1955,9 +1964,6 @@ public class DocumentSaveTest extends TestCase {
     }
     
     public void testUpdateAutoIncrementRecord() throws Exception {
-        createBeanDelegatorContainer();
-        BeanDelegatorContainer.getInstance().setDelegatorInstancePool(
-                Collections.<String, Object> singletonMap("LocalUser", new MockILocalUser()));
         MetadataRepository repository = new MetadataRepository();
         repository.load(DocumentSaveTest.class.getResourceAsStream("metadata1.xsd"));
         MockMetadataRepositoryAdmin.INSTANCE.register("DStar", repository);
@@ -1982,11 +1988,7 @@ public class DocumentSaveTest extends TestCase {
      * test for TMDM-9804 AUTO_INCREMENT issue in cluster enviroment
      */
     public void testUpdateAutoIncrementRecordForLongTransactionInCluster() throws Exception {
-
         MDMConfiguration.getConfiguration().setProperty("system.cluster", Boolean.TRUE.toString());
-        createBeanDelegatorContainer();
-        BeanDelegatorContainer.getInstance().setDelegatorInstancePool(
-                Collections.<String, Object> singletonMap("LocalUser", new MockILocalUser()));
         MetadataRepository repository = new MetadataRepository();
         repository.load(DocumentSaveTest.class.getResourceAsStream("metadata1.xsd"));
         MockMetadataRepositoryAdmin.INSTANCE.register("DStar", repository);
@@ -3541,13 +3543,10 @@ public class DocumentSaveTest extends TestCase {
         InputStream recordXml = new ByteArrayInputStream(updString.getBytes("UTF-8"));
         DocumentSaverContext context = session.getContextFactory().create("DStar", "DStar", "Source", recordXml, false, true,
                 true, false, false);
-
         DocumentSaver saver = context.createSaver();
         session.begin("DStar");
         saver.save(session, context);
-        createBeanDelegatorContainer();
-        BeanDelegatorContainer.getInstance().setDelegatorInstancePool(
-                Collections.<String, Object> singletonMap("LocalUser", new MockILocalUser()));
+
         session.end(new DefaultCommitter());
 
         UserQueryBuilder qb = from(test1).where(eq(test1.getField("id"), "a"));

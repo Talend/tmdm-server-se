@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.talend.mdm</groupId>
         <artifactId>mdm-base</artifactId>
-        <version>7.1.1-SNAPSHOT</version>
+        <version>7.2.1-SNAPSHOT</version>
         <relativePath>../../tmdm-common/org.talend.mdm.base/pom.xml</relativePath>
     </parent>
 
@@ -13,8 +13,11 @@
     <name>org.talend.mdm.core</name>
 
     <properties>
-        <jackson.version>2.7.9</jackson.version>
+        <jackson.version>2.8.11.1</jackson.version>
+        <jackson.provider.version>2.9.7</jackson.provider.version>
         <activemq.version>5.14.5</activemq.version>
+        <woodstox.core.version>5.0.3</woodstox.core.version>
+        <joda.time.version>2.10</joda.time.version>
     </properties>
 
     <build>
@@ -69,6 +72,8 @@
                             <excludes>
                                 <exclude>com/amalto/core/delegator/impl/DefaultItemCtrlDelegator.class</exclude>
                                 <exclude>com/amalto/core/delegator/impl/DefaultValidationDelegator.class</exclude>
+                                <exclude>com/amalto/core/delegator/impl/DefaultSecurityCheckDelegator.class</exclude>
+                                <exclude>com/amalto/core/delegator/impl/DefaultMenuUtilDelegator.class</exclude>
                                 <exclude>com/amalto/core/delegator/impl/DefaultXtentisWSDelegator.class</exclude>
                                 <exclude>com/amalto/core/delegator/impl/DefaultLocalUserDelegator.class</exclude>
                                 <exclude>com/amalto/core/save/generator/AutoIncrementGenerator.class</exclude>
@@ -85,6 +90,8 @@
                             <includes>
                                 <include>com/amalto/core/delegator/impl/DefaultItemCtrlDelegator.class</include>
                                 <include>com/amalto/core/delegator/impl/DefaultValidationDelegator.class</include>
+                                <include>com/amalto/core/delegator/impl/DefaultSecurityCheckDelegator.class</include>
+                                <include>com/amalto/core/delegator/impl/DefaultMenuUtilDelegator.class</include>
                                 <include>com/amalto/core/delegator/impl/DefaultXtentisWSDelegator.class</include>
                                 <include>com/amalto/core/delegator/impl/DefaultLocalUserDelegator.class</include>
                                 <include>com/amalto/core/save/generator/AutoIncrementGenerator.class</include>
@@ -220,22 +227,22 @@
 	                <artifactId>snakeyaml</artifactId>
 	            </exclusion>
             </exclusions>
-            <version>${jackson.version}</version>
+            <version>${jackson.provider.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-xml</artifactId>
-            <version>${jackson.version}</version>
+            <version>${jackson.provider.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-joda</artifactId>
-            <version>${jackson.version}</version>
+            <version>${jackson.provider.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
-            <version>${jackson.version}</version>
+            <version>${jackson.provider.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -245,12 +252,32 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
-            <version>${jackson.version}</version>
+            <version>${jackson.provider.version}</version>
         </dependency>
+		<dependency>
+		    <groupId>com.fasterxml.jackson.module</groupId>
+		    <artifactId>jackson-module-jaxb-annotations</artifactId>
+		    <version>${jackson.provider.version}</version>
+		</dependency>
+		<dependency>
+		    <groupId>com.fasterxml.woodstox</groupId>
+		    <artifactId>woodstox-core</artifactId>
+		    <version>${woodstox.core.version}</version>
+		</dependency>
+		<dependency>
+		    <groupId>joda-time</groupId>
+		    <artifactId>joda-time</artifactId>
+		    <version>${joda.time.version}</version>
+		</dependency>
+		<dependency>
+		    <groupId>com.fasterxml.jackson.jaxrs</groupId>
+		    <artifactId>jackson-jaxrs-base</artifactId>
+		    <version>${jackson.provider.version}</version>
+		</dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.jaxrs</groupId>
             <artifactId>jackson-jaxrs-json-provider</artifactId>
-            <version>${jackson.version}</version>
+            <version>${jackson.provider.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>

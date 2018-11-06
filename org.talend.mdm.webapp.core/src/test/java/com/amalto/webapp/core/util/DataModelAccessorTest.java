@@ -14,8 +14,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.talend.mdm.commmon.util.core.MDMXMLUtils;
 import org.w3c.dom.Document;
 
 import com.amalto.commons.core.utils.XMLUtils;
@@ -50,8 +50,7 @@ public class DataModelAccessorTest extends TestCase {
     private String getXSDModel(String filename) throws Exception {
         InputStream is = getClass().getResourceAsStream(filename);
         assertNotNull(is);
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
+        DocumentBuilder builder = MDMXMLUtils.getDocumentBuilder().get();
         Document doc = builder.parse(is);
         return XMLUtils.nodeToString(doc, true, true);
     }

@@ -23,7 +23,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
@@ -38,6 +37,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
+import org.talend.mdm.commmon.util.core.MDMXMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -427,7 +427,7 @@ public class XSLTTransformerPluginBean extends Plugin {
             transformationeWarning = null;
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             if ("xml".equals(outputMethod) || "xhtml".equals(outputMethod)) { //$NON-NLS-1$ //$NON-NLS-2$
-                DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+                DocumentBuilder builder = MDMXMLUtils.getDocumentBuilder().get();
                 Document document = builder.newDocument();
                 DOMResult domResult = new DOMResult(document);
 

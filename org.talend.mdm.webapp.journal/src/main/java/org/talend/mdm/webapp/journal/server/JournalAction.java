@@ -41,6 +41,7 @@ import org.talend.mdm.webapp.journal.shared.JournalTreeModel;
 
 import com.amalto.core.history.exception.UnsupportedUndoPhysicalDeleteException;
 import com.amalto.core.util.LocalUser;
+import com.amalto.core.util.LocaleUtil;
 import com.amalto.core.util.Messages;
 import com.amalto.core.util.MessagesFactory;
 import com.amalto.webapp.core.util.DataModelAccessor;
@@ -134,7 +135,7 @@ public class JournalAction extends RemoteServiceServlet implements JournalServic
             LOG.error(e.getMessage(), e);
             throw e;
         } catch (UnsupportedUndoPhysicalDeleteException unsupportedUndoException) {
-            throw new ServiceException(MESSAGES.getMessage(new Locale(language), "unsupport_restore_message")); //$NON-NLS-1$
+            throw new ServiceException(MESSAGES.getMessage(LocaleUtil.getLocale(language), "unsupport_restore_message")); //$NON-NLS-1$
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
             throw new ServiceException(e.getMessage());
@@ -165,20 +166,21 @@ public class JournalAction extends RemoteServiceServlet implements JournalServic
 
     @Override
     public void restoreRecord(JournalParameters parameter, String language) throws ServiceException {
+        Locale locale = LocaleUtil.getLocale(language);
         try {
             if (DataModelAccessor.getInstance().checkRestoreAccess(parameter.getDataModelName(),parameter.getConceptName())) {
                 JournalHistoryService.getInstance().restoreRecord(parameter, language);
             } else {
-                throw new ServiceException(MESSAGES.getMessage(new Locale(language), "restore_no_permissions")); //$NON-NLS-1$
+                throw new ServiceException(MESSAGES.getMessage(locale, "restore_no_permissions")); //$NON-NLS-1$
             }
         } catch (ServiceException e) {
             LOG.error(e.getMessage(), e);
             throw e;
         } catch (UnsupportedUndoPhysicalDeleteException unsupportedUndoException) {
-            throw new ServiceException(MESSAGES.getMessage(new Locale(language), "unsupport_restore_message")); //$NON-NLS-1$            
+            throw new ServiceException(MESSAGES.getMessage(locale, "unsupport_restore_message")); //$NON-NLS-1$
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
-            throw new ServiceException(MESSAGES.getMessage(new Locale(language), "restore_fail")); //$NON-NLS-1$
+            throw new ServiceException(MESSAGES.getMessage(locale, "restore_fail")); //$NON-NLS-1$
         }
     }
 
@@ -296,7 +298,7 @@ public class JournalAction extends RemoteServiceServlet implements JournalServic
             sb.append("{'start':'").append(this.computeTime(model.getOperationDate())).append("',"); //$NON-NLS-1$ //$NON-NLS-2$
             sb.append("'title':'").append(model.getOperationDate()).append(" - ").append(model.getOperationType()).append("',"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             //            sb.append("'link':'").append("javascript:showDialog(\"").append(model.toString()).append("\")',"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            Locale locale = new Locale(language);
+            Locale locale = LocaleUtil.getLocale(language);
             sb.append("'description':'").append(MESSAGES.getMessage(locale, "updatereport.timeline.label.userName")).append(":").append(model.getUserName()).append("<br>") //$NON-NLS-1$ //$NON-NLS-2$  //$NON-NLS-3$ //$NON-NLS-4$
                     .append(MESSAGES.getMessage(locale, "updatereport.timeline.label.source")).append(":").append(model.getSource()).append("<br>") //$NON-NLS-1$ //$NON-NLS-2$  //$NON-NLS-3$
                     .append(MESSAGES.getMessage(locale, "updatereport.timeline.label.entity")).append(":").append(model.getEntity()).append("<br>") //$NON-NLS-1$ //$NON-NLS-2$  //$NON-NLS-3$

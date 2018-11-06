@@ -10,20 +10,18 @@
 
 package com.amalto.core.storage;
 
-import java.util.List;
-import java.util.Set;
-
-import com.amalto.core.storage.record.StorageConstants;
-import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
-import org.talend.mdm.commmon.metadata.MetadataRepository;
-import org.talend.mdm.commmon.metadata.compare.Compare.DiffResults;
-import org.talend.mdm.commmon.metadata.compare.ImpactAnalyzer;
-
 import com.amalto.core.query.user.Expression;
 import com.amalto.core.storage.datasource.DataSource;
 import com.amalto.core.storage.datasource.DataSourceDefinition;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.transaction.StorageTransaction;
+import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.MetadataRepository;
+import org.talend.mdm.commmon.metadata.compare.Compare.DiffResults;
+import org.talend.mdm.commmon.metadata.compare.ImpactAnalyzer;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  *

@@ -41,6 +41,7 @@ import java.util.Set;
 
 import javax.xml.XMLConstants;
 
+import com.amalto.core.storage.record.StorageConstants;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -264,9 +265,9 @@ public class HibernateStorage implements Storage {
 
     @Override
     public int getCapabilities() {
-        int capabilities = CAP_TRANSACTION | CAP_INTEGRITY;
+        int capabilities = StorageConstants.CAP_TRANSACTION | StorageConstants.CAP_INTEGRITY;
         if (dataSource.supportFullText()) {
-            capabilities |= CAP_FULL_TEXT;
+            capabilities |= StorageConstants.CAP_FULL_TEXT;
         }
         return capabilities;
     }
@@ -566,17 +567,17 @@ public class HibernateStorage implements Storage {
                 // Adds "staging status" / "staging block key" / "staging task id" as indexed fields
                 for (TypeMapping typeMapping : mappingRepository.getAllTypeMappings()) {
                     ComplexTypeMetadata database = typeMapping.getDatabase();
-                    if (database.hasField(METADATA_STAGING_STATUS)) {
-                        databaseIndexedFields.add(database.getField(METADATA_STAGING_STATUS));
+                    if (database.hasField(StorageConstants.METADATA_STAGING_STATUS)) {
+                        databaseIndexedFields.add(database.getField(StorageConstants.METADATA_STAGING_STATUS));
                     }
-                    if (database.hasField(METADATA_STAGING_BLOCK_KEY)) {
-                        databaseIndexedFields.add(database.getField(METADATA_STAGING_BLOCK_KEY));
+                    if (database.hasField(StorageConstants.METADATA_STAGING_BLOCK_KEY)) {
+                        databaseIndexedFields.add(database.getField(StorageConstants.METADATA_STAGING_BLOCK_KEY));
                     }
-                    if (database.hasField(METADATA_TASK_ID)) {
-                        databaseIndexedFields.add(database.getField(METADATA_TASK_ID));
+                    if (database.hasField(StorageConstants.METADATA_TASK_ID)) {
+                        databaseIndexedFields.add(database.getField(StorageConstants.METADATA_TASK_ID));
                     }
-                    if (database.hasField(METADATA_STAGING_HAS_TASK)) {
-                        databaseIndexedFields.add(database.getField(METADATA_STAGING_HAS_TASK));
+                    if (database.hasField(StorageConstants.METADATA_STAGING_HAS_TASK)) {
+                        databaseIndexedFields.add(database.getField(StorageConstants.METADATA_STAGING_HAS_TASK));
                     }
                 }
                 break;

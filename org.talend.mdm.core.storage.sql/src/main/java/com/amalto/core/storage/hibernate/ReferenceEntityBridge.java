@@ -22,6 +22,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.amalto.core.storage.record.StorageConstants;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.lucene.document.Document;
@@ -151,8 +152,8 @@ public class ReferenceEntityBridge implements TwoWayFieldBridge {
     }
 
     private static IndexHandler getHandler(Field culField, Object curVal) {
-        if (curVal == null || Storage.METADATA_TIMESTAMP.equals(culField.getName())
-                || Storage.METADATA_TASK_ID.equals(culField.getName())) {
+        if (curVal == null || StorageConstants.METADATA_TIMESTAMP.equals(culField.getName())
+                || StorageConstants.METADATA_TASK_ID.equals(culField.getName())) {
             return new EmptyIndexHandler();
         }
         if (Collection.class.isAssignableFrom(culField.getType())) {

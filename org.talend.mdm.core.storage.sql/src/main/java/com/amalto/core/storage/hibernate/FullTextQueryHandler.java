@@ -22,6 +22,7 @@ import java.util.Set;
 
 import javax.xml.XMLConstants;
 
+import com.amalto.core.storage.record.StorageConstants;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.search.Query;
@@ -203,7 +204,7 @@ class FullTextQueryHandler extends AbstractQueryHandler {
                 @Override
                 public DataRecord next() {
                     final DataRecord next = super.next();
-                    final ComplexTypeMetadata explicitProjectionType = new ComplexTypeMetadataImpl(StringUtils.EMPTY, Storage.PROJECTION_TYPE, false);
+                    final ComplexTypeMetadata explicitProjectionType = new ComplexTypeMetadataImpl(StringUtils.EMPTY, StorageConstants.PROJECTION_TYPE, false);
                     final DataRecord nextRecord = new DataRecord(explicitProjectionType, UnsupportedDataRecordMetadata.INSTANCE);
                     VisitorAdapter<Void> visitor = new VisitorAdapter<Void>() {
                         private String aliasName;
@@ -357,7 +358,7 @@ class FullTextQueryHandler extends AbstractQueryHandler {
                 public DataRecord next() {
                     DataRecord next = super.next();
                     ComplexTypeMetadata explicitProjectionType = new ComplexTypeMetadataImpl(StringUtils.EMPTY,
-                            Storage.PROJECTION_TYPE,
+                            StorageConstants.PROJECTION_TYPE,
                             false);
                     DataRecord nextRecord = new DataRecord(explicitProjectionType, UnsupportedDataRecordMetadata.INSTANCE);
                     for (TypedExpression selectedField : selectedFields) {

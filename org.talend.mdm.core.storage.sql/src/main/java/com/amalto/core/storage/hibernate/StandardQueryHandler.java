@@ -10,121 +10,31 @@
 
 package com.amalto.core.storage.hibernate;
 
-import static org.hibernate.criterion.Restrictions.and;
-import static org.hibernate.criterion.Restrictions.eq;
-import static org.hibernate.criterion.Restrictions.ge;
-import static org.hibernate.criterion.Restrictions.gt;
-import static org.hibernate.criterion.Restrictions.ilike;
-import static org.hibernate.criterion.Restrictions.in;
-import static org.hibernate.criterion.Restrictions.isNull;
-import static org.hibernate.criterion.Restrictions.le;
-import static org.hibernate.criterion.Restrictions.like;
-import static org.hibernate.criterion.Restrictions.lt;
-import static org.hibernate.criterion.Restrictions.not;
-import static org.hibernate.criterion.Restrictions.or;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.lang.NotImplementedException;
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
-import org.hibernate.Criteria;
-import org.hibernate.Hibernate;
-import org.hibernate.ScrollMode;
-import org.hibernate.ScrollableResults;
-import org.hibernate.Session;
-import org.hibernate.criterion.AggregateProjection;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projection;
-import org.hibernate.criterion.ProjectionList;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.PropertyProjection;
-import org.hibernate.criterion.Restrictions;
-import org.hibernate.criterion.SQLProjection;
-import org.hibernate.internal.CriteriaImpl;
-import org.hibernate.sql.JoinType;
-import org.hibernate.transform.DistinctRootEntityResultTransformer;
-import org.hibernate.type.IntegerType;
-import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
-import org.talend.mdm.commmon.metadata.CompoundFieldMetadata;
-import org.talend.mdm.commmon.metadata.DefaultMetadataVisitor;
-import org.talend.mdm.commmon.metadata.EnumerationFieldMetadata;
-import org.talend.mdm.commmon.metadata.FieldMetadata;
-import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
-import org.talend.mdm.commmon.metadata.SimpleTypeFieldMetadata;
-import org.talend.mdm.commmon.metadata.Types;
-
-import com.amalto.core.query.user.Alias;
-import com.amalto.core.query.user.BigDecimalConstant;
-import com.amalto.core.query.user.BinaryLogicOperator;
-import com.amalto.core.query.user.BooleanConstant;
-import com.amalto.core.query.user.ByteConstant;
-import com.amalto.core.query.user.Compare;
-import com.amalto.core.query.user.ComplexTypeExpression;
-import com.amalto.core.query.user.Condition;
-import com.amalto.core.query.user.ConstantCollection;
-import com.amalto.core.query.user.ConstantCondition;
-import com.amalto.core.query.user.Count;
-import com.amalto.core.query.user.DateConstant;
-import com.amalto.core.query.user.DateTimeConstant;
+import com.amalto.core.query.user.*;
 import com.amalto.core.query.user.Distinct;
-import com.amalto.core.query.user.DoubleConstant;
 import com.amalto.core.query.user.Expression;
-import com.amalto.core.query.user.Field;
-import com.amalto.core.query.user.FieldFullText;
-import com.amalto.core.query.user.FloatConstant;
-import com.amalto.core.query.user.FullText;
-import com.amalto.core.query.user.Id;
-import com.amalto.core.query.user.IndexedField;
-import com.amalto.core.query.user.IntegerConstant;
-import com.amalto.core.query.user.IsEmpty;
-import com.amalto.core.query.user.IsNull;
-import com.amalto.core.query.user.Isa;
-import com.amalto.core.query.user.Join;
-import com.amalto.core.query.user.LongConstant;
-import com.amalto.core.query.user.Max;
-import com.amalto.core.query.user.Min;
-import com.amalto.core.query.user.NotIsEmpty;
-import com.amalto.core.query.user.NotIsNull;
-import com.amalto.core.query.user.OrderBy;
-import com.amalto.core.query.user.Paging;
-import com.amalto.core.query.user.Predicate;
-import com.amalto.core.query.user.Range;
-import com.amalto.core.query.user.Select;
-import com.amalto.core.query.user.ShortConstant;
-import com.amalto.core.query.user.StringConstant;
-import com.amalto.core.query.user.TimeConstant;
-import com.amalto.core.query.user.Type;
-import com.amalto.core.query.user.TypedExpression;
-import com.amalto.core.query.user.UnaryLogicOperator;
-import com.amalto.core.query.user.VisitorAdapter;
-import com.amalto.core.query.user.metadata.GroupSize;
-import com.amalto.core.query.user.metadata.StagingBlockKey;
-import com.amalto.core.query.user.metadata.StagingError;
-import com.amalto.core.query.user.metadata.StagingHasTask;
-import com.amalto.core.query.user.metadata.StagingSource;
-import com.amalto.core.query.user.metadata.StagingStatus;
-import com.amalto.core.query.user.metadata.TaskId;
-import com.amalto.core.query.user.metadata.Timestamp;
-import com.amalto.core.storage.CloseableIterator;
-import com.amalto.core.storage.Storage;
-import com.amalto.core.storage.StorageMetadataUtils;
-import com.amalto.core.storage.StorageResults;
-import com.amalto.core.storage.StorageType;
+import com.amalto.core.query.user.metadata.*;
+import com.amalto.core.storage.*;
 import com.amalto.core.storage.datasource.DataSource;
 import com.amalto.core.storage.datasource.RDBMSDataSource;
 import com.amalto.core.storage.exception.UnsupportedQueryException;
 import com.amalto.core.storage.record.DataRecord;
+import com.amalto.core.storage.record.StorageConstants;
+import org.apache.commons.lang.NotImplementedException;
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.hibernate.*;
+import org.hibernate.criterion.*;
+import org.hibernate.internal.CriteriaImpl;
+import org.hibernate.sql.JoinType;
+import org.hibernate.transform.DistinctRootEntityResultTransformer;
+import org.hibernate.type.IntegerType;
+import org.talend.mdm.commmon.metadata.*;
+
+import java.io.IOException;
+import java.util.*;
+
+import static org.hibernate.criterion.Restrictions.*;
 
 
 class StandardQueryHandler extends AbstractQueryHandler {
@@ -396,39 +306,39 @@ class StandardQueryHandler extends AbstractQueryHandler {
 
     @Override
     public StorageResults visit(StagingStatus stagingStatus) {
-        projectionList.add(Projections.property(Storage.METADATA_STAGING_STATUS));
+        projectionList.add(Projections.property(StorageConstants.METADATA_STAGING_STATUS));
         return null;
     }
 
     @Override
     public StorageResults visit(StagingError stagingError) {
-        projectionList.add(Projections.property(Storage.METADATA_STAGING_ERROR));
+        projectionList.add(Projections.property(StorageConstants.METADATA_STAGING_ERROR));
         return null;
     }
 
     @Override
     public StorageResults visit(StagingSource stagingSource) {
-        projectionList.add(Projections.property(Storage.METADATA_STAGING_SOURCE));
+        projectionList.add(Projections.property(StorageConstants.METADATA_STAGING_SOURCE));
         return null;
     }
 
     @Override
     public StorageResults visit(StagingBlockKey stagingBlockKey) {
-        projectionList.add(Projections.property(Storage.METADATA_STAGING_BLOCK_KEY));
+        projectionList.add(Projections.property(StorageConstants.METADATA_STAGING_BLOCK_KEY));
         return null;
     }
 
     @Override
     public StorageResults visit(StagingHasTask stagingHasTask) {
-        projectionList.add(Projections.property(Storage.METADATA_STAGING_HAS_TASK));
+        projectionList.add(Projections.property(StorageConstants.METADATA_STAGING_HAS_TASK));
         return null;
     }
 
     @Override
     public StorageResults visit(GroupSize groupSize) {
         Projection groupSizeProjection = Projections.sqlGroupProjection(
-                "count(this_." + Storage.METADATA_TASK_ID + ") as talend_group_size", //$NON-NLS-1$ //$NON-NLS-2$ 
-                "this_." + Storage.METADATA_TASK_ID, new String[] { "talend_group_size" }, //$NON-NLS-1$ //$NON-NLS-2$ 
+                "count(this_." + StorageConstants.METADATA_TASK_ID + ") as talend_group_size", //$NON-NLS-1$ //$NON-NLS-2$
+                "this_." + StorageConstants.METADATA_TASK_ID, new String[] { "talend_group_size" }, //$NON-NLS-1$ //$NON-NLS-2$
                 new org.hibernate.type.Type[] { new IntegerType() });
         projectionList.add(groupSizeProjection);
         return null;
@@ -1263,7 +1173,7 @@ class StandardQueryHandler extends AbstractQueryHandler {
                     String sqlConditionBuilder = "("; //$NON-NLS-1$
                     sqlConditionBuilder += "select count(1) from"; //$NON-NLS-1$
                     sqlConditionBuilder += ' ' + mainTableName + ' ';
-                    sqlConditionBuilder += "where " + Storage.METADATA_TASK_ID + " = " + mainTableAlias + "." + Storage.METADATA_TASK_ID; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$  
+                    sqlConditionBuilder += "where " + StorageConstants.METADATA_TASK_ID + " = " + mainTableAlias + "." + StorageConstants.METADATA_TASK_ID; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                     sqlConditionBuilder += ')';
                     sqlConditionBuilder += ' ' + comparator + ' ' + value;
                     return Restrictions.sqlRestriction(sqlConditionBuilder);
@@ -1718,7 +1628,7 @@ class StandardQueryHandler extends AbstractQueryHandler {
         public FieldCondition visit(TaskId taskId) {
             String taskIdField = mappings.getMappingFromDatabase(mainType).getDatabaseTaskId();
             if (taskIdField != null) {
-                return createInternalCondition(Storage.METADATA_TASK_ID);
+                return createInternalCondition(StorageConstants.METADATA_TASK_ID);
             } else {
                 return null;
             }
@@ -1734,27 +1644,27 @@ class StandardQueryHandler extends AbstractQueryHandler {
 
         @Override
         public FieldCondition visit(StagingStatus stagingStatus) {
-            return createInternalCondition(Storage.METADATA_STAGING_STATUS);
+            return createInternalCondition(StorageConstants.METADATA_STAGING_STATUS);
         }
 
         @Override
         public FieldCondition visit(StagingError stagingError) {
-            return createInternalCondition(Storage.METADATA_STAGING_ERROR);
+            return createInternalCondition(StorageConstants.METADATA_STAGING_ERROR);
         }
 
         @Override
         public FieldCondition visit(StagingSource stagingSource) {
-            return createInternalCondition(Storage.METADATA_STAGING_SOURCE);
+            return createInternalCondition(StorageConstants.METADATA_STAGING_SOURCE);
         }
 
         @Override
         public FieldCondition visit(StagingBlockKey stagingBlockKey) {
-            return createInternalCondition(Storage.METADATA_STAGING_BLOCK_KEY);
+            return createInternalCondition(StorageConstants.METADATA_STAGING_BLOCK_KEY);
         }
 
         @Override
         public FieldCondition visit(StagingHasTask stagingHasTask) {
-            return createInternalCondition(Storage.METADATA_STAGING_HAS_TASK);
+            return createInternalCondition(StorageConstants.METADATA_STAGING_HAS_TASK);
         }
 
         @Override

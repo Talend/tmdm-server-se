@@ -12,6 +12,7 @@
 package com.amalto.core.storage.hibernate;
 
 import com.amalto.core.storage.datasource.RDBMSDataSource;
+import com.amalto.core.storage.record.StorageConstants;
 import org.apache.commons.lang.StringUtils;
 import org.talend.mdm.commmon.metadata.*;
 import com.amalto.core.storage.Storage;
@@ -32,8 +33,8 @@ class UserTypeMappingRepository extends InternalRepository {
         if (database.isInstantiable() && !database.isFrozen()) {
             TypeMetadata longType = new SoftTypeRef(internalRepository, XMLConstants.W3C_XML_SCHEMA_NS_URI, Types.LONG, false);
             TypeMetadata stringType = new SoftTypeRef(internalRepository, XMLConstants.W3C_XML_SCHEMA_NS_URI, Types.STRING, false);
-            database.addField(new SimpleTypeFieldMetadata(database, false, false, true, Storage.METADATA_TIMESTAMP, longType, Collections.<String>emptyList(), Collections.<String>emptyList(), Collections.<String>emptyList(), StringUtils.EMPTY));
-            database.addField(new SimpleTypeFieldMetadata(database, false, false, false, Storage.METADATA_TASK_ID, stringType, Collections.<String>emptyList(), Collections.<String>emptyList(), Collections.<String>emptyList(), StringUtils.EMPTY));
+            database.addField(new SimpleTypeFieldMetadata(database, false, false, true, StorageConstants.METADATA_TIMESTAMP, longType, Collections.<String>emptyList(), Collections.<String>emptyList(), Collections.<String>emptyList(), StringUtils.EMPTY));
+            database.addField(new SimpleTypeFieldMetadata(database, false, false, false, StorageConstants.METADATA_TASK_ID, stringType, Collections.<String>emptyList(), Collections.<String>emptyList(), Collections.<String>emptyList(), StringUtils.EMPTY));
         }
         // Register mapping
         internalRepository.addTypeMetadata(typeMapping.getDatabase());

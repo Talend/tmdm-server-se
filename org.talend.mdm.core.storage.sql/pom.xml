@@ -64,6 +64,11 @@
         </dependency>
         <dependency>
             <groupId>org.talend.mdm</groupId>
+            <artifactId>org.talend.mdm.query</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.talend.mdm</groupId>
             <artifactId>org.talend.mdm.core</artifactId>
             <classifier>test</classifier>
             <version>${project.version}</version>

@@ -13,6 +13,7 @@ package com.amalto.core.storage.hibernate;
 
 import com.amalto.core.query.user.metadata.*;
 import com.amalto.core.storage.CloseableIterator;
+import com.amalto.core.storage.record.StorageConstants;
 import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.metadata.*;
 import com.amalto.core.query.user.*;
@@ -118,7 +119,7 @@ class IdQueryHandler extends AbstractQueryHandler {
                             firstCall = false;
                         }
                         DataRecord next = super.next();
-                        ComplexTypeMetadata explicitProjectionType = new ComplexTypeMetadataImpl(StringUtils.EMPTY, Storage.PROJECTION_TYPE, false);
+                        ComplexTypeMetadata explicitProjectionType = new ComplexTypeMetadataImpl(StringUtils.EMPTY, StorageConstants.PROJECTION_TYPE, false);
                         DataRecord nextRecord = new DataRecord(explicitProjectionType, next.getRecordMetadata());
                         ExplicitProjectionAdapter projectionAdapter = new ExplicitProjectionAdapter(next, explicitProjectionType, nextRecord);
                         for (TypedExpression selectedField : selectedFields) {
@@ -309,7 +310,7 @@ class IdQueryHandler extends AbstractQueryHandler {
         @Override
         public Void visit(StagingStatus stagingStatus) {
             FieldMetadata field = createField(stagingStatus);
-            Object o = next.getRecordMetadata().getRecordProperties().get(Storage.METADATA_STAGING_STATUS);
+            Object o = next.getRecordMetadata().getRecordProperties().get(StorageConstants.METADATA_STAGING_STATUS);
             nextRecord.set(field, o);
             return null;
         }
@@ -317,7 +318,7 @@ class IdQueryHandler extends AbstractQueryHandler {
         @Override
         public Void visit(StagingError stagingError) {
             FieldMetadata field = createField(stagingError);
-            Object o = next.getRecordMetadata().getRecordProperties().get(Storage.METADATA_STAGING_ERROR);
+            Object o = next.getRecordMetadata().getRecordProperties().get(StorageConstants.METADATA_STAGING_ERROR);
             nextRecord.set(field, o);
             return null;
         }
@@ -325,7 +326,7 @@ class IdQueryHandler extends AbstractQueryHandler {
         @Override
         public Void visit(StagingBlockKey stagingBlockKey) {
             FieldMetadata field = createField(stagingBlockKey);
-            Object o = next.getRecordMetadata().getRecordProperties().get(Storage.METADATA_STAGING_BLOCK_KEY);
+            Object o = next.getRecordMetadata().getRecordProperties().get(StorageConstants.METADATA_STAGING_BLOCK_KEY);
             nextRecord.set(field, o);
             return null;
         }
@@ -333,7 +334,7 @@ class IdQueryHandler extends AbstractQueryHandler {
         @Override
         public Void visit(StagingSource stagingSource) {
             FieldMetadata field = createField(stagingSource);
-            Object o = next.getRecordMetadata().getRecordProperties().get(Storage.METADATA_STAGING_SOURCE);
+            Object o = next.getRecordMetadata().getRecordProperties().get(StorageConstants.METADATA_STAGING_SOURCE);
             nextRecord.set(field, o);
             return null;
         }
@@ -341,7 +342,7 @@ class IdQueryHandler extends AbstractQueryHandler {
         @Override
         public Void visit(StagingHasTask stagingHasTask) {
             FieldMetadata field = createField(stagingHasTask);
-            Object o = next.getRecordMetadata().getRecordProperties().get(Storage.METADATA_STAGING_HAS_TASK);
+            Object o = next.getRecordMetadata().getRecordProperties().get(StorageConstants.METADATA_STAGING_HAS_TASK);
             nextRecord.set(field, o);
             return null;
         }

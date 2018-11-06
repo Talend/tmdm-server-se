@@ -20,6 +20,7 @@ import java.util.Set;
 
 import javax.xml.XMLConstants;
 
+import com.amalto.core.storage.record.StorageConstants;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -172,7 +173,7 @@ class ProjectionIterator implements CloseableIterator<DataRecord> {
         DataRecord record;
         try {
             final ComplexTypeMetadata explicitProjectionType = new ComplexTypeMetadataImpl(StringUtils.EMPTY,
-                    Storage.PROJECTION_TYPE, false);
+                    StorageConstants.PROJECTION_TYPE, false);
             record = new DataRecord(explicitProjectionType, UnsupportedDataRecordMetadata.INSTANCE);
             Object[] values;
             Object next = iterator.next();

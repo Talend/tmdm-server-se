@@ -10,74 +10,22 @@
 
 package com.amalto.core.storage.hibernate;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.StringTokenizer;
-
+import com.amalto.core.query.user.*;
+import com.amalto.core.query.user.metadata.*;
+import com.amalto.core.storage.StorageMetadataUtils;
+import com.amalto.core.storage.exception.FullTextQueryCompositeKeyException;
+import com.amalto.core.storage.exception.UnsupportedFullTextQueryException;
+import com.amalto.core.storage.record.StorageConstants;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
-import org.apache.lucene.search.BooleanClause;
-import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.NumericRangeQuery;
-import org.apache.lucene.search.PhraseQuery;
-import org.apache.lucene.search.PrefixQuery;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.TermQuery;
-import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
-import org.talend.mdm.commmon.metadata.ContainedComplexTypeMetadata;
-import org.talend.mdm.commmon.metadata.DefaultMetadataVisitor;
-import org.talend.mdm.commmon.metadata.EnumerationFieldMetadata;
-import org.talend.mdm.commmon.metadata.FieldMetadata;
-import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
-import org.talend.mdm.commmon.metadata.SimpleTypeFieldMetadata;
+import org.apache.lucene.search.*;
+import org.talend.mdm.commmon.metadata.*;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
 
-import com.amalto.core.query.user.Alias;
-import com.amalto.core.query.user.BigDecimalConstant;
-import com.amalto.core.query.user.BinaryLogicOperator;
-import com.amalto.core.query.user.BooleanConstant;
-import com.amalto.core.query.user.ByteConstant;
-import com.amalto.core.query.user.Compare;
-import com.amalto.core.query.user.DateConstant;
-import com.amalto.core.query.user.DateTimeConstant;
-import com.amalto.core.query.user.DoubleConstant;
-import com.amalto.core.query.user.Expression;
-import com.amalto.core.query.user.Field;
-import com.amalto.core.query.user.FieldFullText;
-import com.amalto.core.query.user.FloatConstant;
-import com.amalto.core.query.user.FullText;
-import com.amalto.core.query.user.IntegerConstant;
-import com.amalto.core.query.user.LongConstant;
-import com.amalto.core.query.user.Predicate;
-import com.amalto.core.query.user.Range;
-import com.amalto.core.query.user.ShortConstant;
-import com.amalto.core.query.user.StringConstant;
-import com.amalto.core.query.user.TimeConstant;
-import com.amalto.core.query.user.TypedExpression;
-import com.amalto.core.query.user.UnaryLogicOperator;
-import com.amalto.core.query.user.VisitorAdapter;
-import com.amalto.core.query.user.metadata.MetadataField;
-import com.amalto.core.query.user.metadata.StagingBlockKey;
-import com.amalto.core.query.user.metadata.StagingError;
-import com.amalto.core.query.user.metadata.StagingHasTask;
-import com.amalto.core.query.user.metadata.StagingSource;
-import com.amalto.core.query.user.metadata.StagingStatus;
-import com.amalto.core.query.user.metadata.TaskId;
-import com.amalto.core.query.user.metadata.Timestamp;
-import com.amalto.core.storage.Storage;
-import com.amalto.core.storage.StorageMetadataUtils;
-import com.amalto.core.storage.exception.FullTextQueryCompositeKeyException;
-import com.amalto.core.storage.exception.UnsupportedFullTextQueryException;
+import java.util.*;
 
 class LuceneQueryGenerator extends VisitorAdapter<Query> {
 
@@ -198,43 +146,43 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
 
     @Override
     public Query visit(Timestamp timestamp) {
-        currentFieldName = Storage.METADATA_TIMESTAMP;
+        currentFieldName = StorageConstants.METADATA_TIMESTAMP;
         return null;
     }
 
     @Override
     public Query visit(StagingStatus stagingStatus) {
-        currentFieldName = Storage.METADATA_STAGING_STATUS;
+        currentFieldName = StorageConstants.METADATA_STAGING_STATUS;
         return null;
     }
 
     @Override
     public Query visit(TaskId taskId) {
-        currentFieldName = Storage.METADATA_TASK_ID;
+        currentFieldName = StorageConstants.METADATA_TASK_ID;
         return null;
     }
 
     @Override
     public Query visit(StagingError stagingError) {
-        currentFieldName = Storage.METADATA_STAGING_ERROR;
+        currentFieldName = StorageConstants.METADATA_STAGING_ERROR;
         return null;
     }
 
     @Override
     public Query visit(StagingSource stagingSource) {
-        currentFieldName = Storage.METADATA_STAGING_SOURCE;
+        currentFieldName = StorageConstants.METADATA_STAGING_SOURCE;
         return null;
     }
 
     @Override
     public Query visit(StagingBlockKey stagingBlockKey) {
-        currentFieldName = Storage.METADATA_STAGING_BLOCK_KEY;
+        currentFieldName = StorageConstants.METADATA_STAGING_BLOCK_KEY;
         return null;
     }
 
     @Override
     public Query visit(StagingHasTask stagingHasTask) {
-        currentFieldName = Storage.METADATA_STAGING_HAS_TASK;
+        currentFieldName = StorageConstants.METADATA_STAGING_HAS_TASK;
         return null;
     }
 
@@ -368,8 +316,8 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
 
                 @Override
                 public Void visit(SimpleTypeFieldMetadata simpleField) {
-                    if (!Storage.METADATA_TIMESTAMP.equals(simpleField.getName())
-                            && !Storage.METADATA_TASK_ID.equals(simpleField.getName())) {
+                    if (!StorageConstants.METADATA_TIMESTAMP.equals(simpleField.getName())
+                            && !StorageConstants.METADATA_TASK_ID.equals(simpleField.getName())) {
                         if (StorageMetadataUtils.isValueSearchable(fullText.getValue(), simpleField) && isFieldSearchable(simpleField)) {
                             fieldsMap.put(prefix + simpleField.getName(), simpleField.isKey());
                         }

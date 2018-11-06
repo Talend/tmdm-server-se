@@ -11,8 +11,8 @@
 
 package com.amalto.core.storage.hibernate;
 
-import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.record.DataRecord;
+import com.amalto.core.storage.record.StorageConstants;
 import com.amalto.core.storage.record.metadata.DataRecordMetadata;
 import com.amalto.core.storage.record.metadata.UnsupportedDataRecordMetadata;
 import org.apache.commons.lang.NotImplementedException;
@@ -20,7 +20,7 @@ import org.hibernate.Session;
 import org.hibernate.collection.internal.PersistentList;
 import org.talend.mdm.commmon.metadata.*;
 
-import java.io.*;
+import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.util.*;
 
@@ -268,12 +268,12 @@ class SystemScatteredTypeMapping extends ScatteredTypeMapping {
 
     @Override
     public String getDatabaseTimestamp() {
-        return Storage.METADATA_TIMESTAMP;
+        return StorageConstants.METADATA_TIMESTAMP;
     }
 
     @Override
     public String getDatabaseTaskId() {
-        return Storage.METADATA_TASK_ID;
+        return StorageConstants.METADATA_TASK_ID;
     }
 
     // Returns actual contained type (in case in reference to hold contained record can have sub types).

@@ -226,16 +226,26 @@ public class StorageQueryTest extends StorageTestCase {
                         .read(repository,
                                 person,
                                 "<Person><id>4</id><score>200000.00</score><lastname>Leblanc</lastname><middlename>John</middlename><firstname>Julien</firstname><age>30</age><Status>Friend</Status></Person>"));
-        allRecords
-                .add(factory
-                        .read(repository,
-                                person,
-                                "<Person><id>5</id><score>140000.00</score><lastname>John</lastname><resume>[EN:apple][FR:pomme]</resume><middlename>Mike</middlename><firstname>Bill</firstname><addresses><address>[2&amp;2][true]</address><address>[1][false]</address></addresses><age>10</age><Status>Employee</Status><Available>true</Available></Person>"));
-        allRecords
-                .add(factory
-                        .read(repository,
-                                person,
-                                "<Person><id>6</id><score>150000.00</score><lastname>Eric</lastname><resume>[EN:jelle][FR:gelee]</resume><middlename>Mike</middlename><firstname>Binary</firstname><addresses><address>[2&amp;2][true]</address><address>[1][false]</address></addresses><age>10</age><Status>Employee</Status><Available>true</Available></Person>"));
+        // used id=(5,6) test multilingual field sort
+        allRecords.add(factory.read(repository, person,
+                "<Person><id>5</id><score>140000.00</score><lastname>John</lastname><resume>[EN:apple][FR:pomme]</resume><middlename>Mike</middlename><firstname>Bill</firstname><addresses><address>[2&amp;2][true]</address><address>[1][false]</address></addresses><age>10</age><Status>Employee</Status><Available>true</Available></Person>"));
+        allRecords.add(factory.read(repository, person,
+                "<Person><id>6</id><score>150000.00</score><lastname>Eric</lastname><resume>[EN:jelle][FR:gelee]</resume><middlename>Mike</middlename><firstname>Binary</firstname><addresses><address>[2&amp;2][true]</address><address>[1][false]</address></addresses><age>10</age><Status>Employee</Status><Available>true</Available></Person>"));
+        // used id = (7,8,9) test the multilingual field sort is same with normal string field in English language
+        allRecords.add(factory.read(repository, person,
+                "<Person><id>7</id><score>150000.00</score><lastname>Eric</lastname><resume>[EN:abdon][FR:convensation]</resume><middlename>abdon</middlename><firstname>Binary</firstname><addresses><address>[2&amp;2][true]</address><address>[1][false]</address></addresses><age>10</age><Status>Employee</Status><Available>true</Available></Person>"));
+        allRecords.add(factory.read(repository, person,
+                "<Person><id>8</id><score>150000.00</score><lastname>Eric</lastname><resume>[EN:mature][FR:tablet]</resume><middlename>mature</middlename><firstname>Binary</firstname><addresses><address>[2&amp;2][true]</address><address>[1][false]</address></addresses><age>10</age><Status>Employee</Status><Available>true</Available></Person>"));
+        allRecords.add(factory.read(repository, person,
+                "<Person><id>9</id><score>150000.00</score><lastname>Eric</lastname><resume>[EN:sandal][FR:facsimile]</resume><middlename>sandal</middlename><firstname>Binary</firstname><addresses><address>[2&amp;2][true]</address><address>[1][false]</address></addresses><age>10</age><Status>Employee</Status><Available>true</Available></Person>"));
+        // used id = (10,11,12) test the multilingual field sort is same with normal string field in Franch language
+        allRecords.add(factory.read(repository, person,
+                "<Person><id>10</id><score>150000.00</score><lastname>Eric</lastname><resume>[EN:abdon][FR:convensation]</resume><middlename>convensation</middlename><firstname>Binary</firstname><addresses><address>[2&amp;2][true]</address><address>[1][false]</address></addresses><age>10</age><Status>Employee</Status><Available>true</Available></Person>"));
+        allRecords.add(factory.read(repository, person,
+                "<Person><id>11</id><score>150000.00</score><lastname>Eric</lastname><resume>[EN:mature][FR:tablet]</resume><middlename>tablet</middlename><firstname>Binary</firstname><addresses><address>[2&amp;2][true]</address><address>[1][false]</address></addresses><age>10</age><Status>Employee</Status><Available>true</Available></Person>"));
+        allRecords.add(factory.read(repository, person,
+                "<Person><id>12</id><score>150000.00</score><lastname>Eric</lastname><resume>[EN:sandal][FR:facsimile]</resume><middlename>facsimile</middlename><firstname>Binary</firstname><addresses><address>[2&amp;2][true]</address><address>[1][false]</address></addresses><age>10</age><Status>Employee</Status><Available>true</Available></Person>"));
+
         allRecords.add(factory.read(repository, b, "<B><id>1</id><textB>TextB</textB></B>"));
         allRecords.add(factory.read(repository, d, "<D><id>2</id><textB>TextBD</textB><textD>TextDD</textD></D>"));
         allRecords.add(factory.read(repository, a, "<A><id>1</id><textA>TextA</textA><nestedB><text>Text1</text></nestedB></A>"));
@@ -576,7 +586,7 @@ public class StorageQueryTest extends StorageTestCase {
         UserQueryBuilder qb = from(person).isa(person);
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(6, results.getCount());
+            assertEquals(12, results.getCount());
         } finally {
             results.close();
         }
@@ -650,8 +660,8 @@ public class StorageQueryTest extends StorageTestCase {
 
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(6, results.getSize());
-            assertEquals(6, results.getCount());
+            assertEquals(12, results.getSize());
+            assertEquals(12, results.getCount());
             for (DataRecord result : results) {
                 assertNotNull(result.get(keyField));
             }
@@ -846,8 +856,8 @@ public class StorageQueryTest extends StorageTestCase {
 
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(5, results.getSize());
-            assertEquals(5, results.getCount());
+            assertEquals(11, results.getSize());
+            assertEquals(11, results.getCount());
             for (DataRecord result : results) {
                 assertNotNull(result.get(keyField));
             }
@@ -876,11 +886,11 @@ public class StorageQueryTest extends StorageTestCase {
     }
 
     public void testOrderByCompositeKey() throws Exception {
-        // Test ASC direction
+        FieldMetadata idField = person.getField("id");
         FieldMetadata personLastName = person.getField("lastname");
         FieldMetadata personId = person.getField("id");
-        UserQueryBuilder qb = from(person).orderBy(personLastName, OrderBy.Direction.ASC).orderBy(personId,
-                OrderBy.Direction.DESC);
+        UserQueryBuilder qb = from(person).where(in(idField, getPersonIdList(1, 6))).orderBy(personLastName, OrderBy.Direction.ASC)
+                .orderBy(personId, OrderBy.Direction.DESC);
         String[] ascExpectedValues = { "Dupond", "Dupont", "Eric", "John", "Leblanc", "Leblanc" };
 
         StorageResults results = storage.fetch(qb.getSelect());
@@ -944,9 +954,9 @@ public class StorageQueryTest extends StorageTestCase {
     }
 
     public void testOrderByPK() throws Exception {
-        // Test ASC direction
+        FieldMetadata idField = person.getField("id");
         FieldMetadata personLastName = person.getField("lastname");
-        UserQueryBuilder qb = from(person).select(personLastName).orderBy(person.getField("id"), OrderBy.Direction.ASC);
+        UserQueryBuilder qb = from(person).select(personLastName).where(in(idField, getPersonIdList(1, 6))).orderBy(person.getField("id"), OrderBy.Direction.ASC);
         String[] ascExpectedValues = { "Dupond", "Dupont", "Leblanc", "Leblanc", "John", "Eric"};
 
         StorageResults results = storage.fetch(qb.getSelect());
@@ -976,9 +986,9 @@ public class StorageQueryTest extends StorageTestCase {
     }
 
     public void testOrderByASC() throws Exception {
-        // Test ASC direction
+        FieldMetadata idField = person.getField("id");
         FieldMetadata personLastName = person.getField("lastname");
-        UserQueryBuilder qb = from(person).orderBy(personLastName, OrderBy.Direction.ASC);
+        UserQueryBuilder qb = from(person).where(in(idField, getPersonIdList(1, 6))).orderBy(personLastName, OrderBy.Direction.ASC);
         String[] ascExpectedValues = { "Dupond", "Dupont", "Eric", "John", "Leblanc", "Leblanc" };
 
         StorageResults results = storage.fetch(qb.getSelect());
@@ -997,8 +1007,9 @@ public class StorageQueryTest extends StorageTestCase {
     }
 
     public void testOrderByDESC() throws Exception {
+        FieldMetadata idField = person.getField("id");
         FieldMetadata personLastName = person.getField("lastname");
-        UserQueryBuilder qb = from(person).orderBy(personLastName, OrderBy.Direction.DESC);
+        UserQueryBuilder qb = from(person).where(in(idField, getPersonIdList(1, 6))).orderBy(personLastName, OrderBy.Direction.DESC);
         String[] descExpectedValues = { "Leblanc", "Leblanc", "John", "Eric", "Dupont", "Dupond" };
 
         StorageResults results = storage.fetch(qb.getSelect());
@@ -1020,8 +1031,8 @@ public class StorageQueryTest extends StorageTestCase {
         UserQueryBuilder qb = from(person);
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(6, results.getSize());
-            assertEquals(6, results.getCount());
+            assertEquals(12, results.getSize());
+            assertEquals(12, results.getCount());
         } finally {
             results.close();
         }
@@ -1128,8 +1139,8 @@ public class StorageQueryTest extends StorageTestCase {
         UserQueryBuilder qb = from(person).where(neq(person.getField("lastname"), "Dupond"));
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(5, results.getSize());
-            assertEquals(5, results.getCount());
+            assertEquals(11, results.getSize());
+            assertEquals(11, results.getCount());
         } finally {
             results.close();
         }
@@ -1181,8 +1192,8 @@ public class StorageQueryTest extends StorageTestCase {
         UserQueryBuilder qb = from(person).where(gt(person.getField("score"), "100000"));
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(6, results.getSize());
-            assertEquals(6, results.getCount());
+            assertEquals(12, results.getSize());
+            assertEquals(12, results.getCount());
         } finally {
             results.close();
         }
@@ -1192,8 +1203,8 @@ public class StorageQueryTest extends StorageTestCase {
         UserQueryBuilder qb = from(person).where(lt(person.getField("age"), "20"));
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(3, results.getSize());
-            assertEquals(3, results.getCount());
+            assertEquals(9, results.getSize());
+            assertEquals(9, results.getCount());
         } finally {
             results.close();
         }
@@ -1225,8 +1236,8 @@ public class StorageQueryTest extends StorageTestCase {
         UserQueryBuilder qb = from(person).where(lt(person.getField("score"), "1000000"));
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(6, results.getSize());
-            assertEquals(6, results.getCount());
+            assertEquals(12, results.getSize());
+            assertEquals(12, results.getCount());
         } finally {
             results.close();
         }
@@ -1236,8 +1247,8 @@ public class StorageQueryTest extends StorageTestCase {
         UserQueryBuilder qb = from(person).where(gte(person.getField("age"), "10"));
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(6, results.getSize());
-            assertEquals(6, results.getCount());
+            assertEquals(12, results.getSize());
+            assertEquals(12, results.getCount());
         } finally {
             results.close();
         }
@@ -1247,8 +1258,8 @@ public class StorageQueryTest extends StorageTestCase {
         UserQueryBuilder qb = from(person).where(gte(person.getField("age"), "10")).where(lte(person.getField("age"), "30"));
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(6, results.getSize());
-            assertEquals(6, results.getCount());
+            assertEquals(12, results.getSize());
+            assertEquals(12, results.getCount());
         } finally {
             results.close();
         }
@@ -1291,8 +1302,8 @@ public class StorageQueryTest extends StorageTestCase {
         UserQueryBuilder qb = from(person).where(lte(person.getField("age"), "20"));
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(4, results.getSize());
-            assertEquals(4, results.getCount());
+            assertEquals(10, results.getSize());
+            assertEquals(10, results.getCount());
         } finally {
             results.close();
         }
@@ -1324,8 +1335,8 @@ public class StorageQueryTest extends StorageTestCase {
         UserQueryBuilder qb = from(person).where(lte(person.getField("score"), "170000"));
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(4, results.getSize());
-            assertEquals(4, results.getCount());
+            assertEquals(10, results.getSize());
+            assertEquals(10, results.getCount());
         } finally {
             results.close();
         }
@@ -1495,8 +1506,8 @@ public class StorageQueryTest extends StorageTestCase {
                 .join(person.getField("addresses/address"));
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(10, results.getSize());
-            assertEquals(10, results.getCount());
+            assertEquals(22, results.getSize());
+            assertEquals(22, results.getCount());
         } finally {
             results.close();
         }
@@ -1547,8 +1558,8 @@ public class StorageQueryTest extends StorageTestCase {
                 .join(person.getField("addresses/address"));
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(10, results.getSize());
-            assertEquals(10, results.getCount());
+            assertEquals(22, results.getSize());
+            assertEquals(22, results.getCount());
         } finally {
             results.close();
         }
@@ -1599,8 +1610,8 @@ public class StorageQueryTest extends StorageTestCase {
         StorageResults results = storage.fetch(qb.getSelect());
 
         try {
-            assertEquals(10, results.getSize());
-            assertEquals(10, results.getCount());
+            assertEquals(22, results.getSize());
+            assertEquals(22, results.getCount());
         } finally {
             results.close();
         }
@@ -1624,7 +1635,7 @@ public class StorageQueryTest extends StorageTestCase {
         StorageResults results = storage.fetch(qb.getSelect());
         try {
             assertEquals(1, results.getSize());
-            assertEquals(6, results.getCount());
+            assertEquals(12, results.getCount());
             for (DataRecord result : results) {
                 assertNotNull(result.get("id"));
             }
@@ -1634,26 +1645,26 @@ public class StorageQueryTest extends StorageTestCase {
         qb = from(person).limit(-1);
         results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(6, results.getSize());
-            assertEquals(6, results.getCount());
+            assertEquals(12, results.getSize());
+            assertEquals(12, results.getCount());
             int actualCount = 0;
             for (DataRecord result : results) {
                 actualCount++;
             }
-            assertEquals(6, actualCount);
+            assertEquals(12, actualCount);
         } finally {
             results.close();
         }
         qb = from(person);
         results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(6, results.getSize());
-            assertEquals(6, results.getCount());
+            assertEquals(12, results.getSize());
+            assertEquals(12, results.getCount());
             int actualCount = 0;
             for (DataRecord result : results) {
                 actualCount++;
             }
-            assertEquals(6, actualCount);
+            assertEquals(12, actualCount);
         } finally {
             results.close();
         }
@@ -1661,7 +1672,7 @@ public class StorageQueryTest extends StorageTestCase {
         results = storage.fetch(qb.getSelect());
         try {
             assertEquals(1, results.getSize());
-            assertEquals(6, results.getCount());
+            assertEquals(12, results.getCount());
         } finally {
             results.close();
         }
@@ -1669,15 +1680,15 @@ public class StorageQueryTest extends StorageTestCase {
         results = storage.fetch(qb.getSelect());
         try {
             assertEquals(1, results.getSize());
-            assertEquals(6, results.getCount());
+            assertEquals(12, results.getCount());
         } finally {
             results.close();
         }
         qb = from(person).selectId(person).limit(-1);
         results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(6, results.getSize());
-            assertEquals(6, results.getCount());
+            assertEquals(12, results.getSize());
+            assertEquals(12, results.getCount());
         } finally {
             results.close();
         }
@@ -1774,7 +1785,7 @@ public class StorageQueryTest extends StorageTestCase {
 
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(6, results.getCount());
+            assertEquals(12, results.getCount());
             for (DataRecord result : results) {
                 assertNotNull(result.get("timestamp"));
                 assertNull(result.get("taskid"));
@@ -2020,7 +2031,7 @@ public class StorageQueryTest extends StorageTestCase {
         UserQueryBuilder qb = from(person).selectId(person).where(lte(person.getField("id"), person.getField("score")));
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(6, results.getCount());
+            assertEquals(12, results.getCount());
         } finally {
             results.close();
         }
@@ -2120,7 +2131,7 @@ public class StorageQueryTest extends StorageTestCase {
                 and(gte(timestamp(), "0"), lte(timestamp(), String.valueOf(System.currentTimeMillis()))));
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(6, results.getCount());
+            assertEquals(12, results.getCount());
         } finally {
             results.close();
         }
@@ -2132,7 +2143,7 @@ public class StorageQueryTest extends StorageTestCase {
                         eq(person.getField("id"), "1")));
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(6, results.getCount());
+            assertEquals(12, results.getCount());
         } finally {
             results.close();
         }
@@ -2589,8 +2600,8 @@ public class StorageQueryTest extends StorageTestCase {
     public void testNativeQueryWithReturn() throws Exception {
         UserQueryBuilder qb = from("SELECT * FROM PERSON;");
         StorageResults results = storage.fetch(qb.getExpression());
-        assertEquals(6, results.getCount());
-        assertEquals(6, results.getSize());
+        assertEquals(12, results.getCount());
+        assertEquals(12, results.getSize());
         for (DataRecord result : results) {
             assertNotNull(result.get("col0") != null);
         }
@@ -2615,7 +2626,7 @@ public class StorageQueryTest extends StorageTestCase {
         qb = from(person).where(eq(person.getField("firstname"), "My SQL modified firstname"));
         results = storage.fetch(qb.getExpression());
         try {
-            assertEquals(6, results.getCount());
+            assertEquals(12, results.getCount());
         } finally {
             results.close();
         }
@@ -2662,26 +2673,173 @@ public class StorageQueryTest extends StorageTestCase {
     }
 
     public void testMultiLingualSearchSort() throws Exception {
+        /**
+         * 1. Sort "ASC" on multilingual field of "resume" with "EN" value, expected results as bellow:
+         * id=7 resume=[EN:abdon][FR:convensation]
+         * id=5 resume=[EN:apple][FR:pomme]
+         * id=6 resume=[EN:jelle][FR:gelee]
+         * id=8 resume=[EN:mature][FR:tablet]
+         * id=9 resume=[EN:sandal][FR:facsimile]
+         */
         OrderBy.SortLanguage.set("EN");
-        UserQueryBuilder qb = from(person).select(person.getField("id")).select(person.getField("resume"))
-                .orderBy(person.getField("resume"), Direction.ASC);
+        List<String> idList = getPersonIdList(5, 9);
+        FieldMetadata idField = person.getField("id");
+        FieldMetadata resumeField = person.getField("resume");
+        FieldMetadata middlenameField = person.getField("middlename");
+        UserQueryBuilder qb = from(person).select(idField).select(resumeField).where(in(idField, idList))
+                .orderBy(resumeField, Direction.ASC);
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(6, results.getCount());
+            assertEquals(5, results.getCount());
             int i = 1;
             for (DataRecord result : results) {
                 if (i == 1) {
-                    assertEquals("2", result.get(person.getField("id")));
+                    assertEquals("7", result.get(idField));
                 } else if (i == 2) {
-                    assertEquals("3", result.get(person.getField("id")));
+                    assertEquals("5", result.get(idField));
                 } else if (i == 3) {
-                    assertEquals("4", result.get(person.getField("id")));
+                    assertEquals("6", result.get(idField));
                 } else if (i == 4) {
-                    assertEquals("5", result.get(person.getField("id")));
+                    assertEquals("8", result.get(idField));
                 } else if (i == 5) {
-                    assertEquals("6", result.get(person.getField("id")));
-                } else if (i == 6) {
-                    assertEquals("1", result.get(person.getField("id")));
+                    assertEquals("9", result.get(idField));
+                }
+                i++;
+            }
+        } finally {
+            results.close();
+            OrderBy.SortLanguage.remove();
+        }
+
+        /**
+         * 2. Sort "DESC" on multilingual field of "resume" with "EN" value, expected results as bellow:
+         * id=9 resume=[EN:sandal][FR:facsimile]
+         * id=8 resume=[EN:mature][FR:tablet]
+         * id=6 resume=[EN:jelle][FR:gelee]
+         * id=5 resume=[EN:apple][FR:pomme]
+         * id=7 resume=[EN:abdon][FR:convensation]
+         */
+        OrderBy.SortLanguage.set("EN");
+        qb = from(person).select(resumeField).select(idField).where(in(idField, idList))
+                .orderBy(resumeField, Direction.DESC);
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(5, results.getCount());
+            int i = 1;
+            for (DataRecord result : results) {
+                if (i == 1) {
+                    assertEquals("9", result.get(idField));
+                } else if (i == 2) {
+                    assertEquals("8", result.get(idField));
+                } else if (i == 3) {
+                    assertEquals("6", result.get(idField));
+                } else if (i == 4) {
+                    assertEquals("5", result.get(idField));
+                } else if (i == 5) {
+                    assertEquals("7", result.get(idField));
+                }
+                i++;
+            }
+        } finally {
+            results.close();
+            OrderBy.SortLanguage.remove();
+        }
+
+        /**
+         * 3. Sort "ASC" on multilingual field of "resume" with "FR" value, expected results as bellow:
+         * id=7 resume=[EN:abdon][FR:convensation]
+         * id=9 resume=[EN:sandal][FR:facsimile]
+         * id=6 resume=[EN:jelle][FR:gelee]
+         * id=5 resume=[EN:apple][FR:pomme]
+         * id=8 resume=[EN:mature][FR:tablet]
+         */
+        OrderBy.SortLanguage.set("FR");
+        qb = from(person).select(resumeField).select(idField).where(in(idField, idList))
+                .orderBy(resumeField, Direction.ASC);
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(5, results.getCount());
+            int i = 1;
+            for (DataRecord result : results) {
+                if (i == 1) {
+                    assertEquals("7", result.get(idField));
+                } else if (i == 2) {
+                    assertEquals("9", result.get(idField));
+                } else if (i == 3) {
+                    assertEquals("6", result.get(idField));
+                } else if (i == 4) {
+                    assertEquals("5", result.get(idField));
+                } else if (i == 5) {
+                    assertEquals("8", result.get(idField));
+                }
+                i++;
+            }
+        } finally {
+            results.close();
+            OrderBy.SortLanguage.remove();
+        }
+
+        /**
+         * 4. Sort "DESC" on multilingual field of "resume" with "FR" value, expected results as bellow:
+         * id=8 resume=[EN:mature][FR:tablet]
+         * id=5 resume=[EN:apple][FR:pomme]
+         * id=6 resume=[EN:jelle][FR:gelee]
+         * id=9 resume=[EN:sandal][FR:facsimile]
+         * id=7 resume=[EN:abdon][FR:convensation]
+         */
+        OrderBy.SortLanguage.set("FR");
+        qb = from(person).select(resumeField).select(idField).where(in(idField, idList))
+                .orderBy(resumeField, Direction.DESC);
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(5, results.getCount());
+            int i = 1;
+            for (DataRecord result : results) {
+                if (i == 1) {
+                    assertEquals("8", result.get(idField));
+                } else if (i == 2) {
+                    assertEquals("5", result.get(idField));
+                } else if (i == 3) {
+                    assertEquals("6", result.get(idField));
+                } else if (i == 4) {
+                    assertEquals("9", result.get(idField));
+                } else if (i == 5) {
+                    assertEquals("7", result.get(idField));
+                }
+                i++;
+            }
+        } finally {
+            results.close();
+            OrderBy.SortLanguage.remove();
+        }
+
+        /**
+         * 5. English value of multilingual field 'resume' is same with ordinary field 'middlename',
+         *    Sort "DESC" on multilingual field of "resume" with "EN" value, and Sort "DESC" on ordinary field 'middlename', expected results as bellow:
+         * id=7 resume=[EN:abdon][FR:convensation], middlename=abdon
+         * id=8 resume=[EN:mature][FR:tablet], middlename=mature
+         * id=9 resume=[EN:sandal][FR:facsimile], middlename=sandal
+         */
+        idList.clear();
+        idList = getPersonIdList(7, 9);
+
+        OrderBy.SortLanguage.set("EN");
+        qb = from(person).select(resumeField).select(idField).where(in(idField, idList))
+                .orderBy(resumeField, Direction.DESC);
+        results = storage.fetch(qb.getSelect());
+        List<String> sortByResumeFieldResult = new ArrayList<>();
+        List<String> sortByMiddleNameFieldResult = new ArrayList<>();
+        try {
+            assertEquals(3, results.getCount());
+            int i = 1;
+            for (DataRecord result : results) {
+                sortByResumeFieldResult.add(result.get(idField).toString());
+                if (i == 1) {
+                    assertEquals("9", result.get(idField));
+                } else if (i == 2) {
+                    assertEquals("8", result.get(idField));
+                } else if (i == 3) {
+                    assertEquals("7", result.get(idField));
                 }
                 i++;
             }
@@ -2691,25 +2849,59 @@ public class StorageQueryTest extends StorageTestCase {
         }
 
         OrderBy.SortLanguage.set("EN");
-        qb = from(person).select(person.getField("resume")).select(person.getField("id"))
-                .orderBy(person.getField("resume"), Direction.DESC);
+        qb = from(person).select(resumeField).select(idField).where(in(idField, idList))
+                .orderBy(middlenameField, Direction.DESC);
         results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(6, results.getCount());
+            assertEquals(3, results.getCount());
             int i = 1;
             for (DataRecord result : results) {
+                sortByMiddleNameFieldResult.add(result.get(idField).toString());
                 if (i == 1) {
-                    assertEquals("1", result.get(person.getField("id")));
+                    assertEquals("9", result.get(idField));
                 } else if (i == 2) {
-                    assertEquals("6", result.get(person.getField("id")));
+                    assertEquals("8", result.get(idField));
                 } else if (i == 3) {
-                    assertEquals("5", result.get(person.getField("id")));
-                } else if (i == 4) {
-                    assertEquals("2", result.get(person.getField("id")));
-                } else if (i == 5) {
-                    assertEquals("3", result.get(person.getField("id")));
-                } else if (i == 6) {
-                    assertEquals("4", result.get(person.getField("id")));
+                    assertEquals("7", result.get(idField));
+                }
+                i++;
+            }
+        } finally {
+            results.close();
+            OrderBy.SortLanguage.remove();
+        }
+        assertEquals(sortByResumeFieldResult.size(), sortByMiddleNameFieldResult.size());
+        assertEquals(sortByResumeFieldResult.get(0), sortByMiddleNameFieldResult.get(0));
+        assertEquals(sortByResumeFieldResult.get(1), sortByMiddleNameFieldResult.get(1));
+        assertEquals(sortByResumeFieldResult.get(2), sortByMiddleNameFieldResult.get(2));
+
+        /**
+         * 6. Franch value of multilingual field 'resume' is same with ordinary field 'middlename',
+         *    Sort "DESC" on multilingual field of "resume" with "FR" value, and Sort "DESC" on ordinary field 'middlename', expected results as bellow:
+         * id=10 resume=[EN:abdon][FR:convensation], middlename=convensation
+         * id=11 resume=[EN:mature][FR:tablet], middlename=tablet
+         * id=12 resume=[EN:sandal][FR:facsimile], middlename=facsimile
+         */
+        idList.clear();
+        idList = getPersonIdList(10, 12);
+
+        OrderBy.SortLanguage.set("FR");
+        qb = from(person).select(resumeField).select(idField).where(in(idField, idList))
+                .orderBy(resumeField, Direction.DESC);
+        results = storage.fetch(qb.getSelect());
+        sortByResumeFieldResult = new ArrayList<>();
+        sortByMiddleNameFieldResult = new ArrayList<>();
+        try {
+            assertEquals(3, results.getCount());
+            int i = 1;
+            for (DataRecord result : results) {
+                sortByResumeFieldResult.add(result.get(idField).toString());
+                if (i == 1) {
+                    assertEquals("11", result.get(idField));
+                } else if (i == 2) {
+                    assertEquals("12", result.get(idField));
+                } else if (i == 3) {
+                    assertEquals("10", result.get(idField));
                 }
                 i++;
             }
@@ -2719,26 +2911,20 @@ public class StorageQueryTest extends StorageTestCase {
         }
 
         OrderBy.SortLanguage.set("FR");
-        qb = from(person).select(person.getField("resume")).select(person.getField("id"))
-                .orderBy(person.getField("resume"), Direction.ASC);
+        qb = from(person).select(resumeField).select(idField).where(in(idField, idList))
+                .orderBy(middlenameField, Direction.DESC);
         results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(6, results.getCount());
-            assertEquals(6, results.getCount());
+            assertEquals(3, results.getCount());
             int i = 1;
             for (DataRecord result : results) {
+                sortByMiddleNameFieldResult.add(result.get(idField).toString());
                 if (i == 1) {
-                    assertEquals("2", result.get(person.getField("id")));
+                    assertEquals("11", result.get(idField));
                 } else if (i == 2) {
-                    assertEquals("3", result.get(person.getField("id")));
+                    assertEquals("12", result.get(idField));
                 } else if (i == 3) {
-                    assertEquals("4", result.get(person.getField("id")));
-                } else if (i == 4) {
-                    assertEquals("6", result.get(person.getField("id")));
-                } else if (i == 5) {
-                    assertEquals("1", result.get(person.getField("id")));
-                } else if (i == 6) {
-                    assertEquals("5", result.get(person.getField("id")));
+                    assertEquals("10", result.get(idField));
                 }
                 i++;
             }
@@ -2746,34 +2932,10 @@ public class StorageQueryTest extends StorageTestCase {
             results.close();
             OrderBy.SortLanguage.remove();
         }
-
-        OrderBy.SortLanguage.set("FR");
-        qb = from(person).select(person.getField("resume")).select(person.getField("id"))
-                .orderBy(person.getField("resume"), Direction.DESC);
-        results = storage.fetch(qb.getSelect());
-        try {
-            assertEquals(6, results.getCount());
-            int i = 1;
-            for (DataRecord result : results) {
-                if (i == 1) {
-                    assertEquals("5", result.get(person.getField("id")));
-                } else if (i == 2) {
-                    assertEquals("1", result.get(person.getField("id")));
-                } else if (i == 3) {
-                    assertEquals("6", result.get(person.getField("id")));
-                } else if (i == 4) {
-                    assertEquals("2", result.get(person.getField("id")));
-                } else if (i == 5) {
-                    assertEquals("3", result.get(person.getField("id")));
-                } else if (i == 6) {
-                    assertEquals("4", result.get(person.getField("id")));
-                }
-                i++;
-            }
-        } finally {
-            results.close();
-            OrderBy.SortLanguage.remove();
-        }
+        assertEquals(sortByResumeFieldResult.size(), sortByMiddleNameFieldResult.size());
+        assertEquals(sortByResumeFieldResult.get(0), sortByMiddleNameFieldResult.get(0));
+        assertEquals(sortByResumeFieldResult.get(1), sortByMiddleNameFieldResult.get(1));
+        assertEquals(sortByResumeFieldResult.get(2), sortByMiddleNameFieldResult.get(2));
     }
 
     public void testSortOnXPath() throws Exception {
@@ -2782,7 +2944,7 @@ public class StorageQueryTest extends StorageTestCase {
         qb.orderBy(sortField, OrderBy.Direction.DESC);
 
         StorageResults storageResults = storage.fetch(qb.getSelect());
-        String[] expected = { "6", "5", "4", "3", "2", "1" };
+        String[] expected = { "9","8", "7", "6", "5", "4", "3", "2", "12", "11", "10", "1" };
         int i = 0;
         for (DataRecord result : storageResults) {
             assertEquals(expected[i++], result.get("id"));
@@ -4154,7 +4316,7 @@ public class StorageQueryTest extends StorageTestCase {
         try {
             for (DataRecord result : results) {
                 assertNotNull(result.get("count"));
-                assertEquals(6l, result.get("count"));
+                assertEquals(12l, result.get("count"));
             }
         } finally {
             results.close();
@@ -4389,8 +4551,10 @@ public class StorageQueryTest extends StorageTestCase {
 
     public void testOrderByExpression() throws Exception {
         // Most common to least common order (DESC).
-        UserQueryBuilder qb = from(person).select(person.getField("firstname")).orderBy(count(person.getField("firstname")),
-                OrderBy.Direction.DESC);
+        List<String> idList = getPersonIdList(1, 6);
+        FieldMetadata idField = person.getField("id");
+        UserQueryBuilder qb = from(person).select(person.getField("firstname")).where(in(idField, idList))
+                .orderBy(count(person.getField("firstname")), OrderBy.Direction.DESC);
         storage.begin();
         StorageResults records = storage.fetch(qb.getSelect());
         try {
@@ -4408,7 +4572,7 @@ public class StorageQueryTest extends StorageTestCase {
         }
         // Least common to most common order (ASC).
         storage.begin();
-        qb = from(person).select(person.getField("firstname"))
+        qb = from(person).select(person.getField("firstname")).where(in(idField, idList))
                 .orderBy(count(person.getField("firstname")), OrderBy.Direction.ASC);
         records = storage.fetch(qb.getSelect());
         try {
@@ -5677,6 +5841,14 @@ public class StorageQueryTest extends StorageTestCase {
             assertEquals("e37e995a-1389-4ad9-a37b-9a4b87f8bbe1", record.get("PrincipalLegalEntityUuid"));
             assertEquals("26160961-e4a7-438b-8c92-cae8340d8664", record.get("SalesAgencyLegalEntityUuid"));
         }
+    }
+
+    private List<String> getPersonIdList(int from, int end) {
+        List<String> idList = new ArrayList<>();
+        for (int i = from; i <= end; i++) {
+            idList.add(i + "");
+        }
+        return idList;
     }
 
     private static class TestUserDelegator implements SecuredStorage.UserDelegator {

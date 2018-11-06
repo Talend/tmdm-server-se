@@ -352,7 +352,6 @@
         <dependency>
             <groupId>org.talend.mdm</groupId>
             <artifactId>org.talend.mdm.query</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <!-- 3rd dependencies -->
         <dependency>

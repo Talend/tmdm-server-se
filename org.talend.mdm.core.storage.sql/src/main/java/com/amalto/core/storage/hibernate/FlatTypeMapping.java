@@ -21,6 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import com.amalto.core.storage.record.StorageConstants;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
@@ -367,12 +368,12 @@ class FlatTypeMapping extends TypeMapping {
 
     @Override
     public String getDatabaseTimestamp() {
-        return Storage.METADATA_TIMESTAMP;
+        return StorageConstants.METADATA_TIMESTAMP;
     }
 
     @Override
     public String getDatabaseTaskId() {
-        return Storage.METADATA_TASK_ID;
+        return StorageConstants.METADATA_TASK_ID;
     }
 
     private Object createReferencedObject(Session session, ComplexTypeMetadata referencedType, Class<?> referencedClass, Object referencedIdValue) throws InstantiationException, IllegalAccessException {

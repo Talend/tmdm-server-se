@@ -23,7 +23,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.*;
 
-public class CommonStorageMetaDataUtils {
+public class MetaDataUtils {
 
     /**
      * <p>

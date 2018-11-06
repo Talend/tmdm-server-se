@@ -84,7 +84,7 @@ public class DataRecord {
         int i = 0;
         while (tokenizer.hasMoreTokens()) {
             String currentKeyValue = tokenizer.nextToken().substring(1);
-            keyValues[i] = CommonStorageMetaDataUtils.convert(currentKeyValue, keyFields[i]);
+            keyValues[i] = MetaDataUtils.convert(currentKeyValue, keyFields[i]);
             i++;
         }
         return keyValues;
@@ -130,7 +130,7 @@ public class DataRecord {
             } else if (recordMetadata.getRecordProperties().containsKey(field.getName())) { // Try to read from metadata
                 return recordMetadata.getRecordProperties().get(field.getName());
             }
-            Iterator<FieldMetadata> path = CommonStorageMetaDataUtils.path(type, field, false).iterator();
+            Iterator<FieldMetadata> path = MetaDataUtils.path(type, field, false).iterator();
             if (!path.hasNext()) {
                 Object value = get(field.getName());
                 if (value != null) { // Support explicit projection type fields

@@ -14,7 +14,7 @@ import com.amalto.core.query.user.ConstantExpression;
 import com.amalto.core.query.user.DateConstant;
 import com.amalto.core.query.user.DateTimeConstant;
 import com.amalto.core.query.user.TimeConstant;
-import com.amalto.core.storage.record.CommonStorageMetaDataUtils;
+import com.amalto.core.storage.record.MetaDataUtils;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.record.metadata.UnsupportedDataRecordMetadata;
 import org.apache.commons.collections.CollectionUtils;
@@ -33,7 +33,7 @@ import java.util.*;
  * Similar to {@link org.talend.mdm.commmon.metadata.MetadataUtils} but with utility methods for use of metadata
  * information in {@link com.amalto.core.storage.Storage} API.
  */
-public class StorageMetadataUtils extends CommonStorageMetaDataUtils {
+public class StorageMetadataUtils extends MetaDataUtils {
 
     private static final Logger LOGGER = Logger.getLogger(StorageMetadataUtils.class);
 

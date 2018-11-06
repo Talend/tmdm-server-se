@@ -11,7 +11,7 @@
 package com.amalto.core.query.user;
 
 import com.amalto.core.query.user.metadata.MetadataField;
-import com.amalto.core.storage.record.CommonStorageMetaDataUtils;
+import com.amalto.core.storage.record.MetaDataUtils;
 import com.amalto.core.util.FieldNotFoundException;
 import com.amalto.xmlserver.interfaces.*;
 import org.apache.commons.lang.NotImplementedException;
@@ -37,7 +37,6 @@ public class UserQueryHelper {
     private UserQueryHelper() {
     }
 
-    //TODO : yvinqueur : To delete, legacy
     public static Condition buildCondition(UserQueryBuilder queryBuilder, IWhereItem whereItem, MetadataRepository repository) {
         if (whereItem == null) {
             return TRUE;
@@ -153,7 +152,7 @@ public class UserQueryHelper {
                         boolean isFk = field instanceof Field
                                 && ((Field) field).getFieldMetadata() instanceof ReferenceFieldMetadata;
                         if (!isFk
-                                && (field instanceof Field && !CommonStorageMetaDataUtils.isValueAssignable(value,
+                                && (field instanceof Field && !MetaDataUtils.isValueAssignable(value,
                                         ((Field) field).getFieldMetadata())) && !WhereCondition.EMPTY_NULL.equals(operator)) {
                             LOGGER.warn("Skip '" + leftFieldName + "' because it can't accept value '" + value + "'");
                             continue;

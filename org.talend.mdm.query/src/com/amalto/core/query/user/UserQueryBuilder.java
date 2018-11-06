@@ -14,7 +14,7 @@ package com.amalto.core.query.user;
 import com.amalto.core.query.user.metadata.MetadataField;
 import com.amalto.core.query.user.metadata.TaskId;
 import com.amalto.core.query.user.metadata.Timestamp;
-import com.amalto.core.storage.record.CommonStorageMetaDataUtils;
+import com.amalto.core.storage.record.MetaDataUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang.NotImplementedException;
@@ -190,7 +190,7 @@ public class UserQueryBuilder {
     public static Condition eq(FieldMetadata field, String constant) {
         assertNullField(field);
         Field userField = new Field(field);
-        if (CommonStorageMetaDataUtils.isValueAssignable(constant, field)) {
+        if (MetaDataUtils.isValueAssignable(constant, field)) {
             return eq(userField, constant);
         } else {
             return UserQueryHelper.FALSE;
@@ -205,7 +205,7 @@ public class UserQueryBuilder {
             return isNull(field);
         }
         assertValueConditionArguments(field, constant);
-        if (!CommonStorageMetaDataUtils.isValueAssignable(constant, field.getFieldMetadata())) {
+        if (!MetaDataUtils.isValueAssignable(constant, field.getFieldMetadata())) {
             return UserQueryHelper.FALSE;
         }
         if (field.getFieldMetadata() instanceof ReferenceFieldMetadata) {
@@ -248,7 +248,7 @@ public class UserQueryBuilder {
     public static Condition in(FieldMetadata field, String constant) {
         assertNullField(field);
         Field userField = new Field(field);
-        if (CommonStorageMetaDataUtils.isValueAssignable(constant, field)) {
+        if (MetaDataUtils.isValueAssignable(constant, field)) {
             return in(userField, constant);
         } else {
             return UserQueryHelper.FALSE;
@@ -259,7 +259,7 @@ public class UserQueryBuilder {
     public static Condition in(FieldMetadata field, List constant) {
         assertNullField(field);
         Field userField = new Field(field);
-        if (CommonStorageMetaDataUtils.isValueAssignable(constant, field)) {
+        if (MetaDataUtils.isValueAssignable(constant, field)) {
             return in(userField, constant);
         } else {
             return UserQueryHelper.FALSE;
@@ -274,7 +274,7 @@ public class UserQueryBuilder {
             return isNull(field);
         }
         assertValueConditionArguments(field, constant);
-        if (!CommonStorageMetaDataUtils.isValueAssignable(constant, field.getFieldMetadata())) {
+        if (!MetaDataUtils.isValueAssignable(constant, field.getFieldMetadata())) {
             return UserQueryHelper.FALSE;
         }
         if (field.getFieldMetadata() instanceof ReferenceFieldMetadata) {
@@ -294,7 +294,7 @@ public class UserQueryBuilder {
             return isNull(field);
         }
         assertValueConditionArguments(field, constant);
-        if (!CommonStorageMetaDataUtils.isValueAssignable(constant, field.getFieldMetadata())) {
+        if (!MetaDataUtils.isValueAssignable(constant, field.getFieldMetadata())) {
             return UserQueryHelper.FALSE;
         }
         if (field.getFieldMetadata() instanceof ReferenceFieldMetadata) {
@@ -1108,7 +1108,7 @@ public class UserQueryBuilder {
 
     public static Condition contains(TypedExpression field, String value) {
         assertValueConditionArguments(field, value);
-        if (!CommonStorageMetaDataUtils.isValueAssignable(value, field.getTypeName())) {
+        if (!MetaDataUtils.isValueAssignable(value, field.getTypeName())) {
             return UserQueryHelper.FALSE;
         }
         Expression constant = createConstant(field, value);

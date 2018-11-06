@@ -12,8 +12,11 @@ package com.amalto.core.storage.services;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -28,14 +31,18 @@ import org.apache.log4j.Logger;
 
 import com.amalto.core.objects.ObjectPOJO;
 import com.amalto.core.objects.datamodel.DataModelPOJOPK;
+import com.amalto.core.objects.role.RolePOJO;
+import com.amalto.core.objects.role.RolePOJOPK;
 import com.amalto.core.objects.view.ViewPOJO;
 import com.amalto.core.objects.view.ViewPOJOPK;
 import com.amalto.core.save.MultiRecordsSaveException;
 import com.amalto.core.server.MetadataRepositoryAdmin;
 import com.amalto.core.server.ServerContext;
+import com.amalto.core.server.api.Role;
 import com.amalto.core.server.api.View;
 import com.amalto.core.storage.exception.ConstraintViolationException;
 import com.amalto.core.util.LocaleUtil;
+import com.amalto.core.util.RoleSpecification;
 import com.amalto.core.util.Util;
 import com.amalto.core.util.ValidateException;
 
@@ -62,15 +69,21 @@ public class SystemViews {
 
     private static final String NODE_DATA_MODEL_ID = "dataModelId";
 
+    private static final String NODE_ROLES = "roles";
+
     private static final String DEFAULT_VIEW_PREFIX = "Browse_items";
+
+    private static final String DEFAULT_VIEW_ALL = "Browse_items_.*";
+
+    private static final String VIEW_OBJECT_NAME = "View";
 
     public SystemViews() {
     }
 
     @GET
-    @ApiOperation("Get all views, not including the ones without data model deployed.")
-    public Response getViewList(@ApiParam("Optional parameter of language to get localized result, default: EN")
-                                @QueryParam("lang") @DefaultValue("EN") String locale) {
+    @ApiOperation("Get all views with roles allowed to access. Only views that correspond to deployed data models are returned.")
+    public Response getViewList(@ApiParam("Optional parameter of language to get localized result, default: en")
+                                @QueryParam("lang") @DefaultValue("en") String locale) {
         try {
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Request parameter lang = " + locale);
@@ -78,6 +91,7 @@ public class SystemViews {
             JSONArray viewObjectArray = new JSONArray();
             View viewCtrlLocal = Util.getViewCtrlLocal();
             List<String> dataModelNames = getDataModelNames();
+            Map<String, Set<String>> viewRolesMap = getViewRolesMap();
             MetadataRepositoryAdmin metadataRepositoryAdmin = ServerContext.INSTANCE.get().getMetadataRepositoryAdmin();
             for (ViewPOJOPK viewPOJOPK : viewCtrlLocal.getViewPKs(".*")) {
                 ViewPOJO viewPOJO = ObjectPOJO.load(ViewPOJO.class, viewPOJOPK);
@@ -92,11 +106,12 @@ public class SystemViews {
                 viewObject.put(NODE_NAME, viewName);
                 viewObject.put(NODE_DESCRIPTION, description);
                 viewObject.put(NODE_DATA_MODEL_ID, dataModelName);
+                viewObject.put(NODE_ROLES, viewRolesMap.get(viewName));
                 viewObjectArray.put(viewObject);
             }
             return Response.ok(viewObjectArray.toString()).type(MediaType.APPLICATION_JSON_TYPE).build();
         } catch (Exception e) {
-            return getErrorResponse(e, "Could not get all user views.");
+            return getErrorResponse(e, "Could not get all views.");
         }
     }
 
@@ -161,5 +176,50 @@ public class SystemViews {
             LOGGER.error(responseMessage, e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(responseMessage).build();
         }
+    }
+
+    private Map<String, Set<String>> getViewRolesMap() {
+        Role roleCtrlLocal = Util.getRoleCtrlLocal();
+        Map<String, Set<String>> viewRolesMap = new HashMap<String, Set<String>>();
+        Set<String> roleAllViewsSet = new HashSet<>();
+        try {
+            for (Object rolePOJOPK : roleCtrlLocal.getRolePKs(".*")) {
+                String roleName = ((RolePOJOPK) rolePOJOPK).getUniqueId();
+                RolePOJO role = ObjectPOJO.load(RolePOJO.class, new RolePOJOPK(roleName));
+                // get Specifications for the View Object
+                RoleSpecification specification = role.getRoleSpecifications().get(VIEW_OBJECT_NAME);
+                if (specification != null && !specification.isAdmin()) {
+                    Set<String> viewNames = specification.getInstances().keySet();
+                    for (String viewName : viewNames) {
+                        if (viewName.equals(DEFAULT_VIEW_ALL)) {
+                            roleAllViewsSet.add(roleName);
+                            continue;
+                        }
+                        Set<String> rolesSet = viewRolesMap.get(viewName);
+                        if (null == rolesSet) {
+                            rolesSet = new HashSet<>();
+                        }
+                        if (!rolesSet.contains(roleName)) {
+                            rolesSet.add(roleName);
+                            viewRolesMap.put(viewName, rolesSet);
+                        }
+                    }
+                }
+            }
+            if (roleAllViewsSet.size() > 0) {
+                for (String viewName : viewRolesMap.keySet()) {
+                    Set<String> rolesSet = viewRolesMap.get(viewName);
+                    if (null == rolesSet) {
+                        rolesSet = new HashSet<>();
+                    } else {
+                        rolesSet.addAll(roleAllViewsSet);
+                    }
+                    viewRolesMap.put(viewName, rolesSet);
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to get view roles map.", e);
+        }
+        return viewRolesMap;
     }
 }

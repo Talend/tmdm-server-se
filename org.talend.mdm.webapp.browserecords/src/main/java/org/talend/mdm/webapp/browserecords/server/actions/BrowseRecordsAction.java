@@ -27,6 +27,7 @@ import java.util.TreeMap;
 
 import javax.xml.parsers.DocumentBuilder;
 
+import com.amalto.core.storage.record.StorageConstants;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.dom4j.DocumentHelper;
@@ -2469,8 +2470,8 @@ public class BrowseRecordsAction implements BrowseRecordsService {
 
     private boolean isValidGoldenStatus(WSDataClusterPK wsDataClusterPK, String conceptName, String taskId) {
         StringBuilder query = new StringBuilder().append("select count(*) from ").append(conceptName).append(" where ") //$NON-NLS-1$ //$NON-NLS-2$
-                .append(Storage.METADATA_TASK_ID).append("='").append(taskId).append("' and ") //$NON-NLS-1$ //$NON-NLS-2$
-                .append(Storage.METADATA_STAGING_STATUS).append("=").append(StagingConstants.SUCCESS_VALIDATE); //$NON-NLS-1$
+                .append(StorageConstants.METADATA_TASK_ID).append("='").append(taskId).append("' and ") //$NON-NLS-1$ //$NON-NLS-2$
+                .append(StorageConstants.METADATA_STAGING_STATUS).append("=").append(StagingConstants.SUCCESS_VALIDATE); //$NON-NLS-1$
         WSRunQuery wsRunQuery = new WSRunQuery(wsDataClusterPK, query.toString(), null);
         try {
             String countResult = CommonUtil.getPort().runQuery(wsRunQuery).getStrings()[0];

@@ -35,7 +35,7 @@ import com.amalto.core.storage.StorageMetadataUtils;
  */
 public class DataRecordJSONWriter implements DataRecordWriter {
 
-    // Controls attribute name to be low case or raw value defined in schema, default: true, low case
+    // Controls attribute name to be lowcase or raw value defined in schema, default: true, lowcase
     private boolean ignoreCase = true;
 
     private SecuredStorage.UserDelegator delegator = SecuredStorage.UNSECURED;
@@ -57,12 +57,12 @@ public class DataRecordJSONWriter implements DataRecordWriter {
                             }
                             try {
                                 if (!field.isMany()) {
-                                    writer.key(generateAttributeName(field.getName())).value(
+                                    writer.key(getFieldName(field.getName())).value(
                                             StorageMetadataUtils.toString(record.get(field), false));
                                 } else {
                                     List<Object> values = (List<Object>) record.get(field);
                                     if (values != null) {
-                                        writer.key(generateAttributeName(field.getName())).array();
+                                        writer.key(getFieldName(field.getName())).array();
                                         for (Object value : values) {
                                             writer.value(StorageMetadataUtils.toString(value, false));
                                         }
@@ -91,7 +91,7 @@ public class DataRecordJSONWriter implements DataRecordWriter {
                                 return null;
                             }
                             try {
-                                writer.key(generateAttributeName(containedField.getName()));
+                                writer.key(getFieldName(containedField.getName()));
                                 if (!containedField.isMany()) {
                                     writeRecord((DataRecord) record.get(containedField), writer);
                                 } else {
@@ -133,7 +133,7 @@ public class DataRecordJSONWriter implements DataRecordWriter {
     public void write(DataRecord record, Writer writer) throws IOException {
         JSONWriter jsonWriter = new JSONWriter(writer);
         try {
-            jsonWriter.object().key(generateAttributeName(record.getType().getName()));
+            jsonWriter.object().key(getFieldName(record.getType().getName()));
             {
                 if (!delegator.hide(record.getType())) {
                     writeRecord(record, jsonWriter);
@@ -154,7 +154,7 @@ public class DataRecordJSONWriter implements DataRecordWriter {
         this.delegator = delegator;
     }
 
-    private String generateAttributeName(String name) {
+    private String getFieldName(String name) {
         return ignoreCase ? name.toLowerCase() : name;
     }
 }

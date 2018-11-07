@@ -806,6 +806,15 @@ public class DocumentSaveTest extends TestCase {
                         put("report", "report6");
                     }
                 });
+                add(new HashMap<String, String>() {// simple type
+
+                    {
+                        put("pivot", "Person/phones/PHONE_NUMBER");
+                        put("key", "/PHONE_NUMBER");
+                        put("document", "PartialDelete_8.xml");
+                        put("report", "report7");
+                    }
+                });
             }
         };
 
@@ -865,6 +874,12 @@ public class DocumentSaveTest extends TestCase {
                         add(new String[] { "Pets[3]/Pet", "Pig", "" });
                         add(new String[] { "Pets[2]/Pet", "Dog", "Cow" });
                         add(new String[] { "Pets[1]/Pet", "Cat", "Dog" });
+                    }
+                });
+                put("report7", new ArrayList<String[]>() {
+
+                    {
+                        add(new String[] { "phones[2]/PHONE_NUMBER[1]/PHONE_NUMBER", "456", "" });
                     }
                 });
             }

@@ -38,6 +38,10 @@ public class MultilanguageMessageParser {
      * @param errorString Multiple language message string to be parsed
      * @param lang Language code of the desired message
      * @return Message corresponding to the current language
+     * 
+     * Please note that function getLocaleValue(in class com.amalto.core.util.LocaleUtil) 
+     * has same functionality as below function getValueByLanguage, They should be consistent during change.
+     * 
      */
     public static String pickOutISOMessage(String errorString, String lang) {
         return pickOutISOMessage(errorString, lang, false);

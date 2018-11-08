@@ -72,6 +72,10 @@ public class LocaleUtil {
      * @param value, like "[fr:Produit avec Magasins][en:Product with Stores]"
      * @param language, like "en", if language is empty, return raw value
      * @return
+     * 
+     * Please note that function getValueByLanguage(in class org.talend.mdm.webapp.base.client.util.MultilanguageMessageParser) 
+     * has same functionality as below function getLocaleValue, They should be consistent during change.
+     * 
      */
     public static String getLocaleValue(String value, String language) {
         if (StringUtils.isEmpty(value)) {

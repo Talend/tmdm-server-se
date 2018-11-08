@@ -203,10 +203,8 @@ public class SystemViews {
                         if (null == rolesSet) {
                             rolesSet = new HashSet<>();
                         }
-                        if (!rolesSet.contains(roleName)) {
-                            rolesSet.add(roleName);
-                            viewRolesMap.put(viewName, rolesSet);
-                        }
+                        rolesSet.add(roleName);
+                        viewRolesMap.put(viewName, rolesSet);
                     }
                 }
             }

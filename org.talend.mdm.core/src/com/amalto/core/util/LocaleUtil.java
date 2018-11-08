@@ -86,7 +86,6 @@ public class LocaleUtil {
      * @return
      * Please note that function getValueByLanguage(in class org.talend.mdm.webapp.base.client.util.MultilanguageMessageParser) 
      * has same functionality as below function getLocaleValue, They should be consistent during change.
-     * 
      */
     public static String getLocaleValue(String value, String language) {
         if (StringUtils.isEmpty(value)) {

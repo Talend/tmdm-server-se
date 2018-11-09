@@ -119,11 +119,14 @@ public class SystemModels {
                 map.put("dataModelId", dataModelId); //$NON-NLS-1$
                 return Response.ok(map).type(MediaType.APPLICATION_JSON_TYPE).build();
             } else {
-                return Response.status(Response.Status.NOT_FOUND).build();
+                return Response.status(Response.Status.NOT_FOUND).entity("Entity '" + entityName + "' doesn't exist.").build(); //$NON-NLS-1$//$NON-NLS-2$
             }
         } catch (Exception e) {
-            throw new RuntimeException("Could not get data model.", e); //$NON-NLS-1$
+            String errorMsg = "Could not get entity details."; //$NON-NLS-1$
+            LOGGER.error(errorMsg, e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(errorMsg).build();
         }
+
     }
 
     @GET

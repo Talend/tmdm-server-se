@@ -47,6 +47,10 @@ public class MultilanguageMessageParser {
         return pickOutISOMessage(errorString, UrlUtil.getLanguage());
     }
 
+    /** 
+     * Please note that function getLocaleValue(in class com.amalto.core.util.LocaleUtil}) 
+     * has same functionality as below function getValueByLanguage, They should be consistent during change.
+     */ 
     public static String getValueByLanguage(String multiLanguageString, String language) {
         return pickOutISOMessage(multiLanguageString, language, true);
     }

@@ -15,34 +15,42 @@ import junit.framework.TestCase;
 public class LocaleUtilTest extends TestCase {
 
     public void testLocaleValue() {
+        String str1 = "[FR:Produit avec Magasins][EN:Product with Stores][ZH:Zhong Wen]";
+
         //case 1
-        String language = "en";
-        String str1 = "[FR:Produit avec Magasins][EN:Product with Stores]";
-        String results = LocaleUtil.getLocaleValue(str1, language);
+        String results = LocaleUtil.getLocaleValue(str1, "en");
         assertEquals("Product with Stores", results);
 
         //case 2
-        language = "zh";
-        str1 = "[FR:Produit avec Magasins][EN:Product with Stores]";
-        results = LocaleUtil.getLocaleValue(str1, language);
-        assertEquals("[FR:Produit avec Magasins][EN:Product with Stores]", results);
+        results = LocaleUtil.getLocaleValue(str1, "FR");
+        assertEquals("Produit avec Magasins", results);
 
         //case 3
-        language = "fr";
-        str1 = "";
-        results = LocaleUtil.getLocaleValue(str1, language);
-        assertEquals("", results);
+        results = LocaleUtil.getLocaleValue(str1, "zh");
+        assertEquals("Zhong Wen", results);
 
         //case 4
-        language = "fr";
-        str1 = "[FR:Produit avec Magasins]";
-        results = LocaleUtil.getLocaleValue(str1, language);
-        assertEquals("Produit avec Magasins", results);
-        
+        results = LocaleUtil.getLocaleValue(str1, "zh_CN");
+        assertEquals(str1, results);
+
         //case 5
-        language = "";
-        str1 = "[FR:Produit avec Magasins]";
-        results = LocaleUtil.getLocaleValue(str1, language);
-        assertEquals("[FR:Produit avec Magasins]", results);
+        results = LocaleUtil.getLocaleValue(str1, "");
+        assertEquals(str1, results);
+        
+        //case 6
+        results = LocaleUtil.getLocaleValue(str1, "xx");
+        assertEquals(str1, results);
+        
+        //case 7
+        results = LocaleUtil.getLocaleValue("", "en");
+        assertEquals("", results);
+
+        //case 8
+        results = LocaleUtil.getLocaleValue("", "");
+        assertEquals("", results);
+
+        //case 9
+        results = LocaleUtil.getLocaleValue("", "xx");
+        assertEquals("", results);
     }
 }

@@ -107,14 +107,14 @@ public class SystemModels {
 
     @GET
     @Path("/entities/{entityName}")
-    @ApiOperation("Get the details of an entity according his identifier.")
+    @ApiOperation("Get the details of an entity according its identifier.")
     public Response getEntityDetails(@ApiParam("Entity name") @PathParam("entityName") String entityName) {
         try {
             MetadataRepositoryAdmin metadataRepositoryAdmin = ServerContext.INSTANCE.get().getMetadataRepositoryAdmin();
             String dataModelId = DataModelUtil.getDataModelNameByEntityName(metadataRepositoryAdmin,
                     DataModelUtil.getDataModelNames(), entityName);
             if (StringUtils.isNotEmpty(dataModelId)) {
-                Map<String, Object> map = new HashMap<String, Object>();
+                Map<String, Object> map = new HashMap<>();
                 map.put("entity", entityName); //$NON-NLS-1$
                 map.put("dataModelId", dataModelId); //$NON-NLS-1$
                 return Response.ok(map).type(MediaType.APPLICATION_JSON_TYPE).build();

@@ -12,9 +12,6 @@ package com.amalto.core.storage.services;
 
 import static com.amalto.core.query.user.UserQueryBuilder.eq;
 import static com.amalto.core.query.user.UserQueryBuilder.from;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -23,6 +20,7 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -35,6 +33,8 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -67,10 +67,15 @@ import com.amalto.core.storage.StorageType;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.record.DataRecordReader;
 import com.amalto.core.storage.record.XmlDOMDataRecordReader;
+import com.amalto.core.util.DataModelUtil;
 import com.amalto.core.util.LocalUser;
 import com.amalto.core.util.LocaleUtil;
 import com.amalto.core.util.Util;
 import com.amalto.core.util.XtentisException;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 
 @Path("/system/models")
@@ -98,6 +103,27 @@ public class SystemModels {
         SaverSession session = SaverSession.newSession();
         session.getSaverSource().invalidateTypeCache(modelName);
         session.end();
+    }
+
+    @GET
+    @Path("/entities/{entityName}")
+    @ApiOperation("Get the details of an entity according his identifier.")
+    public Response getEntityDetails(@ApiParam("Entity name") @PathParam("entityName") String entityName) {
+        try {
+            MetadataRepositoryAdmin metadataRepositoryAdmin = ServerContext.INSTANCE.get().getMetadataRepositoryAdmin();
+            String dataModelId = DataModelUtil.getDataModelNameByEntityName(metadataRepositoryAdmin,
+                    DataModelUtil.getDataModelNames(), entityName);
+            if (StringUtils.isNotEmpty(dataModelId)) {
+                Map<String, Object> map = new HashMap<String, Object>();
+                map.put("entity", entityName); //$NON-NLS-1$
+                map.put("dataModelId", dataModelId); //$NON-NLS-1$
+                return Response.ok(map).type(MediaType.APPLICATION_JSON_TYPE).build();
+            } else {
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Could not get data model.", e); //$NON-NLS-1$
+        }
     }
 
     @GET
@@ -166,7 +192,7 @@ public class SystemModels {
             user = LocalUser.getLocalUser().getUsername();
             oldDataModel = DataModelPOJO.load(DataModelPOJO.class, new DataModelPOJOPK(modelName));
         } catch (XtentisException e) {
-            LOGGER.error("An error occurred while fetching Data Model.", e);
+            LOGGER.error("An error occurred while fetching Data Model.", e); //$NON-NLS-1$
         }
         if (!isSystemStorageAvailable()) { // If no system storage is available, store new schema version.
             try {
@@ -204,7 +230,7 @@ public class SystemModels {
                 // TMDM-7312: Don't forget to add staging types (otherwise, staging storage will complain about removed
                 // types).
                 MetadataRepository stagingRepository = newRepository.copy();
-                stagingRepository.load(MetadataRepositoryAdmin.class.getResourceAsStream("stagingInternalTypes.xsd"));
+                stagingRepository.load(MetadataRepositoryAdmin.class.getResourceAsStream("stagingInternalTypes.xsd")); //$NON-NLS-1$
                 stagingStorage.adapt(stagingRepository, force);
             } else {
                 LOGGER.warn("No SQL staging storage defined for data model '" + modelName //$NON-NLS-1$
@@ -265,7 +291,7 @@ public class SystemModels {
         try {
             dataModelPOJO = DataModelPOJO.load(DataModelPOJO.class, new DataModelPOJOPK(modelName));
         } catch (XtentisException e) {
-            LOGGER.error("An error occurred while fetching Data Model.", e);
+            LOGGER.error("An error occurred while fetching Data Model.", e); //$NON-NLS-1$
             throw new RuntimeException("An error occurred while fetching Data Model.", e); //$NON-NLS-1$
         }
         Map<ImpactAnalyzer.Impact, List<Change>> impacts;

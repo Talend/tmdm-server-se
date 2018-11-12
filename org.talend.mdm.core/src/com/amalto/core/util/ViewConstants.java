@@ -30,7 +30,7 @@ public final class ViewConstants {
 
     public static final String SEARCHABLE_BUSINESS_ELEMENTS = "searchableBusinessElements";
 
-    public static final String VIEWABLE_BUSINESS_ELEMENTS = "viewableBusinessElementsJson";
+    public static final String VIEWABLE_BUSINESS_ELEMENTS = "viewableBusinessElements";
 
     public static final String WHERE_CONDITIONS = "whereConditions";
 

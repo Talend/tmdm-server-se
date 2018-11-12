@@ -187,6 +187,56 @@ class UnaryFieldAccessor implements DOMAccessor {
         }
     }
 
+    /**
+     * return Number of elements contained by this accessor. If {@link #exist()} returns <code>false</code>, this method
+     * must return <code>0</code>.
+     * <p>
+     * return number of the first level node of node name is {@link #fieldName} in document {@link #parent} if
+     * {@link #parent} is Element, if {@link #parent} is node return 1.
+     *
+     * <p>
+     * For xml document,
+     * <pre>
+     * {@code
+     *  <phones>
+     *      <PHONE_NUMBER>
+     *          <PHONE_NUMBER>123</PHONE_NUMBER>
+     *          <IS_MOBILE/>
+     *          <IS_DEFAULT/>
+     *      </PHONE_NUMBER>
+     *  </phones>
+     * }
+     * </pre>
+     * use below code, it get two node: parent node '<PHONE_NUMBER>' and sub node '<PHONE_NUMBER>123</PHONE_NUMBER>',
+     * it's not needed.
+     * <pre>
+     * {@code
+     *   parentElement.getElementsByTagName("PHONE_NUMBER")
+     *   }
+     * </pre>
+     *
+     * here, need to get the size of the first level node of "PHONE_NUMBER", for above xml document, return 1 is
+     * correct. for below xml document, the number will be return 2
+     *
+     * <pre>
+     * {@code
+     *  <phones>
+     *      <PHONE_NUMBER>
+     *          <PHONE_NUMBER>123</PHONE_NUMBER>
+     *          <IS_MOBILE/>
+     *          <IS_DEFAULT/>
+     *      </PHONE_NUMBER>
+     *  </phones>
+     *  <phones>
+     *      <PHONE_NUMBER>
+     *          <PHONE_NUMBER>456</PHONE_NUMBER>
+     *          <IS_MOBILE/>
+     *          <IS_DEFAULT/>
+     *      </PHONE_NUMBER>
+     *  </phones>
+     * }
+     * </pre>
+     */
     @Override
     public int size() {
         if (!exist()) {
@@ -195,7 +245,14 @@ class UnaryFieldAccessor implements DOMAccessor {
         Node node = parent.getNode();
         if (node instanceof Element) {
             Element parentElement = (Element) node;
-            return parentElement.getElementsByTagName(fieldName).getLength();
+            NodeList nodeList = parentElement.getChildNodes();
+            int length = 0;
+            for (int i = 0; i < nodeList.getLength(); i++) {
+                if (nodeList.item(i).getNodeName().equals(fieldName)) {
+                    length++;
+                }
+            }
+            return length;
         } else {
             return 1;
         }

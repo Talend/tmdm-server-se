@@ -1,0 +1,10 @@
+<Person>
+    <Id>1</Id>
+    <phones>
+        <PHONE_NUMBER>
+            <PHONE_NUMBER>123</PHONE_NUMBER>
+            <IS_MOBILE />
+            <IS_DEFAULT />
+        </PHONE_NUMBER>
+    </phones>
+</Person>

@@ -750,10 +750,8 @@ public class DocumentSaveTest extends TestCase {
 
         @SuppressWarnings("serial")
         List<Map<String, String>> testDatas = new ArrayList<Map<String, String>>() {
-
             {
                 add(new HashMap<String, String>() {// foreign key
-
                     {
                         put("pivot", "Person/Houses/House");
                         put("key", ".");
@@ -762,7 +760,6 @@ public class DocumentSaveTest extends TestCase {
                     }
                 });
                 add(new HashMap<String, String>() {// complex type
-
                     {
                         put("pivot", "Person/Kids/Kid");
                         put("key", "/Name");
@@ -771,7 +768,6 @@ public class DocumentSaveTest extends TestCase {
                     }
                 });
                 add(new HashMap<String, String>() {// simple type
-
                     {
                         put("pivot", "Person/Habits/Habit");
                         put("key", "");
@@ -780,7 +776,6 @@ public class DocumentSaveTest extends TestCase {
                     }
                 });
                 add(new HashMap<String, String>() {// simple type
-
                     {
                         put("pivot", "Person/Kids/Kid[1]/Habits/Habit");
                         put("key", "");
@@ -789,7 +784,6 @@ public class DocumentSaveTest extends TestCase {
                     }
                 });
                 add(new HashMap<String, String>() {// simple type
-
                     {
                         put("pivot", "Person/Kids/Kid[2]/Habits/Habit");
                         put("key", "");
@@ -798,7 +792,6 @@ public class DocumentSaveTest extends TestCase {
                     }
                 });
                 add(new HashMap<String, String>() {// simple type
-
                     {
                         put("pivot", "Person/Pets");
                         put("key", "/Pet");
@@ -806,15 +799,21 @@ public class DocumentSaveTest extends TestCase {
                         put("report", "report6");
                     }
                 });
+                add(new HashMap<String, String>() {// two same label name in document
+                    {
+                        put("pivot", "Person/phones/PHONE_NUMBER");
+                        put("key", "/PHONE_NUMBER");
+                        put("document", "PartialDelete_8.xml");
+                        put("report", "report7");
+                    }
+                });
             }
         };
 
         @SuppressWarnings("serial")
         Map<String, List<String[]>> reportDatas = new HashMap<String, List<String[]>>() {
-
             {
                 put("report1", new ArrayList<String[]>() {
-
                     {
                         add(new String[] { "Houses/House[3]", "[3]", "" });
                         add(new String[] { "Houses/House[2]", "[2]", "" });
@@ -822,7 +821,6 @@ public class DocumentSaveTest extends TestCase {
                     }
                 });
                 put("report2", new ArrayList<String[]>() {
-
                     {
                         add(new String[] { "Kids/Kid[3]/Name", "k3", "" });
                         add(new String[] { "Kids/Kid[3]/Age", "3", "" });
@@ -834,7 +832,6 @@ public class DocumentSaveTest extends TestCase {
                     }
                 });
                 put("report3", new ArrayList<String[]>() {
-
                     {
                         add(new String[] { "Habits/Habit[4]", "Boxing", "" });
                         add(new String[] { "Habits/Habit[3]", "Tennis", "" });
@@ -843,7 +840,6 @@ public class DocumentSaveTest extends TestCase {
                     }
                 });
                 put("report4", new ArrayList<String[]>() {
-
                     {
                         add(new String[] { "Kids/Kid[1]/Habits/Habit[3]", "Tennis", "" });
                         add(new String[] { "Kids/Kid[1]/Habits/Habit[2]", "Football", "" });
@@ -851,7 +847,6 @@ public class DocumentSaveTest extends TestCase {
                     }
                 });
                 put("report5", new ArrayList<String[]>() {
-
                     {
                         add(new String[] { "Kids/Kid[2]/Habits/Habit[3]", "Boxing", "" });
                         add(new String[] { "Kids/Kid[2]/Habits/Habit[2]", "Football", "" });
@@ -859,12 +854,16 @@ public class DocumentSaveTest extends TestCase {
                     }
                 });
                 put("report6", new ArrayList<String[]>() {
-
                     {
                         add(new String[] { "Pets[4]/Pet", "Cow", "" });
                         add(new String[] { "Pets[3]/Pet", "Pig", "" });
                         add(new String[] { "Pets[2]/Pet", "Dog", "Cow" });
                         add(new String[] { "Pets[1]/Pet", "Cat", "Dog" });
+                    }
+                });
+                put("report7", new ArrayList<String[]>() {
+                    {
+                        add(new String[] { "phones[2]/PHONE_NUMBER[1]/PHONE_NUMBER", "456", "" });
                     }
                 });
             }

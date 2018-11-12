@@ -12,7 +12,7 @@
 // ============================================================================
 package com.amalto.core.util;
 
-public final class SystemViewConstants {
+public final class ViewConstants {
 
     public static final String NODE_NAME = "name";
 

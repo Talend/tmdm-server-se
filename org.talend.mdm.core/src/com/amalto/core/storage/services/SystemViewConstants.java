@@ -20,6 +20,8 @@ public final class SystemViewConstants {
 
     protected static final String NODE_DATA_MODEL_ID = "dataModelId";
 
+    protected static final String VIEW_OBJECT_NAME = "View";
+
     protected static final String NODE_ROLES = "roles";
 
     protected static final String DEFAULT_VIEW_PREFIX = "Browse_items";

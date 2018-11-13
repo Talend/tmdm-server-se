@@ -114,7 +114,7 @@ public class SystemModels {
             String dataModelId = DataModelUtil.getDataModelNameByEntityName(metadataRepositoryAdmin,
                     DataModelUtil.getDataModelNames(), entityName);
             if (StringUtils.isNotEmpty(dataModelId)) {
-                Map<String, Object> map = new HashMap<>();
+                Map<String, String> map = new HashMap<>();
                 map.put("entity", entityName); //$NON-NLS-1$
                 map.put("dataModelId", dataModelId); //$NON-NLS-1$
                 return Response.ok(map).type(MediaType.APPLICATION_JSON_TYPE).build();

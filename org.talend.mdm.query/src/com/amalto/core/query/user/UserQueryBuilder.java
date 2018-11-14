@@ -842,9 +842,6 @@ public class UserQueryBuilder {
             throw new IllegalArgumentException("Condition cannot be null");
         }
         if (expressionAsSelect().getCondition() == null) {
-            if(condition instanceof ConstantCondition){
-                return this;
-            }
             expressionAsSelect().setCondition(condition);
         } else {
             if (predicate == Predicate.OR) {

@@ -25,10 +25,10 @@ import static com.amalto.core.query.user.UserQueryBuilder.eq;
 /**
  * Goal of unit test is pretty simple:
  * <ul>
- *     <li>Create a {@link Expression}</li>
- *     <li>Serialize it to JSON</li>
- *     <li>Parse JSON using {@link QueryParser}</li>
- *     <li>Assert {@link Expression} parsed from JSON is equals to initial</li>
+ * <li>Create a {@link Expression}</li>
+ * <li>Serialize it to JSON</li>
+ * <li>Parse JSON using {@link QueryParser}</li>
+ * <li>Assert {@link Expression} parsed from JSON is equals to initial</li>
  * </ul>
  */
 public class UserQueryJsonSerializerTest extends TestCase {
@@ -80,7 +80,7 @@ public class UserQueryJsonSerializerTest extends TestCase {
         // given
         final ComplexTypeMetadata type1 = repository.getComplexType("Type1");
         UserQueryBuilder uq = UserQueryBuilder.from(type1);
-        uq.where(UserQueryHelper.buildCondition(uq, new WhereCondition("Type1/fk2", "JOINS", "Type2/id","NONE"), repository));
+        uq.where(UserQueryHelper.buildCondition(uq, new WhereCondition("Type1/fk2", "JOINS", "Type2/id", "NONE"), repository));
 
         // when, then
         assertRoundTrip(uq.getSelect());

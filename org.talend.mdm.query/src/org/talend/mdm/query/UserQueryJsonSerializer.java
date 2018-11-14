@@ -61,6 +61,10 @@ public class UserQueryJsonSerializer extends VisitorAdapter<JsonElement> {
 
     @Override
     public JsonElement visit(Select select) {
+        // Prune all useless information before serialization
+        select = (Select) select.normalize();
+
+        // Start JSON serialization
         JsonObject selectContent = new JsonObject();
 
         // Generate from clause

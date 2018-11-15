@@ -11,9 +11,18 @@
 package com.amalto.core.storage.hibernate;
 
 import com.amalto.core.storage.HibernateMetadataUtils;
-import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.record.StorageConstants;
-import javassist.*;
+import javassist.CannotCompileException;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtConstructor;
+import javassist.CtField;
+import javassist.CtMethod;
+import javassist.CtNewConstructor;
+import javassist.CtNewMethod;
+import javassist.LoaderClassPath;
+import javassist.Modifier;
+import javassist.NotFoundException;
 import javassist.bytecode.AnnotationsAttribute;
 import javassist.bytecode.ClassFile;
 import javassist.bytecode.ConstPool;

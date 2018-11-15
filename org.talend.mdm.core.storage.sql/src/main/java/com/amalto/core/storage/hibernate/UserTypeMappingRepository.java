@@ -14,8 +14,12 @@ package com.amalto.core.storage.hibernate;
 import com.amalto.core.storage.datasource.RDBMSDataSource;
 import com.amalto.core.storage.record.StorageConstants;
 import org.apache.commons.lang.StringUtils;
-import org.talend.mdm.commmon.metadata.*;
-import com.amalto.core.storage.Storage;
+import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.MetadataRepository;
+import org.talend.mdm.commmon.metadata.SimpleTypeFieldMetadata;
+import org.talend.mdm.commmon.metadata.SoftTypeRef;
+import org.talend.mdm.commmon.metadata.TypeMetadata;
+import org.talend.mdm.commmon.metadata.Types;
 
 import javax.xml.XMLConstants;
 import java.util.Collections;

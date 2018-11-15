@@ -13,7 +13,6 @@ package com.amalto.core.storage.hibernate;
 
 import com.amalto.core.storage.CloseableIterator;
 import com.amalto.core.storage.record.StorageConstants;
-import org.talend.mdm.commmon.metadata.*;
 import com.amalto.core.query.user.NativeQuery;
 import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.StorageResults;
@@ -25,6 +24,11 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.jdbc.Work;
+import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.ComplexTypeMetadataImpl;
+import org.talend.mdm.commmon.metadata.MetadataUtils;
+import org.talend.mdm.commmon.metadata.SimpleTypeFieldMetadata;
+import org.talend.mdm.commmon.metadata.SimpleTypeMetadata;
 
 import javax.xml.XMLConstants;
 import java.io.IOException;

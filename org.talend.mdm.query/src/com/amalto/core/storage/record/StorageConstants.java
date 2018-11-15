@@ -9,36 +9,37 @@
  */
 package com.amalto.core.storage.record;
 
-public class StorageConstants {
+@SuppressWarnings("nls")
+public interface StorageConstants {
     /**
      * Name of the column where last MDM validation error is stored (for STAGING databases only).
      */
-    public final static String METADATA_STAGING_ERROR = "x_talend_staging_error";   //$NON-NLS-1$
+    public final static String METADATA_STAGING_ERROR = "x_talend_staging_error";
     /**
      * Name of the column where MDM status (validated...) is stored (for STAGING databases only).
      * com.amalto.core.storage.task.StagingConstants
      */
-    public final static String METADATA_STAGING_STATUS = "x_talend_staging_status";  //$NON-NLS-1$
+    public final static String METADATA_STAGING_STATUS = "x_talend_staging_status";
 
     /**
      * Name of the column where a block key can be stored (for STAGING databases only).
      */
-    public final static String METADATA_STAGING_BLOCK_KEY = "x_talend_staging_blockkey"; //$NON-NLS-1$
+    public final static String METADATA_STAGING_BLOCK_KEY = "x_talend_staging_blockkey";
     /**
      * Name of type for explicit projection (i.e. selection of a field within MDM entity). Declared fields in this type
      * varies from one query to another (if selected fields in query changed).
      */
-    public final static String PROJECTION_TYPE = "$ExplicitProjection$";     //$NON-NLS-1$
+    public final static String PROJECTION_TYPE = "$ExplicitProjection$";
     /**
      * Name of the column where MDM has task is stored (for STAGING databases only).
      * com.amalto.core.storage.task.StagingConstants
      */
-    public final static String METADATA_STAGING_HAS_TASK = "x_talend_staging_hastask";  //$NON-NLS-1$
+    public final static String METADATA_STAGING_HAS_TASK = "x_talend_staging_hastask";
 
     /**
      * Name of the column where MDM source is stored (for STAGING databases only).
      */
-    public final static String METADATA_STAGING_SOURCE = "x_talend_staging_source";  //$NON-NLS-1$
+    public final static String METADATA_STAGING_SOURCE = "x_talend_staging_source";
 
     /**
      * Indicates storage supports transactions.
@@ -58,12 +59,12 @@ public class StorageConstants {
     /**
      * Name of the column where MDM timestamp is stored.
      */
-    public final static String METADATA_TIMESTAMP = "x_talend_timestamp";       //$NON-NLS-1$
+    public final static String METADATA_TIMESTAMP = "x_talend_timestamp";
 
     /**
      * Name of the column where MDM task id is stored.
      */
-    public final static String METADATA_TASK_ID = "x_talend_task_id";         //$NON-NLS-1$
+    public final static String METADATA_TASK_ID = "x_talend_task_id";
 
     /**
      * <p>
@@ -84,6 +85,6 @@ public class StorageConstants {
      *
      * </p>
      */
-    public final static String METADATA_STAGING_VALUES = "x_talend_staging_values";  //$NON-NLS-1$
+    public final static String METADATA_STAGING_VALUES = "x_talend_staging_values";
 
 }

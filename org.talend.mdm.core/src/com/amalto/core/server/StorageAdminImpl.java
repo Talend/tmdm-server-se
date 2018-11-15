@@ -36,7 +36,11 @@ import org.talend.mdm.commmon.util.webapp.XSystemObjects;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class StorageAdminImpl implements StorageAdmin {
 

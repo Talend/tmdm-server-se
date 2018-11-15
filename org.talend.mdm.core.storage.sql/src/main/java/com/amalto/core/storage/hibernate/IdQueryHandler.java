@@ -11,17 +11,34 @@
 
 package com.amalto.core.storage.hibernate;
 
+import com.amalto.core.query.user.Alias;
+import com.amalto.core.query.user.BinaryLogicOperator;
+import com.amalto.core.query.user.Compare;
+import com.amalto.core.query.user.Condition;
+import com.amalto.core.query.user.Count;
+import com.amalto.core.query.user.Field;
+import com.amalto.core.query.user.Select;
+import com.amalto.core.query.user.StringConstant;
+import com.amalto.core.query.user.Type;
+import com.amalto.core.query.user.TypedExpression;
+import com.amalto.core.query.user.UnaryLogicOperator;
+import com.amalto.core.query.user.VisitorAdapter;
 import com.amalto.core.query.user.metadata.*;
 import com.amalto.core.storage.CloseableIterator;
 import com.amalto.core.storage.record.StorageConstants;
 import org.apache.log4j.Logger;
-import org.talend.mdm.commmon.metadata.*;
-import com.amalto.core.query.user.*;
+
 import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.StorageResults;
 import com.amalto.core.storage.record.DataRecord;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
+import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.ComplexTypeMetadataImpl;
+import org.talend.mdm.commmon.metadata.FieldMetadata;
+import org.talend.mdm.commmon.metadata.SimpleTypeFieldMetadata;
+import org.talend.mdm.commmon.metadata.SimpleTypeMetadata;
+import org.talend.mdm.commmon.metadata.Types;
 
 import javax.xml.XMLConstants;
 import java.io.IOException;

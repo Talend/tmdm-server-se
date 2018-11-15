@@ -9,7 +9,11 @@
  */
 package com.amalto.core.storage.record.metadata;
 
-import com.amalto.core.query.user.metadata.*;
+import com.amalto.core.query.user.metadata.StagingBlockKey;
+import com.amalto.core.query.user.metadata.StagingError;
+import com.amalto.core.query.user.metadata.StagingHasTask;
+import com.amalto.core.query.user.metadata.StagingSource;
+import com.amalto.core.query.user.metadata.StagingStatus;
 import com.amalto.core.storage.record.DataRecordReader;
 import com.amalto.core.storage.record.StorageConstants;
 import org.apache.log4j.Logger;

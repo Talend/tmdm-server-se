@@ -112,7 +112,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 @SuppressWarnings({ "deprecation", "nls" })
-public class Util extends CommonUtilXml {
+public class Util extends XmlUtil {
 
     private static final Logger LOGGER = Logger.getLogger(Util.class);
 

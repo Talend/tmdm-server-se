@@ -243,8 +243,8 @@ public class MDMTable extends Table {
                 if (dialect instanceof OracleCustomDialect) {
                     alter.append(" MODIFY ").append(columnName).append(" DEFAULT ").append(defaultValue);
                 } else if (dialect instanceof SQLServerDialect) {
-                    String existDefaultValue = getDefaultValueForColumn(tableName, columnName);
-                    if (StringUtils.isNotBlank(existDefaultValue) && existDefaultValue.equals(defaultValue)) {
+                    String existedDefaultValue = getDefaultValueForColumn(tableName, columnName);
+                    if (StringUtils.isNotBlank(existedDefaultValue) && existedDefaultValue.equals(defaultValue)) {
                         needAlterDefalutValue = false;
                     } else {
                         String alterDropConstraintSQL = generateAlterDefaultValueConstraintSQL(tableName, columnName);
@@ -323,7 +323,7 @@ public class MDMTable extends Table {
     private String executeSQLForSQLServer(String sql, List<String> parameters) throws Exception {
         Connection connection = null;
         PreparedStatement statement = null;
-        String queryValue = StringUtils.EMPTY;
+        String result = StringUtils.EMPTY;
         try {
             Properties properties = dataSource.getAdvancedPropertiesIncludeUserInfo();
             connection = DriverManager.getConnection(dataSource.getConnectionURL(), properties);
@@ -333,7 +333,7 @@ public class MDMTable extends Table {
             }
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
-                queryValue = rs.getString(1);
+                result = rs.getString(1);
             }
         } finally {
             try {
@@ -347,7 +347,7 @@ public class MDMTable extends Table {
                 LOGGER.error("Unexpected error when closing connection.", e);
             }
         }
-        return queryValue;
+        return result;
     }
 
     private String convertDefaultValue(Dialect dialect, String sqlType, String defaultValue) {
@@ -364,7 +364,6 @@ public class MDMTable extends Table {
         }
         return true;
     }
-
 
     public void setDataSource(RDBMSDataSource dataSource) {
         this.dataSource = dataSource;

@@ -248,7 +248,9 @@ public class MDMTable extends Table {
                         needAlterDefalutValue = false;
                     } else {
                         String alterDropConstraintSQL = generateAlterDefaultValueConstraintSQL(tableName, columnName);
-                        results.add(alterDropConstraintSQL);
+                        if(StringUtils.isNotBlank(alterDropConstraintSQL)) {
+                            results.add(alterDropConstraintSQL);
+                        }
                         if (LOGGER.isDebugEnabled()) {
                             LOGGER.debug(alterDropConstraintSQL);
                         }
@@ -297,7 +299,10 @@ public class MDMTable extends Table {
             parameters.add(tableName);
             parameters.add(columnName);
             String queryResult = executeSQLForSQLServer(sql, parameters);
-            alterDropConstraintSQL = "alter table " + tableName + " drop constraint " + queryResult;
+            if(StringUtils.isNotEmpty(queryResult)){
+                alterDropConstraintSQL = "alter table " + tableName + " drop constraint " + queryResult;
+            }
+
         } catch (Exception e) {
             LOGGER.error("Fetching SQLServer default value constraint failed.", e);
         }
@@ -307,7 +312,7 @@ public class MDMTable extends Table {
     private String getDefaultValueForColumn(String tableName, String columnName) {
         String defaultValue = StringUtils.EMPTY;
         try {
-            String sql = "SELECT CM.text FROM syscolumns C INNER JOIN systypes T ON C.xusertype = T.xusertype "
+            String sql = "SELECT ISNULL(CM.text,'')  FROM syscolumns C INNER JOIN systypes T ON C.xusertype = T.xusertype "
                     + "LEFT JOIN sys.extended_properties ETP ON  ETP.major_id = c.id AND ETP.minor_id = C.colid AND ETP.name ='MS_Description' "
                     + "LEFT join syscomments CM ON C.cdefault=CM.id WHERE C.id = object_id(?) AND C.name = ?";
             List<String> parameters = new ArrayList<>();

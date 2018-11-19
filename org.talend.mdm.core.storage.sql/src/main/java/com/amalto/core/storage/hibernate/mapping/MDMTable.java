@@ -291,8 +291,8 @@ public class MDMTable extends Table {
     private String generateAlterDefaultValueConstraintSQL(String tableName, String columnName) {
         String alterDropConstraintSQL = StringUtils.EMPTY;
         try {
-            String sql = "select c.name from sysconstraints a inner join syscolumns b on a.colid=b.colid inner join sysobjects c on a.constid=c.id "
-                    + "where a.id=object_id(?) and b.name=?";
+            String sql = "SELECT c.name FROM sysconstraints a INNER JOIN syscolumns b ON a.colid=b.colid INNER JOIN sysobjects c ON a.constid=c.id "
+                    + "WHERE a.id = object_id (?) AND b.name = ?";
             List<String> parameters = new ArrayList<>();
             parameters.add(tableName);
             parameters.add(columnName);
@@ -309,7 +309,7 @@ public class MDMTable extends Table {
         try {
             String sql = "SELECT CM.text FROM syscolumns C INNER JOIN systypes T ON C.xusertype = T.xusertype "
                     + "LEFT JOIN sys.extended_properties ETP ON  ETP.major_id = c.id AND ETP.minor_id = C.colid AND ETP.name ='MS_Description' "
-                    + "LEFT join syscomments CM ON C.cdefault=CM.id WHERE C.id = object_id(?) and C.name = ?";
+                    + "LEFT join syscomments CM ON C.cdefault=CM.id WHERE C.id = object_id(?) AND C.name = ?";
             List<String> parameters = new ArrayList<>();
             parameters.add(tableName);
             parameters.add(columnName);

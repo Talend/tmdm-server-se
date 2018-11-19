@@ -61,7 +61,7 @@ public class MDMTable extends Table {
         // Try to find out the name of the primary key to create it as identity if the IdentityGenerator is used
         String pkname = null;
         if (hasPrimaryKey() && identityColumn) {
-            pkname = getPrimaryKey().getColumnIterator().next().getQuotedName(dialect);
+            pkname = ((Column) getPrimaryKey().getColumnIterator().next()).getQuotedName(dialect);
         }
 
         Iterator iter = getColumnIterator();

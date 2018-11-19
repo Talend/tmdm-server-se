@@ -1,9 +1,9 @@
 /*
  * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
- * 
+ *
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
- * 
+ *
  * You should have received a copy of the agreement along with this program; if not, write to Talend SA 9 rue Pages
  * 92150 Suresnes, France
  */
@@ -61,7 +61,7 @@ public class MDMTable extends Table {
         // Try to find out the name of the primary key to create it as identity if the IdentityGenerator is used
         String pkname = null;
         if (hasPrimaryKey() && identityColumn) {
-            pkname = ((Column) getPrimaryKey().getColumnIterator().next()).getQuotedName(dialect);
+            pkname = getPrimaryKey().getColumnIterator().next().getQuotedName(dialect);
         }
 
         Iterator iter = getColumnIterator();
@@ -239,26 +239,33 @@ public class MDMTable extends Table {
                 results.add(alter.toString());
             } else if (StringUtils.isNotBlank(defaultValue)) {
                 StringBuilder alter = new StringBuilder(root.toString());
+                boolean needAlterDefalutValue = true;
                 if (dialect instanceof OracleCustomDialect) {
                     alter.append(" MODIFY ").append(columnName).append(" DEFAULT ").append(defaultValue);
                 } else if (dialect instanceof SQLServerDialect) {
-                    String alterDropConstraintSQL = generateAlterDefaultValueConstraintSQL(tableName, columnName);
-                    results.add(alterDropConstraintSQL);
-                    if (LOGGER.isDebugEnabled()) {
-                        LOGGER.debug(alterDropConstraintSQL);
+                    String existDefaultValue = getDefaultValueForColumn(tableName, columnName);
+                    if (StringUtils.isNotBlank(existDefaultValue) && existDefaultValue.equals(defaultValue)) {
+                        needAlterDefalutValue = false;
+                    } else {
+                        String alterDropConstraintSQL = generateAlterDefaultValueConstraintSQL(tableName, columnName);
+                        results.add(alterDropConstraintSQL);
+                        if (LOGGER.isDebugEnabled()) {
+                            LOGGER.debug(alterDropConstraintSQL);
+                        }
+                        alter.append("  ADD DEFAULT ").append(defaultValue).append(" FOR ").append(columnName);
                     }
-                    alter.append("  ADD DEFAULT ").append(defaultValue).append(" FOR ").append(columnName);
                 } else {
                     if (isDefaultValueNeeded(sqlType, dialect)) {
                         alter.append(" ALTER COLUMN ").append(columnName).append(" SET DEFAULT ").append(defaultValue);
                     }
                 }
-                alter.append(dialect.getAddColumnSuffixString());
-
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug(alter.toString());
+                if (needAlterDefalutValue) {
+                    alter.append(dialect.getAddColumnSuffixString());
+                    if (LOGGER.isDebugEnabled()) {
+                        LOGGER.debug(alter.toString());
+                    }
+                    results.add(alter.toString());
                 }
-                results.add(alter.toString());
             } else if (MDMTableUtils.isChangedToOptional(column, columnInfo)) {
                 StringBuilder alter = new StringBuilder(root.toString());
                 if (dialect instanceof PostgreSQLDialect || dialect instanceof DB2Dialect) {
@@ -282,32 +289,65 @@ public class MDMTable extends Table {
     }
 
     private String generateAlterDefaultValueConstraintSQL(String tableName, String columnName) {
+        String alterDropConstraintSQL = StringUtils.EMPTY;
+        try {
+            String sql = "select c.name from sysconstraints a inner join syscolumns b on a.colid=b.colid inner join sysobjects c on a.constid=c.id "
+                    + "where a.id=object_id(?) and b.name=?";
+            List<String> parameters = new ArrayList<>();
+            parameters.add(tableName);
+            parameters.add(columnName);
+            String queryResult = executeSQLForSQLServer(sql, parameters);
+            alterDropConstraintSQL = "alter table " + tableName + " drop constraint " + queryResult;
+        } catch (Exception e) {
+            LOGGER.error("Fetching SQLServer default value constraint failed.", e);
+        }
+        return alterDropConstraintSQL;
+    }
+
+    private String getDefaultValueForColumn(String tableName, String columnName) {
+        String defaultValue = StringUtils.EMPTY;
+        try {
+            String sql = "SELECT CM.text FROM syscolumns C INNER JOIN systypes T ON C.xusertype = T.xusertype "
+                    + "LEFT JOIN sys.extended_properties ETP ON  ETP.major_id = c.id AND ETP.minor_id = C.colid AND ETP.name ='MS_Description' "
+                    + "LEFT join syscomments CM ON C.cdefault=CM.id WHERE C.id = object_id(?) and C.name = ?";
+            List<String> parameters = new ArrayList<>();
+            parameters.add(tableName);
+            parameters.add(columnName);
+            defaultValue = executeSQLForSQLServer(sql, parameters);
+        } catch (Exception e) {
+            LOGGER.error("Fetching SQLServer default value failed.", e);
+        }
+        return defaultValue.replaceAll("\\(", "").replaceAll("\\)", "");
+    }
+
+    private String executeSQLForSQLServer(String sql, List<String> parameters) throws Exception {
         Connection connection = null;
         PreparedStatement statement = null;
-        String alterDropConstraintSQL = StringUtils.EMPTY;
+        String queryValue = StringUtils.EMPTY;
         try {
             Properties properties = dataSource.getAdvancedPropertiesIncludeUserInfo();
             connection = DriverManager.getConnection(dataSource.getConnectionURL(), properties);
-            String sql = "select c.name from sysconstraints a inner join syscolumns b on a.colid=b.colid inner join sysobjects c on a.constid=c.id "
-                    + "where a.id=object_id(?) and b.name=?";
             statement = connection.prepareStatement(sql);
-            statement.setString(1, tableName);
-            statement.setString(2, columnName);
+            for (int i = 0; i < parameters.size(); i++) {
+                statement.setString(i + 1, parameters.get(i));
+            }
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
-                alterDropConstraintSQL = "alter table " + tableName + " drop constraint " + rs.getString(1);
+                queryValue = rs.getString(1);
             }
-        } catch (SQLException e) {
-            LOGGER.error("Fetching SQLServer default value constraint failed.", e);
         } finally {
             try {
-                statement.close();
-                connection.close();
+                if (statement != null) {
+                    statement.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
             } catch (SQLException e) {
                 LOGGER.error("Unexpected error when closing connection.", e);
             }
         }
-        return alterDropConstraintSQL;
+        return queryValue;
     }
 
     private String convertDefaultValue(Dialect dialect, String sqlType, String defaultValue) {
@@ -324,6 +364,7 @@ public class MDMTable extends Table {
         }
         return true;
     }
+
 
     public void setDataSource(RDBMSDataSource dataSource) {
         this.dataSource = dataSource;

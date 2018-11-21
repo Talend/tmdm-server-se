@@ -248,7 +248,7 @@ public class MDMTable extends Table {
                         needAlterDefalutValue = false;
                     } else {
                         String alterDropConstraintSQL = generateAlterDefaultValueConstraintSQL(tableName, columnName);
-                        if(StringUtils.isNotBlank(alterDropConstraintSQL)) {
+                        if (StringUtils.isNotBlank(alterDropConstraintSQL)) {
                             results.add(alterDropConstraintSQL);
                         }
                         if (LOGGER.isDebugEnabled()) {
@@ -299,10 +299,9 @@ public class MDMTable extends Table {
             parameters.add(tableName);
             parameters.add(columnName);
             String queryResult = executeSQLForSQLServer(sql, parameters);
-            if(StringUtils.isNotEmpty(queryResult)){
+            if (StringUtils.isNotBlank(queryResult)) {
                 alterDropConstraintSQL = "alter table " + tableName + " drop constraint " + queryResult;
             }
-
         } catch (Exception e) {
             LOGGER.error("Fetching SQLServer default value constraint failed.", e);
         }

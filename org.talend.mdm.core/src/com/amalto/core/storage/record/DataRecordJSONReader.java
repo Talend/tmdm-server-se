@@ -42,7 +42,7 @@ public class DataRecordJSONReader implements DataRecordReader<JsonElement> {
         DataRecordMetadata metadata = new DataRecordMetadataImpl();
         DataRecord dataRecord = new DataRecord(type, metadata);
         rootElement = (JsonElement) element.getAsJsonObject().get(type.getName());
-        _read(repository, dataRecord, type, rootElement);
+        readElement(repository, dataRecord, type, rootElement);
         // Process fields that are links to other field values.
         ComplexTypeMetadata dataRecordType = dataRecord.getType();
         Collection<FieldMetadata> fields = dataRecordType.getFields();
@@ -54,7 +54,7 @@ public class DataRecordJSONReader implements DataRecordReader<JsonElement> {
         return dataRecord;
     }
 
-    private void _read(MetadataRepository repository, DataRecord dataRecord, ComplexTypeMetadata type, JsonElement element) {
+    private void readElement(MetadataRepository repository, DataRecord dataRecord, ComplexTypeMetadata type, JsonElement element) {
         JsonObject root = element.getAsJsonObject();
         for (Iterator<Entry<String, JsonElement>> iterator = root.entrySet().iterator(); iterator.hasNext(); ) {
             Entry<String, JsonElement> entry = iterator.next();
@@ -62,7 +62,7 @@ public class DataRecordJSONReader implements DataRecordReader<JsonElement> {
             JsonElement currentChild = entry.getValue();
             String refType = "";
             if (tagName.equalsIgnoreCase(JSON_REF)) {
-                refType = _resolveJSONRef(currentChild);
+                refType = resolveJSONRef(currentChild);
                 for (Entry<String, JsonElement> refEntry : ((JsonObject)rootElement.getAsJsonObject().get(refType)).entrySet()) {
                     root.addProperty(refEntry.getKey(), refEntry.getValue().getAsString());
                 }
@@ -84,20 +84,20 @@ public class DataRecordJSONReader implements DataRecordReader<JsonElement> {
                     }
                     DataRecord containedRecord = new DataRecord(containedType, UnsupportedDataRecordMetadata.INSTANCE);
                     dataRecord.set(field, containedRecord);
-                    _read(repository, containedRecord, containedType, child);
+                    readElement(repository, containedRecord, containedType, child);
                 } else {
-                    _read(repository, dataRecord, type, child);
+                    readElement(repository, dataRecord, type, child);
                 }
             } else if (currentChild instanceof JsonPrimitive) {
-                _readJsonPrimitive(repository, dataRecord, type, (JsonPrimitive)currentChild, tagName);
+                readJsonPrimitive(repository, dataRecord, type, (JsonPrimitive)currentChild, tagName);
             } else if (currentChild instanceof JsonArray) {
                 int size = ((JsonArray) currentChild).size();
                 for (int i=0; i<size; i++) {
                     JsonElement childObject = ((JsonArray) currentChild).get(i);
                     if (childObject instanceof JsonPrimitive) {
-                        _readJsonPrimitive(repository, dataRecord, type, (JsonPrimitive)childObject, tagName);
+                        readJsonPrimitive(repository, dataRecord, type, (JsonPrimitive)childObject, tagName);
                     } else if(childObject instanceof JsonObject) {
-                        _read(repository, dataRecord, type, childObject);
+                        readElement(repository, dataRecord, type, childObject);
                     }
                 }
             }
@@ -134,7 +134,7 @@ public class DataRecordJSONReader implements DataRecordReader<JsonElement> {
     *    }
     *
     */
-    private String _resolveJSONRef(JsonElement refChild) {
+    private String resolveJSONRef(JsonElement refChild) {
         if (refChild != null && !refChild.isJsonNull()) {
             if (refChild.isJsonPrimitive()) {
                 String refType = refChild.getAsString();
@@ -145,7 +145,7 @@ public class DataRecordJSONReader implements DataRecordReader<JsonElement> {
         return ""; //$NON-NLS-1$
     }
 
-    private void _readJsonPrimitive(MetadataRepository repository, DataRecord dataRecord, ComplexTypeMetadata type, JsonPrimitive currentChild, String tagName) {
+    private void readJsonPrimitive(MetadataRepository repository, DataRecord dataRecord, ComplexTypeMetadata type, JsonPrimitive currentChild, String tagName) {
         StringBuilder builder = new StringBuilder();
         String nodeValue = currentChild.getAsString();
         if (nodeValue != null) {

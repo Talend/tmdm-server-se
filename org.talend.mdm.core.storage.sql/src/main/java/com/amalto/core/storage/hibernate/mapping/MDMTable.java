@@ -239,13 +239,13 @@ public class MDMTable extends Table {
                 results.add(alter.toString());
             } else if (StringUtils.isNotBlank(defaultValue)) {
                 StringBuilder alter = new StringBuilder(root.toString());
-                boolean needAlterDefultValue = true;
+                boolean needAlterDefaultValue = true;
                 if (dialect instanceof OracleCustomDialect) {
                     alter.append(" MODIFY ").append(columnName).append(" DEFAULT ").append(defaultValue);
                 } else if (dialect instanceof SQLServerDialect) {
                     String existedDefaultValue = getDefaultValueForColumn(tableName, columnName);
                     if (StringUtils.isNotBlank(existedDefaultValue) && existedDefaultValue.equals(defaultValue)) {
-                        needAlterDefultValue = false;
+                        needAlterDefaultValue = false;
                     } else {
                         String alterDropConstraintSQL = generateAlterDefaultValueConstraintSQL(tableName, columnName);
                         if (StringUtils.isNotBlank(alterDropConstraintSQL)) {
@@ -261,7 +261,7 @@ public class MDMTable extends Table {
                         alter.append(" ALTER COLUMN ").append(columnName).append(" SET DEFAULT ").append(defaultValue);
                     }
                 }
-                if (needAlterDefultValue) {
+                if (needAlterDefaultValue) {
                     alter.append(dialect.getAddColumnSuffixString());
                     if (LOGGER.isDebugEnabled()) {
                         LOGGER.debug(alter.toString());

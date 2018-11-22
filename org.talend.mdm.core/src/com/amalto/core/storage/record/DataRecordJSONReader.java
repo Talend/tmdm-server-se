@@ -96,7 +96,7 @@ public class DataRecordJSONReader implements DataRecordReader<JsonElement> {
                     JsonElement childObject = ((JsonArray) currentChild).get(i);
                     if (childObject instanceof JsonPrimitive) {
                         readJsonPrimitive(repository, dataRecord, type, (JsonPrimitive)childObject, tagName);
-                    } else if(childObject instanceof JsonObject) {
+                    } else if (childObject instanceof JsonObject) {
                         readElement(repository, dataRecord, type, childObject);
                     }
                 }

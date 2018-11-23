@@ -315,9 +315,9 @@ public class DataRecordJSONReaderTestCase extends DataRecordDataWriterTestCase {
 
     /*
     "Customer": {
+        "ref": "NameField",
         "Id": "33",
-        "$ref": "#/NameField",
-        "NameField": {  "Name": "New_Name" }
+        "Name": "New_Name"
         }
     }
     */
@@ -328,7 +328,7 @@ public class DataRecordJSONReaderTestCase extends DataRecordDataWriterTestCase {
         setDataRecordField(record, "Id", "12345");
         setDataRecordField(record, "Name", "New_Name");
 
-        String inputJson = "{\"Customer\":{\"Id\":\"12345\",\"$ref\": \"#/NameField\",\"NameField\": {  \"Name\": \"New_Name\" }}}";
+        String inputJson = "{\"Customer\":{\"Id\":\"12345\",\"Name\": \"New_Name\",\"$ref\": \"NameField\"}}";
         DataRecord resultRecord = toDataRecord(inputJson, "Customer");
 
         Assert.assertEquals(record.get("Name"), resultRecord.get("Name"));

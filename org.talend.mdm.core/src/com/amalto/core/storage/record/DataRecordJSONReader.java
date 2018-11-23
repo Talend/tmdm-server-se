@@ -31,9 +31,9 @@ import com.google.gson.JsonPrimitive;
 
 public class DataRecordJSONReader implements DataRecordReader<JsonElement> {
 
-    private static final String JSON_REF = "$ref"; //$NON-NLS-1$
-    
-    private static JsonElement rootElement = null;
+    private final String JSON_REF = "$ref"; //$NON-NLS-1$
+
+    private JsonElement rootElement = null;
 
     public DataRecordJSONReader() {
     }
@@ -54,30 +54,58 @@ public class DataRecordJSONReader implements DataRecordReader<JsonElement> {
         return dataRecord;
     }
 
+    /*   The xsi:type in XML:
+    *    <Person><PersonId>33</PersonId><Name>person-name-322aa3</Name><Address xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="USAddress"><zip>10221</zip><Line1>usa-new</Line1></Address></Person>
+    * 
+    *    The expected JSON input:
+    *    {
+    *        "Person": {
+    *            "PersonId": "33",
+    *            "Name": "person-name-322aa3",
+    *            "Address": {
+    *                "zip": "102221",
+    *                "$ref": "USAddress",
+    *                "Line1": "usa-new"
+    *            }
+    *        }
+    *    }
+    */
+    private String getRefName(String typeName) {
+        if (null == rootElement.getAsJsonObject().get(typeName)) {
+            return "";
+        }
+        JsonObject root = rootElement.getAsJsonObject().get(typeName).getAsJsonObject();
+        for (Iterator<Entry<String, JsonElement>> iterator = root.entrySet().iterator(); iterator.hasNext(); ) {
+            Entry<String, JsonElement> entry = iterator.next();
+            String tagName = entry.getKey();
+            JsonElement currentElement = entry.getValue();
+            if (tagName.equalsIgnoreCase(JSON_REF)) {
+                String refName = currentElement.getAsString();
+                if (StringUtils.isNotEmpty(refName)) {
+                    return refName;
+                }
+            }
+        }
+        return "";
+    }
+
     private void readElement(MetadataRepository repository, DataRecord dataRecord, ComplexTypeMetadata type, JsonElement element) {
         JsonObject root = element.getAsJsonObject();
         for (Iterator<Entry<String, JsonElement>> iterator = root.entrySet().iterator(); iterator.hasNext(); ) {
             Entry<String, JsonElement> entry = iterator.next();
             String tagName = entry.getKey();
             JsonElement currentChild = entry.getValue();
-            String refType = "";
-            if (tagName.equalsIgnoreCase(JSON_REF)) {
-                refType = resolveJSONRef(currentChild);
-                for (Entry<String, JsonElement> refEntry : ((JsonObject)rootElement.getAsJsonObject().get(refType)).entrySet()) {
-                    root.addProperty(refEntry.getKey(), refEntry.getValue().getAsString());
-                }
-                iterator.remove();
-            }
             if (currentChild instanceof JsonObject) {
                 JsonObject child = currentChild.getAsJsonObject();
                 if (!type.hasField(tagName)) {
                     continue;
                 }
                 FieldMetadata field = type.getField(tagName);
+                String refName = getRefName(tagName);
                 if (field.getType() instanceof ContainedComplexTypeMetadata) {
                     ComplexTypeMetadata containedType = (ComplexTypeMetadata) field.getType();
                     for (ComplexTypeMetadata subType : containedType.getSubTypes()) {
-                        if (subType.getName().equals(refType)) {
+                        if (StringUtils.isNotEmpty(refName) && subType.getName().equals(refName)) {
                             containedType = subType;
                             break;
                         }
@@ -104,48 +132,11 @@ public class DataRecordJSONReader implements DataRecordReader<JsonElement> {
         }
     }
 
-    /*   The xsi:type in XML:
-    *    <Person><PersonId>33</PersonId><Name>person-name-322aa3</Name><Address xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="USAddress"><zip>10221</zip><Line1>usa-new</Line1></Address></Person>
-    * 
-    *    The expected JSON input:
-    *    {
-    *        "Person": {
-    *            "PersonId": "33",
-    *            "Name": "person-name-322aa3",
-    *            "Address": {
-    *                "zip": "102221",
-    *                "$ref": "#/USAddress"
-    *            },
-    *            "USAddress": {  "Line1": "usa-new" }
-    *                
-    *        }
-    *    }
-    *    
-    *    The resolved JSON output:
-    *    {
-    *        "Person": {
-    *            "PersonId": "33",
-    *            "Name": "person-name-322aa3",
-    *            "Address": {
-    *                "zip": "102221",
-    *                "Line1": "usa-new"
-    *            }   
-    *        }
-    *    }
-    *
-    */
-    private String resolveJSONRef(JsonElement refChild) {
-        if (refChild != null && !refChild.isJsonNull()) {
-            if (refChild.isJsonPrimitive()) {
-                String refType = refChild.getAsString();
-                refType = StringUtils.substringAfterLast(refType, "/"); //$NON-NLS-1$
-                return refType;
-            }
-        }
-        return ""; //$NON-NLS-1$
-    }
-
     private void readJsonPrimitive(MetadataRepository repository, DataRecord dataRecord, ComplexTypeMetadata type, JsonPrimitive currentChild, String tagName) {
+        if (tagName.equalsIgnoreCase(JSON_REF)) {
+            return;
+        }            
+
         StringBuilder builder = new StringBuilder();
         String nodeValue = currentChild.getAsString();
         if (nodeValue != null) {

@@ -43,6 +43,41 @@ public class DataRecordJSONReaderTestCase extends DataRecordDataWriterTestCase {
     }
 
     @Test
+    public void testAllFieldType() throws Exception {
+        DataRecord record = createDataRecord(repository.getComplexType("TypeAll"));
+        setDataRecordField(record, "Id", "12345");
+        setDataRecordField(record, "string", "string");
+        setDataRecordField(record, "boolean", 0);
+        setDataRecordField(record, "float", 0.1);
+        setDataRecordField(record, "double", 0.001);
+        setDataRecordField(record, "decimal", 1.2);
+        setDataRecordField(record, "duration", 1);
+        setDataRecordField(record, "dateTime", "2018-10-10T11:12:13");
+        setDataRecordField(record, "time", "12:30:06");
+        setDataRecordField(record, "date", "2018-12-12");
+        setDataRecordField(record, "hexBinary", "hexBinary");
+        setDataRecordField(record, "base64Binary", "base64Binary");
+        setDataRecordField(record, "anyURI", "anyURI");
+        setDataRecordField(record, "qname", "qname");
+        setDataRecordField(record, "integer", 10);
+        setDataRecordField(record, "nonPositiveInteger", -10);
+        setDataRecordField(record, "negativeInteger", -20);
+        setDataRecordField(record, "long", 123);
+        setDataRecordField(record, "int", 123);
+        setDataRecordField(record, "short", 255);
+        setDataRecordField(record, "byte", 1);
+        setDataRecordField(record, "nonNegativeInteger", 30);
+        setDataRecordField(record, "unsignedLong", 234);
+        setDataRecordField(record, "unsignedInt", 123);
+        setDataRecordField(record, "unsignedShort", 223);
+        setDataRecordField(record, "unsignedByte", 111);
+        setDataRecordField(record, "positiveInteger", 3456);
+        String inputJson = "{\"TypeAll\": {\"Id\":\"12345\",\"string\":\"string\",\"boolean\":0,\"float\":0.1,\"double\":0.001,\"decimal\":1.2,\"duration\":1,\"dateTime\":\"2018-10-10T11:12:13\",\"time\":\"12:30:06\",\"date\":\"2018-12-12\",\"hexBinary\":\"hexBinary\",\"base64Binary\":\"base64Binary\",\"anyURI\":\"anyURI\",\"qname\":\"qname\",\"integer\":10,\"nonPositiveInteger\":-10,\"negativeInteger\":-20,\"long\":123,\"int\":123,\"short\":255,\"byte\":1,\"nonNegativeInteger\":30,\"unsignedLong\":234,\"unsignedInt\":123,\"unsignedShort\":223,\"unsignedByte\":111,\"positiveInteger\":3456}}";
+        DataRecord resultRecord = toDataRecord(inputJson, "TypeAll");
+        Assert.assertEquals(record, resultRecord);
+    }
+
+    @Test
     public void testComplexType() throws Exception {
         DataRecord record = createDataRecord(repository.getComplexType("SimpleProduct"));
         setDataRecordField(record, "Id", "12345");

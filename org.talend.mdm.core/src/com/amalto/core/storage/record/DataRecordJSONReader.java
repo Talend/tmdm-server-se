@@ -63,28 +63,32 @@ public class DataRecordJSONReader implements DataRecordReader<JsonElement> {
     *            "PersonId": "33",
     *            "Name": "person-name-322aa3",
     *            "Address": {
-    *                "zip": "102221",
     *                "$ref": "USAddress",
+    *                "zip": "102221",
     *                "Line1": "usa-new"
     *            }
     *        }
     *    }
     */
     private String getRefName(String typeName) {
-        if (null == rootElement.getAsJsonObject().get(typeName)) {
-            return "";
-        }
-        JsonObject root = rootElement.getAsJsonObject().get(typeName).getAsJsonObject();
-        for (Iterator<Entry<String, JsonElement>> iterator = root.entrySet().iterator(); iterator.hasNext(); ) {
-            Entry<String, JsonElement> entry = iterator.next();
-            String tagName = entry.getKey();
-            JsonElement currentElement = entry.getValue();
-            if (tagName.equalsIgnoreCase(JSON_REF)) {
-                String refName = currentElement.getAsString();
-                if (StringUtils.isNotEmpty(refName)) {
-                    return refName;
+        try {
+            if (null == rootElement.getAsJsonObject().get(typeName)) {
+                return "";
+            }
+            JsonObject root = rootElement.getAsJsonObject().get(typeName).getAsJsonObject();
+            for (Iterator<Entry<String, JsonElement>> iterator = root.entrySet().iterator(); iterator.hasNext(); ) {
+                Entry<String, JsonElement> entry = iterator.next();
+                String tagName = entry.getKey();
+                JsonElement currentElement = entry.getValue();
+                if (tagName.equalsIgnoreCase(JSON_REF)) {
+                    String refName = currentElement.getAsString();
+                    if (StringUtils.isNotEmpty(refName)) {
+                        return refName;
+                    }
                 }
             }
+        } catch (Exception e) {
+            return "";
         }
         return "";
     }
@@ -96,26 +100,10 @@ public class DataRecordJSONReader implements DataRecordReader<JsonElement> {
             String tagName = entry.getKey();
             JsonElement currentChild = entry.getValue();
             if (currentChild instanceof JsonObject) {
-                JsonObject child = currentChild.getAsJsonObject();
                 if (!type.hasField(tagName)) {
                     continue;
                 }
-                FieldMetadata field = type.getField(tagName);
-                String refName = getRefName(tagName);
-                if (field.getType() instanceof ContainedComplexTypeMetadata) {
-                    ComplexTypeMetadata containedType = (ComplexTypeMetadata) field.getType();
-                    for (ComplexTypeMetadata subType : containedType.getSubTypes()) {
-                        if (StringUtils.isNotEmpty(refName) && subType.getName().equals(refName)) {
-                            containedType = subType;
-                            break;
-                        }
-                    }
-                    DataRecord containedRecord = new DataRecord(containedType, UnsupportedDataRecordMetadata.INSTANCE);
-                    dataRecord.set(field, containedRecord);
-                    readElement(repository, containedRecord, containedType, child);
-                } else {
-                    readElement(repository, dataRecord, type, child);
-                }
+                readJsonObject(repository, dataRecord, type, (JsonObject)currentChild, tagName);
             } else if (currentChild instanceof JsonPrimitive) {
                 readJsonPrimitive(repository, dataRecord, type, (JsonPrimitive)currentChild, tagName);
             } else if (currentChild instanceof JsonArray) {
@@ -125,17 +113,39 @@ public class DataRecordJSONReader implements DataRecordReader<JsonElement> {
                     if (childObject instanceof JsonPrimitive) {
                         readJsonPrimitive(repository, dataRecord, type, (JsonPrimitive)childObject, tagName);
                     } else if (childObject instanceof JsonObject) {
-                        readElement(repository, dataRecord, type, childObject);
+                        if (!type.hasField(tagName)) {
+                            continue;
+                        }
+                        readJsonObject(repository, dataRecord, type, (JsonObject)childObject, tagName);
                     }
                 }
             }
         }
     }
 
+    private void readJsonObject(MetadataRepository repository, DataRecord dataRecord, ComplexTypeMetadata type, JsonObject currentChild, String tagName) {
+        FieldMetadata field = type.getField(tagName);
+        String refName = getRefName(tagName);
+        if (field.getType() instanceof ContainedComplexTypeMetadata) {
+            ComplexTypeMetadata containedType = (ComplexTypeMetadata) field.getType();
+            for (ComplexTypeMetadata subType : containedType.getSubTypes()) {
+                if (StringUtils.isNotEmpty(refName) && subType.getName().equals(refName)) {
+                    containedType = subType;
+                    break;
+                }
+            }
+            DataRecord containedRecord = new DataRecord(containedType, UnsupportedDataRecordMetadata.INSTANCE);
+            dataRecord.set(field, containedRecord);
+            readElement(repository, containedRecord, containedType, currentChild);
+        } else {
+            readElement(repository, dataRecord, type, currentChild);
+        }
+    }
+
     private void readJsonPrimitive(MetadataRepository repository, DataRecord dataRecord, ComplexTypeMetadata type, JsonPrimitive currentChild, String tagName) {
         if (tagName.equalsIgnoreCase(JSON_REF)) {
             return;
-        }            
+        }
 
         StringBuilder builder = new StringBuilder();
         String nodeValue = currentChild.getAsString();

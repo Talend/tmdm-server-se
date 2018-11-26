@@ -194,7 +194,7 @@ public class SystemModels {
         StorageAdmin storageAdmin = ServerContext.INSTANCE.get().getStorageAdmin();
         Storage storage = storageAdmin.get(modelName, StorageType.MASTER);
         if (storage == null) {
-            return getErrorResponse(new IllegalArgumentException(), "Container '" + modelName + "' does not exist."); //$NON-NLS-1$//$NON-NLS-2$
+            return getErrorResponse(new NotFoundException(), StringUtils.EMPTY);
         }
         // Parses new data model version for comparison with existing
         MetadataRepository previousRepository = storage.getMetadataRepository();
@@ -289,8 +289,7 @@ public class SystemModels {
             StorageAdmin storageAdmin = ServerContext.INSTANCE.get().getStorageAdmin();
             Storage storage = storageAdmin.get(modelName, StorageType.MASTER);
             if (storage == null || dataModelPOJO == null) {
-                return getErrorResponse(new IllegalArgumentException(),
-                        "Container '" + modelName + "' does not exist. Skip impact analyzing for model change.");//$NON-NLS-1$//$NON-NLS-2$
+                return getErrorResponse(new NotFoundException(), StringUtils.EMPTY);
             }
 
             if (storage.getType() == StorageType.SYSTEM) {

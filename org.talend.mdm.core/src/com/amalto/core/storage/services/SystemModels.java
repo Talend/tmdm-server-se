@@ -12,9 +12,6 @@ package com.amalto.core.storage.services;
 
 import static com.amalto.core.query.user.UserQueryBuilder.eq;
 import static com.amalto.core.query.user.UserQueryBuilder.from;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -30,11 +27,13 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Response;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -64,6 +63,10 @@ import com.amalto.core.storage.StorageType;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.util.LocalUser;
 import com.amalto.core.util.XtentisException;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 
 @Path("/system/models")
@@ -96,9 +99,9 @@ public class SystemModels {
     @GET
     @Path("{model}")
     @ApiOperation("Returns the requested data model XML schema")
-    public String getSchema(@ApiParam("The model name") @PathParam("model") String modelName) {
+    public Response getSchema(@ApiParam("The model name") @PathParam("model") String modelName) {
         if (!isSystemStorageAvailable()) {
-            return StringUtils.EMPTY;
+            return ServiceUtil.getErrorResponse(new RuntimeException(), "System storage is not available."); //$NON-NLS-1$
         }
         UserQueryBuilder qb = from(dataModelType).where(eq(dataModelType.getField("name"), modelName)); //$NON-NLS-1$
         systemStorage.begin();
@@ -109,22 +112,26 @@ public class SystemModels {
             if (iterator.hasNext()) {
                 DataRecord model = iterator.next();
                 if (iterator.hasNext()) {
-                    throw new IllegalStateException("Found multiple data models for '" + modelName + "'."); //$NON-NLS-1$ //$NON-NLS-2$
+                    return ServiceUtil.getErrorResponse(new IllegalStateException(),
+                            "Found multiple data models for '" + modelName + "'."); //$NON-NLS-1$ //$NON-NLS-2$
                 }
                 modelContent = String.valueOf(model.get("schema")); //$NON-NLS-1$
             }
             systemStorage.commit();
-            return modelContent;
+            if (StringUtils.isEmpty(modelContent)) {
+                return ServiceUtil.getErrorResponse(new NotFoundException(), StringUtils.EMPTY);
+            }
+            return Response.ok(modelContent).build();
         } catch (Exception e) {
             systemStorage.rollback();
-            throw new RuntimeException("Could not update data model.", e); //$NON-NLS-1$
+            return ServiceUtil.getErrorResponse(e, "Could not get data model."); //$NON-NLS-1$
         }
     }
 
     @POST
     @Path("/")
     @ApiOperation("Create a new data model given its name and XSD provided as request content")
-    public void createDataModel(@ApiParam("New model name") @QueryParam("name") String modelName, InputStream dataModel) {
+    public Response createDataModel(@ApiParam("New model name") @QueryParam("name") String modelName, InputStream dataModel) {
         String user = null;
         try {
             user = LocalUser.getLocalUser().getUsername();
@@ -140,17 +147,19 @@ public class SystemModels {
             } else {
                 MDMAuditLogger.dataModelModified(user, oldDataModel, dataModelPOJO);
             }
+            return Response.ok().build();
         } catch (Exception e) {
-            RuntimeException ex = new RuntimeException("An error occurred while creating Data Model.", e); //$NON-NLS-1$
+            String errorMsg = "An error occurred while creating Data Model."; //$NON-NLS-1$
+            RuntimeException ex = new RuntimeException(errorMsg, e); // $NON-NLS-1$
             MDMAuditLogger.dataModelCreationFailed(user, modelName, ex);
-            throw ex;
+            return ServiceUtil.getErrorResponse(ex, errorMsg);
         }
     }
 
     @PUT
     @Path("{model}")
     @ApiOperation("Updates the requested model with the XSD provided as request content")
-    public void updateModel(@ApiParam("Model name") @PathParam("model") String modelName, 
+    public Response updateModel(@ApiParam("Model name") @PathParam("model") String modelName,
             @ApiParam("Update model even if HIGH or MEDIUM impacts were found") @QueryParam("force") boolean force, InputStream dataModel) {
         String user = null;
         DataModelPOJO oldDataModel = null;
@@ -167,17 +176,17 @@ public class SystemModels {
                 dataModelPOJO.setSchema(IOUtils.toString(dataModel, "UTF-8")); //$NON-NLS-1$
                 dataModelPOJO.store();
                 MDMAuditLogger.dataModelModified(user, oldDataModel, dataModelPOJO, true);
-                return;
+                return Response.ok().build();
             } catch (Exception e) {
                 RuntimeException ex = new RuntimeException("An error occurred while updating Data Model.", e); //$NON-NLS-1$
                 MDMAuditLogger.dataModelModificationFailed(user, modelName, ex);
-                throw ex;
+                return ServiceUtil.getErrorResponse(ex, "An error occurred while updating Data Model."); //$NON-NLS-1$
             }
         }
         StorageAdmin storageAdmin = ServerContext.INSTANCE.get().getStorageAdmin();
         Storage storage = storageAdmin.get(modelName, StorageType.MASTER);
         if (storage == null) {
-            throw new IllegalArgumentException("Container '" + modelName + "' does not exist."); //$NON-NLS-1$ //$NON-NLS-2$
+            return ServiceUtil.getErrorResponse(new NotFoundException(), StringUtils.EMPTY);
         }
         // Parses new data model version for comparison with existing
         MetadataRepository previousRepository = storage.getMetadataRepository();
@@ -187,7 +196,7 @@ public class SystemModels {
             content = IOUtils.toString(dataModel, "UTF-8"); //$NON-NLS-1$
             newRepository.load(new ByteArrayInputStream(content.getBytes("UTF-8"))); //$NON-NLS-1$
         } catch (IOException e) {
-            throw new RuntimeException("Could not read data model from body.", e); //$NON-NLS-1$
+            return ServiceUtil.getErrorResponse(new RuntimeException(), "Could not read data model from body."); //$NON-NLS-1$
         }
         // Ask the storage to adapt its structure following the changes
         storage.adapt(newRepository, force);
@@ -234,12 +243,13 @@ public class SystemModels {
             } catch (Exception e) {
                 systemStorage.rollback();
                 MDMAuditLogger.dataModelModificationFailed(user, modelName, e);
-                throw new RuntimeException("Could not update data model.", e); //$NON-NLS-1$
+                return ServiceUtil.getErrorResponse(new RuntimeException(), "Could not update data model."); //$NON-NLS-1$
             }
         }
         // synchronize with outer agents
         DataModelChangeNotifier dmUpdateEventNotifier = DataModelChangeNotifier.createInstance();
         dmUpdateEventNotifier.notifyChange(new DMUpdateEvent(modelName));
+        return Response.ok().build();
     }
 
 
@@ -250,15 +260,14 @@ public class SystemModels {
     @POST
     @Path("{model}")
     @ApiOperation("Get impacts of the model update with the new XSD provided as request content. Changes will not be performed !")
-    public String analyzeModelChange(@ApiParam("Model name") @PathParam("model") String modelName, 
+    public Response analyzeModelChange(@ApiParam("Model name") @PathParam("model") String modelName,
             @ApiParam("Optional language to get localized result") @QueryParam("lang") String locale, 
             InputStream dataModel) {
         DataModelPOJO dataModelPOJO;
         try {
             dataModelPOJO = DataModelPOJO.load(DataModelPOJO.class, new DataModelPOJOPK(modelName));
         } catch (XtentisException e) {
-            LOGGER.error("An error occurred while fetching Data Model.", e);
-            throw new RuntimeException("An error occurred while fetching Data Model.", e); //$NON-NLS-1$
+            return ServiceUtil.getErrorResponse(new RuntimeException(), "An error occurred while fetching Data Model.");//$NON-NLS-1$
         }
         Map<ImpactAnalyzer.Impact, List<Change>> impacts;
         List<String> typeNamesToDrop = new ArrayList<String>();
@@ -271,13 +280,11 @@ public class SystemModels {
             StorageAdmin storageAdmin = ServerContext.INSTANCE.get().getStorageAdmin();
             Storage storage = storageAdmin.get(modelName, StorageType.MASTER);
             if (storage == null || dataModelPOJO == null) {
-                LOGGER.warn("Container '" + modelName + "' does not exist. Skip impact analyzing for model change."); //$NON-NLS-1$//$NON-NLS-2$
-                return StringUtils.EMPTY;
+                return ServiceUtil.getErrorResponse(new NotFoundException(), StringUtils.EMPTY);
             }
 
             if (storage.getType() == StorageType.SYSTEM) {
-                LOGGER.debug("No model update for system storage"); //$NON-NLS-1$
-                return StringUtils.EMPTY;
+                return ServiceUtil.getErrorResponse(new IllegalArgumentException(), "No model update for system storage"); //$NON-NLS-1$
             }
             // Compare new data model with existing data model
             MetadataRepository previousRepository = storage.getMetadataRepository();
@@ -333,7 +340,7 @@ public class SystemModels {
             }
             writer.writeEndElement();
         } catch (XMLStreamException e) {
-            throw new RuntimeException(e);
+            return ServiceUtil.getErrorResponse(e, e.getMessage());
         } finally {
             if (writer != null) {
                 try {
@@ -345,6 +352,6 @@ public class SystemModels {
                 }
             }
         }
-        return resultAsXml.toString();
+        return Response.ok(resultAsXml.toString()).build();
     }
 }

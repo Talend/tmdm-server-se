@@ -18,6 +18,7 @@ import com.amalto.core.storage.record.metadata.DataRecordMetadataImpl;
 import com.amalto.core.storage.record.metadata.UnsupportedDataRecordMetadata;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.metadata.*;
 
 import java.util.Collection;
@@ -30,6 +31,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
 public class DataRecordJSONReader implements DataRecordReader<JsonElement> {
+
+    private static final Logger LOGGER = Logger.getLogger(DataRecordJSONReader.class);
 
     private final String JSON_REF = "$ref"; //$NON-NLS-1$
 
@@ -70,7 +73,7 @@ public class DataRecordJSONReader implements DataRecordReader<JsonElement> {
     *        }
     *    }
     */
-    private String getRefName(String typeName) {
+    private String getReferenceValue(String typeName) {
         try {
             if (null == rootElement.getAsJsonObject().get(typeName)) {
                 return StringUtils.EMPTY;
@@ -88,6 +91,7 @@ public class DataRecordJSONReader implements DataRecordReader<JsonElement> {
                 }
             }
         } catch (Exception e) {
+            LOGGER.warn("Failed to get JSON reference value.", e); //$NON-NLS-1$
             return StringUtils.EMPTY;
         }
         return StringUtils.EMPTY;
@@ -125,11 +129,11 @@ public class DataRecordJSONReader implements DataRecordReader<JsonElement> {
 
     private void readJsonObject(MetadataRepository repository, DataRecord dataRecord, ComplexTypeMetadata type, JsonObject currentChild, String tagName) {
         FieldMetadata field = type.getField(tagName);
-        String refName = getRefName(tagName);
+        String referenceValue = getReferenceValue(tagName);
         if (field.getType() instanceof ContainedComplexTypeMetadata) {
             ComplexTypeMetadata containedType = (ComplexTypeMetadata) field.getType();
             for (ComplexTypeMetadata subType : containedType.getSubTypes()) {
-                if (StringUtils.isNotEmpty(refName) && subType.getName().equals(refName)) {
+                if (StringUtils.isNotEmpty(referenceValue) && subType.getName().equals(referenceValue)) {
                     containedType = subType;
                     break;
                 }

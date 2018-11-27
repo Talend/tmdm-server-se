@@ -108,7 +108,7 @@ public class SystemModels {
     @ApiOperation("Returns the requested data model XML schema")
     public Response getSchema(@ApiParam("The model name") @PathParam("model") String modelName) {
         if (!isSystemStorageAvailable()) {
-            return ServiceUtil.getErrorResponse(new Exception(), "System storage is not available."); //$NON-NLS-1$
+            return ServiceUtil.getErrorResponse(new RuntimeException(), "System storage is not available."); //$NON-NLS-1$
         }
         UserQueryBuilder qb = from(dataModelType).where(eq(dataModelType.getField("name"), modelName)); //$NON-NLS-1$
         systemStorage.begin();

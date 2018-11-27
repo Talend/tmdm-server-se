@@ -73,7 +73,7 @@ public class DataRecordJSONReader implements DataRecordReader<JsonElement> {
     private String getRefName(String typeName) {
         try {
             if (null == rootElement.getAsJsonObject().get(typeName)) {
-                return "";
+                return StringUtils.EMPTY;
             }
             JsonObject root = rootElement.getAsJsonObject().get(typeName).getAsJsonObject();
             for (Iterator<Entry<String, JsonElement>> iterator = root.entrySet().iterator(); iterator.hasNext(); ) {
@@ -88,9 +88,9 @@ public class DataRecordJSONReader implements DataRecordReader<JsonElement> {
                 }
             }
         } catch (Exception e) {
-            return "";
+            return StringUtils.EMPTY;
         }
-        return "";
+        return StringUtils.EMPTY;
     }
 
     private void readElement(MetadataRepository repository, DataRecord dataRecord, ComplexTypeMetadata type, JsonElement element) {

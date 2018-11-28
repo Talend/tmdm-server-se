@@ -100,6 +100,26 @@ public class DataRecordJSONReader implements DataRecordReader<JsonElement> {
         return StringUtils.EMPTY;
     }
 
+    /*
+    *    {
+    *        "Product": {
+    *            "Id": "231035933",
+    *            "Name": "Talend Dog T-Shirt",
+    *            "Family": "[3]",
+    *            "Stores": {
+    *                "Store": [
+    *                    "[TalendUS]",
+    *                    "[TalendFR]"
+    *                ]
+    *            }
+    *        }
+    *    }
+    *    
+    *    As above Json input, the root element is Product, fields Id, Name and Family are JsonPrimitive.
+    *    Field Stores is ComplexTypeMetadata and JsonObject, and filed Store is JsonArray.
+    *    Field Family and each Store are ReferenceFieldMetadata, 
+    *    
+    */
     private void readElement(MetadataRepository repository, DataRecord dataRecord, ComplexTypeMetadata type, JsonElement element) {
         JsonObject root = element.getAsJsonObject();
         for (Iterator<Entry<String, JsonElement>> iterator = root.entrySet().iterator(); iterator.hasNext(); ) {

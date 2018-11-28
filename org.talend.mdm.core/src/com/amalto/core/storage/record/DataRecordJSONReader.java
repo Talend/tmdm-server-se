@@ -37,6 +37,8 @@ public class DataRecordJSONReader implements DataRecordReader<JsonElement> {
     private final String JSON_REF = "$ref"; //$NON-NLS-1$
 
     private JsonElement rootElement = null;
+    
+    private String entityName = "";
 
     public DataRecordJSONReader() {
     }
@@ -44,6 +46,7 @@ public class DataRecordJSONReader implements DataRecordReader<JsonElement> {
     public DataRecord read(MetadataRepository repository, ComplexTypeMetadata type, JsonElement element) {
         DataRecordMetadata metadata = new DataRecordMetadataImpl();
         DataRecord dataRecord = new DataRecord(type, metadata);
+        entityName = type.getName();
         rootElement = (JsonElement) element.getAsJsonObject().get(type.getName());
         readElement(repository, dataRecord, type, rootElement);
         // Process fields that are links to other field values.
@@ -105,7 +108,7 @@ public class DataRecordJSONReader implements DataRecordReader<JsonElement> {
             JsonElement currentChild = entry.getValue();
             if (currentChild instanceof JsonObject) {
                 if (!type.hasField(tagName)) {
-                    continue;
+                    throwNotOwnedField(tagName);
                 }
                 readJsonObject(repository, dataRecord, type, (JsonObject)currentChild, tagName);
             } else if (currentChild instanceof JsonPrimitive) {
@@ -118,13 +121,17 @@ public class DataRecordJSONReader implements DataRecordReader<JsonElement> {
                         readJsonPrimitive(repository, dataRecord, type, (JsonPrimitive)childObject, tagName);
                     } else if (childObject instanceof JsonObject) {
                         if (!type.hasField(tagName)) {
-                            continue;
+                            throwNotOwnedField(tagName);
                         }
                         readJsonObject(repository, dataRecord, type, (JsonObject)childObject, tagName);
                     }
                 }
             }
         }
+    }
+
+    private void throwNotOwnedField(String tagName) {
+        throw new IllegalArgumentException("Entity '" + entityName + "' doesn't own field '" + tagName + "'."); //$NON-NLS-1$
     }
 
     private void readJsonObject(MetadataRepository repository, DataRecord dataRecord, ComplexTypeMetadata type, JsonObject currentChild, String tagName) {
@@ -166,6 +173,8 @@ public class DataRecordJSONReader implements DataRecordReader<JsonElement> {
                 } else {
                     dataRecord.set(field, StorageMetadataUtils.convert(textContent, field, type));
                 }
+            } else {
+                throwNotOwnedField(tagName);
             }
         }
     }

@@ -37,8 +37,8 @@ public class DataRecordJSONReader implements DataRecordReader<JsonElement> {
     private final String JSON_REF = "$ref"; //$NON-NLS-1$
 
     private JsonElement rootElement = null;
-    
-    private String entityName = "";
+
+    private String entityName = StringUtils.EMPTY;
 
     public DataRecordJSONReader() {
     }

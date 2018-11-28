@@ -66,6 +66,9 @@ import org.apache.commons.lang.NotImplementedException;
 import org.talend.mdm.commmon.metadata.ContainedComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 
+import java.util.Arrays;
+import java.util.stream.Stream;
+
 /**
  * This {@link com.amalto.core.query.user.Visitor} implementation transforms an {@link com.amalto.core.query.user.Expression}
  * into JSON that can be then processed by a {@link QueryParser}.
@@ -102,7 +105,13 @@ public class UserQueryJsonSerializer extends VisitorAdapter<JsonElement> {
 
     private static JsonElement toConstant(ConstantExpression constantExpression) {
         final JsonObject valueObject = new JsonObject();
-        valueObject.add("value", new JsonPrimitive(String.valueOf(constantExpression.getValue())));
+        if (constantExpression.isExpressionList()) {
+            JsonArray jsonArray = new JsonArray();
+            constantExpression.getValueList().stream().forEach(con -> jsonArray.add(new JsonPrimitive(con.toString())));
+            valueObject.add("value", jsonArray);
+        } else {
+            valueObject.add("value", new JsonPrimitive(String.valueOf(constantExpression.getValue())));
+        }
         return valueObject;
     }
 
@@ -210,6 +219,8 @@ public class UserQueryJsonSerializer extends VisitorAdapter<JsonElement> {
             compareObject.add("lte", compareObjectContent);
         } else if (predicate == Predicate.STARTS_WITH) {
             compareObject.add("startsWith", compareObjectContent);
+        } else if (predicate == Predicate.IN) {
+            compareObject.add("in", compareObjectContent);
         }
 
         return compareObject;

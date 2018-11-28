@@ -38,7 +38,7 @@ public class DataRecordJSONReader implements DataRecordReader<JsonElement> {
 
     private JsonElement rootElement = null;
 
-    private String entityName = StringUtils.EMPTY;
+    private String entityName = null;
 
     public DataRecordJSONReader() {
     }

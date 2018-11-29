@@ -96,11 +96,7 @@ public class UserQueryJsonSerializer extends VisitorAdapter<JsonElement> {
     }
 
     private static String toPath(Field field) {
-        if(field.getFieldMetadata().getContainingType() instanceof ContainedComplexTypeMetadata){
-            return field.getFieldMetadata().getContainingType().getContainer().getContainingType().getName() + '/' + field.getFieldMetadata().getContainingType().getContainer().getName() + '/' + field.getFieldMetadata().getName();
-        }else{
-            return field.getFieldMetadata().getContainingType().getName() + '/' + field.getFieldMetadata().getName();
-        }
+        return String.join("/", field.getFieldMetadata().getEntityTypeName(), field.getFieldMetadata().getPath());
     }
 
     private static JsonElement toConstant(ConstantExpression constantExpression) {

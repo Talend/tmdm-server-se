@@ -11,7 +11,24 @@
 
 package com.amalto.core.query.optimization;
 
-import com.amalto.core.query.user.*;
+import com.amalto.core.query.user.BinaryLogicOperator;
+import com.amalto.core.query.user.Compare;
+import com.amalto.core.query.user.Condition;
+import com.amalto.core.query.user.ConstantCondition;
+import com.amalto.core.query.user.FieldFullText;
+import com.amalto.core.query.user.FullText;
+import com.amalto.core.query.user.IsEmpty;
+import com.amalto.core.query.user.IsNull;
+import com.amalto.core.query.user.Isa;
+import com.amalto.core.query.user.NotIsEmpty;
+import com.amalto.core.query.user.NotIsNull;
+import com.amalto.core.query.user.Predicate;
+import com.amalto.core.query.user.Range;
+import com.amalto.core.query.user.Select;
+import com.amalto.core.query.user.StringConstant;
+import com.amalto.core.query.user.UnaryLogicOperator;
+import com.amalto.core.query.user.UserQueryHelper;
+import com.amalto.core.query.user.VisitorAdapter;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 

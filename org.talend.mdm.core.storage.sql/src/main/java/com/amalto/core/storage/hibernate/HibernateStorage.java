@@ -41,6 +41,7 @@ import java.util.Set;
 
 import javax.xml.XMLConstants;
 
+import com.amalto.core.query.optimization.ContainedTypeOptimizer;
 import com.amalto.core.storage.record.StorageConstants;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.ObjectUtils;
@@ -184,8 +185,8 @@ public class HibernateStorage implements Storage {
                                                                                           // value < p) into
                                                                                           // (RANGE(n,p)).
             new ContainsOptimizer(), // Transforms all '*' in CONTAINS into '%'.
-            new UpdateReportOptimizer() // Adds queries on super types if update report query a concept name with super
-                                        // types.
+            new UpdateReportOptimizer(), // Adds queries on super types if update report query a concept name with super types.
+            new ContainedTypeOptimizer() // Define empty constant for ContainedType fields
     };
 
     private static final String FORBIDDEN_PREFIX = "x_talend_"; //$NON-NLS-1$

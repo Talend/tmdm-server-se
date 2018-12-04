@@ -1,0 +1,8 @@
+{
+  "select": {
+    "from": ["Type1"],
+    "fields": [
+      {"field": "Type1/field1"}
+    ]
+  }
+}

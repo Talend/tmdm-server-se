@@ -828,6 +828,34 @@ public class UserQueryBuilder {
     }
 
     /**
+     * Adds a {@link TypedExpression} the query should return. If the typed expression has already been selected, an
+     * {@link Alias} is automatically created.
+     *
+     * @param expression Expression that represents a value to return in query results.
+     * @return This instance for method call chaining.
+     */
+    public UserQueryBuilder select(TypedExpression expression) {
+        Select select = expressionAsSelect();
+        List<TypedExpression> selectedFields = select.getSelectedFields();
+        if (!selectedFields.contains(expression)) {
+            if (expression instanceof Field) {
+                // Make sure to go through field specific checks
+                select(((Field) expression).getFieldMetadata());
+            } else {
+                selectedFields.add(expression);
+            }
+        } else {
+            if (expression instanceof Field) {
+                // TMDM-5022: Automatic alias if a field with same name was already selected.
+                selectedFields.add(alias(expression, ((Field) expression).getFieldMetadata().getName()));
+            } else {
+                throw new UnsupportedOperationException("Can't select twice a non-field expression.");
+            }
+        }
+        return this;
+    }
+
+    /**
      * Adds a {@link Condition} to the {@link Select} built by this {@link UserQueryBuilder}. If this method has previously
      * been called, a logic "and"/"or" condition (depends on <code>predicate</code> argument) is created between the
      * existing condition {@link com.amalto.core.query.user.Select#getCondition()} and the <code>condition</code> parameter.
@@ -1042,29 +1070,6 @@ public class UserQueryBuilder {
         if (field == null) {
             throw new IllegalArgumentException("Field cannot be null");
         }
-    }
-
-    /**
-     * Adds a {@link TypedExpression} the query should return. If the typed expression has already been selected, an
-     * {@link Alias} is automatically created.
-     *
-     * @param expression Expression that represents a value to return in query results.
-     * @return This instance for method call chaining.
-     */
-    public UserQueryBuilder select(TypedExpression expression) {
-        Select select = expressionAsSelect();
-        List<TypedExpression> selectedFields = select.getSelectedFields();
-        if (!selectedFields.contains(expression)) {
-            selectedFields.add(expression);
-        } else {
-            if (expression instanceof Field) {
-                // TMDM-5022: Automatic alias if a field with same name was already selected.
-                selectedFields.add(alias(expression, ((Field) expression).getFieldMetadata().getName()));
-            } else {
-                throw new UnsupportedOperationException("Can't select twice a non-field expression.");
-            }
-        }
-        return this;
     }
 
     public static TypedExpression alias(FieldMetadata field, String alias) {

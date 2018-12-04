@@ -119,4 +119,47 @@
 	    </xsd:restriction>
 	</xsd:simpleType>
 
+    <!-- TYPE TEST DATA MODEL (field type coverage) -->
+    <xsd:element name="TypeAll">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Label_FR">Produit</xsd:appinfo>
+            <xsd:appinfo source="X_Label_EN">Product</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:sequence maxOccurs="1" minOccurs="0">
+                <xsd:element maxOccurs="1" minOccurs="1" name="Id" type="xsd:string"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="string" type="xsd:string"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="boolean" type="xsd:boolean"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="float" type="xsd:float"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="double" type="xsd:double"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="decimal" type="xsd:decimal"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="duration" type="xsd:duration"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="dateTime" type="xsd:dateTime"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="time" type="xsd:time"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="date" type="xsd:date"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="hexBinary" type="xsd:hexBinary"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="base64Binary" type="xsd:base64Binary"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="anyURI" type="xsd:anyURI"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="qname" type="xsd:string"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="integer" type="xsd:integer"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="nonPositiveInteger" type="xsd:nonPositiveInteger"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="negativeInteger" type="xsd:negativeInteger"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="long" type="xsd:long"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="int" type="xsd:int"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="short" type="xsd:short"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="byte" type="xsd:byte"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="nonNegativeInteger" type="xsd:nonNegativeInteger"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="unsignedLong" type="xsd:unsignedLong"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="unsignedInt" type="xsd:unsignedInt"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="unsignedShort" type="xsd:unsignedShort"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="unsignedByte" type="xsd:unsignedByte"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="positiveInteger" type="xsd:positiveInteger"/>
+            </xsd:sequence>
+        </xsd:complexType>
+        <xsd:unique name="TypeAll">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="Id" />
+        </xsd:unique>
+    </xsd:element>
+
 </xsd:schema>

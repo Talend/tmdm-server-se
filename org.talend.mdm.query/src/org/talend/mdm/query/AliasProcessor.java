@@ -9,10 +9,12 @@
  */
 package org.talend.mdm.query;
 
+import com.amalto.core.query.user.StringConstant;
 import com.amalto.core.query.user.TypedExpression;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import org.apache.commons.lang.StringUtils;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 
 import static com.amalto.core.query.user.UserQueryBuilder.alias;
@@ -36,6 +38,9 @@ class AliasProcessor implements TypedExpressionProcessor {
                 aliasName = item.get("name").getAsString(); //$NON-NLS-1$
             } else {
                 aliasedExpression = Deserializer.getTypedExpression(item).process(item, repository);
+            }
+            if (item.has("value")){
+                aliasedExpression = new StringConstant(item.get("value").getAsString());
             }
         }
         if (aliasName == null || aliasedExpression == null) {

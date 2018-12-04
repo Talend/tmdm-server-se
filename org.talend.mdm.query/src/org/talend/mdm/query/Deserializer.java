@@ -38,6 +38,8 @@ class Deserializer implements JsonDeserializer<Expression> {
             return FieldProcessor.INSTANCE;
         } else if (object.has("alias")) { //$NON-NLS-1$
             return AliasProcessor.INSTANCE;
+        } else if (object.has("value")) { //$NON-NLS-1$
+            return AliasProcessor.INSTANCE;
         } else if (object.has("max")) { //$NON-NLS-1$
             return MaxProcessor.INSTANCE;
         } else if (object.has("min")) { //$NON-NLS-1$

@@ -798,7 +798,7 @@ public class UserQueryBuilder {
         if (field instanceof ContainedTypeFieldMetadata) {
             // Selecting a field without value is equivalent to select "" (empty string) with an alias name equals to
             // selected field. (see MSQL-50)
-            typedExpression = new Alias(new StringConstant(StringUtils.EMPTY), String.join("/", field.getEntityTypeName(), field.getPath()));
+            typedExpression = new Alias(new StringConstant(StringUtils.EMPTY), field.getPath());
         } else {
             typedExpression = new Field(field);
         }
@@ -838,11 +838,8 @@ public class UserQueryBuilder {
         Select select = expressionAsSelect();
         List<TypedExpression> selectedFields = select.getSelectedFields();
         if (!selectedFields.contains(expression)) {
-            if (expression instanceof Field) {
-                // Make sure to go through field specific checks
-                this.select(((Field)expression).getFieldMetadata());
-            } else if (expression instanceof Alias && ((Alias) expression).getTypedExpression() instanceof Field && ((Field)((Alias) expression).getTypedExpression()).getFieldMetadata() instanceof  ContainedTypeFieldMetadata) {
-                select(((Field)((Alias)expression).getTypedExpression()).getFieldMetadata());
+            if (expression instanceof Alias && ((Alias) expression).getTypedExpression() instanceof Field && ((Field)((Alias) expression).getTypedExpression()).getFieldMetadata() instanceof  ContainedTypeFieldMetadata) {
+                selectedFields.add(new Alias(new StringConstant(StringUtils.EMPTY), ((Alias) expression).getAliasName()));
             } else {
                 selectedFields.add(expression);
             }

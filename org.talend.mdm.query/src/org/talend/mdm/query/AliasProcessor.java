@@ -39,7 +39,7 @@ class AliasProcessor implements TypedExpressionProcessor {
             } else {
                 aliasedExpression = Deserializer.getTypedExpression(item).process(item, repository);
             }
-            if (item.has("value") && item.get("value") != null){
+            if (item.has("value")) {
                 aliasedExpression = new StringConstant(item.get("value").getAsString());
             }
         }

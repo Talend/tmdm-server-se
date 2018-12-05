@@ -11,9 +11,13 @@ package org.talend.mdm.query;
 
 import com.amalto.core.query.user.Expression;
 import com.amalto.core.query.user.Select;
+import com.amalto.core.query.user.TypedExpression;
 import com.amalto.core.query.user.UserQueryBuilder;
 import com.amalto.core.query.user.UserQueryHelper;
 import com.amalto.xmlserver.interfaces.WhereCondition;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import junit.framework.TestCase;
 import org.talend.mdm.QueryParserTest;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
@@ -100,6 +104,25 @@ public class UserQueryJsonSerializerTest extends TestCase {
 
         // when, then
         assertRoundTrip(uq.getSelect());
+    }
+
+    public void testStringConstantOnAlias() {
+
+        JsonParser jsonParser = new JsonParser();
+        JsonObject jsonObject = jsonParser.parse("{" +
+                "\"alias\":[" +
+                "{" +
+                "\"name\":\"Sizes\"" +
+                "}," +
+                "{" +
+                "\"value\":\"\"" +
+                "}" +
+                "]" +
+                "}").getAsJsonObject();
+        assertNotNull(jsonObject);
+        TypedExpressionProcessor typedExpressionProcessor = Deserializer.getTypedExpression(jsonObject);
+        TypedExpression typedExpression = typedExpressionProcessor.process(jsonObject, this.repository);
+        assertNotNull(typedExpression);
     }
 
 

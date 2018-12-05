@@ -107,18 +107,8 @@ public class UserQueryJsonSerializerTest extends TestCase {
     }
 
     public void testStringConstantOnAlias() {
-
         JsonParser jsonParser = new JsonParser();
-        JsonObject jsonObject = jsonParser.parse("{" +
-                "\"alias\":[" +
-                "{" +
-                "\"name\":\"Sizes\"" +
-                "}," +
-                "{" +
-                "\"value\":\"\"" +
-                "}" +
-                "]" +
-                "}").getAsJsonObject();
+        JsonObject jsonObject = jsonParser.parse("{\"alias\":[{\"name\":\"Sizes\"},{\"value\":\"\"}]}").getAsJsonObject();
         assertNotNull(jsonObject);
         TypedExpressionProcessor typedExpressionProcessor = Deserializer.getTypedExpression(jsonObject);
         TypedExpression typedExpression = typedExpressionProcessor.process(jsonObject, this.repository);

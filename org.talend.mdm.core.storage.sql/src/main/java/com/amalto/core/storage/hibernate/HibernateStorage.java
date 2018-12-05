@@ -184,7 +184,8 @@ public class HibernateStorage implements Storage {
                                                                                           // value < p) into
                                                                                           // (RANGE(n,p)).
             new ContainsOptimizer(), // Transforms all '*' in CONTAINS into '%'.
-            new UpdateReportOptimizer() // Adds queries on super types if update report query a concept name with super types.
+            new UpdateReportOptimizer() // Adds queries on super types if update report query a concept name with super
+                                        // types.
     };
 
     private static final String FORBIDDEN_PREFIX = "x_talend_"; //$NON-NLS-1$

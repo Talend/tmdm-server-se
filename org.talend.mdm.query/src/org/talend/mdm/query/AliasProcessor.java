@@ -36,12 +36,11 @@ class AliasProcessor implements TypedExpressionProcessor {
             JsonObject item = array.get(j).getAsJsonObject();
             if (item.has("name")) { //$NON-NLS-1$
                 aliasName = item.get("name").getAsString(); //$NON-NLS-1$
-            } else if (item.has("value")) {
-                aliasedExpression = new StringConstant(item.get("value").getAsString());
+            } else if (item.has("value")) { //$NON-NLS-1$
+                aliasedExpression = new StringConstant(item.get("value").getAsString()); //$NON-NLS-1$
             } else {
                 aliasedExpression = Deserializer.getTypedExpression(item).process(item, repository);
             }
-
         }
         if (aliasName == null || aliasedExpression == null) {
             throw new IllegalArgumentException("Malformed query (field '" + alias + "' is malformed).");

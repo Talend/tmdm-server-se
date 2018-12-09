@@ -494,7 +494,10 @@ public class QueryParserTest extends TestCase {
         assertEquals(At.Swing.AFTER, condition.getSwing());
         assertEquals(0, condition.getDateTime());
     }
-
+    
+    /**
+     * JIRA TMDM-12897
+     */
     public void testQuery31() {
         QueryParser parser = QueryParser.newParser(repository);
         Expression expression = parser.parse(QueryParserTest.class.getResourceAsStream("query31.json")); //$NON-NLS-1$

@@ -265,6 +265,128 @@ public class HibernateCompareTest {
         qb = from(original.getComplexType(typeName));
         storage.delete(qb.getSelect());
     }
+
+    @Test
+    public void testModifyContainedFieldType_From_11_TO_01() throws Exception {
+        /*
+         * Test                                                                    Test
+         *   |__id (SimpleField) (1-1)                                               |__id (SimpleField) (1-1)
+         *   |__Name (SimpleField) (0-1)                                             |__Name (SimpleField) (0-1)
+         *   |__Feature (ContainedFieldType) (1-1)                                   |__Feature (ContainedFieldType) (0-1)
+         *        |__Colors (SimpleField) (0-1)                                           |__Colors (SimpleField) (0-1)
+         *        |__Sizes (SimpleField) (1-1)              =======>                      |__Sizes (SimpleField) (1-1)
+         *   |__Stores (ContainedFieldType) (1-1)                                    |__Stores (ContainedFieldType) (0-1)
+         *        |__Store(Foreign Key)(0-many)                                           |__Store(Foreign Key)(0-many)
+         *   |__Nodes (ContainedFieldType) (1-1)                                     |__Nodes (ContainedFieldType) (0-1)
+         *        |__Subelement (SimpleField) (1-1)                                        |__Subelement (SimpleField) (1-1)
+         */
+        DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
+        HibernateStorage storage = new HibernateStorage("Person", StorageType.MASTER);
+        storage.init(dataSource);
+        MetadataRepository original = new MetadataRepository();
+        original.load(HibernateCompareTest.class.getResourceAsStream("../adapt/schema22_1.xsd"));
+        storage.prepare(original, true);
+
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+        String typeName = "Test";
+        String[] typeNames = { "Store", typeName };
+
+        String input1 = "<Store><Id>1</Id></Store>";
+        String input2 = "<Test><Id>1</Id><Name>name</Name><Features><Colors><Color>Red</Color></Colors><Sizes><Size>Large</Size></Sizes></Features><Stores><Store>[1]</Store></Stores><Nodes><subelement>node</subelement></Nodes></Test>";
+        createRecord(storage, factory, original, typeNames, new String[] { input1, input2 });
+
+        ComplexTypeMetadata objectType = original.getComplexType(typeName);
+        UserQueryBuilder qb = from(objectType);
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+            for (DataRecord result : results) {
+                assertEquals("1", result.get("Id"));
+            }
+        } finally {
+            results.close();
+        }
+        storage.end();
+
+        MetadataRepository updated1 = new MetadataRepository();
+        updated1.load(HibernateCompareTest.class.getResourceAsStream("../adapt/schema22_2.xsd"));
+
+        Compare.DiffResults diffResults = Compare.compare(original, updated1);
+        assertEquals(3, diffResults.getActions().size());
+        assertEquals(3, diffResults.getModifyChanges().size());
+        assertEquals(0, diffResults.getRemoveChanges().size());
+        assertEquals(0, diffResults.getAddChanges().size());
+
+        ImpactAnalyzer analyzer = new HibernateStorageDataAnaylzer(storage);
+        Map<ImpactAnalyzer.Impact, List<Change>> sort = analyzer.analyzeImpacts(diffResults);
+        assertEquals(0, sort.get(ImpactAnalyzer.Impact.HIGH).size());
+        assertEquals(0, sort.get(ImpactAnalyzer.Impact.MEDIUM).size());
+        assertEquals(3, sort.get(ImpactAnalyzer.Impact.LOW).size());
+
+        qb = from(original.getComplexType(typeName));
+        storage.delete(qb.getSelect());
+    }
+
+    @Test
+    public void testModifyContainedFieldType_From_01_TO_11() throws Exception {
+        /*
+         * Test                                                                    Test
+         *   |__id (SimpleField) (1-1)                                               |__id (SimpleField) (1-1)
+         *   |__Name (SimpleField) (0-1)                                             |__Name (SimpleField) (0-1)
+         *   |__Feature (ContainedFieldType) (0-1)                                   |__Feature (ContainedFieldType) (1-1)
+         *        |__Colors (SimpleField) (0-1)                                           |__Colors (SimpleField) (0-1)
+         *        |__Sizes (SimpleField) (1-1)              =======>                      |__Sizes (SimpleField) (1-1)
+         *   |__Stores (ContainedFieldType) (0-1)                                    |__Stores (ContainedFieldType) (1-1)
+         *        |__Store(Foreign Key)(0-many)                                           |__Store(Foreign Key)(0-many)
+         *   |__Nodes (ContainedFieldType) (0-1)                                     |__Nodes (ContainedFieldType) (1-1)
+         *        |__Subelement (SimpleField) (1-1)                                       |__Subelement (SimpleField) (1-1)
+         */
+        DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
+        HibernateStorage storage = new HibernateStorage("Person", StorageType.MASTER);
+        storage.init(dataSource);
+        MetadataRepository original = new MetadataRepository();
+        original.load(HibernateCompareTest.class.getResourceAsStream("../adapt/schema22_2.xsd"));
+        storage.prepare(original, true);
+
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+        String typeName = "Test";
+        String[] typeNames = { "Store", typeName };
+
+        String input1 = "<Store><Id>1</Id></Store>";
+        String input2 = "<Test><Id>1</Id><Name>name</Name><Features><Colors><Color>Red</Color></Colors><Sizes><Size>Large</Size></Sizes></Features><Stores><Store>[1]</Store></Stores><Nodes><subelement>node</subelement></Nodes></Test>";
+        createRecord(storage, factory, original, typeNames, new String[] { input1, input2 });
+
+        ComplexTypeMetadata objectType = original.getComplexType(typeName);
+        UserQueryBuilder qb = from(objectType);
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+            for (DataRecord result : results) {
+                assertEquals("1", result.get("Id"));
+            }
+        } finally {
+            results.close();
+        }
+        storage.end();
+
+        MetadataRepository updated1 = new MetadataRepository();
+        updated1.load(HibernateCompareTest.class.getResourceAsStream("../adapt/schema22_1.xsd"));
+
+        Compare.DiffResults diffResults = Compare.compare(original, updated1);
+        assertEquals(3, diffResults.getActions().size());
+        assertEquals(3, diffResults.getModifyChanges().size());
+        assertEquals(0, diffResults.getRemoveChanges().size());
+        assertEquals(0, diffResults.getAddChanges().size());
+
+        ImpactAnalyzer analyzer = new HibernateStorageDataAnaylzer(storage);
+        Map<ImpactAnalyzer.Impact, List<Change>> sort = analyzer.analyzeImpacts(diffResults);
+        assertEquals(3, sort.get(ImpactAnalyzer.Impact.HIGH).size());
+        assertEquals(0, sort.get(ImpactAnalyzer.Impact.MEDIUM).size());
+        assertEquals(0, sort.get(ImpactAnalyzer.Impact.LOW).size());
+
+        qb = from(original.getComplexType(typeName));
+        storage.delete(qb.getSelect());
+    }
     
     private void createRecord(Storage storage, DataRecordReader<String> factory, MetadataRepository repository,  String[] typeNames, String[] inputs){
         List<DataRecord> records = new ArrayList<DataRecord>();

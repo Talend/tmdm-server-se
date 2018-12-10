@@ -52,7 +52,7 @@ public class HibernateStorageDataAnaylzer extends HibernateStorageImpactAnalyzer
                 FieldMetadata previous = (FieldMetadata) modifyAction.getPrevious();
                 FieldMetadata current = (FieldMetadata) modifyAction.getCurrent();
 
-                if (current.isMandatory() && !previous.isMandatory()) {
+                if (current.isMandatory() && !previous.isMandatory() && !(element instanceof ContainedTypeFieldMetadata)) {
                     int count = fetchFieldCountOfNull(previous.getContainingType().getEntity(), previous);
                     modifyAction.setHasNullValue(count > 0);
                 }
@@ -107,9 +107,12 @@ public class HibernateStorageDataAnaylzer extends HibernateStorageImpactAnalyzer
     private int fetchFieldCountByUserQuery(UserQueryBuilder qb) {
         int count = 0;
         storage.begin();
-        StorageResults results = storage.fetch(qb.getSelect());
+        StorageResults results = null;
         try {
+            results = storage.fetch(qb.getSelect());
             count = results.getCount();
+        } catch (Exception e) {
+            LOGGER.error("Fetch field's count failed.", e); //$NON-NLS-1$
         } finally {
             results.close();
             storage.commit();

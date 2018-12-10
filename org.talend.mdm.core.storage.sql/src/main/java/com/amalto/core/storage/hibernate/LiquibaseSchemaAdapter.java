@@ -170,8 +170,10 @@ public class LiquibaseSchemaAdapter  {
         List<AbstractChange> changeActionList = new ArrayList<AbstractChange>();
         for (ModifyChange modifyAction : diffResults.getModifyChanges()) {
             MetadataVisitable element = modifyAction.getElement();
-            if (!isContainedComplexFieldTypeMetadata((FieldMetadata) element)
-                    || isSimpleTypeFieldMetadata((FieldMetadata) element) || isContainedComplexType((FieldMetadata) element)) {
+            if ((!isContainedComplexFieldTypeMetadata((FieldMetadata) element)
+                    || isSimpleTypeFieldMetadata((FieldMetadata) element)
+                    || isContainedComplexType((FieldMetadata) element))
+                    && !isContainedTypeFieldMetadata((FieldMetadata) element)) {
                 FieldMetadata previous = (FieldMetadata) modifyAction.getPrevious();
                 FieldMetadata current = (FieldMetadata) modifyAction.getCurrent();
 
@@ -482,6 +484,10 @@ public class LiquibaseSchemaAdapter  {
     protected boolean isContainedComplexType(FieldMetadata fieldMetadata) {
         return (fieldMetadata.getContainingType() instanceof ComplexTypeMetadata)
                 && (fieldMetadata.getType() instanceof ContainedComplexTypeMetadata);
+    }
+
+    protected  boolean isContainedTypeFieldMetadata(FieldMetadata fieldMetadata){
+        return fieldMetadata instanceof ContainedTypeFieldMetadata;
     }
 
     protected boolean isBooleanType(String columnDataType) {

@@ -112,7 +112,7 @@ public class HibernateStorageDataAnaylzer extends HibernateStorageImpactAnalyzer
             results = storage.fetch(qb.getSelect());
             count = results.getCount();
         } catch (Exception e) {
-            LOGGER.error("Fetch field's count failed.", e); //$NON-NLS-1$
+            LOGGER.error("Failed to fetch count of field.", e); //$NON-NLS-1$
         } finally {
             results.close();
             storage.commit();

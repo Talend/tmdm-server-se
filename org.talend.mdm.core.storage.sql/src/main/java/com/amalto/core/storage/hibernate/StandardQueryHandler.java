@@ -125,7 +125,8 @@ import com.amalto.core.storage.datasource.DataSource;
 import com.amalto.core.storage.datasource.RDBMSDataSource;
 import com.amalto.core.storage.exception.UnsupportedQueryException;
 import com.amalto.core.storage.record.DataRecord;
-
+import com.amalto.core.storage.record.StorageConstants;
+import com.amalto.core.storage.task.StagingConstants;
 
 class StandardQueryHandler extends AbstractQueryHandler {
 
@@ -1260,13 +1261,21 @@ class StandardQueryHandler extends AbstractQueryHandler {
                     } else {
                         throw new IllegalArgumentException("Predicate '" + predicate + "' is not supported on group_size value."); //$NON-NLS-1$ //$NON-NLS-2$
                     }
-                    String sqlConditionBuilder = "("; //$NON-NLS-1$
-                    sqlConditionBuilder += "select count(1) from"; //$NON-NLS-1$
-                    sqlConditionBuilder += ' ' + mainTableName + ' ';
-                    sqlConditionBuilder += "where " + Storage.METADATA_TASK_ID + " = " + mainTableAlias + "." + Storage.METADATA_TASK_ID; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$  
-                    sqlConditionBuilder += ')';
-                    sqlConditionBuilder += ' ' + comparator + ' ' + value;
-                    return Restrictions.sqlRestriction(sqlConditionBuilder);
+                    StringBuilder sb = new StringBuilder();
+                    sb.append('(');//$NON-NLS-1$
+                    sb.append("SELECT count(1) FROM");//$NON-NLS-1$
+                    sb.append(' ').append(mainTableName).append(' ');//$NON-NLS-1$ //$NON-NLS-2$
+                    sb.append("WHERE ").append(StorageConstants.METADATA_TASK_ID).append('=');//$NON-NLS-1$ //$NON-NLS-2$
+                    sb.append(mainTableAlias).append('.').append(StorageConstants.METADATA_TASK_ID);//$NON-NLS-1$
+                    if (!DuringMatching.get()) {
+                        sb.append(" AND ").append(StorageConstants.METADATA_STAGING_STATUS);//$NON-NLS-1$
+                        sb.append(" NOT IN (").append(StagingConstants.SUCCESS_VALIDATE).append(',');//$NON-NLS-1$ //$NON-NLS-2$
+                        sb.append(StagingConstants.SUCCESS_MERGED_RECORD_TO_RESOLVE).append(',');//$NON-NLS-1$
+                        sb.append(StagingConstants.SUCCESS_MERGED_RECORD).append(')');//$NON-NLS-1$
+                    }
+                    sb.append(')');//$NON-NLS-1$
+                    sb.append(' ').append(comparator).append(' ').append(value);//$NON-NLS-1$ //$NON-NLS-2$
+                    return Restrictions.sqlRestriction(sb.toString());
                 }
                 if (LOGGER.isDebugEnabled()) {
                     LOGGER.debug("Query on '" + leftFieldCondition + "' is not a user set property. Ignore this condition."); //$NON-NLS-1$ //$NON-NLS-2$

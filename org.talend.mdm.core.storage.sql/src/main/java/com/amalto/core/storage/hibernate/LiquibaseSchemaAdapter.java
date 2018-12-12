@@ -177,6 +177,10 @@ public class LiquibaseSchemaAdapter  {
                 FieldMetadata previous = (FieldMetadata) modifyAction.getPrevious();
                 FieldMetadata current = (FieldMetadata) modifyAction.getCurrent();
 
+                if (MetadataUtils.isAnonymousType(current.getContainingType())) {
+                    continue;
+                }
+
                 String defaultValueRule = current.getData(MetadataRepository.DEFAULT_VALUE_RULE);
                 defaultValueRule = HibernateStorageUtils.convertedDefaultValue(current.getType().getName(),
                         dataSource.getDialectName(), defaultValueRule, StringUtils.EMPTY);

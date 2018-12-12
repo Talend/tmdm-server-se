@@ -1567,12 +1567,14 @@ public class CompareTest extends TestCase {
          *   |__id (SimpleField) (1-1)                                               |__id (SimpleField) (1-1)
          *   |__Name (SimpleField) (0-1)                                             |__Name (SimpleField) (0-1)
          *   |__Feature (ContainedFieldType) (1-1)                                   |__Feature (ContainedFieldType) (0-1)
-         *        |__Colors (SimpleField) (0-1)                                           |__Colors (SimpleField) (0-1)
-         *        |__Sizes (SimpleField) (1-1)              =======>                      |__Sizes (SimpleField) (1-1)
+         *        |__Colors (ContainedFieldType) (0-1)                                    |__Colors (ContainedFieldType) (0-1)
+         *            |__Color(SimpleField)(1-1)                                               |__Color(SimpleField)(1-1)
+         *        |__Sizes (ContainedFieldType) (1-1)              =======>               |__Sizes (ContainedFieldType) (1-1)
+         *            |__Size(SimpleField)(1-1)                                                |__Size(SimpleField)(1-1)
          *   |__Stores (ContainedFieldType) (1-1)                                    |__Stores (ContainedFieldType) (0-1)
          *        |__Store(Foreign Key)(0-many)                                           |__Store(Foreign Key)(0-many)
          *   |__Nodes (ContainedFieldType) (1-1)                                     |__Nodes (ContainedFieldType) (0-1)
-         *        |__Subelement (SimpleField) (1-1)                                       |__Subelement (SimpleField) (1-1)
+         *        |__subelement (SimpleField) (1-1)                                       |__subelement (SimpleField) (0-1)
          */
         MetadataRepository original = new MetadataRepository();
         original.load(CompareTest.class.getResourceAsStream("schema34_1.xsd")); //$NON-NLS-1$
@@ -1598,12 +1600,14 @@ public class CompareTest extends TestCase {
          *   |__id (SimpleField) (1-1)                                               |__id (SimpleField) (1-1)
          *   |__Name (SimpleField) (0-1)                                             |__Name (SimpleField) (0-1)
          *   |__Feature (ContainedFieldType) (0-1)                                   |__Feature (ContainedFieldType) (1-1)
-         *        |__Colors (SimpleField) (0-1)                                           |__Colors (SimpleField) (0-1)
-         *        |__Sizes (SimpleField) (1-1)              =======>                      |__Sizes (SimpleField) (1-1)
+         *        |__Colors (ContainedFieldType) (0-1)                                    |__Colors (ContainedFieldType) (0-1)
+         *            |__Color(SimpleField)(1-1)                                               |__Color(SimpleField)(1-1)
+         *        |__Sizes (ContainedFieldType) (1-1)              =======>               |__Sizes (ContainedFieldType) (1-1)
+         *             |__Size(SimpleField)(1-1)                                               |__Size(SimpleField)(1-1)
          *   |__Stores (ContainedFieldType) (0-1)                                    |__Stores (ContainedFieldType) (1-1)
          *        |__Store(Foreign Key)(0-many)                                           |__Store(Foreign Key)(0-many)
          *   |__Nodes (ContainedFieldType) (0-1)                                     |__Nodes (ContainedFieldType) (1-1)
-         *        |__Subelement (SimpleField) (1-1)                                       |__Subelement (SimpleField) (1-1)
+         *        |__subelement (SimpleField) (1-1)                                       |__subelement (SimpleField) (0-1)
          */
         MetadataRepository original = new MetadataRepository();
         original.load(CompareTest.class.getResourceAsStream("schema34_2.xsd")); //$NON-NLS-1$

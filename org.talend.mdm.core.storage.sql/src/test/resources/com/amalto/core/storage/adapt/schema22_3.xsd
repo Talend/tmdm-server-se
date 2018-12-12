@@ -12,14 +12,14 @@
                             <xsd:element maxOccurs="1" minOccurs="1" name="Sizes">
                                 <xsd:complexType>
                                     <xsd:sequence>
-                                        <xsd:element maxOccurs="1" minOccurs="0" name="Size" type="Size"></xsd:element>
+                                        <xsd:element maxOccurs="1" minOccurs="1" name="Size" type="Size"></xsd:element>
                                     </xsd:sequence>
                                 </xsd:complexType>
                             </xsd:element>
                             <xsd:element maxOccurs="1" minOccurs="0" name="Colors">
                                 <xsd:complexType>
                                     <xsd:sequence>
-                                        <xsd:element maxOccurs="1" minOccurs="0" name="Color" type="Color"></xsd:element>
+                                        <xsd:element maxOccurs="1" minOccurs="1" name="Color" type="Color"></xsd:element>
                                     </xsd:sequence>
                                 </xsd:complexType>
                             </xsd:element>

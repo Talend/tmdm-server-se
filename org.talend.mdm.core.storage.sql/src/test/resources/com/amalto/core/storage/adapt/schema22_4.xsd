@@ -27,7 +27,7 @@
                                 </xsd:annotation>
                                 <xsd:complexType>
                                     <xsd:sequence>
-                                        <xsd:element maxOccurs="1" minOccurs="1" name="Color" type="xsd:string" />
+                                        <xsd:element maxOccurs="1" minOccurs="0" name="Color" type="xsd:string" />
                                     </xsd:sequence>
                                 </xsd:complexType>
                             </xsd:element>
@@ -37,7 +37,7 @@
                                 </xsd:annotation>
                                 <xsd:complexType>
                                     <xsd:sequence>
-                                        <xsd:element maxOccurs="1" minOccurs="1" name="Size" type="xsd:string" />
+                                        <xsd:element maxOccurs="1" minOccurs="0" name="Size" type="xsd:string" />
                                     </xsd:sequence>
                                 </xsd:complexType>
                             </xsd:element>

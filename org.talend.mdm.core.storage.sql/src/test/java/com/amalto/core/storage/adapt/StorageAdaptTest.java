@@ -2336,6 +2336,20 @@ public class StorageAdaptTest extends TestCase {
     }
 
     public void test22_ModifyContainedFieldType() throws Exception {
+        /*
+         * Test                                                                    Test
+         *   |__id (SimpleField) (1-1)                                               |__id (SimpleField) (1-1)
+         *   |__Name (SimpleField) (0-1)                                             |__Name (SimpleField) (0-1)
+         *   |__Feature (ContainedFieldType) (1-1)                                   |__Feature (ContainedFieldType) (0-1)
+         *        |__Colors (ContainedFieldType) (0-1)                                    |__Colors (ContainedFieldType) (0-1)
+         *            |__Color(SimpleField)(1-1)                                               |__Color(SimpleField)(1-1)
+         *        |__Sizes (ContainedFieldType) (1-1)              =======>               |__Sizes (ContainedFieldType) (1-1)
+         *            |__Size(SimpleField)(1-1)                                                |__Size(SimpleField)(1-1)
+         *   |__Stores (ContainedFieldType) (1-1)                                    |__Stores (ContainedFieldType) (0-1)
+         *        |__Store(Foreign Key)(0-many)                                           |__Store(Foreign Key)(0-many)
+         *   |__Nodes (ContainedFieldType) (1-1)                                     |__Nodes (ContainedFieldType) (0-1)
+         *        |__subelement (SimpleField) (1-1)                                       |__subelement (SimpleField) (0-1)
+         */
         setMDMRootURL();
 
         DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
@@ -2368,6 +2382,39 @@ public class StorageAdaptTest extends TestCase {
             assertColumnNullAble(dataSource, tables, columns, isNullable);
         } catch (SQLException e) {
             assertNull(e);
+        }
+    }
+
+    public void test22_ModifyContainedFieldType_For_Color_Field() throws Exception {
+        /*
+         * Test                                                                    Test
+         *   |__id (SimpleField) (1-1)                                               |__id (SimpleField) (1-1)
+         *   |__Name (SimpleField) (0-1)                                             |__Name (SimpleField) (0-1)
+         *   |__Feature (ContainedFieldType) (1-1)                                   |__Feature (ContainedFieldType) (1-1)
+         *        |__Colors (ContainedFieldType) (0-1)                                    |__Colors (ContainedFieldType) (0-1)
+         *            |__Color(SimpleField)(1-1)                                               |__Color(SimpleField)(0-1)
+         *        |__Sizes (ContainedFieldType) (1-1)              =======>               |__Sizes (ContainedFieldType) (1-1)
+         *            |__Size(SimpleField)(1-1)                                                |__Size(SimpleField)(0-1)
+         *   |__Stores (ContainedFieldType) (1-1)                                    |__Stores (ContainedFieldType) (1-1)
+         *        |__Store(Foreign Key)(0-many)                                           |__Store(Foreign Key)(0-many)
+         *   |__Nodes (ContainedFieldType) (1-1)                                     |__Nodes (ContainedFieldType) (1-1)
+         *        |__subelement (SimpleField) (1-1)                                       |__subelement (SimpleField) (0-1)
+         */
+        setMDMRootURL();
+
+        DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
+        Storage storage = new HibernateStorage("Test", StorageType.MASTER);
+        storage.init(dataSource);
+        MetadataRepository repository1 = new MetadataRepository();
+        repository1.load(StorageAdaptTest.class.getResourceAsStream("schema22_3.xsd"));
+        storage.prepare(repository1, true);
+
+        MetadataRepository repository2 = new MetadataRepository();
+        repository2.load(StorageAdaptTest.class.getResourceAsStream("schema22_4.xsd"));
+        try {
+            storage.adapt(repository2, false);
+        } catch (Exception e2) {
+            assertNull(e2);
         }
     }
 

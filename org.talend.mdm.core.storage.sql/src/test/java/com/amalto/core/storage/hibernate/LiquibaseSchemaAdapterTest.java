@@ -170,14 +170,9 @@ public class LiquibaseSchemaAdapterTest {
 
         List<AbstractChange> changeList = adapter.analyzeModifyChange(diffResults);
 
-        assertEquals(3, changeList.size());
+        assertEquals(1, changeList.size());
         assertEquals("liquibase.change.core.DropNotNullConstraintChange", changeList.get(0).getClass().getName());
-        assertEquals("liquibase.change.core.DropNotNullConstraintChange", changeList.get(1).getClass().getName());
-        assertEquals("liquibase.change.core.DropNotNullConstraintChange", changeList.get(2).getClass().getName());
-
-        assertEquals("x_bb_x_talend_id", ((DropNotNullConstraintChange) changeList.get(0)).getColumnName());
-        assertEquals("x_ee", ((DropNotNullConstraintChange) changeList.get(1)).getColumnName());
-        assertEquals("x_uu_x_talend_id", ((DropNotNullConstraintChange) changeList.get(2)).getColumnName());
+        assertEquals("x_ee", ((DropNotNullConstraintChange) changeList.get(0)).getColumnName());
     }
 
     @Test

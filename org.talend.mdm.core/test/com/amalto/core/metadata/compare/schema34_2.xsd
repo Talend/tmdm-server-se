@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+<!--
+  ~ Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+  ~
+  ~ This source code is available under agreement available at
+  ~  %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
+  ~
+  ~ You should have received a copy of the agreement along with this program; if not, write to Talend SA 9 rue Pages
+  ~ 92150 Suresnes, France
+  -->
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:element name="Test">
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1" name="Id" type="xsd:string" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="Name" type="xsd:string" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="Features">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_AutoExpand">false</xsd:appinfo>
+                    </xsd:annotation>
+                    <xsd:complexType>
+                        <xsd:all>
+                            <xsd:element maxOccurs="1" minOccurs="0" name="Colors">
+                                <xsd:annotation>
+                                    <xsd:appinfo source="X_AutoExpand">false</xsd:appinfo>
+                                </xsd:annotation>
+                                <xsd:complexType>
+                                    <xsd:sequence>
+                                        <xsd:element maxOccurs="unbounded" name="Color" type="xsd:string" />
+                                    </xsd:sequence>
+                                </xsd:complexType>
+                            </xsd:element>
+                            <xsd:element maxOccurs="1" minOccurs="0" name="Sizes">
+                                <xsd:annotation>
+                                    <xsd:appinfo source="X_AutoExpand">false</xsd:appinfo>
+                                </xsd:annotation>
+                                <xsd:complexType>
+                                    <xsd:sequence>
+                                        <xsd:element maxOccurs="unbounded" name="Size" type="xsd:string" />
+                                    </xsd:sequence>
+                                </xsd:complexType>
+                            </xsd:element>
+                        </xsd:all>
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Stores">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_AutoExpand">false</xsd:appinfo>
+                    </xsd:annotation>
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element maxOccurs="unbounded" minOccurs="0" name="Store" type="xsd:string">
+                                <xsd:annotation>
+                                    <xsd:appinfo source="X_ForeignKey">Store/Id</xsd:appinfo>
+                                    <xsd:appinfo source="X_ForeignKeyInfo">Store/Address</xsd:appinfo>
+                                    <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
+                                </xsd:annotation>
+                            </xsd:element>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Nodes" type="Node">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_AutoExpand">false</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="Test">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="Id" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="Store">
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1" name="Id" type="xsd:string" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="Address" type="xsd:string" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="Lat" type="xsd:double" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="Long" type="xsd:double" />
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="Store">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="Id" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:complexType name="Node">
+        <xsd:all>
+            <xsd:element name="subelement" type="xsd:string" />
+        </xsd:all>
+    </xsd:complexType>
+</xsd:schema>

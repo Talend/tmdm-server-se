@@ -10,13 +10,14 @@
  */
 package com.amalto.core.query.user;
 
-import com.amalto.xmlserver.interfaces.WhereCondition;
 import org.apache.commons.lang.NotImplementedException;
-import org.talend.mdm.commmon.metadata.MetadataRepository;
+import org.apache.commons.lang3.StringUtils;
+import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.tql.model.AllFields;
 import org.talend.tql.model.AndExpression;
 import org.talend.tql.model.ComparisonExpression;
 import org.talend.tql.model.ComparisonOperator;
+import org.talend.tql.model.Expression;
 import org.talend.tql.model.FieldBetweenExpression;
 import org.talend.tql.model.FieldCompliesPattern;
 import org.talend.tql.model.FieldContainsExpression;
@@ -33,175 +34,172 @@ import org.talend.tql.model.OrExpression;
 import org.talend.tql.model.TqlElement;
 import org.talend.tql.visitor.IASTVisitor;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Stack;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.amalto.core.query.user.UserQueryBuilder.in;
+public class TQLPredicateToMDMPredicate implements IASTVisitor<Condition> {
 
-public class TQLPredicateToMDMPredicate implements IASTVisitor<UserQueryBuilder> {
+    private final Stack<TypedExpression> typedValues = new Stack<>();
 
-    private String leftPath;
-    private List<String> values = new ArrayList<>();
+    private final Map<String, ComplexTypeMetadata> types = new HashMap<>();
 
-    private MetadataRepository metadataRepository;
+    public TQLPredicateToMDMPredicate(ComplexTypeMetadata... types) {
+        for (ComplexTypeMetadata type : types) {
+            this.types.put(type.getName(), type);
+        }
+    }
 
-    private UserQueryBuilder userQueryBuilder = new UserQueryBuilder();
+    private Condition merge(Supplier<Expression[]> source, Predicate and) {
+        final List<Condition> conditions = Stream.of(source.get()) //
+                .map(e -> e.accept(this)) //
+                .collect(Collectors.toList());
+        Condition current = conditions.get(0);
+        for (int i = 1; i < conditions.size(); i++) {
+            current = new BinaryLogicOperator(current, and, conditions.get(i));
+        }
+        return current;
+    }
 
-    public TQLPredicateToMDMPredicate(MetadataRepository metadataRepository) {
-        this.metadataRepository = metadataRepository;
+    private TypedExpression peekCurrentExpression() {
+        return typedValues.peek();
+    }
+
+    private TypedExpression popCurrentExpression() {
+        return typedValues.pop();
     }
 
     @Override
-    public UserQueryBuilder visit(TqlElement tqlElement) {
+    public Condition visit(TqlElement tqlElement) {
         throw new NotImplementedException("TqlElement not implemented.");
     }
 
     @Override
-    public UserQueryBuilder visit(ComparisonOperator comparisonOperator) {
-        this.userQueryBuilder = UserQueryBuilder.where(this.userQueryBuilder, UserQueryHelper.buildCondition(this.userQueryBuilder, new WhereCondition(this.leftPath, this.getOperatorFromComparisonOperator(comparisonOperator.getOperator().name()), this.values.get(0), null), this.metadataRepository), null);
+    public Condition visit(ComparisonOperator comparisonOperator) {
+        // Be careful here: order in pop() is very important!
+        final TypedExpression right = popCurrentExpression();
+        final TypedExpression left = popCurrentExpression();
+
+        switch (comparisonOperator.getOperator()) {
+            case EQ:
+                return new Compare(left, Predicate.EQUALS, right);
+            case LT:
+                return new Compare(left, Predicate.LOWER_THAN, right);
+            case GT:
+                return new Compare(left, Predicate.GREATER_THAN, right);
+            case NEQ:
+                return new UnaryLogicOperator(new Compare(left, Predicate.EQUALS, right), Predicate.NOT);
+            case LET:
+                return new Compare(left, Predicate.LOWER_THAN_OR_EQUALS, right);
+            case GET:
+                return new Compare(left, Predicate.GREATER_THAN, right);
+            default:
+                throw new NotImplementedException("'" + comparisonOperator.getOperator().name() + "' support not implemented.");
+        }
+    }
+
+    @Override
+    public Condition visit(LiteralValue literalValue) {
+        typedValues.push(UserQueryBuilder.createConstant(peekCurrentExpression(), literalValue.getValue()));
         return null;
     }
 
     @Override
-    public UserQueryBuilder visit(LiteralValue literalValue) {
-        this.values.add(literalValue.getValue());
+    public Condition visit(FieldReference fieldReference) {
+        final String path = fieldReference.getPath();
+        final String typeName = StringUtils.substringBefore(path, ".");
+        final String fieldName = StringUtils.substringAfter(path, ".");
+        final ComplexTypeMetadata complexTypeMetadata = types.get(typeName);
+        if (complexTypeMetadata == null) {
+            throw new IllegalArgumentException("Type '" + typeName + "' is not selected in query.");
+        }
+        typedValues.push(new Field(complexTypeMetadata.getField(fieldName)));
         return null;
     }
 
     @Override
-    public UserQueryBuilder visit(FieldReference fieldReference) {
-        this.leftPath = fieldReference.getPath().substring(1, fieldReference.getPath().length()-1);
-        return null;
-    }
-
-    @Override
-    public UserQueryBuilder visit(org.talend.tql.model.Expression expression) {
+    public Condition visit(org.talend.tql.model.Expression expression) {
         throw new NotImplementedException("Expression not implemented.");
     }
 
     @Override
-    public UserQueryBuilder visit(AndExpression andExpression) {
-        if (andExpression.getExpressions().length == 1) {
-            andExpression.getExpressions()[0].accept(this);
-            return this.userQueryBuilder;
-        } else {
-            //Arrays.stream(andExpression.getExpressions()).forEach(expression -> expression.accept(this));
-            throw new NotImplementedException("And expression not implemented.");
-        }
+    public Condition visit(AndExpression andExpression) {
+        return merge(andExpression::getExpressions, Predicate.AND);
     }
 
     @Override
-    public UserQueryBuilder visit(OrExpression orExpression) {
-        if (orExpression.getExpressions().length == 1) {
-            orExpression.getExpressions()[0].accept(this);
-            return this.userQueryBuilder;
-        } else {
-            //Arrays.stream(orExpression.getExpressions()).forEach(expression -> expression.accept(this));
-            throw new NotImplementedException("Or expression not implemented.");
-        }
+    public Condition visit(OrExpression orExpression) {
+        return merge(orExpression::getExpressions, Predicate.OR);
     }
 
     @Override
-    public UserQueryBuilder visit(ComparisonExpression comparisonExpression) {
+    public Condition visit(ComparisonExpression comparisonExpression) {
         comparisonExpression.getField().accept(this);
         comparisonExpression.getValueOrField().accept(this);
-        comparisonExpression.getOperator().accept(this);
-        return null;
+        return comparisonExpression.getOperator().accept(this);
     }
 
     @Override
-    public UserQueryBuilder visit(FieldInExpression fieldInExpression) {
-        fieldInExpression.getField().accept(this);
-        Stream.of(fieldInExpression.getValues()).forEach(value -> this.values.add(value.getValue()));
-        this.userQueryBuilder.where(in(this.metadataRepository.getComplexType(this.getEntity(this.leftPath)).getField(getField(this.leftPath)), this.values));
-        return null;
+    public Condition visit(FieldIsEmptyExpression fieldIsEmptyExpression) {
+        fieldIsEmptyExpression.getField().accept(this);
+        return new IsEmpty(popCurrentExpression());
     }
 
     @Override
-    public UserQueryBuilder visit(FieldIsEmptyExpression fieldIsEmptyExpression) {
-        throw new NotImplementedException("FieldIsEmpty expression not implemented.");
+    public Condition visit(FieldBetweenExpression fieldBetweenExpression) {
+        fieldBetweenExpression.getField().accept(this);
+        final int start = Integer.parseInt(fieldBetweenExpression.getLeft().getValue());
+        final int end = Integer.parseInt(fieldBetweenExpression.getLeft().getValue());
+        return new Range(popCurrentExpression(), start, end);
     }
 
     @Override
-    public UserQueryBuilder visit(FieldIsValidExpression fieldIsValidExpression) {
-        throw new NotImplementedException("FieldIsEmpty expression not implemented.");
-    }
-
-    @Override
-    public UserQueryBuilder visit(FieldIsInvalidExpression fieldIsInvalidExpression) {
-        throw new NotImplementedException("FieldIsInvalid expression not implemented.");
-    }
-
-    @Override
-    public UserQueryBuilder visit(FieldMatchesRegex fieldMatchesRegex) {
-        throw new NotImplementedException("FieldMatches regex not implemented.");
-    }
-
-    @Override
-    public UserQueryBuilder visit(FieldCompliesPattern fieldCompliesPattern) {
-        throw new NotImplementedException("FieldComplies pattern not implemented.");
-    }
-
-    @Override
-    public UserQueryBuilder visit(FieldWordCompliesPattern fieldWordCompliesPattern) {
-        throw new NotImplementedException("FieldWordComplies pattern not implemented.");
-    }
-
-    @Override
-    public UserQueryBuilder visit(FieldBetweenExpression fieldBetweenExpression) {
-        throw new NotImplementedException("FieldBetween expression not implemented.");
-    }
-
-    @Override
-    public UserQueryBuilder visit(NotExpression notExpression) {
-        throw new NotImplementedException("NotExpression not implemented.");
-    }
-
-    @Override
-    public UserQueryBuilder visit(FieldContainsExpression fieldContainsExpression) {
+    public Condition visit(FieldContainsExpression fieldContainsExpression) {
         fieldContainsExpression.getField().accept(this);
-        this.userQueryBuilder = UserQueryBuilder.where(this.userQueryBuilder, UserQueryHelper.buildCondition(userQueryBuilder, new WhereCondition(leftPath, "CONTAINS", fieldContainsExpression.getValue(), null), this.metadataRepository), null);
-        return null;
+        return new Compare(popCurrentExpression(), Predicate.CONTAINS, new StringConstant(fieldContainsExpression.getValue()));
     }
 
     @Override
-    public UserQueryBuilder visit(AllFields allFields) {
-        throw new NotImplementedException("AllFields not implemented.");
+    public Condition visit(NotExpression notExpression) {
+        return new UnaryLogicOperator(notExpression.getExpression().accept(this), Predicate.NOT);
     }
 
-    private String getEntity(String leftPath) {
-        return leftPath.split("/")[0];
+    @Override
+    public Condition visit(FieldInExpression fieldInExpression) {
+        throw new UnsupportedOperationException("FieldInExpression not supported by MDM.");
     }
 
-    private String getField(String leftPath) {
-        return leftPath.split("/")[1];
+    @Override
+    public Condition visit(FieldIsValidExpression fieldIsValidExpression) {
+        throw new UnsupportedOperationException("FieldIsValidExpression not supported by MDM.");
     }
 
-    private String getOperatorFromComparisonOperator(String name) {
-        String operator;
-        switch (name) {
-            case "EQ" :
-                operator = "=";
-                break;
-            case "NEQ" :
-                operator = "!=";
-                break;
-            case "LT" :
-                operator = "<";
-                break;
-            case "GT" :
-                operator = ">";
-                break;
-            case "LET" :
-                operator = "<=";
-                break;
-            case "GET" :
-                operator = ">=";
-                break;
-            default :
-                throw new NotImplementedException("'" + name + "' support not implemented.");
-        }
-        return operator;
+    @Override
+    public Condition visit(FieldIsInvalidExpression fieldIsInvalidExpression) {
+        throw new UnsupportedOperationException("FieldIsInvalidExpression not supported by MDM.");
+    }
+
+    @Override
+    public Condition visit(FieldMatchesRegex fieldMatchesRegex) {
+        throw new UnsupportedOperationException("FieldMatchesRegex not supported by MDM.");
+    }
+
+    @Override
+    public Condition visit(FieldCompliesPattern fieldCompliesPattern) {
+        throw new UnsupportedOperationException("FieldCompliesPattern not supported by MDM.");
+    }
+
+    @Override
+    public Condition visit(FieldWordCompliesPattern fieldWordCompliesPattern) {
+        throw new UnsupportedOperationException("FieldWordCompliesPattern not supported by MDM.");
+    }
+
+    @Override
+    public Condition visit(AllFields allFields) {
+        throw new UnsupportedOperationException("AllFields not supported by MDM.");
     }
 }

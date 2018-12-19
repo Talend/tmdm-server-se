@@ -114,28 +114,38 @@ public class UserQueryJsonSerializerTest extends TestCase {
         assertNotNull(typedExpression);
     }
 
-    public void testConditionOperatorTQL(){
+    public void testConditionEqualsTQL() {
         final ComplexTypeMetadata type1 = repository.getComplexType("Type1");
-        final UserQueryBuilder userQueryBuilder = UserQueryBuilder.from(type1).where("'Type1/value1' = 10", this.repository);
+        final UserQueryBuilder userQueryBuilder = UserQueryBuilder.from(type1).where("Type1.value1 = 10");
         final Select select = userQueryBuilder.getSelect();
         assertNotNull(select.getCondition());
         assertRoundTrip(select);
     }
 
-    public void testConditionContainsTQL(){
+    public void testConditionEqualsFieldTQL() {
         final ComplexTypeMetadata type1 = repository.getComplexType("Type1");
-        final UserQueryBuilder userQueryBuilder = UserQueryBuilder.from(type1).where("'Type1/value1' contains 'Toto'", this.repository);
+        final UserQueryBuilder userQueryBuilder = UserQueryBuilder.from(type1).where("Type1.value1 = field(Type1.fk2)");
         final Select select = userQueryBuilder.getSelect();
         assertNotNull(select.getCondition());
         assertRoundTrip(select);
     }
 
-    public void testConditionInTQL(){
+    public void testConditionContainsTQL() {
         final ComplexTypeMetadata type1 = repository.getComplexType("Type1");
-        final UserQueryBuilder userQueryBuilder = UserQueryBuilder.from(type1).where("'Type1/value1' in ['value1', 'value2']", this.repository);
+        final UserQueryBuilder userQueryBuilder = UserQueryBuilder.from(type1).where("Type1.value1 contains 'Toto'");
         final Select select = userQueryBuilder.getSelect();
         assertNotNull(select.getCondition());
         assertRoundTrip(select);
+    }
+
+    public void testConditionInTQL() {
+        try {
+            final ComplexTypeMetadata type1 = repository.getComplexType("Type1");
+            UserQueryBuilder.from(type1).where("Type1.value1 in ['value1', 'value2']");
+            fail("Expected an UnsupportedOperationException (in is not supported)");
+        } catch (UnsupportedOperationException e) {
+            // Expected
+        }
     }
 
     private void assertRoundTrip(Select select) {

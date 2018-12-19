@@ -861,9 +861,10 @@ public class UserQueryBuilder {
         return this;
     }
 
-    public UserQueryBuilder where(String tqlCondition, MetadataRepository metadataRepository) {
-        UserQueryBuilder userQueryBuilder = Tql.parse(tqlCondition).accept(new TQLPredicateToMDMPredicate(metadataRepository));
-        where(userQueryBuilder.getSelect().getCondition());
+    public UserQueryBuilder where(String tqlCondition) {
+        final ComplexTypeMetadata[] types = getSelect().getTypes().toArray(new ComplexTypeMetadata[0]);
+        Condition condition = Tql.parse(tqlCondition).accept(new TQLPredicateToMDMPredicate(types));
+        where(condition);
         return this;
     }
 

@@ -13,12 +13,13 @@
 package com.amalto.core.storage.hibernate;
 
 /**
- * The ThreadLocal method use during the Integrated Matching to except 
- * Golden record with state code 204.
- * created by hwzhu on Dec 18, 2018
+ * The ThreadLocal method use below scenarios.<br />
+ * 1. during the Integrated Matching to except Golden record with state code 204. {@link MatchMergeUtils#getObsoleteTaskIds}<br />
+ * 2. MatchingStatistics to bypass the sub condition that added in class StandardQueryHandler#visit(Compare), {@link MatchingStatistics#getMatchingStatistics}
+ * Created by hwzhu on Dec 18, 2018
  *
  */
-public final class DuringMatching {
+public final class MatchingIdentifier {
 
     private static ThreadLocal<Boolean> threadLocal = new ThreadLocal<Boolean>() {
         public Boolean initialValue() {

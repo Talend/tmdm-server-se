@@ -1266,7 +1266,7 @@ class StandardQueryHandler extends AbstractQueryHandler {
                     sb.append(' ').append(mainTableName).append(' ');//$NON-NLS-1$ //$NON-NLS-2$
                     sb.append("WHERE ").append(Storage.METADATA_TASK_ID).append('=');//$NON-NLS-1$ //$NON-NLS-2$
                     sb.append(mainTableAlias).append('.').append(Storage.METADATA_TASK_ID);//$NON-NLS-1$
-                    if (!DuringMatching.get()) {
+                    if (!MatchingIdentifier.get()) {
                         sb.append(" AND ").append(Storage.METADATA_STAGING_STATUS);//$NON-NLS-1$
                         sb.append(" NOT IN (").append(StagingConstants.SUCCESS_VALIDATE).append(',');//$NON-NLS-1$ //$NON-NLS-2$
                         sb.append(StagingConstants.SUCCESS_MERGED_RECORD_TO_RESOLVE).append(',');//$NON-NLS-1$

@@ -94,4 +94,8 @@ public interface BaseMessages extends Messages {
     String restore_success_prefix();
 
     String restore_fail_prefix();
+
+    String empty_entity();
+
+    String loading();
 }

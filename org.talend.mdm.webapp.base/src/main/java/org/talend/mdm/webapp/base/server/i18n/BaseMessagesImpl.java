@@ -241,4 +241,14 @@ public final class BaseMessagesImpl implements BaseMessages {
     public String restore_fail_prefix() {
         return MESSAGES.getMessage("restore_fail_prefix");
     }
+
+    @Override
+    public String empty_entity() {
+        return MESSAGES.getMessage("empty_entity");
+    }
+
+    @Override
+    public String loading() {
+        return MESSAGES.getMessage("loading");
+    }
 }

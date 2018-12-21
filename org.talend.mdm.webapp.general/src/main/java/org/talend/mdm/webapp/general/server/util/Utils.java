@@ -55,9 +55,13 @@ public class Utils {
 
     private static final Logger LOG = Logger.getLogger(Utils.class);
 
-    private static final String WELCOMECONTEXT = "welcomeportal"; // $NON-NLS-2$
+    private static final String WELCOMECONTEXT = "welcomeportal"; //$NON-NLS-1$
 
     private static final String WELCOMEAPP = "WelcomePortal"; //$NON-NLS-1$
+
+    private static final String USER_JOURNAL_CONTEXT = "userjournal"; //$NON-NLS-1$
+
+    private static final String USER_JOURNAL_APP = "UserJournal"; //$NON-NLS-1$
 
     private static final String DEFAULT_LANG = "en"; //$NON-NLS-1$
 
@@ -162,6 +166,11 @@ public class Utils {
             welMenu.setApplication(WELCOMEAPP);
             welMenu.setContext(WELCOMECONTEXT);
             menu.getSubMenus().put(WELCOMECONTEXT, welMenu);
+
+            Menu userJournalMenu = new Menu();
+            userJournalMenu.setApplication(USER_JOURNAL_APP);
+            userJournalMenu.setContext(USER_JOURNAL_CONTEXT);
+            menu.getSubMenus().put(USER_JOURNAL_CONTEXT, userJournalMenu);
         }
 
         for (String key : menu.getSubMenus().keySet()) {

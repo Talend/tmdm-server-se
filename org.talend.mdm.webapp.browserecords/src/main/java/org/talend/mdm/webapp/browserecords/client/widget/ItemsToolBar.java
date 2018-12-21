@@ -129,6 +129,8 @@ public class ItemsToolBar extends ToolBar {
 
     protected Button bulkUpdateButton;
 
+    protected Button userJournalButton;
+
     public final Button searchButton = new Button(MessagesFactory.getMessages().search_btn());
 
     protected ToggleButton advancedSearchButton;
@@ -307,6 +309,9 @@ public class ItemsToolBar extends ToolBar {
         if (bulkUpdateButton != null) {
             bulkUpdateButton.setEnabled(true);
         }
+        if (userJournalButton != null) {
+            userJournalButton.setEnabled(true);
+        }
         updateUserCriteriasList();
         this.layout(true);
     }
@@ -327,6 +332,7 @@ public class ItemsToolBar extends ToolBar {
         if (((AppHeader) BrowseRecords.getSession().get(UserSession.APP_HEADER)).isEnterprise() && !isStaging()) {
             addBulkUpdateButton();
         }
+        addUserJournalButton();
         add(new FillToolItem());
         addEntityCombo();
         updateEntityCombo();
@@ -580,6 +586,25 @@ public class ItemsToolBar extends ToolBar {
             }
         });
         add(bulkUpdateButton);
+    }
+
+    protected void addUserJournalButton() {
+        userJournalButton = new Button(MessagesFactory.getMessages().userJournal_btn());
+        userJournalButton.setIcon(AbstractImagePrototype.create(Icons.INSTANCE.UserJournal()));
+        userJournalButton.setToolTip(MessagesFactory.getMessages().journal_tip());
+        userJournalButton.setEnabled(false);
+        userJournalButton.setId("BrowseRecords_UserJournal"); //$NON-NLS-1$
+        userJournalButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                String viewPK = entityCombo.getValue().get("value").toString(); //$NON-NLS-1$
+                String concept = ViewUtil.getConceptFromBrowseItemView(viewPK); // $NON-NLS-1$
+                initUserJournal(concept, viewPK);
+            }
+
+        });
+        add(userJournalButton);
     }
 
     protected void addEntityCombo() {
@@ -1399,6 +1424,11 @@ public class ItemsToolBar extends ToolBar {
             tabPanel.add(panel);
         }
         tabPanel.setSelection(id);
+    }-*/;
+
+    private native void initUserJournal(String concept, String view)/*-{
+        $wnd.amalto.userjournal.UserJournal.browseUserJournalWithView(concept,
+                view);
     }-*/;
 
     private native static JavaScriptObject convertBulkUpdatePanel(BulkUpdatePanel bulkUpdatePanel)/*-{

@@ -598,9 +598,10 @@ public class ItemsToolBar extends ToolBar {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
+                String viewName = entityCombo.getValue().get("name").toString(); //$NON-NLS-1$
                 String viewPK = entityCombo.getValue().get("value").toString(); //$NON-NLS-1$
                 String concept = ViewUtil.getConceptFromBrowseItemView(viewPK); // $NON-NLS-1$
-                initUserJournal(concept, viewPK);
+                initUserJournal(concept, viewName, viewPK);
             }
 
         });
@@ -1426,9 +1427,9 @@ public class ItemsToolBar extends ToolBar {
         tabPanel.setSelection(id);
     }-*/;
 
-    private native void initUserJournal(String concept, String view)/*-{
+    private native void initUserJournal(String concept, String viewName, String viewPK)/*-{
         $wnd.amalto.userjournal.UserJournal.browseUserJournalWithView(concept,
-                view);
+                viewName, viewPK);
     }-*/;
 
     private native static JavaScriptObject convertBulkUpdatePanel(BulkUpdatePanel bulkUpdatePanel)/*-{

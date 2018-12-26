@@ -45,9 +45,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.amalto.commons.core.utils.XMLUtils;
+import com.amalto.core.delegator.BaseSecurityCheck;
 import com.amalto.core.delegator.BeanDelegatorContainer;
 import com.amalto.core.delegator.ILocalUser;
-import com.amalto.core.delegator.BaseSecurityCheck;
 import com.amalto.core.history.DeleteType;
 import com.amalto.core.history.MutableDocument;
 import com.amalto.core.objects.UpdateReportPOJO;
@@ -3680,6 +3680,153 @@ public class DocumentSaveTest extends TestCase {
         results = storage.fetch(qb.getSelect());
         assertEquals(0, results.getCount());
         storage.commit();
+    }
+
+    public void testCreateWithOwnPK() throws Exception {
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(DocumentSaveTest.class.getResourceAsStream("MyProduct.xsd"));
+        MockMetadataRepositoryAdmin.INSTANCE.register("MyProduct", repository);
+        SaverSource source = new TestSaverSource(repository, false, "MyProduct_original.xml", "MyProduct.xsd");
+
+        //Case 1 PeopleGroupSize create record with submitted id id1, create success
+        SaverSession session = SaverSession.newSession(source);
+        InputStream recordXml = new ByteArrayInputStream(("<PeopleGroupSize><Id>id1</Id><Name>Product Name1</Name><Description>desc1</Description></PeopleGroupSize>").getBytes("UTF-8"));
+        DocumentSaverContext context = session.getContextFactory().create("MyProduct", "MyProduct", "Source", recordXml, true, true, true, false, false);
+        DocumentSaver saver = context.createSaver();
+        saver.save(session, context);
+        MockCommitter committer = new MockCommitter();
+        session.end(committer);
+
+        assertTrue(committer.hasSaved());
+        Element committedElement = committer.getCommittedElement();
+        assertEquals("id1", evaluate(committedElement, "/PeopleGroupSize/Id"));
+        assertEquals("Product Name1", evaluate(committedElement, "/PeopleGroupSize/Name"));
+        assertEquals("desc1", evaluate(committedElement, "/PeopleGroupSize/Description"));
+
+        //Case 2 PeopleGroupSize create record without id, create fail
+        session = SaverSession.newSession(source);
+        recordXml = new ByteArrayInputStream(("<PeopleGroupSize><Id></Id><Name>Product Name1</Name><Description>desc1</Description></PeopleGroupSize>").getBytes("UTF-8"));
+        context = session.getContextFactory().create("MyProduct", "MyProduct", "Source", recordXml, true, true, true, false, false);
+        saver = context.createSaver();
+        try {
+            saver.save(session, context);
+            fail("Expected Id to be set");
+        } catch (Exception e) {
+        }
+        committer = new MockCommitter();
+        session.end(committer);
+
+        //Case 3 AutoIDEntity create record with submitted id 1, create success
+        session = SaverSession.newSession(source);
+        recordXml = new ByteArrayInputStream(("<AutoIDEntity><Id>1</Id><Name>name1</Name></AutoIDEntity>").getBytes("UTF-8"));
+        context = session.getContextFactory().create("MyProduct", "MyProduct", "Source", recordXml, true, true, true, false, false);
+        saver = context.createSaver();
+        saver.save(session, context);
+        committer = new MockCommitter();
+        session.end(committer);
+
+        assertTrue(committer.hasSaved());
+        committedElement = committer.getCommittedElement();
+        assertEquals("1", evaluate(committedElement, "/AutoIDEntity/Id"));
+        assertEquals("name1", evaluate(committedElement, "/AutoIDEntity/Name"));
+
+        //Case 4 AutoIDEntity create record with submitted empty id, create success
+        session = SaverSession.newSession(source);
+        recordXml = new ByteArrayInputStream(("<AutoIDEntity><Id></Id><Name>name2</Name></AutoIDEntity>").getBytes("UTF-8"));
+        context = session.getContextFactory().create("MyProduct", "MyProduct", "Source", recordXml, true, true, true, false, false);
+        saver = context.createSaver();
+        saver.save(session, context);
+        committer = new MockCommitter();
+        session.end(committer);
+
+        assertTrue(committer.hasSaved());
+        committedElement = committer.getCommittedElement();
+        assertNotNull(evaluate(committedElement, "/AutoIDEntity/Id"));
+        assertEquals("name2", evaluate(committedElement, "/AutoIDEntity/Name"));
+
+        //Case 5 AutoIDEntity create record with empty id element for request body, create success
+        session = SaverSession.newSession(source);
+        recordXml = new ByteArrayInputStream(("<AutoIDEntity><Name>name3</Name></AutoIDEntity>").getBytes("UTF-8"));
+        context = session.getContextFactory().create("MyProduct", "MyProduct", "Source", recordXml, true, true, true, false, false);
+        saver = context.createSaver();
+        saver.save(session, context);
+        committer = new MockCommitter();
+        session.end(committer);
+
+        assertTrue(committer.hasSaved());
+        committedElement = committer.getCommittedElement();
+        assertNotNull(evaluate(committedElement, "/AutoIDEntity/Id"));
+        assertEquals("name3", evaluate(committedElement, "/AutoIDEntity/Name"));
+
+        //Case 6 AutoIDEntity create record with existing id 1 for request body, create success
+        session = SaverSession.newSession(source);
+        recordXml = new ByteArrayInputStream(("<AutoIDEntity><Id>1</Id><Name>name4</Name></AutoIDEntity>").getBytes("UTF-8"));
+        context = session.getContextFactory().create("MyProduct", "MyProduct", "Source", recordXml, true, true, true, false, false);
+        saver = context.createSaver();
+        saver.save(session, context);
+        committer = new MockCommitter();
+        session.end(committer);
+
+        assertTrue(committer.hasSaved());
+        committedElement = committer.getCommittedElement();
+        assertNotNull(evaluate(committedElement, "/AutoIDEntity/Id"));
+        assertEquals("name4", evaluate(committedElement, "/AutoIDEntity/Name"));
+
+        //Case 7 UUIDEntity create record with submitted id 1 for request body, create success
+        session = SaverSession.newSession(source);
+        recordXml = new ByteArrayInputStream(("<UUIDEntity><Id>1</Id><Name>name1</Name></UUIDEntity>").getBytes("UTF-8"));
+        context = session.getContextFactory().create("MyProduct", "MyProduct", "Source", recordXml, true, true, true, false, false);
+        saver = context.createSaver();
+        saver.save(session, context);
+        committer = new MockCommitter();
+        session.end(committer);
+
+        assertTrue(committer.hasSaved());
+        committedElement = committer.getCommittedElement();
+        assertEquals("1", evaluate(committedElement, "/UUIDEntity/Id"));
+        assertEquals("name1", evaluate(committedElement, "/UUIDEntity/Name"));
+
+        //Case 8 UUIDEntity create record with with submitted empty id, create success
+        session = SaverSession.newSession(source);
+        recordXml = new ByteArrayInputStream(("<UUIDEntity><Id></Id><Name>name2</Name></UUIDEntity>").getBytes("UTF-8"));
+        context = session.getContextFactory().create("MyProduct", "MyProduct", "Source", recordXml, true, true, true, false, false);
+        saver = context.createSaver();
+        saver.save(session, context);
+        committer = new MockCommitter();
+        session.end(committer);
+
+        assertTrue(committer.hasSaved());
+        committedElement = committer.getCommittedElement();
+        assertNotNull(evaluate(committedElement, "/AutoIDEntity/Id"));
+        assertEquals("name2", evaluate(committedElement, "/UUIDEntity/Name"));
+
+        //Case 9 UUIDEntity create record with empty id element for request body, create success
+        session = SaverSession.newSession(source);
+        recordXml = new ByteArrayInputStream(("<UUIDEntity><Name>name3</Name></UUIDEntity>").getBytes("UTF-8"));
+        context = session.getContextFactory().create("MyProduct", "MyProduct", "Source", recordXml, true, true, true, false, false);
+        saver = context.createSaver();
+        saver.save(session, context);
+        committer = new MockCommitter();
+        session.end(committer);
+
+        assertTrue(committer.hasSaved());
+        committedElement = committer.getCommittedElement();
+        assertNotNull(evaluate(committedElement, "/AutoIDEntity/Id"));
+        assertEquals("name3", evaluate(committedElement, "/UUIDEntity/Name"));
+
+        //Case 10 UUIDEntity create record with existing id 1 for request body, create success
+        session = SaverSession.newSession(source);
+        recordXml = new ByteArrayInputStream(("<UUIDEntity><Id>1</Id><Name>name4</Name></UUIDEntity>").getBytes("UTF-8"));
+        context = session.getContextFactory().create("MyProduct", "MyProduct", "Source", recordXml, true, true, true, false, false);
+        saver = context.createSaver();
+        saver.save(session, context);
+        committer = new MockCommitter();
+        session.end(committer);
+
+        assertTrue(committer.hasSaved());
+        committedElement = committer.getCommittedElement();
+        assertEquals("1", evaluate(committedElement, "/UUIDEntity/Id"));
+        assertEquals("name4", evaluate(committedElement, "/UUIDEntity/Name"));
     }
 
     private static class MockCommitter implements SaverSession.Committer {

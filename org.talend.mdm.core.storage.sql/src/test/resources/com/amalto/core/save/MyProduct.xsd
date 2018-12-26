@@ -1,0 +1,91 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<xsd:import namespace="http://www.w3.org/2001/XMLSchema" />
+	<xsd:simpleType name="AUTO_INCREMENT">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:simpleType name="UUID">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="PeopleGroupSize">
+		<xsd:annotation>
+			<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:all>
+				<xsd:element name="Id" type="xsd:string">
+					<xsd:annotation>
+						<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element maxOccurs="1" minOccurs="1" name="Name"
+					type="xsd:string">
+					<xsd:annotation>
+
+						<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element maxOccurs="1" minOccurs="1"
+					name="Description" type="xsd:string">
+					<xsd:annotation>
+
+						<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+					</xsd:annotation>
+				</xsd:element>
+			</xsd:all>
+		</xsd:complexType>
+		<xsd:unique name="PeopleGroupSize">
+			<xsd:selector xpath="." />
+			<xsd:field xpath="Id" />
+		</xsd:unique>
+	</xsd:element>
+	<xsd:element name="AutoIDEntity">
+		<xsd:annotation>
+			<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:all>
+				<xsd:element maxOccurs="1" minOccurs="1" name="Id"
+					type="AUTO_INCREMENT">
+					<xsd:annotation>
+						<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element maxOccurs="1" minOccurs="1" name="Name"
+					type="xsd:string">
+					<xsd:annotation>
+						<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+					</xsd:annotation>
+				</xsd:element>
+			</xsd:all>
+		</xsd:complexType>
+		<xsd:unique name="AutoIDEntity">
+			<xsd:selector xpath="." />
+			<xsd:field xpath="Id" />
+		</xsd:unique>
+	</xsd:element>
+	<xsd:element name="UUIDEntity">
+		<xsd:annotation>
+			<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:all>
+				<xsd:element maxOccurs="1" minOccurs="1" name="Id"
+					type="UUID">
+					<xsd:annotation>
+						<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element maxOccurs="1" minOccurs="1" name="Name"
+					type="xsd:string">
+					<xsd:annotation>
+						<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+					</xsd:annotation>
+				</xsd:element>
+			</xsd:all>
+		</xsd:complexType>
+		<xsd:unique name="UUIDEntity">
+			<xsd:selector xpath="." />
+			<xsd:field xpath="Id" />
+		</xsd:unique>
+	</xsd:element>
+</xsd:schema>

@@ -12,6 +12,7 @@
 package com.amalto.core.save.context;
 
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -50,12 +51,14 @@ class ID implements DocumentSaver {
         String dataModelName = context.getDataModelName();
         MutableDocument userDocument = context.getUserDocument();
         String typeName = type.getName();
+        boolean isAutomaticId = false;
         for (FieldMetadata keyField : keyFields) {
             String keyFieldTypeName = keyField.getType().getName();
             Accessor userAccessor = userDocument.createAccessor(keyField.getName());
             // Get ids.
             String currentIdValue;
             if (isServerProvidedValue(keyFieldTypeName)) {
+                isAutomaticId = true;
                 if (userAccessor.exist()) { // Ignore cases where id is not there (will usually mean this is a creation).
                     String value = userAccessor.get();
                     if (!value.trim().isEmpty()) {
@@ -80,13 +83,18 @@ class ID implements DocumentSaver {
             }
         }
         // now has an id, so load database document
-        String[] xmlDocumentId = ids.toArray(new String[ids.size()]);
-        if (xmlDocumentId.length > 0 && database.exist(dataCluster, dataModelName, typeName, xmlDocumentId)) {
+        String[] xmlDocumentIds = ids.toArray(new String[ids.size()]);
+        EnumSet<UserAction> createTypeSet = EnumSet.of(UserAction.AUTO, UserAction.AUTO_STRICT, UserAction.CREATE, UserAction.CREATE_STRICT, UserAction.REPLACE);
+        boolean isExistRecord = database.exist(dataCluster, dataModelName, typeName, xmlDocumentIds);
+        if (xmlDocumentIds.length > 0 && isExistRecord) {
             if (context.getUserAction() == UserAction.AUTO || context.getUserAction() == UserAction.AUTO_STRICT) {
                 context.setUserAction(UserAction.UPDATE);
             }
-            context.setId(xmlDocumentId);
-            context.setDatabaseDocument(database.get(dataCluster, dataModelName, typeName, xmlDocumentId));
+            context.setId(xmlDocumentIds);
+            context.setDatabaseDocument(database.get(dataCluster, dataModelName, typeName, xmlDocumentIds));
+        } else if (isAutomaticId && xmlDocumentIds.length > 0 && keyFields.size() == xmlDocumentIds.length && !isExistRecord && createTypeSet.contains(context.getUserAction())) {
+            context.setUserAction(UserAction.CREATE_STRICT);
+            context.setDatabaseDocument(new DOMDocument(SaverContextFactory.DOCUMENT_BUILDER.newDocument(), type, dataCluster, context.getDataModelName()));
         } else {
             // Throw an exception if trying to update a document that does not exist.
             switch (context.getUserAction()) {
@@ -99,7 +107,7 @@ class ID implements DocumentSaver {
                 case UPDATE:
                 case PARTIAL_UPDATE:
                     StringBuilder builder = new StringBuilder();
-                    for (String idElement : xmlDocumentId) {
+                    for (String idElement : xmlDocumentIds) {
                         builder.append('[').append(idElement).append(']');
                     }
                     throw new IllegalStateException("Can not update document '" + type.getName() + "' with id '" + builder.toString() + "' because it does not exist.");

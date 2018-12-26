@@ -182,7 +182,7 @@ class GenerateActions implements DocumentSaver {
                 if (action instanceof FieldUpdateAction) {
                     FieldUpdateAction fieldUpdateAction = (FieldUpdateAction) action;
                     FieldMetadata field = fieldUpdateAction.getField();
-                    if (field.isKey()) {
+                    if (field.isKey() && keyActions.containsKey(field)) {
                         mergedActions.add(keyActions.get(field));
                     } else {
                         mergedActions.add(action);

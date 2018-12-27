@@ -1561,6 +1561,72 @@ public class CompareTest extends TestCase {
         assertEquals(1, sort.get(ImpactAnalyzer.Impact.LOW).size());
     }
 
+    public void test34_ModifyContainedFieldType_From_11_TO_01() throws Exception {
+        /*
+         * Test                                                                    Test
+         *   |__id (SimpleField) (1-1)                                               |__id (SimpleField) (1-1)
+         *   |__Name (SimpleField) (0-1)                                             |__Name (SimpleField) (0-1)
+         *   |__Feature (ContainedFieldType) (1-1)                                   |__Feature (ContainedFieldType) (0-1)
+         *        |__Colors (ContainedFieldType) (0-1)                                    |__Colors (ContainedFieldType) (0-1)
+         *            |__Color(SimpleField) (1-1)                                               |__Color(SimpleField) (1-1)
+         *        |__Sizes (ContainedFieldType) (1-1)              =======>               |__Sizes (ContainedFieldType) (1-1)
+         *            |__Size(SimpleField) (1-1)                                                |__Size(SimpleField) (1-1)
+         *   |__Stores (ContainedFieldType) (1-1)                                    |__Stores (ContainedFieldType) (0-1)
+         *        |__Store(Foreign Key)(0-many)                                           |__Store(Foreign Key)(0-many)
+         *   |__Nodes (ContainedFieldType) (1-1)                                     |__Nodes (ContainedFieldType) (0-1)
+         *        |__subelement (SimpleField) (1-1)                                       |__subelement (SimpleField) (0-1)
+         */
+        MetadataRepository original = new MetadataRepository();
+        original.load(CompareTest.class.getResourceAsStream("schema34_1.xsd")); //$NON-NLS-1$
+        original = original.copy();
+        MetadataRepository updated2 = new MetadataRepository();
+        updated2.load(CompareTest.class.getResourceAsStream("schema34_2.xsd")); //$NON-NLS-1$
+        Compare.DiffResults diffResults = Compare.compare(original, updated2);
+        assertEquals(3, diffResults.getActions().size());
+        assertEquals(3, diffResults.getModifyChanges().size());
+        assertEquals(0, diffResults.getRemoveChanges().size());
+        assertEquals(0, diffResults.getAddChanges().size());
+
+        ImpactAnalyzer analyzer = new HibernateStorageImpactAnalyzer();
+        Map<ImpactAnalyzer.Impact, List<Change>> sort = analyzer.analyzeImpacts(diffResults);
+        assertEquals(0, sort.get(ImpactAnalyzer.Impact.HIGH).size());
+        assertEquals(0, sort.get(ImpactAnalyzer.Impact.MEDIUM).size());
+        assertEquals(3, sort.get(ImpactAnalyzer.Impact.LOW).size());
+    }
+
+    public void test34_ModifyContainedFieldType_From_01_TO_11() throws Exception {
+        /*
+         * Test                                                                    Test
+         *   |__id (SimpleField) (1-1)                                               |__id (SimpleField) (1-1)
+         *   |__Name (SimpleField) (0-1)                                             |__Name (SimpleField) (0-1)
+         *   |__Feature (ContainedFieldType) (0-1)                                   |__Feature (ContainedFieldType) (1-1)
+         *        |__Colors (ContainedFieldType) (0-1)                                    |__Colors (ContainedFieldType) (0-1)
+         *            |__Color(SimpleField) (1-1)                                               |__Color(SimpleField) (1-1)
+         *        |__Sizes (ContainedFieldType) (1-1)              =======>               |__Sizes (ContainedFieldType) (1-1)
+         *             |__Size(SimpleField) (1-1)                                               |__Size(SimpleField) (1-1)
+         *   |__Stores (ContainedFieldType) (0-1)                                    |__Stores (ContainedFieldType) (1-1)
+         *        |__Store(Foreign Key)(0-many)                                           |__Store(Foreign Key)(0-many)
+         *   |__Nodes (ContainedFieldType) (0-1)                                     |__Nodes (ContainedFieldType) (1-1)
+         *        |__subelement (SimpleField) (1-1)                                       |__subelement (SimpleField) (0-1)
+         */
+        MetadataRepository original = new MetadataRepository();
+        original.load(CompareTest.class.getResourceAsStream("schema34_2.xsd")); //$NON-NLS-1$
+        original = original.copy();
+        MetadataRepository updated2 = new MetadataRepository();
+        updated2.load(CompareTest.class.getResourceAsStream("schema34_1.xsd")); //$NON-NLS-1$
+        Compare.DiffResults diffResults = Compare.compare(original, updated2);
+        assertEquals(3, diffResults.getActions().size());
+        assertEquals(3, diffResults.getModifyChanges().size());
+        assertEquals(0, diffResults.getRemoveChanges().size());
+        assertEquals(0, diffResults.getAddChanges().size());
+
+        ImpactAnalyzer analyzer = new HibernateStorageImpactAnalyzer();
+        Map<ImpactAnalyzer.Impact, List<Change>> sort = analyzer.analyzeImpacts(diffResults);
+        assertEquals(3, sort.get(ImpactAnalyzer.Impact.HIGH).size());
+        assertEquals(0, sort.get(ImpactAnalyzer.Impact.MEDIUM).size());
+        assertEquals(0, sort.get(ImpactAnalyzer.Impact.LOW).size());
+    }
+
     @SuppressWarnings("rawtypes")
     private ClassRepository buildRepository() {
         ClassRepository repository = new ClassRepository();

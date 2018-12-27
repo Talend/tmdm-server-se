@@ -262,7 +262,7 @@ public class DefaultItem implements Item {
             throw new RuntimeException("Cannot delete instance '" + itemPOJOPK.getUniqueID() + "' (concept name: " + conceptName + ") due to FK integrity constraints.");
         }
         try {
-            return ItemPOJO.drop(itemPOJOPK, partPath);
+            return ItemPOJO.drop(itemPOJOPK, partPath, false);
         } catch (XtentisException e) {
             throw (e);
         } catch (Exception e) {

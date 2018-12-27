@@ -24,8 +24,6 @@ import com.google.gwt.core.client.JavaScriptObject;
  */
 public class JournalTimelinePanel extends ContentPanel {
 
-    private JournalServiceAsync service = Registry.get(Journal.JOURNAL_SERVICE);
-
     public static String TIMELIME_INIT = "init"; //$NON-NLS-1$
 
     private boolean isActive = false;
@@ -103,7 +101,7 @@ public class JournalTimelinePanel extends ContentPanel {
 
     private void loadTimeline(int startIndex) {
         start = startIndex;
-        service.getReportString(startIndex, limit, sort, field, language, dataModel, entity, key, source, operationType,
+        getService().getReportString(startIndex, limit, sort, field, language, dataModel, entity, key, source, operationType,
                 startDate, endDate, isStrict, new SessionAwareAsyncCallback<String>() {
 
             public void onSuccess(String result) {
@@ -239,5 +237,9 @@ public class JournalTimelinePanel extends ContentPanel {
 
     public void setActive(boolean isActive) {
         this.isActive = isActive;
+    }
+
+    protected JournalServiceAsync getService() {
+        return Registry.get(Journal.JOURNAL_SERVICE);
     }
 }

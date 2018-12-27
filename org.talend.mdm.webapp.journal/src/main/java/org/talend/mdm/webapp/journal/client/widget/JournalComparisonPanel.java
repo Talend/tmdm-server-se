@@ -60,8 +60,6 @@ public class JournalComparisonPanel extends ContentPanel {
 
     private static final String RIGHT_BRAKCET = "]";
 
-    private JournalServiceAsync service = Registry.get(Journal.JOURNAL_SERVICE);
-
     private ToolBar toolbar;
 
     private TreePanel<JournalTreeModel> tree;
@@ -111,7 +109,7 @@ public class JournalComparisonPanel extends ContentPanel {
         toolbar.add(restoreButton);
         
 
-        service.getComparisionTree(parameter, UrlUtil.getLanguage(), new SessionAwareAsyncCallback<JournalTreeModel>() {
+        getService().getComparisionTree(parameter, UrlUtil.getLanguage(), new SessionAwareAsyncCallback<JournalTreeModel>() {
 
             @Override
             public void onSuccess(JournalTreeModel root) {
@@ -333,7 +331,7 @@ public class JournalComparisonPanel extends ContentPanel {
         }
         
         if (UpdateReportPOJO.OPERATION_TYPE_UPDATE.equals(journalGridModel.getOperationType()) || (UpdateReportPOJO.OPERATION_TYPE_LOGICAL_DELETE.equals(journalGridModel.getOperationType()) && isBeforePanel)) {
-            service.isAdmin(new SessionAwareAsyncCallback<Boolean>() {
+            getService().isAdmin(new SessionAwareAsyncCallback<Boolean>() {
 
                 @Override
                 public void onSuccess(Boolean isAdmin) {
@@ -442,5 +440,9 @@ public class JournalComparisonPanel extends ContentPanel {
 
     public Map<String, JournalTreeModel> getModelMap() {
         return modelMap;
+    }
+
+    protected JournalServiceAsync getService() {
+        return Registry.get(Journal.JOURNAL_SERVICE);
     }
 }

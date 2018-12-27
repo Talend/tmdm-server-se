@@ -65,8 +65,6 @@ public class JournalDataPanel extends FormPanel {
 
     private JournalHistoryPanel journalHistoryPanel;
 
-    private JournalServiceAsync service = Registry.get(Journal.JOURNAL_SERVICE);
-
     private ListStore<JournalGridModel> gridStore = JournalGridPanel.getInstance().getStore();
 
     private PagingLoadConfig localPagingLoadConfig;
@@ -205,7 +203,7 @@ public class JournalDataPanel extends FormPanel {
             protected void load(Object loadConfig, final AsyncCallback<PagingLoadResult<JournalGridModel>> callback) {
                 localPagingLoadConfig = (PagingLoadConfig) loadConfig;
 
-                service.getJournalList(criteria, BasePagingLoadConfigImpl.copyPagingLoad(localPagingLoadConfig),
+                getService().getJournalList(criteria, BasePagingLoadConfigImpl.copyPagingLoad(localPagingLoadConfig),
                         new SessionAwareAsyncCallback<ItemBasePageLoadResult<JournalGridModel>>() {
 
                             @Override
@@ -263,7 +261,7 @@ public class JournalDataPanel extends FormPanel {
                     PagingLoadConfig loadConfig = new BasePagingLoadConfig();
                     loadConfig.setOffset(0);
                     loadConfig.setLimit(0);
-                    service.getJournalList(criteriaForPhysicalDeleted, BasePagingLoadConfigImpl.copyPagingLoad(loadConfig),
+                    getService().getJournalList(criteriaForPhysicalDeleted, BasePagingLoadConfigImpl.copyPagingLoad(loadConfig),
                             new SessionAwareAsyncCallback<ItemBasePageLoadResult<JournalGridModel>>() {
 
                                 @Override
@@ -311,7 +309,7 @@ public class JournalDataPanel extends FormPanel {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
-                service.checkDCAndDM(journalGridModel.getDataContainer(), journalGridModel.getDataModel(),
+                getService().checkDCAndDM(journalGridModel.getDataContainer(), journalGridModel.getDataModel(),
                         new SessionAwareAsyncCallback<Boolean>() {
 
                             @Override
@@ -432,12 +430,12 @@ public class JournalDataPanel extends FormPanel {
     }
 
     public void updateTabPanel(final JournalGridModel gridModel) {
-        service.getDetailTreeModel(JournalSearchUtil.buildParameter(gridModel, "before", true), UrlUtil.getLanguage(),
+        getService().getDetailTreeModel(JournalSearchUtil.buildParameter(gridModel, "before", true), UrlUtil.getLanguage(),
                 new SessionAwareAsyncCallback<JournalTreeModel>() {
 
             @Override
             public void onSuccess(final JournalTreeModel newRoot) {
-                service.isEnterpriseVersion(new SessionAwareAsyncCallback<Boolean>() {
+                        getService().isEnterpriseVersion(new SessionAwareAsyncCallback<Boolean>() {
 
                     @Override
                     public void onSuccess(Boolean isEnterprise) {
@@ -639,6 +637,10 @@ public class JournalDataPanel extends FormPanel {
         this.keyField.setValue(gridModel.getKey());
         this.operationTypeField.setValue(gridModel.getOperationType());
         this.oeprationTimeField.setValue(gridModel.getOperationDate());
+    }
+
+    protected JournalServiceAsync getService() {
+        return Registry.get(Journal.JOURNAL_SERVICE);
     }
 
     private native void openBrowseRecordPanel(String title, String key, String concept)/*-{

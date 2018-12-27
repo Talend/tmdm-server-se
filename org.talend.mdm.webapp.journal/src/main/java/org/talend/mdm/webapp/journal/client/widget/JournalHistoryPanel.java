@@ -9,12 +9,13 @@
  */
 package org.talend.mdm.webapp.journal.client.widget;
 
+import org.talend.mdm.webapp.journal.client.Journal;
 import org.talend.mdm.webapp.journal.client.i18n.MessagesFactory;
 import org.talend.mdm.webapp.journal.client.util.JournalSearchUtil;
 import org.talend.mdm.webapp.journal.shared.JournalGridModel;
-import org.talend.mdm.webapp.journal.shared.JournalSearchCriteria;
 import org.talend.mdm.webapp.journal.shared.JournalTreeModel;
 
+import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
@@ -39,10 +40,10 @@ public class JournalHistoryPanel extends ContentPanel {
     
     BorderLayoutData northData;
     
-    public JournalHistoryPanel(JournalTreeModel root, JournalGridModel gridModel, JournalSearchCriteria criteria, boolean isAuth, int width) {
+    public JournalHistoryPanel(JournalTreeModel root, JournalGridModel gridModel, boolean isAuth, int width) {
         this.isAuth = isAuth;
         this.setFrame(false);
-        this.setItemId(gridModel.getIds().concat(criteria.toString()));
+        this.setItemId(gridModel.getIds().concat(getCriteriaString()));
         this.setHeaderVisible(false);
         this.setHeading(MessagesFactory.getMessages().data_change_viewer());
         this.setLayout(new BorderLayout());
@@ -96,6 +97,10 @@ public class JournalHistoryPanel extends ContentPanel {
         this.layout();
     }
     
+    public String getCriteriaString() {
+        return Registry.get(Journal.SEARCH_CRITERIA).toString();
+    }
+
     public JournalComparisonPanel getBeforePanel() {
         return beforePanel;
     }

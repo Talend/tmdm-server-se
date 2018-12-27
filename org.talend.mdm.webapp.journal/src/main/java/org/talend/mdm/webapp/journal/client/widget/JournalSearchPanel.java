@@ -63,31 +63,37 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public class JournalSearchPanel extends FormPanel {
 
-    private static JournalSearchPanel formPanel;
+    protected static JournalSearchPanel formPanel;
     
     private JournalServiceAsync service = Registry.get(Journal.JOURNAL_SERVICE);
 
-    private ComboBox<ItemBaseModel> dataModelCombo;
+    protected ComboBox<ItemBaseModel> dataModelCombo;
         
-    private TextField<String> entityField;
+    protected TextField<String> entityField;
     
-    private TextField<String> keyField;
+    protected TextField<String> keyField;
     
-    private ComboBox<ItemBaseModel> sourceCombo;
+    protected ComboBox<ItemBaseModel> sourceCombo;
     
-    private ComboBox<ItemBaseModel> operationTypeCombo;
+    protected ComboBox<ItemBaseModel> operationTypeCombo;
     
-    private DateField startDateField;
+    protected DateField startDateField;
     
-    private DateField endDateField;
+    protected DateField endDateField;
     
-    private CheckBox strictCheckBox;
+    protected CheckBox strictCheckBox;
         
-    private Button resetButton;
+    protected Button resetButton;
     
-    private Button searchButton;
+    protected Button searchButton;
     
-    private Button exportButton;
+    protected Button exportButton;
+
+    protected LayoutContainer left;
+
+    protected LayoutContainer right;
+    
+    protected FormData formData = new FormData();
 
     public static JournalSearchPanel getInstance() {
         if (formPanel == null) {
@@ -96,8 +102,11 @@ public class JournalSearchPanel extends FormPanel {
         return formPanel;
     }
     
-    private JournalSearchPanel() {
-        FormData formData = new FormData();
+    protected JournalSearchPanel() {
+        init();
+    }
+
+    protected void init() {
         this.setFrame(true);
         this.setHeight(-1);
         this.setPadding(5);
@@ -107,7 +116,29 @@ public class JournalSearchPanel extends FormPanel {
         LayoutContainer main = new LayoutContainer();
         main.setLayout(new ColumnLayout());
 
-        LayoutContainer left = new LayoutContainer();
+        initLeft();
+        initDataModelCombo();
+        initEntityField();
+        initStartDateField();
+        initEndDateField();
+
+        initRight();
+        initKeyField();
+        initOperationTypeCombo();
+        initSourceCombo();
+
+        main.add(left, new ColumnData(.5));
+        main.add(right, new ColumnData(.5));
+        this.add(main, new FormData("100%")); //$NON-NLS-1$
+
+        initStrictCheckBox();
+        intiSearchButton();
+        initResetButton();
+        initExportButton();
+    }
+
+    protected void initLeft() {
+        left = new LayoutContainer();
         left.setStyleAttribute("paddingRight", "10px"); //$NON-NLS-1$ //$NON-NLS-2$
         left.setStyleAttribute("paddingTop", "1px"); //$NON-NLS-1$ //$NON-NLS-2$
         FormLayout layout = new FormLayout();
@@ -115,7 +146,19 @@ public class JournalSearchPanel extends FormPanel {
         layout.setLabelWidth(110);
         left.setWidth(350);
         left.setLayout(layout);
-        
+    }
+
+    protected void initRight() {
+        right = new LayoutContainer();
+        right.setStyleAttribute("paddingLeft", "10px"); //$NON-NLS-1$ //$NON-NLS-2$
+        right.setStyleAttribute("paddingTop", "1px"); //$NON-NLS-1$ //$NON-NLS-2$
+        right.setWidth(350);
+        FormLayout layout = new FormLayout();
+        layout.setLabelAlign(LabelAlign.LEFT);
+        right.setLayout(layout);
+    }
+
+    protected void initDataModelCombo() {
         RpcProxy<List<ItemBaseModel>> modelproxy = new RpcProxy<List<ItemBaseModel>>() {
 
             @Override
@@ -161,7 +204,9 @@ public class JournalSearchPanel extends FormPanel {
         });
         left.add(dataModelCombo, formData);
         setCurrentDataModel();
+    }
 
+    protected void initEntityField() {
         entityField = new TextField<String>();
         entityField.setFieldLabel(MessagesFactory.getMessages().entity_label());
         entityField.addListener(Events.KeyDown, new Listener<FieldEvent>() {
@@ -176,7 +221,9 @@ public class JournalSearchPanel extends FormPanel {
             }
         });
         left.add(entityField, formData);
-        
+    }
+
+    protected void initStartDateField() {
         startDateField = new DateField();
         startDateField.setFieldLabel(MessagesFactory.getMessages().start_date_label());
         startDateField.setPropertyEditor(new DateTimePropertyEditor("yyyy-MM-dd HH:mm:ss")); //$NON-NLS-1$
@@ -192,7 +239,9 @@ public class JournalSearchPanel extends FormPanel {
             }
         });
         left.add(startDateField, formData);
-        
+    }
+
+    protected void initEndDateField() {
         endDateField = new DateField();
         endDateField.setFieldLabel(MessagesFactory.getMessages().end_date_label());
         endDateField.setPropertyEditor(new DateTimePropertyEditor("yyyy-MM-dd HH:mm:ss")); //$NON-NLS-1$
@@ -208,15 +257,9 @@ public class JournalSearchPanel extends FormPanel {
             }
         });
         left.add(endDateField, formData);
+    }
 
-        LayoutContainer right = new LayoutContainer();
-        right.setStyleAttribute("paddingLeft", "10px"); //$NON-NLS-1$ //$NON-NLS-2$
-        right.setStyleAttribute("paddingTop", "1px"); //$NON-NLS-1$ //$NON-NLS-2$
-        right.setWidth(350);
-        layout = new FormLayout();
-        layout.setLabelAlign(LabelAlign.LEFT);
-        right.setLayout(layout);
-
+    protected void initKeyField() {
         keyField = new TextField<String>();
         keyField.setFieldLabel(MessagesFactory.getMessages().key_label());
         keyField.addListener(Events.KeyDown, new Listener<FieldEvent>() {
@@ -231,7 +274,9 @@ public class JournalSearchPanel extends FormPanel {
             }
         });
         right.add(keyField, formData);
+    }
 
+    protected void initOperationTypeCombo() {
         List<String> list = new ArrayList<String>();
         list.add("ALL"); //$NON-NLS-1$
         list.add(UpdateReportPOJO.OPERATION_TYPE_CREATE);
@@ -264,8 +309,10 @@ public class JournalSearchPanel extends FormPanel {
             }
         });
         right.add(operationTypeCombo, formData);
+    }
 
-        list.clear();
+    protected void initSourceCombo() {
+        List<String> list = new ArrayList<String>();
         list.add(UpdateReportPOJO.GENERIC_UI_SOURCE);
         list.add("adminWorkbench"); //$NON-NLS-1$
         list.add("dataSynchronization"); //$NON-NLS-1$
@@ -291,52 +338,41 @@ public class JournalSearchPanel extends FormPanel {
             }
         });
         right.add(sourceCombo, formData);
+    }
 
-        main.add(left, new ColumnData(.5));
-        main.add(right, new ColumnData(.5));
-        this.add(main, new FormData("100%")); //$NON-NLS-1$
-
+    protected void initStrictCheckBox() {
         strictCheckBox = new CheckBox();
         strictCheckBox.setEnabled(true);
         strictCheckBox.setValue(true);
         strictCheckBox.setBoxLabel(MessagesFactory.getMessages().strict_search_checkbox());
         this.getButtonBar().add(strictCheckBox);
+    }
 
+    protected void intiSearchButton() {
         searchButton = new Button(MessagesFactory.getMessages().search_button());
         searchButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
-                if (entityField.isValid() && sourceCombo.isValid() && startDateField.isValid() && keyField.isValid() && operationTypeCombo.isValid() && endDateField.isValid()) {
-                    if (startDateField.getValue() != null && endDateField.getValue() != null &&  startDateField.getValue().after(endDateField.getValue())) {
-                        MessageBox.alert(MessagesFactory.getMessages().warning_title(), MessagesFactory.getMessages().search_date_error_message(),null);
-                    } else {
-                        bundleCriteria();
-                        Dispatcher dispatcher = Dispatcher.get();
-                        dispatcher.dispatch(JournalEvents.DoSearch);
-                    }
-                }
+                searchAction();
             }
         });
         this.addButton(searchButton);
-        
+    }
+
+    protected void initResetButton() {
         resetButton = new Button(MessagesFactory.getMessages().reset_button());
         resetButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
-                setCurrentDataModel();
-                entityField.clear();
-                keyField.clear();
-                sourceCombo.clear();
-                operationTypeCombo.clear();
-                startDateField.clear();
-                endDateField.clear();
-                strictCheckBox.setValue(true);
+                resetSearchAction();
             }
         });
         this.addButton(resetButton);
+    }
 
+    protected void initExportButton() {
         exportButton = new Button(MessagesFactory.getMessages().exprot_excel_button());
         exportButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
@@ -348,7 +384,33 @@ public class JournalSearchPanel extends FormPanel {
         this.addButton(exportButton);
     }
     
-    private ListStore<ItemBaseModel> getListStore(List<String> list) {
+    protected void searchAction() {
+        if (entityField.isValid() && sourceCombo.isValid() && startDateField.isValid() && keyField.isValid()
+                && operationTypeCombo.isValid() && endDateField.isValid()) {
+            if (startDateField.getValue() != null && endDateField.getValue() != null
+                    && startDateField.getValue().after(endDateField.getValue())) {
+                MessageBox.alert(MessagesFactory.getMessages().warning_title(),
+                        MessagesFactory.getMessages().search_date_error_message(), null);
+            } else {
+                bundleCriteria();
+                Dispatcher dispatcher = Dispatcher.get();
+                dispatcher.dispatch(JournalEvents.DoSearch);
+            }
+        }
+    }
+
+    protected void resetSearchAction() {
+        setCurrentDataModel();
+        entityField.clear();
+        keyField.clear();
+        sourceCombo.clear();
+        operationTypeCombo.clear();
+        startDateField.clear();
+        endDateField.clear();
+        strictCheckBox.setValue(true);
+    }
+
+    protected ListStore<ItemBaseModel> getListStore(List<String> list) {
         List<ItemBaseModel> modelList = new ArrayList<ItemBaseModel>();
         for (String str : list) {
             ItemBaseModel model = new ItemBaseModel();
@@ -361,7 +423,7 @@ public class JournalSearchPanel extends FormPanel {
         return store;
     }
     
-    private void bundleCriteria() {
+    protected void bundleCriteria() {
         JournalSearchCriteria criteria = Registry.get(Journal.SEARCH_CRITERIA);
         if (dataModelCombo.getValue() != null && !"ALL".equals(dataModelCombo.getValue().get("key").toString())) { //$NON-NLS-1$//$NON-NLS-2$
             criteria.setDataModel(dataModelCombo.getValue().get("key").toString()); //$NON-NLS-1$
@@ -389,7 +451,7 @@ public class JournalSearchPanel extends FormPanel {
         criteria.setStrict(strictCheckBox.getValue());
     }
 
-    private Map<String, String> getCriteriaMap() {
+    protected Map<String, String> getCriteriaMap() {
         Map<String, String> map = new HashMap<String, String>();
         if (dataModelCombo.getValue() != null && !dataModelCombo.getValue().get("key").equals("ALL")) { //$NON-NLS-1$//$NON-NLS-2$
             map.put("dataModel", dataModelCombo.getValue().get("key").toString()); //$NON-NLS-1$ //$NON-NLS-2$

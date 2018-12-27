@@ -34,6 +34,8 @@ public class JournalSearchCriteria implements IsSerializable {
 
     private String entity;
 
+    private String view;
+
     private String key;
 
     private String source;
@@ -68,6 +70,14 @@ public class JournalSearchCriteria implements IsSerializable {
 
     public String getKey() {
         return key;
+    }
+
+    public String getView() {
+        return view;
+    }
+
+    public void setView(String view) {
+        this.view = view;
     }
 
     public void setKey(String key) {
@@ -116,9 +126,11 @@ public class JournalSearchCriteria implements IsSerializable {
     
     public String toString() {
         StringBuilder criteraStr= new StringBuilder();
-        
+
         if (entity != null) criteraStr.append(entity);
         if (key != null) criteraStr.append(key);
+        if (view != null)
+            criteraStr.append(view);
         if (source != null) criteraStr.append(source);
         if (operationType != null) criteraStr.append(operationType);
         if (startDate != null) criteraStr.append(startDate);

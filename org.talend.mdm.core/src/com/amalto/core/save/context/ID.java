@@ -84,7 +84,6 @@ class ID implements DocumentSaver {
         }
         // now has an id, so load database document
         String[] xmlDocumentIds = ids.toArray(new String[ids.size()]);
-        EnumSet<UserAction> createTypeSet = EnumSet.of(UserAction.AUTO, UserAction.AUTO_STRICT, UserAction.CREATE, UserAction.CREATE_STRICT, UserAction.REPLACE);
         boolean isExistRecord = database.exist(dataCluster, dataModelName, typeName, xmlDocumentIds);
         if (xmlDocumentIds.length > 0 && isExistRecord) {
             if (context.getUserAction() == UserAction.AUTO || context.getUserAction() == UserAction.AUTO_STRICT) {
@@ -92,7 +91,7 @@ class ID implements DocumentSaver {
             }
             context.setId(xmlDocumentIds);
             context.setDatabaseDocument(database.get(dataCluster, dataModelName, typeName, xmlDocumentIds));
-        } else if (isAutomaticId && xmlDocumentIds.length > 0 && keyFields.size() == xmlDocumentIds.length && !isExistRecord && createTypeSet.contains(context.getUserAction())) {
+        } else if (isAutomaticId && !isExistRecord && isValidSubmittedIds(xmlDocumentIds, context)) {
             context.setUserAction(UserAction.CREATE_STRICT);
             context.setDatabaseDocument(new DOMDocument(SaverContextFactory.DOCUMENT_BUILDER.newDocument(), type, dataCluster, context.getDataModelName()));
         } else {
@@ -126,6 +125,16 @@ class ID implements DocumentSaver {
         // Continue save
         savedTypeName = type.getName();
         next.save(session, context);
+    }
+
+    private boolean isValidSubmittedIds(String[] xmlDocumentIds, DocumentSaverContext context) {
+        ComplexTypeMetadata type = context.getUserDocument().getType();
+        Collection<FieldMetadata> keyFields = type.getKeyFields();
+        EnumSet<UserAction> createTypeSet = EnumSet.of(UserAction.AUTO, UserAction.AUTO_STRICT, UserAction.CREATE, UserAction.CREATE_STRICT, UserAction.REPLACE);
+        if (xmlDocumentIds.length > 0 && keyFields.size() == xmlDocumentIds.length && createTypeSet.contains(context.getUserAction())) {
+            return true;
+        }
+        return false;
     }
 
     private static boolean isServerProvidedValue(String keyFieldTypeName) {

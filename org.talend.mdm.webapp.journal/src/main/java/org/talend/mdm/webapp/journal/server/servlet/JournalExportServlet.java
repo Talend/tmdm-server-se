@@ -33,8 +33,6 @@ import org.talend.mdm.webapp.journal.shared.JournalSearchCriteria;
  */
 public class JournalExportServlet extends HttpServlet {
 
-    private static final Logger LOG = Logger.getLogger(JournalExportServlet.class);
-
     private static final long serialVersionUID = 1L;
     
     @Override
@@ -44,7 +42,7 @@ public class JournalExportServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        LOG.info("Exporting excel file"); //$NON-NLS-1$
+        getLogger().info("Exporting excel file"); //$NON-NLS-1$
         JournalExcel journalExcel = new JournalExcel(request.getParameter("language")); //$NON-NLS-1$     
      
         response.reset();
@@ -54,7 +52,7 @@ public class JournalExportServlet extends HttpServlet {
 
         Object[] resultArr = null;
         try {
-            JournalDBService service = new JournalDBService(new WebServiceImp());
+            JournalDBService service = getService();
             resultArr = service.getResultListByCriteria(getCriteriaFromRequest(request), 0, -1, null, null);
 
             List<JournalGridModel> resultList = (List<JournalGridModel>) resultArr[1];
@@ -76,7 +74,7 @@ public class JournalExportServlet extends HttpServlet {
                 row.createCell((short) 7).setCellValue(model.getUserName());
             }
         } catch (Exception e) {
-            LOG.error(e.getMessage());
+            getLogger().error(e.getMessage());
         }
         response.setCharacterEncoding("utf-8"); //$NON-NLS-1$
         OutputStream out = response.getOutputStream();
@@ -88,6 +86,7 @@ public class JournalExportServlet extends HttpServlet {
     private JournalSearchCriteria getCriteriaFromRequest(HttpServletRequest request) {
         String dataModel = request.getParameter("dataModel"); //$NON-NLS-1$
         String entity = request.getParameter("entity"); //$NON-NLS-1$
+        String view = request.getParameter("view"); //$NON-NLS-1$
         String key = request.getParameter("key"); //$NON-NLS-1$
         String source = request.getParameter("source"); //$NON-NLS-1$
         String operationType = request.getParameter("operationType"); //$NON-NLS-1$
@@ -98,6 +97,7 @@ public class JournalExportServlet extends HttpServlet {
         JournalSearchCriteria criteria = new JournalSearchCriteria();
         criteria.setDataModel(dataModel);
         criteria.setEntity(entity);
+        criteria.setView(view);
         criteria.setKey(key);
         criteria.setSource(source);
         criteria.setOperationType(operationType);
@@ -116,5 +116,13 @@ public class JournalExportServlet extends HttpServlet {
         }
 
         return criteria;
+    }
+
+    protected JournalDBService getService() {
+        return new JournalDBService(new WebServiceImp());
+    }
+
+    protected Logger getLogger() {
+        return Logger.getLogger(JournalExportServlet.class);
     }
 }

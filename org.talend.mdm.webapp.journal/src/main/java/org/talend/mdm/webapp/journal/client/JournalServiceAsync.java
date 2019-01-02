@@ -39,8 +39,7 @@ public interface JournalServiceAsync {
 
     void checkDCAndDM(String dataContainer, String dataModel, AsyncCallback<Boolean> callback);
 
-    void getReportString(int start, int limit, String sort, String field, String language, String dataModel, String entity,
-            String key, String source, String operationType, String startDate, String endDate, boolean isStrict,
+    void getReportString(JournalSearchCriteria criteria, int start, int limit, String sort, String field, String language,
             AsyncCallback<String> callback);
 
     void isAdmin(AsyncCallback<Boolean> callback);

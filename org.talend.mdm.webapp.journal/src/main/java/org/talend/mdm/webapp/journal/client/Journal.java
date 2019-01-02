@@ -37,6 +37,8 @@ public class Journal implements EntryPoint {
 
     public static final String JOURNAL_SERVICE = "JournalService"; //$NON-NLS-1$
 
+    public static final String JOURNAL_DB_SERVICE = "JournalDBService"; //$NON-NLS-1$
+
     public static final String JOURNAL_ID = "Journal"; //$NON-NLS-1$
 
     public static final String SEARCH_CRITERIA = "SearchCriteria"; //$NON-NLS-1$

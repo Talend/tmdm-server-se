@@ -44,15 +44,15 @@ import com.amalto.core.util.LocalUser;
 import com.amalto.core.util.LocaleUtil;
 import com.amalto.core.util.Messages;
 import com.amalto.core.util.MessagesFactory;
-import com.amalto.webapp.core.util.DataModelAccessor;
-import com.amalto.webapp.core.util.Util;
-import com.amalto.webapp.core.util.Webapp;
 import com.amalto.core.webservice.WSDataClusterPK;
 import com.amalto.core.webservice.WSDataModelPK;
 import com.amalto.core.webservice.WSExistsItem;
 import com.amalto.core.webservice.WSItemPK;
 import com.amalto.core.webservice.WSRegexDataModelPKs;
 import com.amalto.core.webservice.XtentisPort;
+import com.amalto.webapp.core.util.DataModelAccessor;
+import com.amalto.webapp.core.util.Util;
+import com.amalto.webapp.core.util.Webapp;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
@@ -61,9 +61,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 @SuppressWarnings("serial")
 public class JournalAction extends RemoteServiceServlet implements JournalService {
 
-    private static final Logger LOG = Logger.getLogger(JournalAction.class);
-
-    private JournalDBService service = new JournalDBService(new WebServiceImp());
+    protected JournalDBService service;
 
     private static final Messages MESSAGES = MessagesFactory.getMessages(
             "org.talend.mdm.webapp.journal.client.i18n.JournalMessages", JournalAction.class.getClassLoader()); //$NON-NLS-1$
@@ -76,16 +74,16 @@ public class JournalAction extends RemoteServiceServlet implements JournalServic
         String sort = load.getSortDir();
         String field = load.getSortField();
         try {
-            Object[] result = service.getResultListByCriteria(criteria, start, limit, sort, field);
+            Object[] result = getJournalDBService().getResultListByCriteria(criteria, start, limit, sort, field);
             int totalSize = Integer.parseInt(result[0].toString());
             @SuppressWarnings("unchecked")
             List<JournalGridModel> resultList = (List<JournalGridModel>) result[1];
             return new ItemBasePageLoadResult<JournalGridModel>(resultList, load.getOffset(), totalSize);
         } catch (ServiceException e) {
-            LOG.error(e.getMessage(), e);
+            getLogger().error(e.getMessage(), e);
             throw e;
         } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
+            getLogger().error(e.getMessage(), e);
             throw new ServiceException(e.getMessage());
         }
     }
@@ -97,12 +95,12 @@ public class JournalAction extends RemoteServiceServlet implements JournalServic
             EntityModel entityModel = new EntityModel();
             DataModelHelper.parseSchema(parameter.getDataModelName(), parameter.getConceptName(), entityModel, LocalUser
                     .getLocalUser().getRoles());
-            return service.getDetailTreeModel(idsArr, entityModel, language);
+            return getJournalDBService().getDetailTreeModel(idsArr, entityModel, language);
         } catch (ServiceException e) {
-            LOG.error(e.getMessage(), e);
+            getLogger().error(e.getMessage(), e);
             throw e;
         } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
+            getLogger().error(e.getMessage(), e);
             throw new ServiceException(e.getMessage());
         }
     }
@@ -126,18 +124,18 @@ public class JournalAction extends RemoteServiceServlet implements JournalServic
                             .get(CommonUtil.RESULT)));
 
                 }
-                root = service.getComparisionTreeModel(xmlStr);
+                root = getJournalDBService().getComparisionTreeModel(xmlStr);
             } else {
                 root = new JournalTreeModel("root", "Document", "root"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             }
             return root;
         } catch (ServiceException e) {
-            LOG.error(e.getMessage(), e);
+            getLogger().error(e.getMessage(), e);
             throw e;
         } catch (UnsupportedUndoPhysicalDeleteException unsupportedUndoException) {
             throw new ServiceException(MESSAGES.getMessage(LocaleUtil.getLocale(language), "unsupport_restore_message")); //$NON-NLS-1$
         } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
+            getLogger().error(e.getMessage(), e);
             throw new ServiceException(e.getMessage());
         }
     }
@@ -159,7 +157,7 @@ public class JournalAction extends RemoteServiceServlet implements JournalServic
             WSDataClusterPK wddcpk = new WSDataClusterPK(itemPk);
             return Util.getPort().existsItem(new WSExistsItem(new WSItemPK(wddcpk, conceptName, ids))).is_true();
         } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
+            getLogger().error(e.getMessage(), e);
             throw new ServiceException(e.getLocalizedMessage());
         }
     }
@@ -174,33 +172,31 @@ public class JournalAction extends RemoteServiceServlet implements JournalServic
                 throw new ServiceException(MESSAGES.getMessage(locale, "restore_no_permissions")); //$NON-NLS-1$
             }
         } catch (ServiceException e) {
-            LOG.error(e.getMessage(), e);
+            getLogger().error(e.getMessage(), e);
             throw e;
         } catch (UnsupportedUndoPhysicalDeleteException unsupportedUndoException) {
             throw new ServiceException(MESSAGES.getMessage(locale, "unsupport_restore_message")); //$NON-NLS-1$
         } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
+            getLogger().error(e.getMessage(), e);
             throw new ServiceException(MESSAGES.getMessage(locale, "restore_fail")); //$NON-NLS-1$
         }
     }
 
     @Override
-    public String getReportString(int start, int limit, String sort, String field, String language, String dataModel,
-            String entity, String key, String source, String operationType, String startDate, String endDate, boolean isStrict)
+    public String getReportString(JournalSearchCriteria criteria, int start, int limit, String sort, String field,
+            String language)
             throws ServiceException {
 
         try {
-            JournalSearchCriteria criteria = this.buildCriteria(dataModel, entity, key, source, operationType, startDate,
-                    endDate, isStrict);
-            Object[] result = service.getResultListByCriteria(criteria, start, limit, sort, field);
+            Object[] result = getJournalDBService().getResultListByCriteria(criteria, start, limit, sort, field);
             @SuppressWarnings("unchecked")
             List<JournalGridModel> resultList = (List<JournalGridModel>) result[1];
             return this.generateEventString(resultList, language, criteria.getStartDate());
         } catch (ServiceException e) {
-            LOG.error(e.getMessage(), e);
+            getLogger().error(e.getMessage(), e);
             throw e;
         } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
+            getLogger().error(e.getMessage(), e);
             throw new ServiceException(e.getMessage());
         }
 
@@ -211,8 +207,8 @@ public class JournalAction extends RemoteServiceServlet implements JournalServic
         try {
             return LocalUser.getLocalUser().getRoles().contains(ICoreConstants.SYSTEM_ADMIN_ROLE);
         } catch (Exception e) {
-            if (LOG.isDebugEnabled()) {
-                LOG.error(e.getMessage());
+            if (getLogger().isDebugEnabled()) {
+                getLogger().error(e.getMessage());
             }
             return false;
         }
@@ -228,12 +224,12 @@ public class JournalAction extends RemoteServiceServlet implements JournalServic
                 return true;
             }
         } catch (UnsupportedUndoPhysicalDeleteException exception) {
-            if (LOG.isDebugEnabled()) {
-                LOG.warn("Undo for physical delete is not supported."); //$NON-NLS-1$
+            if (getLogger().isDebugEnabled()) {
+                getLogger().warn("Undo for physical delete is not supported."); //$NON-NLS-1$
             }
             return false;
         } catch (Exception exception) {
-            LOG.error(exception.getMessage(), exception);
+            getLogger().error(exception.getMessage(), exception);
             throw new ServiceException(exception.getMessage());
         }
     }   
@@ -258,35 +254,6 @@ public class JournalAction extends RemoteServiceServlet implements JournalServic
             }
         }
         return dataModels;
-    }
-
-    private JournalSearchCriteria buildCriteria(String dataModel, String entity, String key, String source, String operationType,
-            String startDate,
-            String endDate, boolean isStrict) {
-        JournalSearchCriteria criteria = new JournalSearchCriteria();
-        if (!dataModel.equalsIgnoreCase("")) { //$NON-NLS-1$
-            criteria.setDataModel(dataModel);
-        }
-        if (!entity.equalsIgnoreCase("")) { //$NON-NLS-1$
-            criteria.setEntity(entity);
-        }
-        if (!key.equalsIgnoreCase("")) { //$NON-NLS-1$
-            criteria.setKey(key);
-        }
-        if (!source.equalsIgnoreCase("")) { //$NON-NLS-1$
-            criteria.setSource(source);
-        }
-        if (!operationType.equalsIgnoreCase("")) { //$NON-NLS-1$
-            criteria.setOperationType(operationType);
-        }
-        if (!startDate.equalsIgnoreCase("")) { //$NON-NLS-1$
-            criteria.setStartDate(new Date(Long.parseLong(startDate)));
-        }
-        if (!endDate.equalsIgnoreCase("")) { //$NON-NLS-1$
-            criteria.setEndDate(new Date(Long.parseLong(endDate)));
-        }
-        criteria.setStrict(isStrict);
-        return criteria;
     }
 
     private String generateEventString(List<JournalGridModel> resultList, String language, Date startDate) throws ParseException {
@@ -350,5 +317,16 @@ public class JournalAction extends RemoteServiceServlet implements JournalServic
         SimpleDateFormat sdf = new SimpleDateFormat("MMM dd yyyy HH:mm:ss", Locale.ENGLISH); //$NON-NLS-1$
         String timeStr = sdf.format(date);
         return timeStr + " GMT"; //$NON-NLS-1$
+    }
+
+    protected Logger getLogger() {
+         return Logger.getLogger(JournalAction.class);
+     }
+
+    protected JournalDBService getJournalDBService() {
+        if (service == null) {
+            service = new JournalDBService(new WebServiceImp());
+        }
+        return service;
     }
 }

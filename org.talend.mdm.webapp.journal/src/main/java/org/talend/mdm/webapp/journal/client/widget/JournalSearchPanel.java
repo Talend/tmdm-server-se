@@ -378,7 +378,7 @@ public class JournalSearchPanel extends FormPanel {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
-                PostDataUtil.postData(GWT.getHostPageBaseURL() + "journal/journalExport", getCriteriaMap()); //$NON-NLS-1$
+                exportAction();
             }
         });
         this.addButton(exportButton);
@@ -500,4 +500,9 @@ public class JournalSearchPanel extends FormPanel {
             this.dataModelCombo.setValue(currentModel);
         }
     }
+
+    protected void exportAction() {
+        PostDataUtil.postData(GWT.getHostPageBaseURL() + "/journal/journalExport", getCriteriaMap()); //$NON-NLS-1$
+    }
+
 }

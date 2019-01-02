@@ -20,6 +20,7 @@ import org.talend.mdm.webapp.base.client.model.ForeignKeyBean;
 import org.talend.mdm.webapp.base.client.model.ItemBasePageLoadResult;
 import org.talend.mdm.webapp.base.client.model.MultiLanguageModel;
 import org.talend.mdm.webapp.base.client.util.MultilanguageMessageParser;
+import org.talend.mdm.webapp.base.client.widget.ComboBoxField;
 import org.talend.mdm.webapp.base.client.widget.PagingToolBarEx;
 import org.talend.mdm.webapp.base.shared.Constants;
 import org.talend.mdm.webapp.base.shared.EntityModel;
@@ -33,7 +34,6 @@ import org.talend.mdm.webapp.browserecords.client.resources.icon.Icons;
 import org.talend.mdm.webapp.browserecords.client.util.CommonUtil;
 import org.talend.mdm.webapp.browserecords.client.util.Locale;
 import org.talend.mdm.webapp.browserecords.client.util.ViewUtil;
-import org.talend.mdm.webapp.browserecords.client.widget.inputfield.ComboBoxField;
 
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.SortDir;
@@ -300,7 +300,7 @@ public class ForeignKeyListWindow extends Window {
 
         ToolBar toolBar = new ToolBar();
 
-        typeComboBox = new ComboBoxField<BaseModel>();
+        typeComboBox = new ComboBoxField<BaseModel>(BrowseRecords.getSession().getAppHeader().getUserProperties());
         typeComboBox.setRawValue(entityModel.getConceptName());
         typeComboBox.setDisplayField("name"); //$NON-NLS-1$
         typeComboBox.setValueField("value"); //$NON-NLS-1$

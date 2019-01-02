@@ -18,6 +18,7 @@ import java.util.Map;
 
 import org.talend.mdm.webapp.base.client.model.DataTypeConstants;
 import org.talend.mdm.webapp.base.client.model.ForeignKeyBean;
+import org.talend.mdm.webapp.base.client.widget.ComboBoxField;
 import org.talend.mdm.webapp.base.client.widget.MultiLanguageField;
 import org.talend.mdm.webapp.base.shared.ComplexTypeModel;
 import org.talend.mdm.webapp.base.shared.FacetModel;
@@ -35,7 +36,6 @@ import org.talend.mdm.webapp.browserecords.client.widget.ItemsDetailPanel;
 import org.talend.mdm.webapp.browserecords.client.widget.ForeignKey.FKPropertyEditor;
 import org.talend.mdm.webapp.browserecords.client.widget.ForeignKey.ForeignKeySelector;
 import org.talend.mdm.webapp.browserecords.client.widget.inputfield.BooleanField;
-import org.talend.mdm.webapp.browserecords.client.widget.inputfield.ComboBoxField;
 import org.talend.mdm.webapp.browserecords.client.widget.inputfield.FormatDateField;
 import org.talend.mdm.webapp.browserecords.client.widget.inputfield.FormatNumberField;
 import org.talend.mdm.webapp.browserecords.client.widget.inputfield.FormatTextField;
@@ -116,7 +116,8 @@ public class TreeDetailGridFieldCreator {
             }
             field = comboBox;
         } else if (dataType instanceof ComplexTypeModel) {
-            final ComboBoxField<ComboBoxModel> comboxField = new ComboBoxField<ComboBoxModel>();
+            final ComboBoxField<ComboBoxModel> comboxField = new ComboBoxField<ComboBoxModel>(
+                    BrowseRecords.getSession().getAppHeader().getUserProperties());
             comboxField.setDisplayField("text"); //$NON-NLS-1$
             comboxField.setValueField("value"); //$NON-NLS-1$
             comboxField.setTypeAhead(true);
@@ -373,7 +374,7 @@ public class TreeDetailGridFieldCreator {
             }
 
             private native void _setEl(El elem)/*-{
-		this.@com.extjs.gxt.ui.client.widget.Component::el = elem;
+        this.@com.extjs.gxt.ui.client.widget.Component::el = elem;
     }-*/;
         };
         errorIcon.setStyleAttribute("display", "block"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -387,22 +388,22 @@ public class TreeDetailGridFieldCreator {
     }
 
     private static native void _setErrorIcon(Field<?> field, WidgetComponent errorIcon)/*-{
-		field.@com.extjs.gxt.ui.client.widget.form.Field::errorIcon = errorIcon;
+        field.@com.extjs.gxt.ui.client.widget.form.Field::errorIcon = errorIcon;
     }-*/;
 
     private static native WidgetComponent _getErrorIcon(Field<?> field)/*-{
-		return field.@com.extjs.gxt.ui.client.widget.form.Field::errorIcon;
+        return field.@com.extjs.gxt.ui.client.widget.form.Field::errorIcon;
     }-*/;
 
     public static native String getTemplate() /*-{
-		return [
-				'<tpl for=".">',
-				'<tpl if="text == \'\'">',
-				'<div role=\"listitem\" class="x-combo-list-item" title=""></br></div>',
-				'</tpl>',
-				'<tpl if="text != \'\'">',
-				'<div role=\"listitem\" class="x-combo-list-item" title="{text}">{text}</div>',
-				'</tpl>', '</tpl>' ].join("");
+        return [
+                '<tpl for=".">',
+                '<tpl if="text == \'\'">',
+                '<div role=\"listitem\" class="x-combo-list-item" title=""></br></div>',
+                '</tpl>',
+                '<tpl if="text != \'\'">',
+                '<div role=\"listitem\" class="x-combo-list-item" title="{text}">{text}</div>',
+                '</tpl>', '</tpl>' ].join("");
     }-*/;
 
     private static void buildFacets(TypeModel typeModel, Widget w) {

@@ -19,6 +19,7 @@ import org.talend.mdm.webapp.base.client.SessionAwareAsyncCallback;
 import org.talend.mdm.webapp.base.client.model.DataTypeConstants;
 import org.talend.mdm.webapp.base.client.model.ForeignKeyBean;
 import org.talend.mdm.webapp.base.client.model.SimpleCriterion;
+import org.talend.mdm.webapp.base.client.widget.ComboBoxField;
 import org.talend.mdm.webapp.base.client.widget.MultiLanguageField;
 import org.talend.mdm.webapp.base.shared.EntityModel;
 import org.talend.mdm.webapp.base.shared.TypeModel;
@@ -29,7 +30,6 @@ import org.talend.mdm.webapp.browserecords.client.util.Locale;
 import org.talend.mdm.webapp.browserecords.client.util.StagingConstant;
 import org.talend.mdm.webapp.browserecords.client.widget.ForeignKey.ForeignKeyField;
 import org.talend.mdm.webapp.browserecords.client.widget.ForeignKey.ReturnCriteriaFK;
-import org.talend.mdm.webapp.browserecords.client.widget.inputfield.ComboBoxField;
 import org.talend.mdm.webapp.browserecords.client.widget.inputfield.SpinnerField;
 import org.talend.mdm.webapp.browserecords.client.widget.inputfield.creator.SearchFieldCreator;
 import org.talend.mdm.webapp.browserecords.shared.ViewBean;
@@ -93,7 +93,7 @@ public class SimpleCriterionPanel<T> extends HorizontalPanel implements ReturnCr
         this.searchBut = searchBut;
         setSpacing(3);
 
-        keyComboBox = new ComboBoxField<BaseModel>();
+        keyComboBox = new ComboBoxField<BaseModel>(BrowseRecords.getSession().getAppHeader().getUserProperties());
         keyComboBox.setDisplayField("name"); //$NON-NLS-1$
         keyComboBox.setValueField("value"); //$NON-NLS-1$
         keyComboBox.setStore(list);
@@ -102,7 +102,7 @@ public class SimpleCriterionPanel<T> extends HorizontalPanel implements ReturnCr
         addKeyComboBoxListener(null);
         add(keyComboBox);
 
-        operatorComboBox = new ComboBoxField<BaseModel>();
+        operatorComboBox = new ComboBoxField<BaseModel>(BrowseRecords.getSession().getAppHeader().getUserProperties());
         operatorComboBox.setDisplayField("name"); //$NON-NLS-1$
         operatorComboBox.setValueField("value"); //$NON-NLS-1$
         operatorComboBox.setStore(operatorlist);
@@ -144,7 +144,7 @@ public class SimpleCriterionPanel<T> extends HorizontalPanel implements ReturnCr
         this.searchBut = searchBut;
         Grid sizeGrid = new Grid(3, 1);
 
-        keyComboBox = new ComboBoxField<BaseModel>();
+        keyComboBox = new ComboBoxField<BaseModel>(BrowseRecords.getSession().getAppHeader().getUserProperties());
         keyComboBox.setDisplayField("name"); //$NON-NLS-1$
         keyComboBox.setValueField("value"); //$NON-NLS-1$
         keyComboBox.setStore(list);
@@ -153,7 +153,7 @@ public class SimpleCriterionPanel<T> extends HorizontalPanel implements ReturnCr
 
         sizeGrid.setWidget(0, 0, keyComboBox);
 
-        operatorComboBox = new ComboBoxField<BaseModel>();
+        operatorComboBox = new ComboBoxField<BaseModel>(BrowseRecords.getSession().getAppHeader().getUserProperties());
         operatorComboBox.setDisplayField("name"); //$NON-NLS-1$
         operatorComboBox.setValueField("value"); //$NON-NLS-1$
         operatorComboBox.setStore(operatorlist);

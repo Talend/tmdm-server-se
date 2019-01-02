@@ -22,6 +22,7 @@ import org.talend.mdm.webapp.base.client.model.ItemBasePageLoadResult;
 import org.talend.mdm.webapp.base.client.model.MultipleCriteria;
 import org.talend.mdm.webapp.base.client.model.SimpleCriterion;
 import org.talend.mdm.webapp.base.client.util.CriteriaUtil;
+import org.talend.mdm.webapp.base.client.widget.ComboBoxField;
 import org.talend.mdm.webapp.base.client.widget.PagingToolBarEx;
 import org.talend.mdm.webapp.base.shared.AppHeader;
 import org.talend.mdm.webapp.base.shared.EntityModel;
@@ -44,7 +45,6 @@ import org.talend.mdm.webapp.browserecords.client.util.UserSession;
 import org.talend.mdm.webapp.browserecords.client.util.ViewUtil;
 import org.talend.mdm.webapp.browserecords.client.widget.SearchPanel.AdvancedSearchPanel;
 import org.talend.mdm.webapp.browserecords.client.widget.SearchPanel.SimpleCriterionPanel;
-import org.talend.mdm.webapp.browserecords.client.widget.inputfield.ComboBoxField;
 import org.talend.mdm.webapp.browserecords.client.widget.integrity.ContainerUpdate;
 import org.talend.mdm.webapp.browserecords.client.widget.integrity.DeleteAction;
 import org.talend.mdm.webapp.browserecords.client.widget.integrity.DeleteCallback;
@@ -635,7 +635,7 @@ public class ItemsToolBar extends ToolBar {
 
         // HorizontalPanel entityPanel = new HorizontalPanel();
         final ListStore<ItemBaseModel> list = new ListStore<ItemBaseModel>(entityloader);
-        entityCombo = new ComboBoxField<ItemBaseModel>();
+        entityCombo = new ComboBoxField<ItemBaseModel>(BrowseRecords.getSession().getAppHeader().getUserProperties());
         entityCombo.setAutoWidth(true);
         entityCombo.setEmptyText(MessagesFactory.getMessages().empty_entity());
         entityCombo.setLoadingText(MessagesFactory.getMessages().loading());

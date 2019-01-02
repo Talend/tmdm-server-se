@@ -18,6 +18,7 @@ import org.talend.mdm.webapp.base.client.SessionAwareAsyncCallback;
 import org.talend.mdm.webapp.base.client.model.ItemBaseModel;
 import org.talend.mdm.webapp.base.client.util.MultilanguageMessageParser;
 import org.talend.mdm.webapp.base.client.util.UrlUtil;
+import org.talend.mdm.webapp.base.client.widget.ComboBoxField;
 import org.talend.mdm.webapp.base.shared.Constants;
 import org.talend.mdm.webapp.base.shared.TypeModel;
 import org.talend.mdm.webapp.browserecords.client.BrowseRecords;
@@ -38,7 +39,6 @@ import org.talend.mdm.webapp.browserecords.client.util.Locale;
 import org.talend.mdm.webapp.browserecords.client.util.UserSession;
 import org.talend.mdm.webapp.browserecords.client.util.ViewUtil;
 import org.talend.mdm.webapp.browserecords.client.widget.ForeignKey.ReturnCriteriaFK;
-import org.talend.mdm.webapp.browserecords.client.widget.inputfield.ComboBoxField;
 import org.talend.mdm.webapp.browserecords.client.widget.integrity.CloseLineageTabPostDeleteAction;
 import org.talend.mdm.webapp.browserecords.client.widget.integrity.CloseTabPostDeleteAction;
 import org.talend.mdm.webapp.browserecords.client.widget.integrity.ContainerUpdate;
@@ -1040,7 +1040,7 @@ public class ItemDetailToolBar extends ToolBar {
         ListStore<ItemBaseModel> workFlowList = new ListStore<ItemBaseModel>();
         workFlowList.add(processList);
         if (workFlowCombo == null) {
-            workFlowCombo = new ComboBoxField<ItemBaseModel>();
+            workFlowCombo = new ComboBoxField<ItemBaseModel>(BrowseRecords.getSession().getAppHeader().getUserProperties());
             workFlowCombo.setId("workFlowCombo"); //$NON-NLS-1$
             workFlowCombo.setStore(workFlowList);
             workFlowCombo.setDisplayField("value");//$NON-NLS-1$
@@ -1292,7 +1292,7 @@ public class ItemDetailToolBar extends ToolBar {
     protected void addSmartViewCombo() {
         final ListStore<ItemBaseModel> smartViewList = new ListStore<ItemBaseModel>();
         if (smartViewCombo == null) {
-            smartViewCombo = new ComboBoxField<ItemBaseModel>();
+            smartViewCombo = new ComboBoxField<ItemBaseModel>(BrowseRecords.getSession().getAppHeader().getUserProperties());
             smartViewCombo.setId("smartViewCombo"); //$NON-NLS-1$
             smartViewCombo.setStore(smartViewList);
             smartViewCombo.setDisplayField("value"); //$NON-NLS-1$
@@ -1739,7 +1739,8 @@ public class ItemDetailToolBar extends ToolBar {
                 menu.add(comboBoxClone);
             } else if (c instanceof ComboBoxField<?>) {
                 final ComboBoxField<ItemBaseModel> cb = (ComboBoxField<ItemBaseModel>) c;
-                ComboBoxField<ItemBaseModel> comboBoxClone = new ComboBoxField<ItemBaseModel>();
+                ComboBoxField<ItemBaseModel> comboBoxClone = new ComboBoxField<ItemBaseModel>(
+                        BrowseRecords.getSession().getAppHeader().getUserProperties());
                 comboBoxClone.setStore(cb.getStore());
                 comboBoxClone.setDisplayField("value");//$NON-NLS-1$
                 comboBoxClone.setValueField("key");

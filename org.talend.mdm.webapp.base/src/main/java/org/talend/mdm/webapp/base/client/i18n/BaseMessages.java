@@ -97,5 +97,7 @@ public interface BaseMessages extends Messages {
 
     String empty_entity();
 
+    String empty_view();
+
     String loading();
 }

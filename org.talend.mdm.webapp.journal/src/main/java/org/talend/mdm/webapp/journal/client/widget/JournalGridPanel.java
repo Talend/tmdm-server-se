@@ -189,7 +189,7 @@ public class JournalGridPanel extends ContentPanel {
         pagetoolBar.bind(loader);
         grid.setLoadMask(true);
         grid.setStateful(true);
-        grid.setStateId("journalgrid");//$NON-NLS-1$
+        grid.setStateId(getGridStateId());
         grid.addListener(Events.Attach, new Listener<GridEvent<JournalGridModel>>() {
 
             @Override
@@ -551,6 +551,10 @@ public class JournalGridPanel extends ContentPanel {
         });
     }
     
+    protected String getGridStateId() {
+        return "journalgrid"; //$NON-NLS-1$
+    }
+
     protected JournalServiceAsync getService() {
         return Registry.get(Journal.JOURNAL_SERVICE);
     }

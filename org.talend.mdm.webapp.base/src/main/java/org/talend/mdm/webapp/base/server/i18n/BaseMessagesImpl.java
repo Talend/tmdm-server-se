@@ -248,6 +248,11 @@ public final class BaseMessagesImpl implements BaseMessages {
     }
 
     @Override
+    public String empty_view() {
+        return MESSAGES.getMessage("empty_view");
+    }
+
+    @Override
     public String loading() {
         return MESSAGES.getMessage("loading");
     }

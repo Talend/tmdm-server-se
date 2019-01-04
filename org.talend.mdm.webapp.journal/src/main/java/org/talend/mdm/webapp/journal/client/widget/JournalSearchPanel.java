@@ -277,14 +277,7 @@ public class JournalSearchPanel extends FormPanel {
     }
 
     protected void initOperationTypeCombo() {
-        List<String> list = new ArrayList<String>();
-        list.add("ALL"); //$NON-NLS-1$
-        list.add(UpdateReportPOJO.OPERATION_TYPE_CREATE);
-        list.add(UpdateReportPOJO.OPERATION_TYPE_UPDATE);
-        list.add(UpdateReportPOJO.OPERATION_TYPE_PHYSICAL_DELETE);
-        list.add(UpdateReportPOJO.OPERATION_TYPE_LOGICAL_DELETE);
-        list.add(UpdateReportPOJO.OPERATION_TYPE_RESTORED);
-        list.add(UpdateReportPOJO.OPERATION_TYPE_ACTION);
+        List<String> list = generateOperatorList();
 
         operationTypeCombo = new ComboBox<ItemBaseModel>();
         operationTypeCombo.setId("operationType");//$NON-NLS-1$
@@ -505,4 +498,15 @@ public class JournalSearchPanel extends FormPanel {
         PostDataUtil.postData(GWT.getHostPageBaseURL() + "/journal/journalExport", getCriteriaMap()); //$NON-NLS-1$
     }
 
+    protected List<String> generateOperatorList() {
+        List<String> list = new ArrayList<String>();
+        list.add("ALL"); //$NON-NLS-1$
+        list.add(UpdateReportPOJO.OPERATION_TYPE_CREATE);
+        list.add(UpdateReportPOJO.OPERATION_TYPE_UPDATE);
+        list.add(UpdateReportPOJO.OPERATION_TYPE_PHYSICAL_DELETE);
+        list.add(UpdateReportPOJO.OPERATION_TYPE_LOGICAL_DELETE);
+        list.add(UpdateReportPOJO.OPERATION_TYPE_RESTORED);
+        list.add(UpdateReportPOJO.OPERATION_TYPE_ACTION);
+        return list;
+    }
 }

@@ -638,6 +638,11 @@ public class CommonUtilTest extends TestCase {
 
         public String loading(){
             return "";
+        }
+
+        @Override
+        public String empty_view() {
+            return "";
         };
     }
 

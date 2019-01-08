@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.talend.mdm.webapp.base.client.model.DataTypeConstants;
-import org.talend.mdm.webapp.base.client.widget.ComboBoxField;
 import org.talend.mdm.webapp.base.client.widget.MultiLanguageField;
 import org.talend.mdm.webapp.base.shared.AppHeader;
 import org.talend.mdm.webapp.base.shared.ComplexTypeModel;
@@ -24,6 +23,7 @@ import org.talend.mdm.webapp.browserecords.client.model.ComboBoxModel;
 import org.talend.mdm.webapp.browserecords.client.model.ItemNodeModel;
 import org.talend.mdm.webapp.browserecords.client.util.UserSession;
 import org.talend.mdm.webapp.browserecords.client.widget.ItemDetailToolBar;
+import org.talend.mdm.webapp.browserecords.client.widget.inputfield.ComboBoxField;
 
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.widget.form.Field;

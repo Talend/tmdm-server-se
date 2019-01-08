@@ -373,7 +373,7 @@ public class TreeDetailGridFieldCreator {
             }
 
             private native void _setEl(El elem)/*-{
-        this.@com.extjs.gxt.ui.client.widget.Component::el = elem;
+		this.@com.extjs.gxt.ui.client.widget.Component::el = elem;
     }-*/;
         };
         errorIcon.setStyleAttribute("display", "block"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -387,22 +387,22 @@ public class TreeDetailGridFieldCreator {
     }
 
     private static native void _setErrorIcon(Field<?> field, WidgetComponent errorIcon)/*-{
-        field.@com.extjs.gxt.ui.client.widget.form.Field::errorIcon = errorIcon;
+		field.@com.extjs.gxt.ui.client.widget.form.Field::errorIcon = errorIcon;
     }-*/;
 
     private static native WidgetComponent _getErrorIcon(Field<?> field)/*-{
-        return field.@com.extjs.gxt.ui.client.widget.form.Field::errorIcon;
+		return field.@com.extjs.gxt.ui.client.widget.form.Field::errorIcon;
     }-*/;
 
     public static native String getTemplate() /*-{
-        return [
-                '<tpl for=".">',
-                '<tpl if="text == \'\'">',
-                '<div role=\"listitem\" class="x-combo-list-item" title=""></br></div>',
-                '</tpl>',
-                '<tpl if="text != \'\'">',
-                '<div role=\"listitem\" class="x-combo-list-item" title="{text}">{text}</div>',
-                '</tpl>', '</tpl>' ].join("");
+		return [
+				'<tpl for=".">',
+				'<tpl if="text == \'\'">',
+				'<div role=\"listitem\" class="x-combo-list-item" title=""></br></div>',
+				'</tpl>',
+				'<tpl if="text != \'\'">',
+				'<div role=\"listitem\" class="x-combo-list-item" title="{text}">{text}</div>',
+				'</tpl>', '</tpl>' ].join("");
     }-*/;
 
     private static void buildFacets(TypeModel typeModel, Widget w) {

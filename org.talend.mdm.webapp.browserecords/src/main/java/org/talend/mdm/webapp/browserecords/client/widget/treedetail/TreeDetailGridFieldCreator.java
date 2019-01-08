@@ -18,7 +18,6 @@ import java.util.Map;
 
 import org.talend.mdm.webapp.base.client.model.DataTypeConstants;
 import org.talend.mdm.webapp.base.client.model.ForeignKeyBean;
-import org.talend.mdm.webapp.base.client.widget.ComboBoxField;
 import org.talend.mdm.webapp.base.client.widget.MultiLanguageField;
 import org.talend.mdm.webapp.base.shared.ComplexTypeModel;
 import org.talend.mdm.webapp.base.shared.FacetModel;
@@ -36,6 +35,7 @@ import org.talend.mdm.webapp.browserecords.client.widget.ItemsDetailPanel;
 import org.talend.mdm.webapp.browserecords.client.widget.ForeignKey.FKPropertyEditor;
 import org.talend.mdm.webapp.browserecords.client.widget.ForeignKey.ForeignKeySelector;
 import org.talend.mdm.webapp.browserecords.client.widget.inputfield.BooleanField;
+import org.talend.mdm.webapp.browserecords.client.widget.inputfield.ComboBoxField;
 import org.talend.mdm.webapp.browserecords.client.widget.inputfield.FormatDateField;
 import org.talend.mdm.webapp.browserecords.client.widget.inputfield.FormatNumberField;
 import org.talend.mdm.webapp.browserecords.client.widget.inputfield.FormatTextField;
@@ -116,8 +116,7 @@ public class TreeDetailGridFieldCreator {
             }
             field = comboBox;
         } else if (dataType instanceof ComplexTypeModel) {
-            final ComboBoxField<ComboBoxModel> comboxField = new ComboBoxField<ComboBoxModel>(
-                    BrowseRecords.getSession().getAppHeader().getUserProperties());
+            final ComboBoxField<ComboBoxModel> comboxField = new ComboBoxField<ComboBoxModel>();
             comboxField.setDisplayField("text"); //$NON-NLS-1$
             comboxField.setValueField("value"); //$NON-NLS-1$
             comboxField.setTypeAhead(true);

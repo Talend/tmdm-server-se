@@ -148,7 +148,7 @@ public class JournalGridPanel extends ContentPanel {
         ccUserName.setWidth(120);
         ccList.add(ccUserName);
 
-        criteria = Registry.get(Journal.SEARCH_CRITERIA);
+        criteria = getSearchCriteria();
         RpcProxy<PagingLoadResult<JournalGridModel>> proxy = new RpcProxy<PagingLoadResult<JournalGridModel>>() {
 
             @Override
@@ -350,7 +350,7 @@ public class JournalGridPanel extends ContentPanel {
 
     private void openDebugPanel(Boolean isEnterprise, JournalGridModel gridModel, JournalTreeModel root) {
         if (isEnterprise) {
-            JournalHistoryPanel journalHistoryPanel = new JournalHistoryPanel(root, gridModel, root.isAuth(), 550);
+            JournalHistoryPanel journalHistoryPanel = generateJournalHistoryPanel(root, gridModel, root.isAuth(), 550);
             Window window = new Window();
             window.setLayout(new FitLayout());
             window.add(journalHistoryPanel);
@@ -360,7 +360,7 @@ public class JournalGridPanel extends ContentPanel {
             window.show();
             journalHistoryPanel.getJournalDataPanel().getTree().setExpanded(root, true);
         } else {
-            JournalDataPanel journalDataPanel = new JournalDataPanel(root, gridModel);
+            JournalDataPanel journalDataPanel = generateJournalDataPanel(root, gridModel);
             Window window = new Window();
             window.setLayout(new FitLayout());
             window.add(journalDataPanel);
@@ -374,12 +374,12 @@ public class JournalGridPanel extends ContentPanel {
 
     private void openGWTPanel(Boolean isEnterprise, JournalGridModel gridModel, JournalTreeModel root) {
         if (isEnterprise) {
-            int width = JournalTabPanel.getInstance().getWidth() / 2 - 2;
-            JournalHistoryPanel journalHistoryPanel = new JournalHistoryPanel(root, gridModel, root.isAuth(), width);
+            int width = getJournalTabPanel().getWidth() / 2 - 2;
+            JournalHistoryPanel journalHistoryPanel = generateJournalHistoryPanel(root, gridModel, root.isAuth(), width);
             this.openHistoryTabPanel(gridModel.getIds().concat(criteria.toString()), journalHistoryPanel);
             journalHistoryPanel.getJournalDataPanel().getTree().setExpanded(root, true);
         } else {
-            JournalDataPanel journalDataPanel = new JournalDataPanel(root, gridModel);
+            JournalDataPanel journalDataPanel = generateJournalDataPanel(root, gridModel);
             this.openDataTabPanel(gridModel.getIds(), journalDataPanel);
             journalDataPanel.getTree().setExpanded(root, true);
         }
@@ -555,8 +555,24 @@ public class JournalGridPanel extends ContentPanel {
         return "journalgrid"; //$NON-NLS-1$
     }
 
+    protected JournalSearchCriteria getSearchCriteria() {
+        return Registry.get(Journal.SEARCH_CRITERIA);
+    }
+
     protected JournalServiceAsync getService() {
         return Registry.get(Journal.JOURNAL_SERVICE);
+    }
+
+    protected JournalTabPanel getJournalTabPanel() {
+        return JournalTabPanel.getInstance();
+    }
+
+    protected JournalDataPanel generateJournalDataPanel(JournalTreeModel root, JournalGridModel gridModel) {
+        return new JournalDataPanel(root, gridModel);
+    }
+
+    protected JournalHistoryPanel generateJournalHistoryPanel(JournalTreeModel root, JournalGridModel gridModel, boolean isAuth, int width) {
+        return new JournalHistoryPanel(root, gridModel, isAuth, width);
     }
 
     private native void closeTabPanel()/*-{

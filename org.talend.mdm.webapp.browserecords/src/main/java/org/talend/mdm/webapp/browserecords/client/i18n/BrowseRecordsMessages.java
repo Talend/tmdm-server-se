@@ -48,8 +48,6 @@ public interface BrowseRecordsMessages extends Messages {
 
     String journal_tip();
 
-    String userJournal_btn();
-
     String navigator_btn();
 
     String navigator_tip();

@@ -631,19 +631,6 @@ public class CommonUtilTest extends TestCase {
         public String server_unavailable_error() {
             return "";
         }
-
-        public String empty_entity(){
-            return "";
-        };
-
-        public String loading(){
-            return "";
-        }
-
-        @Override
-        public String empty_view() {
-            return "";
-        };
     }
 
     private class MockSimpleTypeFieldMetadata extends SimpleTypeFieldMetadata {

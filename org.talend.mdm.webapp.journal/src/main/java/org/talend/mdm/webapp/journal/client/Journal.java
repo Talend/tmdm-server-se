@@ -35,11 +35,9 @@ import com.google.gwt.user.client.ui.SimplePanel;
  */
 public class Journal implements EntryPoint {
 
-    public static final String JOURNAL_SERVICE = "JournalService"; //$NON-NLS-1$
-
-    public static final String JOURNAL_DB_SERVICE = "JournalDBService"; //$NON-NLS-1$
-
     public static final String JOURNAL_ID = "Journal"; //$NON-NLS-1$
+
+    public static final String JOURNAL_SERVICE = "JournalService"; //$NON-NLS-1$
 
     public static final String SEARCH_CRITERIA = "SearchCriteria"; //$NON-NLS-1$
 
@@ -62,8 +60,8 @@ public class Journal implements EntryPoint {
 
         ServiceDefTarget service = GWT.create(JournalService.class);
         ServiceEnhancer.customizeService(service);
-        Registry.register(JOURNAL_SERVICE, service);
-        Registry.register(SEARCH_CRITERIA, new JournalSearchCriteria());
+        Registry.register(Journal.JOURNAL_SERVICE, service);
+        Registry.register(Journal.SEARCH_CRITERIA, new JournalSearchCriteria());
 
         Dispatcher dispatcher = Dispatcher.get();
         dispatcher.addController(new JournalController());

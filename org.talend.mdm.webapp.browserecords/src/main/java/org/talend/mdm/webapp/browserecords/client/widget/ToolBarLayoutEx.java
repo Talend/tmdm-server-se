@@ -12,12 +12,12 @@ package org.talend.mdm.webapp.browserecords.client.widget;
 
 import org.talend.mdm.webapp.base.client.SessionAwareAsyncCallback;
 import org.talend.mdm.webapp.base.client.model.ItemBaseModel;
-import org.talend.mdm.webapp.base.client.widget.ComboBoxField;
 import org.talend.mdm.webapp.browserecords.client.BrowseRecords;
 import org.talend.mdm.webapp.browserecords.client.BrowseRecordsServiceAsync;
 import org.talend.mdm.webapp.browserecords.client.i18n.MessagesFactory;
 import org.talend.mdm.webapp.browserecords.client.util.Locale;
 import org.talend.mdm.webapp.browserecords.client.widget.SearchPanel.SimpleCriterionPanel;
+import org.talend.mdm.webapp.browserecords.client.widget.inputfield.ComboBoxField;
 import org.talend.mdm.webapp.browserecords.shared.ViewBean;
 
 import com.extjs.gxt.ui.client.GXT;
@@ -123,8 +123,7 @@ public class ToolBarLayoutEx extends ToolBarLayout {
             menu.add(item);
         } else if (c instanceof ComboBox<?>) {
             final ComboBoxField<ItemBaseModel> cb = (ComboBoxField<ItemBaseModel>) c;
-            ComboBoxField<ItemBaseModel> comboBoxClone = new ComboBoxField<ItemBaseModel>(
-                    BrowseRecords.getSession().getAppHeader().getUserProperties());
+            ComboBoxField<ItemBaseModel> comboBoxClone = new ComboBoxField<ItemBaseModel>();
             comboBoxClone.setStore(cb.getStore());
             comboBoxClone.setDisplayField("name");//$NON-NLS-1$
             comboBoxClone.setValueField("value");//$NON-NLS-1$

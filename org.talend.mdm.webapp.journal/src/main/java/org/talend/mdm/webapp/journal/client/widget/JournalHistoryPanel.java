@@ -53,7 +53,7 @@ public class JournalHistoryPanel extends ContentPanel {
         northData.setSplit(true);
         northData.setMargins(new Margins(0, 0, 0, 0));        
         
-        journalDataPanel = new JournalDataPanel(root, gridModel);
+        journalDataPanel = generateJournalDataPanel(root, gridModel);
         journalDataPanel.setJournalHistoryPanel(this);
         this.add(journalDataPanel, northData);        
 
@@ -111,5 +111,9 @@ public class JournalHistoryPanel extends ContentPanel {
 
     public JournalDataPanel getJournalDataPanel() {
         return journalDataPanel;
+    }
+
+    protected JournalDataPanel generateJournalDataPanel(JournalTreeModel root, JournalGridModel gridModel) {
+        return new JournalDataPanel(root, gridModel);
     }
 }

@@ -208,6 +208,8 @@ public class JournalSearchPanel extends FormPanel {
 
     protected void initEntityField() {
         entityField = new TextField<String>();
+        entityField.setId("entity");//$NON-NLS-1$
+        entityField.setName("entity");//$NON-NLS-1$
         entityField.setFieldLabel(MessagesFactory.getMessages().entity_label());
         entityField.addListener(Events.KeyDown, new Listener<FieldEvent>() {
 
@@ -225,6 +227,8 @@ public class JournalSearchPanel extends FormPanel {
 
     protected void initStartDateField() {
         startDateField = new DateField();
+        startDateField.setId("startDate");//$NON-NLS-1$
+        startDateField.setName("startDate");//$NON-NLS-1$
         startDateField.setFieldLabel(MessagesFactory.getMessages().start_date_label());
         startDateField.setPropertyEditor(new DateTimePropertyEditor("yyyy-MM-dd HH:mm:ss")); //$NON-NLS-1$
         startDateField.addListener(Events.KeyDown, new Listener<FieldEvent>() {
@@ -243,6 +247,8 @@ public class JournalSearchPanel extends FormPanel {
 
     protected void initEndDateField() {
         endDateField = new DateField();
+        endDateField.setId("endDate");//$NON-NLS-1$
+        endDateField.setName("endDate");//$NON-NLS-1$
         endDateField.setFieldLabel(MessagesFactory.getMessages().end_date_label());
         endDateField.setPropertyEditor(new DateTimePropertyEditor("yyyy-MM-dd HH:mm:ss")); //$NON-NLS-1$
         endDateField.addListener(Events.KeyDown, new Listener<FieldEvent>() {
@@ -261,6 +267,8 @@ public class JournalSearchPanel extends FormPanel {
 
     protected void initKeyField() {
         keyField = new TextField<String>();
+        keyField.setId("key");//$NON-NLS-1$
+        keyField.setName("key");//$NON-NLS-1$
         keyField.setFieldLabel(MessagesFactory.getMessages().key_label());
         keyField.addListener(Events.KeyDown, new Listener<FieldEvent>() {
 
@@ -335,6 +343,8 @@ public class JournalSearchPanel extends FormPanel {
 
     protected void initStrictCheckBox() {
         strictCheckBox = new CheckBox();
+        strictCheckBox.setId("strict"); //$NON-NLS-1$
+        strictCheckBox.setName("strict"); //$NON-NLS-1$
         strictCheckBox.setEnabled(true);
         strictCheckBox.setValue(true);
         strictCheckBox.setBoxLabel(MessagesFactory.getMessages().strict_search_checkbox());

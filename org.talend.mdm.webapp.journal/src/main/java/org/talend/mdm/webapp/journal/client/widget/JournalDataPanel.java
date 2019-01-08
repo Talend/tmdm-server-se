@@ -65,8 +65,6 @@ public class JournalDataPanel extends FormPanel {
 
     private JournalHistoryPanel journalHistoryPanel;
 
-    private ListStore<JournalGridModel> gridStore = JournalGridPanel.getInstance().getStore();
-
     private PagingLoadConfig localPagingLoadConfig;
 
     private PagingLoader<PagingLoadResult<JournalGridModel>> localLoader;
@@ -196,7 +194,7 @@ public class JournalDataPanel extends FormPanel {
         FormData formData = new FormData("100%"); //$NON-NLS-1$
         this.add(main, formData);
 
-        final JournalSearchCriteria criteria = Registry.get(Journal.SEARCH_CRITERIA);
+        final JournalSearchCriteria criteria = getSearchCriteria();
         RpcProxy<PagingLoadResult<JournalGridModel>> proxy = new RpcProxy<PagingLoadResult<JournalGridModel>>() {
 
             @Override
@@ -256,8 +254,7 @@ public class JournalDataPanel extends FormPanel {
                     turnPage = false;
                 } else {// updateJournalNavigationList only called from here when the JournalDataPanel opened from
                         // gridPanel, other calls to this fuction is issued from update()
-                    JournalSearchCriteria criteriaForPhysicalDeleted = new JournalSearchCriteria();
-                    criteriaForPhysicalDeleted.setOperationType(UpdateReportPOJO.OPERATION_TYPE_PHYSICAL_DELETE);
+                    JournalSearchCriteria criteriaForPhysicalDeleted = generatePhysicalDeletedCriteria();
                     PagingLoadConfig loadConfig = new BasePagingLoadConfig();
                     loadConfig.setOffset(0);
                     loadConfig.setLimit(0);
@@ -481,7 +478,7 @@ public class JournalDataPanel extends FormPanel {
     }
 
     private void initLoadConfig() {
-        PagingLoadConfig pagingLoadConfig = (PagingLoadConfig) gridStore.getLoadConfig();
+        PagingLoadConfig pagingLoadConfig = (PagingLoadConfig) getGridStore().getLoadConfig();
 
         localPagingLoadConfig = new BasePagingLoadConfig();
         localPagingLoadConfig.setOffset(pagingLoadConfig.getOffset());
@@ -639,8 +636,23 @@ public class JournalDataPanel extends FormPanel {
         this.oeprationTimeField.setValue(gridModel.getOperationDate());
     }
 
+
+    protected ListStore<JournalGridModel> getGridStore() {
+        return JournalGridPanel.getInstance().getStore();
+    }
+
+    protected JournalSearchCriteria generatePhysicalDeletedCriteria() {
+        JournalSearchCriteria criteriaForPhysicalDeleted = new JournalSearchCriteria();
+        criteriaForPhysicalDeleted.setOperationType(UpdateReportPOJO.OPERATION_TYPE_PHYSICAL_DELETE);
+        return criteriaForPhysicalDeleted;
+    }
+
     protected JournalServiceAsync getService() {
         return Registry.get(Journal.JOURNAL_SERVICE);
+    }
+
+    protected JournalSearchCriteria getSearchCriteria() {
+        return Registry.get(Journal.SEARCH_CRITERIA);
     }
 
     private native void openBrowseRecordPanel(String title, String key, String concept)/*-{

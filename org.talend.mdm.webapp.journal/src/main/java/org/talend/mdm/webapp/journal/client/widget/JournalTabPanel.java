@@ -104,12 +104,12 @@ public class JournalTabPanel extends TabPanel {
         return timeLineTabItem;
     }
 
-    public JournalTimelinePanel getJournalTimelinePanel() {
-        return this.journalTimelinePanel;
-    }
-
     public void setSelectionItem() {
         this.setSelection(resultTabItem);
+    }
+
+    public JournalTimelinePanel getJournalTimelinePanel() {
+        return this.journalTimelinePanel;
     }
 
     protected JournalTimelinePanel generateJournalTimelinePanel() {

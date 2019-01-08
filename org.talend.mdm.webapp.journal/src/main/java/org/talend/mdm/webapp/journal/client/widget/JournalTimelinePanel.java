@@ -75,7 +75,7 @@ public class JournalTimelinePanel extends ContentPanel {
     }
 
     private void loadTimeline(int startIndex) {
-        JournalSearchCriteria criteria = Registry.get(Journal.SEARCH_CRITERIA);
+        JournalSearchCriteria criteria = getSearchCriteria();
         start = startIndex;
         getService().getReportString(criteria, startIndex, limit, sort, field, language, new SessionAwareAsyncCallback<String>() {
 
@@ -216,5 +216,9 @@ public class JournalTimelinePanel extends ContentPanel {
 
     protected JournalServiceAsync getService() {
         return Registry.get(Journal.JOURNAL_SERVICE);
+    }
+
+    protected JournalSearchCriteria getSearchCriteria() {
+        return Registry.get(Journal.SEARCH_CRITERIA);
     }
 }

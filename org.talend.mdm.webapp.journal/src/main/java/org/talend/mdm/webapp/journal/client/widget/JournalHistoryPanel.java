@@ -13,6 +13,7 @@ import org.talend.mdm.webapp.journal.client.Journal;
 import org.talend.mdm.webapp.journal.client.i18n.MessagesFactory;
 import org.talend.mdm.webapp.journal.client.util.JournalSearchUtil;
 import org.talend.mdm.webapp.journal.shared.JournalGridModel;
+import org.talend.mdm.webapp.journal.shared.JournalParameters;
 import org.talend.mdm.webapp.journal.shared.JournalTreeModel;
 
 import com.extjs.gxt.ui.client.Registry;
@@ -62,7 +63,7 @@ public class JournalHistoryPanel extends ContentPanel {
         westData.setSplit(true);
         westData.setMargins(new Margins(5, 5, 0, 0));
         
-        beforePanel = new JournalComparisonPanel(MessagesFactory.getMessages().before_label(),
+        beforePanel = generateJournalComparisonPanel(MessagesFactory.getMessages().before_label(),
                 JournalSearchUtil.buildParameter(gridModel, "before", isAuth),journalDataPanel.getJournalGridModel(),true); //$NON-NLS-1$
         this.add(beforePanel, westData);
         
@@ -71,7 +72,7 @@ public class JournalHistoryPanel extends ContentPanel {
         centerData.setMargins(new Margins(5, 0, 0, 0));
         centerData.setSplit(true);
         
-        afterPanel = new JournalComparisonPanel(MessagesFactory.getMessages().after_label(),
+        afterPanel = generateJournalComparisonPanel(MessagesFactory.getMessages().after_label(),
                 JournalSearchUtil.buildParameter(gridModel, "current", isAuth),journalDataPanel.getJournalGridModel(),false); //$NON-NLS-1$
         this.add(afterPanel, centerData);
         
@@ -84,10 +85,10 @@ public class JournalHistoryPanel extends ContentPanel {
         this.remove(beforePanel);
         JournalGridModel gridModel = journalDataPanel.getJournalGridModel();
         this.setItemId(gridModel.getIds());
-        this.beforePanel = new JournalComparisonPanel(MessagesFactory.getMessages().before_label(),
+        this.beforePanel = generateJournalComparisonPanel(MessagesFactory.getMessages().before_label(),
                 JournalSearchUtil.buildParameter(gridModel, "before", this.isAuth),journalDataPanel.getJournalGridModel(),true); //$NON-NLS-1$
         this.add(beforePanel, westData);
-        this.afterPanel = new JournalComparisonPanel(MessagesFactory.getMessages().after_label(),
+        this.afterPanel = generateJournalComparisonPanel(MessagesFactory.getMessages().after_label(),
                 JournalSearchUtil.buildParameter(gridModel, "current", isAuth),journalDataPanel.getJournalGridModel(),false); //$NON-NLS-1$
         this.add(afterPanel, centerData);
         
@@ -115,5 +116,10 @@ public class JournalHistoryPanel extends ContentPanel {
 
     protected JournalDataPanel generateJournalDataPanel(JournalTreeModel root, JournalGridModel gridModel) {
         return new JournalDataPanel(root, gridModel);
+    }
+
+    protected JournalComparisonPanel generateJournalComparisonPanel(String title, final JournalParameters parameter,
+            final JournalGridModel journalGridModel, final boolean isBeforePanel) {
+        return new JournalComparisonPanel(title, parameter, journalGridModel, isBeforePanel);
     }
 }

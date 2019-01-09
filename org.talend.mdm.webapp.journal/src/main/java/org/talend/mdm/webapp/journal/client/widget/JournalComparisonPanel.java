@@ -51,9 +51,6 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Accessibility;
 
-/**
- * DOC Administrator class global comment. Detailled comment
- */
 public class JournalComparisonPanel extends ContentPanel {
     
     private static final String LEFT_BRAKCET = "[";
@@ -340,7 +337,7 @@ public class JournalComparisonPanel extends ContentPanel {
 
                             @Override
                             public void componentSelected(ButtonEvent ce) {
-                                JournalGridPanel.getInstance().restore(parameter,true);
+                                getJournalGridPanel().restore(parameter, true);
                             };
                         });
                         restoreButton.setEnabled(parameter.isAuth());
@@ -444,5 +441,9 @@ public class JournalComparisonPanel extends ContentPanel {
 
     protected JournalServiceAsync getService() {
         return Registry.get(Journal.JOURNAL_SERVICE);
+    }
+
+    protected JournalGridPanel getJournalGridPanel() {
+        return JournalGridPanel.getInstance();
     }
 }

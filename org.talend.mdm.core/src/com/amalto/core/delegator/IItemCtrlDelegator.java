@@ -250,7 +250,7 @@ public abstract class IItemCtrlDelegator implements IBeanDelegator, IItemCtrlDel
         return isNeedToAdd;
     }
 
-    public static IWhereItem normalizeConditions(ArrayList<IWhereItem> conditions) {
+    private static IWhereItem normalizeConditions(ArrayList<IWhereItem> conditions) {
         IWhereItem viewCondition = null;
         String predicate = null;
         int i = 0;

@@ -35,6 +35,8 @@ public class JournalExportServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
     
+    private static final Logger LOG = Logger.getLogger(JournalExportServlet.class);
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         this.doPost(request, response);
@@ -42,7 +44,7 @@ public class JournalExportServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        getLogger().info("Exporting excel file"); //$NON-NLS-1$
+        LOG.info("Exporting excel file"); //$NON-NLS-1$
         JournalExcel journalExcel = new JournalExcel(request.getParameter("language")); //$NON-NLS-1$     
      
         response.reset();
@@ -74,7 +76,7 @@ public class JournalExportServlet extends HttpServlet {
                 row.createCell((short) 7).setCellValue(model.getUserName());
             }
         } catch (Exception e) {
-            getLogger().error(e.getMessage());
+            LOG.error(e.getMessage());
         }
         response.setCharacterEncoding("utf-8"); //$NON-NLS-1$
         OutputStream out = response.getOutputStream();
@@ -120,9 +122,5 @@ public class JournalExportServlet extends HttpServlet {
 
     protected JournalDBService getService() {
         return new JournalDBService(new WebServiceImp());
-    }
-
-    protected Logger getLogger() {
-        return Logger.getLogger(JournalExportServlet.class);
     }
 }

@@ -61,6 +61,8 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 @SuppressWarnings("serial")
 public class JournalAction extends RemoteServiceServlet implements JournalService {
 
+    private static final Logger LOG = Logger.getLogger(JournalAction.class);
+
     protected JournalDBService service;
 
     private static final Messages MESSAGES = MessagesFactory.getMessages(
@@ -80,10 +82,10 @@ public class JournalAction extends RemoteServiceServlet implements JournalServic
             List<JournalGridModel> resultList = (List<JournalGridModel>) result[1];
             return new ItemBasePageLoadResult<JournalGridModel>(resultList, load.getOffset(), totalSize);
         } catch (ServiceException e) {
-            getLogger().error(e.getMessage(), e);
+            LOG.error(e.getMessage(), e);
             throw e;
         } catch (Exception e) {
-            getLogger().error(e.getMessage(), e);
+            LOG.error(e.getMessage(), e);
             throw new ServiceException(e.getMessage());
         }
     }
@@ -97,10 +99,10 @@ public class JournalAction extends RemoteServiceServlet implements JournalServic
                     .getLocalUser().getRoles());
             return getJournalDBService().getDetailTreeModel(idsArr, entityModel, language);
         } catch (ServiceException e) {
-            getLogger().error(e.getMessage(), e);
+            LOG.error(e.getMessage(), e);
             throw e;
         } catch (Exception e) {
-            getLogger().error(e.getMessage(), e);
+            LOG.error(e.getMessage(), e);
             throw new ServiceException(e.getMessage());
         }
     }
@@ -130,12 +132,12 @@ public class JournalAction extends RemoteServiceServlet implements JournalServic
             }
             return root;
         } catch (ServiceException e) {
-            getLogger().error(e.getMessage(), e);
+            LOG.error(e.getMessage(), e);
             throw e;
         } catch (UnsupportedUndoPhysicalDeleteException unsupportedUndoException) {
             throw new ServiceException(MESSAGES.getMessage(LocaleUtil.getLocale(language), "unsupport_restore_message")); //$NON-NLS-1$
         } catch (Exception e) {
-            getLogger().error(e.getMessage(), e);
+            LOG.error(e.getMessage(), e);
             throw new ServiceException(e.getMessage());
         }
     }
@@ -157,7 +159,7 @@ public class JournalAction extends RemoteServiceServlet implements JournalServic
             WSDataClusterPK wddcpk = new WSDataClusterPK(itemPk);
             return Util.getPort().existsItem(new WSExistsItem(new WSItemPK(wddcpk, conceptName, ids))).is_true();
         } catch (Exception e) {
-            getLogger().error(e.getMessage(), e);
+            LOG.error(e.getMessage(), e);
             throw new ServiceException(e.getLocalizedMessage());
         }
     }
@@ -172,12 +174,12 @@ public class JournalAction extends RemoteServiceServlet implements JournalServic
                 throw new ServiceException(MESSAGES.getMessage(locale, "restore_no_permissions")); //$NON-NLS-1$
             }
         } catch (ServiceException e) {
-            getLogger().error(e.getMessage(), e);
+            LOG.error(e.getMessage(), e);
             throw e;
         } catch (UnsupportedUndoPhysicalDeleteException unsupportedUndoException) {
             throw new ServiceException(MESSAGES.getMessage(locale, "unsupport_restore_message")); //$NON-NLS-1$
         } catch (Exception e) {
-            getLogger().error(e.getMessage(), e);
+            LOG.error(e.getMessage(), e);
             throw new ServiceException(MESSAGES.getMessage(locale, "restore_fail")); //$NON-NLS-1$
         }
     }
@@ -193,10 +195,10 @@ public class JournalAction extends RemoteServiceServlet implements JournalServic
             List<JournalGridModel> resultList = (List<JournalGridModel>) result[1];
             return this.generateEventString(resultList, language, criteria.getStartDate());
         } catch (ServiceException e) {
-            getLogger().error(e.getMessage(), e);
+            LOG.error(e.getMessage(), e);
             throw e;
         } catch (Exception e) {
-            getLogger().error(e.getMessage(), e);
+            LOG.error(e.getMessage(), e);
             throw new ServiceException(e.getMessage());
         }
 
@@ -207,8 +209,8 @@ public class JournalAction extends RemoteServiceServlet implements JournalServic
         try {
             return LocalUser.getLocalUser().getRoles().contains(ICoreConstants.SYSTEM_ADMIN_ROLE);
         } catch (Exception e) {
-            if (getLogger().isDebugEnabled()) {
-                getLogger().error(e.getMessage());
+            if (LOG.isDebugEnabled()) {
+                LOG.error(e.getMessage());
             }
             return false;
         }
@@ -224,12 +226,12 @@ public class JournalAction extends RemoteServiceServlet implements JournalServic
                 return true;
             }
         } catch (UnsupportedUndoPhysicalDeleteException exception) {
-            if (getLogger().isDebugEnabled()) {
-                getLogger().warn("Undo for physical delete is not supported."); //$NON-NLS-1$
+            if (LOG.isDebugEnabled()) {
+                LOG.warn("Undo for physical delete is not supported."); //$NON-NLS-1$
             }
             return false;
         } catch (Exception exception) {
-            getLogger().error(exception.getMessage(), exception);
+            LOG.error(exception.getMessage(), exception);
             throw new ServiceException(exception.getMessage());
         }
     }   
@@ -318,10 +320,6 @@ public class JournalAction extends RemoteServiceServlet implements JournalServic
         String timeStr = sdf.format(date);
         return timeStr + " GMT"; //$NON-NLS-1$
     }
-
-    protected Logger getLogger() {
-         return Logger.getLogger(JournalAction.class);
-     }
 
     protected JournalDBService getJournalDBService() {
         if (service == null) {

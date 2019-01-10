@@ -9,9 +9,12 @@
  */
 package org.talend.mdm.webapp.welcomeportal.client.widget;
 
+import com.extjs.gxt.ui.client.Registry;
+import org.talend.mdm.webapp.base.client.SessionAwareAsyncCallback;
 import org.talend.mdm.webapp.base.client.widget.PortletConstants;
 import org.talend.mdm.webapp.welcomeportal.client.MainFramePanel;
 import org.talend.mdm.webapp.welcomeportal.client.WelcomePortal;
+import org.talend.mdm.webapp.welcomeportal.client.WelcomePortalServiceAsync;
 import org.talend.mdm.webapp.welcomeportal.client.i18n.MessagesFactory;
 import org.talend.mdm.webapp.welcomeportal.client.resources.icon.Icons;
 
@@ -21,6 +24,8 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.HTML;
 
 public class StartPortlet extends BasePortlet {
+
+    private WelcomePortalServiceAsync service = (WelcomePortalServiceAsync) Registry.get(WelcomePortal.WELCOMEPORTAL_SERVICE);
 
     public StartPortlet(MainFramePanel portal) {
         super(PortletConstants.START_NAME, portal);
@@ -57,14 +62,22 @@ public class StartPortlet extends BasePortlet {
         journalItem.append("<IMG SRC=\"/talendmdm/secure/img/menu/updatereport.png\"/>&nbsp;"); //$NON-NLS-1$
         journalItem.append(MessagesFactory.getMessages().journal());
         journalItem.append("</span>"); //$NON-NLS-1$
-        HTML journalHtml = new HTML(journalItem.toString());
-        journalHtml.addClickHandler(new ClickHandler() {
+        final HTML journalHtml = new HTML(journalItem.toString());
 
-            @Override
-            public void onClick(ClickEvent event) {
-                portal.itemClick(WelcomePortal.JOURNALCONTEXT, WelcomePortal.JOURNALAPP);
+        service.isMenuExisted("UpdateReport", new SessionAwareAsyncCallback<Boolean>() {
+
+            @Override public void onSuccess(Boolean isJournalMenuExisted) {
+                if (isJournalMenuExisted) {
+                    journalHtml.addClickHandler(new ClickHandler() {
+
+                        @Override public void onClick(ClickEvent event) {
+                            portal.itemClick(WelcomePortal.JOURNALCONTEXT, WelcomePortal.JOURNALAPP);
+                        }
+                    });
+                }
             }
         });
+
         fieldSet.add(journalHtml);
         fieldSet.layout(true);
     }

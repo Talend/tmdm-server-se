@@ -13,9 +13,10 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import com.amalto.core.server.security.SecurityConfig;
+import com.amalto.core.webservice.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
@@ -34,18 +35,6 @@ import com.amalto.core.util.LocalUser;
 import com.amalto.core.util.Messages;
 import com.amalto.core.util.MessagesFactory;
 import com.amalto.core.util.User;
-import com.amalto.core.webservice.WSByteArray;
-import com.amalto.core.webservice.WSDataClusterPK;
-import com.amalto.core.webservice.WSDataModelPK;
-import com.amalto.core.webservice.WSExecuteTransformerV2;
-import com.amalto.core.webservice.WSGetTransformerV2;
-import com.amalto.core.webservice.WSGetTransformerV2PKs;
-import com.amalto.core.webservice.WSPutItem;
-import com.amalto.core.webservice.WSTransformerContext;
-import com.amalto.core.webservice.WSTransformerContextPipelinePipelineItem;
-import com.amalto.core.webservice.WSTransformerV2;
-import com.amalto.core.webservice.WSTransformerV2PK;
-import com.amalto.core.webservice.WSTypedContent;
 import com.amalto.webapp.core.bean.Configuration;
 import com.amalto.core.util.Menu;
 import com.amalto.webapp.core.util.Util;
@@ -376,5 +365,36 @@ public class WelcomePortalAction implements WelcomePortalService {
             LOG.error(e.getMessage(), e);
             throw new ServiceException(e.getLocalizedMessage());
         }
+    }
+
+    @Override
+    public boolean isMenuExisted(String menu) throws ServiceException {
+        try {
+            ILocalUser user = LocalUser.getLocalUser();
+            for (String role : user.getRoles()) {
+                if (!SecurityConfig.isSecurityPermission(role)) {
+                    WSRole wsRole = Util.getPort().getRole(new WSGetRole(new WSRolePK(role)));
+                    WSRoleSpecification[] specifications = wsRole.getSpecification();
+                    if (specifications != null) {
+                        for (WSRoleSpecification specification : specifications) {
+                            if ("Menu".equals(specification.getObjectType())) { //$NON-NLS-1$
+                                WSRoleSpecificationInstance[] instances = specification.getInstance();
+                                if (instances != null) {
+                                    for (WSRoleSpecificationInstance instance : instances) {
+                                        if (instance.getInstanceName().equals(menu)) {
+                                            return true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            LOG.error(e.getMessage(), e);
+            throw new ServiceException(e.getLocalizedMessage());
+        }
+        return false;
     }
 }

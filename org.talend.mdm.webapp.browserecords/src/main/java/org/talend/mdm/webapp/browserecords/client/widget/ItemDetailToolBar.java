@@ -656,7 +656,11 @@ public class ItemDetailToolBar extends ToolBar {
                         @Override
                         public void componentSelected(MenuEvent menuEvent) {
                             String ids = itemBean.getIds();
-                            initJournal(ids, viewBean.getDescription(), viewBean.getViewPK());
+                            if (BrowseRecords.getSession().getAppHeader().isEnterprise()) {
+                                initJournal(ids, viewBean.getDescription(), viewBean.getViewPK());
+                            } else {
+                                initJournal(ids, itemBean.getConcept());
+                            }
                         }
                     });
                     subActionsMenu.add(new SeparatorMenuItem());
@@ -1365,6 +1369,12 @@ public class ItemDetailToolBar extends ToolBar {
     public void updateToolBar() {
         // do nothing
     }
+
+    private native boolean initJournal(String ids, String concept)/*-{
+        $wnd.amalto.journal.Journal.browseJournalWithCriteria(ids, concept,
+                true);
+        return true;
+    }-*/;
 
     private native boolean initJournal(String ids, String viewName, String viewPK)/*-{
         $wnd.amalto.userjournal.UserJournal.browseUserJournalWithKeyAndView(

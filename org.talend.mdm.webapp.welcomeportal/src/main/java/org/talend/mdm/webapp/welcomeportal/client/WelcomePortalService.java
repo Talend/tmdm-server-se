@@ -56,6 +56,4 @@ public interface WelcomePortalService extends RemoteService {
     public AppHeader getAppHeader() throws ServiceException;
 
     public String getCurrentDataModel() throws ServiceException;
-
-    public boolean isMenuExisted(String menu) throws ServiceException;
 }

@@ -62,6 +62,4 @@ public interface WelcomePortalServiceAsync {
     void getAppHeader(AsyncCallback<AppHeader> callback);
 
     void getCurrentDataModel(AsyncCallback<String> callback);
-
-    void isMenuExisted(String menu, AsyncCallback<Boolean> async);
 }

@@ -1,15 +1,15 @@
 package com.amalto.core.storage.hibernate;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import liquibase.change.AbstractChange;
-import liquibase.change.core.DropNotNullConstraintChange;
 
 import org.apache.log4j.Logger;
 import org.hibernate.dialect.Dialect;
@@ -29,6 +29,9 @@ import com.amalto.core.storage.StorageType;
 import com.amalto.core.storage.adapt.StorageAdaptTest;
 import com.amalto.core.storage.datasource.DataSourceDefinition;
 import com.amalto.core.storage.datasource.RDBMSDataSource;
+
+import liquibase.change.AbstractChange;
+import liquibase.change.core.DropNotNullConstraintChange;
 
 
 public class LiquibaseSchemaAdapterTest {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -109,24 +109,24 @@ public class JournalDBServiceTest extends TestCase {
 
         JournalTreeModel journalTreeModel = journalDBService.getDetailTreeModel(ids, entityModel, "en");
         assertEquals("Update", journalTreeModel.getName());
-        assertEquals(9, journalTreeModel.getChildCount());
+        assertEquals(10, journalTreeModel.getChildCount());
         JournalTreeModel childModel = (JournalTreeModel) journalTreeModel.getChild(0);
         assertEquals("UserName:administrator", childModel.getName());
         childModel = (JournalTreeModel) journalTreeModel.getChild(1);
         assertEquals("Source:genericUI", childModel.getName());
         childModel = (JournalTreeModel) journalTreeModel.getChild(2);
         assertEquals("TimeInMillis:1361153957282", childModel.getName());
-        childModel = (JournalTreeModel) journalTreeModel.getChild(3);
-        assertEquals("OperationType:UPDATE", childModel.getName());
         childModel = (JournalTreeModel) journalTreeModel.getChild(4);
-        assertEquals("Concept:Product", childModel.getName());
+        assertEquals("OperationType:UPDATE", childModel.getName());
         childModel = (JournalTreeModel) journalTreeModel.getChild(5);
-        assertEquals("DataCluster:Product", childModel.getName());
+        assertEquals("Concept:Product", childModel.getName());
         childModel = (JournalTreeModel) journalTreeModel.getChild(6);
-        assertEquals("DataModel:Product", childModel.getName());
+        assertEquals("DataCluster:Product", childModel.getName());
         childModel = (JournalTreeModel) journalTreeModel.getChild(7);
-        assertEquals("Key:1", childModel.getName());
+        assertEquals("DataModel:Product", childModel.getName());
         childModel = (JournalTreeModel) journalTreeModel.getChild(8);
+        assertEquals("Key:1", childModel.getName());
+        childModel = (JournalTreeModel) journalTreeModel.getChild(9);
         assertEquals("path:Name", ((JournalTreeModel) childModel.getChild(0)).getName());
         assertEquals("oldValue:1", ((JournalTreeModel) childModel.getChild(1)).getName());
         assertEquals("newValue:123", ((JournalTreeModel) childModel.getChild(2)).getName());
@@ -185,8 +185,7 @@ public class JournalDBServiceTest extends TestCase {
 
     public void testParseString2Model() throws NoSuchMethodException, InvocationTargetException, IllegalArgumentException,
             IllegalAccessException {
-        String xmlString = "<result><Update><UserName>Jennifer</UserName><Source>genericUI</Source><TimeInMillis>1360032633336</TimeInMillis><OperationType>UPDATE</OperationType><DataCluster>DStar</DataCluster><DataModel>DStar</DataModel><Concept>Agency</Concept><Key>2</Key><Item><path>Name</path><oldValue>23456</oldValue><newValue>34567</newValue><path>Feautres/Sizes/Size[3]</path><oldValue>ccc</oldValue><newValue>333</newValue><path>Feautres/Sizes/Size[2]</path><oldValue>bbb</oldValue><newValue>222</newValue><path>Feautres/Sizes/Size[1]</path><oldValue>aaa</oldValue><newValue>111</newValue></Item></Update></result>";
-        Method method = journalDBService.getClass().getDeclaredMethod("parseString2Model", String.class);
+        String xmlString = "<result><Update><UserName>Jennifer</UserName><Source>genericUI</Source><TimeInMillis>1360032633336</TimeInMillis><UUID>5258f292-5670-473b-bc01-8b63434682d3</UUID><OperationType>UPDATE</OperationType><DataCluster>DStar</DataCluster><DataModel>DStar</DataModel><Concept>Agency</Concept><Key>2</Key><Item><path>Name</path><oldValue>23456</oldValue><newValue>34567</newValue><path>Feautres/Sizes/Size[3]</path><oldValue>ccc</oldValue><newValue>333</newValue><path>Feautres/Sizes/Size[2]</path><oldValue>bbb</oldValue><newValue>222</newValue><path>Feautres/Sizes/Size[1]</path><oldValue>aaa</oldValue><newValue>111</newValue></Item></Update></result>";        Method method = journalDBService.getClass().getDeclaredMethod("parseString2Model", String.class);
         method.setAccessible(true);
         JournalGridModel returnValue = (JournalGridModel) method.invoke(journalDBService, new Object[] { xmlString });
         method.setAccessible(false);
@@ -198,6 +197,7 @@ public class JournalDBServiceTest extends TestCase {
         assertEquals(UpdateReportPOJO.OPERATION_TYPE_UPDATE, returnValue.getOperationType());
         assertEquals("genericUI", returnValue.getSource());
         assertEquals("1360032633336", returnValue.getOperationTime());
+        assertEquals("5258f292-5670-473b-bc01-8b63434682d3", returnValue.getUuid());
         assertEquals("Jennifer", returnValue.getUserName());
         assertEquals("/Agency/Name", returnValue.getChangeNodeList().get(0));
         assertEquals("/Agency/Feautres/Sizes/Size[1]", returnValue.getChangeNodeList().get(1));

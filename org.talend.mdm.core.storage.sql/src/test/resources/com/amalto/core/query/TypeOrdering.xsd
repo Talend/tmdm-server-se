@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (C) 2006-2012 Talend Inc. - www.talend.com
+  ~ Copyright (C) 2006-2019 Talend Inc. - www.talend.com
   ~
   ~ This source code is available under agreement available at
   ~ %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -921,6 +921,7 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="UserName" nillable="true" type="xsd:string"/>
             <xsd:element maxOccurs="1" minOccurs="1" name="Source" nillable="false" type="xsd:string"/>
             <xsd:element maxOccurs="1" minOccurs="1" name="TimeInMillis" nillable="false" type="xsd:string"/>
+            <xsd:element maxOccurs="1" minOccurs="1" name="UUID" nillable="false" type="xsd:string"/>
             <xsd:element maxOccurs="1" minOccurs="1" name="OperationType" nillable="false">
                 <xsd:simpleType>
                     <xsd:restriction base="xsd:string">

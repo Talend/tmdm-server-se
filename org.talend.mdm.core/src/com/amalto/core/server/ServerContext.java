@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -14,10 +14,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ServiceLoader;
 
-import com.amalto.core.storage.*;
-import com.amalto.core.storage.datasource.DataSource;
 import org.apache.log4j.Logger;
 
+import com.amalto.core.storage.CacheStorage;
+import com.amalto.core.storage.SecuredStorage;
+import com.amalto.core.storage.Storage;
+import com.amalto.core.storage.StorageLogger;
+import com.amalto.core.storage.StorageType;
+import com.amalto.core.storage.datasource.DataSource;
 import com.amalto.core.storage.datasource.DataSourceDefinition;
 import com.amalto.core.storage.dispatch.CompositeStorage;
 
@@ -152,6 +156,29 @@ public class ServerContext {
             if (storage != null) {
                 storage.close(dropExistingData);
             }
+        }
+
+        @Override
+        public PersistenceExtension createPersistence(Server server) {
+            ServiceLoader<PersistenceExtension> extensions = ServiceLoader.load(PersistenceExtension.class);
+            for (PersistenceExtension extension : extensions) {
+                if (extension.accept(server)) {
+                    return extension;
+                }
+            }
+            return new DefaultPersistenceExtension();
+        }
+    }
+
+    private static class DefaultPersistenceExtension implements PersistenceExtension {
+
+        @Override
+        public boolean accept(Server server) {
+            return false;
+        }
+
+        @Override
+        public void update() {
         }
     }
 }

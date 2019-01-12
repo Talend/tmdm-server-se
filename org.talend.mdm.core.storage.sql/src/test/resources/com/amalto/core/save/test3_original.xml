@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (C) 2006-2012 Talend Inc. - www.talend.com
+  ~ Copyright (C) 2006-2019 Talend Inc. - www.talend.com
   ~
   ~ This source code is available under agreement available at
   ~ %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -21,6 +21,7 @@
             <UserName>administrator</UserName>
             <Source>genericUI</Source>
             <TimeInMillis>1306490022341</TimeInMillis>
+            <UUID>902c144e-a673-11e8-98d0-529269fb1459</UUID>
             <OperationType>PHYSICAL_DELETE</OperationType>
             <RevisionID>null</RevisionID>
             <DataCluster>Product</DataCluster>

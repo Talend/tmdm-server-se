@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -23,6 +23,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.UUID;
 
 import javax.xml.parsers.DocumentBuilder;
 
@@ -1942,7 +1943,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             String dataClusterPK = config.getCluster() == null ? StringUtils.EMPTY : config.getCluster();
             UpdateReportPOJO updateReportPOJO = new UpdateReportPOJO(concept,
                     Util.joinStrings(ids, "."), UpdateReportPOJO.OPERATION_TYPE_ACTION, //$NON-NLS-1$
-                    UpdateReportPOJO.GENERIC_UI_SOURCE, System.currentTimeMillis(), dataClusterPK, dataModelPK,
+                    UpdateReportPOJO.GENERIC_UI_SOURCE, System.currentTimeMillis(), UUID.randomUUID().toString(), dataClusterPK, dataModelPK,
                     LocalUser.getLocalUser().getUsername(), null);
 
             String updateReport = updateReportPOJO.serialize();

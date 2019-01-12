@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -24,6 +24,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.dom4j.Attribute;
 import org.dom4j.io.SAXReader;
+import org.talend.mdm.commmon.util.core.MDMConfiguration;
 import org.talend.mdm.commmon.util.core.MDMXMLUtils;
 import org.talend.mdm.commmon.util.webapp.XSystemObjects;
 import org.talend.mdm.webapp.base.client.model.DataTypeConstants;
@@ -129,6 +130,7 @@ public class JournalDBService {
         root.add(new JournalTreeModel("UserName:" + checkNull(Util.getFirstTextNode(doc, "/Update/UserName")))); //$NON-NLS-1$ //$NON-NLS-2$
         root.add(new JournalTreeModel("Source:" + checkNull(Util.getFirstTextNode(doc, "/Update/Source")))); //$NON-NLS-1$ //$NON-NLS-2$
         root.add(new JournalTreeModel("TimeInMillis:" + checkNull(Util.getFirstTextNode(doc, "/Update/TimeInMillis")))); //$NON-NLS-1$ //$NON-NLS-2$
+        root.add(new JournalTreeModel("UUID:" + checkNull(Util.getFirstTextNode(doc, "/Update/UUID")))); //$NON-NLS-1$ //$NON-NLS-2$
         root.add(new JournalTreeModel("OperationType:" + checkNull(Util.getFirstTextNode(doc, "/Update/OperationType")))); //$NON-NLS-1$ //$NON-NLS-2$
         root.add(new JournalTreeModel("Concept:" + checkNull(concept))); //$NON-NLS-1$
         root.add(new JournalTreeModel("DataCluster:" + checkNull(dataCluster))); //$NON-NLS-1$
@@ -302,6 +304,7 @@ public class JournalDBService {
         String source = checkNull(Util.getFirstTextNode(doc, "result/Update/Source")); //$NON-NLS-1$
         String timeInMillis = checkNull(Util.getFirstTextNode(doc, "result/Update/TimeInMillis")); //$NON-NLS-1$
 
+        model.setUuid(checkNull(Util.getFirstTextNode(doc, "result/Update/UUID"))); //$NON-NLS-1$
         model.setDataContainer(checkNull(Util.getFirstTextNode(doc, "result/Update/DataCluster"))); //$NON-NLS-1$
         model.setDataModel(checkNull(Util.getFirstTextNode(doc, "result/Update/DataModel"))); //$NON-NLS-1$
         model.setEntity(checkNull(Util.getFirstTextNode(doc, "result/Update/Concept"))); //$NON-NLS-1$
@@ -311,7 +314,18 @@ public class JournalDBService {
         model.setOperationDate(sdf.format(new Date(Long.parseLong(timeInMillis))));
         model.setSource(source);
         model.setUserName(checkNull(Util.getFirstTextNode(doc, "result/Update/UserName"))); //$NON-NLS-1$
-        model.setIds(Util.joinStrings(new String[] { source, timeInMillis }, ".")); //$NON-NLS-1$
+        boolean isClusterEnabled = false;
+        try {
+            isClusterEnabled = MDMConfiguration.isClusterEnabled();
+        } catch (Exception e) {
+            LOG.error("Failed to fetch the current server running mode.", e);
+            isClusterEnabled = false;
+        }
+        if (isClusterEnabled) {
+            model.setIds(checkNull(Util.getFirstTextNode(doc, "result/Update/UUID")));//$NON-NLS-1$
+        } else {
+            model.setIds(Util.joinStrings(new String[] { source, timeInMillis }, ".")); //$NON-NLS-1$
+        }
 
         String[] pathArray = Util.getTextNodes(doc, "result/Update/Item/path"); //$NON-NLS-1$
 

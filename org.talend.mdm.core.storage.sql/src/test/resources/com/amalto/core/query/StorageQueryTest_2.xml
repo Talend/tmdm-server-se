@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (C) 2006-2012 Talend Inc. - www.talend.com
+  ~ Copyright (C) 2006-2019 Talend Inc. - www.talend.com
   ~
   ~ This source code is available under agreement available at
   ~ %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -9,4 +9,4 @@
   ~ 9 rue Pages 92150 Suresnes, France
   -->
 
-<Update><UserName>administrator</UserName><Source/><TimeInMillis>1307525702000</TimeInMillis><OperationType>UPDATE</OperationType><RevisionID>null</RevisionID><DataCluster>Product</DataCluster><DataModel>Product</DataModel><Concept>Product</Concept><Key>8</Key><Item><path>path/collection[3]/path</path><newValue>newValue</newValue></Item><Item><path>path/collection[1]/path/path/path</path><newValue>newValue</newValue></Item><Item><path>path/collection[1]/path/@attribute</path><newValue>newValue</newValue></Item><Item><path>path/collection[1]/path/@xsi:type</path><newValue>newValue</newValue></Item></Update>
+<Update><UserName>administrator</UserName><Source/><TimeInMillis>1307525702000</TimeInMillis><UUID>1b671a64-40d5-491e-99b0-da01ff1f3342</UUID><OperationType>UPDATE</OperationType><RevisionID>null</RevisionID><DataCluster>Product</DataCluster><DataModel>Product</DataModel><Concept>Product</Concept><Key>8</Key><Item><path>path/collection[3]/path</path><newValue>newValue</newValue></Item><Item><path>path/collection[1]/path/path/path</path><newValue>newValue</newValue></Item><Item><path>path/collection[1]/path/@attribute</path><newValue>newValue</newValue></Item><Item><path>path/collection[1]/path/@xsi:type</path><newValue>newValue</newValue></Item></Update>

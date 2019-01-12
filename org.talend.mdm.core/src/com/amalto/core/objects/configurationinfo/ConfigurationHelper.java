@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -18,7 +18,7 @@ import com.amalto.core.util.XtentisException;
 
 public class ConfigurationHelper {
 
-    private static final Logger logger = Logger.getLogger(ConfigurationHelper.class);
+    private static final Logger LOGGER = Logger.getLogger(ConfigurationHelper.class);
 
     private static XmlServer server = null;// Do not use this field directly
 
@@ -28,7 +28,7 @@ public class ConfigurationHelper {
                 server = Util.getXmlServerCtrlLocal();
             } catch (Exception e) {
                 String err = "Unable to access the XML Server wrapper";
-                logger.error(err, e);
+                LOGGER.error(err, e);
                 throw new XtentisException(err, e);
             }
         }
@@ -44,7 +44,7 @@ public class ConfigurationHelper {
             boolean exist = getServer().existCluster(clusterName);
             if (!exist) {
                 getServer().createCluster(clusterName);
-                logger.info("Created a new data cluster " + clusterName);
+                LOGGER.info("Created a new data cluster " + clusterName);
             }
         } catch (Exception e) {
             throw new XtentisException(e);
@@ -57,8 +57,21 @@ public class ConfigurationHelper {
             boolean exist = getServer().existCluster(clusterName);
             if (exist) {
                 getServer().deleteCluster(clusterName);
-                logger.info("Deleted a data cluster " + clusterName);
+                LOGGER.info("Deleted a data cluster " + clusterName);
             }
+        } catch (Exception e) {
+            throw new XtentisException(e);
+        }
+    }
+
+    public static String getDocument(String dataCluster, String uniqueID) throws XtentisException {
+        XmlServer server = getServer();
+        server.start(dataCluster);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.info("Fetch document by " + uniqueID + " from data cluster " + dataCluster);
+        }
+        try {
+            return server.getDocumentAsString(dataCluster, uniqueID);
         } catch (Exception e) {
             throw new XtentisException(e);
         }
@@ -75,7 +88,7 @@ public class ConfigurationHelper {
                 server.rollback(dataCluster);
                 throw new XtentisException(e);
             }
-            logger.info("Inserted document " + uniqueID + " to data cluster " + dataCluster);
+            LOGGER.info("Inserted document " + uniqueID + " to data cluster " + dataCluster);
         }
     }
 

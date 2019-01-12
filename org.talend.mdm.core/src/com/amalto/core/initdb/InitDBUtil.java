@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -10,6 +10,7 @@
 package com.amalto.core.initdb;
 
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -29,6 +30,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.amalto.core.objects.UpdateReportPOJO;
 import com.amalto.core.objects.configurationinfo.ConfigurationHelper;
 
 /**
@@ -119,15 +121,15 @@ public class InitDBUtil {
      * init db
      */
     public static void initDB() {
-        updateDB("/com/amalto/core/initdb/data", initDB); //$NON-NLS-1$
+        updateDB("/com/amalto/core/initdb/data", initDB, false); //$NON-NLS-1$
         if (useExtension) {
-            updateDB("/com/amalto/core/initdb/extensiondata", initExtensionDB); //$NON-NLS-1$
+            updateDB("/com/amalto/core/initdb/extensiondata", initExtensionDB, true); //$NON-NLS-1$
             // init db extension job
             InitDbExtJobRepository.getInstance().execute();
         }
     }
 
-    private static void updateDB(String resourcePath, Map<String, List<String>> initdb) {
+    private static void updateDB(String resourcePath, Map<String, List<String>> initdb, boolean isExist) {
         for (Entry<String, List<String>> entry : initdb.entrySet()) {
             String dataCluster = entry.getKey();
             try {
@@ -144,13 +146,21 @@ public class InitDBUtil {
                 String item = iterator.next();
                 try {
                     InputStream in = InitDBUtil.class.getResourceAsStream(resourcePath + "/" + item); //$NON-NLS-1$
-                    String xmlString = IOUtils.toString(in, "UTF-8"); //$NON-NLS-1$
+                    String xmlString = IOUtils.toString(in, StandardCharsets.UTF_8.name()); //$NON-NLS-1$
                     String uniqueID = item;
                     int pos = item.lastIndexOf('/');
                     if (pos != -1) {
                         uniqueID = item.substring(pos + 1);
                     }
                     uniqueID = uniqueID.replaceAll("\\+", " "); //$NON-NLS-1$ //$NON-NLS-2$
+                    boolean isClusterEnabled = MDMConfiguration.isClusterEnabled();
+                    if (isClusterEnabled && uniqueID.equalsIgnoreCase(UpdateReportPOJO.DATA_MODEL) && !item.contains("menu")) {
+                        if (isExist) {
+                            ConfigurationHelper.deleteDocument(dataCluster, uniqueID);
+                        } else {
+                            continue;
+                        }
+                    }
                     if (Boolean.valueOf((String) MDMConfiguration.getConfiguration().get("cluster_override"))) { //$NON-NLS-1$
                         ConfigurationHelper.deleteDocument(dataCluster, uniqueID);
                     }

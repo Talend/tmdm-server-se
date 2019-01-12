@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -52,6 +52,8 @@ public class UpdateReportPOJO {
 
     private long timeInMillis;
 
+    private String uuid;
+
     private String operationType;
 
     private String concept;
@@ -67,18 +69,19 @@ public class UpdateReportPOJO {
 
     private String userName;
 
-    public UpdateReportPOJO(String concept, String key, String operationType, String source, long timeInMillis) {
+    public UpdateReportPOJO(String concept, String key, String operationType, String source, long timeInMillis, String uuid) {
         super();
         this.concept = concept;
         this.key = key;
         this.operationType = operationType;
         this.source = source;
         this.timeInMillis = timeInMillis;
+        this.uuid = uuid;
     }
 
-    public UpdateReportPOJO(String concept, String key, String operationType, String source, long timeInMillis,
+    public UpdateReportPOJO(String concept, String key, String operationType, String source, long timeInMillis, String uuid,
             Map<String, UpdateReportItemPOJO> updateReportItemsMap) {
-        this(concept, key, operationType, source, timeInMillis);
+        this(concept, key, operationType, source, timeInMillis, uuid);
         if (updateReportItemsMap == null) {
             this.updateReportItemsMap = new HashMap<String, UpdateReportItemPOJO>();
         } else {
@@ -86,10 +89,10 @@ public class UpdateReportPOJO {
         }
     }
 
-    public UpdateReportPOJO(String concept, String key, String operationType, String source, long timeInMillis,
+    public UpdateReportPOJO(String concept, String key, String operationType, String source, long timeInMillis, String uuid,
                             String dataCluster, String dataModel, String userName,
                             Map<String, UpdateReportItemPOJO> updateReportItemsMap) {
-        this(concept, key, operationType, source, timeInMillis);
+        this(concept, key, operationType, source, timeInMillis, uuid);
         this.dataCluster = dataCluster;
         this.dataModel = dataModel;
         this.userName = userName;
@@ -164,6 +167,14 @@ public class UpdateReportPOJO {
         this.userName = userName;
     }
 
+    public String getUUID() {
+        return uuid;
+    }
+
+    public void setUUID(String uuid) {
+        this.uuid = uuid;
+    }
+
     public Map<String, UpdateReportItemPOJO> getUpdateReportItemsMap() {
         if (updateReportItemsMap == null) {
             updateReportItemsMap = new LinkedHashMap<String, UpdateReportItemPOJO>();
@@ -187,6 +198,7 @@ public class UpdateReportPOJO {
                 .append("<UserName>").append(StringEscapeUtils.escapeXml(this.userName)).append("</UserName>\n") //$NON-NLS-1$ //$NON-NLS-2$
                 .append("<Source>").append(StringEscapeUtils.escapeXml(this.source)).append("</Source>\n") //$NON-NLS-1$ //$NON-NLS-2$
                 .append("<TimeInMillis>").append(this.timeInMillis).append("</TimeInMillis>\n") //$NON-NLS-1$ //$NON-NLS-2$
+                .append("<UUID>").append(this.uuid).append("</UUID>\n") //$NON-NLS-1$ //$NON-NLS-2$
                 .append("<OperationType>").append(StringEscapeUtils.escapeXml(this.operationType)).append("</OperationType>\n") //$NON-NLS-1$ //$NON-NLS-2$
                 .append("<DataCluster>").append(StringEscapeUtils.escapeXml(this.dataCluster)).append("</DataCluster>\n") //$NON-NLS-1$ //$NON-NLS-2$
                 .append("<DataModel>").append(StringEscapeUtils.escapeXml(this.dataModel)).append("</DataModel>\n") //$NON-NLS-1$ //$NON-NLS-2$

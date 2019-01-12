@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  *
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -12,6 +12,7 @@
 package com.amalto.core.save.context;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
@@ -67,6 +68,7 @@ class UpdateReport implements DocumentSaver {
                 setHeader(updateReportDocument, "UserName", session.getSaverSource().getLegitimateUser()); //$NON-NLS-1$
                 setHeader(updateReportDocument, "Source", String.valueOf(action.getSource())); //$NON-NLS-1$
                 setHeader(updateReportDocument, "TimeInMillis", String.valueOf(action.getDate().getTime())); //$NON-NLS-1$
+                setHeader(updateReportDocument, "UUID", UUID.randomUUID().toString()); //$NON-NLS-1$
                 setHeader(updateReportDocument, "DataCluster", String.valueOf(context.getDataCluster())); //$NON-NLS-1$
                 setHeader(updateReportDocument, "DataModel", String.valueOf(context.getDataModelName())); //$NON-NLS-1$
                 setHeader(updateReportDocument, "Concept", String.valueOf(type.getName())); //$NON-NLS-1$

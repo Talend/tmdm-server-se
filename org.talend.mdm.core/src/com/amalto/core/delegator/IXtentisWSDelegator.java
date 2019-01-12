@@ -25,6 +25,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.UUID;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.xpath.XPath;
@@ -1231,7 +1232,7 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
             userName = user.getUsername();
         }
         UpdateReportPOJO updateReportPOJO = new UpdateReportPOJO(concept, Util.joinStrings(ids, "."), operationType, //$NON-NLS-1$
-                source, System.currentTimeMillis(), dataClusterPK, dataModelPK, userName, updateReportItemsMap);
+                source, System.currentTimeMillis(), UUID.randomUUID().toString(), dataClusterPK, dataModelPK, userName, updateReportItemsMap);
         WSItemPK itemPK = putItem(new WSPutItem(new WSDataClusterPK(UpdateReportPOJO.DATA_CLUSTER), updateReportPOJO.serialize(),
                 new WSDataModelPK(UpdateReportPOJO.DATA_MODEL), false));
     }

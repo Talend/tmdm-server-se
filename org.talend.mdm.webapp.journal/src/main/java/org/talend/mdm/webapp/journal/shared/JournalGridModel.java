@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -35,6 +35,8 @@ public class JournalGridModel extends BaseModel implements IsSerializable {
     private String operationType;
 
     private String operationTime;
+
+    private String uuid;
 
     private String source;
 
@@ -91,6 +93,15 @@ public class JournalGridModel extends BaseModel implements IsSerializable {
     public void setKey(String key) {
         set("key", key); //$NON-NLS-1$
         this.key = key;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        set("uuid", uuid); //$NON-NLS-1$
+        this.uuid = uuid;
     }
 
     public String getOperationType() {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  *
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -56,6 +56,7 @@ class UpdateReportTypeMapping extends TypeMapping {
         this.databaseUpdateReportType = databaseUpdateReportType;
         this.repository = repository;
 
+        map(updateReportType.getField("UUID"), databaseUpdateReportType.getField("x_uuid")); //$NON-NLS-1$ //$NON-NLS-2$
         map(updateReportType.getField("UserName"), databaseUpdateReportType.getField("x_user_name")); //$NON-NLS-1$ //$NON-NLS-2$
         map(updateReportType.getField("Source"), databaseUpdateReportType.getField("x_source")); //$NON-NLS-1$ //$NON-NLS-2$
         map(updateReportType.getField("TimeInMillis"), databaseUpdateReportType.getField("x_time_in_millis")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -86,7 +87,8 @@ class UpdateReportTypeMapping extends TypeMapping {
             // TMDM-4856: In case source is null, put "none" as the source.
             source = NO_SOURCE;
         }
-        to.set("x_source", source); //$NON-NLS-1$ 
+        to.set("x_source", source); //$NON-NLS-1$
+        to.set("x_uuid", from.get("UUID")); //$NON-NLS-1$
         to.set("x_time_in_millis", Long.parseLong(String.valueOf(from.get("TimeInMillis")))); //$NON-NLS-1$ //$NON-NLS-2$
         to.set("x_operation_type", from.get("OperationType")); //$NON-NLS-1$ //$NON-NLS-2$
         to.set("x_revision_id", from.get("RevisionID")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -141,6 +143,7 @@ class UpdateReportTypeMapping extends TypeMapping {
         DataRecordReader<String> itemReader = new XmlStringDataRecordReader();
         DataRecord items = itemReader.read(repository, updateReportType, "<Update>" + getItemsXml(from) + "</Update>");  //$NON-NLS-1$ //$NON-NLS-2$
 
+        to.set(updateReportType.getField("UUID"), from.get("x_uuid")); //$NON-NLS-1$ //$NON-NLS-2$
         to.set(updateReportType.getField("UserName"), from.get("x_user_name")); //$NON-NLS-1$ //$NON-NLS-2$
         to.set(updateReportType.getField("Source"), from.get("x_source")); //$NON-NLS-1$ //$NON-NLS-2$
         to.set(updateReportType.getField("TimeInMillis"), from.get("x_time_in_millis")); //$NON-NLS-1$ //$NON-NLS-2$

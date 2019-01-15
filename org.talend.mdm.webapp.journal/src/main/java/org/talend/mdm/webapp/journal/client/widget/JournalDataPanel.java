@@ -479,10 +479,11 @@ public class JournalDataPanel extends FormPanel {
 
     private void initLoadConfig() {
         PagingLoadConfig pagingLoadConfig = (PagingLoadConfig) getGridStore().getLoadConfig();
-
         localPagingLoadConfig = new BasePagingLoadConfig();
-        localPagingLoadConfig.setOffset(pagingLoadConfig.getOffset());
-        localPagingLoadConfig.setLimit(pagingLoadConfig.getLimit());
+        if (pagingLoadConfig != null) {
+            localPagingLoadConfig.setOffset(pagingLoadConfig.getOffset());
+            localPagingLoadConfig.setLimit(pagingLoadConfig.getLimit());
+        }
     }
 
     private void backupToPreviousPage() {

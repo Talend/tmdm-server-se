@@ -11,8 +11,7 @@
 
 package com.amalto.core.load;
 
-import junit.framework.TestCase;
-
+import org.apache.commons.lang.StringUtils;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
 
 import com.amalto.core.load.action.DefaultLoadAction;
@@ -20,6 +19,8 @@ import com.amalto.core.load.action.LoadAction;
 import com.amalto.core.load.action.OptimizedLoadAction;
 import com.amalto.core.objects.datacluster.DataClusterPOJO;
 import com.amalto.core.servlet.LoadServlet;
+
+import junit.framework.TestCase;
 
 /**
  *
@@ -35,11 +36,15 @@ public class LoadServletTest extends TestCase {
     public void testOptimizationSelection() {
         LoadServletTestFixture servlet = getFixture();
 
-        LoadAction loadAction = servlet.getLoadAction(false);
+        LoadAction loadAction = servlet.getLoadAction(false, false);
         assertEquals(OptimizedLoadAction.class, loadAction.getClass());
         assertFalse(loadAction.supportValidation());
 
-        loadAction = servlet.getLoadAction(true);
+        loadAction = servlet.getLoadAction(true, false);
+        assertEquals(DefaultLoadAction.class, loadAction.getClass());
+        assertTrue(loadAction.supportValidation());
+
+        loadAction = servlet.getLoadAction(false, true);
         assertEquals(DefaultLoadAction.class, loadAction.getClass());
         assertTrue(loadAction.supportValidation());
 
@@ -84,12 +89,13 @@ public class LoadServletTest extends TestCase {
             this.dataClusterNames = dataClusterNames;
         }
 
-        public LoadAction getLoadAction(boolean needValidate) {
-            return getLoadAction(TEST_DATA_CLUSTER, "", "", needValidate, false);
+        public LoadAction getLoadAction(boolean needValidate, boolean updateReport) {
+            return getLoadAction(TEST_DATA_CLUSTER, StringUtils.EMPTY, StringUtils.EMPTY, needValidate, false, updateReport,
+                    StringUtils.EMPTY);
         }
 
         public LoadAction getLoadAction(String dataClusterName, String typeName, String dataModelName, boolean needValidate) {
-            return getLoadAction(dataClusterName, typeName, dataModelName, needValidate, false);
+            return getLoadAction(dataClusterName, typeName, dataModelName, needValidate, false, false, StringUtils.EMPTY);
         }
 
         @Override

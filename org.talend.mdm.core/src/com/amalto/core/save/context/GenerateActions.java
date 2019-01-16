@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -64,9 +64,9 @@ class GenerateActions implements DocumentSaver {
         List<Action> actions;
         MetadataRepository metadataRepository = saverSource.getMetadataRepository(context.getDataModelName());
         // Generate field update actions for UUID and AutoIncrement elements.
-        UpdateActionCreator updateActions = new UpdateActionCreator(databaseDocument, userDocument, date, source, userName,
-                context.generateTouchActions(), metadataRepository, context.getDataCluster(), context.getDataModelName(),
-                saverSource, context.getUserAction());
+        UpdateActionCreator updateActions = new UpdateActionCreator(databaseDocument, userDocument, date,
+                context.preserveOldCollectionValues(), source, userName, context.generateTouchActions(), metadataRepository,
+                context.getDataCluster(), context.getDataModelName(), saverSource, context.getUserAction());
         UserAction userAction = context.getUserAction();
         switch (userAction) {
         case CREATE_STRICT:

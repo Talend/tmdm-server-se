@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
@@ -68,6 +69,10 @@ public class LoadServlet extends HttpServlet {
     private static final String PARAMETER_SMARTPK = "smartpk"; //$NON-NLS-1$
 
     private static final String PARAMETER_INSERTONLY = "insertonly"; //$NON-NLS-1$
+
+    private static final String PARAMETER_UPDATEREPORT = "updateReport"; //$NON-NLS-1$
+
+    private static final String PARAMETER_SOURCE = "source"; //$NON-NLS-1$
 
     private static final Map<String, AtomicInteger> DB_REQUESTS_MAP = new HashMap<String, AtomicInteger>();
 
@@ -116,7 +121,16 @@ public class LoadServlet extends HttpServlet {
             throw new ServletException(message);
         }
 
-        LoadAction loadAction = getLoadAction(dataClusterName, typeName, dataModelName, needValidate, needAutoGenPK);
+        boolean updateReport = Boolean.valueOf(request.getParameter(PARAMETER_UPDATEREPORT));
+        String source = StringUtils.EMPTY;
+        if (dataClusterName.endsWith("#STAGING")) { //$NON-NLS-1$
+            updateReport = false;
+        }
+        if (updateReport) {
+            source = request.getParameter(PARAMETER_SOURCE);
+        }
+        LoadAction loadAction = getLoadAction(dataClusterName, typeName, dataModelName, needValidate, needAutoGenPK, updateReport,
+                source);
         if (needValidate && !loadAction.supportValidation()) {
             throw new ServletException(new UnsupportedOperationException("XML Validation isn't supported")); //$NON-NLS-1$
         }
@@ -197,7 +211,7 @@ public class LoadServlet extends HttpServlet {
     }
 
     protected LoadAction getLoadAction(String dataClusterName, String typeName, String dataModelName, boolean needValidate,
-            boolean needAutoGenPK) {
+            boolean needAutoGenPK, boolean updateReport, String source) {
         // Test if the data cluster actually exists
         DataClusterPOJO dataCluster = getDataCluster(dataClusterName);
         if (dataCluster == null) {
@@ -205,8 +219,8 @@ public class LoadServlet extends HttpServlet {
         }
 
         LoadAction loadAction;
-        if (needValidate || XSystemObjects.DC_PROVISIONING.getName().equals(dataClusterName)) {
-            loadAction = new DefaultLoadAction(dataClusterName, dataModelName, needValidate);
+        if (needValidate || updateReport || XSystemObjects.DC_PROVISIONING.getName().equals(dataClusterName)) {
+            loadAction = new DefaultLoadAction(dataClusterName, dataModelName, needValidate, updateReport, source);
         } else {
             loadAction = new OptimizedLoadAction(dataClusterName, typeName, dataModelName, needAutoGenPK);
         }

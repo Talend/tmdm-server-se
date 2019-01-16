@@ -21,17 +21,24 @@ public class BulkloadOptions {
 
     boolean insertOnly = false;
 
+    boolean updateReport = false;
+
+    String source;
+
     public BulkloadOptions(boolean smartpk, boolean validate, int arraySize) {
         this.smartpk = smartpk;
         this.validate = validate;
         this.arraySize = arraySize;
     }
 
-    public BulkloadOptions(boolean smartpk, boolean validate, int arraySize, boolean insertOnly) {
+    public BulkloadOptions(boolean smartpk, boolean validate, int arraySize, boolean insertOnly, boolean updateReport,
+            String source) {
         this.smartpk = smartpk;
         this.validate = validate;
         this.arraySize = arraySize;
         this.insertOnly = insertOnly;
+        this.updateReport = updateReport;
+        this.source = source;
     }
 
     public BulkloadOptions(int arraySize) {
@@ -71,5 +78,21 @@ public class BulkloadOptions {
 
     public void setInsertOnly(boolean insertOnly) {
         this.insertOnly = insertOnly;
+    }
+
+    public boolean isUpdateReport() {
+        return updateReport;
+    }
+
+    public void setUpdateReport(boolean updateReport) {
+        this.updateReport = updateReport;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
     }
 }

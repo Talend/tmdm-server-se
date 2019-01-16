@@ -192,7 +192,8 @@ public class BulkloadClient {
      * @throws Exception Thrown in case of bulk load error
      */
     public void load(InputStream xmlDocuments) throws Exception {
-        BulkloadClientUtil.bulkload(url, cluster, concept, dataModel, options.isValidate(), options.isSmartpk(), options.isInsertOnly(), xmlDocuments,
+        BulkloadClientUtil.bulkload(url, cluster, concept, dataModel, options.isValidate(), options.isSmartpk(),
+                options.isInsertOnly(), options.isUpdateReport(), options.getSource(), xmlDocuments,
                 username, password, transactionId, cookies, universe, tokenKey, tokenValue);
     }
 
@@ -215,7 +216,8 @@ public class BulkloadClient {
      * @see InputStreamMerger
      */
     public InputStreamMerger load() throws Exception {
-        return BulkloadClientUtil.bulkload(url, cluster, concept, dataModel, options.isValidate(), options.isSmartpk(), options.isInsertOnly(), username,
+        return BulkloadClientUtil.bulkload(url, cluster, concept, dataModel, options.isValidate(), options.isSmartpk(),
+                options.isInsertOnly(), options.isUpdateReport(), options.getSource(), username,
                 password, transactionId, cookies, universe, tokenKey, tokenValue, startedBulkloadCount);
     }
 }

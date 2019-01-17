@@ -24,8 +24,6 @@ public class BulkloadClient {
 
     private String password;
 
-    private String universe;
-
     private String cluster;
 
     private String concept;
@@ -44,11 +42,10 @@ public class BulkloadClient {
 
     private final AtomicInteger startedBulkloadCount = new AtomicInteger(0);
 
-    public BulkloadClient(String url, String username, String password, String universe, String cluster, String concept, String dataModel) {
+    public BulkloadClient(String url, String username, String password, String cluster, String concept, String dataModel) {
         this.url = url;
         this.username = username;
         this.password = password;
-        this.universe = universe;
         this.cluster = cluster;
         this.concept = concept;
         this.dataModel = dataModel;
@@ -92,14 +89,6 @@ public class BulkloadClient {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getUniverse() {
-        return universe;
-    }
-
-    public void setUniverse(String universe) {
-        this.universe = universe;
     }
 
     public String getCluster() {
@@ -194,7 +183,7 @@ public class BulkloadClient {
     public void load(InputStream xmlDocuments) throws Exception {
         BulkloadClientUtil.bulkload(url, cluster, concept, dataModel, options.isValidate(), options.isSmartpk(),
                 options.isInsertOnly(), options.isUpdateReport(), options.getSource(), xmlDocuments,
-                username, password, transactionId, cookies, universe, tokenKey, tokenValue);
+                username, password, transactionId, cookies, tokenKey, tokenValue);
     }
 
     /**
@@ -218,6 +207,6 @@ public class BulkloadClient {
     public InputStreamMerger load() throws Exception {
         return BulkloadClientUtil.bulkload(url, cluster, concept, dataModel, options.isValidate(), options.isSmartpk(),
                 options.isInsertOnly(), options.isUpdateReport(), options.getSource(), username,
-                password, transactionId, cookies, universe, tokenKey, tokenValue, startedBulkloadCount);
+                password, transactionId, cookies, tokenKey, tokenValue, startedBulkloadCount);
     }
 }

@@ -22,7 +22,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
@@ -42,6 +41,7 @@ import com.amalto.core.save.context.DocumentSaver;
 import com.amalto.core.save.context.SaverContextFactory;
 import com.amalto.core.server.MetadataRepositoryAdmin;
 import com.amalto.core.server.ServerContext;
+import com.amalto.core.server.StorageAdmin;
 import com.amalto.core.server.api.DataCluster;
 import com.amalto.core.server.api.XmlServer;
 import com.amalto.core.storage.record.DataRecord;
@@ -122,13 +122,7 @@ public class LoadServlet extends HttpServlet {
         }
 
         boolean updateReport = Boolean.valueOf(request.getParameter(PARAMETER_UPDATEREPORT));
-        String source = StringUtils.EMPTY;
-        if (dataClusterName.endsWith("#STAGING")) { //$NON-NLS-1$
-            updateReport = false;
-        }
-        if (updateReport) {
-            source = request.getParameter(PARAMETER_SOURCE);
-        }
+        String source = request.getParameter(PARAMETER_SOURCE);
         LoadAction loadAction = getLoadAction(dataClusterName, typeName, dataModelName, needValidate, needAutoGenPK, updateReport,
                 source);
         if (needValidate && !loadAction.supportValidation()) {
@@ -215,9 +209,11 @@ public class LoadServlet extends HttpServlet {
         // Test if the data cluster actually exists
         DataClusterPOJO dataCluster = getDataCluster(dataClusterName);
         if (dataCluster == null) {
-            throw new IllegalArgumentException("Data cluster '" + dataClusterName + "' does not exist.");
+            throw new IllegalArgumentException("Data cluster '" + dataClusterName + "' does not exist."); //$NON-NLS-1$ //$NON-NLS-2$
         }
-
+        if (dataClusterName.endsWith(StorageAdmin.STAGING_SUFFIX)) {
+            updateReport = false;
+        }
         LoadAction loadAction;
         if (needValidate || updateReport || XSystemObjects.DC_PROVISIONING.getName().equals(dataClusterName)) {
             loadAction = new DefaultLoadAction(dataClusterName, dataModelName, needValidate, updateReport, source);

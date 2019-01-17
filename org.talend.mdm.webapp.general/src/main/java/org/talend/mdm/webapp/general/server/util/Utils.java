@@ -167,6 +167,7 @@ public class Utils {
             welMenu.setContext(WELCOMECONTEXT);
             menu.getSubMenus().put(WELCOMECONTEXT, welMenu);
 
+            // Add User Journal Menu just for importing gxt js file,this menu doesn't display in menu panel.
             Menu userJournalMenu = new Menu();
             userJournalMenu.setApplication(USER_JOURNAL_APP);
             userJournalMenu.setContext(USER_JOURNAL_CONTEXT);

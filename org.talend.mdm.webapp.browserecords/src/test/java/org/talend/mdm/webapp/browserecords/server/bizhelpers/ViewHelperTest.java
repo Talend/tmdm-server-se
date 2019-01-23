@@ -13,8 +13,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import junit.framework.TestCase;
-
 import org.talend.mdm.webapp.base.client.model.DataTypeCustomized;
 import org.talend.mdm.webapp.base.shared.ComplexTypeModel;
 import org.talend.mdm.webapp.base.shared.EntityModel;
@@ -22,6 +20,8 @@ import org.talend.mdm.webapp.base.shared.SimpleTypeModel;
 import org.talend.mdm.webapp.base.shared.TypeModel;
 
 import com.amalto.core.webservice.WSView;
+
+import junit.framework.TestCase;
 
 @SuppressWarnings("nls")
 public class ViewHelperTest extends TestCase {
@@ -67,7 +67,7 @@ public class ViewHelperTest extends TestCase {
         assertEquals(result, ViewHelper.getSearchables(wsView, dataModel, language, entityModel));
         result.clear();
         
-        result.put("ProductFamily", "Tout le contenu");
+        result.put("ProductFamily", "Contenu complet");
         result.put("ProductFamily/Id", "rf-id");
         result.put("ProductFamily/Name", "rf-name");
         result.put("ProductFamily/ChangeStatus", "rf-changeSatus");

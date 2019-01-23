@@ -599,10 +599,11 @@ public class UserQueryBuilder {
             if (!fieldMetadata.isMany() && fieldMetadata instanceof ReferenceFieldMetadata) {
                 return new IsNull(new Field(fieldMetadata));
             }
-        }                
+        }
         // Only do a isEmpty operator if field type is string, for all other known cases, isNull is enough.
         if (Types.STRING.equals(field.getTypeName())) {
-            return new BinaryLogicOperator(isEmpty(field), Predicate.OR, isNull(field));
+            Condition condition = or(new IsEmpty(field), isNull(field));
+            return new BinaryLogicOperator(condition, Predicate.OR, isNull(field));
         } else {
             return isNull(field);
         }
@@ -636,7 +637,7 @@ public class UserQueryBuilder {
 
     public static Condition isEmpty(TypedExpression typedExpression) {
         assertNullField(typedExpression);
-        return or(new IsEmpty(typedExpression), isNull(typedExpression));
+        return new IsEmpty(typedExpression);
     }
 
     public static Condition isNull(FieldMetadata field) {

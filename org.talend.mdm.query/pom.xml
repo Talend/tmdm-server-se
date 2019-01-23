@@ -50,4 +50,43 @@
         </dependency>
     </dependencies>
 
+    <profiles>
+        <profile>
+            <id>tem-build</id>
+            <properties>
+                <jar.include>${project.build.finalName}.jar</jar.include>
+            </properties>
+        </profile>
+        <profile>
+            <id>tom-build</id>
+            <properties>
+                <jar.include>${project.build.finalName}*.jar</jar.include>
+            </properties>
+        </profile>
+        <profile>
+            <id>dev-build</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>deploy-tomcat</id>
+                                <configuration>
+                                    <target>
+                                        <copy todir="${mdm.lib.dir}" overwrite="true">
+                                            <fileset dir="${project.build.directory}">
+                                                <include name="${jar.include}" />
+                                            </fileset>
+                                        </copy>
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

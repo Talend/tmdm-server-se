@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -322,6 +322,11 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
             if (newAccessor.exist()) { // new accessor exist
                 if (newAccessor.get() != null && !newAccessor.get().isEmpty()) { // Empty accessor means no op to ensure legacy behavior
                     generateNoOp(lastMatchPath);
+                    if (comparedField.isMany() && preserveCollectionOldValues) {
+                        int insertIndex = Integer.parseInt(StringUtils.substringBetween(path, "[", "]")) //$NON-NLS-1$ //$NON-NLS-2$ 
+                                + originalDocument.createAccessor(StringUtils.substringBeforeLast(path, "[")).size();//$NON-NLS-1$
+                        path = path.replaceAll("\\[\\d+\\]", "[" + insertIndex + "]");//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    }
                     actions.add(new FieldUpdateAction(date, source, userName, path, StringUtils.EMPTY, newAccessor.get(), comparedField, userAction));
                     generateNoOp(path);
                 } else if (EUUIDCustomType.AUTO_INCREMENT.getName().equalsIgnoreCase(comparedField.getType().getName())

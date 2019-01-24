@@ -602,8 +602,7 @@ public class UserQueryBuilder {
         }
         // Only do a isEmpty operator if field type is string, for all other known cases, isNull is enough.
         if (Types.STRING.equals(field.getTypeName())) {
-            Condition condition = or(new IsEmpty(field), isNull(field));
-            return new BinaryLogicOperator(condition, Predicate.OR, isNull(field));
+            return new BinaryLogicOperator(isEmpty(field), Predicate.OR, isNull(field));
         } else {
             return isNull(field);
         }

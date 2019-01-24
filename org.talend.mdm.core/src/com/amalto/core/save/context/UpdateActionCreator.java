@@ -78,7 +78,7 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
 
     private final Set<String> touchedPaths = new HashSet<String>();
 
-    private final Map<FieldMetadata, Integer> originalFieldToLastIndex = new HashMap<FieldMetadata, Integer>();
+    private final Map<FieldMetadata, Integer> invertedIndex = new HashMap<FieldMetadata, Integer>();
 
     protected final boolean preserveCollectionOldValues;
 
@@ -382,9 +382,9 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
                 String newValue = newAccessor.get();
                 if (newValue != null && !(comparedField instanceof ContainedTypeFieldMetadata)) {
                     if (comparedField.isMany() && preserveCollectionOldValues) {
-                        // Append at the end of the collection
-                        if (!originalFieldToLastIndex.containsKey(comparedField)) {
-                            originalFieldToLastIndex.put(comparedField, originalAccessor.size());
+                        // Inverted order the index
+                        if (!invertedIndex.containsKey(comparedField)) {
+                            invertedIndex.put(comparedField, originalAccessor.size() + Integer.parseInt(StringUtils.substringBetween(path, "[", "]")));
                         }
                         String previousPathElement = this.path.pop();
                         int insertIndex = getInsertIndex(comparedField);
@@ -429,9 +429,8 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
 
     private int getInsertIndex(FieldMetadata comparedField) {
         if (insertIndex < 0) {
-            int newIndex = originalFieldToLastIndex.get(comparedField);
-            newIndex = newIndex + 1;
-            originalFieldToLastIndex.put(comparedField, newIndex);
+            int newIndex = invertedIndex.get(comparedField);
+            invertedIndex.put(comparedField, newIndex - 1);
             return newIndex;
         } else {
             return insertIndex;

@@ -21,6 +21,7 @@ import javax.xml.stream.XMLStreamException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.util.webapp.XObjectType;
 import org.talend.mdm.commmon.util.webapp.XSystemObjects;
@@ -53,12 +54,13 @@ public class ServiceUtil {
     }
 
     public static List<String> getNoAccessRolesByEntity(MetadataRepositoryAdmin metadataRepositoryAdmin,
-             List<String> dataModelNames, String entityName){
+             List<String> dataModelNames, String entityName) {
         try {
             for (String dataModelName : dataModelNames) {
                 MetadataRepository repository = metadataRepositoryAdmin.get(dataModelName);
-                if (null != repository.getComplexType(entityName)) {
-                    return repository.getComplexType(entityName).getHideUsers();
+                ComplexTypeMetadata complexTypeMetadata = repository.getComplexType(entityName);
+                if (complexTypeMetadata != null) {
+                    return complexTypeMetadata.getHideUsers();
                 }
             }
         } catch (Exception e) {

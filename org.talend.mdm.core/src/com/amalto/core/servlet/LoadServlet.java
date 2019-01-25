@@ -215,10 +215,10 @@ public class LoadServlet extends HttpServlet {
             updateReport = false;
         }
         LoadAction loadAction;
-        if (needValidate || updateReport || XSystemObjects.DC_PROVISIONING.getName().equals(dataClusterName)) {
+        if (needValidate || XSystemObjects.DC_PROVISIONING.getName().equals(dataClusterName)) {
             loadAction = new DefaultLoadAction(dataClusterName, dataModelName, needValidate, updateReport, source);
         } else {
-            loadAction = new OptimizedLoadAction(dataClusterName, typeName, dataModelName, needAutoGenPK);
+            loadAction = new OptimizedLoadAction(dataClusterName, typeName, dataModelName, needAutoGenPK, updateReport, source);
         }
         if (LOG.isDebugEnabled()) {
             LOG.debug("Load action selected for load: " + loadAction.getClass().getName() //$NON-NLS-1$

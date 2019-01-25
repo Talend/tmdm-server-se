@@ -36,18 +36,13 @@ public class LoadServletTest extends TestCase {
     public void testOptimizationSelection() {
         LoadServletTestFixture servlet = getFixture();
 
-        LoadAction loadAction = servlet.getLoadAction(false, false);
+        LoadAction loadAction = servlet.getLoadAction(false);
         assertEquals(OptimizedLoadAction.class, loadAction.getClass());
         assertFalse(loadAction.supportValidation());
 
-        loadAction = servlet.getLoadAction(true, false);
+        loadAction = servlet.getLoadAction(true);
         assertEquals(DefaultLoadAction.class, loadAction.getClass());
         assertTrue(loadAction.supportValidation());
-
-        loadAction = servlet.getLoadAction(false, true);
-        assertEquals(DefaultLoadAction.class, loadAction.getClass());
-        assertTrue(loadAction.supportValidation());
-
     }
 
     public void testNullArguments() {
@@ -89,8 +84,8 @@ public class LoadServletTest extends TestCase {
             this.dataClusterNames = dataClusterNames;
         }
 
-        public LoadAction getLoadAction(boolean needValidate, boolean updateReport) {
-            return getLoadAction(TEST_DATA_CLUSTER, StringUtils.EMPTY, StringUtils.EMPTY, needValidate, false, updateReport,
+        public LoadAction getLoadAction(boolean needValidate) {
+            return getLoadAction(TEST_DATA_CLUSTER, StringUtils.EMPTY, StringUtils.EMPTY, needValidate, false, false,
                     StringUtils.EMPTY);
         }
 

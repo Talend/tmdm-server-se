@@ -11,6 +11,7 @@ package com.amalto.core.storage.services;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -49,6 +50,21 @@ public class ServiceUtil {
             LOGGER.warn("Failed to get data model name by entity name.", e); //$NON-NLS-1$
         }
         return StringUtils.EMPTY;
+    }
+
+    public static List<String> getNoAccessRolesByEntity(MetadataRepositoryAdmin metadataRepositoryAdmin,
+             List<String> dataModelNames, String entityName){
+        try {
+            for (String dataModelName : dataModelNames) {
+                MetadataRepository repository = metadataRepositoryAdmin.get(dataModelName);
+                if (null != repository.getComplexType(entityName)) {
+                    return repository.getComplexType(entityName).getHideUsers();
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.warn("Failed to get data model name by entity name.", e); //$NON-NLS-1$
+        }
+        return Collections.EMPTY_LIST;
     }
 
     public static List<String> getDataModelNames() {

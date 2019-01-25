@@ -24,6 +24,8 @@ public final class ViewConstants {
 
     public static final String NODE_ROLES = "roles";
 
+    public static final String NODE_NO_ACCESS_ROLES = "noAccessRoles";
+
     public static final String DEFAULT_VIEW_PREFIX = "Browse_items";
 
     public static final String DEFAULT_VIEW_ALL = "Browse_items_.*";

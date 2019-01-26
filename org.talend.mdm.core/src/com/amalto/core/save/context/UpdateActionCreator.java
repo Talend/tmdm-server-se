@@ -323,8 +323,9 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
                 if (newAccessor.get() != null && !newAccessor.get().isEmpty()) { // Empty accessor means no op to ensure legacy behavior
                     generateNoOp(lastMatchPath);
                     if (comparedField.isMany() && preserveCollectionOldValues) {
-                        int insertIndex = Integer.parseInt(StringUtils.substringBetween(path, "[", "]")) //$NON-NLS-1$ //$NON-NLS-2$ 
-                                + originalDocument.createAccessor(StringUtils.substringBeforeLast(path, "[")).size();//$NON-NLS-1$
+                        int newItemIndex = Integer.parseInt(StringUtils.substringBetween(path, "[", "]"));//$NON-NLS-1$ //$NON-NLS-2$
+                        int oldItemIndex = originalDocument.createAccessor(StringUtils.substringBeforeLast(path, "[")).size();//$NON-NLS-1$
+                        int insertIndex = newItemIndex + oldItemIndex;
                         path = path.replaceAll("\\[\\d+\\]", "[" + insertIndex + "]");//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                     }
                     actions.add(new FieldUpdateAction(date, source, userName, path, StringUtils.EMPTY, newAccessor.get(), comparedField, userAction));

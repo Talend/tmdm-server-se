@@ -804,7 +804,7 @@ public class DocumentSaveTest extends TestCase {
         assertEquals("http://www.mynewsite.fr", newValue);
     }
 
-    public void testPartialUpdateWithOverwriteEqualsFalseTwoToTwo() throws Exception {
+    public void testPartialUpdateSameCountWithOverwriteFalse() throws Exception {
         final MetadataRepository repository = new MetadataRepository();
         repository.load(DocumentSaveTest.class.getResourceAsStream("metadata1.xsd"));
         MockMetadataRepositoryAdmin.INSTANCE.register("DStar", repository);
@@ -824,6 +824,7 @@ public class DocumentSaveTest extends TestCase {
         MockCommitter committer = new MockCommitter();
         session.end(committer);
 
+        //two to two
         assertTrue(committer.hasSaved());
         Element committedElement = committer.getCommittedElement();
         assertEquals("www.a.com", evaluate(committedElement, "/Agency/Information/MoreInfo[1]"));
@@ -849,7 +850,7 @@ public class DocumentSaveTest extends TestCase {
         assertEquals("http://www.mynewsite.fr", newValue);
     }
 
-    public void testPartialUpdateWithOverwriteEqFalseThreeToTwo() throws Exception {
+    public void testPartialUpdateLessCountWithOverwriteFalse() throws Exception {
         final MetadataRepository repository = new MetadataRepository();
         repository.load(DocumentSaveTest.class.getResourceAsStream("metadata1.xsd"));
         MockMetadataRepositoryAdmin.INSTANCE.register("DStar", repository);
@@ -869,6 +870,7 @@ public class DocumentSaveTest extends TestCase {
         MockCommitter committer = new MockCommitter();
         session.end(committer);
 
+        //Three to One
         assertTrue(committer.hasSaved());
         Element committedElement = committer.getCommittedElement();
         assertEquals("www.a.com", evaluate(committedElement, "/Agency/Information/MoreInfo[1]"));

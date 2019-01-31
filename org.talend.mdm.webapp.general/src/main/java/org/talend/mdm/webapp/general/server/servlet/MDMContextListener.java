@@ -75,10 +75,10 @@ public class MDMContextListener implements ServletContextListener {
     private int getSessionTimeoutInSeconds(ServletContext servletContext) {
         int webSessionTimeoutInSeconds;
         try {
-            webSessionTimeoutInSeconds = servletContext.getSessionTimeout()*60;
+            webSessionTimeoutInSeconds = servletContext.getSessionTimeout() * 60;
         } catch (Exception e) {
             LOGGER.warn("Failed to retrieve session timeout, using default value of 30 mins.", e); //$NON-NLS-1$
-            webSessionTimeoutInSeconds = 30*60;
+            webSessionTimeoutInSeconds = 30 * 60;
         }
         return webSessionTimeoutInSeconds;
     }

@@ -122,6 +122,8 @@ public class Util extends XmlUtil {
 
     public static final String ROOT_LOCATION_URL_KEY = "mdm.root.url";
 
+    public static final String WEB_SESSION_TIMEOUT_IN_SECONDS = "mdm.web.session.timeout";
+
     private static final String USER_PROPERTY_PREFIX = "${user_context";
 
     private static final ScriptEngineManager SCRIPT_FACTORY = new ScriptEngineManager();

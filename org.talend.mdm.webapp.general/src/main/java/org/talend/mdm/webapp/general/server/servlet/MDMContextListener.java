@@ -57,10 +57,8 @@ public class MDMContextListener implements ServletContextListener {
             }
             System.setProperty(ROOT_LOCATION_KEY, file.getAbsolutePath());
             System.setProperty(ROOT_LOCATION_URL_KEY, file.toURI().toURL().toString());
-            servletContext.log(
-                    "Set MDM root system property: '" + ROOT_LOCATION_KEY + "' = [" + file.getAbsolutePath() + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            servletContext.log("Set MDM root url system property: '" + ROOT_LOCATION_URL_KEY + "' = [" //$NON-NLS-1$ //$NON-NLS-2$
-                    + file.toURI().toURL().toString() + "]"); //$NON-NLS-1$
+            servletContext.log("Set MDM root system property: '" + ROOT_LOCATION_KEY + "' = [" + file.getAbsolutePath() + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            servletContext.log("Set MDM root url system property: '" + ROOT_LOCATION_URL_KEY + "' = [" + file.toURI().toURL().toString() + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         } catch (FileNotFoundException e) {
             throw new IllegalArgumentException("Invalid '" + ROOT_LOCATION_PARAM + "' parameter", e); //$NON-NLS-1$ //$NON-NLS-2$
         } catch (MalformedURLException e) {

@@ -29,15 +29,10 @@ import org.apache.log4j.Logger;
 
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.util.ServletContextPropertyUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ResourceLoader;
 
 public class MDMContextListener implements ServletContextListener {
 
     private static final Logger LOGGER = Logger.getLogger(MDMContextListener.class);
-
-    @Autowired
-    private ResourceLoader resourceLoader;
 
     @Override
     public void contextInitialized(ServletContextEvent event) {
@@ -84,9 +79,8 @@ public class MDMContextListener implements ServletContextListener {
         // Servlet 3.1 doesn't provide a way to get Session timeout defined in web.xml
         int webSessionTimeoutInSeconds;
         try {
-            String webXmlContent = IOUtils.toString(resourceLoader.getResource("/WEB-INF/web.xml").getInputStream()); //$NON-NLS-1$
-            String sessionTimeout =
-                    StringUtils.substringBetween(webXmlContent, "<session-timeout>", "</session-timeout>"); //$NON-NLS-1$ //$NON-NLS-2$
+            String webXmlContent = IOUtils.toString(servletContext.getResourceAsStream("/WEB-INF/web.xml")); //$NON-NLS-1$
+            String sessionTimeout = StringUtils.substringBetween(webXmlContent, "<session-timeout>", "</session-timeout>"); //$NON-NLS-1$ //$NON-NLS-2$
             webSessionTimeoutInSeconds = Integer.parseInt(sessionTimeout) * 60;
         } catch (Exception e) {
             LOGGER.warn("Failed to retrieve session timeout, using default value of 30 mins", e); //$NON-NLS-1$

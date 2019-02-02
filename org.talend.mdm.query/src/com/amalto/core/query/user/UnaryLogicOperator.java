@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -69,7 +69,15 @@ public class UnaryLogicOperator implements Condition {
 
                 @Override
                 public Condition visit(BinaryLogicOperator condition) {
-                    return new BinaryLogicOperator(condition.getLeft().accept(this), condition.getPredicate(), condition.getRight().accept(this));
+                    Predicate predicate = condition.getPredicate();
+                    //not(conditionA OR conditionB) = (not conditionA) AND (not conditionB)
+                    //not(conditionA AND conditionB) = (not conditionA) OR (not conditionB)
+                    if (predicate == Predicate.OR) {
+                        predicate = Predicate.AND;
+                    } else if (predicate == Predicate.AND) {
+                        predicate = Predicate.OR;
+                    }
+                    return new BinaryLogicOperator(condition.getLeft().accept(this), predicate, condition.getRight().accept(this));
                 }
             });
         } else {

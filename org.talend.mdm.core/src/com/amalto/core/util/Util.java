@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -128,6 +128,8 @@ public class Util {
 
     public static final String ROOT_LOCATION_URL_KEY = "mdm.root.url";
 
+    public static final String WEB_SESSION_TIMEOUT_IN_SECONDS = "mdm.web.session.timeout";
+
     private static final String USER_PROPERTY_PREFIX = "${user_context";
 
     private static final ScriptEngineManager SCRIPT_FACTORY = new ScriptEngineManager();
@@ -135,7 +137,7 @@ public class Util {
     private static final Pattern extractCharsetPattern = Pattern.compile(".*charset\\s*=(.+)");
 
     private static final String[] INVALID_ID_CHARACTERS = { "'", "\"", "*", "[", "]" };
-    
+
     private static DocumentBuilderFactory nonValidatingDocumentBuilderFactory;
 
     private static XmlServer defaultXmlServer;
@@ -204,7 +206,8 @@ public class Util {
         return getTextNodes(contextNode, xPath, contextNode);
     }
 
-    private static String[] getTextNodes(Node contextNode, String xPath, final Node namespaceNode) throws TransformerException {
+    private static String[] getTextNodes(Node contextNode, String xPath, final Node namespaceNode)
+            throws TransformerException {
         String[] results;
         // test for hard-coded values
         if (xPath.startsWith("\"") && xPath.endsWith("\"")) {
@@ -249,7 +252,8 @@ public class Util {
 
     }
 
-    private static String getFirstTextNode(Node contextNode, String xPath, Node namespaceNode) throws TransformerException {
+    private static String getFirstTextNode(Node contextNode, String xPath, Node namespaceNode)
+            throws TransformerException {
         String[] res = getTextNodes(contextNode, xPath, namespaceNode);
         if (res.length == 0) {
             return null;
@@ -323,7 +327,8 @@ public class Util {
         return mapForAll;
     }
 
-    public static String[] getKeyValuesFromItem(Element item, Collection<FieldMetadata> keyFields) throws TransformerException {
+    public static String[] getKeyValuesFromItem(Element item, Collection<FieldMetadata> keyFields)
+            throws TransformerException {
         XPath xPath = XPathFactory.newInstance().newXPath();
         String[] ids = new String[keyFields.size()];
         int i = 0;
@@ -392,7 +397,8 @@ public class Util {
             return (NodeList) xPathParser.evaluate(xPath, contextNode, XPathConstants.NODESET);
         } catch (Exception e) {
             String err = "Unable to get the Nodes List for xpath '" + xPath + "'"
-                    + ((contextNode == null) ? "" : " for Node " + contextNode.getLocalName()) + ": " + e.getLocalizedMessage();
+                    + ((contextNode == null) ? "" : " for Node " + contextNode.getLocalName()) + ": "
+                    + e.getLocalizedMessage();
             throw new XtentisException(err, e);
         }
     }
@@ -619,7 +625,8 @@ public class Util {
                 String exchangeData = mergeExchangeData(xml, resultUpdateReport);
                 context.put(RUNNING, Boolean.TRUE);
                 com.amalto.core.server.api.Transformer ctrl = getTransformerV2CtrlLocal();
-                TypedContent wsTypedContent = new TypedContent(exchangeData.getBytes("UTF-8"), "text/xml; charset=utf-8");
+                TypedContent wsTypedContent =
+                        new TypedContent(exchangeData.getBytes("UTF-8"), "text/xml; charset=utf-8");
                 ctrl.execute(context, wsTypedContent, new TransformerCallBack() {
 
                     @Override
@@ -675,8 +682,8 @@ public class Util {
      * @throws Exception If something went wrong
      */
     @SuppressWarnings("unchecked")
-    public static BeforeDeleteResult beforeDeleting(String clusterName, String concept, String[] ids, String operationType)
-            throws Exception {
+    public static BeforeDeleteResult beforeDeleting(String clusterName, String concept, String[] ids,
+            String operationType) throws Exception {
         // check before deleting transformer
         boolean isBeforeDeletingTransformerExist = false;
         Collection<TransformerV2POJOPK> transformers = getTransformerV2CtrlLocal().getTransformerPKs("*");
@@ -699,7 +706,8 @@ public class Util {
                     if (droppedItem != null) {
                         xml = droppedItem.getProjection();
                         Document doc = Util.parse(xml);
-                        Node item = (Node) XPathFactory.newInstance().newXPath().evaluate("//ii/p", doc, XPathConstants.NODE);
+                        Node item = (Node) XPathFactory.newInstance().newXPath().evaluate("//ii/p", doc,
+                                XPathConstants.NODE);
                         if (item != null && item instanceof Element) {
                             NodeList list = item.getChildNodes();
                             Node node = null;
@@ -734,20 +742,23 @@ public class Util {
                         }
                     }
                 }
-                String resultUpdateReport = "" + "<Update>" + "<UserName>" + username + "</UserName>"
-                        + "<Source>" + UpdateReportPOJO.GENERIC_UI_SOURCE +"</Source>" + "<TimeInMillis>" + System.currentTimeMillis() + "</TimeInMillis>"
-                        + "<OperationType>" + StringEscapeUtils.escapeXml(operationType) + "</OperationType>" + "<DataCluster>"
-                        + clusterName + "</DataCluster>" + "<DataModel>" + StringUtils.EMPTY + "</DataModel>" + "<Concept>"
-                        + StringEscapeUtils.escapeXml(concept) + "</Concept>" + "<Key>" + StringEscapeUtils.escapeXml(key)
-                        + "</Key>";
+                String resultUpdateReport = "" + "<Update>" + "<UserName>" + username + "</UserName>" + "<Source>"
+                        + UpdateReportPOJO.GENERIC_UI_SOURCE + "</Source>" + "<TimeInMillis>"
+                        + System.currentTimeMillis() + "</TimeInMillis>" + "<OperationType>"
+                        + StringEscapeUtils.escapeXml(operationType) + "</OperationType>" + "<DataCluster>"
+                        + clusterName + "</DataCluster>" + "<DataModel>" + StringUtils.EMPTY + "</DataModel>"
+                        + "<Concept>" + StringEscapeUtils.escapeXml(concept) + "</Concept>" + "<Key>"
+                        + StringEscapeUtils.escapeXml(key) + "</Key>";
                 resultUpdateReport += "</Update>";
                 // Proceed with execution
                 String exchangeData = mergeExchangeData(xml, resultUpdateReport);
                 final String runningKey = "XtentisWSBean.executeTransformerV2.beforeDeleting.running";
-                TransformerContext context = new TransformerContext(new TransformerV2POJOPK("beforeDeleting_" + concept));
+                TransformerContext context =
+                        new TransformerContext(new TransformerV2POJOPK("beforeDeleting_" + concept));
                 context.put(runningKey, Boolean.TRUE);
                 com.amalto.core.server.api.Transformer ctrl = getTransformerV2CtrlLocal();
-                TypedContent wsTypedContent = new TypedContent(exchangeData.getBytes("UTF-8"), "text/xml; charset=utf-8");
+                TypedContent wsTypedContent =
+                        new TypedContent(exchangeData.getBytes("UTF-8"), "text/xml; charset=utf-8");
                 ctrl.execute(context, wsTypedContent, new TransformerCallBack() {
 
                     @Override
@@ -788,7 +799,8 @@ public class Util {
                         Document doc = Util.parse(outputErrorMessage);
                         // TODO what if multiple error nodes ?
                         String xpath = "//report/message";
-                        Node errorNode = (Node) XPathFactory.newInstance().newXPath().evaluate(xpath, doc, XPathConstants.NODE);
+                        Node errorNode =
+                                (Node) XPathFactory.newInstance().newXPath().evaluate(xpath, doc, XPathConstants.NODE);
                         if (errorNode instanceof Element) {
                             Element errorElement = (Element) errorNode;
                             result.type = errorElement.getAttribute("type");
@@ -894,24 +906,23 @@ public class Util {
         }
         return null;
     }
-    
+
     public static void setUserProperty(Document user, String name, String value) throws Exception {
-        if(name == null){
+        if (name == null) {
             return;
         }
         NodeList properties = Util.getNodeList(user, "//properties");
         Element propertiesElement = null;
-        if(properties == null || properties.getLength() == 0){
+        if (properties == null || properties.getLength() == 0) {
             propertiesElement = user.createElement("properties");
             user.getDocumentElement().appendChild(propertiesElement);
-        }
-        else {
-            propertiesElement = (Element)properties.item(0);
+        } else {
+            propertiesElement = (Element) properties.item(0);
         }
         NodeList props = Util.getNodeList(propertiesElement, "//property");
         boolean propertyFound = false;
-        if(props != null){
-            for(int i=0; i<props.getLength(); i++){
+        if (props != null) {
+            for (int i = 0; i < props.getLength(); i++) {
                 Node node = props.item(i);
                 if (name.equals(getFirstTextNode(node, "name"))) {
                     propertyFound = true;
@@ -923,14 +934,14 @@ public class Util {
                 }
             }
         }
-        if(!propertyFound){
+        if (!propertyFound) {
             Element propertyElement = user.createElement("property");
             propertiesElement.appendChild(propertyElement);
-            
+
             Element nameElement = user.createElement("name");
             nameElement.setTextContent(name);
             propertyElement.appendChild(nameElement);
-            
+
             Element valueElement = user.createElement("value");
             valueElement.setTextContent(value);
             propertyElement.appendChild(valueElement);
@@ -972,7 +983,8 @@ public class Util {
                     scriptEngine.put("user_context", user);
                 }
                 String rightCondition = condition.getRightValueOrPath();
-                String userExpression = rightCondition.substring(rightCondition.indexOf('{') + 1, rightCondition.indexOf('}'));
+                String userExpression =
+                        rightCondition.substring(rightCondition.indexOf('{') + 1, rightCondition.indexOf('}'));
                 try {
                     if (LOGGER.isDebugEnabled()) {
                         LOGGER.debug("Groovy engine evaluating " + userExpression + ".");
@@ -992,7 +1004,8 @@ public class Util {
             }
 
             if (!condition.getOperator().equals(WhereCondition.EMPTY_NULL)) {
-                whereItem = "*".equals(condition.getRightValueOrPath()) || ".*".equals(condition.getRightValueOrPath()) ? null
+                whereItem = "*".equals(condition.getRightValueOrPath()) || ".*".equals(condition.getRightValueOrPath())
+                        ? null
                         : whereItem;
             }
         } else {
@@ -1015,8 +1028,8 @@ public class Util {
             if (conditions.get(i) instanceof WhereCondition) {
                 WhereCondition condition = (WhereCondition) conditions.get(i);
                 String rightValueOrPath = condition.getRightValueOrPath();
-                if (rightValueOrPath == null
-                        || (rightValueOrPath.length() == 0 && !WhereCondition.EMPTY_NULL.equals(condition.getOperator()))) {
+                if (rightValueOrPath == null || (rightValueOrPath.length() == 0
+                        && !WhereCondition.EMPTY_NULL.equals(condition.getOperator()))) {
                     conditions.remove(i);
                 }
             }
@@ -1043,8 +1056,8 @@ public class Util {
                 if (condition.getRightValueOrPath() != null && condition.getRightValueOrPath().length() > 0
                         && condition.getRightValueOrPath().contains(USER_PROPERTY_PREFIX)) {
                     String rightCondition = condition.getRightValueOrPath();
-                    String userExpression = rightCondition
-                            .substring(rightCondition.indexOf("{") + 1, rightCondition.indexOf("}"));
+                    String userExpression =
+                            rightCondition.substring(rightCondition.indexOf("{") + 1, rightCondition.indexOf("}"));
                     try {
                         if (LOGGER.isDebugEnabled()) {
                             LOGGER.debug("Groovy engine evaluating " + userExpression + ".");
@@ -1084,7 +1097,8 @@ public class Util {
 
                 @Override
                 public boolean accept(File pathName) {
-                    return pathName.isDirectory() || (pathName.isFile() && pathName.getName().toLowerCase().endsWith(".zip"));
+                    return pathName.isDirectory()
+                            || (pathName.isFile() && pathName.getName().toLowerCase().endsWith(".zip"));
                 }
             };
             List<File> zipFiles = listFiles(filter, new File(JobContainer.getUniqueInstance().getDeployDir()));
@@ -1139,7 +1153,7 @@ public class Util {
                     } else {
                         return null;
                     }
-                }// war
+                } // war
                 if (fileName.endsWith(".zip")) {
                     if ((z = in.getNextEntry()) != null) {
                         String dirName = z.getName();
@@ -1257,7 +1271,7 @@ public class Util {
 
         public String message;
     }
-    
+
     public static void checkIdValidation(String id) {
         if (StringUtils.isNotEmpty(id)) {
             for (String character : INVALID_ID_CHARACTERS) {
@@ -1271,10 +1285,10 @@ public class Util {
 
     /**
      * remove the bracket and number between two bracket.
-     * eg.  /detail/feature/actor[1]    = /detail/feature/actor
-     *      /detail/feature[2]/actor    = /detail/feature/actor
-     *      /detail[3]/feature//actor   = /detail/feature/actor
-     *      /detail[s]/feature//actor   = /detail[s]/feature/actor
+     * eg. /detail/feature/actor[1] = /detail/feature/actor
+     * /detail/feature[2]/actor = /detail/feature/actor
+     * /detail[3]/feature//actor = /detail/feature/actor
+     * /detail[s]/feature//actor = /detail[s]/feature/actor
      *
      * @param path path to repalce
      * @return the path have no the bracket and number between two bracket, return <code>null</code> if path is null

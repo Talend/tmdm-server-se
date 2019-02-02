@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -12,6 +12,7 @@ package org.talend.mdm.webapp.general.server.servlet;
 import static com.amalto.core.util.Util.ROOT_LOCATION_KEY;
 import static com.amalto.core.util.Util.ROOT_LOCATION_PARAM;
 import static com.amalto.core.util.Util.ROOT_LOCATION_URL_KEY;
+import static com.amalto.core.util.Util.WEB_SESSION_TIMEOUT_IN_SECONDS;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -22,14 +23,29 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.io.IOUtils;
+
+import org.apache.log4j.Logger;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.util.ServletContextPropertyUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ResourceLoader;
 
 public class MDMContextListener implements ServletContextListener {
+
+    private static final Logger LOGGER = Logger.getLogger(MDMContextListener.class);
+
+    @Autowired
+    private ResourceLoader resourceLoader;
 
     @Override
     public void contextInitialized(ServletContextEvent event) {
         ServletContext servletContext = event.getServletContext();
+
+        int webSessionTimeoutInSeconds = getSessionTimeoutInSeconds(servletContext);
+        System.setProperty(WEB_SESSION_TIMEOUT_IN_SECONDS, webSessionTimeoutInSeconds + ""); //$NON-NLS-1$
+
         String location = servletContext.getInitParameter(ROOT_LOCATION_PARAM);
         String resolvedLocation = ServletContextPropertyUtils.resolvePlaceholders(location, servletContext);
         servletContext.log("Initializing MDM root folder from [" + resolvedLocation + "]"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -39,7 +55,7 @@ public class MDMContextListener implements ServletContextListener {
                 URL resolvedLocationURL = new URL(resolvedLocation);
                 file = ResourceUtils.getFile(resolvedLocationURL);
             } else {
-               file = ResourceUtils.getFile(resolvedLocation);
+                file = ResourceUtils.getFile(resolvedLocation);
             }
             if (!file.exists()) {
                 throw new FileNotFoundException("MDM Root folder [" + resolvedLocation + "] not found"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -49,8 +65,10 @@ public class MDMContextListener implements ServletContextListener {
             }
             System.setProperty(ROOT_LOCATION_KEY, file.getAbsolutePath());
             System.setProperty(ROOT_LOCATION_URL_KEY, file.toURI().toURL().toString());
-            servletContext.log("Set MDM root system property: '" + ROOT_LOCATION_KEY + "' = [" + file.getAbsolutePath() + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            servletContext.log("Set MDM root url system property: '" + ROOT_LOCATION_URL_KEY + "' = [" + file.toURI().toURL().toString() + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            servletContext.log(
+                    "Set MDM root system property: '" + ROOT_LOCATION_KEY + "' = [" + file.getAbsolutePath() + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            servletContext.log("Set MDM root url system property: '" + ROOT_LOCATION_URL_KEY + "' = [" //$NON-NLS-1$ //$NON-NLS-2$
+                    + file.toURI().toURL().toString() + "]"); //$NON-NLS-1$
         } catch (FileNotFoundException e) {
             throw new IllegalArgumentException("Invalid '" + ROOT_LOCATION_PARAM + "' parameter", e); //$NON-NLS-1$ //$NON-NLS-2$
         } catch (MalformedURLException e) {
@@ -64,4 +82,18 @@ public class MDMContextListener implements ServletContextListener {
         System.getProperties().remove(ROOT_LOCATION_URL_KEY);
     }
 
+    private int getSessionTimeoutInSeconds(ServletContext servletContext) {
+        // Servlet 3.1 doesn't provide a way to get Session timeout defined in web.xml
+        int webSessionTimeoutInSeconds;
+        try {
+            String webXmlContent = IOUtils.toString(resourceLoader.getResource("/WEB-INF/web.xml").getInputStream()); //$NON-NLS-1$
+            String sessionTimeout =
+                    StringUtils.substringBetween(webXmlContent, "<session-timeout>", "</session-timeout>"); //$NON-NLS-1$ //$NON-NLS-2$
+            webSessionTimeoutInSeconds = Integer.parseInt(sessionTimeout) * 60;
+        } catch (Exception e) {
+            LOGGER.warn("Failed to retrieve session timeout, using default value of 30 mins", e); //$NON-NLS-1$
+            webSessionTimeoutInSeconds = 30 * 60;
+        }
+        return webSessionTimeoutInSeconds;
+    }
 }

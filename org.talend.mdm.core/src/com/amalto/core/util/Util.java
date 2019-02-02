@@ -741,7 +741,7 @@ public class Util {
                         + "<OperationType>" + StringEscapeUtils.escapeXml(operationType) + "</OperationType>" + "<DataCluster>"
                         + clusterName + "</DataCluster>" + "<DataModel>" + StringUtils.EMPTY + "</DataModel>" + "<Concept>"
                         + StringEscapeUtils.escapeXml(concept) + "</Concept>" + "<Key>" + StringEscapeUtils.escapeXml(key)
-                        + "</Key>";                
+                        + "</Key>";
                 resultUpdateReport += "</Update>";
                 // Proceed with execution
                 String exchangeData = mergeExchangeData(xml, resultUpdateReport);

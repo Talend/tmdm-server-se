@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -128,6 +128,8 @@ public class Util {
 
     public static final String ROOT_LOCATION_URL_KEY = "mdm.root.url";
 
+    public static final String WEB_SESSION_TIMEOUT_IN_SECONDS = "mdm.web.session.timeout";
+
     private static final String USER_PROPERTY_PREFIX = "${user_context";
 
     private static final ScriptEngineManager SCRIPT_FACTORY = new ScriptEngineManager();
@@ -135,7 +137,7 @@ public class Util {
     private static final Pattern extractCharsetPattern = Pattern.compile(".*charset\\s*=(.+)");
 
     private static final String[] INVALID_ID_CHARACTERS = { "'", "\"", "*", "[", "]" };
-    
+
     private static DocumentBuilderFactory nonValidatingDocumentBuilderFactory;
 
     private static XmlServer defaultXmlServer;
@@ -894,24 +896,23 @@ public class Util {
         }
         return null;
     }
-    
+
     public static void setUserProperty(Document user, String name, String value) throws Exception {
-        if(name == null){
+        if (name == null) {
             return;
         }
         NodeList properties = Util.getNodeList(user, "//properties");
         Element propertiesElement = null;
-        if(properties == null || properties.getLength() == 0){
+        if (properties == null || properties.getLength() == 0) {
             propertiesElement = user.createElement("properties");
             user.getDocumentElement().appendChild(propertiesElement);
-        }
-        else {
-            propertiesElement = (Element)properties.item(0);
+        } else {
+            propertiesElement = (Element) properties.item(0);
         }
         NodeList props = Util.getNodeList(propertiesElement, "//property");
         boolean propertyFound = false;
-        if(props != null){
-            for(int i=0; i<props.getLength(); i++){
+        if (props != null) {
+            for (int i = 0; i < props.getLength(); i++) {
                 Node node = props.item(i);
                 if (name.equals(getFirstTextNode(node, "name"))) {
                     propertyFound = true;
@@ -923,14 +924,14 @@ public class Util {
                 }
             }
         }
-        if(!propertyFound){
+        if (!propertyFound) {
             Element propertyElement = user.createElement("property");
             propertiesElement.appendChild(propertyElement);
-            
+
             Element nameElement = user.createElement("name");
             nameElement.setTextContent(name);
             propertyElement.appendChild(nameElement);
-            
+
             Element valueElement = user.createElement("value");
             valueElement.setTextContent(value);
             propertyElement.appendChild(valueElement);
@@ -1015,7 +1016,7 @@ public class Util {
             if (conditions.get(i) instanceof WhereCondition) {
                 WhereCondition condition = (WhereCondition) conditions.get(i);
                 String rightValueOrPath = condition.getRightValueOrPath();
-                if (rightValueOrPath == null
+                if (rightValueOrPath == null 
                         || (rightValueOrPath.length() == 0 && !WhereCondition.EMPTY_NULL.equals(condition.getOperator()))) {
                     conditions.remove(i);
                 }
@@ -1139,7 +1140,7 @@ public class Util {
                     } else {
                         return null;
                     }
-                }// war
+                } // war
                 if (fileName.endsWith(".zip")) {
                     if ((z = in.getNextEntry()) != null) {
                         String dirName = z.getName();
@@ -1257,7 +1258,7 @@ public class Util {
 
         public String message;
     }
-    
+
     public static void checkIdValidation(String id) {
         if (StringUtils.isNotEmpty(id)) {
             for (String character : INVALID_ID_CHARACTERS) {
@@ -1271,10 +1272,10 @@ public class Util {
 
     /**
      * remove the bracket and number between two bracket.
-     * eg.  /detail/feature/actor[1]    = /detail/feature/actor
-     *      /detail/feature[2]/actor    = /detail/feature/actor
-     *      /detail[3]/feature//actor   = /detail/feature/actor
-     *      /detail[s]/feature//actor   = /detail[s]/feature/actor
+     * eg.  /detail/feature/actor[1] = /detail/feature/actor
+     *      /detail/feature[2]/actor = /detail/feature/actor
+     *      /detail[3]/feature//actor = /detail/feature/actor
+     *      /detail[s]/feature//actor = /detail[s]/feature/actor
      *
      * @param path path to repalce
      * @return the path have no the bracket and number between two bracket, return <code>null</code> if path is null

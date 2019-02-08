@@ -139,13 +139,11 @@ public class UserQueryJsonSerializerTest extends TestCase {
     }
 
     public void testConditionInTQL() {
-        try {
-            final ComplexTypeMetadata type1 = repository.getComplexType("Type1");
-            UserQueryBuilder.from(type1).where("Type1.value1 in ['value1', 'value2']");
-            fail("Expected an UnsupportedOperationException (in is not supported)");
-        } catch (UnsupportedOperationException e) {
-            // Expected
-        }
+        final ComplexTypeMetadata type1 = repository.getComplexType("Type1");
+        final UserQueryBuilder userQueryBuilder = UserQueryBuilder.from(type1).where("Type1.value1 in ['value1', 'value2']");
+        final Select select = userQueryBuilder.getSelect();
+        assertNotNull(select.getCondition());
+        assertRoundTrip(select);
     }
 
     private void assertRoundTrip(Select select) {

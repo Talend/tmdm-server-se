@@ -34,6 +34,8 @@ import org.talend.tql.model.OrExpression;
 import org.talend.tql.model.TqlElement;
 import org.talend.tql.visitor.IASTVisitor;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -170,7 +172,11 @@ public class TQLPredicateToMDMPredicate implements IASTVisitor<Condition> {
 
     @Override
     public Condition visit(FieldInExpression fieldInExpression) {
-        throw new UnsupportedOperationException("FieldInExpression not supported by MDM.");
+        fieldInExpression.getField().accept(this);
+        List<String> constantValues = new ArrayList<>();
+        Stream.of(fieldInExpression.getValues()).forEach(val -> constantValues.add(val.getValue()));
+        final TypedExpression typedExpression = popCurrentExpression();
+        return new Compare(typedExpression, Predicate.IN, UserQueryBuilder.createConstant(typedExpression, constantValues));
     }
 
     @Override

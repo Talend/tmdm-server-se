@@ -42,7 +42,8 @@ class ManyValue implements Setter, Getter {
             ReferenceFieldMetadata fieldMetadata = (ReferenceFieldMetadata) element.field;
             boolean needResetValue = false;
             if (list.get(element.index) != null) {
-                String referValue = (String) ((DataRecord) list.get(element.index)).get(fieldMetadata.getReferencedField());
+                String referValue = String
+                        .valueOf(((DataRecord) list.get(element.index)).get(fieldMetadata.getReferencedField()));
                 if (!StringUtils
                         .equals(referValue, value.replaceAll("\\[", StringUtils.EMPTY).replaceAll("]", StringUtils.EMPTY))) {
                     needResetValue = true;

@@ -347,8 +347,11 @@ public class ItemPOJO implements Serializable {
 
     /**
      * drop an item to items-trash
+     * 
+     * @param createItemsTrashOnly Only create dropped record in Recycle Bin, source records will be deleted using query
      */
-    public static DroppedItemPOJOPK drop(ItemPOJOPK itemPOJOPK, String partPath) throws XtentisException {
+    public static DroppedItemPOJOPK drop(ItemPOJOPK itemPOJOPK, String partPath, boolean createItemsTrashOnly)
+            throws XtentisException {
         // validate input
         if (itemPOJOPK == null) {
             return null;
@@ -364,10 +367,10 @@ public class ItemPOJO implements Serializable {
             // init MDMItemsTrash Cluster
             if (ObjectPOJO.load(DataClusterPOJO.class, new DataClusterPOJOPK("MDMItemsTrash")) == null) { //$NON-NLS-1$
                 // create record
-                DataClusterPOJO dataCluster = new DataClusterPOJO("MDMItemsTrash", "Holds logical deleted items", null);
+                DataClusterPOJO dataCluster = new DataClusterPOJO("MDMItemsTrash", "Holds logical deleted items", null); //$NON-NLS-1$ //$NON-NLS-2$
                 ObjectPOJOPK pk = dataCluster.store();
                 if (pk == null) {
-                    throw new XtentisException("Unable to create the Data Cluster. Please check the XML Server logs");
+                    throw new XtentisException("Unable to create the Data Cluster. Please check the XML Server logs"); //$NON-NLS-1$
                 }
                 // create cluster
                 boolean exist = server.existCluster(pk.getUniqueId());
@@ -375,7 +378,7 @@ public class ItemPOJO implements Serializable {
                     server.createCluster(pk.getUniqueId());
                 }
                 // log
-                LOG.info("Init MDMItemsTrash Cluster");
+                LOG.info("Init MDMItemsTrash Cluster"); //$NON-NLS-1$
             }
             String dataClusterName = itemPOJOPK.getDataClusterPOJOPK().getUniqueId();
             String uniqueID = itemPOJOPK.getUniqueID();
@@ -394,7 +397,7 @@ public class ItemPOJO implements Serializable {
                 sourceDoc = Util.parse(xml);
                 toDeleteNodeList = Util.getNodeList(sourceDoc, xPath);
                 if (toDeleteNodeList.getLength() == 0) {
-                    throw new XtentisException("\nThe target content is not exist or have been deleted already.");
+                    throw new XtentisException("\nThe target content is not exist or have been deleted already."); //$NON-NLS-1$
                 }
                 for (int i = 0; i < toDeleteNodeList.getLength(); i++) {
                     Node node = toDeleteNodeList.item(i);
@@ -414,7 +417,7 @@ public class ItemPOJO implements Serializable {
                             lastParentNode.removeChild(node);
                         }
                         if (formatSiblingNode != null && formatSiblingNode.getNodeValue() != null
-                                && formatSiblingNode.getNodeValue().matches("\\s+")) {
+                                && formatSiblingNode.getNodeValue().matches("\\s+")) { //$NON-NLS-1$
                             lastParentNode.removeChild(formatSiblingNode);
                         }
                     }
@@ -430,7 +433,7 @@ public class ItemPOJO implements Serializable {
                         try {
                             projection = itemPOJO.getProjection();
                         } catch (Exception e) {
-                            throw new XtentisException("\nThe remaining item can not be empty!");
+                            throw new XtentisException("\nThe remaining item can not be empty!"); //$NON-NLS-1$
                         }
 
                         if (projection != null)
@@ -460,27 +463,29 @@ public class ItemPOJO implements Serializable {
                 server.rollback("MDMItemsTrash"); //$NON-NLS-1$
                 return null;
             }
-            // delete source item
-            try {
-                if (partPath.equals("/")) { //$NON-NLS-1$
-                    server.deleteDocument(dataClusterName, uniqueID);
-                } else {
-                    String xmlString = Util.nodeToString(sourceDoc);
-                    server.start(dataClusterName);
-                    server.putDocumentFromString(xmlString, uniqueID, dataClusterName);
-                    server.commit(dataClusterName);
+            if (!createItemsTrashOnly) {
+                // delete source item
+                try {
+                    if (partPath.equals("/")) { //$NON-NLS-1$
+                        server.deleteDocument(dataClusterName, uniqueID);
+                    } else {
+                        String xmlString = Util.nodeToString(sourceDoc);
+                        server.start(dataClusterName);
+                        server.putDocumentFromString(xmlString, uniqueID, dataClusterName);
+                        server.commit(dataClusterName);
+                    }
+                } catch (Exception e) {
+                    server.deleteDocument("MDMItemsTrash", droppedItemPOJO.obtainDroppedItemPK().getUniquePK()); //$NON-NLS-1$
+                    throw new XtentisException(e);
                 }
-            } catch (Exception e) {
-                server.deleteDocument("MDMItemsTrash", droppedItemPOJO.obtainDroppedItemPK().getUniquePK()); //$NON-NLS-1$
-                throw new XtentisException(e);
             }
             return droppedItemPOJO.obtainDroppedItemPK();
         } catch (SAXException e) {
-            String err = "The remaining item did not obey the rules of data model.\nYou can modify the data model, and try it again.\n\n"
+            String err = "The remaining item did not obey the rules of data model.\nYou can modify the data model, and try it again.\n\n" //$NON-NLS-1$
                     + e.getLocalizedMessage();
             throw new XtentisException(err);
         } catch (Exception e) {
-            String err = "Unable to drop the item " + itemPOJOPK.getUniqueID() + ": " + e.getClass().getName() + ": "
+            String err = "Unable to drop the item " + itemPOJOPK.getUniqueID() + ": " + e.getClass().getName() + ": " //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
                     + e.getLocalizedMessage();
             LOG.error(err, e);
             throw new XtentisException(err, e);

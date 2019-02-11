@@ -1958,6 +1958,34 @@ public class StorageQueryTest extends StorageTestCase {
         }
     }
 
+    public void testEmptyOrNullForTypedExpression() throws Exception {
+        UserQueryBuilder qb = from(address).selectId(address).where(emptyOrNull(new Field(address.getField("City"))));
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(0, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        //
+        qb = from(address).selectId(address).where(emptyOrNull(new Field(address.getField("OptionalCity"))));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(4, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        //
+        qb = from(address).selectId(address).where(not(emptyOrNull(new Field(address.getField("OptionalCity")))));
+        results = storage.fetch(qb.getSelect().normalize());
+        try {
+            assertEquals(1, results.getCount());
+        } finally {
+            results.close();
+        }
+    }
+
     public void testEmptyOrNullOnContainedElement() throws Exception {
         UserQueryBuilder qb = from(country).selectId(country).where(emptyOrNull(country.getField("notes/note")));
         StorageResults results = storage.fetch(qb.getSelect());

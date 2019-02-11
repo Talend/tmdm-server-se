@@ -181,7 +181,7 @@ public abstract class IItemCtrlDelegator implements IBeanDelegator, IItemCtrlDel
             // Order by
             String orderByFieldPath;
             OrderBy.Direction queryDirection;
-            
+
             if (StringUtils.isNotEmpty(orderBy)) {
                 orderByFieldPath = orderBy;
                 if ("ascending".equals(direction) //$NON-NLS-1$

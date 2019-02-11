@@ -66,7 +66,7 @@ public class JournalDBService {
 
     private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //$NON-NLS-1$
 
-    private WebService webService;
+    protected WebService webService;
 
     public JournalDBService(WebService webService) {
         this.webService = webService;
@@ -296,7 +296,7 @@ public class JournalDBService {
         return model;
     }
 
-    private JournalGridModel parseString2Model(String xmlStr) throws Exception {
+    protected JournalGridModel parseString2Model(String xmlStr) throws Exception {
         JournalGridModel model = new JournalGridModel();
         Document doc = Util.parse(xmlStr);
         String source = checkNull(Util.getFirstTextNode(doc, "result/Update/Source")); //$NON-NLS-1$

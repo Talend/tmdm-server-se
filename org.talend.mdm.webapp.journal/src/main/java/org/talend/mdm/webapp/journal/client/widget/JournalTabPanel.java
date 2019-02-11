@@ -43,7 +43,7 @@ public class JournalTabPanel extends TabPanel {
         return tabPanel;
     }
 
-    private JournalTabPanel() {
+    protected JournalTabPanel() {
         this.setResizeTabs(true);
         this.setAnimScroll(true);
 
@@ -51,7 +51,7 @@ public class JournalTabPanel extends TabPanel {
         resultTabItem.setId("resultTabItem"); //$NON-NLS-1$
         resultTabItem.setLayout(new FitLayout());
         resultTabItem.setClosable(false);
-        resultTabItem.add(JournalGridPanel.getInstance());
+        resultTabItem.add(getJournalGridPanel());
         resultTabItem.addListener(Events.Select, new Listener<ComponentEvent>() {
 
             public void handleEvent(ComponentEvent be) {
@@ -70,16 +70,16 @@ public class JournalTabPanel extends TabPanel {
         cp.setStyleName("timeline-default"); //$NON-NLS-1$
         cp.getElement().getStyle().setProperty("height", 398D, Unit.PX); //$NON-NLS-1$
 
-        journalTimelinePanel = new JournalTimelinePanel();
+        journalTimelinePanel = generateJournalTimelinePanel();
         journalTimelinePanel.setId("journalTimeLine"); //$NON-NLS-1$
         journalTimelinePanel.setStyleName("timeline-default"); //$NON-NLS-1$
 
         timeLineTabItem.addListener(Events.Resize, new Listener<ComponentEvent>(){
             public void handleEvent(ComponentEvent be) {
-                if (journalTimelinePanel.isRendered() && status != JournalSearchPanel.getInstance().isExpanded()) { 
+                if (journalTimelinePanel.isRendered() && status != getJournalSearchPanel().isExpanded()) {
                     timeLineTabItem.fireEvent(Events.Select);
                 }
-                status = JournalSearchPanel.getInstance().isExpanded();    
+                status = getJournalSearchPanel().isExpanded();
             }            
         });
 
@@ -89,7 +89,7 @@ public class JournalTabPanel extends TabPanel {
                 journalTimelinePanel.setActive(true);
                 journalTimelinePanel.setTimeLinePanelHeight(timeLineTabItem.getHeight());
                 journalTimelinePanel.getElement().getStyle().setPropertyPx("height", timeLineTabItem.getHeight()); //$NON-NLS-1$
-                journalTimelinePanel.initTimeline(JournalGridPanel.getInstance().getOffset(), JournalGridPanel.getInstance().getLoaderConfigStr());
+                journalTimelinePanel.initTimeline(getJournalGridPanel().getOffset(), getJournalGridPanel().getLoaderConfigStr());
             }
         });
         this.add(timeLineTabItem);
@@ -104,11 +104,23 @@ public class JournalTabPanel extends TabPanel {
         return timeLineTabItem;
     }
 
+    public void setSelectionItem() {
+        this.setSelection(resultTabItem);
+    }
+
     public JournalTimelinePanel getJournalTimelinePanel() {
         return this.journalTimelinePanel;
     }
 
-    public void setSelectionItem() {
-        this.setSelection(resultTabItem);
+    protected JournalTimelinePanel generateJournalTimelinePanel() {
+        return new JournalTimelinePanel();
+    }
+
+    protected JournalSearchPanel getJournalSearchPanel() {
+        return JournalSearchPanel.getInstance();
+    }
+
+    protected JournalGridPanel getJournalGridPanel() {
+        return JournalGridPanel.getInstance();
     }
 }

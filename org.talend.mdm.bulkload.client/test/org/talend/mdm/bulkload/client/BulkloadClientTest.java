@@ -27,7 +27,7 @@ public class BulkloadClientTest extends TestCase {
         String serverURL = "http://localhost:8180/talendmdm/services/bulkload";
         boolean isServerRunning = isServerRunning(serverURL);
         if (isServerRunning) {
-            BulkloadClient client = new BulkloadClient(serverURL, "administrator", "administrator", null, "Product", "Product", "Product");
+            BulkloadClient client = new BulkloadClient(serverURL, "administrator", "administrator", "Product", "Product", "Product");
             client.setOptions(new BulkloadOptions());
             StringBuilder sb = new StringBuilder();
             for (int i = 1; i <= 20; i++) {
@@ -55,7 +55,7 @@ public class BulkloadClientTest extends TestCase {
         String serverURL = "http://localhost:8180/talendmdm/services/bulkload";
         boolean isServerRunning = isServerRunning(serverURL);
         if (isServerRunning) {
-            BulkloadClient client = new BulkloadClient(serverURL, "administrator", "administrator", null, "Product", "Product", "Product");
+            BulkloadClient client = new BulkloadClient(serverURL, "administrator", "administrator", "Product", "Product", "Product");
             client.setOptions(new BulkloadOptions());
 
             String xml = "<Product><Id>Product_0</Id><Name>a</Name><Description>a</Description><Features><Sizes/><Colors/></Features><Price>2.00</Price><Stores/></Product>";
@@ -85,7 +85,7 @@ public class BulkloadClientTest extends TestCase {
         boolean isServerRunning = isServerRunning(serverURL);
         if (isServerRunning) {
             final InterruptedTestResult result = new InterruptedTestResult();
-            BulkloadClient client = new BulkloadClient(serverURL, "administrator", "administrator", null, "Product", "Product", "Product");
+            BulkloadClient client = new BulkloadClient(serverURL, "administrator", "administrator", "Product", "Product", "Product");
             client.setOptions(new BulkloadOptions());
 
             int count = 10;
@@ -123,13 +123,13 @@ public class BulkloadClientTest extends TestCase {
         String serverURL = "http://localhost:8180/talendmdm/services/bulkload";
         boolean isServerRunning = isServerRunning(serverURL);
         if (isServerRunning) {
-            BulkloadClient client1 = new BulkloadClient(serverURL, "administrator", "administrator", null, "Product", "Product", "Product");
+            BulkloadClient client1 = new BulkloadClient(serverURL, "administrator", "administrator", "Product", "Product", "Product");
             client1.setOptions(new BulkloadOptions());
             InputStreamMerger merger1 = client1.load();
             InputStream data1 = new ByteArrayInputStream(("<Product><Id>P1</Id><Name>P1</Name><Description>P1</Description><Features><Sizes/><Colors/></Features><Price>2.00</Price><Stores/></Product>").getBytes("UTF-8"));
             merger1.push(data1);
             
-            BulkloadClient client2 = new BulkloadClient(serverURL, "administrator", "administrator", null, "Product", "Product", "Product");
+            BulkloadClient client2 = new BulkloadClient(serverURL, "administrator", "administrator", "Product", "Product", "Product");
             client2.setOptions(new BulkloadOptions());
             InputStreamMerger merger2 = client2.load();
             InputStream data2 = new ByteArrayInputStream(("<Product><Id>P2</Id><Name>P2</Name><Description>P2</Description><Features><Sizes/><Colors/></Features><Price>2.00</Price><Stores/></Product>").getBytes("UTF-8"));
@@ -151,7 +151,7 @@ public class BulkloadClientTest extends TestCase {
         String serverURL = "http://localhost:8180/talendmdm/services/bulkload";
         boolean isServerRunning = isServerRunning(serverURL);
         if (isServerRunning) {
-            BulkloadClient client = new BulkloadClient(serverURL, "administrator", "administrator", null, "Product", "Product", "Product");
+            BulkloadClient client = new BulkloadClient(serverURL, "administrator", "administrator", "Product", "Product", "Product");
             client.setOptions(new BulkloadOptions());
             int count = 5;
             for (int i = 0; i < count; i++) {
@@ -207,7 +207,7 @@ public class BulkloadClientTest extends TestCase {
         String serverURL = "http://localhost:8180/talendmdm/services/bulkload"; //$NON-NLS-1$
         boolean isServerRunning = isServerRunning(serverURL);
         if (isServerRunning) {
-            BulkloadClient client = new BulkloadClient(serverURL, "administrator", "administrator", null, "Product", "Product", "Product");
+            BulkloadClient client = new BulkloadClient(serverURL, "administrator", "administrator", "Product", "Product", "Product");
             BulkloadOptions options = new BulkloadOptions();
             client.setOptions(options);
             

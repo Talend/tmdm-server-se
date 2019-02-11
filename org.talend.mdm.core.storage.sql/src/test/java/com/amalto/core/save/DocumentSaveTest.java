@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -45,9 +45,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.amalto.commons.core.utils.XMLUtils;
+import com.amalto.core.delegator.BaseSecurityCheck;
 import com.amalto.core.delegator.BeanDelegatorContainer;
 import com.amalto.core.delegator.ILocalUser;
-import com.amalto.core.delegator.BaseSecurityCheck;
 import com.amalto.core.history.DeleteType;
 import com.amalto.core.history.MutableDocument;
 import com.amalto.core.objects.UpdateReportPOJO;
@@ -706,8 +706,7 @@ public class DocumentSaveTest extends TestCase {
                 ("<Agency>\n" + "    <Id>5258f292-5670-473b-bc01-8b63434682f3</Id>\n" + "    <Information>\n"
                         + "        <MoreInfo>http://www.mynewsite.fr</MoreInfo>\n" + "    </Information>\n" + "</Agency>\n")
                         .getBytes("UTF-8"));
-        DocumentSaverContext context = session.getContextFactory().createPartialUpdate("MDM", "DStar", "Source",
-                partialUpdateContent, true, true, "/Agency/Information/MoreInfo", "", -1, false);
+        DocumentSaverContext context = session.getContextFactory().createPartialUpdate("MDM", "DStar", "Source", partialUpdateContent, true, true, "/Agency/Information/MoreInfo", "", -1, false);
         DocumentSaver saver = context.createSaver();
         saver.save(session, context);
         MockCommitter committer = new MockCommitter();
@@ -729,9 +728,188 @@ public class DocumentSaveTest extends TestCase {
         InputStream partialUpdateContent = new ByteArrayInputStream(
                 ("<Agency>\n" + "    <Id>5258f292-5670-473b-bc01-8b63434682f3</Id>\n" + "    <Information>\n"
                         + "        <MoreInfo>http://www.mynewsite.fr</MoreInfo>\n" + "    </Information>\n" + "</Agency>\n")
+                .getBytes("UTF-8"));
+        DocumentSaverContext context = session.getContextFactory().createPartialUpdate("MDM", "DStar", "Source", partialUpdateContent, true, true, "/", "/", -1, true);
+        DocumentSaver saver = context.createSaver();
+        saver.save(session, context);
+        MockCommitter committer = new MockCommitter();
+        session.end(committer);
+
+        assertTrue(committer.hasSaved());
+        Element committedElement = committer.getCommittedElement();
+        assertEquals("http://www.mynewsite.fr", evaluate(committedElement, "/Agency/Information/MoreInfo[1]"));
+        assertEquals("", evaluate(committedElement, "/Agency/Information/MoreInfo[2]"));
+
+        MutableDocument updateReportDocument = context.getUpdateReportDocument();
+        assertNotNull(updateReportDocument);
+        Document doc = updateReportDocument.asDOM();
+        String path = (String) evaluate(doc.getDocumentElement(), "Item[1]/path");
+        String oldValue = (String) evaluate(doc.getDocumentElement(), "Item[1]/oldValue");
+        String newValue = (String) evaluate(doc.getDocumentElement(), "Item[1]/newValue");
+        assertEquals("Information/MoreInfo[1]", path);
+        assertEquals("", oldValue);
+        assertEquals("http://www.mynewsite.fr", newValue);
+    }
+
+    public void testPartialUpdateWithOverwriteEqFalseOneToThree() throws Exception {
+        final MetadataRepository repository = new MetadataRepository();
+        repository.load(DocumentSaveTest.class.getResourceAsStream("metadata1.xsd"));
+        MockMetadataRepositoryAdmin.INSTANCE.register("DStar", repository);
+
+        SaverSource source = new TestSaverSource(repository, true, "test1_0_original.xml", "metadata1.xsd");
+
+        SaverSession session = SaverSession.newSession(source);
+        InputStream partialUpdateContent = new ByteArrayInputStream(
+                ("<Agency>\n" + "    <Id>5258f292-5670-473b-bc01-8b63434682f4</Id>\n" + "    <Information>\n"
+                        + "        <MoreInfo>http://www.mynewsite.fr</MoreInfo>\n"
+                        + "        <MoreInfo>http://www.mynewsite.com</MoreInfo>\n"
+                        + "        <MoreInfo>http://www.mynewsite.cn</MoreInfo>\n"
+                        + "    </Information>\n" + "</Agency>\n")
+                .getBytes("UTF-8"));
+        DocumentSaverContext context = session.getContextFactory().createPartialUpdate("MDM", "DStar", "Source", partialUpdateContent, true, true, "/", "/", -1, false);
+        DocumentSaver saver = context.createSaver();
+        saver.save(session, context);
+        MockCommitter committer = new MockCommitter();
+        session.end(committer);
+
+        assertTrue(committer.hasSaved());
+        Element committedElement = committer.getCommittedElement();
+        assertEquals("www.a.com", evaluate(committedElement, "/Agency/Information/MoreInfo[1]"));
+        assertEquals("http://www.mynewsite.fr", evaluate(committedElement, "/Agency/Information/MoreInfo[2]"));
+        assertEquals("http://www.mynewsite.com", evaluate(committedElement, "/Agency/Information/MoreInfo[3]"));
+        assertEquals("http://www.mynewsite.cn", evaluate(committedElement, "/Agency/Information/MoreInfo[4]"));
+
+        MutableDocument updateReportDocument = context.getUpdateReportDocument();
+        assertNotNull(updateReportDocument);
+        Document doc = updateReportDocument.asDOM();
+        String path = (String) evaluate(doc.getDocumentElement(), "Item[1]/path");
+        String oldValue = (String) evaluate(doc.getDocumentElement(), "Item[1]/oldValue");
+        String newValue = (String) evaluate(doc.getDocumentElement(), "Item[1]/newValue");
+        assertEquals("Information/MoreInfo[4]", path);
+        assertEquals("", oldValue);
+        assertEquals("http://www.mynewsite.cn", newValue);
+
+        path = (String) evaluate(doc.getDocumentElement(), "Item[2]/path");
+        oldValue = (String) evaluate(doc.getDocumentElement(), "Item[2]/oldValue");
+        newValue = (String) evaluate(doc.getDocumentElement(), "Item[2]/newValue");
+        assertEquals("Information/MoreInfo[3]", path);
+        assertEquals("", oldValue);
+        assertEquals("http://www.mynewsite.com", newValue);
+
+        path = (String) evaluate(doc.getDocumentElement(), "Item[3]/path");
+        oldValue = (String) evaluate(doc.getDocumentElement(), "Item[3]/oldValue");
+        newValue = (String) evaluate(doc.getDocumentElement(), "Item[3]/newValue");
+        assertEquals("Information/MoreInfo[2]", path);
+        assertEquals("", oldValue);
+        assertEquals("http://www.mynewsite.fr", newValue);
+    }
+
+    public void testPartialUpdateSameCountWithOverwriteFalse() throws Exception {
+        final MetadataRepository repository = new MetadataRepository();
+        repository.load(DocumentSaveTest.class.getResourceAsStream("metadata1.xsd"));
+        MockMetadataRepositoryAdmin.INSTANCE.register("DStar", repository);
+
+        SaverSource source = new TestSaverSource(repository, true, "test1_1_original.xml", "metadata1.xsd");
+
+        SaverSession session = SaverSession.newSession(source);
+        InputStream partialUpdateContent = new ByteArrayInputStream(
+                ("<Agency>\n" + "    <Id>5258f292-5670-473b-bc01-8b63434682f4</Id>\n" + "    <Information>\n"
+                        + "        <MoreInfo>http://www.mynewsite.fr</MoreInfo>\n"
+                        + "        <MoreInfo>http://www.mynewsite.com</MoreInfo>\n"
+                        + "    </Information>\n" + "</Agency>\n")
+                .getBytes("UTF-8"));
+        DocumentSaverContext context = session.getContextFactory().createPartialUpdate("MDM", "DStar", "Source", partialUpdateContent, true, true, "/", "/", -1, false);
+        DocumentSaver saver = context.createSaver();
+        saver.save(session, context);
+        MockCommitter committer = new MockCommitter();
+        session.end(committer);
+
+        //two to two
+        assertTrue(committer.hasSaved());
+        Element committedElement = committer.getCommittedElement();
+        assertEquals("www.a.com", evaluate(committedElement, "/Agency/Information/MoreInfo[1]"));
+        assertEquals("www.b.com", evaluate(committedElement, "/Agency/Information/MoreInfo[2]"));
+        assertEquals("http://www.mynewsite.fr", evaluate(committedElement, "/Agency/Information/MoreInfo[3]"));
+        assertEquals("http://www.mynewsite.com", evaluate(committedElement, "/Agency/Information/MoreInfo[4]"));
+
+        MutableDocument updateReportDocument = context.getUpdateReportDocument();
+        assertNotNull(updateReportDocument);
+        Document doc = updateReportDocument.asDOM();
+        String path = (String) evaluate(doc.getDocumentElement(), "Item[1]/path");
+        String oldValue = (String) evaluate(doc.getDocumentElement(), "Item[1]/oldValue");
+        String newValue = (String) evaluate(doc.getDocumentElement(), "Item[1]/newValue");
+        assertEquals("Information/MoreInfo[4]", path);
+        assertEquals("", oldValue);
+        assertEquals("http://www.mynewsite.com", newValue);
+
+        path = (String) evaluate(doc.getDocumentElement(), "Item[2]/path");
+        oldValue = (String) evaluate(doc.getDocumentElement(), "Item[2]/oldValue");
+        newValue = (String) evaluate(doc.getDocumentElement(), "Item[2]/newValue");
+        assertEquals("Information/MoreInfo[3]", path);
+        assertEquals("", oldValue);
+        assertEquals("http://www.mynewsite.fr", newValue);
+    }
+
+    public void testPartialUpdateLessCountWithOverwriteFalse() throws Exception {
+        final MetadataRepository repository = new MetadataRepository();
+        repository.load(DocumentSaveTest.class.getResourceAsStream("metadata1.xsd"));
+        MockMetadataRepositoryAdmin.INSTANCE.register("DStar", repository);
+
+        SaverSource source = new TestSaverSource(repository, true, "test1_2_original.xml", "metadata1.xsd");
+
+        SaverSession session = SaverSession.newSession(source);
+        InputStream partialUpdateContent = new ByteArrayInputStream(
+                ("<Agency>\n" + "    <Id>5258f292-5670-473b-bc01-8b63434682f4</Id>\n" + "    <Information>\n"
+                        + "        <MoreInfo>http://www.mynewsite.fr</MoreInfo>\n"
+                        + "        <MoreInfo>http://www.mynewsite.com</MoreInfo>\n"
+                        + "    </Information>\n" + "</Agency>\n")
+                .getBytes("UTF-8"));
+        DocumentSaverContext context = session.getContextFactory().createPartialUpdate("MDM", "DStar", "Source", partialUpdateContent, true, true, "/", "/", -1, false);
+        DocumentSaver saver = context.createSaver();
+        saver.save(session, context);
+        MockCommitter committer = new MockCommitter();
+        session.end(committer);
+
+        //Three to One
+        assertTrue(committer.hasSaved());
+        Element committedElement = committer.getCommittedElement();
+        assertEquals("www.a.com", evaluate(committedElement, "/Agency/Information/MoreInfo[1]"));
+        assertEquals("www.b.com", evaluate(committedElement, "/Agency/Information/MoreInfo[2]"));
+        assertEquals("www.c.com", evaluate(committedElement, "/Agency/Information/MoreInfo[3]"));
+        assertEquals("http://www.mynewsite.fr", evaluate(committedElement, "/Agency/Information/MoreInfo[4]"));
+        assertEquals("http://www.mynewsite.com", evaluate(committedElement, "/Agency/Information/MoreInfo[5]"));
+
+        MutableDocument updateReportDocument = context.getUpdateReportDocument();
+        assertNotNull(updateReportDocument);
+        Document doc = updateReportDocument.asDOM();
+        String path = (String) evaluate(doc.getDocumentElement(), "Item[1]/path");
+        String oldValue = (String) evaluate(doc.getDocumentElement(), "Item[1]/oldValue");
+        String newValue = (String) evaluate(doc.getDocumentElement(), "Item[1]/newValue");
+        assertEquals("Information/MoreInfo[5]", path);
+        assertEquals("", oldValue);
+        assertEquals("http://www.mynewsite.com", newValue);
+
+        path = (String) evaluate(doc.getDocumentElement(), "Item[2]/path");
+        oldValue = (String) evaluate(doc.getDocumentElement(), "Item[2]/oldValue");
+        newValue = (String) evaluate(doc.getDocumentElement(), "Item[2]/newValue");
+        assertEquals("Information/MoreInfo[4]", path);
+        assertEquals("", oldValue);
+        assertEquals("http://www.mynewsite.fr", newValue);
+    }
+
+    public void testPartialUpdateWithOverwriteEqualsTrue() throws Exception {
+        final MetadataRepository repository = new MetadataRepository();
+        repository.load(DocumentSaveTest.class.getResourceAsStream("metadata1.xsd"));
+        MockMetadataRepositoryAdmin.INSTANCE.register("DStar", repository);
+
+        SaverSource source = new TestSaverSource(repository, true, "test1_1_original.xml", "metadata1.xsd");
+
+        SaverSession session = SaverSession.newSession(source);
+        InputStream partialUpdateContent = new ByteArrayInputStream(
+                ("<Agency>\n" + "    <Id>5258f292-5670-473b-bc01-8b63434682f4</Id>\n" + "    <Information>\n"
+                        + "        <MoreInfo>http://www.mynewsite.fr</MoreInfo>\n" + "    </Information>\n" + "</Agency>\n")
                         .getBytes("UTF-8"));
-        DocumentSaverContext context = session.getContextFactory().createPartialUpdate("MDM", "DStar", "Source",
-                partialUpdateContent, true, true, "/", "/", -1, true);
+        DocumentSaverContext context = session.getContextFactory().createPartialUpdate("MDM", "DStar", "Source", partialUpdateContent, true, true, "/", "/", -1, true);
         DocumentSaver saver = context.createSaver();
         saver.save(session, context);
         MockCommitter committer = new MockCommitter();
@@ -3680,6 +3858,153 @@ public class DocumentSaveTest extends TestCase {
         results = storage.fetch(qb.getSelect());
         assertEquals(0, results.getCount());
         storage.commit();
+    }
+
+    public void testCreateWithOwnPK() throws Exception {
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(DocumentSaveTest.class.getResourceAsStream("MyProduct.xsd"));
+        MockMetadataRepositoryAdmin.INSTANCE.register("MyProduct", repository);
+        SaverSource source = new TestSaverSource(repository, false, "MyProduct_original.xml", "MyProduct.xsd");
+
+        //Case 1 PeopleGroupSize create record with submitted id id1, create success
+        SaverSession session = SaverSession.newSession(source);
+        InputStream recordXml = new ByteArrayInputStream(("<PeopleGroupSize><Id>id1</Id><Name>Product Name1</Name><Description>desc1</Description></PeopleGroupSize>").getBytes("UTF-8"));
+        DocumentSaverContext context = session.getContextFactory().create("MyProduct", "MyProduct", "Source", recordXml, true, true, true, false, false);
+        DocumentSaver saver = context.createSaver();
+        saver.save(session, context);
+        MockCommitter committer = new MockCommitter();
+        session.end(committer);
+
+        assertTrue(committer.hasSaved());
+        Element committedElement = committer.getCommittedElement();
+        assertEquals("id1", evaluate(committedElement, "/PeopleGroupSize/Id"));
+        assertEquals("Product Name1", evaluate(committedElement, "/PeopleGroupSize/Name"));
+        assertEquals("desc1", evaluate(committedElement, "/PeopleGroupSize/Description"));
+
+        //Case 2 PeopleGroupSize create record without id, create fail
+        session = SaverSession.newSession(source);
+        recordXml = new ByteArrayInputStream(("<PeopleGroupSize><Id></Id><Name>Product Name1</Name><Description>desc1</Description></PeopleGroupSize>").getBytes("UTF-8"));
+        context = session.getContextFactory().create("MyProduct", "MyProduct", "Source", recordXml, true, true, true, false, false);
+        saver = context.createSaver();
+        try {
+            saver.save(session, context);
+            fail("Expected Id to be set");
+        } catch (Exception e) {
+        }
+        committer = new MockCommitter();
+        session.end(committer);
+
+        //Case 3 AutoIDEntity create record with submitted id 1, create success
+        session = SaverSession.newSession(source);
+        recordXml = new ByteArrayInputStream(("<AutoIDEntity><Id>1</Id><Name>name1</Name></AutoIDEntity>").getBytes("UTF-8"));
+        context = session.getContextFactory().create("MyProduct", "MyProduct", "Source", recordXml, true, true, true, false, false);
+        saver = context.createSaver();
+        saver.save(session, context);
+        committer = new MockCommitter();
+        session.end(committer);
+
+        assertTrue(committer.hasSaved());
+        committedElement = committer.getCommittedElement();
+        assertEquals("1", evaluate(committedElement, "/AutoIDEntity/Id"));
+        assertEquals("name1", evaluate(committedElement, "/AutoIDEntity/Name"));
+
+        //Case 4 AutoIDEntity create record with submitted empty id, create success
+        session = SaverSession.newSession(source);
+        recordXml = new ByteArrayInputStream(("<AutoIDEntity><Id></Id><Name>name2</Name></AutoIDEntity>").getBytes("UTF-8"));
+        context = session.getContextFactory().create("MyProduct", "MyProduct", "Source", recordXml, true, true, true, false, false);
+        saver = context.createSaver();
+        saver.save(session, context);
+        committer = new MockCommitter();
+        session.end(committer);
+
+        assertTrue(committer.hasSaved());
+        committedElement = committer.getCommittedElement();
+        assertNotNull(evaluate(committedElement, "/AutoIDEntity/Id"));
+        assertEquals("name2", evaluate(committedElement, "/AutoIDEntity/Name"));
+
+        //Case 5 AutoIDEntity create record with empty id element for request body, create success
+        session = SaverSession.newSession(source);
+        recordXml = new ByteArrayInputStream(("<AutoIDEntity><Name>name3</Name></AutoIDEntity>").getBytes("UTF-8"));
+        context = session.getContextFactory().create("MyProduct", "MyProduct", "Source", recordXml, true, true, true, false, false);
+        saver = context.createSaver();
+        saver.save(session, context);
+        committer = new MockCommitter();
+        session.end(committer);
+
+        assertTrue(committer.hasSaved());
+        committedElement = committer.getCommittedElement();
+        assertNotNull(evaluate(committedElement, "/AutoIDEntity/Id"));
+        assertEquals("name3", evaluate(committedElement, "/AutoIDEntity/Name"));
+
+        //Case 6 AutoIDEntity create record with existing id 1 for request body, create success
+        session = SaverSession.newSession(source);
+        recordXml = new ByteArrayInputStream(("<AutoIDEntity><Id>1</Id><Name>name4</Name></AutoIDEntity>").getBytes("UTF-8"));
+        context = session.getContextFactory().create("MyProduct", "MyProduct", "Source", recordXml, true, true, true, false, false);
+        saver = context.createSaver();
+        saver.save(session, context);
+        committer = new MockCommitter();
+        session.end(committer);
+
+        assertTrue(committer.hasSaved());
+        committedElement = committer.getCommittedElement();
+        assertNotNull(evaluate(committedElement, "/AutoIDEntity/Id"));
+        assertEquals("name4", evaluate(committedElement, "/AutoIDEntity/Name"));
+
+        //Case 7 UUIDEntity create record with submitted id 1 for request body, create success
+        session = SaverSession.newSession(source);
+        recordXml = new ByteArrayInputStream(("<UUIDEntity><Id>1</Id><Name>name1</Name></UUIDEntity>").getBytes("UTF-8"));
+        context = session.getContextFactory().create("MyProduct", "MyProduct", "Source", recordXml, true, true, true, false, false);
+        saver = context.createSaver();
+        saver.save(session, context);
+        committer = new MockCommitter();
+        session.end(committer);
+
+        assertTrue(committer.hasSaved());
+        committedElement = committer.getCommittedElement();
+        assertEquals("1", evaluate(committedElement, "/UUIDEntity/Id"));
+        assertEquals("name1", evaluate(committedElement, "/UUIDEntity/Name"));
+
+        //Case 8 UUIDEntity create record with with submitted empty id, create success
+        session = SaverSession.newSession(source);
+        recordXml = new ByteArrayInputStream(("<UUIDEntity><Id></Id><Name>name2</Name></UUIDEntity>").getBytes("UTF-8"));
+        context = session.getContextFactory().create("MyProduct", "MyProduct", "Source", recordXml, true, true, true, false, false);
+        saver = context.createSaver();
+        saver.save(session, context);
+        committer = new MockCommitter();
+        session.end(committer);
+
+        assertTrue(committer.hasSaved());
+        committedElement = committer.getCommittedElement();
+        assertNotNull(evaluate(committedElement, "/AutoIDEntity/Id"));
+        assertEquals("name2", evaluate(committedElement, "/UUIDEntity/Name"));
+
+        //Case 9 UUIDEntity create record with empty id element for request body, create success
+        session = SaverSession.newSession(source);
+        recordXml = new ByteArrayInputStream(("<UUIDEntity><Name>name3</Name></UUIDEntity>").getBytes("UTF-8"));
+        context = session.getContextFactory().create("MyProduct", "MyProduct", "Source", recordXml, true, true, true, false, false);
+        saver = context.createSaver();
+        saver.save(session, context);
+        committer = new MockCommitter();
+        session.end(committer);
+
+        assertTrue(committer.hasSaved());
+        committedElement = committer.getCommittedElement();
+        assertNotNull(evaluate(committedElement, "/AutoIDEntity/Id"));
+        assertEquals("name3", evaluate(committedElement, "/UUIDEntity/Name"));
+
+        //Case 10 UUIDEntity create record with existing id 1 for request body, create success
+        session = SaverSession.newSession(source);
+        recordXml = new ByteArrayInputStream(("<UUIDEntity><Id>1</Id><Name>name4</Name></UUIDEntity>").getBytes("UTF-8"));
+        context = session.getContextFactory().create("MyProduct", "MyProduct", "Source", recordXml, true, true, true, false, false);
+        saver = context.createSaver();
+        saver.save(session, context);
+        committer = new MockCommitter();
+        session.end(committer);
+
+        assertTrue(committer.hasSaved());
+        committedElement = committer.getCommittedElement();
+        assertEquals("1", evaluate(committedElement, "/UUIDEntity/Id"));
+        assertEquals("name4", evaluate(committedElement, "/UUIDEntity/Name"));
     }
 
     private static class MockCommitter implements SaverSession.Committer {

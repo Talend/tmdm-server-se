@@ -234,7 +234,11 @@ public class DataRecordAccessor implements Accessor {
                                 DataRecord record = new DataRecord(((ReferenceFieldMetadata) field).getReferencedType(),
                                         UnsupportedDataRecordMetadata.INSTANCE);
                                 try {
-                                    list.add(record);
+                                    if (!record.isEmpty()) {
+                                        list.add(record);
+                                    } else {
+                                        list.add(null);
+                                    }
                                 } catch (UnsupportedOperationException e) {
                                     list = addFieldValueToNewList(current, field, list, record);
                                 }

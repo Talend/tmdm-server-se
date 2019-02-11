@@ -41,6 +41,7 @@ import com.amalto.core.save.context.DocumentSaver;
 import com.amalto.core.save.context.SaverContextFactory;
 import com.amalto.core.server.MetadataRepositoryAdmin;
 import com.amalto.core.server.ServerContext;
+import com.amalto.core.server.StorageAdmin;
 import com.amalto.core.server.api.DataCluster;
 import com.amalto.core.server.api.XmlServer;
 import com.amalto.core.storage.record.DataRecord;
@@ -68,6 +69,10 @@ public class LoadServlet extends HttpServlet {
     private static final String PARAMETER_SMARTPK = "smartpk"; //$NON-NLS-1$
 
     private static final String PARAMETER_INSERTONLY = "insertonly"; //$NON-NLS-1$
+
+    private static final String PARAMETER_UPDATEREPORT = "updateReport"; //$NON-NLS-1$
+
+    private static final String PARAMETER_SOURCE = "source"; //$NON-NLS-1$
 
     private static final Map<String, AtomicInteger> DB_REQUESTS_MAP = new HashMap<String, AtomicInteger>();
 
@@ -116,7 +121,10 @@ public class LoadServlet extends HttpServlet {
             throw new ServletException(message);
         }
 
-        LoadAction loadAction = getLoadAction(dataClusterName, typeName, dataModelName, needValidate, needAutoGenPK);
+        boolean updateReport = Boolean.valueOf(request.getParameter(PARAMETER_UPDATEREPORT));
+        String source = request.getParameter(PARAMETER_SOURCE);
+        LoadAction loadAction = getLoadAction(dataClusterName, typeName, dataModelName, needValidate, needAutoGenPK, updateReport,
+                source);
         if (needValidate && !loadAction.supportValidation()) {
             throw new ServletException(new UnsupportedOperationException("XML Validation isn't supported")); //$NON-NLS-1$
         }
@@ -197,16 +205,18 @@ public class LoadServlet extends HttpServlet {
     }
 
     protected LoadAction getLoadAction(String dataClusterName, String typeName, String dataModelName, boolean needValidate,
-            boolean needAutoGenPK) {
+            boolean needAutoGenPK, boolean updateReport, String source) {
         // Test if the data cluster actually exists
         DataClusterPOJO dataCluster = getDataCluster(dataClusterName);
         if (dataCluster == null) {
-            throw new IllegalArgumentException("Data cluster '" + dataClusterName + "' does not exist.");
+            throw new IllegalArgumentException("Data cluster '" + dataClusterName + "' does not exist."); //$NON-NLS-1$ //$NON-NLS-2$
         }
-
+        if (dataClusterName.endsWith(StorageAdmin.STAGING_SUFFIX)) {
+            updateReport = false;
+        }
         LoadAction loadAction;
-        if (needValidate || XSystemObjects.DC_PROVISIONING.getName().equals(dataClusterName)) {
-            loadAction = new DefaultLoadAction(dataClusterName, dataModelName, needValidate);
+        if (needValidate || updateReport || XSystemObjects.DC_PROVISIONING.getName().equals(dataClusterName)) {
+            loadAction = new DefaultLoadAction(dataClusterName, dataModelName, needValidate, updateReport, source);
         } else {
             loadAction = new OptimizedLoadAction(dataClusterName, typeName, dataModelName, needAutoGenPK);
         }

@@ -10,6 +10,60 @@
 
 package com.amalto.core.storage.hibernate;
 
+import static org.hibernate.criterion.Restrictions.and;
+import static org.hibernate.criterion.Restrictions.eq;
+import static org.hibernate.criterion.Restrictions.ge;
+import static org.hibernate.criterion.Restrictions.gt;
+import static org.hibernate.criterion.Restrictions.ilike;
+import static org.hibernate.criterion.Restrictions.in;
+import static org.hibernate.criterion.Restrictions.isNull;
+import static org.hibernate.criterion.Restrictions.le;
+import static org.hibernate.criterion.Restrictions.like;
+import static org.hibernate.criterion.Restrictions.lt;
+import static org.hibernate.criterion.Restrictions.not;
+import static org.hibernate.criterion.Restrictions.or;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.lang.NotImplementedException;
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
+import org.hibernate.Hibernate;
+import org.hibernate.ScrollMode;
+import org.hibernate.ScrollableResults;
+import org.hibernate.Session;
+import org.hibernate.criterion.AggregateProjection;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projection;
+import org.hibernate.criterion.ProjectionList;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.PropertyProjection;
+import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.SQLProjection;
+import org.hibernate.internal.CriteriaImpl;
+import org.hibernate.sql.JoinType;
+import org.hibernate.transform.DistinctRootEntityResultTransformer;
+import org.hibernate.type.IntegerType;
+import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.CompoundFieldMetadata;
+import org.talend.mdm.commmon.metadata.DefaultMetadataVisitor;
+import org.talend.mdm.commmon.metadata.EnumerationFieldMetadata;
+import org.talend.mdm.commmon.metadata.FieldMetadata;
+import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
+import org.talend.mdm.commmon.metadata.SimpleTypeFieldMetadata;
+import org.talend.mdm.commmon.metadata.Types;
+
 import com.amalto.core.query.user.Alias;
 import com.amalto.core.query.user.BigDecimalConstant;
 import com.amalto.core.query.user.BinaryLogicOperator;
@@ -72,59 +126,7 @@ import com.amalto.core.storage.datasource.RDBMSDataSource;
 import com.amalto.core.storage.exception.UnsupportedQueryException;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.record.StorageConstants;
-import org.apache.commons.lang.NotImplementedException;
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
-import org.hibernate.Criteria;
-import org.hibernate.Hibernate;
-import org.hibernate.ScrollMode;
-import org.hibernate.ScrollableResults;
-import org.hibernate.Session;
-import org.hibernate.criterion.AggregateProjection;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projection;
-import org.hibernate.criterion.ProjectionList;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.PropertyProjection;
-import org.hibernate.criterion.Restrictions;
-import org.hibernate.criterion.SQLProjection;
-import org.hibernate.internal.CriteriaImpl;
-import org.hibernate.sql.JoinType;
-import org.hibernate.transform.DistinctRootEntityResultTransformer;
-import org.hibernate.type.IntegerType;
-import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
-import org.talend.mdm.commmon.metadata.CompoundFieldMetadata;
-import org.talend.mdm.commmon.metadata.DefaultMetadataVisitor;
-import org.talend.mdm.commmon.metadata.EnumerationFieldMetadata;
-import org.talend.mdm.commmon.metadata.FieldMetadata;
-import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
-import org.talend.mdm.commmon.metadata.SimpleTypeFieldMetadata;
-import org.talend.mdm.commmon.metadata.Types;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import static org.hibernate.criterion.Restrictions.and;
-import static org.hibernate.criterion.Restrictions.eq;
-import static org.hibernate.criterion.Restrictions.ge;
-import static org.hibernate.criterion.Restrictions.gt;
-import static org.hibernate.criterion.Restrictions.ilike;
-import static org.hibernate.criterion.Restrictions.in;
-import static org.hibernate.criterion.Restrictions.isNull;
-import static org.hibernate.criterion.Restrictions.le;
-import static org.hibernate.criterion.Restrictions.like;
-import static org.hibernate.criterion.Restrictions.lt;
-import static org.hibernate.criterion.Restrictions.not;
-import static org.hibernate.criterion.Restrictions.or;
+import com.amalto.core.storage.task.StagingConstants;
 
 
 class StandardQueryHandler extends AbstractQueryHandler {
@@ -1260,13 +1262,21 @@ class StandardQueryHandler extends AbstractQueryHandler {
                     } else {
                         throw new IllegalArgumentException("Predicate '" + predicate + "' is not supported on group_size value."); //$NON-NLS-1$ //$NON-NLS-2$
                     }
-                    String sqlConditionBuilder = "("; //$NON-NLS-1$
-                    sqlConditionBuilder += "select count(1) from"; //$NON-NLS-1$
-                    sqlConditionBuilder += ' ' + mainTableName + ' ';
-                    sqlConditionBuilder += "where " + StorageConstants.METADATA_TASK_ID + " = " + mainTableAlias + "." + StorageConstants.METADATA_TASK_ID; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                    sqlConditionBuilder += ')';
-                    sqlConditionBuilder += ' ' + comparator + ' ' + value;
-                    return Restrictions.sqlRestriction(sqlConditionBuilder);
+                    StringBuilder sb = new StringBuilder();
+                    sb.append('(');//$NON-NLS-1$
+                    sb.append("SELECT count(1) FROM");//$NON-NLS-1$
+                    sb.append(' ').append(mainTableName).append(' ');//$NON-NLS-1$ //$NON-NLS-2$
+                    sb.append("WHERE ").append(StorageConstants.METADATA_TASK_ID).append('=');//$NON-NLS-1$ //$NON-NLS-2$
+                    sb.append(mainTableAlias).append('.').append(StorageConstants.METADATA_TASK_ID);//$NON-NLS-1$
+                    if (!MatchingIdentifier.get()) {
+                        sb.append(" AND ").append(StorageConstants.METADATA_STAGING_STATUS);//$NON-NLS-1$
+                        sb.append(" NOT IN (").append(StagingConstants.SUCCESS_VALIDATE).append(',');//$NON-NLS-1$ //$NON-NLS-2$
+                        sb.append(StagingConstants.SUCCESS_MERGED_RECORD_TO_RESOLVE).append(',');//$NON-NLS-1$
+                        sb.append(StagingConstants.SUCCESS_MERGED_RECORD).append(')');//$NON-NLS-1$
+                    }
+                    sb.append(')');//$NON-NLS-1$
+                    sb.append(' ').append(comparator).append(' ').append(value);//$NON-NLS-1$ //$NON-NLS-2$
+                    return Restrictions.sqlRestriction(sb.toString());
                 }
                 if (LOGGER.isDebugEnabled()) {
                     LOGGER.debug("Query on '" + leftFieldCondition + "' is not a user set property. Ignore this condition."); //$NON-NLS-1$ //$NON-NLS-2$

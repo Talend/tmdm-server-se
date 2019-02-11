@@ -27,7 +27,6 @@ import java.util.TreeMap;
 
 import javax.xml.parsers.DocumentBuilder;
 
-import com.amalto.core.storage.record.StorageConstants;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.dom4j.DocumentHelper;
@@ -45,7 +44,6 @@ import org.talend.mdm.webapp.base.client.model.ForeignKeyBean;
 import org.talend.mdm.webapp.base.client.model.ItemBaseModel;
 import org.talend.mdm.webapp.base.client.model.ItemBasePageLoadResult;
 import org.talend.mdm.webapp.base.client.model.ItemResult;
-import org.talend.mdm.webapp.base.client.util.LanguageUtil;
 import org.talend.mdm.webapp.base.client.util.MultilanguageMessageParser;
 import org.talend.mdm.webapp.base.server.ForeignKeyHelper;
 import org.talend.mdm.webapp.base.server.exception.WebBaseException;
@@ -104,7 +102,7 @@ import com.amalto.core.save.context.BeforeSaving;
 import com.amalto.core.server.MDMContextAccessor;
 import com.amalto.core.server.ServerContext;
 import com.amalto.core.server.StorageAdmin;
-import com.amalto.core.storage.Storage;
+import com.amalto.core.storage.record.StorageConstants;
 import com.amalto.core.storage.services.BulkUpdate;
 import com.amalto.core.storage.task.StagingConstants;
 import com.amalto.core.util.CoreException;
@@ -625,6 +623,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             LOG.error(e.getMessage(), e);
             throw new ServiceException(MESSAGES.getMessage(locale, "find_view_error", viewPk)); //$NON-NLS-1$
         }
+        vb.setDescription(ViewHelper.getViewLabel(language, wsView));
         EntityModel entityModel = null;
         try {
             // bind entity model

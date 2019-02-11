@@ -13,7 +13,6 @@ package com.amalto.core.load.action;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.util.webapp.XSystemObjects;
 
@@ -37,10 +36,17 @@ public class DefaultLoadAction implements LoadAction {
 
     private final boolean needValidate;
 
-    public DefaultLoadAction(String dataClusterName, String dataModelName, boolean needValidate) {
+    private final boolean updateReport;
+
+    private final String source;
+
+    public DefaultLoadAction(String dataClusterName, String dataModelName, boolean needValidate, boolean updateReport,
+            String source) {
         this.dataClusterName = dataClusterName;
         this.dataModelName = dataModelName;
         this.needValidate = needValidate;
+        this.updateReport = updateReport;
+        this.source = source;
     }
 
     @Override
@@ -59,10 +65,10 @@ public class DefaultLoadAction implements LoadAction {
                 if (xmlData != null && xmlData.trim().length() > 0) {
                     // Note: in case you wish to change the "replace" behavior, also check
                     // com.amalto.core.save.context.BulkLoadContext.isReplace()
-                    DocumentSaverContext context = contextFactory.create(dataClusterName, dataModelName, StringUtils.EMPTY,
+                    DocumentSaverContext context = contextFactory.create(dataClusterName, dataModelName, source,
                             new ByteArrayInputStream(xmlData.getBytes("UTF-8")), //$NON-NLS-1$
                             true, // Always replace in this case (bulk load).
-                            needValidate, false, false, XSystemObjects.DC_PROVISIONING.getName().equals(dataClusterName)); // Enforce
+                            needValidate, updateReport, false, XSystemObjects.DC_PROVISIONING.getName().equals(dataClusterName)); // Enforce
                                                                                                                            // auto
                                                                                                                            // commit
                                                                                                                            // for

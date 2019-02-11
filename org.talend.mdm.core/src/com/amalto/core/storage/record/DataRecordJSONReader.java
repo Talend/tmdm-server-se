@@ -22,7 +22,9 @@ import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.metadata.*;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 import java.util.Map.Entry;
 
 import com.google.gson.JsonArray;
@@ -40,6 +42,8 @@ public class DataRecordJSONReader implements DataRecordReader<JsonElement> {
 
     private String entityName = null;
 
+    private static Set<String> tagNames = null;
+
     public DataRecordJSONReader() {
     }
 
@@ -48,6 +52,7 @@ public class DataRecordJSONReader implements DataRecordReader<JsonElement> {
         DataRecord dataRecord = new DataRecord(type, metadata);
         entityName = type.getName();
         rootElement = (JsonElement) element.getAsJsonObject().get(type.getName());
+        tagNames = new HashSet<>();
         readElement(repository, dataRecord, type, rootElement);
         // Process fields that are links to other field values.
         ComplexTypeMetadata dataRecordType = dataRecord.getType();
@@ -125,6 +130,7 @@ public class DataRecordJSONReader implements DataRecordReader<JsonElement> {
         for (Iterator<Entry<String, JsonElement>> iterator = root.entrySet().iterator(); iterator.hasNext(); ) {
             Entry<String, JsonElement> entry = iterator.next();
             String tagName = entry.getKey();
+            tagNames.add(tagName);
             JsonElement currentChild = entry.getValue();
             if (currentChild instanceof JsonObject) {
                 if (!type.hasField(tagName)) {
@@ -178,24 +184,21 @@ public class DataRecordJSONReader implements DataRecordReader<JsonElement> {
             return;
         }
 
-        StringBuilder builder = new StringBuilder();
         String nodeValue = currentChild.getAsString();
-        if (nodeValue != null) {
-            builder.append(nodeValue.trim());
-        }
-        String textContent = builder.toString();
-        if (!textContent.isEmpty()) {
-            if (type.hasField(tagName)) {
-                FieldMetadata field = type.getField(tagName);
-                if (field instanceof ReferenceFieldMetadata) {
-                    ComplexTypeMetadata actualType = ((ReferenceFieldMetadata) field).getReferencedType();
-                    dataRecord.set(field, StorageMetadataUtils.convert(textContent, field, actualType));
-                } else {
-                    dataRecord.set(field, StorageMetadataUtils.convert(textContent, field, type));
-                }
+        if (type.hasField(tagName)) {
+            FieldMetadata field = type.getField(tagName);
+            if (field instanceof ReferenceFieldMetadata) {
+                ComplexTypeMetadata actualType = ((ReferenceFieldMetadata) field).getReferencedType();
+                dataRecord.set(field, StorageMetadataUtils.convert(nodeValue, field, actualType));
             } else {
-                throwNotOwnedField(tagName);
+                dataRecord.set(field, StorageMetadataUtils.convert(nodeValue, field, type));
             }
+        } else {
+            throwNotOwnedField(tagName);
         }
+    }
+
+    public static Set<String> getValidTagNames() {
+        return tagNames;
     }
 }

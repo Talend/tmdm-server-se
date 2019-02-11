@@ -51,16 +51,11 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Accessibility;
 
-/**
- * DOC Administrator class global comment. Detailled comment
- */
 public class JournalComparisonPanel extends ContentPanel {
     
     private static final String LEFT_BRAKCET = "[";
 
     private static final String RIGHT_BRAKCET = "]";
-
-    private JournalServiceAsync service = Registry.get(Journal.JOURNAL_SERVICE);
 
     private ToolBar toolbar;
 
@@ -111,7 +106,7 @@ public class JournalComparisonPanel extends ContentPanel {
         toolbar.add(restoreButton);
         
 
-        service.getComparisionTree(parameter, UrlUtil.getLanguage(), new SessionAwareAsyncCallback<JournalTreeModel>() {
+        getService().getComparisionTree(parameter, UrlUtil.getLanguage(), new SessionAwareAsyncCallback<JournalTreeModel>() {
 
             @Override
             public void onSuccess(JournalTreeModel root) {
@@ -333,7 +328,7 @@ public class JournalComparisonPanel extends ContentPanel {
         }
         
         if (UpdateReportPOJO.OPERATION_TYPE_UPDATE.equals(journalGridModel.getOperationType()) || (UpdateReportPOJO.OPERATION_TYPE_LOGICAL_DELETE.equals(journalGridModel.getOperationType()) && isBeforePanel)) {
-            service.isAdmin(new SessionAwareAsyncCallback<Boolean>() {
+            getService().isAdmin(new SessionAwareAsyncCallback<Boolean>() {
 
                 @Override
                 public void onSuccess(Boolean isAdmin) {
@@ -342,7 +337,7 @@ public class JournalComparisonPanel extends ContentPanel {
 
                             @Override
                             public void componentSelected(ButtonEvent ce) {
-                                JournalGridPanel.getInstance().restore(parameter,true);
+                                getJournalGridPanel().restore(parameter, true);
                             };
                         });
                         restoreButton.setEnabled(parameter.isAuth());
@@ -442,5 +437,13 @@ public class JournalComparisonPanel extends ContentPanel {
 
     public Map<String, JournalTreeModel> getModelMap() {
         return modelMap;
+    }
+
+    protected JournalServiceAsync getService() {
+        return Registry.get(Journal.JOURNAL_SERVICE);
+    }
+
+    protected JournalGridPanel getJournalGridPanel() {
+        return JournalGridPanel.getInstance();
     }
 }

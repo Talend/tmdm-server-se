@@ -24,8 +24,6 @@ import com.google.gwt.core.client.JavaScriptObject;
  */
 public class JournalTimelinePanel extends ContentPanel {
 
-    private JournalServiceAsync service = Registry.get(Journal.JOURNAL_SERVICE);
-
     public static String TIMELIME_INIT = "init"; //$NON-NLS-1$
 
     private boolean isActive = false;
@@ -41,22 +39,6 @@ public class JournalTimelinePanel extends ContentPanel {
     private JavaScriptObject eventCache;
 
     private int timeLinePanelHeight;
-
-    private String dataModel;
-
-    private String entity;
-
-    private String key;
-
-    private String source;
-
-    private String operationType;
-
-    private String startDate;
-
-    private String endDate;
-
-    private boolean isStrict;
 
     private int start;
 
@@ -83,15 +65,6 @@ public class JournalTimelinePanel extends ContentPanel {
     public void initTimeline(int startIndex, String config) {
         isInit = true;
         initJsEnv();
-        JournalSearchCriteria criteria = Registry.get(Journal.SEARCH_CRITERIA);
-        dataModel = criteria.getDataModel() == null ? "" : criteria.getDataModel(); //$NON-NLS-1$
-        entity = criteria.getEntity() == null ? "" : criteria.getEntity(); //$NON-NLS-1$
-        key = criteria.getKey() == null ? "" : criteria.getKey(); //$NON-NLS-1$
-        source = criteria.getSource() == null ? "" : criteria.getSource(); //$NON-NLS-1$
-        operationType = criteria.getOperationType() == null ? "" : criteria.getOperationType(); //$NON-NLS-1$
-        startDate = criteria.getStartDate() == null ? "" : String.valueOf(criteria.getStartDate().getTime()); //$NON-NLS-1$
-        endDate = criteria.getEndDate() == null ? "" : String.valueOf(criteria.getEndDate().getTime()); //$NON-NLS-1$
-        isStrict = criteria.isStrict();
         String[] cfgArray = (startIndex + config).split(","); //$NON-NLS-1$
         start = Integer.parseInt(cfgArray[0]);
         limit = Integer.parseInt(cfgArray[1]);
@@ -102,9 +75,9 @@ public class JournalTimelinePanel extends ContentPanel {
     }
 
     private void loadTimeline(int startIndex) {
+        JournalSearchCriteria criteria = getSearchCriteria();
         start = startIndex;
-        service.getReportString(startIndex, limit, sort, field, language, dataModel, entity, key, source, operationType,
-                startDate, endDate, isStrict, new SessionAwareAsyncCallback<String>() {
+        getService().getReportString(criteria, startIndex, limit, sort, field, language, new SessionAwareAsyncCallback<String>() {
 
             public void onSuccess(String result) {
                 parseResult(result);
@@ -239,5 +212,13 @@ public class JournalTimelinePanel extends ContentPanel {
 
     public void setActive(boolean isActive) {
         this.isActive = isActive;
+    }
+
+    protected JournalServiceAsync getService() {
+        return Registry.get(Journal.JOURNAL_SERVICE);
+    }
+
+    protected JournalSearchCriteria getSearchCriteria() {
+        return Registry.get(Journal.SEARCH_CRITERIA);
     }
 }

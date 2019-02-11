@@ -70,8 +70,6 @@ public class JournalGridPanel extends ContentPanel {
 
     private static JournalGridPanel instance;
 
-    private JournalServiceAsync service = Registry.get(Journal.JOURNAL_SERVICE);
-
     private Grid<JournalGridModel> grid;
 
     private ListStore<JournalGridModel> store;
@@ -95,7 +93,7 @@ public class JournalGridPanel extends ContentPanel {
         return instance;
     }
 
-    private JournalGridPanel() {
+    protected JournalGridPanel() {
         this.setLayout(new FitLayout());
         this.setBodyBorder(false);
         this.setFrame(false);
@@ -150,14 +148,14 @@ public class JournalGridPanel extends ContentPanel {
         ccUserName.setWidth(120);
         ccList.add(ccUserName);
 
-        criteria = Registry.get(Journal.SEARCH_CRITERIA);
+        criteria = getSearchCriteria();
         RpcProxy<PagingLoadResult<JournalGridModel>> proxy = new RpcProxy<PagingLoadResult<JournalGridModel>>() {
 
             @Override
             protected void load(Object loadConfig, final AsyncCallback<PagingLoadResult<JournalGridModel>> callback) {
                 pagingLoadConfig = (PagingLoadConfig) loadConfig;
                 pagingLoadConfig.setLimit(pagetoolBar.getPageSize());
-                service.getJournalList(criteria, BasePagingLoadConfigImpl.copyPagingLoad(pagingLoadConfig),
+                getService().getJournalList(criteria, BasePagingLoadConfigImpl.copyPagingLoad(pagingLoadConfig),
                         new SessionAwareAsyncCallback<ItemBasePageLoadResult<JournalGridModel>>() {
 
                             @Override
@@ -191,7 +189,7 @@ public class JournalGridPanel extends ContentPanel {
         pagetoolBar.bind(loader);
         grid.setLoadMask(true);
         grid.setStateful(true);
-        grid.setStateId("journalgrid");//$NON-NLS-1$
+        grid.setStateId(getGridStateId());
         grid.addListener(Events.Attach, new Listener<GridEvent<JournalGridModel>>() {
 
             @Override
@@ -213,7 +211,7 @@ public class JournalGridPanel extends ContentPanel {
             @Override
             public void handleEvent(GridEvent<JournalGridModel> be) {
                 final JournalGridModel gridModel = be.getModel();
-                service.isJournalHistoryExist(JournalSearchUtil.buildParameter(gridModel, BEFORE_ACTION, true),
+                getService().isJournalHistoryExist(JournalSearchUtil.buildParameter(gridModel, BEFORE_ACTION, true),
                         new SessionAwareAsyncCallback<Boolean>() {
 
                             @Override
@@ -244,12 +242,12 @@ public class JournalGridPanel extends ContentPanel {
     }
 
     public void openTabPanel(final JournalGridModel gridModel) {
-        service.getDetailTreeModel(JournalSearchUtil.buildParameter(gridModel, "before", true), UrlUtil.getLanguage(),
+        getService().getDetailTreeModel(JournalSearchUtil.buildParameter(gridModel, "before", true), UrlUtil.getLanguage(),
                 new SessionAwareAsyncCallback<JournalTreeModel>() {
 
                     @Override
                     public void onSuccess(final JournalTreeModel root) {
-                        service.isEnterpriseVersion(new SessionAwareAsyncCallback<Boolean>() {
+                        getService().isEnterpriseVersion(new SessionAwareAsyncCallback<Boolean>() {
 
                             @Override
                             public void onSuccess(Boolean isEnterprise) {
@@ -352,7 +350,7 @@ public class JournalGridPanel extends ContentPanel {
 
     private void openDebugPanel(Boolean isEnterprise, JournalGridModel gridModel, JournalTreeModel root) {
         if (isEnterprise) {
-            JournalHistoryPanel journalHistoryPanel = new JournalHistoryPanel(root, gridModel, criteria, root.isAuth(), 550);
+            JournalHistoryPanel journalHistoryPanel = generateJournalHistoryPanel(root, gridModel, root.isAuth(), 550);
             Window window = new Window();
             window.setLayout(new FitLayout());
             window.add(journalHistoryPanel);
@@ -362,7 +360,7 @@ public class JournalGridPanel extends ContentPanel {
             window.show();
             journalHistoryPanel.getJournalDataPanel().getTree().setExpanded(root, true);
         } else {
-            JournalDataPanel journalDataPanel = new JournalDataPanel(root, gridModel);
+            JournalDataPanel journalDataPanel = generateJournalDataPanel(root, gridModel);
             Window window = new Window();
             window.setLayout(new FitLayout());
             window.add(journalDataPanel);
@@ -376,12 +374,12 @@ public class JournalGridPanel extends ContentPanel {
 
     private void openGWTPanel(Boolean isEnterprise, JournalGridModel gridModel, JournalTreeModel root) {
         if (isEnterprise) {
-            int width = JournalTabPanel.getInstance().getWidth() / 2 - 2;
-            JournalHistoryPanel journalHistoryPanel = new JournalHistoryPanel(root, gridModel, criteria, root.isAuth(), width);
+            int width = getJournalTabPanel().getWidth() / 2 - 2;
+            JournalHistoryPanel journalHistoryPanel = generateJournalHistoryPanel(root, gridModel, root.isAuth(), width);
             this.openHistoryTabPanel(gridModel.getIds().concat(criteria.toString()), journalHistoryPanel);
             journalHistoryPanel.getJournalDataPanel().getTree().setExpanded(root, true);
         } else {
-            JournalDataPanel journalDataPanel = new JournalDataPanel(root, gridModel);
+            JournalDataPanel journalDataPanel = generateJournalDataPanel(root, gridModel);
             this.openDataTabPanel(gridModel.getIds(), journalDataPanel);
             journalDataPanel.getTree().setExpanded(root, true);
         }
@@ -402,7 +400,7 @@ public class JournalGridPanel extends ContentPanel {
         });
         contextMenu.add(viewChagesMenuItem);
 
-        service.isEnterpriseVersion(new SessionAwareAsyncCallback<Boolean>() {
+        getService().isEnterpriseVersion(new SessionAwareAsyncCallback<Boolean>() {
 
             @Override
             public void onSuccess(Boolean result) {
@@ -425,7 +423,7 @@ public class JournalGridPanel extends ContentPanel {
                         public void handleEvent(GridEvent<JournalGridModel> be) {
                             final JournalGridModel gridModel = be.getModel();
 
-                            service.isAdmin(new SessionAwareAsyncCallback<Boolean>() {
+                            getService().isAdmin(new SessionAwareAsyncCallback<Boolean>() {
 
                                 @Override
                                 public void onSuccess(Boolean isAdmin) {
@@ -437,7 +435,7 @@ public class JournalGridPanel extends ContentPanel {
                                         restoreMenuItem.setEnabled(false);
                                     }
 
-                                    service.isJournalHistoryExist(
+                                    getService().isJournalHistoryExist(
                                             JournalSearchUtil.buildParameter(gridModel, BEFORE_ACTION, true),
                                             new SessionAwareAsyncCallback<Boolean>() {
 
@@ -487,7 +485,7 @@ public class JournalGridPanel extends ContentPanel {
                     public void handleEvent(MessageBoxEvent be) {
                         if (be.getButtonClicked().getItemId().equals(Dialog.YES)) {
                             if (UpdateReportPOJO.OPERATION_TYPE_LOGICAL_DELETE.equals(parameter.getOperationType())) {
-                                service.checkConflict(parameter.getDataClusterName(), parameter.getConceptName(),
+                                getService().checkConflict(parameter.getDataClusterName(), parameter.getConceptName(),
                                         parameter.getId()[0], new SessionAwareAsyncCallback<Boolean>() {
 
                                             @Override
@@ -518,7 +516,7 @@ public class JournalGridPanel extends ContentPanel {
     }
 
     private void restoreRecord(final JournalParameters parameter, final boolean isCloseTabPanel) {
-        service.restoreRecord(parameter, UrlUtil.getLanguage(), new SessionAwareAsyncCallback<Void>() {
+        getService().restoreRecord(parameter, UrlUtil.getLanguage(), new SessionAwareAsyncCallback<Void>() {
 
             @Override
             public void onSuccess(Void result) {
@@ -551,6 +549,30 @@ public class JournalGridPanel extends ContentPanel {
                         });
             }
         });
+    }
+    
+    protected String getGridStateId() {
+        return "journalgrid"; //$NON-NLS-1$
+    }
+
+    protected JournalSearchCriteria getSearchCriteria() {
+        return Registry.get(Journal.SEARCH_CRITERIA);
+    }
+
+    protected JournalServiceAsync getService() {
+        return Registry.get(Journal.JOURNAL_SERVICE);
+    }
+
+    protected JournalTabPanel getJournalTabPanel() {
+        return JournalTabPanel.getInstance();
+    }
+
+    protected JournalDataPanel generateJournalDataPanel(JournalTreeModel root, JournalGridModel gridModel) {
+        return new JournalDataPanel(root, gridModel);
+    }
+
+    protected JournalHistoryPanel generateJournalHistoryPanel(JournalTreeModel root, JournalGridModel gridModel, boolean isAuth, int width) {
+        return new JournalHistoryPanel(root, gridModel, isAuth, width);
     }
 
     private native void closeTabPanel()/*-{

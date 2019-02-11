@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -78,7 +78,7 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
 
     private final Set<String> touchedPaths = new HashSet<String>();
 
-    private final Map<FieldMetadata, Integer> originalFieldToLastIndex = new HashMap<FieldMetadata, Integer>();
+    private final Map<FieldMetadata, Integer> invertedIndex = new HashMap<FieldMetadata, Integer>();
 
     protected final boolean preserveCollectionOldValues;
 
@@ -322,6 +322,12 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
             if (newAccessor.exist()) { // new accessor exist
                 if (newAccessor.get() != null && !newAccessor.get().isEmpty()) { // Empty accessor means no op to ensure legacy behavior
                     generateNoOp(lastMatchPath);
+                    if (comparedField.isMany() && preserveCollectionOldValues) {
+                        int newItemIndex = Integer.parseInt(StringUtils.substringBetween(path, "[", "]"));//$NON-NLS-1$ //$NON-NLS-2$
+                        int oldItemIndex = originalDocument.createAccessor(StringUtils.substringBeforeLast(path, "[")).size();//$NON-NLS-1$
+                        int insertIndex = newItemIndex + oldItemIndex;
+                        path = path.replaceAll("\\[\\d+\\]", "[" + insertIndex + "]");//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    }
                     actions.add(new FieldUpdateAction(date, source, userName, path, StringUtils.EMPTY, newAccessor.get(), comparedField, userAction));
                     generateNoOp(path);
                 } else if (EUUIDCustomType.AUTO_INCREMENT.getName().equalsIgnoreCase(comparedField.getType().getName())
@@ -377,9 +383,9 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
                 String newValue = newAccessor.get();
                 if (newValue != null && !(comparedField instanceof ContainedTypeFieldMetadata)) {
                     if (comparedField.isMany() && preserveCollectionOldValues) {
-                        // Append at the end of the collection
-                        if (!originalFieldToLastIndex.containsKey(comparedField)) {
-                            originalFieldToLastIndex.put(comparedField, originalAccessor.size());
+                        // Inverted order the index
+                        if (!invertedIndex.containsKey(comparedField)) {
+                            invertedIndex.put(comparedField, originalAccessor.size() + Integer.parseInt(StringUtils.substringBetween(path, "[", "]")));
                         }
                         String previousPathElement = this.path.pop();
                         int insertIndex = getInsertIndex(comparedField);
@@ -424,9 +430,8 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
 
     private int getInsertIndex(FieldMetadata comparedField) {
         if (insertIndex < 0) {
-            int newIndex = originalFieldToLastIndex.get(comparedField);
-            newIndex = newIndex + 1;
-            originalFieldToLastIndex.put(comparedField, newIndex);
+            int newIndex = invertedIndex.get(comparedField);
+            invertedIndex.put(comparedField, newIndex - 1);
             return newIndex;
         } else {
             return insertIndex;

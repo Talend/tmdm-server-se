@@ -36,7 +36,7 @@ class SimpleValue implements Setter, Getter {
                         .equals(referValue, value.replaceAll("\\[", StringUtils.EMPTY).replaceAll("]", StringUtils.EMPTY))) {
                     needResetValue = true;
                 }
-            } else if (record.get(element.field) == null) {
+            } else {
                 needResetValue = true;
             }
             if (needResetValue) {

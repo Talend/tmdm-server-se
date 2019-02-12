@@ -48,7 +48,7 @@ class ManyValue implements Setter, Getter {
                         .equals(referValue, value.replaceAll("\\[", StringUtils.EMPTY).replaceAll("]", StringUtils.EMPTY))) {
                     needResetValue = true;
                 }
-            } else if (list.get(element.index) == null) {
+            } else {
                 needResetValue = true;
             }
             if (needResetValue) {

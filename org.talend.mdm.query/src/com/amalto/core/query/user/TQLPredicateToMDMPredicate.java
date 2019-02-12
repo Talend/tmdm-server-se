@@ -155,7 +155,7 @@ public class TQLPredicateToMDMPredicate implements IASTVisitor<Condition> {
     public Condition visit(FieldBetweenExpression fieldBetweenExpression) {
         fieldBetweenExpression.getField().accept(this);
         final int start = Integer.parseInt(fieldBetweenExpression.getLeft().getValue());
-        final int end = Integer.parseInt(fieldBetweenExpression.getLeft().getValue());
+        final int end = Integer.parseInt(fieldBetweenExpression.getRight().getValue());
         return new Range(popCurrentExpression(), start, end);
     }
 

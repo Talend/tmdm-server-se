@@ -40,15 +40,11 @@ class ManyValue implements Setter, Getter {
         }
         if (element.field instanceof ReferenceFieldMetadata) {
             ReferenceFieldMetadata fieldMetadata = (ReferenceFieldMetadata) element.field;
-            boolean needResetValue = false;
-            Object oldData = list.get(element.index);
-            if (oldData != null) {
-                String oldValue = '[' + String.valueOf(((DataRecord) oldData).get(fieldMetadata.getReferencedField())) + ']';
-                if (!StringUtils.equals(oldValue, value)) {
-                    needResetValue = true;
-                }
-            } else {
-                needResetValue = true;
+            DataRecord oldRecord = (DataRecord) list.get(element.index);
+            boolean needResetValue = true;
+            if (oldRecord != null) {
+                String oldValue = String.valueOf(oldRecord.get(fieldMetadata.getReferencedField()));
+                needResetValue = !value.equals('[' + oldValue + ']');
             }
             if (needResetValue) {
                 ComplexTypeMetadata referencedType = fieldMetadata.getReferencedType();
@@ -56,7 +52,7 @@ class ManyValue implements Setter, Getter {
                 list.set(element.index, referencedRecord);
             }
         } else {
-            list.set(element.index, StorageMetadataUtils.convert(String.valueOf(value), element.field));
+            list.set(element.index, StorageMetadataUtils.convert(value, element.field));
         }
     }
 

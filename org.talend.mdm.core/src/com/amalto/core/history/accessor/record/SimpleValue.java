@@ -29,14 +29,10 @@ class SimpleValue implements Setter, Getter {
         }
         if (element.field instanceof ReferenceFieldMetadata) {
             ReferenceFieldMetadata fieldMetadata = (ReferenceFieldMetadata) element.field;
-            boolean needResetValue = false;
+            boolean needResetValue = true;
             if (record.get(element.field) != null) {
-                String oldValue = '[' + String.valueOf(record.get(fieldMetadata.getReferencedField())) + ']';
-                if (!StringUtils.equals(oldValue, value)) {
-                    needResetValue = true;
-                }
-            } else {
-                needResetValue = true;
+                String oldValue = String.valueOf(record.get(fieldMetadata.getReferencedField()));
+                needResetValue = !value.equals('[' + oldValue + ']');
             }
             if (needResetValue) {
                 ComplexTypeMetadata referencedType = fieldMetadata.getReferencedType();

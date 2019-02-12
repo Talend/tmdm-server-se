@@ -41,7 +41,6 @@ import java.util.Set;
 
 import javax.xml.XMLConstants;
 
-import com.amalto.core.storage.record.StorageConstants;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -158,6 +157,7 @@ import com.amalto.core.storage.prepare.StorageCleaner;
 import com.amalto.core.storage.prepare.StorageInitializer;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.record.DataRecordConverter;
+import com.amalto.core.storage.record.StorageConstants;
 import com.amalto.core.storage.record.metadata.DataRecordMetadata;
 import com.amalto.core.storage.transaction.StorageTransaction;
 import com.amalto.core.storage.transaction.TransactionManager;
@@ -193,11 +193,11 @@ public class HibernateStorage implements Storage {
     private static final MetadataChecker METADATA_CHECKER = new MetadataChecker();
 
     // Default value is "true" (meaning the storage will try to create database if it doesn't exist).
-    private static final boolean autoPrepare = Boolean.valueOf(MDMConfiguration.getConfiguration().getProperty(
-            "db.autoPrepare", "true")); //$NON-NLS-1$ //$NON-NLS-2$
+    private static final boolean autoPrepare = Boolean
+            .valueOf(MDMConfiguration.getConfiguration().getProperty("db.autoPrepare", "true")); //$NON-NLS-1$ //$NON-NLS-2$
 
-    private static final Boolean FLUSH_ON_LOAD = Boolean.valueOf(MDMConfiguration.getConfiguration().getProperty(
-            "db.flush.on.load", "false")); //$NON-NLS-1$ //$NON-NLS-2$
+    private static final Boolean FLUSH_ON_LOAD = Boolean
+            .valueOf(MDMConfiguration.getConfiguration().getProperty("db.flush.on.load", "false")); //$NON-NLS-1$ //$NON-NLS-2$
 
     private final String storageName;
 
@@ -316,32 +316,26 @@ public class HibernateStorage implements Storage {
             class MDMMappingsImpl extends MappingsImpl {
 
                 @Override
-                public Table addTable(
-                        String schema,
-                        String catalog,
-                        String name,
-                        String subselect,
-                        boolean isAbstract) {
-                    name = getObjectNameNormalizer().normalizeIdentifierQuoting( name );
-                    schema = getObjectNameNormalizer().normalizeIdentifierQuoting( schema );
-                    catalog = getObjectNameNormalizer().normalizeIdentifierQuoting( catalog );
+                public Table addTable(String schema, String catalog, String name, String subselect, boolean isAbstract) {
+                    name = getObjectNameNormalizer().normalizeIdentifierQuoting(name);
+                    schema = getObjectNameNormalizer().normalizeIdentifierQuoting(schema);
+                    catalog = getObjectNameNormalizer().normalizeIdentifierQuoting(catalog);
 
-                    String key = subselect == null ? Table.qualify( catalog, schema, name ) : subselect;
-                    Table table = tables.get( key );
+                    String key = subselect == null ? Table.qualify(catalog, schema, name) : subselect;
+                    Table table = tables.get(key);
 
-                    if ( table == null ) {
+                    if (table == null) {
                         table = new MDMTable();
                         ((MDMTable) table).setDataSource(dataSource);
                         table.setAbstract(isAbstract);
-                        table.setName( name );
-                        table.setSchema( schema );
-                        table.setCatalog( catalog );
-                        table.setSubselect( subselect );
-                        tables.put( key, table );
-                    }
-                    else {
-                        if ( !isAbstract ) {
-                            table.setAbstract( false );
+                        table.setName(name);
+                        table.setSchema(schema);
+                        table.setCatalog(catalog);
+                        table.setSubselect(subselect);
+                        tables.put(key, table);
+                    } else {
+                        if (!isAbstract) {
+                            table.setAbstract(false);
                         }
                     }
 
@@ -356,8 +350,8 @@ public class HibernateStorage implements Storage {
                     catalog = getObjectNameNormalizer().normalizeIdentifierQuoting(catalog);
                     String key = subSelect == null ? Table.qualify(catalog, schema, name) : subSelect;
                     if (tables.containsKey(key)) {
-                        throw new DuplicateMappingException(
-                                "Table " + key + " is duplicated.", DuplicateMappingException.Type.TABLE, name); //$NON-NLS-1$ //$NON-NLS-2$
+                        throw new DuplicateMappingException("Table " + key + " is duplicated.", //$NON-NLS-1$ //$NON-NLS-2$
+                                DuplicateMappingException.Type.TABLE, name);
                     }
                     Table table = new MDMDenormalizedTable(includedTable) {
 
@@ -546,8 +540,8 @@ public class HibernateStorage implements Storage {
                         if (!databaseField.getContainingType().isInstantiable()) {
                             Collection<ComplexTypeMetadata> roots = RecommendedIndexes.getRoots(optimizedExpression);
                             for (ComplexTypeMetadata root : roots) {
-                                List<FieldMetadata> path = StorageMetadataUtils.path(mappingRepository.getMappingFromUser(root)
-                                        .getDatabase(), databaseField);
+                                List<FieldMetadata> path = StorageMetadataUtils
+                                        .path(mappingRepository.getMappingFromUser(root).getDatabase(), databaseField);
                                 if (path.size() > 1) {
                                     databaseIndexedFields.addAll(path.subList(0, path.size() - 1));
                                 } else {
@@ -725,7 +719,7 @@ public class HibernateStorage implements Storage {
             export.execute(false, false, false, true);
             if (export.getExceptions().size() > 0) {
                 for (int i = 0; i < export.getExceptions().size(); i++) {
-                    LOGGER.error("Error occurred while producing ddl.",//$NON-NLS-1$
+                    LOGGER.error("Error occurred while producing ddl.", //$NON-NLS-1$
                             (Exception) export.getExceptions().get(i));
                 }
             }
@@ -947,7 +941,9 @@ public class HibernateStorage implements Storage {
         com.amalto.core.storage.transaction.Transaction currentTransaction = transactionManager.currentTransaction();
         StorageTransaction storageTransaction = currentTransaction.include(this);
         if (!storageTransaction.getCoordinator().equals(currentTransaction)) {
-            LOGGER.warn("Current transaction returned by TransactionManager [" + currentTransaction + "] does not match storageTransaction coordinator [" + storageTransaction.getCoordinator() + "]. There is something wrong in TransactionManager"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            LOGGER.warn("Current transaction returned by TransactionManager [" + currentTransaction //$NON-NLS-1$
+                    + "] does not match storageTransaction coordinator [" + storageTransaction.getCoordinator() //$NON-NLS-1$
+                    + "]. There is something wrong in TransactionManager"); //$NON-NLS-1$
         }
         return storageTransaction;
     }
@@ -1066,7 +1062,7 @@ public class HibernateStorage implements Storage {
                 typesToDrop.add((ComplexTypeMetadata) element);
             }
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Change '" + change.getMessage(Locale.getDefault()) + "' requires a database schema update.");  //$NON-NLS-1$ //$NON-NLS-2$
+                LOGGER.debug("Change '" + change.getMessage(Locale.getDefault()) + "' requires a database schema update."); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
     }
@@ -1108,7 +1104,7 @@ public class HibernateStorage implements Storage {
         }
         return typesToDrop;
     }
-    
+
     private Set<ComplexTypeMetadata> findDependentTypesToDelete(MetadataRepository previousRepository,
             Set<ComplexTypeMetadata> typesToDrop, Set<ComplexTypeMetadata> allDependencies) {
         Set<ComplexTypeMetadata> additionalTypes = new HashSet<ComplexTypeMetadata>();
@@ -1131,7 +1127,7 @@ public class HibernateStorage implements Storage {
         }
         return additionalTypes;
     }
-    
+
     private void cleanFullTextIndex(List<ComplexTypeMetadata> sortedTypesToDrop) {
         if (dataSource.supportFullText()) {
             try {
@@ -1174,7 +1170,7 @@ public class HibernateStorage implements Storage {
             }
         }
     }
-    
+
     private void cleanUpdateReports(List<ComplexTypeMetadata> sortedTypesToDrop) {
         StorageAdmin storageAdmin = ServerContext.INSTANCE.get().getStorageAdmin();
         Storage storage = storageAdmin.get(XSystemObjects.DC_UPDATE_PREPORT.getName(), StorageType.MASTER);
@@ -1186,9 +1182,8 @@ public class HibernateStorage implements Storage {
                 storage.begin();
                 for (ComplexTypeMetadata type : sortedTypesToDrop) {
                     try {
-                        UserQueryBuilder qb = from(update)
-                                .where(and(
-                                        eq(update.getField("Concept"), type.getName()), eq(update.getField("DataCluster"), getName()))); //$NON-NLS-1$ //$NON-NLS-2$
+                        UserQueryBuilder qb = from(update).where(and(eq(update.getField("Concept"), type.getName()), //$NON-NLS-1$
+                                eq(update.getField("DataCluster"), getName()))); //$NON-NLS-1$
                         storage.delete(qb.getExpression());
                     } catch (Exception e) {
                         LOGGER.warn("Could not remove update reports for '" + type.getName() + "'.", e); //$NON-NLS-1$ //$NON-NLS-2$
@@ -1203,7 +1198,60 @@ public class HibernateStorage implements Storage {
             LOGGER.warn("Could not correctly clean update reports", e); //$NON-NLS-1$
         }
     }
-    
+
+    private void cleanUpdateReports() {
+        StorageAdmin storageAdmin = ServerContext.INSTANCE.get().getStorageAdmin();
+        Storage storage = storageAdmin.get(XSystemObjects.DC_UPDATE_PREPORT.getName(), StorageType.MASTER);
+        try {
+            if (storage == null) {
+                LOGGER.warn("No update report storage available."); //$NON-NLS-1$
+            } else {
+                ComplexTypeMetadata update = storage.getMetadataRepository().getComplexType("Update"); //$NON-NLS-1$
+                storage.begin();
+                try {
+                    UserQueryBuilder qb = from(update).where(eq(update.getField("DataCluster"), getName())); //$NON-NLS-1$
+                    storage.delete(qb.getExpression());
+
+                } catch (Exception e) {
+                    LOGGER.warn("Could not remove update reports for '" + storage.getName() + "'.", e); //$NON-NLS-1$ //$NON-NLS-2$
+                }
+                storage.commit();
+            }
+        } catch (Exception e) {
+            if (storage != null) {
+                storage.rollback();
+            }
+            LOGGER.warn("Could not correctly clean update reports", e); //$NON-NLS-1$
+        }
+    }
+
+    private void cleanRecycleBins(List<ComplexTypeMetadata> sortedTypesToDrop) {
+        StorageAdmin storageAdmin = ServerContext.INSTANCE.get().getStorageAdmin();
+        Storage storage = storageAdmin.get(StorageAdmin.SYSTEM_STORAGE, StorageType.SYSTEM);
+        try {
+            if (storage == null) {
+                LOGGER.warn("No system storage available."); //$NON-NLS-1$
+            } else {
+                ComplexTypeMetadata droppedItem = storage.getMetadataRepository().getComplexType("dropped-item-pOJO"); //$NON-NLS-1$
+                storage.begin();
+                for (ComplexTypeMetadata type : sortedTypesToDrop) {
+                    try {
+                        UserQueryBuilder qb = from(droppedItem).where(eq(droppedItem.getField("concept-name"), type.getName())); //$NON-NLS-1$
+                        storage.delete(qb.getExpression());
+                    } catch (Exception e) {
+                        LOGGER.warn("Could not remove dropped items for '" + type.getName() + "'.", e); //$NON-NLS-1$ //$NON-NLS-2$
+                    }
+                }
+                storage.commit();
+            }
+        } catch (Exception e) {
+            if (storage != null) {
+                storage.rollback();
+            }
+            LOGGER.warn("Could not correctly clean dropped items", e); //$NON-NLS-1$
+        }
+    }
+
     @Override
     public Set<String> findTablesToDrop(List<ComplexTypeMetadata> sortedTypesToDrop) {
         Set<String> tablesToDrop = new LinkedHashSet<String>();
@@ -1231,7 +1279,7 @@ public class HibernateStorage implements Storage {
         }
         return tablesToDrop;
     }
-    
+
     private void cleanImpactedTables(List<ComplexTypeMetadata> sortedTypesToDrop) {
         Set<String> tablesToDrop = findTablesToDrop(sortedTypesToDrop);
         int totalCount = tablesToDrop.size();
@@ -1250,7 +1298,7 @@ public class HibernateStorage implements Storage {
                         dropedTables.add(table);
                         successCount++;
                     } catch (SQLException e) {
-                        LOGGER.warn("Could not delete '" + table + "' in round "+ totalRound + "."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                        LOGGER.warn("Could not delete '" + table + "' in round " + totalRound + "."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                     } finally {
                         statement.close();
                     }
@@ -1258,7 +1306,8 @@ public class HibernateStorage implements Storage {
                 tablesToDrop.removeAll(dropedTables);
             }
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Successfully deleted " + successCount + " tables (out of " + totalCount + " tables) in "+ totalRound +" rounds."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                LOGGER.debug("Successfully deleted " + successCount + " tables (out of " + totalCount + " tables) in " //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                        + totalRound + " rounds."); //$NON-NLS-1$
             }
         } catch (SQLException e) {
             throw new RuntimeException("Could not acquire connection to database.", e); //$NON-NLS-1$
@@ -1272,7 +1321,7 @@ public class HibernateStorage implements Storage {
             }
         }
     }
-    
+
     @Override
     public void adapt(MetadataRepository newRepository, boolean force) {
         if (newRepository == null) {
@@ -1286,6 +1335,8 @@ public class HibernateStorage implements Storage {
             cleanFullTextIndex(sortedTypesToDrop);
             // Clean update reports
             cleanUpdateReports(sortedTypesToDrop);
+            // Clean records in recycle bin
+            cleanRecycleBins(sortedTypesToDrop);
             // Clean impacted tables
             cleanImpactedTables(sortedTypesToDrop);
         }
@@ -1336,7 +1387,7 @@ public class HibernateStorage implements Storage {
         }
     }
 
-    private Map<ImpactAnalyzer.Impact, List<Change>> getImpactsResult(DiffResults diffResults){
+    private Map<ImpactAnalyzer.Impact, List<Change>> getImpactsResult(DiffResults diffResults) {
         ImpactAnalyzer analyzer = getImpactAnalyzer();
         return analyzer.analyzeImpacts(diffResults);
     }
@@ -1352,8 +1403,7 @@ public class HibernateStorage implements Storage {
             Set<ComplexTypeMetadata> typesToDrop = findTypesToDelete(force, diffResults);
             if (!typesToDrop.isEmpty()) {
                 if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug(typesToDrop.size()
-                            + " type(s) scheduled for deletion: " + Arrays.toString(typesToDrop.toArray()) //$NON-NLS-1$
+                    LOGGER.debug(typesToDrop.size() + " type(s) scheduled for deletion: " + Arrays.toString(typesToDrop.toArray()) //$NON-NLS-1$
                             + "."); //$NON-NLS-1$
                 }
                 // Find dependent types to delete
@@ -1427,7 +1477,7 @@ public class HibernateStorage implements Storage {
                                         // No need to check for mandatory collections of references since constraint
                                         // cannot be expressed in db schema
                                         String formattedTableName = tableResolver.getCollectionTable(reference);
-                                        session.createSQLQuery(DELETE_FROM_STR + formattedTableName).executeUpdate(); //$NON-NLS-1$
+                                        session.createSQLQuery(DELETE_FROM_STR + formattedTableName).executeUpdate(); // $NON-NLS-1$
                                     } else {
                                         String referenceTableName = tableResolver.get(reference.getContainingType());
                                         if (referenceTableName.startsWith("X_ANONYMOUS")) { //$NON-NLS-1$
@@ -1444,7 +1494,7 @@ public class HibernateStorage implements Storage {
                                             // cannot
                                             // be expressed in db schema
                                             String formattedTableName = tableResolver.getCollectionTable(reference);
-                                            session.createSQLQuery(DELETE_FROM_STR + formattedTableName).executeUpdate(); //$NON-NLS-1$
+                                            session.createSQLQuery(DELETE_FROM_STR + formattedTableName).executeUpdate(); // $NON-NLS-1$
                                         } else {
                                             String referenceTableName = tableResolver.get(reference.getContainingType());
                                             if (reference.getReferencedField() instanceof CompoundFieldMetadata) {
@@ -1453,7 +1503,8 @@ public class HibernateStorage implements Storage {
                                                 for (FieldMetadata field : fields) {
                                                     List list = session.createSQLQuery(
                                                             "select " + tableResolver.get(field, reference.getName()) + " from " //$NON-NLS-1$ //$NON-NLS-2$
-                                                                    + referenceTableName).list();
+                                                                    + referenceTableName)
+                                                            .list();
                                                     if (list == null || list.isEmpty()) {
                                                         continue;
                                                     } else {
@@ -1462,11 +1513,9 @@ public class HibernateStorage implements Storage {
                                                     }
                                                 }
                                             } else {
-                                                List list = session.createSQLQuery(
-                                                                "select " //$NON-NLS-1$
-                                                                        + tableResolver.get(reference.getReferencedField(),
-                                                                                reference.getName())
-                                                                        + " from " + referenceTableName).list(); //$NON-NLS-1$
+                                                List list = session.createSQLQuery("select " //$NON-NLS-1$
+                                                        + tableResolver.get(reference.getReferencedField(), reference.getName())
+                                                        + " from " + referenceTableName).list(); //$NON-NLS-1$
                                                 if (list == null || list.isEmpty()) {
                                                     continue;
                                                 } else {
@@ -1537,7 +1586,7 @@ public class HibernateStorage implements Storage {
             // Delete the type instances
             String className = storageClassLoader.getClassFromType(typeToDelete).getName();
 
-            String hql = DELETE_FROM_STR + className; //$NON-NLS-1$
+            String hql = DELETE_FROM_STR + className; // $NON-NLS-1$
             deleteDataWithCondition(session, condition, hql);
 
             // Clean up full text indexes
@@ -1708,12 +1757,15 @@ public class HibernateStorage implements Storage {
 
     @Override
     public void close(boolean dropExistingData) {
+
         // Close hibernate so all connections get released before drop schema.
         close();
         if (dropExistingData) { // Drop schema if asked for...
             LOGGER.info("Deleting data and schema of storage '" + storageName + "' (" + storageType + ")."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             JDBCStorageCleaner cleaner = new JDBCStorageCleaner(new FullTextIndexCleaner());
             cleaner.clean(this);
+            // Clean update reports
+            cleanUpdateReports();
             LOGGER.info("Data and schema of storage '" + storageName + "' (" + storageType + ") deleted."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
     }
@@ -1736,7 +1788,7 @@ public class HibernateStorage implements Storage {
             } finally {
                 OrderBy.OrderByNone.remove();
             }
-          
+
             // Other optimizations
             for (Optimizer optimizer : OPTIMIZERS) {
                 optimizer.optimize(select);
@@ -1940,8 +1992,8 @@ public class HibernateStorage implements Storage {
                         orderedTableNames.add(0, tableName);
                     }
                     if (value instanceof ToOne) { // to-one
-                        PersistentClass referencedEntityClass = configuration.getClassMapping(((ToOne) value)
-                                .getReferencedEntityName());
+                        PersistentClass referencedEntityClass = configuration
+                                .getClassMapping(((ToOne) value).getReferencedEntityName());
                         String entityName = StringUtils.substringAfterLast(referencedEntityClass.getEntityName(), "."); //$NON-NLS-1$
                         // only deal with nested types, not including entities
                         if (userMetadataRepository.getComplexType(entityName) == null) {
@@ -1963,7 +2015,7 @@ public class HibernateStorage implements Storage {
             }
             return orderedTableNames;
         }
-        
+
         @SuppressWarnings("rawtypes")
         private List<String> getReferencedTableNames(PersistentClass referencedPersistentClass) {
             List<String> orderedTableNames = new LinkedList<String>();
@@ -1979,8 +2031,8 @@ public class HibernateStorage implements Storage {
                     if (!orderedTableNames.contains(tableName)) {
                         Value value = property.getValue();
                         if (value instanceof ToOne) {
-                            PersistentClass referencedEntityClass = configuration.getClassMapping(((ToOne) value)
-                                    .getReferencedEntityName());
+                            PersistentClass referencedEntityClass = configuration
+                                    .getClassMapping(((ToOne) value).getReferencedEntityName());
                             if (referencedPersistentClass.getEntityName().equals(referencedEntityClass.getEntityName())) {
                                 if (!orderedTableNames.contains(persistentClass.getTable().getName())) {
                                     orderedTableNames.add(persistentClass.getTable().getName());

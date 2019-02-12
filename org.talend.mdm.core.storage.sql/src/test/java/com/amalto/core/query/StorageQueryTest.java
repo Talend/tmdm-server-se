@@ -5871,6 +5871,137 @@ public class StorageQueryTest extends StorageTestCase {
         }
     }
 
+    public void testTqlSelectById() throws Exception {
+        Collection<FieldMetadata> keyFields = person.getKeyFields();
+        assertEquals(1, keyFields.size());
+        FieldMetadata keyField = keyFields.iterator().next();
+
+        UserQueryBuilder qb = from(person).where("Person.id = 1");
+
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getSize());
+            assertEquals(1, results.getCount());
+            for (DataRecord result : results) {
+                assertNotNull(result.get(keyField));
+            }
+        } finally {
+            results.close();
+        }
+    }
+
+    public void testTqlBetween() throws Exception {
+        FieldMetadata personLastName = person.getField("lastname");
+        UserQueryBuilder qb = from(person).where("Person.age between [20, 30]");
+        String[] ascExpectedValues = { "Dupont", "Leblanc", "Leblanc" };
+
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(3, results.getSize());
+            assertEquals(3, results.getCount());
+
+            int i = 0;
+            for (DataRecord result : results) {
+                assertEquals(ascExpectedValues[i++], result.get(personLastName));
+            }
+
+        } finally {
+            results.close();
+        }
+    }
+
+    public void testTqlOrderByASC() throws Exception {
+        FieldMetadata personLastName = person.getField("lastname");
+        UserQueryBuilder qb = from(person).where("Person.id in [1, 2, 3, 4, 5, 6]").orderBy(personLastName, OrderBy.Direction.ASC);
+        String[] ascExpectedValues = { "Dupond", "Dupont", "Eric", "John", "Leblanc", "Leblanc" };
+
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(6, results.getSize());
+            assertEquals(6, results.getCount());
+
+            int i = 0;
+            for (DataRecord result : results) {
+                assertEquals(ascExpectedValues[i++], result.get(personLastName));
+            }
+
+        } finally {
+            results.close();
+        }
+    }
+
+    public void testTqlContainsCondition() throws Exception {
+        UserQueryBuilder qb = from(person).where("Person.lastname contains 'Dupo'");
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(2, results.getSize());
+            assertEquals(2, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        qb = from(address).where("Address.Street contains 'Street'");
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(5, results.getSize());
+            assertEquals(5, results.getCount());
+        } finally {
+            results.close();
+        }
+    }
+
+    public void testTqlConditionAnd() throws Exception {
+        UserQueryBuilder qb = from(person).where("Person.lastname = 'Dupond' and Person.firstname = 'Robert-Damien'");
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(0, results.getSize());
+            assertEquals(0, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        // Wheres are equivalent to "and" statements
+        qb = from(person).where("Person.lastname = 'Dupond'").where("Person.firstname = 'Robert-Damien'");
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(0, results.getSize());
+            assertEquals(0, results.getCount());
+        } finally {
+            results.close();
+        }
+    }
+
+    public void testTqlConditionNot() throws Exception {
+        UserQueryBuilder qb = from(person).where("Person.lastname = 'Dupond' and not(Person.firstname = 'Robert')");
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getSize());
+            assertEquals(1, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        // Equivalent to the previous query (chained wheres are "and")
+        qb = from(person).where("Person.lastname = 'Dupond'").where("not(Person.firstname = 'Robert')");
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getSize());
+            assertEquals(1, results.getCount());
+        } finally {
+            results.close();
+        }
+    }
+
+    public void testTqlFullText_OR() throws Exception {
+        UserQueryBuilder qb = from(product).where("Product.Id contains '1' or Product.Id contains '2'");
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(2, results.getCount());
+        } finally {
+            results.close();
+        }
+    }
+
     private List<String> getPersonIdList(int from, int end) {
         List<String> idList = new ArrayList<>();
         for (int i = from; i <= end; i++) {

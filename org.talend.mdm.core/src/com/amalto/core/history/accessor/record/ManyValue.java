@@ -41,23 +41,20 @@ class ManyValue implements Setter, Getter {
         if (element.field instanceof ReferenceFieldMetadata) {
             ReferenceFieldMetadata fieldMetadata = (ReferenceFieldMetadata) element.field;
             boolean needResetValue = false;
-            if (list.get(element.index) != null) {
-                String referValue = String
-                        .valueOf(((DataRecord) list.get(element.index)).get(fieldMetadata.getReferencedField()));
-                if (!StringUtils
-                        .equals(referValue, value.replaceAll("\\[", StringUtils.EMPTY).replaceAll("]", StringUtils.EMPTY))) {
+            Object oldData = list.get(element.index);
+            if (oldData != null) {
+                String oldValue = '[' + String.valueOf(((DataRecord) oldData).get(fieldMetadata.getReferencedField())) + ']';
+                if (!StringUtils.equals(oldValue, value)) {
                     needResetValue = true;
                 }
             } else {
                 needResetValue = true;
             }
             if (needResetValue) {
-                ComplexTypeMetadata referencedType = ((ReferenceFieldMetadata) element.field).getReferencedType();
-                DataRecord referencedRecord = (DataRecord) StorageMetadataUtils
-                        .convert(String.valueOf(value), element.field, referencedType);
+                ComplexTypeMetadata referencedType = fieldMetadata.getReferencedType();
+                DataRecord referencedRecord = (DataRecord) StorageMetadataUtils.convert(value, element.field, referencedType);
                 list.set(element.index, referencedRecord);
             }
-
         } else {
             list.set(element.index, StorageMetadataUtils.convert(String.valueOf(value), element.field));
         }

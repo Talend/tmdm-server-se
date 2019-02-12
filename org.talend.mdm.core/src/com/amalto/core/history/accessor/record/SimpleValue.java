@@ -31,9 +31,8 @@ class SimpleValue implements Setter, Getter {
             ReferenceFieldMetadata fieldMetadata = (ReferenceFieldMetadata) element.field;
             boolean needResetValue = false;
             if (record.get(element.field) != null) {
-                String referValue = String.valueOf(record.get(fieldMetadata.getReferencedField()));
-                if (!StringUtils
-                        .equals(referValue, value.replaceAll("\\[", StringUtils.EMPTY).replaceAll("]", StringUtils.EMPTY))) {
+                String oldValue = '[' + String.valueOf(record.get(fieldMetadata.getReferencedField())) + ']';
+                if (!StringUtils.equals(oldValue, value)) {
                     needResetValue = true;
                 }
             } else {
@@ -41,7 +40,7 @@ class SimpleValue implements Setter, Getter {
             }
             if (needResetValue) {
                 ComplexTypeMetadata referencedType = fieldMetadata.getReferencedType();
-                DataRecord referencedRecord = (DataRecord) StorageMetadataUtils.convert(String.valueOf(value), element.field, referencedType);
+                DataRecord referencedRecord = (DataRecord) StorageMetadataUtils.convert(value, element.field, referencedType);
                 record.set(element.field, referencedRecord);
             }
         } else {

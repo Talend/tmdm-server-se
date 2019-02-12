@@ -146,6 +146,30 @@ public class UserQueryJsonSerializerTest extends TestCase {
         assertRoundTrip(select);
     }
 
+    public void testAndInTQL() {
+        final ComplexTypeMetadata type1 = repository.getComplexType("Type1");
+        final UserQueryBuilder userQueryBuilder = UserQueryBuilder.from(type1).where("Type1.value1 = 'value1' and Type1.value1 = 'value2'");
+        final Select select = userQueryBuilder.getSelect();
+        assertNotNull(select.getCondition());
+        assertRoundTrip(select);
+    }
+
+    public void testOrInTQL() {
+        final ComplexTypeMetadata type1 = repository.getComplexType("Type1");
+        final UserQueryBuilder userQueryBuilder = UserQueryBuilder.from(type1).where("Type1.value1 = 'value1' or Type1.value1 = 'value2'");
+        final Select select = userQueryBuilder.getSelect();
+        assertNotNull(select.getCondition());
+        assertRoundTrip(select);
+    }
+
+    public void testNotInTQL() {
+        final ComplexTypeMetadata type1 = repository.getComplexType("Type1");
+        final UserQueryBuilder userQueryBuilder = UserQueryBuilder.from(type1).where("Type1.value1 = 'value1' and not(Type1.id = 'value2')");
+        final Select select = userQueryBuilder.getSelect();
+        assertNotNull(select.getCondition());
+        assertRoundTrip(select);
+    }
+
     private void assertRoundTrip(Select select) {
         // when
         final String jsonAsString = UserQueryJsonSerializer.toJson(select);

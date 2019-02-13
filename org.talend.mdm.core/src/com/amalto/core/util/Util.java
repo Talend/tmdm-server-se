@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -121,6 +121,8 @@ public class Util extends XmlUtil {
     public static final String ROOT_LOCATION_KEY = "mdm.root";
 
     public static final String ROOT_LOCATION_URL_KEY = "mdm.root.url";
+
+    public static final String WEB_SESSION_TIMEOUT_IN_SECONDS = "mdm.web.session.timeout";
 
     private static final String USER_PROPERTY_PREFIX = "${user_context";
 

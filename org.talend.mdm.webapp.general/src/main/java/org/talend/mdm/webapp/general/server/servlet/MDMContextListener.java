@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -12,6 +12,7 @@ package org.talend.mdm.webapp.general.server.servlet;
 import static com.amalto.core.util.Util.ROOT_LOCATION_KEY;
 import static com.amalto.core.util.Util.ROOT_LOCATION_PARAM;
 import static com.amalto.core.util.Util.ROOT_LOCATION_URL_KEY;
+import static com.amalto.core.util.Util.WEB_SESSION_TIMEOUT_IN_SECONDS;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -22,14 +23,21 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.apache.log4j.Logger;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.util.ServletContextPropertyUtils;
 
 public class MDMContextListener implements ServletContextListener {
 
+    private static final Logger LOGGER = Logger.getLogger(MDMContextListener.class);
+
     @Override
     public void contextInitialized(ServletContextEvent event) {
         ServletContext servletContext = event.getServletContext();
+
+        int webSessionTimeoutInSeconds = getSessionTimeoutInSeconds(servletContext);
+        System.setProperty(WEB_SESSION_TIMEOUT_IN_SECONDS, webSessionTimeoutInSeconds + ""); //$NON-NLS-1$
+
         String location = servletContext.getInitParameter(ROOT_LOCATION_PARAM);
         String resolvedLocation = ServletContextPropertyUtils.resolvePlaceholders(location, servletContext);
         servletContext.log("Initializing MDM root folder from [" + resolvedLocation + "]"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -64,4 +72,14 @@ public class MDMContextListener implements ServletContextListener {
         System.getProperties().remove(ROOT_LOCATION_URL_KEY);
     }
 
+    private int getSessionTimeoutInSeconds(ServletContext servletContext) {
+        int webSessionTimeoutInSeconds;
+        try {
+            webSessionTimeoutInSeconds = servletContext.getSessionTimeout() * 60;
+        } catch (Exception e) {
+            LOGGER.warn("Failed to retrieve session timeout, using default value of 30 mins.", e); //$NON-NLS-1$
+            webSessionTimeoutInSeconds = 30 * 60;
+        }
+        return webSessionTimeoutInSeconds;
+    }
 }

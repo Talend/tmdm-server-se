@@ -24,11 +24,11 @@ import com.amalto.core.util.XtentisException;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
-import sun.misc.BASE64Decoder;
 
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -104,7 +104,7 @@ public class CallTransformerServiceBean extends Service {
                 String userToken = null;
                 if (routingOrder != null) {
                     try {
-                        userToken = new String((new BASE64Decoder()).decodeBuffer(routingOrder.getBindingUserToken()), "UTF-8");
+                        userToken = new String(Base64.getDecoder().decode(routingOrder.getBindingUserToken()), "UTF-8");
                     } catch (UnsupportedEncodingException e) {
                         LOGGER.error("Unable to read user token.", e);
                     }

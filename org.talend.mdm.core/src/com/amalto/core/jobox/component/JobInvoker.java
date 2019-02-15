@@ -10,20 +10,23 @@
 
 package com.amalto.core.jobox.component;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
+import org.apache.log4j.Logger;
+
 import com.amalto.core.jobox.JobContainer;
 import com.amalto.core.jobox.JobInfo;
 import com.amalto.core.jobox.properties.ThreadIsolatedSystemProperties;
 import com.amalto.core.jobox.util.JobNotFoundException;
 import com.amalto.core.jobox.util.JoboxException;
 import com.amalto.core.jobox.util.MissingMainClassException;
-
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.log4j.Logger;
+import com.google.common.base.Joiner;
 
 /**
  * Class that handles common tasks for job execution:
@@ -54,6 +57,17 @@ public abstract class JobInvoker {
         return call(Collections.<String, String> emptyMap());
     }
 
+    private String transformAllPropertyAsString(Properties props) {
+        List<String> list = new ArrayList<>();
+        Enumeration<?> enumeration = props.propertyNames();
+        while (enumeration.hasMoreElements()) {
+            String key = (String) enumeration.nextElement();
+            String value = props.getProperty(key);
+            list.add(key + "=" + value);
+        }
+        return Joiner.on(",").join(list);
+    }
+
     /**
      * @param parameters Input values for job execution
      * @return Result of job execution
@@ -66,7 +80,7 @@ public abstract class JobInvoker {
         try {
             container.lock(false);
 
-            if (!System.getProperties().equals(isolatedSystemProperties.getThreadProperties(Thread.currentThread()))) {
+            if (!transformAllPropertyAsString(System.getProperties()).equals(transformAllPropertyAsString(isolatedSystemProperties.getThreadProperties(Thread.currentThread())))) {
                 throw new IllegalStateException("Expected system properties to support thread isolation."); //$NON-NLS-1$
             }
 

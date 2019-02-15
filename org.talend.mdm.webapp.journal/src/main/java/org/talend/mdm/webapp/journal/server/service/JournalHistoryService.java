@@ -9,14 +9,13 @@
  */
 package org.talend.mdm.webapp.journal.server.service;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.ServletException;
 
-import com.amalto.core.server.ServerContext;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.metadata.TypeMetadata;
 import org.talend.mdm.webapp.base.client.exception.ServiceException;
@@ -24,11 +23,6 @@ import org.talend.mdm.webapp.journal.server.ForeignKeyInfoTransformer;
 import org.talend.mdm.webapp.journal.server.LocalLabelTransformer;
 import org.talend.mdm.webapp.journal.shared.JournalParameters;
 
-import com.amalto.core.objects.DroppedItemPOJO;
-import com.amalto.core.objects.DroppedItemPOJOPK;
-import com.amalto.core.objects.ItemPOJO;
-import com.amalto.core.objects.ItemPOJOPK;
-import com.amalto.core.objects.UpdateReportPOJO;
 import com.amalto.core.history.Action;
 import com.amalto.core.history.DocumentHistory;
 import com.amalto.core.history.DocumentHistoryFactory;
@@ -37,7 +31,13 @@ import com.amalto.core.history.DocumentTransformer;
 import com.amalto.core.history.EmptyDocument;
 import com.amalto.core.history.ModificationMarker;
 import com.amalto.core.history.UniqueIdTransformer;
+import com.amalto.core.objects.DroppedItemPOJO;
+import com.amalto.core.objects.DroppedItemPOJOPK;
+import com.amalto.core.objects.ItemPOJO;
+import com.amalto.core.objects.ItemPOJOPK;
+import com.amalto.core.objects.UpdateReportPOJO;
 import com.amalto.core.objects.datacluster.DataClusterPOJOPK;
+import com.amalto.core.server.ServerContext;
 import com.amalto.core.util.Messages;
 import com.amalto.core.util.MessagesFactory;
 
@@ -109,7 +109,11 @@ public class JournalHistoryService {
         ModificationMarker modificationMarker = new ModificationMarker(modificationMarkersAction);
         UniqueIdTransformer idTransformer = new UniqueIdTransformer();
         LocalLabelTransformer multipleLanguageLabel = new LocalLabelTransformer(com.amalto.core.util.LocaleUtil.getLocale().getLanguage());
-        List<DocumentTransformer> transformers = Arrays.asList(foreignKeyInfoTransformer, idTransformer, modificationMarker,multipleLanguageLabel);
+        List<DocumentTransformer> transformers = new ArrayList<>();
+        transformers.add(foreignKeyInfoTransformer);
+        transformers.add(idTransformer);
+        transformers.add(modificationMarker);
+        transformers.add(multipleLanguageLabel);
         com.amalto.core.history.Document transformedDocument = document;
         for (DocumentTransformer transformer : transformers) {
             transformedDocument = document.transform(transformer);

@@ -13,7 +13,6 @@ import java.io.Serializable;
 import java.io.StringReader;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -1174,7 +1173,11 @@ public class BrowseRecordsAction implements BrowseRecordsService {
     public ItemBasePageLoadResult<ItemBaseModel> querySearchTemplates(String view, boolean isShared, BasePagingLoadConfigImpl load)
             throws ServiceException {
         try {
-            List<String> results = Arrays.asList(getSearchTemplateNames(view, isShared, load.getOffset(), load.getLimit()));
+            List<String> results = new ArrayList<>();
+            String[] tempResults = getSearchTemplateNames(view, isShared, load.getOffset(), load.getLimit());
+            for (String item : tempResults) {
+                results.add(item);
+            }
             List<ItemBaseModel> list = new ArrayList<ItemBaseModel>();
             for (String result : results) {
                 ItemBaseModel bm = new ItemBaseModel();

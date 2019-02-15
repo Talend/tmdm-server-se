@@ -423,13 +423,20 @@ public class ForeignKeyHelper {
                 String[] fks = Util.getBusinessConceptKeys(initxpathForeignKey);
                 if (fks != null && fks.length > 0) {
                     realXpathForeignKey = fks[0];
-                    fkXpathList.addAll(Arrays.asList(fks));
+                    List<String> tempFkXpathList = new ArrayList<>();
+                    for (String item : fks) {
+                        tempFkXpathList.add(item);
+                    }
+                    fkXpathList.addAll(tempFkXpathList);
                 }
             } else {
                 fkXpathList.add(xpathForeignKey);
             }
-
-            fkXpathList.addAll(Arrays.asList(xpathInfos));
+            List<String> tempFkXpathList = new ArrayList<>();
+            for (String item : xpathInfos) {
+                tempFkXpathList.add(item);
+            }
+            fkXpathList.addAll(tempFkXpathList);
             if (fkXpathList != null && fkXpathList.size() > 0) {
                 for (String xpath : fkXpathList) {
                     visitor.setFieldPath(xpath.split("/")); //$NON-NLS-1$

@@ -18,14 +18,13 @@ import com.amalto.core.util.XtentisException;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.Base64;
 
 @Service(CodecPluginBean.JNDI_NAME)
 public class CodecPluginBean extends Plugin {
@@ -290,9 +289,9 @@ public class CodecPluginBean extends Plugin {
             // TODO Please add more algorithms (we still need URL/MD5)
             if (algorithm.equals(ALGORITHM_TYPE_BASE64)) {
                 if (method.equals(METHOD_TYPE_ENCODE)) {
-                    codecText = (new BASE64Encoder()).encode(lawText.getBytes(charset));
+                    codecText = new String(Base64.getEncoder().encode(lawText.getBytes(charset)));
                 } else if (method.equals(METHOD_TYPE_DECODE)) {
-                    codecText = new String((new BASE64Decoder()).decodeBuffer(lawText), charset);
+                    codecText = new String(Base64.getDecoder().decode(lawText), charset);
                 }
             } else if (algorithm.equals(ALGORITHM_TYPE_XMLESCAPE)) {
                 if (method.equals(METHOD_TYPE_ENCODE)) {

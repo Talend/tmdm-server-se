@@ -323,7 +323,11 @@ public class JournalDBService {
 
     protected List<String> getChangeNodeList(String modelEntityName, String[] pathArray) {
         List<String> result = new ArrayList<String>();
-        getChagneNodePath(StringUtils.EMPTY, Arrays.asList(pathArray), result);
+        List<String> pathList = new ArrayList<String>();
+        for (String item : pathArray) {
+            pathList.add(item);
+        }
+        getChagneNodePath(StringUtils.EMPTY, pathList, result);
         for(int i = 0 ; i < result.size() ; i++){
             result.set(i, SPRIT + modelEntityName + SPRIT + result.get(i));
         }

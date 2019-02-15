@@ -17,6 +17,7 @@ import java.io.InputStreamReader;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 /**
@@ -53,8 +54,11 @@ class SunOracleStandardPropertiesStrategy implements StandardPropertiesStrategy 
                             } else if ("java.endorsed.dirs".equals(line)) { //$NON-NLS-1$
                                 // Skip it!
                             } else if (JAVA_CLASS_PATH.equals(line)) {
-                                StringBuilder filteredValue = filterJBoss(System.getProperty(SUN_BOOT_CLASS_PATH));
-                                properties.put(line, filteredValue.toString());
+                                String rawValue = System.getProperty(SUN_BOOT_CLASS_PATH);
+                                if (StringUtils.isNotBlank(rawValue)) {
+                                    StringBuilder filteredValue = filterJBoss(rawValue);
+                                    properties.put(line, filteredValue.toString());
+                                }
                             } else {
                                 properties.put(line, systemProperty);
                             }

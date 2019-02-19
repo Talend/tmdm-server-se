@@ -15,7 +15,6 @@ import com.amalto.core.query.user.TypedExpression;
 import com.amalto.core.query.user.UserQueryBuilder;
 import com.amalto.core.query.user.UserQueryHelper;
 import com.amalto.xmlserver.interfaces.WhereCondition;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import junit.framework.TestCase;
@@ -115,6 +114,61 @@ public class UserQueryJsonSerializerTest extends TestCase {
         assertNotNull(typedExpression);
     }
 
+    public void testConditionEqualsTQL() {
+        final ComplexTypeMetadata type1 = repository.getComplexType("Type1");
+        final UserQueryBuilder userQueryBuilder = UserQueryBuilder.from(type1).where("Type1.value1 = 10");
+        final Select select = userQueryBuilder.getSelect();
+        assertNotNull(select.getCondition());
+        assertRoundTrip(select);
+    }
+
+    public void testConditionEqualsFieldTQL() {
+        final ComplexTypeMetadata type1 = repository.getComplexType("Type1");
+        final UserQueryBuilder userQueryBuilder = UserQueryBuilder.from(type1).where("Type1.value1 = field(Type1.fk2)");
+        final Select select = userQueryBuilder.getSelect();
+        assertNotNull(select.getCondition());
+        assertRoundTrip(select);
+    }
+
+    public void testConditionContainsTQL() {
+        final ComplexTypeMetadata type1 = repository.getComplexType("Type1");
+        final UserQueryBuilder userQueryBuilder = UserQueryBuilder.from(type1).where("Type1.value1 contains 'Toto'");
+        final Select select = userQueryBuilder.getSelect();
+        assertNotNull(select.getCondition());
+        assertRoundTrip(select);
+    }
+
+    public void testConditionInTQL() {
+        final ComplexTypeMetadata type1 = repository.getComplexType("Type1");
+        final UserQueryBuilder userQueryBuilder = UserQueryBuilder.from(type1).where("Type1.value1 in ['value1', 'value2']");
+        final Select select = userQueryBuilder.getSelect();
+        assertNotNull(select.getCondition());
+        assertRoundTrip(select);
+    }
+
+    public void testAndInTQL() {
+        final ComplexTypeMetadata type1 = repository.getComplexType("Type1");
+        final UserQueryBuilder userQueryBuilder = UserQueryBuilder.from(type1).where("Type1.value1 = 'value1' and Type1.value1 = 'value2'");
+        final Select select = userQueryBuilder.getSelect();
+        assertNotNull(select.getCondition());
+        assertRoundTrip(select);
+    }
+
+    public void testOrInTQL() {
+        final ComplexTypeMetadata type1 = repository.getComplexType("Type1");
+        final UserQueryBuilder userQueryBuilder = UserQueryBuilder.from(type1).where("Type1.value1 = 'value1' or Type1.value1 = 'value2'");
+        final Select select = userQueryBuilder.getSelect();
+        assertNotNull(select.getCondition());
+        assertRoundTrip(select);
+    }
+
+    public void testNotInTQL() {
+        final ComplexTypeMetadata type1 = repository.getComplexType("Type1");
+        final UserQueryBuilder userQueryBuilder = UserQueryBuilder.from(type1).where("Type1.value1 = 'value1' and not(Type1.id = 'value2')");
+        final Select select = userQueryBuilder.getSelect();
+        assertNotNull(select.getCondition());
+        assertRoundTrip(select);
+    }
 
     private void assertRoundTrip(Select select) {
         // when

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  *
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -15,13 +15,16 @@ import com.amalto.core.query.user.metadata.MetadataField;
 import com.amalto.core.query.user.metadata.TaskId;
 import com.amalto.core.query.user.metadata.Timestamp;
 import com.amalto.core.storage.record.MetaDataUtils;
+import com.amalto.xmlserver.interfaces.IWhereItem;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.metadata.*;
+import org.talend.tql.parser.Tql;
 
+import javax.jws.soap.SOAPBinding;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.*;
@@ -40,6 +43,10 @@ public class UserQueryBuilder {
 
     private UserQueryBuilder(Expression expression) {
         this.expression = expression;
+    }
+
+    protected UserQueryBuilder() {
+        this.expression = new Select();
     }
 
     private Select expressionAsSelect() {
@@ -854,6 +861,31 @@ public class UserQueryBuilder {
         return this;
     }
 
+    public UserQueryBuilder where(String tqlCondition) {
+        final ComplexTypeMetadata[] types = getSelect().getTypes().toArray(new ComplexTypeMetadata[0]);
+        Condition condition = Tql.parse(tqlCondition).accept(new TQLPredicateToMDMPredicate(types));
+        where(condition);
+        return this;
+    }
+
+    public static UserQueryBuilder where(UserQueryBuilder userQueryBuilder, Condition condition, Predicate predicate) {
+        if (condition == null) {
+            throw new IllegalArgumentException("Condition cannot be null");
+        }
+        if (userQueryBuilder.getSelect().getCondition() == null) {
+            userQueryBuilder.getSelect().setCondition(condition);
+        } else {
+            if (predicate == Predicate.OR) {
+                userQueryBuilder.getSelect().setCondition(or(userQueryBuilder.getSelect().getCondition(), condition));
+            } else if (predicate == Predicate.AND) {
+                userQueryBuilder.getSelect().setCondition(and(userQueryBuilder.getSelect().getCondition(), condition));
+            } else {
+                throw new NotImplementedException("Not implemented: support of " + predicate);
+            }
+        }
+        return userQueryBuilder;
+    }
+
     /**
      * Adds a {@link Condition} to the {@link Select} built by this {@link UserQueryBuilder}. If this method has previously
      * been called, a logic "and"/"or" condition (depends on <code>predicate</code> argument) is created between the
@@ -865,22 +897,7 @@ public class UserQueryBuilder {
      * @throws IllegalArgumentException If <code>condition</code> parameter is null.
      */
     public UserQueryBuilder where(Condition condition, Predicate predicate) {
-        if (condition == null) {
-            throw new IllegalArgumentException("Condition cannot be null");
-        }
-        if (expressionAsSelect().getCondition() == null) {
-            expressionAsSelect().setCondition(condition);
-        } else {
-            if (predicate == Predicate.OR) {
-                expressionAsSelect().setCondition(or(expressionAsSelect().getCondition(), condition));
-            } else if (predicate == Predicate.AND) {
-                expressionAsSelect().setCondition(and(expressionAsSelect().getCondition(), condition));
-            } else {
-                throw new NotImplementedException("Not implemented: support of " + predicate);
-            }
-        }
-
-        return this;
+        return where(this, condition, predicate);
     }
 
     /**

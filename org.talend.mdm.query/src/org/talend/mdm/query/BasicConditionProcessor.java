@@ -49,7 +49,12 @@ abstract class BasicConditionProcessor implements ConditionProcessor {
                     throw new IllegalArgumentException("Value '" + valueElement + "' is not supported."); //$NON-NLS-1 //$NON-NLS-2
                 }
             } else {
-                expression = Deserializer.getTypedExpression(element.getAsJsonObject()).process(element.getAsJsonObject(), repository);
+                final TypedExpression process = Deserializer.getTypedExpression(element.getAsJsonObject()).process(element.getAsJsonObject(), repository);
+                if (expression != null) { // we already have a field expression, keep new value as a value expression
+                    valueExpression = process;
+                } else {
+                    expression = process;
+                }
             }
         }
         if (expression == null || (value == null && valueExpression == null && valueList.isEmpty())) {

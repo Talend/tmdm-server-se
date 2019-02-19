@@ -40,7 +40,7 @@ class SimpleValue implements Setter, Getter {
                 record.set(element.field, referencedRecord);
             }
         } else {
-            record.set(element.field, StorageMetadataUtils.convert(String.valueOf(value), element.field));
+            record.set(element.field, StorageMetadataUtils.convert(value, element.field));
         }
     }
 

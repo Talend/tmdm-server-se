@@ -1119,7 +1119,9 @@ public class HibernateStorage implements Storage {
                 }
                 break;
             case LOW:
-                analyzeChanges(typesToDrop, changes);
+                if (!impactCategory.getValue().isEmpty()) {
+                    analyzeChanges(typesToDrop, changes);
+                }
             }
         }
         return typesToDrop;

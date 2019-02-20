@@ -1816,15 +1816,16 @@ public class HibernateStorage implements Storage {
 
     @Override
     public void close(boolean dropExistingData) {
-
+        if (dropExistingData) {
+            // Clean update reports
+            cleanUpdateReports();
+        }
         // Close hibernate so all connections get released before drop schema.
         close();
         if (dropExistingData) { // Drop schema if asked for...
             LOGGER.info("Deleting data and schema of storage '" + storageName + "' (" + storageType + ")."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             JDBCStorageCleaner cleaner = new JDBCStorageCleaner(new FullTextIndexCleaner());
             cleaner.clean(this);
-            // Clean update reports
-            cleanUpdateReports();
             LOGGER.info("Data and schema of storage '" + storageName + "' (" + storageType + ") deleted."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
     }

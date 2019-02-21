@@ -298,26 +298,7 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
         String user = null;
         try {
             // Clean records in recycle bin before delete data model.
-            StorageAdmin storageAdmin = ServerContext.INSTANCE.get().getStorageAdmin();
-            Storage storage = storageAdmin.get(StorageAdmin.SYSTEM_STORAGE, StorageType.SYSTEM);
-            if (storage == null) {
-                LOGGER.warn("No system storage available."); //$NON-NLS-1$
-            } else {
-                MetadataRepositoryAdmin metadataRepositoryAdmin = ServerContext.INSTANCE.get().getMetadataRepositoryAdmin();
-                MetadataRepository metadataRepository = metadataRepositoryAdmin.get(wsDeleteDataModel.getWsDataModelPK().getPk());
-                ComplexTypeMetadata droppedItem = storage.getMetadataRepository().getComplexType("dropped-item-pOJO"); //$NON-NLS-1$
-                UserQueryBuilder qb;
-                try {
-                    storage.begin();
-                    for (TypeMetadata type : metadataRepository.getInstantiableTypes()) {
-                        qb = from(droppedItem).where(eq(droppedItem.getField("concept-name"), type.getName())); //$NON-NLS-1$
-                        storage.delete(qb.getExpression());
-                    }
-                } catch (Exception e) {
-                    LOGGER.warn("Could not remove dropped items for '" + storage.getName() + "'.", e); //$NON-NLS-1$ //$NON-NLS-2$
-                }
-                storage.commit();
-            }
+            cleanRecycleBin(wsDeleteDataModel.getWsDataModelPK().getPk());
             // Delete data model
             user = LocalUser.getLocalUser().getUsername();
             DataModelPOJOPK dataModelPK = Util.getDataModelCtrlLocal()
@@ -2674,6 +2655,30 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
             WSProcessFileUsingTransformerAsBackgroundJob wsProcessFileUsingTransformerAsBackgroundJob) throws RemoteException {
         // TODO
         throw new NotImplementedException();
+    }
+
+    private void cleanRecycleBin(String dataModelPK)
+    {
+        StorageAdmin storageAdmin = ServerContext.INSTANCE.get().getStorageAdmin();
+        Storage storage = storageAdmin.get(StorageAdmin.SYSTEM_STORAGE, StorageType.SYSTEM);
+        if (storage == null) {
+            LOGGER.warn("No system storage available."); //$NON-NLS-1$
+        } else {
+            MetadataRepositoryAdmin metadataRepositoryAdmin = ServerContext.INSTANCE.get().getMetadataRepositoryAdmin();
+            MetadataRepository metadataRepository = metadataRepositoryAdmin.get(dataModelPK);
+            ComplexTypeMetadata droppedItem = storage.getMetadataRepository().getComplexType("dropped-item-pOJO"); //$NON-NLS-1$
+            UserQueryBuilder qb;
+            try {
+                storage.begin();
+                for (TypeMetadata type : metadataRepository.getInstantiableTypes()) {
+                    qb = from(droppedItem).where(eq(droppedItem.getField("concept-name"), type.getName())); //$NON-NLS-1$
+                    storage.delete(qb.getExpression());
+                }
+            } catch (Exception e) {
+                LOGGER.warn("Could not remove dropped items for '" + storage.getName() + "'.", e); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+            storage.commit();
+        }
     }
 
     private RemoteException handleException(Throwable throwable, String errorMessage) {

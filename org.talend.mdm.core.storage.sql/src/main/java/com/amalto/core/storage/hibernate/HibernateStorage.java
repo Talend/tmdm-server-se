@@ -333,10 +333,8 @@ public class HibernateStorage implements Storage {
                         table.setCatalog(catalog);
                         table.setSubselect(subselect);
                         tables.put(key, table);
-                    } else {
-                        if (!isAbstract) {
-                            table.setAbstract(false);
-                        }
+                    } else if (!isAbstract) {
+                        table.setAbstract(false);
                     }
 
                     return table;
@@ -1104,7 +1102,7 @@ public class HibernateStorage implements Storage {
         return typesToDrop;
     }
 
-    public Set<ComplexTypeMetadata> findChangedTypes(Compare.DiffResults diffResults) {
+    private Set<ComplexTypeMetadata> findChangedTypes(Compare.DiffResults diffResults) {
         Map<ImpactAnalyzer.Impact, List<Change>> impacts = getImpactsResult(diffResults);
         Set<ComplexTypeMetadata> typesToDrop = new HashSet<ComplexTypeMetadata>();
         for (Map.Entry<ImpactAnalyzer.Impact, List<Change>> impactCategory : impacts.entrySet()) {
@@ -1114,10 +1112,6 @@ public class HibernateStorage implements Storage {
             case HIGH:
                 break;
             case MEDIUM:
-                if (!impactCategory.getValue().isEmpty()) {
-                    analyzeChanges(typesToDrop, changes);
-                }
-                break;
             case LOW:
                 if (!impactCategory.getValue().isEmpty()) {
                     analyzeChanges(typesToDrop, changes);
@@ -1202,40 +1196,24 @@ public class HibernateStorage implements Storage {
             } else {
                 ComplexTypeMetadata update = storage.getMetadataRepository().getComplexType("Update"); //$NON-NLS-1$
                 storage.begin();
-                for (ComplexTypeMetadata type : sortedTypesToDrop) {
+                if (sortedTypesToDrop == null) {
                     try {
-                        UserQueryBuilder qb = from(update).where(and(eq(update.getField("Concept"), type.getName()), //$NON-NLS-1$
-                                eq(update.getField("DataCluster"), getName()))); //$NON-NLS-1$
+                        UserQueryBuilder qb = from(update).where(eq(update.getField("DataCluster"), getName())); //$NON-NLS-1$
                         storage.delete(qb.getExpression());
+
                     } catch (Exception e) {
-                        LOGGER.warn("Could not remove update reports for '" + type.getName() + "'.", e); //$NON-NLS-1$ //$NON-NLS-2$
+                        LOGGER.warn("Could not remove update reports for '" + storage.getName() + "'.", e); //$NON-NLS-1$ //$NON-NLS-2$
                     }
-                }
-                storage.commit();
-            }
-        } catch (Exception e) {
-            if (storage != null) {
-                storage.rollback();
-            }
-            LOGGER.warn("Could not correctly clean update reports", e); //$NON-NLS-1$
-        }
-    }
-
-    private void cleanUpdateReports() {
-        StorageAdmin storageAdmin = ServerContext.INSTANCE.get().getStorageAdmin();
-        Storage storage = storageAdmin.get(XSystemObjects.DC_UPDATE_PREPORT.getName(), StorageType.MASTER);
-        try {
-            if (storage == null) {
-                LOGGER.warn("No update report storage available."); //$NON-NLS-1$
-            } else {
-                ComplexTypeMetadata update = storage.getMetadataRepository().getComplexType("Update"); //$NON-NLS-1$
-                storage.begin();
-                try {
-                    UserQueryBuilder qb = from(update).where(eq(update.getField("DataCluster"), getName())); //$NON-NLS-1$
-                    storage.delete(qb.getExpression());
-
-                } catch (Exception e) {
-                    LOGGER.warn("Could not remove update reports for '" + storage.getName() + "'.", e); //$NON-NLS-1$ //$NON-NLS-2$
+                } else {
+                    for (ComplexTypeMetadata type : sortedTypesToDrop) {
+                        try {
+                            UserQueryBuilder qb = from(update).where(and(eq(update.getField("Concept"), type.getName()), //$NON-NLS-1$
+                                    eq(update.getField("DataCluster"), getName()))); //$NON-NLS-1$
+                            storage.delete(qb.getExpression());
+                        } catch (Exception e) {
+                            LOGGER.warn("Could not remove update reports for '" + type.getName() + "'.", e); //$NON-NLS-1$ //$NON-NLS-2$
+                        }
+                    }
                 }
                 storage.commit();
             }
@@ -1358,21 +1336,15 @@ public class HibernateStorage implements Storage {
         List<ComplexTypeMetadata> sortedTypesToDrop = findSortedTypesToDrop(diffResults, force);
 
         if (sortedTypesToDrop.size() > 0) {
-            // Clean update reports
             cleanUpdateReports(sortedTypesToDrop);
-            // Clean records in recycle bin
             cleanRecycleBins(sortedTypesToDrop);
-            // Clean full text index
             cleanFullTextIndex(sortedTypesToDrop);
-            // Clean impacted tables
             cleanImpactedTables(sortedTypesToDrop);
         }
 
         changedTypesToDrop.removeAll(sortedTypesToDrop);
         if (changedTypesToDrop.size() > 0) {
-            // Clean update reports
             cleanUpdateReports(changedTypesToDrop);
-            // Clean records in recycle bin
             cleanRecycleBins(changedTypesToDrop);
         }
 
@@ -1820,7 +1792,7 @@ public class HibernateStorage implements Storage {
     public void close(boolean dropExistingData) {
         if (dropExistingData) {
             // Clean update reports
-            cleanUpdateReports();
+            cleanUpdateReports(null);
         }
         // Close hibernate so all connections get released before drop schema.
         close();

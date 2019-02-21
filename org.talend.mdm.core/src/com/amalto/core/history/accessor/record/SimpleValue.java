@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  *
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -28,11 +28,19 @@ class SimpleValue implements Setter, Getter {
             record.set(element.field, null);
         }
         if (element.field instanceof ReferenceFieldMetadata) {
-            ComplexTypeMetadata referencedType = ((ReferenceFieldMetadata) element.field).getReferencedType();
-            DataRecord referencedRecord = (DataRecord) StorageMetadataUtils.convert(String.valueOf(value), element.field, referencedType);
-            record.set(element.field, referencedRecord);
+            ReferenceFieldMetadata fieldMetadata = (ReferenceFieldMetadata) element.field;
+            boolean needResetValue = true;
+            if (record.get(element.field) != null) {
+                String oldValue = String.valueOf(record.get(fieldMetadata.getReferencedField()));
+                needResetValue = !value.equals('[' + oldValue + ']');
+            }
+            if (needResetValue) {
+                ComplexTypeMetadata referencedType = fieldMetadata.getReferencedType();
+                DataRecord referencedRecord = (DataRecord) StorageMetadataUtils.convert(value, element.field, referencedType);
+                record.set(element.field, referencedRecord);
+            }
         } else {
-            record.set(element.field, StorageMetadataUtils.convert(String.valueOf(value), element.field));
+            record.set(element.field, StorageMetadataUtils.convert(value, element.field));
         }
     }
 

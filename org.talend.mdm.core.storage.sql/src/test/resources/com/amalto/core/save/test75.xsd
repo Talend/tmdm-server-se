@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:import namespace="http://www.w3.org/2001/XMLSchema" />
+    <xsd:complexType name="personMailAddressInfoType">
+        <xsd:sequence minOccurs="0">
+            <xsd:element minOccurs="0" name="mrMrs" type="xsd:string" />
+            <xsd:element minOccurs="0" name="title" type="xsd:string" />
+            <xsd:element minOccurs="0" name="firstName" type="xsd:string" />
+            <xsd:element minOccurs="0" name="lastName" type="xsd:string" />
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="organisationMailAddressInfoType">
+        <xsd:sequence minOccurs="0">
+            <xsd:element minOccurs="0" name="organisationName" type="xsd:string" />
+            <xsd:element minOccurs="0" name="organisationNameAddOn1" type="xsd:string" />
+            <xsd:element minOccurs="0" name="mrMrs" type="xsd:string" />
+            <xsd:element minOccurs="0" name="firstName" type="xsd:string" />
+            <xsd:element minOccurs="0" name="lastName" type="xsd:string" />
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="addressInformationType">
+        <xsd:sequence minOccurs="0">
+            <xsd:element maxOccurs="1" minOccurs="0" name="addressLine1" type="xsd:string" />
+            <xsd:element maxOccurs="1" minOccurs="0" name="addressLine2" type="xsd:string" />
+            <xsd:element maxOccurs="1" minOccurs="0" name="street" type="xsd:string" />
+            <xsd:element maxOccurs="1" minOccurs="0" name="houseNumber" type="xsd:string" />
+            <xsd:element maxOccurs="1" minOccurs="0" name="dwellingNumber" type="xsd:string" />
+            <xsd:element minOccurs="0" name="postOfficeBoxNumber" type="xsd:unsignedInt" />
+            <xsd:element minOccurs="0" name="postOfficeBoxText" type="xsd:string" />
+            <xsd:element maxOccurs="1" minOccurs="0" name="locality" type="xsd:string" />
+            <xsd:element minOccurs="0" name="town" type="xsd:string" />
+            <xsd:element minOccurs="0" name="swissZipCode" type="xsd:string" />
+            <xsd:element minOccurs="0" name="swissZipCodeAddOn" type="xsd:string" />
+            <xsd:element minOccurs="0" name="swissZipCodeId" type="xsd:int" />
+            <xsd:element minOccurs="0" name="foreignZipCode" type="xsd:string" />
+            <xsd:element maxOccurs="1" minOccurs="0" name="mobileNumber" type="xsd:string" />
+            <xsd:element maxOccurs="1" minOccurs="0" name="faxNumber" type="xsd:string" />
+            <xsd:element maxOccurs="1" minOccurs="0" name="emailAddress" type="xsd:string" />
+            <xsd:element maxOccurs="1" minOccurs="0" name="contactReference" type="xsd:string" />
+            <xsd:element maxOccurs="1" minOccurs="0" name="fkCountryTerritory" type="xsd:string" />
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:element name="organisation">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="organisationId" type="AUTO_INCREMENT" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="isn" type="xsd:double" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="activeCode" type="xsd:string" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="adrId" type="xsd:string" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="organisationNameId" type="xsd:string" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="ijInstitutionCode" type="xsd:string" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="internetAddress" type="xsd:string" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="sedexId" type="xsd:string" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="comment" type="xsd:string" />
+                <xsd:element maxOccurs="1" minOccurs="1" name="creationDate" type="xsd:dateTime" />
+                <xsd:element maxOccurs="1" minOccurs="1" name="creationName" type="xsd:string" />
+                <xsd:element maxOccurs="1" minOccurs="1" name="changeDate" type="xsd:dateTime" />
+                <xsd:element maxOccurs="1" minOccurs="1" name="changeName" type="xsd:string" />
+                <xsd:element maxOccurs="1" minOccurs="1" name="deleted" type="xsd:boolean" />
+                <xsd:element maxOccurs="unbounded" minOccurs="1" name="fkOrganisationTypes" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_ForeignKey">organisationType/organisationTypeId</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="unbounded" minOccurs="0" name="fkAddresses" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_ForeignKey">address/addressId</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="unbounded" minOccurs="0" name="fkServices" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_ForeignKey">service/serviceId</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="fkReplacedBy" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_ForeignKey">organisation/organisationId</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="fkHeadQuarter" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_ForeignKey">organisation/organisationId</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+        <xsd:unique name="organisation">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="organisationId" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="service">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="serviceId" type="AUTO_INCREMENT" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="serviceName" type="xsd:string" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="phoneNumber" type="xsd:string" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="emailAddress" type="xsd:string" />
+                <xsd:element maxOccurs="1" minOccurs="1" name="creationDate" type="xsd:dateTime" />
+                <xsd:element maxOccurs="1" minOccurs="1" name="creationName" type="xsd:string" />
+                <xsd:element maxOccurs="1" minOccurs="1" name="changeDate" type="xsd:dateTime" />
+                <xsd:element maxOccurs="1" minOccurs="1" name="changeName" type="xsd:string" />
+                <xsd:element maxOccurs="1" minOccurs="1" name="deleted" type="xsd:boolean" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="fkOrganisationTypes" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_ForeignKey">organisationType/organisationTypeId</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="fkAddresses" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_ForeignKey">address/addressId</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+        <xsd:unique name="service">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="serviceId" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="address">
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element name="addressId" type="AUTO_INCREMENT" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="addressType" type="xsd:string" />
+                <xsd:element minOccurs="0" name="organisation" type="organisationMailAddressInfoType" />
+                <xsd:element minOccurs="0" name="person" type="personMailAddressInfoType" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="banking" type="bankingMailAddressInfoType" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="addressInformation" type="addressInformationType" />
+                <xsd:element maxOccurs="1" minOccurs="1" name="creationDate" type="xsd:dateTime" />
+                <xsd:element maxOccurs="1" minOccurs="1" name="creationName" type="xsd:string" />
+                <xsd:element maxOccurs="1" minOccurs="1" name="changeDate" type="xsd:dateTime" />
+                <xsd:element maxOccurs="1" minOccurs="1" name="changeName" type="xsd:string" />
+                <xsd:element maxOccurs="1" minOccurs="1" name="deleted" type="xsd:boolean" />
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="address">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="addressId" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:simpleType name="AUTO_INCREMENT">
+        <xsd:restriction base="xsd:string" />
+    </xsd:simpleType>
+    <xsd:element name="organisationType">
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element name="organisationTypeId" type="AUTO_INCREMENT" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="type" type="xsd:string" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="comment" type="xsd:string" />
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="organisationType">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="organisationTypeId" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:complexType name="bankingMailAddressInfoType">
+        <xsd:sequence>
+            <xsd:element maxOccurs="1" minOccurs="0" name="accountName" type="xsd:string" />
+            <xsd:element maxOccurs="1" minOccurs="0" name="accountNameAddOn1" type="xsd:string" />
+            <xsd:element maxOccurs="1" minOccurs="0" name="bankName" type="xsd:string" />
+            <xsd:element maxOccurs="1" minOccurs="0" name="bankNameAddOn1" type="xsd:string" />
+            <xsd:element maxOccurs="1" minOccurs="0" name="iban" type="xsd:string" />
+            <xsd:element maxOccurs="1" minOccurs="0" name="accountNumber" type="xsd:string" />
+            <xsd:element maxOccurs="1" minOccurs="0" name="bic" type="xsd:string" />
+            <xsd:element maxOccurs="1" minOccurs="0" name="clearing" type="xsd:string" />
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:element name="countryTerritory">
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1" name="countryTerritoryId" type="AUTO_INCREMENT" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="entryValid" type="xsd:boolean" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="ofasCode" type="xsd:integer" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="ofsCode" type="xsd:integer" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="cdcCode" type="xsd:string" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="iso2Code" type="xsd:string" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="iso3Code" type="xsd:string" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="shortNameFr" type="xsd:string" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="shortNameDe" type="xsd:string" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="shortNameIt" type="xsd:string" />
+                <xsd:element maxOccurs="1" minOccurs="1" name="creationDate" type="xsd:dateTime" />
+                <xsd:element maxOccurs="1" minOccurs="1" name="creationName" type="xsd:string" />
+                <xsd:element maxOccurs="1" minOccurs="1" name="changeDate" type="xsd:dateTime" />
+                <xsd:element maxOccurs="1" minOccurs="1" name="changeName" type="xsd:string" />
+                <xsd:element maxOccurs="1" minOccurs="1" name="deleted" type="xsd:boolean" />
+                <xsd:element maxOccurs="1" minOccurs="0" name="fkSovereignCountry" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_ForeignKey">countryTerritory/countryTerritoryId</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="countryTerritory">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="countryTerritoryId" />
+        </xsd:unique>
+    </xsd:element>
+</xsd:schema>

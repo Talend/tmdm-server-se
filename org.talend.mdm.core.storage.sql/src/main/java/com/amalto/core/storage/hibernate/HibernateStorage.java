@@ -1400,7 +1400,7 @@ public class HibernateStorage implements Storage {
         return analyzer.analyzeImpacts(diffResults);
     }
 
-    public List<ComplexTypeMetadata> findChangedTypesToDrop(Compare.DiffResults diffResults) {
+    private List<ComplexTypeMetadata> findChangedTypesToDrop(Compare.DiffResults diffResults) {
         List<ComplexTypeMetadata> sortedTypesToDrop = new ArrayList<ComplexTypeMetadata>();
         MetadataRepository previousRepository = getMetadataRepository();
         if (diffResults.getActions().isEmpty()) {

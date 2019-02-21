@@ -1,0 +1,22 @@
+<ii>
+    <c>WorkingDraftsObj</c>
+    <n>WorkingDraftsObj</n>
+    <dmn>WorkingDraftsObj</dmn>
+    <i>1</i>
+    <t>1328544306344</t>
+    <taskId/>
+    <p>
+        <organisation>
+            <organisationId>2</organisationId>
+            <adrId>sdf</adrId>
+            <creationDate>2019-01-28T12:00:00</creationDate>
+            <creationName>ORG1</creationName>
+            <changeDate>2019-01-28T12:00:00</changeDate>
+            <changeName>ORG1</changeName>
+            <deleted>false</deleted>
+            <fkOrganisationTypes>[1]</fkOrganisationTypes>
+            <fkAddresses>[1]</fkAddresses>
+            <fkServices>[1]</fkServices>
+        </organisation>
+    </p>
+</ii>

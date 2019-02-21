@@ -3682,6 +3682,50 @@ public class DocumentSaveTest extends TestCase {
         storage.commit();
     }
 
+    public void test74_UpdateForeignKeyForMany() throws Exception {
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(DocumentSaveTest.class.getResourceAsStream("test74.xsd"));
+        MockMetadataRepositoryAdmin.INSTANCE.register("modelisationRefad", repository);
+        SaverSource source = new TestSaverSource(repository, true, "test74_1_original.xml", "test74.xsd");
+
+        //Case 1 add fkService in organisation entity, saved success.
+        SaverSession session = SaverSession.newSession(source);
+        InputStream recordXml = DocumentSaveTest.class.getResourceAsStream("test74_1.xml");
+        DocumentSaverContext context = session.getContextFactory()
+                .create("modelisationRefad", "modelisationRefad", "Source", recordXml, false, true, true, false, false);
+        DocumentSaver saver = context.createSaver();
+        saver.save(session, context);
+        MockCommitter committer = new MockCommitter();
+        session.end(committer);
+
+        assertTrue(committer.hasSaved());
+        Element committedElement = committer.getCommittedElement();
+        assertEquals("2", evaluate(committedElement, "/organisation/organisationId"));
+        assertEquals("[2]", evaluate(committedElement, "/organisation/fkServices[1]"));
+    }
+
+    public void test74_UpdateForeignKeyForOne() throws Exception {
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(DocumentSaveTest.class.getResourceAsStream("test75.xsd"));
+        MockMetadataRepositoryAdmin.INSTANCE.register("modelisationRefad", repository);
+        SaverSource source = new TestSaverSource(repository, true, "test75_1_original.xml", "test75.xsd");
+
+        //Case 1 add fkService in organisation entity, saved success.
+        SaverSession session = SaverSession.newSession(source);
+        InputStream recordXml = DocumentSaveTest.class.getResourceAsStream("test75_1.xml");
+        DocumentSaverContext context = session.getContextFactory()
+                .create("modelisationRefad", "modelisationRefad", "Source", recordXml, false, true, true, false, false);
+        DocumentSaver saver = context.createSaver();
+        saver.save(session, context);
+        MockCommitter committer = new MockCommitter();
+        session.end(committer);
+
+        assertTrue(committer.hasSaved());
+        Element committedElement = committer.getCommittedElement();
+        assertEquals("2", evaluate(committedElement, "/organisation/organisationId"));
+        assertEquals("[2]", evaluate(committedElement, "/organisation/fkServices[1]"));
+    }
+
     private static class MockCommitter implements SaverSession.Committer {
 
         private MutableDocument lastSaved;

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  *
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -39,11 +39,20 @@ class ManyValue implements Setter, Getter {
             list.set(element.index, null);
         }
         if (element.field instanceof ReferenceFieldMetadata) {
-            ComplexTypeMetadata referencedType = ((ReferenceFieldMetadata) element.field).getReferencedType();
-            DataRecord referencedRecord = (DataRecord) StorageMetadataUtils.convert(String.valueOf(value), element.field, referencedType);
-            list.set(element.index, referencedRecord);
+            ReferenceFieldMetadata fieldMetadata = (ReferenceFieldMetadata) element.field;
+            DataRecord oldRecord = (DataRecord) list.get(element.index);
+            boolean needResetValue = true;
+            if (oldRecord != null) {
+                String oldValue = String.valueOf(oldRecord.get(fieldMetadata.getReferencedField()));
+                needResetValue = !value.equals('[' + oldValue + ']');
+            }
+            if (needResetValue) {
+                ComplexTypeMetadata referencedType = fieldMetadata.getReferencedType();
+                DataRecord referencedRecord = (DataRecord) StorageMetadataUtils.convert(value, element.field, referencedType);
+                list.set(element.index, referencedRecord);
+            }
         } else {
-            list.set(element.index, StorageMetadataUtils.convert(String.valueOf(value), element.field));
+            list.set(element.index, StorageMetadataUtils.convert(value, element.field));
         }
     }
 

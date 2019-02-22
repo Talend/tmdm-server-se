@@ -3686,7 +3686,7 @@ public class DocumentSaveTest extends TestCase {
         MetadataRepository repository = new MetadataRepository();
         repository.load(DocumentSaveTest.class.getResourceAsStream("test74.xsd"));
         MockMetadataRepositoryAdmin.INSTANCE.register("modelisationRefad", repository);
-        SaverSource source = new TestSaverSource(repository, true, "test74_1_original.xml", "test74.xsd");
+        SaverSource source = new TestSaverSource(repository, true, "test74_1_original.xml", "test74.xsd", "admin");
 
         //Case 1 add fkService in organisation entity, saved success.
         SaverSession session = SaverSession.newSession(source);
@@ -3708,7 +3708,7 @@ public class DocumentSaveTest extends TestCase {
         MetadataRepository repository = new MetadataRepository();
         repository.load(DocumentSaveTest.class.getResourceAsStream("test75.xsd"));
         MockMetadataRepositoryAdmin.INSTANCE.register("modelisationRefad", repository);
-        SaverSource source = new TestSaverSource(repository, true, "test75_1_original.xml", "test75.xsd");
+        SaverSource source = new TestSaverSource(repository, true, "test75_1_original.xml", "test75.xsd", "admin");
 
         //Case 1 add fkService in organisation entity, saved success.
         SaverSession session = SaverSession.newSession(source);

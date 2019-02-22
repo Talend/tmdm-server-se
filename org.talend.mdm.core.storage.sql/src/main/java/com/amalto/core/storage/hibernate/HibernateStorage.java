@@ -1790,10 +1790,6 @@ public class HibernateStorage implements Storage {
 
     @Override
     public void close(boolean dropExistingData) {
-        if (dropExistingData) {
-            // Clean update reports
-            cleanUpdateReports(null);
-        }
         // Close hibernate so all connections get released before drop schema.
         close();
         if (dropExistingData) { // Drop schema if asked for...

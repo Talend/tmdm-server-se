@@ -297,8 +297,8 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
     public WSDataModelPK deleteDataModel(WSDeleteDataModel wsDeleteDataModel) throws RemoteException {
         String user = null;
         try {
-            // Clean records in recycle bin before delete data model.
             cleanRecycleBin(wsDeleteDataModel.getWsDataModelPK().getPk());
+            cleanUpdateReport(wsDeleteDataModel.getWsDataModelPK().getPk());
             // Delete data model
             user = LocalUser.getLocalUser().getUsername();
             DataModelPOJOPK dataModelPK = Util.getDataModelCtrlLocal()
@@ -2676,6 +2676,25 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
                 }
             } catch (Exception e) {
                 LOGGER.warn("Could not remove dropped items for '" + storage.getName() + "'.", e); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+            storage.commit();
+        }
+    }
+
+    private void cleanUpdateReport(String dataModelPK) {
+        StorageAdmin storageAdmin = ServerContext.INSTANCE.get().getStorageAdmin();
+        Storage storage = storageAdmin.get(XSystemObjects.DC_UPDATE_PREPORT.getName(), StorageType.MASTER);
+        if (storage == null) {
+            LOGGER.warn("No system storage available."); //$NON-NLS-1$
+        } else {
+            ComplexTypeMetadata update = storage.getMetadataRepository().getComplexType("Update"); //$NON-NLS-1$
+            UserQueryBuilder qb;
+            try {
+                storage.begin();
+                qb = from(update).where(eq(update.getField("DataModel"), dataModelPK)); //$NON-NLS-1$
+                    storage.delete(qb.getExpression());
+            } catch (Exception e) {
+                LOGGER.warn("Could not remove update report for '" + dataModelPK + "'.", e); //$NON-NLS-1$ //$NON-NLS-2$
             }
             storage.commit();
         }

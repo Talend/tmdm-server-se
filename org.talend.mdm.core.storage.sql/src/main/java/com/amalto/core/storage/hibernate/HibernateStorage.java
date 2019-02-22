@@ -1196,15 +1196,6 @@ public class HibernateStorage implements Storage {
             } else {
                 ComplexTypeMetadata update = storage.getMetadataRepository().getComplexType("Update"); //$NON-NLS-1$
                 storage.begin();
-                if (sortedTypesToDrop == null) {
-                    try {
-                        UserQueryBuilder qb = from(update).where(eq(update.getField("DataCluster"), getName())); //$NON-NLS-1$
-                        storage.delete(qb.getExpression());
-
-                    } catch (Exception e) {
-                        LOGGER.warn("Could not remove update reports for '" + storage.getName() + "'.", e); //$NON-NLS-1$ //$NON-NLS-2$
-                    }
-                } else {
                     for (ComplexTypeMetadata type : sortedTypesToDrop) {
                         try {
                             UserQueryBuilder qb = from(update).where(and(eq(update.getField("Concept"), type.getName()), //$NON-NLS-1$
@@ -1214,7 +1205,6 @@ public class HibernateStorage implements Storage {
                             LOGGER.warn("Could not remove update reports for '" + type.getName() + "'.", e); //$NON-NLS-1$ //$NON-NLS-2$
                         }
                     }
-                }
                 storage.commit();
             }
         } catch (Exception e) {

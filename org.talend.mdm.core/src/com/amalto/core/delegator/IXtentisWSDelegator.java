@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -2657,8 +2657,7 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
         throw new NotImplementedException();
     }
 
-    private void cleanRecycleBin(String dataModelPK)
-    {
+    private void cleanRecycleBin(String dataModelPK) {
         StorageAdmin storageAdmin = ServerContext.INSTANCE.get().getStorageAdmin();
         Storage storage = storageAdmin.get(StorageAdmin.SYSTEM_STORAGE, StorageType.SYSTEM);
         if (storage == null) {

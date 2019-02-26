@@ -2673,10 +2673,10 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
                     qb = from(droppedItem).where(eq(droppedItem.getField("concept-name"), type.getName())); //$NON-NLS-1$
                     storage.delete(qb.getExpression());
                 }
+                storage.commit();
             } catch (Exception e) {
                 LOGGER.warn("Could not remove dropped items for '" + storage.getName() + "'.", e); //$NON-NLS-1$ //$NON-NLS-2$
             }
-            storage.commit();
         }
     }
 
@@ -2692,10 +2692,10 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
                 storage.begin();
                 qb = from(update).where(eq(update.getField("DataModel"), dataModelPK)); //$NON-NLS-1$
                     storage.delete(qb.getExpression());
+                storage.commit();
             } catch (Exception e) {
                 LOGGER.warn("Could not remove update report for '" + dataModelPK + "'.", e); //$NON-NLS-1$ //$NON-NLS-2$
             }
-            storage.commit();
         }
     }
 

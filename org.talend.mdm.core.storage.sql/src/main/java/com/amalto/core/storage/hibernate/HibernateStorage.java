@@ -1113,7 +1113,7 @@ public class HibernateStorage implements Storage {
                 break;
             case MEDIUM:
             case LOW:
-                if (!impactCategory.getValue().isEmpty()) {
+                if (!changes.isEmpty()) {
                     analyzeChanges(typesToDrop, changes);
                 }
             }
@@ -1178,11 +1178,11 @@ public class HibernateStorage implements Storage {
                                     + "' no longer exists. No need to delete it."); //$NON-NLS-1$
                         }
                     } catch (Exception e) {
-                        LOGGER.warn("Could not remove full text directory for '" + typeMetadata.getName() + "'.", e); //$NON-NLS-1$ //$NON-NLS-2$
+                        LOGGER.error("Could not remove full text directory for '" + typeMetadata.getName() + "'.", e); //$NON-NLS-1$ //$NON-NLS-2$
                     }
                 }
             } catch (Exception e) {
-                LOGGER.warn("Could not correctly clean full text directory.", e); //$NON-NLS-1$
+                LOGGER.error("Could not correctly clean full text directory.", e); //$NON-NLS-1$
             }
         }
     }
@@ -1202,7 +1202,7 @@ public class HibernateStorage implements Storage {
                                     eq(update.getField("DataCluster"), getName()))); //$NON-NLS-1$
                             storage.delete(qb.getExpression());
                         } catch (Exception e) {
-                            LOGGER.warn("Could not remove update reports for '" + type.getName() + "'.", e); //$NON-NLS-1$ //$NON-NLS-2$
+                        LOGGER.error("Could not remove update reports for '" + type.getName() + "'.", e); //$NON-NLS-1$ //$NON-NLS-2$
                         }
                     }
                 storage.commit();
@@ -1211,7 +1211,7 @@ public class HibernateStorage implements Storage {
             if (storage != null) {
                 storage.rollback();
             }
-            LOGGER.warn("Could not correctly clean update reports", e); //$NON-NLS-1$
+            LOGGER.error("Could not correctly clean update reports", e); //$NON-NLS-1$
         }
     }
 
@@ -1229,7 +1229,7 @@ public class HibernateStorage implements Storage {
                         UserQueryBuilder qb = from(droppedItem).where(eq(droppedItem.getField("concept-name"), type.getName())); //$NON-NLS-1$
                         storage.delete(qb.getExpression());
                     } catch (Exception e) {
-                        LOGGER.warn("Could not remove dropped items for '" + type.getName() + "'.", e); //$NON-NLS-1$ //$NON-NLS-2$
+                        LOGGER.error("Could not remove dropped items for '" + type.getName() + "'.", e); //$NON-NLS-1$ //$NON-NLS-2$
                     }
                 }
                 storage.commit();
@@ -1238,7 +1238,7 @@ public class HibernateStorage implements Storage {
             if (storage != null) {
                 storage.rollback();
             }
-            LOGGER.warn("Could not correctly clean dropped items", e); //$NON-NLS-1$
+            LOGGER.error("Could not correctly clean dropped items", e); //$NON-NLS-1$
         }
     }
 

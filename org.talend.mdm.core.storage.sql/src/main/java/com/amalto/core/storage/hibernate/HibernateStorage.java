@@ -1196,15 +1196,15 @@ public class HibernateStorage implements Storage {
             } else {
                 ComplexTypeMetadata update = storage.getMetadataRepository().getComplexType("Update"); //$NON-NLS-1$
                 storage.begin();
-                    for (ComplexTypeMetadata type : sortedTypesToDrop) {
-                        try {
-                            UserQueryBuilder qb = from(update).where(and(eq(update.getField("Concept"), type.getName()), //$NON-NLS-1$
-                                    eq(update.getField("DataCluster"), getName()))); //$NON-NLS-1$
-                            storage.delete(qb.getExpression());
-                        } catch (Exception e) {
+                for (ComplexTypeMetadata type : sortedTypesToDrop) {
+                    try {
+                        UserQueryBuilder qb = from(update).where(and(eq(update.getField("Concept"), type.getName()), //$NON-NLS-1$
+                                eq(update.getField("DataCluster"), getName()))); //$NON-NLS-1$
+                        storage.delete(qb.getExpression());
+                    } catch (Exception e) {
                         LOGGER.error("Could not remove update reports for '" + type.getName() + "'.", e); //$NON-NLS-1$ //$NON-NLS-2$
-                        }
                     }
+                }
                 storage.commit();
             }
         } catch (Exception e) {
@@ -1288,7 +1288,7 @@ public class HibernateStorage implements Storage {
                         dropedTables.add(table);
                         successCount++;
                     } catch (SQLException e) {
-                        LOGGER.warn("Could not delete '" + table + "' in round " + totalRound + "."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                        LOGGER.error("Could not delete '" + table + "' in round " + totalRound + "."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                     } finally {
                         statement.close();
                     }
@@ -1391,7 +1391,7 @@ public class HibernateStorage implements Storage {
     }
 
     private List<ComplexTypeMetadata> findChangedTypesToDrop(Compare.DiffResults diffResults) {
-        List<ComplexTypeMetadata> sortedTypesToDrop = new ArrayList<ComplexTypeMetadata>();
+        List<ComplexTypeMetadata> sortedTypesToDrop = new ArrayList<>();
         MetadataRepository previousRepository = getMetadataRepository();
         if (diffResults.getActions().isEmpty()) {
             LOGGER.info("No change detected, no database schema update to perform."); //$NON-NLS-1$

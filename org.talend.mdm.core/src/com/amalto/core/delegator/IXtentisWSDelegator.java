@@ -2675,7 +2675,10 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
                 }
                 storage.commit();
             } catch (Exception e) {
-                LOGGER.warn("Could not remove dropped items for '" + storage.getName() + "'.", e); //$NON-NLS-1$ //$NON-NLS-2$
+                if (storage != null) {
+                    storage.rollback();
+                }
+                LOGGER.error("Could not remove dropped items for '" + storage.getName() + "'.", e); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
     }
@@ -2691,10 +2694,13 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
             try {
                 storage.begin();
                 qb = from(update).where(eq(update.getField("DataModel"), dataModelPK)); //$NON-NLS-1$
-                    storage.delete(qb.getExpression());
+                storage.delete(qb.getExpression());
                 storage.commit();
             } catch (Exception e) {
-                LOGGER.warn("Could not remove update report for '" + dataModelPK + "'.", e); //$NON-NLS-1$ //$NON-NLS-2$
+                if (storage != null) {
+                    storage.rollback();
+                }
+                LOGGER.error("Could not remove update report for '" + dataModelPK + "'.", e); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
     }

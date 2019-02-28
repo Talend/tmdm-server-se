@@ -20,6 +20,7 @@ import org.talend.mdm.webapp.general.client.GeneralServiceAsync;
 import org.talend.mdm.webapp.general.model.ActionBean;
 import org.talend.mdm.webapp.general.model.ComboBoxModel;
 import org.talend.mdm.webapp.general.model.LanguageBean;
+import org.talend.mdm.webapp.general.model.MenuBean;
 import org.talend.mdm.webapp.general.model.MenuGroup;
 import org.talend.mdm.webapp.general.model.ProductInfo;
 import org.talend.mdm.webapp.general.model.UserBean;
@@ -319,6 +320,9 @@ public class ActionsPanelGWTTest extends GWTTestCase {
         @Override
         public void getAppHeader(AsyncCallback<AppHeader> callback) {
         }
-        
+
+        @Override
+        public void getMenuList(String language, AsyncCallback<List<MenuBean>> callback) {
+        }
     }
 }

@@ -212,17 +212,19 @@ public class MainFramePanel extends Portal {
 
     private List<String> getDefaultPortletOrdering(boolean isEE) {
         if (isEE) {
+            List<String> portletList = new ArrayList<String>();
+            portletList.add(PortletConstants.START_NAME);
+            portletList.add(PortletConstants.PROCESS_NAME);
+            portletList.add(PortletConstants.ALERT_NAME);
             if (menus.contains(WelcomePortal.SEARCHCONTEXTAPP)) {
-                return Arrays.asList(PortletConstants.START_NAME, PortletConstants.PROCESS_NAME, PortletConstants.ALERT_NAME,
-                        PortletConstants.SEARCH_NAME, PortletConstants.TASKS_NAME, PortletConstants.DATA_CHART_NAME,
-                        PortletConstants.ROUTING_EVENT_CHART_NAME, PortletConstants.JOURNAL_CHART_NAME,
-                        PortletConstants.MATCHING_CHART_NAME);
-            } else {
-                return Arrays.asList(PortletConstants.START_NAME, PortletConstants.PROCESS_NAME, PortletConstants.ALERT_NAME,
-                        PortletConstants.TASKS_NAME, PortletConstants.DATA_CHART_NAME,
-                        PortletConstants.ROUTING_EVENT_CHART_NAME, PortletConstants.JOURNAL_CHART_NAME,
-                        PortletConstants.MATCHING_CHART_NAME);
+                portletList.add(PortletConstants.SEARCH_NAME);
             }
+            portletList.add(PortletConstants.TASKS_NAME);
+            portletList.add(PortletConstants.DATA_CHART_NAME);
+            portletList.add(PortletConstants.ROUTING_EVENT_CHART_NAME);
+            portletList.add(PortletConstants.JOURNAL_CHART_NAME);
+            portletList.add(PortletConstants.MATCHING_CHART_NAME);
+            return portletList;
         } else {
             return Arrays.asList(PortletConstants.START_NAME, PortletConstants.PROCESS_NAME);
         }
@@ -241,11 +243,6 @@ public class MainFramePanel extends Portal {
             MainFramePanel.this.add(portlet);
         } else if (userConfigs == null) {// login: init with configs in db
             portletToLocations = props.getPortletToLocations();
-            if (!menus.contains(WelcomePortal.SEARCHCONTEXTAPP)) {
-                List<Integer> loc = portletToLocations.get(WelcomePortal.SEARCHCONTEXT);
-                portletToLocations.put(PortletConstants.ROUTING_EVENT_CHART_NAME, loc);
-                portletToLocations.remove(WelcomePortal.SEARCHCONTEXT);
-            }
             initializePortlets(portletToLocations);
             markPortalConfigsOnUI(getConfigsForUser());
         } else {

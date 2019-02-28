@@ -315,10 +315,8 @@ public class PortletConfigFieldSet extends FieldSet {
             if (alertWidgetCheckBox.getValue()) {
                 updates.add(PortletConstants.ALERT_NAME);
             }
-            if (menus.contains(SEARCH_CONTEXT)) {
-                if (searchWidgetCheckBox.getValue()) {
-                    updates.add(PortletConstants.SEARCH_NAME);
-                }
+            if (menus.contains(SEARCH_CONTEXT) && searchWidgetCheckBox.getValue()) {
+                updates.add(PortletConstants.SEARCH_NAME);
             }
             if (tasksWidgetCheckBox.getValue()) {
                 updates.add(PortletConstants.TASKS_NAME);

@@ -109,7 +109,7 @@ public class GeneralAction implements GeneralService {
     @Override
     public List<MenuBean> getMenuList(String language) throws ServiceException {
         try {
-            List<MenuBean> menus = new ArrayList<MenuBean>();
+            List<MenuBean> menus = new ArrayList<>();
             Utils.getSubMenus(Menu.getRootMenu(), language, menus, 1, 1);
             return menus;
         } catch (Exception e) {

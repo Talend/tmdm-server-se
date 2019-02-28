@@ -95,9 +95,8 @@ public class GeneralAction implements GeneralService {
     @Override
     public MenuGroup getMenus(String language) throws ServiceException {
         MenuGroup result = new MenuGroup();
+        List<MenuBean> menus = getMenuList(language);
         try {
-            List<MenuBean> menus = new ArrayList<MenuBean>();
-            Utils.getSubMenus(Menu.getRootMenu(), language, menus, 1, 1);
             result.setMenuBean(menus);
             result.setGroupItem(Utils.getGroupItems(language));
         } catch (Exception e) {
@@ -105,6 +104,18 @@ public class GeneralAction implements GeneralService {
             throw new ServiceException(e.getLocalizedMessage());
         }
         return result;
+    }
+
+    @Override
+    public List<MenuBean> getMenuList(String language) throws ServiceException {
+        try {
+            List<MenuBean> menus = new ArrayList<MenuBean>();
+            Utils.getSubMenus(Menu.getRootMenu(), language, menus, 1, 1);
+            return menus;
+        } catch (Exception e) {
+            LOG.error(e.getMessage(), e);
+            throw new ServiceException(e.getLocalizedMessage());
+        }
     }
 
     private List<ComboBoxModel> getClusters() throws Exception {

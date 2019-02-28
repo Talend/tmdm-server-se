@@ -15,6 +15,7 @@ import org.talend.mdm.webapp.base.client.exception.ServiceException;
 import org.talend.mdm.webapp.base.shared.AppHeader;
 import org.talend.mdm.webapp.general.model.ActionBean;
 import org.talend.mdm.webapp.general.model.LanguageBean;
+import org.talend.mdm.webapp.general.model.MenuBean;
 import org.talend.mdm.webapp.general.model.MenuGroup;
 import org.talend.mdm.webapp.general.model.ProductInfo;
 import org.talend.mdm.webapp.general.model.UserBean;
@@ -31,6 +32,8 @@ public interface GeneralService extends RemoteService {
     public ProductInfo getProductInfo() throws ServiceException;
 
     MenuGroup getMenus(String language) throws ServiceException;
+
+    List<MenuBean> getMenuList(String language) throws ServiceException;
 
     ActionBean getAction() throws ServiceException;
 

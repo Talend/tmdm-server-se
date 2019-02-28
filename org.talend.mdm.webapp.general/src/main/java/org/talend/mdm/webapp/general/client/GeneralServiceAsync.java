@@ -14,6 +14,7 @@ import java.util.List;
 import org.talend.mdm.webapp.base.shared.AppHeader;
 import org.talend.mdm.webapp.general.model.ActionBean;
 import org.talend.mdm.webapp.general.model.LanguageBean;
+import org.talend.mdm.webapp.general.model.MenuBean;
 import org.talend.mdm.webapp.general.model.MenuGroup;
 import org.talend.mdm.webapp.general.model.ProductInfo;
 import org.talend.mdm.webapp.general.model.UserBean;
@@ -28,6 +29,8 @@ public interface GeneralServiceAsync {
     void getProductInfo(AsyncCallback<ProductInfo> callback);
 
     void getMenus(String language, AsyncCallback<MenuGroup> callback);
+
+    void getMenuList(String language, AsyncCallback<List<MenuBean>> callback);
 
     void setClusterAndModel(String cluster, String model, AsyncCallback<Void> callback);
 

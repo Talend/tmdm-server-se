@@ -23,7 +23,6 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.talend.mdm.webapp.base.client.SessionAwareAsyncCallback;
-import org.talend.mdm.webapp.base.client.util.UrlUtil;
 import org.talend.mdm.webapp.base.client.widget.PortletConstants;
 import org.talend.mdm.webapp.welcomeportal.client.mvc.PortalProperties;
 import org.talend.mdm.webapp.welcomeportal.client.widget.AlertPortlet;
@@ -97,6 +96,8 @@ public class MainFramePanel extends Portal {
     private List<List<Integer>> defaultLocationList;
 
     private WelcomePortalServiceAsync service = (WelcomePortalServiceAsync) Registry.get(WelcomePortal.WELCOMEPORTAL_SERVICE);
+
+    private List<String> menus = (List<String>) Registry.get(WelcomePortal.MENUS);
 
     public MainFramePanel(int colNum, PortalProperties portalConfig, boolean isEnterpriseVersion) {
         this(colNum, portalConfig, null, isEnterpriseVersion);
@@ -211,10 +212,17 @@ public class MainFramePanel extends Portal {
 
     private List<String> getDefaultPortletOrdering(boolean isEE) {
         if (isEE) {
-            return Arrays.asList(PortletConstants.START_NAME, PortletConstants.PROCESS_NAME, PortletConstants.ALERT_NAME,
-                    PortletConstants.SEARCH_NAME, PortletConstants.TASKS_NAME, PortletConstants.DATA_CHART_NAME,
-                    PortletConstants.ROUTING_EVENT_CHART_NAME, PortletConstants.JOURNAL_CHART_NAME,
-                    PortletConstants.MATCHING_CHART_NAME);
+            if (menus.contains(WelcomePortal.SEARCHCONTEXTAPP)) {
+                return Arrays.asList(PortletConstants.START_NAME, PortletConstants.PROCESS_NAME, PortletConstants.ALERT_NAME,
+                        PortletConstants.SEARCH_NAME, PortletConstants.TASKS_NAME, PortletConstants.DATA_CHART_NAME,
+                        PortletConstants.ROUTING_EVENT_CHART_NAME, PortletConstants.JOURNAL_CHART_NAME,
+                        PortletConstants.MATCHING_CHART_NAME);
+            } else {
+                return Arrays.asList(PortletConstants.START_NAME, PortletConstants.PROCESS_NAME, PortletConstants.ALERT_NAME,
+                        PortletConstants.TASKS_NAME, PortletConstants.DATA_CHART_NAME,
+                        PortletConstants.ROUTING_EVENT_CHART_NAME, PortletConstants.JOURNAL_CHART_NAME,
+                        PortletConstants.MATCHING_CHART_NAME);
+            }
         } else {
             return Arrays.asList(PortletConstants.START_NAME, PortletConstants.PROCESS_NAME);
         }
@@ -233,6 +241,11 @@ public class MainFramePanel extends Portal {
             MainFramePanel.this.add(portlet);
         } else if (userConfigs == null) {// login: init with configs in db
             portletToLocations = props.getPortletToLocations();
+            if (!menus.contains(WelcomePortal.SEARCHCONTEXTAPP)) {
+                List<Integer> loc = portletToLocations.get(WelcomePortal.SEARCHCONTEXT);
+                portletToLocations.put(PortletConstants.ROUTING_EVENT_CHART_NAME, loc);
+                portletToLocations.remove(WelcomePortal.SEARCHCONTEXT);
+            }
             initializePortlets(portletToLocations);
             markPortalConfigsOnUI(getConfigsForUser());
         } else {
@@ -747,18 +760,18 @@ public class MainFramePanel extends Portal {
     }
 
     public native void openWindow(String url)/*-{
-                                             window.open(url);
-                                             }-*/;
+        window.open(url);
+    }-*/;
 
     public native void initUI(String context, String application)/*-{
-                                                                 $wnd.setTimeout(function() {
-                                                                 $wnd.amalto[context][application].init();
-                                                                 }, 50);
-                                                                 }-*/;
+        $wnd.setTimeout(function() {
+            $wnd.amalto[context][application].init();
+        }, 50);
+    }-*/;
 
     // record available portlets in Actions panel
     private native void markPortalConfigsOnUI(String configs)/*-{
-                                                             $wnd.amalto.core.markPortlets(configs);
-                                                             }-*/;
+        $wnd.amalto.core.markPortlets(configs);
+    }-*/;
 
 }

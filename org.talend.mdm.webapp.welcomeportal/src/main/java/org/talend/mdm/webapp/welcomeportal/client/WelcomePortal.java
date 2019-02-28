@@ -9,9 +9,16 @@
  */
 package org.talend.mdm.webapp.welcomeportal.client;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.talend.mdm.webapp.base.client.ServiceEnhancer;
 import org.talend.mdm.webapp.base.client.SessionAwareAsyncCallback;
+import org.talend.mdm.webapp.base.client.util.UrlUtil;
 import org.talend.mdm.webapp.base.shared.AppHeader;
+import org.talend.mdm.webapp.general.client.GeneralService;
+import org.talend.mdm.webapp.general.client.GeneralServiceAsync;
+import org.talend.mdm.webapp.general.model.MenuBean;
 import org.talend.mdm.webapp.welcomeportal.client.mvc.WelcomePortalController;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -55,9 +62,11 @@ public class WelcomePortal implements EntryPoint {
 
     public static final String SEARCHCONTEXT = "search"; //$NON-NLS-1$
 
-    public static final String SEARCHCONTEXTAPP = "search"; //$NON-NLS-1$
+    public static final String SEARCHCONTEXTAPP = "Search"; //$NON-NLS-1$
 
     public static final String APP_HEADER = "appHeader"; //$NON-NLS-1$
+
+    public static final String MENUS = "menus"; //$NON-NLS-1$
 
     /**
      * This is the entry point method.
@@ -84,6 +93,22 @@ public class WelcomePortal implements EntryPoint {
                 Registry.register(APP_HEADER, header);
             }
         });
+
+        ServiceDefTarget generalService = GWT.create(GeneralService.class);
+        ServiceEnhancer.customizeService(generalService);
+        ((GeneralServiceAsync) generalService).getMenuList(UrlUtil.getLanguage(),
+                new SessionAwareAsyncCallback<List<MenuBean>>() {
+
+                    @Override
+                    public void onSuccess(List<MenuBean> menusList) {
+                        List<String> menuApplicationList = new ArrayList<String>();
+                        for (MenuBean menuBean : menusList) {
+                            menuApplicationList.add(menuBean.getApplication());
+                        }
+                        Registry.register(MENUS, menuApplicationList);
+                    }
+                });
+
     }
 
     private native void registerPubService()/*-{

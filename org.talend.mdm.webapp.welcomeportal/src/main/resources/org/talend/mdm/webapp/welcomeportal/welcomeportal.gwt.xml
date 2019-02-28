@@ -2,6 +2,7 @@
 <module rename-to='welcomeportal'>
  <inherits name="org.talend.mdm.webapp.base.BASE" />
  <inherits name="org.talend.mdm.webapp.base.REST" />
+ <inherits name="org.talend.mdm.webapp.general.BaseGeneral" />
  <!-- gwt module for chart library flot -->
  <inherits name='com.googlecode.gflot.GFlotJQueryNoConflict'/>
  <!-- enable a flot plugin when needed

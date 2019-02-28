@@ -56,13 +56,23 @@
             <artifactId>org.restlet.ext.xml</artifactId>
         </dependency>
         <dependency>
-          <groupId>com.googlecode.gflot</groupId>
-          <artifactId>gflot</artifactId>
+            <groupId>com.googlecode.gflot</groupId>
+            <artifactId>gflot</artifactId>
         </dependency>
         <!-- MDM dependencies -->
         <dependency>
             <groupId>org.talend.mdm</groupId>
             <artifactId>org.talend.mdm.webapp.base</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.talend.mdm</groupId>
+            <artifactId>org.talend.mdm.webapp.general</artifactId>
+            <classifier>sources</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.talend.mdm</groupId>
+            <artifactId>org.talend.mdm.webapp.general</artifactId>
+            <classifier>lib</classifier>
         </dependency>
         <dependency>
             <groupId>org.talend.mdm</groupId>
@@ -95,35 +105,35 @@
             </plugin>
         </plugins>
     </build>
-    
+
     <profiles>
         <profile>
             <id>dev-build</id>
             <build>
-            	<plugins>
-            		<plugin>
+                <plugins>
+                    <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-antrun-plugin</artifactId>
                         <executions>
-                        	<execution>
+                            <execution>
                                 <id>deploy-tomcat</id>
                                 <configuration>
-                                	<target>
-                                		<copy tofile="${lib.dest}" file="${web.lib.src}" />
-                                		<delete dir="${mdm.app.dir}/welcomeportal" />
-                                		<copy todir="${mdm.app.dir}/welcomeportal">
-                                			<fileset dir="${mdm.build.web.dir}/welcomeportal" />
-                                		</copy>
-                                		<copy tofile="${mdm.app.dir}/WelcomePortal.css" file="${mdm.build.web.dir}/WelcomePortal.css" overwrite="true" />
-                                		<copy tofile="${mdm.app.dir}/WelcomePortal.js" file="${mdm.build.web.dir}/WelcomePortal.js" overwrite="true" />
-                                	</target>
+                                    <target>
+                                        <copy tofile="${lib.dest}" file="${web.lib.src}" />
+                                        <delete dir="${mdm.app.dir}/welcomeportal" />
+                                        <copy todir="${mdm.app.dir}/welcomeportal">
+                                            <fileset dir="${mdm.build.web.dir}/welcomeportal" />
+                                        </copy>
+                                        <copy tofile="${mdm.app.dir}/WelcomePortal.css" file="${mdm.build.web.dir}/WelcomePortal.css" overwrite="true" />
+                                        <copy tofile="${mdm.app.dir}/WelcomePortal.js" file="${mdm.build.web.dir}/WelcomePortal.js" overwrite="true" />
+                                    </target>
                                 </configuration>
                             </execution>
                         </executions>
-                     </plugin>
+                    </plugin>
                 </plugins>
             </build>
         </profile>
-     </profiles>
-     
+    </profiles>
+
 </project>

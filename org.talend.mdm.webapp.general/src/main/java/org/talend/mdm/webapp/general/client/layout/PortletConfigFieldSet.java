@@ -13,10 +13,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.talend.mdm.webapp.base.client.SessionAwareAsyncCallback;
+import org.talend.mdm.webapp.base.client.util.UrlUtil;
 import org.talend.mdm.webapp.base.client.widget.PortletConstants;
 import org.talend.mdm.webapp.general.client.General;
 import org.talend.mdm.webapp.general.client.GeneralServiceAsync;
 import org.talend.mdm.webapp.general.client.i18n.MessageFactory;
+import org.talend.mdm.webapp.general.model.MenuBean;
 
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.Orientation;
@@ -68,6 +70,8 @@ public class PortletConfigFieldSet extends FieldSet {
 
     private static String WELCOMEPORTAL_CONTEXT = "welcomeportal"; //$NON-NLS-1$
 
+    public static final String SEARCH_CONTEXT = "search"; //$NON-NLS-1$
+
     private boolean isEnterprise;
 
     private static String WELCOMEPORTAL_APP = "WelcomePortal"; //$NON-NLS-1$
@@ -77,6 +81,8 @@ public class PortletConfigFieldSet extends FieldSet {
     private List<String> portletsToCheck;
 
     private int colNum = 3;
+
+    private List<String> menus = new ArrayList<String>();
 
     public PortletConfigFieldSet() {
         FormLayout formLayout = new FormLayout();
@@ -105,6 +111,16 @@ public class PortletConfigFieldSet extends FieldSet {
                 buttonFormData.setMargins(new Margins(2, 0, 2, 0));
                 add(saveButton, buttonFormData);
                 layout(true);
+            }
+        });
+
+        service.getMenuList(UrlUtil.getLanguage(), new SessionAwareAsyncCallback<List<MenuBean>>() {
+
+            @Override
+            public void onSuccess(List<MenuBean> menusList) {
+                for (MenuBean menuBean : menusList) {
+                    menus.add(menuBean.getContext());
+                }
             }
         });
     }
@@ -144,10 +160,12 @@ public class PortletConfigFieldSet extends FieldSet {
             widgetGroup.add(alertWidgetCheckBox);
 
             searchWidgetCheckBox = new CheckBox();
-            searchWidgetCheckBox.setBoxLabel(MessageFactory.getMessages().portlet_search());
-            searchWidgetCheckBox.setValue(false);
-            searchWidgetCheckBox.setVisible(true);
-            widgetGroup.add(searchWidgetCheckBox);
+            if (menus.contains(SEARCH_CONTEXT)) {
+                searchWidgetCheckBox.setBoxLabel(MessageFactory.getMessages().portlet_search());
+                searchWidgetCheckBox.setValue(false);
+                searchWidgetCheckBox.setVisible(true);
+                widgetGroup.add(searchWidgetCheckBox);
+            }
 
             tasksWidgetCheckBox = new CheckBox();
             tasksWidgetCheckBox.setBoxLabel(MessageFactory.getMessages().portlet_tasks());
@@ -297,8 +315,10 @@ public class PortletConfigFieldSet extends FieldSet {
             if (alertWidgetCheckBox.getValue()) {
                 updates.add(PortletConstants.ALERT_NAME);
             }
-            if (searchWidgetCheckBox.getValue()) {
-                updates.add(PortletConstants.SEARCH_NAME);
+            if (menus.contains(SEARCH_CONTEXT)) {
+                if (searchWidgetCheckBox.getValue()) {
+                    updates.add(PortletConstants.SEARCH_NAME);
+                }
             }
             if (tasksWidgetCheckBox.getValue()) {
                 updates.add(PortletConstants.TASKS_NAME);
@@ -384,15 +404,15 @@ public class PortletConfigFieldSet extends FieldSet {
 
     // call refresh in WelcomePortal
     private native void refreshPortal(String portalConfig)/*-{
-		$wnd.amalto.core.refreshPortal(portalConfig);
+        $wnd.amalto.core.refreshPortal(portalConfig);
     }-*/;
 
     private native void display(String context, String application)/*-{
-		if ($wnd.amalto[context]) {
-			if ($wnd.amalto[context][application]) {
-				$wnd.amalto[context][application].init();
-			}
-		}
+        if ($wnd.amalto[context]) {
+            if ($wnd.amalto[context][application]) {
+                $wnd.amalto[context][application].init();
+            }
+        }
     }-*/;
 
     public void activateSaveButton() {

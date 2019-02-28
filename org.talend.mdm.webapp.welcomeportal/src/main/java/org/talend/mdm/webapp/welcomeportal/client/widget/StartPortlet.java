@@ -9,12 +9,15 @@
  */
 package org.talend.mdm.webapp.welcomeportal.client.widget;
 
+import java.util.List;
+
 import org.talend.mdm.webapp.base.client.widget.PortletConstants;
 import org.talend.mdm.webapp.welcomeportal.client.MainFramePanel;
 import org.talend.mdm.webapp.welcomeportal.client.WelcomePortal;
 import org.talend.mdm.webapp.welcomeportal.client.i18n.MessagesFactory;
 import org.talend.mdm.webapp.welcomeportal.client.resources.icon.Icons;
 
+import com.extjs.gxt.ui.client.Registry;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
@@ -38,34 +41,42 @@ public class StartPortlet extends BasePortlet {
     }
 
     private void initPortlet() {
-        StringBuilder browseRecordsItem = new StringBuilder(
-                "<span id=\"ItemsBrowser\" style=\"padding-right:8px;cursor: pointer; width:150;\" class=\"labelStyle\" title=\"" + MessagesFactory.getMessages().browse_items() + "\">"); //$NON-NLS-1$ //$NON-NLS-2$
-        browseRecordsItem.append("<IMG SRC=\"/talendmdm/secure/img/menu/browse.png\"/>&nbsp;"); //$NON-NLS-1$
-        browseRecordsItem.append(MessagesFactory.getMessages().browse_items());
-        browseRecordsItem.append("</span>"); //$NON-NLS-1$
-        HTML browseHtml = new HTML(browseRecordsItem.toString());
-        browseHtml.addClickHandler(new ClickHandler() {
+        List<String> menus = (List<String>) Registry.get(WelcomePortal.MENUS);
+        if (menus.contains(WelcomePortal.BROWSEAPP)) {
+            StringBuilder browseRecordsItem = new StringBuilder(
+                    "<span id=\"ItemsBrowser\" style=\"padding-right:8px;cursor: pointer; width:150;\" class=\"labelStyle\" title=\"" //$NON-NLS-1$
+                            + MessagesFactory.getMessages().browse_items() + "\">"); //$NON-NLS-1$
+            browseRecordsItem.append("<IMG SRC=\"/talendmdm/secure/img/menu/browse.png\"/>&nbsp;"); //$NON-NLS-1$
+            browseRecordsItem.append(MessagesFactory.getMessages().browse_items());
+            browseRecordsItem.append("</span>"); //$NON-NLS-1$
+            HTML browseHtml = new HTML(browseRecordsItem.toString());
+            browseHtml.addClickHandler(new ClickHandler() {
 
-            @Override
-            public void onClick(ClickEvent event) {
-                portal.itemClick(WelcomePortal.BROWSECONTEXT, WelcomePortal.BROWSEAPP);
-            }
-        });
-        fieldSet.add(browseHtml);
-        StringBuilder journalItem = new StringBuilder(
-                "<span id=\"Journal\" style=\"padding-right:8px;cursor: pointer; width:150;\" class=\"labelStyle\" title=\"" + MessagesFactory.getMessages().journal() + "\">"); //$NON-NLS-1$ //$NON-NLS-2$
-        journalItem.append("<IMG SRC=\"/talendmdm/secure/img/menu/updatereport.png\"/>&nbsp;"); //$NON-NLS-1$
-        journalItem.append(MessagesFactory.getMessages().journal());
-        journalItem.append("</span>"); //$NON-NLS-1$
-        HTML journalHtml = new HTML(journalItem.toString());
-        journalHtml.addClickHandler(new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent event) {
+                    portal.itemClick(WelcomePortal.BROWSECONTEXT, WelcomePortal.BROWSEAPP);
+                }
+            });
+            fieldSet.add(browseHtml);
+        }
 
-            @Override
-            public void onClick(ClickEvent event) {
-                portal.itemClick(WelcomePortal.JOURNALCONTEXT, WelcomePortal.JOURNALAPP);
-            }
-        });
-        fieldSet.add(journalHtml);
+        if (menus.contains(WelcomePortal.JOURNALAPP)) {
+            StringBuilder journalItem = new StringBuilder(
+                    "<span id=\"Journal\" style=\"padding-right:8px;cursor: pointer; width:150;\" class=\"labelStyle\" title=\"" //$NON-NLS-1$
+                            + MessagesFactory.getMessages().journal() + "\">"); //$NON-NLS-1$
+            journalItem.append("<IMG SRC=\"/talendmdm/secure/img/menu/updatereport.png\"/>&nbsp;"); //$NON-NLS-1$
+            journalItem.append(MessagesFactory.getMessages().journal());
+            journalItem.append("</span>"); //$NON-NLS-1$
+            HTML journalHtml = new HTML(journalItem.toString());
+            journalHtml.addClickHandler(new ClickHandler() {
+
+                @Override
+                public void onClick(ClickEvent event) {
+                    portal.itemClick(WelcomePortal.JOURNALCONTEXT, WelcomePortal.JOURNALAPP);
+                }
+            });
+            fieldSet.add(journalHtml);
+        }
         fieldSet.layout(true);
     }
 }

@@ -96,6 +96,18 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>jar-source</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>gwt-maven-plugin</artifactId>
                 <executions>
@@ -112,12 +124,9 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>jar-general-library</id>
-                        <phase>prepare-package</phase>
+                        <id>jar-lib</id>
                         <configuration>
-                            <includes>
-                                <include>org/talend/mdm/webapp/general/gwt/*.class</include>
-                            </includes>
+                            <classifier>lib</classifier>
                         </configuration>
                         <goals>
                             <goal>jar</goal>

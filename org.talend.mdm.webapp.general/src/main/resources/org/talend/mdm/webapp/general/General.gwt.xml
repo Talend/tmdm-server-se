@@ -1,12 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module rename-to='general'>
- <inherits name="org.talend.mdm.webapp.base.BASE" />
+ <inherits name="org.talend.mdm.webapp.general.BaseGeneral" />
 
  <!-- Specify the app entry point class. -->
  <entry-point class='org.talend.mdm.webapp.general.client.General' />
-
- <!-- Specify the paths for translatable code -->
- <source path='client' />
- <source path='model' />
 
 </module>

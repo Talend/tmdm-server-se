@@ -229,6 +229,10 @@
         <servlet-name>GeneralService</servlet-name>
         <url-pattern>/welcomeportal/WelcomePortalService</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GeneralService</servlet-name>
+        <url-pattern>/welcomeportal/GeneralService</url-pattern>
+    </servlet-mapping>
     <!-- org.talend.mdm.webapp.browserecords -->
     <servlet>
         <servlet-name>baseRemoteServlet</servlet-name>

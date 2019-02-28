@@ -46,15 +46,15 @@ public class WelcomePortal implements EntryPoint {
      */
     public final static String WELCOMEPORTAL_SERVICE = "WelcomePortalService"; //$NON-NLS-1$
 
-    public final static String BROWSECONTEXT = "browserecords"; // $NON-NLS-2$
+    public final static String BROWSECONTEXT = "browserecords"; //$NON-NLS-1$
 
     public final static String BROWSEAPP = "BrowseRecords"; //$NON-NLS-1$
 
-    public final static String JOURNALCONTEXT = "journal"; //$NON-NLS-2$
+    public final static String JOURNALCONTEXT = "journal"; //$NON-NLS-1$
     
     public final static String JOURNALAPP = "Journal"; //$NON-NLS-1$
 
-    public final static String WORKFLOW_TASKCONTEXT = "workflowtasks"; // $NON-NLS-2$
+    public final static String WORKFLOW_TASKCONTEXT = "workflowtasks"; //$NON-NLS-1$
 
     public final static String WORKFLOW_TASKAPP = "BonitaWorkflowTasks";//$NON-NLS-1$
 

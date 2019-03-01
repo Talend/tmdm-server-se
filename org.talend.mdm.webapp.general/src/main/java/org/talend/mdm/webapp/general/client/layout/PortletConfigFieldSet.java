@@ -95,32 +95,31 @@ public class PortletConfigFieldSet extends FieldSet {
             @Override
             public void onSuccess(Boolean isEE) {
                 isEnterprise = isEE;
-                initWidgetCheckBox();
-                saveButton = new Button(MessageFactory.getMessages().save());
-                saveButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                service.getMenuList(UrlUtil.getLanguage(), new SessionAwareAsyncCallback<List<MenuBean>>() {
 
                     @Override
-                    public void componentSelected(ButtonEvent ce) {
-                        List<String> configUpdates = getPortalConfigUpdate();
-                        switchToWelcomeportal();
-                        refreshPortal(configUpdates.toString());
+                    public void onSuccess(List<MenuBean> menusList) {
+                        for (MenuBean menuBean : menusList) {
+                            menus.add(menuBean.getContext());
+                        }
+                        initWidgetCheckBox();
+                        saveButton = new Button(MessageFactory.getMessages().save());
+                        saveButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
+                            @Override
+                            public void componentSelected(ButtonEvent ce) {
+                                List<String> configUpdates = getPortalConfigUpdate();
+                                switchToWelcomeportal();
+                                refreshPortal(configUpdates.toString());
+
+                            }
+                        });
+                        FormData buttonFormData = new FormData();
+                        buttonFormData.setMargins(new Margins(2, 0, 2, 0));
+                        add(saveButton, buttonFormData);
+                        layout(true);
                     }
                 });
-                FormData buttonFormData = new FormData();
-                buttonFormData.setMargins(new Margins(2, 0, 2, 0));
-                add(saveButton, buttonFormData);
-                layout(true);
-            }
-        });
-
-        service.getMenuList(UrlUtil.getLanguage(), new SessionAwareAsyncCallback<List<MenuBean>>() {
-
-            @Override
-            public void onSuccess(List<MenuBean> menusList) {
-                for (MenuBean menuBean : menusList) {
-                    menus.add(menuBean.getContext());
-                }
             }
         });
     }

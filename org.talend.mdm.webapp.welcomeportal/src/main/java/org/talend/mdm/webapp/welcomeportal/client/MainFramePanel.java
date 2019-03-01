@@ -235,16 +235,18 @@ public class MainFramePanel extends Portal {
         Map<String, List<Integer>> locations = props.getPortletToLocations();
 
         if (locations == null) {// login: init from scratch - no data in db
-            portletToLocations = new LinkedHashMap<String, List<Integer>>();
-            BasePortlet portlet;
-            // start portlets initialization, see ContainerEvent listener
-            portlet = new StartPortlet(this);
-            portlets.add(portlet);
-            MainFramePanel.this.add(portlet);
+            initProltes();
         } else if (userConfigs == null) {// login: init with configs in db
             portletToLocations = props.getPortletToLocations();
-            initializePortlets(portletToLocations);
-            markPortalConfigsOnUI(getConfigsForUser());
+            boolean hasSearchOnMenu = menus.contains(WelcomePortal.SEARCHCONTEXTAPP);
+            boolean hasSearchOnConfig = portletToLocations.containsKey(WelcomePortal.SEARCHCONTEXT);
+            // Reset portlets setting when search portlet changes.
+            if (hasSearchOnMenu == hasSearchOnConfig) {
+                initializePortlets(portletToLocations);
+                markPortalConfigsOnUI(getConfigsForUser());
+            } else {
+                initProltes();
+            }
         } else {
             // switch column config
             final PortalProperties portalPropertiesCp = new PortalProperties(props);
@@ -276,6 +278,15 @@ public class MainFramePanel extends Portal {
             });
 
         }
+    }
+
+    private void initProltes() {
+        portletToLocations = new LinkedHashMap<String, List<Integer>>();
+        BasePortlet portlet;
+        // start portlets initialization, see ContainerEvent listener
+        portlet = new StartPortlet(this);
+        portlets.add(portlet);
+        MainFramePanel.this.add(portlet);
     }
 
     private Integer getDefaultColumNum() {

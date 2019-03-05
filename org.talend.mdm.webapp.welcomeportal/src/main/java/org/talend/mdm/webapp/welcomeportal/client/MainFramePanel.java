@@ -235,7 +235,7 @@ public class MainFramePanel extends Portal {
         Map<String, List<Integer>> locations = props.getPortletToLocations();
 
         if (locations == null) {// login: init from scratch - no data in db
-            initProltes();
+            initPortlets();
         } else if (userConfigs == null) {// login: init with configs in db
             portletToLocations = props.getPortletToLocations();
             boolean hasSearchOnMenu = menus.contains(WelcomePortal.SEARCHCONTEXTAPP);
@@ -245,7 +245,7 @@ public class MainFramePanel extends Portal {
                 initializePortlets(portletToLocations);
                 markPortalConfigsOnUI(getConfigsForUser());
             } else {
-                initProltes();
+                initPortlets();
             }
         } else {
             // switch column config

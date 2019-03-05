@@ -280,7 +280,7 @@ public class MainFramePanel extends Portal {
         }
     }
 
-    private void initProltes() {
+    private void initPortlets() {
         portletToLocations = new LinkedHashMap<String, List<Integer>>();
         BasePortlet portlet;
         // start portlets initialization, see ContainerEvent listener

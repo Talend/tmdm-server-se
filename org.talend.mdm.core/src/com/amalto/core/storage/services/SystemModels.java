@@ -27,6 +27,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
@@ -162,6 +163,7 @@ public class SystemModels {
     @POST
     @Path("/")
     @ApiOperation("Create a new data model given its name and XSD provided as request content")
+    @Consumes({ MediaType.APPLICATION_XML, MediaType.TEXT_XML })
     public Response createDataModel(@ApiParam("New model name") @QueryParam("name") String modelName, InputStream dataModel) {
         String user = null;
         try {
@@ -190,6 +192,7 @@ public class SystemModels {
     @PUT
     @Path("{model}")
     @ApiOperation("Updates the requested model with the XSD provided as request content")
+    @Consumes({ MediaType.APPLICATION_XML, MediaType.TEXT_XML })
     public Response updateModel(@ApiParam("Model name") @PathParam("model") String modelName,
             @ApiParam("Update model even if HIGH or MEDIUM impacts were found") @QueryParam("force") boolean force, InputStream dataModel) {
         String user = null;
@@ -292,6 +295,7 @@ public class SystemModels {
     @POST
     @Path("{model}")
     @ApiOperation("Get impacts of the model update with the new XSD provided as request content. Changes will not be performed !")
+    @Consumes({ MediaType.APPLICATION_XML, MediaType.TEXT_XML })
     public Response analyzeModelChange(@ApiParam("Model name") @PathParam("model") String modelName,
             @ApiParam("Optional language to get localized result") @QueryParam("lang") String locale, 
             InputStream dataModel) {

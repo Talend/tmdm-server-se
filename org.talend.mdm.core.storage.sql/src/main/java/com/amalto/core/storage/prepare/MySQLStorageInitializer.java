@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -11,10 +11,8 @@
 package com.amalto.core.storage.prepare;
 
 import java.sql.Connection;
-import java.sql.Driver;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
@@ -35,13 +33,7 @@ class MySQLStorageInitializer implements StorageInitializer {
     public boolean isInitialized(Storage storage) {
         try {
             RDBMSDataSource dataSource = getDataSource(storage);
-            Driver driver = (Driver) Class.forName(dataSource.getDriverClassName()).newInstance();
-
-            Properties properties = new Properties();
-            properties.put("user", dataSource.getInitUserName()); //$NON-NLS-1$
-            properties.put("password", dataSource.getInitPassword()); //$NON-NLS-1$
-
-            Connection connection = driver.connect(dataSource.getConnectionURL(), properties);
+            Connection connection = RDBMSDataSource.getConnection(dataSource);
             connection.close();
             return true;
         } catch (SQLException e) {
@@ -55,13 +47,7 @@ class MySQLStorageInitializer implements StorageInitializer {
     public void initialize(Storage storage) {
         try {
             RDBMSDataSource dataSource = getDataSource(storage);
-            Driver driver = (Driver) Class.forName(dataSource.getDriverClassName()).newInstance();
-
-            Properties properties = new Properties();
-            properties.put("user", dataSource.getInitUserName()); //$NON-NLS-1$
-            properties.put("password", dataSource.getInitPassword()); //$NON-NLS-1$
-
-            Connection connection = driver.connect(dataSource.getInitConnectionURL(), properties);
+            Connection connection = RDBMSDataSource.getInitConnection(dataSource);
             try {
                 Statement statement = connection.createStatement();
                 try {

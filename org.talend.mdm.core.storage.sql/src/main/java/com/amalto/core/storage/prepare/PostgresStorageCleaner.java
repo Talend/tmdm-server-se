@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  *
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -11,16 +11,15 @@
 
 package com.amalto.core.storage.prepare;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import org.apache.log4j.Logger;
+
 import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.datasource.DataSource;
 import com.amalto.core.storage.datasource.RDBMSDataSource;
-import org.apache.log4j.Logger;
-
-import java.sql.Connection;
-import java.sql.Driver;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Properties;
 
 class PostgresStorageCleaner implements StorageCleaner {
 
@@ -44,8 +43,7 @@ class PostgresStorageCleaner implements StorageCleaner {
                 throw new IllegalArgumentException("Data source '" + dataSource.getName() + "' does not define initialization information.");
             }
 
-            Driver driver = (Driver) Class.forName(dataSource.getDriverClassName()).newInstance();
-            Connection connection = driver.connect(dataSource.getInitConnectionURL() + "?user=" + dataSource.getInitUserName() + "&password=" + dataSource.getInitPassword(), new Properties());  //$NON-NLS-1$ //$NON-NLS-2$
+            Connection connection = RDBMSDataSource.getConnection(dataSource);
             try {
                 Statement statement = connection.createStatement();
                 try {

@@ -11,10 +11,8 @@
 package com.amalto.core.storage.prepare;
 
 import java.sql.Connection;
-import java.sql.Driver;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
@@ -45,13 +43,8 @@ class MySQLStorageCleaner implements StorageCleaner {
                 throw new IllegalArgumentException("Data source '" + dataSource.getName()
                         + "' does not define initialization information.");
             }
+            Connection connection = RDBMSDataSource.getConnection(dataSource);
 
-            Driver driver = (Driver) Class.forName(dataSource.getDriverClassName()).newInstance();
-            Properties properties = new Properties();
-            properties.put("user", dataSource.getInitUserName()); //$NON-NLS-1$
-            properties.put("password", dataSource.getInitPassword()); //$NON-NLS-1$
-
-            Connection connection = driver.connect(dataSource.getConnectionURL(), properties);
             try {
                 Statement statement = connection.createStatement();
                 try {

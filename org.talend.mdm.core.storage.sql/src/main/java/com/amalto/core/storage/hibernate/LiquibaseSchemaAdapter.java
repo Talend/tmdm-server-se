@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -181,9 +181,9 @@ public class LiquibaseSchemaAdapter  {
                     continue;
                 }
 
-                String defaultValueRule = current.getData(MetadataRepository.DEFAULT_VALUE_RULE);
-                defaultValueRule = HibernateStorageUtils.convertedDefaultValue(current.getType().getName(),
-                        dataSource.getDialectName(), defaultValueRule, StringUtils.EMPTY);
+                String defaultValue = current.getData(MetadataRepository.DEFAULT_VALUE);
+                defaultValue = HibernateStorageUtils.convertedDefaultValue(current.getType().getName(),
+                        dataSource.getDialectName(), defaultValue, StringUtils.EMPTY);
                 String tableName = getTableName(current);
                 String columnDataType = getColumnTypeName(current);
                 String columnName = getColumnName(current);
@@ -191,11 +191,11 @@ public class LiquibaseSchemaAdapter  {
                 if (current.isMandatory() && !previous.isMandatory() && !isModifyMinOccursForRepeatable(previous, current)) {
                     if (storageType == StorageType.MASTER) {
                         changeActionList
-                                .add(generateAddNotNullConstraintChange(defaultValueRule, tableName, columnName, columnDataType));
+                                .add(generateAddNotNullConstraintChange(defaultValue, tableName, columnName, columnDataType));
                     }
-                    if (StringUtils.isNotBlank(defaultValueRule)) {
+                    if (StringUtils.isNotBlank(defaultValue)) {
                         changeActionList
-                                .add(generateAddDefaultValueChange(defaultValueRule, tableName, columnName, columnDataType));
+                                .add(generateAddDefaultValueChange(defaultValue, tableName, columnName, columnDataType));
                     }
                 } else if (!current.isMandatory() && previous.isMandatory()) {
                     if (HibernateStorageUtils.isSQLServer(dataSource.getDialectName()) && storageType == StorageType.MASTER) {
@@ -205,10 +205,10 @@ public class LiquibaseSchemaAdapter  {
                     if (storageType == StorageType.MASTER && !isModifyMinOccursForRepeatable(previous, current)) {
                         changeActionList.add(generateDropNotNullConstraintChange(tableName, columnName, columnDataType));
                     }
-                    if (!isModifyMinOccursForRepeatable(previous, current) && StringUtils.isNotBlank(defaultValueRule)
+                    if (!isModifyMinOccursForRepeatable(previous, current) && StringUtils.isNotBlank(defaultValue)
                             && HibernateStorageUtils.isMySQL(dataSource.getDialectName())) {
                         changeActionList
-                                .add(generateAddDefaultValueChange(defaultValueRule, tableName, columnName, columnDataType));
+                                .add(generateAddDefaultValueChange(defaultValue, tableName, columnName, columnDataType));
                     }
                 }
             }

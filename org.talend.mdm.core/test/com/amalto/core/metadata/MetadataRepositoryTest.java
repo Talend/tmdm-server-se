@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -683,7 +683,7 @@ public class MetadataRepositoryTest extends TestCase {
         }
     }
 
-    //TMDM-9086 if the default value is string, number, and the fn:true(), fn:false(), filed's data contains DEFAULT_VALUE_RULE value 
+    //TMDM-9086 if the default value is string, number, and the fn:true(), fn:false(), filed's data contains DEFAULT_VALUE value
     public void test_32() throws Exception {
         MetadataRepository repository = new MetadataRepository();
         InputStream stream = getClass().getResourceAsStream("schema32.xsd");
@@ -695,11 +695,21 @@ public class MetadataRepositoryTest extends TestCase {
         assertTrue(entityType.hasField("lastname"));
         assertTrue(entityType.hasField("sex"));
 
+        assertEquals("\"Jason\"", entityType.getField("lastname").getData(MetadataRepository.DEFAULT_VALUE));
+        assertEquals("6", entityType.getField("age").getData(MetadataRepository.DEFAULT_VALUE));
+        assertEquals("12.6", entityType.getField("weight").getData(MetadataRepository.DEFAULT_VALUE));
+        assertEquals("fn:true()", entityType.getField("sex").getData(MetadataRepository.DEFAULT_VALUE));
+        assertEquals("\"true\"", entityType.getField("isGradeOne").getData(MetadataRepository.DEFAULT_VALUE));
+        assertNull(entityType.getField("name_1").getData(MetadataRepository.DEFAULT_VALUE));
+        assertNull(entityType.getField("name_2").getData(MetadataRepository.DEFAULT_VALUE));
+
         assertEquals("\"Jason\"", entityType.getField("lastname").getData(MetadataRepository.DEFAULT_VALUE_RULE));
         assertEquals("6", entityType.getField("age").getData(MetadataRepository.DEFAULT_VALUE_RULE));
         assertEquals("12.6", entityType.getField("weight").getData(MetadataRepository.DEFAULT_VALUE_RULE));
         assertEquals("fn:true()", entityType.getField("sex").getData(MetadataRepository.DEFAULT_VALUE_RULE));
-        assertEquals(null, entityType.getField("name_1").getData(MetadataRepository.DEFAULT_VALUE_RULE));
+        assertEquals("\"true\"", entityType.getField("isGradeOne").getData(MetadataRepository.DEFAULT_VALUE));
+        assertEquals("fn:name()", entityType.getField("name_1").getData(MetadataRepository.DEFAULT_VALUE_RULE));
+        assertEquals("John", entityType.getField("name_2").getData(MetadataRepository.DEFAULT_VALUE_RULE));
     }
 
     // test the min occurs and max occurs for TMDM-10534

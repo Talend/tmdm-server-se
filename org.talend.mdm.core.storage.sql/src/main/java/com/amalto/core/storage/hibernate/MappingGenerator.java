@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  *
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -658,15 +658,15 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
 
     private void addDefaultValueAttribute(FieldMetadata field, Element columnElement) {
         // default value
-        String defaultValueRule = field.getData(MetadataRepository.DEFAULT_VALUE_RULE);
-        if (StringUtils.isNotBlank(defaultValueRule)) {
+        String defaultValue = field.<String>getData(MetadataRepository.DEFAULT_VALUE);
+        if (StringUtils.isNotBlank(defaultValue)) {
 
             Attr defaultValueAttr = document.createAttribute("default"); //$NON-NLS-1$
 
             if (!field.getType().getName().equals(TypeMapping.SQL_TYPE_BOOLEAN)
-                    || HibernateStorageUtils.isBooleanDefaultValue(field.getType().getName(), defaultValueRule.trim())) {
+                    || HibernateStorageUtils.isBooleanDefaultValue(field.getType().getName(), defaultValue.trim())) {
                 defaultValueAttr.setValue(HibernateStorageUtils.convertedDefaultValue(field.getType().getName(),
-                        dataSource.getDialectName(), defaultValueRule.trim(), "'"));
+                        dataSource.getDialectName(), defaultValue.trim(), "'"));
                 columnElement.getAttributes().setNamedItem(defaultValueAttr);
             }
         }

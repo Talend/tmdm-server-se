@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  *
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -150,9 +150,14 @@ class FlatTypeMappingCreator extends DefaultMetadataVisitor<TypeMapping> {
                 newFlattenField.setData(MetadataRepository.DATA_ZIPPED, Boolean.FALSE);
             }
         }
-        
-        String defaultValueRule = field.<String> getData(MetadataRepository.DEFAULT_VALUE_RULE);
-        if (StringUtils.isNotBlank(defaultValueRule)) {
+
+        String defaultValue = field.<String>getData(MetadataRepository.DEFAULT_VALUE);
+        if (StringUtils.isNotBlank(defaultValue)) {
+            newFlattenField.setData(MetadataRepository.DEFAULT_VALUE, defaultValue);
+        }
+
+        String defaultValueRule = field.<String>getData(MetadataRepository.DEFAULT_VALUE_RULE);
+        if (StringUtils.isNotBlank(defaultValue)) {
             newFlattenField.setData(MetadataRepository.DEFAULT_VALUE_RULE, defaultValueRule);
         }
         typeMapping.map(field, newFlattenField);

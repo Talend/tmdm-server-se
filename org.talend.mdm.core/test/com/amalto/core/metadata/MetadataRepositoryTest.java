@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -788,5 +788,25 @@ public class MetadataRepositoryTest extends TestCase {
 
         assertEquals("X_ANONYMOUS0", entityType.getField("aa-non-anonymous/bb-anonymous").getType().getName());
         assertEquals("X_ANONYMOUS1", entityType.getField("do").getType().getName());
+    }
+
+    public void test36_RenderInMainTab() throws Exception {
+        MetadataRepository repository = new MetadataRepository();
+        InputStream stream = getClass().getResourceAsStream("SortType_05.xsd");
+        repository.load(stream);
+
+        //1 set the X_ForeignKey_NotSep value
+        ComplexTypeMetadata component = repository.getComplexType("Component");
+        ReferenceFieldMetadata defaultAirbag = (ReferenceFieldMetadata) component.getField("DefaultAirbag_Fk");
+        ReferenceFieldMetadata associatedComponent = (ReferenceFieldMetadata) component.getField("AssociatedComponent_Fk");
+
+        assertTrue(defaultAirbag.isFKMainRender());
+        assertFalse(associatedComponent.isFKMainRender());
+
+        //2. no set X_ForeignKey_NotSep, default is false
+        ComplexTypeMetadata finishedProduct = repository.getComplexType("FinishedProduct");
+        ReferenceFieldMetadata compositionFk = (ReferenceFieldMetadata) finishedProduct.getField("Composition_Fk");
+
+        assertFalse(compositionFk.isFKMainRender());
     }
 }

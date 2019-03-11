@@ -428,7 +428,7 @@ public class RDBMSDataSource implements DataSource {
      * <ul><li>
      * 1. Load the DB Connector/J into your program.
      * </li><li>
-     * 2. Get an existing Connection object from the Driver class. Then you can use this Connection object to execute queries.
+     * 2. Create a new Connection object from the Driver class. Then you can use this Connection object to execute queries.
      * </li></ul>
      * @param dataSource
      * @return

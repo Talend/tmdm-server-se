@@ -33,7 +33,7 @@ class MySQLStorageInitializer implements StorageInitializer {
     public boolean isInitialized(Storage storage) {
         try {
             RDBMSDataSource dataSource = getDataSource(storage);
-            Connection connection = RDBMSDataSource.getConnection(dataSource);
+            Connection connection = RDBMSDataSource.getInitedConnection(dataSource);
             connection.close();
             return true;
         } catch (SQLException e) {

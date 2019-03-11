@@ -448,7 +448,7 @@ public class RDBMSDataSource implements DataSource {
         properties.put("user", dataSource.getInitUserName()); //$NON-NLS-1$
         properties.put("password", dataSource.getInitPassword()); //$NON-NLS-1$
 
-        String connectionURL = getConnectionURL(dataSource);
+        String connectionURL = getInitConnectionURL(dataSource);
         return driver.connect(connectionURL, properties);
     }
 
@@ -462,7 +462,7 @@ public class RDBMSDataSource implements DataSource {
      * @param dataSource
      * @return
      */
-    public static Connection getConnection(RDBMSDataSource dataSource) throws SQLException {
+    public static Connection getInitedConnection(RDBMSDataSource dataSource) throws SQLException {
         Driver driver = createDriver(dataSource);
         Properties properties = new Properties();
         properties.put("user", dataSource.getUserName()); //$NON-NLS-1$
@@ -472,7 +472,7 @@ public class RDBMSDataSource implements DataSource {
         return driver.connect(connectionURL, properties);
     }
 
-    private static String getConnectionURL(RDBMSDataSource dataSource) {
+    private static String getInitConnectionURL(RDBMSDataSource dataSource) {
         RDBMSDataSource.DataSourceDialect dialect = dataSource.getDialectName();
         String connectionURL = dataSource.getInitConnectionURL();
         if (DataSourceDialect.POSTGRES == dialect) {

@@ -21,9 +21,11 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.metadata.*;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.Map.Entry;
 
@@ -37,6 +39,12 @@ public class DataRecordJSONReader implements DataRecordReader<JsonElement> {
     private static final Logger LOGGER = Logger.getLogger(DataRecordJSONReader.class);
 
     private final String JSON_REF = "$ref"; //$NON-NLS-1$
+
+    private final String MDM_TYPE = "-tmdm:type"; //$NON-NLS-1$
+
+    private final String MDM_NAMESPACE = "-xmlns:tmdm"; //$NON-NLS-1$
+
+    private final String REERENCE_VALUE = "#text"; //$NON-NLS-1$
 
     private JsonElement rootElement = null;
 
@@ -66,7 +74,10 @@ public class DataRecordJSONReader implements DataRecordReader<JsonElement> {
     }
 
     /*   The xsi:type in XML:
-    *    <Person><PersonId>33</PersonId><Name>person-name-322aa3</Name><Address xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="USAddress"><zip>10221</zip><Line1>usa-new</Line1></Address></Person>
+    *    <Person><PersonId>33</PersonId><Name>person-name-322aa3</Name>
+    *       <Address xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="USAddress">
+    *       <zip>10221</zip><Line1>usa-new</Line1></Address>
+    *    </Person>
     * 
     *    The expected JSON input:
     *    {
@@ -81,7 +92,7 @@ public class DataRecordJSONReader implements DataRecordReader<JsonElement> {
     *        }
     *    }
     */
-    private String getReferenceValue(String typeName) {
+    private String getContainedValue(String typeName) {
         try {
             if (null == rootElement.getAsJsonObject().get(typeName)) {
                 return StringUtils.EMPTY;
@@ -99,7 +110,7 @@ public class DataRecordJSONReader implements DataRecordReader<JsonElement> {
                 }
             }
         } catch (Exception e) {
-            LOGGER.warn("Failed to get JSON reference value.", e); //$NON-NLS-1$
+            LOGGER.warn("Failed to get JSON contained value.", e); //$NON-NLS-1$
             return StringUtils.EMPTY;
         }
         return StringUtils.EMPTY;
@@ -157,16 +168,16 @@ public class DataRecordJSONReader implements DataRecordReader<JsonElement> {
     }
 
     private void throwNotOwnedField(String tagName) {
-        throw new IllegalArgumentException("Entity '" + entityName + "' doesn't own field '" + tagName + "'."); //$NON-NLS-1$
+        throw new IllegalArgumentException("Entity '" + entityName + "' doesn't own field '" + tagName + "'."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     private void readJsonObject(MetadataRepository repository, DataRecord dataRecord, ComplexTypeMetadata type, JsonObject currentChild, String tagName) {
         FieldMetadata field = type.getField(tagName);
-        String referenceValue = getReferenceValue(tagName);
+        String containedValue = getContainedValue(tagName);
         if (field.getType() instanceof ContainedComplexTypeMetadata) {
             ComplexTypeMetadata containedType = (ComplexTypeMetadata) field.getType();
             for (ComplexTypeMetadata subType : containedType.getSubTypes()) {
-                if (StringUtils.isNotEmpty(referenceValue) && subType.getName().equals(referenceValue)) {
+                if (StringUtils.isNotEmpty(containedValue) && subType.getName().equals(containedValue)) {
                     containedType = subType;
                     break;
                 }
@@ -174,13 +185,80 @@ public class DataRecordJSONReader implements DataRecordReader<JsonElement> {
             DataRecord containedRecord = new DataRecord(containedType, UnsupportedDataRecordMetadata.INSTANCE);
             dataRecord.set(field, containedRecord);
             readElement(repository, containedRecord, containedType, currentChild);
+        } else if (field instanceof ReferenceFieldMetadata) {
+            ComplexTypeMetadata actualType = ((ReferenceFieldMetadata) field).getReferencedType();
+            String referencedType = null;
+            String referenceValue = null;
+            List<String> referencedTypeAndValue = getReferencedTypeAndValue(tagName);
+            if (null != referencedTypeAndValue) {
+                referencedType = referencedTypeAndValue.get(0);
+                referenceValue = referencedTypeAndValue.get(1);
+                if (!referencedType.isEmpty()) {
+                    actualType = repository.getComplexType(referencedType);
+                }
+            }
+            if (actualType == null) {
+                throw new IllegalArgumentException("Type '" + referencedType + "' does not exist."); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+            dataRecord.set(field, StorageMetadataUtils.convert(referenceValue, field, actualType));
         } else {
             readElement(repository, dataRecord, type, currentChild);
         }
     }
 
+    /*   The mdm:type in XML:
+    *    <PartyProduct><id>PartyProduct1</id><name>PartyProduct1</name>
+    *       <supplier xmlns:tmdm='http://www.talend.com/mdm' tmdm:type='PartyIndividual'>[PartyIndividual1]</supplier>
+    *    </PartyProduct>
+    *    
+    *    The expected JSON input:
+    *    {
+    *        "PartyProduct": {
+    *            "id": "PartyProduct1",
+    *            "name": "PartyProduct1",
+    *            "supplier": {
+    *                "-xmlns:tmdm": "http://www.talend.com/mdm",
+    *                "-tmdm:type": "PartyCompany",
+    *                "#text": "[PartyCompany1]"
+    *            }
+    *        }
+    *    }
+    */
+    private List<String> getReferencedTypeAndValue(String typeName) {
+        try {
+            if (null == rootElement.getAsJsonObject().get(typeName)) {
+                return null;
+            }
+            List<String> referencedTypeAndValue = new ArrayList<>();
+            JsonObject root = rootElement.getAsJsonObject().get(typeName).getAsJsonObject();
+            for (Iterator<Entry<String, JsonElement>> iterator = root.entrySet().iterator(); iterator.hasNext(); ) {
+                Entry<String, JsonElement> entry = iterator.next();
+                String tagName = entry.getKey();
+                JsonElement currentElement = entry.getValue();
+                if (tagName.equalsIgnoreCase(MDM_TYPE)) {
+                    String refType = currentElement.getAsString();
+                    if (StringUtils.isNotEmpty(refType)) {
+                        referencedTypeAndValue.add(refType);
+                    }
+                } else if (tagName.equalsIgnoreCase(REERENCE_VALUE)) {
+                    String refValue = currentElement.getAsString();
+                    if (StringUtils.isNotEmpty(refValue)) {
+                        referencedTypeAndValue.add(refValue);
+                    }
+                }
+            }
+            return referencedTypeAndValue.size() > 0 ? referencedTypeAndValue : null;
+        } catch (Exception e) {
+            LOGGER.warn("Failed to get JSON referenced type and value.", e); //$NON-NLS-1$
+            return null;
+        }
+    }
+    
     private void readJsonPrimitive(MetadataRepository repository, DataRecord dataRecord, ComplexTypeMetadata type, JsonPrimitive currentChild, String tagName) {
-        if (tagName.equalsIgnoreCase(JSON_REF)) {
+        if (tagName.equalsIgnoreCase(JSON_REF) || 
+            tagName.equalsIgnoreCase(MDM_TYPE) ||
+            tagName.equalsIgnoreCase(MDM_NAMESPACE) ||            
+            tagName.equalsIgnoreCase(REERENCE_VALUE)) {
             return;
         }
 

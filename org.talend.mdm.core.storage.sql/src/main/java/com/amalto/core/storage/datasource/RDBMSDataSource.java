@@ -419,16 +419,16 @@ public class RDBMSDataSource implements DataSource {
         try {
             return (Driver) Class.forName(dataSource.getDriverClassName()).newInstance();
         } catch (Exception e) {
-            throw new RuntimeException("Exception occurred during initialization of database", e);
+            throw new RuntimeException("Exception occurred during initialization of database.", e);
         }
     }
 
     /**
-     * Connecting to special DB Using JDBC Driver,need to do the following steps:
+     * Create a JDBC Connecting without assign database, need to do the following steps
      * <ul><li>
      * 1. Load the DB Connector/J into your program.
      * </li><li>
-     * 2. Create a new Connection object from the Driver class. Then you can use this Connection object to execute queries.
+     * 2. Get an existing Connection object from the Driver class. Then you can use this Connection object to execute queries.
      * </li></ul>
      * @param dataSource
      * @return
@@ -444,11 +444,11 @@ public class RDBMSDataSource implements DataSource {
     }
 
     /**
-     * Connecting to special DB Using JDBC Driver,need to do the following steps:
+     * Connecting to special DB Using JDBC Driver,need to do the following steps
      * <ul><li>
      * 1. Load the DB Connector/J into your program.
      * </li><li>
-     * 2. Create a new Connection object from the Driver class. Then you can use this Connection object to execute queries.
+     * 2. Get an existing Connection object from the Driver class. Then you can use this Connection object to execute queries.
      * </li></ul>
      * @param dataSource
      * @return

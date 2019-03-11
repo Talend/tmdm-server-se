@@ -405,15 +405,6 @@ public class RDBMSDataSource implements DataSource {
         return advancedProperties;
     }
 
-    /**
-     * Getter for nameMaxLength.
-     * 
-     * @return the nameMaxLength
-     */
-    public int getNameMaxLength() {
-        return this.nameMaxLength;
-    }
-
     public Properties getAdvancedPropertiesIncludeUserInfo() {
         Properties properties = new Properties();
         for (Map.Entry<String, String> entry : advancedProperties.entrySet()) {
@@ -433,32 +424,30 @@ public class RDBMSDataSource implements DataSource {
     }
 
     /**
-     * Create a JDBC Connecting without assign database, need to do the following steps
-     * <ul><li>
+     * Create a JDBC Connection without assign database, need to do the following steps
+     * <pre>
      * 1. Load the DB Connector/J into your program.
-     * </li><li>
      * 2. Create a new Connection object from the Driver class. Then you can use this Connection object to execute queries.
-     * </li></ul>
+     * </pre>
      * @param dataSource
      * @return
      */
-    public static Connection getInitConnection(RDBMSDataSource dataSource) throws SQLException {
+    public static Connection getConnectionToInit(RDBMSDataSource dataSource) throws SQLException {
         Driver driver = createDriver(dataSource);
         Properties properties = new Properties();
         properties.put("user", dataSource.getInitUserName()); //$NON-NLS-1$
         properties.put("password", dataSource.getInitPassword()); //$NON-NLS-1$
 
-        String connectionURL = getInitConnectionURL(dataSource);
+        String connectionURL = getConnectionToInitURL(dataSource);//No database specified
         return driver.connect(connectionURL, properties);
     }
 
     /**
-     * Connecting to special DB Using JDBC Driver,need to do the following steps
-     * <ul><li>
+     * Connecting to special DB Using JDBC Driver, need to do the following steps
+     * <pre>
      * 1. Load the DB Connector/J into your program.
-     * </li><li>
      * 2. Get an existing Connection object from the Driver class. Then you can use this Connection object to execute queries.
-     * </li></ul>
+     * </pre>
      * @param dataSource
      * @return
      */
@@ -472,7 +461,7 @@ public class RDBMSDataSource implements DataSource {
         return driver.connect(connectionURL, properties);
     }
 
-    private static String getInitConnectionURL(RDBMSDataSource dataSource) {
+    private static String getConnectionToInitURL(RDBMSDataSource dataSource) {
         RDBMSDataSource.DataSourceDialect dialect = dataSource.getDialectName();
         String connectionURL = dataSource.getInitConnectionURL();
         if (DataSourceDialect.POSTGRES == dialect) {
@@ -481,6 +470,15 @@ public class RDBMSDataSource implements DataSource {
             }
         }
         return connectionURL;
+    }
+
+    /**
+     * Getter for nameMaxLength.
+     * 
+     * @return the nameMaxLength
+     */
+    public int getNameMaxLength() {
+        return this.nameMaxLength;
     }
 
     /**

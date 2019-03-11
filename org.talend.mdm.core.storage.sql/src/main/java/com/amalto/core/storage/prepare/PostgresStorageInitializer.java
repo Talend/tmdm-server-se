@@ -46,7 +46,7 @@ class PostgresStorageInitializer implements StorageInitializer {
     public void initialize(Storage storage) {
         try {
             RDBMSDataSource dataSource = getDataSource(storage);
-            Connection connection = RDBMSDataSource.getInitConnection(dataSource);
+            Connection connection = RDBMSDataSource.getConnectionToInit(dataSource);
             try {
                 Statement statement = connection.createStatement();
                 try {

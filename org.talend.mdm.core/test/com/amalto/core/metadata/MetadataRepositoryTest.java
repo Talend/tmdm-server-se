@@ -809,4 +809,33 @@ public class MetadataRepositoryTest extends TestCase {
 
         assertFalse(compositionFk.isFKMainRender());
     }
+
+    public void test37_RenderInMainTabForContainerField() throws Exception {
+        MetadataRepository repository = new MetadataRepository();
+        InputStream stream = getClass().getResourceAsStream("schema37.xsd");
+        repository.load(stream);
+
+        // 1 Reference Field (not set X_ForeignKey_NotSep = false)
+        ComplexTypeMetadata product = repository.getComplexType("Product");
+        ReferenceFieldMetadata family = (ReferenceFieldMetadata) product.getField("Family");
+        assertFalse(family.isFKMainRender());
+
+        // 2. Reference in Anonymous Container field (set X_ForeignKey_NotSep = true )
+        ContainedTypeFieldMetadata storeContainer = ((ContainedTypeFieldMetadata) product.getField("Stores"));
+        ReferenceFieldMetadata storeRefer = (ReferenceFieldMetadata) storeContainer.getContainedType().getField("Store");
+        assertTrue(storeRefer.isFKMainRender());
+
+        // 3. Reference in NON-Anonymous Container field (set X_ForeignKey_NotSep = true )
+        ContainedComplexTypeMetadata bookContainer = (ContainedComplexTypeMetadata) ((ContainedTypeFieldMetadata) product
+                .getField("Book")).getContainedType().getContainer().getType();
+        ReferenceFieldMetadata bookRefer = (ReferenceFieldMetadata) bookContainer.getContainedType().getField("FamilyName");
+        assertTrue(bookRefer.isFKMainRender());
+
+        // 4. Reference in NON-Anonymous Container field (set X_ForeignKey_NotSep = false )
+        ContainedComplexTypeMetadata publishContainer = (ContainedComplexTypeMetadata) ((ContainedTypeFieldMetadata) product
+                .getField("Publish")).getContainedType().getContainer().getType();
+        ReferenceFieldMetadata publishRefer = (ReferenceFieldMetadata) publishContainer.getContainedType()
+                .getField("PublishName");
+        assertFalse(publishRefer.isFKMainRender());
+    }
 }

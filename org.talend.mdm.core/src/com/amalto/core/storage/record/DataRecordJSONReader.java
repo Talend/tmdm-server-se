@@ -74,9 +74,9 @@ public class DataRecordJSONReader implements DataRecordReader<JsonElement> {
     }
 
     /**
+     * The xsi:type in XML:
      * <pre>
-     * {@code
-     *  The xsi:type in XML:
+     *    {@code
      *    <Person><PersonId>33</PersonId><Name>person-name-322aa3</Name>
      *        <Address xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="USAddress">
      *        <zip>10221</zip><Line1>usa-new</Line1></Address>
@@ -94,7 +94,6 @@ public class DataRecordJSONReader implements DataRecordReader<JsonElement> {
      *            }
      *        }
      *    }
-     * }   
      * </pre>
      */
     private String getContainedValue(String typeName) {
@@ -138,9 +137,9 @@ public class DataRecordJSONReader implements DataRecordReader<JsonElement> {
     *    }
     * </pre>
     *    
-    *    As above Json input, the root element is Product, fields Id, Name and Family are JsonPrimitive.
-    *    Field Stores is ComplexTypeMetadata and JsonObject, and filed Store is JsonArray.
-    *    Field Family and each Store are ReferenceFieldMetadata, 
+    * As above Json input, the root element is Product, fields Id, Name and Family are JsonPrimitive.
+    * Field Stores is ComplexTypeMetadata and JsonObject, and filed Store is JsonArray.
+    * Field Family and each Store are ReferenceFieldMetadata, 
     *    
     */
     private void readElement(MetadataRepository repository, DataRecord dataRecord, ComplexTypeMetadata type, JsonElement element) {
@@ -214,9 +213,9 @@ public class DataRecordJSONReader implements DataRecordReader<JsonElement> {
     }
 
     /**
-     * <pre>
-     * {@code
      *    The mdm:type in XML:
+     * <pre>
+     *     {@code
      *     <PartyProduct><id>PartyProduct1</id><name>PartyProduct1</name>
      *         <supplier xmlns:tmdm='http://www.talend.com/mdm' tmdm:type='PartyIndividual'>[PartyIndividual1]</supplier>
      *     </PartyProduct>
@@ -233,8 +232,8 @@ public class DataRecordJSONReader implements DataRecordReader<JsonElement> {
      *            }
      *        }
      *    }
-     * }
      * </pre>
+     * 
      */
     private List<String> getReferencedTypeAndValue(String typeName) {
         try {

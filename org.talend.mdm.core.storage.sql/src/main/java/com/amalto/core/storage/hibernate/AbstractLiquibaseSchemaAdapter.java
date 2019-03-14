@@ -52,6 +52,13 @@ public abstract class AbstractLiquibaseSchemaAdapter {
         this.storageType = storageType;
     }
 
+    /**
+     * Each change which describes the change/refactoring to apply to the database,
+     * Liquibase supports multiple descriptive changes for all major database.
+     * @param connection : current connection object.
+     * @param diffResults
+     * @throws Exception
+     */
     public abstract void adapt(Connection connection, Compare.DiffResults diffResults) throws Exception;
 
     protected String getChangeLogFilePath(List<AbstractChange> changeType) {

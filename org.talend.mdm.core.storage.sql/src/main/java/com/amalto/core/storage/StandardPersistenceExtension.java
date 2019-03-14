@@ -51,7 +51,7 @@ public class StandardPersistenceExtension implements PersistenceExtension {
         String dataSourceName = storageAdmin.getDatasource(UpdateReportPOJO.DATA_CLUSTER);
 
         if (!server.hasDataSource(dataSourceName, UpdateReportPOJO.DATA_CLUSTER, StorageType.MASTER)) {
-            LOGGER.warn("Can not initialize " + StorageType.MASTER + " storage for '" + UpdateReportPOJO.DATA_CLUSTER + "': data source '" + dataSourceName + "' configuration is incomplete."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-2$ //$NON-NLS-2$
+            LOGGER.warn("Can not initialize " + StorageType.MASTER + " storage for '" + UpdateReportPOJO.DATA_CLUSTER + "': data source '" + dataSourceName + "' configuration is incomplete."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
             return false;
         }
         boolean isClusterMode = MDMConfiguration.isClusterEnabled();
@@ -101,13 +101,13 @@ public class StandardPersistenceExtension implements PersistenceExtension {
 
     private void updateUpdateReportXSDToDB() {
         try {
-            InputStream in = StandardPersistenceExtension.class.getResourceAsStream(INIT_DB_RESOURCE_PATH); // $NON-NLS-1$
-            String xmlString = IOUtils.toString(in, StandardCharsets.UTF_8.name()); //$NON-NLS-1$
+            InputStream in = StandardPersistenceExtension.class.getResourceAsStream(INIT_DB_RESOURCE_PATH);
+            String xmlString = IOUtils.toString(in, StandardCharsets.UTF_8.name());
             String uniqueID = UpdateReportPOJO.DATA_CLUSTER;
             ConfigurationHelper.deleteDocument(DATAMODEL_CONTAINER_NAME, uniqueID);
             ConfigurationHelper.putDocument(DATAMODEL_CONTAINER_NAME, xmlString, uniqueID);
         } catch (Exception e) {
-            throw new RuntimeException("Failed to update the latest Update Report XSD to system table.", e);
+            throw new RuntimeException("Failed to update the latest Update Report XSD to system table.", e); //$NON-NLS-1$
         }
     }
 

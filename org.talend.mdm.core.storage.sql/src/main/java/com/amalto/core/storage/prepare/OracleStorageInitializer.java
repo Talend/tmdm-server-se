@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -34,8 +34,7 @@ class OracleStorageInitializer implements StorageInitializer {
         try {
             RDBMSDataSource dataSource = getDataSource(storage);
             Class.forName(dataSource.getDriverClassName());
-            Connection connection = DriverManager.getConnection(dataSource.getConnectionURL(), dataSource.getInitUserName(),
-                    dataSource.getInitPassword());
+            Connection connection = DriverManager.getConnection(dataSource.getConnectionURL(), dataSource.getUserName(), dataSource.getPassword());
             connection.close();
             return true;
         } catch (SQLException e) {
@@ -49,8 +48,7 @@ class OracleStorageInitializer implements StorageInitializer {
         try {
             RDBMSDataSource dataSource = getDataSource(storage);
             Class.forName(dataSource.getDriverClassName());
-            Connection connection = DriverManager.getConnection(dataSource.getConnectionURL(), dataSource.getInitUserName(),
-                    dataSource.getInitPassword());
+            Connection connection = DriverManager.getConnection(dataSource.getConnectionURL(), dataSource.getUserName(), dataSource.getPassword());
             try {
                 Statement statement = connection.createStatement();
                 try {
@@ -77,11 +75,6 @@ class OracleStorageInitializer implements StorageInitializer {
             throw new IllegalArgumentException("Storage to initialize does not seem to be a RDBMS storage.");
         }
 
-        RDBMSDataSource dataSource = (RDBMSDataSource) storageDataSource;
-        if (!dataSource.hasInit()) {
-            throw new IllegalArgumentException("Data source '" + dataSource.getName()
-                    + "' does not define initialization information.");
-        }
-        return dataSource;
+        return (RDBMSDataSource) storageDataSource;
     }
 }

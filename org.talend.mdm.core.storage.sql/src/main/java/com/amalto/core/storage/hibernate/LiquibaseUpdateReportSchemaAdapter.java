@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.talend.mdm.commmon.metadata.compare.Compare;
+import org.talend.mdm.commmon.util.core.MDMConfiguration;
 
 import com.amalto.core.storage.StorageType;
 import com.amalto.core.storage.datasource.RDBMSDataSource;
@@ -80,7 +81,7 @@ public class LiquibaseUpdateReportSchemaAdapter extends AbstractLiquibaseSchemaA
         PrimaryKey example = new PrimaryKey();
         Table table = new Table();
         table.setSchema(new Schema());
-        table.setName(TABLE_NAME);
+        table.setName(getValidTableName());
         example.setTable(table);
         example.setName(PRIMARY_INFO_NAME);
 
@@ -107,15 +108,24 @@ public class LiquibaseUpdateReportSchemaAdapter extends AbstractLiquibaseSchemaA
         List<AbstractChange> changeActionList = new ArrayList<>();
 
         DropPrimaryKeyChange dropPrimaryKeyChange = new DropPrimaryKeyChange();
-        dropPrimaryKeyChange.setTableName(TABLE_NAME);
+        dropPrimaryKeyChange.setTableName(getValidTableName());
         changeActionList.add(dropPrimaryKeyChange);
 
         AddPrimaryKeyChange addPrimaryKeyChange = new AddPrimaryKeyChange();
-        addPrimaryKeyChange.setTableName(TABLE_NAME);
+        addPrimaryKeyChange.setTableName(getValidTableName());
         addPrimaryKeyChange.setColumnNames(PRIMARY_KEY_NAME);
         addPrimaryKeyChange.setConstraintName(PRIMARY_CONSTRAINT_NAME);
 
         changeActionList.add(addPrimaryKeyChange);
         return changeActionList;
+    }
+
+    private String getValidTableName() {
+        String dataSourceName = MDMConfiguration.getConfiguration().getProperty("db.default.datasource"); //$NON-NLS-1$
+        if ("MySQL8-Default".equals(dataSourceName)) { //$NON-NLS-1$
+            return TABLE_NAME.toUpperCase();
+        } else {
+            return TABLE_NAME;
+        }
     }
 }

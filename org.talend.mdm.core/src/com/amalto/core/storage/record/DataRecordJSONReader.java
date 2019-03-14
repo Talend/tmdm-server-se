@@ -73,25 +73,30 @@ public class DataRecordJSONReader implements DataRecordReader<JsonElement> {
         return dataRecord;
     }
 
-    /*   The xsi:type in XML:
-    *    <Person><PersonId>33</PersonId><Name>person-name-322aa3</Name>
-    *       <Address xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="USAddress">
-    *       <zip>10221</zip><Line1>usa-new</Line1></Address>
-    *    </Person>
-    * 
-    *    The expected JSON input:
-    *    {
-    *        "Person": {
-    *            "PersonId": "33",
-    *            "Name": "person-name-322aa3",
-    *            "Address": {
-    *                "$ref": "USAddress",
-    *                "zip": "102221",
-    *                "Line1": "usa-new"
-    *            }
-    *        }
-    *    }
-    */
+    /**
+     * <pre>
+     * {@code
+     *  The xsi:type in XML:
+     *    <Person><PersonId>33</PersonId><Name>person-name-322aa3</Name>
+     *        <Address xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="USAddress">
+     *        <zip>10221</zip><Line1>usa-new</Line1></Address>
+     *    </Person>
+     *
+     *    The expected JSON input:
+     *    {
+     *        "Person": {
+     *            "PersonId": "33",
+     *            "Name": "person-name-322aa3",
+     *            "Address": {
+     *                "$ref": "USAddress",
+     *                "zip": "102221",
+     *                "Line1": "usa-new"
+     *            }
+     *        }
+     *    }
+     * }   
+     * </pre>
+     */
     private String getContainedValue(String typeName) {
         try {
             if (null == rootElement.getAsJsonObject().get(typeName)) {
@@ -116,7 +121,8 @@ public class DataRecordJSONReader implements DataRecordReader<JsonElement> {
         return StringUtils.EMPTY;
     }
 
-    /*
+    /**
+    * <pre>
     *    {
     *        "Product": {
     *            "Id": "231035933",
@@ -130,6 +136,7 @@ public class DataRecordJSONReader implements DataRecordReader<JsonElement> {
     *            }
     *        }
     *    }
+    * </pre>
     *    
     *    As above Json input, the root element is Product, fields Id, Name and Family are JsonPrimitive.
     *    Field Stores is ComplexTypeMetadata and JsonObject, and filed Store is JsonArray.
@@ -206,24 +213,29 @@ public class DataRecordJSONReader implements DataRecordReader<JsonElement> {
         }
     }
 
-    /*   The mdm:type in XML:
-    *    <PartyProduct><id>PartyProduct1</id><name>PartyProduct1</name>
-    *       <supplier xmlns:tmdm='http://www.talend.com/mdm' tmdm:type='PartyIndividual'>[PartyIndividual1]</supplier>
-    *    </PartyProduct>
-    *    
-    *    The expected JSON input:
-    *    {
-    *        "PartyProduct": {
-    *            "id": "PartyProduct1",
-    *            "name": "PartyProduct1",
-    *            "supplier": {
-    *                "-xmlns:tmdm": "http://www.talend.com/mdm",
-    *                "-tmdm:type": "PartyCompany",
-    *                "#text": "[PartyCompany1]"
-    *            }
-    *        }
-    *    }
-    */
+    /**
+     * <pre>
+     * {@code
+     *    The mdm:type in XML:
+     *     <PartyProduct><id>PartyProduct1</id><name>PartyProduct1</name>
+     *         <supplier xmlns:tmdm='http://www.talend.com/mdm' tmdm:type='PartyIndividual'>[PartyIndividual1]</supplier>
+     *     </PartyProduct>
+     *   
+     *    The expected JSON input:
+     *    {
+     *        "PartyProduct": {
+     *            "id": "PartyProduct1",
+     *            "name": "PartyProduct1",
+     *            "supplier": {
+     *                "-xmlns:tmdm": "http://www.talend.com/mdm",
+     *                "-tmdm:type": "PartyCompany",
+     *                "#text": "[PartyCompany1]"
+     *            }
+     *        }
+     *    }
+     * }
+     * </pre>
+     */
     private List<String> getReferencedTypeAndValue(String typeName) {
         try {
             if (null == rootElement.getAsJsonObject().get(typeName)) {

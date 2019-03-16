@@ -123,6 +123,13 @@ public class LiquibaseUpdateReportSchemaAdapter extends AbstractLiquibaseSchemaA
         return changeActionList;
     }
 
+    /**
+     * This method only be called when using Mysql DB, major functionality is to return correct table name.<br/>
+     * For Mysql5.*, returned the lowercase table name <b>x_update_report</b>.<br/>
+     * For Mysql8, returned the uppercase table name <b>X_UPDATE_REPORT</b>.
+     * @param connection
+     * @return
+     */
     private String getValidTableName(Connection connection) {
         if (!HibernateStorageUtils.isMySQL(dataSource.getDialectName())) {
             return TABLE_NAME;

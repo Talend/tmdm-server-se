@@ -3719,7 +3719,7 @@ public class DocumentSaveTest extends TestCase {
         SaverSession session = SaverSession.newSession(source);
         InputStream recordXml = new ByteArrayInputStream(updString.getBytes("UTF-8"));
         DocumentSaverContext context = session.getContextFactory().create("DStar", "DStar", "Source", recordXml, false, true,
-                true, false, false);
+                false, false, false);
         DocumentSaver saver = context.createSaver();
         session.begin("DStar");
         saver.save(session, context);

@@ -12,12 +12,14 @@ package com.amalto.core.storage.hibernate;
 
 import java.io.Writer;
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.talend.mdm.commmon.metadata.compare.Compare;
-import org.talend.mdm.commmon.util.core.MDMConfiguration;
 
+import com.amalto.core.storage.HibernateStorageUtils;
 import com.amalto.core.storage.StorageType;
 import com.amalto.core.storage.datasource.RDBMSDataSource;
 
@@ -34,7 +36,7 @@ import liquibase.structure.core.Schema;
 import liquibase.structure.core.Table;
 
 public class LiquibaseUpdateReportSchemaAdapter extends AbstractLiquibaseSchemaAdapter {
-    
+
     private static final String TABLE_NAME = "x_update_report";//$NON-NLS-1$
 
     private static final String PRIMARY_KEY_NAME = "x_uuid";//$NON-NLS-1$
@@ -49,7 +51,8 @@ public class LiquibaseUpdateReportSchemaAdapter extends AbstractLiquibaseSchemaA
 
     @Override
     public void adapt(Connection connection, Compare.DiffResults diffResults) throws Exception {
-        List<AbstractChange> changeType = fillChangedFiles();
+        String curTableName = getValidTableName(connection);
+        List<AbstractChange> changeType = fillChangedFiles(curTableName);
         if (changeType.isEmpty()) {
             return;
         }
@@ -61,7 +64,7 @@ public class LiquibaseUpdateReportSchemaAdapter extends AbstractLiquibaseSchemaA
             String filePath = getChangeLogFilePath(changeType);
             Liquibase liquibase = new Liquibase(filePath, new FileSystemResourceAccessor(), database);
 
-            if (isPrimaryKeyUUIDExists(database)) {
+            if (isPrimaryKeyUUIDExists(database, curTableName)) {
                 return;
             }
             if (LOGGER.isDebugEnabled()) {
@@ -77,11 +80,11 @@ public class LiquibaseUpdateReportSchemaAdapter extends AbstractLiquibaseSchemaA
         }
     }
 
-    private boolean isPrimaryKeyUUIDExists(liquibase.database.Database database) {
+    private boolean isPrimaryKeyUUIDExists(liquibase.database.Database database, String curTableName) {
         PrimaryKey example = new PrimaryKey();
         Table table = new Table();
         table.setSchema(new Schema());
-        table.setName(getValidTableName());
+        table.setName(curTableName);
         example.setTable(table);
         example.setName(PRIMARY_INFO_NAME);
 
@@ -104,15 +107,15 @@ public class LiquibaseUpdateReportSchemaAdapter extends AbstractLiquibaseSchemaA
         return false;
     }
 
-    private List<AbstractChange> fillChangedFiles() {
+    private List<AbstractChange> fillChangedFiles(String curTableName) {
         List<AbstractChange> changeActionList = new ArrayList<>();
 
         DropPrimaryKeyChange dropPrimaryKeyChange = new DropPrimaryKeyChange();
-        dropPrimaryKeyChange.setTableName(getValidTableName());
+        dropPrimaryKeyChange.setTableName(curTableName);
         changeActionList.add(dropPrimaryKeyChange);
 
         AddPrimaryKeyChange addPrimaryKeyChange = new AddPrimaryKeyChange();
-        addPrimaryKeyChange.setTableName(getValidTableName());
+        addPrimaryKeyChange.setTableName(curTableName);
         addPrimaryKeyChange.setColumnNames(PRIMARY_KEY_NAME);
         addPrimaryKeyChange.setConstraintName(PRIMARY_CONSTRAINT_NAME);
 
@@ -120,11 +123,28 @@ public class LiquibaseUpdateReportSchemaAdapter extends AbstractLiquibaseSchemaA
         return changeActionList;
     }
 
-    private String getValidTableName() {
-        String dataSourceName = MDMConfiguration.getConfiguration().getProperty("db.default.datasource"); //$NON-NLS-1$
-        if ("MySQL8-Default".equals(dataSourceName)) { //$NON-NLS-1$
-            return TABLE_NAME.toUpperCase();
-        } else {
+    private String getValidTableName(Connection connection) {
+        if (!HibernateStorageUtils.isMySQL(dataSource.getDialectName())) {
+            return TABLE_NAME;
+        }
+        try {
+            Statement statement = connection.createStatement();
+            try {
+                ResultSet resultSet = statement.executeQuery("SELECT count(1) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '"  //$NON-NLS-1
+                        + dataSource.getDatabaseName() + "' and TABLE_NAME = '" + TABLE_NAME + "';"); //$NON-NLS-1$ //$NON-NLS-2$
+                if (resultSet.next() && (resultSet.getInt(1) == 1)) {
+                    return TABLE_NAME;
+                } else {
+                    return TABLE_NAME.toUpperCase();
+                }
+            } catch (Exception e) {
+                LOGGER.error("Failed to execute SQL Query.", e); //$NON-NLS-1$
+                return TABLE_NAME;
+            } finally {
+                statement.close();
+            }
+        } catch (Exception e) {
+            LOGGER.error("Exception occurred during creating of Statement.", e); //$NON-NLS-1$
             return TABLE_NAME;
         }
     }

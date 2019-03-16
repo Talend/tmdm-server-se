@@ -130,12 +130,12 @@ public class LiquibaseUpdateReportSchemaAdapter extends AbstractLiquibaseSchemaA
         try {
             Statement statement = connection.createStatement();
             try {
-                ResultSet resultSet = statement.executeQuery("SELECT count(1) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '"  //$NON-NLS-1
-                        + dataSource.getDatabaseName() + "' and TABLE_NAME = '" + TABLE_NAME + "';"); //$NON-NLS-1$ //$NON-NLS-2$
-                if (resultSet.next() && (resultSet.getInt(1) == 1)) {
-                    return TABLE_NAME;
+                ResultSet resultSet = statement.executeQuery("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '"  //$NON-NLS-1
+                        + dataSource.getDatabaseName() + "' and TABLE_NAME = '" + TABLE_NAME.toUpperCase() + "';"); //$NON-NLS-1$ //$NON-NLS-2$
+                if (resultSet.next()) {
+                    return resultSet.getString(1);
                 } else {
-                    return TABLE_NAME.toUpperCase();
+                    return TABLE_NAME;
                 }
             } catch (Exception e) {
                 LOGGER.error("Failed to execute SQL Query.", e); //$NON-NLS-1$

@@ -762,12 +762,16 @@ public class Util extends XmlUtil {
         return ret;
     }
 
-    private static Element getUserDocument() throws Exception {
-        return parse(LocalUser.getLocalUser().getUserXML()).getDocumentElement();
+    private static Element getLoginProvisioningFromDB() throws Exception {
+        String userXml = LocalUser.getLocalUser().getUserXML();
+        if (StringUtils.isEmpty(userXml)) {
+            return null;
+        }
+        return parse(userXml).getDocumentElement();
     }
 
     public static String getUserDataModel() throws Exception {
-        return getUserDataModel(getUserDocument());
+        return getUserDataModel(getLoginProvisioningFromDB());
     }
 
     private static String getUserDataModel(Element item) throws Exception {
@@ -785,7 +789,7 @@ public class Util extends XmlUtil {
     }
 
     public static String getUserDataCluster() throws Exception {
-        return getUserDataCluster(getUserDocument());
+        return getUserDataCluster(getLoginProvisioningFromDB());
     }
 
     private static String getUserDataCluster(Element item) throws Exception {

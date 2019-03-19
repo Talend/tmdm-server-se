@@ -397,6 +397,8 @@ class FullTextQueryHandler extends AbstractQueryHandler {
                                 nextRecord.set(newField, getTypeName(next.get(fieldMetadata.getName())));
                             } else if (typedExpression instanceof MetadataField) {
                                 nextRecord.set(newField, ((MetadataField) typedExpression).getReader().readValue(next));
+                            } else if (typedExpression instanceof Count) {
+                                nextRecord.set(newField, query.getResultSize());
                             } else {
                                 throw new IllegalArgumentException("Aliased expression '" + typedExpression + "' is not supported.");
                             }

@@ -183,7 +183,7 @@ public class StorageAdaptTest extends TestCase {
         Statement statement = connection.createStatement();
         try {
             // Chinese address table asserts
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM X_ChineseAddress");
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM X_Address");
             ResultSetMetaData metaData = resultSet.getMetaData();
             boolean hasRoad = false;
             for (int i = 1; i <= metaData.getColumnCount(); i++) {

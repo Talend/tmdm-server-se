@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -10,18 +10,15 @@
 
 package com.amalto.core.query;
 
-import static com.amalto.core.query.user.UserQueryBuilder.*;
+import static com.amalto.core.query.user.UserQueryBuilder.eq;
+import static com.amalto.core.query.user.UserQueryBuilder.from;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 
-import com.amalto.core.integrity.FKIntegrityCheckResult;
-import com.amalto.core.integrity.FKIntegrityChecker;
 import com.amalto.core.query.user.UserQueryBuilder;
 import com.amalto.core.server.MockServerLifecycle;
 import com.amalto.core.server.ServerContext;
@@ -31,6 +28,8 @@ import com.amalto.core.storage.hibernate.HibernateStorage;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.record.DataRecordReader;
 import com.amalto.core.storage.record.XmlStringDataRecordReader;
+
+import junit.framework.TestCase;
 
 @SuppressWarnings("nls")
 public class StorageIntegrityTest extends TestCase {
@@ -236,9 +235,9 @@ public class StorageIntegrityTest extends TestCase {
         try {
             DataRecordReader<String> factory = new XmlStringDataRecordReader();
             List<DataRecord> allRecords = new LinkedList<DataRecord>();
-            
+
             allRecords.add(factory.read(repository, TMDM_8792_Country, "<TMDM_8792_Country><Code>CN</Code></TMDM_8792_Country>"));
-            allRecords.add(factory.read(repository, TMDM_8792_Entity, "<TMDM_8792_Entity><Id>Entity_Id1</Id><Type2_field1><Base_field1>[CN]</Base_field1></Type2_field1></TMDM_8792_Entity>"));
+            allRecords.add(factory.read(repository, TMDM_8792_Entity, "<TMDM_8792_Entity><Id>Entity_Id1</Id><Type2_field1><Base_id>8792</Base_id><Base_field1>[CN]</Base_field1></Type2_field1></TMDM_8792_Entity>"));
             storage.begin();
             try {
                 storage.update(allRecords);
@@ -246,17 +245,16 @@ public class StorageIntegrityTest extends TestCase {
             } catch (Exception e) {
                 storage.rollback();
             }
-            
+
             UserQueryBuilder qb = from(TMDM_8792_Entity).and(TMDM_8792_Country).selectId(TMDM_8792_Entity).select(TMDM_8792_Country.getField("Code")).where(eq(TMDM_8792_Country.getField("Code"), "CN"))
                     .join(TMDM_8792_Entity.getField("Type2_field1/Base_field1"));
             StorageResults results = storage.fetch(qb.getSelect());
-            
+
             try {
                 assertEquals(results.getSize(), 1);
             } finally {
                 results.close();
             }
-            
         } finally {
             storage.close();
         }

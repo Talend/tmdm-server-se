@@ -1855,6 +1855,74 @@ public class DocumentSaveTest extends TestCase {
         assertEquals("Khaki", evaluate(committer.getCommittedElement(), "/Product/Features/Colors/Color[4]"));
     }
 
+    public void testProductPartialUpdateOverwriteTrue() throws Exception {
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(DocumentSaveTest.class.getResourceAsStream("metadata1.xsd"));
+        MockMetadataRepositoryAdmin.INSTANCE.register("DStar", repository);
+
+        TestSaverSource source = new TestSaverSource(repository, true, "test11_original.xml", "metadata1.xsd");
+        source.setUserName("admin");
+
+        SaverSession session = SaverSession.newSession(source);
+        InputStream partialUpdateContent = new ByteArrayInputStream((
+                "<Product><Id>11</Id><Features><Colors><Color>Light Pink</Color></Colors></Features></Product>\n")
+                .getBytes("UTF-8"));
+        DocumentSaverContext context = session.getContextFactory().createPartialUpdate("MDM", "DStar", "Source",
+                partialUpdateContent, true, false, "/Product/Features/Colors", "/Color", 1, true, false);
+        DocumentSaver saver = context.createSaver();
+        saver.save(session, context);
+        MockCommitter committer = new MockCommitter();
+        session.end(committer);
+
+        assertTrue(committer.hasSaved());
+        assertEquals("Light Pink", evaluate(committer.getCommittedElement(), "/Product/Features/Colors/Color[1]"));
+    }
+
+    public void testProductPartialUpdateDeleteTrue() throws Exception {
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(DocumentSaveTest.class.getResourceAsStream("PartialDelete.xsd"));
+        MockMetadataRepositoryAdmin.INSTANCE.register("DStar", repository);
+
+        TestSaverSource source = new TestSaverSource(repository, true, "PartialDelete_original_2.xml", "PartialDelete.xsd");
+        source.setUserName("admin");
+
+        SaverSession session = SaverSession.newSession(source);
+        InputStream partialUpdateContent = new ByteArrayInputStream((
+                "<Person><Id>1</Id><Kids><Kid><Name>k1</Name></Kid></Kids></Person>")
+                .getBytes("UTF-8"));
+        DocumentSaverContext context = session.getContextFactory().createPartialUpdate("MDM", "DStar", "Source",
+                partialUpdateContent, true, false, "/Person/Kids/Kid", "/Name", 1, false, true);
+        DocumentSaver saver = context.createSaver();
+        saver.save(session, context);
+        MockCommitter committer = new MockCommitter();
+        session.end(committer);
+        assertTrue(committer.hasSaved());
+        assertEquals("", evaluate(committer.getCommittedElement(), "/Person/Kids"));
+    }
+
+    public void testProductPartialUpdateOverwriteAndDeleteFalse() throws Exception {
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(DocumentSaveTest.class.getResourceAsStream("metadata1.xsd"));
+        MockMetadataRepositoryAdmin.INSTANCE.register("DStar", repository);
+
+        TestSaverSource source = new TestSaverSource(repository, true, "test11_original.xml", "metadata1.xsd");
+        source.setUserName("admin");
+
+        SaverSession session = SaverSession.newSession(source);
+        InputStream partialUpdateContent = new ByteArrayInputStream((
+                "<Product><Id>1221</Id><Features><Colors><Color>Light Pink</Color></Colors></Features></Product>\n")
+                .getBytes("UTF-8"));
+        DocumentSaverContext context = session.getContextFactory().createPartialUpdate("MDM", "DStar", "Source",
+                partialUpdateContent, true, false, "/Product/Features/Colors", "/Color", 1, false, false);
+        DocumentSaver saver = context.createSaver();
+        saver.save(session, context);
+        MockCommitter committer = new MockCommitter();
+        session.end(committer);
+
+        assertTrue(committer.hasSaved());
+        assertEquals("Light Pink", evaluate(committer.getCommittedElement(), "/Product/Features/Colors/Color[1]"));
+    }
+
     public void testProductPartialUpdate2() throws Exception {
         MetadataRepository repository = new MetadataRepository();
         repository.load(DocumentSaveTest.class.getResourceAsStream("metadata1.xsd"));

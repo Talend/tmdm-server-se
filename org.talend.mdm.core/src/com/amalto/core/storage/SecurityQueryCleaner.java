@@ -40,7 +40,7 @@ class SecurityQueryCleaner extends VisitorAdapter<Expression> {
     @Override
     public Expression visit(Range range) {
         if (!range.getExpression().accept(checker)) {
-            return UserQueryHelper.TRUE;
+            return UserQueryHelper.FALSE;
         } else {
             return range;
         }
@@ -106,7 +106,7 @@ class SecurityQueryCleaner extends VisitorAdapter<Expression> {
     @Override
     public Expression visit(IndexedField indexedField) {
         if (delegator.hide(indexedField.getFieldMetadata())) {
-            return UserQueryHelper.TRUE;
+            return UserQueryHelper.FALSE;
         } else {
             return indexedField;
         }
@@ -115,7 +115,7 @@ class SecurityQueryCleaner extends VisitorAdapter<Expression> {
     @Override
     public Expression visit(Isa isa) {
         if(!isa.getExpression().accept(checker)) {
-            return UserQueryHelper.TRUE;
+            return UserQueryHelper.FALSE;
         } else {
             return isa;
         }
@@ -124,7 +124,7 @@ class SecurityQueryCleaner extends VisitorAdapter<Expression> {
     @Override
     public Expression visit(NotIsEmpty notIsEmpty) {
         if (!notIsEmpty.getField().accept(checker)) {
-            return UserQueryHelper.TRUE;
+            return UserQueryHelper.FALSE;
         } else {
             return notIsEmpty;
         }
@@ -133,7 +133,7 @@ class SecurityQueryCleaner extends VisitorAdapter<Expression> {
     @Override
     public Expression visit(NotIsNull notIsNull) {
         if (!notIsNull.getField().accept(checker)) {
-            return UserQueryHelper.TRUE;
+            return UserQueryHelper.FALSE;
         } else {
             return notIsNull;
         }
@@ -142,7 +142,7 @@ class SecurityQueryCleaner extends VisitorAdapter<Expression> {
     @Override
     public Expression visit(IsEmpty isEmpty) {
         if (!isEmpty.getField().accept(checker)) {
-            return UserQueryHelper.TRUE;
+            return UserQueryHelper.FALSE;
         } else {
             return isEmpty;
         }
@@ -151,7 +151,7 @@ class SecurityQueryCleaner extends VisitorAdapter<Expression> {
     @Override
     public Expression visit(IsNull isNull) {
         if (!isNull.getField().accept(checker)) {
-            return UserQueryHelper.TRUE;
+            return UserQueryHelper.FALSE;
         } else {
             return isNull;
         }
@@ -159,12 +159,9 @@ class SecurityQueryCleaner extends VisitorAdapter<Expression> {
 
     @Override
     public Expression visit(BinaryLogicOperator condition) {
-        if (!condition.getLeft().accept(checker) && !condition.getRight().accept(checker)) {
-            return UserQueryHelper.TRUE;
-        } else if (!condition.getLeft().accept(checker)) {
-            return new BinaryLogicOperator(UserQueryHelper.TRUE, condition.getPredicate(), condition.getRight());
-        } else if (!condition.getRight().accept(checker)) {
-            return new BinaryLogicOperator(condition.getLeft(), condition.getPredicate(), UserQueryHelper.TRUE);
+        // TMDM-13275 If user has no access to one query condition field, return empty list.
+        if (!condition.getLeft().accept(checker) || !condition.getRight().accept(checker)) {
+            return UserQueryHelper.FALSE;
         } else {
             return condition;
         }
@@ -173,7 +170,7 @@ class SecurityQueryCleaner extends VisitorAdapter<Expression> {
     @Override
     public Expression visit(UnaryLogicOperator condition) {
         if (!condition.getCondition().accept(checker)) {
-            return new UnaryLogicOperator(UserQueryHelper.TRUE, condition.getPredicate());
+            return new UnaryLogicOperator(UserQueryHelper.FALSE, condition.getPredicate());
         } else {
             return condition;
         }
@@ -182,7 +179,7 @@ class SecurityQueryCleaner extends VisitorAdapter<Expression> {
     @Override
     public Expression visit(Compare condition) {
         if (!condition.getLeft().accept(checker) || !condition.getRight().accept(checker)) {
-            return UserQueryHelper.TRUE;
+            return UserQueryHelper.FALSE;
         } else {
             return condition;
         }
@@ -202,7 +199,7 @@ class SecurityQueryCleaner extends VisitorAdapter<Expression> {
     @Override
     public Expression visit(FieldFullText fullText) {
         if (!fullText.getField().accept(checker)) {
-            return UserQueryHelper.TRUE;
+            return UserQueryHelper.FALSE;
         } else {
             return fullText;
         }

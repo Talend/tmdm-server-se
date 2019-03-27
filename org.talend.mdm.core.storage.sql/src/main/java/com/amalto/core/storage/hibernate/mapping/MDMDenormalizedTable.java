@@ -55,6 +55,10 @@ public class MDMDenormalizedTable extends DenormalizedTable {
         while (iter.hasNext()) {
             Column column = (Column) iter.next();
 
+            if (column.getSqlTypeCode() == null) {
+                column.setSqlTypeCode(column.getSqlTypeCode(p));
+            }
+
             ColumnMetadata columnInfo = tableInfo.getColumnMetadata(column.getName());
 
             if (columnInfo == null) {

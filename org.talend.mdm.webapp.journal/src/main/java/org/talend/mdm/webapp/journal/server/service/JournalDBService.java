@@ -61,7 +61,7 @@ public class JournalDBService {
 
     private static final String RIGHT_BRACKET = "]";
 
-    private static final String SPRIT = "/";
+    private static final String SLASH = "/";
 
     private static final Logger LOG = Logger.getLogger(JournalDBService.class);
 
@@ -341,9 +341,9 @@ public class JournalDBService {
         for (String item : pathArray) {
             pathList.add(item);
         }
-        getChagneNodePath(StringUtils.EMPTY, pathList, result);
-        for(int i = 0 ; i < result.size() ; i++){
-            result.set(i, SPRIT + modelEntityName + SPRIT + result.get(i));
+        getChangeNodePath(StringUtils.EMPTY, pathList, result);
+        for (int i = 0 ; i < result.size() ; i++) {
+            result.set(i, SLASH + modelEntityName + SLASH + result.get(i));
         }
         return result;
     }
@@ -358,7 +358,7 @@ public class JournalDBService {
         return result;
     }
 
-    private void getChagneNodePath(String prePath, List<String> pathList, List<String> result) {
+    private void getChangeNodePath(String prePath, List<String> pathList, List<String> result) {
         for (int i = 0; i < pathList.size(); i++) {
             String path = pathList.get(i);
 
@@ -369,6 +369,9 @@ public class JournalDBService {
                 result.add(path);
                 break;
             }
+            if (StringUtils.isNoneEmpty(path) && StringUtils.isNoneEmpty(prePath) && path.equalsIgnoreCase(prePath)) {
+                continue;
+            }
 
             String newpath = StringUtils.EMPTY; 
             if (prePath.equals(StringUtils.EMPTY)) { 
@@ -377,14 +380,14 @@ public class JournalDBService {
                 newpath = path.substring(prePath.length() + 1);
             }
 
-            if (newpath.endsWith(LEFT_BRACKET) && !newpath.contains(SPRIT)) {
+            if (newpath.endsWith(LEFT_BRACKET) && !newpath.contains(SLASH)) {
                 result.add(path);
-            } else if (!newpath.contains(LEFT_BRACKET) && !newpath.contains(SPRIT)) {
+            } else if (!newpath.contains(LEFT_BRACKET) && !newpath.contains(SLASH)) {
                 result.add(path);
-            } else if (newpath.contains(LEFT_BRACKET) || newpath.contains(SPRIT)) {
+            } else if (newpath.contains(LEFT_BRACKET) || newpath.contains(SLASH)) {
                 String firstStr = StringUtils.EMPTY;
-                if (newpath.contains(SPRIT)) {
-                    firstStr = newpath.substring(0, newpath.indexOf(SPRIT));
+                if (newpath.contains(SLASH)) {
+                    firstStr = newpath.substring(0, newpath.indexOf(SLASH));
                 } else {
                     firstStr = newpath;
                 }
@@ -394,19 +397,18 @@ public class JournalDBService {
                     for (int j = 1; j <= firstStrNum; j++) {
                         String newStr = firstStr.substring(0, firstStr.indexOf(LEFT_BRACKET)) + LEFT_BRACKET + j + RIGHT_BRACKET;
                         if (i < pathList.size() - 1) {
-                            List<String> containsList = getContainsList(prePath.equals(StringUtils.EMPTY) ? newStr : prePath + SPRIT + newStr,
+                            List<String> containsList = getContainsList(prePath.equals(StringUtils.EMPTY) ? newStr : prePath + SLASH + newStr,
                                     pathList);
-                            getChagneNodePath(prePath.equals(StringUtils.EMPTY) ? newStr : prePath + SPRIT + newStr, containsList, result);
+                            getChangeNodePath(prePath.equals(StringUtils.EMPTY) ? newStr : prePath + SLASH + newStr, containsList, result);
                         }
                     }
                 } else {
-                    List<String> containsList = getContainsList(prePath.equals(StringUtils.EMPTY) ? firstStr : prePath + SPRIT + firstStr,
+                    List<String> containsList = getContainsList(prePath.equals(StringUtils.EMPTY) ? firstStr : prePath + SLASH + firstStr,
                             pathList);
-                    getChagneNodePath(prePath.equals(StringUtils.EMPTY) ? firstStr : prePath + SPRIT + firstStr, containsList, result);
+                    getChangeNodePath(prePath.equals(StringUtils.EMPTY) ? firstStr : prePath + SLASH + firstStr, containsList, result);
                 }
             }
         }
-
     }
 
     private String checkNull(String str) {

@@ -136,13 +136,18 @@ public class StoragePrepareTest extends TestCase {
         try {
             assertEquals(2, results.getCount());
             for (DataRecord result : results) {
-                if (result.get("Id").equals("3")) {//$NON-NLS-1$ //$NON-NLS-2$
+                String id = result.get("Id").toString();
+                switch (id) {
+                case "3"://$NON-NLS-1$
                     assertEquals("personName33", result.get("Person/personName"));//$NON-NLS-1$ //$NON-NLS-2$
                     assertEquals("teacherName33", result.get("Person/teacherName"));//$NON-NLS-1$ //$NON-NLS-2$
-                }
-                if (result.get("Id").equals("4")) {//$NON-NLS-1$ //$NON-NLS-2$
+                    break;
+                case "4"://$NON-NLS-1$
                     assertEquals("personName44", result.get("Person/personName"));//$NON-NLS-1$ //$NON-NLS-2$
                     assertEquals("teacherName44", result.get("Person/teacherName"));//$NON-NLS-1$ //$NON-NLS-2$
+                    break;
+                default:
+                    assertNull(id);
                 }
             }
         } finally {
@@ -180,13 +185,18 @@ public class StoragePrepareTest extends TestCase {
         try {
             assertEquals(2, results.getCount());
             for (DataRecord result : results) {
-                if (result.get("Id").equals("5")) {//$NON-NLS-1$ //$NON-NLS-2$
+                String id = result.get("Id").toString();
+                switch (id) {
+                case "5"://$NON-NLS-1$
                     assertEquals("personName55", result.get("Student/personName"));//$NON-NLS-1$ //$NON-NLS-2$
                     assertEquals("studentName55", result.get("Student/studentName"));//$NON-NLS-1$ //$NON-NLS-2$
-                }
-                if (result.get("Id").equals("6")) {//$NON-NLS-1$ //$NON-NLS-2$
+                    break;
+                case "6"://$NON-NLS-1$
                     assertEquals("personName66", result.get("Student/personName"));//$NON-NLS-1$ //$NON-NLS-2$
                     assertEquals("studentName66", result.get("Student/studentName"));//$NON-NLS-1$ //$NON-NLS-2$
+                    break;
+                default:
+                    assertNull(id);
                 }
             }
         } finally {
@@ -224,13 +234,18 @@ public class StoragePrepareTest extends TestCase {
         try {
             assertEquals(2, results.getCount());
             for (DataRecord result : results) {
-                if (result.get("Id").equals("1")) {//$NON-NLS-1$ //$NON-NLS-2$
+                String id = result.get("Id").toString();
+                switch (id) {
+                case "1"://$NON-NLS-1$
                     assertEquals("myPersonName11", result.get("Student/personName"));//$NON-NLS-1$ //$NON-NLS-2$
                     assertEquals("myStudentName11", result.get("Student/studentName"));//$NON-NLS-1$ //$NON-NLS-2$
-                }
-                if (result.get("Id").equals("2")) {//$NON-NLS-1$ //$NON-NLS-2$
+                    break;
+                case "2"://$NON-NLS-1$
                     assertEquals("myPersonName22", result.get("Student/personName"));//$NON-NLS-1$ //$NON-NLS-2$
                     assertEquals("myStudentName22", result.get("Student/studentName"));//$NON-NLS-1$ //$NON-NLS-2$
+                    break;
+                default:
+                    assertNull(id);
                 }
             }
 

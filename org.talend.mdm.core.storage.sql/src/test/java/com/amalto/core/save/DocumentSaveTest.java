@@ -1865,7 +1865,7 @@ public class DocumentSaveTest extends TestCase {
 
         SaverSession session = SaverSession.newSession(source);
         InputStream partialUpdateContent = new ByteArrayInputStream((
-                "<Product><Id>11</Id><Features><Colors><Color>Light Pink</Color></Colors></Features></Product>\n")
+                "<Product><Id>11</Id><Features><Colors><Color>Light Blue</Color></Colors></Features></Product>\n")
                 .getBytes("UTF-8"));
         DocumentSaverContext context = session.getContextFactory().createPartialUpdate("MDM", "DStar", "Source",
                 partialUpdateContent, true, false, "/Product/Features/Colors", "/Color", 1, true, false);
@@ -1875,7 +1875,36 @@ public class DocumentSaveTest extends TestCase {
         session.end(committer);
 
         assertTrue(committer.hasSaved());
-        assertEquals("Light Pink", evaluate(committer.getCommittedElement(), "/Product/Features/Colors/Color[1]"));
+        assertEquals("Light Blue", evaluate(committer.getCommittedElement(), "/Product/Features/Colors/Color[1]"));
+        assertEquals("White", evaluate(committer.getCommittedElement(), "/Product/Features/Colors/Color[2]"));
+        assertEquals("Light Blue", evaluate(committer.getCommittedElement(), "/Product/Features/Colors/Color[3]"));
+        assertEquals("Khaki", evaluate(committer.getCommittedElement(), "/Product/Features/Colors/Color[4]"));
+    }
+
+    public void testProductPartialUpdateWithIndexOutOfRange() throws Exception {
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(DocumentSaveTest.class.getResourceAsStream("metadata1.xsd"));
+        MockMetadataRepositoryAdmin.INSTANCE.register("DStar", repository);
+
+        TestSaverSource source = new TestSaverSource(repository, true, "test11_original.xml", "metadata1.xsd");
+        source.setUserName("admin");
+
+        SaverSession session = SaverSession.newSession(source);
+        InputStream partialUpdateContent = new ByteArrayInputStream((
+                "<Product><Id>11</Id><Features><Colors><Color>Light Blue</Color></Colors></Features></Product>\n")
+                .getBytes("UTF-8"));
+        DocumentSaverContext context = session.getContextFactory().createPartialUpdate("MDM", "DStar", "Source",
+                partialUpdateContent, true, false, "/Product/Features/Colors", "/Color", 10000, true, false);
+        DocumentSaver saver = context.createSaver();
+        saver.save(session, context);
+        MockCommitter committer = new MockCommitter();
+        session.end(committer);
+
+        assertTrue(committer.hasSaved());
+        assertEquals("White", evaluate(committer.getCommittedElement(), "/Product/Features/Colors/Color[1]"));
+        assertEquals("Light Blue", evaluate(committer.getCommittedElement(), "/Product/Features/Colors/Color[2]"));
+        assertEquals("Khaki", evaluate(committer.getCommittedElement(), "/Product/Features/Colors/Color[3]"));
+        assertEquals("Light Blue", evaluate(committer.getCommittedElement(), "/Product/Features/Colors/Color[4]"));
     }
 
     public void testProductPartialUpdateDeleteTrue() throws Exception {
@@ -1900,7 +1929,7 @@ public class DocumentSaveTest extends TestCase {
         assertEquals("", evaluate(committer.getCommittedElement(), "/Person/Kids"));
     }
 
-    public void testProductPartialUpdateOverwriteAndDeleteFalse() throws Exception {
+    public void testProductPartialUpdateOverwriteFalse() throws Exception {
         MetadataRepository repository = new MetadataRepository();
         repository.load(DocumentSaveTest.class.getResourceAsStream("metadata1.xsd"));
         MockMetadataRepositoryAdmin.INSTANCE.register("DStar", repository);
@@ -1910,7 +1939,7 @@ public class DocumentSaveTest extends TestCase {
 
         SaverSession session = SaverSession.newSession(source);
         InputStream partialUpdateContent = new ByteArrayInputStream((
-                "<Product><Id>1221</Id><Features><Colors><Color>Light Pink</Color></Colors></Features></Product>\n")
+                "<Product><Id>1221</Id><Features><Colors><Color>Light Blue</Color></Colors></Features></Product>\n")
                 .getBytes("UTF-8"));
         DocumentSaverContext context = session.getContextFactory().createPartialUpdate("MDM", "DStar", "Source",
                 partialUpdateContent, true, false, "/Product/Features/Colors", "/Color", 1, false, false);
@@ -1920,7 +1949,10 @@ public class DocumentSaveTest extends TestCase {
         session.end(committer);
 
         assertTrue(committer.hasSaved());
-        assertEquals("Light Pink", evaluate(committer.getCommittedElement(), "/Product/Features/Colors/Color[1]"));
+        assertEquals("Light Blue", evaluate(committer.getCommittedElement(), "/Product/Features/Colors/Color[1]"));
+        assertEquals("White", evaluate(committer.getCommittedElement(), "/Product/Features/Colors/Color[2]"));
+        assertEquals("Light Blue", evaluate(committer.getCommittedElement(), "/Product/Features/Colors/Color[3]"));
+        assertEquals("Khaki", evaluate(committer.getCommittedElement(), "/Product/Features/Colors/Color[4]"));
     }
 
     public void testProductPartialUpdate2() throws Exception {

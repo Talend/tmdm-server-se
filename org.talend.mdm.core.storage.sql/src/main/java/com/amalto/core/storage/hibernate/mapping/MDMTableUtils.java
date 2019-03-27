@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -10,10 +10,13 @@
 
 package com.amalto.core.storage.hibernate.mapping;
 
+import org.hibernate.dialect.DB2Dialect;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.SQLServerDialect;
 import org.hibernate.mapping.Column;
 import org.hibernate.tool.hbm2ddl.ColumnMetadata;
+
+import java.sql.Types;
 
 @SuppressWarnings("nls")
 public abstract class MDMTableUtils {
@@ -24,29 +27,34 @@ public abstract class MDMTableUtils {
         if (oldColumnInfo == null) {
             return Boolean.FALSE;
         }
-        boolean isNeedToAlter = Boolean.TRUE;
-        isNeedToAlter &= isVarcharField(newColumn, oldColumnInfo, dialect)
-                && isIncreaseVarcharColumnLength(newColumn, oldColumnInfo, dialect);
-        return isNeedToAlter;
+        return isVarcharField(oldColumnInfo, dialect) && isIncreaseVarcharColumnLength(newColumn, oldColumnInfo)
+                || isStringTypeChanged(newColumn, oldColumnInfo, dialect);
     }
 
-    public static boolean isVarcharField(Column newColumn, ColumnMetadata oldColumnInfo, Dialect dialect) {
-        boolean isVarcharType = oldColumnInfo.getTypeCode() == java.sql.Types.VARCHAR;
+    public static boolean isStringTypeChanged(Column newColumn, ColumnMetadata oldColumnInfo, Dialect dialect) {
+        if (dialect instanceof DB2Dialect) {
+            if (oldColumnInfo.getTypeCode() == Types.VARCHAR && newColumn.getSqlTypeCode() == Types.CLOB) {
+                return false;
+            }
+        }
+        return oldColumnInfo.getTypeCode() == Types.VARCHAR && newColumn.getSqlTypeCode() == Types.LONGVARCHAR;
+    }
+
+
+    public static boolean isVarcharField(ColumnMetadata oldColumnInfo, Dialect dialect) {
+        boolean isVarcharType = oldColumnInfo.getTypeCode() == Types.VARCHAR;
         if (dialect instanceof SQLServerDialect) {
-            isVarcharType |= oldColumnInfo.getTypeCode() == java.sql.Types.NVARCHAR
+            isVarcharType |= oldColumnInfo.getTypeCode() == Types.NVARCHAR
                     && oldColumnInfo.getTypeName().equalsIgnoreCase("nvarchar");
         }
         return isVarcharType;
     }
 
-    public static boolean isIncreaseVarcharColumnLength(Column newColumn, ColumnMetadata oldColumnInfo, Dialect dialect) {
-        return newColumn.getLength() > oldColumnInfo.getColumnSize();
+    public static boolean isIncreaseVarcharColumnLength(Column newColumn, ColumnMetadata oldColumnInfo) {
+        return newColumn.getLength() > oldColumnInfo.getColumnSize() && (newColumn.getSqlTypeCode() == oldColumnInfo.getTypeCode());
     }
 
     public static boolean isChangedToOptional(Column newColumn, ColumnMetadata oldColumnInfo) {
-        if (oldColumnInfo.getNullable().toUpperCase().equals(NO) && newColumn.isNullable()) {
-            return true;
-        }
-        return false;
+        return oldColumnInfo.getNullable().toUpperCase().equals(NO) && newColumn.isNullable();
     }
 }

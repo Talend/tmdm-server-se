@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  *
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -45,7 +45,7 @@ public class MDMTable extends Table {
 
     private static final String LONGTEXT = "longtext";
 
-    protected RDBMSDataSource dataSource;
+    private RDBMSDataSource dataSource;
 
     private static final Logger LOGGER = Logger.getLogger(MDMTable.class);
 
@@ -61,7 +61,7 @@ public class MDMTable extends Table {
         // Try to find out the name of the primary key to create it as identity if the IdentityGenerator is used
         String pkname = null;
         if (hasPrimaryKey() && identityColumn) {
-            pkname = ((Column) getPrimaryKey().getColumnIterator().next()).getQuotedName(dialect);
+            pkname = getPrimaryKey().getColumnIterator().next().getQuotedName(dialect);
         }
 
         Iterator iter = getColumnIterator();
@@ -91,12 +91,8 @@ public class MDMTable extends Table {
 
             }
 
-            if (col.isUnique()) {
-                String keyName = Constraint.generateName("UK_", this, col);
-                UniqueKey uk = getOrCreateUniqueKey(keyName);
-                uk.addColumn(col);
-                buf.append(dialect.getUniqueDelegate().getColumnDefinitionUniquenessFragment(col));
-            }
+            // add the UK str
+            buf.append(generateUK(dialect, col));
 
             if (col.hasCheckConstraint() && dialect.supportsColumnCheck()) {
                 buf.append(" check (").append(col.getCheckConstraint()).append(')');
@@ -154,6 +150,9 @@ public class MDMTable extends Table {
             ColumnMetadata columnInfo = tableInfo.getColumnMetadata(column.getName());
 
             String sqlType = column.getSqlType(dialect, p);
+            if (column.getSqlTypeCode() == null) {
+                column.setSqlTypeCode(column.getSqlTypeCode(p));
+            }
             String defaultValue = column.getDefaultValue();
             String columnName = column.getQuotedName(dialect);
             if (columnInfo == null) {
@@ -169,12 +168,8 @@ public class MDMTable extends Table {
                     alter.append(" not null");
                 }
 
-                if (column.isUnique()) {
-                    String keyName = Constraint.generateName("UK_", this, column);
-                    UniqueKey uk = getOrCreateUniqueKey(keyName);
-                    uk.addColumn(column);
-                    alter.append(dialect.getUniqueDelegate().getColumnDefinitionUniquenessFragment(column));
-                }
+                // add the UK str
+                alter.append(generateUK(dialect, column));
 
                 if (column.hasCheckConstraint() && dialect.supportsColumnCheck()) {
                     alter.append(" check(").append(column.getCheckConstraint()).append(')');
@@ -215,12 +210,8 @@ public class MDMTable extends Table {
                     alter.append(" not null ");
                 }
 
-                if (column.isUnique()) {
-                    String keyName = Constraint.generateName("UK_", this, column);
-                    UniqueKey uk = getOrCreateUniqueKey(keyName);
-                    uk.addColumn(column);
-                    alter.append(dialect.getUniqueDelegate().getColumnDefinitionUniquenessFragment(column));
-                }
+                // add the UK str
+                alter.append(generateUK(dialect, column));
 
                 if (column.hasCheckConstraint() && dialect.supportsColumnCheck()) {
                     alter.append(" check(").append(column.getCheckConstraint()).append(')');
@@ -288,6 +279,17 @@ public class MDMTable extends Table {
             }
         }
         return results.iterator();
+    }
+
+    private String generateUK(Dialect dialect, Column col) {
+        StringBuilder buf = new StringBuilder();
+        if (col.isUnique()) {
+            String keyName = Constraint.generateName("UK_", this, col);
+            UniqueKey uk = getOrCreateUniqueKey(keyName);
+            uk.addColumn(col);
+            buf.append(dialect.getUniqueDelegate().getColumnDefinitionUniquenessFragment(col));
+        }
+        return buf.toString();
     }
 
     private String generateAlterDefaultValueConstraintSQL(String tableName, String columnName) {
@@ -362,11 +364,8 @@ public class MDMTable extends Table {
         return defaultSQL;
     }
 
-    public static boolean isDefaultValueNeeded(String sqlType, Dialect dialect) {
-        if (LONGTEXT.equals(sqlType) && dialect instanceof MySQLDialect) {
-            return false;
-        }
-        return true;
+    private static boolean isDefaultValueNeeded(String sqlType, Dialect dialect) {
+        return !LONGTEXT.equals(sqlType) || !(dialect instanceof MySQLDialect);
     }
 
     public void setDataSource(RDBMSDataSource dataSource) {

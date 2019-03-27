@@ -282,14 +282,13 @@ public class MDMTable extends Table {
     }
 
     private String generateUK(Dialect dialect, Column col) {
-        StringBuilder buf = new StringBuilder();
         if (col.isUnique()) {
             String keyName = Constraint.generateName("UK_", this, col);
             UniqueKey uk = getOrCreateUniqueKey(keyName);
             uk.addColumn(col);
-            buf.append(dialect.getUniqueDelegate().getColumnDefinitionUniquenessFragment(col));
+            return dialect.getUniqueDelegate().getColumnDefinitionUniquenessFragment(col);
         }
-        return buf.toString();
+        return StringUtils.EMPTY;
     }
 
     private String generateAlterDefaultValueConstraintSQL(String tableName, String columnName) {

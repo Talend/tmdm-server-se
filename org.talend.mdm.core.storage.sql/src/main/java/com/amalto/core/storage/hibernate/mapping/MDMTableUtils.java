@@ -28,7 +28,7 @@ public abstract class MDMTableUtils {
             return Boolean.FALSE;
         }
         return isVarcharField(oldColumnInfo, dialect) && isIncreaseVarcharColumnLength(newColumn, oldColumnInfo, dialect)
-                || isVarcharTypeChanged(newColumn, oldColumnInfo, dialect);
+                || isVarcharTypeChanged(newColumn, oldColumnInfo);
     }
 
     private static boolean isVarcharTypeChanged(Column newColumn, ColumnMetadata oldColumnInfo) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -18,6 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.amalto.core.storage.HibernateStorageUtils;
+import com.amalto.core.storage.datasource.RDBMSDataSource;
 import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.metadata.*;
 import org.talend.mdm.commmon.metadata.compare.AddChange;
@@ -29,6 +31,7 @@ import org.talend.mdm.commmon.metadata.compare.RemoveChange;
 
 import com.amalto.core.query.user.UserQueryBuilder;
 import com.amalto.core.storage.StorageResults;
+import org.talend.mdm.commmon.util.core.CommonUtil;
 
 @SuppressWarnings("nls")
 public class HibernateStorageDataAnaylzer extends HibernateStorageImpactAnalyzer {
@@ -41,8 +44,6 @@ public class HibernateStorageDataAnaylzer extends HibernateStorageImpactAnalyzer
         this.storage = storage;
     }
 
-    protected final String STRING_DEFAULT_LENGTH = "255";
-
     @Override
     public Map<Impact, List<Change>> analyzeImpacts(Compare.DiffResults diffResult) {
         // Modify actions
@@ -52,9 +53,26 @@ public class HibernateStorageDataAnaylzer extends HibernateStorageImpactAnalyzer
                 FieldMetadata previous = (FieldMetadata) modifyAction.getPrevious();
                 FieldMetadata current = (FieldMetadata) modifyAction.getCurrent();
 
+                Object previousLength = CommonUtil.getSuperTypeMaxLength(previous.getType(), previous.getType());
+                Object currentLength = CommonUtil.getSuperTypeMaxLength(current.getType(), current.getType());
+
+
                 if (current.isMandatory() && !previous.isMandatory() && !(element instanceof ContainedTypeFieldMetadata)) {
                     int count = fetchFieldCountOfNull(previous.getContainingType().getEntity(), previous);
-                    modifyAction.setHasNullValue(count > 0);
+                    modifyAction.addData(ModifyChange.HAS_NULL_VALUE, count > 0);
+                }
+
+                int currentLengthInt = Integer.parseInt((currentLength == null ? STRING_DEFAULT_LENGTH : (String) currentLength));
+                int previousLengthInt = Integer.parseInt((previousLength == null ? STRING_DEFAULT_LENGTH : (String) previousLength));
+
+                if (element instanceof SimpleTypeFieldMetadata && currentLengthInt > previousLengthInt &&
+                        MetadataUtils.getSuperConcreteType(((FieldMetadata) element).getType()).getName().equals("string")) {
+                    RDBMSDataSource.DataSourceDialect dialect = ((RDBMSDataSource)storage.getDataSource()).getDialectName();
+
+                    if ((HibernateStorageUtils.isDB2(dialect) || HibernateStorageUtils.isOracle(dialect))
+                            && currentLengthInt > dialect.getTextLimit()) {
+                        modifyAction.addData(ModifyChange.CHANGE_TO_CLOB, true);
+                    }
                 }
             }
         }

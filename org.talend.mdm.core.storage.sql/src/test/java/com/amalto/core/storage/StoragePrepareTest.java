@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -22,8 +22,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
@@ -43,6 +41,8 @@ import com.amalto.core.storage.hibernate.HibernateStorage;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.record.DataRecordReader;
 import com.amalto.core.storage.record.XmlStringDataRecordReader;
+
+import junit.framework.TestCase;
 
 public class StoragePrepareTest extends TestCase {
     
@@ -88,7 +88,173 @@ public class StoragePrepareTest extends TestCase {
             assertEquals(dbKeys[j++], keyField.getName());
         }
     }
-    
+
+    public void testCreateWithInheritanceComplexType() {
+        Storage storage = new SecuredStorage(new HibernateStorage("InheritanceComplexType", StorageType.MASTER), userSecurity);//$NON-NLS-1$
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(StoragePrepareTest.class.getResourceAsStream("InheritanceComplexType.xsd"));//$NON-NLS-1$
+        MockMetadataRepositoryAdmin.INSTANCE.register("InheritanceComplexType", repository);//$NON-NLS-1$
+
+        storage.init(getDatasource("H2-DS3"));// //$NON-NLS-1$
+        storage.prepare(repository, Collections.<Expression> emptySet(), true, true);
+        ((MockStorageAdmin) ServerContext.INSTANCE.get().getStorageAdmin()).register(storage);
+
+        //testing Add and Query record for Entity TestA, TestB and TestC
+        doAddAndQueryWithEntityTestA(storage, repository);
+        doAddAndQueryWithEntityTestB(storage, repository);
+        doAddAndQueryWithEntityTestC(storage, repository);
+
+        storage.close();
+    }
+
+    private void doAddAndQueryWithEntityTestB(Storage storage, MetadataRepository repository) {
+        storage.begin();
+        ComplexTypeMetadata testB = repository.getComplexType("TestB");//$NON-NLS-1$
+        UserQueryBuilder qb = from(testB);
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(0, results.getCount());
+        } finally {
+            results.close();
+        }
+        storage.end();
+
+        List<DataRecord> records = new ArrayList<DataRecord>();
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+        records.add(factory.read(repository, testB, "<TestB><Id>3</Id><Person xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"TeacherType\"><personName>personName33</personName><teacherName>teacherName33</teacherName></Person></TestB>")); //$NON-NLS-1$
+        records.add(factory.read(repository, testB, "<TestB><Id>4</Id><Person xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"TeacherType\"><personName>personName44</personName><teacherName>teacherName44</teacherName></Person></TestB>")); //$NON-NLS-1$
+        try {
+            storage.begin();
+            storage.update(records);
+            storage.commit();
+        } finally {
+            storage.end();
+        }
+
+        storage.begin();
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(2, results.getCount());
+            for (DataRecord result : results) {
+                String id = result.get("Id").toString();
+                switch (id) {
+                case "3"://$NON-NLS-1$
+                    assertEquals("personName33", result.get("Person/personName"));//$NON-NLS-1$ //$NON-NLS-2$
+                    assertEquals("teacherName33", result.get("Person/teacherName"));//$NON-NLS-1$ //$NON-NLS-2$
+                    break;
+                case "4"://$NON-NLS-1$
+                    assertEquals("personName44", result.get("Person/personName"));//$NON-NLS-1$ //$NON-NLS-2$
+                    assertEquals("teacherName44", result.get("Person/teacherName"));//$NON-NLS-1$ //$NON-NLS-2$
+                    break;
+                default:
+                    assertNull(id);
+                }
+            }
+        } finally {
+            results.close();
+        }
+        storage.end();
+    }
+
+    private void doAddAndQueryWithEntityTestC(Storage storage, MetadataRepository repository) {
+        storage.begin();
+        ComplexTypeMetadata testC = repository.getComplexType("TestC");//$NON-NLS-1$
+        UserQueryBuilder qb = from(testC);
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(0, results.getCount());
+        } finally {
+            results.close();
+        }
+        storage.end();
+
+        List<DataRecord> records = new ArrayList<DataRecord>();
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+        records.add(factory.read(repository, testC, "<TestC><Id>5</Id><Student><personName>personName55</personName><studentName>studentName55</studentName></Student></TestC>")); //$NON-NLS-1$
+        records.add(factory.read(repository, testC, "<TestC><Id>6</Id><Student><personName>personName66</personName><studentName>studentName66</studentName></Student></TestC>")); //$NON-NLS-1$
+        try {
+            storage.begin();
+            storage.update(records);
+            storage.commit();
+        } finally {
+            storage.end();
+        }
+
+        storage.begin();
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(2, results.getCount());
+            for (DataRecord result : results) {
+                String id = result.get("Id").toString();
+                switch (id) {
+                case "5"://$NON-NLS-1$
+                    assertEquals("personName55", result.get("Student/personName"));//$NON-NLS-1$ //$NON-NLS-2$
+                    assertEquals("studentName55", result.get("Student/studentName"));//$NON-NLS-1$ //$NON-NLS-2$
+                    break;
+                case "6"://$NON-NLS-1$
+                    assertEquals("personName66", result.get("Student/personName"));//$NON-NLS-1$ //$NON-NLS-2$
+                    assertEquals("studentName66", result.get("Student/studentName"));//$NON-NLS-1$ //$NON-NLS-2$
+                    break;
+                default:
+                    assertNull(id);
+                }
+            }
+        } finally {
+            results.close();
+        }
+        storage.end();
+    }
+
+    private void doAddAndQueryWithEntityTestA(Storage storage, MetadataRepository repository) {
+        storage.begin();
+        ComplexTypeMetadata testA = repository.getComplexType("TestA");//$NON-NLS-1$
+        UserQueryBuilder qb = from(testA);
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(0, results.getCount());
+        } finally {
+            results.close();
+        }
+        storage.end();
+
+        List<DataRecord> records = new ArrayList<DataRecord>();
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+        records.add(factory.read(repository, testA, "<TestA><Id>1</Id><Student><personName>myPersonName11</personName><studentName>myStudentName11</studentName></Student></TestA>")); //$NON-NLS-1$
+        records.add(factory.read(repository, testA, "<TestA><Id>2</Id><Student><personName>myPersonName22</personName><studentName>myStudentName22</studentName></Student></TestA>")); //$NON-NLS-1$
+        try {
+            storage.begin();
+            storage.update(records);
+            storage.commit();
+        } finally {
+            storage.end();
+        }
+
+        storage.begin();
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(2, results.getCount());
+            for (DataRecord result : results) {
+                String id = result.get("Id").toString();
+                switch (id) {
+                case "1"://$NON-NLS-1$
+                    assertEquals("myPersonName11", result.get("Student/personName"));//$NON-NLS-1$ //$NON-NLS-2$
+                    assertEquals("myStudentName11", result.get("Student/studentName"));//$NON-NLS-1$ //$NON-NLS-2$
+                    break;
+                case "2"://$NON-NLS-1$
+                    assertEquals("myPersonName22", result.get("Student/personName"));//$NON-NLS-1$ //$NON-NLS-2$
+                    assertEquals("myStudentName22", result.get("Student/studentName"));//$NON-NLS-1$ //$NON-NLS-2$
+                    break;
+                default:
+                    assertNull(id);
+                }
+            }
+
+        } finally {
+            results.close();
+        }
+        storage.end();
+    }
+
     // TMDM-8022 custom decimal type totalDigits/fractionDigits is not considered while mapping to RDBMS db
     public void testDecimalComplexType() {
         Storage storage = new SecuredStorage(new HibernateStorage("Goods", StorageType.MASTER), userSecurity);//$NON-NLS-1$

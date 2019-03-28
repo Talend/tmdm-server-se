@@ -11,11 +11,30 @@
 
 package com.amalto.core.storage.hibernate;
 
-import org.talend.mdm.commmon.metadata.*;
-import org.apache.commons.lang.StringUtils;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Stack;
 
 import javax.xml.XMLConstants;
-import java.util.*;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
+import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.ComplexTypeMetadataImpl;
+import org.talend.mdm.commmon.metadata.ContainedComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
+import org.talend.mdm.commmon.metadata.DefaultMetadataVisitor;
+import org.talend.mdm.commmon.metadata.EnumerationFieldMetadata;
+import org.talend.mdm.commmon.metadata.FieldMetadata;
+import org.talend.mdm.commmon.metadata.MetadataRepository;
+import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
+import org.talend.mdm.commmon.metadata.SimpleTypeFieldMetadata;
+import org.talend.mdm.commmon.metadata.SimpleTypeMetadata;
+import org.talend.mdm.commmon.metadata.SoftIdFieldRef;
+import org.talend.mdm.commmon.metadata.SoftTypeRef;
+import org.talend.mdm.commmon.metadata.TypeMetadata;
+import org.talend.mdm.commmon.metadata.Types;
 
 class ScatteredMappingCreator extends DefaultMetadataVisitor<TypeMapping> {
 
@@ -152,7 +171,12 @@ class ScatteredMappingCreator extends DefaultMetadataVisitor<TypeMapping> {
     @Override
     public TypeMapping visit(ContainedComplexTypeMetadata containedType) {
         String typeName = containedType.getName().replace('-', '_');
-        String databaseSuperType = createContainedType(getNonInstantiableTypeName(typeName), null, containedType);
+        String superTypeName = null;
+        if (CollectionUtils.isNotEmpty(containedType.getSuperTypes())) {
+            ComplexTypeMetadata superType = (ComplexTypeMetadata) containedType.getSuperTypes().iterator().next();
+            superTypeName = createContainedType(getNonInstantiableTypeName(superType.getName().replace('-', '_')), null, superType);
+        }
+        String databaseSuperType = createContainedType(getNonInstantiableTypeName(typeName), superTypeName, containedType);
         for (ComplexTypeMetadata subType : containedType.getSubTypes()) {
             String subTypeName = subType.getName().replace('-', '_');
             createContainedType(getNonInstantiableTypeName(subTypeName), databaseSuperType, subType);

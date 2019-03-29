@@ -59,7 +59,7 @@ public class HibernateStorageDataAnaylzer extends HibernateStorageImpactAnalyzer
 
                 if (current.isMandatory() && !previous.isMandatory() && !(element instanceof ContainedTypeFieldMetadata)) {
                     int count = fetchFieldCountOfNull(previous.getContainingType().getEntity(), previous);
-                    modifyAction.addData(ModifyChange.HAS_NULL_VALUE, count > 0);
+                    modifyAction.addData(Change.HAS_NULL_VALUE, count > 0);
                 }
 
                 int currentLengthInt = Integer.parseInt((currentLength == null ? STRING_DEFAULT_LENGTH : (String) currentLength));
@@ -71,7 +71,7 @@ public class HibernateStorageDataAnaylzer extends HibernateStorageImpactAnalyzer
 
                     if ((HibernateStorageUtils.isDB2(dialect) || HibernateStorageUtils.isOracle(dialect))
                             && currentLengthInt > dialect.getTextLimit()) {
-                        modifyAction.addData(ModifyChange.CHANGE_TO_CLOB, true);
+                        modifyAction.addData(Change.CHANGE_TO_CLOB, true);
                     }
                 }
             }

@@ -681,7 +681,7 @@ public class UserQueryBuilder {
     public static Condition fullText(FieldMetadata field, String constant) {
         if (field.getType() instanceof ComplexTypeMetadata) {
             // TMDM-5126: Full text on contained type -> perform search on all elements defined in type
-            List<FieldMetadata> fields = field.getType().accept(new ContainedFieldFullTextSearch());
+            List<FieldMetadata> fields = field.getType().accept(new ContainedFieldQuerySearch());
             if (fields.isEmpty()) {
                 return UserQueryHelper.FALSE;
             } else {
@@ -1123,26 +1123,45 @@ public class UserQueryBuilder {
         if (value.isEmpty()) {
             return UserQueryHelper.TRUE;
         }
-        Field userField = new Field(field);
-        return contains(userField, value);
+        if (field.getType() instanceof ComplexTypeMetadata) {
+            // TMDM-5126: Full text on contained type -> perform search on all elements defined in type
+            List<FieldMetadata> fields = field.getType().accept(new ContainedFieldQuerySearch());
+            if (fields.isEmpty()) {
+                return UserQueryHelper.FALSE;
+            } else {
+                Iterator<FieldMetadata> iterator = fields.iterator();
+                Condition condition = contains(new Field(iterator.next()), value);
+                while (iterator.hasNext()) {
+                    condition = or(condition, contains(new Field(iterator.next()), value));
+                }
+                return condition;
+            }
+        } else {
+            return contains(new Field(field), value);
+        }
     }
 
     public static Condition contains(TypedExpression field, String value) {
-        assertValueConditionArguments(field, value);
-        if (!MetaDataUtils.isValueAssignable(value, field.getTypeName())) {
-            return UserQueryHelper.FALSE;
-        }
-        Expression constant = createConstant(field, value);
-        if (constant instanceof StringConstant) {
-            return new Compare(field, Predicate.CONTAINS, constant);
+        assertValueConditionArguments(field, value);        
+        if (field instanceof Field && ((Field)field).getFieldMetadata().getType() instanceof ComplexTypeMetadata) {
+            FieldMetadata fieldMetadata = ((Field)field).getFieldMetadata();
+            return contains(fieldMetadata, value);
         } else {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Change CONTAINS to EQUALS for '" + field + "' (type: " + field.getTypeName() + ").");
+            if (!MetaDataUtils.isValueAssignable(value, field.getTypeName())) {
+                return UserQueryHelper.FALSE;
             }
-            return new Compare(field, Predicate.EQUALS, constant);
-        }
+            Expression constant = createConstant(field, value);
+            if (constant instanceof StringConstant) {
+                return new Compare(field, Predicate.CONTAINS, constant);
+            } else {
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("Change CONTAINS to EQUALS for '" + field + "' (type: " + field.getTypeName() + ").");
+                }
+                return new Compare(field, Predicate.EQUALS, constant);
+            }
+        }       
     }
-
+    
     public static TypedExpression type(FieldMetadata field) {
         if (!(field.getType() instanceof ComplexTypeMetadata)) {
             throw new IllegalArgumentException("Expected a complex type for field '" + field.getName() + "'.");
@@ -1166,7 +1185,7 @@ public class UserQueryBuilder {
         return new Distinct(expression);
     }
 
-    private static class ContainedFieldFullTextSearch extends DefaultMetadataVisitor<List<FieldMetadata>> {
+    private static class ContainedFieldQuerySearch extends DefaultMetadataVisitor<List<FieldMetadata>> {
 
         private final List<FieldMetadata> fields = new ArrayList<FieldMetadata>();
 

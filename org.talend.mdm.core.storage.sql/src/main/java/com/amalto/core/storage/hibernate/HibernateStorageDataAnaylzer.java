@@ -53,25 +53,25 @@ public class HibernateStorageDataAnaylzer extends HibernateStorageImpactAnalyzer
                 FieldMetadata previous = (FieldMetadata) modifyAction.getPrevious();
                 FieldMetadata current = (FieldMetadata) modifyAction.getCurrent();
 
-                Object previousLength = CommonUtil.getSuperTypeMaxLength(previous.getType(), previous.getType());
-                Object currentLength = CommonUtil.getSuperTypeMaxLength(current.getType(), current.getType());
-
-
                 if (current.isMandatory() && !previous.isMandatory() && !(element instanceof ContainedTypeFieldMetadata)) {
                     int count = fetchFieldCountOfNull(previous.getContainingType().getEntity(), previous);
                     modifyAction.addData(Change.HAS_NULL_VALUE, count > 0);
                 }
 
-                int currentLengthInt = Integer.parseInt((currentLength == null ? STRING_DEFAULT_LENGTH : (String) currentLength));
-                int previousLengthInt = Integer.parseInt((previousLength == null ? STRING_DEFAULT_LENGTH : (String) previousLength));
+                RDBMSDataSource.DataSourceDialect dialect = ((RDBMSDataSource) storage.getDataSource()).getDialectName();
+                if ((HibernateStorageUtils.isDB2(dialect)
+                        || HibernateStorageUtils.isOracle(dialect) && element instanceof SimpleTypeFieldMetadata)) {
+                    String fieldType = MetadataUtils.getSuperConcreteType(((FieldMetadata) element).getType()).getName();
+                    if (fieldType.equals("string")) {
+                        Object oldLengthObj = CommonUtil.getSuperTypeMaxLength(previous.getType(), previous.getType());
+                        Object newLengthObj = CommonUtil.getSuperTypeMaxLength(current.getType(), current.getType());
 
-                if (element instanceof SimpleTypeFieldMetadata && currentLengthInt > previousLengthInt &&
-                        MetadataUtils.getSuperConcreteType(((FieldMetadata) element).getType()).getName().equals("string")) {
-                    RDBMSDataSource.DataSourceDialect dialect = ((RDBMSDataSource)storage.getDataSource()).getDialectName();
+                        int oldLength = Integer.parseInt((oldLengthObj == null ? STRING_DEFAULT_LENGTH : (String) oldLengthObj));
+                        int newLength = Integer.parseInt((newLengthObj == null ? STRING_DEFAULT_LENGTH : (String) newLengthObj));
 
-                    if ((HibernateStorageUtils.isDB2(dialect) || HibernateStorageUtils.isOracle(dialect))
-                            && currentLengthInt > dialect.getTextLimit()) {
-                        modifyAction.addData(Change.CHANGE_TO_CLOB, true);
+                        if (newLength > dialect.getTextLimit() && newLength > oldLength) {
+                            modifyAction.addData(ModifyChange.CHANGE_TO_CLOB, true);
+                        }
                     }
                 }
             }

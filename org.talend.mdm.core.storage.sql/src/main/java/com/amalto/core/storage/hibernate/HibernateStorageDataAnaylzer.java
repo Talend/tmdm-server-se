@@ -59,8 +59,8 @@ public class HibernateStorageDataAnaylzer extends HibernateStorageImpactAnalyzer
                 }
 
                 RDBMSDataSource.DataSourceDialect dialect = ((RDBMSDataSource) storage.getDataSource()).getDialectName();
-                if ((HibernateStorageUtils.isDB2(dialect)
-                        || HibernateStorageUtils.isOracle(dialect) && element instanceof SimpleTypeFieldMetadata)) {
+                if ((HibernateStorageUtils.isDB2(dialect) || HibernateStorageUtils.isOracle(dialect))
+                        && element instanceof SimpleTypeFieldMetadata) {
                     String fieldType = MetadataUtils.getSuperConcreteType(((FieldMetadata) element).getType()).getName();
                     if (fieldType.equals("string")) {
                         Object oldLengthObj = CommonUtil.getSuperTypeMaxLength(previous.getType(), previous.getType());

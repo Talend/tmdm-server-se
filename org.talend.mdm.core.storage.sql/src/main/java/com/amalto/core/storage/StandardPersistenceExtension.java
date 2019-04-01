@@ -16,7 +16,9 @@ import java.lang.reflect.Proxy;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
@@ -43,6 +45,8 @@ public class StandardPersistenceExtension implements PersistenceExtension {
 
     private static final String INIT_DB_RESOURCE_PATH = "/com/amalto/core/initdb/extensiondata/datamodel/UpdateReport"; //$NON-NLS-1$
 
+    private static final String TABLE_NAME = "x_update_report";//$NON-NLS-1$
+
     private RDBMSDataSource dataSource;
 
     @Override
@@ -68,7 +72,42 @@ public class StandardPersistenceExtension implements PersistenceExtension {
         Storage simpleStorage = (Storage) UpdateReportStorageProxy.newInstance(new Class[] { Storage.class }, dataSource);
         StorageInitializer initializer = new JDBCStorageInitializer();
 
-        return initializer.isInitialized(simpleStorage);
+        return initializer.isInitialized(simpleStorage) && isExistsTable(simpleStorage);
+    }
+
+    /**
+     * The method major use in Oracle DB to check if table <b>UpdateReport</b> exists or not.
+     * @param storage
+     * @return
+     */
+    public boolean isExistsTable(Storage storage) {
+        if (!HibernateStorageUtils.isOracle(dataSource.getDialectName())) {
+            return true;
+        }
+        try {
+            Class.forName(dataSource.getDriverClassName());
+            Connection connection = DriverManager.getConnection(dataSource.getConnectionURL(), dataSource.getUserName(), dataSource.getPassword());
+            try {
+                Statement statement = connection.createStatement();
+                try {
+                    ResultSet resultSet = statement.executeQuery("SELECT COUNT(*) FROM user_tables WHERE table_name = upper('" + TABLE_NAME + "')"); //$NON-NLS-1$ $NON-NLS-2$
+                    if (resultSet.next()) {
+                        return resultSet.getInt(1) == 1;
+                    } else {
+                        return false;
+                    }
+                } catch (SQLException e) {
+                    LOGGER.warn("Exception occurred during checking the query table exists.", e);
+                } finally {
+                    statement.close();
+                }
+            } finally {
+                connection.close();
+            }
+            return false;
+        } catch (Exception e) {
+            throw new RuntimeException("Exception occurred during processing querying of Oracle database", e);
+        }
     }
 
     @Override

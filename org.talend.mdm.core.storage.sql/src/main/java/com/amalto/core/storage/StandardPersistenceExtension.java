@@ -78,14 +78,14 @@ public class StandardPersistenceExtension implements PersistenceExtension {
      * @param storage
      * @return
      */
-    public boolean isTableExisted(Storage storage) {
+    private boolean isTableExisted(Storage storage) {
         if (!HibernateStorageUtils.isOracle(dataSource.getDialectName())) {
             return true;
         }
         try {
             Class.forName(dataSource.getDriverClassName());
-            try (Connection connection = DriverManager.getConnection(dataSource.getConnectionURL(), dataSource.getUserName(), dataSource.getPassword());
-                 Statement statement = connection.createStatement()) {
+            try (Connection connection = DriverManager.getConnection(dataSource.getConnectionURL(), dataSource.getUserName(),
+                    dataSource.getPassword()); Statement statement = connection.createStatement()) {
                 ResultSet resultSet = statement.executeQuery("SELECT COUNT(*) FROM user_tables WHERE table_name = upper('x_update_report')"); //$NON-NLS-1$
                 if (resultSet.next()) {
                     return resultSet.getInt(1) == 1;

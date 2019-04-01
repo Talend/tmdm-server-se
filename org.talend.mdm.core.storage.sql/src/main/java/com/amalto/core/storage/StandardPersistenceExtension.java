@@ -84,23 +84,16 @@ public class StandardPersistenceExtension implements PersistenceExtension {
         }
         try {
             Class.forName(dataSource.getDriverClassName());
-            Connection connection = DriverManager.getConnection(dataSource.getConnectionURL(), dataSource.getUserName(), dataSource.getPassword());
-            try {
-                Statement statement = connection.createStatement();
-                try {
-                    ResultSet resultSet = statement.executeQuery("SELECT COUNT(*) FROM user_tables WHERE table_name = upper('x_update_report')"); //$NON-NLS-1$
-                    if (resultSet.next()) {
-                        return resultSet.getInt(1) == 1;
-                    } else {
-                        return false;
-                    }
-                } catch (SQLException e) {
-                    LOGGER.warn("Exception occurred during checking the query table exists.", e);//$NON-NLS-1$
-                } finally {
-                    statement.close();
+            try (Connection connection = DriverManager.getConnection(dataSource.getConnectionURL(), dataSource.getUserName(), dataSource.getPassword());
+                 Statement statement = connection.createStatement()) {
+                ResultSet resultSet = statement.executeQuery("SELECT COUNT(*) FROM user_tables WHERE table_name = upper('x_update_report')"); //$NON-NLS-1$
+                if (resultSet.next()) {
+                    return resultSet.getInt(1) == 1;
+                } else {
+                    return false;
                 }
-            } finally {
-                connection.close();
+            } catch (SQLException e) {
+                LOGGER.error("Exception occurred during checking the query table exists.", e);//$NON-NLS-1$
             }
             return false;
         } catch (Exception e) {

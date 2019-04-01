@@ -70,7 +70,7 @@ public class StandardPersistenceExtension implements PersistenceExtension {
         Storage simpleStorage = (Storage) UpdateReportStorageProxy.newInstance(new Class[] { Storage.class }, dataSource);
         StorageInitializer initializer = new JDBCStorageInitializer();
 
-        return initializer.isInitialized(simpleStorage) && isTableExisted(simpleStorage);
+        return initializer.isInitialized(simpleStorage) && isUpdateReportExisted(simpleStorage);
     }
 
     /**
@@ -78,7 +78,7 @@ public class StandardPersistenceExtension implements PersistenceExtension {
      * @param storage
      * @return
      */
-    private boolean isTableExisted(Storage storage) {
+    private boolean isUpdateReportExisted(Storage storage) {
         if (!HibernateStorageUtils.isOracle(dataSource.getDialectName())) {
             return true;
         }

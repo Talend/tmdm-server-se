@@ -59,8 +59,7 @@ public class HibernateStorageDataAnaylzer extends HibernateStorageImpactAnalyzer
                 }
 
                 RDBMSDataSource.DataSourceDialect dialect = ((RDBMSDataSource) storage.getDataSource()).getDialectName();
-                if ((HibernateStorageUtils.isDB2(dialect) || HibernateStorageUtils.isOracle(dialect))
-                        && element instanceof SimpleTypeFieldMetadata) {
+                if (element instanceof SimpleTypeFieldMetadata) {
                     String fieldType = MetadataUtils.getSuperConcreteType(((FieldMetadata) element).getType()).getName();
                     if (fieldType.equals("string")) {
                         Object oldLengthObj = CommonUtil.getSuperTypeMaxLength(previous.getType(), previous.getType());
@@ -69,8 +68,13 @@ public class HibernateStorageDataAnaylzer extends HibernateStorageImpactAnalyzer
                         int oldLength = Integer.parseInt((oldLengthObj == null ? STRING_DEFAULT_LENGTH : (String) oldLengthObj));
                         int newLength = Integer.parseInt((newLengthObj == null ? STRING_DEFAULT_LENGTH : (String) newLengthObj));
 
-                        if (newLength > dialect.getTextLimit() && newLength > oldLength) {
+                        //increase length
+                        if (newLength > oldLength && newLength > dialect.getTextLimit() && oldLength <= dialect.getTextLimit()
+                                && (HibernateStorageUtils.isDB2(dialect) || HibernateStorageUtils.isOracle(dialect))) {
                             modifyAction.addData(ModifyChange.CHANGE_TO_CLOB, true);
+                        } else if (oldLength > newLength && newLength > dialect.getTextLimit()) {
+                            //decrease length
+                            modifyAction.addData(ModifyChange.TEXT_TO_TEXT, true);
                         }
                     }
                 }

@@ -148,7 +148,8 @@ public class TQLPredicateToMDMPredicate implements IASTVisitor<Condition> {
     @Override
     public Condition visit(FieldIsEmptyExpression fieldIsEmptyExpression) {
         fieldIsEmptyExpression.getField().accept(this);
-        return new IsEmpty(popCurrentExpression());
+        // TMDM-13367 : Workaround : A value not valorised in MDM is null
+        return new IsNull(popCurrentExpression());
     }
 
     @Override

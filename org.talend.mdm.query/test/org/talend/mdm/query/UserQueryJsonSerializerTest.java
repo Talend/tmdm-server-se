@@ -10,6 +10,7 @@
 package org.talend.mdm.query;
 
 import com.amalto.core.query.user.Expression;
+import com.amalto.core.query.user.IsNull;
 import com.amalto.core.query.user.Select;
 import com.amalto.core.query.user.TypedExpression;
 import com.amalto.core.query.user.UserQueryBuilder;
@@ -135,6 +136,15 @@ public class UserQueryJsonSerializerTest extends TestCase {
         final UserQueryBuilder userQueryBuilder = UserQueryBuilder.from(type1).where("Type1.value1 contains 'Toto'");
         final Select select = userQueryBuilder.getSelect();
         assertNotNull(select.getCondition());
+        assertRoundTrip(select);
+    }
+
+    public void testConditionIsEmptyTQL() {
+        final ComplexTypeMetadata type1 = repository.getComplexType("Type1");
+        final UserQueryBuilder userQueryBuilder = UserQueryBuilder.from(type1).where("Type1.value1 is empty");
+        final Select select = userQueryBuilder.getSelect();
+        assertNotNull(select.getCondition());
+        assertTrue(select.getCondition() instanceof IsNull);
         assertRoundTrip(select);
     }
 

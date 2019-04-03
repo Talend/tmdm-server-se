@@ -207,7 +207,11 @@ public class MDMTable extends Table {
                 if (column.isNullable()) {
                     alter.append(dialect.getNullColumnString());
                 } else {
-                    alter.append(" not null ");
+                    if (dialect instanceof PostgreSQLDialect) {
+                        alter.append(", alter column ").append(columnName).append(" set not null ");
+                    } else {
+                        alter.append(" not null ");
+                    }
                 }
 
                 // add the UK str

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -4440,6 +4440,39 @@ public class StorageQueryTest extends StorageTestCase {
         storage.begin();
         storage.delete(qb.getSelect());
         storage.commit();
+    }
+
+    public void testDeleteRecordsChangeWithFK() throws Exception {
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(DataRecordCreationTest.class.getResourceAsStream("metadata18.xsd"));
+        Storage storage = new HibernateStorage("H2-DS1", StorageType.MASTER);
+        storage.init(ServerContext.INSTANCE.get().getDefinition("H2-DS1", "MDM"));
+        storage.prepare(repository, true);
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+
+        List<DataRecord> records = new LinkedList<DataRecord>();
+        ComplexTypeMetadata complexTypeMetadata = repository.getComplexType("countryTerritory");
+        records.add(factory.read(repository, complexTypeMetadata, "<countryTerritory><countryTerritoryId>22</countryTerritoryId></countryTerritory>"));
+        storage.begin();
+        storage.update(records);
+        storage.commit();
+
+        // Delete 'record1' which is no longer used
+        UserQueryBuilder qb = from(complexTypeMetadata).where(contains(complexTypeMetadata.getField("countryTerritoryId"), "22"));
+        storage.begin();
+        try {
+            storage.delete(qb.getSelect());
+        } finally {
+            storage.commit();
+        }
+
+        storage.begin();
+        StorageResults storageRecords = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(0, storageRecords.getCount());
+        } finally {
+            storage.commit();
+        }
     }
 
     public void testEmptyOrNullOnFK() throws Exception {

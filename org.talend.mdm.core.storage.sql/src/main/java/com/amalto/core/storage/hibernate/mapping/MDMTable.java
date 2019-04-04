@@ -29,7 +29,7 @@ import org.hibernate.dialect.H2Dialect;
 import org.hibernate.dialect.MySQLDialect;
 import org.hibernate.dialect.PostgreSQLDialect;
 import org.hibernate.dialect.SQLServerDialect;
-import org.hibernate.dialect.OracleDialect;
+import org.hibernate.dialect.Oracle8iDialect;
 import org.hibernate.engine.spi.Mapping;
 import org.hibernate.mapping.Column;
 import org.hibernate.mapping.Constraint;
@@ -206,15 +206,15 @@ public class MDMTable extends Table {
                 alter.append(convertDefaultValue(dialect, sqlType, defaultValue));
 
                 if (column.isNullable()) {
-                    if (dialect instanceof OracleDialect) {
-                        alter.append(" check( ").append(columnName).append(" is not null )");
+                    if (dialect instanceof Oracle8iDialect) {
+                        alter.append(" check( ").append(columnName).append(" is null )");
                     } else {
                         alter.append(dialect.getNullColumnString());
                     }
                 } else {
                     if (dialect instanceof PostgreSQLDialect) {
                         alter.append(", alter column ").append(columnName).append(" set not null ");
-                    } else if (dialect instanceof OracleDialect) {
+                    } else if (dialect instanceof Oracle8iDialect) {
                         alter.append(" check( ").append(columnName).append(" is not null )");
                     } else {
                         alter.append(" not null ");

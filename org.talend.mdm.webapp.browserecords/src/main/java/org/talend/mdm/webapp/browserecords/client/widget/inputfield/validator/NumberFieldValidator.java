@@ -16,6 +16,7 @@ import org.talend.mdm.webapp.browserecords.shared.FacetEnum;
 
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.Validator;
+import com.google.gwt.i18n.client.NumberFormat;
 
 
 public class NumberFieldValidator implements Validator {
@@ -66,7 +67,7 @@ public class NumberFieldValidator implements Validator {
         String minInclusive = field.getData(FacetEnum.MIN_INCLUSIVE.getFacetName());
         if (minInclusive != null && !minInclusive.equals("")){//$NON-NLS-1$
             double min = Double.parseDouble(minInclusive);
-            double numberValue = Double.parseDouble(value);
+            double numberValue = NumberFormat.getDecimalFormat().parse(value);
             if (numberValue < min){
                 succeed = false;
                 defaultMessage += MessagesFactory.getMessages().check_minInclusive() + min + "\n";//$NON-NLS-1$
@@ -76,7 +77,7 @@ public class NumberFieldValidator implements Validator {
         String maxInclusive = field.getData(FacetEnum.MAX_INCLUSIVE.getFacetName());
         if (maxInclusive != null && !maxInclusive.equals("")){//$NON-NLS-1$
             double max = Double.parseDouble(maxInclusive);
-            double numberValue = Double.parseDouble(value);
+            double numberValue = NumberFormat.getDecimalFormat().parse(value);
             if (numberValue > max){
                 succeed = false;
                 defaultMessage += MessagesFactory.getMessages().check_maxInclusive() + max + "\n";//$NON-NLS-1$
@@ -86,7 +87,7 @@ public class NumberFieldValidator implements Validator {
         String minExclusive = field.getData(FacetEnum.MIN_EXCLUSIVE.getFacetName());
         if (minExclusive != null && !minExclusive.equals("")){//$NON-NLS-1$
             double min = Double.parseDouble(minExclusive);
-            double numberValue = Double.parseDouble(value);
+            double numberValue = NumberFormat.getDecimalFormat().parse(value);
             if (numberValue <= min){
                 succeed = false;
                 defaultMessage += MessagesFactory.getMessages().check_minExclusive() + min + "\n";//$NON-NLS-1$
@@ -96,7 +97,7 @@ public class NumberFieldValidator implements Validator {
         String maxExclusive = field.getData(FacetEnum.MAX_EXCLUSIVE.getFacetName());
         if (maxExclusive != null && !maxExclusive.equals("")){//$NON-NLS-1$
             double max = Double.parseDouble(maxExclusive);
-            double numberValue = Double.parseDouble(value);
+            double numberValue = NumberFormat.getDecimalFormat().parse(value);
             if (numberValue >= max){
                 succeed = false;
                 defaultMessage += MessagesFactory.getMessages().check_maxExclusive() + max + "\n";//$NON-NLS-1$

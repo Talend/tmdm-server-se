@@ -305,9 +305,9 @@ class FlatTypeMapping extends TypeMapping {
 	                    }
 						for (Object value : valueList) {
                             if (fieldMetadata instanceof ReferenceFieldMetadata) {
-                                //if (value != null) {
+                                if (value != null) {
                                     dataRecord.set(fieldMetadata, getDataRecordFromWrapper(contextClassLoader, (Wrapper) value, proceedWrappers));
-                                //}
+                                }
                             } else if (fieldMetadata instanceof ContainedTypeFieldMetadata) {
                                 TypeMapping newMapping = mappings.getMappingFromUser(ContainedComplexTypeMetadata.contain(contextClassLoader.getTypeFromClass(((Wrapper) value).getClass()), fieldMetadata));
                                 DataRecord newdataRecord = new DataRecord(newMapping.getUser(), UnsupportedDataRecordMetadata.INSTANCE);

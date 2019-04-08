@@ -9,10 +9,10 @@
  */
 package org.talend.mdm.webapp.browserecords.client;
 
+import com.google.gwt.junit.tools.GWTTestSuite;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
-
-import com.google.gwt.junit.tools.GWTTestSuite;
 
 @SuppressWarnings("nls")
 public class ClientGWTTestSuite extends TestCase /* note this is TestCase and not TestSuite */
@@ -44,6 +44,8 @@ public class ClientGWTTestSuite extends TestCase /* note this is TestCase and no
         suite.addTestSuite(org.talend.mdm.webapp.browserecords.client.widget.foreignkey.ForeignKeySelectorGWTTest.class);
         suite.addTestSuite(org.talend.mdm.webapp.browserecords.client.widget.ItemsToolBarGWTTest.class);
         suite.addTestSuite(org.talend.mdm.webapp.browserecords.client.widget.treedetail.MultiOccurrenceChangeItemGWTTest.class);
+        suite.addTestSuite(
+                org.talend.mdm.webapp.browserecords.client.widget.inputfield.validator.NumberFieldValidatorGWTTest.class);
         return suite;
     }
 }

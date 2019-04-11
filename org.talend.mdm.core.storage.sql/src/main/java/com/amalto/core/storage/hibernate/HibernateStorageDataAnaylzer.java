@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -18,6 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.amalto.core.storage.HibernateStorageUtils;
+import com.amalto.core.storage.datasource.RDBMSDataSource;
 import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.metadata.*;
 import org.talend.mdm.commmon.metadata.compare.AddChange;
@@ -29,6 +31,7 @@ import org.talend.mdm.commmon.metadata.compare.RemoveChange;
 
 import com.amalto.core.query.user.UserQueryBuilder;
 import com.amalto.core.storage.StorageResults;
+import org.talend.mdm.commmon.util.core.CommonUtil;
 
 @SuppressWarnings("nls")
 public class HibernateStorageDataAnaylzer extends HibernateStorageImpactAnalyzer {
@@ -41,8 +44,6 @@ public class HibernateStorageDataAnaylzer extends HibernateStorageImpactAnalyzer
         this.storage = storage;
     }
 
-    protected final String STRING_DEFAULT_LENGTH = "255";
-
     @Override
     public Map<Impact, List<Change>> analyzeImpacts(Compare.DiffResults diffResult) {
         // Modify actions
@@ -54,7 +55,28 @@ public class HibernateStorageDataAnaylzer extends HibernateStorageImpactAnalyzer
 
                 if (current.isMandatory() && !previous.isMandatory() && !(element instanceof ContainedTypeFieldMetadata)) {
                     int count = fetchFieldCountOfNull(previous.getContainingType().getEntity(), previous);
-                    modifyAction.setHasNullValue(count > 0);
+                    modifyAction.addData(Change.HAS_NULL_VALUE, count > 0);
+                }
+
+                RDBMSDataSource.DataSourceDialect dialect = ((RDBMSDataSource) storage.getDataSource()).getDialectName();
+                if (element instanceof SimpleTypeFieldMetadata) {
+                    String fieldType = MetadataUtils.getSuperConcreteType(((FieldMetadata) element).getType()).getName();
+                    if (fieldType.equals("string")) {
+                        Object oldLengthObj = CommonUtil.getSuperTypeMaxLength(previous.getType(), previous.getType());
+                        Object newLengthObj = CommonUtil.getSuperTypeMaxLength(current.getType(), current.getType());
+
+                        int oldLength = Integer.parseInt((oldLengthObj == null ? STRING_DEFAULT_LENGTH : (String) oldLengthObj));
+                        int newLength = Integer.parseInt((newLengthObj == null ? STRING_DEFAULT_LENGTH : (String) newLengthObj));
+
+                        //increase length
+                        if (newLength > oldLength && newLength > dialect.getTextLimit() && oldLength <= dialect.getTextLimit()
+                                && (HibernateStorageUtils.isDB2(dialect) || HibernateStorageUtils.isOracle(dialect))) {
+                            modifyAction.addData(ModifyChange.CHANGE_TO_CLOB, true);
+                        } else if (oldLength > newLength && newLength > dialect.getTextLimit()) {
+                            //decrease length
+                            modifyAction.addData(ModifyChange.TEXT_TO_TEXT, true);
+                        }
+                    }
                 }
             }
         }

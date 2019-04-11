@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  *
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -305,7 +305,9 @@ class FlatTypeMapping extends TypeMapping {
 	                    }
 						for (Object value : valueList) {
                             if (fieldMetadata instanceof ReferenceFieldMetadata) {
-								dataRecord.set(fieldMetadata, getDataRecordFromWrapper(contextClassLoader, (Wrapper) value, proceedWrappers));
+                                if (value != null) {
+                                    dataRecord.set(fieldMetadata, getDataRecordFromWrapper(contextClassLoader, (Wrapper) value, proceedWrappers));
+                                }
                             } else if (fieldMetadata instanceof ContainedTypeFieldMetadata) {
                                 TypeMapping newMapping = mappings.getMappingFromUser(ContainedComplexTypeMetadata.contain(contextClassLoader.getTypeFromClass(((Wrapper) value).getClass()), fieldMetadata));
                                 DataRecord newdataRecord = new DataRecord(newMapping.getUser(), UnsupportedDataRecordMetadata.INSTANCE);

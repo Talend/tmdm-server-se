@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -581,6 +581,8 @@ public class StorageAdaptTest extends TestCase {
         String[] tables = { "MyStr" };
         String[] columns = { "X_ID", "X_MYSTR", "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" };
         DataRecordReader<String> factory = new XmlStringDataRecordReader();
+
+        //1. Prepare origin data model, the string length is 10
         MetadataRepository repository1 = new MetadataRepository();
         repository1.load(StorageAdaptTest.class.getResourceAsStream("schema9_1.xsd"));
         storage.prepare(repository1, true);
@@ -599,6 +601,7 @@ public class StorageAdaptTest extends TestCase {
         String input1 = "<MyStr><Id>id-1</Id><MyStr>str-1</MyStr></MyStr>";
         String input2 = "<MyStr><Id>id-2</Id><MyStr>str-1-1-1-1-1-1-1-1-1-1-1</MyStr></MyStr>";
         String input3 = "<MyStr><Id>id-3</Id><MyStr>str123456789123456789123456789123</MyStr></MyStr>";
+        // create record success when the field 'MyStr' length is less than 10
         try {
             createRecord(storage, factory, repository1, typeNames, new String[] { input1 });
         } catch (Exception e2) {
@@ -620,6 +623,7 @@ public class StorageAdaptTest extends TestCase {
         }
         storage.end();
 
+        // create record failure when the field 'MyStr' length is much than 10
         try {
             createRecord(storage, factory, repository1, typeNames, new String[] { input2 });
             fail("could not insert into the input2 data");
@@ -641,6 +645,7 @@ public class StorageAdaptTest extends TestCase {
         }
         storage.end();
 
+        //2. Prepare origin data model, the string length is 30
         MetadataRepository repository2 = new MetadataRepository();
         repository2.load(StorageAdaptTest.class.getResourceAsStream("schema9_2.xsd"));
         storage.adapt(repository2, true);
@@ -682,6 +687,7 @@ public class StorageAdaptTest extends TestCase {
         }
         storage.end();
 
+        //3. Prepare origin data model, the string length is 10
         MetadataRepository repository3 = new MetadataRepository();
         repository3.load(StorageAdaptTest.class.getResourceAsStream("schema10_1.xsd"));
         storage.adapt(repository3, true);
@@ -726,6 +732,7 @@ public class StorageAdaptTest extends TestCase {
         }
         storage.end();
 
+        //4. Prepare origin data model, the string length is 5
         MetadataRepository repository4 = new MetadataRepository();
         repository4.load(StorageAdaptTest.class.getResourceAsStream("schema9_3.xsd"));
         storage.adapt(repository4, true);
@@ -746,6 +753,48 @@ public class StorageAdaptTest extends TestCase {
         qb = from(MyStr);
         results = storage.fetch(qb.getSelect());
         assertEquals(0, results.getCount());
+
+
+        //create 2 records, the second doesn't insert into database
+        input1 = "<MyStr><Id>id-1</Id><MyStr>str-1</MyStr></MyStr>";
+        input2 = "<MyStr><Id>id-2</Id><MyStr>str-1-1-1-1-1-1-1-1-1-1-1</MyStr></MyStr>";
+        try {
+            createRecord(storage, factory, repository1, typeNames, new String[] { input1 });
+        } catch (Exception e2) {
+            assertNull(e2);
+        }
+        try {
+            createRecord(storage, factory, repository1, typeNames, new String[] { input2 });
+        } catch (Exception e2) {
+            assertNotNull(e2);
+        }
+        storage.begin();
+        MyStr = repository4.getComplexType("MyStr");//$NON-NLS-1$
+        qb = from(MyStr);
+        results = storage.fetch(qb.getSelect());
+        assertEquals(1, results.getCount());
+
+        //5. Prepare origin data model, the string length is 2000
+        MetadataRepository repository5 = new MetadataRepository();
+        repository5.load(StorageAdaptTest.class.getResourceAsStream("schema9_4.xsd"));
+        storage.adapt(repository5, true);
+        try {
+            assertDatabaseChange(dataSource, tables, columns, new boolean[] { true });
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+
+        try {
+            assertColumnLengthChange(dataSource, "MyStr", "X_MYSTR", 2147483647);
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+
+        storage.begin();
+        MyStr = repository5.getComplexType("MyStr");//$NON-NLS-1$
+        qb = from(MyStr);
+        results = storage.fetch(qb.getSelect());
+        assertEquals(1, results.getCount());
     }
 
     public void test10_UseSuperTypeMaxLengthForInherit() {

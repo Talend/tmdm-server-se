@@ -109,6 +109,12 @@ public class NumberFieldValidatorGWTTest extends GWTTestCase{
         assertNotNull(NumberFieldValidator.getInstance().validate(dateField, "-999999999999.999"));
         assertNotNull(NumberFieldValidator.getInstance().validate(dateField, "99999999999999999999.999"));
         assertNotNull(NumberFieldValidator.getInstance().validate(dateField, "-99999999999999999999.999"));
+
+        // TMDM-13372 Can't display form detail with facet in French
+        // Test MIN_INCLUSIVE or MAX_INCLUSIVE is not null in French
+        dateField.setData(FacetEnum.MIN_INCLUSIVE.getFacetName(), "1.0");
+        dateField.setData(FacetEnum.MAX_INCLUSIVE.getFacetName(), "9.99999999999E11");
+        assertNotNull(NumberFieldValidator.getInstance().validate(dateField, "345,0"));
     }
     
     

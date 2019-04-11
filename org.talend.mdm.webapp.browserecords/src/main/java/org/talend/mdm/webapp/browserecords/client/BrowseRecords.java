@@ -64,7 +64,9 @@ public class BrowseRecords implements EntryPoint {
 
     public static final String VIEW_BEAN = "ViewBean"; //$NON-NLS-1$
 
-    public static final String BULK_UPDATE_PANEL = "BulkUpdatePanel";
+    public static final String BULK_UPDATE_PANEL = "BulkUpdatePanel"; //$NON-NLS-1$
+
+    public static final String SAVE_PROGRESS_BAR = "SaveProgressBar"; //$NON-NLS-1$
 
     private static JavaScriptObject stagingArea;
 
@@ -193,43 +195,43 @@ public class BrowseRecords implements EntryPoint {
     }
 
     public native void renderPubTreeDetailPanel(String itemId, ItemPanel itemPanel)/*-{
-		var tabPanel = $wnd.amalto.hierarchy.Hierarchy.getTabPanel();
-		var panel = tabPanel.getItem(itemId);
-		if (panel == undefined || panel == null) {
-			panel = this.@org.talend.mdm.webapp.browserecords.client.BrowseRecords::wrapTreeDetailPanel(Lorg/talend/mdm/webapp/browserecords/client/widget/ItemPanel;)(itemPanel);
-			tabPanel.add(panel);
-		}
-		tabPanel.setSelection(panel.getItemId());
+        var tabPanel = $wnd.amalto.hierarchy.Hierarchy.getTabPanel();
+        var panel = tabPanel.getItem(itemId);
+        if (panel == undefined || panel == null) {
+            panel = this.@org.talend.mdm.webapp.browserecords.client.BrowseRecords::wrapTreeDetailPanel(Lorg/talend/mdm/webapp/browserecords/client/widget/ItemPanel;)(itemPanel);
+            tabPanel.add(panel);
+        }
+        tabPanel.setSelection(panel.getItemId());
     }-*/;
 
     public native JavaScriptObject wrapTreeDetailPanel(ItemPanel itemPanel)/*-{
-		var panel = {
-			// imitate extjs's render method, really call gxt code.
-			render : function(el) {
-				var rootPanel = @com.google.gwt.user.client.ui.RootPanel::get(Ljava/lang/String;)(el.id);
-				rootPanel.@com.google.gwt.user.client.ui.RootPanel::add(Lcom/google/gwt/user/client/ui/Widget;)(itemPanel);
-			},
-			// imitate extjs's setSize method, really call gxt code.
-			setSize : function(width, height) {
-				itemPanel.@org.talend.mdm.webapp.browserecords.client.widget.ItemPanel::setSize(II)(width, height);
-			},
-			// imitate extjs's getItemId, really return itemId of ContentPanel of GXT.
-			getItemId : function() {
-				return itemPanel.@org.talend.mdm.webapp.browserecords.client.widget.ItemPanel::getItemId()();
-			},
-			// imitate El object of extjs
-			getEl : function() {
-				var el = itemPanel.@org.talend.mdm.webapp.browserecords.client.widget.ItemPanel::getElement()();
-				return {
-					dom : el
-				};
-			},
-			// imitate extjs's doLayout method, really call gxt code.
-			doLayout : function() {
-				return itemPanel.@org.talend.mdm.webapp.browserecords.client.widget.ItemPanel::doLayout()();
-			}
-		};
-		return panel;
+        var panel = {
+            // imitate extjs's render method, really call gxt code.
+            render : function(el) {
+                var rootPanel = @com.google.gwt.user.client.ui.RootPanel::get(Ljava/lang/String;)(el.id);
+                rootPanel.@com.google.gwt.user.client.ui.RootPanel::add(Lcom/google/gwt/user/client/ui/Widget;)(itemPanel);
+            },
+            // imitate extjs's setSize method, really call gxt code.
+            setSize : function(width, height) {
+                itemPanel.@org.talend.mdm.webapp.browserecords.client.widget.ItemPanel::setSize(II)(width, height);
+            },
+            // imitate extjs's getItemId, really return itemId of ContentPanel of GXT.
+            getItemId : function() {
+                return itemPanel.@org.talend.mdm.webapp.browserecords.client.widget.ItemPanel::getItemId()();
+            },
+            // imitate El object of extjs
+            getEl : function() {
+                var el = itemPanel.@org.talend.mdm.webapp.browserecords.client.widget.ItemPanel::getElement()();
+                return {
+                    dom : el
+                };
+            },
+            // imitate extjs's doLayout method, really call gxt code.
+            doLayout : function() {
+                return itemPanel.@org.talend.mdm.webapp.browserecords.client.widget.ItemPanel::doLayout()();
+            }
+        };
+        return panel;
     }-*/;
 
     public static UserSession getSession() {
@@ -238,102 +240,102 @@ public class BrowseRecords implements EntryPoint {
     }
 
     private native void registerPubService()/*-{
-		var instance = this;
-		$wnd.amalto.browserecords = $wnd.amalto.browserecords || {};
-		$wnd.amalto.browserecords.BrowseRecords = function() {
+        var instance = this;
+        $wnd.amalto.browserecords = $wnd.amalto.browserecords || {};
+        $wnd.amalto.browserecords.BrowseRecords = function() {
 
-			function initUI(stagingarea) {
-				instance.@org.talend.mdm.webapp.browserecords.client.BrowseRecords::initUI(Lcom/google/gwt/core/client/JavaScriptObject;)(stagingarea);
-			}
+            function initUI(stagingarea) {
+                instance.@org.talend.mdm.webapp.browserecords.client.BrowseRecords::initUI(Lcom/google/gwt/core/client/JavaScriptObject;)(stagingarea);
+            }
 
-			function showTreeDetailPanel(concept, ids) {
-				instance.@org.talend.mdm.webapp.browserecords.client.BrowseRecords::showTreeDetailPanel(Ljava/lang/String;Ljava/lang/String;)(concept, ids);
-			}
+            function showTreeDetailPanel(concept, ids) {
+                instance.@org.talend.mdm.webapp.browserecords.client.BrowseRecords::showTreeDetailPanel(Ljava/lang/String;Ljava/lang/String;)(concept, ids);
+            }
 
-			function refreshGrid() {
-				var tabPanel = $wnd.amalto.core.getTabPanel();
-				var panel = tabPanel.getItem("Browse Records");
-				if (panel != undefined) {
-					tabPanel.setSelection(panel.getItemId());
-				}
-				instance.@org.talend.mdm.webapp.browserecords.client.BrowseRecords::refreshGrid()();
-			}
+            function refreshGrid() {
+                var tabPanel = $wnd.amalto.core.getTabPanel();
+                var panel = tabPanel.getItem("Browse Records");
+                if (panel != undefined) {
+                    tabPanel.setSelection(panel.getItemId());
+                }
+                instance.@org.talend.mdm.webapp.browserecords.client.BrowseRecords::refreshGrid()();
+            }
 
-			return {
-				init : function(stagingarea) {
-					initUI(stagingarea);
-				},
-				showTreeDetailPanel : function(concept, ids) {
-					showTreeDetailPanel(concept, ids);
-				},
-				refreshGrid : function() {
-					refreshGrid();
-				}
-			}
-		}();
+            return {
+                init : function(stagingarea) {
+                    initUI(stagingarea);
+                },
+                showTreeDetailPanel : function(concept, ids) {
+                    showTreeDetailPanel(concept, ids);
+                },
+                refreshGrid : function() {
+                    refreshGrid();
+                }
+            }
+        }();
     }-*/;
 
     private native void _initUI(JavaScriptObject stagingarea)/*-{
-		var tabPanel = $wnd.amalto.core.getTabPanel();
+        var tabPanel = $wnd.amalto.core.getTabPanel();
 
-		var panel = tabPanel.getItem("Browse Records");
-		if (panel == undefined) {
-			var defaultTitle = @org.talend.mdm.webapp.browserecords.client.widget.GenerateContainer::defaultTitle()();
-			@org.talend.mdm.webapp.browserecords.client.widget.GenerateContainer::generateContentPanel(Ljava/lang/String;Ljava/lang/String;)("Browse Records", defaultTitle);
-			panel = this.@org.talend.mdm.webapp.browserecords.client.BrowseRecords::createPanel()();
-			tabPanel.add(panel);
-		}
-		tabPanel.setSelection(panel.getItemId());
+        var panel = tabPanel.getItem("Browse Records");
+        if (panel == undefined) {
+            var defaultTitle = @org.talend.mdm.webapp.browserecords.client.widget.GenerateContainer::defaultTitle()();
+            @org.talend.mdm.webapp.browserecords.client.widget.GenerateContainer::generateContentPanel(Ljava/lang/String;Ljava/lang/String;)("Browse Records", defaultTitle);
+            panel = this.@org.talend.mdm.webapp.browserecords.client.BrowseRecords::createPanel()();
+            tabPanel.add(panel);
+        }
+        tabPanel.setSelection(panel.getItemId());
 
-		var defaultTitle = @org.talend.mdm.webapp.browserecords.client.widget.GenerateContainer::defaultTitle()();
-		if (stagingarea) {
-			@org.talend.mdm.webapp.browserecords.client.BrowseRecords::stagingArea = stagingarea;
-			$wnd.amalto.core.getTabPanel().updateCurrentTabText(
-					stagingarea.from + defaultTitle);
-		} else {
-			@org.talend.mdm.webapp.browserecords.client.BrowseRecords::stagingArea = null;
-			$wnd.amalto.core.getTabPanel().updateCurrentTabText(defaultTitle);
-		}
-		@org.talend.mdm.webapp.browserecords.client.widget.GenerateContainer::setDefaultView()();
+        var defaultTitle = @org.talend.mdm.webapp.browserecords.client.widget.GenerateContainer::defaultTitle()();
+        if (stagingarea) {
+            @org.talend.mdm.webapp.browserecords.client.BrowseRecords::stagingArea = stagingarea;
+            $wnd.amalto.core.getTabPanel().updateCurrentTabText(
+                    stagingarea.from + defaultTitle);
+        } else {
+            @org.talend.mdm.webapp.browserecords.client.BrowseRecords::stagingArea = null;
+            $wnd.amalto.core.getTabPanel().updateCurrentTabText(defaultTitle);
+        }
+        @org.talend.mdm.webapp.browserecords.client.widget.GenerateContainer::setDefaultView()();
     }-*/;
 
     native JavaScriptObject createPanel()/*-{
-		var instance = this;
-		// imitate extjs Panel
-		var panel = {
-			// imitate extjs's render method, really call gxt code.
-			render : function(el) {
-				instance.@org.talend.mdm.webapp.browserecords.client.BrowseRecords::renderContent(Ljava/lang/String;)(el.id);
-			},
-			// imitate extjs's setSize method, really call gxt code.
-			setSize : function(width, height) {
-				var cp = @org.talend.mdm.webapp.browserecords.client.widget.GenerateContainer::getContentPanel()();
-				cp.@com.extjs.gxt.ui.client.widget.ContentPanel::setSize(II)(width, height);
-			},
-			// imitate extjs's getItemId, really return itemId of ContentPanel of GXT.
-			getItemId : function() {
-				var cp = @org.talend.mdm.webapp.browserecords.client.widget.GenerateContainer::getContentPanel()();
-				return cp.@com.extjs.gxt.ui.client.widget.ContentPanel::getItemId()();
-			},
-			// imitate El object of extjs
-			getEl : function() {
-				var cp = @org.talend.mdm.webapp.browserecords.client.widget.GenerateContainer::getContentPanel()();
-				var el = cp.@com.extjs.gxt.ui.client.widget.ContentPanel::getElement()();
-				return {
-					dom : el
-				};
-			},
-			// imitate extjs's doLayout method, really call gxt code.
-			doLayout : function() {
-				var cp = @org.talend.mdm.webapp.browserecords.client.widget.GenerateContainer::getContentPanel()();
-				return cp.@com.extjs.gxt.ui.client.widget.ContentPanel::doLayout()();
-			},
-			title : function() {
-				var cp = @org.talend.mdm.webapp.browserecords.client.widget.GenerateContainer::getContentPanel()();
-				return cp.@com.extjs.gxt.ui.client.widget.ContentPanel::getHeading()();
-			}
-		};
-		return panel;
+        var instance = this;
+        // imitate extjs Panel
+        var panel = {
+            // imitate extjs's render method, really call gxt code.
+            render : function(el) {
+                instance.@org.talend.mdm.webapp.browserecords.client.BrowseRecords::renderContent(Ljava/lang/String;)(el.id);
+            },
+            // imitate extjs's setSize method, really call gxt code.
+            setSize : function(width, height) {
+                var cp = @org.talend.mdm.webapp.browserecords.client.widget.GenerateContainer::getContentPanel()();
+                cp.@com.extjs.gxt.ui.client.widget.ContentPanel::setSize(II)(width, height);
+            },
+            // imitate extjs's getItemId, really return itemId of ContentPanel of GXT.
+            getItemId : function() {
+                var cp = @org.talend.mdm.webapp.browserecords.client.widget.GenerateContainer::getContentPanel()();
+                return cp.@com.extjs.gxt.ui.client.widget.ContentPanel::getItemId()();
+            },
+            // imitate El object of extjs
+            getEl : function() {
+                var cp = @org.talend.mdm.webapp.browserecords.client.widget.GenerateContainer::getContentPanel()();
+                var el = cp.@com.extjs.gxt.ui.client.widget.ContentPanel::getElement()();
+                return {
+                    dom : el
+                };
+            },
+            // imitate extjs's doLayout method, really call gxt code.
+            doLayout : function() {
+                var cp = @org.talend.mdm.webapp.browserecords.client.widget.GenerateContainer::getContentPanel()();
+                return cp.@com.extjs.gxt.ui.client.widget.ContentPanel::doLayout()();
+            },
+            title : function() {
+                var cp = @org.talend.mdm.webapp.browserecords.client.widget.GenerateContainer::getContentPanel()();
+                return cp.@com.extjs.gxt.ui.client.widget.ContentPanel::getHeading()();
+            }
+        };
+        return panel;
     }-*/;
 
     public void renderContent(final String contentId) {

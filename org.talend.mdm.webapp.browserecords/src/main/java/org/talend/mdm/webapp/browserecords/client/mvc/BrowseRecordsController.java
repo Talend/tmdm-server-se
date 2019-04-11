@@ -51,7 +51,6 @@ import com.extjs.gxt.ui.client.mvc.AppEvent;
 import com.extjs.gxt.ui.client.mvc.Controller;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.google.gwt.core.client.GWT;
 
 /**
  * DOC Administrator class global comment. Detailled comment
@@ -142,8 +141,6 @@ public class BrowseRecordsController extends Controller {
         final Boolean isStaging = event.getData("isStaging"); //$NON-NLS-1$
         final ItemDetailToolBar detailToolBar = event.getData("itemDetailToolBar"); //$NON-NLS-1$
         final ItemsDetailPanel itemsDetailPanel = event.getData(BrowseRecordsView.ITEMS_DETAIL_PANEL);
-        final MessageBox progressBar = MessageBox.wait(MessagesFactory.getMessages().save_progress_bar_title(), MessagesFactory
-                .getMessages().save_progress_bar_message(), MessagesFactory.getMessages().please_wait());
         final Boolean isWarningApprovedBeforeSave = false;
         final BrowseRecordsServiceAsync browseRecordsService;
         if (isStaging) {
@@ -152,7 +149,7 @@ public class BrowseRecordsController extends Controller {
             browseRecordsService = ServiceFactory.getInstance().getMasterService();
         }
         saveItem(model, viewBean, itemBean, isCreate, isClose, isWarningApprovedBeforeSave, isStaging, detailToolBar,
-                itemsDetailPanel, progressBar, browseRecordsService);
+                itemsDetailPanel, browseRecordsService);
     }
 
     private void onBulkUpdateItem(AppEvent event) {
@@ -396,7 +393,7 @@ public class BrowseRecordsController extends Controller {
 
     private void saveItem(final ItemNodeModel model, final ViewBean viewBean, final ItemBean itemBean, final Boolean isCreate,
             final Boolean isClose, final Boolean isWarningApprovedBeforeSave, final Boolean isStaging,
-            final ItemDetailToolBar detailToolBar, final ItemsDetailPanel itemsDetailPanel, final MessageBox progressBar,
+            final ItemDetailToolBar detailToolBar, final ItemsDetailPanel itemsDetailPanel,
             final BrowseRecordsServiceAsync browseRecordsService) {
         browseRecordsService.saveItem(viewBean, itemBean.getIds(),
                 (new ItemTreeHandler(model, viewBean, itemBean, ItemTreeHandlingStatus.ToSave)).serializeItem(), isCreate,
@@ -404,7 +401,10 @@ public class BrowseRecordsController extends Controller {
 
                     @Override
                     protected void doOnFailure(Throwable caught) {
-                        progressBar.close();
+                        MessageBox progressBar = (MessageBox) Registry.get(BrowseRecords.SAVE_PROGRESS_BAR);
+                        if (progressBar != null) {
+                            progressBar.close();
+                        }
                         String err = caught.getMessage();
                         if (err != null) {
                             MessageBox.alert(MessagesFactory.getMessages().error_title(), XmlUtil.transformXmlToString(err), null)
@@ -422,7 +422,10 @@ public class BrowseRecordsController extends Controller {
                             itemBean.setIds(result.getReturnValue());
                             itemBean.setLastUpdateTime(result);
                         }
-                        progressBar.close();
+                        MessageBox progressBar = (MessageBox) Registry.get(BrowseRecords.SAVE_PROGRESS_BAR);
+                        if (progressBar != null) {
+                            progressBar.close();
+                        }
                         MessageBox messageBox = MessageUtil.generateMessageBox(result);
                         String message = messageBox.getMessage();
                         if (result.getStatus() == ItemResult.FAILURE) {
@@ -439,7 +442,7 @@ public class BrowseRecordsController extends Controller {
                                     public void handleEvent(MessageBoxEvent event) {
                                         if (event.getButtonClicked().getItemId().equals(Dialog.OK)) {
                                             saveItem(model, viewBean, itemBean, isCreate, isClose, true, isStaging, detailToolBar,
-                                                    itemsDetailPanel, progressBar, browseRecordsService);
+                                                    itemsDetailPanel, browseRecordsService);
                                         }
                                     }
                                 });

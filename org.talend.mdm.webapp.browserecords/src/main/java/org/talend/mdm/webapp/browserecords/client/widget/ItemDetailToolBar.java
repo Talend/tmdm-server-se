@@ -1399,6 +1399,9 @@ public class ItemDetailToolBar extends ToolBar {
     }-*/;
 
     public void saveItemAndClose(final boolean isClose) {
+        MessageBox progressBar = MessageBox.wait(MessagesFactory.getMessages().save_progress_bar_title(),
+                MessagesFactory.getMessages().save_progress_bar_message(), MessagesFactory.getMessages().please_wait());
+        Registry.register(BrowseRecords.SAVE_PROGRESS_BAR, progressBar);
         ItemBean bean = itemBean;
         Widget widget = itemsDetailPanel.getPrimaryKeyTabWidget();
         if (widget instanceof ItemPanel) {// save primary key

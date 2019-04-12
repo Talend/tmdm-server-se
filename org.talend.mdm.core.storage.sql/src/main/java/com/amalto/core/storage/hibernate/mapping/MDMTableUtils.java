@@ -10,8 +10,8 @@
 
 package com.amalto.core.storage.hibernate.mapping;
 
-import org.hibernate.dialect.DB2Dialect;
 import org.hibernate.dialect.Dialect;
+import org.hibernate.dialect.PostgreSQLDialect;
 import org.hibernate.dialect.SQLServerDialect;
 import org.hibernate.mapping.Column;
 import org.hibernate.tool.hbm2ddl.ColumnMetadata;
@@ -28,10 +28,14 @@ public abstract class MDMTableUtils {
             return Boolean.FALSE;
         }
         return isVarcharField(oldColumnInfo, dialect) && isIncreaseVarcharColumnLength(newColumn, oldColumnInfo, dialect)
-                || isVarcharTypeChanged(newColumn, oldColumnInfo);
+                || isVarcharTypeChanged(newColumn, oldColumnInfo, dialect);
     }
 
-    private static boolean isVarcharTypeChanged(Column newColumn, ColumnMetadata oldColumnInfo) {
+    private static boolean isVarcharTypeChanged(Column newColumn, ColumnMetadata oldColumnInfo, Dialect dialect) {
+        if (dialect instanceof PostgreSQLDialect) {
+            return oldColumnInfo.getTypeName().toLowerCase().startsWith("varchar") && newColumn.getSqlType().equalsIgnoreCase("text");
+        }
+
         return (oldColumnInfo.getTypeCode() == Types.VARCHAR || oldColumnInfo.getTypeCode() == Types.NVARCHAR) && (
                 newColumn.getSqlTypeCode() == Types.LONGVARCHAR || newColumn.getSqlTypeCode() == Types.CLOB);
     }

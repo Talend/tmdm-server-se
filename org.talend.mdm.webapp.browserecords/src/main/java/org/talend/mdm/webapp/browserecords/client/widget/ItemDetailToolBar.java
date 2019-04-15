@@ -1399,7 +1399,7 @@ public class ItemDetailToolBar extends ToolBar {
     }-*/;
 
     public void saveItemAndClose(final boolean isClose) {
-        MessageBox progressBar = MessageBox.wait(MessagesFactory.getMessages().save_progress_bar_title(),
+        final MessageBox progressBar = MessageBox.wait(MessagesFactory.getMessages().save_progress_bar_title(),
                 MessagesFactory.getMessages().save_progress_bar_message(), MessagesFactory.getMessages().please_wait());
         Registry.register(BrowseRecords.SAVE_PROGRESS_BAR, progressBar);
         ItemBean bean = itemBean;
@@ -1425,6 +1425,8 @@ public class ItemDetailToolBar extends ToolBar {
                                         public void handleEvent(MessageBoxEvent be) {
                                             if (Dialog.YES.equals(be.getButtonClicked().getItemId())) {
                                                 saveItem(isClose);
+                                            } else {
+                                                progressBar.close();
                                             }
                                         }
                                     }).getDialog().setWidth(600);
@@ -1452,6 +1454,10 @@ public class ItemDetailToolBar extends ToolBar {
                                 MessageBox
                                         .alert(MessagesFactory.getMessages().info_title(),
                                                 MessagesFactory.getMessages().record_exists(), null).getDialog().setWidth(400);
+                                MessageBox progressBar = (MessageBox) Registry.get(BrowseRecords.SAVE_PROGRESS_BAR);
+                                if (progressBar != null) {
+                                    progressBar.close();
+                                }
                             } else {
                                 saveItem(isClose);
                             }

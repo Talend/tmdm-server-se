@@ -42,10 +42,10 @@ public abstract class MDMTableUtils {
             String newColumnType = newColumn.getSqlType();
             String oldColumnType = oldColumnInfo.getTypeName();
 
-            if (newColumnType.contains("(")) {
+            if (!newColumnType.equals("nvarchar(max)") && newColumnType.contains("(")) {
                 newColumnType = newColumnType.substring(0, newColumnType.indexOf('('));
             }
-            if (oldColumnType.contains("(")) {
+            if (!oldColumnType.equals("nvarchar(max)") && oldColumnType.contains("(")) {
                 oldColumnType = oldColumnType.substring(0, oldColumnType.indexOf('('));
             }
             return !newColumnType.equals(oldColumnType);

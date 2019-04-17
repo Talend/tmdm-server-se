@@ -32,11 +32,23 @@ public abstract class MDMTableUtils {
     }
 
     private static boolean isVarcharTypeChanged(Column newColumn, ColumnMetadata oldColumnInfo, Dialect dialect) {
+        if(!isVarcharField(oldColumnInfo, dialect)){
+            return false;
+        }
         if (dialect instanceof PostgreSQLDialect) {
             return oldColumnInfo.getTypeName().toLowerCase().startsWith("varchar") && newColumn.getSqlType().equalsIgnoreCase("text");
         }
         if (dialect instanceof SQLServerDialect) {
-            return isVarcharTypeChangedForMSSQL(newColumn, oldColumnInfo);
+            String newColumnType = newColumn.getSqlType();
+            String oldColumnType = oldColumnInfo.getTypeName();
+
+            if (newColumnType.contains("(")) {
+                newColumnType = newColumnType.substring(0, newColumnType.indexOf('('));
+            }
+            if (oldColumnType.contains("(")) {
+                oldColumnType = oldColumnType.substring(0, oldColumnType.indexOf('('));
+            }
+            return !newColumnType.equals(oldColumnType);
         }
 
         return (oldColumnInfo.getTypeCode() == Types.VARCHAR || oldColumnInfo.getTypeCode() == Types.NVARCHAR) && (
@@ -55,16 +67,12 @@ public abstract class MDMTableUtils {
 
     private static boolean isIncreaseVarcharColumnLength(Column newColumn, ColumnMetadata oldColumnInfo, Dialect dialect) {
         if (dialect instanceof SQLServerDialect) {
-            return newColumn.getLength() > oldColumnInfo.getColumnSize() && isVarcharTypeChangedForMSSQL(newColumn,
-                    oldColumnInfo);
+            return newColumn.getLength() > oldColumnInfo.getColumnSize() && (oldColumnInfo.getTypeCode() == Types.NVARCHAR
+                    || oldColumnInfo.getTypeCode() == Types.VARCHAR) && (newColumn.getSqlTypeCode() == Types.NVARCHAR
+                    || newColumn.getSqlTypeCode() == Types.VARCHAR);
         }
         return newColumn.getLength() > oldColumnInfo.getColumnSize() && (newColumn.getSqlTypeCode() == oldColumnInfo
                 .getTypeCode());
-    }
-
-    private static boolean isVarcharTypeChangedForMSSQL(Column newColumn, ColumnMetadata oldColumnInfo) {
-        return (oldColumnInfo.getTypeCode() == Types.NVARCHAR || oldColumnInfo.getTypeCode() == Types.VARCHAR) && (
-                newColumn.getSqlTypeCode() == Types.NVARCHAR || newColumn.getSqlTypeCode() == Types.VARCHAR);
     }
 
     public static boolean isChangedToOptional(Column newColumn, ColumnMetadata oldColumnInfo) {

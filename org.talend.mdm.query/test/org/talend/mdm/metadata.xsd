@@ -9,6 +9,9 @@
                 <xsd:element name="fk2" type="xsd:string">
                     <xsd:annotation>
                         <xsd:appinfo source="X_ForeignKey">Type2</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKeyInfo">Type2/id</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKeyInfo">Type2/value1</xsd:appinfo>
+                        <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element name="fk3" type="xsd:string">

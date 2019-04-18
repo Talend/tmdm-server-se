@@ -49,7 +49,6 @@ import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.mvc.AppEvent;
 import com.extjs.gxt.ui.client.mvc.Controller;
 import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.google.gwt.core.client.GWT;
 
 /**
  * DOC Administrator class global comment. Detailled comment
@@ -140,8 +139,6 @@ public class BrowseRecordsController extends Controller {
         final Boolean isStaging = event.getData("isStaging"); //$NON-NLS-1$
         final ItemDetailToolBar detailToolBar = event.getData("itemDetailToolBar"); //$NON-NLS-1$
         final ItemsDetailPanel itemsDetailPanel = event.getData(BrowseRecordsView.ITEMS_DETAIL_PANEL);
-        final MessageBox progressBar = MessageBox.wait(MessagesFactory.getMessages().save_progress_bar_title(), MessagesFactory
-                .getMessages().save_progress_bar_message(), MessagesFactory.getMessages().please_wait());
         final BrowseRecordsServiceAsync browseRecordsService;
         if (isStaging) {
             browseRecordsService = ServiceFactory.getInstance().getStagingService();
@@ -154,7 +151,10 @@ public class BrowseRecordsController extends Controller {
 
                     @Override
                     protected void doOnFailure(Throwable caught) {
-                        progressBar.close();
+                        MessageBox progressBar = (MessageBox) Registry.get(BrowseRecords.SAVE_PROGRESS_BAR);
+                        if (progressBar != null) {
+                            progressBar.close();
+                        }
                         String err = caught.getMessage();
                         if (err != null) {
                             MessageBox
@@ -173,7 +173,10 @@ public class BrowseRecordsController extends Controller {
                             itemBean.setIds(result.getReturnValue());
                             itemBean.setLastUpdateTime(result);
                         }
-                        progressBar.close();
+                        MessageBox progressBar = (MessageBox) Registry.get(BrowseRecords.SAVE_PROGRESS_BAR);
+                        if (progressBar != null) {
+                            progressBar.close();
+                        }
                         MessageBox msgBox;
                         if (result.getStatus() == ItemResult.FAILURE) {
                             MessageBox
@@ -343,17 +346,17 @@ public class BrowseRecordsController extends Controller {
     }
 
     private native void selectBrowseRecordsTab()/*-{
-		var tabPanel = $wnd.amalto.core.getTabPanel();
-		var panel = tabPanel.getItem("Browse Records");
-		if (panel != undefined) {
-			tabPanel.setSelection(panel.getItemId());
-		}
+        var tabPanel = $wnd.amalto.core.getTabPanel();
+        var panel = tabPanel.getItem("Browse Records");
+        if (panel != undefined) {
+            tabPanel.setSelection(panel.getItemId());
+        }
     }-*/;
 
     private native void setTimeout(MessageBox msgBox, int millisecond)/*-{
-		$wnd.setTimeout(function() {
-			msgBox.@com.extjs.gxt.ui.client.widget.MessageBox::close()();
-		}, millisecond);
+        $wnd.setTimeout(function() {
+            msgBox.@com.extjs.gxt.ui.client.widget.MessageBox::close()();
+        }, millisecond);
     }-*/;
 
     private void onViewForeignKey(final AppEvent event) {

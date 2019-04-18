@@ -21,6 +21,8 @@ import java.sql.Types;
 @SuppressWarnings("nls")
 public abstract class MDMTableUtils {
 
+    public static final String NVARCHAR_MAX_TYPE = "nvarchar(max)";
+
     private static final String NO = "NO";
 
     public static boolean isAlterColumnField(Column newColumn, ColumnMetadata oldColumnInfo, Dialect dialect) {
@@ -42,10 +44,14 @@ public abstract class MDMTableUtils {
             String newColumnType = newColumn.getSqlType();
             String oldColumnType = oldColumnInfo.getTypeName();
 
-            if (!newColumnType.equals("nvarchar(max)") && newColumnType.contains("(")) {
+            if (oldColumnType.equals("nvarchar") && oldColumnInfo.getColumnSize() == Integer.MAX_VALUE) {
+                oldColumnType = NVARCHAR_MAX_TYPE;
+            }
+
+            if (!newColumnType.equals(NVARCHAR_MAX_TYPE) && newColumnType.contains("(")) {
                 newColumnType = newColumnType.substring(0, newColumnType.indexOf('('));
             }
-            if (!oldColumnType.equals("nvarchar(max)") && oldColumnType.contains("(")) {
+            if (!oldColumnType.equals(NVARCHAR_MAX_TYPE) && oldColumnType.contains("(")) {
                 oldColumnType = oldColumnType.substring(0, oldColumnType.indexOf('('));
             }
             return !newColumnType.equals(oldColumnType);

@@ -56,7 +56,7 @@ public class TQLPredicateToMDMPredicate implements IASTVisitor<Condition> {
         }
     }
 
-    private Condition merge(Supplier<Expression[]> source, Predicate predicate) {
+    private Condition mergeAndOr(Supplier<Expression[]> source, Predicate predicate) {
         final List<Condition> conditions = Stream
                 .of(source.get())
                 .map(e -> e.accept(this))
@@ -107,21 +107,21 @@ public class TQLPredicateToMDMPredicate implements IASTVisitor<Condition> {
         final TypedExpression left = popCurrentExpression();
 
         switch (comparisonOperator.getOperator()) {
-        case EQ:
-            return typedValues.size() > 0 ? mergeEquals(Predicate.OR, left, right) : new Compare(left, Predicate.EQUALS, right);
-        case LT:
-            return new Compare(left, Predicate.LOWER_THAN, right);
-        case GT:
-            return new Compare(left, Predicate.GREATER_THAN, right);
-        case NEQ:
-            return new UnaryLogicOperator(new Compare(left, Predicate.EQUALS, right), Predicate.NOT);
-        case LET:
-            return new Compare(left, Predicate.LOWER_THAN_OR_EQUALS, right);
-        case GET:
-            return new Compare(left, Predicate.GREATER_THAN_OR_EQUALS, right);
-        default:
-            throw new NotImplementedException(
-                    "'" + comparisonOperator.getOperator().name() + "' support not implemented.");
+            case EQ:
+                return mergeEquals(Predicate.OR, left, right);
+            case LT:
+                return new Compare(left, Predicate.LOWER_THAN, right);
+            case GT:
+                return new Compare(left, Predicate.GREATER_THAN, right);
+            case NEQ:
+                return new UnaryLogicOperator(new Compare(left, Predicate.EQUALS, right), Predicate.NOT);
+            case LET:
+                return new Compare(left, Predicate.LOWER_THAN_OR_EQUALS, right);
+            case GET:
+                return new Compare(left, Predicate.GREATER_THAN_OR_EQUALS, right);
+            default:
+                throw new NotImplementedException(
+                        "'" + comparisonOperator.getOperator().name() + "' support not implemented.");
         }
     }
 
@@ -142,8 +142,8 @@ public class TQLPredicateToMDMPredicate implements IASTVisitor<Condition> {
         }
         if ((complexTypeMetadata.getField(fieldName) instanceof ReferenceFieldMetadata)
                 && (!((ReferenceFieldMetadata) complexTypeMetadata.getField(fieldName))
-                        .getForeignKeyInfoFields()
-                        .isEmpty())) {
+                .getForeignKeyInfoFields()
+                .isEmpty())) {
             ((ReferenceFieldMetadata) complexTypeMetadata.getField(fieldName))
                     .getForeignKeyInfoFields()
                     .forEach(key -> typedValues.push(new Field(key)));
@@ -160,12 +160,12 @@ public class TQLPredicateToMDMPredicate implements IASTVisitor<Condition> {
 
     @Override
     public Condition visit(AndExpression andExpression) {
-        return merge(andExpression::getExpressions, Predicate.AND);
+        return mergeAndOr(andExpression::getExpressions, Predicate.AND);
     }
 
     @Override
     public Condition visit(OrExpression orExpression) {
-        return merge(orExpression::getExpressions, Predicate.OR);
+        return mergeAndOr(orExpression::getExpressions, Predicate.OR);
     }
 
     @Override
@@ -193,9 +193,7 @@ public class TQLPredicateToMDMPredicate implements IASTVisitor<Condition> {
     @Override
     public Condition visit(FieldContainsExpression fieldContainsExpression) {
         fieldContainsExpression.getField().accept(this);
-        return typedValues.size() > 1 ? mergeContains(Predicate.OR, fieldContainsExpression.getValue())
-                : new Compare(popCurrentExpression(), Predicate.CONTAINS,
-                        new StringConstant(fieldContainsExpression.getValue()));
+        return mergeContains(Predicate.OR, fieldContainsExpression.getValue());
     }
 
     @Override

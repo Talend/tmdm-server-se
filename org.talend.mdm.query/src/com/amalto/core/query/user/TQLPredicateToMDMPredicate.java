@@ -118,7 +118,7 @@ public class TQLPredicateToMDMPredicate implements IASTVisitor<Condition> {
         case LET:
             return new Compare(left, Predicate.LOWER_THAN_OR_EQUALS, right);
         case GET:
-            return new Compare(left, Predicate.GREATER_THAN, right);
+            return new Compare(left, Predicate.GREATER_THAN_OR_EQUALS, right);
         default:
             throw new NotImplementedException(
                     "'" + comparisonOperator.getOperator().name() + "' support not implemented.");

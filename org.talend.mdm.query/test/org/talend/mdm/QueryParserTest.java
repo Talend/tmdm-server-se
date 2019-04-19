@@ -508,4 +508,18 @@ public class QueryParserTest extends TestCase {
         assertEquals(Alias.class, select.getSelectedFields().get(0).getClass());
     }
 
+    //Test non ascii characters
+    public void testQuery32() {
+        QueryParser parser = QueryParser.newParser(repository);
+        Expression expression = parser.parse(QueryParserTest.class.getResourceAsStream("query32.json")); //$NON-NLS-1$
+        assertTrue(expression instanceof Select);
+        Select select = (Select) expression;
+
+        Condition condition = select.getCondition();
+        assertNotNull(condition);
+        assertTrue(condition instanceof Compare);
+        Compare compare = (Compare)condition;
+        assertEquals("æ", ((StringConstant)compare.getRight()).getValue());
+    }
+
 }

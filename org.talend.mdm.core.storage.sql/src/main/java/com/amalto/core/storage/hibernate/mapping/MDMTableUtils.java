@@ -44,13 +44,16 @@ public abstract class MDMTableUtils {
             String newColumnType = newColumn.getSqlType();
             String oldColumnType = oldColumnInfo.getTypeName();
 
+            // oldColumnType=nvarchar and the oldColumnInfo length=Integer.MAX_VALUE, oldColumnType changed to nvarchar(max)
             if (oldColumnType.equals("nvarchar") && oldColumnInfo.getColumnSize() == Integer.MAX_VALUE) {
                 oldColumnType = NVARCHAR_MAX_TYPE;
             }
 
+            // newColumnType=nvarchar(200), newColumnType changed to nvarchar
             if (!newColumnType.equals(NVARCHAR_MAX_TYPE) && newColumnType.contains("(")) {
                 newColumnType = newColumnType.substring(0, newColumnType.indexOf('('));
             }
+            // oldColumnType=nvarchar(200), oldColumnType changed to nvarchar
             if (!oldColumnType.equals(NVARCHAR_MAX_TYPE) && oldColumnType.contains("(")) {
                 oldColumnType = oldColumnType.substring(0, oldColumnType.indexOf('('));
             }

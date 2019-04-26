@@ -495,4 +495,40 @@ public class QueryParserTest extends TestCase {
         assertEquals(0, condition.getDateTime());
     }
 
+    //Test non ascii characters
+    public void testQuery32() {
+        QueryParser parser = QueryParser.newParser(repository);
+        Expression expression = parser.parse(QueryParserTest.class.getResourceAsStream("query32_1.json")); //$NON-NLS-1$
+        assertTrue(expression instanceof Select);
+        Select select = (Select) expression;
+
+        Condition condition = select.getCondition();
+        assertNotNull(condition);
+        assertTrue(condition instanceof Compare);
+        Compare compare = (Compare)condition;
+        assertEquals("æ", ((StringConstant)compare.getRight()).getValue());
+
+        parser = QueryParser.newParser(repository);
+        expression = parser.parse(QueryParserTest.class.getResourceAsStream("query32_2.json")); //$NON-NLS-1$
+        assertTrue(expression instanceof Select);
+        select = (Select) expression;
+
+        condition = select.getCondition();
+        assertNotNull(condition);
+        assertTrue(condition instanceof Compare);
+        compare = (Compare)condition;
+        assertEquals("我是中国人", ((StringConstant)compare.getRight()).getValue());
+
+        parser = QueryParser.newParser(repository);
+        expression = parser.parse(QueryParserTest.class.getResourceAsStream("query32_3.json")); //$NON-NLS-1$
+        assertTrue(expression instanceof Select);
+        select = (Select) expression;
+
+        condition = select.getCondition();
+        assertNotNull(condition);
+        assertTrue(condition instanceof Compare);
+        compare = (Compare)condition;
+        assertEquals("æœøÆŒØï", ((StringConstant)compare.getRight()).getValue());
+    }
+
 }

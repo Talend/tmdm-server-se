@@ -1,0 +1,15 @@
+{
+  "select": {
+    "from": ["Type1"],
+    "where": {
+      "eq": [
+        {
+          "field": "Type1/value1"
+        },
+        {
+          "value": "æ"
+        }
+      ]
+    }
+  }
+}

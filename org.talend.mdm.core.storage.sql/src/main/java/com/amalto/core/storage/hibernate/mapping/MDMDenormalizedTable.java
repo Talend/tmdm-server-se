@@ -58,6 +58,9 @@ public class MDMDenormalizedTable extends DenormalizedTable {
             if (column.getSqlTypeCode() == null) {
                 column.setSqlTypeCode(column.getSqlTypeCode(p));
             }
+            if (column.getSqlType() == null) {
+                column.setSqlType(column.getSqlType(dialect, p));
+            }
 
             ColumnMetadata columnInfo = tableInfo.getColumnMetadata(column.getName());
 

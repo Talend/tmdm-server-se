@@ -14,6 +14,7 @@ import com.google.gson.GsonBuilder;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 
 import java.io.*;
+import java.nio.charset.Charset;
 
 /**
  *
@@ -49,7 +50,7 @@ public class QueryParser {
         if (query == null) {
             throw new IllegalArgumentException("Query cannot be null.");
         }
-        return parse(new InputStreamReader(query)).normalize();
+        return parse(new InputStreamReader(query, Charset.forName("UTF-8"))).normalize(); //$NON-NLS-1$
     }
 
     public Expression parse(Reader query) {

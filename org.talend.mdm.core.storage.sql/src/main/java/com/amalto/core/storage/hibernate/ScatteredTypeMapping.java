@@ -74,22 +74,10 @@ class ScatteredTypeMapping extends TypeMapping {
                     DataRecord referencedObject = (DataRecord) readValue(from, field, mappedDatabaseField, session);
                     Wrapper existingValue = (Wrapper) to.get(referenceFieldMetadata.getName());
                     if (referencedObject != null) {
-                        // Update existing value or update existing
                         if (existingValue != null) {
-                            // Check for type change
-                            ComplexTypeMetadata existingType = classLoader.getTypeFromClass(existingValue.getClass());
-                            TypeMapping mapping = mappings.getMappingFromDatabase(existingType);
-                            if (mapping == null) {
-                                throw new IllegalStateException("Type '" + existingType.getName() + "' has no mapping."); //$NON-NLS-1$ //$NON-NLS-2$
-                            }
-                            boolean isSameType = mapping.getUser().equals(referencedObject.getType());
-                            if (isSameType) {
-                                to.set(referenceFieldMetadata.getName(), _setValues(session, referencedObject, existingValue));
-                            } else {
-                                session.delete(existingValue);
-                                Wrapper newValue = createObject(contextClassLoader, referencedObject);
-                                to.set(referenceFieldMetadata.getName(), _setValues(session, referencedObject, newValue));
-                            }
+                            session.delete(existingValue);
+                            Wrapper newValue = createObject(contextClassLoader, referencedObject);
+                            to.set(referenceFieldMetadata.getName(), _setValues(session, referencedObject, newValue));
                         } else {
                             Wrapper object = createObject(contextClassLoader, referencedObject);
                             to.set(referenceFieldMetadata.getName(), _setValues(session, referencedObject, object));

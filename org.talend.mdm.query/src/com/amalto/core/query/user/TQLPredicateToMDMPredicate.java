@@ -10,9 +10,19 @@
  */
 package com.amalto.core.query.user;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
 import org.talend.tql.model.AllFields;
 import org.talend.tql.model.AndExpression;
 import org.talend.tql.model.ComparisonExpression;
@@ -34,16 +44,6 @@ import org.talend.tql.model.OrExpression;
 import org.talend.tql.model.TqlElement;
 import org.talend.tql.visitor.IASTVisitor;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 public class TQLPredicateToMDMPredicate implements IASTVisitor<Condition> {
 
     private final Stack<TypedExpression> typedValues = new Stack<>();
@@ -56,16 +56,36 @@ public class TQLPredicateToMDMPredicate implements IASTVisitor<Condition> {
         }
     }
 
-    private Condition merge(Supplier<Expression[]> source, Predicate and) {
-        final List<Condition> conditions = Stream.of(source.get()) //
-                .map(e -> e.accept(this)) //
+    private Condition mergeAndOr(Supplier<Expression[]> source, Predicate predicate) {
+        final List<Condition> conditions = Stream
+                .of(source.get())
+                .map(e -> e.accept(this))
                 .collect(Collectors.toList());
         Condition current = conditions.get(0);
         for (int i = 1; i < conditions.size(); i++) {
-            current = new BinaryLogicOperator(current, and, conditions.get(i));
+            current = new BinaryLogicOperator(current, predicate, conditions.get(i));
         }
         return current;
     }
+
+    private Condition mergeContains(Predicate predicate, String fieldValue) {
+        Condition current = new Compare(popCurrentExpression(), Predicate.CONTAINS, new StringConstant(fieldValue));
+        for (int i = 0; i < typedValues.size(); i++) {
+            current = new BinaryLogicOperator(current, predicate,
+                    new Compare(popCurrentExpression(), Predicate.CONTAINS, new StringConstant(fieldValue)));
+        }
+        return current;
+    }
+
+    private Condition mergeEquals(Predicate predicate, TypedExpression fieldLeftValue, TypedExpression fieldRightValue) {
+        Condition current = new Compare(fieldLeftValue, Predicate.EQUALS, fieldRightValue);
+        for (int i = 0; i < typedValues.size(); i++) {
+            current = new BinaryLogicOperator(current, predicate,
+                    new Compare(popCurrentExpression(), Predicate.EQUALS, fieldRightValue));
+        }
+        return current;
+    }
+
 
     private TypedExpression peekCurrentExpression() {
         return typedValues.peek();
@@ -88,7 +108,7 @@ public class TQLPredicateToMDMPredicate implements IASTVisitor<Condition> {
 
         switch (comparisonOperator.getOperator()) {
             case EQ:
-                return new Compare(left, Predicate.EQUALS, right);
+                return mergeEquals(Predicate.OR, left, right);
             case LT:
                 return new Compare(left, Predicate.LOWER_THAN, right);
             case GT:
@@ -98,9 +118,10 @@ public class TQLPredicateToMDMPredicate implements IASTVisitor<Condition> {
             case LET:
                 return new Compare(left, Predicate.LOWER_THAN_OR_EQUALS, right);
             case GET:
-                return new Compare(left, Predicate.GREATER_THAN, right);
+                return new Compare(left, Predicate.GREATER_THAN_OR_EQUALS, right);
             default:
-                throw new NotImplementedException("'" + comparisonOperator.getOperator().name() + "' support not implemented.");
+                throw new NotImplementedException(
+                        "'" + comparisonOperator.getOperator().name() + "' support not implemented.");
         }
     }
 
@@ -119,7 +140,16 @@ public class TQLPredicateToMDMPredicate implements IASTVisitor<Condition> {
         if (complexTypeMetadata == null) {
             throw new IllegalArgumentException("Type '" + typeName + "' is not selected in query.");
         }
-        typedValues.push(new Field(complexTypeMetadata.getField(fieldName)));
+        if ((complexTypeMetadata.getField(fieldName) instanceof ReferenceFieldMetadata)
+                && (!((ReferenceFieldMetadata) complexTypeMetadata.getField(fieldName))
+                .getForeignKeyInfoFields()
+                .isEmpty())) {
+            ((ReferenceFieldMetadata) complexTypeMetadata.getField(fieldName))
+                    .getForeignKeyInfoFields()
+                    .forEach(key -> typedValues.push(new Field(key)));
+        } else {
+            typedValues.push(new Field(complexTypeMetadata.getField(fieldName)));
+        }
         return null;
     }
 
@@ -130,12 +160,12 @@ public class TQLPredicateToMDMPredicate implements IASTVisitor<Condition> {
 
     @Override
     public Condition visit(AndExpression andExpression) {
-        return merge(andExpression::getExpressions, Predicate.AND);
+        return mergeAndOr(andExpression::getExpressions, Predicate.AND);
     }
 
     @Override
     public Condition visit(OrExpression orExpression) {
-        return merge(orExpression::getExpressions, Predicate.OR);
+        return mergeAndOr(orExpression::getExpressions, Predicate.OR);
     }
 
     @Override
@@ -163,7 +193,7 @@ public class TQLPredicateToMDMPredicate implements IASTVisitor<Condition> {
     @Override
     public Condition visit(FieldContainsExpression fieldContainsExpression) {
         fieldContainsExpression.getField().accept(this);
-        return new Compare(popCurrentExpression(), Predicate.CONTAINS, new StringConstant(fieldContainsExpression.getValue()));
+        return mergeContains(Predicate.OR, fieldContainsExpression.getValue());
     }
 
     @Override
@@ -177,7 +207,8 @@ public class TQLPredicateToMDMPredicate implements IASTVisitor<Condition> {
         List<String> constantValues = new ArrayList<>();
         Stream.of(fieldInExpression.getValues()).forEach(val -> constantValues.add(val.getValue()));
         final TypedExpression typedExpression = popCurrentExpression();
-        return new Compare(typedExpression, Predicate.IN, UserQueryBuilder.createConstant(typedExpression, constantValues));
+        return new Compare(typedExpression, Predicate.IN,
+                UserQueryBuilder.createConstant(typedExpression, constantValues));
     }
 
     @Override

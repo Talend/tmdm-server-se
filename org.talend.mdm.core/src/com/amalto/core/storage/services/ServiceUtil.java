@@ -64,7 +64,7 @@ public class ServiceUtil {
                 }
             }
         } catch (Exception e) {
-            LOGGER.warn("Failed to get data model name by entity name.", e); //$NON-NLS-1$
+            LOGGER.warn("Failed to get no access role by entity name.", e); //$NON-NLS-1$
         }
         return Collections.EMPTY_LIST;
     }

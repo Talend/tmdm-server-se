@@ -428,32 +428,44 @@ class FullTextQueryHandler extends AbstractQueryHandler {
         return new FullTextStorageResults(pageSize, query.getResultSize(), iterator);
     }
 
+    /**
+     * If the current next is a collection, iterator the list to get each of foreign key Id with a comma separated, like:
+     * <pre>
+     * "entityfk": [
+     *   "11",
+     *   "22"
+     * ]
+     * </pre>
+     * @param next
+     * @param field
+     * @return foreign key list
+     */
+    @SuppressWarnings("unchecked")
     private static Object getReferencedId(DataRecord next, ReferenceFieldMetadata field) {
-        DataRecord record;
+        List<Object> referenceIdList = new ArrayList<>();
         Object recordObject = next.get(field);
         if (recordObject != null && recordObject instanceof List) {
-            if (((List<Object>)recordObject).size() > 0) {
-                record = (DataRecord)((List<Object>)recordObject).get(0);
-            } else {
-                return null;
+            for (Iterator<DataRecord> iterator = ((List<DataRecord>)recordObject).iterator(); iterator.hasNext();) {
+                DataRecord currentItem = iterator.next();
+                referenceIdList.addAll(getFlatReferencedId(currentItem));
             }
         } else {
-            record = (DataRecord)recordObject;
+            DataRecord record = (DataRecord)recordObject;
+            referenceIdList.addAll(getFlatReferencedId(record));
         }
-        
-        if (record != null) {
-            Collection<FieldMetadata> keyFields = record.getType().getKeyFields();
-            if (keyFields.size() == 1) {
-                return record.get(keyFields.iterator().next());
-            } else {
-                List<Object> compositeKeyValues = new ArrayList<Object>(keyFields.size());
-                for (FieldMetadata keyField : keyFields) {
-                    compositeKeyValues.add(record.get(keyField));
-                }
-                return compositeKeyValues.toArray(new Object[keyFields.size()]);
-            }
-        } 
-        return null;
+        return referenceIdList;
+    }
+
+    private static List<Object> getFlatReferencedId(DataRecord record) {
+        if (record == null) {
+            return Collections.emptyList();
+        }
+        Collection<FieldMetadata> keyFields = record.getType().getKeyFields();
+        List<Object> compositeKeyValues = new ArrayList<Object>(keyFields.size());
+        for (FieldMetadata keyField : keyFields) {
+            compositeKeyValues.add(record.get(keyField));
+        }
+        return compositeKeyValues;
     }
 
     @Override

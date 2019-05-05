@@ -225,7 +225,9 @@ public class ReferenceEntityBridge implements TwoWayFieldBridge {
                 name += "." + field.getName(); // x_stores.store.name
                 for (Iterator<?> it = valList.iterator(); it.hasNext();) {
                     Object itemObj = it.next();
-                    createEvaluationClassInternal(name, itemObj, itemObj.getClass(), document, luceneOptions);
+                    if (itemObj != null) {
+                        createEvaluationClassInternal(name, itemObj, itemObj.getClass(), document, luceneOptions);
+                    }
                 }
             } catch (Exception e) {
                 throw new UnsupportedOperationException(

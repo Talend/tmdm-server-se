@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -1071,7 +1071,7 @@ public class StorageFullTextTest extends StorageTestCase {
         try {
             assertEquals(1, results.getCount());
             for (DataRecord result : results) {
-                assertEquals(null, result.get("Family"));
+                assertEquals(0, ((List)result.get("Family")).size());
             }
         } finally {
             results.close();
@@ -1411,9 +1411,9 @@ public class StorageFullTextTest extends StorageTestCase {
             assertEquals(1, results.getCount());
             DataRecord result = results.iterator().next();
             Object b2 = result.get(a3.getField("a2"));
-            assertTrue(b2 instanceof Object[]);
-            assertEquals("1", ((Object[]) b2)[0]);
-            assertEquals("2", ((Object[]) b2)[1]);
+            assertTrue(b2 instanceof List);
+            assertEquals("1", ((List) b2).get(0));
+            assertEquals("2", ((List) b2).get(1));
         } catch (Exception e) {
             exception = e;
         } finally {
@@ -1780,31 +1780,49 @@ public class StorageFullTextTest extends StorageTestCase {
     }
 
     public void testFullTextSearchResultContainsMultiOccurReferenceFields() throws Exception {
+      //There are two FK
         UserQueryBuilder qb = from(product).select(product.getField("Name")).select(product.getField("Supplier")).where(fullText("car"));
         StorageResults results = storage.fetch(qb.getSelect());
         try {
             assertEquals(1, results.getCount());
             for (DataRecord result : results) {
                 assertEquals("Renault car", (String)result.get("Name"));
+                assertEquals(2, ((List)result.get("Supplier")).size());
                 assertEquals("2", ((List)result.get("Supplier")).get(0));
+                assertEquals("1", ((List)result.get("Supplier")).get(1));
             }
         } finally {
             results.close();
         }
-        
+
+        //There is one FK
+        qb = from(product).select(product.getField("Name")).select(product.getField("Supplier")).where(fullText("talend"));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+            for (DataRecord result : results) {
+                assertEquals("talend", (String)result.get("Name"));
+                assertEquals(1, ((List)result.get("Supplier")).size());
+                assertEquals("1", ((List)result.get("Supplier")).get(0));
+            }
+        } finally {
+            results.close();
+        }
+
+        //nothing FK
         qb = from(product).select(product.getField("Name")).select(product.getField("Supplier")).where(fullText("kevin"));
         results = storage.fetch(qb.getSelect());
         try {
             assertEquals(1, results.getCount());
             for (DataRecord result : results) {
                 assertEquals("kevin cui", (String)result.get("Name"));
-                assertNull(result.get("Supplier"));
+                assertEquals(0, ((List)result.get("Supplier")).size());
             }
         } finally {
             results.close();
         }
     }
-    
+
     public void testFullTextSearchOnComplexType() throws Exception {
         UserQueryBuilder qb = from(persons).select(prepareSelectPersonsFields(persons)).where(fullText("1"));
         qb.limit(5);

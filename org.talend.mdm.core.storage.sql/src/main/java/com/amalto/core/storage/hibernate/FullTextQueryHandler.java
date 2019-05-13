@@ -13,16 +13,18 @@ package com.amalto.core.storage.hibernate;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.xml.XMLConstants;
 
-import com.amalto.core.storage.record.StorageConstants;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.search.Query;
@@ -58,7 +60,9 @@ import com.amalto.core.query.user.ConstantCollection;
 import com.amalto.core.query.user.Count;
 import com.amalto.core.query.user.DateConstant;
 import com.amalto.core.query.user.DateTimeConstant;
+import com.amalto.core.query.user.Distinct;
 import com.amalto.core.query.user.DoubleConstant;
+import com.amalto.core.query.user.Expression;
 import com.amalto.core.query.user.Field;
 import com.amalto.core.query.user.FieldFullText;
 import com.amalto.core.query.user.FloatConstant;
@@ -90,8 +94,8 @@ import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.StorageResults;
 import com.amalto.core.storage.exception.FullTextQueryCompositeKeyException;
 import com.amalto.core.storage.record.DataRecord;
+import com.amalto.core.storage.record.StorageConstants;
 import com.amalto.core.storage.record.metadata.UnsupportedDataRecordMetadata;
-
 
 class FullTextQueryHandler extends AbstractQueryHandler {
 
@@ -175,13 +179,37 @@ class FullTextQueryHandler extends AbstractQueryHandler {
         for (OrderBy current : select.getOrderBy()) {
             current.accept(this);
         }
+
+        boolean isCountDistinct = false;
+        FieldMetadata distinctFieldMetadata = null;
+        boolean isCount = false;
+        boolean isDistinct = false;
+        for (TypedExpression selectedField : selectedFields) {
+            if (selectedField instanceof Alias) {
+                Alias alias = (Alias) selectedField;
+                TypedExpression typedExpression = alias.getTypedExpression();
+                if (typedExpression instanceof Distinct) {
+                    isDistinct = true;
+                    Expression expression = alias.getTypedExpression();
+                    Distinct distinct = (Distinct) expression;
+                    if (distinct.getExpression() instanceof Field) {
+                        Field field = (Field) distinct.getExpression();
+                        distinctFieldMetadata = field.getFieldMetadata();
+                    }
+                } else if (typedExpression instanceof Count) {
+                    isCount = true;
+                }
+            }
+        }
+        isCountDistinct = isCount && isDistinct ? true : false;
+
         // Paging
         Paging paging = select.getPaging();
         paging.accept(this);
         pageSize = paging.getLimit();
         boolean hasPaging = pageSize < Integer.MAX_VALUE;
         if (!hasPaging) {
-            return createResults(query.scroll(ScrollMode.FORWARD_ONLY));
+            return createResults(query.scroll(ScrollMode.FORWARD_ONLY), distinctFieldMetadata, isCountDistinct);
         } else {
             return createResults(query.list());
         }
@@ -328,6 +356,7 @@ class FullTextQueryHandler extends AbstractQueryHandler {
                 }
             };
         }
+
         return new FullTextStorageResults(pageSize, query.getResultSize(), iterator);
     }
 
@@ -342,14 +371,108 @@ class FullTextQueryHandler extends AbstractQueryHandler {
         return typeName;
     }
 
-    private StorageResults createResults(ScrollableResults scrollableResults) {
+    private boolean containsValue(Set<Object> checkedValueSet, Object needCheckValue, Map<Object, Boolean> duplicatedValueMap) {
+        // check the needCheckValue is existed in checkedValueSet or not.and put repeated value to duplicatedValueMap.
+        // In same time,check the list type value with different order.
+        boolean isExisted = false;
+        Iterator<Object> checkedValueIterator = checkedValueSet.iterator();
+        while (checkedValueIterator.hasNext()) {
+            Object checkedValue = checkedValueIterator.next();
+            isExisted = equalsValue(checkedValue, needCheckValue);
+            if (isExisted) {
+                if (duplicatedValueMap.get(needCheckValue) == null) {
+                    if (duplicatedValueMap.get(checkedValue) == null) {
+                        duplicatedValueMap.put(checkedValue, false);
+                    }
+                    if (duplicatedValueMap.get(needCheckValue) == null) {
+                        duplicatedValueMap.put(needCheckValue, true);
+                    }
+                }
+                break;
+            } else {
+                continue;
+            }
+
+        }
+        return isExisted;
+    }
+
+    private boolean isExistedValue(Map<Object, Boolean> duplicatedMap, Object needCheckValue) {
+        // when we execute distinct query,we need to use this method.
+        // the values in duplicatedMap is repeated value, so we need to only get them one time.
+        if (duplicatedMap.get(needCheckValue) != null) {
+            if (duplicatedMap.get(needCheckValue)) {
+                return true;
+            } else {
+                duplicatedMap.put(needCheckValue, true);
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    private boolean equalsValue(Object checkedValue, Object needCheckValue) {
+        boolean isSame = false;
+        if (needCheckValue instanceof List) {
+            // when value from multiple field
+            List<Object> exsitedValue = (List<Object>) checkedValue;
+            List<Object> targetValue = (List<Object>) needCheckValue;
+
+            isSame = equalsValue(exsitedValue, targetValue);
+        } else {
+            // when value from multiple simple field
+            isSame = checkedValue.equals(needCheckValue);
+        }
+        return isSame;
+    }
+
+    private boolean equalsValue(List<Object> checkedValueList, List<Object> needCheckValueList) {
+        // sorted value list and compare them each other
+        if (checkedValueList == null) {
+            return needCheckValueList == null;
+        }
+
+        if (checkedValueList.size() != needCheckValueList.size()) {
+            return false;
+        }
+        Object[] originArray = checkedValueList.toArray(new Object[] {});
+        Object[] targetArray = needCheckValueList.toArray(new Object[] {});
+        Arrays.sort(originArray);
+        Arrays.sort(targetArray);
+        return Arrays.equals(originArray, targetArray);
+    }
+
+    private StorageResults createResults(ScrollableResults scrollableResults, final FieldMetadata distinctFieldMetadata, boolean isCountDistinct) {
         CloseableIterator<DataRecord> iterator;
+        Map<Object, Boolean> duplicatedValueMap = new HashMap<>();
+        Set<Object> checkedValueSet = new HashSet<>();
         if (selectedFields.isEmpty()) {
             iterator = new ScrollableIterator(mappings,
                     storageClassLoader,
                     scrollableResults,
                     callbacks);
         } else {
+            int count = query.getResultSize();
+            // count distinct record if this is a distinct query.
+            if (null != distinctFieldMetadata) {
+                count = 0;
+                iterator = new ScrollableIterator(mappings, storageClassLoader, scrollableResults, callbacks);
+                while (iterator.hasNext()) {
+                    DataRecord record = iterator.next();
+                    Object value;
+                    if (distinctFieldMetadata instanceof ReferenceFieldMetadata) {
+                        value = getReferencedId(record, (ReferenceFieldMetadata) distinctFieldMetadata);
+                    } else {
+                        value = record.get(distinctFieldMetadata);
+                    }
+                    if (!containsValue(checkedValueSet, value, duplicatedValueMap)) {
+                        checkedValueSet.add(value);
+                        count++;
+                    }
+                }
+            }
+            final int recordCount = count;
             iterator = new ScrollableIterator(mappings,
                     storageClassLoader,
                     scrollableResults,
@@ -357,6 +480,23 @@ class FullTextQueryHandler extends AbstractQueryHandler {
                 @Override
                 public DataRecord next() {
                     DataRecord next = super.next();
+                    if (null != distinctFieldMetadata) {
+                        Object distinctFieldValue;
+                        if (distinctFieldMetadata instanceof ReferenceFieldMetadata) {
+                            distinctFieldValue = getReferencedId(next, (ReferenceFieldMetadata) distinctFieldMetadata);
+                        } else {
+                            distinctFieldValue = next.get(distinctFieldMetadata);
+                        }
+                        while (isExistedValue(duplicatedValueMap, distinctFieldValue)) {
+                            if (super.hasNext()) {
+                                next = super.next();
+                                distinctFieldValue = next.get(distinctFieldMetadata);
+                            } else {
+                                return null;
+                            }
+                        }
+                    }
+
                     ComplexTypeMetadata explicitProjectionType = new ComplexTypeMetadataImpl(StringUtils.EMPTY,
                             StorageConstants.PROJECTION_TYPE,
                             false);
@@ -398,8 +538,20 @@ class FullTextQueryHandler extends AbstractQueryHandler {
                                 nextRecord.set(newField, getTypeName(next.get(fieldMetadata.getName())));
                             } else if (typedExpression instanceof MetadataField) {
                                 nextRecord.set(newField, ((MetadataField) typedExpression).getReader().readValue(next));
+                            } else if (typedExpression instanceof Distinct) {
+                                TypedExpression expression = ((Distinct) typedExpression).getExpression();
+                                if (expression instanceof Field) {
+                                    FieldMetadata fieldMetadata = ((Field) expression).getFieldMetadata();
+                                    if (fieldMetadata instanceof ReferenceFieldMetadata) {
+                                        nextRecord.set(newField, getReferencedId(next, (ReferenceFieldMetadata) fieldMetadata));
+                                    } else {
+                                        nextRecord.set(newField, next.get(distinctFieldMetadata));
+                                    }
+                                } else {
+                                    nextRecord.set(newField, next.get(distinctFieldMetadata));
+                                }
                             } else if (typedExpression instanceof Count) {
-                                nextRecord.set(newField, query.getResultSize());
+                                nextRecord.set(newField, recordCount);
                             } else {
                                 throw new IllegalArgumentException("Aliased expression '" + typedExpression + "' is not supported.");
                             }
@@ -424,33 +576,20 @@ class FullTextQueryHandler extends AbstractQueryHandler {
                 }
             };
         }
-
         return new FullTextStorageResults(pageSize, query.getResultSize(), iterator);
     }
 
-    /**
-     * If the current next is a collection, iterator the list to get each of foreign key Id with a comma separated, like:
-     * <pre>
-     * "entityfk": [
-     *   "11",
-     *   "22"
-     * ]
-     * </pre>
-     * @param next
-     * @param field
-     * @return foreign key list
-     */
     @SuppressWarnings("unchecked")
     private static Object getReferencedId(DataRecord next, ReferenceFieldMetadata field) {
         List<Object> referenceIdList = new ArrayList<>();
         Object recordObject = next.get(field);
         if (recordObject != null && recordObject instanceof List) {
-            for (Iterator<DataRecord> iterator = ((List<DataRecord>)recordObject).iterator(); iterator.hasNext();) {
+            for (Iterator<DataRecord> iterator = ((List<DataRecord>) recordObject).iterator(); iterator.hasNext();) {
                 DataRecord currentItem = iterator.next();
                 referenceIdList.addAll(getFlatReferencedId(currentItem));
             }
         } else {
-            DataRecord record = (DataRecord)recordObject;
+            DataRecord record = (DataRecord) recordObject;
             referenceIdList.addAll(getFlatReferencedId(record));
         }
         return referenceIdList;
@@ -461,11 +600,15 @@ class FullTextQueryHandler extends AbstractQueryHandler {
             return Collections.emptyList();
         }
         Collection<FieldMetadata> keyFields = record.getType().getKeyFields();
-        List<Object> compositeKeyValues = new ArrayList<Object>(keyFields.size());
-        for (FieldMetadata keyField : keyFields) {
-            compositeKeyValues.add(record.get(keyField));
+        if (keyFields.size() == 1) {
+            return Arrays.<Object> asList(record.get(keyFields.iterator().next()));
+        } else {
+            List<Object> compositeKeyValues = new ArrayList<Object>(keyFields.size());
+            for (FieldMetadata keyField : keyFields) {
+                compositeKeyValues.add(record.get(keyField));
+            }
+            return compositeKeyValues;
         }
-        return compositeKeyValues;
     }
 
     @Override

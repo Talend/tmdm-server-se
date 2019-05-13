@@ -50,6 +50,7 @@ import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.PropertyProjection;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.RowCountProjection;
 import org.hibernate.criterion.SQLProjection;
 import org.hibernate.internal.CriteriaImpl;
 import org.hibernate.sql.JoinType;
@@ -140,6 +141,8 @@ class StandardQueryHandler extends AbstractQueryHandler {
     private final StandardQueryHandler.CriterionFieldCondition criterionFieldCondition;
 
     private final Map<String, String> pathToAlias = new HashMap<>();
+
+    private final Map<Expression, String> distinctProjectionMap = new HashMap<>();
 
     private final Map<String, String> aliasToPath = new HashMap<>();
 
@@ -332,7 +335,8 @@ class StandardQueryHandler extends AbstractQueryHandler {
     @Override
     public StorageResults visit(Distinct distinct) {
         // Standard visit for the expression where distinct should be added
-        distinct.getExpression().accept(this);
+        Expression expression = distinct.getExpression();
+        expression.accept(this);
         // Wraps the last projection into a 'distinct' statement
         // Note: Hibernate does not provide projection editing functions... have to work around that with a new
         // projection list.
@@ -341,7 +345,25 @@ class StandardQueryHandler extends AbstractQueryHandler {
         for (; i < projectionList.getLength() - 1; i++) {
             newProjectionList.add(projectionList.getProjection(i));
         }
-        newProjectionList.add(Projections.distinct(projectionList.getProjection(i)));
+        Projection projection = projectionList.getProjection(i);
+        if (projection instanceof PropertyProjection) {
+            PropertyProjection propertyProjection = (PropertyProjection) projection;
+            distinctProjectionMap.put(expression, propertyProjection.getPropertyName());
+        } else if (projection instanceof ManyFieldProjection) {
+            newProjectionList = Projections.projectionList();
+            for (int k = 0; k < projectionList.getLength() - 1; k++) {
+                if (projectionList.getProjection(k) instanceof RowCountProjection) {
+                    ManyFieldRowCountProjection rawProjection = new ManyFieldRowCountProjection((ManyFieldProjection) projection);
+                    newProjectionList.add(rawProjection);
+                    ((ManyFieldProjection) projection).setCount(true);
+                    ((ManyFieldProjection) projection).setDistinct(true);
+                    break;
+                }
+            }
+        }
+        Projection distinctProjection = Projections.distinct(projection);
+        newProjectionList.add(distinctProjection);
+
         projectionList = newProjectionList;
         return null;
     }
@@ -673,11 +695,13 @@ class StandardQueryHandler extends AbstractQueryHandler {
         }
         // If select is not a projection, selecting root type is enough, otherwise add projection for selected fields.
         boolean toDistinct = true;
+        String distinctFieldName = null;
+        boolean isCountQuery = false;
+        boolean isManyDistinctFieldName = false;
         if (select.isProjection()) {
             projectionList = Projections.projectionList();
             {
                 List<TypedExpression> queryFields = select.getSelectedFields();
-                boolean isCountQuery = false;
                 boolean hasGroupSize = false;
                 for (Expression selectedField : queryFields) {
                     if (selectedField instanceof GroupSize) {
@@ -691,6 +715,19 @@ class StandardQueryHandler extends AbstractQueryHandler {
                         }
                         if (alias.getTypedExpression() instanceof Distinct) {
                             toDistinct = false;
+                            Expression expression = alias.getTypedExpression();
+                            Distinct distinct = (Distinct)expression;
+                            if (distinct.getExpression() instanceof Field) {
+                                if (distinctProjectionMap.get(distinct.getExpression()) != null) {
+                                    distinctFieldName = distinctProjectionMap.get(distinct.getExpression());
+                                } else {
+                                    isManyDistinctFieldName = true;
+                                    Field field = (Field) distinct.getExpression();
+                                    FieldMetadata fieldMetadata = field.getFieldMetadata();
+                                    distinctFieldName = fieldMetadata.getName();
+                                }
+
+                            }
                         }
                     }
                 }
@@ -700,13 +737,27 @@ class StandardQueryHandler extends AbstractQueryHandler {
                 if (hasGroupSize) {
                     projectionList = optimizeProjectionList(mainType, projectionList);
                 }
+                // TMDM-13303 if select more than one field,only choose count field.
                 if (isCountQuery && queryFields.size() > 1) {
-                    Projection projection = projectionList.getProjection(projectionList.getLength() - 1);
-                    projectionList = Projections.projectionList();
-                    projectionList.add(projection);
-                    TypedExpression countTypedExpression = selectedFields.get(queryFields.size() - 1);
-                    selectedFields.clear();
-                    selectedFields.add(countTypedExpression);
+                    for (int i = 0; i < projectionList.getLength(); i++) {
+                        Projection projection = projectionList.getProjection(i);
+                        if (projection instanceof RowCountProjection) {
+                            projectionList = Projections.projectionList();
+                            projectionList.add(projection);
+                            break;
+                        }
+                    }
+                    for (int i = 0; i < queryFields.size(); i++) {
+                        TypedExpression typedExpression = selectedFields.get(i);
+                        if (typedExpression instanceof Alias) {
+                            Alias alias = (Alias) typedExpression;
+                            if (alias.getTypedExpression() instanceof Count) {
+                                selectedFields.clear();
+                                selectedFields.add(typedExpression);
+                                break;
+                            }
+                        }
+                    }
                 }
             }
             // for SELECT DISTINCT, ORDER BY expressions must appear in select list. Or it will throw exception in H2, postgres...
@@ -745,7 +796,9 @@ class StandardQueryHandler extends AbstractQueryHandler {
             current.accept(this);
         }
         if (select.isProjection()) {
-            if (select.getOrderBy().size() > 0 && toDistinct) {
+            if (isCountQuery && !toDistinct && !isManyDistinctFieldName) {
+                criteria.setProjection(Projections.countDistinct(distinctFieldName));
+            } else if (select.getOrderBy().size() > 0 && toDistinct) {
                 criteria.setProjection(Projections.distinct(projectionList));
             } else {
                 criteria.setProjection(projectionList);

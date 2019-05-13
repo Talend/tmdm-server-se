@@ -45,6 +45,7 @@ import org.hibernate.cfg.Environment;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
+import org.talend.mdm.query.QueryParser;
 
 import com.amalto.core.query.optimization.ConfigurableContainsOptimizer;
 import com.amalto.core.query.user.BinaryLogicOperator;
@@ -111,7 +112,7 @@ public class StorageFullTextTest extends StorageTestCase {
         allRecords.add(factory.read(repository, product, "<Product><Id>1</Id><Name>talend</Name><ShortDescription>Short description word</ShortDescription><LongDescription>Long description</LongDescription><Price>10</Price><Features><Sizes><Size>Small</Size><Size>Medium</Size><Size>Large</Size></Sizes><Colors><Color>Blue</Color><Color>Red</Color></Colors></Features><Status>Pending</Status><Supplier>[1]</Supplier></Product>"));
         allRecords.add(factory.read(repository, product, "<Product><Id>2</Id><Name>Renault car</Name><ShortDescription>A car</ShortDescription><LongDescription>Long description 2</LongDescription><Price>10</Price><Features><Sizes><Size>Large</Size><Size>Large</Size></Sizes><Colors><Color>Blue 2</Color><Color>Blue 1</Color><Color>Klein blue2</Color></Colors></Features><Family>[1]</Family><Status>Pending</Status><Supplier>[2]</Supplier><Supplier>[1]</Supplier></Product>"));
         allRecords.add(factory.read(repository, product, "<Product><Id>3</Id><Name>kevin cui</Name><ShortDescription>A person</ShortDescription><LongDescription>Long description 3</LongDescription><Price>100</Price><Features><Sizes><Size>Large</Size><Size>Large</Size></Sizes><Colors><Color>Blue 3</Color><Color>Blue 4</Color><Color>Kevin blue3</Color></Colors></Features><Family></Family><Status>Pending</Status></Product>"));
-        allRecords.add(factory.read(repository, product, "<Product><Id>4</Id><Name>John zhou</Name><ShortDescription>Leader staff</ShortDescription><LongDescription>descn1</LongDescription><Price>101</Price><Features><Sizes></Sizes><Colors></Colors></Features><Family>[721 345 123]</Family><Status>Pending</Status></Product>"));
+        allRecords.add(factory.read(repository, product, "<Product><Id>4</Id><Name>Evan Lin</Name><ShortDescription>Leader staff</ShortDescription><LongDescription>descn1</LongDescription><Price>101</Price><Features><Sizes></Sizes><Colors></Colors></Features><Family>[721 345 123]</Family><Status>Pending</Status></Product>"));
         allRecords.add(factory.read(repository, product, "<Product><Id>5</Id><Name>Evan Lin</Name><ShortDescription>Sample developer</ShortDescription><LongDescription>descn2</LongDescription><Price>101</Price><Features><Sizes></Sizes><Colors></Colors></Features><Family>[123 345]</Family><Status>Pending</Status></Product>"));
         allRecords.add(factory.read(repository, supplier, "<Supplier><Id>1</Id><SupplierName>Renault</SupplierName><Contact><Name>Jean Voiture</Name><Phone>33123456789</Phone><Email>test@test.org</Email></Contact></Supplier>"));
         allRecords.add(factory.read(repository, supplier, "<Supplier><Id>2</Id><SupplierName>Starbucks Talend</SupplierName><Contact><Name>Jean Cafe</Name><Phone>33234567890</Phone><Email>test@testfactory.org</Email></Contact></Supplier>"));
@@ -401,6 +402,104 @@ public class StorageFullTextTest extends StorageTestCase {
                 LOG.info("result = " + result);
             }
             assertEquals(1, results.getCount());
+        } finally {
+            results.close();
+        }
+    }
+
+    public void testCountSearch() throws Exception {
+        long count = 0;
+        String query = "{'select': {'from': ['Product'],'fields': [{'count': {}}], 'where': {'gt': [{'field': 'Product/Price'},{'value': '1'}]}}}";
+        QueryParser parser = QueryParser.newParser(storage.getMetadataRepository());
+        Expression expression = parser.parse(query);
+        StorageResults results = storage.fetch(expression);
+        try {
+            for (DataRecord result : results) {
+                LOG.info("result = " + result);
+                count = (Long) result.get("count");
+            }
+            assertEquals(5, count);
+        } finally {
+            results.close();
+        }
+    }
+
+    public void testDistinctSearch() throws Exception {
+        // there are 5 records,name are 'talend','Renault car','kevin cu'i,'Evan Lin','Evan Lin'.So the count of
+        // distinct name should be 4.
+        int nameCount = 0;
+        String query = "{'select': {'from': ['Product'],'fields': [{'distinct': {'field': 'Product/Name'}}], 'where': {'gt': [{'field': 'Product/Price'},{'value': '1'}]}}}";
+        QueryParser parser = QueryParser.newParser(storage.getMetadataRepository());
+        Expression expression = parser.parse(query);
+        StorageResults results = storage.fetch(expression);
+        try {
+            for (DataRecord result : results) {
+                LOG.info("result = " + result);
+                nameCount++;
+            }
+            assertEquals(4, nameCount);
+        } finally {
+            results.close();
+        }
+
+        nameCount = 0;
+        query = "{'select': {'from': ['Product'],'fields': [{'distinct': {'field': 'Product/Family'}}], 'where': {'gt': [{'field': 'Product/Price'},{'value': '1'}]}}}";
+        parser = QueryParser.newParser(storage.getMetadataRepository());
+        expression = parser.parse(query);
+        results = storage.fetch(expression);
+        try {
+            for (DataRecord result : results) {
+                LOG.info("result = " + result);
+                nameCount++;
+            }
+            assertEquals(4, nameCount);
+        } finally {
+            results.close();
+        }
+    }
+
+    public void testDistinctCountSearch() throws Exception {
+        // there are 5 records,name are 'talend','Renault car','kevin cu'i,'Evan Lin','Evan Lin' Lin.So the count of
+        // distinct name should be 4.
+        long count = 0;
+        String query = "{'select': {'from': ['Product'],'fields': [{'count': {}},{'distinct': {'field': 'Product/Name'}}], 'where': {'gt': [{'field': 'Product/Price'},{'value': '1'}]}}}";
+        QueryParser parser = QueryParser.newParser(storage.getMetadataRepository());
+        Expression expression = parser.parse(query);
+        StorageResults results = storage.fetch(expression);
+        try {
+            for (DataRecord result : results) {
+                LOG.info("result = " + result);
+                count = (Long) result.get("count");
+            }
+            assertEquals(4, count);
+        } finally {
+            results.close();
+        }
+
+        query = "{'select': {'from': ['Product'],'fields': [{'distinct': {'field': 'Product/Name'}},{'count': {}}], 'where': {'gt': [{'field': 'Product/Price'},{'value': '1'}]}}}";
+        parser = QueryParser.newParser(storage.getMetadataRepository());
+        expression = parser.parse(query);
+        results = storage.fetch(expression);
+        try {
+            for (DataRecord result : results) {
+                LOG.info("result = " + result);
+                count = (Long) result.get("count");
+            }
+            assertEquals(4, count);
+        } finally {
+            results.close();
+        }
+
+        query = "{'select': {'from': ['Product'],'fields': [{'distinct': {'field': 'Product/Family'}},{'count': {}}], 'where': {'gt': [{'field': 'Product/Price'},{'value': '1'}]}}}";
+        parser = QueryParser.newParser(storage.getMetadataRepository());
+        expression = parser.parse(query);
+        results = storage.fetch(expression);
+        try {
+            for (DataRecord result : results) {
+                LOG.info("result = " + result);
+                count = (Long) result.get("count");
+            }
+            assertEquals(3, count);
         } finally {
             results.close();
         }
@@ -1071,7 +1170,7 @@ public class StorageFullTextTest extends StorageTestCase {
         try {
             assertEquals(1, results.getCount());
             for (DataRecord result : results) {
-                assertEquals(0, ((List)result.get("Family")).size());
+                assertEquals(0, ((List) result.get("Family")).size());
             }
         } finally {
             results.close();
@@ -1780,49 +1879,48 @@ public class StorageFullTextTest extends StorageTestCase {
     }
 
     public void testFullTextSearchResultContainsMultiOccurReferenceFields() throws Exception {
-      //There are two FK
         UserQueryBuilder qb = from(product).select(product.getField("Name")).select(product.getField("Supplier")).where(fullText("car"));
         StorageResults results = storage.fetch(qb.getSelect());
         try {
             assertEquals(1, results.getCount());
             for (DataRecord result : results) {
                 assertEquals("Renault car", (String)result.get("Name"));
-                assertEquals(2, ((List)result.get("Supplier")).size());
+                assertEquals(2, ((List) result.get("Supplier")).size());
                 assertEquals("2", ((List)result.get("Supplier")).get(0));
-                assertEquals("1", ((List)result.get("Supplier")).get(1));
+                assertEquals("1", ((List) result.get("Supplier")).get(1));
             }
         } finally {
             results.close();
         }
-
-        //There is one FK
+        
+        // There is one FK
         qb = from(product).select(product.getField("Name")).select(product.getField("Supplier")).where(fullText("talend"));
         results = storage.fetch(qb.getSelect());
         try {
             assertEquals(1, results.getCount());
             for (DataRecord result : results) {
-                assertEquals("talend", (String)result.get("Name"));
-                assertEquals(1, ((List)result.get("Supplier")).size());
-                assertEquals("1", ((List)result.get("Supplier")).get(0));
+                assertEquals("talend", (String) result.get("Name"));
+                assertEquals(1, ((List) result.get("Supplier")).size());
+                assertEquals("1", ((List) result.get("Supplier")).get(0));
             }
         } finally {
             results.close();
         }
 
-        //nothing FK
+        // nothing FK
         qb = from(product).select(product.getField("Name")).select(product.getField("Supplier")).where(fullText("kevin"));
         results = storage.fetch(qb.getSelect());
         try {
             assertEquals(1, results.getCount());
             for (DataRecord result : results) {
-                assertEquals("kevin cui", (String)result.get("Name"));
-                assertEquals(0, ((List)result.get("Supplier")).size());
+                assertEquals("kevin cui", (String) result.get("Name"));
+                assertEquals(0, ((List) result.get("Supplier")).size());
             }
         } finally {
             results.close();
         }
     }
-
+    
     public void testFullTextSearchOnComplexType() throws Exception {
         UserQueryBuilder qb = from(persons).select(prepareSelectPersonsFields(persons)).where(fullText("1"));
         qb.limit(5);

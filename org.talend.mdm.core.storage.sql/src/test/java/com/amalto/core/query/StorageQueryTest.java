@@ -5994,4 +5994,68 @@ public class StorageQueryTest extends StorageTestCase {
                 assertEquals(record.get(product.getField("Name")), "Renault car");
         });
     }
+
+    public void testEntityWithHierarchyForeignKey() {
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(DataRecordCreationTest.class.getResourceAsStream("modelisationRefad.xsd"));
+
+        Storage storage = new HibernateStorage("H2-DS1", StorageType.MASTER);
+        storage.init(ServerContext.INSTANCE.get().getDefinition("H2-DS1", "MDM"));
+        storage.prepare(repository, true);
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+
+        List<DataRecord> records = new LinkedList<DataRecord>();
+        records.add(factory.read(repository, repository.getComplexType("countryTerritory"), "<countryTerritory><countryTerritoryId>1</countryTerritoryId></countryTerritory>"));
+        records.add(factory.read(repository, repository.getComplexType("countryTerritory"), "<countryTerritory><countryTerritoryId>2</countryTerritoryId></countryTerritory>"));
+        records.add(factory.read(repository, repository.getComplexType("insuredAddressCervie"),
+                "<insuredAddressCervie><insuredAddressCervieId>11</insuredAddressCervieId><addressCervie><fkCountryTerritory>[1]</fkCountryTerritory></addressCervie></insuredAddressCervie>"));
+        records.add(factory.read(repository, repository.getComplexType("insuredAddressCervie"),
+                "<insuredAddressCervie><insuredAddressCervieId>22</insuredAddressCervieId><addressCervie><fkCountryTerritory>[2]</fkCountryTerritory></addressCervie></insuredAddressCervie>"));
+        records.add(factory.read(repository, repository.getComplexType("insuredAddressResidence"),
+                "<insuredAddressResidence><insuredAddressResidenceId>33</insuredAddressResidenceId><addressResidence><fkCountryTerritory>[1]</fkCountryTerritory></addressResidence></insuredAddressResidence>"));
+        records.add(factory.read(repository, repository.getComplexType("insuredAddressResidence"),
+                "<insuredAddressResidence><insuredAddressResidenceId>44</insuredAddressResidenceId><addressResidence><fkCountryTerritory>[2]</fkCountryTerritory></addressResidence></insuredAddressResidence>"));
+        storage.begin();
+        storage.update(records);
+        storage.commit();
+
+        // Query insuredAddressCervie data
+        storage.begin();
+        final ComplexTypeMetadata complexTypeMetadata = repository.getComplexType("insuredAddressCervie");
+        UserQueryBuilder qb = from(complexTypeMetadata).select(complexTypeMetadata.getField("insuredAddressCervieId"))
+                .select(complexTypeMetadata.getField("addressCervie/fkCountryTerritory"));
+        qb.start(0);
+        qb.limit(2);
+        StorageResults results = storage.fetch(qb.getSelect());
+        assertEquals(2, results.getCount());
+        int[] idx = { 1 };
+        results.forEach((DataRecord record) -> {
+            if (idx[0]++ == 1) {
+                assertEquals(record.get(complexTypeMetadata.getField("insuredAddressCervieId")), "11");
+                assertEquals(record.get(complexTypeMetadata.getField("addressCervie/fkCountryTerritory")), "1");
+            } else {
+                assertEquals(record.get(complexTypeMetadata.getField("insuredAddressCervieId")), "22");
+                assertEquals(record.get(complexTypeMetadata.getField("addressCervie/fkCountryTerritory")), "2");
+            }
+        });
+
+        // Query insuredAddressResidence data
+        final ComplexTypeMetadata complexTypeMetadataResidence = repository.getComplexType("insuredAddressResidence");
+        qb = from(complexTypeMetadataResidence).select(complexTypeMetadataResidence.getField("insuredAddressResidenceId"))
+                .select(complexTypeMetadataResidence.getField("addressResidence/fkCountryTerritory"));
+        qb.start(0);
+        qb.limit(2);
+        results = storage.fetch(qb.getSelect());
+        assertEquals(2, results.getCount());
+        idx[0] = 1;
+        results.forEach((DataRecord record) -> {
+            if (idx[0]++ == 1) {
+                assertEquals(record.get(complexTypeMetadataResidence.getField("insuredAddressResidenceId")), "33");
+                assertEquals(record.get(complexTypeMetadataResidence.getField("addressResidence/fkCountryTerritory")), "1");
+            } else {
+                assertEquals(record.get(complexTypeMetadataResidence.getField("insuredAddressResidenceId")), "44");
+                assertEquals(record.get(complexTypeMetadataResidence.getField("addressResidence/fkCountryTerritory")), "2");
+            }
+        });
+    }
 }

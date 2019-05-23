@@ -14,18 +14,14 @@ package com.amalto.core.save.context;
 import java.util.List;
 
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
-import org.talend.mdm.commmon.metadata.MetadataRepository;
-import org.talend.mdm.commmon.metadata.TypeMetadata;
 import org.w3c.dom.Document;
 
 import com.amalto.core.history.Action;
 import com.amalto.core.history.MutableDocument;
 import com.amalto.core.history.accessor.Accessor;
-import com.amalto.core.history.action.FieldUpdateAction;
 import com.amalto.core.objects.UpdateReportPOJO;
 import com.amalto.core.save.DocumentSaverContext;
 import com.amalto.core.save.SaverSession;
-import com.amalto.core.util.Util;
 
 class UpdateReport implements DocumentSaver {
 
@@ -74,11 +70,8 @@ class UpdateReport implements DocumentSaver {
                 hasHeader = true;
                 updateReportDocument.enableRecordFieldChange();
             }
-
-            if (!(action instanceof ChangeTypeAction) && !isInherit(action, type)) {
-                action.perform(updateReportDocument);
-                action.undo(updateReportDocument);
-            }
+            action.perform(updateReportDocument);
+            action.undo(updateReportDocument);
         }
         if (!updateReportDocument.isCreated()) {
             updateReportDocument.setOperationType(UpdateReportPOJO.OPERATION_TYPE_UPDATE);
@@ -87,26 +80,6 @@ class UpdateReport implements DocumentSaver {
 
         context.setUpdateReportDocument(updateReportDocument);
         next.save(session, context);
-    }
-
-    private boolean isInherit(Action action, ComplexTypeMetadata type) {
-        if (!(action instanceof FieldUpdateAction)) {
-            return false;
-        }
-        FieldUpdateAction filedUpdateAction = (FieldUpdateAction) action;
-
-        String path = filedUpdateAction.getPath();
-        path = Util.removeBracketWithNumber(path);
-
-        TypeMetadata filedType = type.getField(path).getType();
-
-        if (filedType instanceof ComplexTypeMetadata) {
-            if (((ComplexTypeMetadata) filedType).getContainer().getType().getName()
-                    .startsWith(MetadataRepository.ANONYMOUS_PREFIX)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private void setHeader(MutableDocument updateReportDocument, String fieldName, String value) {

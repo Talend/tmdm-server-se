@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  *
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -13,7 +13,10 @@ package com.amalto.core.history.action;
 
 import com.amalto.core.history.Action;
 import com.amalto.core.history.MutableDocument;
+import org.apache.commons.lang.StringUtils;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -40,7 +43,8 @@ public class CompositeAction implements Action {
 
     public MutableDocument perform(MutableDocument document) {
         MutableDocument mutableDocument = document;
-        for (Action action : actions) {
+        List<Action> reorderedAction = reorderDeleteContainedTypeActions(actions);
+        for (Action action : reorderedAction) {
             mutableDocument = action.perform(document);
         }
         return mutableDocument;
@@ -48,7 +52,8 @@ public class CompositeAction implements Action {
 
     public MutableDocument undo(MutableDocument document) {
         MutableDocument mutableDocument = document;
-        for (Action action : actions) {
+        List<Action> copyActions = reorderDeleteContainedTypeActions(reverseXSITypeActions(actions));
+        for (Action action : copyActions) {
             mutableDocument = action.undo(document);
         }
         return mutableDocument;
@@ -106,5 +111,119 @@ public class CompositeAction implements Action {
             }
         }
         return true;
+    }
+
+    /**
+     * reorder the actions if the actions contains one which is a delete contained type
+     * eg.:
+     * actions[0] ="FieldUpdateAction{path='detail[2]/code', oldValue='s', newValue='null'}"
+     * actions[1] ="FieldUpdateAction{path='detail[2]/features/actor', oldValue='sf', newValue='null'}"
+     * actions[2] ="FieldUpdateAction{path='detail[2]/features/vendor[1]', oldValue='sd', newValue='null'}"
+     * actions[3] ="FieldUpdateAction{path='detail[2]/features', oldValue='null', newValue='null'}"
+     * <p>
+     * return:
+     * actions[0] ="FieldUpdateAction{path='detail[2]/code', oldValue='s', newValue='null'}"
+     * actions[1] ="FieldUpdateAction{path='detail[2]/features', oldValue='null', newValue='null'}"
+     * actions[2] ="FieldUpdateAction{path='detail[2]/features/actor', oldValue='sf', newValue='null'}"
+     * actions[3] ="FieldUpdateAction{path='detail[2]/features/vendor[1]', oldValue='sd', newValue='null'}"
+     *
+     * @param actions the action list need to be reordered
+     * @return reordered action list
+     */
+    protected List<Action> reorderDeleteContainedTypeActions(List<Action> actions) {
+        List<Action> copyActions = new ArrayList<>(actions);
+        int beginIndex = 0;
+        String previousPath = StringUtils.EMPTY;
+        for (int i = actions.size() - 1; i >= 0; i--) {
+            FieldUpdateAction fieldUpdateAction = (FieldUpdateAction) actions.get(i);
+            if (fieldUpdateAction.getOldValue() == null && fieldUpdateAction.getNewValue() == null) {
+                beginIndex = i;
+                previousPath = fieldUpdateAction.getPath();
+            } else if (beginIndex > 0 && !StringUtils
+                    .equals(previousPath, StringUtils.substringBeforeLast(fieldUpdateAction.getPath(), "/"))) {
+                copyActions.remove(actions.get(beginIndex));
+                copyActions.add(i + 1, actions.get(beginIndex));
+                beginIndex = 0;
+                previousPath = StringUtils.EMPTY;
+            }
+
+        }
+        return copyActions;
+    }
+
+    /**
+     * reverse the actions if the actions contains <pre>xsi:type</pre>
+     * eg.
+     * action[0] = "FieldUpdateAction{path='User/first/Location', oldValue='J-Location-N', newValue='null'}"
+     * action[1] = "FieldUpdateAction{path='User/first/@xsi:type', oldValue='JuniorSchool', newValue='SeniorSchool'}"
+     * action[2] = "FieldUpdateAction{path='User/first/Name', oldValue='J-Name-N', newValue='J-Name-N-to-O'}"
+     * action[3] = "FieldUpdateAction{path='User/first/Gaokao', oldValue='null', newValue='J-Location-N-O'}"
+     * action[4] = "FieldUpdateAction{path='User/second/Gaokao', oldValue='S-Gaokao-N', newValue='null'}"
+     * action[5] = "FieldUpdateAction{path='User/second/@xsi:type', oldValue='SeniorSchool', newValue='JuniorSchool'}"
+     * action[6] = "FieldUpdateAction{path='User/second/Name', oldValue='S-Name-N', newValue='S-Name-N-O'}"
+     * action[7] = "FieldUpdateAction{path='User/second/Location', oldValue='null', newValue='S-Gaokao-N-O'}"
+     * <p>
+     * finally return:
+     * action[0] = "FieldUpdateAction{path='User/first/Gaokao', oldValue='null', newValue='J-Location-N-O'}"
+     * action[1] = "FieldUpdateAction{path='User/first/Name', oldValue='J-Name-N', newValue='J-Name-N-to-O'}"
+     * action[2] = "FieldUpdateAction{path='User/first/@xsi:type', oldValue='JuniorSchool', newValue='SeniorSchool'}"
+     * action[3] = "FieldUpdateAction{path='User/first/Location', oldValue='J-Location-N', newValue='null'}"
+     * action[4] = "FieldUpdateAction{path='User/second/Location', oldValue='null', newValue='S-Gaokao-N-O'}"
+     * action[5] = "FieldUpdateAction{path='User/second/Name', oldValue='S-Name-N', newValue='S-Name-N-O'}"
+     * action[6] = "FieldUpdateAction{path='User/second/@xsi:type', oldValue='SeniorSchool', newValue='JuniorSchool'}"
+     * action[7] = "FieldUpdateAction{path='User/second/Gaokao', oldValue='S-Gaokao-N', newValue='null'}"
+     *
+     * @param actions the actions need to be reversed
+     * @return reversed action list
+     */
+    protected List<Action> reverseXSITypeActions(List<Action> actions) {
+        List<Action> copyActions = new ArrayList<>(actions);
+        boolean containsXSIType = false;
+        for (Action action : copyActions) {
+            FieldUpdateAction fieldUpdateAction = (FieldUpdateAction) action;
+            if (fieldUpdateAction.getPath().contains("@xsi:type")) {
+                containsXSIType = true;
+            }
+        }
+        if (!containsXSIType || actions.size() == 1) {
+            return copyActions;
+        }
+        int beginIndex = -1;
+        String previousPath = StringUtils.substringBeforeLast(((FieldUpdateAction) actions.get(0)).getPath(), "/");
+        List<Action> changeTypeActions = new ArrayList<>(actions.size());
+        for (int i = 1; i < actions.size(); i++) {
+            FieldUpdateAction fieldUpdateAction = (FieldUpdateAction) actions.get(i);
+            String path = fieldUpdateAction.getPath();
+            String parentPath = StringUtils.substringBeforeLast(path, "/");
+            if (previousPath.equals(parentPath)) {
+                if (changeTypeActions.size() == 0) {
+                    changeTypeActions.add(actions.get(i - 1));
+                }
+                changeTypeActions.add(fieldUpdateAction);
+                if (beginIndex < 0) {
+                    beginIndex = i - 1;
+                }
+                previousPath = parentPath;
+            } else {
+                if (changeTypeActions.size() > 1) {
+                    resetActions(beginIndex, copyActions, changeTypeActions);
+                    changeTypeActions.clear();
+                    beginIndex = -1;
+                    previousPath = parentPath;
+                }
+            }
+        }
+        if (changeTypeActions.size() > 1) {
+            resetActions(beginIndex, copyActions, changeTypeActions);
+        }
+        return copyActions;
+    }
+
+    private void resetActions(int beginIndex, List<Action> copyActions, List<Action> changeTypeActions) {
+        Collections.reverse(changeTypeActions);
+        int resetIndex = beginIndex;
+        for (Action changeTypeAction : changeTypeActions) {
+            copyActions.set(resetIndex++, changeTypeAction);
+        }
     }
 }

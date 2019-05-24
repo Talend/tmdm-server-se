@@ -52,7 +52,7 @@ class AttributeAccessor implements DOMAccessor {
 
     private Node getAttribute() {
         Node parentNode = parent.getNode();
-        if(parentNode == null && this.attributeName.contains("xsi:type")){
+        if(parentNode == null && this.attributeName.contains("xsi:type")){ ////$NON-NLS-1$
             parent.insert();
             parentNode = parent.getNode();
         }

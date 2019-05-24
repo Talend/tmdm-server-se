@@ -140,7 +140,7 @@ public class CompositeAction implements Action {
                 beginIndex = i;
                 previousPath = fieldUpdateAction.getPath();
             } else if (beginIndex > 0 && !StringUtils
-                    .equals(previousPath, StringUtils.substringBeforeLast(fieldUpdateAction.getPath(), "/"))) {
+                    .equals(previousPath, StringUtils.substringBeforeLast(fieldUpdateAction.getPath(), "/"))) { //$NON-NLS-1$
                 copyActions.remove(actions.get(beginIndex));
                 copyActions.add(i + 1, actions.get(beginIndex));
                 beginIndex = 0;
@@ -181,7 +181,7 @@ public class CompositeAction implements Action {
         boolean containsXSIType = false;
         for (Action action : copyActions) {
             FieldUpdateAction fieldUpdateAction = (FieldUpdateAction) action;
-            if (fieldUpdateAction.getPath().contains("@xsi:type")) {
+            if (fieldUpdateAction.getPath().contains("@xsi:type")) { //$NON-NLS-1$
                 containsXSIType = true;
             }
         }
@@ -189,7 +189,7 @@ public class CompositeAction implements Action {
             return copyActions;
         }
         int beginIndex = -1;
-        String previousPath = StringUtils.substringBeforeLast(((FieldUpdateAction) actions.get(0)).getPath(), "/");
+        String previousPath = StringUtils.substringBeforeLast(((FieldUpdateAction) actions.get(0)).getPath(), "/"); //$NON-NLS-1$
         List<Action> changeTypeActions = new ArrayList<>(actions.size());
         for (int i = 1; i < actions.size(); i++) {
             FieldUpdateAction fieldUpdateAction = (FieldUpdateAction) actions.get(i);

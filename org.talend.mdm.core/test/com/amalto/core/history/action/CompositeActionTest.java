@@ -66,6 +66,6 @@ public class CompositeActionTest {
         assertEquals("detail[2]/code", ((FieldUpdateAction) actualResult.get(0)).getPath());
         assertEquals("detail[2]/features", ((FieldUpdateAction) actualResult.get(1)).getPath());
         assertEquals("detail[2]/features/actor", ((FieldUpdateAction) actualResult.get(2)).getPath());
-        assertEquals("features/vendor[1]", ((FieldUpdateAction) actualResult.get(3)).getPath());
+        assertEquals("detail[2]/features/vendor[1]", ((FieldUpdateAction) actualResult.get(3)).getPath());
     }
 }

@@ -52,7 +52,7 @@ class AttributeAccessor implements DOMAccessor {
 
     private Node getAttribute() {
         Node parentNode = parent.getNode();
-        if(parentNode == null && this.attributeName.contains("xsi:type")){ ////$NON-NLS-1$
+        if (parentNode == null && this.attributeName.contains("xsi:type")) { ////$NON-NLS-1$
             parent.insert();
             parentNode = parent.getNode();
         }
@@ -70,7 +70,7 @@ class AttributeAccessor implements DOMAccessor {
             // Look up with namespace didn't work, falls back to standard getNamedItem
             attribute = attributes.getNamedItem(qName.getLocalPart());
         }
-        if(attribute == null){
+        if (attribute == null) {
             attribute = createAttribute(parentNode, document.asDOM());
         }
         return attribute;

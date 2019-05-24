@@ -50,10 +50,11 @@ class TypeValue implements Setter, Getter {
                 ComplexTypeMetadata type = record.getType();
                 if (!value.equals(type.getName())) {
                     ComplexTypeMetadata newType = repository.getComplexType(value);
-                    if (newType == null) {
-                        newType = lookupNonInstantiableFieldWithName(repository.getComplexType(element.field.getEntityTypeName()),
-                                value);
-                        if (newType == null) {
+                    if (newType == null ) {
+                        if(element.field instanceof ContainedTypeFieldMetadata){
+                            newType = lookupSubField((ContainedTypeFieldMetadata)element.field, value);
+                        }
+                        if(newType == null) {
                             newType = (ComplexTypeMetadata) repository.getNonInstantiableType(StringUtils.EMPTY, value);
                         }
                     }
@@ -74,49 +75,17 @@ class TypeValue implements Setter, Getter {
     }
 
     /**
-     * return the field of one Non Instantiable type in Data Model
-     * <p>
-     * for Below Data Model, if lookup the "JuniorSchool", returned type of JuniorSchool is subType in School,
-     * which is one contained field type for Test.
-     * <pre>
-     * Entity:
-     *   Test
-     *     |__Id
-     *     |__Name
-     *     |__School (complex type)
-     *
-     * Complex Type:
-     *    School
-     *      |__Name
-     *      |__Address
-     *
-     *    JuniorSchool:School
-     *      |__Location
-     *
-     *    SeniorSchool::School
-     *      |__Exam
-     *  </pre>
-     *
-     * @param parentType the entity need to lookup
+     * sub field of name with fieldName in containedField
+     * @param containedField the entity need to lookup
      * @param fieldName  non instantiable field name
-     * @return non instantiable field
+     * @return  sub field of name with fieldName in containedField
      */
-    protected ComplexTypeMetadata lookupNonInstantiableFieldWithName(ComplexTypeMetadata parentType, String fieldName) {
-        Collection<FieldMetadata> containedFieldColl = parentType.getFields().stream()
-                .filter(fieldMetadata -> fieldMetadata instanceof ContainedTypeFieldMetadata).collect(Collectors.toList());
-        for (FieldMetadata containedField : containedFieldColl) {
-            Collection<ComplexTypeMetadata> subTypes = ((ContainedComplexTypeMetadata) containedField.getType())
-                    .getContainedType().getSubTypes();
-            for (ComplexTypeMetadata subType : subTypes) {
-                if (subType.getName().equals(fieldName)) {
-                    return subType;
-                }
+    private ComplexTypeMetadata lookupSubField(ContainedTypeFieldMetadata containedField, String fieldName) {
+        Collection<ComplexTypeMetadata> subFields = containedField.getContainedType().getSubTypes();
+        for (ComplexTypeMetadata subField : subFields) {
+            if (subField.getName().equals(fieldName)) {
+                return subField;
             }
-            for (ComplexTypeMetadata subType : subTypes) {
-                return lookupNonInstantiableFieldWithName(subType, fieldName);
-            }
-            return lookupNonInstantiableFieldWithName(
-                    ((ContainedComplexTypeMetadata) containedField.getType()).getContainedType(), fieldName);
         }
         return null;
     }

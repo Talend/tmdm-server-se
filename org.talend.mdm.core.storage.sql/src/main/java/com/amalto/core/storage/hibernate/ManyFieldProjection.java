@@ -209,7 +209,7 @@ class ManyFieldProjection extends SimpleProjection {
     /**
      * Below method will generate special SQL fragment template for MS Server when existing count and distinct function.
      * <pre>
-     *   distinct (select count(*) from (select distinct this_1.x_id as y0_ from Product this_1 where this_1.x_price>2) as yy0_) as y0_
+     *   distinct (select count(*) from (select distinct this_1.x_id as y0_ from Product this_1 where this_1.x_price>2) as yy0_ where y0_ is not null) as y0_
      * </pre>
      */
     private StringBuilder preProcessSQL(StringBuilder sqlFragment, Criteria subCriteria, String containerTable,
@@ -226,7 +226,7 @@ class ManyFieldProjection extends SimpleProjection {
         if (StringUtils.isNotEmpty(whereCondition)) {
             sqlFragment.append(" where ").append(whereCondition);//$NON-NLS-1$
         }
-        sqlFragment.append(" ) as my_y0_)").append(" as y").append(position).append('_').append(" ");//$NON-NLS-1$ $NON-NLS-2$ $NON-NLS-3$ $NON-NLS-4$
+        sqlFragment.append(" ) as my_y0_ where y0_ is not null)").append(" as y").append(position).append('_').append(" ");//$NON-NLS-1$ $NON-NLS-2$ $NON-NLS-3$ $NON-NLS-4$
 
         return new StringBuilder(sqlFragment.toString().replaceAll(criteriaQuery.getSQLAlias(subCriteria),
                 criteriaQuery.getSQLAlias(subCriteria) + position));

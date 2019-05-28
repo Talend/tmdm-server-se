@@ -5746,4 +5746,144 @@ public class StorageQueryTest extends StorageTestCase {
         }
     }
 
+    public void testNotConditionWithMultiSubCondition() throws Exception {
+        //Case 1 with query condition : NOT (A AND B) = NOT A OR NOT B
+        UserQueryBuilder qb = UserQueryBuilder.from(product);
+        qb.where(not(and(eq(product.getField("Name"), "Product name"), eq(product.getField("Name"), "Renault car"))));
+        StorageResults results = storage.fetch(qb.getSelect());
+        assertEquals(3, results.getCount());
+
+        //Case 2 with query condition : NOT (A OR B) = NOT A AND NOT B
+        qb = UserQueryBuilder.from(product);
+        qb.where(not(or(eq(product.getField("Name"), "Product name"), eq(product.getField("Name"), "Renault car"))));
+        results = storage.fetch(qb.getSelect());
+        assertEquals(1, results.getCount());
+        results.forEach((DataRecord record) -> assertEquals(record.get(product.getField("Id")), "3"));
+
+        //Case 3 with query condition : NOT ((A OR B) AND C) = NOT A AND NOT B OR NOT C
+        qb = UserQueryBuilder.from(product);
+        qb.where(not(and(or(eq(product.getField("Name"), "Product name"), eq(product.getField("Name"), "Renault car")),
+                eq(product.getField("Id"), "1"))));
+        results = storage.fetch(qb.getSelect());
+        assertEquals(2, results.getCount());
+        int[] idx = { 1 };
+        results.forEach((DataRecord record) -> {
+            if (idx[0]++ == 1) {
+                assertEquals(record.get(product.getField("Id")), "2");
+                assertEquals(record.get(product.getField("Name")), "Renault car");
+            } else {
+                assertEquals(record.get(product.getField("Id")), "3");
+                assertEquals(record.get(product.getField("Name")), "Product evan");
+            }
+        });
+
+        //Case 4 with query condition : NOT ((A AND B) OR C) = (NOT A OR NOT B) AND NOT C
+        qb = UserQueryBuilder.from(product);
+        qb.where(not(and(or(eq(product.getField("Name"), "Product name"), eq(product.getField("Name"), "Renault car")),
+                eq(product.getField("Id"), "2"))));
+        results = storage.fetch(qb.getSelect());
+        assertEquals(2, results.getCount());
+        idx[0] = 1;
+        results.forEach((DataRecord record) -> {
+            if (idx[0]++ == 1) {
+                assertEquals(record.get(product.getField("Id")), "1");
+                assertEquals(record.get(product.getField("Name")), "Product name");
+            } else {
+                assertEquals(record.get(product.getField("Id")), "3");
+                assertEquals(record.get(product.getField("Name")), "Product evan");
+            }
+        });
+
+        //Case 5 with query condition : NOT ((A OR B) AND (C OR D)) = (NOT A AND NOT B) OR (NOT C AND NOT D)
+        qb = UserQueryBuilder.from(product);
+        qb.where(not(and(or(eq(product.getField("Name"), "Product name"), eq(product.getField("Id"), "1")),
+                or(eq(product.getField("Features/Sizes/Size"), "Small"), eq(product.getField("Price"), "10")))));
+        results = storage.fetch(qb.getSelect());
+        assertEquals(2, results.getCount());
+        idx[0] = 1;
+        results.forEach((DataRecord record) -> {
+            if (idx[0]++ == 1) {
+                assertEquals(record.get(product.getField("Id")), "2");
+                assertEquals(record.get(product.getField("Name")), "Renault car");
+            } else {
+                assertEquals(record.get(product.getField("Id")), "3");
+                assertEquals(record.get(product.getField("Name")), "Product evan");
+            }
+        });
+
+        //Case 6 with query condition : NOT ((A AND B) AND (C OR D)) = NOT A OR NOT B OR (NOT C AND NOT D)
+        qb = UserQueryBuilder.from(product);
+        qb.where(not(or(or(eq(product.getField("Name"), "Product name"), eq(product.getField("Id"), "1")),
+                and(eq(product.getField("Name"), "Product evan"), eq(product.getField("Price"), "11")))));
+        results = storage.fetch(qb.getSelect());
+        assertEquals(1, results.getCount());
+        results.forEach((DataRecord record) -> {
+                assertEquals(record.get(product.getField("Id")), "2");
+                assertEquals(record.get(product.getField("Name")), "Renault car");
+        });
+    }
+
+    public void testEntityWithHierarchyForeignKey() {
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(DataRecordCreationTest.class.getResourceAsStream("modelisationRefad.xsd"));
+
+        Storage storage = new HibernateStorage("H2-DS1", StorageType.MASTER);
+        storage.init(ServerContext.INSTANCE.get().getDefinition("H2-DS1", "MDM"));
+        storage.prepare(repository, true);
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+
+        List<DataRecord> records = new LinkedList<DataRecord>();
+        records.add(factory.read(repository, repository.getComplexType("countryTerritory"), "<countryTerritory><countryTerritoryId>1</countryTerritoryId></countryTerritory>"));
+        records.add(factory.read(repository, repository.getComplexType("countryTerritory"), "<countryTerritory><countryTerritoryId>2</countryTerritoryId></countryTerritory>"));
+        records.add(factory.read(repository, repository.getComplexType("insuredAddressCervie"),
+                "<insuredAddressCervie><insuredAddressCervieId>11</insuredAddressCervieId><addressCervie><fkCountryTerritory>[1]</fkCountryTerritory></addressCervie></insuredAddressCervie>"));
+        records.add(factory.read(repository, repository.getComplexType("insuredAddressCervie"),
+                "<insuredAddressCervie><insuredAddressCervieId>22</insuredAddressCervieId><addressCervie><fkCountryTerritory>[2]</fkCountryTerritory></addressCervie></insuredAddressCervie>"));
+        records.add(factory.read(repository, repository.getComplexType("insuredAddressResidence"),
+                "<insuredAddressResidence><insuredAddressResidenceId>33</insuredAddressResidenceId><addressResidence><fkCountryTerritory>[1]</fkCountryTerritory></addressResidence></insuredAddressResidence>"));
+        records.add(factory.read(repository, repository.getComplexType("insuredAddressResidence"),
+                "<insuredAddressResidence><insuredAddressResidenceId>44</insuredAddressResidenceId><addressResidence><fkCountryTerritory>[2]</fkCountryTerritory></addressResidence></insuredAddressResidence>"));
+        storage.begin();
+        storage.update(records);
+        storage.commit();
+
+        // Query insuredAddressCervie data
+        storage.begin();
+        final ComplexTypeMetadata complexTypeMetadata = repository.getComplexType("insuredAddressCervie");
+        UserQueryBuilder qb = from(complexTypeMetadata).select(complexTypeMetadata.getField("insuredAddressCervieId"))
+                .select(complexTypeMetadata.getField("addressCervie/fkCountryTerritory"));
+        qb.start(0);
+        qb.limit(2);
+        StorageResults results = storage.fetch(qb.getSelect());
+        assertEquals(2, results.getCount());
+        int[] idx = { 1 };
+        results.forEach((DataRecord record) -> {
+            if (idx[0]++ == 1) {
+                assertEquals(record.get(complexTypeMetadata.getField("insuredAddressCervieId")), "11");
+                assertEquals(record.get(complexTypeMetadata.getField("addressCervie/fkCountryTerritory")), "1");
+            } else {
+                assertEquals(record.get(complexTypeMetadata.getField("insuredAddressCervieId")), "22");
+                assertEquals(record.get(complexTypeMetadata.getField("addressCervie/fkCountryTerritory")), "2");
+            }
+        });
+
+        // Query insuredAddressResidence data
+        final ComplexTypeMetadata complexTypeMetadataResidence = repository.getComplexType("insuredAddressResidence");
+        qb = from(complexTypeMetadataResidence).select(complexTypeMetadataResidence.getField("insuredAddressResidenceId"))
+                .select(complexTypeMetadataResidence.getField("addressResidence/fkCountryTerritory"));
+        qb.start(0);
+        qb.limit(2);
+        results = storage.fetch(qb.getSelect());
+        assertEquals(2, results.getCount());
+        idx[0] = 1;
+        results.forEach((DataRecord record) -> {
+            if (idx[0]++ == 1) {
+                assertEquals(record.get(complexTypeMetadataResidence.getField("insuredAddressResidenceId")), "33");
+                assertEquals(record.get(complexTypeMetadataResidence.getField("addressResidence/fkCountryTerritory")), "1");
+            } else {
+                assertEquals(record.get(complexTypeMetadataResidence.getField("insuredAddressResidenceId")), "44");
+                assertEquals(record.get(complexTypeMetadataResidence.getField("addressResidence/fkCountryTerritory")), "2");
+            }
+        });
+    }
 }

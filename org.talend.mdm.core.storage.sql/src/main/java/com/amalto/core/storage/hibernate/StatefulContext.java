@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
 import org.talend.mdm.commmon.metadata.DefaultMetadataVisitor;
@@ -26,6 +28,8 @@ import org.talend.mdm.commmon.metadata.SimpleTypeFieldMetadata;
 import com.amalto.core.storage.datasource.RDBMSDataSource;
 
 public class StatefulContext implements MappingCreatorContext {
+
+    private static final Logger LOGGER = Logger.getLogger(StatefulContext.class);
 
     private final Map<FieldMetadata, String> enforcedUniqueNames = new HashMap<FieldMetadata, String>();
 
@@ -41,7 +45,8 @@ public class StatefulContext implements MappingCreatorContext {
     public String getFieldColumn(FieldMetadata field) {
         if (!field.getContainingType().getSuperTypes().isEmpty() && !field.getContainingType().isInstantiable()) {
             boolean isUnique = isUniqueWithinTypeHierarchy(field.getContainingType(), field.getName());
-            if (field.getDeclaringType().equals(field.getContainingType()) && !isUnique) {
+            boolean isExistEntity = isExistInSameEntity(field);
+            if (field.getDeclaringType().equals(field.getContainingType()) && !isUnique && !isExistEntity) {
                 // Non instantiable types are mapped using a "table per hierarchy" strategy, if field name isn't unique
                 // make sure name becomes unique to avoid conflict (Hibernate doesn't issue warning/errors in case of
                 // overlap).
@@ -59,6 +64,30 @@ public class StatefulContext implements MappingCreatorContext {
         } else {
             return getFieldColumn(field.getName());
         }
+    }
+
+    private static boolean isExistInSameEntity(FieldMetadata field) {
+        ComplexTypeMetadata type = field.getContainingType();
+        if (type == null) {
+            return false;
+        }
+        ComplexTypeMetadata topLevelType = (ComplexTypeMetadata) MetadataUtils.getSuperConcreteType(type);
+        if (type.getContainer() != null && type.getContainer().getContainingType() != null) {
+            String curName = type.getContainer().getContainingType().getName();
+            if (StringUtils.isEmpty(curName)) {
+                return false;
+            }
+            boolean isExist = topLevelType.getSubTypes().stream()
+                    .anyMatch(action -> action.getUsages().stream().anyMatch(item -> {
+                        if (item.getContainer() != null && item.getContainer().getContainingType() != null) {
+                            return curName.equals(item.getContainer().getContainingType().getName());
+                        } else {
+                            return false;
+                        }
+                    }));
+            return isExist;
+        }
+        return false;
     }
 
     /**

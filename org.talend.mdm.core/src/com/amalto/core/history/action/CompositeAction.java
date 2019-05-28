@@ -183,6 +183,7 @@ public class CompositeAction implements Action {
             FieldUpdateAction fieldUpdateAction = (FieldUpdateAction) action;
             if (fieldUpdateAction.getPath().contains("@xsi:type")) { //$NON-NLS-1$
                 containsXSIType = true;
+                break;
             }
         }
         if (!containsXSIType || actions.size() == 1) {
@@ -209,8 +210,8 @@ public class CompositeAction implements Action {
                     resetActions(beginIndex, copyActions, changeTypeActions);
                     changeTypeActions.clear();
                     beginIndex = -1;
-                    previousPath = parentPath;
                 }
+                previousPath = parentPath;
             }
         }
         if (changeTypeActions.size() > 1) {

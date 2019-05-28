@@ -52,6 +52,36 @@ public class CompositeActionTest {
         assertEquals("User/second/Name", ((FieldUpdateAction) actualResult.get(5)).getPath());
         assertEquals("User/second/@xsi:type", ((FieldUpdateAction) actualResult.get(6)).getPath());
         assertEquals("User/second/Gaokao", ((FieldUpdateAction) actualResult.get(7)).getPath());
+
+        actions.clear();
+        actions.add(new FieldUpdateAction(null, null, null, "changeName", null, "update1", null, null));
+        actions.add(new FieldUpdateAction(null, null, null, "phoneNumber", null, "22222222222", null, null));
+        actions.add(new FieldUpdateAction(null, null, null, "mobileNumber", null, "22222222222", null, null));
+        actions.add(new FieldUpdateAction(null, null, null, "addressAttorneyAF/mrMrs", "2", "null", null, null));
+        actions.add(new FieldUpdateAction(null, null, null, "addressAttorneyAF/lastName", "john", "null", null, null));
+        actions.add(new FieldUpdateAction(null, null, null, "addressAttorneyAF/@xsi:type", "addressPersonType", "addressPaymentBeneficiaryType", null, null));
+        actions.add(new FieldUpdateAction(null, null, null, "addressAttorneyAF/addressLine1", "Beijing", "eee", null, null));
+        actions.add(new FieldUpdateAction(null, null, null, "addressAttorneyAF/addressLine2", "Dongcheng", "eee", null, null));
+        actions.add(new FieldUpdateAction(null, null, null, "addressAttorneyAF/street", "wangfujing", "eee", null, null));
+        actions.add(new FieldUpdateAction(null, null, null, "addressAttorneyAF/houseNumber", "2", "33", null, null));
+        actions.add(new FieldUpdateAction(null, null, null, "addressAttorneyAF/dwellingNumber", "2", "33", null, null));
+        actions.add(new FieldUpdateAction(null, null, null, "addressAttorneyAF/postOfficeBoxNumber", "2", "33", null, null));
+        actions.add(new FieldUpdateAction(null, null, null, "addressAttorneyAF/postOfficeBoxText", "2", "33", null, null));
+
+        actualResult = compositeAction.reverseXSITypeActions(actions);
+        assertEquals("changeName", ((FieldUpdateAction) actualResult.get(0)).getPath());
+        assertEquals("phoneNumber", ((FieldUpdateAction) actualResult.get(1)).getPath());
+        assertEquals("mobileNumber", ((FieldUpdateAction) actualResult.get(2)).getPath());
+        assertEquals("addressAttorneyAF/postOfficeBoxText", ((FieldUpdateAction) actualResult.get(3)).getPath());
+        assertEquals("addressAttorneyAF/postOfficeBoxNumber", ((FieldUpdateAction) actualResult.get(4)).getPath());
+        assertEquals("addressAttorneyAF/dwellingNumber", ((FieldUpdateAction) actualResult.get(5)).getPath());
+        assertEquals("addressAttorneyAF/houseNumber", ((FieldUpdateAction) actualResult.get(6)).getPath());
+        assertEquals("addressAttorneyAF/street", ((FieldUpdateAction) actualResult.get(7)).getPath());
+        assertEquals("addressAttorneyAF/addressLine2", ((FieldUpdateAction) actualResult.get(8)).getPath());
+        assertEquals("addressAttorneyAF/addressLine1", ((FieldUpdateAction) actualResult.get(9)).getPath());
+        assertEquals("addressAttorneyAF/@xsi:type", ((FieldUpdateAction) actualResult.get(10)).getPath());
+        assertEquals("addressAttorneyAF/lastName", ((FieldUpdateAction) actualResult.get(11)).getPath());
+        assertEquals("addressAttorneyAF/mrMrs", ((FieldUpdateAction) actualResult.get(12)).getPath());
     }
 
     @Test

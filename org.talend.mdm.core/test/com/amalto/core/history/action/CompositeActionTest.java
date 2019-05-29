@@ -82,6 +82,18 @@ public class CompositeActionTest {
         assertEquals("addressAttorneyAF/@xsi:type", ((FieldUpdateAction) actualResult.get(10)).getPath());
         assertEquals("addressAttorneyAF/lastName", ((FieldUpdateAction) actualResult.get(11)).getPath());
         assertEquals("addressAttorneyAF/mrMrs", ((FieldUpdateAction) actualResult.get(12)).getPath());
+
+        actions.clear();
+        actions.add(new FieldUpdateAction(null, null, null, "paymentBenefitType/iban", "aa", null, null, null));
+        actions.add(new FieldUpdateAction(null, null, null, "paymentBenefitType/addressBanking/addressLine1", "Beijing", null, null, null));
+        actions.add(new FieldUpdateAction(null, null, null, "paymentBenefitType/@xsi:type", "paymentTransferType", "paymentCashType", null, null));
+        actions.add(new FieldUpdateAction(null, null, null, "paymentBenefitType/dummy", null, "dd", null, null));
+
+        actualResult = compositeAction.reverseXSITypeActions(actions);
+        assertEquals("paymentBenefitType/dummy", ((FieldUpdateAction) actualResult.get(0)).getPath());
+        assertEquals("paymentBenefitType/@xsi:type", ((FieldUpdateAction) actualResult.get(1)).getPath());
+        assertEquals("paymentBenefitType/addressBanking/addressLine1", ((FieldUpdateAction) actualResult.get(2)).getPath());
+        assertEquals("paymentBenefitType/iban", ((FieldUpdateAction) actualResult.get(3)).getPath());
     }
 
     @Test
@@ -97,5 +109,30 @@ public class CompositeActionTest {
         assertEquals("detail[2]/features", ((FieldUpdateAction) actualResult.get(1)).getPath());
         assertEquals("detail[2]/features/actor", ((FieldUpdateAction) actualResult.get(2)).getPath());
         assertEquals("detail[2]/features/vendor[1]", ((FieldUpdateAction) actualResult.get(3)).getPath());
+    }
+
+    @Test
+    public void removeXSITypeAndNullValueActionTest(){
+        List<Action> actions = new ArrayList<>();
+        actions.add(new FieldUpdateAction(null, null, null, "User/first/Location", "J-Location-N", null, null, null));
+        actions.add(new FieldUpdateAction(null, null, null, "User/first/@xsi:type", "JuniorSchool", "SeniorSchool", null, null));
+        actions.add(new FieldUpdateAction(null, null, null, "User/first/Name", "J-Name-N", "J-Name-N-to-O", null, null));
+        actions.add(new FieldUpdateAction(null, null, null, "User/first/Gaokao", null, "J-Location-N-O", null, null));
+        actions.add(new FieldUpdateAction(null, null, null, "User/second/Gaokao", "S-Gaokao-N", null, null, null));
+        actions.add(new FieldUpdateAction(null, null, null, "User/second/@xsi:type", "SeniorSchool", "JuniorSchool", null, null));
+        actions.add(new FieldUpdateAction(null, null, null, "User/second/Name", "S-Name-N", "S-Name-N-O", null, null));
+        actions.add(new FieldUpdateAction(null, null, null, "User/second/Location", null, "S-Gaokao-N-O", null, null));
+
+        compositeAction = new CompositeAction(null, null, null, actions);
+        compositeAction.removeXSITypeAndNullValueAction();
+        List<Action> actualResult = compositeAction.getActions();
+        assertEquals("User/first/Gaokao", ((FieldUpdateAction)actualResult.get(0)).getPath());
+        assertEquals("User/first/Name", ((FieldUpdateAction)actualResult.get(1)).getPath());
+        assertEquals("User/first/@xsi:type", ((FieldUpdateAction)actualResult.get(2)).getPath());
+        assertEquals("User/first/Location", ((FieldUpdateAction)actualResult.get(3)).getPath());
+        assertEquals("User/second/Location", ((FieldUpdateAction)actualResult.get(4)).getPath());
+        assertEquals("User/second/Name", ((FieldUpdateAction)actualResult.get(5)).getPath());
+        assertEquals("User/second/@xsi:type", ((FieldUpdateAction)actualResult.get(6)).getPath());
+        assertEquals("User/second/Gaokao", ((FieldUpdateAction)actualResult.get(7)).getPath());
     }
 }

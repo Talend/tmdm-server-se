@@ -18,8 +18,11 @@ import org.apache.commons.lang.StringUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
+import java.util.stream.Collectors;
 
 /**
  *
@@ -113,6 +116,10 @@ public class CompositeAction implements Action {
         return true;
     }
 
+    public List<Action> getActions() {
+        return actions;
+    }
+
     /**
      * reorder the actions if the actions contains one which is a delete contained type
      * eg.:
@@ -178,46 +185,58 @@ public class CompositeAction implements Action {
      */
     protected List<Action> reverseXSITypeActions(List<Action> actions) {
         List<Action> copyActions = new ArrayList<>(actions);
-        boolean containsXSIType = false;
-        for (Action action : copyActions) {
-            FieldUpdateAction fieldUpdateAction = (FieldUpdateAction) action;
-            if (fieldUpdateAction.getPath().contains("@xsi:type")) { //$NON-NLS-1$
-                containsXSIType = true;
-                break;
-            }
-        }
-        if (!containsXSIType || actions.size() == 1) {
+        List<String> parents = copyActions.stream().filter(action -> ((FieldUpdateAction) action).getPath().contains("@xsi:type"))
+                .map(action -> (StringUtils.substringBeforeLast(((FieldUpdateAction) action).getPath(), "@xsi:type")))
+                .collect(Collectors.toList());
+        if (parents.isEmpty()) {
             return copyActions;
         }
         int beginIndex = -1;
-        String previousPath = StringUtils.substringBeforeLast(((FieldUpdateAction) actions.get(0)).getPath(), "/"); //$NON-NLS-1$
         List<Action> changeTypeActions = new ArrayList<>(actions.size());
-        for (int i = 1; i < actions.size(); i++) {
-            FieldUpdateAction fieldUpdateAction = (FieldUpdateAction) actions.get(i);
-            String path = fieldUpdateAction.getPath();
-            String parentPath = StringUtils.substringBeforeLast(path, "/");
-            if (previousPath.equals(parentPath)) {
-                if (changeTypeActions.size() == 0) {
-                    changeTypeActions.add(actions.get(i - 1));
+        int i = 0;
+        for (String parent : parents) {
+            for (; i < actions.size(); i++) {
+                FieldUpdateAction fieldUpdateAction = (FieldUpdateAction) actions.get(i);
+                String path = fieldUpdateAction.getPath();
+                if (path.indexOf(parent) == 0) {
+                    changeTypeActions.add(fieldUpdateAction);
+                    if (beginIndex < 0) {
+                        beginIndex = i;
+                    }
+                } else {
+                    if (changeTypeActions.size() > 1) {
+                        resetActions(beginIndex, copyActions, changeTypeActions);
+                        changeTypeActions.clear();
+                        beginIndex = -1;
+                        break;
+                    }
                 }
-                changeTypeActions.add(fieldUpdateAction);
-                if (beginIndex < 0) {
-                    beginIndex = i - 1;
-                }
-                previousPath = parentPath;
-            } else {
-                if (changeTypeActions.size() > 1) {
-                    resetActions(beginIndex, copyActions, changeTypeActions);
-                    changeTypeActions.clear();
-                    beginIndex = -1;
-                }
-                previousPath = parentPath;
             }
         }
+
         if (changeTypeActions.size() > 1) {
             resetActions(beginIndex, copyActions, changeTypeActions);
         }
         return copyActions;
+    }
+
+    /**
+     * remove the actions if the actions contains <pre>xsi:type</pre>
+     * remove the action which the newValue and oldValue both are null
+     *
+     * below two actions will be removed
+     * action[0] = "FieldUpdateAction{path='User/first/Gaokao', oldValue='null', newValue='John'}"
+     * action[0] = "FieldUpdateAction{path='User/detail', oldValue='null', newValue='null'}"
+     */
+    public void removeXSITypeAndNullValueAction() {
+        Iterator<Action> iterator = actions.iterator();
+        while (iterator.hasNext()) {
+            Action action = iterator.next();
+            FieldUpdateAction fieldUpdateAction = (FieldUpdateAction) action;
+            if (fieldUpdateAction.getNewValue() == null && fieldUpdateAction.getOldValue() == null) {
+                iterator.remove();
+            }
+        }
     }
 
     private void resetActions(int beginIndex, List<Action> copyActions, List<Action> changeTypeActions) {

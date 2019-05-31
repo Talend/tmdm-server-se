@@ -86,6 +86,14 @@ public class TQLPredicateToMDMPredicate implements IASTVisitor<Condition> {
         return current;
     }
 
+    private Condition mergeNotEquals(Predicate predicate, TypedExpression fieldLeftValue, TypedExpression fieldRightValue) {
+        Condition current = new UnaryLogicOperator(new Compare(fieldLeftValue, Predicate.EQUALS, fieldRightValue), Predicate.NOT);
+        for (int i = 0; i < typedValues.size(); i++) {
+            current = new BinaryLogicOperator(current, predicate, new UnaryLogicOperator(new Compare(popCurrentExpression(), Predicate.EQUALS, fieldRightValue), Predicate.NOT));
+        }
+        return current;
+    }
+
 
     private TypedExpression peekCurrentExpression() {
         return typedValues.peek();
@@ -114,7 +122,7 @@ public class TQLPredicateToMDMPredicate implements IASTVisitor<Condition> {
             case GT:
                 return new Compare(left, Predicate.GREATER_THAN, right);
             case NEQ:
-                return new UnaryLogicOperator(new Compare(left, Predicate.EQUALS, right), Predicate.NOT);
+                return mergeNotEquals(Predicate.AND, left, right);
             case LET:
                 return new Compare(left, Predicate.LOWER_THAN_OR_EQUALS, right);
             case GET:

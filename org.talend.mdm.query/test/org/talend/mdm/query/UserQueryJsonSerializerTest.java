@@ -240,6 +240,19 @@ public class UserQueryJsonSerializerTest extends TestCase {
         assertRoundTrip(select);
     }
 
+    public void testNotFkMultipleInTQL() {
+        final ComplexTypeMetadata type1 = this.repository.getComplexType("Type1");
+        final UserQueryBuilder userQueryBuilder = UserQueryBuilder.from(type1).where("Type1.fk2 != 'value1'");
+        final Select select = userQueryBuilder.getSelect();
+        assertNotNull(select.getCondition());
+        assertTrue(select.getCondition() instanceof BinaryLogicOperator);
+        assertEquals(((BinaryLogicOperator)select.getCondition()).getPredicate(), Predicate.AND);
+        assertTrue(((BinaryLogicOperator)select.getCondition()).getRight() instanceof UnaryLogicOperator);
+        assertEquals(((UnaryLogicOperator) ((BinaryLogicOperator) select.getCondition()).getRight()).getPredicate(),  Predicate.NOT);
+        assertEquals(((UnaryLogicOperator) ((BinaryLogicOperator) select.getCondition()).getLeft()).getPredicate(),  Predicate.NOT);
+        assertRoundTrip(select);
+    }
+
     private void assertRoundTrip(Select select) {
         // when
         final String jsonAsString = UserQueryJsonSerializer.toJson(select);

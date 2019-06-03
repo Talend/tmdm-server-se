@@ -118,21 +118,23 @@ public class CompositeActionTest {
         actions.add(new FieldUpdateAction(null, null, null, "User/first/@xsi:type", "JuniorSchool", "SeniorSchool", null, null));
         actions.add(new FieldUpdateAction(null, null, null, "User/first/Name", "J-Name-N", "J-Name-N-to-O", null, null));
         actions.add(new FieldUpdateAction(null, null, null, "User/first/Gaokao", null, "J-Location-N-O", null, null));
+        actions.add(new FieldUpdateAction(null, null, null, "User/first", null, null, null, null));
         actions.add(new FieldUpdateAction(null, null, null, "User/second/Gaokao", "S-Gaokao-N", null, null, null));
         actions.add(new FieldUpdateAction(null, null, null, "User/second/@xsi:type", "SeniorSchool", "JuniorSchool", null, null));
         actions.add(new FieldUpdateAction(null, null, null, "User/second/Name", "S-Name-N", "S-Name-N-O", null, null));
         actions.add(new FieldUpdateAction(null, null, null, "User/second/Location", null, "S-Gaokao-N-O", null, null));
+        actions.add(new FieldUpdateAction(null, null, null, "User/second", null, null, null, null));
 
-        compositeAction = new CompositeAction(null, null, null, actions);
+        CompositeAction compositeAction = new CompositeAction(null, null, null, actions);
         compositeAction.removeXSITypeAndNullValueAction();
         List<Action> actualResult = compositeAction.getActions();
-        assertEquals("User/first/Gaokao", ((FieldUpdateAction)actualResult.get(0)).getPath());
-        assertEquals("User/first/Name", ((FieldUpdateAction)actualResult.get(1)).getPath());
-        assertEquals("User/first/@xsi:type", ((FieldUpdateAction)actualResult.get(2)).getPath());
-        assertEquals("User/first/Location", ((FieldUpdateAction)actualResult.get(3)).getPath());
-        assertEquals("User/second/Location", ((FieldUpdateAction)actualResult.get(4)).getPath());
-        assertEquals("User/second/Name", ((FieldUpdateAction)actualResult.get(5)).getPath());
-        assertEquals("User/second/@xsi:type", ((FieldUpdateAction)actualResult.get(6)).getPath());
-        assertEquals("User/second/Gaokao", ((FieldUpdateAction)actualResult.get(7)).getPath());
+        assertEquals("User/first/Location", ((FieldUpdateAction)actualResult.get(0)).getPath());
+        assertEquals("User/first/@xsi:type", ((FieldUpdateAction)actualResult.get(1)).getPath());
+        assertEquals("User/first/Name", ((FieldUpdateAction)actualResult.get(2)).getPath());
+        assertEquals("User/first/Gaokao", ((FieldUpdateAction)actualResult.get(3)).getPath());
+        assertEquals("User/second/Gaokao", ((FieldUpdateAction)actualResult.get(4)).getPath());
+        assertEquals("User/second/@xsi:type", ((FieldUpdateAction)actualResult.get(5)).getPath());
+        assertEquals("User/second/Name", ((FieldUpdateAction)actualResult.get(6)).getPath());
+        assertEquals("User/second/Location", ((FieldUpdateAction)actualResult.get(7)).getPath());
     }
 }

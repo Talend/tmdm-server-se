@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  *
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -15,8 +15,14 @@ import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.record.metadata.UnsupportedDataRecordMetadata;
 import org.apache.commons.lang.StringUtils;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.ContainedComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
+import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
+
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 class TypeValue implements Setter, Getter {
 
@@ -44,8 +50,13 @@ class TypeValue implements Setter, Getter {
                 ComplexTypeMetadata type = record.getType();
                 if (!value.equals(type.getName())) {
                     ComplexTypeMetadata newType = repository.getComplexType(value);
-                    if (newType == null) {
-                        newType = (ComplexTypeMetadata) repository.getNonInstantiableType(StringUtils.EMPTY, value);
+                    if (newType == null ) {
+                        if(element.field instanceof ContainedTypeFieldMetadata){
+                            newType = lookupSubField((ContainedTypeFieldMetadata)element.field, value);
+                        }
+                        if(newType == null) {
+                            newType = (ComplexTypeMetadata) repository.getNonInstantiableType(StringUtils.EMPTY, value);
+                        }
                     }
                     record.setType(newType);
                 }
@@ -61,5 +72,21 @@ class TypeValue implements Setter, Getter {
         } else {
             return record.getType().getName();
         }
+    }
+
+    /**
+     * sub field of name with fieldName in containedField
+     * @param containedField the entity need to lookup
+     * @param fieldName  non instantiable field name
+     * @return  sub field of name with fieldName in containedField
+     */
+    private ComplexTypeMetadata lookupSubField(ContainedTypeFieldMetadata containedField, String fieldName) {
+        Collection<ComplexTypeMetadata> subFields = containedField.getContainedType().getSubTypes();
+        for (ComplexTypeMetadata subField : subFields) {
+            if (subField.getName().equals(fieldName)) {
+                return subField;
+            }
+        }
+        return null;
     }
 }

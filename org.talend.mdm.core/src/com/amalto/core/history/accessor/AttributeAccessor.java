@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  *
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -52,6 +52,10 @@ class AttributeAccessor implements DOMAccessor {
 
     private Node getAttribute() {
         Node parentNode = parent.getNode();
+        if (parentNode == null && this.attributeName.contains("xsi:type")) { ////$NON-NLS-1$
+            parent.insert();
+            parentNode = parent.getNode();
+        }
         if (parentNode == null) {
             throw new IllegalStateException("Could not find a parent node in document (check if document has a root element)."); //$NON-NLS-1$
         }
@@ -65,6 +69,9 @@ class AttributeAccessor implements DOMAccessor {
         if (attribute == null) {
             // Look up with namespace didn't work, falls back to standard getNamedItem
             attribute = attributes.getNamedItem(qName.getLocalPart());
+        }
+        if (attribute == null) {
+            attribute = createAttribute(parentNode, document.asDOM());
         }
         return attribute;
     }

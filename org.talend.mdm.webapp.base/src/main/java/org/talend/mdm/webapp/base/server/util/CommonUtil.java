@@ -247,6 +247,10 @@ public class CommonUtil {
         return idList.toArray(new String[idList.size()]);
     }
 
+    public static String[] extractFKRefValue(String ids) {
+        return new String[] { ids.replaceAll("^\\[|\\]$", "").replace("][", ".").replace(", ", ".") }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+    }
+
     public static String buildCriteriaByIds(String[] keys, String[] ids) {
         if (keys == null || ids == null) {
             return null;

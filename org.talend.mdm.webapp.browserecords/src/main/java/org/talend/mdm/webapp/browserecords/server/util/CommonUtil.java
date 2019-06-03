@@ -279,7 +279,7 @@ public class CommonUtil {
                 return bean;
             } else {
                 ItemPOJOPK pk = new ItemPOJOPK();
-                String[] itemId = org.talend.mdm.webapp.base.server.util.CommonUtil.extractFKRefValue(ids, language);
+                String[] itemId = org.talend.mdm.webapp.base.server.util.CommonUtil.extractFKRefValue(ids);
                 pk.setIds(itemId);
                 String conceptName = model.getForeignkey().split("/")[0]; //$NON-NLS-1$
                 // get deriveType's conceptName, otherwise getItem() method will throw exception.

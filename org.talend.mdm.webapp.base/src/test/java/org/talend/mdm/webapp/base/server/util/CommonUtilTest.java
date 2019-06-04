@@ -378,6 +378,13 @@ public class CommonUtilTest extends TestCase {
         String[] id = CommonUtil.extractFKRefValue(ids, "en");
         assertEquals("1", id[0]);
         assertEquals("2", id[1]);
+
+        id = CommonUtil.extractFKRefValue(ids);
+        assertEquals("1.2", id[0]);
+
+        ids = "[1, 2]";
+        id = CommonUtil.extractFKRefValue(ids);
+        assertEquals("1.2", id[0]);
     }
 
     public void testSplitString() {

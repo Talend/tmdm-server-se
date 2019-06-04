@@ -14,6 +14,9 @@ amalto.itemsbrowser.SearchEntityPanel = function(config) {
 
 var mate = document.getElementById("gwt:property");
 language = mate.content.split("=")[1];
+if (language == 'zh') {
+    language = 'zh_CN';
+}
 
 amalto.itemsbrowser.SearchEntity = {};
 amalto.itemsbrowser.SearchEntity.bundle =  new Ext.i18n.Bundle({bundle:'SearchEntity', path:'secure/resources', lang:language});

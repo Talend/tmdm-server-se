@@ -185,7 +185,7 @@ class ScatteredMappingCreator extends DefaultMetadataVisitor<TypeMapping> {
     }
 
     private String createContainedType(String typeName, String superTypeName, ComplexTypeMetadata originalContainedType) {
-        ComplexTypeMetadata internalContainedType = (ComplexTypeMetadata) internalRepository.getType(typeName);
+        ComplexTypeMetadata internalContainedType = (ComplexTypeMetadata) internalRepository.getNonInstantiableType(originalContainedType.getNamespace(), typeName);
         if (internalContainedType == null) {
             internalContainedType = new ComplexTypeMetadataImpl(originalContainedType.getNamespace(),
                     typeName,
@@ -222,6 +222,8 @@ class ScatteredMappingCreator extends DefaultMetadataVisitor<TypeMapping> {
                 internalContainedType.addSuperType(type);
             }
             internalRepository.addTypeMetadata(internalContainedType);
+        } else {
+            internalContainedType = (ComplexTypeMetadata)internalContainedType.copy();
         }
         // Visit contained type fields
         TypeMapping mapping = mappings.getMappingFromUser(originalContainedType);

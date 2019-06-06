@@ -255,6 +255,160 @@ public class StoragePrepareTest extends TestCase {
         storage.end();
     }
 
+    public void testCreateWithThreeLevelInheritanceComplexType() {
+        Storage storage = new SecuredStorage(new HibernateStorage("InheritanceComplexType_1", StorageType.MASTER), userSecurity);//$NON-NLS-1$
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(StoragePrepareTest.class.getResourceAsStream("InheritanceComplexType_1.xsd"));//$NON-NLS-1$
+        MockMetadataRepositoryAdmin.INSTANCE.register("InheritanceComplexType_1", repository);//$NON-NLS-1$
+
+        storage.init(getDatasource("H2-DS3"));// //$NON-NLS-1$
+        storage.prepare(repository, Collections.<Expression> emptySet(), true, true);
+        ((MockStorageAdmin) ServerContext.INSTANCE.get().getStorageAdmin()).register(storage);
+
+        //testing Add and Query record for Entity City, Organization
+        doAddAndQueryWithThreeLevelEntityCity(storage, repository);
+        doAddAndQueryWithThreeLevelEntityOrganization(storage, repository);
+        doDeleteAndQueryWithThreeLevelEntityOrganization(storage, repository);
+        storage.close();
+    }
+
+    private void doDeleteAndQueryWithThreeLevelEntityOrganization(Storage storage, MetadataRepository repository) {
+        storage.begin();
+        ComplexTypeMetadata organization = repository.getComplexType("Organization");//$NON-NLS-1$
+        ComplexTypeMetadata city = repository.getComplexType("City");//$NON-NLS-1$
+        UserQueryBuilder qb = from(organization);
+        UserQueryBuilder qb_city = from(city);
+        StorageResults results = storage.fetch(qb.getSelect());
+        StorageResults results_city = storage.fetch(qb_city.getSelect());
+        try {
+            assertEquals(2, results.getCount());
+            assertEquals(2, results_city.getCount());
+        } finally {
+            results.close();
+            results.close();
+            storage.end();
+        }
+
+        try {
+            storage.begin();
+            storage.delete(qb.getSelect());
+            storage.delete(qb_city.getSelect());
+            storage.commit();
+        } finally {
+            storage.end();
+        }
+
+        results = storage.fetch(qb.getSelect());
+        results_city = storage.fetch(qb_city.getSelect());
+        try {
+            assertEquals(0, results.getCount());
+            assertEquals(0, results_city.getCount());
+        } finally {
+            results.close();
+            storage.end();
+        }
+    }
+
+    private void doAddAndQueryWithThreeLevelEntityOrganization(Storage storage, MetadataRepository repository) {
+        storage.begin();
+        ComplexTypeMetadata organization = repository.getComplexType("Organization");//$NON-NLS-1$
+        UserQueryBuilder qb = from(organization);
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(0, results.getCount());
+        } finally {
+            results.close();
+        }
+        storage.end();
+
+        List<DataRecord> records = new ArrayList<DataRecord>();
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+        records.add(factory.read(repository, organization, "<Organization><org_id>11</org_id><address><street>part 1</street><city>[bj]</city><country><name>China</name><code>086</code></country></address></Organization>")); //$NON-NLS-1$
+        records.add(factory.read(repository, organization, "<Organization><org_id>22</org_id><address><street>part 2</street><city>[hb]</city><country><name>China</name><code>088</code></country></address></Organization>")); //$NON-NLS-1$
+        try {
+            storage.begin();
+            storage.update(records);
+            storage.commit();
+        } finally {
+            storage.end();
+        }
+
+        storage.begin();
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(2, results.getCount());
+            for (DataRecord result : results) {
+                String id = result.get("org_id").toString();
+                switch (id) {
+                case "11"://$NON-NLS-1$
+                    assertEquals("part 1", result.get("address/street"));//$NON-NLS-1$ //$NON-NLS-2$
+                    assertEquals("bj", ((DataRecord)result.get("address/city")).get("Code"));//$NON-NLS-1$ //$NON-NLS-2$
+                    assertEquals("China", result.get("address/country/name"));//$NON-NLS-1$ //$NON-NLS-2$
+                    assertEquals("086", result.get("address/country/code"));//$NON-NLS-1$ //$NON-NLS-2$
+                    break;
+                case "22"://$NON-NLS-1$
+                    assertEquals("part 2", result.get("address/street"));//$NON-NLS-1$ //$NON-NLS-2$
+                    assertEquals("hb", ((DataRecord)result.get("address/city")).get("Code"));//$NON-NLS-1$ //$NON-NLS-2$
+                    assertEquals("China", result.get("address/country/name"));//$NON-NLS-1$ //$NON-NLS-2$
+                    assertEquals("088", result.get("address/country/code"));//$NON-NLS-1$ //$NON-NLS-2$
+                    break;
+                default:
+                    assertNull(id);
+                }
+            }
+        } finally {
+            results.close();
+        }
+        storage.end();
+    }
+
+    private void doAddAndQueryWithThreeLevelEntityCity(Storage storage, MetadataRepository repository) {
+        storage.begin();
+        ComplexTypeMetadata city = repository.getComplexType("City");//$NON-NLS-1$
+        UserQueryBuilder qb = from(city);
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(0, results.getCount());
+        } finally {
+            results.close();
+        }
+        storage.end();
+
+        List<DataRecord> records = new ArrayList<DataRecord>();
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+        records.add(factory.read(repository, city, "<City><Code>bj</Code><Name>beijing</Name></City>")); //$NON-NLS-1$
+        records.add(factory.read(repository, city, "<City><Code>hb</Code><Name>hebei</Name></City>"));   //$NON-NLS-1$
+        try {
+            storage.begin();
+            storage.update(records);
+            storage.commit();
+        } finally {
+            storage.end();
+        }
+
+        storage.begin();
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(2, results.getCount());
+            for (DataRecord result : results) {
+                String id = result.get("Code").toString();
+                switch (id) {
+                case "bj"://$NON-NLS-1$
+                    assertEquals("beijing", result.get("Name"));//$NON-NLS-1$ //$NON-NLS-2$
+                    break;
+                case "hb"://$NON-NLS-1$
+                    assertEquals("hebei", result.get("Name"));//$NON-NLS-1$ //$NON-NLS-2$
+                    break;
+                default:
+                    assertNull(id);
+                }
+            }
+        } finally {
+            results.close();
+        }
+        storage.end();
+    }
+
     // TMDM-8022 custom decimal type totalDigits/fractionDigits is not considered while mapping to RDBMS db
     public void testDecimalComplexType() {
         Storage storage = new SecuredStorage(new HibernateStorage("Goods", StorageType.MASTER), userSecurity);//$NON-NLS-1$
@@ -530,4 +684,3 @@ public class StoragePrepareTest extends TestCase {
         }
     }
 }
-

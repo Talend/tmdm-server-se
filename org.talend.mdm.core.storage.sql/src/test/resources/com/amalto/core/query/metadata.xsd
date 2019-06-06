@@ -1807,7 +1807,7 @@
 					<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element maxOccurs="5" minOccurs="1" name="post_address"
+			<xsd:element maxOccurs="1" minOccurs="1" name="post_address"
 				type="AddressDetailType">
 				<xsd:annotation>
 					<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -2330,7 +2330,7 @@
 						<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 					</xsd:annotation>
 				</xsd:element>
-				<xsd:element name="translation" minOccurs="0" maxOccurs="unbounded">
+				<xsd:element name="translation" minOccurs="0" maxOccurs="1">
 					<xsd:annotation>
 						<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 					</xsd:annotation>
@@ -2710,9 +2710,6 @@
 			</xsd:element>
 		</xsd:all>
 	</xsd:complexType>
-	<xsd:simpleType name="UUID">
-		<xsd:restriction base="xsd:string"/>
-	</xsd:simpleType>
 	<xsd:element name="MainEntity" type="SubType">
         <xsd:annotation>
 			<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>

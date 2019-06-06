@@ -170,91 +170,101 @@ public class StorageQueryTest extends StorageTestCase {
 
         List<DataRecord> allRecords = new LinkedList<DataRecord>();
         allRecords
-                .add(factory
-                        .read(repository,
-                                country,
-                                "<Country><id>1</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France</name></Country>"));
+        .add(factory
+                .read(repository,
+                        country,
+                        "<Country><id>1</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France</name></Country>"));
 
         allRecords
-                .add(factory
-                        .read(repository,
-                                country,
-                                "<Country><id>2</id><creationDate>2011-10-10</creationDate><creationTime>2011-10-10T01:01:01</creationTime><name>USA</name><notes><note>Country note</note><comment>repeatable comment 1</comment><comment>Repeatable comment 2</comment></notes></Country>"));
+        .add(factory
+                .read(repository,
+                        country,
+                        "<Country><id>2</id><creationDate>2011-10-10</creationDate><creationTime>2011-10-10T01:01:01</creationTime><name>USA</name><notes><note>Country note</note><comment>repeatable comment 1</comment><comment>Repeatable comment 2</comment></notes></Country>"));
 
         allRecords
-                .add(factory
-                        .read(repository,
-                                address,
-                                "<Address><id>1</id><enterprise>false</enterprise><Street>Street1</Street><ZipCode>10000</ZipCode><City>City</City><country>[1]</country></Address>"));
+        .add(factory
+                .read(repository,
+                        address,
+                        "<Address><id>1</id><enterprise>false</enterprise><Street>Street1</Street><ZipCode>10000</ZipCode><City>City</City><country>[1]</country></Address>"));
         allRecords
-                .add(factory
-                        .read(repository,
-                                address,
-                                "<Address><id>1</id><enterprise>true</enterprise><Street>Street1</Street><ZipCode>10000</ZipCode><City>City</City><country>[2]</country></Address>"));
+        .add(factory
+                .read(repository,
+                        address,
+                        "<Address><id>1</id><enterprise>true</enterprise><Street>Street1</Street><ZipCode>10000</ZipCode><City>City</City><country>[2]</country></Address>"));
         allRecords
-                .add(factory
-                        .read(repository,
-                                address,
-                                "<Address><id>2&amp;2</id><enterprise>true</enterprise><Street>Street2</Street><ZipCode>10000</ZipCode><City>City</City><country>[2]</country></Address>"));
+        .add(factory
+                .read(repository,
+                        address,
+                        "<Address><id>2&amp;2</id><enterprise>true</enterprise><Street>Street2</Street><ZipCode>10000</ZipCode><City>City</City><country>[2]</country></Address>"));
         allRecords
-                .add(factory
-                        .read(repository,
-                                address,
-                                "<Address><id>3</id><enterprise>false</enterprise><Street>Street3</Street><ZipCode>10000</ZipCode><City>City</City><country>[1]</country></Address>"));
+        .add(factory
+                .read(repository,
+                        address,
+                        "<Address><id>3</id><enterprise>false</enterprise><Street>Street3</Street><ZipCode>10000</ZipCode><City>City</City><country>[1]</country></Address>"));
         allRecords
-                .add(factory
-                        .read(repository,
-                                address,
-                                "<Address><id>4</id><enterprise>false</enterprise><Street>Street3</Street><ZipCode>10000</ZipCode><City>City</City><OptionalCity>City2</OptionalCity><country>[1]</country></Address>"));
+        .add(factory
+                .read(repository,
+                        address,
+                        "<Address><id>4</id><enterprise>false</enterprise><Street>Street3</Street><ZipCode>10000</ZipCode><City>City</City><OptionalCity>City2</OptionalCity><country>[1]</country></Address>"));
         allRecords
-                .add(factory
-                        .read(repository,
-                                person,
-                                "<Person><id>1</id><score>130000.00</score><lastname>Dupond</lastname><resume>[EN:my splendid resume, splendid isn't it][FR:mon magnifique resume, n'est ce pas ?]</resume><middlename>John</middlename><firstname>Julien</firstname><addresses><address>[2&amp;2][true]</address><address>[1][false]</address></addresses><age>10</age><Status>Employee</Status><Available>true</Available></Person>"));
+        .add(factory
+                .read(repository,
+                        person,
+                        "<Person><id>1</id><score>130000.00</score><lastname>Dupond</lastname><resume>[EN:my splendid resume, splendid isn't it][FR:mon magnifique resume, n'est ce pas ?]</resume><middlename>John</middlename><firstname>Julien</firstname><addresses><address>[2&amp;2][true]</address><address>[1][false]</address></addresses><age>10</age><Status>Employee</Status><Available>true</Available></Person>"));
         allRecords
-                .add(factory
-                        .read(repository,
-                                person,
-                                "<Person><id>2</id><score>170000.00</score><lastname>Dupont</lastname><middlename>John</middlename><firstname>Robert-Julien</firstname><addresses><address>[1][false]</address><address>[2&amp;2][true]</address></addresses><age>20</age><Status>Customer</Status><Available>false</Available></Person>"));
+        .add(factory
+                .read(repository,
+                        person,
+                        "<Person><id>2</id><score>170000.00</score><lastname>Dupont</lastname><middlename>John</middlename><firstname>Robert-Julien</firstname><addresses><address>[1][false]</address><address>[2&amp;2][true]</address></addresses><age>20</age><Status>Customer</Status><Available>false</Available></Person>"));
         allRecords
-                .add(factory
-                        .read(repository,
-                                person,
-                                "<Person><id>3</id><score>200000.00</score><lastname>Leblanc</lastname><middlename>John</middlename><firstname>Juste</firstname><addresses><address>[3][false]</address><address>[1][false]</address></addresses><age>30</age><Status>Friend</Status></Person>"));
+        .add(factory
+                .read(repository,
+                        person,
+                        "<Person><id>3</id><score>200000.00</score><lastname>Leblanc</lastname><middlename>John</middlename><firstname>Juste</firstname><addresses><address>[3][false]</address><address>[1][false]</address></addresses><age>30</age><Status>Friend</Status></Person>"));
         allRecords
-                .add(factory
-                        .read(repository,
-                                person,
-                                "<Person><id>4</id><score>200000.00</score><lastname>Leblanc</lastname><middlename>John</middlename><firstname>Julien</firstname><age>30</age><Status>Friend</Status></Person>"));
-        allRecords
-                .add(factory
-                        .read(repository,
-                                person,
-                                "<Person><id>5</id><score>140000.00</score><lastname>John</lastname><resume>[EN:apple][FR:pomme]</resume><middlename>Mike</middlename><firstname>Bill</firstname><addresses><address>[2&amp;2][true]</address><address>[1][false]</address></addresses><age>10</age><Status>Employee</Status><Available>true</Available></Person>"));
-        allRecords
-                .add(factory
-                        .read(repository,
-                                person,
-                                "<Person><id>6</id><score>150000.00</score><lastname>Eric</lastname><resume>[EN:jelle][FR:gelee]</resume><middlename>Mike</middlename><firstname>Binary</firstname><addresses><address>[2&amp;2][true]</address><address>[1][false]</address></addresses><age>10</age><Status>Employee</Status><Available>true</Available></Person>"));
+        .add(factory
+                .read(repository,
+                        person,
+                        "<Person><id>4</id><score>200000.00</score><lastname>Leblanc</lastname><middlename>John</middlename><firstname>Julien</firstname><age>30</age><Status>Friend</Status></Person>"));
+        // used id=(5,6) test multilingual field sort
+        allRecords.add(factory.read(repository, person,
+                "<Person><id>5</id><score>140000.00</score><lastname>John</lastname><resume>[EN:apple][FR:pomme]</resume><middlename>Mike</middlename><firstname>Bill</firstname><addresses><address>[2&amp;2][true]</address><address>[1][false]</address></addresses><age>10</age><Status>Employee</Status><Available>true</Available></Person>"));
+        allRecords.add(factory.read(repository, person,
+                "<Person><id>6</id><score>150000.00</score><lastname>Eric</lastname><resume>[EN:jelle][FR:gelee]</resume><middlename>Mike</middlename><firstname>Binary</firstname><addresses><address>[2&amp;2][true]</address><address>[1][false]</address></addresses><age>10</age><Status>Employee</Status><Available>true</Available></Person>"));
+        // used id = (7,8,9) test the multilingual field sort is same with normal string field in English language
+        allRecords.add(factory.read(repository, person,
+                "<Person><id>7</id><score>150000.00</score><lastname>Eric</lastname><resume>[EN:abdon][FR:convensation]</resume><middlename>abdon</middlename><firstname>Binary</firstname><addresses><address>[2&amp;2][true]</address><address>[1][false]</address></addresses><age>10</age><Status>Employee</Status><Available>true</Available></Person>"));
+        allRecords.add(factory.read(repository, person,
+                "<Person><id>8</id><score>150000.00</score><lastname>Eric</lastname><resume>[EN:mature][FR:tablet]</resume><middlename>mature</middlename><firstname>Binary</firstname><addresses><address>[2&amp;2][true]</address><address>[1][false]</address></addresses><age>10</age><Status>Employee</Status><Available>true</Available></Person>"));
+        allRecords.add(factory.read(repository, person,
+                "<Person><id>9</id><score>150000.00</score><lastname>Eric</lastname><resume>[EN:sandal][FR:facsimile]</resume><middlename>sandal</middlename><firstname>Binary</firstname><addresses><address>[2&amp;2][true]</address><address>[1][false]</address></addresses><age>10</age><Status>Employee</Status><Available>true</Available></Person>"));
+        // used id = (10,11,12) test the multilingual field sort is same with normal string field in Franch language
+        allRecords.add(factory.read(repository, person,
+                "<Person><id>10</id><score>150000.00</score><lastname>Eric</lastname><resume>[EN:abdon][FR:convensation]</resume><middlename>convensation</middlename><firstname>Binary</firstname><addresses><address>[2&amp;2][true]</address><address>[1][false]</address></addresses><age>10</age><Status>Employee</Status><Available>true</Available></Person>"));
+        allRecords.add(factory.read(repository, person,
+                "<Person><id>11</id><score>150000.00</score><lastname>Eric</lastname><resume>[EN:mature][FR:tablet]</resume><middlename>tablet</middlename><firstname>Binary</firstname><addresses><address>[2&amp;2][true]</address><address>[1][false]</address></addresses><age>10</age><Status>Employee</Status><Available>true</Available></Person>"));
+        allRecords.add(factory.read(repository, person,
+                "<Person><id>12</id><score>150000.00</score><lastname>Eric</lastname><resume>[EN:sandal][FR:facsimile]</resume><middlename>facsimile</middlename><firstname>Binary</firstname><addresses><address>[2&amp;2][true]</address><address>[1][false]</address></addresses><age>10</age><Status>Employee</Status><Available>true</Available></Person>"));
+
         allRecords.add(factory.read(repository, b, "<B><id>1</id><textB>TextB</textB></B>"));
         allRecords.add(factory.read(repository, d, "<D><id>2</id><textB>TextBD</textB><textD>TextDD</textD></D>"));
         allRecords.add(factory.read(repository, a, "<A><id>1</id><textA>TextA</textA><nestedB><text>Text1</text></nestedB></A>"));
         allRecords.add(factory.read(repository, a, "<A><id>2</id><textA>TextA</textA><nestedB><text>Text2</text></nestedB><refA>[1]</refA></A>"));
         allRecords
-                .add(factory
-                        .read(repository,
-                                a,
-                                "<A xmlns:tmdm=\"http://www.talend.com/mdm\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><id>3</id><refB tmdm:type=\"B\">[1]</refB><textA>TextA</textA><nestedB xsi:type=\"Nested\"><text>Text</text></nestedB></A>"));
+        .add(factory
+                .read(repository,
+                        a,
+                        "<A xmlns:tmdm=\"http://www.talend.com/mdm\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><id>3</id><refB tmdm:type=\"B\">[1]</refB><textA>TextA</textA><nestedB xsi:type=\"Nested\"><text>Text</text></nestedB></A>"));
         allRecords
-                .add(factory
-                        .read(repository,
-                                a,
-                                "<A xmlns:tmdm=\"http://www.talend.com/mdm\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><id>4</id><refB tmdm:type=\"D\">[2]</refB><textA>TextA</textA><nestedB xsi:type=\"Nested\"><text>Text</text></nestedB></A>"));
+        .add(factory
+                .read(repository,
+                        a,
+                        "<A xmlns:tmdm=\"http://www.talend.com/mdm\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><id>4</id><refB tmdm:type=\"D\">[2]</refB><textA>TextA</textA><nestedB xsi:type=\"Nested\"><text>Text</text></nestedB></A>"));
         allRecords
-                .add(factory
-                        .read(repository,
-                                a,
-                                "<A xmlns:tmdm=\"http://www.talend.com/mdm\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><id>5</id><refB tmdm:type=\"B\">[2]</refB><textA>TextA</textA><nestedB xsi:type=\"Nested\"><text>Text</text></nestedB></A>"));
+        .add(factory
+                .read(repository,
+                        a,
+                        "<A xmlns:tmdm=\"http://www.talend.com/mdm\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><id>5</id><refB tmdm:type=\"B\">[2]</refB><textA>TextA</textA><nestedB xsi:type=\"Nested\"><text>Text</text></nestedB></A>"));
 
         allRecords.add(factory.read(repository, supplier, "<Supplier><Id>1</Id><SupplierName>Renault</SupplierName><Contact><Name>Jean Voiture</Name><Phone>33123456789</Phone><Email>test@test.org</Email></Contact></Supplier>"));
         allRecords.add(factory.read(repository, supplier, "<Supplier><Id>.127</Id><SupplierName>Renault</SupplierName><Contact><Name>Jean Voiture</Name><Phone>33123456789</Phone><Email>test@test.org</Email></Contact></Supplier>"));
@@ -272,7 +282,7 @@ public class StorageQueryTest extends StorageTestCase {
         allRecords.add(factory.read(repository, product, "<Product><Id>1</Id><Name>Product name</Name><ShortDescription>Short description word</ShortDescription><LongDescription>Long description</LongDescription><Price>10</Price><Features><Sizes><Size>Small</Size><Size>Medium</Size><Size>Large</Size></Sizes><Colors><Color>Blue</Color><Color>Red</Color></Colors></Features><Status>Pending</Status><Family>[2]</Family><Supplier>[1]</Supplier></Product>"));
         allRecords.add(factory.read(repository, product, "<Product><Id>2</Id><Name>Renault car</Name><ShortDescription>A car</ShortDescription><LongDescription>Long description 2</LongDescription><Price>10</Price><Features><Sizes><Size>Large</Size></Sizes><Colors><Color>Blue 2</Color><Color>Blue 1</Color><Color>Klein blue2</Color></Colors></Features><Family/><Status>Pending</Status><Supplier>[2]</Supplier><Supplier>[1]</Supplier><Stores><Store>[1]</Store></Stores></Product>"));
         allRecords.add(factory.read(repository, product, "<Product><Id>3</Id><Name>Product evan</Name><ShortDescription>evan descn</ShortDescription><LongDescription>Evan test descn</LongDescription><Price>11</Price><Features><Sizes></Sizes><Colors></Colors></Features><Status>Pending</Status><Family>[123 456]</Family><Supplier/></Product>"));
-        
+
         allRecords.add(factory.read(repository, e1, E1_Record1));
         allRecords.add(factory.read(repository, e1, E1_Record2));
         allRecords.add(factory.read(repository, e1, E1_Record3));
@@ -287,45 +297,45 @@ public class StorageQueryTest extends StorageTestCase {
         allRecords.add(factory.read(repository, e2, E2_Record7));
         allRecords.add(factory.read(repository, e2, E2_Record7));
         allRecords
-                .add(factory
-                        .read(repository, manager1,
-                                "<Manager1 xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><birthday>2014-05-01T12:00:00</birthday><id>1</id></Manager1>"));
+        .add(factory
+                .read(repository, manager1,
+                        "<Manager1 xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><birthday>2014-05-01T12:00:00</birthday><id>1</id></Manager1>"));
         allRecords
-                .add(factory
-                        .read(repository,
-                                employee1,
-                                "<Employee1 xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><Id>1</Id><Holiday>2014-05-16T12:00:00</Holiday><birthday>2014-05-23T12:00:00</birthday><manager>[1][2014-05-01T12:00:00]</manager></Employee1>"));
+        .add(factory
+                .read(repository,
+                        employee1,
+                        "<Employee1 xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><Id>1</Id><Holiday>2014-05-16T12:00:00</Holiday><birthday>2014-05-23T12:00:00</birthday><manager>[1][2014-05-01T12:00:00]</manager></Employee1>"));
         allRecords.add(factory.read(repository, entityA,
                 "<EntityA xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><IdA>100</IdA><ContainedField1><text>text1</text></ContainedField1></EntityA>"));
         allRecords.add(factory.read(repository, entityB,
                 "<EntityB xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><IdB>B1</IdB><A_FK>[100]</A_FK></EntityB>"));
         allRecords
-                .add(factory
-                        .read(repository, ContainedEntityB,
-                                "<ContainedEntityB xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><id>B_record1</id></ContainedEntityB>"));
+        .add(factory
+                .read(repository, ContainedEntityB,
+                        "<ContainedEntityB xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><id>B_record1</id></ContainedEntityB>"));
         allRecords
-                .add(factory
-                        .read(repository, ContainedEntityB,
-                                "<ContainedEntityB xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><id>B_record2</id></ContainedEntityB>"));
+        .add(factory
+                .read(repository, ContainedEntityB,
+                        "<ContainedEntityB xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><id>B_record2</id></ContainedEntityB>"));
         allRecords
-                .add(factory
-                        .read(repository, ContainedEntityB,
-                                "<ContainedEntityB xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><id>B_record3</id></ContainedEntityB>"));
+        .add(factory
+                .read(repository, ContainedEntityB,
+                        "<ContainedEntityB xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><id>B_record3</id></ContainedEntityB>"));
         allRecords
-                .add(factory
-                        .read(repository, ContainedEntityB,
-                                "<ContainedEntityB xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><id>B_record4</id></ContainedEntityB>"));
+        .add(factory
+                .read(repository, ContainedEntityB,
+                        "<ContainedEntityB xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><id>B_record4</id></ContainedEntityB>"));
         allRecords
-                .add(factory
-                        .read(repository, ContainedEntityB,
-                                "<ContainedEntityB xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><id>B_record5</id></ContainedEntityB>"));
+        .add(factory
+                .read(repository, ContainedEntityB,
+                        "<ContainedEntityB xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><id>B_record5</id></ContainedEntityB>"));
         allRecords.add(factory.read(repository, city, "<City xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><Code>BJ</Code><Name>Beijing</Name></City>"));
         allRecords.add(factory.read(repository, city, "<City xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><Code>SH</Code><Name>Shanghai</Name></City>"));
         allRecords
-                .add(factory
-                        .read(repository,
-                                organization,
-                                "<Organization xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><org_id>1</org_id><post_address><street>changan rd</street><city>[BJ]</city><country><name>cn</name><code></code></country></post_address><org_address><street>waitan rd</street><city>[SH]</city><country><name>fr</name><code>33</code></country></org_address></Organization>"));
+        .add(factory
+                .read(repository,
+                        organization,
+                        "<Organization xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><org_id>1</org_id><post_address><street>changan rd</street><city>[BJ]</city><country><name>cn</name><code></code></country></post_address><org_address><street>waitan rd</street><city>[SH]</city><country><name>fr</name><code>33</code></country></org_address></Organization>"));
         allRecords.add(factory.read(repository, repeatableElementsEntity, RepeatableElementsEntity_Record));
         allRecords.add(factory.read(repository, rr, RR_Record1));
         allRecords.add(factory.read(repository, rr, RR_Record2));
@@ -340,11 +350,11 @@ public class StorageQueryTest extends StorageTestCase {
         allRecords.add(factory.read(repository, contexte, "<Contexte><IdContexte>222</IdContexte><name>ccc</name></Contexte>"));
         allRecords.add(factory.read(repository, contexte, "<Contexte><IdContexte>333</IdContexte><name>ddd</name></Contexte>"));
         allRecords.add(factory.read(repository, personne, "<Personne><IdMDM>1</IdMDM><Contextes><ContexteFk>[111]</ContexteFk><ContexteFk>[222]</ContexteFk><ContexteFk>[333]</ContexteFk></Contextes></Personne>"));
-        
+
         allRecords.add(factory.read(repository, cpo_service,"<cpo_service><id_service>111111</id_service><etat>I</etat></cpo_service>"));
         allRecords.add(factory.read(repository, cpo_service,"<cpo_service><id_service>222222</id_service><id_service_pere>[111111]</id_service_pere><etat>I</etat></cpo_service>"));
         allRecords.add(factory.read(repository, hierarchy, "<HierarchySearchItem><HierarchySearchName>test1</HierarchySearchName><Owner>administrator</Owner><Separator>-</Separator><HierarchyRelation>true</HierarchyRelation><HierarchySearchCriterias><Concept>cpo_service</Concept><View>Browse_items_cpo_service</View><LabelXpath>cpo_service/id_service</LabelXpath><FkXpath>cpo_service/id_service_pere</FkXpath></HierarchySearchCriterias><HierarchySearchCriterias><Concept>cpo_service</Concept><View>Browse_items_cpo_service</View><LabelXpath>cpo_service/id_service</LabelXpath></HierarchySearchCriterias></HierarchySearchItem>"));
-        
+
         allRecords.add(factory.read(repository, location, "<Location><LocationId>t1</LocationId><name>t1</name></Location>"));
         allRecords.add(factory.read(repository, location, "<Location><LocationId>t2</LocationId><name>t2</name><translation><language>en</language><locationTranslation>Trans1</locationTranslation><src>src</src></translation><translation><language>fr</language><locationTranslation>Trans2</locationTranslation><src>src</src></translation></Location>"));
         allRecords.add(factory.read(repository, organisation, "<Organisation><OrganisationId>1</OrganisationId><locations><src>abc</src><location>[t1]</location></locations></Organisation>"));
@@ -356,10 +366,10 @@ public class StorageQueryTest extends StorageTestCase {
         allRecords.add(factory.read(repository, t_entity, "<T_Entity xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><T_EntityId>T_id1</T_EntityId><T_Field xsi:type=\"T1\"><T1_Field1><A1_Field1><element><elementB>[E_id1]</elementB></element></A1_Field1><A1_Field2><element><elementB>[E_id2]</elementB></element></A1_Field2></T1_Field1></T_Field></T_Entity>"));
 
         allRecords
-                .add(factory
-                        .read(repository,
-                                type,
-                                "<TypeA><Id>1</Id><string>string1</string><boolean>true</boolean><float>1.0</float><double>1.0</double><decimal>1.00</decimal><dateTime>2017-09-15T12:00:00</dateTime><time>12:00:00</time><date>2017-09-15</date><integer>1</integer><long>1</long><int>1</int><short>1</short><byte>1</byte></TypeA>"));
+        .add(factory
+                .read(repository,
+                        type,
+                        "<TypeA><Id>1</Id><string>string1</string><boolean>true</boolean><float>1.0</float><double>1.0</double><decimal>1.00</decimal><dateTime>2017-09-15T12:00:00</dateTime><time>12:00:00</time><date>2017-09-15</date><integer>1</integer><long>1</long><int>1</int><short>1</short><byte>1</byte></TypeA>"));
         allRecords
         .add(factory
                 .read(repository,
@@ -382,7 +392,21 @@ public class StorageQueryTest extends StorageTestCase {
         } finally {
             storage.end();
         }
+    }
 
+    private void postProcessData() {
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+        List<DataRecord> allRecords = new LinkedList<DataRecord>();
+        allRecords.add(factory.read(repository, organization,
+                "<Organization xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><org_id>1</org_id><post_address><street>changan rd</street><country><name>cn</name><code></code></country></post_address><org_address><street>waitan rd</street><country><name>fr</name><code>33</code></country></org_address></Organization>"));
+        allRecords.add(factory.read(repository, t_entity, "<T_Entity xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><T_EntityId>T_id1</T_EntityId><T_Field xsi:type=\"T1\"><T1_Field1><A1_Field1><element></element></A1_Field1><A1_Field2><element></element></A1_Field2></T1_Field1></T_Field></T_Entity>"));
+        try {
+            storage.begin();
+            storage.update(allRecords);
+            storage.commit();
+        } finally {
+            storage.end();
+        }
     }
 
     @Override
@@ -394,6 +418,7 @@ public class StorageQueryTest extends StorageTestCase {
 
     @Override
     public void tearDown() throws Exception {
+        postProcessData();
         try {
             storage.begin();
             {
@@ -4718,7 +4743,7 @@ public class StorageQueryTest extends StorageTestCase {
         }
 
         StorageResults results = storage.fetch(qb.getSelect());
-        assertEquals(2, results.getCount());
+        assertEquals(1, results.getCount());
 
         DataRecordWriter writer = new ViewSearchResultsWriter();
         ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -4733,13 +4758,8 @@ public class StorageQueryTest extends StorageTestCase {
                 throw new RuntimeException(e);
             }
         }
-        assertEquals(2, strings.size());
-        assertEquals(
-                "<result xmlns:metadata=\"http://www.talend.com/mdm/metadata\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n\t<OrganisationId>2</OrganisationId>\n\t<LocationId>t2</LocationId>\n\t<locationTranslation>Trans1</locationTranslation>\n</result>",
-                strings.get(0));
-        assertEquals(
-                "<result xmlns:metadata=\"http://www.talend.com/mdm/metadata\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n\t<OrganisationId>2</OrganisationId>\n\t<LocationId>t2</LocationId>\n\t<locationTranslation>Trans2</locationTranslation>\n</result>",
-                strings.get(1));
+        assertEquals(1, strings.size());
+        assertEquals("<result xmlns:metadata=\"http://www.talend.com/mdm/metadata\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n\t<OrganisationId>2</OrganisationId>\n\t<LocationId>t2</LocationId>\n\t<locationTranslation>Trans2</locationTranslation>\n</result>", strings.get(0));
     }
     
     public void testAdvancedSearchWithMultiCondition() throws Exception {

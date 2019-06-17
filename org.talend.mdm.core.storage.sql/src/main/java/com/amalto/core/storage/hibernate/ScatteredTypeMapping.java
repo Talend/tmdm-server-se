@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import com.amalto.core.storage.record.StorageConstants;
 import org.apache.commons.lang.NotImplementedException;
@@ -32,7 +31,6 @@ import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
 import org.talend.mdm.commmon.metadata.TypeMetadata;
 
-import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.record.metadata.DataRecordMetadata;
 import com.amalto.core.storage.record.metadata.UnsupportedDataRecordMetadata;
@@ -84,7 +82,7 @@ class ScatteredTypeMapping extends TypeMapping {
                             }
                             boolean isSameType = mapping.getUser().equals(referencedObject.getType());
                             if (isSameType) {
-                                session.evict(existingValue);
+                                session.update(existingValue);
                                 to.set(referenceFieldMetadata.getName(), _setValues(session, referencedObject, existingValue));
                             } else {
                                 session.delete(existingValue);

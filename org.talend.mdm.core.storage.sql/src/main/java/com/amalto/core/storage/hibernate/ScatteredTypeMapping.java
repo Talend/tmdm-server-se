@@ -23,6 +23,7 @@ import com.amalto.core.storage.record.StorageConstants;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
+import org.hibernate.UnresolvableObjectException;
 import org.hibernate.collection.internal.PersistentList;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedComplexTypeMetadata;
@@ -82,7 +83,11 @@ class ScatteredTypeMapping extends TypeMapping {
                             }
                             boolean isSameType = mapping.getUser().equals(referencedObject.getType());
                             if (isSameType) {
-                                session.refresh(existingValue);
+                                try {
+                                    session.refresh(existingValue);
+                                } catch (UnresolvableObjectException e) {
+                                    // only in cache, no need to refresh.
+                                }
                                 to.set(referenceFieldMetadata.getName(), _setValues(session, referencedObject, existingValue));
                             } else {
                                 session.delete(existingValue);

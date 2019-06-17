@@ -83,11 +83,8 @@ class ScatteredTypeMapping extends TypeMapping {
                             }
                             boolean isSameType = mapping.getUser().equals(referencedObject.getType());
                             if (isSameType) {
-                                try {
-                                    session.refresh(existingValue);
-                                } catch (UnresolvableObjectException e) {
-                                    // only in cache, no need to refresh.
-                                }
+                                session.evict(existingValue);
+                                session.update(existingValue);
                                 to.set(referenceFieldMetadata.getName(), _setValues(session, referencedObject, existingValue));
                             } else {
                                 session.delete(existingValue);

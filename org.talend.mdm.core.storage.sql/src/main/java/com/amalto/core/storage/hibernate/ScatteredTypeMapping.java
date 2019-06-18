@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import com.amalto.core.storage.record.StorageConstants;
 import org.apache.commons.lang.NotImplementedException;
@@ -83,11 +82,8 @@ class ScatteredTypeMapping extends TypeMapping {
                             }
                             boolean isSameType = mapping.getUser().equals(referencedObject.getType());
                             if (isSameType) {
-                                Wrapper newValue = createObject(contextClassLoader, referencedObject);
-                                if (!Objects.deepEquals(newValue, existingValue)) {
-                                    session.evict(existingValue);
-                                    session.update(existingValue);
-                                }
+                                session.evict(existingValue);
+                                session.update(existingValue);
                                 to.set(referenceFieldMetadata.getName(), _setValues(session, referencedObject, existingValue));
                             } else {
                                 session.delete(existingValue);

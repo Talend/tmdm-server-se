@@ -85,7 +85,8 @@ class ScatteredTypeMapping extends TypeMapping {
                             if (isSameType) {
                                 Wrapper newValue = createObject(contextClassLoader, referencedObject);
                                 if (!Objects.deepEquals(newValue, existingValue)) {
-                                    existingValue = newValue;
+                                    session.evict(existingValue);
+                                    session.update(existingValue);
                                 }
                                 to.set(referenceFieldMetadata.getName(), _setValues(session, referencedObject, existingValue));
                             } else {

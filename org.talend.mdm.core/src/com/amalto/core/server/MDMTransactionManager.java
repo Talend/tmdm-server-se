@@ -206,7 +206,9 @@ public class MDMTransactionManager implements TransactionManager {
 
     @Override
     public boolean hasTransaction() {
-        return !getTransactionStack().isEmpty();
+        synchronized (currentTransactions) {
+            return !getTransactionStack().isEmpty();
+        }
     }
 
     private Stack<Transaction> getTransactionStack(){

@@ -62,7 +62,7 @@ public class SerializableListWriter implements MessageBodyWriter<SerializableLis
             bw.flush();
         } else if (mediaType.equals(MediaType.APPLICATION_JSON_TYPE)) {
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(outputStream));
-            bw.write("{" + strings.getRootElement() + ":[");
+            bw.write("{\"" + strings.getRootElement() + "\":[");
             Iterator iterator = strings.iterator();
             while (iterator.hasNext()) {
                 bw.write('\"' + String.valueOf(iterator.next()) + '\"');

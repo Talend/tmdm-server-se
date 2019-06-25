@@ -31,7 +31,6 @@ import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
 import org.talend.mdm.commmon.metadata.TypeMetadata;
 
-import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.record.metadata.DataRecordMetadata;
 import com.amalto.core.storage.record.metadata.UnsupportedDataRecordMetadata;
@@ -75,9 +74,22 @@ class ScatteredTypeMapping extends TypeMapping {
                     Wrapper existingValue = (Wrapper) to.get(referenceFieldMetadata.getName());
                     if (referencedObject != null) {
                         if (existingValue != null) {
-                            session.delete(existingValue);
-                            Wrapper newValue = createObject(contextClassLoader, referencedObject);
-                            to.set(referenceFieldMetadata.getName(), _setValues(session, referencedObject, newValue));
+                            // Check for type change
+                            ComplexTypeMetadata existingType = classLoader.getTypeFromClass(existingValue.getClass());
+                            TypeMapping mapping = mappings.getMappingFromDatabase(existingType);
+                            if (mapping == null) {
+                                throw new IllegalStateException("Type '" + existingType.getName() + "' has no mapping."); //$NON-NLS-1$ //$NON-NLS-2$
+                            }
+                            boolean isSameType = mapping.getUser().equals(referencedObject.getType());
+                            if (isSameType) {
+                                session.evict(existingValue);
+                                session.update(existingValue);
+                                to.set(referenceFieldMetadata.getName(), _setValues(session, referencedObject, existingValue));
+                            } else {
+                                session.delete(existingValue);
+                                Wrapper newValue = createObject(contextClassLoader, referencedObject);
+                                to.set(referenceFieldMetadata.getName(), _setValues(session, referencedObject, newValue));
+                            }
                         } else {
                             Wrapper object = createObject(contextClassLoader, referencedObject);
                             to.set(referenceFieldMetadata.getName(), _setValues(session, referencedObject, object));

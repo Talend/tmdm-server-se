@@ -10,7 +10,6 @@
 package org.talend.mdm.webapp.base.server;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -186,11 +185,12 @@ public class ForeignKeyHelper {
                     // TMDM-5276: use substringBeforeLast in case sort field is a contained field
                     // (Entity/field1/.../fieldN)
                     xpath = config.getSortField();
+                    // Set sort language if foreign key info field is multiple lingual.
+                    if (Types.MULTI_LINGUAL.equals(entityModel.getTypeModel(config.getSortField()).getType().getTypeName())) {
+                        OrderBy.SortLanguage.set(language.toUpperCase());
+                    }
                 } else {
                     xpath = StringUtils.substringBefore(xPaths.get(0), "/") + "/../../i"; //$NON-NLS-1$ //$NON-NLS-2$
-                }
-                if (Types.MULTI_LINGUAL.equals(entityModel.getTypeModel(config.getSortField()).getType().getTypeName())) {
-                    OrderBy.SortLanguage.set(language.toUpperCase());
                 }
             } else {
                 xpath = null;

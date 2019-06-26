@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.TreeMap;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 
@@ -140,7 +141,7 @@ public abstract class StorageClassLoader extends ClassLoader {
         assertNotClosed();
         // First pass: strict class name equality (don't use isAssignable).
         for (Map.Entry<String, Class<? extends Wrapper>> typeMetadata : registeredClasses.entrySet()) {
-            if (typeMetadata.getValue().getName().equals(clazz.getName())) {
+            if (typeMetadata.getValue().getName().equals(StringUtils.substringBefore(clazz.getName(), "_$$_"))) { //$NON-NLS-1$
                 return knownTypes.get(typeMetadata.getKey());
             }
         }

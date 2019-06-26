@@ -505,7 +505,7 @@ public class MetadataRepositoryTest extends TestCase {
         assertIsBefore(sortTypes, repository, "SiteInjectionRpt", "Gdp");
         assertIsBefore(sortTypes, repository, "UseUrse", "Gdp");
         assertIsBefore(sortTypes, repository, "EdaFuture", "Contrat");
-        assertIsBefore(sortTypes, repository, "Interlocuteur", "EdaFut ure");
+        assertIsBefore(sortTypes, repository, "Interlocuteur", "EdaFuture");
         assertIsBefore(sortTypes, repository, "UseUrse", "EdaFuture");
         assertIsBefore(sortTypes, repository, "Pays", "EdaFuture");
     }

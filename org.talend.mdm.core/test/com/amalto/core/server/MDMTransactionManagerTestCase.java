@@ -18,6 +18,8 @@ import org.junit.Test;
 import com.amalto.core.storage.transaction.Transaction;
 import com.amalto.core.storage.transaction.Transaction.Lifetime;
 
+import java.util.ArrayList;
+import java.util.List;
 
 public class MDMTransactionManagerTestCase {
 
@@ -30,7 +32,7 @@ public class MDMTransactionManagerTestCase {
 
     @After
     public void teardown() throws Exception {
-        if(transactionManager != null){
+        if (transactionManager != null) {
             transactionManager.close();
         }
     }
@@ -67,17 +69,14 @@ public class MDMTransactionManagerTestCase {
         Assert.assertFalse(transactionManager.hasTransaction());
         final Transaction transaction = transactionManager.create(Lifetime.AD_HOC);
         Assert.assertTrue(transactionManager.hasTransaction());
-        Thread t = new Thread(new Runnable(){
-            @Override
-            public void run() {
-                Assert.assertFalse(transactionManager.hasTransaction());
-                transactionManager.associate(transaction);
-                Assert.assertTrue(transactionManager.hasTransaction());
-                Transaction transaction2 = transactionManager.currentTransaction();
-                Assert.assertSame(transaction, transaction2);
-                transactionManager.dissociate(transaction);
-                Assert.assertFalse(transactionManager.hasTransaction());
-            }
+        Thread t = new Thread(() -> {
+            Assert.assertFalse(transactionManager.hasTransaction());
+            transactionManager.associate(transaction);
+            Assert.assertTrue(transactionManager.hasTransaction());
+            Transaction transaction2 = transactionManager.currentTransaction();
+            Assert.assertSame(transaction, transaction2);
+            transactionManager.dissociate(transaction);
+            Assert.assertFalse(transactionManager.hasTransaction());
         });
         t.start();
         t.join();
@@ -101,13 +100,8 @@ public class MDMTransactionManagerTestCase {
     @Test
     public void testRemoveTransactionsAssociatedToSeveralThreads() throws Exception {
         final Transaction transaction = transactionManager.create(Lifetime.AD_HOC);
-        for(int i=0; i<10; i++){
-            Thread t = new Thread(new Runnable(){
-                @Override
-                public void run() {
-                    transactionManager.associate(transaction);
-                }
-            });
+        for (int i = 0; i < 10; i++) {
+            Thread t = new Thread(() -> transactionManager.associate(transaction));
             t.start();
             t.join();
         }
@@ -172,4 +166,35 @@ public class MDMTransactionManagerTestCase {
         transactionManager.dissociate(transaction);
     }
 
+    @Test
+    public void testRemoveTransactionsAndHasTransactionToSeveralThreads() throws Exception {
+        List<Thread> threadList = new ArrayList<>();
+        for (int i = 0; i < 2000; i++) {
+            threadList.add(new Thread(() -> {
+                try {
+                    transactionManager.hasTransaction();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }));
+        }
+
+        Thread t1 = new Thread(() -> {
+            for (Thread thread : threadList) {
+                thread.start();
+            }
+        });
+
+        t1.start();
+
+        for (int i = 0; i < 50; i++) {
+            Transaction transaction = transactionManager.create(Lifetime.AD_HOC);
+            try {
+                transactionManager.remove(transaction);
+            } catch (Exception e) {
+                Assert.fail("java.util.ConcurrentModificationException happens.");
+            }
+        }
+        t1.interrupt();
+    }
 }

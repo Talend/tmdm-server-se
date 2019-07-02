@@ -302,7 +302,14 @@ public class DroppedItemPOJO implements Serializable {
         ItemPOJOPK refItemPOJOPK = droppedItemPOJOPK.getRefItemPOJOPK();
         String actionName = "load"; //$NON-NLS-1$
         //for load we need to be admin, or have a role of admin , or role of write on instance or role of read on instance
-        rolesFilter(refItemPOJOPK, actionName, "r"); //$NON-NLS-1$
+        try {
+            rolesFilter(refItemPOJOPK, actionName, "r"); //$NON-NLS-1$
+        } catch (XtentisException e1) {
+            LOGGER.error("If failed to authorize on a dropped item, return a empty dropped item.");
+            ItemPOJOPK itemPOJOPK = droppedItemPOJOPK.getRefItemPOJOPK();
+            return new DroppedItemPOJO(itemPOJOPK.getDataClusterPOJOPK(), droppedItemPOJOPK.getUniquePK(),
+                    itemPOJOPK.getConceptName(), itemPOJOPK.getIds(), droppedItemPOJOPK.getPartPath(), null, null, 0L);
+        }
         //get XmlServerSLWrapperLocal
         XmlServer server = Util.getXmlServerCtrlLocal();
         //load the dropped item

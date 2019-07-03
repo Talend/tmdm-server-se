@@ -32,12 +32,12 @@ import junit.framework.TestCase;
 
 public class DefaultRecycleBinTest extends TestCase {
 
-    private static boolean BEANDELEGATORCONTAINERFLAG = false;
+    private static boolean BEAN_DELEGATOR_CONTAINER_FLAG = false;
 
     private static void createBeanDelegatorContainer() {
-        if (!BEANDELEGATORCONTAINERFLAG) {
+        if (!BEAN_DELEGATOR_CONTAINER_FLAG) {
             BeanDelegatorContainer.createInstance();
-            BEANDELEGATORCONTAINERFLAG = true;
+            BEAN_DELEGATOR_CONTAINER_FLAG = true;
         }
     }
 
@@ -75,7 +75,7 @@ public class DefaultRecycleBinTest extends TestCase {
         try {
             DataClusterPOJOPK dataClusterPK1 = new DataClusterPOJOPK(new ObjectPOJOPK(new String[] { "1" }));
             BeanDelegatorContainer.getInstance().getItemCtrlDelegator().getItems(dataClusterPK1, conceptNameA, null, 0,
-                    clusterName, conceptNameA, 0, 0, BEANDELEGATORCONTAINERFLAG);
+                    clusterName, conceptNameA, 0, 0, BEAN_DELEGATOR_CONTAINER_FLAG);
             fail("Expected: only data don't exist."); //$NON-NLS-1$
         } catch (Exception e1) {
             // Expected
@@ -106,7 +106,7 @@ public class DefaultRecycleBinTest extends TestCase {
         try {
             DataClusterPOJOPK dataClusterPK1 = new DataClusterPOJOPK(new ObjectPOJOPK(new String[] { "1" }));
             BeanDelegatorContainer.getInstance().getItemCtrlDelegator().getItems(dataClusterPK1, conceptNameA, null, 0,
-                    clusterName, conceptNameA, 0, 0, BEANDELEGATORCONTAINERFLAG);
+                    clusterName, conceptNameA, 0, 0, BEAN_DELEGATOR_CONTAINER_FLAG);
             fail("Expected: not allowed."); //$NON-NLS-1$
         } catch (Exception e1) {
             // Expected

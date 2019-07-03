@@ -302,6 +302,7 @@ public class DroppedItemPOJO implements Serializable {
         ItemPOJOPK refItemPOJOPK = droppedItemPOJOPK.getRefItemPOJOPK();
         String actionName = "load"; //$NON-NLS-1$
         //for load we need to be admin, or have a role of admin , or role of write on instance or role of read on instance
+        //add try catch handle,if the role have no permission to browse the record, return a empty DroppedItemPOJO instead of throw exception.
         try {
             rolesFilter(refItemPOJOPK, actionName, "r"); //$NON-NLS-1$
         } catch (XtentisException e1) {

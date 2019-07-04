@@ -75,7 +75,8 @@ public class MDMContextListener implements ServletContextListener {
     }
 
     private int getSessionTimeoutInSeconds(ServletContext servletContext) {
-        // Servlet 3.1 doesn't provide a way to get Session timeout defined in web.xml
+        // Tomcat 8.5 uses Servlet 3.1, and it doesn't provide a way to get Session timeout defined in web.xml. 
+        // In order to support both Tomcat 8.5 and Tomcat 9, we have to read it manually.
         int webSessionTimeoutInSeconds;
         try {
             String webXmlContent = IOUtils.toString(servletContext.getResourceAsStream("/WEB-INF/web.xml")); //$NON-NLS-1$

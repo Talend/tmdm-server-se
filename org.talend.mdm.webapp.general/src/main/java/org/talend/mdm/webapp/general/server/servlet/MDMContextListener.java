@@ -23,6 +23,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.util.ServletContextPropertyUtils;
@@ -73,9 +75,13 @@ public class MDMContextListener implements ServletContextListener {
     }
 
     private int getSessionTimeoutInSeconds(ServletContext servletContext) {
+        // Tomcat 8.5 uses Servlet 3.1, and it doesn't provide a way to get Session timeout defined in web.xml. 
+        // In order to support both Tomcat 8.5 and Tomcat 9, we have to read it manually.
         int webSessionTimeoutInSeconds;
         try {
-            webSessionTimeoutInSeconds = servletContext.getSessionTimeout() * 60;
+            String webXmlContent = IOUtils.toString(servletContext.getResourceAsStream("/WEB-INF/web.xml")); //$NON-NLS-1$
+            String sessionTimeout = StringUtils.substringBetween(webXmlContent, "<session-timeout>", "</session-timeout>"); //$NON-NLS-1$ //$NON-NLS-2$
+            webSessionTimeoutInSeconds = Integer.parseInt(sessionTimeout) * 60;
         } catch (Exception e) {
             LOGGER.warn("Failed to retrieve session timeout, using default value of 30 mins.", e); //$NON-NLS-1$
             webSessionTimeoutInSeconds = 30 * 60;

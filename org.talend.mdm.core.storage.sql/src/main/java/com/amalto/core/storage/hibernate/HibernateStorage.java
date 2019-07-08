@@ -1497,6 +1497,12 @@ public class HibernateStorage implements Storage {
                                         if (referenceTableName.startsWith("X_ANONYMOUS")) { //$NON-NLS-1$
                                             session.createSQLQuery(DELETE_FROM_STR + referenceTableName).executeUpdate();
                                         } else if(referenceTableName.startsWith("X_")){ //$NON-NLS-1$
+                                            //if used the inherit and it's a subType, the table name used the superType's name
+                                            Collection<TypeMetadata> superTypes = reference.getContainingType().getSuperTypes();
+                                            if (!superTypes.isEmpty()) {
+                                                referenceTableName = tableResolver
+                                                        .get((ComplexTypeMetadata) superTypes.iterator().next());
+                                            }
                                             //update the reference field to null
                                             String setToNullHql = "UPDATE " + referenceTableName + " SET " + tableResolver //$NON-NLS-1$ //$NON-NLS-2$
                                                     .get(reference.getReferencedField(), reference.getName()) + " = NULL"; //$NON-NLS-1$

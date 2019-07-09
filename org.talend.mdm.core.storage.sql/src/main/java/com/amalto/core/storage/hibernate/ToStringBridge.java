@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  *
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -10,9 +10,10 @@
  */
 
 package com.amalto.core.storage.hibernate;
-
+import java.util.Date;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.document.DateTools;
 import org.hibernate.search.bridge.LuceneOptions;
 import org.hibernate.search.bridge.TwoWayFieldBridge;
 
@@ -30,6 +31,12 @@ public class ToStringBridge implements TwoWayFieldBridge {
     }
 
     public void set(String name, Object value, Document document, LuceneOptions luceneOptions) {
-        luceneOptions.addFieldToDocument(name, String.valueOf(value), document);
+        if (value instanceof Date) {
+            Date date = (Date) value;
+            String stringDate = DateTools.dateToString(date, DateTools.Resolution.SECOND);
+            luceneOptions.addFieldToDocument(name, stringDate, document);
+        } else {
+            luceneOptions.addFieldToDocument(name, String.valueOf(value), document);
+        }
     }
 }

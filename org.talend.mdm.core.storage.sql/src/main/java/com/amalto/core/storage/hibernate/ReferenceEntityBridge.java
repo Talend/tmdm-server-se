@@ -25,6 +25,7 @@ import java.util.Set;
 import com.amalto.core.storage.record.StorageConstants;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
 import org.hibernate.ObjectNotFoundException;
 import org.hibernate.search.bridge.LuceneOptions;
@@ -264,18 +265,13 @@ public class ReferenceEntityBridge implements TwoWayFieldBridge {
                 LOGGER.debug("insert a new Date index record with key-value pair [ " + name + "." + field.getName() + ":"
                         + value.toString());
             }
-            if (value instanceof java.util.Date) {
-                java.util.Date date = convertStringToDate("yyyy-MM-dd HH:mm:ss", value.toString());
-                Calendar cal = Calendar.getInstance();
-                cal.setTime(date);
-                String indexKey = name + "." + field.getName();
-                luceneOptions.addFieldToDocument(indexKey, cal.get(Calendar.YEAR) + "", document);
-                luceneOptions.addFieldToDocument(indexKey, cal.get(Calendar.MONTH) + 1 + "", document);
-                luceneOptions.addFieldToDocument(indexKey, cal.get(Calendar.DAY_OF_MONTH) + "", document);
-                luceneOptions.addFieldToDocument(indexKey, cal.get(Calendar.HOUR_OF_DAY) + "." + cal.get(Calendar.MINUTE),
-                        document);
-                luceneOptions.addFieldToDocument(indexKey, cal.get(Calendar.SECOND) + "", document);
-            }
+            if (value instanceof Date) {
+                Date date = (Date) value;
+                String stringDate = DateTools.dateToString(date, DateTools.Resolution.SECOND);
+                luceneOptions.addFieldToDocument(name, stringDate, document);
+            } else {
+                luceneOptions.addFieldToDocument(name, String.valueOf(value), document);
+            }            
         }
     }
 

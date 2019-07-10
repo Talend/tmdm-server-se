@@ -10,13 +10,16 @@
 
 package com.amalto.core.storage.hibernate;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.ContainedComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
 import org.talend.mdm.commmon.metadata.DefaultMetadataVisitor;
 import org.talend.mdm.commmon.metadata.EnumerationFieldMetadata;
@@ -31,7 +34,7 @@ public class StatefulContext implements MappingCreatorContext {
 
     private static final Logger LOGGER = Logger.getLogger(StatefulContext.class);
 
-    private final Map<FieldMetadata, String> enforcedUniqueNames = new HashMap<FieldMetadata, String>();
+    private final Map<String, String> enforcedUniqueNames = new HashMap<String, String>();
 
     private final AtomicInteger uniqueInheritanceCounter = new AtomicInteger();
 
@@ -43,18 +46,18 @@ public class StatefulContext implements MappingCreatorContext {
 
     @Override
     public String getFieldColumn(FieldMetadata field) {
+
         if (!field.getContainingType().getSuperTypes().isEmpty() && !field.getContainingType().isInstantiable()) {
             boolean isUnique = isUniqueWithinTypeHierarchy(field.getContainingType(), field.getName());
             boolean isExistEntity = isExistInSameEntity(field);
             if (field.getDeclaringType().equals(field.getContainingType()) && !isUnique && !isExistEntity) {
                 // Non instantiable types are mapped using a "table per hierarchy" strategy, if field name isn't unique
-                // make sure name becomes unique to avoid conflict (Hibernate doesn't issue warning/errors in case of
-                // overlap).
+                // make sure name becomes unique to avoid conflict (Hibernate doesn't issue warning/errors in case of overlap).
                 synchronized (enforcedUniqueNames) {
-                    String enforcedUniqueName = enforcedUniqueNames.get(field);
+                    String enforcedUniqueName = enforcedUniqueNames.get(getQualifiedKey(field));
                     if (enforcedUniqueName == null) {
                         enforcedUniqueName = getFieldColumn(field.getName()) + uniqueInheritanceCounter.incrementAndGet();
-                        enforcedUniqueNames.put(field, enforcedUniqueName);
+                        enforcedUniqueNames.put(getQualifiedKey(field), enforcedUniqueName);
                     }
                     return enforcedUniqueName;
                 }
@@ -66,19 +69,70 @@ public class StatefulContext implements MappingCreatorContext {
         }
     }
 
+    /**
+     * return the specific format key, that composed of namespace and name of subType, plus namespace and name of top
+     * level base type. like <code>sub_namespace_student/sub_name_student/base_namespace_person/base_name_person</code>
+     * the new key only is using reusable type.
+     *
+     * @param field : A field's Metadata
+
+     * @return: the actual key info
+     */
+    private static String getQualifiedKey(FieldMetadata field) {
+        String key = field.toString();
+        ComplexTypeMetadata type = field.getContainingType();
+        if (type == null) {
+            return key;
+        }
+        ComplexTypeMetadata topLevelType = (ComplexTypeMetadata) MetadataUtils.getSuperConcreteType(type);
+        boolean isDupFKName = false;
+
+        Collection<ComplexTypeMetadata> subTypeSet = topLevelType.getSubTypes().stream()
+                .filter(item -> !item.getName().equals(field.getDeclaringType().getName())).collect(Collectors.toList());
+        outloop: for (ComplexTypeMetadata subType : subTypeSet) {
+            for (FieldMetadata fieldMetadata : subType.getFields()) {
+                if (fieldMetadata instanceof ReferenceFieldMetadata && ((ReferenceFieldMetadata) fieldMetadata).isFKIntegrity()
+                        && fieldMetadata.getName().equals(field.getName())) {
+                    isDupFKName = true;
+                    break outloop;
+                }
+            }
+        }
+
+        if (type instanceof ContainedComplexTypeMetadata && isDupFKName) {
+            ComplexTypeMetadata containedType = ((ContainedComplexTypeMetadata) type).getContainedType();
+            key = String.join("/", containedType.getNamespace(), containedType.getName(), topLevelType.getNamespace(), topLevelType.getName());
+        }
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("The current qualified key is " + key);
+        }
+        return key;
+    }
+
     private static boolean isExistInSameEntity(FieldMetadata field) {
         ComplexTypeMetadata type = field.getContainingType();
+
         if (type == null) {
             return false;
         }
-        ComplexTypeMetadata topLevelType = (ComplexTypeMetadata) MetadataUtils.getSuperConcreteType(type);
+        ComplexTypeMetadata topType = (ComplexTypeMetadata) MetadataUtils.getSuperConcreteType(type);
+        int expectedLength = 18;
         if (type.getContainer() != null && type.getContainer().getContainingType() != null) {
             String curName = type.getContainer().getContainingType().getName();
+
             if (StringUtils.isEmpty(curName)) {
                 return false;
             }
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("The current containType name of field is " + curName);
+            }
+            String rawTypeName = type.getContainer().getType().getName();
+            //If the current field's type is the same with it's super type name, return true.
+            if (topType.getName().equals(rawTypeName) && curName.length() == expectedLength) {
+                return true;
+            }
             Boolean isSameName = null;
-            boolean isExist = topLevelType.getSubTypes().stream()
+            boolean isExist = topType.getSubTypes().stream()
                     .anyMatch(action -> action.getUsages().stream().anyMatch(item -> {
                         if (item.getContainer() != null && item.getContainer().getContainingType() != null) {
                             return curName.equals(item.getContainer().getContainingType().getName());
@@ -87,7 +141,8 @@ public class StatefulContext implements MappingCreatorContext {
                         }
                     }));
             if (isExist) {
-                isSameName = topLevelType.getSubTypes().stream().anyMatch(action -> action.getFields().stream().anyMatch(
+                //This logic code only use in RTE DM
+                isSameName = topType.getSubTypes().stream().anyMatch(action -> action.getFields().stream().anyMatch(
                         item -> !item.equals(field) && !item.getContainingType().equals(field.getContainingType())
                                 && field.getContainingType().getUsages().size() == item.getContainingType().getUsages().size()
                                 && item.getName().equals(field.getName())));

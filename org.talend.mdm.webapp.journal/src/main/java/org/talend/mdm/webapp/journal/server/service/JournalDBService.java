@@ -14,7 +14,6 @@ import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -135,7 +134,8 @@ public class JournalDBService {
         root.add(new JournalTreeModel("Concept:" + checkNull(concept))); //$NON-NLS-1$
         root.add(new JournalTreeModel("DataCluster:" + checkNull(dataCluster))); //$NON-NLS-1$
         root.add(new JournalTreeModel("DataModel:" + checkNull(dataModel))); //$NON-NLS-1$
-        root.add(new JournalTreeModel("Key:" + checkNull(Util.getFirstTextNode(doc, "/Update/Key")))); //$NON-NLS-1$ //$NON-NLS-2$                       
+        root.add(new JournalTreeModel("Key:" + checkNull(Util.getFirstTextNode(doc, "/Update/Key")))); //$NON-NLS-1$ //$NON-NLS-2$
+        root.add(new JournalTreeModel("PrimaryKeyInfo:" + checkNull(Util.getFirstTextNode(doc, "/Update/PrimaryKeyInfo")))); //$NON-NLS-1$ //$NON-NLS-2$    
 
         XSElementDecl decl = webService.getXSElementDecl(dataModel, concept);
 
@@ -309,6 +309,7 @@ public class JournalDBService {
         model.setDataModel(checkNull(Util.getFirstTextNode(doc, "result/Update/DataModel"))); //$NON-NLS-1$
         model.setEntity(checkNull(Util.getFirstTextNode(doc, "result/Update/Concept"))); //$NON-NLS-1$
         model.setKey(checkNull(Util.getFirstTextNode(doc, "result/Update/Key"))); //$NON-NLS-1$
+        model.setPrimaryKeyInfo(checkNull(Util.getFirstTextNode(doc, "result/Update/PrimaryKeyInfo"))); //$NON-NLS-1$
         model.setOperationType(checkNull(Util.getFirstTextNode(doc, "result/Update/OperationType"))); //$NON-NLS-1$
         model.setOperationTime(timeInMillis);
         model.setOperationDate(sdf.format(new Date(Long.parseLong(timeInMillis))));

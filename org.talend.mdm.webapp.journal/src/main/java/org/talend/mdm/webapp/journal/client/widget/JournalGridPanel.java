@@ -148,6 +148,12 @@ public class JournalGridPanel extends ContentPanel {
         ccUserName.setWidth(120);
         ccList.add(ccUserName);
 
+        ColumnConfig ccPrimaryKeyInfo = new ColumnConfig();
+        ccPrimaryKeyInfo.setId("primaryKeyInfo"); //$NON-NLS-1$
+        ccPrimaryKeyInfo.setHeader(MessagesFactory.getMessages().primary_key_info_label());
+        ccPrimaryKeyInfo.setWidth(120);
+        ccList.add(ccPrimaryKeyInfo);
+
         criteria = getSearchCriteria();
         RpcProxy<PagingLoadResult<JournalGridModel>> proxy = new RpcProxy<PagingLoadResult<JournalGridModel>>() {
 

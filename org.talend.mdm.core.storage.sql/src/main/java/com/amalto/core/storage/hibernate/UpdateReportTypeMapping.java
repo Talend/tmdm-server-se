@@ -66,6 +66,7 @@ class UpdateReportTypeMapping extends TypeMapping {
         map(updateReportType.getField("DataModel"), databaseUpdateReportType.getField("x_data_model")); //$NON-NLS-1$ //$NON-NLS-2$
         map(updateReportType.getField("Concept"), databaseUpdateReportType.getField("x_concept")); //$NON-NLS-1$ //$NON-NLS-2$
         map(updateReportType.getField("Key"), databaseUpdateReportType.getField("x_key")); //$NON-NLS-1$ //$NON-NLS-2$
+        map(updateReportType.getField("PrimaryKeyInfo"), databaseUpdateReportType.getField("x_primary_key_info")); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Override
@@ -96,6 +97,7 @@ class UpdateReportTypeMapping extends TypeMapping {
         to.set("x_data_model", from.get("DataModel")); //$NON-NLS-1$ //$NON-NLS-2$
         to.set("x_concept", from.get("Concept")); //$NON-NLS-1$ //$NON-NLS-2$
         to.set("x_key", from.get("Key")); //$NON-NLS-1$ //$NON-NLS-2$
+        to.set("x_primary_key_info", from.get("PrimaryKeyInfo")); //$NON-NLS-1$ //$NON-NLS-2$
         try {
             List<DataRecord> dataRecord = (List<DataRecord>) from.get("Item"); //$NON-NLS-1$
             if (dataRecord != null) { // this might be null if there is no 'Item' element in update report.
@@ -153,6 +155,7 @@ class UpdateReportTypeMapping extends TypeMapping {
         to.set(updateReportType.getField("DataModel"), from.get("x_data_model")); //$NON-NLS-1$ //$NON-NLS-2$
         to.set(updateReportType.getField("Concept"), from.get("x_concept")); //$NON-NLS-1$ //$NON-NLS-2$
         to.set(updateReportType.getField("Key"), from.get("x_key")); //$NON-NLS-1$ //$NON-NLS-2$
+        to.set(updateReportType.getField("PrimaryKeyInfo"), from.get("x_primary_key_info")); //$NON-NLS-1$ //$NON-NLS-2$
         List<DataRecord> itemList = (List<DataRecord>) items.get("Item"); //$NON-NLS-1$
         if (itemList != null) { // Might be null for create update report for instance.
             for (DataRecord dataRecord : itemList) {

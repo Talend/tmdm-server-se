@@ -191,6 +191,7 @@ public class Journal implements EntryPoint {
         criteria.setSource(null);
         criteria.setStartDate(null);
         criteria.setEndDate(null);
+        criteria.setUserName(null);
         JournalSearchPanel.getInstance().initPanel();
     }
 }

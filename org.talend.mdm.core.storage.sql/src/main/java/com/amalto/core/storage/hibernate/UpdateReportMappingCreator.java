@@ -58,6 +58,9 @@ class UpdateReportMappingCreator extends DefaultMetadataVisitor<TypeMapping> {
         databaseUpdateReportType.addField(new SimpleTypeFieldMetadata(databaseUpdateReportType, false, false, false, "x_data_model", stringType, Collections.<String>emptyList(), Collections.<String>emptyList(), Collections.<String>emptyList(), StringUtils.EMPTY)); //$NON-NLS-1$
         databaseUpdateReportType.addField(new SimpleTypeFieldMetadata(databaseUpdateReportType, false, false, false, "x_concept", stringType, Collections.<String>emptyList(), Collections.<String>emptyList(), Collections.<String>emptyList(), StringUtils.EMPTY)); //$NON-NLS-1$
         databaseUpdateReportType.addField(new SimpleTypeFieldMetadata(databaseUpdateReportType, false, false, false, "x_key", stringType, Collections.<String>emptyList(), Collections.<String>emptyList(), Collections.<String>emptyList(), StringUtils.EMPTY)); //$NON-NLS-1$
+        SimpleTypeFieldMetadata primary_key_info = new SimpleTypeFieldMetadata(databaseUpdateReportType, false, false, false, "x_primary_key_info", longStringType, Collections.<String>emptyList(), Collections.<String>emptyList(), Collections.<String>emptyList(), StringUtils.EMPTY); //$NON-NLS-1$
+        primary_key_info.getType().setData(TypeMapping.SQL_TYPE, preferClobUse ? TypeMapping.SQL_TYPE_CLOB: TypeMapping.SQL_TYPE_TEXT); 
+        databaseUpdateReportType.addField(primary_key_info);
         SimpleTypeFieldMetadata items_xml = new SimpleTypeFieldMetadata(databaseUpdateReportType, false, false, false, "x_items_xml", longStringType, Collections.<String>emptyList(), Collections.<String>emptyList(), Collections.<String>emptyList(), StringUtils.EMPTY); //$NON-NLS-1$
         items_xml.getType().setData(TypeMapping.SQL_TYPE, preferClobUse ? TypeMapping.SQL_TYPE_CLOB: TypeMapping.SQL_TYPE_TEXT); 
         databaseUpdateReportType.addField(items_xml);

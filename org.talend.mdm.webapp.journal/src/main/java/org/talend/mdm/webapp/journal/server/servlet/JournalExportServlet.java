@@ -74,6 +74,7 @@ public class JournalExportServlet extends HttpServlet {
                 row.createCell((short) 5).setCellValue(operationTimeValue);
                 row.createCell((short) 6).setCellValue(model.getSource());
                 row.createCell((short) 7).setCellValue(model.getUserName());
+                row.createCell((short) 8).setCellValue(model.getPrimaryKeyInfo());
             }
         } catch (Exception e) {
             LOG.error(e.getMessage());
@@ -94,6 +95,7 @@ public class JournalExportServlet extends HttpServlet {
         String operationType = request.getParameter("operationType"); //$NON-NLS-1$
         String startDate = request.getParameter("startDate"); //$NON-NLS-1$
         String endDate = request.getParameter("endDate"); //$NON-NLS-1$
+        String userName = request.getParameter("userName"); //$NON-NLS-1$
         String isStrict = request.getParameter("isStrict"); //$NON-NLS-1$
 
         JournalSearchCriteria criteria = new JournalSearchCriteria();
@@ -102,6 +104,7 @@ public class JournalExportServlet extends HttpServlet {
         criteria.setView(view);
         criteria.setKey(key);
         criteria.setSource(source);
+        criteria.setUserName(userName);
         criteria.setOperationType(operationType);
         criteria.setStrict(Boolean.parseBoolean(isStrict));
 

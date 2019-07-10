@@ -32,6 +32,8 @@ public class JournalGridModel extends BaseModel implements IsSerializable {
 
     private String key;
 
+    private String primaryKeyInfo;
+
     private String operationType;
 
     private String operationTime;
@@ -93,6 +95,15 @@ public class JournalGridModel extends BaseModel implements IsSerializable {
     public void setKey(String key) {
         set("key", key); //$NON-NLS-1$
         this.key = key;
+    }
+
+    public String getPrimaryKeyInfo() {
+        return primaryKeyInfo;
+    }
+
+    public void setPrimaryKeyInfo(String primaryKeyInfo) {
+        set("primaryKeyInfo", primaryKeyInfo); //$NON-NLS-1$
+        this.primaryKeyInfo = primaryKeyInfo;
     }
 
     public String getUuid() {
@@ -160,6 +171,7 @@ public class JournalGridModel extends BaseModel implements IsSerializable {
         sb.append(dataModel).append(","); //$NON-NLS-1$
         sb.append(entity).append(","); //$NON-NLS-1$
         sb.append(key).append(","); //$NON-NLS-1$
+        sb.append(primaryKeyInfo).append(","); //$NON-NLS-1$
         sb.append(operationType).append(","); //$NON-NLS-1$
         sb.append(operationTime).append(","); //$NON-NLS-1$
         sb.append(source).append(","); //$NON-NLS-1$

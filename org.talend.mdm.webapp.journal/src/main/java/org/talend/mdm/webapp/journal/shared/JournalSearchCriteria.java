@@ -46,6 +46,8 @@ public class JournalSearchCriteria implements IsSerializable {
 
     private Date endDate;
 
+    private String userName;
+
     private boolean isStrict;
 
     public JournalSearchCriteria() {
@@ -92,6 +94,14 @@ public class JournalSearchCriteria implements IsSerializable {
         this.source = source;
     }
 
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
     public String getOperationType() {
         return operationType;
     }
@@ -132,6 +142,7 @@ public class JournalSearchCriteria implements IsSerializable {
         if (view != null)
             criteraStr.append(view);
         if (source != null) criteraStr.append(source);
+        if (userName != null) criteraStr.append(userName);
         if (operationType != null) criteraStr.append(operationType);
         if (startDate != null) criteraStr.append(startDate);
         if (endDate != null) criteraStr.append(endDate);

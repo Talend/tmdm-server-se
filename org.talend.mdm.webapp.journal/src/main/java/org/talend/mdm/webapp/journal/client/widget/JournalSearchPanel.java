@@ -81,6 +81,8 @@ public class JournalSearchPanel extends FormPanel {
 
     protected DateField endDateField;
 
+    protected TextField<String> userNameField;
+
     protected CheckBox strictCheckBox;
 
     protected Button resetButton;
@@ -126,6 +128,7 @@ public class JournalSearchPanel extends FormPanel {
         initKeyField();
         initOperationTypeCombo();
         initSourceCombo();
+        initUserNameField();
 
         main.add(left, new ColumnData(.5));
         main.add(right, new ColumnData(.5));
@@ -341,6 +344,25 @@ public class JournalSearchPanel extends FormPanel {
         right.add(sourceCombo, formData);
     }
 
+    protected void initUserNameField() {
+        userNameField = new TextField<String>();
+        userNameField.setId("userName");//$NON-NLS-1$
+        userNameField.setName("userName");//$NON-NLS-1$
+        userNameField.setFieldLabel(MessagesFactory.getMessages().user_name_label());
+        userNameField.addListener(Events.KeyDown, new Listener<FieldEvent>() {
+
+            @Override
+            public void handleEvent(FieldEvent be) {
+                if (be.getKeyCode() == KeyCodes.KEY_ENTER) {
+                    if (searchButton != null) {
+                        searchButton.fireEvent(Events.Select);
+                    }
+                }
+            }
+        });
+        right.add(userNameField, formData);
+    }
+
     protected void initStrictCheckBox() {
         strictCheckBox = new CheckBox();
         strictCheckBox.setId("strict"); //$NON-NLS-1$
@@ -400,7 +422,7 @@ public class JournalSearchPanel extends FormPanel {
     }
 
     protected boolean validSearchCondition() {
-        return entityField.isValid() && sourceCombo.isValid() && startDateField.isValid() && keyField.isValid()
+        return entityField.isValid() && sourceCombo.isValid() && startDateField.isValid() && keyField.isValid() && userNameField.isValid()
                 && operationTypeCombo.isValid() && endDateField.isValid();
     }
 
@@ -418,6 +440,7 @@ public class JournalSearchPanel extends FormPanel {
         setCurrentDataModel();
         entityField.clear();
         keyField.clear();
+        userNameField.clear();
         sourceCombo.clear();
         operationTypeCombo.clear();
         startDateField.clear();
@@ -463,6 +486,7 @@ public class JournalSearchPanel extends FormPanel {
 
         criteria.setStartDate(startDateField.getValue());
         criteria.setEndDate(endDateField.getValue());
+        criteria.setUserName(userNameField.getValue());
         criteria.setStrict(strictCheckBox.getValue());
     }
 
@@ -476,6 +500,9 @@ public class JournalSearchPanel extends FormPanel {
         }
         if (keyField.getValue() != null) {
             map.put("key", keyField.getValue()); //$NON-NLS-1$
+        }
+        if (userNameField.getValue() != null) {
+            map.put("userName", userNameField.getValue()); //$NON-NLS-1$
         }
         if (sourceCombo.getValue() != null) {
             map.put("source", sourceCombo.getValue().get("key").toString()); //$NON-NLS-1$ //$NON-NLS-2$

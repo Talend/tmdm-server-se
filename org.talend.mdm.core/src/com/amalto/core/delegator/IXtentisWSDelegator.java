@@ -1222,7 +1222,7 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
     }
 
     private void pushToUpdateReport(String dataClusterPK, String dataModelPK, String concept, String[] ids, boolean trigger,
-            String source, String operationType, String deleteUser) throws Exception {
+            String source, String operationType, String deleteUser, String primaryKeyInfo) throws Exception {
         ILocalUser user = LocalUser.getLocalUser();
         Map<String, UpdateReportItemPOJO> updateReportItemsMap = new HashMap<String, UpdateReportItemPOJO>();
         String userName;
@@ -1232,7 +1232,8 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
             userName = user.getUsername();
         }
         UpdateReportPOJO updateReportPOJO = new UpdateReportPOJO(concept, Util.joinStrings(ids, "."), operationType, //$NON-NLS-1$
-                source, System.currentTimeMillis(), UUID.randomUUID().toString(), dataClusterPK, dataModelPK, userName, updateReportItemsMap);
+                source, System.currentTimeMillis(), UUID.randomUUID().toString(), dataClusterPK, dataModelPK, userName,
+                updateReportItemsMap, primaryKeyInfo);
         WSItemPK itemPK = putItem(new WSPutItem(new WSDataClusterPK(UpdateReportPOJO.DATA_CLUSTER), updateReportPOJO.serialize(),
                 new WSDataModelPK(UpdateReportPOJO.DATA_MODEL), false));
     }
@@ -1248,12 +1249,14 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
             if (pojo == null) {
                 throw new EntityNotFoundException(pk);
             }
+            // Get Primary Key Info
+            String primaryKeyInfo = Util.getPrimaryKeyInfo(dataClusterPK, concept, pojo.getProjectionAsString());
             String dataModelPK = pojo.getDataModelName();
             if (UpdateReportPOJO.OPERATION_TYPE_LOGICAL_DELETE.equals(wsDeleteItem.getOperateType())) {
                 Util.getItemCtrl2Local().dropItem(pk, "/", wsDeleteItem.getOverride()); //$NON-NLS-1$
                 if (wsDeleteItem.getPushToUpdateReport()) {
                     pushToUpdateReport(dataClusterPK, dataModelPK, concept, ids, wsDeleteItem.getInvokeBeforeSaving(),
-                            wsDeleteItem.getSource(), wsDeleteItem.getOperateType(), wsDeleteItem.getUser());
+                            wsDeleteItem.getSource(), wsDeleteItem.getOperateType(), wsDeleteItem.getUser(), primaryKeyInfo);
                 }
                 // Message status is stored into 'source' property of the function parameter WSDeleteItemWithReport
                 // (not an ideal situation but necessary to get around WS API refactor) and returned back to the webui.
@@ -1290,7 +1293,7 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
                     // TMDM-9848 while Staging Area operations should not create delete journal event
                     if (!UpdateReportPOJO.DATA_CLUSTER.equals(dataClusterPK) && wsDeleteItem.getPushToUpdateReport() && !dataClusterPK.endsWith(StorageAdmin.STAGING_SUFFIX)) {
                         pushToUpdateReport(dataClusterPK, dataModelPK, concept, ids, wsDeleteItem.getInvokeBeforeSaving(),
-                                wsDeleteItem.getSource(), wsDeleteItem.getOperateType(), wsDeleteItem.getUser());
+                                wsDeleteItem.getSource(), wsDeleteItem.getOperateType(), wsDeleteItem.getUser(), primaryKeyInfo);
                     }
                     if (status == null) { // do not overwrite BeforeDeleting message
                         status = SUCCESS_KEYWORD;
@@ -1603,8 +1606,10 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
             String dataModelName = clusterName;
             String conceptName = itemPK.getConceptName();
             String[] ids = itemPK.getIds();
+            // Get Primary Key Info
+            String primarkKeyInfo = Util.getPrimaryKeyInfo(clusterName, conceptName, ids);
             pushToUpdateReport(clusterName, dataModelName, conceptName, ids, true, UpdateReportPOJO.GENERIC_UI_SOURCE,
-                    operationType, null);
+                    operationType, null, primarkKeyInfo);
             return XConverter.POJO2WS(itemPOJOPK);
         } catch (XtentisException e) {
             throw (new RemoteException(e.getLocalizedMessage(), e));
@@ -1629,8 +1634,11 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
             }
             // Generate physical delete event in journal
             WSDroppedItemPK droppedItemPK = wsRemoveDroppedItem.getWsDroppedItemPK();
+            // Get Primary Key Info
+            DroppedItemPOJO droppedItemPOJO = Util.getDroppedItemCtrlLocal().loadDroppedItem(XConverter.WS2POJO(droppedItemPK));
+            String primarkKeyInfo = Util.getPrimaryKeyInfo(clusterName, conceptName, droppedItemPOJO.getProjection());
             pushToUpdateReport(clusterName, dataModelName, conceptName, ids, true, UpdateReportPOJO.GENERIC_UI_SOURCE,
-                    operationType, null);
+                    operationType, null, primarkKeyInfo);
             // Removes item from recycle bin
             DroppedItem droppedItemCtrl = Util.getDroppedItemCtrlLocal();
             DroppedItemPOJOPK droppedItemPOJOPK = droppedItemCtrl.removeDroppedItem(XConverter.WS2POJO(droppedItemPK));

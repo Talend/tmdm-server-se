@@ -11,10 +11,13 @@
 
 package com.amalto.core.save.context;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.w3c.dom.Document;
 
 import com.amalto.core.history.Action;
@@ -23,6 +26,7 @@ import com.amalto.core.history.accessor.Accessor;
 import com.amalto.core.objects.UpdateReportPOJO;
 import com.amalto.core.save.DocumentSaverContext;
 import com.amalto.core.save.SaverSession;
+import com.amalto.core.util.Util;
 
 class UpdateReport implements DocumentSaver {
 
@@ -56,7 +60,8 @@ class UpdateReport implements DocumentSaver {
             }
         }
 
-        ComplexTypeMetadata type = context.getUserDocument().getType();
+        MutableDocument userDocument = context.getUserDocument();
+        ComplexTypeMetadata type = userDocument.getType();
         List<Action> actions = context.getActions();
         boolean hasHeader = false;
         for (Action action : actions) {
@@ -69,6 +74,7 @@ class UpdateReport implements DocumentSaver {
                 setHeader(updateReportDocument, "DataModel", String.valueOf(context.getDataModelName())); //$NON-NLS-1$
                 setHeader(updateReportDocument, "Concept", String.valueOf(type.getName())); //$NON-NLS-1$
                 setHeader(updateReportDocument, "Key", key.toString()); //$NON-NLS-1$
+                setHeader(updateReportDocument, "PrimaryKeyInfo", Util.getPrimaryKeyInfo(type, userDocument)); //$NON-NLS-1$
                 hasHeader = true;
                 updateReportDocument.enableRecordFieldChange();
             }

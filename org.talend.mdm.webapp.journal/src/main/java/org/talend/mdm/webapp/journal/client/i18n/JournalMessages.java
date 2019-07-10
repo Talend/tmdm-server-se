@@ -26,6 +26,8 @@ public interface JournalMessages extends Messages {
 
     public String key_label();
 
+    public String primary_key_info_label();
+
     public String source_label();
 
     public String operation_type_label();

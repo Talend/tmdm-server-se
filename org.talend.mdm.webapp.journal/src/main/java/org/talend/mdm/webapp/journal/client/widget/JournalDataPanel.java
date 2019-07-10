@@ -117,6 +117,8 @@ public class JournalDataPanel extends FormPanel {
 
     private LabelField oeprationTimeField;
 
+    private LabelField userNameField;
+
     private SelectionListener<ButtonEvent> updateReportListener;
 
     private SelectionListener<ButtonEvent> openRecordListener;
@@ -379,6 +381,10 @@ public class JournalDataPanel extends FormPanel {
         oeprationTimeField.setFieldLabel(MessagesFactory.getMessages().operation_time_label() + " : "); //$NON-NLS-1$
         oeprationTimeField.setValue(this.journalGridModel.getOperationDate());
         right.add(oeprationTimeField);
+        userNameField = new LabelField();
+        userNameField.setFieldLabel(MessagesFactory.getMessages().user_name_label() + " : "); //$NON-NLS-1$
+        userNameField.setValue(this.journalGridModel.getUserName());
+        right.add(userNameField);
 
         main.add(left, new ColumnData(.5));
         main.add(right, new ColumnData(.5));
@@ -635,6 +641,7 @@ public class JournalDataPanel extends FormPanel {
         this.keyField.setValue(gridModel.getKey());
         this.operationTypeField.setValue(gridModel.getOperationType());
         this.oeprationTimeField.setValue(gridModel.getOperationDate());
+        this.userNameField.setValue(gridModel.getUserName());
     }
 
 

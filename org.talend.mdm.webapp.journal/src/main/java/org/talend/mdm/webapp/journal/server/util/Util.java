@@ -74,6 +74,13 @@ public class Util {
             whereItemList.add(wsWhereItem);
         }
 
+        if (criteria.getUserName() != null) {
+            WSWhereCondition wc = new WSWhereCondition(
+                    "UserName", criteria.isStrict() ? WSWhereOperator.EQUALS : WSWhereOperator.CONTAINS, criteria.getUserName().trim(), WSStringPredicate.NONE, false); //$NON-NLS-1$
+            WSWhereItem wsWhereItem = new WSWhereItem(wc, null, null);
+            whereItemList.add(wsWhereItem);
+        }
+
         if (criteria.getOperationType() != null) {
             WSWhereCondition wc = new WSWhereCondition(
                     "OperationType", WSWhereOperator.EQUALS, criteria.getOperationType().trim(), WSStringPredicate.NONE, false); //$NON-NLS-1$
@@ -210,6 +217,8 @@ public class Util {
                 elementName =  "Concept"; //$NON-NLS-1$
             } else if ("key".equals(fieldName)) { //$NON-NLS-1$
                 elementName =  "Key"; //$NON-NLS-1$
+            } else if ("primaryKeyInfo".equals(fieldName)) { //$NON-NLS-1$
+                elementName =  "PrimaryKeyInfo"; //$NON-NLS-1$
             } else if ("operationType".equals(fieldName)) { //$NON-NLS-1$
                 elementName =  "OperationType"; //$NON-NLS-1$
             } else if ("operationTime".equals(fieldName)) { //$NON-NLS-1$

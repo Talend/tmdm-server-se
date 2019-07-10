@@ -1,0 +1,172 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:import namespace="http://www.w3.org/2001/XMLSchema" />
+    <xsd:complexType name="PersonType">
+        <xsd:sequence />
+    </xsd:complexType>
+    <xsd:complexType name="StudentType">
+        <xsd:complexContent>
+            <xsd:extension base="PersonType">
+                <xsd:sequence />
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="MasterType">
+        <xsd:complexContent>
+            <xsd:extension base="StudentType">
+                <xsd:sequence />
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="DocterType">
+        <xsd:complexContent>
+            <xsd:extension base="MasterType">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="1" minOccurs="1"
+                        name="BaseField" type="BaseType">
+                        <xsd:annotation>
+                            <xsd:appinfo source="X_Write">Demo_Manager
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element maxOccurs="1" minOccurs="1"
+                        name="Basename" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo source="X_Write">Demo_Manager
+                            </xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="BaseType">
+        <xsd:sequence>
+            <xsd:element maxOccurs="1" minOccurs="1"
+                name="TestA_FK" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_ForeignKey">TestA/Id
+                    </xsd:appinfo>
+                    <xsd:appinfo
+                        source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:element name="TestA">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1"
+                    name="Id" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">Demo_Manager
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="TestA">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="Id" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="TestB">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1"
+                    name="Id" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">Demo_Manager
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1"
+                    name="DocterField" type="DocterType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">Demo_Manager
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="TestB">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="Id" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="TestC">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1"
+                    name="Id" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">Demo_Manager
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1"
+                    name="DocterField" type="DocterType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">Demo_Manager
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="TestC">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="Id" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:complexType name="FirstType">
+        <xsd:complexContent>
+            <xsd:extension base="BaseType">
+                <xsd:sequence />
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="SecondType">
+        <xsd:complexContent>
+            <xsd:extension base="BaseType">
+                <xsd:sequence />
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:element name="TestD">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1"
+                    name="Id" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">Demo_Manager
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1"
+                    name="FirstField" type="SecondType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">Demo_Manager
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="TestD">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="Id" />
+        </xsd:unique>
+    </xsd:element>
+</xsd:schema>

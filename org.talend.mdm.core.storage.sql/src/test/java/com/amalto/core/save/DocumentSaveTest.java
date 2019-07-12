@@ -4284,6 +4284,106 @@ public class DocumentSaveTest extends TestCase {
         assertEquals("[2]", evaluate(committedElement, "/organisation/fkServices[1]"));
     }
 
+    public void test13587_SaveForeignKeyForReusableType() throws Exception {
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(DocumentSaveTest.class.getResourceAsStream("metadata23.xsd"));
+        MockMetadataRepositoryAdmin.INSTANCE.register("testab", repository);
+        SaverSource source = new TestSaverSource(repository, false, "", "metadata23.xsd");
+
+        //Case 1 add record for entity TestA as fk using in below entity TestB and TestC.
+        SaverSession session = SaverSession.newSession(source);
+        InputStream recordXml = new ByteArrayInputStream(("<TestA><Id>11</Id></TestA>").getBytes("UTF-8"));
+        DocumentSaverContext context = session.getContextFactory().create("testab", "testab", "Source", recordXml, true, true, true, false, false);
+        DocumentSaver saver = context.createSaver();
+        saver.save(session, context);
+        MockCommitter committer = new MockCommitter();
+        session.end(committer);
+
+        //case 2, add record for entity TestB with reusable type BaseType
+        session = SaverSession.newSession(source);
+        recordXml = new ByteArrayInputStream(("<TestB><Id>1</Id><DocterField><BaseField xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"BaseType\"><TestA_FK>[11]</TestA_FK></BaseField><Basename>b1</Basename></DocterField></TestB>").getBytes("UTF-8"));
+        context = session.getContextFactory().create("testab", "testab", "Source", recordXml, true, true, true, false, false);
+        saver = context.createSaver();
+        saver.save(session, context);
+        committer = new MockCommitter();
+        session.end(committer);
+
+        assertTrue(committer.hasSaved());
+        Element committedElement = committer.getCommittedElement();
+        assertEquals("1", evaluate(committedElement, "/TestB/Id"));
+        assertEquals("[11]", evaluate(committedElement, "/TestB/DocterField/BaseField/TestA_FK"));
+
+        //case 3, add record for entity TestB with reusable type FirstType
+        session = SaverSession.newSession(source);
+        recordXml = new ByteArrayInputStream(("<TestB><Id>2</Id><DocterField><BaseField xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"FirstType\"><TestA_FK>[11]</TestA_FK></BaseField><Basename>b2</Basename></DocterField></TestB>").getBytes("UTF-8"));
+        context = session.getContextFactory().create("testab", "testab", "Source", recordXml, true, true, true, false, false);
+        saver = context.createSaver();
+        saver.save(session, context);
+        committer = new MockCommitter();
+        session.end(committer);
+
+        assertTrue(committer.hasSaved());
+        committedElement = committer.getCommittedElement();
+        assertEquals("2", evaluate(committedElement, "/TestB/Id"));
+        assertEquals("[11]", evaluate(committedElement, "/TestB/DocterField/BaseField/TestA_FK"));
+
+        //case 4, add record for entity TestB with reusable type SecondType
+        session = SaverSession.newSession(source);
+        recordXml = new ByteArrayInputStream(("<TestB><Id>3</Id><DocterField><BaseField xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"SecondType\"><TestA_FK>[11]</TestA_FK></BaseField><Basename>b3</Basename></DocterField></TestB>").getBytes("UTF-8"));
+        context = session.getContextFactory().create("testab", "testab", "Source", recordXml, true, true, true, false, false);
+        saver = context.createSaver();
+        saver.save(session, context);
+        committer = new MockCommitter();
+        session.end(committer);
+
+        assertTrue(committer.hasSaved());
+        committedElement = committer.getCommittedElement();
+        assertEquals("3", evaluate(committedElement, "/TestB/Id"));
+        assertEquals("[11]", evaluate(committedElement, "/TestB/DocterField/BaseField/TestA_FK"));
+
+        //case 5, add record for entity TestC with reusable type BaseType
+        session = SaverSession.newSession(source);
+        recordXml = new ByteArrayInputStream(("<TestC><Id>1</Id><DocterField><BaseField xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"BaseType\"><TestA_FK>[11]</TestA_FK></BaseField><Basename>b1</Basename></DocterField></TestC>").getBytes("UTF-8"));
+        context = session.getContextFactory().create("testab", "testab", "Source", recordXml, true, true, true, false, false);
+        saver = context.createSaver();
+        saver.save(session, context);
+        committer = new MockCommitter();
+        session.end(committer);
+
+        assertTrue(committer.hasSaved());
+        committedElement = committer.getCommittedElement();
+        assertEquals("1", evaluate(committedElement, "/TestC/Id"));
+        assertEquals("[11]", evaluate(committedElement, "/TestC/DocterField/BaseField/TestA_FK"));
+
+        //case 6, add record for entity TestC with reusable type FirstType
+        session = SaverSession.newSession(source);
+        recordXml = new ByteArrayInputStream(("<TestC><Id>2</Id><DocterField><BaseField xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"FirstType\"><TestA_FK>[11]</TestA_FK></BaseField><Basename>b2</Basename></DocterField></TestC>").getBytes("UTF-8"));
+        context = session.getContextFactory().create("testab", "testab", "Source", recordXml, true, true, true, false, false);
+        saver = context.createSaver();
+        saver.save(session, context);
+        committer = new MockCommitter();
+        session.end(committer);
+
+        assertTrue(committer.hasSaved());
+        committedElement = committer.getCommittedElement();
+        assertEquals("2", evaluate(committedElement, "/TestC/Id"));
+        assertEquals("[11]", evaluate(committedElement, "/TestC/DocterField/BaseField/TestA_FK"));
+
+        //case 7, add record for entity TestC with reusable type SecondType
+        session = SaverSession.newSession(source);
+        recordXml = new ByteArrayInputStream(("<TestC><Id>3</Id><DocterField><BaseField xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"SecondType\"><TestA_FK>[11]</TestA_FK></BaseField><Basename>b3</Basename></DocterField></TestC>").getBytes("UTF-8"));
+        context = session.getContextFactory().create("testab", "testab", "Source", recordXml, true, true, true, false, false);
+        saver = context.createSaver();
+        saver.save(session, context);
+        committer = new MockCommitter();
+        session.end(committer);
+
+        assertTrue(committer.hasSaved());
+        committedElement = committer.getCommittedElement();
+        assertEquals("3", evaluate(committedElement, "/TestC/Id"));
+        assertEquals("[11]", evaluate(committedElement, "/TestC/DocterField/BaseField/TestA_FK"));
+    }
+
     private static class MockCommitter implements SaverSession.Committer {
 
         private MutableDocument lastSaved;

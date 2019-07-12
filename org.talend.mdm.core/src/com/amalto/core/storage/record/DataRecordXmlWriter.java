@@ -16,9 +16,11 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.ws.rs.core.MediaType;
 import javax.xml.XMLConstants;
 
 import org.apache.commons.lang.StringEscapeUtils;
@@ -42,8 +44,8 @@ import com.amalto.core.query.user.metadata.TaskId;
 import com.amalto.core.query.user.metadata.Timestamp;
 import com.amalto.core.schema.validation.SkipAttributeDocumentBuilder;
 import com.amalto.core.storage.SecuredStorage;
-import com.amalto.core.storage.StagingStorage;
 import com.amalto.core.storage.StorageMetadataUtils;
+import com.amalto.core.storage.StorageResults;
 import com.amalto.core.storage.record.metadata.DataRecordMetadata;
 
 public class DataRecordXmlWriter implements DataRecordWriter {
@@ -75,6 +77,13 @@ public class DataRecordXmlWriter implements DataRecordWriter {
         this.type = type;
         this.rootElementName = type.getName();
         includeMetadata = false;
+    }
+
+    @Override
+    public void write(StorageResults recordList, OutputStream output, MediaType mediaType) throws IOException {
+        for (Iterator<DataRecord> iterator = recordList.iterator(); iterator.hasNext();) {
+            write(iterator.next(), output);
+        }
     }
 
     @Override

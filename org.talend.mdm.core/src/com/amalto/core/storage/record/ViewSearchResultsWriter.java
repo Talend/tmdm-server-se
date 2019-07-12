@@ -15,22 +15,39 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.Iterator;
 
+import javax.ws.rs.core.MediaType;
 import javax.xml.XMLConstants;
 
-import com.amalto.core.storage.SecuredStorage;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
-import org.talend.mdm.commmon.metadata.*;
+import org.talend.mdm.commmon.metadata.AliasedFieldMetadata;
+import org.talend.mdm.commmon.metadata.CompoundFieldMetadata;
+import org.talend.mdm.commmon.metadata.FieldMetadata;
+import org.talend.mdm.commmon.metadata.MetadataUtils;
+import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
+import org.talend.mdm.commmon.metadata.SimpleTypeFieldMetadata;
+import org.talend.mdm.commmon.metadata.TypeMetadata;
+import org.talend.mdm.commmon.metadata.Types;
 
 import com.amalto.core.query.user.DateConstant;
 import com.amalto.core.query.user.DateTimeConstant;
 import com.amalto.core.query.user.TimeConstant;
+import com.amalto.core.storage.SecuredStorage;
 import com.amalto.core.storage.StorageMetadataUtils;
+import com.amalto.core.storage.StorageResults;
 
 public class ViewSearchResultsWriter implements DataRecordWriter {
 
     private SecuredStorage.UserDelegator delegator = SecuredStorage.UNSECURED;
+
+    @Override
+    public void write(StorageResults recordList, OutputStream output, MediaType mediaType) throws IOException {
+        for (Iterator<DataRecord> iterator = recordList.iterator(); iterator.hasNext();) {
+            write(iterator.next(), output);
+        }
+    }
 
     @Override
     public void write(DataRecord record, OutputStream output) throws IOException {

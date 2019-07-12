@@ -194,8 +194,18 @@ public class DataRecord {
         StringTokenizer tokenizer = new StringTokenizer(fieldName, "/"); //$NON-NLS-1$
         DataRecord current = this;
         Object currentValue = null;
+        boolean hasField = false;
         while (tokenizer.hasMoreTokens()) {
             String currentPathElement = tokenizer.nextToken();
+            if (!current.getType().hasField(currentPathElement)) {
+                continue;
+            } else {
+                hasField = true;
+            }
+            if (!hasField) {
+                return null;
+            }
+
             FieldMetadata field = current.getType().getField(currentPathElement);
             currentValue = current.get(field);
             if (tokenizer.hasMoreTokens()) {

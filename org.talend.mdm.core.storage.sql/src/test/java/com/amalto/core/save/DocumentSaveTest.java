@@ -3855,8 +3855,7 @@ public class DocumentSaveTest extends TestCase {
                 assertEquals("a", result.get("name"));
                 assertNull(result.get("desc"));
                 try {
-                    result.get("complx[1]");
-                    fail("Excepted exception for not existing 'complx[1]'");
+                    assertNull(result.get("complx[1]"));//modify code to return null instead of throw exception
                 } catch (IllegalArgumentException e) {
                     // This exception is excepted
                 }

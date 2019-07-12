@@ -15,7 +15,10 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
+import java.util.Iterator;
 import java.util.List;
+
+import javax.ws.rs.core.MediaType;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONWriter;
@@ -28,6 +31,7 @@ import org.talend.mdm.commmon.metadata.SimpleTypeFieldMetadata;
 
 import com.amalto.core.storage.SecuredStorage;
 import com.amalto.core.storage.StorageMetadataUtils;
+import com.amalto.core.storage.StorageResults;
 
 /**
  * A {@link com.amalto.core.storage.record.DataRecordWriter} implementation to serialize a {@link DataRecord record} to
@@ -55,14 +59,17 @@ public class DataRecordJSONWriter implements DataRecordWriter {
                             if (delegator.hide(field)) {
                                 return null;
                             }
+                            String fieldName = field.getName();
+                            if (ignoreCase) {
+                                fieldName = fieldName.toLowerCase();
+                            }
                             try {
                                 if (!field.isMany()) {
-                                    writer.key(getFieldName(field.getName())).value(
-                                            StorageMetadataUtils.toString(record.get(field), false));
+                                    writer.key(fieldName).value(StorageMetadataUtils.toString(record.get(field), false));
                                 } else {
                                     List<Object> values = (List<Object>) record.get(field);
                                     if (values != null) {
-                                        writer.key(getFieldName(field.getName())).array();
+                                        writer.key(fieldName).array();
                                         for (Object value : values) {
                                             writer.value(StorageMetadataUtils.toString(value, false));
                                         }
@@ -90,8 +97,12 @@ public class DataRecordJSONWriter implements DataRecordWriter {
                             if (delegator.hide(containedField)) {
                                 return null;
                             }
+                            String containedName = containedField.getName();
+                            if (ignoreCase) {
+                                containedName = containedName.toLowerCase();
+                            }
                             try {
-                                writer.key(getFieldName(containedField.getName()));
+                                writer.key(containedName);
                                 if (!containedField.isMany()) {
                                     writeRecord((DataRecord) record.get(containedField), writer);
                                 } else {
@@ -125,6 +136,38 @@ public class DataRecordJSONWriter implements DataRecordWriter {
     }
 
     @Override
+    public void write(StorageResults recordList, OutputStream output, MediaType mediaType) throws IOException {
+        Writer writer = new OutputStreamWriter(output, Charset.forName("UTF-8"));
+        for (Iterator<DataRecord> iterator = recordList.iterator(); iterator.hasNext();) {
+            JSONWriter jsonWriter = new JSONWriter(writer);
+            DataRecord record = iterator.next();
+            write(record, jsonWriter);
+            if (iterator.hasNext() && MediaType.APPLICATION_JSON_TYPE.equals(mediaType)) {
+                output.write(",".getBytes()); //$NON-NLS-1$
+            }
+            writer.flush();
+        }
+    }
+
+    private void write(DataRecord record, JSONWriter jsonWriter) throws IOException {
+        String fieldName = record.getType().getName();
+        if (ignoreCase) {
+            fieldName = fieldName.toLowerCase();
+        }
+        try {
+            jsonWriter.object().key(fieldName);
+            {
+                if (!delegator.hide(record.getType())) {
+                    writeRecord(record, jsonWriter);
+                }
+            }
+            jsonWriter.endObject();
+        } catch (JSONException e) {
+            throw new IOException("Could not serialize to JSON.", e);
+        }
+    }
+
+    @Override
     public void write(DataRecord record, OutputStream output) throws IOException {
         write(record, new OutputStreamWriter(output, Charset.forName("UTF-8")));
     }
@@ -132,8 +175,12 @@ public class DataRecordJSONWriter implements DataRecordWriter {
     @Override
     public void write(DataRecord record, Writer writer) throws IOException {
         JSONWriter jsonWriter = new JSONWriter(writer);
+        String fieldName = record.getType().getName();
+        if (ignoreCase) {
+            fieldName = fieldName.toLowerCase();
+        }
         try {
-            jsonWriter.object().key(getFieldName(record.getType().getName()));
+            jsonWriter.object().key(fieldName);
             {
                 if (!delegator.hide(record.getType())) {
                     writeRecord(record, jsonWriter);
@@ -152,9 +199,5 @@ public class DataRecordJSONWriter implements DataRecordWriter {
             throw new IllegalArgumentException("Delegator cannot be null.");
         }
         this.delegator = delegator;
-    }
-
-    private String getFieldName(String name) {
-        return ignoreCase ? name.toLowerCase() : name;
     }
 }

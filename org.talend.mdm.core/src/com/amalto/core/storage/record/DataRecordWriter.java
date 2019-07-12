@@ -12,10 +12,13 @@
 package com.amalto.core.storage.record;
 
 import com.amalto.core.storage.SecuredStorage;
+import com.amalto.core.storage.StorageResults;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
+
+import javax.ws.rs.core.MediaType;
 
 /**
  *
@@ -31,6 +34,15 @@ public interface DataRecordWriter {
      * @see DataRecordReader#read(org.talend.mdm.commmon.metadata.MetadataRepository, org.talend.mdm.commmon.metadata.ComplexTypeMetadata, Object)
      */
     void write(DataRecord record, OutputStream output) throws IOException;
+
+    /**
+     * Writes all of {@link DataRecord} record to the <code>output</code>.
+     * @param recordList
+     * @param output
+     * @param mediaType
+     * @throws IOException
+     */
+    default void write(StorageResults recordList, OutputStream output, MediaType mediaType) throws IOException {}
 
     /**
      * Writes a {@link DataRecord} record to the <code>writer</code>.

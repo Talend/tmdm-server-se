@@ -456,9 +456,9 @@ public class StorageAdaptTest extends TestCase {
         Compare.DiffResults diffResults = Compare.compare(repository1, repository2);
         List<ComplexTypeMetadata> sortedTypesToDrop = storage.findSortedTypesToDrop(diffResults, true);
         assertEquals(3, sortedTypesToDrop.size());
-        assertEquals("OrganisationType", sortedTypesToDrop.get(0).getName());
-        assertEquals("MST_Organisation", sortedTypesToDrop.get(1).getName());
-        assertEquals("MST_Notice", sortedTypesToDrop.get(2).getName());
+        assertEquals("MST_Organisation", sortedTypesToDrop.get(0).getName());
+        assertEquals("MST_Notice", sortedTypesToDrop.get(1).getName());
+        assertEquals("OrganisationType", sortedTypesToDrop.get(2).getName());
 
         storage.adapt(repository2, true);
 
@@ -485,10 +485,10 @@ public class StorageAdaptTest extends TestCase {
         Compare.DiffResults diffResults = Compare.compare(repository1, repository2);
         List<ComplexTypeMetadata> sortedTypesToDrop = storage.findSortedTypesToDrop(diffResults, true);
         assertEquals(5, sortedTypesToDrop.size());
-        assertEquals("TypeComptes", sortedTypesToDrop.get(0).getName());
+        assertEquals("TieTiers", sortedTypesToDrop.get(0).getName());
         assertEquals("TypeEtablissements", sortedTypesToDrop.get(1).getName());
-        assertEquals("TieTiers", sortedTypesToDrop.get(2).getName());
-        assertEquals("TieEtablissements", sortedTypesToDrop.get(3).getName());
+        assertEquals("TieEtablissements", sortedTypesToDrop.get(2).getName());
+        assertEquals("TypeComptes", sortedTypesToDrop.get(3).getName());
         assertEquals("TieComptes", sortedTypesToDrop.get(4).getName());
 
         storage.adapt(repository2, true);

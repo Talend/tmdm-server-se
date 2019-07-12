@@ -6227,4 +6227,138 @@ public class StorageQueryTest extends StorageTestCase {
             }
         });
     }
+
+    public void testEntityRTE() {
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(StorageQueryTest.class.getResourceAsStream("RTE.xsd"));
+
+        Storage storage = new HibernateStorage("H2-DS1", StorageType.MASTER);
+        storage.init(ServerContext.INSTANCE.get().getDefinition("H2-DS1", "MDM"));
+        storage.prepare(repository, true);
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+
+        ComplexTypeMetadata useUrse = repository.getComplexType("UseUrse");
+        ComplexTypeMetadata interlocuteur = repository.getComplexType("Interlocuteur");
+        ComplexTypeMetadata contrat = repository.getComplexType("Contrat");
+        ComplexTypeMetadata eda = repository.getComplexType("Eda");
+
+        List<DataRecord> records = new LinkedList<DataRecord>();
+        records.add(factory.read(repository, useUrse, "<UseUrse><codeUSE>8</codeUSE><nomUse>8</nomUse><nomLongUse>8</nomLongUse><interlocuteurRTERedeclarations/><URSE>Oui</URSE></UseUrse>"));
+        records.add(factory.read(repository, interlocuteur, "<Interlocuteur><idGrc>8</idGrc><EmployeRTE>Oui</EmployeRTE><use>[8]</use></Interlocuteur>"));
+        records.add(factory.read(repository, eda,
+                "<Eda><codeEda>aaaaaH</codeEda><nomEda>test</nomEda><controleCodeEda>Oui</controleCodeEda><piloteContractuel>[8]</piloteContractuel><statutEda>Brouillon</statutEda><delaiNeutralisationEda>60</delaiNeutralisationEda><pminEda>0</pminEda><presencePlancheVisuEda>Oui</presencePlancheVisuEda><idEda>1</idEda></Eda>"));
+        records.add(factory.read(repository, eda,
+                "<Eda><codeEda>aaaaaH2</codeEda><nomEda>test2</nomEda><controleCodeEda>Oui</controleCodeEda><piloteContractuel>[8]</piloteContractuel><statutEda>Brouillon</statutEda><delaiNeutralisationEda>60</delaiNeutralisationEda><pminEda>0</pminEda><presencePlancheVisuEda>Oui</presencePlancheVisuEda><idEda>2</idEda></Eda>"));
+        records.add(factory.read(repository, contrat,
+
+                "<Contrat><numeroContrat>aa</numeroContrat><numeroContratExterne>test</numeroContratExterne><detailContrat xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"AP-AA\"><Perimetre><entitesPassees><EDAs><EDA><eda>[1]</eda><dateDebutApplication>2017-10-11</dateDebutApplication><dateFinApplication>2017-10-28</dateFinApplication></EDA></EDAs></entitesPassees></Perimetre></detailContrat></Contrat>"));
+        records.add(factory.read(repository, contrat,
+                "<Contrat><numeroContrat>bb</numeroContrat><numeroContratExterne>test1</numeroContratExterne><detailContrat xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"AP-AA\"><Perimetre><entitesPassees><EDAs><EDA><eda>[1]</eda><dateDebutApplication>2017-10-11</dateDebutApplication><dateFinApplication>2017-10-28</dateFinApplication></EDA></EDAs></entitesPassees></Perimetre></detailContrat></Contrat>"));
+        records.add(factory.read(repository, contrat,
+                "<Contrat><numeroContrat>cc</numeroContrat><numeroContratExterne>test1</numeroContratExterne><detailContrat xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"AP-RE\"><codeDecompte>test2</codeDecompte></detailContrat></Contrat>"));
+        storage.begin();
+        storage.update(records);
+        storage.commit();
+
+        // Query data
+        storage.begin();
+        UserQueryBuilder qb = from(useUrse);
+        StorageResults results = storage.fetch(qb.getSelect());
+        assertEquals(1, results.getCount());
+
+        qb = from(interlocuteur);
+        results = storage.fetch(qb.getSelect());
+        assertEquals(1, results.getCount());
+
+        qb = from(eda);
+        results = storage.fetch(qb.getSelect());
+        assertEquals(2, results.getCount());
+
+        qb = from(contrat);
+        results = storage.fetch(qb.getSelect());
+        assertEquals(3, results.getCount());
+
+        //delete by record
+        storage.begin();
+        results.forEach((DataRecord record) -> {
+            storage.delete(record);
+        });
+        storage.commit();
+
+        storage.begin();
+        qb = from(eda);
+        results = storage.fetch(qb.getSelect());
+        assertEquals(2, results.getCount());
+        results.forEach((DataRecord record) -> {
+            storage.delete(record);
+        });
+        storage.commit();
+
+        storage.begin();
+        qb = from(interlocuteur);
+        results = storage.fetch(qb.getSelect());
+        assertEquals(1, results.getCount());
+        results.forEach((DataRecord record) -> {
+            storage.delete(record);
+        });
+        storage.commit();
+
+        storage.begin();
+        qb = from(useUrse);
+        results = storage.fetch(qb.getSelect());
+        assertEquals(1, results.getCount());
+        results.forEach((DataRecord record) -> {
+            storage.delete(record);
+        });
+        storage.commit();
+
+        qb = from(useUrse);
+        results = storage.fetch(qb.getSelect());
+        assertEquals(0, results.getCount());
+
+        qb = from(interlocuteur);
+        results = storage.fetch(qb.getSelect());
+        assertEquals(0, results.getCount());
+
+        qb = from(eda);
+        results = storage.fetch(qb.getSelect());
+        assertEquals(0, results.getCount());
+
+        qb = from(contrat);
+        results = storage.fetch(qb.getSelect());
+        assertEquals(0, results.getCount());
+
+        storage.begin();
+        storage.update(records);
+        storage.commit();
+
+        storage.begin();
+        try {
+            storage.delete(from(contrat).getExpression());
+            storage.delete(from(eda).getExpression());
+            //storage.delete(from(interlocuteur).getExpression());
+            //storage.delete(from(useUrse).getExpression());
+        } catch (Exception e) {
+            assertNull(e);
+        } finally {
+            storage.commit();
+        }
+
+        /*qb = from(useUrse);
+        results = storage.fetch(qb.getSelect());
+        assertEquals(0, results.getCount());
+
+        qb = from(interlocuteur);
+        results = storage.fetch(qb.getSelect());
+        assertEquals(0, results.getCount());
+
+        qb = from(eda);
+        results = storage.fetch(qb.getSelect());
+        assertEquals(0, results.getCount());
+
+        qb = from(contrat);
+        results = storage.fetch(qb.getSelect());
+        assertEquals(0, results.getCount());*/
+
+    }
 }

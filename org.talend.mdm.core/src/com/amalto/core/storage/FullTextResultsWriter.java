@@ -17,7 +17,10 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+
+import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
@@ -39,6 +42,13 @@ public class FullTextResultsWriter implements DataRecordWriter {
 
     public FullTextResultsWriter(String keyword) {
         this.keyword = keyword;
+    }
+
+    @Override
+    public void write(StorageResults recordList, OutputStream output, MediaType mediaType) throws IOException {
+        for (Iterator<DataRecord> iterator = recordList.iterator(); iterator.hasNext();) {
+            write(iterator.next(), output);
+        }
     }
 
     @Override

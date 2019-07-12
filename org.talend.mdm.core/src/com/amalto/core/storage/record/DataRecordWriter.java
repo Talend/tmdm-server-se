@@ -42,7 +42,7 @@ public interface DataRecordWriter {
      * @param mediaType
      * @throws IOException
      */
-    default void write(StorageResults recordList, OutputStream output, MediaType mediaType) throws IOException {}
+    void write(StorageResults recordList, OutputStream output, MediaType mediaType) throws IOException;
 
     /**
      * Writes a {@link DataRecord} record to the <code>writer</code>.

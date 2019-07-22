@@ -360,9 +360,6 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
                                 type = ((ContainedTypeFieldMetadata) comparedField).getContainedType();
                             }
                             type.accept(this);
-                            if (!type.getSuperTypes().isEmpty()) {
-                                //comparedField.accept(this);
-                            }
                         } finally {
                             isDeletingContainedElement = previous; // Restore previous value for flag.
                         }

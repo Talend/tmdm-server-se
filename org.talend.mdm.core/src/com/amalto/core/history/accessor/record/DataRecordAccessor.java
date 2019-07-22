@@ -28,7 +28,6 @@ import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
 import com.amalto.core.history.accessor.Accessor;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.record.metadata.UnsupportedDataRecordMetadata;
-import com.amalto.core.storage.record.MetaDataUtils;
 
 public class DataRecordAccessor implements Accessor {
 
@@ -56,7 +55,7 @@ public class DataRecordAccessor implements Accessor {
 
     @SuppressWarnings("rawtypes")
     private static LinkedList<PathElement> getPath(DataRecord dataRecord, String path) {
-        LinkedList<PathElement> elements = new LinkedList<PathElement>();
+        LinkedList<PathElement> elements = new LinkedList<>();
         StringTokenizer tokenizer = new StringTokenizer(path, "/"); //$NON-NLS-1$
         DataRecord current = dataRecord;
         while (tokenizer.hasMoreElements()) {
@@ -133,7 +132,7 @@ public class DataRecordAccessor implements Accessor {
                 } else {
                     List<Object> list = (List) current.get(pathElement.field);
                     if (list == null) {
-                        list = new ArrayList<Object>();
+                        list = new ArrayList<>();
                         current.set(pathElement.field, list);
                     }
                     while (pathElement.index > list.size() - 1) { // Expand list size
@@ -172,7 +171,7 @@ public class DataRecordAccessor implements Accessor {
             } else {
                 List<Object> list = (List) current.get(pathElement.field);
                 if (list == null) {
-                    list = new ArrayList<Object>();
+                    list = new ArrayList<>();
                     current.set(pathElement.field, list);
                 }
                 while (pathElement.index > list.size() - 1) { // Expand list size
@@ -194,13 +193,12 @@ public class DataRecordAccessor implements Accessor {
         // No need to implement anything for this kind of accessor.
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public void create() {
         create(null);
     }
 
-    public void create(String specifiedType) {
+    private void create(String specifiedType) {
         try {
             StringTokenizer tokenizer = new StringTokenizer(path, "/"); //$NON-NLS-1$
             DataRecord current = dataRecord;
@@ -230,7 +228,7 @@ public class DataRecordAccessor implements Accessor {
                         }
                         while (index >= list.size()) {
                             if (field instanceof ContainedTypeFieldMetadata) {
-                                DataRecord record = null;
+                                DataRecord record;
                                 if (specifiedType != null) {
                                     ComplexTypeMetadata complexTypeMetadata = ((ContainedTypeFieldMetadata) field)
                                             .getContainedType().getSubTypes().stream()
@@ -384,7 +382,7 @@ public class DataRecordAccessor implements Accessor {
                     } else {
                         List<Object> list = (List) dataRecord.get(pathElement.field);
                         if (list == null) {
-                            list = new ArrayList<Object>();
+                            list = new ArrayList<>();
                             dataRecord.set(pathElement.field, list);
                         }
                     }

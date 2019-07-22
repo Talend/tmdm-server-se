@@ -1,0 +1,26 @@
+<!--
+  ~ Copyright (C) 2006-2019 Talend Inc. - www.talend.com
+  ~
+  ~ This source code is available under agreement available at
+  ~ %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
+  ~
+  ~ You should have received a copy of the agreement
+  ~ along with this program; if not, write to Talend SA
+  ~ 9 rue Pages 92150 Suresnes, France
+  -->
+
+<Contract xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <id>4</id>
+    <comment>comment-new</comment>
+    <detail xsi:type="ContractDetailSubType">
+        <code>aa-1</code>
+        <features>
+            <actor>aa-2</actor>
+            <vendor>aa-3</vendor>
+            <boolValue>true</boolValue>
+        </features>
+        <ReadOnlyEle>readOnlyEle-one</ReadOnlyEle>
+        <boolTest>true</boolTest>
+    </detail>
+    <enumEle>approved</enumEle>
+</Contract>

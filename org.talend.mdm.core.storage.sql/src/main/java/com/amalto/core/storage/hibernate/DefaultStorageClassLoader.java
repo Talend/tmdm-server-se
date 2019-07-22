@@ -19,6 +19,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -135,10 +136,17 @@ public class DefaultStorageClassLoader extends StorageClassLoader {
     }
 
     public MappingGenerator getMappingGenerator(Document document, TableResolver resolver) {
+        boolean fromMemoryStorage= false;
+        try {
+            UUID formatStorageName = UUID.fromString(storageName);
+            fromMemoryStorage = true;
+        } catch (Exception e) {
+            LOGGER.debug("Storage is not one Memory Storage");
+        }
         switch (type) {
             case MASTER:
             case SYSTEM:
-                return new MappingGenerator(document, resolver, dataSource);
+                return new MappingGenerator(document, resolver, dataSource, true, fromMemoryStorage);
             case STAGING:
                 return new MappingGenerator(document, resolver, dataSource, false);
             default:

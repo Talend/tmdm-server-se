@@ -21,7 +21,9 @@ import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.stream.Collectors;
 
 class TypeValue implements Setter, Getter {
@@ -58,7 +60,22 @@ class TypeValue implements Setter, Getter {
                             newType = (ComplexTypeMetadata) repository.getNonInstantiableType(StringUtils.EMPTY, value);
                         }
                     }
+                    ComplexTypeMetadata oldType = record.getType();
                     record.setType(newType);
+                    //change the newType, field's in oldType should be clear or reset
+                    /**
+                     * the field owned by oldType and new Type, the value should be reserved.
+                     * it the field doesn't exist in new Type, it should be delete
+                     */
+                    Collection<FieldMetadata> setFields = new ArrayList<>(oldType.getFields());
+                    for (FieldMetadata field : setFields) {
+                        if (newType.getFields().stream().anyMatch(item -> item.getName().equals(field.getName()))) {
+                            record.set(newType.getField(field.getName()), record.get(field));
+                            record.remove(field);
+                        } else {
+                            record.remove(field);
+                        }
+                    }
                 }
             }
         }
@@ -86,6 +103,9 @@ class TypeValue implements Setter, Getter {
             if (subField.getName().equals(fieldName)) {
                 return subField;
             }
+        }
+        if (containedField.getType().getName().equals(fieldName)) {
+            return containedField.getContainedType();
         }
         return null;
     }

@@ -74,6 +74,8 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
 
     private boolean generateConstrains;
 
+    private boolean fromMemoryStorage;
+
     public MappingGenerator(Document document, TableResolver resolver, RDBMSDataSource dataSource) {
         this(document, resolver, dataSource, true);
     }
@@ -82,11 +84,21 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
                             TableResolver resolver,
                             RDBMSDataSource dataSource,
                             boolean generateConstrains) {
+        this(document, resolver, dataSource, true, false);
+    }
+
+    public MappingGenerator(Document document,
+            TableResolver resolver,
+            RDBMSDataSource dataSource,
+            boolean generateConstrains,
+            boolean fromMemoryStorage) {
         this.document = document;
         this.resolver = resolver;
         this.dataSource = dataSource;
         this.generateConstrains = generateConstrains;
+        this.fromMemoryStorage = fromMemoryStorage;
     }
+
 
     @Override
     public Element visit(MetadataRepository repository) {
@@ -584,7 +596,11 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
                 if (field.getContainingType().getKeyFields().size() == 1) {
                     // lazy="extra"
                     Attr lazyAttribute = document.createAttribute("lazy"); //$NON-NLS-1$
-                    lazyAttribute.setValue("extra"); //$NON-NLS-1$
+                    if (fromMemoryStorage) {
+                        lazyAttribute.setValue("false"); //$NON-NLS-1$
+                    } else {
+                        lazyAttribute.setValue("extra"); //$NON-NLS-1$
+                    }
                     listElement.getAttributes().setNamedItem(lazyAttribute);
                     // fetch="join"
                     Attr fetchAttribute = document.createAttribute("fetch"); //$NON-NLS-1$

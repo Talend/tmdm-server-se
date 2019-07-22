@@ -67,12 +67,13 @@ abstract class AbstractChangeTypeAction implements FieldAction {
         if (!hasChangedType) {
             impliedActions = Collections.emptyList();
         } else if (previousType != null) {
-            boolean hasChangedType = previousType != newType || !previousType.getName().equals(newType.getName());
             if (!hasChangedType) {
                 impliedActions = Collections.singletonList(NoOpAction.instance());
             } else {
                 // Create field update actions
-                previousType.accept(new TypeComparison(newType, pathToClean));
+                if (newType != null) {
+                    previousType.accept(new TypeComparison(newType, pathToClean));
+                }
                 impliedActions = new ArrayList<Action>(1 + pathToClean.size());
                 if (!pathToClean.isEmpty()) {
                     List<String> indexedPathToClean = getIndexedPathToClean(document, previousType, path, pathToClean);

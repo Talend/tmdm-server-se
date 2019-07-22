@@ -48,6 +48,11 @@ public class CompositeAction implements Action {
         MutableDocument mutableDocument = document;
         List<Action> reorderedAction = reorderDeleteContainedTypeActions(actions);
         for (Action action : reorderedAction) {
+            FieldUpdateAction fieldUpdateAction = (FieldUpdateAction) action;
+            if (fieldUpdateAction.getPath().indexOf('@') > 0 && fieldUpdateAction.getNewValue() == null
+                    && fieldUpdateAction.getOldValue() != null) {
+                continue;
+            }
             mutableDocument = action.perform(document);
         }
         return mutableDocument;

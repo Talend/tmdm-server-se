@@ -360,6 +360,9 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
                                 type = ((ContainedTypeFieldMetadata) comparedField).getContainedType();
                             }
                             type.accept(this);
+                            if (!type.getSuperTypes().isEmpty()) {
+                                //comparedField.accept(this);
+                            }
                         } finally {
                             isDeletingContainedElement = previous; // Restore previous value for flag.
                         }
@@ -492,7 +495,7 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
                         throw new IllegalArgumentException("Type '" + field.getType().getName()
                                 + "' is not assignable from type '" + newTypeMetadata.getName() + "'");
                     }
-                    if (!newTypeMetadata.getSuperTypes().isEmpty() || !newTypeMetadata.getSubTypes().isEmpty()) {
+                    if (!newType.equals(previousType) && (!newTypeMetadata.getSuperTypes().isEmpty() || !newTypeMetadata.getSubTypes().isEmpty())) {
                         actions.addAll(ChangeTypeAction.create(originalDocument, date, source, userName, getLeftPath(), previousTypeMetadata, newTypeMetadata, field, userAction));
                     } else if (LOGGER.isDebugEnabled()) {
                         LOGGER.debug("Ignore type change on '" + getLeftPath() + "': type '" + newTypeMetadata.getName() + "' does not belong to an inheritance tree.");
@@ -506,6 +509,15 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
             }
 
             compare(field);
+            if (leftAccessor.exist() && !rightAccessor.exist()) {
+                String previousType = leftAccessor.getActualType();
+                if (!previousType.isEmpty() && !previousType.startsWith(MetadataRepository.ANONYMOUS_PREFIX)) {
+                    ComplexTypeMetadata previousTypeMetadata = (ComplexTypeMetadata) repository.getNonInstantiableType(repository.getUserNamespace(), previousType);
+                    if (!previousTypeMetadata.getSuperTypes().isEmpty() || !previousTypeMetadata.getSubTypes().isEmpty()) {
+                        actions.addAll(ChangeTypeAction.create(originalDocument, date, source, userName, getLeftPath(), previousTypeMetadata, null, field, userAction));
+                    }
+                }
+            }
             // Way to detect if there is a change in elements below: check if last action in list changed.
             Action last = actions.isEmpty() ? null : actions.getLast();
             boolean hasActions = last != before;

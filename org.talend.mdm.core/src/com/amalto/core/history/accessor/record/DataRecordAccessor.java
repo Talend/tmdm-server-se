@@ -16,8 +16,10 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.StringTokenizer;
 
+
 import org.apache.commons.lang.StringUtils;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.ContainedComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
@@ -26,6 +28,7 @@ import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
 import com.amalto.core.history.accessor.Accessor;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.record.metadata.UnsupportedDataRecordMetadata;
+import com.amalto.core.storage.record.MetaDataUtils;
 
 public class DataRecordAccessor implements Accessor {
 
@@ -93,7 +96,7 @@ public class DataRecordAccessor implements Accessor {
                         throw new IllegalStateException();
                     }
                 } else {
-                    pathElement.field = current.getType().getField(element);
+                    pathElement.field = getFieldMetadata(current.getType(), element);
                     pathElement.setter = SimpleValue.SET;
                     pathElement.getter = SimpleValue.GET;
                     if (pathElement.field instanceof ContainedTypeFieldMetadata
@@ -194,6 +197,10 @@ public class DataRecordAccessor implements Accessor {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public void create() {
+        create(null);
+    }
+
+    public void create(String specifiedType) {
         try {
             StringTokenizer tokenizer = new StringTokenizer(path, "/"); //$NON-NLS-1$
             DataRecord current = dataRecord;
@@ -223,8 +230,16 @@ public class DataRecordAccessor implements Accessor {
                         }
                         while (index >= list.size()) {
                             if (field instanceof ContainedTypeFieldMetadata) {
-                                DataRecord record = new DataRecord((ComplexTypeMetadata) field.getType(),
-                                        UnsupportedDataRecordMetadata.INSTANCE);
+                                DataRecord record = null;
+                                if (specifiedType != null) {
+                                    ComplexTypeMetadata complexTypeMetadata = ((ContainedTypeFieldMetadata) field)
+                                            .getContainedType().getSubTypes().stream()
+                                            .filter(item -> item.getName().equals(specifiedType)).findFirst().get();
+                                    record = new DataRecord(complexTypeMetadata, UnsupportedDataRecordMetadata.INSTANCE);
+                                } else {
+                                    record = new DataRecord((ComplexTypeMetadata) field.getType(),
+                                            UnsupportedDataRecordMetadata.INSTANCE);
+                                }
                                 try {
                                     list.add(record);
                                 } catch (UnsupportedOperationException e) {
@@ -258,9 +273,12 @@ public class DataRecordAccessor implements Accessor {
                             current = (DataRecord) value;
                         }
                     } else {
-                        FieldMetadata field = current.getType().getField(element);
+                        FieldMetadata field = getFieldMetadata(current.getType(), element);
                         if (field instanceof ContainedTypeFieldMetadata) {
-                            Object value = current.get(field);
+                            Object value = null;
+                            if (current.getSetFields().contains(field)) {
+                                value = current.get(field);
+                            }
                             if (value == null) {
                                 DataRecord record = new DataRecord(((ContainedTypeFieldMetadata) field).getContainedType(),
                                         UnsupportedDataRecordMetadata.INSTANCE);
@@ -330,7 +348,11 @@ public class DataRecordAccessor implements Accessor {
 
     @Override
     public void createAndSet(String value) {
-        create();
+        if (path.indexOf('@') > 0) {
+            create(value);
+        } else {
+            create(null);
+        }
         pathElements = null;
         initPath();
         set(value);
@@ -557,5 +579,23 @@ public class DataRecordAccessor implements Accessor {
             return get().equals(accessor.get()) ? 0 : -1;
         }
         return -1;
+    }
+
+    private static FieldMetadata getFieldMetadata(ComplexTypeMetadata complexTypeMetadata, String element) {
+        FieldMetadata field = null;
+        if (complexTypeMetadata.hasField(element)) {
+            field =complexTypeMetadata.getField(element);
+        } else if (complexTypeMetadata instanceof ContainedComplexTypeMetadata) {
+            ComplexTypeMetadata contain = ((ContainedComplexTypeMetadata) complexTypeMetadata).getContainedType();
+            for (ComplexTypeMetadata complexType : contain.getSubTypes()) {
+                for (FieldMetadata subField : complexType.getFields()) {
+                    if (field == null && subField.getName().equals(element)) {
+                        field = subField;
+                        break;
+                    }
+                }
+            }
+        }
+        return field;
     }
 }

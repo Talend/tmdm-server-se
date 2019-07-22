@@ -58,7 +58,9 @@ class UpdateReportDocument extends DOMDocument {
                 item.appendChild(pathNode);
                 // Old value
                 Node oldValueNode = updateReportDocument.createElement("oldValue"); //$NON-NLS-1$
-                oldValueNode.appendChild(updateReportDocument.createTextNode(value));
+                if (value != null) {
+                    oldValueNode.appendChild(updateReportDocument.createTextNode(value));
+                }
                 item.appendChild(oldValueNode);
                 // New value
                 Node newValueNode = updateReportDocument.createElement("newValue"); //$NON-NLS-1$

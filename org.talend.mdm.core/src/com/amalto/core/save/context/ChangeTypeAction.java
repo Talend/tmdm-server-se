@@ -55,8 +55,9 @@ class ChangeTypeAction extends AbstractChangeTypeAction {
         }
 
         Accessor typeAccessor = document.createAccessor(path + "/@xsi:type"); //$NON-NLS-1$
-        String typeName = newType.getName();
+        String typeName = newType == null ? null : newType.getName();
         typeAccessor.createAndSet(typeName);
+        document.clean();
         return document;
     }
 
@@ -68,6 +69,8 @@ class ChangeTypeAction extends AbstractChangeTypeAction {
         Accessor accessor = document.createAccessor(path + "/@xsi:type"); //$NON-NLS-1$
         if (previousType != null) {
             accessor.set(previousType.getName());
+        } else {
+            accessor.set(null);
         }
         return document;
     }

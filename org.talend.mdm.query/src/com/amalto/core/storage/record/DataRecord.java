@@ -292,6 +292,27 @@ public class DataRecord {
         }
     }
 
+    public void setListValue(FieldMetadata field, Object o) {
+        if (field == null) {
+            throw new IllegalArgumentException("Field can not be null.");
+        }
+        if (!field.isMany()) {
+            fieldToValue.put(field, o);
+        } else {
+            List list = (List) fieldToValue.get(field);
+            if (list == null && o instanceof List) {
+                fieldToValue.put(field, o);
+            } else {
+                if (list == null) {
+                    list = new LinkedList();
+                    fieldToValue.put(field, list);
+                } else {
+                    fieldToValue.put(field, o);
+                }
+            }
+        }
+    }
+
     public Set<FieldMetadata> getSetFields() {
         return fieldToValue.keySet();
     }

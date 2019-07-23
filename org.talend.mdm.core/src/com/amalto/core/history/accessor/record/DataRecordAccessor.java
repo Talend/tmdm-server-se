@@ -579,20 +579,18 @@ public class DataRecordAccessor implements Accessor {
     }
 
     private static FieldMetadata getFieldMetadata(ComplexTypeMetadata complexTypeMetadata, String element) {
-        FieldMetadata field = null;
         if (complexTypeMetadata.hasField(element)) {
-            field = complexTypeMetadata.getField(element);
+            return complexTypeMetadata.getField(element);
         } else if (complexTypeMetadata instanceof ContainedComplexTypeMetadata) {
             ComplexTypeMetadata contain = ((ContainedComplexTypeMetadata) complexTypeMetadata).getContainedType();
             for (ComplexTypeMetadata complexType : contain.getSubTypes()) {
                 for (FieldMetadata subField : complexType.getFields()) {
-                    if (field == null && subField.getName().equals(element)) {
-                        field = subField;
-                        break;
+                    if (subField.getName().equals(element)) {
+                        return subField;
                     }
                 }
             }
         }
-        return field;
+        return null;
     }
 }

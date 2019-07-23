@@ -141,7 +141,9 @@ public class DefaultStorageClassLoader extends StorageClassLoader {
             UUID formatStorageName = UUID.fromString(storageName);
             fromMemoryStorage = true;
         } catch (Exception e) {
-            LOGGER.debug("Storage is not one Memory Storage");
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Storage" + storageName + " is not one Memory Storage", e);
+            }
         }
         switch (type) {
             case MASTER:

@@ -142,7 +142,7 @@ public class DefaultStorageClassLoader extends StorageClassLoader {
             fromMemoryStorage = true;
         } catch (Exception e) {
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Storage" + storageName + " is not one Memory Storage", e);
+                LOGGER.debug("Storage" + storageName + " is not Memory Storage", e);
             }
         }
         switch (type) {

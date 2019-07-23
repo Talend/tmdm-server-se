@@ -305,15 +305,11 @@ public class DataRecord {
             fieldToValue.put(field, o);
         } else {
             List list = (List) fieldToValue.get(field);
-            if (list == null && o instanceof LinkedList) {
-                fieldToValue.put(field, o);
+            if (list == null) {
+                list = new LinkedList();
+                fieldToValue.put(field, list);
             } else {
-                if (list == null) {
-                    list = new LinkedList();
-                    fieldToValue.put(field, list);
-                } else {
-                    fieldToValue.put(field, o);
-                }
+                fieldToValue.put(field, o);
             }
         }
     }

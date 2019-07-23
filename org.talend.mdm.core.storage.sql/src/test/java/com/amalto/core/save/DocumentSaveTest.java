@@ -1351,8 +1351,6 @@ public class DocumentSaveTest extends TestCase {
         assertEquals("ContractDetailSubType", evaluate(committedElement, "/Contract/detail[1]/@xsi:type"));
         assertEquals("cccccc", evaluate(committedElement, "/Contract/detail[1]/code"));
         assertEquals("sdfsdf", evaluate(committedElement, "/Contract/detail[1]/features/actor"));
-
-        //todo this is chagne detail from ContractDetailType to ContractDetailSubType
     }
 
     public void testUpdateSequence() throws Exception {

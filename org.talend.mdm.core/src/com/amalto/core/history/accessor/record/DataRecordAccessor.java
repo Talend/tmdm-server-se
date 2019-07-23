@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.StringTokenizer;
 
-
 import org.apache.commons.lang.StringUtils;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedComplexTypeMetadata;
@@ -582,7 +581,7 @@ public class DataRecordAccessor implements Accessor {
     private static FieldMetadata getFieldMetadata(ComplexTypeMetadata complexTypeMetadata, String element) {
         FieldMetadata field = null;
         if (complexTypeMetadata.hasField(element)) {
-            field =complexTypeMetadata.getField(element);
+            field = complexTypeMetadata.getField(element);
         } else if (complexTypeMetadata instanceof ContainedComplexTypeMetadata) {
             ComplexTypeMetadata contain = ((ContainedComplexTypeMetadata) complexTypeMetadata).getContainedType();
             for (ComplexTypeMetadata complexType : contain.getSubTypes()) {

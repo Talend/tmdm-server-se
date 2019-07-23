@@ -292,6 +292,11 @@ public class DataRecord {
         }
     }
 
+    /**
+     * if the value is list, set the value to the new value, can't add to original
+     * @param field
+     * @param o
+     */
     public void setListValue(FieldMetadata field, Object o) {
         if (field == null) {
             throw new IllegalArgumentException("Field can not be null.");

@@ -136,7 +136,7 @@ public class DefaultStorageClassLoader extends StorageClassLoader {
     }
 
     public MappingGenerator getMappingGenerator(Document document, TableResolver resolver) {
-        boolean fromMemoryStorage= false;
+        boolean fromMemoryStorage = false;
         try {
             UUID formatStorageName = UUID.fromString(storageName);
             fromMemoryStorage = true;

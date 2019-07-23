@@ -301,16 +301,8 @@ public class DataRecord {
         if (field == null) {
             throw new IllegalArgumentException("Field can not be null.");
         }
-        if (!field.isMany()) {
+        if (field.isMany() && o instanceof LinkedList) {
             fieldToValue.put(field, o);
-        } else {
-            List list = (List) fieldToValue.get(field);
-            if (list == null) {
-                list = new LinkedList();
-                fieldToValue.put(field, list);
-            } else {
-                fieldToValue.put(field, o);
-            }
         }
     }
 

@@ -305,7 +305,7 @@ public class DataRecord {
             fieldToValue.put(field, o);
         } else {
             List list = (List) fieldToValue.get(field);
-            if (list == null && o instanceof List) {
+            if (list == null && o instanceof LinkedList) {
                 fieldToValue.put(field, o);
             } else {
                 if (list == null) {

@@ -77,14 +77,14 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
     private boolean fromMemoryStorage;
 
     public MappingGenerator(Document document, TableResolver resolver, RDBMSDataSource dataSource) {
-        this(document, resolver, dataSource, true);
+        this(document, resolver, dataSource, true, false);
     }
 
     public MappingGenerator(Document document,
                             TableResolver resolver,
                             RDBMSDataSource dataSource,
                             boolean generateConstrains) {
-        this(document, resolver, dataSource, true, false);
+        this(document, resolver, dataSource, generateConstrains, false);
     }
 
     public MappingGenerator(Document document,

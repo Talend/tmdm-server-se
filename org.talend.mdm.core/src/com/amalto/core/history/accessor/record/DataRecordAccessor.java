@@ -229,7 +229,7 @@ public class DataRecordAccessor implements Accessor {
                             if (field instanceof ContainedTypeFieldMetadata) {
                                 DataRecord record;
                                 // If specified type is not null, means the field changed the type
-                                // need to get the correct type from the subType's and Instantiate new DataRecord object
+                                // need to get the correct type from subTypes and instantiate a new DataRecord object
                                 if (specifiedType != null) {
                                     ComplexTypeMetadata complexTypeMetadata = ((ContainedTypeFieldMetadata) field)
                                             .getContainedType().getSubTypes().stream()
@@ -275,7 +275,7 @@ public class DataRecordAccessor implements Accessor {
                         FieldMetadata field = getFieldMetadata(current.getType(), element);
                         if (field instanceof ContainedTypeFieldMetadata) {
                             Object value = null;
-                            // If the field does not exist in the DataRecord, throws Exception when get its value.
+                            // If the field does't exist in the DataRecord, throw Exception while getting its value.
                             if (current.getSetFields().contains(field)) {
                                 value = current.get(field);
                             }
@@ -348,7 +348,7 @@ public class DataRecordAccessor implements Accessor {
 
     @Override
     public void createAndSet(String value) {
-        // If the path contains '@xsi:type', this action changes type action, need to specify the type to create a node
+        // If the path contains "@xsi:type", this is a change type action, need to specify the type to create a node
         if (path.indexOf('@') > 0) {
             create(value);
         } else {
@@ -583,8 +583,7 @@ public class DataRecordAccessor implements Accessor {
     }
 
     /**
-     * Return the field which fieldName contains in complexTypeMetadata's field and it's subtype if it's a contained type.
-     * return null while complexTypeMetadata and complexTypeMetadata's subtype doesn't contains
+     * Return the field if contained in the type's or subtype's fields
      * @param complexTypeMetadata
      * @param fieldName
      * @return

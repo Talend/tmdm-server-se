@@ -506,8 +506,8 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
             }
 
             compare(field);
-            // If the action is previous type is not null, it also need to add one ChangeTypeAction,
-            // such as changeTypeAction: path=detail[2]/@xsi:type, previousType=ContractDetailSubType, newValue=null
+            // If previous type isn't null, need to add a ChangeTypeAction
+            // Like: path=detail[2]/@xsi:type, previousType=ContractDetailSubType, newValue=null
             if (leftAccessor.exist() && !rightAccessor.exist()) {
                 String previousType = leftAccessor.getActualType();
                 if (!previousType.isEmpty() && !previousType.startsWith(MetadataRepository.ANONYMOUS_PREFIX)) {

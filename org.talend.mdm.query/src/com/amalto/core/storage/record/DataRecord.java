@@ -293,7 +293,7 @@ public class DataRecord {
     }
 
     /**
-     * if the value is list, set the value to the new value, can't add to original
+     * If value is list, set value to new list, not add to old list
      * @param field
      * @param o
      */

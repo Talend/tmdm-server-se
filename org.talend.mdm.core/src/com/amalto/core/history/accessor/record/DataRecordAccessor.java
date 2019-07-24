@@ -228,6 +228,8 @@ public class DataRecordAccessor implements Accessor {
                         while (index >= list.size()) {
                             if (field instanceof ContainedTypeFieldMetadata) {
                                 DataRecord record;
+                                // If specified type is not null, means the field changed the type
+                                // need to get the correct type from the subType's and Instantiate new DataRecord object
                                 if (specifiedType != null) {
                                     ComplexTypeMetadata complexTypeMetadata = ((ContainedTypeFieldMetadata) field)
                                             .getContainedType().getSubTypes().stream()
@@ -273,6 +275,7 @@ public class DataRecordAccessor implements Accessor {
                         FieldMetadata field = getFieldMetadata(current.getType(), element);
                         if (field instanceof ContainedTypeFieldMetadata) {
                             Object value = null;
+                            // If the field does not exist in the DataRecord, throws Exception when get its value.
                             if (current.getSetFields().contains(field)) {
                                 value = current.get(field);
                             }
@@ -345,6 +348,7 @@ public class DataRecordAccessor implements Accessor {
 
     @Override
     public void createAndSet(String value) {
+        // If the path contains '@xsi:type', this action changes type action, need to specify the type to create a node
         if (path.indexOf('@') > 0) {
             create(value);
         } else {
@@ -578,14 +582,21 @@ public class DataRecordAccessor implements Accessor {
         return -1;
     }
 
-    private static FieldMetadata getFieldMetadata(ComplexTypeMetadata complexTypeMetadata, String element) {
-        if (complexTypeMetadata.hasField(element)) {
-            return complexTypeMetadata.getField(element);
+    /**
+     * Return the field which fieldName contains in complexTypeMetadata's field and it's subtype if it's a contained type.
+     * return null while complexTypeMetadata and complexTypeMetadata's subtype doesn't contains
+     * @param complexTypeMetadata
+     * @param fieldName
+     * @return
+     */
+    private static FieldMetadata getFieldMetadata(ComplexTypeMetadata complexTypeMetadata, String fieldName) {
+        if (complexTypeMetadata.hasField(fieldName)) {
+            return complexTypeMetadata.getField(fieldName);
         } else if (complexTypeMetadata instanceof ContainedComplexTypeMetadata) {
             ComplexTypeMetadata contain = ((ContainedComplexTypeMetadata) complexTypeMetadata).getContainedType();
             for (ComplexTypeMetadata complexType : contain.getSubTypes()) {
                 for (FieldMetadata subField : complexType.getFields()) {
-                    if (subField.getName().equals(element)) {
+                    if (subField.getName().equals(fieldName)) {
                         return subField;
                     }
                 }

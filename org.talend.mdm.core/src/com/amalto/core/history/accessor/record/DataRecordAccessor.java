@@ -231,9 +231,14 @@ public class DataRecordAccessor implements Accessor {
                                 // If specified type is not null, means the field changed the type
                                 // need to get the correct type from subTypes and instantiate a new DataRecord object
                                 if (specifiedType != null) {
-                                    ComplexTypeMetadata complexTypeMetadata = ((ContainedTypeFieldMetadata) field)
-                                            .getContainedType().getSubTypes().stream()
-                                            .filter(item -> item.getName().equals(specifiedType)).findFirst().get();
+                                    ComplexTypeMetadata complexTypeMetadata;
+                                    if (((ContainedTypeFieldMetadata) field).getContainedType().getName().equals(specifiedType)) {
+                                        complexTypeMetadata = ((ContainedTypeFieldMetadata) field).getContainedType();
+                                    } else {
+                                        complexTypeMetadata = ((ContainedTypeFieldMetadata) field).getContainedType()
+                                                .getSubTypes().stream().filter(item -> item.getName().equals(specifiedType))
+                                                .findFirst().get();
+                                    }
                                     record = new DataRecord(complexTypeMetadata, UnsupportedDataRecordMetadata.INSTANCE);
                                 } else {
                                     record = new DataRecord((ComplexTypeMetadata) field.getType(),

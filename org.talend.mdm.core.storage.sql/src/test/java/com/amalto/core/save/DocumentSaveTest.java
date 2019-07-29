@@ -87,7 +87,7 @@ public class DocumentSaveTest extends TestCase {
 
     public static final boolean USE_STORAGE_OPTIMIZATIONS = true;
 
-    private static Logger LOG = Logger.getLogger(DocumentSaveTest.class);
+    private static final Logger LOG = Logger.getLogger(DocumentSaveTest.class);
 
     private XPath xPath = XPathFactory.newInstance().newXPath();
 
@@ -111,7 +111,7 @@ public class DocumentSaveTest extends TestCase {
         xPath = xPathFactory.newXPath();
         xPath.setNamespaceContext(new TestNamespaceContext());
         
-        Map<String, Object> delegatorInstancePool = new HashMap<String, Object>();
+        Map<String, Object> delegatorInstancePool = new HashMap<>();
         delegatorInstancePool.put("LocalUser", new MockILocalUser()); //$NON-NLS-1$
         delegatorInstancePool.put("SecurityCheck", new MockISecurityCheck()); //$NON-NLS-1$
         createBeanDelegatorContainer();
@@ -1305,6 +1305,41 @@ public class DocumentSaveTest extends TestCase {
         assertEquals("ContractDetailSubType", evaluate(committedElement, "/Contract/detail[2]/@xsi:type"));
         assertEquals("sdfsdf", evaluate(committedElement, "/Contract/detail[2]/code"));
         assertEquals("sdfsdf", evaluate(committedElement, "/Contract/detail[2]/features/actor"));
+    }
+
+    public void testWithCloneSuperType() throws Exception {
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(DocumentSaveTest.class.getResourceAsStream("metadata3.xsd"));
+        MockMetadataRepositoryAdmin.INSTANCE.register("Contract", repository);
+
+        SaverSource source = new TestSaverSource(repository, true, "test77_original.xml", "metadata3.xsd");
+
+        SaverSession session = SaverSession.newSession(source);
+        InputStream recordXml = DocumentSaveTest.class.getResourceAsStream("test77.xml");
+        DocumentSaverContext context = session.getContextFactory().create("MDM", "Contract", "Source", recordXml, false, true,
+                true, false, false);
+        DocumentSaver saver = context.createSaver();
+        saver.save(session, context);
+        MockCommitter committer = new MockCommitter();
+        session.end(committer);
+
+        assertTrue(committer.hasSaved());
+        Element committedElement = committer.getCommittedElement();
+        assertEquals("ContractDetailType", evaluate(committedElement, "/Contract/detail[1]/@xsi:type"));
+        assertEquals("ContractDetailType", evaluate(committedElement, "/Contract/detail[2]/@xsi:type"));
+        assertEquals("code-1", evaluate(committedElement, "/Contract/detail[2]/code"));
+        assertEquals("code-1", evaluate(committedElement, "/Contract/detail[1]/code"));
+
+        // test update report
+        MutableDocument updateReportDocument = context.getUpdateReportDocument();
+        assertNotNull(updateReportDocument);
+        Document doc = updateReportDocument.asDOM();
+        String path = (String) evaluate(doc.getDocumentElement(), "Item[1]/path");
+        String oldValue = (String) evaluate(doc.getDocumentElement(), "Item[1]/oldValue");
+        String newValue = (String) evaluate(doc.getDocumentElement(), "Item[1]/newValue");
+        assertEquals("detail[2]/code", path);
+        assertEquals("", oldValue);
+        assertEquals("code-1", newValue);
     }
 
     public void testSubclassTypeChange() throws Exception {
@@ -2505,11 +2540,11 @@ public class DocumentSaveTest extends TestCase {
         // create & register storage
         storageAdmin.create("MDM", "MDM", StorageType.MASTER, "H2-Default"); //$NON-NLS-1$//$NON-NLS-2$
 
-        Set<UpdateRunnable> updateRunnables = new HashSet<UpdateRunnable>();
+        Set<UpdateRunnable> updateRunnables = new HashSet<>();
         for (int i = 0; i < 10; i++) {
             updateRunnables.add(new UpdateRunnable(source));
         }
-        Set<Thread> updateThreads = new HashSet<Thread>();
+        Set<Thread> updateThreads = new HashSet<>();
         for (Runnable updateRunnable : updateRunnables) {
             updateThreads.add(new Thread(updateRunnable));
         }
@@ -4020,7 +4055,7 @@ public class DocumentSaveTest extends TestCase {
         storage.prepare(repository, true);
 
         ComplexTypeMetadata objectType = repository.getComplexType("Person");
-        List<DataRecord> records = new ArrayList<DataRecord>();
+        List<DataRecord> records = new ArrayList<>();
         DataRecordReader<String> factory = new XmlStringDataRecordReader();
         records.add(factory.read(repository, repository.getComplexType("Person"), "<Person><id>1</id><name>Jack</name></Person>"));
         records.add(factory.read(repository, repository.getComplexType("Employee"), "<Employee><id>2</id><name>Employee</name><role>Employee</role></Employee>"));
@@ -4474,7 +4509,7 @@ public class DocumentSaveTest extends TestCase {
 
         @Override
         public HashSet<String> getRoles() {
-            HashSet<String> roleSet = new HashSet<String>();
+            HashSet<String> roleSet = new HashSet<>();
             roleSet.add("Demo_Manager");
             return roleSet;
         }
@@ -4510,9 +4545,9 @@ public class DocumentSaveTest extends TestCase {
 
         private boolean hasCalledInitAutoIncrement;
 
-        private final Map<String, String> schemasAsString = new HashMap<String, String>();
+        private final Map<String, String> schemasAsString = new HashMap<>();
 
-        private final Map<String, Integer> AUTO_INCREMENT_ID_MAP = new HashMap<String, Integer>();
+        private final Map<String, Integer> AUTO_INCREMENT_ID_MAP = new HashMap<>();
 
         public TestSaverSource(MetadataRepository repository, boolean exist, String originalDocumentFileName,
                 String schemaFileName) {
@@ -4814,7 +4849,7 @@ public class DocumentSaveTest extends TestCase {
 
     private static class TestNamespaceContext implements NamespaceContext {
 
-        private Map<String, String> declaredPrefix = new HashMap<String, String>();
+        private Map<String, String> declaredPrefix = new HashMap<>();
 
         private TestNamespaceContext() {
             declaredPrefix.put("xsi", XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI);

@@ -41,6 +41,13 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.amalto.core.objects.UpdateReportPOJO;
+import com.amalto.core.server.ServerContext;
+import com.amalto.core.server.StorageAdmin;
+import com.amalto.core.storage.HibernateStorageUtils;
+import com.amalto.core.storage.StorageType;
+import com.amalto.core.storage.datasource.DataSource;
+import com.amalto.core.storage.datasource.RDBMSDataSource;
 import com.amalto.core.util.Util;
 import com.amalto.core.webservice.WSDataClusterPK;
 import com.amalto.core.webservice.WSGetItem;
@@ -79,11 +86,22 @@ public class JournalDBService {
         int totalSize = 0;
         List<JournalGridModel> list = new ArrayList<JournalGridModel>();
         String sortDir = null;
-        if (SortDir.ASC.equals(SortDir.findDir(sort))) {
-            sortDir = Constants.SEARCH_DIRECTION_ASC;
-        } else if (SortDir.DESC.equals(SortDir.findDir(sort))) {
-            sortDir = Constants.SEARCH_DIRECTION_DESC;
+
+        // Ignore Primary Key Info if using Oracle DB, CLOB doesn't support ORDER BY
+        if ("primaryKeyInfo".equals(field)) {
+            StorageAdmin storageAdmin = ServerContext.INSTANCE.get().getStorageAdmin();
+            RDBMSDataSource dataSource = (RDBMSDataSource) storageAdmin.get(UpdateReportPOJO.DATA_CLUSTER, StorageType.MASTER).getDataSource();
+            if (HibernateStorageUtils.isOracle(dataSource.getDialectName())) {
+                field = null;
+            }
+        } else {
+            if (SortDir.ASC.equals(SortDir.findDir(sort))) {
+                sortDir = Constants.SEARCH_DIRECTION_ASC;
+            } else if (SortDir.DESC.equals(SortDir.findDir(sort))) {
+                sortDir = Constants.SEARCH_DIRECTION_DESC;
+            }
         }
+
         WSStringArray resultsArray = webService.getItemsBySort(org.talend.mdm.webapp.journal.server.util.Util.buildGetItemsSort(
                 conditions, start, limit, field, sortDir));
         String[] results = resultsArray == null ? new String[0] : resultsArray.getStrings();

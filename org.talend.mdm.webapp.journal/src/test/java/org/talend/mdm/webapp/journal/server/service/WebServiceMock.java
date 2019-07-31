@@ -46,8 +46,9 @@ public class WebServiceMock implements WebService {
         WSItemPK pk = wSGetItem.getWsItemPK();
         if ("UpdateReport".equals(pk.getWsDataClusterPK().getPk()) && "Update".equals(pk.getConceptName()) && "genericUI".equals(pk.getIds()[0]) && "1360140140037".equals(pk.getIds()[1])) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
             WSItem item = new WSItem();
+            item.setDataModelName("UpdateReport"); //$NON-NLS-1$
             item.setConceptName("Update"); //$NON-NLS-1$
-            item.setContent("<Update><UserName>administrator</UserName><Source>genericUI</Source><TimeInMillis>1361153957282</TimeInMillis><ID>5258f292-567s-473b-bc01-8b6ds34682u3</ID><DataCluster>Product</DataCluster><DataModel>Product</DataModel><Concept>Product</Concept><Key>1</Key><Item><path>Name</path><oldValue>1</oldValue><newValue>123</newValue></Item><OperationType>UPDATE</OperationType></Update>"); //$NON-NLS-1$            item.setDataModelName("UpdateReport"); //$NON-NLS-1$
+            item.setContent("<Update><UserName>administrator</UserName><Source>genericUI</Source><TimeInMillis>1361153957282</TimeInMillis><ID>5258f292-567s-473b-bc01-8b6ds34682u3</ID><DataCluster>Product</DataCluster><DataModel>Product</DataModel><Concept>Product</Concept><Key>1</Key><PrimaryKeyInfo>123-desc</PrimaryKeyInfo><Item><path>Name</path><oldValue>1</oldValue><newValue>123</newValue></Item><OperationType>UPDATE</OperationType></Update>"); //$NON-NLS-1$
             item.setIds(ids);
             item.setWsDataClusterPK(new WSDataClusterPK("UpdateReport")); //$NON-NLS-1$
             return item;

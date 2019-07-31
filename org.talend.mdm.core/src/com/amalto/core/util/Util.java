@@ -1257,9 +1257,13 @@ public class Util extends XmlUtil {
     public static String getPrimaryKeyInfo(ComplexTypeMetadata type, MutableDocument userDocument) {
         List<String> valueList = new ArrayList<>();
         for (FieldMetadata field : type.getPrimaryKeyInfo()) {
-            String value = userDocument.createAccessor(field.getPath()).get();
-            if (StringUtils.isNotBlank(value)) {
-                valueList.add(StringUtils.trim(value));
+            try {
+                String value = userDocument.createAccessor(field.getPath()).get();
+                if (StringUtils.isNotBlank(value)) {
+                    valueList.add(StringUtils.trim(value));
+                }
+            } catch(NullPointerException e) {// No empty element of the field exists
+                continue;
             }
         }
         return StringUtils.join(valueList.toArray(), "-"); //$NON-NLS-1$

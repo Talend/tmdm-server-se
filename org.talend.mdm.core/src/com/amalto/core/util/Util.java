@@ -1212,6 +1212,21 @@ public class Util extends XmlUtil {
     }
 
     /**
+     * Check if the type has set primary key info
+     * 
+     * @param storageName
+     * @param type
+     * @return
+     */
+    public static boolean isPrimaryKeyInfoSet(String storageName, String type) {
+        StorageAdmin storageAdmin = ServerContext.INSTANCE.get().getStorageAdmin();
+        Storage customStorage = storageAdmin.get(storageName, StorageType.MASTER);
+        MetadataRepository repository = customStorage.getMetadataRepository();
+        ComplexTypeMetadata complexType = repository.getComplexType(type);
+        return complexType.getPrimaryKeyInfo().size() > 0;
+    }
+
+    /**
      * Get primary key info from record's ID
      * @param cluster
      * @param concept
@@ -1262,7 +1277,8 @@ public class Util extends XmlUtil {
                 if (StringUtils.isNotBlank(value)) {
                     valueList.add(StringUtils.trim(value));
                 }
-            } catch(NullPointerException e) {// No empty element of the field exists
+            } catch (NullPointerException e) {
+                LOGGER.warn("No element for '" + field.getName() + "' in XML Document.", e);
                 continue;
             }
         }

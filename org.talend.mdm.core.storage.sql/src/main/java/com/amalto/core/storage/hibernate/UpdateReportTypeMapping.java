@@ -40,10 +40,6 @@ class UpdateReportTypeMapping extends TypeMapping {
 
     private static final String NO_SOURCE = "none"; //$NON-NLS-1$
 
-    private static final String ITEMS_XML = "x_items_xml"; //$NON-NLS-1$
-
-    private static final String PK_INFO = "x_primary_key_info"; //$NON-NLS-1$
-
     private final ComplexTypeMetadata updateReportType;
 
     private final ComplexTypeMetadata databaseUpdateReportType;
@@ -102,7 +98,7 @@ class UpdateReportTypeMapping extends TypeMapping {
         to.set("x_concept", from.get("Concept")); //$NON-NLS-1$ //$NON-NLS-2$
         to.set("x_key", from.get("Key")); //$NON-NLS-1$ //$NON-NLS-2$
         String primaryKeyInfo = String.valueOf(from.get("PrimaryKeyInfo")); // $NON-NLS-2$
-        to.set(PK_INFO, isUsingClob(to, PK_INFO) ? Hibernate.getLobCreator(session).createClob(primaryKeyInfo) : primaryKeyInfo);
+        to.set("x_primary_key_info", isUsingClob(to, "x_primary_key_info") ? Hibernate.getLobCreator(session).createClob(primaryKeyInfo) : primaryKeyInfo);
         try {
             List<DataRecord> dataRecord = (List<DataRecord>) from.get("Item"); //$NON-NLS-1$
             if (dataRecord != null) { // this might be null if there is no 'Item' element in update report.
@@ -111,7 +107,7 @@ class UpdateReportTypeMapping extends TypeMapping {
                 for (DataRecord record : dataRecord) {
                     writer.write(record, new BufferedWriter(stringWriter));
                 }
-                to.set(ITEMS_XML, isUsingClob(to, ITEMS_XML) ? Hibernate.getLobCreator(session).createClob(stringWriter.toString()) : stringWriter.toString());
+                to.set("x_items_xml", isUsingClob(to, "x_items_xml") ? Hibernate.getLobCreator(session).createClob(stringWriter.toString()) : stringWriter.toString());
             }
         } catch (IOException e) {
             throw new RuntimeException("Could not set Items XML value", e); //$NON-NLS-1$
@@ -148,7 +144,7 @@ class UpdateReportTypeMapping extends TypeMapping {
     @Override
     public DataRecord setValues(Wrapper from, DataRecord to) {
         DataRecordReader<String> itemReader = new XmlStringDataRecordReader();
-        DataRecord items = itemReader.read(repository, updateReportType, "<Update>" + getStringValue(from, ITEMS_XML) + "</Update>");  //$NON-NLS-1$ //$NON-NLS-2$
+        DataRecord items = itemReader.read(repository, updateReportType, "<Update>" + getStringValue(from, "x_items_xml") + "</Update>");  //$NON-NLS-1$ //$NON-NLS-2$
 
         to.set(updateReportType.getField("UUID"), from.get("x_uuid")); //$NON-NLS-1$ //$NON-NLS-2$
         to.set(updateReportType.getField("UserName"), from.get("x_user_name")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -160,7 +156,7 @@ class UpdateReportTypeMapping extends TypeMapping {
         to.set(updateReportType.getField("DataModel"), from.get("x_data_model")); //$NON-NLS-1$ //$NON-NLS-2$
         to.set(updateReportType.getField("Concept"), from.get("x_concept")); //$NON-NLS-1$ //$NON-NLS-2$
         to.set(updateReportType.getField("Key"), from.get("x_key")); //$NON-NLS-1$ //$NON-NLS-2$
-        to.set(updateReportType.getField("PrimaryKeyInfo"), getStringValue(from, PK_INFO)); //$NON-NLS-1$
+        to.set(updateReportType.getField("PrimaryKeyInfo"), getStringValue(from, "x_primary_key_info")); //$NON-NLS-1$
         List<DataRecord> itemList = (List<DataRecord>) items.get("Item"); //$NON-NLS-1$
         if (itemList != null) { // Might be null for create update report for instance.
             for (DataRecord dataRecord : itemList) {

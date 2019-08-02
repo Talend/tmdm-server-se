@@ -1607,7 +1607,7 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
             String conceptName = itemPK.getConceptName();
             String[] ids = itemPK.getIds();
             // Get Primary Key Info
-            boolean isPKInfoSet = Util.isPrimaryKeyInfoSet(clusterName, conceptName);
+            boolean isPKInfoSet = Util.isPKInfoSet(clusterName, conceptName);
             String primarkKeyInfo = isPKInfoSet ? Util.getPrimaryKeyInfo(clusterName, conceptName, ids) : StringUtils.EMPTY;
             pushToUpdateReport(clusterName, dataModelName, conceptName, ids, true, UpdateReportPOJO.GENERIC_UI_SOURCE,
                     operationType, null, primarkKeyInfo);

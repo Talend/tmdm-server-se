@@ -1218,7 +1218,7 @@ public class Util extends XmlUtil {
      * @param type
      * @return
      */
-    public static boolean isPrimaryKeyInfoSet(String storageName, String type) {
+    public static boolean isPKInfoSet(String storageName, String type) {
         StorageAdmin storageAdmin = ServerContext.INSTANCE.get().getStorageAdmin();
         Storage customStorage = storageAdmin.get(storageName, StorageType.MASTER);
         MetadataRepository repository = customStorage.getMetadataRepository();

@@ -1234,15 +1234,14 @@ public class Util extends XmlUtil {
      * @return
      */
     public static String getPrimaryKeyInfo(String cluster, String concept, String[] ids) {
-        String primaryKeyInfo = StringUtils.EMPTY;
         ItemPOJOPK pk = new ItemPOJOPK(new DataClusterPOJOPK(cluster), concept, ids);
         try {
             ItemPOJO pojo = Util.getItemCtrl2Local().getItem(pk);
-            primaryKeyInfo = getPrimaryKeyInfo(cluster, concept, pojo.getProjectionAsString());
+            return getPrimaryKeyInfo(cluster, concept, pojo.getProjectionAsString());
         } catch (XtentisException e) {
-            LOGGER.error("Can't get record with PK of: " + pk, e);
+            LOGGER.error("Failed to get primary key info.", e);
+            return null;
         }
-        return primaryKeyInfo;
     }
 
     /**

@@ -1,0 +1,6 @@
+<EntityComp>
+  <EntityCompId>1</EntityCompId>
+  <elementA>
+    <subelement>subelement</subelement>
+  </elementA>
+</EntityComp>

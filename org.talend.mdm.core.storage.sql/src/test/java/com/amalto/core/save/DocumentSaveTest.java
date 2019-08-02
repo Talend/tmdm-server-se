@@ -921,6 +921,92 @@ public class DocumentSaveTest extends TestCase {
         assertEquals("", evaluate(committedElement, "/Agency/Information/MoreInfo[2]"));
     }
 
+    public void testUpdateReportPrimaryKeyInfo() throws Exception {
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(DocumentSaveTest.class.getResourceAsStream("PrimaryKeyInfo.xsd"));
+        MockMetadataRepositoryAdmin.INSTANCE.register("PKInfo", repository);
+
+        @SuppressWarnings("serial")
+        List<Map<String, String>> testDatas = new ArrayList<Map<String, String>>() {
+            {
+                add(new HashMap<String, String>() {// string, boolean
+                    {
+                        put("type", "EntityOth");
+                        put("document", "PrimaryKeyInfo_1.xml");
+                        put("pkinfo", "strfield-true");
+                    }
+                });
+                add(new HashMap<String, String>() {// long, integer, int, short
+                    {
+                        put("type", "EntityNum1");
+                        put("document", "PrimaryKeyInfo_2.xml");
+                        put("pkinfo", "11-22-33-44");
+                    }
+                });
+                add(new HashMap<String, String>() {// double, decimal, float
+                    {
+                        put("type", "EntityNum2");
+                        put("document", "PrimaryKeyInfo_3.xml");
+                        put("pkinfo", "2.2-3.30-4.4");
+                    }
+                });
+                add(new HashMap<String, String>() {// date, datetime, time
+                    {
+                        put("type", "EntityDate");
+                        put("document", "PrimaryKeyInfo_4.xml");
+                        put("pkinfo", "2019-07-30-2019-07-31T12:00:00-12:12:12");
+                    }
+                });
+                add(new HashMap<String, String>() {// subelement
+                    {
+                        put("type", "EntityComp");
+                        put("document", "PrimaryKeyInfo_5.xml");
+                        put("pkinfo", "subelement");
+                    }
+                });
+                add(new HashMap<String, String>() {// FK
+                    {
+                        put("type", "EntityFK");
+                        put("document", "PrimaryKeyInfo_6.xml");
+                        put("pkinfo", "[1]");
+                    }
+                });
+                add(new HashMap<String, String>() {// string, boolean=null
+                    {
+                        put("type", "EntityOth");
+                        put("document", "PrimaryKeyInfo_7.xml");
+                        put("pkinfo", "strfield");
+                    }
+                });
+                add(new HashMap<String, String>() {// double=2, decimal=3.3, float=4
+                    {
+                        put("type", "EntityNum2");
+                        put("document", "PrimaryKeyInfo_8.xml");
+                        put("pkinfo", "2-3.3-4");
+                    }
+                });
+             }
+         };
+
+         for (Map<String, String> data : testDatas) {
+             MockStorageSaverSource source = new MockStorageSaverSource(repository, "PrimaryKeyInfo.xsd");
+
+             SaverSession session = SaverSession.newSession(source);
+             InputStream recordXml = DocumentSaveTest.class.getResourceAsStream(data.get("document"));
+             DocumentSaverContext context = session.getContextFactory().create("PKInfo", "PKInfo", "Source", recordXml, true, true, true, false, false);
+             DocumentSaver saver = context.createSaver();
+             saver.save(session, context);
+             MockCommitter committer = new MockCommitter();
+             session.end(committer);
+
+             MutableDocument updateReportDocument = context.getUpdateReportDocument();
+             assertNotNull(updateReportDocument);
+             Document doc = updateReportDocument.asDOM();
+             String pkinfo = (String) evaluate(doc.getDocumentElement(), "PrimaryKeyInfo");
+             assertEquals(data.get("pkinfo"), pkinfo);
+         }
+    }
+
     public void testUpdateReportPartialDelete() throws Exception {
         MetadataRepository repository = new MetadataRepository();
         repository.load(DocumentSaveTest.class.getResourceAsStream("PartialDelete.xsd"));

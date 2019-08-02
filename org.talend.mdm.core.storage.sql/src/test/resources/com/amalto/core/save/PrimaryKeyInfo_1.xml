@@ -1,0 +1,5 @@
+<EntityOth>
+  <EntityOthId>1</EntityOthId>
+  <StrField>strfield</StrField>
+  <BoolField>true</BoolField>
+</EntityOth>

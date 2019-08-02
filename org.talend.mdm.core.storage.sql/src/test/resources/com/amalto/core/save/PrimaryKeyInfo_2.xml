@@ -1,0 +1,7 @@
+<EntityNum1>
+  <EntityNum1Id>1</EntityNum1Id>
+  <LongField>11</LongField>
+  <IntegerField>22</IntegerField>
+  <IntField>33</IntField>
+  <ShortField>44</ShortField>
+</EntityNum1>

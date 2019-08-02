@@ -1,0 +1,218 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/>
+  <xsd:element name="EntityOth">
+    <xsd:annotation>
+      <xsd:appinfo source="X_PrimaryKeyInfo">EntityOth/StrField</xsd:appinfo>
+      <xsd:appinfo source="X_PrimaryKeyInfo">EntityOth/BoolField</xsd:appinfo>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:all>
+        <xsd:element maxOccurs="1" minOccurs="1" name="EntityOthId" type="xsd:string"/>
+        <xsd:element maxOccurs="1" minOccurs="0" name="StrField" type="xsd:string">
+          <xsd:annotation>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
+          </xsd:annotation>
+        </xsd:element>
+        <xsd:element maxOccurs="1" minOccurs="0" name="BoolField" type="xsd:boolean">
+          <xsd:annotation>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
+          </xsd:annotation>
+        </xsd:element>
+      </xsd:all>
+    </xsd:complexType>
+    <xsd:unique name="EntityOth">
+      <xsd:selector xpath="."/>
+      <xsd:field xpath="EntityOthId"/>
+    </xsd:unique>
+  </xsd:element>
+  <xsd:element name="EntityNum1">
+    <xsd:annotation>
+      <xsd:appinfo source="X_PrimaryKeyInfo">EntityNum1/LongField</xsd:appinfo>
+      <xsd:appinfo source="X_PrimaryKeyInfo">EntityNum1/IntegerField</xsd:appinfo>
+      <xsd:appinfo source="X_PrimaryKeyInfo">EntityNum1/IntField</xsd:appinfo>
+      <xsd:appinfo source="X_PrimaryKeyInfo">EntityNum1/ShortField</xsd:appinfo>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:all>
+        <xsd:element name="EntityNum1Id" type="xsd:string">
+          <xsd:annotation>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
+          </xsd:annotation>
+        </xsd:element>
+        <xsd:element maxOccurs="1" minOccurs="0" name="LongField" type="xsd:long">
+          <xsd:annotation>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
+          </xsd:annotation>
+        </xsd:element>
+        <xsd:element maxOccurs="1" minOccurs="0" name="IntegerField" type="xsd:integer">
+          <xsd:annotation>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
+          </xsd:annotation>
+        </xsd:element>
+        <xsd:element maxOccurs="1" minOccurs="0" name="IntField" type="xsd:int">
+          <xsd:annotation>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
+          </xsd:annotation>
+        </xsd:element>
+        <xsd:element maxOccurs="1" minOccurs="0" name="ShortField" type="xsd:short">
+          <xsd:annotation>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
+          </xsd:annotation>
+        </xsd:element>
+      </xsd:all>
+    </xsd:complexType>
+    <xsd:unique name="EntityNum1">
+      <xsd:selector xpath="."/>
+      <xsd:field xpath="EntityNum1Id"/>
+    </xsd:unique>
+  </xsd:element>
+  <xsd:element name="EntityNum2">
+    <xsd:annotation>
+      <xsd:appinfo source="X_PrimaryKeyInfo">EntityNum2/DoubleField</xsd:appinfo>
+      <xsd:appinfo source="X_PrimaryKeyInfo">EntityNum2/DecimaField</xsd:appinfo>
+      <xsd:appinfo source="X_PrimaryKeyInfo">EntityNum2/FloatField</xsd:appinfo>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:all>
+        <xsd:element name="EntityNum2Id" type="xsd:string">
+          <xsd:annotation>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
+          </xsd:annotation>
+        </xsd:element>
+        <xsd:element maxOccurs="1" minOccurs="0" name="DoubleField" type="xsd:double">
+          <xsd:annotation>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
+          </xsd:annotation>
+        </xsd:element>
+        <xsd:element maxOccurs="1" minOccurs="0" name="DecimaField" type="xsd:decimal">
+          <xsd:annotation>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
+          </xsd:annotation>
+        </xsd:element>
+        <xsd:element maxOccurs="1" minOccurs="0" name="FloatField" type="xsd:float">
+          <xsd:annotation>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
+          </xsd:annotation>
+        </xsd:element>
+      </xsd:all>
+    </xsd:complexType>
+    <xsd:unique name="EntityNum2">
+      <xsd:selector xpath="."/>
+      <xsd:field xpath="EntityNum2Id"/>
+    </xsd:unique>
+  </xsd:element>
+  <xsd:element name="EntityDate">
+    <xsd:annotation>
+      <xsd:appinfo source="X_PrimaryKeyInfo">EntityDate/DateField</xsd:appinfo>
+      <xsd:appinfo source="X_PrimaryKeyInfo">EntityDate/DateTimeField</xsd:appinfo>
+      <xsd:appinfo source="X_PrimaryKeyInfo">EntityDate/TimeField</xsd:appinfo>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:all>
+        <xsd:element name="EntityDateId" type="xsd:string">
+          <xsd:annotation>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
+          </xsd:annotation>
+        </xsd:element>
+        <xsd:element maxOccurs="1" minOccurs="0" name="DateField" type="xsd:date">
+          <xsd:annotation>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
+          </xsd:annotation>
+        </xsd:element>
+        <xsd:element maxOccurs="1" minOccurs="0" name="DateTimeField" type="xsd:dateTime">
+          <xsd:annotation>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
+          </xsd:annotation>
+        </xsd:element>
+        <xsd:element maxOccurs="1" minOccurs="0" name="TimeField" type="xsd:time">
+          <xsd:annotation>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
+          </xsd:annotation>
+        </xsd:element>
+      </xsd:all>
+    </xsd:complexType>
+    <xsd:unique name="EntityDate">
+      <xsd:selector xpath="."/>
+      <xsd:field xpath="EntityDateId"/>
+    </xsd:unique>
+  </xsd:element>
+  <xsd:element name="EntityComp">
+    <xsd:annotation>
+      <xsd:appinfo source="X_PrimaryKeyInfo">EntityComp/elementA/subelement</xsd:appinfo>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:all>
+        <xsd:element name="EntityCompId" type="xsd:string">
+          <xsd:annotation>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
+          </xsd:annotation>
+        </xsd:element>
+        <xsd:element maxOccurs="1" minOccurs="0" name="elementA" type="elementA">
+          <xsd:annotation>
+            <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+          </xsd:annotation>
+        </xsd:element>
+      </xsd:all>
+    </xsd:complexType>
+    <xsd:unique name="EntityComp">
+      <xsd:selector xpath="."/>
+      <xsd:field xpath="EntityCompId"/>
+    </xsd:unique>
+  </xsd:element>
+  <xsd:complexType name="elementA">
+    <xsd:all>
+      <xsd:element name="subelement" type="xsd:string">
+        <xsd:annotation>
+          <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
+          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+        </xsd:annotation>
+      </xsd:element>
+    </xsd:all>
+  </xsd:complexType>
+  <xsd:element name="EntityFK">
+    <xsd:annotation>
+      <xsd:appinfo source="X_PrimaryKeyInfo">EntityFK/entityOth</xsd:appinfo>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:all>
+        <xsd:element name="EntityFKId" type="xsd:string">
+          <xsd:annotation>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
+          </xsd:annotation>
+        </xsd:element>
+        <xsd:element maxOccurs="1" minOccurs="0" name="entityOth" type="xsd:string">
+          <xsd:annotation>
+            <xsd:appinfo source="X_ForeignKey">EntityOth</xsd:appinfo>
+            <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
+            <xsd:appinfo source="X_ForeignKeyInfo">EntityOth/StrField</xsd:appinfo>
+            <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
+          </xsd:annotation>
+        </xsd:element>
+      </xsd:all>
+    </xsd:complexType>
+    <xsd:unique name="EntityFK">
+      <xsd:selector xpath="."/>
+      <xsd:field xpath="EntityFKId"/>
+    </xsd:unique>
+  </xsd:element>
+</xsd:schema>

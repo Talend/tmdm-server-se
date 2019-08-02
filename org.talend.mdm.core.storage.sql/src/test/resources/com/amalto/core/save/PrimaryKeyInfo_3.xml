@@ -1,0 +1,6 @@
+<EntityNum2>
+  <EntityNum2Id>1</EntityNum2Id>
+  <DoubleField>2.2</DoubleField>
+  <DecimaField>3.30</DecimaField>
+  <FloatField>4.4</FloatField>
+</EntityNum2>

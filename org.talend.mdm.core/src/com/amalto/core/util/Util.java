@@ -1212,32 +1212,54 @@ public class Util extends XmlUtil {
     }
 
     /**
+     * Get master storage by name
+     *
+     * @param storageName
+     * @return
+     */
+    private static Storage getMasterStorage(String storageName) {
+        StorageAdmin storageAdmin = ServerContext.INSTANCE.get().getStorageAdmin();
+        return storageAdmin.get(storageName, StorageType.MASTER);
+    }
+
+    /**
      * Check if the type has set primary key info
-     * 
+     *
      * @param storageName
      * @param type
      * @return
      */
     public static boolean isPKInfoSet(String storageName, String type) {
-        StorageAdmin storageAdmin = ServerContext.INSTANCE.get().getStorageAdmin();
-        Storage customStorage = storageAdmin.get(storageName, StorageType.MASTER);
-        MetadataRepository repository = customStorage.getMetadataRepository();
-        ComplexTypeMetadata complexType = repository.getComplexType(type);
-        return complexType.getPrimaryKeyInfo().size() > 0;
+        MetadataRepository repository = getMasterStorage(storageName).getMetadataRepository();
+        return repository.getComplexType(type).getPrimaryKeyInfo().size() > 0;
+    }
+
+    /**
+     * Get reccord's XML from DB
+     *
+     * @param cluster
+     * @param concept
+     * @param ids
+     * @return
+     * @throws XtentisException
+     */
+    private static String getXmlFromDB(String cluster, String concept, String[] ids) throws XtentisException {
+        ItemPOJOPK pk = new ItemPOJOPK(new DataClusterPOJOPK(cluster), concept, ids);
+        ItemPOJO pojo = Util.getItemCtrl2Local().getItem(pk);
+        return pojo.getProjectionAsString();
     }
 
     /**
      * Get primary key info from record's ID
+     *
      * @param cluster
      * @param concept
      * @param ids record's id
      * @return
      */
     public static String getPrimaryKeyInfo(String cluster, String concept, String[] ids) {
-        ItemPOJOPK pk = new ItemPOJOPK(new DataClusterPOJOPK(cluster), concept, ids);
         try {
-            ItemPOJO pojo = Util.getItemCtrl2Local().getItem(pk);
-            return getPrimaryKeyInfo(cluster, concept, pojo.getProjectionAsString());
+            return getPrimaryKeyInfo(cluster, concept, getXmlFromDB(cluster, concept, ids));
         } catch (XtentisException e) {
             LOGGER.error("Failed to get primary key info.", e);
             return null;
@@ -1245,25 +1267,38 @@ public class Util extends XmlUtil {
     }
 
     /**
-     * Get primary key info from record's XML
+     * Get primary key info from data record
+     *
      * @param cluster
      * @param concept
-     * @param xml record's XML document
+     * @param dataRecord
      * @return
      */
-    public static String getPrimaryKeyInfo(String cluster, String concept, String xml) {
-        DataRecordReader<String> factory = new XmlStringDataRecordReader();
-        StorageAdmin storageAdmin = ServerContext.INSTANCE.get().getStorageAdmin();
-        Storage customStorage = storageAdmin.get(cluster, StorageType.MASTER);
-        MetadataRepository repository = customStorage.getMetadataRepository();
+    public static String getPrimaryKeyInfo(String cluster, String concept, DataRecord dataRecord) {
+        MetadataRepository repository = getMasterStorage(cluster).getMetadataRepository();
+        MutableDocument userDocument = new StorageDocument(cluster, repository, dataRecord);
+        return getPrimaryKeyInfo(repository.getComplexType(concept), userDocument);
+    }
+
+    /**
+     * Get primary key info from record's XML
+     *
+     * @param cluster
+     * @param concept
+     * @param userXml
+     * @return
+     */
+    public static String getPrimaryKeyInfo(String cluster, String concept, String userXml) {
+        MetadataRepository repository = getMasterStorage(cluster).getMetadataRepository();
         ComplexTypeMetadata type = repository.getComplexType(concept);
-        DataRecord dataRecord = factory.read(repository, type, xml);
+        DataRecord dataRecord = new XmlStringDataRecordReader().read(repository, type, userXml);
         MutableDocument userDocument = new StorageDocument(cluster, repository, dataRecord);
         return getPrimaryKeyInfo(type, userDocument);
     }
 
     /**
      * Get primary key info from record's document object
+     *
      * @param type
      * @param userDocument
      * @return
@@ -1279,6 +1314,46 @@ public class Util extends XmlUtil {
             } catch (NullPointerException e) {
                 LOGGER.warn("No element for '" + field.getName() + "' in XML Document.", e);
                 continue;
+            }
+        }
+        return StringUtils.join(valueList.toArray(), "-"); //$NON-NLS-1$
+    }
+
+    /**
+     * Get primary key info for partial update
+     *
+     * @param cluster
+     * @param concept
+     * @param ids
+     * @param userDocument
+     * @return
+     */
+    public static String getPrimaryKeyInfo(String cluster, String concept, String[] ids, MutableDocument userDocument) {
+        List<String> valueList = new ArrayList<>();
+        // Get record's XML from DB
+        String dbXml = null;
+        try {
+            dbXml = getXmlFromDB(cluster, concept, ids);
+        } catch (XtentisException e) {
+            LOGGER.error("Failed to get primary key info.", e);
+            return null;
+        }
+        // Convert to Document Object
+        MetadataRepository repository = getMasterStorage(cluster).getMetadataRepository();
+        ComplexTypeMetadata type = repository.getComplexType(concept);
+        DataRecord dbRecord = new XmlStringDataRecordReader().read(repository, type, dbXml);
+        MutableDocument dbDocument = new StorageDocument(cluster, repository, dbRecord);
+        // Get from XML Document, if not exist, get from DB
+        for (FieldMetadata field : type.getPrimaryKeyInfo()) {
+            String value = null;
+            try {
+                value = userDocument.createAccessor(field.getPath()).get();
+            } catch (NullPointerException e) {
+                LOGGER.info("No element for '" + field.getName() + "' in XML Document, get from DB.", e);
+                value = dbDocument.createAccessor(field.getPath()).get();
+            }
+            if (StringUtils.isNotBlank(value)) {
+                valueList.add(StringUtils.trim(value));
             }
         }
         return StringUtils.join(valueList.toArray(), "-"); //$NON-NLS-1$

@@ -11,13 +11,11 @@
 
 package com.amalto.core.save.context;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
-import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.w3c.dom.Document;
 
 import com.amalto.core.history.Action;
@@ -25,6 +23,7 @@ import com.amalto.core.history.MutableDocument;
 import com.amalto.core.history.accessor.Accessor;
 import com.amalto.core.objects.UpdateReportPOJO;
 import com.amalto.core.save.DocumentSaverContext;
+import com.amalto.core.save.PartialUpdateSaverContext;
 import com.amalto.core.save.SaverSession;
 import com.amalto.core.util.Util;
 
@@ -52,10 +51,10 @@ class UpdateReport implements DocumentSaver {
         updateReportDocument = new UpdateReportDocument(updateReportAsDOM);
         
         StringBuilder key = new StringBuilder();
-        String[] id = context.getId();
-        for (int i = 0; i < id.length; i++) {
-            key.append(id[i]);
-            if (i < id.length - 1) {
+        String[] ids = context.getId();
+        for (int i = 0; i < ids.length; i++) {
+            key.append(ids[i]);
+            if (i < ids.length - 1) {
                 key.append('.');
             }
         }
@@ -74,7 +73,11 @@ class UpdateReport implements DocumentSaver {
                 setHeader(updateReportDocument, "DataModel", String.valueOf(context.getDataModelName())); //$NON-NLS-1$
                 setHeader(updateReportDocument, "Concept", String.valueOf(type.getName())); //$NON-NLS-1$
                 setHeader(updateReportDocument, "Key", key.toString()); //$NON-NLS-1$
-                setHeader(updateReportDocument, "PrimaryKeyInfo", Util.getPrimaryKeyInfo(type, userDocument)); //$NON-NLS-1$
+                if (context instanceof PartialUpdateSaverContext) {
+                    setHeader(updateReportDocument, "PrimaryKeyInfo", Util.getPrimaryKeyInfo(context.getDataCluster(), type.getName(), ids, userDocument)); //$NON-NLS-1$
+                } else {
+                    setHeader(updateReportDocument, "PrimaryKeyInfo", Util.getPrimaryKeyInfo(type, userDocument)); //$NON-NLS-1$
+                }
                 hasHeader = true;
                 updateReportDocument.enableRecordFieldChange();
             }

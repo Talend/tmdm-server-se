@@ -25,6 +25,7 @@ import com.amalto.core.objects.UpdateReportPOJO;
 import com.amalto.core.save.DocumentSaverContext;
 import com.amalto.core.save.PartialUpdateSaverContext;
 import com.amalto.core.save.SaverSession;
+import com.amalto.core.save.UserAction;
 import com.amalto.core.util.Util;
 
 class UpdateReport implements DocumentSaver {
@@ -59,8 +60,7 @@ class UpdateReport implements DocumentSaver {
             }
         }
 
-        MutableDocument userDocument = context.getUserDocument();
-        ComplexTypeMetadata type = userDocument.getType();
+        ComplexTypeMetadata type = context.getUserDocument().getType();
         List<Action> actions = context.getActions();
         boolean hasHeader = false;
         for (Action action : actions) {
@@ -73,11 +73,7 @@ class UpdateReport implements DocumentSaver {
                 setHeader(updateReportDocument, "DataModel", String.valueOf(context.getDataModelName())); //$NON-NLS-1$
                 setHeader(updateReportDocument, "Concept", String.valueOf(type.getName())); //$NON-NLS-1$
                 setHeader(updateReportDocument, "Key", key.toString()); //$NON-NLS-1$
-                if (context instanceof PartialUpdateSaverContext) {
-                    setHeader(updateReportDocument, "PrimaryKeyInfo", Util.getPrimaryKeyInfo(context.getDataCluster(), type.getName(), ids, userDocument)); //$NON-NLS-1$
-                } else {
-                    setHeader(updateReportDocument, "PrimaryKeyInfo", Util.getPrimaryKeyInfo(type, userDocument)); //$NON-NLS-1$
-                }
+                setHeader(updateReportDocument, "PrimaryKeyInfo", Util.getPrimaryKeyInfo(context)); //$NON-NLS-1$
                 hasHeader = true;
                 updateReportDocument.enableRecordFieldChange();
             }

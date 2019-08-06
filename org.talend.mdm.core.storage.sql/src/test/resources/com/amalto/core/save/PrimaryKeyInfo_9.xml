@@ -1,0 +1,14 @@
+<ii>
+    <c>EntityOth</c>
+    <n>EntityOth</n>
+    <dmn>PKInfo</dmn>
+    <i>231035983</i>
+    <t>1327653438564</t>
+    <p>
+        <EntityOth>
+            <EntityOthId>1</EntityOthId>
+            <StrField>strfield</StrField>
+            <BoolField>true</BoolField>
+        </EntityOth>
+    </p>
+</ii>

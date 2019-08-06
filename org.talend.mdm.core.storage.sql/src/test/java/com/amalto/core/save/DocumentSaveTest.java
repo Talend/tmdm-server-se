@@ -694,7 +694,8 @@ public class DocumentSaveTest extends TestCase {
         assertEquals("16.99", evaluate(committedElement, "/Product/Price"));
     }
 
-    public void testPartialUpdate() throws Exception {
+    // PartialUpdateSaverContext, UserAction=PARTIAL_UPDATE
+    public void testUpdateReportPartialUpdate() throws Exception {
         final MetadataRepository repository = new MetadataRepository();
         repository.load(DocumentSaveTest.class.getResourceAsStream("metadata1.xsd"));
         MockMetadataRepositoryAdmin.INSTANCE.register("DStar", repository);
@@ -703,9 +704,8 @@ public class DocumentSaveTest extends TestCase {
 
         SaverSession session = SaverSession.newSession(source);
         InputStream partialUpdateContent = new ByteArrayInputStream(
-                ("<Agency>\n" + "    <Id>5258f292-5670-473b-bc01-8b63434682f3</Id>\n" + "    <Information>\n"
-                        + "        <MoreInfo>http://www.mynewsite.fr</MoreInfo>\n" + "    </Information>\n" + "</Agency>\n")
-                        .getBytes("UTF-8"));
+                "<Agency><Id>5258f292-5670-473b-bc01-8b63434682f3</Id><Information><MoreInfo>http://www.mynewsite.fr</MoreInfo></Information></Agency>"
+                .getBytes("UTF-8"));
         DocumentSaverContext context = session.getContextFactory().createPartialUpdate("MDM", "DStar", "Source", partialUpdateContent, true, true, "/Agency/Information/MoreInfo", "", -1, false);
         DocumentSaver saver = context.createSaver();
         saver.save(session, context);
@@ -715,6 +715,44 @@ public class DocumentSaveTest extends TestCase {
         assertTrue(committer.hasSaved());
         Element committedElement = committer.getCommittedElement();
         assertEquals("http://www.mynewsite.fr", evaluate(committedElement, "/Agency/Information/MoreInfo[1]"));
+
+        // Primary Key Info (UserAction.PARTIAL_UPDATE)
+        MutableDocument updateReportDocument = context.getUpdateReportDocument();
+        assertNotNull(updateReportDocument);
+        Document doc = updateReportDocument.asDOM();
+        String pkinfo = (String) evaluate(doc.getDocumentElement(), "PrimaryKeyInfo");
+        assertEquals("name1-city1", pkinfo);
+    }
+
+    // PartialUpdateSaverContext, UserAction=UPDATE
+    public void testUpdateReportPartialUpdate2() throws Exception {
+        final MetadataRepository repository = new MetadataRepository();
+        repository.load(DocumentSaveTest.class.getResourceAsStream("metadata1.xsd"));
+        MockMetadataRepositoryAdmin.INSTANCE.register("DStar", repository);
+
+        SaverSource source = new TestSaverSource(repository, true, "test1_original.xml", "metadata1.xsd");
+
+        SaverSession session = SaverSession.newSession(source);
+        InputStream partialUpdateContent = new ByteArrayInputStream(
+                "<Agency><Id>5258f292-5670-473b-bc01-8b63434682f3</Id><City>city2</City><Zip>04103</Zip></Agency>"
+                .getBytes("UTF-8"));
+        DocumentSaverContext context = session.getContextFactory().createPartialUpdate("MDM", "DStar", "Source", partialUpdateContent, true, true, null, "", -1, false);
+        DocumentSaver saver = context.createSaver();
+        saver.save(session, context);
+        MockCommitter committer = new MockCommitter();
+        session.end(committer);
+
+        assertTrue(committer.hasSaved());
+        Element committedElement = committer.getCommittedElement();
+        assertEquals("city2", evaluate(committedElement, "/Agency/City"));
+        assertEquals("04103", evaluate(committedElement, "/Agency/Zip"));
+
+        // Primary Key Info (UserAction.UPDATE)
+        MutableDocument updateReportDocument = context.getUpdateReportDocument();
+        assertNotNull(updateReportDocument);
+        Document doc = updateReportDocument.asDOM();
+        String pkinfo = (String) evaluate(doc.getDocumentElement(), "PrimaryKeyInfo");
+        assertEquals("name1-city2", pkinfo);
     }
 
     public void testPartialUpdateWithOverwrite() throws Exception {
@@ -726,8 +764,7 @@ public class DocumentSaveTest extends TestCase {
 
         SaverSession session = SaverSession.newSession(source);
         InputStream partialUpdateContent = new ByteArrayInputStream(
-                ("<Agency>\n" + "    <Id>5258f292-5670-473b-bc01-8b63434682f3</Id>\n" + "    <Information>\n"
-                        + "        <MoreInfo>http://www.mynewsite.fr</MoreInfo>\n" + "    </Information>\n" + "</Agency>\n")
+                "<Agency><Id>5258f292-5670-473b-bc01-8b63434682f3</Id><Information><MoreInfo>http://www.mynewsite.fr</MoreInfo></Information></Agency>"
                 .getBytes("UTF-8"));
         DocumentSaverContext context = session.getContextFactory().createPartialUpdate("MDM", "DStar", "Source", partialUpdateContent, true, true, "/", "/", -1, true);
         DocumentSaver saver = context.createSaver();
@@ -760,11 +797,7 @@ public class DocumentSaveTest extends TestCase {
 
         SaverSession session = SaverSession.newSession(source);
         InputStream partialUpdateContent = new ByteArrayInputStream(
-                ("<Agency>\n" + "    <Id>5258f292-5670-473b-bc01-8b63434682f4</Id>\n" + "    <Information>\n"
-                        + "        <MoreInfo>http://www.mynewsite.fr</MoreInfo>\n"
-                        + "        <MoreInfo>http://www.mynewsite.com</MoreInfo>\n"
-                        + "        <MoreInfo>http://www.mynewsite.cn</MoreInfo>\n"
-                        + "    </Information>\n" + "</Agency>\n")
+                "<Agency><Id>5258f292-5670-473b-bc01-8b63434682f4</Id><Information><MoreInfo>http://www.mynewsite.fr</MoreInfo><MoreInfo>http://www.mynewsite.com</MoreInfo><MoreInfo>http://www.mynewsite.cn</MoreInfo></Information></Agency>"
                 .getBytes("UTF-8"));
         DocumentSaverContext context = session.getContextFactory().createPartialUpdate("MDM", "DStar", "Source", partialUpdateContent, true, true, "/", "/", -1, false);
         DocumentSaver saver = context.createSaver();
@@ -813,10 +846,7 @@ public class DocumentSaveTest extends TestCase {
 
         SaverSession session = SaverSession.newSession(source);
         InputStream partialUpdateContent = new ByteArrayInputStream(
-                ("<Agency>\n" + "    <Id>5258f292-5670-473b-bc01-8b63434682f4</Id>\n" + "    <Information>\n"
-                        + "        <MoreInfo>http://www.mynewsite.fr</MoreInfo>\n"
-                        + "        <MoreInfo>http://www.mynewsite.com</MoreInfo>\n"
-                        + "    </Information>\n" + "</Agency>\n")
+                "<Agency><Id>5258f292-5670-473b-bc01-8b63434682f4</Id><Information><MoreInfo>http://www.mynewsite.fr</MoreInfo><MoreInfo>http://www.mynewsite.com</MoreInfo></Information></Agency>"
                 .getBytes("UTF-8"));
         DocumentSaverContext context = session.getContextFactory().createPartialUpdate("MDM", "DStar", "Source", partialUpdateContent, true, true, "/", "/", -1, false);
         DocumentSaver saver = context.createSaver();
@@ -859,10 +889,7 @@ public class DocumentSaveTest extends TestCase {
 
         SaverSession session = SaverSession.newSession(source);
         InputStream partialUpdateContent = new ByteArrayInputStream(
-                ("<Agency>\n" + "    <Id>5258f292-5670-473b-bc01-8b63434682f4</Id>\n" + "    <Information>\n"
-                        + "        <MoreInfo>http://www.mynewsite.fr</MoreInfo>\n"
-                        + "        <MoreInfo>http://www.mynewsite.com</MoreInfo>\n"
-                        + "    </Information>\n" + "</Agency>\n")
+                "<Agency><Id>5258f292-5670-473b-bc01-8b63434682f4</Id><Information><MoreInfo>http://www.mynewsite.fr</MoreInfo><MoreInfo>http://www.mynewsite.com</MoreInfo></Information></Agency>"
                 .getBytes("UTF-8"));
         DocumentSaverContext context = session.getContextFactory().createPartialUpdate("MDM", "DStar", "Source", partialUpdateContent, true, true, "/", "/", -1, false);
         DocumentSaver saver = context.createSaver();
@@ -906,9 +933,8 @@ public class DocumentSaveTest extends TestCase {
 
         SaverSession session = SaverSession.newSession(source);
         InputStream partialUpdateContent = new ByteArrayInputStream(
-                ("<Agency>\n" + "    <Id>5258f292-5670-473b-bc01-8b63434682f4</Id>\n" + "    <Information>\n"
-                        + "        <MoreInfo>http://www.mynewsite.fr</MoreInfo>\n" + "    </Information>\n" + "</Agency>\n")
-                        .getBytes("UTF-8"));
+                "<Agency><Id>5258f292-5670-473b-bc01-8b63434682f4</Id><Information><MoreInfo>http://www.mynewsite.fr</MoreInfo></Information></Agency>"
+                .getBytes("UTF-8"));
         DocumentSaverContext context = session.getContextFactory().createPartialUpdate("MDM", "DStar", "Source", partialUpdateContent, true, true, "/", "/", -1, true);
         DocumentSaver saver = context.createSaver();
         saver.save(session, context);
@@ -921,6 +947,7 @@ public class DocumentSaveTest extends TestCase {
         assertEquals("", evaluate(committedElement, "/Agency/Information/MoreInfo[2]"));
     }
 
+    // Non-PartialUpdateSaverContext, CREATE, different data types
     public void testUpdateReportPrimaryKeyInfo() throws Exception {
         MetadataRepository repository = new MetadataRepository();
         repository.load(DocumentSaveTest.class.getResourceAsStream("PrimaryKeyInfo.xsd"));
@@ -1007,6 +1034,32 @@ public class DocumentSaveTest extends TestCase {
          }
     }
 
+    // Non-PartialUpdateSaverContext, UPDATE
+    public void testUpdateReportPrimaryKeyInfo2() throws Exception {
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(DocumentSaveTest.class.getResourceAsStream("PrimaryKeyInfo.xsd"));
+        MockMetadataRepositoryAdmin.INSTANCE.register("PKInfo", repository);
+
+        SaverSource source = new TestSaverSource(repository, true, "PrimaryKeyInfo_9.xml", "PrimaryKeyInfo.xsd");
+        SaverSession session = SaverSession.newSession(source);
+        InputStream updateContent = new ByteArrayInputStream(
+                "<EntityOth><EntityOthId>1</EntityOthId><StrField>strfield2</StrField><BoolField>false</BoolField></EntityOth>"
+                .getBytes("UTF-8"));
+        DocumentSaverContext context = session.getContextFactory().create("PKInfo", "PKInfo", "Source", updateContent, false, true, true, false, false);
+        DocumentSaver saver = context.createSaver();
+        saver.save(session, context);
+        MockCommitter committer = new MockCommitter();
+        session.end(committer);
+
+        // Primary Key Info (UserAction.UPDATE)
+        MutableDocument updateReportDocument = context.getUpdateReportDocument();
+        assertNotNull(updateReportDocument);
+        Document doc = updateReportDocument.asDOM();
+        String pkinfo = (String) evaluate(doc.getDocumentElement(), "PrimaryKeyInfo");
+        assertEquals("strfield2-false", pkinfo);
+    }
+
+    // PartialUpdateSaverContext, UserAction=PARTIAL_DELETE
     public void testUpdateReportPartialDelete() throws Exception {
         MetadataRepository repository = new MetadataRepository();
         repository.load(DocumentSaveTest.class.getResourceAsStream("PartialDelete.xsd"));
@@ -1159,6 +1212,9 @@ public class DocumentSaveTest extends TestCase {
                 assertEquals(value[1], oldValue);
                 assertEquals(value[2], newValue);
             }
+            // Primary Key Info (UserAction.PARTIAL_DELETE)
+            String primaryKeyInfo = (String) evaluate(doc.getDocumentElement(), "PrimaryKeyInfo");
+            assertEquals("1-p1", primaryKeyInfo);
         }
     }
 
@@ -2017,9 +2073,9 @@ public class DocumentSaveTest extends TestCase {
         source.setUserName("admin");
 
         SaverSession session = SaverSession.newSession(source);
-        InputStream partialUpdateContent = new ByteArrayInputStream(("<Product>\n" + "    <Id>1</Id>\n" + "    <Features>\n"
-                + "        <Colors>" + "           <Color>Light Pink</Color>\n" + "        </Colors>\n" + "    </Features>\n"
-                + "</Product>\n").getBytes("UTF-8"));
+        InputStream partialUpdateContent = new ByteArrayInputStream(
+                "<Product><Id>1</Id><Features><Colors><Color>Light Pink</Color></Colors></Features></Product>"
+                .getBytes("UTF-8"));
         DocumentSaverContext context = session.getContextFactory().createPartialUpdate("MDM", "DStar", "Source",
                 partialUpdateContent, true, false, "/Product/Features/Colors/Color", "", -1, false);
         DocumentSaver saver = context.createSaver();
@@ -2139,7 +2195,7 @@ public class DocumentSaveTest extends TestCase {
 
         SaverSession session = SaverSession.newSession(source);
         InputStream partialUpdateContent = new ByteArrayInputStream((
-                "<Product><Id>1221</Id><Features><Colors><Color>Light Blue</Color></Colors></Features></Product>\n")
+                "<Product><Id>1221</Id><Features><Colors><Color>Light Blue</Color></Colors></Features></Product>")
                 .getBytes("UTF-8"));
         DocumentSaverContext context = session.getContextFactory().createPartialUpdate("MDM", "DStar", "Source",
                 partialUpdateContent, true, false, "/Product/Features/Colors", "/Color", 1, false, false);
@@ -2164,9 +2220,9 @@ public class DocumentSaveTest extends TestCase {
         source.setUserName("admin");
 
         SaverSession session = SaverSession.newSession(source);
-        InputStream partialUpdateContent = new ByteArrayInputStream(("<Product>\n" + "    <Id>1</Id>\n" + "    <Features>\n"
-                + "        <Colors>" + "           <Color>Light Pink</Color>\n" + "        </Colors>\n" + "    </Features>\n"
-                + "</Product>\n").getBytes("UTF-8"));
+        InputStream partialUpdateContent = new ByteArrayInputStream((
+                "<Product><Id>1</Id><Features><Colors><Color>Light Pink</Color></Colors></Features></Product>")
+                .getBytes("UTF-8"));
         DocumentSaverContext context = session.getContextFactory().createPartialUpdate("MDM", "DStar", "Source",
                 partialUpdateContent, true, true, "/Product/Features/Colors/Color", "", -1, false);
         DocumentSaver saver = context.createSaver();
@@ -2355,14 +2411,14 @@ public class DocumentSaveTest extends TestCase {
         String oldValue = (String) evaluate(doc.getDocumentElement(), "Item[1]/oldValue");
         String newValue = (String) evaluate(doc.getDocumentElement(), "Item[1]/newValue");
         assertEquals("Name", path);
-        assertEquals("Portland", oldValue);
+        assertEquals("name1", oldValue);
         assertEquals("beforeSaving_Agency", newValue);
 
         path = (String) evaluate(doc.getDocumentElement(), "Item[2]/path");
         oldValue = (String) evaluate(doc.getDocumentElement(), "Item[2]/oldValue");
         newValue = (String) evaluate(doc.getDocumentElement(), "Item[2]/newValue");
         assertEquals("City", path);
-        assertEquals("Portland", oldValue);
+        assertEquals("city1", oldValue);
         assertEquals("Chicago", newValue);
 
         path = (String) evaluate(doc.getDocumentElement(), "Item[3]/path");
@@ -3730,9 +3786,9 @@ public class DocumentSaveTest extends TestCase {
                 return committer;
             }
         };
-        InputStream partialUpdateContent = new ByteArrayInputStream(("<User>\n" + "    <username>user</username>\n"
-                + "        <roles>" + "           <role>System_Interactive</role>\n" + " <role>Demo_User</role>\n" + "</roles>\n"
-                + "</User>\n").getBytes("UTF-8"));
+        InputStream partialUpdateContent = new ByteArrayInputStream(
+                "<User><username>user</username><roles><role>System_Interactive</role><role>Demo_User</role></roles></User>"
+                .getBytes("UTF-8"));
         DocumentSaverContext context = session.getContextFactory().createPartialUpdate("PROVISIONING", "PROVISIONING", "Source",
                 partialUpdateContent, true, false, "/User/roles/role", "", -1, true);
         DocumentSaver saver = context.createSaver();

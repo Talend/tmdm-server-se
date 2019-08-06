@@ -1,6 +1,10 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 	<xsd:import namespace="http://www.w3.org/2001/XMLSchema" />
 	<xsd:element name="Person">
+        <xsd:annotation>
+            <xsd:appinfo source="X_PrimaryKeyInfo">Person/Id</xsd:appinfo>
+            <xsd:appinfo source="X_PrimaryKeyInfo">Person/Name</xsd:appinfo>
+        </xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
 				<xsd:element name="Id" type="xsd:string">

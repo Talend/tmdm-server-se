@@ -94,6 +94,25 @@ public class CompositeActionTest {
         assertEquals("paymentBenefitType/@xsi:type", ((FieldUpdateAction) actualResult.get(1)).getPath());
         assertEquals("paymentBenefitType/addressBanking/addressLine1", ((FieldUpdateAction) actualResult.get(2)).getPath());
         assertEquals("paymentBenefitType/iban", ((FieldUpdateAction) actualResult.get(3)).getPath());
+
+        actions.clear();
+        actions.add(new FieldUpdateAction(null, null, null, "detail[1]/@xsi:type", "ContractDetailType", "ContractDetailSubType", null, null));
+        actions.add(new FieldUpdateAction(null, null, null, "detail[1]/code", "super-code", "sub-code", null, null));
+        actions.add(new FieldUpdateAction(null, null, null, "detail[1]/features/actor", null, "sub-actor", null, null));
+        actions.add(new FieldUpdateAction(null, null, null, "detail[1]/features/vendor[1]", null, "sub-vendor", null, null));
+        actions.add(new FieldUpdateAction(null, null, null, "detail[1]/features/boolValue", null, "true", null, null));
+        actions.add(new FieldUpdateAction(null, null, null, "detail[1]/ReadOnlyEle[2]", null, "false", null, null));
+        actions.add(new FieldUpdateAction(null, null, null, "detail[1]/ReadOnlyEle[1]", null, "yes", null, null));
+
+
+        actualResult = compositeAction.reverseXSITypeActions(actions);
+        assertEquals("detail[1]/ReadOnlyEle[2]", ((FieldUpdateAction) actualResult.get(0)).getPath());
+        assertEquals("detail[1]/ReadOnlyEle[1]", ((FieldUpdateAction) actualResult.get(1)).getPath());
+        assertEquals("detail[1]/features/boolValue", ((FieldUpdateAction) actualResult.get(2)).getPath());
+        assertEquals("detail[1]/features/vendor[1]", ((FieldUpdateAction) actualResult.get(3)).getPath());
+        assertEquals("detail[1]/features/actor", ((FieldUpdateAction) actualResult.get(4)).getPath());
+        assertEquals("detail[1]/code", ((FieldUpdateAction) actualResult.get(5)).getPath());
+        assertEquals("detail[1]/@xsi:type", ((FieldUpdateAction) actualResult.get(6)).getPath());
     }
 
     @Test

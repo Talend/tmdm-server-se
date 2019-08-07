@@ -373,6 +373,20 @@ public class DataRecordAccessor implements Accessor {
         try {
             initPath();
             DataRecord current = dataRecord;
+            // remove the duplicate
+            ListIterator<PathElement> elementIterator = pathElements.listIterator();
+            PathElement previousElement = null;
+            while (elementIterator.hasNext()) {
+                PathElement currentElement = elementIterator.next();
+                if (previousElement != null) {
+                    if (previousElement.field.equals(currentElement.field)) {
+                        elementIterator.remove();
+                    }
+                }
+                if (elementIterator.hasNext()) {
+                    previousElement = currentElement;
+                }
+            }
             ListIterator<PathElement> listIterator = pathElements.listIterator();
             PathElement pathElement = null;
             while (listIterator.hasNext()) {

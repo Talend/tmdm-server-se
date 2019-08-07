@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import java.util.Stack;
 import java.util.stream.Collectors;
 
 /**
@@ -246,9 +247,63 @@ public class CompositeAction implements Action {
 
     private void resetActions(int beginIndex, List<Action> copyActions, List<Action> changeTypeActions) {
         Collections.reverse(changeTypeActions);
+        //reset the multiple field's sort
+        List<Action> actionStack = resetMultipleFieldsSort(changeTypeActions);
         int resetIndex = beginIndex;
-        for (Action changeTypeAction : changeTypeActions) {
+        for (Action changeTypeAction : actionStack) {
             copyActions.set(resetIndex++, changeTypeAction);
         }
+    }
+
+    /**
+     * reset the multiples field's sort
+     * eg:
+     *   0 = {FieldUpdateAction@7041} "FieldUpdateAction{path='detail[1]/ReadOnlyEle[1]', oldValue='null', newValue='false'}"
+     *   1 = {FieldUpdateAction@7040} "FieldUpdateAction{path='detail[1]/ReadOnlyEle[2]', oldValue='null', newValue='yes'}"
+     * return :
+     *   0 = {FieldUpdateAction@7041} "FieldUpdateAction{path='detail[1]/ReadOnlyEle[2]', oldValue='null', newValue='false'}"
+     *   1 = {FieldUpdateAction@7040} "FieldUpdateAction{path='detail[1]/ReadOnlyEle[1]', oldValue='null', newValue='yes'}"
+     * @param changeTypeActions
+     * @return
+     */
+    private List<Action> resetMultipleFieldsSort(List<Action> changeTypeActions) {
+        Stack<Action> actionStack = new Stack<>();
+        boolean isNeedToPush;
+        for (Action changeTypeAction : changeTypeActions) {
+            isNeedToPush = true;
+            FieldUpdateAction fieldUpdateAction = (FieldUpdateAction) changeTypeAction;
+            String path = fieldUpdateAction.getPath();
+            if (path.endsWith("]")) {
+                int index = getIndexFromPath(path);
+                if (index > 1) {
+                    FieldUpdateAction previousAction = (FieldUpdateAction) actionStack.pop();
+                    String previousPath = previousAction.getPath();
+                    if (previousPath.endsWith("]")) {
+                        int previousIndex = getIndexFromPath(previousPath);
+                        if (previousIndex < index) {
+                            actionStack.push(changeTypeAction);
+                            actionStack.push(previousAction);
+                            isNeedToPush = false;
+                        }
+                    }
+                }
+            }
+            if (isNeedToPush) {
+                actionStack.push(changeTypeAction);
+            }
+        }
+        return actionStack;
+    }
+
+    /**
+     * get the multiple field's index in path
+     * eg:
+     *  detail[1]/ReadOnlyEle[1] ==> 1
+     *  detail[1]/ReadOnlyEle[2] ==> 2
+     * @param path field's path
+     * @return index of the field
+     */
+    private Integer getIndexFromPath(String path) {
+        return Integer.parseInt(path.substring(path.lastIndexOf('[') + 1, path.lastIndexOf(']')));
     }
 }

@@ -11,6 +11,10 @@ package com.amalto.core.objects;
 
 import org.apache.commons.lang.StringEscapeUtils;
 
+import com.ibm.wsdl.util.StringUtils;
+
+import bsh.StringUtil;
+
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -220,9 +224,10 @@ public class UpdateReportPOJO {
                 .append("<DataCluster>").append(StringEscapeUtils.escapeXml(this.dataCluster)).append("</DataCluster>\n") //$NON-NLS-1$ //$NON-NLS-2$
                 .append("<DataModel>").append(StringEscapeUtils.escapeXml(this.dataModel)).append("</DataModel>\n") //$NON-NLS-1$ //$NON-NLS-2$
                 .append("<Concept>").append(StringEscapeUtils.escapeXml(this.concept)).append("</Concept>\n") //$NON-NLS-1$ //$NON-NLS-2$
-                .append("<Key>").append(StringEscapeUtils.escapeXml(this.key)).append("</Key>\n") //$NON-NLS-1$ //$NON-NLS-2$
-                .append("<PrimaryKeyInfo>").append(StringEscapeUtils.escapeXml(this.primaryKeyInfo)).append("</PrimaryKeyInfo>\n"); //$NON-NLS-1$ //$NON-NLS-2$
-
+                .append("<Key>").append(StringEscapeUtils.escapeXml(this.key)).append("</Key>\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        if (org.apache.commons.lang.StringUtils.isNotBlank(this.primaryKeyInfo)) {
+            log.append("<PrimaryKeyInfo>").append(StringEscapeUtils.escapeXml(this.primaryKeyInfo)).append("</PrimaryKeyInfo>\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        }
         if (OPERATION_TYPE_UPDATE.equals(operationType)) {
             Map<String, UpdateReportItemPOJO> map = this.updateReportItemsMap == null ? new HashMap<String, UpdateReportItemPOJO>()
                     : this.updateReportItemsMap;

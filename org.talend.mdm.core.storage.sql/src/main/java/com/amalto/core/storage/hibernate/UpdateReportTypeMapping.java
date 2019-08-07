@@ -97,8 +97,10 @@ class UpdateReportTypeMapping extends TypeMapping {
         to.set("x_data_model", from.get("DataModel")); //$NON-NLS-1$ //$NON-NLS-2$
         to.set("x_concept", from.get("Concept")); //$NON-NLS-1$ //$NON-NLS-2$
         to.set("x_key", from.get("Key")); //$NON-NLS-1$ //$NON-NLS-2$
-        String primaryKeyInfo = String.valueOf(from.get("PrimaryKeyInfo")); // $NON-NLS-2$
-        to.set("x_primary_key_info", isUsingClob(to, "x_primary_key_info") ? Hibernate.getLobCreator(session).createClob(primaryKeyInfo) : primaryKeyInfo);
+        Object pkinfo = from.get("PrimaryKeyInfo"); //$NON-NLS-1$
+        if (pkinfo != null) {
+            to.set("x_primary_key_info", isUsingClob(to, "x_primary_key_info") ? Hibernate.getLobCreator(session).createClob(pkinfo.toString()) : pkinfo.toString()); //$NON-NLS-1$ //$NON-NLS-2$
+        }
         try {
             List<DataRecord> dataRecord = (List<DataRecord>) from.get("Item"); //$NON-NLS-1$
             if (dataRecord != null) { // this might be null if there is no 'Item' element in update report.

@@ -14,6 +14,7 @@ package com.amalto.core.save.context;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.w3c.dom.Document;
 
@@ -70,7 +71,7 @@ class UpdateReport implements DocumentSaver {
                 setHeader(updateReportDocument, "DataModel", String.valueOf(context.getDataModelName())); //$NON-NLS-1$
                 setHeader(updateReportDocument, "Concept", String.valueOf(type.getName())); //$NON-NLS-1$
                 setHeader(updateReportDocument, "Key", key.toString()); //$NON-NLS-1$
-                setHeader(updateReportDocument, "PrimaryKeyInfo", Util.getPrimaryKeyInfo(context)); //$NON-NLS-1$
+                setHeaderForPrimaryKeyInfo(updateReportDocument, context);
                 hasHeader = true;
                 updateReportDocument.enableRecordFieldChange();
             }
@@ -84,6 +85,14 @@ class UpdateReport implements DocumentSaver {
 
         context.setUpdateReportDocument(updateReportDocument);
         next.save(session, context);
+    }
+
+    private void setHeaderForPrimaryKeyInfo(MutableDocument updateReportDocument, DocumentSaverContext context) {
+        String primaryKeyInfo = Util.getPrimaryKeyInfo(context);
+        if (StringUtils.isNotBlank(primaryKeyInfo)) {
+            Accessor accessor = updateReportDocument.createAccessor("PrimaryKeyInfo"); //$NON-NLS-1$
+            accessor.createAndSet(primaryKeyInfo);
+        }
     }
 
     private void setHeader(MutableDocument updateReportDocument, String fieldName, String value) {

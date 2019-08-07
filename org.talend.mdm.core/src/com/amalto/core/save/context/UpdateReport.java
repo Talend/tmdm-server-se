@@ -14,7 +14,6 @@ package com.amalto.core.save.context;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.commons.lang.StringUtils;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.w3c.dom.Document;
 
@@ -23,9 +22,7 @@ import com.amalto.core.history.MutableDocument;
 import com.amalto.core.history.accessor.Accessor;
 import com.amalto.core.objects.UpdateReportPOJO;
 import com.amalto.core.save.DocumentSaverContext;
-import com.amalto.core.save.PartialUpdateSaverContext;
 import com.amalto.core.save.SaverSession;
-import com.amalto.core.save.UserAction;
 import com.amalto.core.util.Util;
 
 class UpdateReport implements DocumentSaver {

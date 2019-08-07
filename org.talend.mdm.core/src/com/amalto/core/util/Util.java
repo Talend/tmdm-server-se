@@ -76,8 +76,6 @@ import com.amalto.core.objects.transformers.util.TransformerCallBack;
 import com.amalto.core.objects.transformers.util.TransformerContext;
 import com.amalto.core.objects.transformers.util.TypedContent;
 import com.amalto.core.save.DocumentSaverContext;
-import com.amalto.core.save.PartialUpdateSaverContext;
-import com.amalto.core.save.UserAction;
 import com.amalto.core.save.context.StorageDocument;
 import com.amalto.core.server.DefaultBackgroundJob;
 import com.amalto.core.server.DefaultConfigurationInfo;
@@ -1215,29 +1213,6 @@ public class Util extends XmlUtil {
     }
 
     /**
-     * Get master storage by name
-     *
-     * @param storageName
-     * @return
-     */
-    private static Storage getMasterStorage(String storageName) {
-        StorageAdmin storageAdmin = ServerContext.INSTANCE.get().getStorageAdmin();
-        return storageAdmin.get(storageName, StorageType.MASTER);
-    }
-
-    /**
-     * Check if the type has set primary key info
-     *
-     * @param storageName
-     * @param type
-     * @return
-     */
-    public static boolean isPKInfoSet(String storageName, String type) {
-        MetadataRepository repository = getMasterStorage(storageName).getMetadataRepository();
-        return repository.getComplexType(type).getPrimaryKeyInfo().size() > 0;
-    }
-
-    /**
      * Get primary key info from record's ID
      *
      * @param cluster
@@ -1265,7 +1240,7 @@ public class Util extends XmlUtil {
      * @return
      */
     public static String getPrimaryKeyInfo(String cluster, String concept, String userXml) {
-        MetadataRepository repository = getMasterStorage(cluster).getMetadataRepository();
+        MetadataRepository repository = getMetadataRepository(cluster);
         ComplexTypeMetadata type = repository.getComplexType(concept);
         DataRecord dataRecord = new XmlStringDataRecordReader().read(repository, type, userXml);
         return getPrimaryKeyInfo(cluster, concept, dataRecord);
@@ -1280,9 +1255,9 @@ public class Util extends XmlUtil {
      * @return
      */
     public static String getPrimaryKeyInfo(String cluster, String concept, DataRecord dataRecord) {
-        MetadataRepository repository = getMasterStorage(cluster).getMetadataRepository();
+        MetadataRepository repository = getMetadataRepository(cluster);
         MutableDocument userDocument = new StorageDocument(cluster, repository, dataRecord);
-        return getPKInfo(repository.getComplexType(concept), userDocument);
+        return getPKInfo(repository.getComplexType(concept), null, userDocument);
     }
 
     /**
@@ -1295,46 +1270,34 @@ public class Util extends XmlUtil {
      * </pre>
      */
     public static String getPrimaryKeyInfo(DocumentSaverContext context) {
-        String primaryKeyInfo = StringUtils.EMPTY;
         MutableDocument userDocument = context.getUserDocument();
         MutableDocument dbDocument = context.getDatabaseDocument();
         ComplexTypeMetadata type = userDocument.getType();
-        UserAction userAction = context.getUserAction();
-        if (context instanceof PartialUpdateSaverContext) {
-            if (userAction == UserAction.UPDATE) {
-                primaryKeyInfo = getPKInfo(type, dbDocument, userDocument);
-            } else {// PARTIAL_DELETE, PARTIAL_UPDATE
-                primaryKeyInfo = getPKInfo(type, dbDocument);
-            }
-        } else {
-            primaryKeyInfo = getPKInfo(type, userDocument);
-        }
-        return primaryKeyInfo;
+        return getPKInfo(type, dbDocument, userDocument);
     }
 
     /**
-     * Get primary key info from record's document object
+     * Check if the type has set primary key info
      *
-     * @param type
-     * @param xmlDocument
+     * @param cluster
+     * @param concept
      * @return
      */
-    private static String getPKInfo(ComplexTypeMetadata type, MutableDocument xmlDocument) {
-        List<String> valueList = new ArrayList<>();
-        for (FieldMetadata field : type.getPrimaryKeyInfo()) {
-            Accessor accessor = xmlDocument.createAccessor(field.getPath());
-            if (accessor.exist()) {
-                String value = accessor.get();
-                if (StringUtils.isNotBlank(value)) {
-                    valueList.add(StringUtils.trim(value));
-                }
-            }
-        }
-        return StringUtils.join(valueList.toArray(), "-"); //$NON-NLS-1$
+    public static boolean isPKInfoSet(String cluster, String concept) {
+        MetadataRepository repository = getMetadataRepository(cluster);
+        ComplexTypeMetadata type = repository.getComplexType(concept);
+        return type.getPrimaryKeyInfo().size() > 0;
     }
 
     /**
-     * Get primary key info for partial update when pivot=null
+     * Get primary key info from document object
+     * <ul>
+     * <li>If exist in user document, get from user document</li>
+     * <li>If not exist in user document, get from database document</li>
+     * <li>CREATE, will get from user document</li>
+     * <li>PARTIAL_DELETE and PARTIAL_UPDATE will get from database document</li>
+     * <li>Others, maybe part from user document, part from database document</li>
+     * </ul>
      *
      * @param type
      * @param dbDocument
@@ -1343,10 +1306,9 @@ public class Util extends XmlUtil {
      */
     private static String getPKInfo(ComplexTypeMetadata type, MutableDocument dbDocument, MutableDocument userDocument) {
         List<String> valueList = new ArrayList<>();
-        // Get from user document, if not exist, get from database document
         for (FieldMetadata field : type.getPrimaryKeyInfo()) {
             Accessor accessor = userDocument.createAccessor(field.getPath());
-            if (!accessor.exist()) {
+            if (!accessor.exist() && dbDocument != null) {
                 accessor = dbDocument.createAccessor(field.getPath());
             }
             if (accessor.exist()) {
@@ -1357,5 +1319,17 @@ public class Util extends XmlUtil {
             }
         }
         return StringUtils.join(valueList.toArray(), "-"); //$NON-NLS-1$
+    }
+
+    /**
+     * Get metadata repository by storage name
+     *
+     * @param storageName
+     * @return
+     */
+    private static MetadataRepository getMetadataRepository(String storageName) {
+        StorageAdmin storageAdmin = ServerContext.INSTANCE.get().getStorageAdmin();
+        Storage storage = storageAdmin.get(storageName, StorageType.MASTER);
+        return storage.getMetadataRepository();
     }
 }

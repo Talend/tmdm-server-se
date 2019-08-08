@@ -263,13 +263,13 @@ public class CompositeAction implements Action {
      * return :
      *   0 = {FieldUpdateAction@7041} "FieldUpdateAction{path='detail[1]/ReadOnlyEle[2]', oldValue='null', newValue='false'}"
      *   1 = {FieldUpdateAction@7040} "FieldUpdateAction{path='detail[1]/ReadOnlyEle[1]', oldValue='null', newValue='yes'}"
-     * @param changeTypeActions
+     * @param actions the list of update operation action
      * @return
      */
-    private List<Action> resetMultipleFieldsSort(List<Action> changeTypeActions) {
+    private List<Action> resetMultipleFieldsSort(List<Action> actions) {
         Stack<Action> actionStack = new Stack<>();
         boolean isNeedToPush;
-        for (Action changeTypeAction : changeTypeActions) {
+        for (Action changeTypeAction : actions) {
             isNeedToPush = true;
             FieldUpdateAction fieldUpdateAction = (FieldUpdateAction) changeTypeAction;
             String path = fieldUpdateAction.getPath();

@@ -1530,7 +1530,7 @@ public class DocumentSaveTest extends TestCase {
         assertEquals("cccccc", evaluate(committedElement, "/Contract/detail[1]/code"));
         assertEquals("sdfsdf", evaluate(committedElement, "/Contract/detail[1]/features/actor"));
 
-        //this is change detail from ContractDetailType to ContractDetailSubType
+        // this is change detail from ContractDetailType to ContractDetailSubType
         MutableDocument updateReportDocument = context.getUpdateReportDocument();
         assertNotNull(updateReportDocument);
         Document doc = updateReportDocument.asDOM();

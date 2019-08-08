@@ -267,43 +267,28 @@ public class CompositeAction implements Action {
      * @return
      */
     private List<Action> resetMultipleFieldsSort(List<Action> actions) {
-        Stack<Action> actionStack = new Stack<>();
-        boolean isNeedToPush;
+        String previousVeritablePath = StringUtils.EMPTY;
+        List<Action> resultActions = new ArrayList<>();
+        List<Action> samePathActions = new ArrayList<>();
         for (Action changeTypeAction : actions) {
-            isNeedToPush = true;
             FieldUpdateAction fieldUpdateAction = (FieldUpdateAction) changeTypeAction;
             String path = fieldUpdateAction.getPath();
             if (path.endsWith("]")) {
-                int index = getIndexFromPath(path);
-                if (index > 1) {
-                    FieldUpdateAction previousAction = (FieldUpdateAction) actionStack.pop();
-                    String previousPath = previousAction.getPath();
-                    if (previousPath.endsWith("]")) {
-                        int previousIndex = getIndexFromPath(previousPath);
-                        if (previousIndex < index) {
-                            actionStack.push(changeTypeAction);
-                            actionStack.push(previousAction);
-                            isNeedToPush = false;
-                        }
-                    }
+                String veritablePath = path.substring(0, path.lastIndexOf('['));
+                if (previousVeritablePath.length() == 0 || veritablePath.equalsIgnoreCase(previousVeritablePath)) {
+                    samePathActions.add(changeTypeAction);
                 }
-            }
-            if (isNeedToPush) {
-                actionStack.push(changeTypeAction);
+                previousVeritablePath = veritablePath;
+            } else if (!samePathActions.isEmpty()) {
+                Collections.reverse(samePathActions);
+                resultActions.addAll(samePathActions);
+                previousVeritablePath = StringUtils.EMPTY;
+                samePathActions.clear();
+                resultActions.add(changeTypeAction);
+            } else {
+                resultActions.add(changeTypeAction);
             }
         }
-        return actionStack;
-    }
-
-    /**
-     * get the multiple field's index in path
-     * eg:
-     *  detail[1]/ReadOnlyEle[1] ==> 1
-     *  detail[1]/ReadOnlyEle[2] ==> 2
-     * @param path field's path
-     * @return index of the field
-     */
-    private Integer getIndexFromPath(String path) {
-        return Integer.parseInt(path.substring(path.lastIndexOf('[') + 1, path.lastIndexOf(']')));
+        return resultActions;
     }
 }

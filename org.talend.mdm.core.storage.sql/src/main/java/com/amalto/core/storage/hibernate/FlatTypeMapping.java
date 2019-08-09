@@ -258,7 +258,9 @@ class FlatTypeMapping extends TypeMapping {
                         List<Wrapper> wrapperList = getFullList((List<Wrapper>) value);
                         if (wrapperList != null) {
                             for (Wrapper wrapper : wrapperList) {
-                                to.set(userField, getDataRecordFromWrapper(contextClassLoader, wrapper, new HashMap<Object, DataRecord>()));
+                                if (wrapper != null) {
+                                    to.set(userField, getDataRecordFromWrapper(contextClassLoader, wrapper, new HashMap<Object, DataRecord>()));
+                                }
                             }
                         }
                     }

@@ -65,6 +65,7 @@ public class TransactionService {
         Transaction transaction = transactionManager.get(transactionId);
         if (transaction != null) {
             transaction.commit();
+            System.setProperty(transactionId + "", "true");  //$NON-NLS-1$//$NON-NLS-2$
         }
     }
 
@@ -81,6 +82,7 @@ public class TransactionService {
         Transaction transaction = transactionManager.get(transactionId);
         if (transaction != null) {
             transaction.rollback();
+            System.setProperty(transactionId + "", "false");  //$NON-NLS-1$//$NON-NLS-2$
         }
     }
 }

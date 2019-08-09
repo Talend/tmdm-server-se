@@ -13,9 +13,11 @@ package com.amalto.core.save;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.util.core.EUUIDCustomType;
@@ -28,8 +30,11 @@ import com.amalto.core.save.context.SaverContextFactory;
 import com.amalto.core.save.context.SaverSource;
 import com.amalto.core.save.context.StorageDocument;
 import com.amalto.core.save.context.StorageSaverSource;
-import com.amalto.core.save.generator.AutoIncrementGenerator;
+import com.amalto.core.server.ServerContext;
 import com.amalto.core.storage.record.DataRecord;
+import com.amalto.core.storage.transaction.Transaction;
+import com.amalto.core.storage.transaction.TransactionManager;
+import com.amalto.core.storage.transaction.Transaction.Lifetime;
 
 public class SaverSession {
 
@@ -52,6 +57,8 @@ public class SaverSession {
     private final SaverSource dataSource;
 
     private boolean hasMetAutoIncrement = false;
+
+    private static final Set<String> transactionIds = new HashSet<>();
 
     public SaverSession(SaverSource dataSource) {
         this.dataSource = dataSource;
@@ -211,25 +218,20 @@ public class SaverSession {
                     throw e;
                 }
             }
+
             // If any change was made to data cluster "UpdateReport", route committed update reports.
             List<Document> updateReport = itemsToUpdate.get(XSystemObjects.DC_UPDATE_PREPORT.getName());
-            if (updateReport != null && !DataRecord.ValidateRecord.get()) {
-                Iterator<Document> iterator = updateReport.iterator();
-                while (iterator.hasNext()) {
-                    MutableDocument document = (MutableDocument) iterator.next();
-                    String dataCluster = document.getDataCluster();
-                    String typeName = document.getType().getName();
-
-                    Collection<FieldMetadata> keyFields = document.getType().getKeyFields();
-                    String[] itemsId = new String[keyFields.size()];
-                    int i = 0;
-                    for (FieldMetadata keyField : keyFields) {
-                        itemsId[i++] = document.createAccessor(keyField.getName()).get();
-                    }
-                    saverSource.routeItem(dataCluster, typeName, itemsId);
-                    iterator.remove();
+            String longTransactionId = getLongTransactionId();
+            if (!DataRecord.ValidateRecord.get()) {
+            //if (updateReport != null && !DataRecord.ValidateRecord.get()) {
+                if (longTransactionId == null) {
+                    routeItems(saverSource, updateReport);
+                } else if (!transactionIds.contains(longTransactionId)) {
+                    transactionIds.add(longTransactionId);
+                    new Thread(new TriggerTask(saverSource, updateReport, longTransactionId)).start();
                 }
             }
+
             // reset the AutoIncrement
             if (needResetAutoIncrement) {
                 saverSource.initAutoIncrement();
@@ -244,10 +246,39 @@ public class SaverSession {
                     committer.commit(dataCluster);
                 } catch (Exception e) {
                     committer.rollback(dataCluster);
-                    throw new RuntimeException("Could not save auto increment counter state.", e);
+                    throw new RuntimeException("Could not save auto increment counter state.", e); //$NON-NLS-1$
                 }
             }
         }
+    }
+
+    private void routeItems(SaverSource saverSource, List<Document> updateReport) {
+        Iterator<Document> iterator = updateReport.iterator();
+        while (iterator.hasNext()) {
+            MutableDocument document = (MutableDocument) iterator.next();
+            String dataCluster = document.getDataCluster();
+            String typeName = document.getType().getName();
+
+            Collection<FieldMetadata> keyFields = document.getType().getKeyFields();
+            String[] itemsId = new String[keyFields.size()];
+            int i = 0;
+            for (FieldMetadata keyField : keyFields) {
+                itemsId[i++] = document.createAccessor(keyField.getName()).get();
+            }
+            saverSource.routeItem(dataCluster, typeName, itemsId);
+            iterator.remove();
+        }
+    }
+
+    private String getLongTransactionId() {
+        final TransactionManager transactionManager = ServerContext.INSTANCE.get().getTransactionManager();
+        if (transactionManager.hasTransaction()) {
+            Transaction currentTransaction = transactionManager.currentTransaction();
+            if (currentTransaction.getLifetime() == Lifetime.LONG) {
+                return currentTransaction.getId();
+            }
+        }
+        return null;
     }
 
     /**

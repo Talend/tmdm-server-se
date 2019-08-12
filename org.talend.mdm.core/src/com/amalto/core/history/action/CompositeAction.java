@@ -22,7 +22,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import java.util.Stack;
 import java.util.stream.Collectors;
 
 /**
@@ -248,7 +247,7 @@ public class CompositeAction implements Action {
     private void resetActions(int beginIndex, List<Action> copyActions, List<Action> changeTypeActions) {
         Collections.reverse(changeTypeActions);
         //reset the multiple field's sort
-        List<Action> actionStack = resetMultipleFieldsSort(changeTypeActions);
+        List<Action> actionStack = resetActionOrderForMultiField(changeTypeActions);
         int resetIndex = beginIndex;
         for (Action changeTypeAction : actionStack) {
             copyActions.set(resetIndex++, changeTypeAction);
@@ -256,7 +255,7 @@ public class CompositeAction implements Action {
     }
 
     /**
-     * reset the multiples field's sort
+     * Reset the multiples field's sort
      * eg:
      *   0 = {FieldUpdateAction@7041} "FieldUpdateAction{path='detail[1]/ReadOnlyEle[1]', oldValue='null', newValue='false'}"
      *   1 = {FieldUpdateAction@7040} "FieldUpdateAction{path='detail[1]/ReadOnlyEle[2]', oldValue='null', newValue='yes'}"
@@ -266,29 +265,41 @@ public class CompositeAction implements Action {
      * @param actions the list of update operation action
      * @return
      */
-    private List<Action> resetMultipleFieldsSort(List<Action> actions) {
-        String previousVeritablePath = StringUtils.EMPTY;
+    private List<Action> resetActionOrderForMultiField(List<Action> actions) {
+        String prePath = StringUtils.EMPTY;
         List<Action> resultActions = new ArrayList<>();
         List<Action> samePathActions = new ArrayList<>();
-        for (Action changeTypeAction : actions) {
-            FieldUpdateAction fieldUpdateAction = (FieldUpdateAction) changeTypeAction;
-            String path = fieldUpdateAction.getPath();
-            if (path.endsWith("]")) {
-                String veritablePath = path.substring(0, path.lastIndexOf('['));
-                if (previousVeritablePath.length() == 0 || veritablePath.equalsIgnoreCase(previousVeritablePath)) {
-                    samePathActions.add(changeTypeAction);
+        for (Action action : actions) {
+            String path = ((FieldUpdateAction) action).getPath();
+            if (path.endsWith("]")) { // if current actions is multiple field's
+                String curPath = path.substring(0, path.lastIndexOf('['));
+                if (prePath.length() == 0 || curPath.equals(prePath)) {
+                    // if current actions's path is same with previous's, add current action to samePathActions
+                    samePathActions.add(action);
+                } else if (!samePathActions.isEmpty()) {
+                    // if current action's path is not same with previous's, but also is a multiple field
+                    addToResultActions(resultActions, samePathActions);
+                    samePathActions.add(action);
                 }
-                previousVeritablePath = veritablePath;
-            } else if (!samePathActions.isEmpty()) {
-                Collections.reverse(samePathActions);
-                resultActions.addAll(samePathActions);
-                previousVeritablePath = StringUtils.EMPTY;
-                samePathActions.clear();
-                resultActions.add(changeTypeAction);
-            } else {
-                resultActions.add(changeTypeAction);
+                prePath = curPath;
+            } else { // if current actions is not multiple field's
+                if (!samePathActions.isEmpty()) {
+                    addToResultActions(resultActions, samePathActions);
+                }
+                prePath = StringUtils.EMPTY;
+                resultActions.add(action);
             }
         }
+        if (!samePathActions.isEmpty()) {
+            // if the last action is the multiple field's, also add to result
+            addToResultActions(resultActions, samePathActions);
+        }
         return resultActions;
+    }
+
+    private void addToResultActions(List<Action> resultActions, List<Action> samePathActions) {
+        Collections.reverse(samePathActions);
+        resultActions.addAll(samePathActions);
+        samePathActions.clear();
     }
 }

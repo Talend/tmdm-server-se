@@ -94,7 +94,8 @@ public class JournalDBService {
             if (HibernateStorageUtils.isOracle(dataSource.getDialectName())) {
                 field = null;
             }
-        } else {
+        }
+        if (field != null) {
             if (SortDir.ASC.equals(SortDir.findDir(sort))) {
                 sortDir = Constants.SEARCH_DIRECTION_ASC;
             } else if (SortDir.DESC.equals(SortDir.findDir(sort))) {

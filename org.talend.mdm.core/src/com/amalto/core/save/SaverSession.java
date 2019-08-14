@@ -34,9 +34,11 @@ import com.amalto.core.server.ServerContext;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.transaction.Transaction;
 import com.amalto.core.storage.transaction.TransactionManager;
+import com.amalto.core.storage.transaction.TransactionService;
 import com.amalto.core.storage.transaction.Transaction.Lifetime;
+import com.amalto.core.storage.transaction.TransactionListener;
 
-public class SaverSession {
+public class SaverSession implements TransactionListener{
 
     private static final String AUTO_INCREMENT_TYPE_NAME = "AutoIncrement"; //$NON-NLS-1$
 
@@ -56,9 +58,21 @@ public class SaverSession {
 
     private final SaverSource dataSource;
 
+    private List<Document> updateReport;
+
     private boolean hasMetAutoIncrement = false;
 
     private static final Set<String> transactionIds = new HashSet<>();
+
+    private static TransactionService transactionService = new TransactionService();
+
+    static {
+        transactionService.addListener(new SaverSession());
+    }
+
+    private SaverSession() {
+        this.dataSource = getSaverSource();
+    }
 
     public SaverSession(SaverSource dataSource) {
         this.dataSource = dataSource;
@@ -222,15 +236,14 @@ public class SaverSession {
             // If any change was made to data cluster "UpdateReport", route committed update reports.
             List<Document> updateReport = itemsToUpdate.get(XSystemObjects.DC_UPDATE_PREPORT.getName());
             String longTransactionId = getLongTransactionId();
-            if (!DataRecord.ValidateRecord.get()) {
             //if (updateReport != null && !DataRecord.ValidateRecord.get()) {
+                this.updateReport = updateReport;
                 if (longTransactionId == null) {
-                    routeItems(saverSource, updateReport);
+                    routeItems();
                 } else if (!transactionIds.contains(longTransactionId)) {
                     transactionIds.add(longTransactionId);
-                    new Thread(new TriggerTask(saverSource, updateReport, longTransactionId)).start();
                 }
-            }
+            //}
 
             // reset the AutoIncrement
             if (needResetAutoIncrement) {
@@ -252,7 +265,20 @@ public class SaverSession {
         }
     }
 
-    private void routeItems(SaverSource saverSource, List<Document> updateReport) {
+    @Override
+    public void transactionCommitted(String longTransactionId) {
+        if (transactionIds.contains(longTransactionId)) {
+            routeItems();
+        }
+    }
+
+    @Override
+    public void transactionRollbacked(String longTransactionId) {
+        transactionIds.remove(longTransactionId);
+    }
+
+    private void routeItems() {
+        SaverSource saverSource = getSaverSource();
         Iterator<Document> iterator = updateReport.iterator();
         while (iterator.hasNext()) {
             MutableDocument document = (MutableDocument) iterator.next();
@@ -443,5 +469,4 @@ public class SaverSession {
          */
         void rollback(String dataCluster);
     }
-
 }

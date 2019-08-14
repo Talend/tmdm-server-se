@@ -19,11 +19,18 @@ import io.swagger.annotations.ApiParam;
 
 import javax.ws.rs.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Path("/transactions")
 @Api("Transactions")
 public class TransactionService {
+
+    private static List<TransactionListener> listeners = new ArrayList<>();
+
+    public void addListener(TransactionListener listener) {
+        listeners.add(listener);
+    }
 
     /**
      * Lists all actives transactions ({@link Transaction.Lifetime#LONG} and {@link Transaction.Lifetime#AD_HOC}).
@@ -65,7 +72,9 @@ public class TransactionService {
         Transaction transaction = transactionManager.get(transactionId);
         if (transaction != null) {
             transaction.commit();
-            System.setProperty(transactionId + "", "true");  //$NON-NLS-1$//$NON-NLS-2$
+            for (TransactionListener listener : listeners) {
+                listener.transactionCommitted(transactionId);
+            }
         }
     }
 
@@ -82,7 +91,9 @@ public class TransactionService {
         Transaction transaction = transactionManager.get(transactionId);
         if (transaction != null) {
             transaction.rollback();
-            System.setProperty(transactionId + "", "false");  //$NON-NLS-1$//$NON-NLS-2$
+            for (TransactionListener listener : listeners) {
+                listener.transactionRollbacked(transactionId);
+            }
         }
     }
 }

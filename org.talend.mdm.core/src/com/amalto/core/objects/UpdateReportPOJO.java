@@ -11,10 +11,6 @@ package com.amalto.core.objects;
 
 import org.apache.commons.lang.StringEscapeUtils;
 
-import com.ibm.wsdl.util.StringUtils;
-
-import bsh.StringUtil;
-
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -22,13 +18,9 @@ import java.util.Set;
 
 public class UpdateReportPOJO {
 
-    public final static String SOURCE_DATA_SYNCHRONIZATION = "dataSynchronization"; //$NON-NLS-1$
-
     public static final String DATA_CLUSTER = "UpdateReport"; //$NON-NLS-1$
 
     public static final String DATA_MODEL = "UpdateReport"; //$NON-NLS-1$
-
-    public static final String SOURCE_RESTORE = "restoreUI"; //$NON-NLS-1$
 
     public final static String OPERATION_TYPE_CREATE = "CREATE"; //$NON-NLS-1$
 
@@ -42,15 +34,13 @@ public class UpdateReportPOJO {
 
     public static final String OPERATION_TYPE_ACTION = "ACTION"; //$NON-NLS-1$
 
-    /**
-     * source value for genericUI
-     */
-    public static final String GENERIC_UI_SOURCE = "genericUI";
+    public static final String GENERIC_UI_SOURCE = "genericUI"; //$NON-NLS-1$
 
-    /**
-     * source value for service
-     */
-    public static final String SERVICE_SOURCE = "service";
+    public static final String RESTORE_UI_SOURCE = "restoreUI"; //$NON-NLS-1$
+
+    public static final String SERVICE_SOURCE = "service"; //$NON-NLS-1$
+
+    public static final String WORKFLOW_SOURCE = "workflow"; //$NON-NLS-1$
 
     private String source;
 

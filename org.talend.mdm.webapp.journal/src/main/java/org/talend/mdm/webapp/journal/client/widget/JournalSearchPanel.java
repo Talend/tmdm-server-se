@@ -318,9 +318,9 @@ public class JournalSearchPanel extends FormPanel {
     protected void initSourceCombo() {
         List<String> list = new ArrayList<String>();
         list.add(UpdateReportPOJO.GENERIC_UI_SOURCE);
-        list.add("adminWorkbench"); //$NON-NLS-1$
-        list.add("dataSynchronization"); //$NON-NLS-1$
-        list.add("workflow"); //$NON-NLS-1$
+        list.add(UpdateReportPOJO.RESTORE_UI_SOURCE);
+        list.add(UpdateReportPOJO.SERVICE_SOURCE);
+        list.add(UpdateReportPOJO.WORKFLOW_SOURCE);
 
         sourceCombo = new ComboBox<ItemBaseModel>();
         sourceCombo.setId("source");//$NON-NLS-1$

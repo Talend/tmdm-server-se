@@ -13,11 +13,10 @@ package com.amalto.core.save;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.util.core.EUUIDCustomType;
@@ -58,11 +57,9 @@ public class SaverSession implements TransactionListener{
 
     private final SaverSource dataSource;
 
-    private List<Document> updateReport;
-
     private boolean hasMetAutoIncrement = false;
 
-    private static final Set<String> transactionIds = new HashSet<>();
+    private static final Map<String, Object> transactionIds = new ConcurrentHashMap<>();
 
     private static TransactionService transactionService = new TransactionService();
 
@@ -236,14 +233,13 @@ public class SaverSession implements TransactionListener{
             // If any change was made to data cluster "UpdateReport", route committed update reports.
             List<Document> updateReport = itemsToUpdate.get(XSystemObjects.DC_UPDATE_PREPORT.getName());
             String longTransactionId = getLongTransactionId();
-            //if (updateReport != null && !DataRecord.ValidateRecord.get()) {
-                this.updateReport = updateReport;
+            if (updateReport != null && !DataRecord.ValidateRecord.get()) {
                 if (longTransactionId == null) {
-                    routeItems();
-                } else if (!transactionIds.contains(longTransactionId)) {
-                    transactionIds.add(longTransactionId);
+                    routeItems(updateReport);
+                } else if (!transactionIds.containsKey(longTransactionId)) {
+                    transactionIds.put(longTransactionId, updateReport);
                 }
-            //}
+            }
 
             // reset the AutoIncrement
             if (needResetAutoIncrement) {
@@ -265,10 +261,12 @@ public class SaverSession implements TransactionListener{
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void transactionCommitted(String longTransactionId) {
-        if (transactionIds.contains(longTransactionId)) {
-            routeItems();
+        if (transactionIds.containsKey(longTransactionId)) {
+            List<Document> updateReport = (List<Document>) transactionIds.get(longTransactionId);
+            routeItems(updateReport);
         }
     }
 
@@ -277,7 +275,7 @@ public class SaverSession implements TransactionListener{
         transactionIds.remove(longTransactionId);
     }
 
-    private void routeItems() {
+    private void routeItems(List<Document> updateReport) {
         SaverSource saverSource = getSaverSource();
         Iterator<Document> iterator = updateReport.iterator();
         while (iterator.hasNext()) {

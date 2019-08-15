@@ -31,6 +31,7 @@ import javax.xml.parsers.DocumentBuilder;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -150,8 +151,7 @@ public class StorageDocument implements MutableDocument {
     }
 
     private DataRecord clean(DataRecord dataRecord) {
-        ComplexTypeMetadata type = dataRecord.getType();
-        for (FieldMetadata entityField : type.getFields()) {
+        for (FieldMetadata entityField : new HashSet<FieldMetadata>(dataRecord.getSetFields())) {
             Object fieldData = dataRecord.get(entityField);
             if (fieldData == null) {
                 dataRecord.remove(entityField);
@@ -178,6 +178,7 @@ public class StorageDocument implements MutableDocument {
                 }
             }
         }
+
         if (dataRecord.getSetFields().isEmpty()) {
             return null;
         } else {

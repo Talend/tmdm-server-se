@@ -16,8 +16,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
+import org.springframework.cache.ehcache.EhCacheCacheManager;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.util.core.EUUIDCustomType;
 import org.talend.mdm.commmon.util.webapp.XSystemObjects;
@@ -29,12 +29,14 @@ import com.amalto.core.save.context.SaverContextFactory;
 import com.amalto.core.save.context.SaverSource;
 import com.amalto.core.save.context.StorageDocument;
 import com.amalto.core.save.context.StorageSaverSource;
+import com.amalto.core.server.MDMContextAccessor;
 import com.amalto.core.server.ServerContext;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.transaction.Transaction;
 import com.amalto.core.storage.transaction.TransactionManager;
 import com.amalto.core.storage.transaction.TransactionService;
 import com.amalto.core.storage.transaction.Transaction.Lifetime;
+import com.amalto.core.util.MDMEhCacheUtil;
 import com.amalto.core.storage.transaction.TransactionListener;
 
 public class SaverSession implements TransactionListener{
@@ -59,9 +61,11 @@ public class SaverSession implements TransactionListener{
 
     private boolean hasMetAutoIncrement = false;
 
-    private static final Map<String, Object> transactionIds = new ConcurrentHashMap<>();
-
     private static TransactionService transactionService = new TransactionService();
+
+    public static final String UPDATE_REPORT_EVENT_CACHE = "updateReportEvents"; //$NON-NLS-1$
+
+    public static final String MDM_CACHE_MANAGER = "mdmCacheManager"; //$NON-NLS-1$
 
     static {
         transactionService.addListener(new SaverSession());
@@ -236,8 +240,8 @@ public class SaverSession implements TransactionListener{
             if (updateReport != null && !DataRecord.ValidateRecord.get()) {
                 if (longTransactionId == null) {
                     routeItems(updateReport);
-                } else if (!transactionIds.containsKey(longTransactionId)) {
-                    transactionIds.put(longTransactionId, updateReport);
+                } else {
+                    MDMEhCacheUtil.addCache(UPDATE_REPORT_EVENT_CACHE, longTransactionId, updateReport);
                 }
             }
 
@@ -264,15 +268,18 @@ public class SaverSession implements TransactionListener{
     @SuppressWarnings("unchecked")
     @Override
     public void transactionCommitted(String longTransactionId) {
-        if (transactionIds.containsKey(longTransactionId)) {
-            List<Document> updateReport = (List<Document>) transactionIds.get(longTransactionId);
+        Object object = MDMEhCacheUtil.getCache(UPDATE_REPORT_EVENT_CACHE, longTransactionId);
+        if (object != null) {
+            List<Document> updateReport = (List<Document>) object;
             routeItems(updateReport);
         }
     }
 
     @Override
     public void transactionRollbacked(String longTransactionId) {
-        transactionIds.remove(longTransactionId);
+        EhCacheCacheManager mdmEhcache = MDMContextAccessor.getApplicationContext().getBean(MDM_CACHE_MANAGER,
+                EhCacheCacheManager.class);
+        mdmEhcache.getCacheManager().getCache(UPDATE_REPORT_EVENT_CACHE).remove(longTransactionId);
     }
 
     private void routeItems(List<Document> updateReport) {

@@ -237,7 +237,9 @@ public class StorageDocument implements MutableDocument {
                     refDeep = 0;
                     continue;
                 }
-                cleanMultiLevelRef((DataRecord) fieldData);
+                if (fieldData instanceof DataRecord) {
+                    cleanMultiLevelRef((DataRecord) fieldData);
+                }
                 refDeep = 0;
             } else if (entityField.isMany()) {
                 for (Iterator it = ((List) fieldData).iterator(); it.hasNext();) {

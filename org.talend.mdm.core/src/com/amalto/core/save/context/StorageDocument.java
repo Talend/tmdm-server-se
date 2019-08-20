@@ -11,23 +11,6 @@
 
 package com.amalto.core.save.context;
 
-import com.amalto.core.history.DeleteType;
-import com.amalto.core.history.DocumentTransformer;
-import com.amalto.core.history.MutableDocument;
-import com.amalto.core.history.accessor.Accessor;
-import com.amalto.core.history.accessor.record.DataRecordAccessor;
-import com.amalto.core.schema.validation.SkipAttributeDocumentBuilder;
-import com.amalto.core.storage.record.*;
-import com.amalto.core.storage.record.metadata.DataRecordMetadataImpl;
-
-import org.apache.commons.collections.map.LRUMap;
-import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
-import org.talend.mdm.commmon.metadata.ContainedComplexTypeMetadata;
-import org.talend.mdm.commmon.metadata.FieldMetadata;
-import org.talend.mdm.commmon.metadata.MetadataRepository;
-import org.w3c.dom.Document;
-
-import javax.xml.parsers.DocumentBuilder;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -35,6 +18,31 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import javax.xml.parsers.DocumentBuilder;
+
+import org.apache.commons.collections.map.LRUMap;
+import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.ContainedComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.FieldMetadata;
+import org.talend.mdm.commmon.metadata.MetadataRepository;
+import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
+import org.w3c.dom.Document;
+
+import com.amalto.core.history.DeleteType;
+import com.amalto.core.history.DocumentTransformer;
+import com.amalto.core.history.MutableDocument;
+import com.amalto.core.history.accessor.Accessor;
+import com.amalto.core.history.accessor.record.DataRecordAccessor;
+import com.amalto.core.schema.validation.SkipAttributeDocumentBuilder;
+import com.amalto.core.storage.record.DataRecord;
+import com.amalto.core.storage.record.DataRecordIncludeNullValueXmlWriter;
+import com.amalto.core.storage.record.DataRecordReader;
+import com.amalto.core.storage.record.DataRecordWriter;
+import com.amalto.core.storage.record.DataRecordXmlWriter;
+import com.amalto.core.storage.record.XmlStringDataRecordReader;
+import com.amalto.core.storage.record.metadata.DataRecordMetadataImpl;
 
 public class StorageDocument implements MutableDocument {
 
@@ -49,6 +57,8 @@ public class StorageDocument implements MutableDocument {
     private String taskId;
 
     private DataRecord previousDataRecord;
+
+    private int refDeep = 0;
 
     private boolean isDeleted = false;
 
@@ -184,6 +194,65 @@ public class StorageDocument implements MutableDocument {
         } else {
             return dataRecord;
         }
+    }
+
+    /**
+     * Clean the second level reference child node due to the REST API only display the first reference ID.
+     * Before:
+     * <pre>
+     *    Contrat
+     *       |__AP-AA
+     *       |   |__Anony_x0
+     *       |         |__Anony_x2
+     *       |              |__ EDA (Reference)
+     *       |                   |__LocalUse (Reference)
+     *       |__Anony_x3
+     *            |__ EDP (Reference)
+     *                 |__Book (Reference)
+     * </pre>
+     * After:
+     * <pre>
+     *    Contrat
+     *       |__AP-AA
+     *       |    |__Anony_x0
+     *       |         |__Anony_x2
+     *       |              |__ EDA (Reference)
+     *       |__Anony_x3
+     *            |__ EDP (Reference)
+     * </pre>
+     * @param dataRecord
+     * @return
+     */
+    @SuppressWarnings("rawtypes")
+    public DataRecord cleanMultiLevelRef(DataRecord dataRecord) {
+        Set<FieldMetadata> cloneDataRecord = new HashSet<FieldMetadata>(dataRecord.getSetFields());
+        for (FieldMetadata entityField : cloneDataRecord) {
+            Object fieldData = dataRecord.get(entityField);
+            if (fieldData == null) {
+                continue;
+            }
+            if (entityField instanceof ReferenceFieldMetadata) {
+                if (++refDeep >= 2) {
+                    dataRecord.remove(entityField);
+                    refDeep = 0;
+                    continue;
+                }
+                cleanMultiLevelRef((DataRecord) fieldData);
+                refDeep = 0;
+            } else if (entityField.isMany()) {
+                for (Iterator it = ((List) fieldData).iterator(); it.hasNext();) {
+                    Object next = it.next();
+                    if (next != null && fieldData instanceof DataRecord) {
+                        cleanMultiLevelRef((DataRecord) next);
+                        refDeep = 0;
+                    }
+                }
+            } else if (entityField.getType() instanceof ComplexTypeMetadata && fieldData instanceof DataRecord) {
+                cleanMultiLevelRef((DataRecord) fieldData);
+                refDeep = 0;
+            }
+        }
+        return dataRecord;
     }
 
     @Override

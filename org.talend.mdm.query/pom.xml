@@ -14,7 +14,6 @@
 
     <properties>
         <gson.version>2.3.1</gson.version>
-        <commons.lang3.version>3.2.1</commons.lang3.version>
     </properties>
 
     <build>
@@ -46,11 +45,6 @@
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>${gson.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>${commons.lang3.version}</version>
         </dependency>
 
         <!-- Test dependencies -->

@@ -166,7 +166,7 @@ public class StorageDocument implements MutableDocument {
             Object fieldData = dataRecord.get(entityField);
             if (fieldData == null) {
                 dataRecord.remove(entityField);
-            } else if(entityField.isMany()) {
+            } else if (entityField.isMany()) {
                 List list = (List) fieldData;
                 Iterator iterator = list.iterator();
                 while (iterator.hasNext()) {

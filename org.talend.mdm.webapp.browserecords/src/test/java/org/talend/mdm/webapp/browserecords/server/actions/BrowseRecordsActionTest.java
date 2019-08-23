@@ -558,6 +558,83 @@ public class BrowseRecordsActionTest extends TestCase {
         assertEquals("012", firstItemBean.get("Person/b_age"));
     }
 
+    public void test_queryItemBeansWithInheritDisplayValue() throws Exception {
+        // Create QueryModel parameter
+        QueryModel config = new QueryModel();
+        RecordsPagingConfig pagingConfig = new RecordsPagingConfig();
+        pagingConfig.setLimit(10);
+        pagingConfig.setSortDir("ASC");
+        pagingConfig.setSortField("Contrat/numeroContrat");
+        config.setPagingLoadConfig(pagingConfig);
+        config.setLanguage("fr");
+        config.setDataClusterPK("RTE");
+        String concept = "Contrat";
+        String fileName = "RTE.xsd";
+        String viewPK = "Browse_items_Contrat";
+        // Create ViewBean
+        ViewBean viewBean = getViewBean(concept, fileName);
+        viewBean.setViewPK(viewPK);
+        String keys[] = new String[] { "Contrat/numeroContrat" };
+        viewBean.getBindingEntityModel().setKeys(keys);
+        // Set viewable elements and searchable elements
+        parseElements(concept, viewBean, getXml("Browse_items_Contrat.item"));
+        // Reference View file: 'Browse_items_Product.item' to check the parsing results
+        assertEquals(6, viewBean.getViewables().length);
+        assertEquals("Contrat/numeroContrat", viewBean.getViewables()[0]);
+        assertEquals("Contrat/numeroContratExterne", viewBean.getViewables()[1]);
+        assertEquals("Contrat/codeActeur", viewBean.getViewables()[2]);
+        assertEquals("Contrat/dateSignatureContrat", viewBean.getViewables()[3]);
+        assertEquals("Contrat/dateDebutPrevueContrat", viewBean.getViewables()[4]);
+        assertEquals("Contrat/detailContrat/@xsi:type", viewBean.getViewables()[5]);
+        assertEquals(5, viewBean.getSearchables().size());
+        // Set entityModel and viewBean
+        config.setModel(viewBean.getBindingEntityModel());
+        config.setView(viewBean);
+        // Mock get result from server-side
+        PowerMockito.mockStatic(org.talend.mdm.webapp.base.server.util.CommonUtil.class);
+        XtentisPort port = PowerMockito.mock(XtentisPort.class);
+        String[] results = getMockResultsFromServerForInheritDisplayValue();
+        WSStringArray wsStringArray = new WSStringArray(results);
+
+        Mockito.when(org.talend.mdm.webapp.base.server.util.CommonUtil.getPort()).thenReturn(port);
+        Mockito.when(port.viewSearch(Mockito.any(WSViewSearch.class))).thenReturn(wsStringArray);
+        // Mock get SmartViewDescriptions
+        PowerMockito.mockStatic(SmartViewUtil.class);
+        SmartViewDescriptions svd = PowerMockito.mock(SmartViewDescriptions.class);
+        Mockito.when(SmartViewUtil.build(Mockito.any(SmartViewProvider.class), Mockito.anyString(), Mockito.anyString()))
+                .thenReturn(svd);
+        // Mock private method
+        BrowseRecordsAction newAction = PowerMockito.spy(action);
+        Whitebox.<Boolean> invokeMethod(newAction, "checkSmartViewExistsByLang", Mockito.anyString(), Mockito.anyString());
+        Whitebox.<Boolean> invokeMethod(newAction, "checkSmartViewExistsByOpt", Mockito.anyString(), Mockito.anyString());
+        // Call queryItemBeans
+        ItemBasePageLoadResult<ItemBean> itemBeans = action.queryItemBeans(config, "fr");
+        assertRTEItmesResult(results, viewBean, itemBeans,
+                new String[][] { { "bb", "test1", "AP-AA-FR" }, { "cc", "test1", "AP-RE-FR" }, { "aa", "test", "AP-RP-FR" } });
+
+        config.setLanguage("en");
+        itemBeans = action.queryItemBeans(config, "en");
+        assertRTEItmesResult(results, viewBean, itemBeans,
+                new String[][] { { "bb", "test1", "AP-AA" }, { "cc", "test1", "AP-RE" }, { "aa", "test", "AP-RP" } });
+    }
+
+    private void assertRTEItmesResult(String[] results, ViewBean viewBean, ItemBasePageLoadResult<ItemBean> itemBeans,
+            String[][] expectedResultArray) {
+        // Total record size
+        assertEquals(results[0], "<totalCount>" + itemBeans.getTotalLength() + "</totalCount>");
+        // Query record size
+        assertEquals(results.length - 1, itemBeans.getData().size());
+        for (int i = 0; i < expectedResultArray.length; i++) {
+            ItemBean itemBean = itemBeans.getData().get(i);
+            // Second record (xml)
+            // Second record (property name list size)
+            assertEquals(viewBean.getViewables().length, itemBean.getPropertyNames().size());
+            assertEquals(expectedResultArray[i][0], itemBean.get("Contrat/numeroContrat"));
+            assertEquals(expectedResultArray[i][1], itemBean.get("Contrat/numeroContratExterne"));
+            assertEquals(expectedResultArray[i][2], itemBean.get("Contrat/detailContrat/@xsi:type"));
+        }
+    }
+
     /**
      * Using the ContractInheritance.xsd to test getItemNodeModel<br>
      * Data File: ContractSampleTwo.xml
@@ -790,6 +867,18 @@ public class BrowseRecordsActionTest extends TestCase {
     private String[] getMockResultsFromServerForDateDisplayFormat() throws IOException {
         List<String> results = new ArrayList<String>();
         InputStream is = BrowseRecordsActionTest.class.getResourceAsStream("../../PersonQueryResult.properties");
+        BufferedReader br = new BufferedReader(new InputStreamReader(is));
+        String ln = br.readLine();
+        while (ln != null) {
+            results.add(ln);
+            ln = br.readLine();
+        }
+        return results.toArray(new String[results.size()]);
+    }
+
+    private String[] getMockResultsFromServerForInheritDisplayValue() throws IOException {
+        List<String> results = new ArrayList<String>();
+        InputStream is = BrowseRecordsActionTest.class.getResourceAsStream("../../RTEQueryResult.properties");
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
         String ln = br.readLine();
         while (ln != null) {

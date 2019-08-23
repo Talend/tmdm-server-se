@@ -1,0 +1,14 @@
+<mdmserverobject:WSViewE xmlns:mdmserverobject="http://www.talend.org/mdmserverobject" xmlns:xmi="http://www.omg.org/XMI" description="[FR:Contrat]" digestValue="a1b124744e093d731e4b06c94d334b72" lastServerName="My Server" name="Browse_items_Contrat" timestamp="1566469520691" transformerPK="" xmi:id="_hB4poa2OEeeYIfazYR-9yQ" xmi:version="2.0">
+  <searchableBusinessElements>Contrat/numeroContrat</searchableBusinessElements>
+  <searchableBusinessElements>Contrat/numeroContratExterne</searchableBusinessElements>
+  <searchableBusinessElements>Contrat/codeActeur</searchableBusinessElements>
+  <searchableBusinessElements>Contrat/dateSignatureContrat</searchableBusinessElements>
+  <searchableBusinessElements>Contrat/dateDebutPrevueContrat</searchableBusinessElements>
+  <viewableBusinessElements>Contrat/numeroContrat</viewableBusinessElements>
+  <viewableBusinessElements>Contrat/numeroContratExterne</viewableBusinessElements>
+  <viewableBusinessElements>Contrat/codeActeur</viewableBusinessElements>
+  <viewableBusinessElements>Contrat/dateSignatureContrat</viewableBusinessElements>
+  <viewableBusinessElements>Contrat/dateDebutPrevueContrat</viewableBusinessElements>
+  <viewableBusinessElements>Contrat/detailContrat/@xsi:type</viewableBusinessElements>
+  <isTransformerActive xmi:id="_LZFfwK2PEeeYIfazYR-9yQ"/>
+</mdmserverobject:WSViewE>

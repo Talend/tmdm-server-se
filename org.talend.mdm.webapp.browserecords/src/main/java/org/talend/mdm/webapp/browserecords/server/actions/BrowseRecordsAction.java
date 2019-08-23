@@ -796,6 +796,18 @@ public class BrowseRecordsAction implements BrowseRecordsService {
         }
     }
 
+    private Map<String, Integer> getInheritPath(ViewBean viewBean) {
+        Map<String, Integer> inheritPathMap = new HashMap<>();
+        int index = 0;
+        for (String viewable : viewBean.getViewables()) {
+            if (viewable.contains("@xsi:type")) {
+                inheritPathMap.put(viewable.replace("/@xsi:type", ""), index);
+            }
+            index++;
+        }
+        return inheritPathMap;
+    }
+
     private Object[] getItemBeans(String dataClusterPK, ViewBean viewBean, EntityModel entityModel, String criteria, int skip,
             int max, String sortDir, String sortCol, String language) throws Exception {
 
@@ -806,6 +818,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
         Map<String, String[]> formatMap = org.talend.mdm.webapp.browserecords.server.util.CommonUtil.checkDisplayFormat(
                 entityModel, language);
 
+        Map<String, Integer> inheritPath = getInheritPath(viewBean);
         WSWhereItem wi = null;
         if (criteria != null) {
             wi = CommonUtil.buildWhereItems(criteria);
@@ -856,10 +869,20 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             org.dom4j.Document dom4jDoc = org.talend.mdm.webapp.base.server.util.XmlUtil.parseText(results[i]);
             Map<String, Object> returnValue = org.talend.mdm.webapp.browserecords.server.util.CommonUtil.formatQuerylValue(
                     formatMap, dom4jDoc, entityModel, concept);
+            for (Map.Entry<String, Integer> entry : inheritPath.entrySet()) {
+                org.dom4j.Element element = (org.dom4j.Element) dom4jDoc.getRootElement().elements().get(entry.getValue());
+                ComplexTypeModel complexTypeModel = (ComplexTypeModel) entityModel.getTypeModel(entry.getKey());
+                List<ComplexTypeModel> reusableComplexTypeList = complexTypeModel.getReusableComplexTypes();
+                for (ComplexTypeModel reusableComplexTypeModel : reusableComplexTypeList) {
+                    if (reusableComplexTypeModel.getName().equals(element.getText())) {
+                        element.setText(reusableComplexTypeModel.getLabel(language));
+                        break;
+                    }
+                }
+            }
 
             String value = org.talend.mdm.webapp.base.server.util.XmlUtil.toXml(((org.dom4j.Document) returnValue
                     .get(org.talend.mdm.webapp.browserecords.server.util.CommonUtil.RESULT)));
-
 
             ItemBean itemBean = new ItemBean(concept, CommonUtil.joinStrings(idsArray, "."), value);//$NON-NLS-1$
             itemBean.setOriginalMap((Map<String, Object>) returnValue

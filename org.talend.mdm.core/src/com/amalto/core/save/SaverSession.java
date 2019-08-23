@@ -18,25 +18,33 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.cache.ehcache.EhCacheCacheManager;
+import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
+import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.util.core.EUUIDCustomType;
 import org.talend.mdm.commmon.util.webapp.XSystemObjects;
 
 import com.amalto.core.history.DeleteType;
 import com.amalto.core.history.Document;
 import com.amalto.core.history.MutableDocument;
+import com.amalto.core.objects.UpdateReportPOJO;
 import com.amalto.core.save.context.SaverContextFactory;
 import com.amalto.core.save.context.SaverSource;
 import com.amalto.core.save.context.StorageDocument;
 import com.amalto.core.save.context.StorageSaverSource;
 import com.amalto.core.server.MDMContextAccessor;
 import com.amalto.core.server.ServerContext;
+import com.amalto.core.server.StorageAdmin;
+import com.amalto.core.storage.Storage;
+import com.amalto.core.storage.StorageType;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.transaction.Transaction;
 import com.amalto.core.storage.transaction.TransactionManager;
 import com.amalto.core.storage.transaction.TransactionService;
 import com.amalto.core.storage.transaction.Transaction.Lifetime;
 import com.amalto.core.util.MDMEhCacheUtil;
+import com.amalto.core.util.Util;
+
 import com.amalto.core.storage.transaction.TransactionListener;
 
 public class SaverSession implements TransactionListener{
@@ -68,11 +76,7 @@ public class SaverSession implements TransactionListener{
     public static final String MDM_CACHE_MANAGER = "mdmCacheManager"; //$NON-NLS-1$
 
     static {
-        transactionService.addListener(new SaverSession());
-    }
-
-    private SaverSession() {
-        this.dataSource = getSaverSource();
+        transactionService.addListener(newSession());
     }
 
     public SaverSession(SaverSource dataSource) {
@@ -241,7 +245,11 @@ public class SaverSession implements TransactionListener{
                 if (longTransactionId == null) {
                     routeItems(updateReport);
                 } else {
-                    MDMEhCacheUtil.addCache(UPDATE_REPORT_EVENT_CACHE, longTransactionId, updateReport);
+                    List<String> stringObjects = new ArrayList<>(updateReport.size());
+                    for (Document object : updateReport) {
+                        stringObjects.add(object.exportToString());
+                    }
+                    MDMEhCacheUtil.addCache(UPDATE_REPORT_EVENT_CACHE, longTransactionId, stringObjects);
                 }
             }
 
@@ -270,8 +278,22 @@ public class SaverSession implements TransactionListener{
     public void transactionCommitted(String longTransactionId) {
         Object object = MDMEhCacheUtil.getCache(UPDATE_REPORT_EVENT_CACHE, longTransactionId);
         if (object != null) {
-            List<Document> updateReport = (List<Document>) object;
-            routeItems(updateReport);
+            List<String> stringObjects = (List<String>) object;
+            List<Document> updateReportList = new ArrayList<>(stringObjects.size());
+            for (String string : stringObjects) {
+                DOMDocument document = null;
+                try {
+                    StorageAdmin storageAdmin = ServerContext.INSTANCE.get().getStorageAdmin();
+                    Storage storage = storageAdmin.get(UpdateReportPOJO.DATA_CLUSTER, StorageType.MASTER);
+                    MetadataRepository repository =  storage.getMetadataRepository();
+                    ComplexTypeMetadata type = repository.getComplexType("Update"); //$NON-NLS-1$
+                    document = new DOMDocument(Util.parse(string), type, UpdateReportPOJO.DATA_CLUSTER, UpdateReportPOJO.DATA_MODEL);
+                } catch (Exception e) {
+                    throw new RuntimeException("Failed to parse update report event.", e); //$NON-NLS-1$
+                }
+                updateReportList.add(document);
+            }
+            routeItems(updateReportList);
         }
     }
 
@@ -303,11 +325,9 @@ public class SaverSession implements TransactionListener{
 
     private String getLongTransactionId() {
         final TransactionManager transactionManager = ServerContext.INSTANCE.get().getTransactionManager();
-        if (transactionManager.hasTransaction()) {
-            Transaction currentTransaction = transactionManager.currentTransaction();
-            if (currentTransaction.getLifetime() == Lifetime.LONG) {
-                return currentTransaction.getId();
-            }
+        Transaction currentTransaction = transactionManager.currentTransaction();
+        if (currentTransaction.getLifetime() == Lifetime.LONG) {
+            return currentTransaction.getId();
         }
         return null;
     }

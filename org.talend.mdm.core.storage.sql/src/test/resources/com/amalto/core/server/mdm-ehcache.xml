@@ -16,4 +16,6 @@
           memoryStoreEvictionPolicy="LRU" />
     <cache name="transformerPKs" maxBytesLocalHeap="100M" eternal="false" timeToIdleSeconds="60" overflowToDisk="false" timeToLiveSeconds="120"
          memoryStoreEvictionPolicy="LRU" />
+    <cache name="updateReportEvents" maxBytesLocalHeap="100M" eternal="false" timeToIdleSeconds="300" overflowToDisk="false"
+        memoryStoreEvictionPolicy="LRU" />
 </ehcache>

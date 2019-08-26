@@ -800,8 +800,8 @@ public class BrowseRecordsAction implements BrowseRecordsService {
         Map<String, Integer> inheritPathMap = new HashMap<>();
         int index = 0;
         for (String viewable : viewBean.getViewables()) {
-            if (viewable.contains("@xsi:type")) {
-                inheritPathMap.put(viewable.replace("/@xsi:type", ""), index);
+            if (viewable.endsWith(org.talend.mdm.webapp.browserecords.shared.Constants.XSI_TYPE_QUALIFIED_NAME)) {
+                inheritPathMap.put(viewable.replace("/@xsi:type", StringUtils.EMPTY), index); //$NON-NLS-1$
             }
             index++;
         }

@@ -27,13 +27,14 @@ import javax.xml.xpath.XPathFactory;
 
 import org.apache.log4j.Logger;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
+import com.amalto.core.storage.transaction.TransactionService;
+
 import com.amalto.core.storage.transaction.Transaction;
-import com.amalto.core.storage.transaction.Transaction.Lifetime;
+import com.amalto.core.storage.transaction.TransactionManager;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -52,7 +53,6 @@ import com.amalto.core.schema.validation.SkipAttributeDocumentBuilder;
 import com.amalto.core.schema.validation.XmlSchemaValidator;
 import com.amalto.core.server.MDMContextAccessor;
 import com.amalto.core.server.MockMetadataRepositoryAdmin;
-import com.amalto.core.server.MockServer;
 import com.amalto.core.server.MockServerLifecycle;
 import com.amalto.core.server.ServerContext;
 import com.amalto.core.server.ServerTest;
@@ -73,14 +73,8 @@ public class BulkImportRecordSaveTest extends TestCase {
     private static final Logger LOG = Logger.getLogger(BulkImportRecordSaveTest.class);
 
     private XPath xPath = XPathFactory.newInstance().newXPath();
-    
-    private MockServer mockServer;
 
     private static boolean beanDelegatorContainerFlag = false;
-
-    public static final String UPDATE_REPORT_EVENT_CACHE = "updateReportEvents"; //$NON-NLS-1$
-
-    public static final String MDM_CACHE_MANAGER = "mdmCacheManager"; //$NON-NLS-1$
 
     private static void createBeanDelegatorContainer() {
         if (!beanDelegatorContainerFlag) {
@@ -92,7 +86,7 @@ public class BulkImportRecordSaveTest extends TestCase {
     @Override
     public void setUp() throws Exception {
         LOG.info("Setting up MDM server environment...");
-        mockServer = (MockServer) ServerContext.INSTANCE.get(new MockServerLifecycle());
+        ServerContext.INSTANCE.get(new MockServerLifecycle());
         MDMConfiguration.getConfiguration().setProperty("xmlserver.class", "com.amalto.core.storage.DispatchWrapper");
         SaverSession.setDefaultCommitter(new MockCommitter());
         LOG.info("MDM server environment set.");
@@ -103,7 +97,10 @@ public class BulkImportRecordSaveTest extends TestCase {
         createBeanDelegatorContainer();
         BeanDelegatorContainer.getInstance().setDelegatorInstancePool(
                 Collections.<String, Object> singletonMap("SecurityCheck", new MockISecurityCheck()));
-        ApplicationContext context = new ClassPathXmlApplicationContext("classpath:com/amalto/core/server/mdm-context.xml");
+
+        new MDMContextAccessor()
+        .setApplicationContext(new ClassPathXmlApplicationContext("classpath:com/amalto/core/server/mdm-context.xml"));
+
         EhCacheCacheManager mdmEhcache = MDMContextAccessor.getApplicationContext().getBean(
                 MDMEhCacheUtil.MDM_CACHE_MANAGER, EhCacheCacheManager.class);
         mdmEhcache.setCacheManager(CacheManager.newInstance(ServerTest.class.getResourceAsStream("mdm-ehcache.xml")));
@@ -141,9 +138,12 @@ public class BulkImportRecordSaveTest extends TestCase {
     }
 
     public void testLongTransactionRollback() throws Exception {
-        Transaction transaction = mockServer.getTransactionManager().create(Lifetime.LONG);
+        TransactionService service = new TransactionService();
+
+        TransactionManager transactionManager = ServerContext.INSTANCE.get().getTransactionManager();
+        Transaction transaction = transactionManager.create(Transaction.Lifetime.LONG);
+        transactionManager.associate(transaction);
         String transactionId = transaction.getId();
-        mockServer.getTransactionManager().associate(transaction);
 
         MetadataRepository repository = new MetadataRepository();
         repository.load(DocumentSaveTest.class.getResourceAsStream("metadata22.xsd"));
@@ -159,16 +159,17 @@ public class BulkImportRecordSaveTest extends TestCase {
         MockCommitter committer = new MockCommitter();
         session.end(committer);
 
-        session.transactionRollbacked(transactionId);
-
-        assertNull(MDMEhCacheUtil.getCache(UPDATE_REPORT_EVENT_CACHE, transactionId));
-        assertEquals(false, source.isRouteItem);
+        service.rollback(transactionId);
+        assertNull(MDMEhCacheUtil.getCache(MDMEhCacheUtil.UPDATE_REPORT_EVENT_CACHE, transactionId));
     }
 
     public void testLongTransactionCommit() throws Exception {
-        Transaction transaction = mockServer.getTransactionManager().create(Lifetime.LONG);
+        TransactionService service = new TransactionService();
+
+        TransactionManager transactionManager = ServerContext.INSTANCE.get().getTransactionManager();
+        Transaction transaction = transactionManager.create(Transaction.Lifetime.LONG);
+        transactionManager.associate(transaction);
         String transactionId = transaction.getId();
-        mockServer.getTransactionManager().associate(transaction);
 
         MetadataRepository repository = new MetadataRepository();
         repository.load(DocumentSaveTest.class.getResourceAsStream("metadata22.xsd"));
@@ -184,11 +185,10 @@ public class BulkImportRecordSaveTest extends TestCase {
         MockCommitter committer = new MockCommitter();
         session.end(committer);
 
-        session.transactionCommitted(transactionId);
-
-        assertNotNull(MDMEhCacheUtil.getCache(UPDATE_REPORT_EVENT_CACHE, transactionId));
-        assertEquals(true, source.isRouteItem);
-    }
+        assertNotNull(MDMEhCacheUtil.getCache(MDMEhCacheUtil.UPDATE_REPORT_EVENT_CACHE, transactionId));
+        service.commit(transactionId);
+        assertNull(MDMEhCacheUtil.getCache(MDMEhCacheUtil.UPDATE_REPORT_EVENT_CACHE, transactionId));
+     }
 
     private static class MockCommitter implements SaverSession.Committer {
 
@@ -260,8 +260,6 @@ public class BulkImportRecordSaveTest extends TestCase {
         private boolean hasSavedAutoIncrement;
 
         private boolean hasCalledInitAutoIncrement;
-        
-        private boolean isRouteItem;
 
         private final Map<String, String> schemasAsString = new HashMap<String, String>();
 
@@ -385,7 +383,7 @@ public class BulkImportRecordSaveTest extends TestCase {
 
         @Override
         public void routeItem(String dataCluster, String typeName, String[] id) {
-            isRouteItem = true;
+            // nothing to do
         }
 
         @Override

@@ -33,6 +33,8 @@ public class MDMEhCacheUtil {
 
     public static final String DATA_CLUSTER_CACHE_NAME = "dataCluster"; //$NON-NLS-1$
 
+    public static final String UPDATE_REPORT_EVENT_CACHE = "updateReportEvents"; //$NON-NLS-1$
+
     @SuppressWarnings("unchecked")
     public static <K, V> V getCache(String cacheName, K key) {
         EhCacheCacheManager mdmEhcache = MDMContextAccessor.getApplicationContext().getBean(MDM_CACHE_MANAGER,
@@ -54,5 +56,11 @@ public class MDMEhCacheUtil {
         EhCacheCacheManager mdmEhcache = MDMContextAccessor.getApplicationContext().getBean(MDM_CACHE_MANAGER,
                 EhCacheCacheManager.class);
         mdmEhcache.getCache(cacheName).put(key, value);
+    }
+
+    public static <K, V> void removeCache(String cacheName, K key) {
+        EhCacheCacheManager mdmEhcache = MDMContextAccessor.getApplicationContext().getBean(MDM_CACHE_MANAGER,
+                EhCacheCacheManager.class);
+        mdmEhcache.getCache(cacheName).evict(key);
     }
 }

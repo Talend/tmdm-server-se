@@ -20,7 +20,10 @@ http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/ac
     <bean id="mdmCacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager" p:cacheManager-ref="mdmEhcache" />
     <bean id="mdmEhcache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean" p:configLocation="classpath:com/amalto/core/server/mdm-ehcache.xml"
         p:shared="true" p:cacheManagerName="mdmCacheManager" />
-        
+
+    <bean id="defaultRoutingEngine" class="com.amalto.core.server.routing.DefaultRoutingEngine" />
+    <bean id="routingEngineFactory" class="com.amalto.core.server.routing.RoutingEngineFactory" />
+
     <!-- ApplicationContext accessor -->
     <bean class="com.amalto.core.server.MDMContextAccessor"/>
 </beans>

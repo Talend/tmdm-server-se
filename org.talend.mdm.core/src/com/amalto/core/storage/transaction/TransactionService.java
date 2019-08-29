@@ -19,18 +19,13 @@ import io.swagger.annotations.ApiParam;
 
 import javax.ws.rs.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Path("/transactions")
 @Api("Transactions")
 public class TransactionService {
 
-    private static List<TransactionListener> listeners = new ArrayList<>();
-
-    public void addListener(TransactionListener listener) {
-        listeners.add(listener);
-    }
+    private static TransactionListener transactionListener = new RouteItemListener();
 
     /**
      * Lists all actives transactions ({@link Transaction.Lifetime#LONG} and {@link Transaction.Lifetime#AD_HOC}).
@@ -72,9 +67,7 @@ public class TransactionService {
         Transaction transaction = transactionManager.get(transactionId);
         if (transaction != null) {
             transaction.commit();
-            for (TransactionListener listener : listeners) {
-                listener.transactionCommitted(transactionId);
-            }
+            transactionListener.transactionCommitted(transactionId);
         }
     }
 
@@ -91,9 +84,19 @@ public class TransactionService {
         Transaction transaction = transactionManager.get(transactionId);
         if (transaction != null) {
             transaction.rollback();
-            for (TransactionListener listener : listeners) {
-                listener.transactionRollbacked(transactionId);
-            }
+            transactionListener.transactionRollbacked(transactionId);
         }
+    }
+
+    /**
+     * Route the event trigger in ehcache with key <code>transactionId</code>.
+     * @param transactionId transaction id.
+     */
+    @POST
+    @Path("/route/{id}/")
+    @ApiOperation("Commits the route event identified by the provided id")
+    public void route(
+            @ApiParam("Transaction id") @PathParam("id") String transactionId) {
+        new RouteItemListener().transactionCommitted(transactionId);
     }
 }

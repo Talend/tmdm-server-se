@@ -427,6 +427,11 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
                 fieldName = fieldName + "." + referenceFieldMetadata.getReferencedField().getName(); //$NON-NLS-1$
             }
         }
+        // TMDM-13918 Query by field of joining type, field name in lucene index should be fkIdField.fieldName
+        else if (fieldMetadata instanceof SimpleTypeFieldMetadata && !types.contains(fieldMetadata.getContainingType())) {
+            FieldMetadata keyField = fieldMetadata.getContainingType().getKeyFields().iterator().next();
+            fieldName = keyField.getName() + "." + fieldName; //$NON-NLS-1$
+        }
         String[] fieldsAsArray = new String[] { fieldName };
         String fullTextValue = getFullTextValue(fieldFullText);
         String fullTextQuery = fieldName + ':' + fullTextValue;

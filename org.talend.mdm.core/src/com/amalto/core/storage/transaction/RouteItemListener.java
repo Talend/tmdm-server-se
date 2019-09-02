@@ -36,8 +36,8 @@ public class RouteItemListener implements TransactionListener {
     @SuppressWarnings("unchecked")
     @Override
     public void transactionCommitted(String longTransactionId) {
+        Object object = MDMEhCacheUtil.getCache(MDMEhCacheUtil.UPDATE_REPORT_EVENT_CACHE, longTransactionId);
         try {
-            Object object = MDMEhCacheUtil.getCache(MDMEhCacheUtil.UPDATE_REPORT_EVENT_CACHE, longTransactionId);
             if (object != null) {
                 List<String> stringObjects = (List<String>) object;
                 List<Document> updateReportList = new ArrayList<>(stringObjects.size());
@@ -56,7 +56,6 @@ public class RouteItemListener implements TransactionListener {
                 }
                 SaverSession session = SaverSession.newSession();
                 session.routeItems(updateReportList);
-                MDMEhCacheUtil.removeCache(MDMEhCacheUtil.UPDATE_REPORT_EVENT_CACHE, longTransactionId);
             }
         } catch (Exception e) {
             LOGGER.error("Failed to route item as transaction committed.", e); //$NON-NLS-1$

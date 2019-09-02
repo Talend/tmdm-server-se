@@ -50,7 +50,7 @@ public class RouteItemListener implements TransactionListener {
                     try {
                         document = new DOMDocument(Util.parse(string), type, UpdateReportPOJO.DATA_CLUSTER, UpdateReportPOJO.DATA_MODEL);
                     } catch (Exception e) {
-                        throw new RuntimeException("Failed to parse update report event.", e); //$NON-NLS-1$
+                        throw new RuntimeException("Failed to parse update report from cache.", e); //$NON-NLS-1$
                     }
                     updateReportList.add(document);
                 }
@@ -59,7 +59,9 @@ public class RouteItemListener implements TransactionListener {
                 MDMEhCacheUtil.removeCache(MDMEhCacheUtil.UPDATE_REPORT_EVENT_CACHE, longTransactionId);
             }
         } catch (Exception e) {
-            LOGGER.warn("Failed to route item as transaction committed.", e); //$NON-NLS-1$
+            LOGGER.error("Failed to route item as transaction committed.", e); //$NON-NLS-1$
+        } finally {
+            MDMEhCacheUtil.removeCache(MDMEhCacheUtil.UPDATE_REPORT_EVENT_CACHE, longTransactionId);
         }
     }
 

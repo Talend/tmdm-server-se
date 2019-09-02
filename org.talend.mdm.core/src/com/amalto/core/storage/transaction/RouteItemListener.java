@@ -43,7 +43,7 @@ public class RouteItemListener implements TransactionListener {
                 List<Document> updateReportList = new ArrayList<>(stringObjects.size());
                 StorageAdmin storageAdmin = ServerContext.INSTANCE.get().getStorageAdmin();
                 Storage storage = storageAdmin.get(UpdateReportPOJO.DATA_CLUSTER, StorageType.MASTER);
-                MetadataRepository repository =  storage.getMetadataRepository();
+                MetadataRepository repository = storage.getMetadataRepository();
                 ComplexTypeMetadata type = repository.getComplexType("Update"); //$NON-NLS-1$
                 for (String string : stringObjects) {
                     DOMDocument document = null;
@@ -60,7 +60,9 @@ public class RouteItemListener implements TransactionListener {
         } catch (Exception e) {
             LOGGER.error("Failed to route item as transaction committed.", e); //$NON-NLS-1$
         } finally {
-            MDMEhCacheUtil.removeCache(MDMEhCacheUtil.UPDATE_REPORT_EVENT_CACHE, longTransactionId);
+            if (object != null) {
+                MDMEhCacheUtil.removeCache(MDMEhCacheUtil.UPDATE_REPORT_EVENT_CACHE, longTransactionId);
+            }
         }
     }
 

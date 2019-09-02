@@ -87,16 +87,4 @@ public class TransactionService {
             transactionListener.transactionRollbacked(transactionId);
         }
     }
-
-    /**
-     * Route the event trigger in ehcache with key <code>transactionId</code>.
-     * @param transactionId transaction id.
-     */
-    @POST
-    @Path("/route/{id}/")
-    @ApiOperation("Commits the route event identified by the provided id")
-    public void route(
-            @ApiParam("Transaction id") @PathParam("id") String transactionId) {
-        new RouteItemListener().transactionCommitted(transactionId);
-    }
 }

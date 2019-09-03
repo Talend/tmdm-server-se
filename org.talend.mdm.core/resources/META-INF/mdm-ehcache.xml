@@ -18,6 +18,6 @@
          memoryStoreEvictionPolicy="LRU" />
     <cache name="basicAuthenticationCache" maxBytesLocalHeap="100M" eternal="false" timeToIdleSeconds="120" overflowToDisk="false" timeToLiveSeconds="120"
          memoryStoreEvictionPolicy="LRU" />
-    <cache name="updateReportEvents" maxBytesLocalHeap="100M" eternal="false" timeToIdleSeconds="36000" overflowToDisk="true" timeToLiveSeconds="36000"
+    <cache name="updateReportEvents" maxBytesLocalHeap="100M" eternal="false" timeToIdleSeconds="14400" overflowToDisk="true" timeToLiveSeconds="14400"
         memoryStoreEvictionPolicy="LRU" />
 </ehcache>

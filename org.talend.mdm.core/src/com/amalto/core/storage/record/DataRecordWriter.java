@@ -11,11 +11,13 @@
 
 package com.amalto.core.storage.record;
 
-import com.amalto.core.storage.SecuredStorage;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
+import java.util.Iterator;
+
+import com.amalto.core.storage.SecuredStorage;
+import com.amalto.core.storage.StorageResults;
 
 /**
  *
@@ -31,6 +33,18 @@ public interface DataRecordWriter {
      * @see DataRecordReader#read(org.talend.mdm.commmon.metadata.MetadataRepository, org.talend.mdm.commmon.metadata.ComplexTypeMetadata, Object)
      */
     void write(DataRecord record, OutputStream output) throws IOException;
+
+    /**
+     * Writes all of {@link DataRecord} record to the <code>output</code>.
+     * @param recordList
+     * @param output
+     * @throws IOException
+     */
+    default void write(StorageResults recordList, OutputStream output) throws IOException {
+        for (Iterator<DataRecord> iterator = recordList.iterator(); iterator.hasNext();) {
+            write(iterator.next(), output);
+        }
+    }
 
     /**
      * Writes a {@link DataRecord} record to the <code>writer</code>.

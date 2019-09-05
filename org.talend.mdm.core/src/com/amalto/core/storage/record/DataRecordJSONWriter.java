@@ -18,8 +18,6 @@ import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.ws.rs.core.MediaType;
-
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONWriter;
 import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
@@ -59,10 +57,7 @@ public class DataRecordJSONWriter implements DataRecordWriter {
                             if (delegator.hide(field)) {
                                 return null;
                             }
-                            String fieldName = field.getName();
-                            if (ignoreCase) {
-                                fieldName = fieldName.toLowerCase();
-                            }
+                            String fieldName = getQualifiedName(field.getName());
                             try {
                                 if (!field.isMany()) {
                                     writer.key(fieldName).value(StorageMetadataUtils.toString(record.get(field), false));
@@ -77,7 +72,7 @@ public class DataRecordJSONWriter implements DataRecordWriter {
                                     }
                                 }
                             } catch (JSONException e) {
-                                throw new RuntimeException("Unable to serialize simple field '" + field.getName() + "'", e);
+                                throw new RuntimeException("Unable to serialize simple field '" + field.getName() + "'", e);//$NON-NLS-1$ //$NON-NLS-2$
                             }
                             return null;
                         }
@@ -97,10 +92,7 @@ public class DataRecordJSONWriter implements DataRecordWriter {
                             if (delegator.hide(containedField)) {
                                 return null;
                             }
-                            String containedName = containedField.getName();
-                            if (ignoreCase) {
-                                containedName = containedName.toLowerCase();
-                            }
+                            String containedName = getQualifiedName(containedField.getName());
                             try {
                                 writer.key(containedName);
                                 if (!containedField.isMany()) {
@@ -119,7 +111,7 @@ public class DataRecordJSONWriter implements DataRecordWriter {
                                     }
                                 }
                             } catch (JSONException e) {
-                                throw new RuntimeException("Unable to serialize complex field '" + containedField.getName() + "'", e);
+                                throw new RuntimeException("Unable to serialize complex field '" + containedField.getName() + "'", e);//$NON-NLS-1$ //$NON-NLS-2$
                             }
                             return null;
                         }
@@ -136,13 +128,13 @@ public class DataRecordJSONWriter implements DataRecordWriter {
     }
 
     @Override
-    public void write(StorageResults recordList, OutputStream output, MediaType mediaType) throws IOException {
-        Writer writer = new OutputStreamWriter(output, Charset.forName("UTF-8"));
+    public void write(StorageResults recordList, OutputStream output) throws IOException {
+        Writer writer = new OutputStreamWriter(output, Charset.forName("UTF-8"));//$NON-NLS-1$
         for (Iterator<DataRecord> iterator = recordList.iterator(); iterator.hasNext();) {
             JSONWriter jsonWriter = new JSONWriter(writer);
             DataRecord record = iterator.next();
             write(record, jsonWriter);
-            if (iterator.hasNext() && MediaType.APPLICATION_JSON_TYPE.equals(mediaType)) {
+            if (iterator.hasNext()) {
                 output.write(",".getBytes()); //$NON-NLS-1$
             }
             writer.flush();
@@ -150,12 +142,9 @@ public class DataRecordJSONWriter implements DataRecordWriter {
     }
 
     private void write(DataRecord record, JSONWriter jsonWriter) throws IOException {
-        String fieldName = record.getType().getName();
-        if (ignoreCase) {
-            fieldName = fieldName.toLowerCase();
-        }
+        String typeName = getQualifiedName(record.getType().getName());
         try {
-            jsonWriter.object().key(fieldName);
+            jsonWriter.object().key(typeName);
             {
                 if (!delegator.hide(record.getType())) {
                     writeRecord(record, jsonWriter);
@@ -163,24 +152,21 @@ public class DataRecordJSONWriter implements DataRecordWriter {
             }
             jsonWriter.endObject();
         } catch (JSONException e) {
-            throw new IOException("Could not serialize to JSON.", e);
+            throw new IOException("Could not serialize to JSON.", e);//$NON-NLS-1$
         }
     }
 
     @Override
     public void write(DataRecord record, OutputStream output) throws IOException {
-        write(record, new OutputStreamWriter(output, Charset.forName("UTF-8")));
+        write(record, new OutputStreamWriter(output, Charset.forName("UTF-8")));//$NON-NLS-1$
     }
 
     @Override
     public void write(DataRecord record, Writer writer) throws IOException {
         JSONWriter jsonWriter = new JSONWriter(writer);
-        String fieldName = record.getType().getName();
-        if (ignoreCase) {
-            fieldName = fieldName.toLowerCase();
-        }
+        String typeName = getQualifiedName(record.getType().getName());
         try {
-            jsonWriter.object().key(fieldName);
+            jsonWriter.object().key(typeName);
             {
                 if (!delegator.hide(record.getType())) {
                     writeRecord(record, jsonWriter);
@@ -189,15 +175,19 @@ public class DataRecordJSONWriter implements DataRecordWriter {
             jsonWriter.endObject();
             writer.flush();
         } catch (JSONException e) {
-            throw new IOException("Could not serialize to JSON.", e);
+            throw new IOException("Could not serialize to JSON.", e);//$NON-NLS-1$
         }
     }
 
     @Override
     public void setSecurityDelegator(SecuredStorage.UserDelegator delegator) {
         if(delegator == null) {
-            throw new IllegalArgumentException("Delegator cannot be null.");
+            throw new IllegalArgumentException("Delegator cannot be null.");//$NON-NLS-1$
         }
         this.delegator = delegator;
+    }
+
+    private String getQualifiedName(String name) {
+        return ignoreCase ? name.toLowerCase() : name;
     }
 }

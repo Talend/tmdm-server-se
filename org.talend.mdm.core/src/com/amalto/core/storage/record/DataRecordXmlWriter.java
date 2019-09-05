@@ -80,13 +80,6 @@ public class DataRecordXmlWriter implements DataRecordWriter {
     }
 
     @Override
-    public void write(StorageResults recordList, OutputStream output, MediaType mediaType) throws IOException {
-        for (Iterator<DataRecord> iterator = recordList.iterator(); iterator.hasNext();) {
-            write(iterator.next(), output);
-        }
-    }
-
-    @Override
     public void write(DataRecord record, OutputStream output) throws IOException {
         Writer out = new BufferedWriter(new OutputStreamWriter(output, "UTF-8")); //$NON-NLS-1$
         write(record, out);

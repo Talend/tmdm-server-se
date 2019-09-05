@@ -227,20 +227,17 @@ public class SaverSession {
                 if (longTransactionId == null) {
                     routeItems(updateReport);
                 } else {
-                    List<List<String>> multipleObjects = null;
-                    List<String> stringObjects = new ArrayList<>(updateReport.size());
-                    for (Document object : updateReport) {
-                        stringObjects.add(object.exportToString());
-                    }
+                    List<String> stringObjects = null;
                     Object object = MDMEhCacheUtil.getCache(MDMEhCacheUtil.UPDATE_REPORT_EVENT_CACHE, longTransactionId);
                     if (object != null) {
-                        multipleObjects = (List<List<String>>) object;
-                        multipleObjects.add(stringObjects);
+                        stringObjects = (List<String>) object;
                     } else {
-                        multipleObjects = new ArrayList<>();
-                        multipleObjects.add(stringObjects);
+                        stringObjects = new ArrayList<>();
                     }
-                    MDMEhCacheUtil.addCache(MDMEhCacheUtil.UPDATE_REPORT_EVENT_CACHE, longTransactionId, multipleObjects);
+                    for (Document document : updateReport) {
+                        stringObjects.add(document.exportToString());
+                    }
+                    MDMEhCacheUtil.addCache(MDMEhCacheUtil.UPDATE_REPORT_EVENT_CACHE, longTransactionId, stringObjects);
                 }
             }
 

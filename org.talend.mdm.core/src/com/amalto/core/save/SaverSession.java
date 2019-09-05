@@ -157,6 +157,7 @@ public class SaverSession {
      *
      * @param committer A {@link Committer} committer to use when committing transactions on underlying storage.
      */
+    @SuppressWarnings("unchecked")
     public void end(Committer committer) {
         SaverSource saverSource = getSaverSource();
         // Physical delete
@@ -226,12 +227,20 @@ public class SaverSession {
                 if (longTransactionId == null) {
                     routeItems(updateReport);
                 } else {
+                    List<List<String>> multipleObjects = null;
                     List<String> stringObjects = new ArrayList<>(updateReport.size());
                     for (Document object : updateReport) {
                         stringObjects.add(object.exportToString());
                     }
-                    MDMEhCacheUtil.addCache(MDMEhCacheUtil.UPDATE_REPORT_EVENT_CACHE, longTransactionId, stringObjects);
-                    LOGGER.info("Long transaction id in event trigger cache : " + longTransactionId); //$NON-NLS-1$
+                    Object object = MDMEhCacheUtil.getCache(MDMEhCacheUtil.UPDATE_REPORT_EVENT_CACHE, longTransactionId);
+                    if (object != null) {
+                        multipleObjects = (List<List<String>>) object;
+                        multipleObjects.add(stringObjects);
+                    } else {
+                        multipleObjects = new ArrayList<>();
+                        multipleObjects.add(stringObjects);
+                    }
+                    MDMEhCacheUtil.addCache(MDMEhCacheUtil.UPDATE_REPORT_EVENT_CACHE, longTransactionId, multipleObjects);
                 }
             }
 

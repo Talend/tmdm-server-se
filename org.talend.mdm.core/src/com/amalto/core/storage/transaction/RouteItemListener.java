@@ -39,23 +39,25 @@ public class RouteItemListener implements TransactionListener {
         Object object = MDMEhCacheUtil.getCache(MDMEhCacheUtil.UPDATE_REPORT_EVENT_CACHE, longTransactionId);
         try {
             if (object != null) {
-                List<String> stringObjects = (List<String>) object;
-                List<Document> updateReportList = new ArrayList<>(stringObjects.size());
-                StorageAdmin storageAdmin = ServerContext.INSTANCE.get().getStorageAdmin();
-                Storage storage = storageAdmin.get(UpdateReportPOJO.DATA_CLUSTER, StorageType.MASTER);
-                MetadataRepository repository = storage.getMetadataRepository();
-                ComplexTypeMetadata type = repository.getComplexType("Update"); //$NON-NLS-1$
-                for (String string : stringObjects) {
-                    DOMDocument document = null;
-                    try {
-                        document = new DOMDocument(Util.parse(string), type, UpdateReportPOJO.DATA_CLUSTER, UpdateReportPOJO.DATA_MODEL);
-                    } catch (Exception e) {
-                        throw new RuntimeException("Failed to parse update report from cache.", e); //$NON-NLS-1$
+                List<List<String>> multipleObjects = (List<List<String>>) object;
+                for (List<String> stringObjects : multipleObjects) {
+                    List<Document> updateReportList = new ArrayList<>(stringObjects.size());
+                    StorageAdmin storageAdmin = ServerContext.INSTANCE.get().getStorageAdmin();
+                    Storage storage = storageAdmin.get(UpdateReportPOJO.DATA_CLUSTER, StorageType.MASTER);
+                    MetadataRepository repository = storage.getMetadataRepository();
+                    ComplexTypeMetadata type = repository.getComplexType("Update"); //$NON-NLS-1$
+                    for (String string : stringObjects) {
+                        DOMDocument document = null;
+                        try {
+                            document = new DOMDocument(Util.parse(string), type, UpdateReportPOJO.DATA_CLUSTER, UpdateReportPOJO.DATA_MODEL);
+                        } catch (Exception e) {
+                            throw new RuntimeException("Failed to parse update report from cache.", e); //$NON-NLS-1$
+                        }
+                        updateReportList.add(document);
                     }
-                    updateReportList.add(document);
+                    SaverSession session = SaverSession.newSession();
+                    session.routeItems(updateReportList);
                 }
-                SaverSession session = SaverSession.newSession();
-                session.routeItems(updateReportList);
             }
         } catch (Exception e) {
             LOGGER.error("Failed to route item as transaction committed.", e); //$NON-NLS-1$

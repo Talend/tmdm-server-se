@@ -57,8 +57,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import javax.ws.rs.core.MediaType;
-
 import org.apache.commons.io.output.NullOutputStream;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
@@ -3235,13 +3233,6 @@ public class StorageQueryTest extends StorageTestCase {
         assertEquals(3, results.getCount());
 
         DataRecordWriter writer = new DataRecordWriter() {
-
-            @Override
-            public void write(StorageResults recordList, OutputStream output, MediaType mediaType) throws IOException {
-                for (Iterator<DataRecord> iterator = recordList.iterator(); iterator.hasNext();) {
-                    write(iterator.next(), output);
-                }
-            }
 
             @Override
             public void write(DataRecord record, OutputStream output) throws IOException {

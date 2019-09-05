@@ -15,9 +15,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.Iterator;
 
-import javax.ws.rs.core.MediaType;
 import javax.xml.XMLConstants;
 
 import org.apache.commons.lang.StringEscapeUtils;
@@ -36,18 +34,10 @@ import com.amalto.core.query.user.DateTimeConstant;
 import com.amalto.core.query.user.TimeConstant;
 import com.amalto.core.storage.SecuredStorage;
 import com.amalto.core.storage.StorageMetadataUtils;
-import com.amalto.core.storage.StorageResults;
 
 public class ViewSearchResultsWriter implements DataRecordWriter {
 
     private SecuredStorage.UserDelegator delegator = SecuredStorage.UNSECURED;
-
-    @Override
-    public void write(StorageResults recordList, OutputStream output, MediaType mediaType) throws IOException {
-        for (Iterator<DataRecord> iterator = recordList.iterator(); iterator.hasNext();) {
-            write(iterator.next(), output);
-        }
-    }
 
     @Override
     public void write(DataRecord record, OutputStream output) throws IOException {

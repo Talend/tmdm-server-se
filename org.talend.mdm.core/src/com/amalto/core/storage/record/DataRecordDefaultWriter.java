@@ -14,9 +14,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.Iterator;
-
-import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
@@ -24,19 +21,11 @@ import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
 
 import com.amalto.core.storage.SecuredStorage;
 import com.amalto.core.storage.StorageMetadataUtils;
-import com.amalto.core.storage.StorageResults;
 
 
 public class DataRecordDefaultWriter implements DataRecordWriter {
 
     private SecuredStorage.UserDelegator delegator = SecuredStorage.UNSECURED;
-
-    @Override
-    public void write(StorageResults recordList, OutputStream output, MediaType mediaType) throws IOException {
-        for (Iterator<DataRecord> iterator = recordList.iterator(); iterator.hasNext();) {
-            write(iterator.next(), output);
-        }
-    }
 
     public void write(DataRecord record, OutputStream output) throws IOException {
         Writer out = new BufferedWriter(new OutputStreamWriter(output, "UTF-8")); //$NON-NLS-1$

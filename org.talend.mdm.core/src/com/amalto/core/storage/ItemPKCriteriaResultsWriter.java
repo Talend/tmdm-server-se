@@ -15,9 +15,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.Collection;
-import java.util.Iterator;
-
-import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
@@ -35,13 +32,6 @@ public class ItemPKCriteriaResultsWriter implements DataRecordWriter {
     public ItemPKCriteriaResultsWriter(String typeName, ComplexTypeMetadata itemType) {
         this.typeName = typeName;
         this.itemType = itemType;
-    }
-
-    @Override
-    public void write(StorageResults recordList, OutputStream output, MediaType mediaType) throws IOException {
-        for (Iterator<DataRecord> iterator = recordList.iterator(); iterator.hasNext();) {
-            write(iterator.next(), output);
-        }
     }
 
     @Override

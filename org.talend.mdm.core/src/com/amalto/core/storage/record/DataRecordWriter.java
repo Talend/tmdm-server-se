@@ -11,14 +11,13 @@
 
 package com.amalto.core.storage.record;
 
-import com.amalto.core.storage.SecuredStorage;
-import com.amalto.core.storage.StorageResults;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
+import java.util.Iterator;
 
-import javax.ws.rs.core.MediaType;
+import com.amalto.core.storage.SecuredStorage;
+import com.amalto.core.storage.StorageResults;
 
 /**
  *
@@ -39,10 +38,13 @@ public interface DataRecordWriter {
      * Writes all of {@link DataRecord} record to the <code>output</code>.
      * @param recordList
      * @param output
-     * @param mediaType
      * @throws IOException
      */
-    void write(StorageResults recordList, OutputStream output, MediaType mediaType) throws IOException;
+    default void write(StorageResults recordList, OutputStream output) throws IOException {
+        for (Iterator<DataRecord> iterator = recordList.iterator(); iterator.hasNext();) {
+            write(iterator.next(), output);
+        }
+    }
 
     /**
      * Writes a {@link DataRecord} record to the <code>writer</code>.

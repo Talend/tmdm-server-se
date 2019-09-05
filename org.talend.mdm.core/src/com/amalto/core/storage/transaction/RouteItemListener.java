@@ -39,13 +39,13 @@ public class RouteItemListener implements TransactionListener {
         Object object = MDMEhCacheUtil.getCache(MDMEhCacheUtil.UPDATE_REPORT_EVENT_CACHE, longTransactionId);
         try {
             if (object != null) {
+                StorageAdmin storageAdmin = ServerContext.INSTANCE.get().getStorageAdmin();
+                Storage storage = storageAdmin.get(UpdateReportPOJO.DATA_CLUSTER, StorageType.MASTER);
+                MetadataRepository repository = storage.getMetadataRepository();
+                ComplexTypeMetadata type = repository.getComplexType("Update"); //$NON-NLS-1$
                 List<List<String>> multipleObjects = (List<List<String>>) object;
                 for (List<String> stringObjects : multipleObjects) {
                     List<Document> updateReportList = new ArrayList<>(stringObjects.size());
-                    StorageAdmin storageAdmin = ServerContext.INSTANCE.get().getStorageAdmin();
-                    Storage storage = storageAdmin.get(UpdateReportPOJO.DATA_CLUSTER, StorageType.MASTER);
-                    MetadataRepository repository = storage.getMetadataRepository();
-                    ComplexTypeMetadata type = repository.getComplexType("Update"); //$NON-NLS-1$
                     for (String string : stringObjects) {
                         DOMDocument document = null;
                         try {

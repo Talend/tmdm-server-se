@@ -17,7 +17,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.util.core.EUUIDCustomType;
 import org.talend.mdm.commmon.util.webapp.XSystemObjects;
@@ -35,10 +34,9 @@ import com.amalto.core.storage.transaction.Transaction;
 import com.amalto.core.storage.transaction.TransactionManager;
 import com.amalto.core.storage.transaction.Transaction.Lifetime;
 import com.amalto.core.util.MDMEhCacheUtil;
+import static com.amalto.core.util.MDMEhCacheUtil.UPDATE_REPORT_EVENT_CACHE;
 
 public class SaverSession {
-
-    private static final Logger LOGGER = Logger.getLogger(SaverSession.class);
 
     private static final String AUTO_INCREMENT_TYPE_NAME = "AutoIncrement"; //$NON-NLS-1$
 
@@ -157,7 +155,6 @@ public class SaverSession {
      *
      * @param committer A {@link Committer} committer to use when committing transactions on underlying storage.
      */
-    @SuppressWarnings("unchecked")
     public void end(Committer committer) {
         SaverSource saverSource = getSaverSource();
         // Physical delete
@@ -227,17 +224,14 @@ public class SaverSession {
                 if (longTransactionId == null) {
                     routeItems(updateReport);
                 } else {
-                    List<String> stringObjects = null;
-                    Object object = MDMEhCacheUtil.getCache(MDMEhCacheUtil.UPDATE_REPORT_EVENT_CACHE, longTransactionId);
-                    if (object != null) {
-                        stringObjects = (List<String>) object;
-                    } else {
+                    List<String> stringObjects = MDMEhCacheUtil.getCache(UPDATE_REPORT_EVENT_CACHE, longTransactionId);
+                    if (stringObjects == null) {
                         stringObjects = new ArrayList<>();
                     }
                     for (Document document : updateReport) {
                         stringObjects.add(document.exportToString());
                     }
-                    MDMEhCacheUtil.addCache(MDMEhCacheUtil.UPDATE_REPORT_EVENT_CACHE, longTransactionId, stringObjects);
+                    MDMEhCacheUtil.addCache(UPDATE_REPORT_EVENT_CACHE, longTransactionId, stringObjects);
                 }
             }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2016 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -38,6 +38,10 @@ import static com.amalto.core.query.user.UserQueryBuilder.from;
 public abstract class ILocalUser implements IBeanDelegator {
     
     public ILocalUser getILocalUser() throws XtentisException {
+        return null;
+    }
+
+    public ILocalUser getILocalUser(boolean isWebServiceAccess) throws XtentisException {
         return null;
     }
 

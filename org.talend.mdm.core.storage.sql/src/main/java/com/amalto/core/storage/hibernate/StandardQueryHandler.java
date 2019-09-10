@@ -150,6 +150,12 @@ class StandardQueryHandler extends AbstractQueryHandler {
 
     protected final TableResolver resolver;
 
+    protected boolean isBooleanValueTrue;
+
+    protected boolean previousNot;
+
+    protected Criterion notTrueCriterion;
+
     private Criteria criteria;
 
     private ProjectionList projectionList;
@@ -353,7 +359,7 @@ class StandardQueryHandler extends AbstractQueryHandler {
             newProjectionList = Projections.projectionList();
             for (int k = 0; k < projectionList.getLength() - 1; k++) {
                 if (projectionList.getProjection(k) instanceof RowCountProjection) {
-                    ManyFieldRowCountProjection rawProjection = new ManyFieldRowCountProjection((ManyFieldProjection) projection);
+                    ManyFieldRowCountProjection rawProjection = new ManyFieldRowCountProjection(projection);
                     newProjectionList.add(rawProjection);
                     ((ManyFieldProjection) projection).setCount(true);
                     ((ManyFieldProjection) projection).setDistinct(true);
@@ -1046,10 +1052,21 @@ class StandardQueryHandler extends AbstractQueryHandler {
         @Override
         public Criterion visit(UnaryLogicOperator condition) {
             Predicate predicate = condition.getPredicate();
+            if (predicate == Predicate.NOT) {
+                previousNot = true;
+            }
             Criterion conditionCriterion = condition.getCondition().accept(this);
 
             if (predicate == Predicate.NOT) {
-                return not(conditionCriterion);
+                previousNot = false;
+                if (isBooleanValueTrue && notTrueCriterion != null) {
+                    conditionCriterion = notTrueCriterion;
+                    isBooleanValueTrue = false;
+                    notTrueCriterion = null;
+                } else {
+                    conditionCriterion = not(conditionCriterion);
+                }
+                return conditionCriterion;
             } else {
                 throw new NotImplementedException("No support for predicate '" + predicate + "'"); //$NON-NLS-1$ //$NON-NLS-2$
             }
@@ -1400,18 +1417,25 @@ class StandardQueryHandler extends AbstractQueryHandler {
                     }
                 }
                 if (compareValue instanceof Boolean && predicate == Predicate.EQUALS) {
-                    if (!(Boolean) compareValue) {
-                        // Special case for boolean: when looking for 'false' value, consider null values as 'false'
-                        // too.
+                    // Special case for boolean: when looking for 'false' value, consider null values as 'false'
+                    // too.
+                    // TMDM-13740 For notTrue, need return false and null value.
+                    if (!(Boolean) compareValue || previousNot) {
                         Criterion current = null;
                         for (String criterionFieldName : leftFieldCondition.criterionFieldNames) {
                             if (current == null) {
-                                current = or(eq(criterionFieldName, compareValue), isNull(criterionFieldName));
+                                notTrueCriterion = or(eq(criterionFieldName, false), isNull(criterionFieldName));
                             } else {
-                                current = or(current, or(eq(criterionFieldName, compareValue), isNull(criterionFieldName)));
+                                notTrueCriterion = or(current, or(eq(criterionFieldName, false), isNull(criterionFieldName)));
                             }
                         }
-                        return current;
+                        if ((Boolean) compareValue) {
+                            isBooleanValueTrue = true;
+                        } else {
+                            current = notTrueCriterion;
+                            notTrueCriterion = null;
+                            return current;
+                        }
                     }
                 }
                 if (predicate == Predicate.EQUALS) {

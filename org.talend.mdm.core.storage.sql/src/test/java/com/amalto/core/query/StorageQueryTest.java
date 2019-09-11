@@ -210,7 +210,7 @@ public class StorageQueryTest extends StorageTestCase {
         .add(factory
                 .read(repository,
                         person,
-                                "<Person><id>1</id><score>130000.00</score><lastname>Dupond</lastname><resume>[EN:my splendid resume, splendid isn't it][FR:mon magnifique resume, n'est ce pas ?]</resume><middlename>John</middlename><firstname>Julien</firstname><addresses><address>[2&amp;2][true]</address><address>[1][false]</address></addresses><age>10</age><Status>Employee</Status><Available></Available></Person>"));
+                                "<Person><id>1</id><score>130000.00</score><lastname>Dupond</lastname><resume>[EN:my splendid resume, splendid isn't it][FR:mon magnifique resume, n'est ce pas ?]</resume><middlename>John</middlename><firstname>Julien</firstname><addresses><address>[2&amp;2][true]</address><address>[1][false]</address></addresses><age>10</age><Status>Employee</Status><Available>true</Available></Person>"));
         allRecords
         .add(factory
                 .read(repository,
@@ -228,7 +228,7 @@ public class StorageQueryTest extends StorageTestCase {
                         "<Person><id>4</id><score>200000.00</score><lastname>Leblanc</lastname><middlename>John</middlename><firstname>Julien</firstname><age>30</age><Status>Friend</Status></Person>"));
         // used id=(5,6) test multilingual field sort
         allRecords.add(factory.read(repository, person,
-                "<Person><id>5</id><score>140000.00</score><lastname>John</lastname><resume>[EN:apple][FR:pomme]</resume><middlename>Mike</middlename><firstname>Bill</firstname><addresses><address>[2&amp;2][true]</address><address>[1][false]</address></addresses><age>10</age><Status>Employee</Status><Available>true</Available></Person>"));
+                "<Person><id>5</id><score>140000.00</score><lastname>John</lastname><resume>[EN:apple][FR:pomme]</resume><middlename>Mike</middlename><firstname>Bill</firstname><addresses><address>[2&amp;2][true]</address><address>[1][false]</address></addresses><age>10</age><Status>Employee</Status><Available></Available></Person>"));
         allRecords.add(factory.read(repository, person,
                 "<Person><id>6</id><score>150000.00</score><lastname>Eric</lastname><resume>[EN:jelle][FR:gelee]</resume><middlename>Mike</middlename><firstname>Binary</firstname><addresses><address>[2&amp;2][true]</address><address>[1][false]</address></addresses><age>10</age><Status>Employee</Status><Available>true</Available></Person>"));
         // used id = (7,8,9) test the multilingual field sort is same with normal string field in English language

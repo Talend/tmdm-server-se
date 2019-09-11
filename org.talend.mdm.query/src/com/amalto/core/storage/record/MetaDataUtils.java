@@ -424,7 +424,6 @@ public class MetaDataUtils {
                 || Types.NON_NEGATIVE_INTEGER.equals(type) || Types.NON_POSITIVE_INTEGER.equals(type) || Types.INT.equals(type)
                 || Types.UNSIGNED_INT.equals(type)) {
             CollectionUtils.transform(valueList, new Transformer() {
-                @Override
                 public java.lang.Object transform(java.lang.Object input) {
                     if (input instanceof String) {
                         return new Integer((String) input);
@@ -438,7 +437,6 @@ public class MetaDataUtils {
             // Be careful here: DateFormat is not thread safe
             synchronized (DateConstant.DATE_FORMAT) {
                 CollectionUtils.transform(valueList, new Transformer() {
-                    @Override
                     public java.lang.Object transform(java.lang.Object input) {
                         if (input instanceof String) {
                             try {
@@ -457,7 +455,6 @@ public class MetaDataUtils {
             // Be careful here: DateFormat is not thread safe
             synchronized (DateTimeConstant.DATE_FORMAT) {
                 CollectionUtils.transform(valueList, new Transformer() {
-                    @Override
                     public java.lang.Object transform(java.lang.Object input) {
                         if (input instanceof String) {
                             try {
@@ -476,7 +473,6 @@ public class MetaDataUtils {
             // Boolean.parseBoolean returns "false" if content isn't a boolean string value. Callers of this method
             // expect call to fail if data is malformed.
             CollectionUtils.transform(valueList, new Transformer() {
-                @Override
                 public java.lang.Object transform(java.lang.Object input) {
                     if (input instanceof String) {
                         if ("0".equals(input.toString())) { //$NON-NLS-1$
@@ -496,7 +492,6 @@ public class MetaDataUtils {
             return valueList;
         } else if (Types.DECIMAL.equals(type)) {
             CollectionUtils.transform(valueList, new Transformer() {
-                @Override
                 public java.lang.Object transform(java.lang.Object input) {
                     if (input instanceof String) {
                         return new BigDecimal((String) input);
@@ -508,7 +503,6 @@ public class MetaDataUtils {
             return valueList;
         } else if (Types.FLOAT.equals(type)) {
             CollectionUtils.transform(valueList, new Transformer() {
-                @Override
                 public java.lang.Object transform(java.lang.Object input) {
                     if (input instanceof String) {
                         return Float.parseFloat((String) input);
@@ -520,7 +514,6 @@ public class MetaDataUtils {
             return valueList;
         } else if (Types.LONG.equals(type) || Types.UNSIGNED_LONG.equals(type)) {
             CollectionUtils.transform(valueList, new Transformer() {
-                @Override
                 public java.lang.Object transform(java.lang.Object input) {
                     if (input instanceof String) {
                         return Long.parseLong((String) input);
@@ -534,7 +527,6 @@ public class MetaDataUtils {
             return valueList;
         } else if (Types.SHORT.equals(type) || Types.UNSIGNED_SHORT.equals(type)) {
             CollectionUtils.transform(valueList, new Transformer() {
-                @Override
                 public java.lang.Object transform(java.lang.Object input) {
                     if (input instanceof String) {
                         return Short.parseShort((String) input);
@@ -552,7 +544,6 @@ public class MetaDataUtils {
             return valueList;
         } else if (Types.BYTE.equals(type) || Types.UNSIGNED_BYTE.equals(type)) {
             CollectionUtils.transform(valueList, new Transformer() {
-                @Override
                 public java.lang.Object transform(java.lang.Object input) {
                     if (input instanceof String) {
                         return Byte.parseByte((String) input);
@@ -564,7 +555,6 @@ public class MetaDataUtils {
             return valueList;
         } else if (Types.DOUBLE.equals(type) || Types.UNSIGNED_DOUBLE.equals(type)) {
             CollectionUtils.transform(valueList, new Transformer() {
-                @Override
                 public java.lang.Object transform(java.lang.Object input) {
                     if (input instanceof String) {
                         return Double.parseDouble((String) input);
@@ -578,7 +568,6 @@ public class MetaDataUtils {
             // Be careful here: DateFormat is not thread safe
             synchronized (TimeConstant.TIME_FORMAT) {
                 CollectionUtils.transform(valueList, new Transformer() {
-                    @Override
                     public java.lang.Object transform(java.lang.Object input) {
                         if (input instanceof String) {
                             try {

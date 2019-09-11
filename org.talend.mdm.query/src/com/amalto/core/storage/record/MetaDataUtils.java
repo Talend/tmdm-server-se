@@ -200,8 +200,7 @@ public class MetaDataUtils {
         } else if (Types.BOOLEAN.equals(type)) {
             // Boolean.parseBoolean returns "false" if content isn't a boolean string value. Callers of this method
             // expect call to fail if data is malformed.
-            // TMDM-13740 Improve consistency when filtering on boolean type - Handle "toto" as false
-            if ("0".equals(dataAsString) || "toto".equals(dataAsString)) { //$NON-NLS-1$ //$NON-NLS-2$
+            if ("0".equals(dataAsString)) { //$NON-NLS-1$
                 return false;
             } else if ("1".equals(dataAsString)) { //$NON-NLS-1$
                 return true;

@@ -210,7 +210,7 @@ public class StorageQueryTest extends StorageTestCase {
         .add(factory
                 .read(repository,
                         person,
-                        "<Person><id>1</id><score>130000.00</score><lastname>Dupond</lastname><resume>[EN:my splendid resume, splendid isn't it][FR:mon magnifique resume, n'est ce pas ?]</resume><middlename>John</middlename><firstname>Julien</firstname><addresses><address>[2&amp;2][true]</address><address>[1][false]</address></addresses><age>10</age><Status>Employee</Status><Available>true</Available></Person>"));
+                                "<Person><id>1</id><score>130000.00</score><lastname>Dupond</lastname><resume>[EN:my splendid resume, splendid isn't it][FR:mon magnifique resume, n'est ce pas ?]</resume><middlename>John</middlename><firstname>Julien</firstname><addresses><address>[2&amp;2][true]</address><address>[1][false]</address></addresses><age>10</age><Status>Employee</Status><Available></Available></Person>"));
         allRecords
         .add(factory
                 .read(repository,
@@ -2039,11 +2039,33 @@ public class StorageQueryTest extends StorageTestCase {
         }
     }
 
+    // TMDM-13740 Improve consistency when filtering on boolean type
     public void testBoolean() throws Exception {
         UserQueryBuilder qb = from(person).selectId(person).where(eq(person.getField("Available"), "false"));
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(3, results.getCount());
+            assertEquals(4, results.getCount());
+        } finally {
+            results.close();
+        }
+        qb = from(person).selectId(person).where(not(eq(person.getField("Available"), "false")));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(8, results.getCount());
+        } finally {
+            results.close();
+        }
+        qb = from(person).selectId(person).where(eq(person.getField("Available"), "true"));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(8, results.getCount());
+        } finally {
+            results.close();
+        }
+        qb = from(person).selectId(person).where(not(eq(person.getField("Available"), "true")));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(4, results.getCount());
         } finally {
             results.close();
         }

@@ -11,12 +11,12 @@
 
 package com.amalto.core.storage.hibernate;
 
-import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
-import org.talend.mdm.commmon.metadata.TypeMetadata;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.TypeMetadata;
 
 public class MappingRepository {
 
@@ -30,6 +30,19 @@ public class MappingRepository {
         if (mapping == null && type instanceof ComplexTypeMetadata) {
             // In case, type is a nested type, only the entity type is in repository
             mapping = userToMapping.get(((ComplexTypeMetadata) type).getEntity());
+        }
+        return mapping;
+    }
+
+    /**
+     * This method reference to {MappingRepository{@link #getMappingFromUser(TypeMetadata)}}, If original value doesn't
+     * exist, don't return its containingType, instead recreate a FlatTypeMapping object which contained its
+     * containedType.
+     */
+    public TypeMapping getRealMappingFromUser(TypeMetadata type) {
+        TypeMapping mapping = getMappingFromUser(type);
+        if (mapping != null && !type.equals(mapping.getUser())) {
+            mapping = null;
         }
         return mapping;
     }

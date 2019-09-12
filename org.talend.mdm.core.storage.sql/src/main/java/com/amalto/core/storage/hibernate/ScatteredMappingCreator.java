@@ -231,7 +231,7 @@ class ScatteredMappingCreator extends DefaultMetadataVisitor<TypeMapping> {
             internalContainedType = (ComplexTypeMetadata)internalContainedType.copy();
         }
         // Visit contained type fields
-        TypeMapping mapping = mappings.getMappingFromUser(originalContainedType);
+        TypeMapping mapping = mappings.getRealMappingFromUser(originalContainedType);
         if (mapping == null) {
             mapping = new FlatTypeMapping(originalContainedType, internalContainedType, mappings);
             mappings.addMapping(mapping);

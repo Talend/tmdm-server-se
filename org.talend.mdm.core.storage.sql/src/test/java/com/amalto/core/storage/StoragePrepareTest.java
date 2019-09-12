@@ -89,6 +89,78 @@ public class StoragePrepareTest extends TestCase {
         }
     }
 
+    public void testEECDataModel() {
+        Storage storage = new SecuredStorage(new HibernateStorage("Express_EEC_1", StorageType.MASTER), userSecurity);//$NON-NLS-1$
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(StoragePrepareTest.class.getResourceAsStream("Express_EEC_1.xsd"));//$NON-NLS-1$
+        MockMetadataRepositoryAdmin.INSTANCE.register("Express_EEC_1", repository);//$NON-NLS-1$
+
+        storage.init(getDatasource("H2-DS3"));// //$NON-NLS-1$
+        storage.prepare(repository, Collections.<Expression> emptySet(), true, true);
+        ((MockStorageAdmin) ServerContext.INSTANCE.get().getStorageAdmin()).register(storage);
+
+        storage.begin();
+        ComplexTypeMetadata country = repository.getComplexType("Country");//$NON-NLS-1$
+        ComplexTypeMetadata cacdo_RegisterCustomsWarehouseDetails = repository.getComplexType("cacdo_RegisterCustomsWarehouseDetails");//$NON-NLS-1$
+        UserQueryBuilder qb = from(country);
+        UserQueryBuilder qb_CustomsWarehouseDetails = from(cacdo_RegisterCustomsWarehouseDetails);
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(0, results.getCount());
+        } finally {
+            results.close();
+        }
+        storage.end();
+
+        List<DataRecord> records = new ArrayList<DataRecord>();
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+        records.add(factory.read(repository, country, "<Country><Code>3</Code><Name>33</Name></Country>")); //$NON-NLS-1$
+        records.add(factory.read(repository, country, "<Country><Code>4</Code><Name>44</Name></Country>")); //$NON-NLS-1$
+        records.add(factory.read(repository, cacdo_RegisterCustomsWarehouseDetails,
+                "<cacdo_RegisterCustomsWarehouseDetails><NSIKey>5</NSIKey><cacdo_RegisterOrganizationDetails><ccdo_OrganizationDetails><csdo_CountryCode>[3]</csdo_CountryCode></ccdo_OrganizationDetails></cacdo_RegisterOrganizationDetails></cacdo_RegisterCustomsWarehouseDetails>")); //$NON-NLS-1$
+        records.add(factory.read(repository, cacdo_RegisterCustomsWarehouseDetails,
+                "<cacdo_RegisterCustomsWarehouseDetails><NSIKey>6</NSIKey><cacdo_RegisterOrganizationDetails><ccdo_OrganizationDetails><csdo_CountryCode>[4]</csdo_CountryCode></ccdo_OrganizationDetails></cacdo_RegisterOrganizationDetails></cacdo_RegisterCustomsWarehouseDetails>")); //$NON-NLS-1$
+        try {
+            storage.begin();
+            storage.update(records);
+            storage.commit();
+        } finally {
+            storage.end();
+        }
+        storage.begin();
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(2, results.getCount());
+        } finally {
+            results.close();
+        }
+        results = storage.fetch(qb_CustomsWarehouseDetails.getSelect());
+        try {
+            assertEquals(2, results.getCount());
+            for (DataRecord result : results) {
+                String id = result.get("NSIKey").toString();
+                switch (id) {
+                case "5"://$NON-NLS-1$
+                    assertEquals("3", ((DataRecord) result.get( //$NON-NLS-1$
+                            "cacdo_RegisterCustomsWarehouseDetails/cacdo_RegisterOrganizationDetails/ccdo_OrganizationDetails/csdo_CountryCode")) //$NON-NLS-1$
+                                    .get("Code"));
+                    break;
+                case "6"://$NON-NLS-1$
+                    assertEquals("4", ((DataRecord) result.get( //$NON-NLS-1$
+                            "cacdo_RegisterCustomsWarehouseDetails/cacdo_RegisterOrganizationDetails/ccdo_OrganizationDetails/csdo_CountryCode")) //$NON-NLS-1$
+                                    .get("Code"));
+                    break;
+                default:
+                    assertNull(id);
+                }
+            }
+        } finally {
+            results.close();
+        }
+        storage.end();
+        storage.close();
+    }
+
     public void testCreateWithInheritanceComplexType() {
         Storage storage = new SecuredStorage(new HibernateStorage("InheritanceComplexType", StorageType.MASTER), userSecurity);//$NON-NLS-1$
         MetadataRepository repository = new MetadataRepository();

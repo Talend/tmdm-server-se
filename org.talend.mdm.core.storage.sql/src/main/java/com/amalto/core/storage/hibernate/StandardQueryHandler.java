@@ -1055,6 +1055,7 @@ class StandardQueryHandler extends AbstractQueryHandler {
             if (predicate == Predicate.NOT) {
                 previousNot = true;
             }
+            // previousNot is used here to handle notTrue condition. Need reset to false after retrieving conditionCriterion.
             Criterion conditionCriterion = condition.getCondition().accept(this);
 
             if (predicate == Predicate.NOT) {

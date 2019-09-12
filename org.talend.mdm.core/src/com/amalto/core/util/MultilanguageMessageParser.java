@@ -63,8 +63,10 @@ public class MultilanguageMessageParser {
             if (isGetLanguageValue) {
                 if (errorMessageHash.isEmpty()) {
                     return resultingErrorMessage;
-                } else {
+                } else if (errorMessageHash.get(langCode) != null) {
                     return FormatUtil.languageValueDecode(errorMessageHash.get(langCode));
+                } else {
+                    return resultingErrorMessage;
                 }
             }
             if (errorMessageHash.containsKey(langCode)) {

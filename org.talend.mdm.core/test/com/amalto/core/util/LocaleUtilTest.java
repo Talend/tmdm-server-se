@@ -31,15 +31,18 @@ public class LocaleUtilTest extends TestCase {
 
         //case 4
         results = LocaleUtil.getLocaleValue(str1, "zh_CN");
-        //assertEquals(str1, results);
+        assertEquals(str1, results);
 
         //case 5
         results = LocaleUtil.getLocaleValue(str1, "");
         assertEquals(str1, results);
 
+        results = LocaleUtil.getLocaleValue(str1, null);
+        assertEquals(str1, results);
+
         //case 6
         results = LocaleUtil.getLocaleValue(str1, "xx");
-        //assertEquals(str1, results);
+        assertEquals(str1, results);
 
         //case 7
         results = LocaleUtil.getLocaleValue("", "en");

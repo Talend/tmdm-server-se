@@ -107,14 +107,14 @@ public class LocaleUtil {
             Map<String, String> errorMessageHash = getLanguageValueMap(value);
             String langCode = lang.toLowerCase();
             if (errorMessageHash.isEmpty()) {
-                return rawValue;
+                return replaceSlash(rawValue);
             } else if (errorMessageHash.get(langCode) != null) {
                 return languageValueDecode(errorMessageHash.get(langCode));
             } else {
-                return rawValue;
+                return replaceSlash(rawValue);
             }
         } else {
-            return rawValue;
+            return replaceSlash(rawValue);
         }
     }
 
@@ -128,6 +128,15 @@ public class LocaleUtil {
             }
             if (value.contains("&amp;#93;")) {//$NON-NLS-1$
                 value = value.replace("&amp;#93;", "]"); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+        }
+        return value;
+    }
+
+    private static String replaceSlash(String value) {
+        if (value != null && value.trim().length() > 0) {
+            if (value.contains("\\]")) {//$NON-NLS-1$
+                value = value.replace("\\]", "]"); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
         return value;

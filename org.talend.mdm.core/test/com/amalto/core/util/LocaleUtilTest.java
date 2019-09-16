@@ -59,7 +59,7 @@ public class LocaleUtilTest extends TestCase {
 
     public void testLocaleValueWithSpecialCharacters() {
         String str1 = "[FR:[Org\\]Produit avec Magasins][EN:[Org\\]Product with Stores][ZH:Zhong Wen]";
-
+        String str2 = "[FR:[Org]Produit avec Magasins][EN:[Org]Product with Stores][ZH:Zhong Wen]";
         //case 1
         String results = LocaleUtil.getLocaleValue(str1, "EN");
         assertEquals("[Org]Product with Stores", results);
@@ -71,5 +71,8 @@ public class LocaleUtilTest extends TestCase {
         //case 3
         results = LocaleUtil.getLocaleValue(str1, "zh");
         assertEquals("Zhong Wen", results);
+        
+        results = LocaleUtil.getLocaleValue(str1, "null");
+        assertEquals(str2, results);
     }
 }

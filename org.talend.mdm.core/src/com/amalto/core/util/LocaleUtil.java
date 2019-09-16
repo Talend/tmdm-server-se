@@ -80,7 +80,7 @@ public class LocaleUtil {
         }
         return new Locale(localLanguage);
     }
-    
+
     /**
      * Parse a multiple language string and return the message corresponding to the current language.
      *

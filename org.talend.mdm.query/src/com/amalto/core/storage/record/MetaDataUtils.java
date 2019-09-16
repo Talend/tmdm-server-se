@@ -198,17 +198,8 @@ public class MetaDataUtils {
                 }
             }
         } else if (Types.BOOLEAN.equals(type)) {
-            // Boolean.parseBoolean returns "false" if content isn't a boolean string value. Callers of this method
-            // expect call to fail if data is malformed.
-            if ("0".equals(dataAsString)) { //$NON-NLS-1$
-                return false;
-            } else if ("1".equals(dataAsString)) { //$NON-NLS-1$
-                return true;
-            }
-            if (!"false".equalsIgnoreCase(dataAsString) && !"true".equalsIgnoreCase(dataAsString)) { //$NON-NLS-1$ //$NON-NLS-2$
-                throw new IllegalArgumentException("Value '" + dataAsString + "' is not valid for boolean"); //$NON-NLS-1$ //$NON-NLS-2$
-            }
-            return Boolean.parseBoolean(dataAsString);
+            // Boolean.parseBoolean returns "false" if content isn't a boolean string value.
+            return "1".equals(dataAsString) || Boolean.parseBoolean(dataAsString); //$NON-NLS-1$
         } else if (Types.DECIMAL.equals(type)) {
             try {
                 return new BigDecimal(dataAsString);

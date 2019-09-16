@@ -86,6 +86,10 @@ public class MultilanguageMessageParser {
         }
     }
 
+    /**
+     * NOTE THAT THIS FUNCTION IS DUPLICATED WITH SAME FUNCTION IN:
+     * org.talend.mdm.core.util.LocaleUtil
+     */
     public static LinkedHashMap<String, String> getLanguageValueMap(String errorString) {
         // Parse states
         final byte PARSE_ERROR = 0;

@@ -104,23 +104,23 @@ public class CommonUtilTest extends TestCase {
         assertTrue(args.containsKey("xpath:Product/Name"));
         assertEquals("Product/Name", args.get("xpath:Product/Name"));   
         
-        function = "fn:starts-with(\"xpath:/Product/Name\",\"s\")";
+        function = "fn:starts-with(\"xpath:Product/Name\",\"s\")";
         args = CommonUtil.getArgumentsWithXpath(function);
         assertEquals(1, args.size());
         assertTrue(args.containsKey("xpath:Product/Name"));
         assertEquals("Product/Name", args.get("xpath:Product/Name"));
         
-        function = "fn:string-length(\"xpath:/Product/Name\") > 3\")";
+        function = "fn:string-length(\"xpath:Product/Name\") > 3\")";
         args = CommonUtil.getArgumentsWithXpath(function);
         assertEquals(1, args.size());
         assertTrue(args.containsKey("xpath:Product/Name"));
         assertEquals("Product/Name", args.get("xpath:Product/Name"));
         
-        function = "fn:matches(\"Xpath:../Name\" ,\"test\")";
+        function = "fn:matches(\"xpath:../Name\" ,\"test\")";
         args = CommonUtil.getArgumentsWithXpath(function);
         assertEquals(1, args.size());
-        assertTrue(args.containsKey("xpath:Product/Name"));
-        assertEquals("Product/Name", args.get("xpath:Product/Name"));
+        assertTrue(args.containsKey("xpath:../Name"));
+        assertEquals("../Name", args.get("xpath:../Name"));
     }
 
 }

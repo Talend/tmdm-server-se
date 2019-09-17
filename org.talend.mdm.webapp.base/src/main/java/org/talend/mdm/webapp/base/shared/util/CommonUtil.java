@@ -281,7 +281,7 @@ public class CommonUtil {
             value = matchResult.getGroup(0);
             break;
         }
-        RegExp regExp = RegExp.compile("xpath:[A-Z][a-z]*/(([A-Z][a-z]*)/*)*", "g"); //$NON-NLS-1$
+        RegExp regExp = RegExp.compile("xpath:(([A-Z][a-z]*)|((\\.)+))/(([A-Z][a-z]*)/*)*", "g"); //$NON-NLS-1$
         MatchResult matcher = regExp.exec(value);
         while (matcher != null) {
             String xpathValue = matcher.getGroup(0);

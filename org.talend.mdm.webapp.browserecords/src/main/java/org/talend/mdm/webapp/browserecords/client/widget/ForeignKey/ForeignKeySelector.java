@@ -10,7 +10,6 @@
 package org.talend.mdm.webapp.browserecords.client.widget.ForeignKey;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -30,9 +29,9 @@ import org.talend.mdm.webapp.browserecords.client.util.Locale;
 import org.talend.mdm.webapp.browserecords.client.widget.ForeignKeyFieldList;
 import org.talend.mdm.webapp.browserecords.client.widget.ItemPanel;
 import org.talend.mdm.webapp.browserecords.client.widget.ItemsDetailPanel;
+import org.talend.mdm.webapp.browserecords.client.widget.treedetail.ForeignKeyUtil;
 
 import com.extjs.gxt.ui.client.core.El;
-import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.mvc.AppEvent;
 import com.extjs.gxt.ui.client.mvc.Dispatcher;
 import com.extjs.gxt.ui.client.widget.ComponentHelper;
@@ -44,8 +43,6 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Image;
 
 public class ForeignKeySelector extends ForeignKeyField implements ReturnCriteriaFK {
-
-    private String foreignKeyFilter;
 
     private ItemNodeModel itemNode;
 
@@ -72,6 +69,7 @@ public class ForeignKeySelector extends ForeignKeyField implements ReturnCriteri
     public ForeignKeySelector(TypeModel dataType, ItemsDetailPanel itemsDetailPanel, ItemNodeModel itemNode) {
         super(dataType);
         this.foreignKeyFilter = dataType.getForeignKeyFilter();
+        this.originForeignKeyFilter = dataType.getForeignKeyFilter();
         this.itemsDetailPanel = itemsDetailPanel;
         this.itemNode = itemNode;
         this.isStaging = itemsDetailPanel.isStaging();
@@ -241,7 +239,7 @@ public class ForeignKeySelector extends ForeignKeyField implements ReturnCriteri
                             targetPath = targetPath.substring(0, targetPath.lastIndexOf("/")); //$NON-NLS-1$
                             targetPath = targetPath + filterValue.substring(filterValue.indexOf("/")); //$NON-NLS-1$
                         }
-                        ItemNodeModel targetNode = findTarget(targetPath, parentNode);
+                        ItemNodeModel targetNode = ForeignKeyUtil.findTarget(targetPath, parentNode);
                         if (targetNode != null && targetNode.getObjectValue() != null) {
                             Object targetValue = targetNode.getObjectValue();
                             if (targetValue instanceof ForeignKeyBean) {
@@ -256,44 +254,8 @@ public class ForeignKeySelector extends ForeignKeyField implements ReturnCriteri
                         }
                     }
                 } else {
-                    String[] rightValueOrPathArray = filterValue.split("/"); //$NON-NLS-1$
-                    if (rightValueOrPathArray.length > 0) {
-                        String rightConcept = rightValueOrPathArray[0];
-                        if (rightConcept.equals(currentPath.split("/")[0])) { //$NON-NLS-1$
-                            List<String> duplicatedPathList = new ArrayList<String>();
-                            List<String> leftPathNodeList = new ArrayList<String>();
-                            List<String> rightPathNodeList = Arrays.asList(filterValue.split("/")); //$NON-NLS-1$
-                            String[] leftValueOrPathArray = currentPath.split("/"); //$NON-NLS-1$
-                            for (String element : leftValueOrPathArray) {
-                                leftPathNodeList.add(element);
-                            }
-                            for (int i = 0; i < leftPathNodeList.size(); i++) {
-                                if (i < rightPathNodeList.size() && leftPathNodeList.get(i).equals(rightPathNodeList.get(i))) {
-                                    duplicatedPathList.add(rightPathNodeList.get(i));
-                                } else {
-                                    break;
-                                }
-                            }
-                            leftPathNodeList.removeAll(duplicatedPathList);
-                            ItemNodeModel parentNode = itemNode;
-                            for (int i = 0; i < leftPathNodeList.size(); i++) {
-                                parentNode = (ItemNodeModel) parentNode.getParent();
-                            }
-                            ItemNodeModel targetNode = findTarget(filterValue, parentNode);
-                            if (targetNode != null && targetNode.getObjectValue() != null) {
-                                Object targetValue = targetNode.getObjectValue();
-                                if (targetValue instanceof ForeignKeyBean) {
-                                    ForeignKeyBean targetForeignKeyBean = (ForeignKeyBean) targetValue;
-                                    filterValue = org.talend.mdm.webapp.base.shared.util.CommonUtil
-                                            .unwrapFkValue(targetForeignKeyBean.getId());
-                                } else {
-                                    filterValue = targetNode.getObjectValue().toString();
-                                }
-                            } else {
-                                filterValue = ""; //$NON-NLS-1$
-                            }
-                        }
-                    }
+                    //String[] rightValueOrPathArray = filterValue.split("/"); //$NON-NLS-1$
+                    filterValue = ForeignKeyUtil.getXpathValue(filterValue, currentPath, itemNode);
                 }
                 conditionMap.put("Value", filterValue); //$NON-NLS-1$
                 conditions.add(conditionMap);
@@ -302,39 +264,6 @@ public class ForeignKeySelector extends ForeignKeyField implements ReturnCriteri
         } else {
             return ""; //$NON-NLS-1$
         }
-    }
-
-    protected ItemNodeModel findTarget(String targetPath, ItemNodeModel node) {
-        List<ModelData> childrenList = node.getChildren();
-        if (childrenList != null && childrenList.size() > 0) {
-            for (int i = 0; i < childrenList.size(); i++) {
-                ItemNodeModel child = (ItemNodeModel) childrenList.get(i);
-                String typePath = child.getTypePath();
-                if (typePath.contains(":")) { //$NON-NLS-1$
-                    String[] pathArray = typePath.split("/"); //$NON-NLS-1$
-                    for (int j = 0; j < pathArray.length; j++) {
-                        String nodePath = pathArray[j];
-                        if (nodePath.contains(":")) { //$NON-NLS-1$
-                            String[] nodePathArray = nodePath.split(":");
-                            if (targetPath.contains("xsi:type")) {
-                                pathArray[j] = nodePathArray[0] + "[@xsi:type=\"" + nodePathArray[1] + "\"]"; //$NON-NLS-1$  //$NON-NLS-2$
-                            } else {
-                                pathArray[j] = nodePathArray[0];
-                            }
-                        }
-                    }
-                    typePath = transformPath(pathArray);
-                }
-                if (targetPath.contains(typePath)) {
-                    if (targetPath.equals(typePath)) {
-                        return child;
-                    } else {
-                        return findTarget(targetPath, child);
-                    }
-                }
-            }
-        }
-        return null;
     }
 
     public void setShowAddButton(boolean showAddButton) {
@@ -353,6 +282,10 @@ public class ForeignKeySelector extends ForeignKeyField implements ReturnCriteri
         this.itemNode = itemNode;
     }
 
+    public ItemNodeModel getItemNode() {
+        return itemNode;
+    }
+    
     @Override
     protected void doAttachChildren() {
         super.doAttachChildren();
@@ -423,14 +356,4 @@ public class ForeignKeySelector extends ForeignKeyField implements ReturnCriteri
         }
     }
 
-    protected String transformPath(String[] pathArray) {
-        StringBuilder pathBuilder = new StringBuilder();
-        for (int i = 0; i < pathArray.length; i++) {
-            pathBuilder.append(pathArray[i]);
-            if (i < pathArray.length - 1) {
-                pathBuilder.append("/"); //$NON-NLS-1$
-            }
-        }
-        return pathBuilder.toString();
-    }
 }

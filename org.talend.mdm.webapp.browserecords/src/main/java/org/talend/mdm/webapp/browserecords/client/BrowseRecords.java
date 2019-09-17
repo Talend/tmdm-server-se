@@ -68,6 +68,8 @@ public class BrowseRecords implements EntryPoint {
 
     public static final String SAVE_PROGRESS_BAR = "SaveProgressBar"; //$NON-NLS-1$
 
+    public static final String FOREIGN_KEY_FIELD = "foreignKeyField"; //$NON-NLS-1$
+
     private static JavaScriptObject stagingArea;
 
     public static JavaScriptObject getStagingArea() {

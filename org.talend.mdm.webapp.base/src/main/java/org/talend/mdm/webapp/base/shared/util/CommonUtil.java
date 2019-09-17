@@ -14,6 +14,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.regexp.shared.MatchResult;
+import com.google.gwt.regexp.shared.RegExp;
+
 /**
  * created by yjli on 2013-8-1 Detailled comment
  *
@@ -205,6 +208,10 @@ public class CommonUtil {
         return (foreignKeyFilterValue.startsWith(".") || foreignKeyFilterValue.startsWith("..")); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
+    public static boolean isFunction(String foreignKeyFilterValue) {
+        return foreignKeyFilterValue.startsWith("fn"); //$NON-NLS-1$
+    }
+
     public static Map<String, String> buildConditionByCriteria(String criteria) {
         Map<String, String> conditionMap = new HashMap<String, String>();
         String[] values = criteria.split("\\$\\$");//$NON-NLS-1$
@@ -263,5 +270,25 @@ public class CommonUtil {
         } else {
             return null;
         }
+    }
+
+    public static Map<String, String> getArgumentsWithXpath(String function){
+        Map<String, String> arguments = new HashMap<String, String>();
+        RegExp reg = RegExp.compile("xpath:(.*)");
+        MatchResult matchResult = reg.exec(function);
+        String value = "";
+        while(matchResult != null){
+            value = matchResult.getGroup(0);
+            break;
+        }
+        RegExp regExp = RegExp.compile("xpath:[A-Z][a-z]*/(([A-Z][a-z]*)/*)*", "g"); //$NON-NLS-1$
+        MatchResult matcher = regExp.exec(value);
+        while (matcher != null) {
+            String xpathValue = matcher.getGroup(0);
+            arguments.put(xpathValue, xpathValue.replace("xpath:",""));
+            matcher = regExp.exec(value);
+            //break;
+        }
+        return arguments;
     }
 }

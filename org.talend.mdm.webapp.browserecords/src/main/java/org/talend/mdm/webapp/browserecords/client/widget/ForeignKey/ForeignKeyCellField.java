@@ -19,18 +19,25 @@ import com.extjs.gxt.ui.client.widget.form.Field;
 
 public class ForeignKeyCellField extends ForeignKeyField {
 
-    private String foreignKeyFilter;
+    private Map<Integer, Map<String, Field<?>>> targetFields;
 
-    private Map<Integer, Field<?>> targetFields;
+    public Map<Integer, Map<String, Field<?>>> getTargetFields() {
+        return targetFields;
+    }
+
+    public void setTargetFields(Map<Integer, Map<String, Field<?>>> targetFields) {
+        this.targetFields = targetFields;
+    }
 
     public ForeignKeyCellField(ForeignKeyField foreignKeyField, String foreignKeyFilter) {
         super(foreignKeyField.getDataType());
         super.setReadOnly(foreignKeyField.isReadOnly());
         super.setEnabled(!foreignKeyField.isReadOnly());
         this.foreignKeyFilter = foreignKeyFilter;
+        this.originForeignKeyFilter = foreignKeyFilter;
     }
 
-    public void setTargetField(Map<Integer, Field<?>> targetFields) {
+    public void setTargetField(Map<Integer, Map<String, Field<?>>> targetFields) {
         this.targetFields = targetFields;
     }
 
@@ -54,7 +61,8 @@ public class ForeignKeyCellField extends ForeignKeyField {
                     filterValue = filterValue.substring(1, filterValue.length() - 1);
                 } else {
                     if (targetFields != null && targetFields.get(i) != null) {
-                        Field<?> targetField = targetFields.get(i);
+                        Map<String, Field<?>> targetFieldMap = targetFields.get(i);
+                        Field<?> targetField = targetFieldMap.get(targetFieldMap.keySet().iterator().next());
                         Object targetValue = targetField.getValue();
                         if (targetValue != null) {
                             if (targetValue instanceof ForeignKeyBean) {

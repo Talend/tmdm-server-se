@@ -18,6 +18,7 @@ import org.talend.mdm.webapp.base.client.model.ForeignKeyBean;
 import org.talend.mdm.webapp.base.client.widget.ComboBoxEx;
 import org.talend.mdm.webapp.base.shared.TypeModel;
 import org.talend.mdm.webapp.browserecords.client.BrowseRecords;
+import org.talend.mdm.webapp.browserecords.client.BrowseRecordsEvents;
 import org.talend.mdm.webapp.browserecords.client.BrowseRecordsServiceAsync;
 import org.talend.mdm.webapp.browserecords.client.util.CommonUtil;
 import org.talend.mdm.webapp.browserecords.client.util.Locale;
@@ -33,6 +34,8 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.fx.Resizable;
+import com.extjs.gxt.ui.client.mvc.AppEvent;
+import com.extjs.gxt.ui.client.mvc.Dispatcher;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.DelayedTask;
 import com.extjs.gxt.ui.client.widget.BoxComponent;
@@ -156,6 +159,13 @@ public class SuggestComboBoxField extends ComboBoxEx<ForeignKeyBean> {
                     }
 
                     if (inputValue != null && !"".equals(inputValue.trim()) && !"[".equals(inputValue.trim())) { //$NON-NLS-1$ //$NON-NLS-2$
+                        String foreignKeyfielter = foreignKeyField.getOriginForeignKeyFilter();
+                        if (foreignKeyfielter.contains("fn")) {
+                            AppEvent event = new AppEvent(BrowseRecordsEvents.TransformFkFilterItem, foreignKeyfielter);
+                            event.setData(BrowseRecords.FOREIGN_KEY_FIELD, foreignKeyField);
+                            event.setData("foreignKeyFilter", foreignKeyfielter);
+                            Dispatcher.forwardEvent(event);
+                        }
                         task.delay(getListDelay);
                     }
                 }

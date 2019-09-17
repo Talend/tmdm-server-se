@@ -75,4 +75,8 @@ public class BrowseRecordsEvents {
     public static final int BulkUpdateItemCode = 30015;
 
     public static final EventType BulkUpdateItem = new EventType(BulkUpdateItemCode);
+
+    public static final int TransformFkFilterCode = 30016;
+
+    public static final EventType TransformFkFilterItem = new EventType(TransformFkFilterCode);
 }

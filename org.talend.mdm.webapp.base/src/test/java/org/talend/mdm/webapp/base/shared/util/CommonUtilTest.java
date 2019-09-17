@@ -12,6 +12,7 @@ package org.talend.mdm.webapp.base.shared.util;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -82,5 +83,44 @@ public class CommonUtilTest extends TestCase {
     }
 
 
+    public void testGetArgumentsWithXpath(){
+        String function = "fn:concat(\"xpath:Product/Name\", \"xpath:Product/Description\")";
+        Map<String, String> args = CommonUtil.getArgumentsWithXpath(function);
+        assertEquals(2, args.size());
+        assertTrue(args.containsKey("xpath:Product/Name"));
+        assertTrue(args.containsKey("xpath:Product/Description"));
+        assertEquals("Product/Name", args.get("xpath:Product/Name"));
+        assertEquals("Product/Description", args.get("xpath:Product/Description"));
+
+        function = "fn:concat(\"xpath:Product/Name\")";
+        args = CommonUtil.getArgumentsWithXpath(function);
+        assertEquals(1, args.size());
+        assertTrue(args.containsKey("xpath:Product/Name"));
+        assertEquals("Product/Name", args.get("xpath:Product/Name"));
+
+        function = "fn:concat(\"xpath:Product/Name\", \" s\")";
+        args = CommonUtil.getArgumentsWithXpath(function);
+        assertEquals(1, args.size());
+        assertTrue(args.containsKey("xpath:Product/Name"));
+        assertEquals("Product/Name", args.get("xpath:Product/Name"));   
+        
+        function = "fn:starts-with(\"xpath:/Product/Name\",\"s\")";
+        args = CommonUtil.getArgumentsWithXpath(function);
+        assertEquals(1, args.size());
+        assertTrue(args.containsKey("xpath:Product/Name"));
+        assertEquals("Product/Name", args.get("xpath:Product/Name"));
+        
+        function = "fn:string-length(\"xpath:/Product/Name\") > 3\")";
+        args = CommonUtil.getArgumentsWithXpath(function);
+        assertEquals(1, args.size());
+        assertTrue(args.containsKey("xpath:Product/Name"));
+        assertEquals("Product/Name", args.get("xpath:Product/Name"));
+        
+        function = "fn:matches(\"Xpath:../Name\" ,\"test\")";
+        args = CommonUtil.getArgumentsWithXpath(function);
+        assertEquals(1, args.size());
+        assertTrue(args.containsKey("xpath:Product/Name"));
+        assertEquals("Product/Name", args.get("xpath:Product/Name"));
+    }
 
 }

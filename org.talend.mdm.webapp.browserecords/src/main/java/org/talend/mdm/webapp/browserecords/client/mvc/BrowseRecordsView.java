@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 import org.talend.mdm.webapp.base.shared.ComplexTypeModel;
 import org.talend.mdm.webapp.base.shared.EntityModel;
@@ -32,6 +33,7 @@ import org.talend.mdm.webapp.browserecords.client.util.Locale;
 import org.talend.mdm.webapp.browserecords.client.util.UserSession;
 import org.talend.mdm.webapp.browserecords.client.util.ViewUtil;
 import org.talend.mdm.webapp.browserecords.client.widget.BreadCrumb;
+import org.talend.mdm.webapp.browserecords.client.widget.BulkUpdatePanel;
 import org.talend.mdm.webapp.browserecords.client.widget.GenerateContainer;
 import org.talend.mdm.webapp.browserecords.client.widget.ItemDetailToolBar;
 import org.talend.mdm.webapp.browserecords.client.widget.ItemPanel;
@@ -43,6 +45,7 @@ import org.talend.mdm.webapp.browserecords.client.widget.ItemsToolBar;
 import org.talend.mdm.webapp.browserecords.client.widget.LineagePanel;
 import org.talend.mdm.webapp.browserecords.client.widget.ForeignKey.ForeignKeyCellField;
 import org.talend.mdm.webapp.browserecords.client.widget.ForeignKey.ForeignKeyField;
+import org.talend.mdm.webapp.browserecords.client.widget.ForeignKey.ForeignKeySelector;
 import org.talend.mdm.webapp.browserecords.client.widget.ForeignKey.ReturnCriteriaFK;
 import org.talend.mdm.webapp.browserecords.client.widget.inputfield.creator.FieldCreator;
 import org.talend.mdm.webapp.browserecords.client.widget.treedetail.TreeDetailUtil;
@@ -50,6 +53,7 @@ import org.talend.mdm.webapp.browserecords.shared.ViewBean;
 import org.talend.mdm.webapp.browserecords.shared.VisibleRuleResult;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -129,6 +133,9 @@ public class BrowseRecordsView extends View {
             break;
         case BrowseRecordsEvents.DefaultViewCode:
             setDefaultView(event);
+            break;
+        case BrowseRecordsEvents.TransformFkFilterCode:
+            onTransformFkFilter(event);
             break;
         default:
             break;
@@ -396,7 +403,7 @@ public class BrowseRecordsView extends View {
         List<String> keys = Arrays.asList(entityModel.getKeys());
 
         Map<String, ForeignKeyCellField> fkFieldwithFilterMap = new HashMap<String, ForeignKeyCellField>();
-        Map<String, Field> fieldMap = new HashMap<String, Field>();
+        Map<String, Field<?>> fieldMap = new HashMap<String, Field<?>>();
         for (String xpath : viewableXpaths) {
             TypeModel typeModel = dataTypes.get(xpath);
 
@@ -433,7 +440,7 @@ public class BrowseRecordsView extends View {
 
         for (String xpath : fkFieldwithFilterMap.keySet()) {
             ForeignKeyCellField foreignKeyCellField = fkFieldwithFilterMap.get(xpath);
-            Map<Integer, Field<?>> targetFieldMap = new HashMap<Integer, Field<?>>();
+            Map<Integer, Map<String, Field<?>>> targetFieldMap = new HashMap<Integer, Map<String, Field<?>>>();
             String[] criterias = org.talend.mdm.webapp.base.shared.util.CommonUtil.getCriteriasByForeignKeyFilter(dataTypes.get(
                     xpath).getForeignKeyFilter());
             for (int i = 0; i < criterias.length; i++) {
@@ -449,11 +456,32 @@ public class BrowseRecordsView extends View {
                         } else if (filterValue.startsWith("..")) { //$NON-NLS-1$
                             targetPath = xpath.substring(0, xpath.lastIndexOf("/")) + filterValue.substring(filterValue.indexOf("..")); //$NON-NLS-1$ //$NON-NLS-2$
                         }
+                    } else if(org.talend.mdm.webapp.base.shared.util.CommonUtil.isFunction(filterValue)){
+                        if(filterValue.contains("xpath:")){
+                            Map<String, String> xpathMap = org.talend.mdm.webapp.base.shared.util.CommonUtil.getArgumentsWithXpath(filterValue);
+                            Map<String, Field<?>> xpathFieldMap = null;
+                            if (targetFieldMap.containsKey(i)) {
+                                xpathFieldMap = targetFieldMap.get(i);
+                            } else {
+                                xpathFieldMap = new HashMap<String, Field<?>>();
+                            }
+                            for(Map.Entry<String, String> entry : xpathMap.entrySet()){
+                                xpathFieldMap.put(entry.getKey(), fieldMap.get(entry.getValue()));
+                            }
+                            targetFieldMap.put(i, xpathFieldMap);
+                        }
                     } else {
                         targetPath = filterValue;
                     }
                     if (filterValue != null && entityModel.getConceptName().equals(filterValue.split("/")[0])) { //$NON-NLS-1$
-                        targetFieldMap.put(i, fieldMap.get(filterValue));
+                        Map<String, Field<?>> xpathFieldMap = null;
+                        if (targetFieldMap.containsKey(i)) {
+                            xpathFieldMap = targetFieldMap.get(i);
+                        } else {
+                            xpathFieldMap = new HashMap<String, Field<?>>();
+                        }
+                        xpathFieldMap.put(filterValue, fieldMap.get(filterValue));
+                        targetFieldMap.put(i, xpathFieldMap);
                     }
                 }
             }
@@ -499,5 +527,30 @@ public class BrowseRecordsView extends View {
 
     protected void setDefaultView(final AppEvent event) {
         ItemsToolBar.getInstance().updateEntityCombo();
+    }
+
+    private void onTransformFkFilter(AppEvent event) {
+        List<String> filterValue = event.getData();
+        Stack<String> stack = new Stack<String>();
+        for (String value : filterValue) {
+            stack.push(value);
+        }
+
+        String foreignKeyFilter = event.getData("foreignKeyFilter");
+        String[] criterias = org.talend.mdm.webapp.base.shared.util.CommonUtil.getCriteriasByForeignKeyFilter(foreignKeyFilter);
+        StringBuilder sb = new StringBuilder();
+        for (String cria : criterias) {
+            Map<String, String> conditionMap = org.talend.mdm.webapp.base.shared.util.CommonUtil.buildConditionByCriteria(cria);
+            String returnFilterValue = conditionMap.get("Value"); //$NON-NLS-1$
+            if (returnFilterValue.contains("fn")) {
+                conditionMap.put("Value", stack.pop());
+            }
+            String predicate = conditionMap.get("Predicate");
+            predicate = predicate == null ? "" : predicate;
+            sb.append(conditionMap.get("Xpath")).append("$$").append(conditionMap.get("Operator")).append("$$").append("\"")
+                    .append(conditionMap.get("Value")).append("\"").append("$$").append(predicate).append("#");
+        }
+        ForeignKeyField foreignKeyField = event.getData(BrowseRecords.FOREIGN_KEY_FIELD);
+        foreignKeyField.setForeignKeyFilter(sb.toString());
     }
 }

@@ -16,6 +16,7 @@ import org.talend.mdm.webapp.base.client.model.ForeignKeyBean;
 import org.talend.mdm.webapp.base.shared.EntityModel;
 import org.talend.mdm.webapp.base.shared.TypeModel;
 import org.talend.mdm.webapp.browserecords.client.BrowseRecords;
+import org.talend.mdm.webapp.browserecords.client.BrowseRecordsEvents;
 import org.talend.mdm.webapp.browserecords.client.BrowseRecordsServiceAsync;
 import org.talend.mdm.webapp.browserecords.client.i18n.MessagesFactory;
 import org.talend.mdm.webapp.browserecords.client.resources.icon.Icons;
@@ -26,6 +27,8 @@ import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.core.El;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.FieldEvent;
+import com.extjs.gxt.ui.client.mvc.AppEvent;
+import com.extjs.gxt.ui.client.mvc.Dispatcher;
 import com.extjs.gxt.ui.client.widget.ComponentHelper;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -61,6 +64,10 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
     protected boolean showSelectButton;
 
     private Boolean editable = true;
+
+    protected String foreignKeyFilter;
+
+    protected String originForeignKeyFilter;
 
     public ForeignKeyField(TypeModel dataType) {
         this.dataType = dataType;
@@ -249,11 +256,21 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
 
     protected void addButtonListener() {
         selectButton.setTitle(MessagesFactory.getMessages().fk_select_title());
+        final ForeignKeyField _this = this;
         selectButton.addClickHandler(new ClickHandler() {
 
             @Override
             public void onClick(ClickEvent ce) {
                 if (foreignConceptName != null) {
+
+                    String foreignKeyfielter = getOriginForeignKeyFilter();
+                    if (foreignKeyfielter.contains("fn")) {
+                        AppEvent event = new AppEvent(BrowseRecordsEvents.TransformFkFilterItem, foreignKeyfielter);
+                        event.setData(BrowseRecords.FOREIGN_KEY_FIELD, _this);
+                        event.setData("foreignKeyFilter", foreignKeyfielter);
+                        Dispatcher.forwardEvent(event);
+                    }
+
                     service.getEntityModel(foreignConceptName, Locale.getLanguage(),
                             new SessionAwareAsyncCallback<EntityModel>() {
 
@@ -306,5 +323,17 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
 
     public SuggestComboBoxField getSuggestBox() {
         return this.suggestBox;
+    }
+
+    public String getForeignKeyFilter() {
+        return foreignKeyFilter;
+    }
+
+    public void setForeignKeyFilter(String foreignKeyFilter) {
+        this.foreignKeyFilter = foreignKeyFilter;
+    }
+
+    public String getOriginForeignKeyFilter() {
+        return this.originForeignKeyFilter == null ? "" : this.originForeignKeyFilter;
     }
 }

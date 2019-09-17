@@ -40,6 +40,8 @@ public class DisplayRuleEngine {
 
     Map<String, TypeModel> metaDatas;
 
+    List<String> funcitonList = new ArrayList<>();
+
     public DisplayRuleEngine(Map<String, TypeModel> metaDatas, String concept) {
         this.metaDatas = metaDatas;
         this.concept = concept;
@@ -189,6 +191,28 @@ public class DisplayRuleEngine {
         return valueItems;
     }
 
+    public List<String> execFKFilterRule(Document dom4jDoc) {
+        List<String> resultVaue = new ArrayList<>();
+        try {
+            String xpath = "result/functionName";
+            Node node = dom4jDoc.selectSingleNode(xpath);
+            if (node != null) {
+                Element el = (Element) node;
+                String preciseXPath = xpath;
+                String style = generateFKFilterStyle(preciseXPath, funcitonList);
+                org.dom4j.Document transformedDocumentValue = XMLUtils.styleDocument(dom4jDoc, style);
+                List<org.dom4j.Node> valueNodeList = transformedDocumentValue.selectNodes(xpath);
+                for (org.dom4j.Node valueNode : valueNodeList) {
+                    resultVaue.add(valueNode.getText());
+                }
+            }
+
+        } catch (Exception e) {
+            LOG.error(e.getMessage());
+        }
+        return resultVaue;
+    }
+
     private String genDefaultValueStyle(String concept, String xpath, String defaultValueRule, TypeModel typeModel) {
         StringBuffer style = new StringBuffer();
         style.append("<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" xmlns:fn=\"http://www.w3.org/2005/xpath-functions\" xmlns:t=\"http://www.talend.com/2010/MDM\" version=\"2.0\">"); //$NON-NLS-1$
@@ -300,5 +324,47 @@ public class DisplayRuleEngine {
             }
         }
         return el.getName();
+    }
+    
+
+    public void setFuncitonList(List<String> funcitonList) {
+        this.funcitonList = funcitonList;
+    }
+
+    private String generateFKFilterStyle(String xpath, List<String> functionNameList) {
+        StringBuffer style = new StringBuffer();
+        style.append("<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" xmlns:fn=\"http://www.w3.org/2005/xpath-functions\" xmlns:t=\"http://www.talend.com/2010/MDM\" version=\"2.0\">"); //$NON-NLS-1$
+
+        style.append("<xsl:output method=\"xml\" indent=\"yes\" omit-xml-declaration=\"yes\"/>"); //$NON-NLS-1$
+        style.append("<xsl:template match=\"/result\">"); //$NON-NLS-1$//$NON-NLS-2$
+        style.append("<xsl:copy>"); //$NON-NLS-1$
+        for(int i = 1; i <= functionNameList.size(); i++){
+            style.append("<xsl:apply-templates select=\"/" + xpath +"[" + i +"]\"/>"); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+        style.append("</xsl:copy>"); //$NON-NLS-1$
+        style.append("</xsl:template>"); //$NON-NLS-1$
+
+        int i = 1;
+        Iterator<String> iterator = functionNameList.iterator();
+        while(iterator.hasNext()){
+            style.append("<xsl:template match=\"/" + xpath +"[" + (i++) + "]\">"); //$NON-NLS-1$ //$NON-NLS-2$
+            style.append("<xsl:copy>"); //$NON-NLS-1$
+            style.append("<xsl:choose>"); //$NON-NLS-1$
+
+            style.append("<xsl:when test=\"not(text())\">"); //$NON-NLS-1$
+            style.append("<xsl:value-of select=\"" + XmlUtil.escapeXml(iterator.next()) + "\"/>"); //$NON-NLS-1$ //$NON-NLS-2$
+            style.append("</xsl:when> "); //$NON-NLS-1$
+            style.append("<xsl:otherwise>"); //$NON-NLS-1$
+            style.append("<xsl:value-of select=\".\"/>"); //$NON-NLS-1$
+            style.append("</xsl:otherwise>"); //$NON-NLS-1$
+            style.append("</xsl:choose> "); //$NON-NLS-1$
+            style.append("</xsl:copy>"); //$NON-NLS-1$
+            style.append("</xsl:template>"); //$NON-NLS-1$
+        }
+
+
+        style.append("</xsl:stylesheet>"); //$NON-NLS-1$
+
+        return style.toString();
     }
 }

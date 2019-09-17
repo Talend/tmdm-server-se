@@ -9,6 +9,7 @@
  */
 package org.talend.mdm.webapp.browserecords.server.actions;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.net.URLEncoder;
@@ -26,6 +27,7 @@ import java.util.TreeMap;
 import java.util.UUID;
 
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -89,6 +91,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import com.amalto.commons.core.utils.XMLUtils;
 import com.amalto.core.integrity.FKIntegrityCheckResult;
@@ -2507,5 +2510,26 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             LOG.error(e.getMessage(), e);
             return false;
         }
+    }
+
+    public List<String> transformFunctionValue(List<String> funcitonList) {
+        List<String> result = new ArrayList<>();
+        try {
+            Document doc = XMLUtils.parse("<result></result>");
+            Element element = doc.getDocumentElement();
+            for (String function : funcitonList) {
+                element.appendChild(doc.createElement("functionName")); //$NON-NLS-1$);
+            }
+
+            org.dom4j.Document doc4j = XmlUtil.parseDocument(doc);
+
+            DisplayRuleEngine ruleEngine = new DisplayRuleEngine(null, null);
+            ruleEngine.setFuncitonList(funcitonList);
+            return ruleEngine.execFKFilterRule(doc4j);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return result;
     }
 }

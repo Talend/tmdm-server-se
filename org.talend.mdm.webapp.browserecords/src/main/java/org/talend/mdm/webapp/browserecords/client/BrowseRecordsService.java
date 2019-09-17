@@ -161,5 +161,5 @@ public interface BrowseRecordsService extends RemoteService {
 
     String handleNavigatorNodeLabel(String jsonString, String language) throws ServiceException;
 
-    List<String> transformFunctionValue(List<String> funciton);
+    List<String> transformFunctionValue(List<String> funciton) throws ServiceException;
 }

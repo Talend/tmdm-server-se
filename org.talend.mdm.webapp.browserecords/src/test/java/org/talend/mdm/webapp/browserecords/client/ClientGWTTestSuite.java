@@ -46,6 +46,7 @@ public class ClientGWTTestSuite extends TestCase /* note this is TestCase and no
         suite.addTestSuite(org.talend.mdm.webapp.browserecords.client.widget.treedetail.MultiOccurrenceChangeItemGWTTest.class);
         suite.addTestSuite(
                 org.talend.mdm.webapp.browserecords.client.widget.inputfield.validator.NumberFieldValidatorGWTTest.class);
+        suite.addTestSuite(org.talend.mdm.webapp.browserecords.client.widget.treedetail.ForeignKeyUtilTest.class);
         return suite;
     }
 }

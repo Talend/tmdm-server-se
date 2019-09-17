@@ -253,7 +253,7 @@ public class BrowseRecordsController extends Controller {
                         AppEvent ae = new AppEvent(event.getType(), fkModel);
                         ae.setData(BrowseRecordsView.ITEMS_DETAIL_PANEL, detailPanel);
                         forwardToView(view, ae);
-                    };
+                    }
                 });
 
     }
@@ -416,8 +416,8 @@ public class BrowseRecordsController extends Controller {
                     Map<String, String> conditionMap = org.talend.mdm.webapp.base.shared.util.CommonUtil
                             .buildConditionByCriteria(cria);
                     String filterValue = conditionMap.get("Value"); //$NON-NLS-1$
-                    if (filterValue.contains("fn")) {
-                        if (filterValue.contains("xpath:")) {
+                    if (filterValue.contains("fn:")) { //$NON-NLS-1$
+                        if (filterValue.contains("xpath:")) { //$NON-NLS-1$
                             Map<String, String> xpathMap = CommonUtil.getArgumentsWithXpath(filterValue);
                             for (Map.Entry<String, String> entry : xpathMap.entrySet()) {
                                 String xpathValue = ForeignKeyUtil.getXpathValue(entry.getValue(),

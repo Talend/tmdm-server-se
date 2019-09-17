@@ -1358,17 +1358,23 @@ public class BrowseRecordsActionTest extends TestCase {
         filter.add("fn:concat(\"This is a\", \" Test\")");
         filter.add("fn:starts-with(\"string\",\"s\")");
         filter.add("fn:starts-with(\"none\",\"s\")");
-        filter.add("fn:starts-with(\"Mugs\",\"s\")");
-        filter.add("fn:starts-with(\"Mug\",\"s\")");
+        filter.add("fn:ends-with(\"Mugs\",\"s\")");
+        filter.add("fn:ends-with(\"Mug\",\"s\")");
         filter.add("fn:string-length(\"Mugs\")");
-        filter.add("fn:string-length(\"Mug\"))");
+        filter.add("fn:string-length(\"Mug\")");
         filter.add("fn:matches(\"this is test\" ,\"test\")");
         filter.add("fn:abs(-5)");
         filter.add("fn:true()");
         filter.add("fn:false()");
-        List<String> result = action.transformFunctionValue(filter);
+        filter.add("fn:max((1,2,3))");
+        List<String> result = null;
+        try {
+            result = action.transformFunctionValue(filter);
+        } catch (Exception e) {
+            fail();
+        }
 
-        assertEquals(12, result.size());
+        assertEquals(13, result.size());
         assertEquals("aas", result.get(0));
         assertEquals("This is a Test", result.get(1));
         assertEquals("true", result.get(2));
@@ -1381,6 +1387,7 @@ public class BrowseRecordsActionTest extends TestCase {
         assertEquals("5", result.get(9));
         assertEquals("true", result.get(10));
         assertEquals("false", result.get(11));
+        assertEquals("3", result.get(12));
     }
 
     /**

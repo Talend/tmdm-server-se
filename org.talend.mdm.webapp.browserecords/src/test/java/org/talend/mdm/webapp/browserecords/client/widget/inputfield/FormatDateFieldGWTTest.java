@@ -426,5 +426,9 @@ public class FormatDateFieldGWTTest extends GWTTestCase {
         @Override
         public void bulkUpdateItem(String concept, String xml, String language, AsyncCallback<String> callback) {
         }
+
+        @Override
+        public void transformFunctionValue(List<String> funciton,  AsyncCallback<List<String>> callback){
+        }
     }
 }

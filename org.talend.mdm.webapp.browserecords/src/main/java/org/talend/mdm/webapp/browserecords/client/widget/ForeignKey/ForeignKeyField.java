@@ -325,10 +325,6 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
         return this.suggestBox;
     }
 
-    public String getForeignKeyFilter() {
-        return foreignKeyFilter;
-    }
-
     public void setForeignKeyFilter(String foreignKeyFilter) {
         this.foreignKeyFilter = foreignKeyFilter;
     }

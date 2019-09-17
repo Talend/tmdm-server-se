@@ -263,11 +263,11 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
             public void onClick(ClickEvent ce) {
                 if (foreignConceptName != null) {
 
-                    String foreignKeyfielter = getOriginForeignKeyFilter();
-                    if (foreignKeyfielter.contains("fn")) {
-                        AppEvent event = new AppEvent(BrowseRecordsEvents.TransformFkFilterItem, foreignKeyfielter);
+                    String foreignKeyFilter = getOriginForeignKeyFilter();
+                    if (foreignKeyFilter.contains("fn")) {
+                        AppEvent event = new AppEvent(BrowseRecordsEvents.TransformFkFilterItem, foreignKeyFilter);
                         event.setData(BrowseRecords.FOREIGN_KEY_FIELD, _this);
-                        event.setData("foreignKeyFilter", foreignKeyfielter);
+                        event.setData("foreignKeyFilter", foreignKeyFilter);
                         Dispatcher.forwardEvent(event);
                     }
 

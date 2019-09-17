@@ -662,6 +662,75 @@ public class StoragePrepareTest extends TestCase {
         }
     }
 
+    //TMDM-14012 XPath functions cannot be used on default values
+    public void testParseXPathWithDefaultValueInDataModel() {
+        Storage storage = new SecuredStorage(new HibernateStorage("EEC_Default_Value", StorageType.MASTER), userSecurity);//$NON-NLS-1$
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(StoragePrepareTest.class.getResourceAsStream("EEC_Default_Value.xsd"));//$NON-NLS-1$
+        MockMetadataRepositoryAdmin.INSTANCE.register("EEC_Default_Value", repository);//$NON-NLS-1$
+
+        storage.init(getDatasource("H2-DS3"));// //$NON-NLS-1$
+        storage.prepare(repository, Collections.<Expression> emptySet(), true, true);
+        ((MockStorageAdmin) ServerContext.INSTANCE.get().getStorageAdmin()).register(storage);
+
+        storage.begin();
+        ComplexTypeMetadata country = repository.getComplexType("Country");//$NON-NLS-1$
+        UserQueryBuilder qb = from(country);
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(0, results.getCount());
+        } finally {
+            results.close();
+        }
+        storage.end();
+
+        List<DataRecord> records = new ArrayList<DataRecord>();
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+        records.add(factory.read(repository, country, "<Country><Code>1</Code><ImportToBelarus></ImportToBelarus><ImportToString></ImportToString></Country>")); //$NON-NLS-1$
+        records.add(factory.read(repository, country, "<Country><Code>2</Code><ImportToBelarus>false</ImportToBelarus><ImportToString>hello world</ImportToString></Country>")); //$NON-NLS-1$
+        records.add(factory.read(repository, country, "<Country><Code>3</Code><ImportToBelarus>true</ImportToBelarus><ImportToString>very good</ImportToString></Country>")); //$NON-NLS-1$
+        records.add(factory.read(repository, country, "<Country><Code>4</Code><ImportToBelarus>false</ImportToBelarus><ImportToString>This is a test</ImportToString></Country>")); //$NON-NLS-1$
+        try {
+            storage.begin();
+            storage.update(records);
+            storage.commit();
+        } finally {
+            storage.end();
+        }
+        storage.begin();
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(4, results.getCount());
+            for (DataRecord result : results) {
+                String id = result.get("Code").toString();
+                switch (id) {
+                case "1"://$NON-NLS-1$
+                    assertEquals(false, result.get("Country/ImportToBelarus"));//$NON-NLS-1$
+                    assertEquals(null, result.get("Country/ImportToString"));//$NON-NLS-1$
+                    break;
+                case "2"://$NON-NLS-1$
+                    assertEquals(false, result.get("Country/ImportToBelarus"));//$NON-NLS-1$
+                    assertEquals("hello world", result.get("Country/ImportToString"));//$NON-NLS-1$ $NON-NLS-2$
+                    break;
+                case "3"://$NON-NLS-1$
+                    assertEquals(true, result.get("Country/ImportToBelarus"));//$NON-NLS-1$
+                    assertEquals("very good", result.get("Country/ImportToString"));//$NON-NLS-1$ $NON-NLS-2$
+                    break;
+                case "4"://$NON-NLS-1$
+                    assertEquals(false, result.get("Country/ImportToBelarus"));//$NON-NLS-1$
+                    assertEquals("This is a test", result.get("Country/ImportToString"));//$NON-NLS-1$ $NON-NLS-2$
+                    break;
+                default:
+                    assertNull(id);
+                }
+            }
+        } finally {
+            results.close();
+        }
+        storage.end();
+        storage.close();
+    }
+
     protected static DataSourceDefinition getDatasource(String dataSourceName) {
         return ServerContext.INSTANCE.get().getDefinition(dataSourceName, "MDM");
     }

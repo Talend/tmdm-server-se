@@ -1,0 +1,76 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:import namespace="http://www.w3.org/2001/XMLSchema" />
+    <xsd:simpleType name="IndicatorStringType">
+        <xsd:annotation>
+            <xsd:documentation>IndicatorStringType</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:string" />
+    </xsd:simpleType>
+    <xsd:simpleType name="IndicatorType">
+        <xsd:annotation>
+            <xsd:documentation>IndicatorType</xsd:documentation>
+        </xsd:annotation>
+        <xsd:restriction base="xsd:boolean" />
+    </xsd:simpleType>  
+    <xsd:element name="Country" type="CountryType">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Label_EN">Country</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:unique name="Country">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="Code" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:complexType name="CountryType">
+        <xsd:sequence>
+            <xsd:element maxOccurs="1" minOccurs="1" name="Code" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Label_EN">Code</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="ImportToBelarus" type="IndicatorType">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Default_Value_Rule">fn:false()</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="ImportToString" type="IndicatorStringType">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Default_Value_Rule">fn:concat("hello", " ", "world")</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:element name="Product">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1" name="Id" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="Name" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="Gender" type="xsd:boolean">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                        <xsd:appinfo source="X_Default_Value_Rule">fn:false()</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="Product">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="Id" />
+        </xsd:unique>
+    </xsd:element>
+</xsd:schema>

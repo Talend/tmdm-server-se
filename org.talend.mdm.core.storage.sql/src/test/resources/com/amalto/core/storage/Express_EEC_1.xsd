@@ -1,0 +1,261 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:import namespace="http://www.w3.org/2001/XMLSchema" />
+    <xsd:element name="Country" type="opnsi_CountryType">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Label_EN">Country</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:unique name="Country">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="Code" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:complexType name="opnsi_CountryType">
+        <xsd:sequence>
+            <xsd:element maxOccurs="1" minOccurs="1" name="Code" type="csdo_CountryCodeType">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Label_EN">Code</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="Name" type="ClassifiedReferenceDataItemName4000Type">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Label_EN">Name</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="unbounded" minOccurs="0" name="CountryCode" type="csdo_CountryCodeType_11OP">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Label_EN">CountryCode</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey">Country</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKeyInfo">Country/Code</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKeyInfo">Country/Name</xsd:appinfo>
+                    <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:simpleType name="csdo_CountryCodeType">
+        <xsd:restriction base="bdt_CodeType">
+            <xsd:pattern value="[A-Z]{2}" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="ClassifiedReferenceDataItemName4000Type">
+        <xsd:restriction base="bdt_NameType">
+            <xsd:maxLength value="4000" />
+            <xsd:minLength value="1" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="csdo_CountryCodeType_11OP">
+        <xsd:restriction base="bdt_CodeType" />
+    </xsd:simpleType>
+    <xsd:simpleType name="bdt_CodeType">
+        <xsd:restriction base="eec_token" />
+    </xsd:simpleType>
+    <xsd:simpleType name="bdt_NameType">
+        <xsd:restriction base="eec_token" />
+    </xsd:simpleType>
+    <xsd:simpleType name="eec_token">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="[A-Z]{2}" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:element name="cacdo_RegisterFreeWarehouseDetails" type="cacdo_1_2_5_RegisterFreeWarehouseDetailsType">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Label_EN">cacdo_RegisterFreeWarehouseDetails</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:unique name="cacdo_RegisterFreeWarehouseDetails">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="NSIKey" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:complexType name="cacdo_1_2_5_RegisterFreeWarehouseDetailsType">
+        <xsd:sequence>
+            <xsd:element name="casdo_RegisterCountryCode" type="csdo_0_3_3_CountryCodeType_nsi">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Label_EN">casdo_RegisterCountryCode</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey">Country</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKeyInfo">Country/Name</xsd:appinfo>
+                    <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="cacdo_RegisterOrganizationDetails" type="cacdo_1_2_5_RegisterOrganizationDetailsType_cc07">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Label_EN">cacdo_RegisterOrganizationDetails</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="1" name="NSIKey" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Label_EN">NSIKey</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:element name="cacdo_RegisterCustomsWarehouseDetails" type="cacdo_1_2_5_RegisterCustomsWarehouseDetailsType">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Label_EN">cacdo_RegisterCustomsWarehouseDetails</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:unique name="cacdo_RegisterCustomsWarehouseDetails">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="NSIKey" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:complexType name="cacdo_1_2_5_RegisterCustomsWarehouseDetailsType">
+        <xsd:sequence>
+            <xsd:element maxOccurs="1" minOccurs="0" name="casdo_RegisterCountryCode" type="csdo_0_3_3_CountryCodeType_nsi">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_ForeignKey">Country</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKeyInfo">Country/Name</xsd:appinfo>
+                    <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_EN">casdo_RegisterCountryCode</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="cacdo_RegisterOrganizationDetails" type="cacdo_1_2_5_RegisterOrganizationDetailsType_cc09">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Label_EN">cacdo_RegisterOrganizationDetails</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="1" name="NSIKey" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Label_EN">NSIKey</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="cacdo_1_2_5_RegisterOrganizationDetailsType_cc09">
+        <xsd:complexContent>
+            <xsd:extension base="cacdo_1_2_5_CAOrganizationBaseType_cc09">
+                <xsd:sequence>
+                    <xsd:element minOccurs="0" name="cacdo_PostalAddressDetails" type="ccdo_0_3_3_AddressDetailsType_cc09">
+                        <xsd:annotation>
+                            <xsd:appinfo source="X_Label_EN">cacdo_PostalAddressDetails</xsd:appinfo>
+                            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="ccdo_0_3_3_AddressDetailsType_cc09">
+        <xsd:sequence>
+            <xsd:element minOccurs="0" name="csdo_CountryCode" type="csdo_0_3_3_CountryCodeType_nsi">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_ForeignKey">Country</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKeyInfo">Country/Name</xsd:appinfo>
+                    <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_EN">csdo_CountryCode</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:simpleType name="csdo_0_3_3_CountryCodeType_nsi">
+        <xsd:restriction base="bdt_0_3_3_CodeType" />
+    </xsd:simpleType>
+    <xsd:complexType name="cacdo_1_2_5_CAOrganizationBaseType_cc09">
+        <xsd:sequence>
+            <xsd:element name="ccdo_OrganizationDetails" type="ccdo_0_3_3_OrganizationDetailsType_cc09">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Label_EN">ccdo_OrganizationDetails</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="ccdo_0_3_3_OrganizationDetailsType_cc09">
+        <xsd:sequence>
+            <xsd:element minOccurs="0" name="csdo_CountryCode" type="csdo_0_3_3_CountryCodeType_nsi">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_ForeignKey">Country</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKeyInfo">Country/Name</xsd:appinfo>
+                    <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_EN">csdo_CountryCode</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:simpleType name="csdo_0_3_3_CountryCodeType_nsi">
+        <xsd:restriction base="bdt_0_3_3_CodeType" />
+    </xsd:simpleType>
+    <xsd:simpleType name="bdt_0_3_3_CodeType">
+        <xsd:restriction base="eec_token" />
+    </xsd:simpleType>
+    <xsd:simpleType name="eec_token">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="[A-Z]{2}" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:complexType name="cacdo_1_2_5_RegisterOrganizationDetailsType_cc07">
+        <xsd:complexContent>
+            <xsd:extension base="cacdo_1_2_5_CAOrganizationBaseType_cc07">
+                <xsd:sequence>
+                    <xsd:element minOccurs="0" name="cacdo_PostalAddressDetails" type="ccdo_0_3_3_AddressDetailsType_cc07">
+                        <xsd:annotation>
+                            <xsd:appinfo source="X_Label_EN">cacdo_PostalAddressDetails</xsd:appinfo>
+                            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="cacdo_1_2_5_CAOrganizationBaseType_cc07">
+        <xsd:sequence>
+            <xsd:element name="ccdo_OrganizationDetails" type="ccdo_0_3_3_OrganizationDetailsType_cc07">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Label_EN">ccdo_OrganizationDetails</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="ccdo_0_3_3_OrganizationDetailsType_cc07">
+        <xsd:sequence>
+            <xsd:element minOccurs="0" name="csdo_CountryCode" type="csdo_0_3_3_CountryCodeType_nsi">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_ForeignKey">Country</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKeyInfo">Country/Name</xsd:appinfo>
+                    <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_EN">csdo_CountryCode</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:simpleType name="csdo_0_3_3_CountryCodeType_nsi">
+        <xsd:restriction base="bdt_0_3_3_CodeType" />
+    </xsd:simpleType>
+    <xsd:complexType name="ccdo_0_3_3_AddressDetailsType_cc07">
+        <xsd:sequence>
+            <xsd:element minOccurs="0" name="csdo_CountryCode" type="csdo_0_3_3_CountryCodeType_nsi">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Label_EN">csdo_CountryCode</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey">Country</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKeyInfo">Country/Name</xsd:appinfo>
+                    <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:simpleType name="csdo_0_3_3_CountryCodeType_nsi">
+        <xsd:restriction base="bdt_0_3_3_CodeType" />
+    </xsd:simpleType>
+</xsd:schema>

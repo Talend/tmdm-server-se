@@ -65,8 +65,6 @@ import com.extjs.gxt.ui.client.widget.form.Field;
  */
 public class BrowseRecordsController extends Controller {
 
-    public static final String XPATH_PREFIX = "xpath:"; //$NON-NLS-1$
-
     private BrowseRecordsView view;
 
     private BrowseRecordsServiceAsync service;
@@ -408,22 +406,21 @@ public class BrowseRecordsController extends Controller {
     private void onTransformFkFilter(final AppEvent event) {
         String foreignKeyFilter = event.getData();
         List<String> filterList = new ArrayList<String>();
-        if (foreignKeyFilter != null && foreignKeyFilter.length() > 0 && foreignKeyFilter.contains("fn:")) {
+        if (foreignKeyFilter != null && foreignKeyFilter.contains(CommonUtil.FN_PREFIX)) {
             ForeignKeyField foreignKeyField = event.getData(BrowseRecords.FOREIGN_KEY_FIELD);
-            String[] criterias = org.talend.mdm.webapp.base.shared.util.CommonUtil
-                    .getCriteriasByForeignKeyFilter(foreignKeyFilter);
+            String[] criterias = CommonUtil.getCriteriasByForeignKeyFilter(foreignKeyFilter);
             if (foreignKeyField instanceof ForeignKeySelector) {
                 ForeignKeySelector foreignKeySelector = (ForeignKeySelector) foreignKeyField;
                 for (String cria : criterias) {
-                    Map<String, String> conditionMap = org.talend.mdm.webapp.base.shared.util.CommonUtil
-                            .buildConditionByCriteria(cria);
+                    Map<String, String> conditionMap = CommonUtil.buildConditionByCriteria(cria);
                     String filterValue = conditionMap.get("Value"); //$NON-NLS-1$
-                    if (filterValue.contains("fn:")) { //$NON-NLS-1$
-                        if (filterValue.contains(XPATH_PREFIX)) { //$NON-NLS-1$
+                    if (CommonUtil.isFunction(filterValue)) {
+                        if (CommonUtil.containsXPath(filterValue)) {
                             Map<String, String> xpathMap = CommonUtil.getArgumentsWithXpath(filterValue);
                             for (Map.Entry<String, String> entry : xpathMap.entrySet()) {
-                                String xpathValue = ForeignKeyUtil.getXpathValue(entry.getValue(),
-                                        foreignKeySelector.getCurrentPath(), foreignKeySelector.getItemNode());
+                                String xpathValue = ForeignKeyUtil
+                                        .getXpathValue(entry.getValue(), foreignKeySelector.getCurrentPath(),
+                                                foreignKeySelector.getItemNode());
                                 filterValue = filterValue.replaceAll(entry.getKey(), xpathValue);
                             }
                         }
@@ -434,22 +431,20 @@ public class BrowseRecordsController extends Controller {
                 ForeignKeyCellField foreignKeyCellField = (ForeignKeyCellField) foreignKeyField;
                 for (int i = 0; i < criterias.length; i++) {
                     String criteria = criterias[i];
-                    Map<String, String> conditionMap = org.talend.mdm.webapp.base.shared.util.CommonUtil
-                            .buildConditionByCriteria(criteria);
-                    String filterValue = conditionMap.get("Value"); //$NON-NLS-1$   fn:concat("xpath:Product/Name", "s")
-                    if (org.talend.mdm.webapp.base.shared.util.CommonUtil.isFunction(filterValue)) {
-                        if (filterValue.contains("xpath:")) {
+                    Map<String, String> conditionMap = CommonUtil.buildConditionByCriteria(criteria);
+                    String filterValue = conditionMap.get("Value"); //$NON-NLS-1$
+                    if (CommonUtil.isFunction(filterValue)) {
+                        if (CommonUtil.containsXPath(filterValue)) {
                             Map<Integer, Map<String, Field<?>>> targetFields = foreignKeyCellField.getTargetFields();
                             if (targetFields != null && targetFields.get(i) != null) {
                                 Map<String, Field<?>> targetFieldMap = targetFields.get(i);
                                 for (Map.Entry<String, Field<?>> entry : targetFieldMap.entrySet()) {
                                     Field<?> targetField = entry.getValue();
                                     Object targetValue = targetField.getValue();
-                                    String targetValueStr = "";
+                                    String targetValueStr;
                                     if (targetValue != null) {
                                         if (targetValue instanceof ForeignKeyBean) {
-                                            targetValueStr = org.talend.mdm.webapp.base.shared.util.CommonUtil
-                                                    .unwrapFkValue(((ForeignKeyBean) targetValue).getId());
+                                            targetValueStr = CommonUtil.unwrapFkValue(((ForeignKeyBean) targetValue).getId());
                                         } else {
                                             targetValueStr = targetField.getValue().toString();
                                         }
@@ -458,7 +453,6 @@ public class BrowseRecordsController extends Controller {
                                     }
                                     filterValue = filterValue.replaceAll(entry.getKey(), targetValueStr);
                                 }
-
                             }
                         }
                     }

@@ -23,6 +23,10 @@ import com.google.gwt.regexp.shared.RegExp;
  */
 public class CommonUtil {
 
+    public static final String FN_PREFIX = "fn:"; //$NON-NLS-1$
+
+    public static final String XPATH_PREFIX = "xpath:"; //$NON-NLS-1$
+
     public static String escape(String src) {
         int i;
         char j;
@@ -209,7 +213,22 @@ public class CommonUtil {
     }
 
     public static boolean isFunction(String foreignKeyFilterValue) {
-        return foreignKeyFilterValue.startsWith("fn"); //$NON-NLS-1$
+        return foreignKeyFilterValue.startsWith(FN_PREFIX);
+    }
+
+    public static boolean containsXPath(String foreignKeyFilterValue) {
+        if(foreignKeyFilterValue.contains(XPATH_PREFIX)){
+            return true;
+        }
+        String filter = foreignKeyFilterValue.substring(foreignKeyFilterValue.lastIndexOf("(") + 1, foreignKeyFilterValue.indexOf(")"));
+        String[] filters = filter.split(",");
+        for(String filterContent : filters){
+            filterContent = filterContent.trim();
+            if(filterContent.startsWith("/") || filterContent.startsWith(".") || filterContent.startsWith("..")){
+                return true;
+            }
+        }
+        return false;
     }
 
     public static Map<String, String> buildConditionByCriteria(String criteria) {
@@ -274,20 +293,23 @@ public class CommonUtil {
 
     public static Map<String, String> getArgumentsWithXpath(String function){
         Map<String, String> arguments = new HashMap<String, String>();
-        RegExp reg = RegExp.compile("xpath:(.*)");
+        RegExp reg = RegExp.compile("\\((.*)\\)"); //$NON-NLS-1$
         MatchResult matchResult = reg.exec(function);
-        String value = "";
+        String value = ""; //$NON-NLS-1$
         while(matchResult != null){
             value = matchResult.getGroup(0);
             break;
         }
-        RegExp regExp = RegExp.compile("xpath:(([A-Z][a-z]*)|((\\.)+))/(([A-Z][a-z]*)/*)*", "g"); //$NON-NLS-1$
+        RegExp regExp = RegExp.compile("((xpath:(([a-zA-Z]*)|((\\.)+)))|/([a-zA-Z]*))/(([a-zA-Z]*)/*)*", "g"); //$NON-NLS-1$ //$NON-NLS-2$
         MatchResult matcher = regExp.exec(value);
         while (matcher != null) {
             String xpathValue = matcher.getGroup(0);
-            arguments.put(xpathValue, xpathValue.replace("xpath:",""));
+            if(xpathValue.startsWith(XPATH_PREFIX)){
+                arguments.put(xpathValue, xpathValue.replace("xpath:","")); //$NON-NLS-1$ //$NON-NLS-2$
+            } else if(xpathValue.startsWith("/")){
+                arguments.put(xpathValue, xpathValue.substring(1));
+            }
             matcher = regExp.exec(value);
-            //break;
         }
         return arguments;
     }

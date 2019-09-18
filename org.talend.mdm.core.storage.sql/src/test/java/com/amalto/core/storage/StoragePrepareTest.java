@@ -93,6 +93,7 @@ public class StoragePrepareTest extends TestCase {
         }
     }
 
+    //TMDM-13960 Error deploying data model
     public void testEECDataModel() {
         Storage storage = new SecuredStorage(new HibernateStorage("Express_EEC_1", StorageType.MASTER), userSecurity);//$NON-NLS-1$
         MetadataRepository repository = new MetadataRepository();

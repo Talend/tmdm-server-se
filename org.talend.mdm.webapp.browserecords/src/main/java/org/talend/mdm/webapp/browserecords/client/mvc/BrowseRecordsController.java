@@ -65,6 +65,8 @@ import com.extjs.gxt.ui.client.widget.form.Field;
  */
 public class BrowseRecordsController extends Controller {
 
+    public static final String XPATH_PREFIX = "xpath:"; //$NON-NLS-1$
+
     private BrowseRecordsView view;
 
     private BrowseRecordsServiceAsync service;
@@ -406,7 +408,7 @@ public class BrowseRecordsController extends Controller {
     private void onTransformFkFilter(final AppEvent event) {
         String foreignKeyFilter = event.getData();
         List<String> filterList = new ArrayList<String>();
-        if (foreignKeyFilter != null && foreignKeyFilter.length() > 0 && foreignKeyFilter.contains("fn")) {
+        if (foreignKeyFilter != null && foreignKeyFilter.length() > 0 && foreignKeyFilter.contains("fn:")) {
             ForeignKeyField foreignKeyField = event.getData(BrowseRecords.FOREIGN_KEY_FIELD);
             String[] criterias = org.talend.mdm.webapp.base.shared.util.CommonUtil
                     .getCriteriasByForeignKeyFilter(foreignKeyFilter);
@@ -417,7 +419,7 @@ public class BrowseRecordsController extends Controller {
                             .buildConditionByCriteria(cria);
                     String filterValue = conditionMap.get("Value"); //$NON-NLS-1$
                     if (filterValue.contains("fn:")) { //$NON-NLS-1$
-                        if (filterValue.contains("xpath:")) { //$NON-NLS-1$
+                        if (filterValue.contains(XPATH_PREFIX)) { //$NON-NLS-1$
                             Map<String, String> xpathMap = CommonUtil.getArgumentsWithXpath(filterValue);
                             for (Map.Entry<String, String> entry : xpathMap.entrySet()) {
                                 String xpathValue = ForeignKeyUtil.getXpathValue(entry.getValue(),

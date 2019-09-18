@@ -12,6 +12,7 @@ package org.talend.mdm.webapp.browserecords.client.mvc;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
@@ -530,12 +531,7 @@ public class BrowseRecordsView extends View {
     }
 
     private void onTransformFkFilter(AppEvent event) {
-        List<String> filterValue = event.getData();
-        Stack<String> stack = new Stack<String>();
-        for (String value : filterValue) {
-            stack.push(value);
-        }
-
+        LinkedList<String> filterValue = new LinkedList<String>((List<String>)event.getData());
         String foreignKeyFilter = event.getData("foreignKeyFilter");
         String[] criterias = org.talend.mdm.webapp.base.shared.util.CommonUtil.getCriteriasByForeignKeyFilter(foreignKeyFilter);
         StringBuilder sb = new StringBuilder();
@@ -543,7 +539,7 @@ public class BrowseRecordsView extends View {
             Map<String, String> conditionMap = org.talend.mdm.webapp.base.shared.util.CommonUtil.buildConditionByCriteria(cria);
             String returnFilterValue = conditionMap.get("Value"); //$NON-NLS-1$
             if (returnFilterValue.contains("fn")) {
-                conditionMap.put("Value", stack.pop());
+                conditionMap.put("Value", filterValue.poll());
             }
             String predicate = conditionMap.get("Predicate");
             predicate = predicate == null ? "" : predicate;

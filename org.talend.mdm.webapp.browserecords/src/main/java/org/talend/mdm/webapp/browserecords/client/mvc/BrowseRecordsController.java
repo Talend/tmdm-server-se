@@ -421,6 +421,9 @@ public class BrowseRecordsController extends Controller {
                                 String xpathValue = ForeignKeyUtil
                                         .getXpathValue(entry.getValue(), foreignKeySelector.getCurrentPath(),
                                                 foreignKeySelector.getItemNode());
+                                if(xpathValue.equals(entry.getValue())){
+                                    xpathValue = "";
+                                }
                                 filterValue = filterValue.replaceAll(entry.getKey(), xpathValue);
                             }
                         }

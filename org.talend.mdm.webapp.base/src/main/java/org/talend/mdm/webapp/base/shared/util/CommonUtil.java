@@ -217,14 +217,16 @@ public class CommonUtil {
     }
 
     public static boolean containsXPath(String foreignKeyFilterValue) {
-        if(foreignKeyFilterValue.contains(XPATH_PREFIX)){
+        if (foreignKeyFilterValue.contains(XPATH_PREFIX)) {
             return true;
         }
-        String filter = foreignKeyFilterValue.substring(foreignKeyFilterValue.lastIndexOf("(") + 1, foreignKeyFilterValue.indexOf(")"));
-        String[] filters = filter.split(",");
-        for(String filterContent : filters){
+        String filter = foreignKeyFilterValue
+                .substring(foreignKeyFilterValue.lastIndexOf("(") + 1, foreignKeyFilterValue.indexOf(")")); //$NON-NLS-1$  //$NON-NLS-2$
+        String[] filters = filter.split(","); //$NON-NLS-1$
+        for (String filterContent : filters) {
             filterContent = filterContent.trim();
-            if(filterContent.startsWith("/") || filterContent.startsWith(".") || filterContent.startsWith("..")){
+            if (filterContent.startsWith("/") || filterContent.startsWith(".") //$NON-NLS-1$
+                    || filterContent.startsWith("..")) { //$NON-NLS-1$ //$NON-NLS-2$
                 return true;
             }
         }
@@ -304,9 +306,13 @@ public class CommonUtil {
         MatchResult matcher = regExp.exec(value);
         while (matcher != null) {
             String xpathValue = matcher.getGroup(0);
-            if(xpathValue.startsWith(XPATH_PREFIX)){
-                arguments.put(xpathValue, xpathValue.replace("xpath:","")); //$NON-NLS-1$ //$NON-NLS-2$
-            } else if(xpathValue.startsWith("/")){
+            if (xpathValue.startsWith(XPATH_PREFIX)) {
+                String path = xpathValue.replace("xpath:", ""); //$NON-NLS-1$ //$NON-NLS-2$
+                if (path.startsWith("/")) {
+                    path = path.substring(1);
+                }
+                arguments.put(xpathValue, path);
+            } else if (xpathValue.startsWith("/")) {
                 arguments.put(xpathValue, xpathValue.substring(1));
             }
             matcher = regExp.exec(value);

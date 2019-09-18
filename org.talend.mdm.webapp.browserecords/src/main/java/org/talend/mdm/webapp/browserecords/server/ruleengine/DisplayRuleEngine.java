@@ -323,7 +323,7 @@ public class DisplayRuleEngine {
         }
         return el.getName();
     }
-    
+
 
     public void setFuncitonList(List<String> funcitonList) {
         this.funcitonList = funcitonList;
@@ -332,7 +332,6 @@ public class DisplayRuleEngine {
     private String generateFKFilterStyle(String xpath, List<String> functionNameList) {
         StringBuffer style = new StringBuffer();
         style.append("<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" xmlns:fn=\"http://www.w3.org/2005/xpath-functions\" xmlns:t=\"http://www.talend.com/2010/MDM\" version=\"2.0\">"); //$NON-NLS-1$
-
         style.append("<xsl:output method=\"xml\" indent=\"yes\" omit-xml-declaration=\"yes\"/>"); //$NON-NLS-1$
         style.append("<xsl:template match=\"/result\">"); //$NON-NLS-1$//$NON-NLS-2$
         style.append("<xsl:copy>"); //$NON-NLS-1$
@@ -348,7 +347,6 @@ public class DisplayRuleEngine {
             style.append("<xsl:template match=\"/").append(xpath).append("[").append(i++).append("]\">"); //$NON-NLS-1$ //$NON-NLS-2$
             style.append("<xsl:copy>"); //$NON-NLS-1$
             style.append("<xsl:choose>"); //$NON-NLS-1$
-
             style.append("<xsl:when test=\"not(text())\">"); //$NON-NLS-1$
             style.append("<xsl:value-of select=\"").append(XmlUtil.escapeXml(iterator.next())).append("\"/>"); //$NON-NLS-1$ //$NON-NLS-2$
             style.append("</xsl:when> "); //$NON-NLS-1$
@@ -359,10 +357,7 @@ public class DisplayRuleEngine {
             style.append("</xsl:copy>"); //$NON-NLS-1$
             style.append("</xsl:template>"); //$NON-NLS-1$
         }
-
-
         style.append("</xsl:stylesheet>"); //$NON-NLS-1$
-
         return style.toString();
     }
 }

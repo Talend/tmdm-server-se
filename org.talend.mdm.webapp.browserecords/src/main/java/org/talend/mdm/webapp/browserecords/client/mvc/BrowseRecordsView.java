@@ -444,25 +444,27 @@ public class BrowseRecordsView extends View {
                 Map<String, String> conditionMap = org.talend.mdm.webapp.base.shared.util.CommonUtil
                         .buildConditionByCriteria(criterias[i]);
                 String filterValue = conditionMap.get("Value"); //$NON-NLS-1$
-                if (filterValue != null && !filterValue.isEmpty()
-                        && !org.talend.mdm.webapp.base.shared.util.CommonUtil.isFilterValue(filterValue)) {
+                if (filterValue != null && !filterValue.isEmpty() && !org.talend.mdm.webapp.base.shared.util.CommonUtil
+                        .isFilterValue(filterValue)) {
                     String targetPath;
                     if (org.talend.mdm.webapp.base.shared.util.CommonUtil.isRelativePath(filterValue)) {
                         if (filterValue.startsWith(".")) { //$NON-NLS-1$
                             targetPath = xpath + filterValue.substring(filterValue.indexOf(".")); //$NON-NLS-1$
                         } else if (filterValue.startsWith("..")) { //$NON-NLS-1$
-                            targetPath = xpath.substring(0, xpath.lastIndexOf("/")) + filterValue.substring(filterValue.indexOf("..")); //$NON-NLS-1$ //$NON-NLS-2$
+                            targetPath = xpath.substring(0, xpath.lastIndexOf("/")) + filterValue
+                                    .substring(filterValue.indexOf("..")); //$NON-NLS-1$ //$NON-NLS-2$
                         }
-                    } else if(org.talend.mdm.webapp.base.shared.util.CommonUtil.isFunction(filterValue)){
-                        if(filterValue.contains("xpath:")){
-                            Map<String, String> xpathMap = org.talend.mdm.webapp.base.shared.util.CommonUtil.getArgumentsWithXpath(filterValue);
+                    } else if (org.talend.mdm.webapp.base.shared.util.CommonUtil.isFunction(filterValue)) {
+                        if (filterValue.contains("xpath:")) {
+                            Map<String, String> xpathMap = org.talend.mdm.webapp.base.shared.util.CommonUtil
+                                    .getArgumentsWithXpath(filterValue);
                             Map<String, Field<?>> xpathFieldMap = null;
                             if (targetFieldMap.containsKey(i)) {
                                 xpathFieldMap = targetFieldMap.get(i);
                             } else {
                                 xpathFieldMap = new HashMap<String, Field<?>>();
                             }
-                            for(Map.Entry<String, String> entry : xpathMap.entrySet()){
+                            for (Map.Entry<String, String> entry : xpathMap.entrySet()) {
                                 xpathFieldMap.put(entry.getKey(), fieldMap.get(entry.getValue()));
                             }
                             targetFieldMap.put(i, xpathFieldMap);
@@ -527,7 +529,7 @@ public class BrowseRecordsView extends View {
     }
 
     private void onTransformFkFilter(AppEvent event) {
-        LinkedList<String> filterValue = new LinkedList<String>((List<String>)event.getData());
+        LinkedList<String> filterValue = new LinkedList<String>((List<String>) event.getData());
         String foreignKeyFilter = event.getData("foreignKeyFilter");
         String[] criterias = org.talend.mdm.webapp.base.shared.util.CommonUtil.getCriteriasByForeignKeyFilter(foreignKeyFilter);
         StringBuilder sb = new StringBuilder();

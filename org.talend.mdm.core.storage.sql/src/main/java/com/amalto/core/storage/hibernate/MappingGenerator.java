@@ -26,6 +26,7 @@ import org.talend.mdm.commmon.metadata.DefaultMetadataVisitor;
 import org.talend.mdm.commmon.metadata.EnumerationFieldMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
+import org.talend.mdm.commmon.metadata.MetadataUtils;
 import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
 import org.talend.mdm.commmon.metadata.SimpleTypeFieldMetadata;
 import org.talend.mdm.commmon.metadata.TypeMetadata;
@@ -658,15 +659,15 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
 
     private void addDefaultValueAttribute(FieldMetadata field, Element columnElement) {
         // default value
-        String defaultValue = field.<String>getData(MetadataRepository.DEFAULT_VALUE);
+        String defaultValue = field.<String> getData(MetadataRepository.DEFAULT_VALUE);
         if (StringUtils.isNotBlank(defaultValue)) {
 
             Attr defaultValueAttr = document.createAttribute("default"); //$NON-NLS-1$
-
-            if (!field.getType().getName().equals(TypeMapping.SQL_TYPE_BOOLEAN)
-                    || HibernateStorageUtils.isBooleanDefaultValue(field.getType().getName(), defaultValue.trim())) {
-                defaultValueAttr.setValue(HibernateStorageUtils.convertedDefaultValue(field.getType().getName(),
-                        dataSource.getDialectName(), defaultValue.trim(), "'"));
+            //TMDM-14012 fixed the block of code to parse the XPath, and got the correct field type Name
+            String fieldName = MetadataUtils.getSuperConcreteType(field.getType()).getName();
+            if (!fieldName.equals(TypeMapping.SQL_TYPE_BOOLEAN)
+                    || HibernateStorageUtils.isBooleanDefaultValue(fieldName, defaultValue.trim())) {
+                defaultValueAttr.setValue(HibernateStorageUtils.convertedDefaultValue(fieldName, dataSource.getDialectName(), defaultValue.trim(), "'")); //$NON-NLS-1$
                 columnElement.getAttributes().setNamedItem(defaultValueAttr);
             }
         }

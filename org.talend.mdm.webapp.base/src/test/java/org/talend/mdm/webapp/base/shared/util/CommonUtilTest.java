@@ -154,6 +154,12 @@ public class CommonUtilTest extends TestCase {
         assertEquals(1, args.size());
         assertTrue(args.containsKey("xpath:/Caracteristique/Environnement"));
         assertEquals("Caracteristique/Environnement", args.get("xpath:/Caracteristique/Environnement"));
+
+        function = "fn:concat(&quot;xpath:/Product/Name&quot;, &quot; &quot;)";
+        args = CommonUtil.getArgumentsWithXpath(function);
+        assertEquals(1, args.size());
+        assertTrue(args.containsKey("xpath:/Product/Name"));
+        assertEquals("Product/Name", args.get("xpath:/Product/Name"));
     }
 
     public void testContainsXPath() {

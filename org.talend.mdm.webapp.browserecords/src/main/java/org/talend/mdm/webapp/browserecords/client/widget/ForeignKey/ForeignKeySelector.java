@@ -226,33 +226,7 @@ public class ForeignKeySelector extends ForeignKeyField implements ReturnCriteri
                 if (org.talend.mdm.webapp.base.shared.util.CommonUtil.isFilterValue(filterValue)) {
                     filterValue = filterValue.substring(1, filterValue.length() - 1);
                 } else if (org.talend.mdm.webapp.base.shared.util.CommonUtil.isRelativePath(filterValue)) {
-                    if (conditionMap.get("Xpath") != null && conditionMap.get("Xpath").split("/").length > 0 //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                            && currentPath.split("/")[0].equals(conditionMap.get("Xpath").split("/")[0])) { //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
-                        String[] rightPathArray = filterValue.split("/"); //$NON-NLS-1$
-                        String relativeMark = rightPathArray[0];
-                        String targetPath = itemNode.getTypePath();
-                        ItemNodeModel parentNode = itemNode;
-                        if (".".equals(relativeMark)) { //$NON-NLS-1$
-                            targetPath = targetPath + filterValue.substring(filterValue.indexOf("/")); //$NON-NLS-1$
-                        } else if ("..".equals(relativeMark)) { //$NON-NLS-1$
-                            parentNode = (ItemNodeModel) parentNode.getParent();
-                            targetPath = targetPath.substring(0, targetPath.lastIndexOf("/")); //$NON-NLS-1$
-                            targetPath = targetPath + filterValue.substring(filterValue.indexOf("/")); //$NON-NLS-1$
-                        }
-                        ItemNodeModel targetNode = ForeignKeyUtil.findTarget(targetPath, parentNode);
-                        if (targetNode != null && targetNode.getObjectValue() != null) {
-                            Object targetValue = targetNode.getObjectValue();
-                            if (targetValue instanceof ForeignKeyBean) {
-                                ForeignKeyBean targetForeignKeyBean = (ForeignKeyBean) targetValue;
-                                filterValue = org.talend.mdm.webapp.base.shared.util.CommonUtil
-                                        .unwrapFkValue(targetForeignKeyBean.getId());
-                            } else {
-                                filterValue = targetNode.getObjectValue().toString();
-                            }
-                        } else {
-                            filterValue = ""; //$NON-NLS-1$
-                        }
-                    }
+                    filterValue = ForeignKeyUtil.findRelativePath(filterValue, conditionMap.get("Xpath"), currentPath, itemNode);
                 } else {
                     //String[] rightValueOrPathArray = filterValue.split("/"); //$NON-NLS-1$
                     filterValue = ForeignKeyUtil.getXpathValue(filterValue, currentPath, itemNode);

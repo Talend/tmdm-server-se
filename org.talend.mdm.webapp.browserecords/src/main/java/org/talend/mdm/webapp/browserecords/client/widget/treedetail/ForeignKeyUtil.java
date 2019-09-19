@@ -275,6 +275,36 @@ public class ForeignKeyUtil {
         return filterValue;
     }
 
+    public static String findRelativePath(String filterValue, String filterOfXPath, String currentPath, ItemNodeModel itemNode) {
+        if (filterOfXPath != null && filterOfXPath.split("/").length > 0 //$NON-NLS-1$
+                && currentPath.split("/")[0].equals(filterOfXPath.split("/")[0])) { //$NON-NLS-1$//$NON-NLS-2$
+            String[] rightPathArray = filterValue.split("/"); //$NON-NLS-1$
+            String relativeMark = rightPathArray[0];
+            String targetPath = itemNode.getTypePath();
+            ItemNodeModel parentNode = itemNode;
+            if (".".equals(relativeMark)) { //$NON-NLS-1$
+                targetPath = targetPath + filterValue.substring(filterValue.indexOf("/")); //$NON-NLS-1$
+            } else if ("..".equals(relativeMark)) { //$NON-NLS-1$
+                parentNode = (ItemNodeModel) parentNode.getParent();
+                targetPath = targetPath.substring(0, targetPath.lastIndexOf("/")); //$NON-NLS-1$
+                targetPath = targetPath + filterValue.substring(filterValue.indexOf("/")); //$NON-NLS-1$
+            }
+            ItemNodeModel targetNode = ForeignKeyUtil.findTarget(targetPath, parentNode);
+            if (targetNode != null && targetNode.getObjectValue() != null) {
+                Object targetValue = targetNode.getObjectValue();
+                if (targetValue instanceof ForeignKeyBean) {
+                    ForeignKeyBean targetForeignKeyBean = (ForeignKeyBean) targetValue;
+                    filterValue = org.talend.mdm.webapp.base.shared.util.CommonUtil.unwrapFkValue(targetForeignKeyBean.getId());
+                } else {
+                    filterValue = targetNode.getObjectValue().toString();
+                }
+            } else {
+                filterValue = ""; //$NON-NLS-1$
+            }
+        }
+        return filterValue;
+    }
+
     public static ItemNodeModel findTarget(String targetPath, ItemNodeModel node) {
         List<ModelData> childrenList = node.getChildren();
         if (childrenList != null && childrenList.size() > 0) {

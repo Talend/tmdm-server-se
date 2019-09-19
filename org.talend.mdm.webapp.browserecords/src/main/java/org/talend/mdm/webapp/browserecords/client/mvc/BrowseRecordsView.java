@@ -455,7 +455,7 @@ public class BrowseRecordsView extends View {
                                     .substring(filterValue.indexOf("..")); //$NON-NLS-1$ //$NON-NLS-2$
                         }
                     } else if (org.talend.mdm.webapp.base.shared.util.CommonUtil.isFunction(filterValue)) {
-                        if (filterValue.contains("xpath:")) {
+                        if (org.talend.mdm.webapp.base.shared.util.CommonUtil.containsXPath(filterValue)) {
                             Map<String, String> xpathMap = org.talend.mdm.webapp.base.shared.util.CommonUtil
                                     .getArgumentsWithXpath(filterValue);
                             Map<String, Field<?>> xpathFieldMap = null;

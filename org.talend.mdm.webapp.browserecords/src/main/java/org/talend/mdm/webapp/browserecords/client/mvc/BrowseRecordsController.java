@@ -419,7 +419,7 @@ public class BrowseRecordsController extends Controller {
                             Map<String, String> xpathMap = CommonUtil.getArgumentsWithXpath(filterValue);
                             for (Map.Entry<String, String> entry : xpathMap.entrySet()) {
                                 String filterValuePath = entry.getValue();
-                                if (org.talend.mdm.webapp.base.shared.util.CommonUtil.isRelativePath(filterValue)) {
+                                if (org.talend.mdm.webapp.base.shared.util.CommonUtil.isRelativePath(filterValuePath)) {
                                     filterValuePath = ForeignKeyUtil.findRelativePath(filterValuePath, conditionMap.get("Xpath"),
                                             foreignKeySelector.getCurrentPath(), foreignKeySelector.getItemNode());
                                 }

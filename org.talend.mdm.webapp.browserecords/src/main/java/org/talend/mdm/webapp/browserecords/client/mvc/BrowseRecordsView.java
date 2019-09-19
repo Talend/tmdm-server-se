@@ -460,9 +460,9 @@ public class BrowseRecordsView extends View {
                                 xpathFieldMap = new HashMap<String, Field<?>>();
                             }
                             for (Map.Entry<String, String> entry : xpathMap.entrySet()) {
-                                if (org.talend.mdm.webapp.base.shared.util.CommonUtil.isRelativePath(entry.getKey())) {
-                                    targetPath = findTargetRelativePath(xpath, filterValue);
-                                    xpathFieldMap.put(targetPath, fieldMap.get(entry.getValue()));
+                                if (org.talend.mdm.webapp.base.shared.util.CommonUtil.isRelativePath(entry.getValue())) {
+                                    targetPath = findTargetRelativePath(xpath, entry.getValue());
+                                    xpathFieldMap.put(targetPath, fieldMap.get(targetPath));
                                 } else {
                                     xpathFieldMap.put(entry.getKey(), fieldMap.get(entry.getValue()));
                                 }
@@ -494,9 +494,11 @@ public class BrowseRecordsView extends View {
     }
 
     private String findTargetRelativePath(String xpath, String filterValue) {
-        if (filterValue.startsWith(".")) { //$NON-NLS-1$
+        String[] rightPathArray = filterValue.split("/"); //$NON-NLS-1$
+        String relativeMark = rightPathArray[0];
+        if (relativeMark.startsWith(".")) { //$NON-NLS-1$
             return xpath + filterValue.substring(filterValue.indexOf(".")); //$NON-NLS-1$
-        } else if (filterValue.startsWith("..")) { //$NON-NLS-1$
+        } else if (relativeMark.startsWith("..")) { //$NON-NLS-1$
             return xpath.substring(0, xpath.lastIndexOf("/")) + filterValue
                     .substring(filterValue.indexOf("..")); //$NON-NLS-1$ //$NON-NLS-2$
         }

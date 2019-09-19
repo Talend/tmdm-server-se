@@ -660,27 +660,31 @@ public class ItemPOJO implements Serializable {
         assert user != null;
         boolean authorizedAccess;
         String username = user.getUsername();
+        String dataCluster = itemPOJOPK.getDataClusterPOJOPK().getUniqueId();
 
-        boolean isSystemObject = XSystemObjects.isXSystemObject(DATA_CLUSTER_SYSTEM_OBJECTS, itemPOJOPK.getDataClusterPOJOPK().getIds()[0]);
+        boolean isSystemObject = XSystemObjects.isXSystemObject(DATA_CLUSTER_SYSTEM_OBJECTS, dataCluster);
+        boolean isSystemStorage = StorageAdmin.SYSTEM_STORAGE.equals(dataCluster);
 
         // admin has all rights, so bypass security checks
+        // system object or storage, bypass security checks
         boolean bypassCheckAccess = MDMConfiguration.getAdminUser().equals(username)
-                || user.getRoles().contains(ICoreConstants.ADMIN_PERMISSION) || isSystemObject;
+                || user.getRoles().contains(ICoreConstants.ADMIN_PERMISSION)
+                || isSystemObject || isSystemStorage;
 
         if (bypassCheckAccess) {
             return;
         }
 
-        if(itemPOJOPK.getDataClusterPOJOPK() != null && !StorageAdmin.SYSTEM_STORAGE.equals(itemPOJOPK.getDataClusterPOJOPK().getUniqueId()) && Util.isEnterprise()){
+        if (!isSystemStorage && Util.isEnterprise()) {
             isExistDataCluster(itemPOJOPK.getDataClusterPOJOPK());
         }
 
-        if(user.isAdmin(ItemPOJO.class)) {
+        if (user.isAdmin(ItemPOJO.class)) {
             authorizedAccess = true;
         } else {
             ItemPOJO itemPOJO = loadItem(itemPOJOPK);
             if(mutableAccess) {
-                authorizedAccess = user.userItemCanWrite(itemPOJO, itemPOJOPK.getDataClusterPOJOPK().getUniqueId(), itemPOJOPK.getConceptName());
+                authorizedAccess = user.userItemCanWrite(itemPOJO, dataCluster, itemPOJOPK.getConceptName());
             } else {
                 authorizedAccess = user.userItemCanRead(itemPOJO);
             }

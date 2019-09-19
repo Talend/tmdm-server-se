@@ -225,8 +225,8 @@ public class CommonUtil {
         String[] filters = filter.split(","); //$NON-NLS-1$
         for (String filterContent : filters) {
             filterContent = filterContent.trim();
-            if (filterContent.startsWith("/") || filterContent.startsWith(".") //$NON-NLS-1$
-                    || filterContent.startsWith("..")) { //$NON-NLS-1$ //$NON-NLS-2$
+            if (filterContent.startsWith("/") || filterContent.startsWith(".") //$NON-NLS-1$ //$NON-NLS-2$
+                    || filterContent.startsWith("..")) { //$NON-NLS-1$
                 return true;
             }
         }
@@ -307,12 +307,12 @@ public class CommonUtil {
         while (matcher != null) {
             String xpathValue = matcher.getGroup(0);
             if (xpathValue.startsWith(XPATH_PREFIX)) {
-                String path = xpathValue.replace("xpath:", ""); //$NON-NLS-1$ //$NON-NLS-2$
-                if (path.startsWith("/")) {
+                String path = xpathValue.replace(XPATH_PREFIX, ""); //$NON-NLS-1$
+                if (path.startsWith("/")) { //$NON-NLS-1$
                     path = path.substring(1);
                 }
                 arguments.put(xpathValue, path);
-            } else if (xpathValue.startsWith("/")) {
+            } else if (xpathValue.startsWith("/")) { //$NON-NLS-1$
                 arguments.put(xpathValue, xpathValue.substring(1));
             }
             matcher = regExp.exec(value);

@@ -89,42 +89,40 @@ public class FKConstraintTest extends TestCase {
             storage.end();
         }
 
-        Exception e_a11 = null;
         try {
             storage.begin();
             storage.update(factory.read(repository, entityA1, ENTITY_A1_EMPTY));
             storage.commit();
-        } catch (Exception e) {
-            e_a11 = e;
         } finally {
             storage.end();
         }
-        assertNull(e_a11);
+        UserQueryBuilder qb = from(entityA1);
+        StorageResults results = storage.fetch(qb.getSelect());
+        assertEquals(1, results.getCount());
 
-        Exception e_a21 = null;
         try {
             storage.begin();
             storage.update(factory.read(repository, entityA2, ENTITY_A2_1));
             storage.commit();
-        } catch(Exception e){
-            e_a21 = e;
         } finally {
             storage.end();
         }
-        assertNull(e_a21);
+        qb = from(entityA2);
+        results = storage.fetch(qb.getSelect());
+        assertEquals(1, results.getCount());
 
         // ENTITY_A1_EMPTY has no FK record, so delete this table will success
-        UserQueryBuilder qb = from(entityA1);
+        qb = from(entityA1);
         try {
             storage.begin();
             storage.delete(qb.getSelect());
             storage.commit();
-        } catch (Exception e) {
-            e_a11 = e;
         } finally {
             storage.end();
         }
-        assertNull(e_a11);
+        qb = from(entityA1);
+        results = storage.fetch(qb.getSelect());
+        assertEquals(0, results.getCount());
 
         // ENTITY_C1 is FK of entity A2, so delete this table will fail
         qb = from(entityC).where(eq(entityC.getField("C_Id"), "C1"));
@@ -133,11 +131,11 @@ public class FKConstraintTest extends TestCase {
             storage.delete(qb.getSelect());
             storage.commit();
         } catch (Exception e) {
-            e_a11 = e;
         } finally {
             storage.end();
         }
-        assertNotNull(e_a11);
+        results = storage.fetch(qb.getSelect());
+        assertEquals(1, results.getCount());
     }
 
     public void testMaster(){

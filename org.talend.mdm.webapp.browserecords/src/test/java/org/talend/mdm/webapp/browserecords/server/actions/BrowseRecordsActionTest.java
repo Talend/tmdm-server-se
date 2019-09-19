@@ -1367,6 +1367,9 @@ public class BrowseRecordsActionTest extends TestCase {
         filter.add("fn:true()");
         filter.add("fn:false()");
         filter.add("fn:max((1,2,3))");
+        filter.add("fn:starts-with(&quot;Herbert&quot;,&quot;s&quot;)");
+        filter.add("fn:string-length(&quot;Herbert&quot;) > 3");
+        filter.add("fn:matches(&quot;&quot; ,&quot;test&quot;)");
         List<String> result = null;
         try {
             result = action.transformFunctionValue(filter);
@@ -1374,7 +1377,7 @@ public class BrowseRecordsActionTest extends TestCase {
             fail();
         }
 
-        assertEquals(13, result.size());
+        assertEquals(16, result.size());
         assertEquals("aas", result.get(0));
         assertEquals("This is a Test", result.get(1));
         assertEquals("true", result.get(2));
@@ -1388,6 +1391,9 @@ public class BrowseRecordsActionTest extends TestCase {
         assertEquals("true", result.get(10));
         assertEquals("false", result.get(11));
         assertEquals("3", result.get(12));
+        assertEquals("false", result.get(13));
+        assertEquals("true", result.get(14));
+        assertEquals("false", result.get(15));
     }
 
     /**

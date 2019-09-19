@@ -27,6 +27,18 @@ public class CommonUtil {
 
     public static final String XPATH_PREFIX = "xpath:"; //$NON-NLS-1$
 
+    public static final String XPATH_STR = "Xpath";
+
+    public static final String OPERATOR_STR = "Operator";
+
+    public static final String VALUE_STR = "Value";
+
+    public static final String PREDICATE_STR = "Predicate";
+
+    public static final String DOLLAR_DELIMITER = "$$";
+
+    public static final String EMPTY_STR = "";
+
     public static String escape(String src) {
         int i;
         char j;
@@ -114,7 +126,7 @@ public class CommonUtil {
         }
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < itemList.size(); i++) {
-            result.append((i > 0) ? separator : ""); //$NON-NLS-1$
+            result.append((i > 0) ? separator : EMPTY_STR);
             result.append(escape(itemList.get(i)));
         }
         return result.toString();
@@ -138,7 +150,7 @@ public class CommonUtil {
         }
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < itemList.size(); i++) {
-            result.append((i > 0) ? ";" : ""); //$NON-NLS-1$ //$NON-NLS-2$
+            result.append((i > 0) ? ";" : EMPTY_STR); //$NON-NLS-1$
             result.append(escapeSemicolon(itemList.get(i)));
         }
         return result.toString();
@@ -161,17 +173,17 @@ public class CommonUtil {
     }
 
     public static String buildForeignKeyFilterByConditions(List<Map<String, String>> conditions) {
-        String parsedFkfilter = ""; //$NON-NLS-1$
+        String parsedFkfilter = EMPTY_STR;
         if (conditions.size() > 0) {
             StringBuffer sb = new StringBuffer();
             for (Map<String, String> map : conditions) {
                 Map<String, String> conditionMap = map;
                 if (conditionMap.size() > 0) {
-                    String xpath = conditionMap.get("Xpath") == null ? "" : conditionMap.get("Xpath");//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
-                    String operator = conditionMap.get("Operator") == null ? "" : conditionMap.get("Operator");//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
-                    String value = conditionMap.get("Value") == null ? "" : conditionMap.get("Value");//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
-                    String predicate = conditionMap.get("Predicate") == null ? "" : conditionMap.get("Predicate");//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
-                    sb.append(xpath + "$$" + operator + "$$" + value + "$$" + predicate + "#");//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$//$NON-NLS-4$
+                    String xpath = conditionMap.get(XPATH_STR) == null ? EMPTY_STR : conditionMap.get(XPATH_STR);
+                    String operator = conditionMap.get(OPERATOR_STR) == null ? EMPTY_STR : conditionMap.get(OPERATOR_STR);
+                    String value = conditionMap.get(VALUE_STR) == null ? EMPTY_STR : conditionMap.get(VALUE_STR);
+                    String predicate = conditionMap.get(PREDICATE_STR) == null ? EMPTY_STR : conditionMap.get(PREDICATE_STR);
+                    sb.append(xpath + DOLLAR_DELIMITER + operator + DOLLAR_DELIMITER + value + DOLLAR_DELIMITER + predicate + "#");//$NON-NLS-1$
                 }
             }
             if (sb.length() > 0) {
@@ -240,16 +252,16 @@ public class CommonUtil {
 
             switch (i) {
             case 0:
-                conditionMap.put("Xpath", values[0]);//$NON-NLS-1$
+                conditionMap.put(XPATH_STR, values[0]);
                 break;
             case 1:
-                conditionMap.put("Operator", values[1]);//$NON-NLS-1$
+                conditionMap.put(OPERATOR_STR, values[1]);
                 break;
             case 2:
-                conditionMap.put("Value", values[2].trim());//$NON-NLS-1$
+                conditionMap.put(VALUE_STR, values[2].trim());
                 break;
             case 3:
-                conditionMap.put("Predicate", values[3]);//$NON-NLS-1$
+                conditionMap.put(PREDICATE_STR, values[3]);
                 break;
             default:
                 break;
@@ -297,7 +309,7 @@ public class CommonUtil {
         Map<String, String> arguments = new HashMap<String, String>();
         RegExp reg = RegExp.compile("\\((.*)\\)"); //$NON-NLS-1$
         MatchResult matchResult = reg.exec(function);
-        String value = ""; //$NON-NLS-1$
+        String value = EMPTY_STR;
         while(matchResult != null){
             value = matchResult.getGroup(0);
             break;
@@ -307,7 +319,7 @@ public class CommonUtil {
         while (matcher != null) {
             String xpathValue = matcher.getGroup(0);
             if (xpathValue.startsWith(XPATH_PREFIX)) {
-                String path = xpathValue.replace(XPATH_PREFIX, ""); //$NON-NLS-1$
+                String path = xpathValue.replace(XPATH_PREFIX, EMPTY_STR);
                 if (path.startsWith("/")) { //$NON-NLS-1$
                     path = path.substring(1);
                 }

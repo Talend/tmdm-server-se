@@ -413,20 +413,22 @@ public class BrowseRecordsController extends Controller {
                 ForeignKeySelector foreignKeySelector = (ForeignKeySelector) foreignKeyField;
                 for (String cria : criterias) {
                     Map<String, String> conditionMap = CommonUtil.buildConditionByCriteria(cria);
-                    String filterValue = conditionMap.get("Value"); //$NON-NLS-1$
+                    String filterValue = conditionMap.get(CommonUtil.VALUE_STR);
                     if (CommonUtil.isFunction(filterValue)) {
                         if (CommonUtil.containsXPath(filterValue)) {
                             Map<String, String> xpathMap = CommonUtil.getArgumentsWithXpath(filterValue);
                             for (Map.Entry<String, String> entry : xpathMap.entrySet()) {
                                 String filterValuePath = entry.getValue();
+                                String xpathValue = "";
                                 if (org.talend.mdm.webapp.base.shared.util.CommonUtil.isRelativePath(filterValuePath)) {
-                                    filterValuePath = ForeignKeyUtil.findRelativePath(filterValuePath, conditionMap.get("Xpath"),
+                                    xpathValue = ForeignKeyUtil.findRelativePath(filterValuePath, conditionMap.get("Xpath"),
+                                            foreignKeySelector.getCurrentPath(), foreignKeySelector.getItemNode());
+                                } else {
+                                    xpathValue = ForeignKeyUtil.getXpathValue(filterValuePath,
                                             foreignKeySelector.getCurrentPath(), foreignKeySelector.getItemNode());
                                 }
-                                String xpathValue = ForeignKeyUtil.getXpathValue(filterValuePath,
-                                        foreignKeySelector.getCurrentPath(), foreignKeySelector.getItemNode());
                                 if (xpathValue.equals(filterValuePath)) {
-                                    xpathValue = "";
+                                    xpathValue = CommonUtil.EMPTY_STR;
                                 }
                                 filterValue = filterValue.replaceAll(entry.getKey(), xpathValue);
                             }
@@ -439,7 +441,7 @@ public class BrowseRecordsController extends Controller {
                 for (int i = 0; i < criterias.length; i++) {
                     String criteria = criterias[i];
                     Map<String, String> conditionMap = CommonUtil.buildConditionByCriteria(criteria);
-                    String filterValue = conditionMap.get("Value"); //$NON-NLS-1$
+                    String filterValue = conditionMap.get(CommonUtil.VALUE_STR);
                     if (CommonUtil.isFunction(filterValue)) {
                         if (CommonUtil.containsXPath(filterValue)) {
                             Map<Integer, Map<String, Field<?>>> targetFields = foreignKeyCellField.getTargetFields();
@@ -456,7 +458,7 @@ public class BrowseRecordsController extends Controller {
                                             targetValueStr = targetField.getValue().toString();
                                         }
                                     } else {
-                                        targetValueStr = ""; //$NON-NLS-1$
+                                        targetValueStr = CommonUtil.EMPTY_STR;
                                     }
                                     filterValue = filterValue.replaceAll(entry.getKey(), targetValueStr);
                                 }
@@ -469,8 +471,7 @@ public class BrowseRecordsController extends Controller {
 
             service.transformFunctionValue(filterList, new SessionAwareAsyncCallback<List<String>>() {
 
-                @Override
-                public void onSuccess(List<String> result) {
+                @Override public void onSuccess(List<String> result) {
                     event.setData(result);
                     forwardToView(view, event);
                 }

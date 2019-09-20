@@ -24,6 +24,7 @@ import com.amalto.core.server.MockServerLifecycle;
 import com.amalto.core.server.ServerContext;
 import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.StorageType;
+import com.amalto.core.storage.exception.ConstraintViolationException;
 import com.amalto.core.storage.hibernate.HibernateStorage;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.record.DataRecordReader;
@@ -89,13 +90,18 @@ public class FKConstraintTest extends TestCase {
             storage.end();
         }
 
+        Exception e_a11 = null;
         try {
             storage.begin();
             storage.update(factory.read(repository, entityA1, ENTITY_A1_EMPTY));
             storage.commit();
+        } catch (Exception e) {
+            e_a11 = e;
         } finally {
             storage.end();
         }
+        assertNull(e_a11);
+
         UserQueryBuilder qb = from(entityA1);
         StorageResults results = storage.fetch(qb.getSelect());
         assertEquals(1, results.getCount());
@@ -104,9 +110,13 @@ public class FKConstraintTest extends TestCase {
             storage.begin();
             storage.update(factory.read(repository, entityA2, ENTITY_A2_1));
             storage.commit();
+        } catch (Exception e) {
+            e_a11 = e;
         } finally {
             storage.end();
         }
+        assertNull(e_a11);
+
         qb = from(entityA2);
         results = storage.fetch(qb.getSelect());
         assertEquals(1, results.getCount());
@@ -117,9 +127,13 @@ public class FKConstraintTest extends TestCase {
             storage.begin();
             storage.delete(qb.getSelect());
             storage.commit();
+        } catch (Exception e) {
+            e_a11 = e;
         } finally {
             storage.end();
         }
+        assertNull(e_a11);
+
         qb = from(entityA1);
         results = storage.fetch(qb.getSelect());
         assertEquals(0, results.getCount());
@@ -130,10 +144,13 @@ public class FKConstraintTest extends TestCase {
             storage.begin();
             storage.delete(qb.getSelect());
             storage.commit();
-        } catch (Exception e) {
+        } catch (ConstraintViolationException e) {
+            e_a11 = e;
         } finally {
             storage.end();
         }
+        assertNotNull(e_a11);
+
         results = storage.fetch(qb.getSelect());
         assertEquals(1, results.getCount());
     }

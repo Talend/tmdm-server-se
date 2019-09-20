@@ -40,6 +40,7 @@ import com.amalto.core.objects.marshalling.MarshallingFactory;
 import com.amalto.core.server.StorageAdmin;
 import com.amalto.core.server.api.XmlServer;
 import com.amalto.core.util.LocalUser;
+import com.amalto.core.util.UserManage;
 import com.amalto.core.util.Util;
 import com.amalto.core.util.XtentisException;
 
@@ -666,21 +667,25 @@ public class ItemPOJO implements Serializable {
         boolean authorizedAccess;
         String username = user.getUsername();
         String dataCluster = itemPOJOPK.getDataClusterPOJOPK().getUniqueId();
-
-        boolean isSystemObject = XSystemObjects.isXSystemObject(DATA_CLUSTER_SYSTEM_OBJECTS, dataCluster);
-        boolean isSystemStorage = StorageAdmin.SYSTEM_STORAGE.equals(dataCluster);
+        String concept = itemPOJOPK.getConceptName();
 
         // admin has all rights, so bypass security checks
-        // system object or storage, bypass security checks
-        boolean bypassCheckAccess = MDMConfiguration.getAdminUser().equals(username)
-                || user.getRoles().contains(ICoreConstants.ADMIN_PERMISSION)
-                || isSystemObject || isSystemStorage;
+        boolean isAdmin = MDMConfiguration.getAdminUser().equals(username) || user.getRoles().contains(ICoreConstants.ADMIN_PERMISSION);
 
-        if (bypassCheckAccess) {
+        // crossreferencing, MDMItemImages, MDMMigration, MDMItemsTrash, SearchTemplate, UpdateReport, CONF, PROVISIONING
+        boolean isSystemObject = XSystemObjects.isXSystemObject(DATA_CLUSTER_SYSTEM_OBJECTS, dataCluster);
+
+        // current user changes its own information
+        boolean isSelfChanging = false;
+        if (StorageAdmin.SYSTEM_STORAGE.equals(dataCluster) && UserManage.USER_CONCEPT.equals(concept)) {
+            isSelfChanging = user.getIdentity().equals(itemPOJOPK.getIds()[0]);
+        }
+
+        if (isAdmin || isSystemObject || isSelfChanging) {
             return;
         }
 
-        if (!isSystemStorage && Util.isEnterprise()) {
+        if (!StorageAdmin.SYSTEM_STORAGE.equals(dataCluster) && Util.isEnterprise()) {
             isExistDataCluster(itemPOJOPK.getDataClusterPOJOPK());
         }
 
@@ -688,8 +693,8 @@ public class ItemPOJO implements Serializable {
             authorizedAccess = true;
         } else {
             ItemPOJO itemPOJO = loadItem(itemPOJOPK);
-            if(mutableAccess) {
-                authorizedAccess = user.userItemCanWrite(itemPOJO, dataCluster, itemPOJOPK.getConceptName());
+            if (mutableAccess) {
+                authorizedAccess = user.userItemCanWrite(itemPOJO, dataCluster, concept);
             } else {
                 authorizedAccess = user.userItemCanRead(itemPOJO);
             }

@@ -100,7 +100,6 @@ public class FKConstraintTest extends TestCase {
         } finally {
             storage.end();
         }
-        assertNull(e_a11);
 
         UserQueryBuilder qb = from(entityA1);
         StorageResults results = storage.fetch(qb.getSelect());
@@ -115,7 +114,6 @@ public class FKConstraintTest extends TestCase {
         } finally {
             storage.end();
         }
-        assertNull(e_a11);
 
         qb = from(entityA2);
         results = storage.fetch(qb.getSelect());

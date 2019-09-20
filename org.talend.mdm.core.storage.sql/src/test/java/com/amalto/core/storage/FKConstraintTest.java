@@ -9,6 +9,9 @@
  */
 package com.amalto.core.storage;
 
+import static com.amalto.core.query.user.UserQueryBuilder.eq;
+import static com.amalto.core.query.user.UserQueryBuilder.from;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -16,10 +19,12 @@ import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 
+import com.amalto.core.query.user.UserQueryBuilder;
 import com.amalto.core.server.MockServerLifecycle;
 import com.amalto.core.server.ServerContext;
 import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.StorageType;
+import com.amalto.core.storage.exception.ConstraintViolationException;
 import com.amalto.core.storage.hibernate.HibernateStorage;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.record.DataRecordReader;
@@ -40,7 +45,9 @@ import junit.framework.TestCase;
 public class FKConstraintTest extends TestCase {
     
     private static Logger LOG = Logger.getLogger(FKConstraintTest.class);
-    
+
+    private static String ENTITY_A1_EMPTY = "<Entity_A1><A1_Id>A1</A1_Id><A1_Name>A1 Name</A1_Name><B1><B1_Name>B1 Name</B1_Name></B1></Entity_A1>";
+
     private static String ENTITY_A1_1 = "<Entity_A1><A1_Id>A1</A1_Id><A1_Name>A1 Name</A1_Name><B1><B1_Name>B1 Name</B1_Name><C_Id>[C1]</C_Id><C_Id>[C2]</C_Id></B1></Entity_A1>";
     
     private static String ENTITY_A1_2 = "<Entity_A1><A1_Id>A1</A1_Id><A1_Name>A1 Name</A1_Name><B1><B1_Name>B1 Name</B1_Name><C_Id>[C3]</C_Id><C_Id>[C4]</C_Id></B1></Entity_A1>";
@@ -56,7 +63,92 @@ public class FKConstraintTest extends TestCase {
     private static String ENTITY_C3 = "<Entity_C><C_Id>C3</C_Id><C_Name>C3 Name</C_Name></Entity_C>";
 
     private static String ENTITY_C4 = "<Entity_C><C_Id>C4</C_Id><C_Name>C4 Name</C_Name></Entity_C>";
-    
+
+    public void testDeleteFKTable() {
+        ServerContext.INSTANCE.get(new MockServerLifecycle());
+
+        Storage storage = new HibernateStorage("MDM", StorageType.MASTER);
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(FKConstraintTest.class.getResourceAsStream("FKConstraintTest.xsd"));
+        storage.init(ServerContext.INSTANCE.get().getDefinition("H2-DS1", "MDM"));
+        storage.prepare(repository, true);
+
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+        ComplexTypeMetadata entityA1 = repository.getComplexType("Entity_A1");
+        ComplexTypeMetadata entityA2 = repository.getComplexType("Entity_A2");
+        ComplexTypeMetadata entityC = repository.getComplexType("Entity_C");
+
+        List<DataRecord> recordCs = new LinkedList<DataRecord>();
+        recordCs.add(factory.read(repository, entityC, ENTITY_C1));
+        recordCs.add(factory.read(repository, entityC, ENTITY_C2));
+        recordCs.add(factory.read(repository, entityC, ENTITY_C3));
+        try {
+            storage.begin();
+            storage.update(recordCs);
+            storage.commit();
+        } finally {
+            storage.end();
+        }
+
+        try {
+            storage.begin();
+            storage.update(factory.read(repository, entityA1, ENTITY_A1_EMPTY));
+            storage.commit();
+        } finally {
+            storage.end();
+        }
+
+        UserQueryBuilder qb = from(entityA1);
+        StorageResults results = storage.fetch(qb.getSelect());
+        assertEquals(1, results.getCount());
+
+        try {
+            storage.begin();
+            storage.update(factory.read(repository, entityA2, ENTITY_A2_1));
+            storage.commit();
+        } finally {
+            storage.end();
+        }
+
+        qb = from(entityA2);
+        results = storage.fetch(qb.getSelect());
+        assertEquals(1, results.getCount());
+
+        // ENTITY_A1_EMPTY has no FK record, so delete this table will success
+        Exception e_a11 = null;
+        qb = from(entityA1);
+        try {
+            storage.begin();
+            storage.delete(qb.getSelect());
+            storage.commit();
+        } catch (Exception e) {
+            e_a11 = e;
+        } finally {
+            storage.end();
+        }
+        assertNull(e_a11);
+
+        qb = from(entityA1);
+        results = storage.fetch(qb.getSelect());
+        assertEquals(0, results.getCount());
+
+        // ENTITY_C1 is FK of entity A2, so delete this table will fail
+        qb = from(entityC).where(eq(entityC.getField("C_Id"), "C1"));
+        try {
+            storage.begin();
+            storage.delete(qb.getSelect());
+            storage.commit();
+        } catch (ConstraintViolationException e) {
+            e_a11 = e;
+        } finally {
+            storage.end();
+        }
+        assertNotNull(e_a11);
+
+        results = storage.fetch(qb.getSelect());
+        assertEquals(1, results.getCount());
+    }
+
     public void testMaster(){
         LOG.info("Setting up MDM server environment...");
         ServerContext.INSTANCE.get(new MockServerLifecycle());
@@ -225,5 +317,4 @@ public class FKConstraintTest extends TestCase {
         }
         assertNull(e_a22);
     }
-
 }

@@ -1510,6 +1510,8 @@ public class HibernateStorage implements Storage {
                                                                     + referenceTableName).list();
                                                     if (list != null && !list.isEmpty()) {
                                                         fieldsCondition.put(columnName, list);
+                                                    } else {
+                                                        isNeedToDropDeleteType = false;
                                                     }
                                                 }
                                             } else {
@@ -1525,6 +1527,8 @@ public class HibernateStorage implements Storage {
                                                     } else {
                                                         fieldsCondition.put(columnName, list);
                                                     }
+                                                } else {
+                                                    isNeedToDropDeleteType = false;
                                                 }
                                             }
                                         }

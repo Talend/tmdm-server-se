@@ -496,9 +496,9 @@ public class BrowseRecordsView extends View {
     private String findTargetRelativePath(String xpath, String filterValue) {
         String[] rightPathArray = filterValue.split("/"); //$NON-NLS-1$
         String relativeMark = rightPathArray[0];
-        if (relativeMark.startsWith(".")) { //$NON-NLS-1$
+        if (".".equals(relativeMark)) { //$NON-NLS-1$
             return xpath + filterValue.substring(filterValue.indexOf(".")); //$NON-NLS-1$
-        } else if (relativeMark.startsWith("..")) { //$NON-NLS-1$
+        } else if ("..".equals(relativeMark)) { //$NON-NLS-1$
             return xpath.substring(0, xpath.lastIndexOf("/")) + filterValue
                     .substring(filterValue.indexOf("..")); //$NON-NLS-1$ //$NON-NLS-2$
         }

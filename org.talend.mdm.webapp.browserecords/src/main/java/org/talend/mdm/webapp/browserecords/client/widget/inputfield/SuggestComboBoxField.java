@@ -158,7 +158,7 @@ public class SuggestComboBoxField extends ComboBoxEx<ForeignKeyBean> {
                         }
                     }
 
-                    if (inputValue != null && !org.talend.mdm.webapp.base.shared.util.CommonUtil.EMPTY_STR
+                    if (inputValue != null && !org.talend.mdm.webapp.base.shared.util.CommonUtil.EMPTY
                             .equals(inputValue.trim()) && !"[".equals(inputValue.trim())) { //$NON-NLS-1$
                         String foreignKeyfielter = foreignKeyField.getOriginForeignKeyFilter();
                         if (foreignKeyfielter.contains(org.talend.mdm.webapp.base.shared.util.CommonUtil.FN_PREFIX)) {

@@ -27,17 +27,17 @@ public class CommonUtil {
 
     public static final String XPATH_PREFIX = "xpath:"; //$NON-NLS-1$
 
-    public static final String XPATH_STR = "Xpath";
+    public static final String XPATH_STR = "Xpath"; //$NON-NLS-1$
 
-    public static final String OPERATOR_STR = "Operator";
+    public static final String OPERATOR_STR = "Operator"; //$NON-NLS-1$
 
-    public static final String VALUE_STR = "Value";
+    public static final String VALUE_STR = "Value"; //$NON-NLS-1$
 
-    public static final String PREDICATE_STR = "Predicate";
+    public static final String PREDICATE_STR = "Predicate"; //$NON-NLS-1$
 
-    public static final String DOLLAR_DELIMITER = "$$";
+    public static final String DOLLAR_DELIMITER = "$$"; //$NON-NLS-1$
 
-    public static final String EMPTY_STR = "";
+    public static final String EMPTY = ""; //$NON-NLS-1$
 
     public static String escape(String src) {
         int i;
@@ -126,7 +126,7 @@ public class CommonUtil {
         }
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < itemList.size(); i++) {
-            result.append((i > 0) ? separator : EMPTY_STR);
+            result.append((i > 0) ? separator : EMPTY);
             result.append(escape(itemList.get(i)));
         }
         return result.toString();
@@ -150,7 +150,7 @@ public class CommonUtil {
         }
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < itemList.size(); i++) {
-            result.append((i > 0) ? ";" : EMPTY_STR); //$NON-NLS-1$
+            result.append((i > 0) ? ";" : EMPTY); //$NON-NLS-1$
             result.append(escapeSemicolon(itemList.get(i)));
         }
         return result.toString();
@@ -173,17 +173,17 @@ public class CommonUtil {
     }
 
     public static String buildForeignKeyFilterByConditions(List<Map<String, String>> conditions) {
-        String parsedFkfilter = EMPTY_STR;
+        String parsedFkfilter = EMPTY;
         if (conditions.size() > 0) {
             StringBuffer sb = new StringBuffer();
             for (Map<String, String> map : conditions) {
-                Map<String, String> conditionMap = map;
-                if (conditionMap.size() > 0) {
-                    String xpath = conditionMap.get(XPATH_STR) == null ? EMPTY_STR : conditionMap.get(XPATH_STR);
-                    String operator = conditionMap.get(OPERATOR_STR) == null ? EMPTY_STR : conditionMap.get(OPERATOR_STR);
-                    String value = conditionMap.get(VALUE_STR) == null ? EMPTY_STR : conditionMap.get(VALUE_STR);
-                    String predicate = conditionMap.get(PREDICATE_STR) == null ? EMPTY_STR : conditionMap.get(PREDICATE_STR);
-                    sb.append(xpath + DOLLAR_DELIMITER + operator + DOLLAR_DELIMITER + value + DOLLAR_DELIMITER + predicate + "#");//$NON-NLS-1$
+                if (map.size() > 0) {
+                    String xpath = map.get(XPATH_STR) == null ? EMPTY : map.get(XPATH_STR);
+                    String operator = map.get(OPERATOR_STR) == null ? EMPTY : map.get(OPERATOR_STR);
+                    String value = map.get(VALUE_STR) == null ? EMPTY : map.get(VALUE_STR);
+                    String predicate = map.get(PREDICATE_STR) == null ? EMPTY : map.get(PREDICATE_STR);
+                    sb.append(xpath).append(DOLLAR_DELIMITER).append(operator).append(DOLLAR_DELIMITER).append(value);
+                    sb.append(DOLLAR_DELIMITER).append(predicate).append("#");//$NON-NLS-1$
                 }
             }
             if (sb.length() > 0) {
@@ -305,21 +305,35 @@ public class CommonUtil {
         }
     }
 
+    /**
+     * parse the xpath in the function content
+     * eg:
+     * fn:string-length("xpath:/Product/Name") > 3") ==> key=Product/Name,value=Product/Name
+     * fn:concat("xpath:Product/Name", "xpath:Product/Description") ==> key=Product/Name,value=Product/Name & key=Product/Description,value=Product/Description
+     * fn:concat("xpath:Product/Name") ==> key=Product/Name,value=Product/Name
+     * fn:concat("xpath:Product/Name", " s") ==> key=Product/Name,value=Product/Name
+     * fn:starts-with("xpath:Product/Name","s")  ==> key=Product/Name,value=Product/Name
+     * fn:matches("xpath:../Name" ,"test")  ==> key=../Name,valye=../Name
+     * fn:concat(/Product/Name, /Product/Description)  ==> key=Product/Name,value=/Product/Name & key=Product/Description,value=/Product/Description
+     * fn:string-length(/BasicVisibleRuleWithFunctionXPath/name) > 5  ==> key=BasicVisibleRuleWithFunctionXPath/name,value=/BasicVisibleRuleWithFunctionXPath/name
+     *
+     * @param function the parse function
+     * @return the map contains origin xpath and pure xpath
+     */
     public static Map<String, String> getArgumentsWithXpath(String function){
         Map<String, String> arguments = new HashMap<String, String>();
         RegExp reg = RegExp.compile("\\((.*)\\)"); //$NON-NLS-1$
         MatchResult matchResult = reg.exec(function);
-        String value = EMPTY_STR;
-        while(matchResult != null){
+        String value = EMPTY;
+        if (matchResult != null) {
             value = matchResult.getGroup(0);
-            break;
         }
         RegExp regExp = RegExp.compile("((xpath:(([a-zA-Z]*)|((\\.)+)))|/([a-zA-Z]*))/(([a-zA-Z]*)/*)*", "g"); //$NON-NLS-1$ //$NON-NLS-2$
         MatchResult matcher = regExp.exec(value);
         while (matcher != null) {
             String xpathValue = matcher.getGroup(0);
             if (xpathValue.startsWith(XPATH_PREFIX)) {
-                String path = xpathValue.replace(XPATH_PREFIX, EMPTY_STR);
+                String path = xpathValue.replace(XPATH_PREFIX, EMPTY);
                 if (path.startsWith("/")) { //$NON-NLS-1$
                     path = path.substring(1);
                 }

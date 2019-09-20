@@ -11,6 +11,7 @@ package org.talend.mdm.webapp.browserecords.client.widget.treedetail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -233,6 +234,18 @@ public class ForeignKeyUtil {
         return realXPath;
     }
 
+    public static String findTargetRelativePath(String xpath, String filterValue) {
+        String[] rightPathArray = filterValue.split("/"); //$NON-NLS-1$
+        String relativeMark = rightPathArray[0];
+        if (".".equals(relativeMark)) { //$NON-NLS-1$
+            return xpath + filterValue.substring(filterValue.indexOf(".")); //$NON-NLS-1$
+        } else if ("..".equals(relativeMark)) { //$NON-NLS-1$
+            return xpath.substring(0, xpath.lastIndexOf("/")) + filterValue  //$NON-NLS-1$
+                    .substring(filterValue.indexOf("..") + 2); //$NON-NLS-1$
+        }
+        return "";
+    }
+
     public static String getXpathValue(String filterValue, String currentPath, ItemNodeModel itemNode) {
         String[] rightValueOrPathArray = filterValue.split("/"); //$NON-NLS-1$
         if (rightValueOrPathArray.length > 0) {
@@ -242,9 +255,7 @@ public class ForeignKeyUtil {
                 List<String> leftPathNodeList = new ArrayList<String>();
                 List<String> rightPathNodeList = Arrays.asList(filterValue.split("/")); //$NON-NLS-1$
                 String[] leftValueOrPathArray = currentPath.split("/"); //$NON-NLS-1$
-                for (String element : leftValueOrPathArray) {
-                    leftPathNodeList.add(element);
-                }
+                Collections.addAll(leftPathNodeList, leftValueOrPathArray);
                 for (int i = 0; i < leftPathNodeList.size(); i++) {
                     if (i < rightPathNodeList.size() && leftPathNodeList.get(i).equals(rightPathNodeList.get(i))) {
                         duplicatedPathList.add(rightPathNodeList.get(i));
@@ -258,19 +269,24 @@ public class ForeignKeyUtil {
                     parentNode = (ItemNodeModel) parentNode.getParent();
                 }
                 ItemNodeModel targetNode = findTarget(filterValue, parentNode);
-                if (targetNode != null && targetNode.getObjectValue() != null) {
-                    Object targetValue = targetNode.getObjectValue();
-                    if (targetValue instanceof ForeignKeyBean) {
-                        ForeignKeyBean targetForeignKeyBean = (ForeignKeyBean) targetValue;
-                        filterValue = org.talend.mdm.webapp.base.shared.util.CommonUtil.unwrapFkValue(targetForeignKeyBean
-                                .getId());
-                    } else {
-                        filterValue = targetNode.getObjectValue().toString();
-                    }
-                } else {
-                    filterValue = ""; //$NON-NLS-1$
-                }
+                filterValue = getFilterValueFromTargetNode(targetNode);
             }
+        }
+        return filterValue;
+    }
+
+    private static String getFilterValueFromTargetNode(ItemNodeModel targetNode) {
+        String filterValue;
+        if (targetNode != null && targetNode.getObjectValue() != null) {
+            Object targetValue = targetNode.getObjectValue();
+            if (targetValue instanceof ForeignKeyBean) {
+                ForeignKeyBean targetForeignKeyBean = (ForeignKeyBean) targetValue;
+                filterValue = org.talend.mdm.webapp.base.shared.util.CommonUtil.unwrapFkValue(targetForeignKeyBean.getId());
+            } else {
+                filterValue = targetNode.getObjectValue().toString();
+            }
+        } else {
+            filterValue = ""; //$NON-NLS-1$
         }
         return filterValue;
     }
@@ -290,17 +306,7 @@ public class ForeignKeyUtil {
                 targetPath = targetPath + filterValue.substring(filterValue.indexOf("/")); //$NON-NLS-1$
             }
             ItemNodeModel targetNode = ForeignKeyUtil.findTarget(targetPath, parentNode);
-            if (targetNode != null && targetNode.getObjectValue() != null) {
-                Object targetValue = targetNode.getObjectValue();
-                if (targetValue instanceof ForeignKeyBean) {
-                    ForeignKeyBean targetForeignKeyBean = (ForeignKeyBean) targetValue;
-                    filterValue = org.talend.mdm.webapp.base.shared.util.CommonUtil.unwrapFkValue(targetForeignKeyBean.getId());
-                } else {
-                    filterValue = targetNode.getObjectValue().toString();
-                }
-            } else {
-                filterValue = ""; //$NON-NLS-1$
-            }
+            filterValue = getFilterValueFromTargetNode(targetNode);
         }
         return filterValue;
     }
@@ -308,8 +314,8 @@ public class ForeignKeyUtil {
     public static ItemNodeModel findTarget(String targetPath, ItemNodeModel node) {
         List<ModelData> childrenList = node.getChildren();
         if (childrenList != null && childrenList.size() > 0) {
-            for (int i = 0; i < childrenList.size(); i++) {
-                ItemNodeModel child = (ItemNodeModel) childrenList.get(i);
+            for (ModelData modelData : childrenList) {
+                ItemNodeModel child = (ItemNodeModel) modelData;
                 String typePath = child.getTypePath();
                 if (typePath.contains(":")) { //$NON-NLS-1$
                     String[] pathArray = typePath.split("/"); //$NON-NLS-1$
@@ -318,7 +324,8 @@ public class ForeignKeyUtil {
                         if (nodePath.contains(":")) { //$NON-NLS-1$
                             String[] nodePathArray = nodePath.split(":");
                             if (targetPath.contains("xsi:type")) {
-                                pathArray[j] = nodePathArray[0] + "[@xsi:type=\"" + nodePathArray[1] + "\"]"; //$NON-NLS-1$  //$NON-NLS-2$
+                                pathArray[j] = nodePathArray[0] + "[@xsi:type=\"" + nodePathArray[1]
+                                        + "\"]"; //$NON-NLS-1$  //$NON-NLS-2$
                             } else {
                                 pathArray[j] = nodePathArray[0];
                             }

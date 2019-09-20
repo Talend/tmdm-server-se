@@ -267,7 +267,7 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
                     if (foreignKeyFilter.contains("fn")) {
                         AppEvent event = new AppEvent(BrowseRecordsEvents.TransformFkFilterItem, foreignKeyFilter);
                         event.setData(BrowseRecords.FOREIGN_KEY_FIELD, _this);
-                        event.setData("foreignKeyFilter", foreignKeyFilter);
+                        event.setData(BrowseRecords.FOREIGN_KEY_FILTER, foreignKeyFilter);
                         Dispatcher.forwardEvent(event);
                     }
 

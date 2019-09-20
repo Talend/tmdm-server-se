@@ -228,7 +228,6 @@ public class ForeignKeySelector extends ForeignKeyField implements ReturnCriteri
                 } else if (org.talend.mdm.webapp.base.shared.util.CommonUtil.isRelativePath(filterValue)) {
                     filterValue = ForeignKeyUtil.findRelativePath(filterValue, conditionMap.get("Xpath"), currentPath, itemNode);
                 } else {
-                    //String[] rightValueOrPathArray = filterValue.split("/"); //$NON-NLS-1$
                     filterValue = ForeignKeyUtil.getXpathValue(filterValue, currentPath, itemNode);
                 }
                 conditionMap.put("Value", filterValue); //$NON-NLS-1$

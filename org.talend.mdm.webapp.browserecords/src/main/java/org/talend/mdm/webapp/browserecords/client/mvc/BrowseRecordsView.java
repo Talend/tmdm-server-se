@@ -46,6 +46,7 @@ import org.talend.mdm.webapp.browserecords.client.widget.ForeignKey.ForeignKeyCe
 import org.talend.mdm.webapp.browserecords.client.widget.ForeignKey.ForeignKeyField;
 import org.talend.mdm.webapp.browserecords.client.widget.ForeignKey.ReturnCriteriaFK;
 import org.talend.mdm.webapp.browserecords.client.widget.inputfield.creator.FieldCreator;
+import org.talend.mdm.webapp.browserecords.client.widget.treedetail.ForeignKeyUtil;
 import org.talend.mdm.webapp.browserecords.client.widget.treedetail.TreeDetailUtil;
 import org.talend.mdm.webapp.browserecords.shared.ViewBean;
 import org.talend.mdm.webapp.browserecords.shared.VisibleRuleResult;
@@ -448,7 +449,15 @@ public class BrowseRecordsView extends View {
                         .isFilterValue(filterValue)) {
                     String targetPath;
                     if (org.talend.mdm.webapp.base.shared.util.CommonUtil.isRelativePath(filterValue)) {
-                        targetPath = findTargetRelativePath(xpath, filterValue);
+                        targetPath = ForeignKeyUtil.findTargetRelativePath(xpath, filterValue);
+                        Map<String, Field<?>> xpathFieldMap;
+                        if (targetFieldMap.containsKey(i)) {
+                            xpathFieldMap = targetFieldMap.get(i);
+                        } else {
+                            xpathFieldMap = new HashMap<String, Field<?>>();
+                        }
+                        xpathFieldMap.put(targetPath, fieldMap.get(targetPath));
+                        targetFieldMap.put(i, xpathFieldMap);
                     } else if (org.talend.mdm.webapp.base.shared.util.CommonUtil.isFunction(filterValue)) {
                         if (org.talend.mdm.webapp.base.shared.util.CommonUtil.containsXPath(filterValue)) {
                             Map<String, String> xpathMap = org.talend.mdm.webapp.base.shared.util.CommonUtil
@@ -461,8 +470,8 @@ public class BrowseRecordsView extends View {
                             }
                             for (Map.Entry<String, String> entry : xpathMap.entrySet()) {
                                 if (org.talend.mdm.webapp.base.shared.util.CommonUtil.isRelativePath(entry.getValue())) {
-                                    targetPath = findTargetRelativePath(xpath, entry.getValue());
-                                    xpathFieldMap.put(targetPath, fieldMap.get(targetPath));
+                                    targetPath = ForeignKeyUtil.findTargetRelativePath(xpath, entry.getValue());
+                                    xpathFieldMap.put(entry.getKey(), fieldMap.get(targetPath));
                                 } else {
                                     xpathFieldMap.put(entry.getKey(), fieldMap.get(entry.getValue()));
                                 }
@@ -493,17 +502,7 @@ public class BrowseRecordsView extends View {
 
     }
 
-    private String findTargetRelativePath(String xpath, String filterValue) {
-        String[] rightPathArray = filterValue.split("/"); //$NON-NLS-1$
-        String relativeMark = rightPathArray[0];
-        if (".".equals(relativeMark)) { //$NON-NLS-1$
-            return xpath + filterValue.substring(filterValue.indexOf(".")); //$NON-NLS-1$
-        } else if ("..".equals(relativeMark)) { //$NON-NLS-1$
-            return xpath.substring(0, xpath.lastIndexOf("/")) + filterValue
-                    .substring(filterValue.indexOf("..")); //$NON-NLS-1$ //$NON-NLS-2$
-        }
-        return "";
-    }
+
 
     private void onViewLineageItem(AppEvent event) {
         ItemBean item = (ItemBean) event.getData();
@@ -542,24 +541,24 @@ public class BrowseRecordsView extends View {
 
     private void onTransformFkFilter(AppEvent event) {
         LinkedList<String> filterValue = new LinkedList<String>((List<String>) event.getData());
-        String foreignKeyFilter = event.getData("foreignKeyFilter");
+        String foreignKeyFilter = event.getData(BrowseRecords.FOREIGN_KEY_FIELD);
         String[] criterias = org.talend.mdm.webapp.base.shared.util.CommonUtil.getCriteriasByForeignKeyFilter(foreignKeyFilter);
         StringBuilder sb = new StringBuilder();
-        for (String cria : criterias) {
-            Map<String, String> conditionMap = org.talend.mdm.webapp.base.shared.util.CommonUtil.buildConditionByCriteria(cria);
+        for (String criteria : criterias) {
+            Map<String, String> conditionMap = org.talend.mdm.webapp.base.shared.util.CommonUtil.buildConditionByCriteria(criteria);
             String returnFilterValue = conditionMap.get(org.talend.mdm.webapp.base.shared.util.CommonUtil.VALUE_STR);
             if (returnFilterValue.contains(org.talend.mdm.webapp.base.shared.util.CommonUtil.FN_PREFIX)) {
                 conditionMap.put(org.talend.mdm.webapp.base.shared.util.CommonUtil.VALUE_STR, filterValue.poll());
             }
             String predicate = conditionMap.get(org.talend.mdm.webapp.base.shared.util.CommonUtil.PREDICATE_STR);
-            predicate = predicate == null ? org.talend.mdm.webapp.base.shared.util.CommonUtil.EMPTY_STR : predicate;
+            predicate = predicate == null ? org.talend.mdm.webapp.base.shared.util.CommonUtil.EMPTY : predicate;
 
             sb.append(conditionMap.get(org.talend.mdm.webapp.base.shared.util.CommonUtil.XPATH_STR))
                     .append(org.talend.mdm.webapp.base.shared.util.CommonUtil.DOLLAR_DELIMITER)
                     .append(conditionMap.get(org.talend.mdm.webapp.base.shared.util.CommonUtil.OPERATOR_STR))
-                    .append(org.talend.mdm.webapp.base.shared.util.CommonUtil.DOLLAR_DELIMITER)
+                    .append(org.talend.mdm.webapp.base.shared.util.CommonUtil.DOLLAR_DELIMITER).append("\"") //$NON-NLS-1$
+                    .append(conditionMap.get(org.talend.mdm.webapp.base.shared.util.CommonUtil.VALUE_STR))
                     .append("\"") //$NON-NLS-1$
-                    .append(conditionMap.get(org.talend.mdm.webapp.base.shared.util.CommonUtil.VALUE_STR)).append("\"") //$NON-NLS-1$
                     .append(org.talend.mdm.webapp.base.shared.util.CommonUtil.DOLLAR_DELIMITER).append(predicate)
                     .append("#"); //$NON-NLS-1$
         }

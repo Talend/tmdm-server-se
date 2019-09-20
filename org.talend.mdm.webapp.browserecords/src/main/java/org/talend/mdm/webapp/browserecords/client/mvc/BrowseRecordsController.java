@@ -419,16 +419,17 @@ public class BrowseRecordsController extends Controller {
                             Map<String, String> xpathMap = CommonUtil.getArgumentsWithXpath(filterValue);
                             for (Map.Entry<String, String> entry : xpathMap.entrySet()) {
                                 String filterValuePath = entry.getValue();
-                                String xpathValue = "";
-                                if (org.talend.mdm.webapp.base.shared.util.CommonUtil.isRelativePath(filterValuePath)) {
-                                    xpathValue = ForeignKeyUtil.findRelativePath(filterValuePath, conditionMap.get("Xpath"),
-                                            foreignKeySelector.getCurrentPath(), foreignKeySelector.getItemNode());
+                                String xpathValue;
+                                if (CommonUtil.isRelativePath(filterValuePath)) {
+                                    xpathValue = ForeignKeyUtil
+                                            .findRelativePath(filterValuePath, conditionMap.get(CommonUtil.XPATH_STR),
+                                                    foreignKeySelector.getCurrentPath(), foreignKeySelector.getItemNode());
                                 } else {
                                     xpathValue = ForeignKeyUtil.getXpathValue(filterValuePath,
                                             foreignKeySelector.getCurrentPath(), foreignKeySelector.getItemNode());
                                 }
                                 if (xpathValue.equals(filterValuePath)) {
-                                    xpathValue = CommonUtil.EMPTY_STR;
+                                    xpathValue = CommonUtil.EMPTY;
                                 }
                                 filterValue = filterValue.replaceAll(entry.getKey(), xpathValue);
                             }
@@ -455,10 +456,10 @@ public class BrowseRecordsController extends Controller {
                                         if (targetValue instanceof ForeignKeyBean) {
                                             targetValueStr = CommonUtil.unwrapFkValue(((ForeignKeyBean) targetValue).getId());
                                         } else {
-                                            targetValueStr = targetField.getValue().toString();
+                                            targetValueStr = targetValue.toString();
                                         }
                                     } else {
-                                        targetValueStr = CommonUtil.EMPTY_STR;
+                                        targetValueStr = CommonUtil.EMPTY;
                                     }
                                     filterValue = filterValue.replaceAll(entry.getKey(), targetValueStr);
                                 }

@@ -90,13 +90,10 @@ public class FKConstraintTest extends TestCase {
             storage.end();
         }
 
-        Exception e_a11 = null;
         try {
             storage.begin();
             storage.update(factory.read(repository, entityA1, ENTITY_A1_EMPTY));
             storage.commit();
-        } catch (Exception e) {
-            e_a11 = e;
         } finally {
             storage.end();
         }
@@ -109,8 +106,6 @@ public class FKConstraintTest extends TestCase {
             storage.begin();
             storage.update(factory.read(repository, entityA2, ENTITY_A2_1));
             storage.commit();
-        } catch (Exception e) {
-            e_a11 = e;
         } finally {
             storage.end();
         }
@@ -120,6 +115,7 @@ public class FKConstraintTest extends TestCase {
         assertEquals(1, results.getCount());
 
         // ENTITY_A1_EMPTY has no FK record, so delete this table will success
+        Exception e_a11 = null;
         qb = from(entityA1);
         try {
             storage.begin();

@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.talend.mdm.webapp.base.shared.util.CommonUtil;
 import org.talend.mdm.webapp.base.client.model.ForeignKeyBean;
 
 import com.extjs.gxt.ui.client.widget.form.Field;
@@ -23,10 +24,6 @@ public class ForeignKeyCellField extends ForeignKeyField {
 
     public Map<Integer, Map<String, Field<?>>> getTargetFields() {
         return targetFields;
-    }
-
-    public void setTargetFields(Map<Integer, Map<String, Field<?>>> targetFields) {
-        this.targetFields = targetFields;
     }
 
     public ForeignKeyCellField(ForeignKeyField foreignKeyField, String foreignKeyFilter) {
@@ -41,22 +38,19 @@ public class ForeignKeyCellField extends ForeignKeyField {
         this.targetFields = targetFields;
     }
 
-    @Override
-    public String parseForeignKeyFilter() {
+    @Override public String parseForeignKeyFilter() {
         if (foreignKeyFilter != null) {
-            String[] criterias = org.talend.mdm.webapp.base.shared.util.CommonUtil
-                    .getCriteriasByForeignKeyFilter(foreignKeyFilter);
+            String[] criterias = CommonUtil.getCriteriasByForeignKeyFilter(foreignKeyFilter);
             List<Map<String, String>> conditions = new ArrayList<Map<String, String>>();
             for (int i = 0; i < criterias.length; i++) {
                 String criteria = criterias[i];
-                Map<String, String> conditionMap = org.talend.mdm.webapp.base.shared.util.CommonUtil
-                        .buildConditionByCriteria(criteria);
-                String filterValue = conditionMap.get("Value"); //$NON-NLS-1$
+                Map<String, String> conditionMap = CommonUtil.buildConditionByCriteria(criteria);
+                String filterValue = conditionMap.get(CommonUtil.VALUE_STR);
                 if (filterValue == null) {
                     continue;
                 }
 
-                filterValue = org.talend.mdm.webapp.base.shared.util.CommonUtil.unescapeXml(filterValue);
+                filterValue = CommonUtil.unescapeXml(filterValue);
                 if (org.talend.mdm.webapp.base.shared.util.CommonUtil.isFilterValue(filterValue)) {
                     filterValue = filterValue.substring(1, filterValue.length() - 1);
                 } else {
@@ -66,22 +60,21 @@ public class ForeignKeyCellField extends ForeignKeyField {
                         Object targetValue = targetField.getValue();
                         if (targetValue != null) {
                             if (targetValue instanceof ForeignKeyBean) {
-                                filterValue = org.talend.mdm.webapp.base.shared.util.CommonUtil
-                                        .unwrapFkValue(((ForeignKeyBean) targetValue).getId());
+                                filterValue = CommonUtil.unwrapFkValue(((ForeignKeyBean) targetValue).getId());
                             } else {
                                 filterValue = targetField.getValue().toString();
                             }
                         } else {
-                            filterValue = ""; //$NON-NLS-1$
+                            filterValue = CommonUtil.EMPTY;
                         }
                     }
                 }
-                conditionMap.put("Value", filterValue); //$NON-NLS-1$
+                conditionMap.put(CommonUtil.VALUE_STR, filterValue);
                 conditions.add(conditionMap);
             }
-            return org.talend.mdm.webapp.base.shared.util.CommonUtil.buildForeignKeyFilterByConditions(conditions);
+            return CommonUtil.buildForeignKeyFilterByConditions(conditions);
         } else {
-            return ""; //$NON-NLS-1$
+            return CommonUtil.EMPTY;
         }
     }
 }

@@ -140,5 +140,4 @@ public class ForeignKeyUtilTest extends GWTTestCase {
         resultNode[7] = testNode;
         return resultNode;
     }
-
 }

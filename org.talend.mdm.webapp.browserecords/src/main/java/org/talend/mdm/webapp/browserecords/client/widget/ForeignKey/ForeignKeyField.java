@@ -15,6 +15,7 @@ import org.talend.mdm.webapp.base.client.SessionAwareAsyncCallback;
 import org.talend.mdm.webapp.base.client.model.ForeignKeyBean;
 import org.talend.mdm.webapp.base.shared.EntityModel;
 import org.talend.mdm.webapp.base.shared.TypeModel;
+import org.talend.mdm.webapp.base.shared.util.CommonUtil;
 import org.talend.mdm.webapp.browserecords.client.BrowseRecords;
 import org.talend.mdm.webapp.browserecords.client.BrowseRecordsEvents;
 import org.talend.mdm.webapp.browserecords.client.BrowseRecordsServiceAsync;
@@ -262,9 +263,8 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
             @Override
             public void onClick(ClickEvent ce) {
                 if (foreignConceptName != null) {
-
                     String foreignKeyFilter = getOriginForeignKeyFilter();
-                    if (foreignKeyFilter.contains("fn")) {
+                    if (foreignKeyFilter.contains(CommonUtil.FN_PREFIX)) {
                         AppEvent event = new AppEvent(BrowseRecordsEvents.TransformFkFilterItem, foreignKeyFilter);
                         event.setData(BrowseRecords.FOREIGN_KEY_FIELD, _this);
                         event.setData(BrowseRecords.FOREIGN_KEY_FILTER, foreignKeyFilter);
@@ -330,6 +330,6 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
     }
 
     public String getOriginForeignKeyFilter() {
-        return this.originForeignKeyFilter == null ? "" : this.originForeignKeyFilter;
+        return this.originForeignKeyFilter == null ? CommonUtil.EMPTY : this.originForeignKeyFilter;
     }
 }

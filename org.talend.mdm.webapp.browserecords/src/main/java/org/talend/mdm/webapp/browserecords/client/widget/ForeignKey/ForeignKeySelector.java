@@ -17,6 +17,7 @@ import org.talend.mdm.webapp.base.client.SessionAwareAsyncCallback;
 import org.talend.mdm.webapp.base.client.model.ForeignKeyBean;
 import org.talend.mdm.webapp.base.shared.OperatorValueConstants;
 import org.talend.mdm.webapp.base.shared.TypeModel;
+import org.talend.mdm.webapp.base.shared.util.CommonUtil;
 import org.talend.mdm.webapp.browserecords.client.BrowseRecordsEvents;
 import org.talend.mdm.webapp.browserecords.client.ServiceFactory;
 import org.talend.mdm.webapp.browserecords.client.handler.ItemTreeHandler;
@@ -206,36 +207,37 @@ public class ForeignKeySelector extends ForeignKeyField implements ReturnCriteri
     @Override
     public String parseForeignKeyFilter() {
         if (foreignKeyFilter != null) {
-            String[] criterias = org.talend.mdm.webapp.base.shared.util.CommonUtil
+            String[] criterias = CommonUtil
                     .getCriteriasByForeignKeyFilter(foreignKeyFilter);
             List<Map<String, String>> conditions = new ArrayList<Map<String, String>>();
-            for (String cria : criterias) {
-                Map<String, String> conditionMap = org.talend.mdm.webapp.base.shared.util.CommonUtil
-                        .buildConditionByCriteria(cria);
-                if (OperatorValueConstants.EMPTY_NULL.equals(conditionMap.get("Operator"))) { //$NON-NLS-1$
+            for (String criteria : criterias) {
+                Map<String, String> conditionMap = CommonUtil.buildConditionByCriteria(criteria);
+                if (OperatorValueConstants.EMPTY_NULL.equals(conditionMap.get(CommonUtil.OPERATOR_STR))) {
                     conditions.add(conditionMap);
                     continue;
                 }
-                String filterValue = conditionMap.get("Value"); //$NON-NLS-1$
+                String filterValue = conditionMap.get(CommonUtil.VALUE_STR);
                 if (filterValue == null || this.foreignKeyPath == null) {
-                    return ""; //$NON-NLS-1$
+                    return CommonUtil.EMPTY;
                 }
 
                 // cases handle
-                filterValue = org.talend.mdm.webapp.base.shared.util.CommonUtil.unescapeXml(filterValue);
-                if (org.talend.mdm.webapp.base.shared.util.CommonUtil.isFilterValue(filterValue)) {
+                filterValue = CommonUtil.unescapeXml(filterValue);
+                if (CommonUtil.isFilterValue(filterValue)) {
                     filterValue = filterValue.substring(1, filterValue.length() - 1);
-                } else if (org.talend.mdm.webapp.base.shared.util.CommonUtil.isRelativePath(filterValue)) {
-                    filterValue = ForeignKeyUtil.findRelativePathValueForSelectFK(filterValue, conditionMap.get("Xpath"), currentPath, itemNode);
+                } else if (CommonUtil.isRelativePath(filterValue)) {
+                    filterValue = ForeignKeyUtil
+                            .findRelativePathValueForSelectFK(filterValue, conditionMap.get(CommonUtil.XPATH_STR), currentPath,
+                                    itemNode);
                 } else {
                     filterValue = ForeignKeyUtil.getXpathValue(filterValue, currentPath, itemNode);
                 }
-                conditionMap.put("Value", filterValue); //$NON-NLS-1$
+                conditionMap.put(CommonUtil.VALUE_STR, filterValue);
                 conditions.add(conditionMap);
             }
-            return org.talend.mdm.webapp.base.shared.util.CommonUtil.buildForeignKeyFilterByConditions(conditions);
+            return CommonUtil.buildForeignKeyFilterByConditions(conditions);
         } else {
-            return ""; //$NON-NLS-1$
+            return CommonUtil.EMPTY;
         }
     }
 
@@ -321,7 +323,7 @@ public class ForeignKeySelector extends ForeignKeyField implements ReturnCriteri
         this.validate();
 
         ForeignKeyBean bean = new ForeignKeyBean();
-        bean.setId(""); //$NON-NLS-1$
+        bean.setId(CommonUtil.EMPTY);
         setValue(bean);
 
         if (suggestBox != null) {

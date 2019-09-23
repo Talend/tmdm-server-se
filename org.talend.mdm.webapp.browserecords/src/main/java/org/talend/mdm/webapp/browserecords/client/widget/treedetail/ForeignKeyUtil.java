@@ -300,7 +300,7 @@ public class ForeignKeyUtil {
                 filterValue = targetNode.getObjectValue().toString();
             }
         } else {
-            filterValue = ""; //$NON-NLS-1$
+            filterValue = CommonUtil.EMPTY;
         }
         return filterValue;
     }

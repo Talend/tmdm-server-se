@@ -234,7 +234,13 @@ public class ForeignKeyUtil {
         return realXPath;
     }
 
-    public static String findTargetRelativePath(String xpath, String filterValue) {
+    /**
+     * return the true xpath of the releative xpath
+     * @param xpath current fk field xpath
+     * @param filterValue the current fk field's filter relative path
+     * @return true xpath of the releative xpath
+     */
+    public static String findTargetRelativePathForCellFK(String xpath, String filterValue) {
         String[] rightPathArray = filterValue.split("/"); //$NON-NLS-1$
         String relativeMark = rightPathArray[0];
         if (".".equals(relativeMark)) { //$NON-NLS-1$
@@ -246,6 +252,13 @@ public class ForeignKeyUtil {
         return "";
     }
 
+    /**
+     * find the xpath value from ItemNodeModel
+     * @param filterValue
+     * @param currentPath
+     * @param itemNode
+     * @return
+     */
     public static String getXpathValue(String filterValue, String currentPath, ItemNodeModel itemNode) {
         String[] rightValueOrPathArray = filterValue.split("/"); //$NON-NLS-1$
         if (rightValueOrPathArray.length > 0) {
@@ -291,7 +304,15 @@ public class ForeignKeyUtil {
         return filterValue;
     }
 
-    public static String findRelativePath(String filterValue, String filterOfXPath, String currentPath, ItemNodeModel itemNode) {
+    /**
+     * Find the value of relative path 'relaterValue''s corresponding ItemNodeModel
+     * @param filterValue the filter value is a relative path
+     * @param filterOfXPath current filter corresponding xpath content
+     * @param currentPath current field path
+     * @param itemNode current field corresponding ItemNodeModel
+     * @return the relative path's value
+     */
+    public static String findRelativePathValueForSelectFK(String filterValue, String filterOfXPath, String currentPath, ItemNodeModel itemNode) {
         if (filterOfXPath != null && filterOfXPath.split("/").length > 0 //$NON-NLS-1$
                 && currentPath.split("/")[0].equals(filterOfXPath.split("/")[0])) { //$NON-NLS-1$//$NON-NLS-2$
             String[] rightPathArray = filterValue.split("/"); //$NON-NLS-1$
@@ -311,6 +332,14 @@ public class ForeignKeyUtil {
         return filterValue;
     }
 
+    /**
+     * Find the corresponding ItemNodeModel according to the target path
+     * eg: for Product Entity,
+     *    findTarget("Product/Name", ProductItemNodeModel) ==> the Product/Name's ItemNodeModel.
+     * @param targetPath the path need to find out
+     * @param node current Entity's ItemNodeModel
+     * @return the corresponding ItemNodeModel
+     */
     public static ItemNodeModel findTarget(String targetPath, ItemNodeModel node) {
         List<ModelData> childrenList = node.getChildren();
         if (childrenList != null && childrenList.size() > 0) {

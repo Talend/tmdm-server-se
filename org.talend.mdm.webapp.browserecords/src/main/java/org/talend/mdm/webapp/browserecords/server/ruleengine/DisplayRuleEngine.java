@@ -206,7 +206,7 @@ public class DisplayRuleEngine {
             }
 
         } catch (Exception e) {
-            LOG.error(e.getMessage());
+            LOG.error("Failed to execute fk filter", e);
         }
         return resultValue;
     }

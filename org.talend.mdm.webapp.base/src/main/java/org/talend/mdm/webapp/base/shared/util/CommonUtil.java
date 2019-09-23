@@ -228,6 +228,27 @@ public class CommonUtil {
         return foreignKeyFilterValue.startsWith(FN_PREFIX);
     }
 
+    /**
+     * return the true if foreignKeyFilter contains 'xpath:', fielder's xpath and or a releative path
+     * eg:
+     *     fn:concat('hello', 'world!!!')") ==> false
+     *     fn:concat(\"xpath:Product/Name\", \"xpath:Product/Description\")")  ==> true
+     *     fn:concat(\"xpath:/Product/Name\", \"xpath:/Product/Description\")")  ==> true
+     *     fn:concat(\"/Product/Name\", \"/Product/Description\")")  ==> false
+     *     fn:concat(\"xpath:Product/Name\", \" s\")")  ==> true
+     *     fn:string-length(\"xpath:Product/Name\") > 3\")")  ==> true
+     *     fn:string-length(\"xpath:/Product/Name\") > 3\")")  ==> true
+     *     fn:string-length(\"/BasicVisibleRuleWithFunctionXPath/name\") > 5")  ==> false
+     *     fn:matches(\"xpath:../Name\" ,\"test\")")  ==> true
+     *     fn:starts-with(\"xpath:Product/Name\",\"s\")")  ==> true
+     *     fn:starts-with(\"xpath:/Product/Name\",\"s\")")  ==> true
+     *     fn:starts-with(\"/Product/Name\",\"s\")")  ==> false
+     *     fn:abs(xpath:Product/Name)")  ==> true
+     *     fn:abs(xpath:/Product/Name)")  ==> true
+     *     fn:abs(/Product/Name)")  ==> true
+     * @param foreignKeyFilterValue
+     * @return
+     */
     public static boolean containsXPath(String foreignKeyFilterValue) {
         if (foreignKeyFilterValue.contains(XPATH_PREFIX)) {
             return true;
@@ -314,9 +335,8 @@ public class CommonUtil {
      * fn:concat("xpath:Product/Name", " s") ==> key=Product/Name,value=Product/Name
      * fn:starts-with("xpath:Product/Name","s")  ==> key=Product/Name,value=Product/Name
      * fn:matches("xpath:../Name" ,"test")  ==> key=../Name,valye=../Name
-     * fn:concat(/Product/Name, /Product/Description)  ==> key=Product/Name,value=/Product/Name & key=Product/Description,value=/Product/Description
-     * fn:string-length(/BasicVisibleRuleWithFunctionXPath/name) > 5  ==> key=BasicVisibleRuleWithFunctionXPath/name,value=/BasicVisibleRuleWithFunctionXPath/name
-     *
+     * fn:abs(xpath:Product/Price) ==> key=xpath:Product/Price, value=Product/Price
+     * fn:abs(/Product/Price) ==> key=/Product/Price, value=Product/Price
      * @param function the parse function
      * @return the map contains origin xpath and pure xpath
      */

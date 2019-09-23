@@ -449,7 +449,7 @@ public class BrowseRecordsView extends View {
                         .isFilterValue(filterValue)) {
                     String targetPath;
                     if (org.talend.mdm.webapp.base.shared.util.CommonUtil.isRelativePath(filterValue)) {
-                        targetPath = ForeignKeyUtil.findTargetRelativePath(xpath, filterValue);
+                        targetPath = ForeignKeyUtil.findTargetRelativePathForCellFK(xpath, filterValue);
                         Map<String, Field<?>> xpathFieldMap;
                         if (targetFieldMap.containsKey(i)) {
                             xpathFieldMap = targetFieldMap.get(i);
@@ -470,7 +470,7 @@ public class BrowseRecordsView extends View {
                             }
                             for (Map.Entry<String, String> entry : xpathMap.entrySet()) {
                                 if (org.talend.mdm.webapp.base.shared.util.CommonUtil.isRelativePath(entry.getValue())) {
-                                    targetPath = ForeignKeyUtil.findTargetRelativePath(xpath, entry.getValue());
+                                    targetPath = ForeignKeyUtil.findTargetRelativePathForCellFK(xpath, entry.getValue());
                                     xpathFieldMap.put(entry.getKey(), fieldMap.get(targetPath));
                                 } else {
                                     xpathFieldMap.put(entry.getKey(), fieldMap.get(entry.getValue()));
@@ -539,6 +539,10 @@ public class BrowseRecordsView extends View {
         ItemsToolBar.getInstance().updateEntityCombo();
     }
 
+    /**
+     * Reset the fk filter after deal with the function
+     * @param event app event
+     */
     private void onTransformFkFilter(AppEvent event) {
         LinkedList<String> filterValue = new LinkedList<String>((List<String>) event.getData());
         String foreignKeyFilter = event.getData(BrowseRecords.FOREIGN_KEY_FIELD);
@@ -553,6 +557,7 @@ public class BrowseRecordsView extends View {
             String predicate = conditionMap.get(org.talend.mdm.webapp.base.shared.util.CommonUtil.PREDICATE_STR);
             predicate = predicate == null ? org.talend.mdm.webapp.base.shared.util.CommonUtil.EMPTY : predicate;
 
+            //the content like: Product/Name$$Contains$$"Hat"$$#
             sb.append(conditionMap.get(org.talend.mdm.webapp.base.shared.util.CommonUtil.XPATH_STR))
                     .append(org.talend.mdm.webapp.base.shared.util.CommonUtil.DOLLAR_DELIMITER)
                     .append(conditionMap.get(org.talend.mdm.webapp.base.shared.util.CommonUtil.OPERATOR_STR))

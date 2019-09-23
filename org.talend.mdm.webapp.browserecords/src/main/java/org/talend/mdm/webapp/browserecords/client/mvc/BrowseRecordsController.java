@@ -403,6 +403,25 @@ public class BrowseRecordsController extends Controller {
         }
     }
 
+    /**
+     * Execute the App Event to transform the fk filter after catch the 'select fk relation' click event
+     * contains two types ForeignKeyField:
+     *    ForeignKeySelector: defined in detail for fk
+     *    ForeignKeyCellField, defined in grid for fk
+     * execute work flow:
+     *      fkFilter
+     *         |
+     *         |_if contain function____|
+     *                       |____if contains 'xpath:', parse the xpath's value -->|
+     *                       |____value ------------------------------------------>|
+     *                                                                           value
+     *                                                                             |
+     *                             execute the server service to execute the function and return the function result
+     *                                                                             |
+     *         to invoke the ActionView|<------------------------------------function result
+     *
+     * @param event
+     */
     private void onTransformFkFilter(final AppEvent event) {
         String foreignKeyFilter = event.getData();
         List<String> filterList = new ArrayList<String>();
@@ -411,8 +430,8 @@ public class BrowseRecordsController extends Controller {
             String[] criterias = CommonUtil.getCriteriasByForeignKeyFilter(foreignKeyFilter);
             if (foreignKeyField instanceof ForeignKeySelector) {
                 ForeignKeySelector foreignKeySelector = (ForeignKeySelector) foreignKeyField;
-                for (String cria : criterias) {
-                    Map<String, String> conditionMap = CommonUtil.buildConditionByCriteria(cria);
+                for (String criteria : criterias) {
+                    Map<String, String> conditionMap = CommonUtil.buildConditionByCriteria(criteria);
                     String filterValue = conditionMap.get(CommonUtil.VALUE_STR);
                     if (CommonUtil.isFunction(filterValue)) {
                         if (CommonUtil.containsXPath(filterValue)) {
@@ -420,9 +439,10 @@ public class BrowseRecordsController extends Controller {
                             for (Map.Entry<String, String> entry : xpathMap.entrySet()) {
                                 String filterValuePath = entry.getValue();
                                 String xpathValue;
+                                //if the xpath is a relative path, fetch the path's value
                                 if (CommonUtil.isRelativePath(filterValuePath)) {
                                     xpathValue = ForeignKeyUtil
-                                            .findRelativePath(filterValuePath, conditionMap.get(CommonUtil.XPATH_STR),
+                                            .findRelativePathValueForSelectFK(filterValuePath, conditionMap.get(CommonUtil.XPATH_STR),
                                                     foreignKeySelector.getCurrentPath(), foreignKeySelector.getItemNode());
                                 } else {
                                     xpathValue = ForeignKeyUtil.getXpathValue(filterValuePath,

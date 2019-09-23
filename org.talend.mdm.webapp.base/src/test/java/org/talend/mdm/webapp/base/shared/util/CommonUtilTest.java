@@ -121,20 +121,6 @@ public class CommonUtilTest extends TestCase {
         assertTrue(args.containsKey("xpath:../Name"));
         assertEquals("../Name", args.get("xpath:../Name"));
 
-        function = "fn:concat(/Product/Name, /Product/Description)";
-        args = CommonUtil.getArgumentsWithXpath(function);
-        assertEquals(2, args.size());
-        assertTrue(args.containsKey("/Product/Name"));
-        assertTrue(args.containsKey("/Product/Description"));
-        assertEquals("Product/Name", args.get("/Product/Name"));
-        assertEquals("Product/Description", args.get("/Product/Description"));
-
-        function = "fn:string-length(/BasicVisibleRuleWithFunctionXPath/name) > 5";
-        args = CommonUtil.getArgumentsWithXpath(function);
-        assertEquals(1, args.size());
-        assertTrue(args.containsKey("/BasicVisibleRuleWithFunctionXPath/name"));
-        assertEquals("BasicVisibleRuleWithFunctionXPath/name", args.get("/BasicVisibleRuleWithFunctionXPath/name"));
-
         function = "fn:string-length(\"xpath:/Product/Name\") > 3\")";
         args = CommonUtil.getArgumentsWithXpath(function);
         assertEquals(1, args.size());
@@ -160,20 +146,36 @@ public class CommonUtilTest extends TestCase {
         assertEquals(1, args.size());
         assertTrue(args.containsKey("xpath:/Product/Name"));
         assertEquals("Product/Name", args.get("xpath:/Product/Name"));
+
+        function = "fn:abs(xpath:/Product/Price)";
+        args = CommonUtil.getArgumentsWithXpath(function);
+        assertEquals(1, args.size());
+        assertTrue(args.containsKey("xpath:/Product/Price"));
+        assertEquals("Product/Price", args.get("xpath:/Product/Price"));
+
+        function = "fn:abs(/Product/Price)";
+        args = CommonUtil.getArgumentsWithXpath(function);
+        assertEquals(1, args.size());
+        assertTrue(args.containsKey("/Product/Price"));
+        assertEquals("Product/Price", args.get("/Product/Price"));
     }
 
     public void testContainsXPath() {
         assertFalse(CommonUtil.containsXPath("fn:concat('hello', 'world!!!')"));
+        assertTrue(CommonUtil.containsXPath("fn:concat(\"xpath:Product/Name\", \"xpath:Product/Description\")"));
+        assertTrue(CommonUtil.containsXPath("fn:concat(\"xpath:/Product/Name\", \"xpath:/Product/Description\")"));
+        assertFalse(CommonUtil.containsXPath("fn:concat(\"/Product/Name\", \"/Product/Description\")"));
+        assertTrue(CommonUtil.containsXPath("fn:concat(\"xpath:Product/Name\", \" s\")"));
         assertTrue(CommonUtil.containsXPath("fn:string-length(\"xpath:Product/Name\") > 3\")"));
+        assertTrue(CommonUtil.containsXPath("fn:string-length(\"xpath:/Product/Name\") > 3\")"));
+        assertFalse(CommonUtil.containsXPath("fn:string-length(\"/BasicVisibleRuleWithFunctionXPath/name\") > 5"));
         assertTrue(CommonUtil.containsXPath("fn:matches(\"xpath:../Name\" ,\"test\")"));
         assertTrue(CommonUtil.containsXPath("fn:starts-with(\"xpath:Product/Name\",\"s\")"));
-        assertTrue(CommonUtil.containsXPath("fn:concat(\"xpath:Product/Name\", \" s\")"));
-        assertTrue(CommonUtil.containsXPath("fn:string-length(/Product/Name) > 3)"));
-        assertTrue(CommonUtil.containsXPath("fn:string-length(/BasicVisibleRuleWithFunctionXPath/name) > 5"));
-        assertTrue(CommonUtil.containsXPath("fn:concat(\"xpath:Product/Name\", \"xpath:Product/Description\")"));
-        assertTrue(CommonUtil.containsXPath("fn:concat(\"xpath:Product/Name\", \"/Product/Description\")"));
-        assertFalse(CommonUtil.containsXPath("fn:concat(\"/Product/Name\", \"/Product/Description\")"));
-        assertTrue(CommonUtil.containsXPath("fn:concat(/Product/Name\", /Product/Description\")"));
+        assertTrue(CommonUtil.containsXPath("fn:starts-with(\"xpath:/Product/Name\",\"s\")"));
+        assertFalse(CommonUtil.containsXPath("fn:starts-with(\"/Product/Name\",\"s\")"));
+        assertTrue(CommonUtil.containsXPath("fn:abs(xpath:Product/Name)"));
+        assertTrue(CommonUtil.containsXPath("fn:abs(xpath:/Product/Name)"));
+        assertTrue(CommonUtil.containsXPath("fn:abs(/Product/Name)"));
     }
 
 }

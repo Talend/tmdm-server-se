@@ -56,32 +56,8 @@ public class ForeignKeyUtilTest extends GWTTestCase {
         assertEquals("IdTypeValeur", targetNodeModel.getLabel()); //$NON-NLS-1$
         assertEquals("Caracteristique/Format_Caracteristique:Caracteristique_Liste/IdTypeValeur", targetNodeModel.getTypePath()); //$NON-NLS-1$
 
-
-        ItemNodeModel productNode = new ItemNodeModel("Product"); //$NON-NLS-1$
-        ItemNodeModel pictureNode = new ItemNodeModel("Picture"); //$NON-NLS-1$
-        pictureNode.setTypePath("Product/Picture");
-        ItemNodeModel idNode = new ItemNodeModel("Id"); //$NON-NLS-1$
-        idNode.setTypePath("Product/Id");
-        idNode.setKey(true);
-        ItemNodeModel nameNode = new ItemNodeModel("Name"); //$NON-NLS-1$
-        nameNode.setLabel("Product Name");
-        nameNode.setTypePath("Product/Name");
-        ItemNodeModel descriptionNode = new ItemNodeModel("Description"); //$NON-NLS-1$
-        descriptionNode.setTypePath("Product/Description");
-        ItemNodeModel featuresNode = new ItemNodeModel("Features"); //$NON-NLS-1$
-        featuresNode.setTypePath("Product/Features");
-        ItemNodeModel priceNode = new ItemNodeModel("Price"); //$NON-NLS-1$
-        priceNode.setTypePath("Product/Price");
-
-        productNode.add(pictureNode);
-        productNode.add(idNode);
-        productNode.add(nameNode);
-        productNode.add(descriptionNode);
-        productNode.add(featuresNode);
-        productNode.add(priceNode);
-
         targetPath = "Product/Name"; //$NON-NLS-1$
-        targetNodeModel = ForeignKeyUtil.findTarget(targetPath, productNode);
+        targetNodeModel = ForeignKeyUtil.findTarget(targetPath, generateItemNodeModel()[0]);
         assertNotNull(targetNodeModel);
         assertEquals("Product Name", targetNodeModel.getLabel()); //$NON-NLS-1$
         assertEquals("Product/Name", targetNodeModel.getTypePath()); //$NON-NLS-1$

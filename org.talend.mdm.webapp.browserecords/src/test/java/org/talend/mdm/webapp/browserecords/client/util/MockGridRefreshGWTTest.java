@@ -648,7 +648,7 @@ public class MockGridRefreshGWTTest extends GWTTestCase {
         }
 
         @Override
-        public void transformFunctionValue(List<String> funciton,  AsyncCallback<List<String>> callback){
+        public void transformFunctionValue(List<String> function, AsyncCallback<List<String>> callback) {
         }
     }
 

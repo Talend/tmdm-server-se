@@ -229,7 +229,7 @@ public class CommonUtil {
     }
 
     /**
-     * return the true if foreignKeyFilter contains 'xpath:', fielder's xpath and or a releative path
+     * Return the true if foreignKeyFilter contains 'xpath:', fielder's xpath and or a releative path
      * eg:
      *     fn:concat('hello', 'world!!!')") ==> false
      *     fn:concat(\"xpath:Product/Name\", \"xpath:Product/Description\")")  ==> true
@@ -327,7 +327,7 @@ public class CommonUtil {
     }
 
     /**
-     * parse the xpath in the function content
+     * Parse the xpath in the function content
      * eg:
      * fn:string-length("xpath:/Product/Name") > 3") ==> key=Product/Name,value=Product/Name
      * fn:concat("xpath:Product/Name", "xpath:Product/Description") ==> key=Product/Name,value=Product/Name & key=Product/Description,value=Product/Description

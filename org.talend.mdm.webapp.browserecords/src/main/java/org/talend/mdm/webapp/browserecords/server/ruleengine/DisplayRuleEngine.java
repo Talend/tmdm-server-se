@@ -204,7 +204,6 @@ public class DisplayRuleEngine {
                     resultValue.add(valueNode.getText());
                 }
             }
-
         } catch (Exception e) {
             LOG.error("Failed to execute fk filter", e);
         }
@@ -323,7 +322,6 @@ public class DisplayRuleEngine {
         }
         return el.getName();
     }
-
 
     public void setFuncitonList(List<String> funcitonList) {
         this.funcitonList = funcitonList;

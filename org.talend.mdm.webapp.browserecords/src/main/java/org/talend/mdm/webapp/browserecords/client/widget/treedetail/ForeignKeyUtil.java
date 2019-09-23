@@ -22,6 +22,7 @@ import org.talend.mdm.webapp.base.client.model.ForeignKeyBean;
 import org.talend.mdm.webapp.base.client.model.ItemResult;
 import org.talend.mdm.webapp.base.client.util.MultilanguageMessageParser;
 import org.talend.mdm.webapp.base.shared.TypeModel;
+import org.talend.mdm.webapp.base.shared.util.CommonUtil;
 import org.talend.mdm.webapp.browserecords.client.BrowseRecords;
 import org.talend.mdm.webapp.browserecords.client.BrowseRecordsEvents;
 import org.talend.mdm.webapp.browserecords.client.BrowseRecordsServiceAsync;
@@ -235,7 +236,7 @@ public class ForeignKeyUtil {
     }
 
     /**
-     * return the true xpath of the releative xpath
+     * Return the true xpath of the relative xpath
      * @param xpath current fk field xpath
      * @param filterValue the current fk field's filter relative path
      * @return true xpath of the releative xpath
@@ -249,15 +250,15 @@ public class ForeignKeyUtil {
             return xpath.substring(0, xpath.lastIndexOf("/")) + filterValue  //$NON-NLS-1$
                     .substring(filterValue.indexOf("..") + 2); //$NON-NLS-1$
         }
-        return "";
+        return CommonUtil.EMPTY;
     }
 
     /**
-     * find the xpath value from ItemNodeModel
-     * @param filterValue
-     * @param currentPath
-     * @param itemNode
-     * @return
+     * Find the xpath value from ItemNodeModel
+     * @param filterValue fk filter's value(include the xpath)
+     * @param currentPath current fk field xpath
+     * @param itemNode current fk field's ItemNodeModel
+     * @return xpath value from ItemNodeModel
      */
     public static String getXpathValue(String filterValue, String currentPath, ItemNodeModel itemNode) {
         String[] rightValueOrPathArray = filterValue.split("/"); //$NON-NLS-1$

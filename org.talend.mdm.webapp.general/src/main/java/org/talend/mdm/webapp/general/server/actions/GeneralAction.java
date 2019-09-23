@@ -171,10 +171,13 @@ public class GeneralAction implements GeneralService {
     @Override
     public void setClusterAndModel(String cluster, String model) throws ServiceException {
         try {
+            LocalUser.UpdatePersonalInfo.set(true);
             Configuration.setConfiguration(cluster, model);
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
             throw new ServiceException(e.getLocalizedMessage());
+        } finally {
+            LocalUser.UpdatePersonalInfo.remove();
         }
     }
 
@@ -312,12 +315,15 @@ public class GeneralAction implements GeneralService {
 
     private void setDefaultLanguage(String language, boolean failQuietly) throws ServiceException {
         try {
+            LocalUser.UpdatePersonalInfo.set(true);
             Utils.setDefaultLanguage(language);
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
             if (!failQuietly) {
                 throw new ServiceException(e.getLocalizedMessage());
             }
+        } finally {
+            LocalUser.UpdatePersonalInfo.remove();
         }
     }
 

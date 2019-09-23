@@ -82,4 +82,30 @@ public class LocalUser {
     public static boolean isAdminUser(String username) {
         return username.equals(MDMConfiguration.getAdminUser());
     }
+
+    // Update user's own Language, Domain/Portal Configuration
+    public static class UpdatePersonalInfo {
+
+        private static ThreadLocal<Boolean> threadLocal = new ThreadLocal<Boolean>() {
+
+            public Boolean initialValue() {
+                return Boolean.FALSE;
+            }
+        };
+
+        private UpdatePersonalInfo() {
+        }
+
+        public static void set(boolean value) {
+            threadLocal.set(value);
+        }
+
+        public static boolean get() {
+            return threadLocal.get();
+        }
+
+        public static void remove() {
+            threadLocal.remove();
+        }
+    }
 }

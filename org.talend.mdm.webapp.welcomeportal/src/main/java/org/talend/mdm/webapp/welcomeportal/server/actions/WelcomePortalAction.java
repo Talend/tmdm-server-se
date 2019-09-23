@@ -254,6 +254,7 @@ public class WelcomePortalAction implements WelcomePortalService {
     @Override
     public void savePortalConfig(PortalProperties config) throws ServiceException {
         try {
+            LocalUser.UpdatePersonalInfo.set(true);
             ILocalUser user = LocalUser.getLocalUser();
             if (!user.userCanWrite()) {
                 return;
@@ -273,12 +274,15 @@ public class WelcomePortalAction implements WelcomePortalService {
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
             throw new ServiceException(MESSAGES.getMessage("save_portal_config_failed")); //$NON-NLS-1$
+        } finally {
+            LocalUser.UpdatePersonalInfo.remove();
         }
     }
 
     @Override
     public void savePortalConfig(String key, String value) throws ServiceException {
         try {
+            LocalUser.UpdatePersonalInfo.set(true);
             ILocalUser user = LocalUser.getLocalUser();
             if (!user.userCanWrite()) {
                 return;
@@ -297,12 +301,15 @@ public class WelcomePortalAction implements WelcomePortalService {
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
             throw new ServiceException(MESSAGES.getMessage("save_portal_config_failed")); //$NON-NLS-1$
+        } finally {
+            LocalUser.UpdatePersonalInfo.remove();
         }
     }
 
     @Override
     public void savePortalConfig(String key, String portletName, String value) throws ServiceException {
         try {
+            LocalUser.UpdatePersonalInfo.set(true);
             ILocalUser user = LocalUser.getLocalUser();
             if (!user.userCanWrite()) {
                 return;
@@ -325,6 +332,8 @@ public class WelcomePortalAction implements WelcomePortalService {
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
             throw new ServiceException(MESSAGES.getMessage("save_portal_config_failed")); //$NON-NLS-1$
+        } finally {
+            LocalUser.UpdatePersonalInfo.remove();
         }
     }
 
@@ -332,6 +341,7 @@ public class WelcomePortalAction implements WelcomePortalService {
     public void savePortalConfigAutoAndSetting(String portletName, List<String> configs) throws ServiceException {
         assert configs.size() == 2;
         try {
+            LocalUser.UpdatePersonalInfo.set(true);
             ILocalUser user = LocalUser.getLocalUser();
             if (!user.userCanWrite()) {
                 return;
@@ -356,6 +366,8 @@ public class WelcomePortalAction implements WelcomePortalService {
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
             throw new ServiceException(MESSAGES.getMessage("save_portal_config_failed")); //$NON-NLS-1$
+        } finally {
+            LocalUser.UpdatePersonalInfo.remove();
         }
     }
 

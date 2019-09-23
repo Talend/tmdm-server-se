@@ -340,7 +340,7 @@ public class CommonUtil {
      * @param function the parse function
      * @return the map contains origin xpath and pure xpath
      */
-    public static Map<String, String> getArgumentsWithXpath(String function){
+    public static Map<String, String> getArgumentsWithXpath(String function) {
         Map<String, String> arguments = new HashMap<String, String>();
         RegExp reg = RegExp.compile("\\((.*)\\)"); //$NON-NLS-1$
         MatchResult matchResult = reg.exec(function);
@@ -348,7 +348,8 @@ public class CommonUtil {
         if (matchResult != null) {
             value = matchResult.getGroup(0);
         }
-        RegExp regExp = RegExp.compile("((xpath:(([a-zA-Z]*)|((\\.)+)))|/([a-zA-Z]*))/(([a-zA-Z]*)/*)*", "g"); //$NON-NLS-1$ //$NON-NLS-2$
+        RegExp regExp = RegExp
+                .compile("((xpath:(([a-zA-Z]*)|((\\.)+)))|/([a-zA-Z]*))/(([a-zA-Z]*)/*)*", "g"); //$NON-NLS-1$ //$NON-NLS-2$
         MatchResult matcher = regExp.exec(value);
         while (matcher != null) {
             String xpathValue = matcher.getGroup(0);

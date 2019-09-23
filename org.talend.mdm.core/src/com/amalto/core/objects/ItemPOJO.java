@@ -664,19 +664,16 @@ public class ItemPOJO implements Serializable {
         String dataCluster = itemPOJOPK.getDataClusterPOJOPK().getUniqueId();
         String concept = itemPOJOPK.getConceptName();
 
-        // admin has all rights, so bypass security checks
+        // Admin has all rights, so bypass security checks, "admin.user" defined in mdm.conf, and "Super Admin" defined on TAC
         boolean isAdmin = MDMConfiguration.getAdminUser().equals(username) || user.getRoles().contains(ICoreConstants.ADMIN_PERMISSION);
 
-        // crossreferencing, MDMItemImages, MDMMigration, MDMItemsTrash, SearchTemplate, UpdateReport, CONF, PROVISIONING
+        // Including: crossreferencing, MDMItemImages, MDMMigration, MDMItemsTrash, SearchTemplate, UpdateReport, CONF, PROVISIONING
         boolean isSystemObject = XSystemObjects.isXSystemObject(DATA_CLUSTER_SYSTEM_OBJECTS, dataCluster);
 
-        // current user changes its own information
-        boolean isSelfChanging = false;
-        if (StorageAdmin.SYSTEM_STORAGE.equals(dataCluster) && UserManage.USER_CONCEPT.equals(concept)) {
-            isSelfChanging = user.getIdentity().equals(itemPOJOPK.getIds()[0]);
-        }
+        // Update user's own Language, Domain/Portal Configuration
+        boolean isUpdatePersonalInfo = LocalUser.UpdatePersonalInfo.get();
 
-        if (isAdmin || isSystemObject || isSelfChanging) {
+        if (isAdmin || isSystemObject || isUpdatePersonalInfo) {
             return;
         }
 

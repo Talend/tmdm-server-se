@@ -177,5 +177,4 @@ public class CommonUtilTest extends TestCase {
         assertTrue(CommonUtil.containsXPath("fn:abs(xpath:/Product/Name)"));
         assertTrue(CommonUtil.containsXPath("fn:abs(/Product/Name)"));
     }
-
 }

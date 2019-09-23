@@ -441,12 +441,13 @@ public class BrowseRecordsController extends Controller {
                                 String xpathValue;
                                 //if the xpath is a relative path, fetch the path's value
                                 if (CommonUtil.isRelativePath(filterValuePath)) {
-                                    xpathValue = ForeignKeyUtil
-                                            .findRelativePathValueForSelectFK(filterValuePath, conditionMap.get(CommonUtil.XPATH_STR),
-                                                    foreignKeySelector.getCurrentPath(), foreignKeySelector.getItemNode());
+                                    xpathValue = ForeignKeyUtil.findRelativePathValueForSelectFK(filterValuePath,
+                                            conditionMap.get(CommonUtil.XPATH_STR), foreignKeySelector.getCurrentPath(),
+                                            foreignKeySelector.getItemNode());
                                 } else {
-                                    xpathValue = ForeignKeyUtil.getXpathValue(filterValuePath,
-                                            foreignKeySelector.getCurrentPath(), foreignKeySelector.getItemNode());
+                                    xpathValue = ForeignKeyUtil
+                                            .getXpathValue(filterValuePath, foreignKeySelector.getCurrentPath(),
+                                                    foreignKeySelector.getItemNode());
                                 }
                                 if (xpathValue.equals(filterValuePath)) {
                                     xpathValue = CommonUtil.EMPTY;

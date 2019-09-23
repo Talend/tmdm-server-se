@@ -253,8 +253,8 @@ public class CommonUtil {
         if (foreignKeyFilterValue.contains(XPATH_PREFIX)) {
             return true;
         }
-        String filter = foreignKeyFilterValue
-                .substring(foreignKeyFilterValue.lastIndexOf("(") + 1, foreignKeyFilterValue.indexOf(")")); //$NON-NLS-1$  //$NON-NLS-2$
+        String filter = foreignKeyFilterValue.substring(foreignKeyFilterValue.lastIndexOf("(") + 1,
+                foreignKeyFilterValue.indexOf(")")); //$NON-NLS-1$  //$NON-NLS-2$
         String[] filters = filter.split(","); //$NON-NLS-1$
         for (String filterContent : filters) {
             filterContent = filterContent.trim();

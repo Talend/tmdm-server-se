@@ -204,11 +204,9 @@ public class ForeignKeySelector extends ForeignKeyField implements ReturnCriteri
         relationButton.setVisible(true);
     }
 
-    @Override
-    public String parseForeignKeyFilter() {
+    @Override public String parseForeignKeyFilter() {
         if (foreignKeyFilter != null) {
-            String[] criterias = CommonUtil
-                    .getCriteriasByForeignKeyFilter(foreignKeyFilter);
+            String[] criterias = CommonUtil.getCriteriasByForeignKeyFilter(foreignKeyFilter);
             List<Map<String, String>> conditions = new ArrayList<Map<String, String>>();
             for (String criteria : criterias) {
                 Map<String, String> conditionMap = CommonUtil.buildConditionByCriteria(criteria);

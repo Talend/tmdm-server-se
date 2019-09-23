@@ -439,12 +439,12 @@ public class BrowseRecordsView extends View {
         for (String xpath : fkFieldwithFilterMap.keySet()) {
             ForeignKeyCellField foreignKeyCellField = fkFieldwithFilterMap.get(xpath);
             Map<Integer, Map<String, Field<?>>> targetFieldMap = new HashMap<Integer, Map<String, Field<?>>>();
-            String[] criterias = org.talend.mdm.webapp.base.shared.util.CommonUtil.getCriteriasByForeignKeyFilter(dataTypes.get(
-                    xpath).getForeignKeyFilter());
+            String[] criterias = org.talend.mdm.webapp.base.shared.util.CommonUtil
+                    .getCriteriasByForeignKeyFilter(dataTypes.get(xpath).getForeignKeyFilter());
             for (int i = 0; i < criterias.length; i++) {
                 Map<String, String> conditionMap = org.talend.mdm.webapp.base.shared.util.CommonUtil
                         .buildConditionByCriteria(criterias[i]);
-                String filterValue = conditionMap.get("Value"); //$NON-NLS-1$
+                String filterValue = conditionMap.get(org.talend.mdm.webapp.base.shared.util.CommonUtil.VALUE_STR);
                 if (filterValue != null && !filterValue.isEmpty() && !org.talend.mdm.webapp.base.shared.util.CommonUtil
                         .isFilterValue(filterValue)) {
                     String targetPath;
@@ -549,7 +549,8 @@ public class BrowseRecordsView extends View {
         String[] criterias = org.talend.mdm.webapp.base.shared.util.CommonUtil.getCriteriasByForeignKeyFilter(foreignKeyFilter);
         StringBuilder sb = new StringBuilder();
         for (String criteria : criterias) {
-            Map<String, String> conditionMap = org.talend.mdm.webapp.base.shared.util.CommonUtil.buildConditionByCriteria(criteria);
+            Map<String, String> conditionMap = org.talend.mdm.webapp.base.shared.util.CommonUtil
+                    .buildConditionByCriteria(criteria);
             String returnFilterValue = conditionMap.get(org.talend.mdm.webapp.base.shared.util.CommonUtil.VALUE_STR);
             if (returnFilterValue.contains(org.talend.mdm.webapp.base.shared.util.CommonUtil.FN_PREFIX)) {
                 conditionMap.put(org.talend.mdm.webapp.base.shared.util.CommonUtil.VALUE_STR, filterValue.poll());

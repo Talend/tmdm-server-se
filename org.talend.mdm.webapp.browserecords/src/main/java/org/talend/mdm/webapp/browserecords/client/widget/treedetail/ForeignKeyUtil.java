@@ -313,7 +313,8 @@ public class ForeignKeyUtil {
      * @param itemNode current field corresponding ItemNodeModel
      * @return the relative path's value
      */
-    public static String findRelativePathValueForSelectFK(String filterValue, String filterOfXPath, String currentPath, ItemNodeModel itemNode) {
+    public static String findRelativePathValueForSelectFK(String filterValue, String filterOfXPath, String currentPath,
+            ItemNodeModel itemNode) {
         if (filterOfXPath != null && filterOfXPath.split("/").length > 0 //$NON-NLS-1$
                 && currentPath.split("/")[0].equals(filterOfXPath.split("/")[0])) { //$NON-NLS-1$//$NON-NLS-2$
             String[] rightPathArray = filterValue.split("/"); //$NON-NLS-1$

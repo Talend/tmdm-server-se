@@ -329,24 +329,28 @@ public class DisplayRuleEngine {
 
     private String generateFKFilterStyle(String xpath, List<String> functionNameList) {
         StringBuffer style = new StringBuffer();
-        style.append("<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" xmlns:fn=\"http://www.w3.org/2005/xpath-functions\" xmlns:t=\"http://www.talend.com/2010/MDM\" version=\"2.0\">"); //$NON-NLS-1$
+        style.append(
+                "<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" xmlns:fn=\"http://www.w3.org/2005/xpath-functions\" xmlns:t=\"http://www.talend.com/2010/MDM\" version=\"2.0\">"); //$NON-NLS-1$
         style.append("<xsl:output method=\"xml\" indent=\"yes\" omit-xml-declaration=\"yes\"/>"); //$NON-NLS-1$
         style.append("<xsl:template match=\"/result\">"); //$NON-NLS-1$//$NON-NLS-2$
         style.append("<xsl:copy>"); //$NON-NLS-1$
-        for(int i = 1; i <= functionNameList.size(); i++){
-            style.append("<xsl:apply-templates select=\"/").append(xpath).append("[").append(i).append("]\"/>"); //$NON-NLS-1$ //$NON-NLS-2$
+        for (int i = 1; i <= functionNameList.size(); i++) {
+            style.append("<xsl:apply-templates select=\"/").append(xpath).append("[").append(i)
+                    .append("]\"/>"); //$NON-NLS-1$ //$NON-NLS-2$
         }
         style.append("</xsl:copy>"); //$NON-NLS-1$
         style.append("</xsl:template>"); //$NON-NLS-1$
 
         int i = 1;
         Iterator<String> iterator = functionNameList.iterator();
-        while(iterator.hasNext()){
-            style.append("<xsl:template match=\"/").append(xpath).append("[").append(i++).append("]\">"); //$NON-NLS-1$ //$NON-NLS-2$
+        while (iterator.hasNext()) {
+            style.append("<xsl:template match=\"/").append(xpath).append("[").append(i++)
+                    .append("]\">"); //$NON-NLS-1$ //$NON-NLS-2$
             style.append("<xsl:copy>"); //$NON-NLS-1$
             style.append("<xsl:choose>"); //$NON-NLS-1$
             style.append("<xsl:when test=\"not(text())\">"); //$NON-NLS-1$
-            style.append("<xsl:value-of select=\"").append(XmlUtil.escapeXml(iterator.next())).append("\"/>"); //$NON-NLS-1$ //$NON-NLS-2$
+            style.append("<xsl:value-of select=\"").append(XmlUtil.escapeXml(iterator.next()))
+                    .append("\"/>"); //$NON-NLS-1$ //$NON-NLS-2$
             style.append("</xsl:when> "); //$NON-NLS-1$
             style.append("<xsl:otherwise>"); //$NON-NLS-1$
             style.append("<xsl:value-of select=\".\"/>"); //$NON-NLS-1$

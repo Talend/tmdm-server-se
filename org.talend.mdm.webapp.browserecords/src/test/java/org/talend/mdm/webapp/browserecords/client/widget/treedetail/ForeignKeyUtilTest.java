@@ -40,7 +40,8 @@ public class ForeignKeyUtilTest extends GWTTestCase {
         itemNodeModel2.setTypePath("Caracteristique/Format_Caracteristique:Caracteristique_Liste/Multiple"); //$NON-NLS-1$
         ItemNodeModel itemNodeModel3 = new ItemNodeModel();
         itemNodeModel3.setLabel("ValeursCaracteristique"); //$NON-NLS-1$
-        itemNodeModel3.setTypePath("Caracteristique/Format_Caracteristique:Caracteristique_Liste/ValeursCaracteristique"); //$NON-NLS-1$
+        itemNodeModel3
+                .setTypePath("Caracteristique/Format_Caracteristique:Caracteristique_Liste/ValeursCaracteristique"); //$NON-NLS-1$
         itemNodeModel.getChildren().add(itemNodeModel1);
         itemNodeModel.getChildren().add(itemNodeModel2);
         itemNodeModel.getChildren().add(itemNodeModel3);
@@ -48,13 +49,15 @@ public class ForeignKeyUtilTest extends GWTTestCase {
         ItemNodeModel targetNodeModel = ForeignKeyUtil.findTarget(targetPath, itemNodeModel);
         assertNotNull(targetNodeModel);
         assertEquals("IdTypeValeur", targetNodeModel.getLabel()); //$NON-NLS-1$
-        assertEquals("Caracteristique/Format_Caracteristique:Caracteristique_Liste/IdTypeValeur", targetNodeModel.getTypePath()); //$NON-NLS-1$
+        assertEquals("Caracteristique/Format_Caracteristique:Caracteristique_Liste/IdTypeValeur",
+                targetNodeModel.getTypePath()); //$NON-NLS-1$
 
         targetPath = "Caracteristique/Format_Caracteristique[@xsi:type=\"Caracteristique_Liste\"]/IdTypeValeur"; //$NON-NLS-1$
         targetNodeModel = ForeignKeyUtil.findTarget(targetPath, itemNodeModel);
         assertNotNull(targetNodeModel);
         assertEquals("IdTypeValeur", targetNodeModel.getLabel()); //$NON-NLS-1$
-        assertEquals("Caracteristique/Format_Caracteristique:Caracteristique_Liste/IdTypeValeur", targetNodeModel.getTypePath()); //$NON-NLS-1$
+        assertEquals("Caracteristique/Format_Caracteristique:Caracteristique_Liste/IdTypeValeur",
+                targetNodeModel.getTypePath()); //$NON-NLS-1$
 
         targetPath = "Product/Name"; //$NON-NLS-1$
         targetNodeModel = ForeignKeyUtil.findTarget(targetPath, generateItemNodeModel()[0]);
@@ -90,36 +93,37 @@ public class ForeignKeyUtilTest extends GWTTestCase {
     }
 
     /**
-     * return the Product ItemNodeModel
-     *         resultNode[0] = productNode;
-     *         resultNode[1] = pictureNode;
-     *         resultNode[2] = idNode;
-     *         resultNode[3] = nameNode;
-     *         resultNode[4] = descriptionNode;
-     *         resultNode[5] = featuresNode;
-     *         resultNode[6] = priceNode;
-     *         resultNode[7] = testNode;
+     * Return the Product ItemNodeModel
+     *     resultNode[0] = productNode;
+     *     resultNode[1] = pictureNode;
+     *     resultNode[2] = idNode;
+     *     resultNode[3] = nameNode;
+     *     resultNode[4] = descriptionNode;
+     *     resultNode[5] = featuresNode;
+     *     resultNode[6] = priceNode;
+     *     resultNode[7] = testNode;
+     *
      * @return Product ItemNodeModel Array
      */
     private ItemNodeModel[] generateItemNodeModel() {
         ItemNodeModel productNode = new ItemNodeModel("Product"); //$NON-NLS-1$
         ItemNodeModel pictureNode = new ItemNodeModel("Picture"); //$NON-NLS-1$
-        pictureNode.setTypePath("Product/Picture");
+        pictureNode.setTypePath("Product/Picture"); //$NON-NLS-1$
         ItemNodeModel idNode = new ItemNodeModel("Id"); //$NON-NLS-1$
-        idNode.setTypePath("Product/Id");
+        idNode.setTypePath("Product/Id"); //$NON-NLS-1$
         idNode.setKey(true);
         ItemNodeModel nameNode = new ItemNodeModel("Name"); //$NON-NLS-1$
-        nameNode.setLabel("Product Name");
-        nameNode.setTypePath("Product/Name");
-        nameNode.setObjectValue("Hat");
+        nameNode.setLabel("Product Name"); //$NON-NLS-1$
+        nameNode.setTypePath("Product/Name"); //$NON-NLS-1$
+        nameNode.setObjectValue("Hat"); //$NON-NLS-1$
         ItemNodeModel descriptionNode = new ItemNodeModel("Description"); //$NON-NLS-1$
-        descriptionNode.setTypePath("Product/Description");
+        descriptionNode.setTypePath("Product/Description"); //$NON-NLS-1$
         ItemNodeModel featuresNode = new ItemNodeModel("Features"); //$NON-NLS-1$
-        featuresNode.setTypePath("Product/Features");
+        featuresNode.setTypePath("Product/Features"); //$NON-NLS-1$
         ItemNodeModel priceNode = new ItemNodeModel("Price"); //$NON-NLS-1$
-        priceNode.setTypePath("Product/Price");
+        priceNode.setTypePath("Product/Price"); //$NON-NLS-1$
         ItemNodeModel testNode = new ItemNodeModel("Test"); //$NON-NLS-1$
-        testNode.setTypePath("Product/Test");
+        testNode.setTypePath("Product/Test"); //$NON-NLS-1$
 
         productNode.add(pictureNode);
         productNode.add(idNode);

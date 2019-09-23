@@ -160,11 +160,11 @@ public class SuggestComboBoxField extends ComboBoxEx<ForeignKeyBean> {
 
                     if (inputValue != null && !org.talend.mdm.webapp.base.shared.util.CommonUtil.EMPTY
                             .equals(inputValue.trim()) && !"[".equals(inputValue.trim())) { //$NON-NLS-1$
-                        String foreignKeyfielter = foreignKeyField.getOriginForeignKeyFilter();
-                        if (foreignKeyfielter.contains(org.talend.mdm.webapp.base.shared.util.CommonUtil.FN_PREFIX)) {
-                            AppEvent event = new AppEvent(BrowseRecordsEvents.TransformFkFilterItem, foreignKeyfielter);
+                        String foreignKeyFilter = foreignKeyField.getOriginForeignKeyFilter();
+                        if (foreignKeyFilter.contains(org.talend.mdm.webapp.base.shared.util.CommonUtil.FN_PREFIX)) {
+                            AppEvent event = new AppEvent(BrowseRecordsEvents.TransformFkFilterItem, foreignKeyFilter);
                             event.setData(BrowseRecords.FOREIGN_KEY_FIELD, foreignKeyField);
-                            event.setData("foreignKeyFilter", foreignKeyfielter);
+                            event.setData(BrowseRecords.FOREIGN_KEY_FILTER, foreignKeyFilter);
                             Dispatcher.forwardEvent(event);
                         }
                         task.delay(getListDelay);

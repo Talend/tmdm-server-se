@@ -38,7 +38,8 @@ public class ForeignKeyCellField extends ForeignKeyField {
         this.targetFields = targetFields;
     }
 
-    @Override public String parseForeignKeyFilter() {
+    @Override
+    public String parseForeignKeyFilter() {
         if (foreignKeyFilter != null) {
             String[] criterias = CommonUtil.getCriteriasByForeignKeyFilter(foreignKeyFilter);
             List<Map<String, String>> conditions = new ArrayList<Map<String, String>>();

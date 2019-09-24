@@ -545,7 +545,7 @@ public class BrowseRecordsView extends View {
      */
     private void onTransformFkFilter(AppEvent event) {
         LinkedList<String> filterValue = new LinkedList<String>((List<String>) event.getData());
-        String foreignKeyFilter = event.getData(BrowseRecords.FOREIGN_KEY_FIELD);
+        String foreignKeyFilter = event.getData(BrowseRecords.FOREIGN_KEY_FILTER);
         String[] criterias = org.talend.mdm.webapp.base.shared.util.CommonUtil.getCriteriasByForeignKeyFilter(foreignKeyFilter);
         StringBuilder sb = new StringBuilder();
         for (String criteria : criterias) {

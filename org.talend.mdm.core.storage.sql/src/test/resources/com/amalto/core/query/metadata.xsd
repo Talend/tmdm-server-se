@@ -2853,4 +2853,95 @@
 	        <xsd:enumeration value="rejected" />
 	    </xsd:restriction>
 	</xsd:simpleType>
+    <xsd:complexType abstract="true" name="PartnerType">
+        <xsd:sequence />
+    </xsd:complexType>
+    <xsd:complexType name="SourceSystemMandantType">
+        <xsd:sequence>
+            <xsd:element maxOccurs="1" minOccurs="1" name="SourceSystemId" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_ForeignKey">RefSourceSystem/RefSourceSystemId</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKeyInfo">RefSourceSystem/RefSourceSystemId</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKeyInfo">RefSourceSystem/Bezeichnung</xsd:appinfo>
+                    <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="1" name="MandantNummer" type="xsd:long">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="1" name="SourceKey" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="SourceSystemMandantList">
+        <xsd:sequence>
+            <xsd:element maxOccurs="unbounded" minOccurs="0" name="SourceSystem" type="SourceSystemMandantType">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_AutoExpand">true</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:element name="Partner">
+        <xsd:annotation>
+            <xsd:appinfo source="X_PrimaryKeyInfo">Partner/Name</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="PartnerId" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Default_Value_Rule">fn:concat(format-dateTime(current-dateTime(), "[Y][M][D][H][m][s][f]"),generate-id())</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_DE">Partner ID</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="SourceSystemMap" type="SourceSystemMandantList">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="Name" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+        <xsd:unique name="Partner">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="PartnerId" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="RefSourceSystem">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="RefSourceSystemId" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="Bezeichnung" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+        <xsd:unique name="RefSourceSystem">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="RefSourceSystemId" />
+        </xsd:unique>
+    </xsd:element>
 </xsd:schema>

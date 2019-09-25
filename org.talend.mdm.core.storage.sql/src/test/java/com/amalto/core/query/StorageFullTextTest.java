@@ -283,6 +283,12 @@ public class StorageFullTextTest extends StorageTestCase {
         allRecords.add(factory.read(repository, manager, "<Manager><name>manager 3</name><age>33</age><jobTitle>jobTitle 33</jobTitle><dept>dept 3</dept></Manager>"));
         allRecords.add(factory.read(repository, nn, "<NN><Id>pp</Id><name>tyu</name><sub><name>yu67</name><title>67</title></sub></NN>"));
         allRecords.add(factory.read(repository, contract, "<Contract><id>1</id><comment>1</comment><detail xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"ContractDetailType\"></detail><detail xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"ContractDetailType\"><code>1</code></detail><detail xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"ContractDetailType\"><code>1</code></detail><detail xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"ContractDetailSubType\"><code>1</code><features><actor>1</actor><vendor>1</vendor></features></detail><enumEle>pending</enumEle></Contract>"));
+
+        allRecords.add(factory.read(repository, myFLIF_RefSourceSystem, "<RefSourceSystem><RefSourceSystemId>11</RefSourceSystemId><Bezeichnung>12</Bezeichnung></RefSourceSystem>"));
+        allRecords.add(factory.read(repository, myFLIF_RefSourceSystem, "<RefSourceSystem><RefSourceSystemId>22</RefSourceSystemId><Bezeichnung>23</Bezeichnung></RefSourceSystem>"));
+        allRecords.add(factory.read(repository, myFLIF_Partner, "<Partner><PartnerId>2019926111626752d3e2</PartnerId><SourceSystemMap><SourceSystem><SourceSystemId>[11]</SourceSystemId><MandantNummer>1</MandantNummer><SourceKey>2</SourceKey></SourceSystem></SourceSystemMap><Name>world</Name></Partner>"));
+        allRecords.add(factory.read(repository, myFLIF_Partner, "<Partner><PartnerId>2019926111652083d5e2</PartnerId><SourceSystemMap><SourceSystem><SourceSystemId>[22]</SourceSystemId><MandantNummer>33</MandantNummer><SourceKey>4</SourceKey></SourceSystem></SourceSystemMap><Name>good</Name></Partner>"));
+        allRecords.add(factory.read(repository, myFLIF_Partner, "<Partner><PartnerId>2019926111652084d5e2</PartnerId><SourceSystemMap><SourceSystem><SourceSystemId>[22]</SourceSystemId><MandantNummer>44</MandantNummer><SourceKey>4</SourceKey></SourceSystem></SourceSystemMap><Name>go</Name></Partner>"));
         try {
             storage.begin();
             storage.update(allRecords);
@@ -345,6 +351,12 @@ public class StorageFullTextTest extends StorageTestCase {
             storage.delete(qb.getSelect());
 
             qb = from(contract);
+            storage.delete(qb.getSelect());
+
+            qb = from(myFLIF_RefSourceSystem);
+            storage.delete(qb.getSelect());
+
+            qb = from(myFLIF_Partner);
             storage.delete(qb.getSelect());
         }
         storage.commit();
@@ -645,6 +657,16 @@ public class StorageFullTextTest extends StorageTestCase {
         return results;
     }
 
+    private List<FieldMetadata> prepareFLIFFields(ComplexTypeMetadata partner) {
+        List<FieldMetadata> results = new ArrayList<>();
+        results.add(partner.getField("PartnerId"));
+        results.add(partner.getField("Name"));
+        results.add(partner.getField("SourceSystemMap/SourceSystem/SourceSystemId"));
+        results.add(partner.getField("SourceSystemMap/SourceSystem/MandantNummer"));
+        results.add(partner.getField("SourceSystemMap/SourceSystem/SourceKey"));
+        return results;
+    }
+
     private List<FieldMetadata> prepareSelectProductFields(ComplexTypeMetadata product) {
         List<FieldMetadata> results = new ArrayList<>();
         results.add(product.getField("Family"));
@@ -807,6 +829,69 @@ public class StorageFullTextTest extends StorageTestCase {
             assertEquals(1, results.getCount());
             for (DataRecord result : results) {
                 assertNotSame(0, result.get("Id"));
+            }
+        } finally {
+            results.close();
+        }
+    }
+
+    //TMDM-13991 Advanced Search does not work with AND query on Foreign Key Field
+    public void testAdvancedSearchWithCompostCondition() throws Exception {
+        //case 1: condition (name = good and fk = 22), expected results : one record
+        UserQueryBuilder qb = from(myFLIF_Partner).select(prepareFLIFFields(myFLIF_Partner)).where(and(contains(myFLIF_Partner.getField("Name"), "good"),
+                eq(myFLIF_Partner.getField("SourceSystemMap/SourceSystem/SourceSystemId"), "22")));
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+            for (DataRecord result : results) {
+                assertEquals("2019926111652083d5e2", result.get("PartnerId"));
+            }
+        } finally {
+            results.close();
+        }
+
+        //case 2: condition (name = well and fk = 22), expected results : nothing
+        qb = from(myFLIF_Partner).select(prepareFLIFFields(myFLIF_Partner)).where(and(contains(myFLIF_Partner.getField("Name"), "well"),
+                eq(myFLIF_Partner.getField("SourceSystemMap/SourceSystem/SourceSystemId"), "22")));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(0, results.getCount());
+        } finally {
+            results.close();
+        }
+
+        //case 3: condition (name = world and fk = 11), expected results : one record
+        qb = from(myFLIF_Partner).select(prepareFLIFFields(myFLIF_Partner)).where(and(contains(myFLIF_Partner.getField("Name"), "world"),
+                eq(myFLIF_Partner.getField("SourceSystemMap/SourceSystem/SourceSystemId"), "11")));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+            for (DataRecord result : results) {
+                assertEquals("2019926111626752d3e2", result.get("PartnerId"));
+                assertEquals(1L, result.get("SourceSystemMap/SourceSystem/MandantNummer"));
+            }
+        } finally {
+            results.close();
+        }
+
+        //case 4: condition (name = go and fk = 22), expected results : two record
+        qb = from(myFLIF_Partner).select(prepareFLIFFields(myFLIF_Partner)).where(and(contains(myFLIF_Partner.getField("Name"), "go"),
+                eq(myFLIF_Partner.getField("SourceSystemMap/SourceSystem/SourceSystemId"), "22")));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(2, results.getCount());
+            for (DataRecord result : results) {
+                String id = (String) result.get("PartnerId");
+                switch (id) {
+                case "2019926111652083d5e2"://$NON-NLS-1$
+                    assertEquals(33L, result.get("SourceSystemMap/SourceSystem/MandantNummer"));//$NON-NLS-1$
+                    break;
+                case "2019926111652084d5e2"://$NON-NLS-1$
+                    assertEquals(44L, result.get("SourceSystemMap/SourceSystem/MandantNummer"));//$NON-NLS-1$
+                    break;
+                default:
+                    assertNull(id);
+                }
             }
         } finally {
             results.close();

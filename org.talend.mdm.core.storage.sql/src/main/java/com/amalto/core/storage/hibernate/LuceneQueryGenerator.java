@@ -415,6 +415,38 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
         return query;
     }
 
+    /**
+     * Get a full path of field for its directory tree.
+     * <pre>
+     * Person
+     *      |__Stores
+     *              |__Store
+     *                      |__Name
+     *      |__Age                
+     * </pre>
+     * @return: Person.Stores.Store.Name
+     */
+    private String getFullPathName(FieldFullText fieldFullText) {
+        FieldMetadata fieldMetadata = fieldFullText.getField().getFieldMetadata();
+        StringBuilder fullPathFieldName = new StringBuilder();
+        while (fieldMetadata instanceof ReferenceFieldMetadata) {
+            String fieldName = fieldMetadata.getName();
+            ReferenceFieldMetadata referenceFieldMetadata = ((ReferenceFieldMetadata) fieldMetadata);
+            if (referenceFieldMetadata.getReferencedType().getKeyFields().size() > 1) {
+                throw new FullTextQueryCompositeKeyException(referenceFieldMetadata.getReferencedType().getName());
+            } else {
+                fullPathFieldName.insert(0, fieldName + ".");//$NON-NLS-1$
+            }
+            ComplexTypeMetadata currentContainingType = fieldMetadata.getContainingType();
+            if (currentContainingType != null && currentContainingType.getContainer() != null) {
+                fieldMetadata = currentContainingType.getContainer();
+            } else {
+                break;
+            }
+        }
+        return fullPathFieldName.toString();
+    }
+
     @Override
     public Query visit(FieldFullText fieldFullText) {
         FieldMetadata fieldMetadata = fieldFullText.getField().getFieldMetadata();
@@ -424,7 +456,7 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
             if (referenceFieldMetadata.getReferencedType().getKeyFields().size() > 1) {
                 throw new FullTextQueryCompositeKeyException(referenceFieldMetadata.getReferencedType().getName());
             } else {
-                fieldName = fieldName + "." + referenceFieldMetadata.getReferencedField().getName(); //$NON-NLS-1$
+                fieldName = getFullPathName(fieldFullText) + referenceFieldMetadata.getReferencedField().getName(); //$NON-NLS-1$
             }
         }
         String[] fieldsAsArray = new String[] { fieldName };

@@ -29,7 +29,7 @@ public class DataRecordJSONWriterTestCase extends DataRecordDataWriterTestCase {
     @Before
     public void setup() throws Exception {
         super.setup();
-        writer = new DataRecordJSONWriter();
+        writer = new DataRecordJSONWriter(true);
         writer.setSecurityDelegator(delegate);
         repository.load(this.getClass().getResourceAsStream("metadata.xsd"));
     }

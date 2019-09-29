@@ -10,13 +10,11 @@
 
 package com.amalto.core.query;
 
-import static com.amalto.core.query.user.UserQueryBuilder.*;
+import static com.amalto.core.query.user.UserQueryBuilder.isNull;
 
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-
-import junit.framework.TestCase;
 
 import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
@@ -34,6 +32,8 @@ import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.StorageType;
 import com.amalto.core.storage.datasource.DataSourceDefinition;
 import com.amalto.core.storage.hibernate.HibernateStorage;
+
+import junit.framework.TestCase;
 
 @SuppressWarnings("nls")
 public class StorageTestCase extends TestCase {
@@ -162,6 +162,10 @@ public class StorageTestCase extends TestCase {
 
     protected static final ComplexTypeMetadata contract;
 
+    protected static final ComplexTypeMetadata myFLIF_RefSourceSystem;
+
+    protected static final ComplexTypeMetadata myFLIF_Partner;
+
     public static final String DATABASE = "H2";
     
     public static final String DATASOURCE_DEFAULT = DATABASE + "-Default";
@@ -236,6 +240,8 @@ public class StorageTestCase extends TestCase {
         nn = repository.getComplexType("NN");
 
         contract = repository.getComplexType("Contract");
+        myFLIF_RefSourceSystem = repository.getComplexType("RefSourceSystem");
+        myFLIF_Partner = repository.getComplexType("Partner");
 
         systemStorage = new SecuredStorage(new HibernateStorage("MDM", StorageType.SYSTEM), userSecurity);
         systemRepository = buildSystemRepository();

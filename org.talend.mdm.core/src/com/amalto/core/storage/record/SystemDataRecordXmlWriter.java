@@ -22,7 +22,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import com.amalto.core.storage.SecuredStorage;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
@@ -39,6 +38,7 @@ import com.amalto.core.metadata.ClassRepository;
 import com.amalto.core.query.user.DateConstant;
 import com.amalto.core.query.user.DateTimeConstant;
 import com.amalto.core.query.user.TimeConstant;
+import com.amalto.core.storage.SecuredStorage;
 
 public class SystemDataRecordXmlWriter implements DataRecordWriter {
 

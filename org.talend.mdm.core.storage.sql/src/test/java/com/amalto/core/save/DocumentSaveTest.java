@@ -34,9 +34,6 @@ import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
-import org.springframework.cache.ehcache.EhCacheCacheManager;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
@@ -63,13 +60,11 @@ import com.amalto.core.save.context.StorageSaverSource;
 import com.amalto.core.schema.validation.SkipAttributeDocumentBuilder;
 import com.amalto.core.schema.validation.Validator;
 import com.amalto.core.schema.validation.XmlSchemaValidator;
-import com.amalto.core.server.MDMContextAccessor;
 import com.amalto.core.server.MockMetadataRepositoryAdmin;
 import com.amalto.core.server.MockServerLifecycle;
 import com.amalto.core.server.MockStorageAdmin;
 import com.amalto.core.server.Server;
 import com.amalto.core.server.ServerContext;
-import com.amalto.core.server.ServerTest;
 import com.amalto.core.server.StorageAdmin;
 import com.amalto.core.storage.SecuredStorage;
 import com.amalto.core.storage.Storage;
@@ -80,14 +75,12 @@ import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.record.DataRecordReader;
 import com.amalto.core.storage.record.XmlStringDataRecordReader;
 import com.amalto.core.storage.transaction.TransactionManager;
-import com.amalto.core.util.MDMEhCacheUtil;
 import com.amalto.core.util.OutputReport;
 import com.amalto.core.util.Util;
 import com.amalto.core.util.ValidateException;
 import com.amalto.core.util.XtentisException;
 
 import junit.framework.TestCase;
-import net.sf.ehcache.CacheManager;
 
 @SuppressWarnings("nls")
 public class DocumentSaveTest extends TestCase {
@@ -122,12 +115,7 @@ public class DocumentSaveTest extends TestCase {
         delegatorInstancePool.put("LocalUser", new MockILocalUser()); //$NON-NLS-1$
         delegatorInstancePool.put("SecurityCheck", new MockISecurityCheck()); //$NON-NLS-1$
         createBeanDelegatorContainer();
-        BeanDelegatorContainer.getInstance().setDelegatorInstancePool(delegatorInstancePool);
-
-        ApplicationContext context = new ClassPathXmlApplicationContext("classpath:com/amalto/core/server/mdm-context.xml");
-        EhCacheCacheManager mdmEhcache = MDMContextAccessor.getApplicationContext().getBean(
-                MDMEhCacheUtil.MDM_CACHE_MANAGER, EhCacheCacheManager.class);
-        mdmEhcache.setCacheManager(CacheManager.newInstance(ServerTest.class.getResourceAsStream("mdm-ehcache.xml")));
+        BeanDelegatorContainer.getInstance().setDelegatorInstancePool(delegatorInstancePool); 
     }
 
     private static class MockISecurityCheck extends BaseSecurityCheck {}

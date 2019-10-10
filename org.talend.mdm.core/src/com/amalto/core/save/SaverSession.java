@@ -219,8 +219,8 @@ public class SaverSession {
 
             // If any change was made to data cluster "UpdateReport", route committed update reports.
             List<Document> updateReport = itemsToUpdate.get(XSystemObjects.DC_UPDATE_PREPORT.getName());
+            String longTransactionId = getLongTransactionId();
             if (updateReport != null && !DataRecord.ValidateRecord.get()) {
-                String longTransactionId = getLongTransactionId();
                 if (longTransactionId == null) {
                     routeItems(updateReport);
                 } else {
@@ -276,11 +276,9 @@ public class SaverSession {
 
     private String getLongTransactionId() {
         final TransactionManager transactionManager = ServerContext.INSTANCE.get().getTransactionManager();
-        if (transactionManager.hasTransaction()) {
-            Transaction currentTransaction = transactionManager.currentTransaction();
-            if (currentTransaction != null && currentTransaction.getLifetime() == Lifetime.LONG) {
-                return currentTransaction.getId();
-            }
+        Transaction currentTransaction = transactionManager.currentTransaction();
+        if (currentTransaction != null && currentTransaction.getLifetime() == Lifetime.LONG) {
+            return currentTransaction.getId();
         }
         return null;
     }

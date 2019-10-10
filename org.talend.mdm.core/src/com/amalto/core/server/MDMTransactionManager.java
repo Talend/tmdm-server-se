@@ -215,15 +215,13 @@ public class MDMTransactionManager implements TransactionManager {
         return getTransactionStack(Thread.currentThread());
     }
 
-    private Stack<Transaction> getTransactionStack(Thread t) {
-        synchronized (currentTransactions) {
-            Stack<Transaction> currentStack = currentTransactions.get(t);
-            if (currentStack == null) {
-                currentStack = new Stack<Transaction>();
-                currentTransactions.put(t, currentStack);
-            }
-            return currentStack;
+    private Stack<Transaction> getTransactionStack(Thread t){
+        Stack<Transaction> currentStack = currentTransactions.get(t);
+        if(currentStack == null){
+            currentStack = new Stack<Transaction>();
+            currentTransactions.put(t, currentStack);
         }
+        return currentStack;
     }
 
     private boolean currentTransactionsContains(Transaction t){

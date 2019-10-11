@@ -55,10 +55,7 @@ public class SearchFieldCreator {
                         .equals(keyTypeModel.getType().getTypeName());
                 boolean isUUID = DataTypeConstants.UUID.getTypeName().equals(keyTypeModel.getType().getTypeName());
                 if (isString || isAutoIncrement || isUUID) {
-                    TextField<String> textField = new TextField<String>();
-                    textField.setValue("*");//$NON-NLS-1$
-                    field = textField;
-                    cons = OperatorConstants.stringOperators;
+                    field = createForeignKeyFieldForInput(typeModel);
                 } else {
                     field = createForeignKeyField(typeModel);
                 }
@@ -94,6 +91,13 @@ public class SearchFieldCreator {
         ForeignKeyField fkField = new ForeignKeyField(typeModel);
         fkField.setUsageField("SearchFieldCreator"); //$NON-NLS-1$
         cons = OperatorConstants.foreignKeyOperators;
+        return fkField;
+    }
+
+    public static Field createForeignKeyFieldForInput(TypeModel typeModel) {
+        ForeignKeyField fkField = new ForeignKeyField(typeModel, true);
+        fkField.setUsageField("SearchFieldCreator"); //$NON-NLS-1$
+        cons = OperatorConstants.stringOperators;
         return fkField;
     }
 

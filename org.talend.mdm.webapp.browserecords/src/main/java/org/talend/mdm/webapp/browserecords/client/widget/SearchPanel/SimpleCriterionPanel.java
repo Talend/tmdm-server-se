@@ -24,6 +24,7 @@ import org.talend.mdm.webapp.base.shared.EntityModel;
 import org.talend.mdm.webapp.base.shared.TypeModel;
 import org.talend.mdm.webapp.browserecords.client.BrowseRecords;
 import org.talend.mdm.webapp.browserecords.client.BrowseRecordsServiceAsync;
+import org.talend.mdm.webapp.browserecords.client.model.OperatorConstants;
 import org.talend.mdm.webapp.browserecords.client.resources.icon.Icons;
 import org.talend.mdm.webapp.browserecords.client.util.Locale;
 import org.talend.mdm.webapp.browserecords.client.util.StagingConstant;
@@ -274,11 +275,15 @@ public class SimpleCriterionPanel<T> extends HorizontalPanel implements ReturnCr
 
         if (field != null) {
 
-            if (field.getValue() == null) {
+            if (field.getValue() == null && !(field instanceof ForeignKeyField)) {
                 return "";
             }
 
             if (field instanceof ForeignKeyField) {
+                ForeignKeyField fkField = (ForeignKeyField) field;
+                if (fkField.isSearch()) {
+                    return fkField.getTextInputValue();
+                }
                 return ((ForeignKeyField) field).getValue().getId();
             } else if (field instanceof DateField) {
                 return ((DateField) field).getPropertyEditor().getFormat().format(((DateField) field).getValue());

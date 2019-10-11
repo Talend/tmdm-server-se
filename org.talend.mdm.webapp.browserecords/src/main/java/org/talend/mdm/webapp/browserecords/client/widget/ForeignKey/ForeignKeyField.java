@@ -48,6 +48,8 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
 
     protected SuggestComboBoxField suggestBox;
 
+    protected TextField<String> textField;
+
     protected String currentPath;
 
     protected String foreignKeyPath;
@@ -70,6 +72,8 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
 
     protected String originForeignKeyFilter;
 
+    protected boolean isSearch;
+
     public ForeignKeyField(TypeModel dataType) {
         this.dataType = dataType;
         this.foreignKeyPath = dataType.getForeignkey();
@@ -79,6 +83,25 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
         this.selectButton = new Image(Icons.INSTANCE.link());
         this.showInput = true;
         this.showSelectButton = !dataType.isReadOnly();
+        this.setFireChangeEventOnSetValue(true);
+        this.isSearch = false;
+        String[] foreignKeyPathArray = foreignKeyPath.split("/"); //$NON-NLS-1$
+        if (foreignKeyPathArray.length > 0) {
+            foreignConceptName = foreignKeyPathArray[0];
+        }
+    }
+
+    public ForeignKeyField(TypeModel dataType, boolean isSearch) {
+        this.dataType = dataType;
+        this.foreignKeyPath = dataType.getForeignkey();
+        this.foreignKeyInfo = dataType.getForeignKeyInfo();
+        this.currentPath = dataType.getXpath();
+        //this.suggestBox = new SuggestComboBoxField(this);
+        this.textField  = new TextField<String>();
+        this.selectButton = new Image(Icons.INSTANCE.link());
+        this.showInput = false;
+        this.showSelectButton = !dataType.isReadOnly();
+        this.isSearch = true;
         this.setFireChangeEventOnSetValue(true);
         String[] foreignKeyPathArray = foreignKeyPath.split("/"); //$NON-NLS-1$
         if (foreignKeyPathArray.length > 0) {
@@ -98,10 +121,18 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
 
     @Override
     protected void onResize(int width, int height) {
-        if ("SearchFieldCreator".equals(usageField)) { //$NON-NLS-1$
-            suggestBox.setWidth(width - selectButton.getWidth() - 20);
+        if (isSearch) {
+            if ("SearchFieldCreator".equals(usageField)) { //$NON-NLS-1$
+                textField.setWidth(width - selectButton.getWidth() - 20);
+            } else {
+                textField.setWidth(width);
+            }
         } else {
-            suggestBox.setWidth(width);
+            if ("SearchFieldCreator".equals(usageField)) { //$NON-NLS-1$
+                suggestBox.setWidth(width - selectButton.getWidth() - 20);
+            } else {
+                suggestBox.setWidth(width);
+            }
         }
     }
 
@@ -112,6 +143,9 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
         if (showInput) {
             ComponentHelper.doAttach(suggestBox);
         }
+        if (isSearch) {
+            ComponentHelper.doAttach(textField);
+        }
     }
 
     @Override
@@ -121,6 +155,9 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
         if (showInput) {
             ComponentHelper.doDetach(suggestBox);
         }
+        if (isSearch) {
+            ComponentHelper.doAttach(textField);
+        }
     }
 
     @Override
@@ -128,6 +165,9 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
         super.setReadOnly(readOnly);
         if (suggestBox != null) {
             suggestBox.setReadOnly(readOnly);
+        }
+        if (textField != null) {
+            textField.setReadOnly(readOnly);
         }
         selectButton.setVisible(!readOnly);
     }
@@ -142,6 +182,13 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
             Element inputTD = DOM.createTD();
             foreignKeyTR.appendChild(inputTD);
             suggestBox.render(inputTD);
+        }
+        if (isSearch) {
+            Element inputTD = DOM.createTD();
+            foreignKeyTR.appendChild(inputTD);
+            textField.render(inputTD);
+            textField.setPosition(1, 1);
+            textField.setValue("*"); //$NON-NLS-1$
         }
         Element iconTD = DOM.createTD();
         foreignKeyTR.appendChild(iconTD);
@@ -184,7 +231,7 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
     }
 
     public String parseForeignKeyFilter() {
-        return ""; //$NON-NLS-1$
+        return CommonUtil.EMPTY;
     }
 
     public String getForeignKeyPath() {
@@ -206,9 +253,15 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
         }
         if (suggestBox != null) {
             if (foreignKeyBean == null) {
-                suggestBox.setRawValue(""); //$NON-NLS-1$
+                suggestBox.setRawValue(CommonUtil.EMPTY);
             } else {
                 suggestBox.setValue(foreignKeyBean);
+            }
+        }
+        if (isSearch) {
+            if (foreignKeyBean != null) {
+                textField.setRawValue(foreignKeyBean.getId().substring(1, foreignKeyBean.getId().length() - 1));
+                foreignKeyBean = null;
             }
         }
         super.setValue(foreignKeyBean);
@@ -226,7 +279,7 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
 
     @Override
     public ForeignKeyBean getValue() {
-        if (suggestBox.getValue() != null) {
+        if (suggestBox != null && suggestBox.getValue() != null) {
             return suggestBox.getValue();
         }
         return value;
@@ -236,6 +289,8 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
     protected void onFocus(ComponentEvent be) {
         if (suggestBox != null) {
             suggestBox.focus();
+        } else if (isSearch) {
+            textField.focus();
         }
     }
 
@@ -247,10 +302,16 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
             if (suggestBox != null) {
                 suggestBox.enable();
             }
+            if (isSearch) {
+                textField.enable();
+            }
         } else {
             disable();
             if (suggestBox != null) {
                 suggestBox.disable();
+            }
+            if (isSearch) {
+                textField.disable();
             }
         }
     }
@@ -305,6 +366,13 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
     public void onDisable() {
     }
 
+    public String getTextInputValue() {
+        if (isSearch) {
+            return textField.getRawValue();
+        }
+        return CommonUtil.EMPTY;
+    }
+
     public void setShowInput(boolean showInput) {
         this.showInput = showInput;
     }
@@ -331,5 +399,9 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
 
     public String getOriginForeignKeyFilter() {
         return this.originForeignKeyFilter == null ? CommonUtil.EMPTY : this.originForeignKeyFilter;
+    }
+
+    public boolean isSearch() {
+        return isSearch;
     }
 }

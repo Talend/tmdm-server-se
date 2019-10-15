@@ -260,7 +260,11 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
         }
         if (isSearch) {
             if (foreignKeyBean != null) {
-                textField.setRawValue(foreignKeyBean.getId().substring(1, foreignKeyBean.getId().length() - 1));
+                String value = foreignKeyBean.getId();
+                if(value.startsWith("[") && value.endsWith("]")){
+                    value =  value.substring(1, value.length() - 1);
+                }
+                textField.setRawValue(value);
                 foreignKeyBean = null;
             }
         }

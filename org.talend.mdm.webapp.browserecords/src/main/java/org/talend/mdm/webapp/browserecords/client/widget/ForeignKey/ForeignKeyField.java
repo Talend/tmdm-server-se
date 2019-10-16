@@ -72,7 +72,7 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
 
     protected String originForeignKeyFilter;
 
-    protected boolean isFromSearchPanel; //Check if create FK field from search panel
+    protected boolean isFromSearchPanel; // Check if create FK field from search panel
 
     public ForeignKeyField(TypeModel dataType) {
         this.dataType = dataType;
@@ -266,9 +266,9 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
         if (isFromSearchPanel) {
             if (foreignKeyBean != null) {
                 String value = foreignKeyBean.getId();
-                //the value return by FK Picker wrapped by '[' and ']'
-                //in Advance Search, the value from the input, only the FK id.
-                //if the value wrapped by '[' and ']', will remove them
+                // the value return by FK Picker wrapped by '[' and ']'
+                // in Advance Search, the value from the input, only the FK id.
+                // if the value wrapped by '[' and ']', will remove them
                 if (value.startsWith("[") && value.endsWith("]")) {
                     value = value.substring(1, value.length() - 1);
                 }

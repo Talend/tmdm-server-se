@@ -72,45 +72,42 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
 
     protected String originForeignKeyFilter;
 
-    protected boolean isFromSearchPanel; // Check if create FK field from search panel
+    protected boolean withTextInput; // Check if create input field or suggest box
 
     public ForeignKeyField(TypeModel dataType) {
+        init(dataType);
+        initField(false);
+    }
+
+    public ForeignKeyField(TypeModel dataType, boolean withTextInput) {
+        init(dataType);
+        initField(withTextInput);
+    }
+
+    private void init(TypeModel dataType) {
         this.dataType = dataType;
         this.foreignKeyPath = dataType.getForeignkey();
         this.foreignKeyInfo = dataType.getForeignKeyInfo();
         this.currentPath = dataType.getXpath();
-        this.suggestBox = new SuggestComboBoxField(this);
         this.selectButton = new Image(Icons.INSTANCE.link());
-        this.showInput = true;
         this.showSelectButton = !dataType.isReadOnly();
         this.setFireChangeEventOnSetValue(true);
-        this.isFromSearchPanel = false;
         String[] foreignKeyPathArray = foreignKeyPath.split("/"); //$NON-NLS-1$
         if (foreignKeyPathArray.length > 0) {
             foreignConceptName = foreignKeyPathArray[0];
         }
     }
 
-    public ForeignKeyField(TypeModel dataType, boolean isFromSearchPanel) {
-        // If isFromSearchPanel=true, won't initialize suggestBox but will initialize textField
-        this.dataType = dataType;
-        this.foreignKeyPath = dataType.getForeignkey();
-        this.foreignKeyInfo = dataType.getForeignKeyInfo();
-        this.currentPath = dataType.getXpath();
-        if (isFromSearchPanel) {
+    private void initField(boolean withTextInput) {
+        // If withTextInput=true, won't initialize suggestBox but will initialize textField
+        if (withTextInput) {
             this.textField = new TextField<String>();
-            this.isFromSearchPanel = isFromSearchPanel;
+            this.withTextInput = withTextInput;
+            this.showInput = false;
         } else {
             this.suggestBox = new SuggestComboBoxField(this);
-            this.isFromSearchPanel = false;
-        }
-        this.selectButton = new Image(Icons.INSTANCE.link());
-        this.showInput = false;
-        this.showSelectButton = !dataType.isReadOnly();
-        this.setFireChangeEventOnSetValue(true);
-        String[] foreignKeyPathArray = foreignKeyPath.split("/"); //$NON-NLS-1$
-        if (foreignKeyPathArray.length > 0) {
-            foreignConceptName = foreignKeyPathArray[0];
+            this.withTextInput = false;
+            this.showInput = true;
         }
     }
 
@@ -126,7 +123,7 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
 
     @Override
     protected void onResize(int width, int height) {
-        if (isFromSearchPanel) {
+        if (withTextInput) {
             if ("SearchFieldCreator".equals(usageField)) { //$NON-NLS-1$
                 textField.setWidth(width - selectButton.getWidth() - 20);
             } else {
@@ -148,7 +145,7 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
         if (showInput) {
             ComponentHelper.doAttach(suggestBox);
         }
-        if (isFromSearchPanel) {
+        if (withTextInput) {
             ComponentHelper.doAttach(textField);
         }
     }
@@ -160,7 +157,7 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
         if (showInput) {
             ComponentHelper.doDetach(suggestBox);
         }
-        if (isFromSearchPanel) {
+        if (withTextInput) {
             ComponentHelper.doAttach(textField);
         }
     }
@@ -188,7 +185,7 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
             foreignKeyTR.appendChild(inputTD);
             suggestBox.render(inputTD);
         }
-        if (isFromSearchPanel) {
+        if (withTextInput) {
             Element inputTD = DOM.createTD();
             foreignKeyTR.appendChild(inputTD);
             textField.render(inputTD);
@@ -263,7 +260,7 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
                 suggestBox.setValue(foreignKeyBean);
             }
         }
-        if (isFromSearchPanel) {
+        if (withTextInput) {
             if (foreignKeyBean != null) {
                 String value = foreignKeyBean.getId();
                 // the value return by FK Picker wrapped by '[' and ']'
@@ -301,7 +298,7 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
     protected void onFocus(ComponentEvent be) {
         if (suggestBox != null) {
             suggestBox.focus();
-        } else if (isFromSearchPanel) {
+        } else if (withTextInput) {
             textField.focus();
         }
     }
@@ -314,7 +311,7 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
             if (suggestBox != null) {
                 suggestBox.enable();
             }
-            if (isFromSearchPanel) {
+            if (withTextInput) {
                 textField.enable();
             }
         } else {
@@ -322,7 +319,7 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
             if (suggestBox != null) {
                 suggestBox.disable();
             }
-            if (isFromSearchPanel) {
+            if (withTextInput) {
                 textField.disable();
             }
         }
@@ -379,7 +376,7 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
     }
 
     public String getTextInputValue() {
-        if (isFromSearchPanel) {
+        if (withTextInput) {
             return textField.getRawValue();
         }
         return CommonUtil.EMPTY;
@@ -413,7 +410,7 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
         return this.originForeignKeyFilter == null ? CommonUtil.EMPTY : this.originForeignKeyFilter;
     }
 
-    public boolean isFromSearchPanel() {
-        return isFromSearchPanel;
+    public boolean isWithTextInput() {
+        return withTextInput;
     }
 }

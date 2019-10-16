@@ -280,7 +280,7 @@ public class SimpleCriterionPanel<T> extends HorizontalPanel implements ReturnCr
 
             if (field instanceof ForeignKeyField) {
                 ForeignKeyField fkField = (ForeignKeyField) field;
-                if (fkField.isSearch()) {
+                if (fkField.isWithTextInput()) {
                     return fkField.getTextInputValue();
                 }
                 return ((ForeignKeyField) field).getValue().getId();

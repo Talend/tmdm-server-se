@@ -46,7 +46,8 @@ public class SearchFieldCreator {
         } else if (typeModel.getForeignkey() != null && entityModel != null) {
             boolean isCompositeKey = entityModel.getKeys().length > 1;
             if (isCompositeKey) {
-                field = createForeignKeyField(typeModel);
+                cons = OperatorConstants.foreignKeyOperators;
+                field = createForeignKeyField(typeModel, false);
             } else {
                 String keyPath = entityModel.getKeys()[0];
                 TypeModel keyTypeModel = entityModel.getTypeModel(keyPath);
@@ -55,12 +56,11 @@ public class SearchFieldCreator {
                         .equals(keyTypeModel.getType().getTypeName());
                 boolean isUUID = DataTypeConstants.UUID.getTypeName().equals(keyTypeModel.getType().getTypeName());
                 if (isString || isAutoIncrement || isUUID) {
-                    TextField<String> textField = new TextField<String>();
-                    textField.setValue("*");//$NON-NLS-1$
-                    field = textField;
                     cons = OperatorConstants.stringOperators;
+                    field = createForeignKeyField(typeModel, true);
                 } else {
-                    field = createForeignKeyField(typeModel);
+                    cons = OperatorConstants.foreignKeyOperators;
+                    field = createForeignKeyField(typeModel, false);
                 }
             }
         } else if (typeModel.hasEnumeration()) {
@@ -90,10 +90,9 @@ public class SearchFieldCreator {
         return field;
     }
 
-    private static Field createForeignKeyField(TypeModel typeModel) {
-        ForeignKeyField fkField = new ForeignKeyField(typeModel);
+    private static Field createForeignKeyField(TypeModel typeModel, boolean withTextInput) {
+        ForeignKeyField fkField = new ForeignKeyField(typeModel, withTextInput);
         fkField.setUsageField("SearchFieldCreator"); //$NON-NLS-1$
-        cons = OperatorConstants.foreignKeyOperators;
         return fkField;
     }
 

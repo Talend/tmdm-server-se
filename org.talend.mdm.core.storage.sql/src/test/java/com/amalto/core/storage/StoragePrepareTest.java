@@ -19,6 +19,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -340,6 +341,57 @@ public class StoragePrepareTest extends TestCase {
         } finally {
             statement.close();
             connection.close();
+        }
+    }
+
+    // TMDM-14115 Deploy the customer's datamodel failed(MS SQLServerDB)
+    public void testDefaultValuePrepare() throws Exception {
+        DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS2", STORAGE_NAME);
+        Storage storage = new HibernateStorage("Test", StorageType.MASTER);
+        storage.init(dataSource);
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(StoragePrepareTest.class.getResourceAsStream("EU_PRDMDM_eBomChild.xsd"));
+        storage.prepare(repository, true);
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+        ComplexTypeMetadata EU_PRDMDM_eBomChild = repository.getComplexType("EU_PRDMDM_eBomChild");//$NON-NLS-1$
+        // test data had been added
+        List<DataRecord> records = new ArrayList<DataRecord>();
+        records.add(factory.read(repository, EU_PRDMDM_eBomChild, "<EU_PRDMDM_eBomChild><Id>1</Id><Quantity>23.000000</Quantity><StartDate>2100-01-01</StartDate><EndDate>2100-11-28</EndDate></EU_PRDMDM_eBomChild>")); // $NON-NLS-1$
+        try {
+            storage.begin();
+            storage.update(records);
+            storage.commit();
+        } catch (Exception e) {
+            fail("Faield to insert data");
+        } finally {
+            storage.end();
+        }
+        // test query data
+        UserQueryBuilder qb = from(EU_PRDMDM_eBomChild);
+        qb.getSelect().getPaging().setLimit(10);
+        storage.begin();
+        StorageResults results = storage.fetch(qb.getSelect());
+        SimpleDateFormat format = new SimpleDateFormat("YYYY-MM-dd");
+        try {
+            assertEquals(1, results.getCount());
+            for (DataRecord result : results) {
+                assertEquals("1", result.get("Id"));//$NON-NLS-1$ //$NON-NLS-2$
+                assertEquals("2100-01-01", format.format(result.get("StartDate")));//$NON-NLS-1$ //$NON-NLS-2$
+                assertEquals("2100-11-28", format.format(result.get("EndDate")));//$NON-NLS-1$ //$NON-NLS-2$
+            }
+        } finally {
+            results.close();
+        }
+        storage.end();
+        try {
+            storage.begin();
+            {
+                qb = from(EU_PRDMDM_eBomChild);
+                storage.delete(qb.getSelect());
+            }
+            storage.commit();
+        } finally {
+            storage.end();
         }
     }
 

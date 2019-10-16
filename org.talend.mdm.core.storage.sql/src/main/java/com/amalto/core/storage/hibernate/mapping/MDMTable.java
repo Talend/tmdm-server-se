@@ -281,6 +281,12 @@ public class MDMTable extends Table {
         return results.iterator();
     }
 
+    /**
+     * get the unique constraint name for the particular column in particular table using below SQL statement, then
+     * delete it before adding new default value.
+     *
+     * @return
+     */
     private String generateAlterDefaultValueConstraintSQL(String tableName, String columnName) {
         Connection connection = null;
         PreparedStatement statement = null;
@@ -288,13 +294,17 @@ public class MDMTable extends Table {
         try {
             Properties properties = dataSource.getAdvancedPropertiesIncludeUserInfo();
             connection = DriverManager.getConnection(dataSource.getConnectionURL(), properties);
-            String sql = "select c.name from sysconstraints a inner join syscolumns b on a.colid=b.colid inner join sysobjects c on a.constid=c.id "
-                    + "where a.id=object_id(?) and b.name=?";
+            String sql = "SELECT object_name(const.constid) as name FROM sys.sysconstraints const JOIN sys.columns cols "
+                    + "ON cols.object_id = const.id AND cols.column_id = const.colid "
+                    + "AND object_name(const.id)= ? AND cols.name = ?";
             statement = connection.prepareStatement(sql);
             statement.setString(1, tableName);
             statement.setString(2, columnName);
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("Table [" + tableName + "] with the unique constraint name [" + rs.getString(1) + "] will be deleted.");
+                }
                 alterDropConstraintSQL = "alter table " + tableName + " drop constraint " + rs.getString(1);
             }
         } catch (SQLException e) {

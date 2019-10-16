@@ -72,7 +72,7 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
 
     protected String originForeignKeyFilter;
 
-    protected boolean isFromSearchPanel; // if create FK field from search panel, isSearch=true
+    protected boolean isFromSearchPanel; //Check if create FK field from search panel
 
     public ForeignKeyField(TypeModel dataType) {
         this.dataType = dataType;
@@ -92,7 +92,7 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
     }
 
     public ForeignKeyField(TypeModel dataType, boolean isFromSearchPanel) {
-        // if isFromSearchPanel=true, suggestBox don't initialize and initialize the textField
+        // If isFromSearchPanel=true, won't initialize suggestBox but will initialize textField
         this.dataType = dataType;
         this.foreignKeyPath = dataType.getForeignkey();
         this.foreignKeyInfo = dataType.getForeignKeyInfo();
@@ -266,9 +266,9 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
         if (isFromSearchPanel) {
             if (foreignKeyBean != null) {
                 String value = foreignKeyBean.getId();
-                //the value return by FK Picker wrapped by [ and ]
+                //the value return by FK Picker wrapped by '[' and ']'
                 //in Advance Search, the value from the input, only the FK id.
-                //if the value wrapped by [ and ], will remove them
+                //if the value wrapped by '[' and ']', will remove them
                 if (value.startsWith("[") && value.endsWith("]")) {
                     value = value.substring(1, value.length() - 1);
                 }

@@ -33,8 +33,6 @@ public class OperatorConstants implements Serializable, IsSerializable {
 
     public static String OR_OPERATOR = "OR"; //$NON-NLS-1$
 
-    public static final String NOT_EQUALS_OPERATOR = "NOT_EQUALS"; //$NON-NLS-1$
-
     public static Map<String, String> groupOperators = new LinkedHashMap<String, String>();
 
     public static Map<String, String> fullOperators = new LinkedHashMap<String, String>();
@@ -62,7 +60,7 @@ public class OperatorConstants implements Serializable, IsSerializable {
         fullOperators.put("CONTAINS", MessagesFactory.getMessages().criteria_CONTAINS()); //$NON-NLS-1$
         fullOperators.put("CONTAINS_SENTENCE", MessagesFactory.getMessages().criteria_CONTAINS_SENTENCE()); //$NON-NLS-1$
         fullOperators.put(EQUALS_OPERATOR, MessagesFactory.getMessages().criteria_EQUALS());
-        fullOperators.put(NOT_EQUALS_OPERATOR, MessagesFactory.getMessages().criteria_NOT_EQUALS());
+        fullOperators.put("NOT_EQUALS", MessagesFactory.getMessages().criteria_NOT_EQUALS());
         fullOperators.put("GREATER_THAN", MessagesFactory.getMessages().criteria_GREATER_THAN()); //$NON-NLS-1$
         fullOperators.put("GREATER_THAN_OR_EQUAL", MessagesFactory.getMessages().criteria_GREATER_THAN_OR_EQUAL()); //$NON-NLS-1$
         fullOperators.put("LOWER_THAN", MessagesFactory.getMessages().criteria_LOWER_THAN()); //$NON-NLS-1$
@@ -71,7 +69,6 @@ public class OperatorConstants implements Serializable, IsSerializable {
         fullOperators.put("EMPTY_NULL", MessagesFactory.getMessages().criteria_EMPTY_NULL()); //$NON-NLS-1$
 
         foreignKeyOperators.put(EQUALS_OPERATOR, MessagesFactory.getMessages().criteria_EQUALS());
-        foreignKeyOperators.put(NOT_EQUALS_OPERATOR, MessagesFactory.getMessages().criteria_NOT_EQUALS());
         foreignKeyOperators.put("EMPTY_NULL", MessagesFactory.getMessages().criteria_EMPTY_NULL()); //$NON-NLS-1$
 
         fulltextOperators.put("FULLTEXTSEARCH", MessagesFactory.getMessages().criteria_FULLTEXTSEARCH()); //$NON-NLS-1$
@@ -82,7 +79,7 @@ public class OperatorConstants implements Serializable, IsSerializable {
         dateOperators.put("EMPTY_NULL", MessagesFactory.getMessages().criteria_EMPTY_NULL()); //$NON-NLS-1$
 
         numOperators.put(EQUALS_OPERATOR, MessagesFactory.getMessages().criteria_EQUALS());
-        numOperators.put(NOT_EQUALS_OPERATOR, MessagesFactory.getMessages().criteria_NOT_EQUALS());
+        numOperators.put("NOT_EQUALS", MessagesFactory.getMessages().criteria_NOT_EQUALS());
         numOperators.put("GREATER_THAN", MessagesFactory.getMessages().criteria_GREATER_THAN()); //$NON-NLS-1$
         numOperators.put("GREATER_THAN_OR_EQUAL", MessagesFactory.getMessages().criteria_GREATER_THAN_OR_EQUAL()); //$NON-NLS-1$
         numOperators.put("LOWER_THAN", MessagesFactory.getMessages().criteria_LOWER_THAN()); //$NON-NLS-1$
@@ -101,7 +98,7 @@ public class OperatorConstants implements Serializable, IsSerializable {
         stringOperators.put("CONTAINS", MessagesFactory.getMessages().criteria_CONTAINS()); //$NON-NLS-1$
         stringOperators.put("CONTAINS_SENTENCE", MessagesFactory.getMessages().criteria_CONTAINS_SENTENCE()); //$NON-NLS-1$
         stringOperators.put(EQUALS_OPERATOR, MessagesFactory.getMessages().criteria_EQUALS());
-        stringOperators.put(NOT_EQUALS_OPERATOR, MessagesFactory.getMessages().criteria_NOT_EQUALS());
+        stringOperators.put("NOT_EQUALS", MessagesFactory.getMessages().criteria_NOT_EQUALS());
         stringOperators.put("STARTSWITH", MessagesFactory.getMessages().criteria_STARTSWITH()); //$NON-NLS-1$
         stringOperators.put("EMPTY_NULL", MessagesFactory.getMessages().criteria_EMPTY_NULL()); //$NON-NLS-1$
 

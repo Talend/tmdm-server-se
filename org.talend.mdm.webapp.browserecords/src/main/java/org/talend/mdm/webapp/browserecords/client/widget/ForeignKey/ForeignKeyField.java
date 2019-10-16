@@ -266,7 +266,7 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
                 // the value return by FK Picker wrapped by '[' and ']'
                 // in Advance Search, the value from the input, only the FK id.
                 // if the value wrapped by '[' and ']', will remove them
-                if (value.startsWith("[") && value.endsWith("]")) {
+                if (value.startsWith("[") && value.endsWith("]")) { //$NON-NLS-1$//$NON-NLS-2$
                     value = value.substring(1, value.length() - 1);
                 }
                 textField.setRawValue(value);

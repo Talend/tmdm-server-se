@@ -413,7 +413,7 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
         return this.originForeignKeyFilter == null ? CommonUtil.EMPTY : this.originForeignKeyFilter;
     }
 
-    public boolean isSearch() {
+    public boolean isFromSearchPanel() {
         return isFromSearchPanel;
     }
 }

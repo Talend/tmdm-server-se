@@ -274,11 +274,15 @@ public class SimpleCriterionPanel<T> extends HorizontalPanel implements ReturnCr
 
         if (field != null) {
 
-            if (field.getValue() == null) {
+            if (field.getValue() == null && !(field instanceof ForeignKeyField)) {
                 return "";
             }
 
             if (field instanceof ForeignKeyField) {
+                ForeignKeyField fkField = (ForeignKeyField) field;
+                if (fkField.isWithTextInput()) {
+                    return fkField.getTextInputValue();
+                }
                 return ((ForeignKeyField) field).getValue().getId();
             } else if (field instanceof DateField) {
                 return ((DateField) field).getPropertyEditor().getFormat().format(((DateField) field).getValue());

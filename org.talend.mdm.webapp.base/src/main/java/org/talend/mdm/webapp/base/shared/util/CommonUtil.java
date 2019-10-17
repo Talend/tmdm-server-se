@@ -1,9 +1,9 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
- * 
+ * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
+ *
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
- * 
+ *
  * You should have received a copy of the agreement along with this program; if not, write to Talend SA 9 rue Pages
  * 92150 Suresnes, France
  */
@@ -14,11 +14,30 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.regexp.shared.MatchResult;
+import com.google.gwt.regexp.shared.RegExp;
+
 /**
  * created by yjli on 2013-8-1 Detailled comment
- * 
+ *
  */
 public class CommonUtil {
+
+    public static final String FN_PREFIX = "fn:"; //$NON-NLS-1$
+
+    public static final String XPATH_PREFIX = "xpath:"; //$NON-NLS-1$
+
+    public static final String XPATH_STR = "Xpath"; //$NON-NLS-1$
+
+    public static final String OPERATOR_STR = "Operator"; //$NON-NLS-1$
+
+    public static final String VALUE_STR = "Value"; //$NON-NLS-1$
+
+    public static final String PREDICATE_STR = "Predicate"; //$NON-NLS-1$
+
+    public static final String DOLLAR_DELIMITER = "$$"; //$NON-NLS-1$
+
+    public static final String EMPTY = ""; //$NON-NLS-1$
 
     public static String escape(String src) {
         int i;
@@ -107,7 +126,7 @@ public class CommonUtil {
         }
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < itemList.size(); i++) {
-            result.append((i > 0) ? separator : ""); //$NON-NLS-1$ 
+            result.append((i > 0) ? separator : EMPTY);
             result.append(escape(itemList.get(i)));
         }
         return result.toString();
@@ -131,7 +150,7 @@ public class CommonUtil {
         }
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < itemList.size(); i++) {
-            result.append((i > 0) ? ";" : ""); //$NON-NLS-1$ //$NON-NLS-2$ 
+            result.append((i > 0) ? ";" : EMPTY); //$NON-NLS-1$
             result.append(escapeSemicolon(itemList.get(i)));
         }
         return result.toString();
@@ -154,17 +173,17 @@ public class CommonUtil {
     }
 
     public static String buildForeignKeyFilterByConditions(List<Map<String, String>> conditions) {
-        String parsedFkfilter = ""; //$NON-NLS-1$
+        String parsedFkfilter = EMPTY;
         if (conditions.size() > 0) {
             StringBuffer sb = new StringBuffer();
             for (Map<String, String> map : conditions) {
-                Map<String, String> conditionMap = map;
-                if (conditionMap.size() > 0) {
-                    String xpath = conditionMap.get("Xpath") == null ? "" : conditionMap.get("Xpath");//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
-                    String operator = conditionMap.get("Operator") == null ? "" : conditionMap.get("Operator");//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
-                    String value = conditionMap.get("Value") == null ? "" : conditionMap.get("Value");//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
-                    String predicate = conditionMap.get("Predicate") == null ? "" : conditionMap.get("Predicate");//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
-                    sb.append(xpath + "$$" + operator + "$$" + value + "$$" + predicate + "#");//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$//$NON-NLS-4$
+                if (map.size() > 0) {
+                    String xpath = map.get(XPATH_STR) == null ? EMPTY : map.get(XPATH_STR);
+                    String operator = map.get(OPERATOR_STR) == null ? EMPTY : map.get(OPERATOR_STR);
+                    String value = map.get(VALUE_STR) == null ? EMPTY : map.get(VALUE_STR);
+                    String predicate = map.get(PREDICATE_STR) == null ? EMPTY : map.get(PREDICATE_STR);
+                    sb.append(xpath).append(DOLLAR_DELIMITER).append(operator).append(DOLLAR_DELIMITER).append(value);
+                    sb.append(DOLLAR_DELIMITER).append(predicate).append("#");//$NON-NLS-1$
                 }
             }
             if (sb.length() > 0) {
@@ -198,11 +217,53 @@ public class CommonUtil {
 
     public static boolean isFilterValue(String foreignKeyFilterValue) {
         return (foreignKeyFilterValue.startsWith("\"") && foreignKeyFilterValue.endsWith("\"") || //$NON-NLS-1$//$NON-NLS-2$
-        foreignKeyFilterValue.startsWith("'") && foreignKeyFilterValue.endsWith("'")); //$NON-NLS-1$//$NON-NLS-2$
+                foreignKeyFilterValue.startsWith("'") && foreignKeyFilterValue.endsWith("'")); //$NON-NLS-1$//$NON-NLS-2$
     }
 
     public static boolean isRelativePath(String foreignKeyFilterValue) {
         return (foreignKeyFilterValue.startsWith(".") || foreignKeyFilterValue.startsWith("..")); //$NON-NLS-1$ //$NON-NLS-2$
+    }
+
+    public static boolean isFunction(String foreignKeyFilterValue) {
+        return foreignKeyFilterValue.startsWith(FN_PREFIX);
+    }
+
+    /**
+     * Return the true if foreignKeyFilter contains 'xpath:', fielder's xpath and or a releative path
+     * eg:
+     *     fn:concat('hello', 'world!!!')") ==> false
+     *     fn:concat(\"xpath:Product/Name\", \"xpath:Product/Description\")")  ==> true
+     *     fn:concat(\"xpath:/Product/Name\", \"xpath:/Product/Description\")")  ==> true
+     *     fn:concat(\"/Product/Name\", \"/Product/Description\")")  ==> false
+     *     fn:concat(\"xpath:Product/Name\", \" s\")")  ==> true
+     *     fn:string-length(\"xpath:Product/Name\") > 3\")")  ==> true
+     *     fn:string-length(\"xpath:/Product/Name\") > 3\")")  ==> true
+     *     fn:string-length(\"/BasicVisibleRuleWithFunctionXPath/name\") > 5")  ==> false
+     *     fn:matches(\"xpath:../Name\" ,\"test\")")  ==> true
+     *     fn:starts-with(\"xpath:Product/Name\",\"s\")")  ==> true
+     *     fn:starts-with(\"xpath:/Product/Name\",\"s\")")  ==> true
+     *     fn:starts-with(\"/Product/Name\",\"s\")")  ==> false
+     *     fn:abs(xpath:Product/Name)")  ==> true
+     *     fn:abs(xpath:/Product/Name)")  ==> true
+     *     fn:abs(/Product/Name)")  ==> true
+     * @param foreignKeyFilterValue
+     * @return
+     */
+    public static boolean containsXPath(String foreignKeyFilterValue) {
+        if (foreignKeyFilterValue.contains(XPATH_PREFIX)) {
+            return true;
+        }
+        String filter = foreignKeyFilterValue.substring(foreignKeyFilterValue.lastIndexOf("(") + 1,
+                foreignKeyFilterValue.indexOf(")")); //$NON-NLS-1$  //$NON-NLS-2$
+        String[] filters = filter.split(","); //$NON-NLS-1$
+        for (String filterContent : filters) {
+            filterContent = filterContent.trim();
+            if (filterContent.startsWith("/") || filterContent.startsWith(".") //$NON-NLS-1$ //$NON-NLS-2$
+                    || filterContent.startsWith("..")) { //$NON-NLS-1$
+                return true;
+            }
+        }
+        return false;
     }
 
     public static Map<String, String> buildConditionByCriteria(String criteria) {
@@ -212,16 +273,16 @@ public class CommonUtil {
 
             switch (i) {
             case 0:
-                conditionMap.put("Xpath", values[0]);//$NON-NLS-1$
+                conditionMap.put(XPATH_STR, values[0]);
                 break;
             case 1:
-                conditionMap.put("Operator", values[1]);//$NON-NLS-1$
+                conditionMap.put(OPERATOR_STR, values[1]);
                 break;
             case 2:
-                conditionMap.put("Value", values[2].trim());//$NON-NLS-1$
+                conditionMap.put(VALUE_STR, values[2].trim());
                 break;
             case 3:
-                conditionMap.put("Predicate", values[3]);//$NON-NLS-1$
+                conditionMap.put(PREDICATE_STR, values[3]);
                 break;
             default:
                 break;
@@ -263,5 +324,46 @@ public class CommonUtil {
         } else {
             return null;
         }
+    }
+
+    /**
+     * Parse the xpath in the function content
+     * eg:
+     *     fn:string-length("xpath:/Product/Name") > 3") ==> key=xpath:Product/Name,value=Product/Name
+     *     fn:concat("xpath:Product/Name", "xpath:Product/Description") ==> key=xpath:Product/Name,value=Product/Name & key=xpath:Product/Description,value=Product/Description
+     *     fn:concat("xpath:Product/Name") ==> key=xpath:Product/Name,value=Product/Name
+     *     fn:concat("xpath:Product/Name", " s") ==> key=xpath:Product/Name,value=Product/Name
+     *     fn:starts-with("xpath:Product/Name","s")  ==> key=xpath:Product/Name,value=Product/Name
+     *     fn:matches("xpath:../Name" ,"test")  ==> key=xpath:../Name,valye=../Name
+     *     fn:abs(xpath:Product/Price) ==> key=xpath:Product/Price, value=Product/Price
+     *     fn:abs(/Product/Price) ==> key=/Product/Price, value=Product/Price
+     * @param function the parse function
+     * @return the map contains origin xpath and pure xpath
+     */
+    public static Map<String, String> getArgumentsWithXpath(String function) {
+        Map<String, String> arguments = new HashMap<String, String>();
+        RegExp reg = RegExp.compile("\\((.*)\\)"); //$NON-NLS-1$
+        MatchResult matchResult = reg.exec(function);
+        String value = EMPTY;
+        if (matchResult != null) {
+            value = matchResult.getGroup(0);
+        }
+        RegExp regExp = RegExp
+                .compile("((xpath:(([a-zA-Z]*)|((\\.)+)))|/([a-zA-Z]*))/(([a-zA-Z]*)/*)*", "g"); //$NON-NLS-1$ //$NON-NLS-2$
+        MatchResult matcher = regExp.exec(value);
+        while (matcher != null) {
+            String xpathValue = matcher.getGroup(0);
+            if (xpathValue.startsWith(XPATH_PREFIX)) {
+                String path = xpathValue.replace(XPATH_PREFIX, EMPTY);
+                if (path.startsWith("/")) { //$NON-NLS-1$
+                    path = path.substring(1);
+                }
+                arguments.put(xpathValue, path);
+            } else if (xpathValue.startsWith("/")) { //$NON-NLS-1$
+                arguments.put(xpathValue, xpathValue.substring(1));
+            }
+            matcher = regExp.exec(value);
+        }
+        return arguments;
     }
 }

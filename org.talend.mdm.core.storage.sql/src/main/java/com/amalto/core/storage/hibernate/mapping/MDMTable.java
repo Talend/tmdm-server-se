@@ -290,11 +290,18 @@ public class MDMTable extends Table {
         return results.iterator();
     }
 
+    /**
+     * Get the unique constraint name for the particular column in particular table using below SQL statement, then
+     * do a Delete operation before adding new default value.
+     *
+     * @return
+     */
     private String generateAlterDefaultValueConstraintSQL(String tableName, String columnName) {
         String alterDropConstraintSQL = StringUtils.EMPTY;
         try {
-            String sql = "SELECT c.name FROM sysconstraints a INNER JOIN syscolumns b ON a.colid=b.colid INNER JOIN sysobjects c ON a.constid=c.id "
-                    + "WHERE a.id = object_id (?) AND b.name = ?";
+            String sql = "SELECT object_name(const.constid) as name FROM sys.sysconstraints const JOIN sys.columns cols " //$NON-NLS-1$
+                    + "ON cols.object_id = const.id AND cols.column_id = const.colid " //$NON-NLS-1$
+                    + "AND object_name(const.id)= ? AND cols.name = ?"; //$NON-NLS-1$
             List<String> parameters = new ArrayList<>();
             parameters.add(tableName);
             parameters.add(columnName);

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:element name="EU_PRDMDM_eBomChild_1">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Label_EN">eBom Child</xsd:appinfo>
+            <xsd:appinfo source="X_Deny_LogicalDelete">Demo_Manager</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1" name="Id" type="AUTO_INCREMENT">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="Quantity" type="Decimal13_6Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Label_EN">Quantity</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="StartDate" type="xsd:date">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Label_EN">Start Effective Date</xsd:appinfo>
+                        <xsd:appinfo source="X_Default_Value_Rule">'2100-01-01'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="EndDate" type="xsd:date">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Label_EN">End Effective Date</xsd:appinfo>
+                        <xsd:appinfo source="X_Default_Value_Rule">'2100-12-31'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="EU_PRDMDM_eBomChild_1">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="Id" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="EU_PRDMDM_eBomChild">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Label_EN">eBom Child</xsd:appinfo>
+            <xsd:appinfo source="X_Deny_LogicalDelete">Demo_Manager</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1" name="Id" type="AUTO_INCREMENT">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="Quantity" type="Decimal13_6Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Label_EN">Quantity</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="StartDate" type="xsd:date">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Label_EN">Start Effective Date</xsd:appinfo>
+                        <xsd:appinfo source="X_Default_Value_Rule">'2100-01-01'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="EndDate" type="xsd:date">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Label_EN">End Effective Date</xsd:appinfo>
+                        <xsd:appinfo source="X_Default_Value_Rule">'2100-12-31'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="EU_PRDMDM_eBomChild">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="Id" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:simpleType name="Decimal13_6Type">
+        <xsd:restriction base="xsd:decimal">
+            <xsd:fractionDigits value="6" />
+            <xsd:totalDigits value="13" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="AUTO_INCREMENT">
+        <xsd:restriction base="xsd:string" />
+    </xsd:simpleType>
+</xsd:schema>

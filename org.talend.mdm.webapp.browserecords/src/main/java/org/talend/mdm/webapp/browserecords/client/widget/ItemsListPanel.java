@@ -48,6 +48,7 @@ import org.talend.mdm.webapp.browserecords.client.util.DateUtil;
 import org.talend.mdm.webapp.browserecords.client.util.Locale;
 import org.talend.mdm.webapp.browserecords.client.util.MessageUtil;
 import org.talend.mdm.webapp.browserecords.client.util.UserSession;
+import org.talend.mdm.webapp.browserecords.client.widget.inputfield.celleditor.FKCellEditor;
 import org.talend.mdm.webapp.browserecords.client.widget.treedetail.ForeignKeyTreeDetail;
 import org.talend.mdm.webapp.browserecords.client.widget.treedetail.TreeDetailUtil;
 import org.talend.mdm.webapp.browserecords.shared.ViewBean;
@@ -85,6 +86,7 @@ import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.TabItem;
+import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.grid.CheckBoxSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
@@ -782,6 +784,14 @@ public class ItemsListPanel extends ContentPanel {
             BrowseRecords.getSession().put(UserSession.CURRENT_CACHED_FKTABS, null);
             AppEvent event = new AppEvent(BrowseRecordsEvents.ViewItem, item);
             event.setData("isStaging", isStaging()); //$NON-NLS-1$
+            List<ColumnConfig> columnConfigList = grid.getColumnModel().getColumns();
+            List<Field> fkFieldList = new ArrayList<Field>();
+            for (ColumnConfig columnConfig : columnConfigList) {
+                if (columnConfig.getEditor() != null && (columnConfig.getEditor() instanceof FKCellEditor)) {
+                    fkFieldList.add(columnConfig.getEditor().getField());
+                }
+            }
+            event.setData("FKFieldList", fkFieldList);
             Dispatcher.forwardEvent(event);
             gridUpdateLock = false;
         }

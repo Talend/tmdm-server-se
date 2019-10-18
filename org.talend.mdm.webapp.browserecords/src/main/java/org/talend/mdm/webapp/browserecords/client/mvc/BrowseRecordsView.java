@@ -12,9 +12,11 @@ package org.talend.mdm.webapp.browserecords.client.mvc;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.talend.mdm.webapp.base.shared.ComplexTypeModel;
 import org.talend.mdm.webapp.base.shared.EntityModel;
@@ -67,6 +69,8 @@ import com.extjs.gxt.ui.client.widget.grid.CheckBoxSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.google.gwt.regexp.shared.MatchResult;
+import com.google.gwt.regexp.shared.RegExp;
 
 /**
  * DOC Administrator class global comment. Detailled comment
@@ -281,6 +285,49 @@ public class BrowseRecordsView extends View {
                 itemsMainTabPanel.setSelection(tabItem);
             }
         }
+        List<Field> fkFieldList = event.getData("FKFieldList");
+        for(Field field : fkFieldList){
+            ForeignKeyCellField foreignKeyField = (ForeignKeyCellField)field;
+            String foreignKeyFilter = foreignKeyField.getDataType().getForeignKeyFilter();
+            Set<String> notInViewFieldSet = foreignKeyField.getNotInViewFieldSet();
+            Map<String, String> relativePathMapping = foreignKeyField.getRelativePathMapping();
+            String[] criterias = org.talend.mdm.webapp.base.shared.util.CommonUtil.getCriteriasByForeignKeyFilter(foreignKeyFilter);
+            StringBuilder sb = new StringBuilder();
+
+            Map<String, String> result = new HashMap<String, String>();
+
+            for (String fieldName : notInViewFieldSet) {
+                String[] paths = fieldName.split("/");
+                String pattern = "<" + paths[1] + ">([^<]+)</" + paths[1] + ">";
+                RegExp reg = RegExp.compile(pattern); //$NON-NLS-1$
+                MatchResult matchResult = reg.exec(item.getItemXml());
+                String value = "";
+                if (matchResult != null) {
+                    value = matchResult.getGroup(1);
+                    result.put(fieldName, value);
+                }
+            }
+
+            for (String criteria : criterias) {
+                Map<String, String> conditionMap = org.talend.mdm.webapp.base.shared.util.CommonUtil
+                        .buildConditionByCriteria(criteria);
+                String filterValue = conditionMap.get(org.talend.mdm.webapp.base.shared.util.CommonUtil.VALUE_STR);
+
+                filterValue = ForeignKeyUtil.parseFilterValue(result, notInViewFieldSet, relativePathMapping, filterValue);
+                String predicate = conditionMap.get(org.talend.mdm.webapp.base.shared.util.CommonUtil.PREDICATE_STR);
+                predicate = predicate == null ? org.talend.mdm.webapp.base.shared.util.CommonUtil.EMPTY : predicate;
+                // the content like: Product/Name$$Contains$$"Hat"$$#
+                sb.append(conditionMap.get(org.talend.mdm.webapp.base.shared.util.CommonUtil.XPATH_STR))
+                        .append(org.talend.mdm.webapp.base.shared.util.CommonUtil.DOLLAR_DELIMITER)
+                        .append(conditionMap.get(org.talend.mdm.webapp.base.shared.util.CommonUtil.OPERATOR_STR))
+                        .append(org.talend.mdm.webapp.base.shared.util.CommonUtil.DOLLAR_DELIMITER)
+                        .append(filterValue)
+                        .append(org.talend.mdm.webapp.base.shared.util.CommonUtil.DOLLAR_DELIMITER).append(predicate).append("#"); //$NON-NLS-1$
+
+            }
+            foreignKeyField.setForeignKeyFilter(sb.toString());
+            foreignKeyField.getOriginForeignKeyFilter(sb.toString());
+        }
         ItemsDetailPanel detailPanel = itemsMainTabPanel.getCurrentViewTabItem();
         detailPanel.setOutMost(false);
         ItemPanel itemPanel = (ItemPanel) detailPanel.getPrimaryKeyTabWidget();
@@ -439,14 +486,16 @@ public class BrowseRecordsView extends View {
         for (String xpath : fkFieldwithFilterMap.keySet()) {
             ForeignKeyCellField foreignKeyCellField = fkFieldwithFilterMap.get(xpath);
             Map<Integer, Map<String, Field<?>>> targetFieldMap = new HashMap<Integer, Map<String, Field<?>>>();
-            String[] criterias = org.talend.mdm.webapp.base.shared.util.CommonUtil
-                    .getCriteriasByForeignKeyFilter(dataTypes.get(xpath).getForeignKeyFilter());
+            Set<String> notInViewFieldSet = new HashSet<String>();
+            Map<String, String> relativePathMapping = new HashMap<String, String>();
+            String[] criterias = org.talend.mdm.webapp.base.shared.util.CommonUtil.getCriteriasByForeignKeyFilter(dataTypes.get(
+                    xpath).getForeignKeyFilter());
             for (int i = 0; i < criterias.length; i++) {
                 Map<String, String> conditionMap = org.talend.mdm.webapp.base.shared.util.CommonUtil
                         .buildConditionByCriteria(criterias[i]);
                 String filterValue = conditionMap.get(org.talend.mdm.webapp.base.shared.util.CommonUtil.VALUE_STR);
-                if (filterValue != null && !filterValue.isEmpty() && !org.talend.mdm.webapp.base.shared.util.CommonUtil
-                        .isFilterValue(filterValue)) {
+                if (filterValue != null && !filterValue.isEmpty()
+                        && !org.talend.mdm.webapp.base.shared.util.CommonUtil.isFilterValue(filterValue)) {
                     String targetPath;
                     if (org.talend.mdm.webapp.base.shared.util.CommonUtil.isRelativePath(filterValue)) {
                         targetPath = ForeignKeyUtil.findTargetRelativePathForCellFK(xpath, filterValue);
@@ -456,7 +505,15 @@ public class BrowseRecordsView extends View {
                         } else {
                             xpathFieldMap = new HashMap<String, Field<?>>();
                         }
-                        xpathFieldMap.put(targetPath, fieldMap.get(targetPath));
+
+                        if (!fieldMap.containsKey(targetPath)) {
+                            notInViewFieldSet.add(targetPath);
+                            if (!relativePathMapping.containsKey(targetPath)) {
+                                relativePathMapping.put(targetPath, filterValue);
+                            }
+                        } else {
+                            xpathFieldMap.put(targetPath, fieldMap.get(targetPath));
+                        }
                         targetFieldMap.put(i, xpathFieldMap);
                     } else if (org.talend.mdm.webapp.base.shared.util.CommonUtil.isFunction(filterValue)) {
                         if (org.talend.mdm.webapp.base.shared.util.CommonUtil.containsXPath(filterValue)) {
@@ -471,15 +528,29 @@ public class BrowseRecordsView extends View {
                             for (Map.Entry<String, String> entry : xpathMap.entrySet()) {
                                 if (org.talend.mdm.webapp.base.shared.util.CommonUtil.isRelativePath(entry.getValue())) {
                                     targetPath = ForeignKeyUtil.findTargetRelativePathForCellFK(xpath, entry.getValue());
-                                    xpathFieldMap.put(entry.getKey(), fieldMap.get(targetPath));
+                                    if (!fieldMap.containsKey(targetPath)) {
+                                        notInViewFieldSet.add(targetPath);
+                                        if (!relativePathMapping.containsKey(targetPath)) {
+                                            relativePathMapping.put(targetPath, filterValue);
+                                        }
+                                    } else {
+                                        xpathFieldMap.put(entry.getKey(), fieldMap.get(targetPath));
+                                    }
                                 } else {
-                                    xpathFieldMap.put(entry.getKey(), fieldMap.get(entry.getValue()));
+                                    if (!fieldMap.containsKey(entry.getValue())) {
+                                        notInViewFieldSet.add(entry.getValue());
+                                    } else {
+                                        xpathFieldMap.put(entry.getKey(), fieldMap.get(entry.getValue()));
+                                    }
                                 }
                             }
                             targetFieldMap.put(i, xpathFieldMap);
                         }
                     } else {
                         targetPath = filterValue;
+                        if (!fieldMap.containsKey(targetPath)) {
+                            notInViewFieldSet.add(targetPath);
+                        }
                     }
                     if (filterValue != null && entityModel.getConceptName().equals(filterValue.split("/")[0])) { //$NON-NLS-1$
                         Map<String, Field<?>> xpathFieldMap = null;
@@ -494,6 +565,8 @@ public class BrowseRecordsView extends View {
                 }
             }
             foreignKeyCellField.setTargetField(targetFieldMap);
+            foreignKeyCellField.setNotInViewFieldSet(notInViewFieldSet);
+            foreignKeyCellField.setRelativePathMapping(relativePathMapping);
         }
 
         ItemsListPanel.getInstance().updateGrid(sm, ccList);
@@ -549,24 +622,30 @@ public class BrowseRecordsView extends View {
         String[] criterias = org.talend.mdm.webapp.base.shared.util.CommonUtil.getCriteriasByForeignKeyFilter(foreignKeyFilter);
         StringBuilder sb = new StringBuilder();
         for (String criteria : criterias) {
+            boolean isValue = false;
             Map<String, String> conditionMap = org.talend.mdm.webapp.base.shared.util.CommonUtil
                     .buildConditionByCriteria(criteria);
             String returnFilterValue = conditionMap.get(org.talend.mdm.webapp.base.shared.util.CommonUtil.VALUE_STR);
             if (returnFilterValue.contains(org.talend.mdm.webapp.base.shared.util.CommonUtil.FN_PREFIX)) {
                 conditionMap.put(org.talend.mdm.webapp.base.shared.util.CommonUtil.VALUE_STR, filterValue.poll());
+                isValue = true;
             }
             String predicate = conditionMap.get(org.talend.mdm.webapp.base.shared.util.CommonUtil.PREDICATE_STR);
             predicate = predicate == null ? org.talend.mdm.webapp.base.shared.util.CommonUtil.EMPTY : predicate;
 
-            //the content like: Product/Name$$Contains$$"Hat"$$#
+            // the content like: Product/Name$$Contains$$"Hat"$$#
             sb.append(conditionMap.get(org.talend.mdm.webapp.base.shared.util.CommonUtil.XPATH_STR))
                     .append(org.talend.mdm.webapp.base.shared.util.CommonUtil.DOLLAR_DELIMITER)
                     .append(conditionMap.get(org.talend.mdm.webapp.base.shared.util.CommonUtil.OPERATOR_STR))
-                    .append(org.talend.mdm.webapp.base.shared.util.CommonUtil.DOLLAR_DELIMITER).append("\"") //$NON-NLS-1$
-                    .append(conditionMap.get(org.talend.mdm.webapp.base.shared.util.CommonUtil.VALUE_STR))
-                    .append("\"") //$NON-NLS-1$
-                    .append(org.talend.mdm.webapp.base.shared.util.CommonUtil.DOLLAR_DELIMITER).append(predicate)
-                    .append("#"); //$NON-NLS-1$
+                    .append(org.talend.mdm.webapp.base.shared.util.CommonUtil.DOLLAR_DELIMITER);
+            if (isValue) {
+                sb.append("\""); //$NON-NLS-1$
+            }
+            sb.append(conditionMap.get(org.talend.mdm.webapp.base.shared.util.CommonUtil.VALUE_STR));
+            if (isValue) {
+                sb.append("\""); //$NON-NLS-1$
+            }
+            sb.append(org.talend.mdm.webapp.base.shared.util.CommonUtil.DOLLAR_DELIMITER).append(predicate).append("#"); //$NON-NLS-1$
         }
         ForeignKeyField foreignKeyField = event.getData(BrowseRecords.FOREIGN_KEY_FIELD);
         foreignKeyField.setForeignKeyFilter(sb.toString());

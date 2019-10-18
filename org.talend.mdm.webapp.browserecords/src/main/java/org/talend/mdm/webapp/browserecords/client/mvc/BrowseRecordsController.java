@@ -423,10 +423,13 @@ public class BrowseRecordsController extends Controller {
      * @param event
      */
     private void onTransformFkFilter(final AppEvent event) {
-        String foreignKeyFilter = event.getData();
+        ForeignKeyField foreignKeyField = event.getData(BrowseRecords.FOREIGN_KEY_FIELD);
+        String foreignKeyFilter = foreignKeyField.getOriginForeignKeyFilter();
+        if (!foreignKeyFilter.contains(CommonUtil.FN_PREFIX)) {
+            return;
+        }
         List<String> filterList = new ArrayList<String>();
         if (foreignKeyFilter != null && foreignKeyFilter.contains(CommonUtil.FN_PREFIX)) {
-            ForeignKeyField foreignKeyField = event.getData(BrowseRecords.FOREIGN_KEY_FIELD);
             String[] criterias = CommonUtil.getCriteriasByForeignKeyFilter(foreignKeyFilter);
             if (foreignKeyField instanceof ForeignKeySelector) {
                 ForeignKeySelector foreignKeySelector = (ForeignKeySelector) foreignKeyField;
@@ -486,8 +489,8 @@ public class BrowseRecordsController extends Controller {
                                 }
                             }
                         }
+                        filterList.add(filterValue);
                     }
-                    filterList.add(filterValue);
                 }
             }
 

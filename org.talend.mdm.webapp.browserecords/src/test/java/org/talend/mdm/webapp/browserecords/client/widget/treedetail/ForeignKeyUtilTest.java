@@ -10,6 +10,11 @@
 
 package org.talend.mdm.webapp.browserecords.client.widget.treedetail;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import com.google.gwt.junit.client.GWTTestCase;
 import org.talend.mdm.webapp.browserecords.client.model.ItemNodeModel;
 
@@ -90,6 +95,73 @@ public class ForeignKeyUtilTest extends GWTTestCase {
 
     public void testFindTargetRelativePathForCellFK() {
         assertEquals("Product/Name", ForeignKeyUtil.findTargetRelativePathForCellFK("Product/Family", "../Name"));
+    }
+
+    public void testParseFilterValue() {
+        Map<String, String> result = new HashMap<String, String>();
+        result.put("Product/Name", "Talend Dog T-Shirt");
+        Set<String> notInViewFieldSet = new HashSet<String>();
+        notInViewFieldSet.add("Product/Name");
+        Map<String, String> relativePathMapping = new HashMap<String, String>();
+        relativePathMapping.put("Product/Name", "../Name");
+
+        //Not exist in viewable
+        //1. two XSI function xpath not exist in viewable
+        String filter = "fn:concat(&quot;xpath:/Product/Name&quot;, &quot;xpath:/Product/Name&quot;)";
+        String expectedFilter = "fn:concat(&quot;Talend Dog T-Shirt&quot;, &quot;Talend Dog T-Shirt&quot;)";
+        assertEquals(expectedFilter, ForeignKeyUtil.parseFilterValue(result, notInViewFieldSet, relativePathMapping, filter));
+
+        //2. one XSI function xpath not exist in viewable
+        filter = "fn:concat(&quot;xpath:/Product/Name&quot;, &quot;s&quot;)";
+        expectedFilter = "fn:concat(&quot;Talend Dog T-Shirt&quot;, &quot;s&quot;)";
+        assertEquals(expectedFilter, ForeignKeyUtil.parseFilterValue(result, notInViewFieldSet, relativePathMapping, filter));
+
+        //3. one xpath not exist in viewable
+        filter = "Product/Name";
+        expectedFilter = "\"Talend Dog T-Shirt\"";
+        assertEquals(expectedFilter, ForeignKeyUtil.parseFilterValue(result, notInViewFieldSet, relativePathMapping, filter));
+
+        //4. one relative path not exist in viewable
+        filter = "../Name";
+        expectedFilter = "\"Talend Dog T-Shirt\"";
+        assertEquals(expectedFilter, ForeignKeyUtil.parseFilterValue(result, notInViewFieldSet, relativePathMapping, filter));
+
+        //5. one XSI function relative xpath not exist in viewable
+        filter = "fn:concat(&quot;xpath:../Name&quot;, &quot;s&quot;)";
+        expectedFilter = "fn:concat(&quot;Talend Dog T-Shirt&quot;, &quot;s&quot;)";
+        assertEquals(expectedFilter, ForeignKeyUtil.parseFilterValue(result, notInViewFieldSet, relativePathMapping, filter));
+
+        //Exist in viewable
+        //6. one xpath exist in viewable
+        filter = "Product/Description";
+        expectedFilter = "Product/Description";
+        assertEquals(expectedFilter, ForeignKeyUtil.parseFilterValue(result, notInViewFieldSet, relativePathMapping, filter));
+
+        //7. one XSI function xpath exist in viewable
+        filter = "fn:concat(&quot;xpath:/Product/Description&quot;, &quot;s&quot;)";
+        expectedFilter = "fn:concat(&quot;xpath:/Product/Description&quot;, &quot;s&quot;)";
+        assertEquals(expectedFilter, ForeignKeyUtil.parseFilterValue(result, notInViewFieldSet, relativePathMapping, filter));
+
+        //8. ../Description
+        filter = "../Description";
+        expectedFilter = "../Description";
+        assertEquals(expectedFilter, ForeignKeyUtil.parseFilterValue(result, notInViewFieldSet, relativePathMapping, filter));
+
+        //9. fn:concat("xpath:../Description", "s")
+        filter = "fn:concat(&quot;xpath:../Description&quot;, &quot;s&quot;)";
+        expectedFilter = "fn:concat(&quot;xpath:../Description&quot;, &quot;s&quot;)";
+        assertEquals(expectedFilter, ForeignKeyUtil.parseFilterValue(result, notInViewFieldSet, relativePathMapping, filter));
+
+        //10. fn:concat("xpath:/Product/Description", "xpath:/Product/Description")
+        filter = "fn:concat(&quot;xpath:/Product/Description&quot;, &quot;xpath:/Product/Description&quot;)";
+        expectedFilter = "fn:concat(&quot;xpath:/Product/Description&quot;, &quot;xpath:/Product/Description&quot;)";
+        assertEquals(expectedFilter, ForeignKeyUtil.parseFilterValue(result, notInViewFieldSet, relativePathMapping, filter));
+
+        //11. One Exist in viewable, one don't exist in viewable
+        filter = "fn:concat(&quot;xpath:/Product/Description&quot;, &quot;xpath:/Product/Name&quot;)";
+        expectedFilter = "fn:concat(&quot;xpath:/Product/Description&quot;, &quot;Talend Dog T-Shirt&quot;)";
+        String aa = ForeignKeyUtil.parseFilterValue(result, notInViewFieldSet, relativePathMapping, filter);
+        assertEquals(expectedFilter, ForeignKeyUtil.parseFilterValue(result, notInViewFieldSet, relativePathMapping, filter));
     }
 
     /**

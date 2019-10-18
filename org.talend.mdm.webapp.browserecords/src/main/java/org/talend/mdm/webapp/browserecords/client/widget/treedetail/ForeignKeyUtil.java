@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
@@ -385,5 +386,61 @@ public class ForeignKeyUtil {
             }
         }
         return pathBuilder.toString();
+    }
+
+    /**
+     * parse the foreign key filter if contains xpath
+     * 1. xpath not in the grid list replace
+     *    xpath to the record value
+     * 2. xpath exist in the grid list
+     *    keep the value and don't changed
+     *
+     * @param result value for field not in view viewable elements.
+     * @param notInViewFieldSet the collect of the field name not exist in view viewable elements.
+     * @param relativePathMapping relative field mapping the actual field
+     * @param filterValue the one foreign key filter cell
+     * @return value parsed for the record value.
+     */
+    public static String parseFilterValue(Map<String, String> result, Set<String> notInViewFieldSet,
+            Map<String, String> relativePathMapping, String filterValue) {
+        if (filterValue != null && !filterValue.isEmpty()
+                && !org.talend.mdm.webapp.base.shared.util.CommonUtil.isFilterValue(filterValue)) {
+            // 1. deal with the relative path,
+            if (org.talend.mdm.webapp.base.shared.util.CommonUtil.isRelativePath(filterValue)) {
+                for (Map.Entry<String, String> entry : result.entrySet()) {
+                    if (relativePathMapping.values().contains(filterValue)) {
+                        filterValue = filterValue.replaceAll(relativePathMapping.get(entry.getKey()), "\"" + entry.getValue()
+                                + "\"");
+                    }
+                }
+            } else if (org.talend.mdm.webapp.base.shared.util.CommonUtil.isFunction(filterValue)
+                    && org.talend.mdm.webapp.base.shared.util.CommonUtil.containsXPath(filterValue)) {
+                // 2. deal with the xpath exist in filter value
+                Map<String, String> xpathMap = org.talend.mdm.webapp.base.shared.util.CommonUtil
+                        .getArgumentsWithXpath(filterValue);
+                for (Map.Entry<String, String> entry : xpathMap.entrySet()) {
+                    // 2.1 deal with the relative path
+                    if (org.talend.mdm.webapp.base.shared.util.CommonUtil.isRelativePath(entry.getValue())
+                            && relativePathMapping.values().contains(entry.getValue())) {
+                        for (Map.Entry<String, String> resultEntry : result.entrySet()) {
+                            if (entry.getValue().equals(relativePathMapping.get(resultEntry.getKey()))) {
+                                filterValue = filterValue.replaceAll(entry.getKey(), resultEntry.getValue());
+                            }
+                        }
+                    } else if (notInViewFieldSet.contains(entry.getValue())) {
+                        // 2.2 deal with the xpath
+                        filterValue = filterValue.replaceAll(entry.getKey(), result.get(entry.getValue()));
+                    }
+                }
+            } else {
+                // 3. deal with a xpath
+                if (notInViewFieldSet.contains(filterValue)) {
+                    for (Map.Entry<String, String> resultEntry : result.entrySet()) {
+                        filterValue = filterValue.replaceAll(resultEntry.getKey(), "\"" + resultEntry.getValue() + "\"");
+                    }
+                }
+            }
+        }
+        return filterValue;
     }
 }

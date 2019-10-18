@@ -329,12 +329,12 @@ public class CommonUtil {
     /**
      * Parse the xpath in the function content
      * eg:
-     *     fn:string-length("xpath:/Product/Name") > 3") ==> key=Product/Name,value=Product/Name
-     *     fn:concat("xpath:Product/Name", "xpath:Product/Description") ==> key=Product/Name,value=Product/Name & key=Product/Description,value=Product/Description
-     *     fn:concat("xpath:Product/Name") ==> key=Product/Name,value=Product/Name
-     *     fn:concat("xpath:Product/Name", " s") ==> key=Product/Name,value=Product/Name
-     *     fn:starts-with("xpath:Product/Name","s")  ==> key=Product/Name,value=Product/Name
-     *     fn:matches("xpath:../Name" ,"test")  ==> key=../Name,valye=../Name
+     *     fn:string-length("xpath:/Product/Name") > 3") ==> key=xpath:Product/Name,value=Product/Name
+     *     fn:concat("xpath:Product/Name", "xpath:Product/Description") ==> key=xpath:Product/Name,value=Product/Name & key=xpath:Product/Description,value=Product/Description
+     *     fn:concat("xpath:Product/Name") ==> key=xpath:Product/Name,value=Product/Name
+     *     fn:concat("xpath:Product/Name", " s") ==> key=xpath:Product/Name,value=Product/Name
+     *     fn:starts-with("xpath:Product/Name","s")  ==> key=xpath:Product/Name,value=Product/Name
+     *     fn:matches("xpath:../Name" ,"test")  ==> key=xpath:../Name,valye=../Name
      *     fn:abs(xpath:Product/Price) ==> key=xpath:Product/Price, value=Product/Price
      *     fn:abs(/Product/Price) ==> key=/Product/Price, value=Product/Price
      * @param function the parse function

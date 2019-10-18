@@ -12,6 +12,7 @@ package org.talend.mdm.webapp.browserecords.client.widget.ForeignKey;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.talend.mdm.webapp.base.shared.util.CommonUtil;
 import org.talend.mdm.webapp.base.client.model.ForeignKeyBean;
@@ -22,9 +23,9 @@ public class ForeignKeyCellField extends ForeignKeyField {
 
     private Map<Integer, Map<String, Field<?>>> targetFields;
 
-    public Map<Integer, Map<String, Field<?>>> getTargetFields() {
-        return targetFields;
-    }
+    private Set<String> notInViewFieldSet;
+
+    private Map<String, String> relativePathMapping;
 
     public ForeignKeyCellField(ForeignKeyField foreignKeyField, String foreignKeyFilter) {
         super(foreignKeyField.getDataType());
@@ -77,5 +78,25 @@ public class ForeignKeyCellField extends ForeignKeyField {
         } else {
             return CommonUtil.EMPTY;
         }
+    }
+
+    public Set<String> getNotInViewFieldSet() {
+        return notInViewFieldSet;
+    }
+
+    public void setNotInViewFieldSet(Set<String> notInViewFieldSet) {
+        this.notInViewFieldSet = notInViewFieldSet;
+    }
+
+    public Map<String, String> getRelativePathMapping() {
+        return relativePathMapping;
+    }
+
+    public void setRelativePathMapping(Map<String, String> relativePathMapping) {
+        this.relativePathMapping = relativePathMapping;
+    }
+
+    public Map<Integer, Map<String, Field<?>>> getTargetFields() {
+        return targetFields;
     }
 }

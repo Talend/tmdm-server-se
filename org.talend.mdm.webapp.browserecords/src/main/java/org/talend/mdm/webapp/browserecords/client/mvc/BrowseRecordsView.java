@@ -285,6 +285,11 @@ public class BrowseRecordsView extends View {
                 itemsMainTabPanel.setSelection(tabItem);
             }
         }
+        // If contains the foregin key field, and this fk field's fk filter contains the field which not exist in the
+        // gird viewable elements
+        // after query the current item's detail, update the fk filter
+        // eg: ProductFamily/Name$$Contains$$"fn:concat(&quot;xpath:/Product/Name&quot;, &quot;s&quot;)"$$#
+        // update to: ProductFamily/Name$$Contains$$"fn:concat(&quot;Talend Dog T-Shirt&quot;, &quot;s&quot;)"$$#
         List<Field> fkFieldList = event.getData("FKFieldList");
         for (Field field : fkFieldList) {
             ForeignKeyCellField foreignKeyField = (ForeignKeyCellField) field;
@@ -295,7 +300,7 @@ public class BrowseRecordsView extends View {
                     .getCriteriasByForeignKeyFilter(foreignKeyFilter);
             StringBuilder sb = new StringBuilder();
 
-            Map<String, String> result = new HashMap<String, String>();
+            Map<String, String> fieldValueMapping = new HashMap<String, String>();
 
             for (String fieldName : notInViewFieldSet) {
                 String[] paths = fieldName.split("/");
@@ -305,7 +310,7 @@ public class BrowseRecordsView extends View {
                 String value = "";
                 if (matchResult != null) {
                     value = matchResult.getGroup(1);
-                    result.put(fieldName, value);
+                    fieldValueMapping.put(fieldName, value);
                 }
             }
 
@@ -314,7 +319,7 @@ public class BrowseRecordsView extends View {
                         .buildConditionByCriteria(criteria);
                 String filterValue = conditionMap.get(org.talend.mdm.webapp.base.shared.util.CommonUtil.VALUE_STR);
 
-                filterValue = ForeignKeyUtil.parseFilterValue(result, notInViewFieldSet, relativePathMapping, filterValue);
+                filterValue = ForeignKeyUtil.parseFilterValue(fieldValueMapping, notInViewFieldSet, relativePathMapping, filterValue);
                 String predicate = conditionMap.get(org.talend.mdm.webapp.base.shared.util.CommonUtil.PREDICATE_STR);
                 predicate = predicate == null ? org.talend.mdm.webapp.base.shared.util.CommonUtil.EMPTY : predicate;
                 // the content like: Product/Name$$Contains$$"Hat"$$#
@@ -618,7 +623,8 @@ public class BrowseRecordsView extends View {
      */
     private void onTransformFkFilter(AppEvent event) {
         LinkedList<String> filterValue = new LinkedList<String>((List<String>) event.getData());
-        String foreignKeyFilter = event.getData(BrowseRecords.FOREIGN_KEY_FILTER);
+        ForeignKeyField foreignKeyField = event.getData(BrowseRecords.FOREIGN_KEY_FIELD);
+        String foreignKeyFilter = foreignKeyField.getOriginForeignKeyFilter();
         String[] criterias = org.talend.mdm.webapp.base.shared.util.CommonUtil.getCriteriasByForeignKeyFilter(foreignKeyFilter);
         StringBuilder sb = new StringBuilder();
         for (String criteria : criterias) {
@@ -647,7 +653,6 @@ public class BrowseRecordsView extends View {
             }
             sb.append(org.talend.mdm.webapp.base.shared.util.CommonUtil.DOLLAR_DELIMITER).append(predicate).append("#"); //$NON-NLS-1$
         }
-        ForeignKeyField foreignKeyField = event.getData(BrowseRecords.FOREIGN_KEY_FIELD);
         foreignKeyField.setForeignKeyFilter(sb.toString());
     }
 }

@@ -333,12 +333,10 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
             @Override
             public void onClick(ClickEvent ce) {
                 if (foreignConceptName != null) {
-
                     String foreignKeyFilter = getOriginForeignKeyFilter();
                     if (foreignKeyFilter.contains(CommonUtil.FN_PREFIX)) {
                         AppEvent event = new AppEvent(BrowseRecordsEvents.TransformFkFilterItem, foreignKeyFilter);
                         event.setData(BrowseRecords.FOREIGN_KEY_FIELD, _this);
-                        event.setData(BrowseRecords.FOREIGN_KEY_FILTER, foreignKeyFilter);
                         Dispatcher.forwardEvent(event);
                     }
 

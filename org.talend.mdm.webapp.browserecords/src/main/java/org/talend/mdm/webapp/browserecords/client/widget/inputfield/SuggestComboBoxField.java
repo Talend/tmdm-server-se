@@ -164,7 +164,6 @@ public class SuggestComboBoxField extends ComboBoxEx<ForeignKeyBean> {
                         if (foreignKeyFilter.contains(org.talend.mdm.webapp.base.shared.util.CommonUtil.FN_PREFIX)) {
                             AppEvent event = new AppEvent(BrowseRecordsEvents.TransformFkFilterItem, foreignKeyFilter);
                             event.setData(BrowseRecords.FOREIGN_KEY_FIELD, foreignKeyField);
-                            event.setData(BrowseRecords.FOREIGN_KEY_FILTER, foreignKeyFilter);
                             Dispatcher.forwardEvent(event);
                         }
                         task.delay(getListDelay);

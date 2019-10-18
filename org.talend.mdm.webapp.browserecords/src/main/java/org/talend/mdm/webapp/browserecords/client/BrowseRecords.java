@@ -70,8 +70,6 @@ public class BrowseRecords implements EntryPoint {
 
     public static final String FOREIGN_KEY_FIELD = "foreignKeyField"; //$NON-NLS-1$
 
-    public static final String FOREIGN_KEY_FILTER = "foreignKeyFilter"; //$NON-NLS-1$
-
     private static JavaScriptObject stagingArea;
 
     public static JavaScriptObject getStagingArea() {

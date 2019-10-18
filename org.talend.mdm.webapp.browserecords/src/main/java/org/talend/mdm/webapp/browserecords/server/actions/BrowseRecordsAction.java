@@ -2494,7 +2494,6 @@ public class BrowseRecordsAction implements BrowseRecordsService {
     }
 
     public List<String> transformFunctionValue(List<String> functionList) throws ServiceException {
-        List<String> result = new ArrayList<>();
         try {
             Document doc = XMLUtils.parse("<result></result>"); //$NON-NLS-1$;
             Element element = doc.getDocumentElement();
@@ -2511,26 +2510,5 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             LOG.error(e.getMessage(), e);
             throw new ServiceException(e.getLocalizedMessage());
         }
-    }
-
-    public Map<String, String> getFieldValuesByIds(String concept, String ids, Set<String> fieldPatSet, String language) {
-        Map<String, String> result = new HashMap<String, String>();
-        try {
-            MetadataRepository repository = CommonUtil.getCurrentRepository();
-            String[] idsArray = CommonUtil.getItemId(repository, ids, concept);
-
-            WSItem wsItem = CommonUtil.getPort().getItem(
-                    new WSGetItem(new WSItemPK(new WSDataClusterPK(this.getCurrentDataCluster()), concept, idsArray)));
-
-            org.dom4j.Document doc = org.talend.mdm.webapp.base.server.util.XmlUtil.parseText(wsItem.getContent());
-            EntityModel entityModel = getEntityModel(concept, language);
-            for (String fieldPath : fieldPatSet) {
-                org.dom4j.Node node = doc.selectSingleNode(fieldPath);
-                result.put(fieldPath, node.getText());
-            }
-        } catch (Exception e) {
-
-        }
-        return result;
     }
 }

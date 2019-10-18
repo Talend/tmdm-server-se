@@ -335,7 +335,7 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
                 if (foreignConceptName != null) {
 
                     String foreignKeyFilter = getOriginForeignKeyFilter();
-                    if (foreignKeyFilter.contains(CommonUtil.FN_PREFIX) ) {
+                    if (foreignKeyFilter.contains(CommonUtil.FN_PREFIX)) {
                         AppEvent event = new AppEvent(BrowseRecordsEvents.TransformFkFilterItem, foreignKeyFilter);
                         event.setData(BrowseRecords.FOREIGN_KEY_FIELD, _this);
                         event.setData(BrowseRecords.FOREIGN_KEY_FILTER, foreignKeyFilter);

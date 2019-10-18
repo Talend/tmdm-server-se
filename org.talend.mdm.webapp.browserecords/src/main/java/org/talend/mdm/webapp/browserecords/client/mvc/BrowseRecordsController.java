@@ -425,9 +425,6 @@ public class BrowseRecordsController extends Controller {
     private void onTransformFkFilter(final AppEvent event) {
         ForeignKeyField foreignKeyField = event.getData(BrowseRecords.FOREIGN_KEY_FIELD);
         String foreignKeyFilter = foreignKeyField.getOriginForeignKeyFilter();
-        if (!foreignKeyFilter.contains(CommonUtil.FN_PREFIX)) {
-            return;
-        }
         List<String> filterList = new ArrayList<String>();
         if (foreignKeyFilter != null && foreignKeyFilter.contains(CommonUtil.FN_PREFIX)) {
             String[] criterias = CommonUtil.getCriteriasByForeignKeyFilter(foreignKeyFilter);

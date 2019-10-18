@@ -286,12 +286,13 @@ public class BrowseRecordsView extends View {
             }
         }
         List<Field> fkFieldList = event.getData("FKFieldList");
-        for(Field field : fkFieldList){
-            ForeignKeyCellField foreignKeyField = (ForeignKeyCellField)field;
+        for (Field field : fkFieldList) {
+            ForeignKeyCellField foreignKeyField = (ForeignKeyCellField) field;
             String foreignKeyFilter = foreignKeyField.getDataType().getForeignKeyFilter();
             Set<String> notInViewFieldSet = foreignKeyField.getNotInViewFieldSet();
             Map<String, String> relativePathMapping = foreignKeyField.getRelativePathMapping();
-            String[] criterias = org.talend.mdm.webapp.base.shared.util.CommonUtil.getCriteriasByForeignKeyFilter(foreignKeyFilter);
+            String[] criterias = org.talend.mdm.webapp.base.shared.util.CommonUtil
+                    .getCriteriasByForeignKeyFilter(foreignKeyFilter);
             StringBuilder sb = new StringBuilder();
 
             Map<String, String> result = new HashMap<String, String>();
@@ -320,8 +321,7 @@ public class BrowseRecordsView extends View {
                 sb.append(conditionMap.get(org.talend.mdm.webapp.base.shared.util.CommonUtil.XPATH_STR))
                         .append(org.talend.mdm.webapp.base.shared.util.CommonUtil.DOLLAR_DELIMITER)
                         .append(conditionMap.get(org.talend.mdm.webapp.base.shared.util.CommonUtil.OPERATOR_STR))
-                        .append(org.talend.mdm.webapp.base.shared.util.CommonUtil.DOLLAR_DELIMITER)
-                        .append(filterValue)
+                        .append(org.talend.mdm.webapp.base.shared.util.CommonUtil.DOLLAR_DELIMITER).append(filterValue)
                         .append(org.talend.mdm.webapp.base.shared.util.CommonUtil.DOLLAR_DELIMITER).append(predicate).append("#"); //$NON-NLS-1$
 
             }

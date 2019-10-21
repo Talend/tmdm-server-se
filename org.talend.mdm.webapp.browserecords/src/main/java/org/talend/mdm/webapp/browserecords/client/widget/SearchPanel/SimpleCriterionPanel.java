@@ -22,6 +22,7 @@ import org.talend.mdm.webapp.base.client.model.SimpleCriterion;
 import org.talend.mdm.webapp.base.client.widget.MultiLanguageField;
 import org.talend.mdm.webapp.base.shared.EntityModel;
 import org.talend.mdm.webapp.base.shared.TypeModel;
+import org.talend.mdm.webapp.base.shared.util.CommonUtil;
 import org.talend.mdm.webapp.browserecords.client.BrowseRecords;
 import org.talend.mdm.webapp.browserecords.client.BrowseRecordsServiceAsync;
 import org.talend.mdm.webapp.browserecords.client.resources.icon.Icons;
@@ -202,7 +203,7 @@ public class SimpleCriterionPanel<T> extends HorizontalPanel implements ReturnCr
             }
         } else {
             field = new BaseModel();
-            field.set("", ""); //$NON-NLS-1$  //$NON-NLS-2$
+            field.set(CommonUtil.EMPTY, CommonUtil.EMPTY);
             list.add(field);
         }
 
@@ -275,7 +276,7 @@ public class SimpleCriterionPanel<T> extends HorizontalPanel implements ReturnCr
         if (field != null) {
 
             if (field.getValue() == null && !(field instanceof ForeignKeyField)) {
-                return "";
+                return CommonUtil.EMPTY;
             }
 
             if (field instanceof ForeignKeyField) {
@@ -284,7 +285,7 @@ public class SimpleCriterionPanel<T> extends HorizontalPanel implements ReturnCr
                     return fkField.getTextInputValue();
                 }
                 if (((ForeignKeyField) field).getValue() == null) {
-                    return "";
+                    return CommonUtil.EMPTY;
                 } else {
                     return ((ForeignKeyField) field).getValue().getId();
                 }

@@ -347,13 +347,13 @@ public class StoragePrepareTest extends TestCase {
     // TMDM-14115 Deploy the customer's datamodel failed(MS SQLServerDB)
     public void testDefaultValuePrepare() throws Exception {
         DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS2", STORAGE_NAME);
-        Storage storage = new HibernateStorage("Test", StorageType.MASTER);
+        Storage storage = new HibernateStorage("Test", StorageType.MASTER); //$NON-NLS-1$
         storage.init(dataSource);
         MetadataRepository repository = new MetadataRepository();
-        repository.load(StoragePrepareTest.class.getResourceAsStream("EU_PRDMDM_eBomChild.xsd"));
+        repository.load(StoragePrepareTest.class.getResourceAsStream("EU_PRDMDM_eBomChild.xsd")); //$NON-NLS-1$
         storage.prepare(repository, true);
         DataRecordReader<String> factory = new XmlStringDataRecordReader();
-        ComplexTypeMetadata EU_PRDMDM_eBomChild = repository.getComplexType("EU_PRDMDM_eBomChild");//$NON-NLS-1$
+        ComplexTypeMetadata EU_PRDMDM_eBomChild = repository.getComplexType("EU_PRDMDM_eBomChild"); //$NON-NLS-1$
         // test data had been added
         List<DataRecord> records = new ArrayList<DataRecord>();
         records.add(factory.read(repository, EU_PRDMDM_eBomChild, "<EU_PRDMDM_eBomChild><Id>1</Id><Quantity>23.000000</Quantity><StartDate>2100-01-01</StartDate><EndDate>2100-11-28</EndDate></EU_PRDMDM_eBomChild>")); // $NON-NLS-1$
@@ -371,13 +371,13 @@ public class StoragePrepareTest extends TestCase {
         qb.getSelect().getPaging().setLimit(10);
         storage.begin();
         StorageResults results = storage.fetch(qb.getSelect());
-        SimpleDateFormat format = new SimpleDateFormat("YYYY-MM-dd");
+        SimpleDateFormat format = new SimpleDateFormat("YYYY-MM-dd"); //$NON-NLS-1$
         try {
             assertEquals(1, results.getCount());
             for (DataRecord result : results) {
-                assertEquals("1", result.get("Id"));//$NON-NLS-1$ //$NON-NLS-2$
-                assertEquals("2100-01-01", format.format(result.get("StartDate")));//$NON-NLS-1$ //$NON-NLS-2$
-                assertEquals("2100-11-28", format.format(result.get("EndDate")));//$NON-NLS-1$ //$NON-NLS-2$
+                assertEquals("1", result.get("Id")); //$NON-NLS-1$ $NON-NLS-2$
+                assertEquals("2100-01-01", format.format(result.get("StartDate"))); //$NON-NLS-1$ $NON-NLS-2$
+                assertEquals("2100-11-28", format.format(result.get("EndDate"))); //$NON-NLS-1$ $NON-NLS-2$
             }
         } finally {
             results.close();

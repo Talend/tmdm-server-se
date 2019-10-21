@@ -263,8 +263,8 @@ public class MDMTable extends Table {
     }
 
     /**
-     * get the unique constraint name for the particular column in particular table using below SQL statement, then
-     * delete it before adding new default value.
+     * Get the unique constraint name for the particular column in particular table using below SQL statement, then
+     * do a Delete operation before adding new default value.
      *
      * @return
      */
@@ -275,16 +275,16 @@ public class MDMTable extends Table {
         try {
             Properties properties = dataSource.getAdvancedPropertiesIncludeUserInfo();
             connection = DriverManager.getConnection(dataSource.getConnectionURL(), properties);
-            String sql = "SELECT object_name(const.constid) as name FROM sys.sysconstraints const JOIN sys.columns cols "
-                    + "ON cols.object_id = const.id AND cols.column_id = const.colid "
-                    + "AND object_name(const.id)= ? AND cols.name = ?";
+            String sql = "SELECT object_name(const.constid) as name FROM sys.sysconstraints const JOIN sys.columns cols " //$NON-NLS-1$
+                    + "ON cols.object_id = const.id AND cols.column_id = const.colid " //$NON-NLS-1$
+                    + "AND object_name(const.id)= ? AND cols.name = ?"; //$NON-NLS-1$
             statement = connection.prepareStatement(sql);
             statement.setString(1, tableName);
             statement.setString(2, columnName);
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
                 if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("Table [" + tableName + "] with the unique constraint name [" + rs.getString(1) + "] will be deleted.");
+                    LOGGER.debug("Table [" + tableName + "] with the unique constraint name [" + rs.getString(1) + "] will be deleted."); //$NON-NLS-1$ $NON-NLS-2$ $NON-NLS-3$
                 }
                 alterDropConstraintSQL = "alter table " + tableName + " drop constraint " + rs.getString(1);
             }

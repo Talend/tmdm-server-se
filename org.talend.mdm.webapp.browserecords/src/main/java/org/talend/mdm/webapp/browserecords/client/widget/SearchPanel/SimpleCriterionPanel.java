@@ -283,7 +283,11 @@ public class SimpleCriterionPanel<T> extends HorizontalPanel implements ReturnCr
                 if (fkField.isWithTextInput()) {
                     return fkField.getTextInputValue();
                 }
-                return ((ForeignKeyField) field).getValue().getId();
+                if (((ForeignKeyField) field).getValue() == null) {
+                    return "";
+                } else {
+                    return ((ForeignKeyField) field).getValue().getId();
+                }
             } else if (field instanceof DateField) {
                 return ((DateField) field).getPropertyEditor().getFormat().format(((DateField) field).getValue());
             } else if (field instanceof RadioGroup) {

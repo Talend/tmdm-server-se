@@ -303,23 +303,23 @@ public class MDMTable extends Table {
     }
 
     /**
-     * get the unique constraint name for the particular column in particular table using below SQL statement, then
-     * delete it before adding new default value.
+     * Get the unique constraint name for the particular column in particular table using below SQL statement, then
+     * do a Delete operation before adding new default value.
      *
      * @return
      */
     private String generateAlterDefaultValueConstraintSQL(String tableName, String columnName) {
         String alterDropConstraintSQL = StringUtils.EMPTY;
         try {
-            String sql = "SELECT object_name(const.constid) as name FROM sys.sysconstraints const JOIN sys.columns cols "
-                    + "ON cols.object_id = const.id AND cols.column_id = const.colid "
-                    + "AND object_name(const.id)= ? AND cols.name = ?";
+            String sql = "SELECT object_name(const.constid) as name FROM sys.sysconstraints const JOIN sys.columns cols " //$NON-NLS-1$
+                    + "ON cols.object_id = const.id AND cols.column_id = const.colid " //$NON-NLS-1$
+                    + "AND object_name(const.id)= ? AND cols.name = ?"; //$NON-NLS-1$
             List<String> parameters = new ArrayList<>();
             parameters.add(tableName);
             parameters.add(columnName);
             String queryResult = executeSQLForSQLServer(sql, parameters);
-            if (StringUtils.isNotBlank(queryResult)) {
-                alterDropConstraintSQL = "alter table " + tableName + " drop constraint " + queryResult;
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Table [" + tableName + "] with the unique constraint name [" + rs.getString(1) + "] will be deleted."); //$NON-NLS-1$ $NON-NLS-2$ $NON-NLS-3$
             }
         } catch (Exception e) {
             LOGGER.error("Fetching SQLServer default value constraint failed.", e);

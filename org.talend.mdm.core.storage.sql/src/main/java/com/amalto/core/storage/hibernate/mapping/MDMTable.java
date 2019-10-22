@@ -318,8 +318,8 @@ public class MDMTable extends Table {
             parameters.add(tableName);
             parameters.add(columnName);
             String queryResult = executeSQLForSQLServer(sql, parameters);
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Table [" + tableName + "] with the unique constraint name [" + rs.getString(1) + "] will be deleted."); //$NON-NLS-1$ $NON-NLS-2$ $NON-NLS-3$
+            if (StringUtils.isNotBlank(queryResult)) {
+                alterDropConstraintSQL = "alter table " + tableName + " drop constraint " + queryResult;
             }
         } catch (Exception e) {
             LOGGER.error("Fetching SQLServer default value constraint failed.", e);

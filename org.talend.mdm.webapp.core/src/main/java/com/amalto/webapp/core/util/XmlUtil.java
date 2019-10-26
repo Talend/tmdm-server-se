@@ -26,17 +26,23 @@ public class XmlUtil {
     public static String escapeXml(String value) {
         if (value == null)
             return null;
-        boolean isEscaped=false;
+        boolean isEscaped = false;
         if (value.contains("&quot;") || //$NON-NLS-1$
                 value.contains("&amp;") || //$NON-NLS-1$
                 value.contains("&lt;") || //$NON-NLS-1$
                 value.contains("&gt;")) { //$NON-NLS-1$
             isEscaped = true;
         }
-        if(!isEscaped) {
-            value=StringEscapeUtils.escapeXml(value);
+        if (!isEscaped) {
+            value = StringEscapeUtils.escapeXml(value);
         }
         return value;
     }
 
+    public static String unescapeXml(String value) {
+        if (value == null) {
+            return null;
+        }
+        return StringEscapeUtils.unescapeXml(value);
+    }
 }

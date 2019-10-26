@@ -177,4 +177,16 @@ public class CommonUtilTest extends TestCase {
         assertTrue(CommonUtil.containsXPath("fn:abs(xpath:/Product/Name)"));
         assertTrue(CommonUtil.containsXPath("fn:abs(/Product/Name)"));
     }
+
+    public void testUnescapeXml() {
+        assertEquals("a&b", CommonUtil.unescapeXml("a&b"));
+        assertEquals("a&b", CommonUtil.unescapeXml("a&amp;b"));
+        assertEquals("a'b", CommonUtil.unescapeXml("a&apos;b"));
+        assertEquals("a\"b", CommonUtil.unescapeXml("a&quot;b"));
+        assertEquals("a<b", CommonUtil.unescapeXml("a&lt;b"));
+        assertEquals("a>b", CommonUtil.unescapeXml("a&gt;b"));
+        assertEquals("a&yen;b", CommonUtil.unescapeXml("a&yen;b"));
+        assertEquals("Talend Shirt", CommonUtil.unescapeXml("Talend Shirt"));
+        assertEquals("a￥b￡", CommonUtil.unescapeXml("a￥b￡"));
+    }
 }

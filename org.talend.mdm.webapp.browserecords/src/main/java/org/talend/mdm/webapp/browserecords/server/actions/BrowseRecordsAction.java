@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.xml.parsers.DocumentBuilder;
 
@@ -2495,16 +2496,20 @@ public class BrowseRecordsAction implements BrowseRecordsService {
 
     public List<String> transformFunctionValue(List<String> functionList) throws ServiceException {
         try {
+            List<String> escapedFunctionList = functionList.stream().map((String functionName) -> {
+                return XmlUtil.escapeXml(XmlUtil.unescapeXml(functionName));
+            }).collect(Collectors.toList());
+
             Document doc = XMLUtils.parse("<result></result>"); //$NON-NLS-1$;
             Element element = doc.getDocumentElement();
-            for (String function : functionList) {
+            for (String function : escapedFunctionList) {
                 element.appendChild(doc.createElement("functionName")); //$NON-NLS-1$;
             }
 
             org.dom4j.Document doc4j = XmlUtil.parseDocument(doc);
 
             DisplayRuleEngine ruleEngine = new DisplayRuleEngine(null, null);
-            ruleEngine.setFuncitonList(functionList);
+            ruleEngine.setFuncitonList(escapedFunctionList);
             return ruleEngine.execFKFilterRule(doc4j);
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);

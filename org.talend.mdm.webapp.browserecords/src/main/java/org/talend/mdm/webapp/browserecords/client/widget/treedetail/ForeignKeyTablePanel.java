@@ -31,6 +31,7 @@ import org.talend.mdm.webapp.browserecords.client.model.ItemNodeModel;
 import org.talend.mdm.webapp.browserecords.client.mvc.BrowseRecordsView;
 import org.talend.mdm.webapp.browserecords.client.resources.icon.Icons;
 import org.talend.mdm.webapp.browserecords.client.util.Locale;
+import org.talend.mdm.webapp.browserecords.client.widget.ForeignKey.ForeignKeyField;
 import org.talend.mdm.webapp.browserecords.client.widget.ForeignKeyRowEditor;
 import org.talend.mdm.webapp.browserecords.client.widget.ItemPanel;
 import org.talend.mdm.webapp.browserecords.client.widget.ItemsDetailPanel;
@@ -249,7 +250,7 @@ public class ForeignKeyTablePanel extends ContentPanel implements ReturnCriteria
         columnConfigs.add(sm.getColumn());
 
         foreignKeySelector = new ForeignKeySelector(fkTypeModel, itemsDetailPanel, parent);
-        foreignKeySelector.setUsageField("ForeignKeyTablePanel"); //$NON-NLS-1$
+        foreignKeySelector.setUsageField(ForeignKeyField.USAGE_FOREIGN_KEY_TABLE_PANEL);
         foreignKeySelector.setShowAddButton(false);
         foreignKeySelector.setShowCleanButton(false);
         foreignKeySelector.setShowRelationButton(false);

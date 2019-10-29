@@ -91,9 +91,7 @@ public class SearchFieldCreator {
     }
 
     private static Field createForeignKeyField(TypeModel typeModel, boolean withTextInput) {
-        ForeignKeyField fkField = new ForeignKeyField(typeModel, withTextInput);
-        fkField.setUsageField("SearchFieldCreator"); //$NON-NLS-1$
-        return fkField;
+        return new ForeignKeyField(typeModel, withTextInput, ForeignKeyField.USAGE_SEARCH_FIELD_CREATOR);
     }
 
     private static void setEnumerationValues(TypeModel typeModel, Widget w) {

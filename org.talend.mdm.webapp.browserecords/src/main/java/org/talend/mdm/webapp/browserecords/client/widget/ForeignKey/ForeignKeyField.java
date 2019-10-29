@@ -40,6 +40,10 @@ import com.google.gwt.user.client.ui.Image;
 
 public class ForeignKeyField extends TextField<ForeignKeyBean> {
 
+    public static final String USAGE_SEARCH_FIELD_CREATOR = "SearchFieldCreator"; //$NON-NLS-1$
+
+    public static final String USAGE_FOREIGN_KEY_TABLE_PANEL = "ForeignKeyTablePanel"; //$NON-NLS-1$
+
     private BrowseRecordsServiceAsync service = (BrowseRecordsServiceAsync) Registry.get(BrowseRecords.BROWSERECORDS_SERVICE);
 
     protected TypeModel dataType;
@@ -75,22 +79,27 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
     protected boolean withTextInput; // Check if create input field or suggest box
 
     public ForeignKeyField(TypeModel dataType) {
-        init(dataType);
+        init(dataType, null);
         initField(false);
     }
 
-    public ForeignKeyField(TypeModel dataType, boolean withTextInput) {
-        init(dataType);
+    public ForeignKeyField(TypeModel dataType, boolean withTextInput, String usageField) {
+        init(dataType, usageField);
         initField(withTextInput);
     }
 
-    private void init(TypeModel dataType) {
+    private void init(TypeModel dataType, String usageField) {
         this.dataType = dataType;
         this.foreignKeyPath = dataType.getForeignkey();
         this.foreignKeyInfo = dataType.getForeignKeyInfo();
         this.currentPath = dataType.getXpath();
         this.selectButton = new Image(Icons.INSTANCE.link());
-        this.showSelectButton = !dataType.isReadOnly();
+        this.usageField = usageField;
+        if (USAGE_SEARCH_FIELD_CREATOR.equals(usageField)) {
+            this.showSelectButton = true;
+        } else {
+            this.showSelectButton = !dataType.isReadOnly();
+        }
         this.setFireChangeEventOnSetValue(true);
         String[] foreignKeyPathArray = foreignKeyPath.split("/"); //$NON-NLS-1$
         if (foreignKeyPathArray.length > 0) {
@@ -102,7 +111,7 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
         // If withTextInput=true, won't initialize suggestBox but will initialize textField
         if (withTextInput) {
             this.textField = new TextField<String>();
-            this.withTextInput = withTextInput;
+            this.withTextInput = true;
             this.showInput = false;
         } else {
             this.suggestBox = new SuggestComboBoxField(this);
@@ -124,13 +133,13 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
     @Override
     protected void onResize(int width, int height) {
         if (withTextInput) {
-            if ("SearchFieldCreator".equals(usageField)) { //$NON-NLS-1$
+            if (USAGE_SEARCH_FIELD_CREATOR.equals(usageField)) {
                 textField.setWidth(width - selectButton.getWidth() - 20);
             } else {
                 textField.setWidth(width);
             }
         } else {
-            if ("SearchFieldCreator".equals(usageField)) { //$NON-NLS-1$
+            if (USAGE_SEARCH_FIELD_CREATOR.equals(usageField)) {
                 suggestBox.setWidth(width - selectButton.getWidth() - 20);
             } else {
                 suggestBox.setWidth(width);

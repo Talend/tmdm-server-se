@@ -14,10 +14,10 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-
-import junit.framework.TestCase;
+import java.util.Map;
 
 import org.junit.Assert;
+import org.talend.mdm.commmon.metadata.Category;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.CompoundFieldMetadata;
 import org.talend.mdm.commmon.metadata.ConsoleDumpMetadataVisitor;
@@ -29,6 +29,8 @@ import org.talend.mdm.commmon.metadata.MetadataUtils;
 import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
 import org.talend.mdm.commmon.metadata.SimpleTypeFieldMetadata;
 import org.talend.mdm.commmon.metadata.TypeMetadata;
+
+import junit.framework.TestCase;
 
 /**
  * Schema parsing <br>
@@ -324,7 +326,7 @@ public class MetadataRepositoryTest extends TestCase {
         List<ComplexTypeMetadata> sortTypes = MetadataUtils.sortTypes(repository, MetadataUtils.SortType.LENIENT);
         boolean hasMetHexavia = false;
         boolean hasMetAdresse = false;
-        
+
         for (ComplexTypeMetadata sortType : sortTypes) {
             if ("Hexavia".equals(sortType.getName())) {
                 hasMetHexavia = true;
@@ -336,20 +338,21 @@ public class MetadataRepositoryTest extends TestCase {
         }
         assertTrue(hasMetAdresse);
     }
-    
+
     // More cyclic sort test cases
     public void test26_1() throws Exception {
         MetadataRepository repository = new MetadataRepository();
-        InputStream stream = getClass().getResourceAsStream("SortType_01.xsd"); // BA_Adresse=(0..1)=>BB_Hexavia;BA_Adresse=(0..1)=>A_TypeVoie; BB_Hexavia=(0..1)=>A_TypeVoie/BB_Hexavia;
+        InputStream stream = getClass().getResourceAsStream("SortType_01.xsd"); // BA_Adresse=(0..1)=>BB_Hexavia;BA_Adresse=(0..1)=>A_TypeVoie;
+                                                                                // BB_Hexavia=(0..1)=>A_TypeVoie/BB_Hexavia;
         repository.load(stream);
         List<ComplexTypeMetadata> sortTypes = MetadataUtils.sortTypes(repository, MetadataUtils.SortType.LENIENT);
         boolean hasMetHexavia = false;
         boolean hasMetAdresse = false;
-        boolean hasTypeVoice= false ;
-        
+        boolean hasTypeVoice = false;
+
         for (ComplexTypeMetadata sortType : sortTypes) {
-            if("A_TypeVoie".equals(sortType.getName())){
-                hasTypeVoice = true ;
+            if ("A_TypeVoie".equals(sortType.getName())) {
+                hasTypeVoice = true;
             }
             if ("BB_Hexavia".equals(sortType.getName())) {
                 assertTrue(hasTypeVoice);
@@ -361,18 +364,20 @@ public class MetadataRepositoryTest extends TestCase {
             }
         }
         assertTrue(hasMetAdresse);
-        
+
         repository = new MetadataRepository();
-        stream = getClass().getResourceAsStream("SortType_02.xsd");// BA_Adresse=(1..1)=>BB_Hexavia;BA_Adresse=(1..1)=>A_TypeVoie; BB_Hexavia=(1..1)=>A_TypeVoie; BB_Hexavia=(0..1)=>BB_Hexavia;
+        stream = getClass().getResourceAsStream("SortType_02.xsd");// BA_Adresse=(1..1)=>BB_Hexavia;BA_Adresse=(1..1)=>A_TypeVoie;
+                                                                   // BB_Hexavia=(1..1)=>A_TypeVoie;
+                                                                   // BB_Hexavia=(0..1)=>BB_Hexavia;
         repository.load(stream);
         sortTypes = MetadataUtils.sortTypes(repository, MetadataUtils.SortType.STRICT);
         hasMetHexavia = false;
         hasMetAdresse = false;
-        hasTypeVoice= false ;
-        
+        hasTypeVoice = false;
+
         for (ComplexTypeMetadata sortType : sortTypes) {
-            if("A_TypeVoie".equals(sortType.getName())){
-                hasTypeVoice = true ;
+            if ("A_TypeVoie".equals(sortType.getName())) {
+                hasTypeVoice = true;
             }
             if ("BB_Hexavia".equals(sortType.getName())) {
                 assertTrue(hasTypeVoice);
@@ -384,23 +389,24 @@ public class MetadataRepositoryTest extends TestCase {
             }
         }
         assertTrue(hasMetAdresse);
-        
 
         repository = new MetadataRepository();
-        stream = getClass().getResourceAsStream("SortType_03.xsd");// BA_Adresse=(0..1)=>BB_Hexavia;BA_Adresse=(0..1)=>A_TypeVoie; BB_Hexavia=(0..1)=>BA_Adresse; BB_Hexavia=(0..1)=>Hexaposte;
+        stream = getClass().getResourceAsStream("SortType_03.xsd");// BA_Adresse=(0..1)=>BB_Hexavia;BA_Adresse=(0..1)=>A_TypeVoie;
+                                                                   // BB_Hexavia=(0..1)=>BA_Adresse;
+                                                                   // BB_Hexavia=(0..1)=>Hexaposte;
         repository.load(stream);
         sortTypes = MetadataUtils.sortTypes(repository, MetadataUtils.SortType.LENIENT);
         hasMetHexavia = false;
         hasMetAdresse = false;
-        hasTypeVoice= false ;
-        boolean hasHexaposte = false ;
-        
+        hasTypeVoice = false;
+        boolean hasHexaposte = false;
+
         for (ComplexTypeMetadata sortType : sortTypes) {
-            if("A_TypeVoie".equals(sortType.getName())){
-                hasTypeVoice = true ;
+            if ("A_TypeVoie".equals(sortType.getName())) {
+                hasTypeVoice = true;
             }
-            if("Hexaposte".equals(sortType.getName())){
-                hasHexaposte = true ;
+            if ("Hexaposte".equals(sortType.getName())) {
+                hasHexaposte = true;
             }
             if ("BB_Hexavia".equals(sortType.getName())) {
                 assertTrue(hasHexaposte);
@@ -458,7 +464,7 @@ public class MetadataRepositoryTest extends TestCase {
             assertEquals(names[j], copyNames[j]);
         }
     }
-    
+
     // TMDM-8022
     public void test30() throws Exception {
         MetadataRepository repository = new MetadataRepository();
@@ -473,7 +479,7 @@ public class MetadataRepositoryTest extends TestCase {
         assertEquals(fieldMetadata.getData(MetadataRepository.DATA_TOTAL_DIGITS), "15");
         assertEquals(fieldMetadata.getData(MetadataRepository.DATA_FRACTION_DIGITS), "3");
     }
-    
+
     public void testLenientSortSimpleTest() throws Exception {
         MetadataRepository repository = new MetadataRepository();
         InputStream stream = getClass().getResourceAsStream("product.xsd");
@@ -483,7 +489,7 @@ public class MetadataRepositoryTest extends TestCase {
         assertIsBefore(sortTypes, repository, "ProductFamily", "Product");
         assertIsBefore(sortTypes, repository, "Supplier", "Product");
     }
-    
+
     public void testLenientSortComplexTest() throws Exception {
         MetadataRepository repository = new MetadataRepository();
         InputStream stream = getClass().getResourceAsStream("schema9.xsd");
@@ -509,7 +515,7 @@ public class MetadataRepositoryTest extends TestCase {
         assertIsBefore(sortTypes, repository, "UseUrse", "EdaFuture");
         assertIsBefore(sortTypes, repository, "Pays", "EdaFuture");
     }
-    
+
     // TMDM-8760
     public void testLenientSortComplexTest2() throws Exception {
         MetadataRepository repository = new MetadataRepository();
@@ -524,10 +530,10 @@ public class MetadataRepositoryTest extends TestCase {
         assertIsBefore(sortTypes, repository, "TypeMatiere", "Matiere");
         assertIsBefore(sortTypes, repository, "Provenance", "Pays");
         assertIsBefore(sortTypes, repository, "CouleurBasique", "CodePantone");
-        
+
     }
-    
-    private void assertIsBefore(List<ComplexTypeMetadata> types, MetadataRepository repository, String type1, String type2){
+
+    private void assertIsBefore(List<ComplexTypeMetadata> types, MetadataRepository repository, String type1, String type2) {
         ComplexTypeMetadata m1 = repository.getComplexType(type1);
         Assert.assertNotNull(type1 + " does not exist", m1);
         Assert.assertFalse(type1 + " not part of list", types.indexOf(m1) == -1);
@@ -554,16 +560,16 @@ public class MetadataRepositoryTest extends TestCase {
     }
 
     // TMDM-8085
-	public void testEntityUsesAbstractType() {
-		MetadataRepository repository = new MetadataRepository();
+    public void testEntityUsesAbstractType() {
+        MetadataRepository repository = new MetadataRepository();
         InputStream stream = getClass().getResourceAsStream("EntityUsesAbstractType.xsd");
-		try {
-			repository.load(stream);
-			fail("Runtime Exception should occur if Entity uses an abstract type.");
-		} catch (RuntimeException e) {
-			assertTrue(e.getMessage().contains("Entity 'Pet' is using an abstract reusable type. (line: 19 / column: 2)"));
-		}
-	}
+        try {
+            repository.load(stream);
+            fail("Runtime Exception should occur if Entity uses an abstract type.");
+        } catch (RuntimeException e) {
+            assertTrue(e.getMessage().contains("Entity 'Pet' is using an abstract reusable type. (line: 19 / column: 2)"));
+        }
+    }
 
     // TMDM-3612R
     public void testCircleTypeModel() {
@@ -626,7 +632,7 @@ public class MetadataRepositoryTest extends TestCase {
         MetadataUtils.sortTypes(repository, MetadataUtils.SortType.LENIENT);
     }
 
-    public void test_31() throws Exception{
+    public void test_31() throws Exception {
         MetadataRepository repository = new MetadataRepository();
         InputStream stream = getClass().getResourceAsStream("schema31_1.xsd");
         repository.load(stream);
@@ -636,17 +642,17 @@ public class MetadataRepositoryTest extends TestCase {
         FieldMetadata fieldMetadata = entityType.getField("LOCAL_FO_ID");
         assertEquals(ReferenceFieldMetadata.class, fieldMetadata.getClass());
         assertNotNull(fieldMetadata);
-        ReferenceFieldMetadata referFieldMetadata = (ReferenceFieldMetadata)fieldMetadata ;
-        if(!referFieldMetadata.getForeignKeyInfoFields().isEmpty()){
-            assertEquals(SimpleTypeFieldMetadata.class, referFieldMetadata.getForeignKeyInfoFields().get(0) .getClass()) ;
+        ReferenceFieldMetadata referFieldMetadata = (ReferenceFieldMetadata) fieldMetadata;
+        if (!referFieldMetadata.getForeignKeyInfoFields().isEmpty()) {
+            assertEquals(SimpleTypeFieldMetadata.class, referFieldMetadata.getForeignKeyInfoFields().get(0).getClass());
         }
 
         fieldMetadata = entityType.getField("LOCAL_SOURCE_ID");
         assertEquals(ReferenceFieldMetadata.class, fieldMetadata.getClass());
         assertNotNull(fieldMetadata);
-        referFieldMetadata = (ReferenceFieldMetadata)fieldMetadata ;
-        if(!referFieldMetadata.getForeignKeyInfoFields().isEmpty()){
-            assertEquals(SimpleTypeFieldMetadata.class, referFieldMetadata.getForeignKeyInfoFields().get(0) .getClass()) ;
+        referFieldMetadata = (ReferenceFieldMetadata) fieldMetadata;
+        if (!referFieldMetadata.getForeignKeyInfoFields().isEmpty()) {
+            assertEquals(SimpleTypeFieldMetadata.class, referFieldMetadata.getForeignKeyInfoFields().get(0).getClass());
         }
 
         stream = getClass().getResourceAsStream("schema31_2.xsd");
@@ -656,33 +662,35 @@ public class MetadataRepositoryTest extends TestCase {
         fieldMetadata = entityType2.getField("FK1ToEB");
         assertEquals(ReferenceFieldMetadata.class, fieldMetadata.getClass());
         assertNotNull(fieldMetadata);
-        referFieldMetadata = (ReferenceFieldMetadata)fieldMetadata ;
-        if(!referFieldMetadata.getForeignKeyInfoFields().isEmpty()){
-            assertEquals(SimpleTypeFieldMetadata.class, referFieldMetadata.getForeignKeyInfoFields().get(0) .getClass()) ;
+        referFieldMetadata = (ReferenceFieldMetadata) fieldMetadata;
+        if (!referFieldMetadata.getForeignKeyInfoFields().isEmpty()) {
+            assertEquals(SimpleTypeFieldMetadata.class, referFieldMetadata.getForeignKeyInfoFields().get(0).getClass());
         }
 
         fieldMetadata = entityType2.getField("FK4ToEBName");
         assertEquals(ReferenceFieldMetadata.class, fieldMetadata.getClass());
         assertNotNull(fieldMetadata);
-        referFieldMetadata = (ReferenceFieldMetadata)fieldMetadata ;
-        if(!referFieldMetadata.getForeignKeyInfoFields().isEmpty()){
-            assertEquals(SimpleTypeFieldMetadata.class, referFieldMetadata.getForeignKeyInfoFields().get(0) .getClass()) ;
+        referFieldMetadata = (ReferenceFieldMetadata) fieldMetadata;
+        if (!referFieldMetadata.getForeignKeyInfoFields().isEmpty()) {
+            assertEquals(SimpleTypeFieldMetadata.class, referFieldMetadata.getForeignKeyInfoFields().get(0).getClass());
         }
 
         stream = getClass().getResourceAsStream("schema31_3.xsd");
         repository.load(stream);
-        ComplexTypeMetadata entityType3 = ((ContainedComplexTypeMetadata)repository.getComplexType("TT").getField("MUl").getType()).getContainedType() ;
+        ComplexTypeMetadata entityType3 = ((ContainedComplexTypeMetadata) repository.getComplexType("TT").getField("MUl")
+                .getType()).getContainedType();
         assertNotNull(entityType);
         fieldMetadata = entityType3.getField("E3");
         assertEquals(ReferenceFieldMetadata.class, fieldMetadata.getClass());
         assertNotNull(fieldMetadata);
-        referFieldMetadata = (ReferenceFieldMetadata)fieldMetadata ;
-        if(!referFieldMetadata.getForeignKeyInfoFields().isEmpty()){
-            assertEquals(SimpleTypeFieldMetadata.class, referFieldMetadata.getForeignKeyInfoFields().get(0) .getClass()) ;
+        referFieldMetadata = (ReferenceFieldMetadata) fieldMetadata;
+        if (!referFieldMetadata.getForeignKeyInfoFields().isEmpty()) {
+            assertEquals(SimpleTypeFieldMetadata.class, referFieldMetadata.getForeignKeyInfoFields().get(0).getClass());
         }
     }
 
-    //TMDM-9086 if the default value is string, number, and the fn:true(), fn:false(), filed's data contains DEFAULT_VALUE value
+    // TMDM-9086 if the default value is string, number, and the fn:true(), fn:false(), filed's data contains
+    // DEFAULT_VALUE value
     public void test_32() throws Exception {
         MetadataRepository repository = new MetadataRepository();
         InputStream stream = getClass().getResourceAsStream("schema32.xsd");
@@ -751,8 +759,8 @@ public class MetadataRepositoryTest extends TestCase {
         assertTrue(entityType.hasField("inclusive"));
         assertTrue(entityType.hasField("name"));
 
-        assertEquals("[Approve, Reject, Ignore]", entityType.getField("status").getData(MetadataRepository.ENUMERATION_LIST)
-                .toString());
+        assertEquals("[Approve, Reject, Ignore]",
+                entityType.getField("status").getData(MetadataRepository.ENUMERATION_LIST).toString());
         assertEquals(9999,
                 Integer.parseInt(entityType.getField("exclusive").getData(MetadataRepository.MAX_EXCLUSIVE).toString()));
         assertEquals(2, Integer.parseInt(entityType.getField("exclusive").getData(MetadataRepository.MIN_EXCLUSIVE).toString()));
@@ -765,15 +773,16 @@ public class MetadataRepositoryTest extends TestCase {
 
         assertEquals("[Approve, Reject, Ignore]",
                 entityType.getField("status").getType().getData(MetadataRepository.ENUMERATION_LIST).toString());
-        assertEquals(9999,
-                Integer.parseInt(entityType.getField("exclusive").getType().getData(MetadataRepository.MAX_EXCLUSIVE).toString()));
-        assertEquals(2,
-                Integer.parseInt(entityType.getField("exclusive").getType().getData(MetadataRepository.MIN_EXCLUSIVE).toString()));
-        assertEquals("[0-9]{2};[0-9]{1}", entityType.getField("address").getType().getData(MetadataRepository.PATTERN).toString());
-        assertEquals(9999,
-                Integer.parseInt(entityType.getField("inclusive").getType().getData(MetadataRepository.MAX_INCLUSIVE).toString()));
-        assertEquals(1,
-                Integer.parseInt(entityType.getField("inclusive").getType().getData(MetadataRepository.MIN_INCLUSIVE).toString()));
+        assertEquals(9999, Integer
+                .parseInt(entityType.getField("exclusive").getType().getData(MetadataRepository.MAX_EXCLUSIVE).toString()));
+        assertEquals(2, Integer
+                .parseInt(entityType.getField("exclusive").getType().getData(MetadataRepository.MIN_EXCLUSIVE).toString()));
+        assertEquals("[0-9]{2};[0-9]{1}",
+                entityType.getField("address").getType().getData(MetadataRepository.PATTERN).toString());
+        assertEquals(9999, Integer
+                .parseInt(entityType.getField("inclusive").getType().getData(MetadataRepository.MAX_INCLUSIVE).toString()));
+        assertEquals(1, Integer
+                .parseInt(entityType.getField("inclusive").getType().getData(MetadataRepository.MIN_INCLUSIVE).toString()));
         assertEquals(50,
                 Integer.parseInt(entityType.getField("name").getType().getData(MetadataRepository.DATA_MAX_LENGTH).toString()));
         assertEquals(20,
@@ -804,7 +813,7 @@ public class MetadataRepositoryTest extends TestCase {
         InputStream stream = getClass().getResourceAsStream("SortType_05.xsd");
         repository.load(stream);
 
-        //1 set the X_ForeignKey_NotSep value
+        // 1 set the X_ForeignKey_NotSep value
         ComplexTypeMetadata component = repository.getComplexType("Component");
         ReferenceFieldMetadata defaultAirbag = (ReferenceFieldMetadata) component.getField("DefaultAirbag_Fk");
         ReferenceFieldMetadata associatedComponent = (ReferenceFieldMetadata) component.getField("AssociatedComponent_Fk");
@@ -812,7 +821,7 @@ public class MetadataRepositoryTest extends TestCase {
         assertTrue(defaultAirbag.isFKMainRender());
         assertFalse(associatedComponent.isFKMainRender());
 
-        //2. no set X_ForeignKey_NotSep, default is false
+        // 2. no set X_ForeignKey_NotSep, default is false
         ComplexTypeMetadata finishedProduct = repository.getComplexType("FinishedProduct");
         ReferenceFieldMetadata compositionFk = (ReferenceFieldMetadata) finishedProduct.getField("Composition_Fk");
 
@@ -846,5 +855,133 @@ public class MetadataRepositoryTest extends TestCase {
         ReferenceFieldMetadata publishRefer = (ReferenceFieldMetadata) publishContainer.getContainedType()
                 .getField("PublishName");
         assertFalse(publishRefer.isFKMainRender());
+    }
+
+    public void test38_getCategoriesWithAnonymousType() throws Exception {
+        MetadataRepository repository = new MetadataRepository();
+        InputStream stream = getClass().getResourceAsStream("category01.xsd");
+        repository.load(stream);
+
+        ComplexTypeMetadata product = repository.getComplexType("Product");
+        List<Category> categories = product.getCategories();
+        assertNotNull(categories);
+        assertTrue(categories.size() == 3);
+        // check category #1
+        Category categoryA = categories.get(0);
+        assertEquals("CategoryA", categoryA.getName());
+        Map<Locale, String> labels = categoryA.getLabels();
+        assertNotNull(labels);
+        assertEquals(3, labels.size());
+        assertEquals("a", labels.get(new Locale("en")));
+        assertEquals("b", labels.get(new Locale("fr")));
+        assertEquals("c", labels.get(new Locale("ab")));
+        List<String> fields = categoryA.getFields();
+        assertNotNull(fields);
+        assertEquals(2, fields.size());
+        assertEquals("Picture", fields.get(0));
+        assertEquals("Features", fields.get(1));
+
+        // check category #2
+        Category categoryB = categories.get(1);
+        assertEquals("CategoryB", categoryB.getName());
+        labels = categoryB.getLabels();
+        assertNotNull(labels);
+        assertEquals(0, labels.size());
+        fields = categoryB.getFields();
+        assertNotNull(fields);
+        assertEquals(2, fields.size());
+        assertEquals("OnlineStore", fields.get(0));
+        assertEquals("Stores", fields.get(1));
+
+        // check category #3
+        Category categoryC = categories.get(2);
+        assertEquals("CategoryC", categoryC.getName());
+        fields = categoryC.getFields();
+        assertNotNull(fields);
+        assertEquals(2, fields.size());
+        assertEquals("Availability", fields.get(0));
+        assertEquals("Description", fields.get(1));
+    }
+
+    public void test39_getCategoriesWithExtendType() throws Exception {
+        MetadataRepository repository = new MetadataRepository();
+        InputStream stream = getClass().getResourceAsStream("category02.xsd");
+        repository.load(stream);
+
+        // first entity
+        ComplexTypeMetadata entityA = repository.getComplexType("EntityA");
+        List<Category> categories = entityA.getCategories();
+        assertNotNull(categories);
+        assertTrue(categories.size() == 3);
+        // check category #1
+        Category categoryA = categories.get(0);
+        assertEquals("C1", categoryA.getName());
+        Map<Locale, String> labels = categoryA.getLabels();
+        assertNotNull(labels);
+        assertEquals(0, labels.size());
+
+        List<String> fields = categoryA.getFields();
+        assertNotNull(fields);
+        assertEquals(0, fields.size());
+
+        // check category #2
+        Category categoryB = categories.get(1);
+        assertEquals("C2", categoryB.getName());
+        labels = categoryB.getLabels();
+        assertNotNull(labels);
+        assertEquals(0, labels.size());
+        fields = categoryB.getFields();
+        assertNotNull(fields);
+        assertEquals(0, fields.size());
+
+        // check category #3
+        Category categoryC = categories.get(2);
+        assertEquals("C3", categoryC.getName());
+        labels = categoryC.getLabels();
+        assertNotNull(labels);
+        assertEquals(0, labels.size());
+        fields = categoryC.getFields();
+        assertNotNull(fields);
+        assertEquals(1, fields.size());
+        assertEquals("EA", fields.get(0));
+
+        // second entity
+        ComplexTypeMetadata entityB = repository.getComplexType("EntityB");
+        categories = entityB.getCategories();
+        assertNotNull(categories);
+        assertTrue(categories.size() == 3);
+        // check category #1
+        categoryA = categories.get(0);
+        assertEquals("C2", categoryA.getName());
+        labels = categoryA.getLabels();
+        assertNotNull(labels);
+        assertEquals(0, labels.size());
+
+        fields = categoryA.getFields();
+        assertNotNull(fields);
+        assertEquals(1, fields.size());
+        assertEquals("EA", fields.get(0));
+
+        // check category #2
+        categoryB = categories.get(1);
+        assertEquals("C3", categoryB.getName());
+        labels = categoryB.getLabels();
+        assertNotNull(labels);
+        assertEquals(0, labels.size());
+        fields = categoryB.getFields();
+        assertNotNull(fields);
+        assertEquals(1, fields.size());
+        assertEquals("EB", fields.get(0));
+
+        // check category #3
+        categoryC = categories.get(2);
+        assertEquals("C4", categoryC.getName());
+        labels = categoryC.getLabels();
+        assertNotNull(labels);
+        assertEquals(0, labels.size());
+        fields = categoryC.getFields();
+        assertNotNull(fields);
+        assertEquals(1, fields.size());
+        assertEquals("EC", fields.get(0));
     }
 }

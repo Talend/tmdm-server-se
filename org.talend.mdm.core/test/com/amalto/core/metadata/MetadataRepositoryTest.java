@@ -857,62 +857,16 @@ public class MetadataRepositoryTest extends TestCase {
         assertFalse(publishRefer.isFKMainRender());
     }
 
-    public void test38_getCategoriesWithAnonymousType() throws Exception {
+    public void test38_getCategories() throws Exception {
         MetadataRepository repository = new MetadataRepository();
         InputStream stream = getClass().getResourceAsStream("category01.xsd");
         repository.load(stream);
-
-        ComplexTypeMetadata product = repository.getComplexType("Product");
-        List<Category> categories = product.getCategories();
-        assertNotNull(categories);
-        assertTrue(categories.size() == 3);
-        // check category #1
-        Category categoryA = categories.get(0);
-        assertEquals("CategoryA", categoryA.getName());
-        Map<Locale, String> labels = categoryA.getLabels();
-        assertNotNull(labels);
-        assertEquals(3, labels.size());
-        assertEquals("a", labels.get(new Locale("en")));
-        assertEquals("b", labels.get(new Locale("fr")));
-        assertEquals("c", labels.get(new Locale("ab")));
-        List<String> fields = categoryA.getFields();
-        assertNotNull(fields);
-        assertEquals(2, fields.size());
-        assertEquals("Picture", fields.get(0));
-        assertEquals("Features", fields.get(1));
-
-        // check category #2
-        Category categoryB = categories.get(1);
-        assertEquals("CategoryB", categoryB.getName());
-        labels = categoryB.getLabels();
-        assertNotNull(labels);
-        assertEquals(0, labels.size());
-        fields = categoryB.getFields();
-        assertNotNull(fields);
-        assertEquals(2, fields.size());
-        assertEquals("OnlineStore", fields.get(0));
-        assertEquals("Stores", fields.get(1));
-
-        // check category #3
-        Category categoryC = categories.get(2);
-        assertEquals("CategoryC", categoryC.getName());
-        fields = categoryC.getFields();
-        assertNotNull(fields);
-        assertEquals(2, fields.size());
-        assertEquals("Availability", fields.get(0));
-        assertEquals("Description", fields.get(1));
-    }
-
-    public void test39_getCategoriesWithExtendType() throws Exception {
-        MetadataRepository repository = new MetadataRepository();
-        InputStream stream = getClass().getResourceAsStream("category02.xsd");
-        repository.load(stream);
-
+        // Check for entity with standalone type
         // first entity
         ComplexTypeMetadata entityA = repository.getComplexType("EntityA");
         List<Category> categories = entityA.getCategories();
         assertNotNull(categories);
-        assertTrue(categories.size() == 3);
+        assertTrue(categories.size() == 2);
         // check category #1
         Category categoryA = categories.get(0);
         assertEquals("C1", categoryA.getName());
@@ -926,21 +880,11 @@ public class MetadataRepositoryTest extends TestCase {
 
         // check category #2
         Category categoryB = categories.get(1);
-        assertEquals("C2", categoryB.getName());
+        assertEquals("C3", categoryB.getName());
         labels = categoryB.getLabels();
         assertNotNull(labels);
         assertEquals(0, labels.size());
         fields = categoryB.getFields();
-        assertNotNull(fields);
-        assertEquals(0, fields.size());
-
-        // check category #3
-        Category categoryC = categories.get(2);
-        assertEquals("C3", categoryC.getName());
-        labels = categoryC.getLabels();
-        assertNotNull(labels);
-        assertEquals(0, labels.size());
-        fields = categoryC.getFields();
         assertNotNull(fields);
         assertEquals(1, fields.size());
         assertEquals("EA", fields.get(0));
@@ -949,13 +893,16 @@ public class MetadataRepositoryTest extends TestCase {
         ComplexTypeMetadata entityB = repository.getComplexType("EntityB");
         categories = entityB.getCategories();
         assertNotNull(categories);
-        assertTrue(categories.size() == 3);
+        assertTrue(categories.size() == 2);
         // check category #1
         categoryA = categories.get(0);
         assertEquals("C2", categoryA.getName());
         labels = categoryA.getLabels();
         assertNotNull(labels);
-        assertEquals(0, labels.size());
+        assertEquals(3, labels.size());
+        assertEquals("d", labels.get(new Locale("en")));
+        assertEquals("e", labels.get(new Locale("fr")));
+        assertEquals("f", labels.get(new Locale("ab")));
 
         fields = categoryA.getFields();
         assertNotNull(fields);
@@ -964,24 +911,45 @@ public class MetadataRepositoryTest extends TestCase {
 
         // check category #2
         categoryB = categories.get(1);
-        assertEquals("C3", categoryB.getName());
+        assertEquals("C4", categoryB.getName());
         labels = categoryB.getLabels();
         assertNotNull(labels);
         assertEquals(0, labels.size());
         fields = categoryB.getFields();
         assertNotNull(fields);
         assertEquals(1, fields.size());
-        assertEquals("EB", fields.get(0));
+        assertEquals("EC", fields.get(0));
 
-        // check category #3
-        categoryC = categories.get(2);
-        assertEquals("C4", categoryC.getName());
-        labels = categoryC.getLabels();
+        // third entity
+        ComplexTypeMetadata entityC = repository.getComplexType("EntityC");
+        categories = entityC.getCategories();
+        assertNotNull(categories);
+        assertTrue(categories.size() == 2);
+        // check category #1
+        categoryA = categories.get(0);
+        assertEquals("C5", categoryA.getName());
+        labels = categoryA.getLabels();
+        assertNotNull(labels);
+        assertEquals(3, labels.size());
+        assertEquals("a", labels.get(new Locale("en")));
+        assertEquals("b", labels.get(new Locale("fr")));
+        assertEquals("c", labels.get(new Locale("ab")));
+
+        fields = categoryA.getFields();
+        assertNotNull(fields);
+        assertEquals(2, fields.size());
+        assertEquals("EA", fields.get(0));
+        assertEquals("EB", fields.get(1));
+
+        // check category #2
+        categoryB = categories.get(1);
+        assertEquals("C6", categoryB.getName());
+        labels = categoryB.getLabels();
         assertNotNull(labels);
         assertEquals(0, labels.size());
-        fields = categoryC.getFields();
+        fields = categoryB.getFields();
         assertNotNull(fields);
         assertEquals(1, fields.size());
-        assertEquals("EC", fields.get(0));
+        assertEquals("ED", fields.get(0));
     }
 }

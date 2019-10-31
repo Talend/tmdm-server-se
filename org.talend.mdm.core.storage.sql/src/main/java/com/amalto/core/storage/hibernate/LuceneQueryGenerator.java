@@ -25,6 +25,7 @@ import com.amalto.core.query.user.Field;
 import com.amalto.core.query.user.FieldFullText;
 import com.amalto.core.query.user.FloatConstant;
 import com.amalto.core.query.user.FullText;
+import com.amalto.core.query.user.Id;
 import com.amalto.core.query.user.IntegerConstant;
 import com.amalto.core.query.user.LongConstant;
 import com.amalto.core.query.user.Predicate;
@@ -194,6 +195,11 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
         range.getEnd().accept(this);
         Long currentRangeEnd = ((Long) currentValue) == Long.MAX_VALUE ? null : (Long) currentValue;
         return NumericRangeQuery.newLongRange(currentFieldName, currentRangeStart, currentRangeEnd, true, true);
+    }
+
+    @Override
+    public Query visit(Id id) {
+        return null;
     }
 
     @Override

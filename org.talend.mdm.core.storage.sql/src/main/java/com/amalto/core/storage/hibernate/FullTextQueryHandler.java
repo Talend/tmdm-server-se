@@ -67,6 +67,7 @@ import com.amalto.core.query.user.Field;
 import com.amalto.core.query.user.FieldFullText;
 import com.amalto.core.query.user.FloatConstant;
 import com.amalto.core.query.user.FullText;
+import com.amalto.core.query.user.Id;
 import com.amalto.core.query.user.IntegerConstant;
 import com.amalto.core.query.user.Join;
 import com.amalto.core.query.user.LongConstant;
@@ -714,6 +715,11 @@ class FullTextQueryHandler extends AbstractQueryHandler {
         
         @Override
         public Collection<? extends ComplexTypeMetadata> visit(Range range) {
+            return closure;
+        }
+
+        @Override
+        public Collection<? extends ComplexTypeMetadata> visit(Id id) {
             return closure;
         }
 

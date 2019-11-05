@@ -628,6 +628,38 @@ class StandardQueryHandler extends AbstractQueryHandler {
         return aliases;
     }
 
+    /**
+     * Parameter pathToAlias specify all of alias and parse the current XPath to get associated one, which is as
+     * follows: eg: pathToAlias value:
+     * <ul>
+     * <li>a1/x_sourcesystemmap/x_sourcesystem/x_sourcesystemid=a2</li>
+     * <li>a0/x_sourcesystemmap/x_sourcesystem=a1</li>
+     * <li>Partner/x_sourcesystemmap=a0</li>
+     * </ul>
+     * rawPath: Partner/x_sourcesystemmap/x_sourcesystem<br/>
+     * expected results: <b>a1</b>
+     * @param pathToAlias : collections with alias
+     * @param rawPath : key
+     * @return
+     */
+    private String getRealAlias(Map<String, String> pathToAlias, String rawPath) {
+        String curPath = new String(rawPath);
+        String expectedAlias = pathToAlias.get(curPath);
+        if (StringUtils.isNotEmpty(expectedAlias)) {
+            return expectedAlias;
+        }
+        String tempAlias = StringUtils.EMPTY;
+        do {
+            curPath = StringUtils.substringBeforeLast(curPath, "/"); //$NON-NLS-1$
+            if (!curPath.contains("/")) { //$NON-NLS-1$
+                break;
+            }
+            tempAlias = pathToAlias.get(curPath);
+        } while (StringUtils.isEmpty(tempAlias));
+        rawPath = StringUtils.replaceOnce(rawPath, StringUtils.substringBefore(rawPath, "/"), tempAlias); //$NON-NLS-1$
+        return pathToAlias.get(rawPath);
+    }
+
     private String getAliasByPath(String previousAlias, String aliasPathKey) {
         String alias = pathToAlias.get(previousAlias + "/" + aliasPathKey); //$NON-NLS-1$
         if (alias == null) {
@@ -1874,7 +1906,7 @@ class StandardQueryHandler extends AbstractQueryHandler {
                     List<FieldMetadata> path = field.getPath();
                     if (path.size() > 1) {
                         // For path with more than 1 element, the alias for the criterion is the *containing* one(s).
-                        String containerAlias = pathToAlias.get(mainType.getName() + "/" + path.get(path.size() - 2).getPath()); //$NON-NLS-1$
+                        String containerAlias = getRealAlias(pathToAlias, mainType.getName() + "/" + path.get(path.size() - 2).getPath()); //$NON-NLS-1$
                         addCondition(condition, containerAlias, field.getFieldMetadata());
                     } else {
                         // For path with size 1, code did not generate an alias for field and returned containing alias.

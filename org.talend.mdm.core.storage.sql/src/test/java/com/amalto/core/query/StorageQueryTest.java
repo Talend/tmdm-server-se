@@ -5936,6 +5936,53 @@ public class StorageQueryTest extends StorageTestCase {
         }
     }
 
+    // TMDM-14099 Search complex Foreign Key Field with "is empty or null" throws error
+    public void testQueryFKFieldIsEmptyOrNull() throws Exception {
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(DataRecordCreationTest.class.getResourceAsStream("FLIFExpress.xsd"));
+        Storage storage = new HibernateStorage("H2-DS1", StorageType.MASTER);
+        storage.init(ServerContext.INSTANCE.get().getDefinition("H2-DS1", "MDM"));
+        storage.prepare(repository, true);
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+
+        ComplexTypeMetadata refSourceSystem = repository.getComplexType("RefSourceSystem");
+        ComplexTypeMetadata partner = repository.getComplexType("Partner");
+
+        List<DataRecord> records = new LinkedList<DataRecord>();
+        records.add(factory.read(repository, refSourceSystem,
+                "<RefSourceSystem><RefSourceSystemId>11</RefSourceSystemId><Bezeichnung>Source_11</Bezeichnung></RefSourceSystem>"));
+        records.add(factory.read(repository, refSourceSystem,
+                "<RefSourceSystem><RefSourceSystemId>22</RefSourceSystemId><Bezeichnung>Source_22</Bezeichnung></RefSourceSystem>"));
+        records.add(factory.read(repository, partner,
+                "<Partner><PartnerId>201911110451976d11e2</PartnerId><Name>MyName1</Name><SourceSystemMap><SourceSystem><SourceSystemId>[11]</SourceSystemId><SourceKey>key1</SourceKey></SourceSystem></SourceSystemMap></Partner>"));
+        records.add(factory.read(repository, partner,
+                "<Partner><PartnerId>2019111114853265d5e2</PartnerId><Name>good</Name></Partner>"));
+        records.add(factory.read(repository, partner,
+                "<Partner><PartnerId>201911110451976d11e2</PartnerId><Name>MyName1</Name><SourceSystemMap><SourceSystem><SourceSystemId>[11]</SourceSystemId><SourceKey>key1</SourceKey></SourceSystem></SourceSystemMap></Partner>"));
+
+        storage.begin();
+        storage.update(records);
+        storage.commit();
+
+        storage.begin();
+        UserQueryBuilder qb = from(partner).where(isEmpty(partner.getField("SourceSystemMap/SourceSystem/SourceSystemId")));
+        StorageResults results = storage.fetch(qb.getSelect());
+        assertEquals(1, results.getCount());
+        for (DataRecord result : results) {
+            assertEquals("Partner", result.getType().getName());
+            assertEquals("good", result.get("Name"));
+            assertEquals("2019111114853265d5e2", result.get("PartnerId"));
+        }
+        qb = from(partner).where(emptyOrNull(partner.getField("SourceSystemMap/SourceSystem/SourceSystemId")));
+        results = storage.fetch(qb.getSelect());
+        assertEquals(1, results.getCount());
+        for (DataRecord result : results) {
+            assertEquals("Partner", result.getType().getName());
+            assertEquals("good", result.get("Name"));
+            assertEquals("2019111114853265d5e2", result.get("PartnerId"));
+        }
+    }
+
     public void testTqlSelectById() throws Exception {
         Collection<FieldMetadata> keyFields = person.getKeyFields();
         assertEquals(1, keyFields.size());

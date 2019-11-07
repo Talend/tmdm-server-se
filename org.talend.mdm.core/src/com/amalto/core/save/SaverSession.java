@@ -308,10 +308,13 @@ public class SaverSession {
     public void save(String dataCluster, Document document) {
         synchronized (itemsToUpdate) {
             if (!this.hasMetAutoIncrement) {
-                Collection<FieldMetadata> keyFields = document.getType().getKeyFields();
+                Collection<FieldMetadata> allFields = document.getType().getFields();
                 boolean hasAutoincrementKey = false;
-                for (FieldMetadata keyField : keyFields) {
-                    hasAutoincrementKey = EUUIDCustomType.AUTO_INCREMENT.getName().equals(keyField.getType().getName());
+                for (FieldMetadata keyField : allFields) {
+                    if (EUUIDCustomType.AUTO_INCREMENT.getName().equals(keyField.getType().getName())) {
+                        hasAutoincrementKey = true;
+                        break;
+                    }
                 }
                 this.hasMetAutoIncrement = hasAutoincrementKey;
             }

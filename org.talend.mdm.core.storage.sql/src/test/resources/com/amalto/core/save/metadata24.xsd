@@ -1,0 +1,42 @@
+<!--
+  ~ Copyright (C) 2006-2019 Talend Inc. - www.talend.com
+  ~
+  ~ This source code is available under agreement available at
+  ~  %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
+  ~
+  ~ You should have received a copy of the agreement along with this program; if not, write to Talend SA 9 rue Pages
+  ~ 92150 Suresnes, France
+  -->
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/>
+    <xsd:element name="Person">
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1" name="Id" type="xsd:string"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Name" type="xsd:string"/>
+                <xsd:element maxOccurs="1" minOccurs="1" name="N_Index" type="AUTO_INCREMENT"/>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="Person">
+            <xsd:selector xpath="."/>
+            <xsd:field xpath="Id"/>
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="Address">
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1" name="Id" type="AUTO_INCREMENT"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Name" type="xsd:string"/>
+                <xsd:element maxOccurs="1" minOccurs="1" name="Port" type="AUTO_INCREMENT"/>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="Address">
+            <xsd:selector xpath="."/>
+            <xsd:field xpath="Id"/>
+        </xsd:unique>
+    </xsd:element>
+    <xsd:simpleType name="AUTO_INCREMENT">
+        <xsd:restriction base="xsd:string" />
+    </xsd:simpleType>
+</xsd:schema>

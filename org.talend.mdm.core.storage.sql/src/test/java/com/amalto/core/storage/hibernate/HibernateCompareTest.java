@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
@@ -118,6 +117,43 @@ public class HibernateCompareTest {
 
         UserQueryBuilder qb = from(original.getComplexType("Person"));
         storage.delete(qb.getSelect());
+    }
+
+    // TMDM-14135 Date/Datetime with default value would fail to deploy with Oracle DB
+    @Test
+    public void testDMcontainsDefaultValue() {
+        DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
+        HibernateStorage storage = new HibernateStorage("EU_PRDMDM_eBomChild", StorageType.MASTER);
+        storage.init(dataSource);
+        MetadataRepository original = new MetadataRepository();
+        original.load(HibernateCompareTest.class.getResourceAsStream("../ProductExpress.xsd"));
+        storage.prepare(original, true);
+
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+        String[] typeNames = { "EU_PRDMDM_eBomChild" };
+
+        String input1 = "<EU_PRDMDM_eBomChild><Id>1</Id><Quantity>23</Quantity><EndDate>2019-11-12</EndDate><MyTime>12:15:13</MyTime><StartDate>2012-11-22T22:23:20</StartDate></EU_PRDMDM_eBomChild>";
+        createRecord(storage, factory, original, typeNames, new String[] { input1 });
+
+        ComplexTypeMetadata objectType = original.getComplexType("EU_PRDMDM_eBomChild");//$NON-NLS-1$
+        UserQueryBuilder qb = from(objectType);
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+            for (DataRecord result : results) {
+                assertEquals("1", result.get("Id"));
+                assertEquals("23", result.get("Quantity"));
+                assertEquals("1970-01-01 12:15:13.0", result.get("MyTime").toString());
+                assertEquals("2012-11-22 22:23:20.0", result.get("StartDate").toString());
+                assertEquals("2019-11-12 00:00:00.0", result.get("EndDate").toString());
+            }
+        } finally {
+            results.close();
+        }
+        storage.end();
+
+        UserQueryBuilder qb1 = from(original.getComplexType("EU_PRDMDM_eBomChild"));
+        storage.delete(qb1.getSelect());
     }
 
     @Test

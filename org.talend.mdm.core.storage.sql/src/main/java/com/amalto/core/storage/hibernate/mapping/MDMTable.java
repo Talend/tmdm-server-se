@@ -11,10 +11,12 @@
 package com.amalto.core.storage.hibernate.mapping;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -239,7 +241,7 @@ public class MDMTable extends Table {
                     LOGGER.debug(alter.toString());
                 }
                 results.add(alter.toString());
-            } else if (StringUtils.isNotBlank(defaultValue)) {
+            } else if (StringUtils.isNotBlank(defaultValue) && !isDateType(sqlType)) {
                 StringBuilder alter = new StringBuilder(root.toString());
                 boolean needAlterDefaultValue = true;
                 if (dialect instanceof OracleCustomDialect) {
@@ -375,7 +377,7 @@ public class MDMTable extends Table {
 
     private String convertDefaultValue(Dialect dialect, String sqlType, String defaultValue) {
         String defaultSQL = StringUtils.EMPTY;
-        if (StringUtils.isNotBlank(defaultValue) && isDefaultValueNeeded(sqlType, dialect)) {
+        if (StringUtils.isNotBlank(defaultValue) && isDefaultValueNeeded(sqlType, dialect) && !isDateType(sqlType)) {
             defaultSQL = " DEFAULT " + defaultValue;
         }
         return defaultSQL;
@@ -383,6 +385,11 @@ public class MDMTable extends Table {
 
     private static boolean isDefaultValueNeeded(String sqlType, Dialect dialect) {
         return !LONGTEXT.equals(sqlType) || !(dialect instanceof MySQLDialect);
+    }
+
+    private static boolean isDateType(String sqlType) {
+        return sqlType.equalsIgnoreCase(Timestamp.class.getSimpleName()) || sqlType.equalsIgnoreCase(Date.class.getSimpleName())
+                || sqlType.equalsIgnoreCase("datetime"); //$NON-NLS-1$
     }
 
     public void setDataSource(RDBMSDataSource dataSource) {

@@ -637,7 +637,7 @@ public class UserQueryBuilder {
 
     public static Condition isEmpty(TypedExpression typedExpression) {
         assertNullField(typedExpression);
-        return or(new IsEmpty(typedExpression), isNull(typedExpression));
+        return new IsEmpty(typedExpression);
     }
 
     public static Condition isNull(FieldMetadata field) {

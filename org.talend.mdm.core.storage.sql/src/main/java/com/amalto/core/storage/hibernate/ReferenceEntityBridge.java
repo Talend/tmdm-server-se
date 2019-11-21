@@ -282,7 +282,15 @@ public class ReferenceEntityBridge implements TwoWayFieldBridge {
                 LOGGER.debug("insert a new index record with key-value pair [ " + name + "." + field.getName() + ":"
                         + value.toString());
             }
-            luceneOptions.addFieldToDocument(name + "." + field.getName(), MultilingualIndexHandler.getIndexedContent(value.toString()), document);
+
+            if (value.toString().startsWith("[") && value.toString().endsWith("]")) {
+                luceneOptions.addFieldToDocument(name + "." + field.getName(), MultilingualIndexHandler.getIndexedContent(value.toString()), document);
+            } else {
+                String[] values = value.toString().split(" ");
+                for(String splitValue : values){
+                    luceneOptions.addFieldToDocument(name + "." + field.getName(), splitValue, document);
+                }
+            }
         }
     }
 

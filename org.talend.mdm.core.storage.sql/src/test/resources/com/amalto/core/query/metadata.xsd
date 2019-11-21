@@ -2853,6 +2853,111 @@
 	        <xsd:enumeration value="rejected" />
 	    </xsd:restriction>
 	</xsd:simpleType>
+	<xsd:element name="RefPays">
+		<xsd:annotation>
+			<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:all>
+				<xsd:element maxOccurs="1" minOccurs="1" name="idRefPays" type="xsd:string">
+					<xsd:annotation>
+						<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element maxOccurs="1" minOccurs="0" name="codeISO2" type="xsd:string">
+					<xsd:annotation>
+						<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element maxOccurs="1" minOccurs="0" name="codeISO3" type="xsd:string">
+					<xsd:annotation>
+						<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element maxOccurs="1" minOccurs="1" name="libelleFR" type="xsd:string">
+					<xsd:annotation>
+						<xsd:appinfo source="X_Label_FR">libellé</xsd:appinfo>
+						<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element maxOccurs="1" minOccurs="0" name="libelleEN" type="xsd:string">
+					<xsd:annotation>
+						<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element maxOccurs="1" minOccurs="0" name="libelleES" type="xsd:string">
+					<xsd:annotation>
+						<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+					</xsd:annotation>
+				</xsd:element>
+			</xsd:all>
+		</xsd:complexType>
+		<xsd:unique name="RefPays">
+			<xsd:selector xpath="."/>
+			<xsd:field xpath="idRefPays"/>
+		</xsd:unique>
+	</xsd:element>
+	<xsd:element name="RefRegion">
+		<xsd:annotation>
+			<xsd:appinfo source="X_Label_FR">Listes des régions par Pays
+			</xsd:appinfo>
+			<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element maxOccurs="1" minOccurs="1" name="codeRegion" type="xsd:string">
+					<xsd:annotation>
+						<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element maxOccurs="1" minOccurs="0" name="PaysFk" type="xsd:string">
+					<xsd:annotation>
+						<xsd:appinfo source="X_ForeignKey">RefPays</xsd:appinfo>
+						<xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+						<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element maxOccurs="unbounded" minOccurs="0" name="libelleRegion" type="libelleMultilingue">
+					<xsd:annotation>
+						<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+					</xsd:annotation>
+				</xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+		<xsd:unique name="RefRegion">
+			<xsd:selector xpath="."/>
+			<xsd:field xpath="codeRegion"/>
+		</xsd:unique>
+	</xsd:element>
+	<xsd:complexType name="libelleMultilingue">
+		<xsd:sequence>
+			<xsd:element maxOccurs="1" minOccurs="1" name="codeLangue" type="xsd:string">
+				<xsd:annotation>
+					<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="1" name="libelle" type="xsd:string">
+				<xsd:annotation>
+					<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="1" name="Con" type="Con"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="Con">
+		<xsd:all>
+			<xsd:element maxOccurs="1" minOccurs="1" name="Add_City" type="xsd:string">
+				<xsd:annotation>
+					<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="Add_Country" type="xsd:string">
+				<xsd:annotation>
+					<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:all>
+	</xsd:complexType>
     <xsd:complexType abstract="true" name="PartnerType">
         <xsd:sequence />
     </xsd:complexType>

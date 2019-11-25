@@ -460,25 +460,17 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
     private void getFullPathName(ComplexTypeMetadata complexTypeMetadata, FieldMetadata fieldMetadata, StringBuilder sb) {
         complexTypeMetadata.getFields().stream().filter(field -> field instanceof ReferenceFieldMetadata)
                 .collect(Collectors.toList()).forEach(field -> {
-            if (((ReferenceFieldMetadata) field).getReferencedType().equals(fieldMetadata.getContainingType())) {
-                ReferenceFieldMetadata referenceFieldMetadata = ((ReferenceFieldMetadata) fieldMetadata);
-                if (referenceFieldMetadata.getReferencedType().getKeyFields().size() > 1) {
-                    throw new FullTextQueryCompositeKeyException(referenceFieldMetadata.getReferencedType().getName());
-                } else {
-                    sb.append(getFullPathName(field));
-                    sb.append(fieldMetadata.getName());
-                }
-
+            ReferenceFieldMetadata referenceFieldMetadata = ((ReferenceFieldMetadata) field);
+            if (referenceFieldMetadata.getReferencedType().getKeyFields().size() > 1) {
+                throw new FullTextQueryCompositeKeyException(referenceFieldMetadata.getReferencedType().getName());
+            } else if (((ReferenceFieldMetadata) field).getReferencedType().equals(fieldMetadata.getContainingType())) {
+                sb.append(getFullPathName(field));
+                sb.append(fieldMetadata.getName());
             } else {
                 ComplexTypeMetadata subComplexTypeMetadata = ((ReferenceFieldMetadata) field).getReferencedType();
                 if (subComplexTypeMetadata.getFields().stream()
                         .anyMatch(subField -> subField instanceof ReferenceFieldMetadata)) {
-                    ReferenceFieldMetadata referenceFieldMetadata = ((ReferenceFieldMetadata) fieldMetadata);
-                    if (referenceFieldMetadata.getReferencedType().getKeyFields().size() > 1) {
-                        throw new FullTextQueryCompositeKeyException(referenceFieldMetadata.getReferencedType().getName());
-                    } else {
-                        getFullPathName(subComplexTypeMetadata, fieldMetadata, sb);
-                    }
+                    getFullPathName(subComplexTypeMetadata, fieldMetadata, sb);
                 }
             }
         });

@@ -2294,8 +2294,8 @@ public class StorageFullTextTest extends StorageTestCase {
         assertEquals(0, count);
 
         qb = from(refRegion).where(or(contains(refRegion.getField("codeRegion"), "BRU"), contains(
-                ((ContainedTypeFieldMetadata)((ContainedTypeFieldMetadata) refRegion.getField("libelleRegion")).getContainedType().getField("Con")).getContainedType().getField("Add_Country"),
-                "England")));
+                ((ContainedTypeFieldMetadata) ((ContainedTypeFieldMetadata) refRegion.getField("libelleRegion"))
+                        .getContainedType().getField("Con")).getContainedType().getField("Add_Country"), "England")));
         results = storage.fetch(qb.getSelect());
         try {
             assertTrue(results.getCount() == 2);
@@ -2339,21 +2339,19 @@ public class StorageFullTextTest extends StorageTestCase {
         assertEquals(0, count);
     }
 
-    public void tneToManySearchForProduct() {
+    public void testToManySearchForProduct() {
         UserQueryBuilder qb = from(product).where(contains(store.getField("Name"), "china"));
-        StorageResults results = storage.fetch(qb.getSelect());
+        StorageResults results = null;
         try {
+            results = storage.fetch(qb.getSelect());
             assertTrue(results.getCount() == 2);
+            fail("Don't support the composite key for full text search");
+        } catch (Exception e) {
+            assertNotNull(e);
         } finally {
-            results.close();
-        }
-
-        qb.limit(100).start(0);
-        results = storage.fetch(qb.getSelect());
-        try {
-            assertTrue(results.getCount() == 2);
-        } finally {
-            results.close();
+            if (results != null) {
+                results.close();
+            }
         }
     }
 

@@ -287,7 +287,7 @@ public class ReferenceEntityBridge implements TwoWayFieldBridge {
                 luceneOptions.addFieldToDocument(name + "." + field.getName(), MultilingualIndexHandler.getIndexedContent(value.toString()), document);
             } else {
                 String[] values = value.toString().split(" ");
-                for(String splitValue : values){
+                for (String splitValue : values) {
                     luceneOptions.addFieldToDocument(name + "." + field.getName(), splitValue, document);
                 }
             }

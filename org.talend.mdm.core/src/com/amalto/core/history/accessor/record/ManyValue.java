@@ -11,13 +11,18 @@
 
 package com.amalto.core.history.accessor.record;
 
-import com.amalto.core.storage.StorageMetadataUtils;
-import com.amalto.core.storage.record.DataRecord;
-import org.apache.commons.lang.StringUtils;
-import org.talend.mdm.commmon.metadata.*;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.CompoundFieldMetadata;
+import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
+import org.talend.mdm.commmon.metadata.MetadataRepository;
+import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
+
+import com.amalto.core.storage.StorageMetadataUtils;
+import com.amalto.core.storage.record.DataRecord;
 
 class ManyValue implements Setter, Getter {
 
@@ -44,7 +49,10 @@ class ManyValue implements Setter, Getter {
             boolean needResetValue = true;
             if (oldRecord != null) {
                 String oldValue = String.valueOf(oldRecord.get(fieldMetadata.getReferencedField()));
-                needResetValue = !value.equals('[' + oldValue + ']');
+                if (!(fieldMetadata.getReferencedField() instanceof CompoundFieldMetadata)) {
+                    oldValue = '[' + oldValue + ']';
+                }
+                needResetValue = !value.equals(oldValue);
             }
             if (needResetValue) {
                 ComplexTypeMetadata referencedType = fieldMetadata.getReferencedType();

@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
@@ -85,6 +86,8 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
 
     private final Collection<ComplexTypeMetadata> types;
 
+    private final Collection<ComplexTypeMetadata> selectedTypes;
+
     private List<TypedExpression> viewableFields;
 
     private String currentFieldName;
@@ -93,13 +96,10 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
 
     private boolean isBuildingNot;
 
-    LuceneQueryGenerator(Collection<ComplexTypeMetadata> types) {
-        this.types = types;
-    }
-
-    LuceneQueryGenerator(List<TypedExpression> viewableFields, Collection<ComplexTypeMetadata> types) {
+    LuceneQueryGenerator(List<TypedExpression> viewableFields, Collection<ComplexTypeMetadata> types, Collection<ComplexTypeMetadata> selectedTypes) {
         this.types = types;
         this.viewableFields = viewableFields;
+        this.selectedTypes = selectedTypes;
     }
 
     @Override
@@ -325,8 +325,8 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
     @Override
     public Query visit(final FullText fullText) {
         // TODO Test me on conditions where many types share same field names.
-        final Map<String, Boolean> fieldsMap = new HashMap<String, Boolean>();
-        final Set<String> processedTypeNames = new HashSet<String>();
+        final Map<String, Boolean> fieldsMap = new HashMap<>();
+        final Set<String> processedTypeNames = new HashSet<>();
         for (final ComplexTypeMetadata type : types) {
             if (!type.isInstantiable()) {
                 continue;
@@ -428,6 +428,10 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
      */
     private String getFullPathName(FieldFullText fieldFullText) {
         FieldMetadata fieldMetadata = fieldFullText.getField().getFieldMetadata();
+        return getFullPathName(fieldMetadata).toString();
+    }
+
+    private StringBuilder getFullPathName(FieldMetadata fieldMetadata) {
         StringBuilder fullPathFieldName = new StringBuilder();
         while (fieldMetadata instanceof ReferenceFieldMetadata) {
             String fieldName = fieldMetadata.getName();
@@ -444,26 +448,71 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
                 break;
             }
         }
-        return fullPathFieldName.toString();
+        return fullPathFieldName;
     }
 
-    @Override
-    public Query visit(FieldFullText fieldFullText) {
-        FieldMetadata fieldMetadata = fieldFullText.getField().getFieldMetadata();
+    private void getFullPathName(ComplexTypeMetadata complexTypeMetadata, FieldMetadata fieldMetadata, StringBuilder sb) {
+        complexTypeMetadata.getFields().stream().filter(field -> field instanceof ReferenceFieldMetadata)
+                .collect(Collectors.toList()).forEach(field -> {
+            ReferenceFieldMetadata referenceFieldMetadata = ((ReferenceFieldMetadata) field);
+            if (referenceFieldMetadata.getReferencedType().getKeyFields().size() > 1) {
+                throw new FullTextQueryCompositeKeyException(referenceFieldMetadata.getReferencedType().getName());
+            } else if (((ReferenceFieldMetadata) field).getReferencedType().equals(fieldMetadata.getContainingType())) {
+                sb.append(getFullPathName(field));
+                sb.append(fieldMetadata.getName());
+            } else {
+                ComplexTypeMetadata subComplexTypeMetadata = ((ReferenceFieldMetadata) field).getReferencedType();
+                if (subComplexTypeMetadata.getFields().stream()
+                        .anyMatch(subField -> subField instanceof ReferenceFieldMetadata)) {
+                    getFullPathName(subComplexTypeMetadata, fieldMetadata, sb);
+                }
+            }
+        });
+    }
+
+    private String getFieldName(FieldMetadata fieldMetadata) {
         String fieldName = fieldMetadata.getName();
         if (fieldMetadata instanceof ReferenceFieldMetadata) {
             ReferenceFieldMetadata referenceFieldMetadata = ((ReferenceFieldMetadata) fieldMetadata);
             if (referenceFieldMetadata.getReferencedType().getKeyFields().size() > 1) {
                 throw new FullTextQueryCompositeKeyException(referenceFieldMetadata.getReferencedType().getName());
             } else {
-                fieldName = getFullPathName(fieldFullText) + referenceFieldMetadata.getReferencedField().getName(); //$NON-NLS-1$
+                fieldName = getFullPathName(fieldMetadata) + referenceFieldMetadata.getReferencedField().getName(); //$NON-NLS-1$
             }
         }
-        // TMDM-13918 Query by field of joining type, field name in lucene index should be fkIdField.fieldName
-        else if (fieldMetadata instanceof SimpleTypeFieldMetadata && !types.contains(fieldMetadata.getContainingType())) {
-            FieldMetadata keyField = fieldMetadata.getContainingType().getKeyFields().iterator().next();
-            fieldName = keyField.getName() + "." + fieldName; //$NON-NLS-1$
+        else {
+            ComplexTypeMetadata containingType = fieldMetadata.getContainingType();
+            // TMDM-13918 Query by field of joining type, field name in lucene index should be fkIdField.fieldName
+            if (fieldMetadata instanceof SimpleTypeFieldMetadata && !types.contains(containingType) && !selectedTypes
+                    .contains(containingType)) {
+                FieldMetadata keyField = containingType.getKeyFields().iterator().next();
+                fieldName = keyField.getName() + "." + fieldName; //$NON-NLS-1$
+            } else if ((!selectedTypes.contains(containingType) && types.contains(containingType)) || (
+                    selectedTypes.contains(containingType) && !types.contains(containingType))) {
+                if (containingType.getContainer() != null) {
+                    FieldMetadata field = containingType.getContainer();
+                    StringBuilder sb = getFullPathName(field);
+                    sb.append(fieldMetadata.getName());
+                    fieldName = sb.toString();
+                } else {
+                    StringBuilder sb = new StringBuilder();
+                    for (ComplexTypeMetadata complexTypeMetadata : selectedTypes) {
+                        getFullPathName(complexTypeMetadata, fieldMetadata, sb);
+                        if (!sb.toString().equals(StringUtils.EMPTY)) {
+                            break;
+                        }
+                    }
+                    fieldName = sb.toString();
+                }
+            }
         }
+        return fieldName;
+    }
+
+    @Override
+    public Query visit(FieldFullText fieldFullText) {
+        FieldMetadata fieldMetadata = fieldFullText.getField().getFieldMetadata();
+        String fieldName = getFieldName(fieldMetadata);
         String[] fieldsAsArray = new String[] { fieldName };
         String fullTextValue = getFullTextValue(fieldFullText);
         String fullTextQuery = fieldName + ':' + fullTextValue;
@@ -563,14 +612,14 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
     }
 
     private static String getMultiKeywords(String value, boolean isFuzzySearch) {
-        List<String> blocks = new ArrayList<String>(Arrays.asList(value.split(" "))); //$NON-NLS-1$
+        List<String> blocks = new ArrayList<>(Arrays.asList(value.split(" "))); //$NON-NLS-1$
         StringBuffer sb = new StringBuffer();
         for (String block : blocks) {
             if (StringUtils.isNotEmpty(block)) {
                 if (!block.endsWith("*") && !isFuzzySearch) { //$NON-NLS-1$
-                    sb.append(block + "* "); //$NON-NLS-1$
+                    sb.append(block).append("* "); //$NON-NLS-1$
                 } else {
-                    sb.append(block + " "); //$NON-NLS-1$
+                    sb.append(block).append(" "); //$NON-NLS-1$
                 }
             }
         }

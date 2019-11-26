@@ -152,7 +152,7 @@ class FullTextQueryHandler extends AbstractQueryHandler {
         }
         // Create Lucene query (concatenates all sub queries together).
         FullTextSession fullTextSession = Search.getFullTextSession(session);
-        Query parsedQuery = select.getCondition().accept(new LuceneQueryGenerator(select.getSelectedFields(), types));
+        Query parsedQuery = select.getCondition().accept(new LuceneQueryGenerator(select.getSelectedFields(), types, select.getTypes()));
         // Create Hibernate Search query
         Set<Class> classes = new HashSet<Class>();
         for (ComplexTypeMetadata type : types) {
@@ -334,7 +334,7 @@ class FullTextQueryHandler extends AbstractQueryHandler {
         String typeName = StringUtils.EMPTY;
         if (dataRecord != null) {
             if (dataRecord instanceof List) {
-                dataRecord = (DataRecord) ((List) dataRecord).get(0);
+                dataRecord = ((List) dataRecord).get(0);
             }
             typeName = ((DataRecord) dataRecord).getType().getName();
         }

@@ -166,6 +166,10 @@ public class StorageTestCase extends TestCase {
 
     protected static final ComplexTypeMetadata myFLIF_Partner;
 
+    protected static final ComplexTypeMetadata refPays;
+
+    protected static final ComplexTypeMetadata refRegion;
+
     public static final String DATABASE = "H2";
 
     public static final String DATASOURCE_DEFAULT = DATABASE + "-Default";
@@ -242,6 +246,9 @@ public class StorageTestCase extends TestCase {
         contract = repository.getComplexType("Contract");
         myFLIF_RefSourceSystem = repository.getComplexType("RefSourceSystem");
         myFLIF_Partner = repository.getComplexType("Partner");
+
+        refPays = repository.getComplexType("RefPays");
+        refRegion = repository.getComplexType("RefRegion");
 
         systemStorage = new SecuredStorage(new HibernateStorage("MDM", StorageType.SYSTEM), userSecurity);
         systemRepository = buildSystemRepository();

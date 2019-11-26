@@ -43,6 +43,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
 import org.talend.mdm.query.QueryParser;
@@ -290,6 +291,16 @@ public class StorageFullTextTest extends StorageTestCase {
         allRecords.add(factory.read(repository, myFLIF_Partner, "<Partner><PartnerId>2019926111626752d3e2</PartnerId><SourceSystemMap><SourceSystem><SourceSystemId>[11]</SourceSystemId><MandantNummer>1</MandantNummer><SourceKey>2</SourceKey></SourceSystem></SourceSystemMap><Name>world</Name></Partner>"));
         allRecords.add(factory.read(repository, myFLIF_Partner, "<Partner><PartnerId>2019926111652083d5e2</PartnerId><SourceSystemMap><SourceSystem><SourceSystemId>[22]</SourceSystemId><MandantNummer>33</MandantNummer><SourceKey>4</SourceKey></SourceSystem></SourceSystemMap><Name>good</Name></Partner>"));
         allRecords.add(factory.read(repository, myFLIF_Partner, "<Partner><PartnerId>2019926111652084d5e2</PartnerId><SourceSystemMap><SourceSystem><SourceSystemId>[22]</SourceSystemId><MandantNummer>44</MandantNummer><SourceKey>4</SourceKey></SourceSystem></SourceSystemMap><Name>go</Name></Partner>"));
+
+        allRecords.add(factory.read(repository, refPays,
+                "<RefPays><idRefPays>1</idRefPays><codeISO2>FR</codeISO2><codeISO3>FR</codeISO3><libelleFR>FR</libelleFR><libelleEN>FR</libelleEN><libelleES>FR</libelleES></RefPays>"));
+        allRecords.add(factory.read(repository, refPays,
+                "<RefPays><idRefPays>2</idRefPays><codeISO2>BE</codeISO2><codeISO3>BE</codeISO3><libelleFR>BE</libelleFR><libelleEN>BE</libelleEN><libelleES>BE</libelleES></RefPays>"));
+        allRecords.add(factory.read(repository, refRegion,
+                "<RefRegion><codeRegion>BEL_BC</codeRegion><PaysFk>[1]</PaysFk><libelleRegion><codeLangue>fr</codeLangue><libelle>Bruxelles-Capitale</libelle><Con><Add_City>Pairs</Add_City><Add_Country>Franch</Add_Country></Con></libelleRegion><libelleRegion><codeLangue>en</codeLangue><libelle>Bruxees-Capitale</libelle><Con><Add_City>Longdong</Add_City><Add_Country>England</Add_Country></Con></libelleRegion><libelleRegion><codeLangue>es</codeLangue><libelle>Bruxeeserses-Capitale</libelle><Con><Add_City>Longdong</Add_City><Add_Country>England</Add_Country></Con></libelleRegion></RefRegion>"));
+        allRecords.add(factory.read(repository, refRegion,
+                "<RefRegion><codeRegion>CAN_NBR</codeRegion><PaysFk>[2]</PaysFk><libelleRegion><codeLangue>fr</codeLangue><libelle>NOUVENAU-BRUNSWICK</libelle><Con><Add_City>PARISE</Add_City><Add_Country>FRANCH</Add_Country></Con></libelleRegion><libelleRegion><codeLangue>en</codeLangue><libelle>NEW-BRUNSWICK</libelle><Con><Add_City>LONGDONG</Add_City><Add_Country>ENGLAND</Add_Country></Con></libelleRegion><libelleRegion><codeLangue>es</codeLangue><libelle>NUEVO BRUNSWICK</libelle><Con><Add_City>ENGLAND</Add_City><Add_Country>ENGLAND</Add_Country></Con></libelleRegion></RefRegion>"));
+
         try {
             storage.begin();
             storage.update(allRecords);
@@ -358,6 +369,12 @@ public class StorageFullTextTest extends StorageTestCase {
             storage.delete(qb.getSelect());
 
             qb = from(myFLIF_Partner);
+            storage.delete(qb.getSelect());
+
+            qb = from(refRegion);
+            storage.delete(qb.getSelect());
+
+            qb = from(refPays);
             storage.delete(qb.getSelect());
         }
         storage.commit();
@@ -2231,6 +2248,111 @@ public class StorageFullTextTest extends StorageTestCase {
         }
 
         MDMConfiguration.getConfiguration().setProperty(luceneFuzzySearch, "false");
+    }
+
+    public void testOneToManySearch() {
+        UserQueryBuilder qb = from(refRegion).where(or(contains(refRegion.getField("codeRegion"), "BRU"), contains(
+                ((ContainedTypeFieldMetadata) refRegion.getField("libelleRegion")).getContainedType().getField("libelle"),
+                "BRU")));
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertTrue(results.getCount() == 2);
+        } finally {
+            results.close();
+        }
+
+        qb.limit(100).start(0);
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertTrue(results.getCount() == 2);
+        } finally {
+            results.close();
+        }
+
+        int count = 0;
+        qb.limit(100).start(1);
+        results = storage.fetch(qb.getSelect());
+        try {
+            for (DataRecord result : results) {
+                count++;
+            }
+        } finally {
+            results.close();
+        }
+        assertEquals(1, count);
+
+        count = 0;
+        qb.limit(100).start(5);
+        results = storage.fetch(qb.getSelect());
+        try {
+            for (DataRecord result : results) {
+                count++;
+            }
+        } finally {
+            results.close();
+        }
+        assertEquals(0, count);
+
+        qb = from(refRegion).where(or(contains(refRegion.getField("codeRegion"), "BRU"), contains(
+                ((ContainedTypeFieldMetadata) ((ContainedTypeFieldMetadata) refRegion.getField("libelleRegion"))
+                        .getContainedType().getField("Con")).getContainedType().getField("Add_Country"), "England")));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertTrue(results.getCount() == 2);
+        } finally {
+            results.close();
+        }
+
+        count = 0;
+        qb.limit(100).start(0);
+        results = storage.fetch(qb.getSelect());
+        try {
+            for (DataRecord result : results) {
+                count++;
+            }
+        } finally {
+            results.close();
+        }
+
+        count = 0;
+        qb.limit(100).start(1);
+        results = storage.fetch(qb.getSelect());
+        try {
+            for (DataRecord result : results) {
+                count++;
+            }
+        } finally {
+            results.close();
+        }
+        assertEquals(1, count);
+
+        count = 0;
+        qb.limit(100).start(2);
+        results = storage.fetch(qb.getSelect());
+        try {
+            for (DataRecord result : results) {
+                count++;
+            }
+        } finally {
+            results.close();
+        }
+        assertEquals(0, count);
+    }
+
+    public void testToManySearchForProduct() {
+        UserQueryBuilder qb = from(product).where(contains(store.getField("Name"), "china"));
+        StorageResults results = null;
+        try {
+            results = storage.fetch(qb.getSelect());
+            assertTrue(results.getCount() == 2);
+            fail("Don't support the composite key for full text search");
+        } catch (Exception e) {
+            assertNotNull(e);
+        } finally {
+            if (results != null) {
+                results.close();
+            }
+        }
     }
 
     private static class TestRDBMSDataSource extends RDBMSDataSource {

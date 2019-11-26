@@ -107,14 +107,8 @@ class DefaultCheckDataSource implements FKIntegrityCheckDataSource {
 
     public boolean isFKReferencedBySelf(String clusterName, String[] ids, String fromTypeName,
             ReferenceFieldMetadata fromReference) throws XtentisException {
-        // For the anonymous type and leave the type name empty
         if (fromTypeName == null || fromTypeName.trim().equals("")) { //$NON-NLS-1$
             return false;
-        }
-        // Transform ids into the string format expected in base
-        StringBuilder referencedId = new StringBuilder();
-        for (String id : ids) {
-            referencedId.append('[').append(id).append(']');
         }
         StorageAdmin storageAdmin = ServerContext.INSTANCE.get().getStorageAdmin();
         Storage storage = storageAdmin.get(clusterName, storageAdmin.getType(clusterName));
@@ -129,12 +123,22 @@ class DefaultCheckDataSource implements FKIntegrityCheckDataSource {
                 builder.append(fieldMetadata.getName()).append('/');
             }
         }
+        String xpathString = builder.toString();
 
-        // Expect to have a format as:
-        // $EntityA/EntityB/EntityC/EntityAFk$[id]
-        String str = builder.toString();
-        int len = str.length();
-        String keysKeywords = "$" + str.substring(0, len - 1) + "$" + referencedId; //$NON-NLS-1$ //$NON-NLS-2$
+        // Transform ids into the string format
+        StringBuilder referencedId = new StringBuilder();
+        for (String id : ids) {
+            referencedId.append('[').append(id).append(']');
+        }
+        // Expect to have a format as: $EntityA/EntityB/EntityAFk$[id]
+        String keysKeywords = StringUtils.EMPTY;
+        if (StringUtils.isNotEmpty(xpathString)) {
+            int len = xpathString.length();
+            if (xpathString.lastIndexOf('/') == len -1) {
+                xpathString = xpathString.substring(0, len - 1);
+            }
+        }
+        keysKeywords = "$" + xpathString + "$" + referencedId; //$NON-NLS-1$ //$NON-NLS-2$
 
         ItemPKCriteria criteria = new ItemPKCriteria();
         criteria.setClusterName(clusterName);
@@ -161,8 +165,7 @@ class DefaultCheckDataSource implements FKIntegrityCheckDataSource {
             NodeList pksIdsList = (NodeList) xpath.evaluate("./ids/i", element, XPathConstants.NODESET); //$NON-NLS-1$
             pkIds = new String[pksIdsList.getLength()];
             for (int j = 0; j < pksIdsList.getLength(); j++) {
-                pkIds[j] = (pksIdsList.item(j).getFirstChild() == null ? "" //$NON-NLS-1$
-                        : pksIdsList.item(j).getFirstChild().getNodeValue());
+                pkIds[j] = (pksIdsList.item(j).getFirstChild() == null ? "" : pksIdsList.item(j).getFirstChild().getNodeValue()); //$NON-NLS-1$
             }
         } catch (Exception e) {
             throw new XtentisException(e);

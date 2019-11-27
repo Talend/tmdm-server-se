@@ -14,7 +14,6 @@ import com.amalto.core.objects.ItemPOJO;
 import com.amalto.core.objects.ItemPOJOPK;
 import com.amalto.core.storage.StorageMetadataUtils;
 import com.amalto.core.objects.datacluster.DataClusterPOJOPK;
-import com.amalto.core.query.user.DateConstant;
 import com.amalto.core.server.ServerContext;
 import com.amalto.core.server.StorageAdmin;
 import com.amalto.core.storage.Storage;
@@ -32,7 +31,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import java.io.StringReader;
-import java.text.ParseException;
 import java.util.*;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -152,15 +150,7 @@ class DefaultCheckDataSource implements FKIntegrityCheckDataSource {
         criteria.setConceptName(fromTypeName);
         criteria.setKeysKeywords(keysKeywords);
         criteria.setCompoundKeyKeywords(false);
-
-        Date fromDate = null;
-        try {
-            fromDate = DateConstant.DATE_FORMAT.parse("1970-01-01"); //$NON-NLS-1$
-        } catch (ParseException e) {
-            throw new XtentisException(e);
-        }
-
-        criteria.setFromDate(fromDate.getTime());
+        criteria.setFromDate(new Date(0).getTime());
         criteria.setToDate(new Date().getTime());
         criteria.setUseFTSearch(false);
         List<String> results = Util.getItemCtrl2Local().getItemPKsByCriteria(criteria);

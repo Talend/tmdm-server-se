@@ -32,6 +32,7 @@ import org.xml.sax.InputSource;
 
 import java.io.StringReader;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -105,11 +106,24 @@ class DefaultCheckDataSource implements FKIntegrityCheckDataSource {
         return inboundReferenceCount;
     }
 
-    public boolean isFKReferencedBySelf(String clusterName, String[] ids, String fromTypeName,
+    public boolean isFKReferencedBySelf(String clusterName, String[] fkIds, String fromTypeName,
             ReferenceFieldMetadata fromReference) throws XtentisException {
-        if (fromTypeName == null || fromTypeName.trim().equals("")) { //$NON-NLS-1$
+        if (StringUtils.isBlank(fromTypeName)) {
             return false;
         }
+        String[] pkIds = getItemPKsByCriteria(clusterName, fkIds, fromTypeName, fromReference);
+        if (Arrays.equals(fkIds, pkIds)) {
+            return true;
+        }
+        return false;
+    }
+
+    /*
+     * This function refers to: IXtentisWSDelegator.java#doGetItemPKsByCriteria
+     * Used FK entity ids to get the PK ids which the FK was referenced.
+     */
+    private String[] getItemPKsByCriteria(String clusterName, String[] fkIds, String fromTypeName,
+            ReferenceFieldMetadata fromReference) throws XtentisException {
         StorageAdmin storageAdmin = ServerContext.INSTANCE.get().getStorageAdmin();
         Storage storage = storageAdmin.get(clusterName, storageAdmin.getType(clusterName));
         MetadataRepository repository = storage.getMetadataRepository();
@@ -124,35 +138,31 @@ class DefaultCheckDataSource implements FKIntegrityCheckDataSource {
             }
         }
         String xpathString = builder.toString();
+        xpathString = StringUtils.removeEnd(xpathString, "/"); //$NON-NLS-1$
 
         // Transform ids into the string format
         StringBuilder referencedId = new StringBuilder();
-        for (String id : ids) {
+        for (String id : fkIds) {
             referencedId.append('[').append(id).append(']');
         }
         // Expect to have a format as: $EntityA/EntityB/EntityAFk$[id]
-        String keysKeywords = StringUtils.EMPTY;
-        if (StringUtils.isNotEmpty(xpathString)) {
-            int len = xpathString.length();
-            if (xpathString.lastIndexOf('/') == len -1) {
-                xpathString = xpathString.substring(0, len - 1);
-            }
-        }
-        keysKeywords = "$" + xpathString + "$" + referencedId; //$NON-NLS-1$ //$NON-NLS-2$
+        String keysKeywords = "$" + xpathString + "$" + referencedId; //$NON-NLS-1$ //$NON-NLS-2$
 
         ItemPKCriteria criteria = new ItemPKCriteria();
         criteria.setClusterName(clusterName);
         criteria.setConceptName(fromTypeName);
         criteria.setKeysKeywords(keysKeywords);
         criteria.setCompoundKeyKeywords(false);
-        DateFormat format = new SimpleDateFormat("dd/MM/yyyy"); //$NON-NLS-1$
-        Date date = null;
+
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); //$NON-NLS-1$
+        Date fromDate = null;
         try {
-            date = format.parse("01/01/1970"); //$NON-NLS-1$
-        } catch (Exception e) {
+            fromDate = dateFormat.parse("1970-01-01"); //$NON-NLS-1$
+        } catch (ParseException e) {
             throw new XtentisException(e);
         }
-        criteria.setFromDate(date.getTime());
+
+        criteria.setFromDate(fromDate.getTime());
         criteria.setToDate(new Date().getTime());
         criteria.setUseFTSearch(false);
         List<String> results = Util.getItemCtrl2Local().getItemPKsByCriteria(criteria);
@@ -165,15 +175,13 @@ class DefaultCheckDataSource implements FKIntegrityCheckDataSource {
             NodeList pksIdsList = (NodeList) xpath.evaluate("./ids/i", element, XPathConstants.NODESET); //$NON-NLS-1$
             pkIds = new String[pksIdsList.getLength()];
             for (int j = 0; j < pksIdsList.getLength(); j++) {
-                pkIds[j] = (pksIdsList.item(j).getFirstChild() == null ? "" : pksIdsList.item(j).getFirstChild().getNodeValue()); //$NON-NLS-1$
+                pkIds[j] = (pksIdsList.item(j).getFirstChild() == null ? "" //$NON-NLS-1$
+                        : pksIdsList.item(j).getFirstChild().getNodeValue());
             }
         } catch (Exception e) {
             throw new XtentisException(e);
         }
-        if (Arrays.equals(ids, pkIds)) {
-            return true;
-        }
-        return false;
+        return pkIds;
     }
 
     public Set<ReferenceFieldMetadata> getForeignKeyList(String concept, String dataModel) throws XtentisException {

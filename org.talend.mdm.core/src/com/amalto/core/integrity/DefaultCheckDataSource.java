@@ -14,6 +14,7 @@ import com.amalto.core.objects.ItemPOJO;
 import com.amalto.core.objects.ItemPOJOPK;
 import com.amalto.core.storage.StorageMetadataUtils;
 import com.amalto.core.objects.datacluster.DataClusterPOJOPK;
+import com.amalto.core.query.user.DateConstant;
 import com.amalto.core.server.ServerContext;
 import com.amalto.core.server.StorageAdmin;
 import com.amalto.core.storage.Storage;
@@ -31,9 +32,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import java.io.StringReader;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -154,10 +153,9 @@ class DefaultCheckDataSource implements FKIntegrityCheckDataSource {
         criteria.setKeysKeywords(keysKeywords);
         criteria.setCompoundKeyKeywords(false);
 
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); //$NON-NLS-1$
         Date fromDate = null;
         try {
-            fromDate = dateFormat.parse("1970-01-01"); //$NON-NLS-1$
+            fromDate = DateConstant.DATE_FORMAT.parse("1970-01-01"); //$NON-NLS-1$
         } catch (ParseException e) {
             throw new XtentisException(e);
         }

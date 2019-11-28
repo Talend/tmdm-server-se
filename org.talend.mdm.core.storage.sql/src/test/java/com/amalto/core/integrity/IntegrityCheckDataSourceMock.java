@@ -39,6 +39,14 @@ class IntegrityCheckDataSourceMock implements FKIntegrityCheckDataSource {
         return 1;
     }
 
+    public boolean isFKReferencedBySelf(String clusterName, String[] ids, String fromTypeName,
+            ReferenceFieldMetadata fromReference) throws XtentisException {
+        if (fromReference.getReferencedType().getName().equalsIgnoreCase(fromTypeName)) {
+            return true;
+        }
+        return false;
+    }
+
     public Set<ReferenceFieldMetadata> getForeignKeyList(String concept, String dataModel) throws XtentisException {
         TypeMetadata type = repository.getType(concept);
         if (type != null) {

@@ -411,9 +411,9 @@ public class InboundReferencesTest extends TestCase {
         String dataCluster = "DataCluster";
         String typeName = "A";
         String[] ids = {"1"};
-        assertFalse(integrityChecker.allowDelete(dataCluster, typeName, ids, false, dataSource));
+        assertTrue(integrityChecker.allowDelete(dataCluster, typeName, ids, false, dataSource));
         FKIntegrityCheckResult policy = integrityChecker.getFKIntegrityPolicy(dataCluster, typeName, ids, dataSource);
-        assertEquals(FKIntegrityCheckResult.FORBIDDEN, policy);
+        assertEquals(FKIntegrityCheckResult.ALLOWED, policy);
     }
 
     public void testModel15() throws Exception {
@@ -490,9 +490,9 @@ public class InboundReferencesTest extends TestCase {
         String dataCluster = "DataCluster";
         String typeName = "A";
         String[] ids = {"1"};
-        assertFalse(integrityChecker.allowDelete(dataCluster, typeName, ids, false, dataSource));
+        assertTrue(integrityChecker.allowDelete(dataCluster, typeName, ids, false, dataSource));
         FKIntegrityCheckResult policy = integrityChecker.getFKIntegrityPolicy(dataCluster, typeName, ids, dataSource);
-        assertEquals(FKIntegrityCheckResult.FORBIDDEN, policy);
+        assertEquals(FKIntegrityCheckResult.ALLOWED, policy);
     }
 
     public void testEmptyTypeName() throws Exception {

@@ -146,10 +146,14 @@ public class FKIntegrityChecker {
                 boolean allowOverride = incomingReference.allowFKIntegrityOverride();
                 long count = dataSource.countInboundReferences(clusterName, ids, referencingTypeName, incomingReference);
                 if (count > 0) {
-                    if (allowOverride) {
-                        get(checkResultToFields, FORBIDDEN_OVERRIDE_ALLOWED).add(incomingReference);
+                    if (dataSource.isFKReferencedBySelf(clusterName, ids, referencingTypeName, incomingReference)) {
+                        get(checkResultToFields, ALLOWED).add(incomingReference);
                     } else {
-                        get(checkResultToFields, FORBIDDEN).add(incomingReference);
+                        if (allowOverride) {
+                            get(checkResultToFields, FORBIDDEN_OVERRIDE_ALLOWED).add(incomingReference);
+                        } else {
+                            get(checkResultToFields, FORBIDDEN).add(incomingReference);
+                        }
                     }
                 } else {
                     get(checkResultToFields, ALLOWED).add(incomingReference);

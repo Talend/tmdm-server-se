@@ -20,12 +20,23 @@ import com.amalto.core.storage.Storage;
 import com.amalto.core.util.Util;
 import com.amalto.core.util.XtentisException;
 import com.amalto.xmlserver.interfaces.IWhereItem;
+import com.amalto.xmlserver.interfaces.ItemPKCriteria;
 import com.amalto.xmlserver.interfaces.WhereCondition;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.metadata.*;
+import org.talend.mdm.commmon.util.core.MDMXMLUtils;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
+import java.io.StringReader;
 import java.util.*;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
 
 import static com.amalto.core.integrity.FKIntegrityCheckResult.*;
 
@@ -90,6 +101,75 @@ class DefaultCheckDataSource implements FKIntegrityCheckDataSource {
             inboundReferenceCount += Util.getXmlServerCtrlLocal().countItems(clusterName, fromTypeName, whereItem);
         }
         return inboundReferenceCount;
+    }
+
+    public boolean isFKReferencedBySelf(String clusterName, String[] fkIds, String fromTypeName,
+            ReferenceFieldMetadata fromReference) throws XtentisException {
+        if (StringUtils.isBlank(fromTypeName)) {
+            return false;
+        }
+        String[] pkIds = getItemPKsByCriteria(clusterName, fkIds, fromTypeName, fromReference);
+        if (Arrays.equals(fkIds, pkIds)) {
+            return true;
+        }
+        return false;
+    }
+
+    /*
+     * This function refers to: IXtentisWSDelegator.java#doGetItemPKsByCriteria
+     * Used FK entity ids to get the PK ids which the FK was referenced.
+     */
+    private String[] getItemPKsByCriteria(String clusterName, String[] fkIds, String fromTypeName,
+            ReferenceFieldMetadata fromReference) throws XtentisException {
+        StorageAdmin storageAdmin = ServerContext.INSTANCE.get().getStorageAdmin();
+        Storage storage = storageAdmin.get(clusterName, storageAdmin.getType(clusterName));
+        MetadataRepository repository = storage.getMetadataRepository();
+        ComplexTypeMetadata complexType = repository.getComplexType(fromTypeName);
+        Set<List<FieldMetadata>> paths = StorageMetadataUtils.paths(complexType, fromReference);
+
+        StringBuilder builder = new StringBuilder();
+        for (List<FieldMetadata> path : paths) {
+            builder.append(complexType.getName()).append('/');
+            for (FieldMetadata fieldMetadata : path) {
+                builder.append(fieldMetadata.getName()).append('/');
+            }
+        }
+        String xpathString = builder.toString();
+        xpathString = StringUtils.removeEnd(xpathString, "/"); //$NON-NLS-1$
+
+        // Transform ids into the string format
+        StringBuilder referencedId = new StringBuilder();
+        for (String id : fkIds) {
+            referencedId.append('[').append(id).append(']');
+        }
+        // Expect to have a format as: $EntityA/EntityB/EntityAFk$[id]
+        String keysKeywords = "$" + xpathString + "$" + referencedId; //$NON-NLS-1$ //$NON-NLS-2$
+
+        ItemPKCriteria criteria = new ItemPKCriteria();
+        criteria.setClusterName(clusterName);
+        criteria.setConceptName(fromTypeName);
+        criteria.setKeysKeywords(keysKeywords);
+        criteria.setCompoundKeyKeywords(false);
+        criteria.setFromDate(new Date(0).getTime());
+        criteria.setToDate(new Date().getTime());
+        criteria.setUseFTSearch(false);
+        List<String> results = Util.getItemCtrl2Local().getItemPKsByCriteria(criteria);
+        XPath xpath = XPathFactory.newInstance().newXPath();
+        DocumentBuilder documentBuilder = MDMXMLUtils.getDocumentBuilder().get();
+        String[] pkIds = null;
+        try {
+            String result = results.get(1);
+            Element element = documentBuilder.parse(new InputSource(new StringReader(result))).getDocumentElement();
+            NodeList pksIdsList = (NodeList) xpath.evaluate("./ids/i", element, XPathConstants.NODESET); //$NON-NLS-1$
+            pkIds = new String[pksIdsList.getLength()];
+            for (int j = 0; j < pksIdsList.getLength(); j++) {
+                pkIds[j] = (pksIdsList.item(j).getFirstChild() == null ? "" //$NON-NLS-1$
+                        : pksIdsList.item(j).getFirstChild().getNodeValue());
+            }
+        } catch (Exception e) {
+            throw new XtentisException(e);
+        }
+        return pkIds;
     }
 
     public Set<ReferenceFieldMetadata> getForeignKeyList(String concept, String dataModel) throws XtentisException {

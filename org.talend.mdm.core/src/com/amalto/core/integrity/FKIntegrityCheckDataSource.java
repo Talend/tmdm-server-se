@@ -58,6 +58,27 @@ public interface FKIntegrityCheckDataSource {
 
     /**
      * <p>
+     * Check if FK referenced by self of <code>fromType</code> points to instance to <code>referenceId</code> via the
+     * relation <code>fromReference</code>.
+     * </p>
+     * <p>
+     * <i>Note</i>: Type of instance with id <code>id</code> should be inferred from <code>fromReference</code>.
+     * </p>
+     *
+     * @param clusterName   Cluster name where the query should be done.
+     * @param ids           Id of an existing instance in database. In case of composite key, each item of the array contains
+     *                      a key value.
+     * @param fromTypeName  Type name where query is performed.
+     * @param fromReference Reference from <code>fromType</code> to the id <code>id</code>.
+     * @return true or false.
+     * @throws com.amalto.core.util.XtentisException
+     *          In case of any exception during execution.
+     */
+    boolean isFKReferencedBySelf(String clusterName, String[] ids, String fromTypeName,
+            ReferenceFieldMetadata fromReference) throws XtentisException;
+
+    /**
+     * <p>
      * Returns a {@link java.util.Set} of {@link FieldMetadata} of all fields that <b>point to</b> the
      * concept <code>concept</code>. Fields are inferred from data model only (thus no need for id in this method).
      * </p>

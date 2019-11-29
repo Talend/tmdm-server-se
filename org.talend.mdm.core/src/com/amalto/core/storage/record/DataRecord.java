@@ -13,6 +13,7 @@ package com.amalto.core.storage.record;
 import java.util.*;
 
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.CompoundFieldMetadata;
 import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
@@ -167,6 +168,15 @@ public class DataRecord {
             }
             return null; // Not found.
         } else {
+            if (field instanceof CompoundFieldMetadata) {
+                StringBuilder keyValue = new StringBuilder();
+                for (Object keyField : this.type.getKeyFields()) {
+                    if (fieldToValue.containsKey(keyField)) {
+                        keyValue.append('[').append(fieldToValue.get(keyField)).append(']');
+                    }
+                }
+                return keyValue.toString();
+            }
             if (fieldToValue.containsKey(field)) {
                 return fieldToValue.get(field);
             } else if (recordMetadata.getRecordProperties().containsKey(field.getName())) { // Try to read from metadata
@@ -375,6 +385,7 @@ public class DataRecord {
 
         private static ThreadLocal<Boolean> threadLocal = new ThreadLocal<Boolean>() {
 
+            @Override
             public Boolean initialValue() {
                 return Boolean.TRUE;
             }
@@ -404,6 +415,7 @@ public class DataRecord {
 
         private static ThreadLocal<Boolean> threadLocal = new ThreadLocal<Boolean>() {
 
+            @Override
             public Boolean initialValue() {
                 return Boolean.FALSE;
             }

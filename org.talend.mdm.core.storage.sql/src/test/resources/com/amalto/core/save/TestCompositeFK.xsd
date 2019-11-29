@@ -2,23 +2,27 @@
   <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/>            
   <xsd:element name="FK2"> 
     <xsd:annotation> 
-      <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo> 
+      <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+	  <xsd:appinfo source="X_Write">User</xsd:appinfo>
     </xsd:annotation>  
     <xsd:complexType> 
       <xsd:all> 
         <xsd:element maxOccurs="1" minOccurs="1" name="Id1" type="xsd:string"> 
           <xsd:annotation> 
-            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo> 
+            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+			<xsd:appinfo source="X_Write">User</xsd:appinfo>
           </xsd:annotation> 
         </xsd:element>  
         <xsd:element maxOccurs="1" minOccurs="1" name="Id2" type="xsd:string"> 
           <xsd:annotation> 
-            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo> 
+            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+			<xsd:appinfo source="X_Write">User</xsd:appinfo>
           </xsd:annotation> 
         </xsd:element>  
         <xsd:element maxOccurs="1" minOccurs="0" name="Name" type="xsd:string"> 
           <xsd:annotation> 
-            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo> 
+            <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+			<xsd:appinfo source="X_Write">User</xsd:appinfo>
           </xsd:annotation> 
         </xsd:element> 
       </xsd:all> 
@@ -30,33 +34,31 @@
     </xsd:unique> 
   </xsd:element>      
   <xsd:element name="TestMultipleCompositeFK"> 
-    <xsd:annotation>       
-    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
-<xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
+    <xsd:annotation>      
+    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+	<xsd:appinfo source="X_Write">User</xsd:appinfo>
 </xsd:annotation>  
     <xsd:complexType> 
       <xsd:sequence> 
         <xsd:element maxOccurs="1" minOccurs="1" name="Id" type="xsd:string"> 
           <xsd:annotation>              
-          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
-<xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
-</xsd:annotation> 
+			<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+			<xsd:appinfo source="X_Write">User</xsd:appinfo>
+		</xsd:annotation> 
         </xsd:element>  
         <xsd:element maxOccurs="1" minOccurs="0" name="Name" type="xsd:string"> 
-          <xsd:annotation>              
-          <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
-<xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
-</xsd:annotation> 
+        <xsd:annotation>              
+			<xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+			<xsd:appinfo source="X_Write">User</xsd:appinfo>
+		</xsd:annotation> 
         </xsd:element>  
         <xsd:element maxOccurs="unbounded" minOccurs="0" name="FK" type="xsd:string"> 
           <xsd:annotation> 
             <xsd:appinfo source="X_ForeignKey">FK2</xsd:appinfo>  
             <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>               
-          <xsd:appinfo source="X_No_Remove">Demo_User</xsd:appinfo>
-<xsd:appinfo source="X_No_Add">Demo_Manager</xsd:appinfo>
-<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
-<xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
-</xsd:annotation> 
+		    <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
+			<xsd:appinfo source="X_Write">User</xsd:appinfo>
+		</xsd:annotation> 
         </xsd:element> 
       </xsd:sequence> 
     </xsd:complexType>  

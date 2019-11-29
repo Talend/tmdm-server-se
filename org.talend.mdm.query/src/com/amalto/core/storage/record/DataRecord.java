@@ -10,12 +10,6 @@
 
 package com.amalto.core.storage.record;
 
-import com.amalto.core.storage.record.metadata.DataRecordMetadata;
-import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
-import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
-import org.talend.mdm.commmon.metadata.FieldMetadata;
-import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -26,6 +20,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
+
+import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.CompoundFieldMetadata;
+import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
+import org.talend.mdm.commmon.metadata.FieldMetadata;
+import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
+
+import com.amalto.core.storage.record.metadata.DataRecordMetadata;
 
 
 public class DataRecord {
@@ -175,6 +177,15 @@ public class DataRecord {
             }
             return null; // Not found.
         } else {
+            if (field instanceof CompoundFieldMetadata) {
+                StringBuilder keyValue = new StringBuilder();
+                for (Object keyField : this.type.getKeyFields()) {
+                    if (fieldToValue.containsKey(keyField)) {
+                        keyValue.append('[').append(fieldToValue.get(keyField)).append(']');
+                    }
+                }
+                return keyValue.toString();
+            }
             if (fieldToValue.containsKey(field)) {
                 return fieldToValue.get(field);
             } else if (recordMetadata.getRecordProperties().containsKey(field.getName())) { // Try to read from metadata
@@ -393,6 +404,7 @@ public class DataRecord {
 
         private static ThreadLocal<Boolean> threadLocal = new ThreadLocal<Boolean>() {
 
+            @Override
             public Boolean initialValue() {
                 return Boolean.TRUE;
             }
@@ -422,6 +434,7 @@ public class DataRecord {
 
         private static ThreadLocal<Boolean> threadLocal = new ThreadLocal<Boolean>() {
 
+            @Override
             public Boolean initialValue() {
                 return Boolean.FALSE;
             }

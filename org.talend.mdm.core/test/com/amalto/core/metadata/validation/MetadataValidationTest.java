@@ -575,7 +575,7 @@ public class MetadataValidationTest extends TestCase {
         InputStream resourceAsStream = this.getClass().getResourceAsStream("xsd_attributes.xsd");
         TestValidationHandler handler = new TestValidationHandler();
         repository.load(resourceAsStream, handler);
-        assertEquals(6, handler.getWarningCount());
+        assertEquals(28, handler.getWarningCount());
         assertTrue(handler.getMessages().contains(ValidationError.TYPE_USE_XSD_ATTRIBUTES));
         assertTrue(handler.getLineNumbers().contains(63));
         assertTrue(handler.getLineNumbers().contains(113));

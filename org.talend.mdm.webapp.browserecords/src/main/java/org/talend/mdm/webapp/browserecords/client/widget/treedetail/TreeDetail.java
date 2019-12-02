@@ -19,6 +19,7 @@ import java.util.Set;
 
 import org.talend.mdm.webapp.base.client.SessionAwareAsyncCallback;
 import org.talend.mdm.webapp.base.client.model.ForeignKeyBean;
+import org.talend.mdm.webapp.base.client.util.ErrorMessageUtil;
 import org.talend.mdm.webapp.base.client.util.UrlUtil;
 import org.talend.mdm.webapp.base.shared.ComplexTypeModel;
 import org.talend.mdm.webapp.base.shared.TypeModel;
@@ -236,7 +237,7 @@ public class TreeDetail extends ContentPanel {
                         @Override
                         protected void doOnFailure(Throwable caught) {
                             loadProgress.close();
-                            super.doOnFailure(caught);
+                            ErrorMessageUtil.showDetailErrorMessage(caught);
                         }
                     });
         }
@@ -892,8 +893,7 @@ public class TreeDetail extends ContentPanel {
 
                     @Override
                     protected void doOnFailure(Throwable caught) {
-                        MessageBox.alert(MessagesFactory.getMessages().error_title(), MessagesFactory.getMessages()
-                                .refresh_error(), null);
+                        ErrorMessageUtil.showDetailErrorMessage(caught);
                     }
                 });
     }

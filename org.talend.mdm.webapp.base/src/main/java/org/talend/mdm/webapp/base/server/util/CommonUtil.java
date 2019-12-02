@@ -314,4 +314,19 @@ public class CommonUtil {
     public static MetadataRepository getCurrentRepository() throws Exception {
         return ServerContext.INSTANCE.get().getMetadataRepositoryAdmin().get(Configuration.getConfiguration().getModel());
     }
+
+    /**
+     * Return the root Throwable message, if Throwable is null, return ""
+     * @param e current Throwable
+     * @return root Throwable Message
+     */
+    public static String getRootThrowableMessage(Throwable e) {
+        if (e == null) {
+            return StringUtils.EMPTY;
+        }
+        if (e.getCause() != null) {
+            return getRootThrowableMessage(e.getCause());
+        }
+        return e.getLocalizedMessage();
+    }
 }

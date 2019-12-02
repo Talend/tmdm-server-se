@@ -15,6 +15,7 @@ import java.util.Map;
 
 import org.talend.mdm.webapp.base.client.SessionAwareAsyncCallback;
 import org.talend.mdm.webapp.base.client.model.ItemResult;
+import org.talend.mdm.webapp.base.client.util.ErrorMessageUtil;
 import org.talend.mdm.webapp.base.client.widget.CallbackAction;
 import org.talend.mdm.webapp.base.client.widget.OperationMessageWindow;
 import org.talend.mdm.webapp.browserecords.client.BrowseRecordsServiceAsync;
@@ -46,6 +47,7 @@ public class LogicalDeleteAction implements DeleteAction {
         CommonUtil.setDeleteItemInfo(items, fkIntegrityMsgs, itemBeans);
 
         service.logicalDeleteItems(itemBeans, url, override, new SessionAwareAsyncCallback<Void>() {
+            @Override
             public void onSuccess(Void arg0) {
                 progressBar.close();
                 if (fkIntegrityMsgs != null && fkIntegrityMsgs.size() > 0) {
@@ -58,7 +60,7 @@ public class LogicalDeleteAction implements DeleteAction {
             @Override
             protected void doOnFailure(Throwable caught) {
                 progressBar.close();
-                super.doOnFailure(caught);
+                ErrorMessageUtil.showDetailErrorMessage(caught);
             }
         });
     }

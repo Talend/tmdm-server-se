@@ -16,6 +16,7 @@ import java.util.Map;
 import org.talend.mdm.webapp.base.client.SessionAwareAsyncCallback;
 import org.talend.mdm.webapp.base.client.model.ForeignKeyBean;
 import org.talend.mdm.webapp.base.client.model.ItemResult;
+import org.talend.mdm.webapp.base.client.util.ErrorMessageUtil;
 import org.talend.mdm.webapp.base.client.util.MultilanguageMessageParser;
 import org.talend.mdm.webapp.base.client.util.XmlUtil;
 import org.talend.mdm.webapp.base.client.widget.CallbackAction;
@@ -292,6 +293,10 @@ public class BrowseRecordsController extends Controller {
                                 event.setData(BrowseRecordsView.ITEMS_FORM_TARGET, itemsFormTarget);
                             }
                             forwardToView(view, event);
+                        }
+                        @Override
+                        protected void doOnFailure(Throwable caught) {
+                            ErrorMessageUtil.showDetailErrorMessage(caught);
                         }
                     });
         }

@@ -12,6 +12,7 @@ package org.talend.mdm.webapp.base.server.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.powermock.api.mockito.PowerMockito;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -430,6 +431,16 @@ public class CommonUtilTest extends TestCase {
         assertEquals(2, ids.length);
         assertEquals("1", ids[0]);
         assertEquals("2", ids[1]);
+    }
+
+    public void testGetRootThrowableMessage() {
+        Exception e1 = new Exception("e1 exception");
+        Exception e2 = new Exception(e1);
+        Exception e3 = new Exception("e3 Exception", e2);
+        assertEquals("e1 exception", CommonUtil.getRootThrowableMessage(e1));
+        assertEquals("e1 exception", CommonUtil.getRootThrowableMessage(e2));
+        assertEquals("e1 exception", CommonUtil.getRootThrowableMessage(e3));
+        assertEquals(StringUtils.EMPTY, CommonUtil.getRootThrowableMessage(null));
     }
 
     private class MockBaseMessages implements BaseMessages {

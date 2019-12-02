@@ -472,7 +472,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
                 errorMessage = getErrorMessageFromWebCoreException(webCoreException, itemBean.getConcept(), itemBean.getIds(),
                         locale);
             } else {
-                errorMessage = exception.getLocalizedMessage();
+                errorMessage = CommonUtil.getRootThrowableMessage(exception);
             }
             LOG.error(errorMessage, exception);
             throw new ServiceException(errorMessage);
@@ -685,13 +685,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
         } catch (WebBaseException e) {
             throw new ServiceException(BASEMESSAGE.getMessage(e.getMessage(), e.getArgs()));
         } catch (Exception exception) {
-            String errorMessage;
-            if (CoreException.class.isInstance(exception.getCause())) {
-                errorMessage = getErrorMessageFromWebCoreException(((CoreException) exception.getCause()), item.getConcept(),
-                        item.getIds(), null);
-            } else {
-                errorMessage = exception.getMessage();
-            }
+            String errorMessage = CommonUtil.getRootThrowableMessage(exception);
             LOG.error(errorMessage, exception);
             throw new ServiceException(errorMessage);
         }
@@ -751,7 +745,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
                 CoreException webCoreException = (CoreException) exception.getCause();
                 errorMessage = getErrorMessageFromWebCoreException(webCoreException, "", null, LocaleUtil.getLocale(language)); //$NON-NLS-1$
             } else {
-                errorMessage = exception.getLocalizedMessage();
+                errorMessage = CommonUtil.getRootThrowableMessage(exception);
             }
             LOG.error(exception.getMessage(), exception);
             throw new ServiceException(errorMessage);
@@ -783,7 +777,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
                 CoreException webCoreException = (CoreException) exception.getCause();
                 errorMessage = getErrorMessageFromWebCoreException(webCoreException, "", null, locale); //$NON-NLS-1$
             } else {
-                errorMessage = exception.getLocalizedMessage();
+                errorMessage = CommonUtil.getRootThrowableMessage(exception);
             }
             LOG.error(exception.getMessage(), exception);
             throw new ServiceException(errorMessage);
@@ -1339,8 +1333,9 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             LOG.error(e.getMessage(), e);
             throw e;
         } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
-            throw new ServiceException(e.getLocalizedMessage());
+            String errorMessage = CommonUtil.getRootThrowableMessage(e);
+            LOG.error(errorMessage, e);
+            throw new ServiceException(errorMessage);
         }
     }
 
@@ -1743,7 +1738,7 @@ public class BrowseRecordsAction implements BrowseRecordsService {
                     LOG.error(errorMessage, exception);
                 }
             } else {
-                errorMessage = exception.getLocalizedMessage();
+                errorMessage = CommonUtil.getRootThrowableMessage(exception);
                 LOG.error(errorMessage, exception);
             }
             return new ItemResult(ItemResult.FAILURE, errorMessage);

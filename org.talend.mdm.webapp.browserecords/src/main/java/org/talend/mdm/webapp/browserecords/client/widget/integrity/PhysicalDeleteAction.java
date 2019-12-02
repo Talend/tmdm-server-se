@@ -16,6 +16,7 @@ import java.util.Map;
 import org.talend.mdm.webapp.base.client.SessionAwareAsyncCallback;
 import org.talend.mdm.webapp.base.client.i18n.BaseMessagesFactory;
 import org.talend.mdm.webapp.base.client.model.ItemResult;
+import org.talend.mdm.webapp.base.client.util.ErrorMessageUtil;
 import org.talend.mdm.webapp.base.client.util.MultilanguageMessageParser;
 import org.talend.mdm.webapp.base.client.widget.CallbackAction;
 import org.talend.mdm.webapp.base.client.widget.OperationMessageWindow;
@@ -75,16 +76,7 @@ public class PhysicalDeleteAction implements DeleteAction {
             @Override
             protected void doOnFailure(Throwable caught) {
                 progressBar.close();
-                String errorMsg = caught.getLocalizedMessage();
-                if (errorMsg == null) {
-                    if (Log.isDebugEnabled()) {
-                        errorMsg = caught.toString(); // for debugging purpose
-                    } else {
-                        errorMsg = BaseMessagesFactory.getMessages().unknown_error();
-                    }
-                }
-                MessageBox.alert(message.error_title(),
-                        MultilanguageMessageParser.pickOutISOMessage(errorMsg), null);
+                ErrorMessageUtil.showDetailErrorMessage(caught);
             }
         });
     }

@@ -24,6 +24,7 @@ import org.talend.mdm.webapp.base.client.model.DataTypeConstants;
 import org.talend.mdm.webapp.base.client.model.ForeignKeyBean;
 import org.talend.mdm.webapp.base.client.model.ItemBasePageLoadResult;
 import org.talend.mdm.webapp.base.client.model.ItemResult;
+import org.talend.mdm.webapp.base.client.util.ErrorMessageUtil;
 import org.talend.mdm.webapp.base.client.util.MultilanguageMessageParser;
 import org.talend.mdm.webapp.base.client.util.Parser;
 import org.talend.mdm.webapp.base.client.widget.ColumnAlignGrid;
@@ -186,7 +187,7 @@ public class ItemsListPanel extends ContentPanel {
 
                 @Override
                 protected void doOnFailure(Throwable caught) {
-                    super.doOnFailure(caught);
+                    ErrorMessageUtil.showDetailErrorMessage(caught);
                     callback.onSuccess(new BasePagingLoadResult<ItemBean>(new ArrayList<ItemBean>(), 0, 0));
                     currentQueryModel = null;
                 }

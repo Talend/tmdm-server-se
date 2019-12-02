@@ -802,6 +802,30 @@ public class DocumentSaveTest extends TestCase {
         assertEquals("16.99", evaluate(committedElement, "/Product/Price"));
     }
 
+    public void testUpdateCompositeFK() throws Exception {
+        final MetadataRepository repository = new MetadataRepository();
+        repository.load(DocumentSaveTest.class.getResourceAsStream("TestCompositeFK.xsd"));
+        MockMetadataRepositoryAdmin.INSTANCE.register("TestCompositeFK", repository);
+
+        SaverSource source = new TestSaverSource(repository, true, "testCompositeFK_original.xml", "TestCompositeFK.xsd");
+
+        SaverSession session = SaverSession.newSession(source);
+        InputStream recordXml = new ByteArrayInputStream(
+                "<TestMultipleCompositeFK><Id>1</Id><Name>1</Name><FK>[Id2_c][Id1_c]</FK></TestMultipleCompositeFK>"
+                        .getBytes("UTF-8"));
+        DocumentSaverContext context = session.getContextFactory().create("MDM", "TestCompositeFK", "Source", recordXml, true,
+                true, true, false, false);
+        DocumentSaver saver = context.createSaver();
+        saver.save(session, context);
+        MockCommitter committer = new MockCommitter();
+        session.end(committer);
+
+        assertTrue(committer.hasSaved());
+        Element committedElement = committer.getCommittedElement();
+        System.out.print(evaluate(committedElement, "/TestMultipleCompositeFK/FK"));
+        assertEquals("[Id2_c][Id1_c]", evaluate(committedElement, "/TestMultipleCompositeFK/FK"));
+    }
+
     public void testPartialUpdate() throws Exception {
         final MetadataRepository repository = new MetadataRepository();
         repository.load(DocumentSaveTest.class.getResourceAsStream("metadata1.xsd"));

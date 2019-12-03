@@ -143,7 +143,7 @@ public class TQLPredicateToMDMPredicate implements IASTVisitor<Condition> {
     public Condition visit(FieldReference fieldReference) {
         final String path = fieldReference.getPath();
         final String typeName = StringUtils.substringBefore(path, ".");
-        final String fieldName = StringUtils.substringAfter(path, ".");
+        final String fieldName = StringUtils.substringAfter(path, ".").replace(".", "/");
         final ComplexTypeMetadata complexTypeMetadata = types.get(typeName);
         if (complexTypeMetadata == null) {
             throw new IllegalArgumentException("Type '" + typeName + "' is not selected in query.");

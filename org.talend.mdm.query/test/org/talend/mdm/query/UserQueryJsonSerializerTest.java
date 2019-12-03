@@ -253,6 +253,23 @@ public class UserQueryJsonSerializerTest extends TestCase {
         assertRoundTrip(select);
     }
 
+    public void testFKInfosContainedInTQL() {
+        this.repository.load(QueryParserTest.class.getResourceAsStream("metadatamovie.xsd"));
+        final ComplexTypeMetadata type1 = this.repository.getComplexType("Movie");
+        final UserQueryBuilder userQueryBuilder = UserQueryBuilder.from(type1).where("Movie.Genres.Genre contains 'Animation'");
+        final Select select = userQueryBuilder.getSelect();
+        assertNotNull(select.getCondition());
+        assertTrue(select.getCondition() instanceof BinaryLogicOperator);
+        assertEquals(((BinaryLogicOperator)select.getCondition()).getPredicate(), Predicate.OR);
+        assertTrue(((BinaryLogicOperator)select.getCondition()).getRight() instanceof Compare);
+        assertTrue(((BinaryLogicOperator)select.getCondition()).getLeft() instanceof Compare);
+        assertEquals(((Compare) ((BinaryLogicOperator) select.getCondition()).getRight()).getPredicate(),  Predicate.CONTAINS);
+        assertEquals(((Compare) ((BinaryLogicOperator) select.getCondition()).getLeft()).getPredicate(),  Predicate.CONTAINS);
+        assertEquals(((StringConstant) ((Compare) ((BinaryLogicOperator) select.getCondition()).getRight()).getRight()).getValue(), "Animation");
+        assertEquals(((Field)((Compare) ((BinaryLogicOperator) select.getCondition()).getRight()).getLeft()).getFieldMetadata().getName(), this.repository.getComplexType("Genre").getField("Id").getName());
+        assertRoundTrip(select);
+    }
+
     private void assertRoundTrip(Select select) {
         // when
         final String jsonAsString = UserQueryJsonSerializer.toJson(select);

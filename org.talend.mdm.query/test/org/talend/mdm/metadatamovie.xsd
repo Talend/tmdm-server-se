@@ -1,0 +1,296 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/>
+    <xsd:simpleType name="PICTURE">
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:simpleType name="URL">
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:simpleType name="AUTO_INCREMENT">
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="Movie">
+
+        <xsd:annotation>
+            <xsd:appinfo source="X_Write">Movie_Manager</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Poster" type="PICTURE">
+                    <xsd:annotation>
+
+
+
+                        <xsd:appinfo source="X_Label_EN">Poster</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Affiche</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Movie_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="Id" type="AUTO_INCREMENT">
+                    <xsd:annotation>
+
+
+
+                        <xsd:appinfo source="X_Label_EN">Identifier</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Identifiant</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Movie_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="Title" type="xsd:string">
+                    <xsd:annotation>
+
+
+
+                        <xsd:appinfo source="X_Label_EN">Title</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Titre</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Movie_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Overview" type="LongString">
+                    <xsd:annotation>
+
+
+
+                        <xsd:appinfo source="X_Label_EN">Synopsis</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Synopsis</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Movie_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Release" type="xsd:date">
+                    <xsd:annotation>
+
+                        <xsd:appinfo source="X_Label_EN">Release date</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Date de sortie</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Movie_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Status" type="Status">
+                    <xsd:annotation>
+
+                        <xsd:appinfo source="X_Label_EN">Status</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Statut</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Movie_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Budget" type="xsd:long">
+                    <xsd:annotation>
+
+
+
+                        <xsd:appinfo source="X_Label_EN">Budget</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Budget</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Movie_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Revenue" type="xsd:long">
+                    <xsd:annotation>
+
+
+
+                        <xsd:appinfo source="X_Label_EN">Gross</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Revenu</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Movie_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Imdb" type="URL">
+                    <xsd:annotation>
+
+
+
+                        <xsd:appinfo source="X_Label_EN">IMDb Link</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Lien IMDb</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Movie_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="BelongCollection" type="xsd:string">
+                    <xsd:annotation>
+
+                        <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey">Collection/Id</xsd:appinfo>
+
+                        <xsd:appinfo source="X_Label_EN">Collection</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Collection</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKeyInfo">Collection/Name</xsd:appinfo>
+                        <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Movie_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Adult" type="xsd:boolean">
+                    <xsd:annotation>
+
+
+
+                        <xsd:appinfo source="X_Label_EN">Adult audience</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Public adulte</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Movie_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Genres">
+                    <xsd:annotation>
+
+
+
+                        <xsd:appinfo source="X_Label_EN">Genres</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Genres</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Movie_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element maxOccurs="unbounded" minOccurs="0" name="Genre" type="xsd:string">
+                                <xsd:annotation>
+                                    <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
+                                    <xsd:appinfo source="X_ForeignKey">Genre/Id</xsd:appinfo>
+
+
+                                    <xsd:appinfo source="X_ForeignKeyInfo">Genre/Id</xsd:appinfo>
+                                    <xsd:appinfo source="X_ForeignKeyInfo">Genre/Name</xsd:appinfo>
+                                    <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Movie_Manager</xsd:appinfo>
+                                </xsd:annotation>
+                            </xsd:element>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Languages">
+                    <xsd:annotation>
+
+
+                        <xsd:appinfo source="X_Label_EN">Languages</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Langues</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Movie_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                    <xsd:complexType>
+                        <xsd:all>
+                            <xsd:element maxOccurs="1" minOccurs="1" name="Original" type="Lang">
+                                <xsd:annotation>
+
+
+                                    <xsd:appinfo source="X_Label_EN">Original language</xsd:appinfo>
+                                    <xsd:appinfo source="X_Label_FR">Version originale</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Movie_Manager</xsd:appinfo>
+                                </xsd:annotation>
+                            </xsd:element>
+                            <xsd:element maxOccurs="1" minOccurs="0" name="Spoken">
+                                <xsd:annotation>
+
+                                    <xsd:appinfo source="X_Label_EN">Available</xsd:appinfo>
+                                    <xsd:appinfo source="X_Label_FR">Doublages</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Movie_Manager</xsd:appinfo>
+                                </xsd:annotation>
+                                <xsd:complexType>
+                                    <xsd:sequence>
+                                        <xsd:element maxOccurs="unbounded" minOccurs="0" name="Lang" type="Lang">
+                                            <xsd:annotation>
+
+                                                <xsd:appinfo source="X_Label_EN">Language</xsd:appinfo>
+                                                <xsd:appinfo source="X_Label_FR">Langue</xsd:appinfo>
+                                                <xsd:appinfo source="X_Write">Movie_Manager</xsd:appinfo>
+                                            </xsd:annotation>
+                                        </xsd:element>
+                                    </xsd:sequence>
+                                </xsd:complexType>
+                            </xsd:element>
+                        </xsd:all>
+                    </xsd:complexType>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="Movie">
+            <xsd:selector xpath="."/>
+            <xsd:field xpath="Id"/>
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="Collection">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Write">Movie_Manager</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1" name="Id" type="AUTO_INCREMENT">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">Movie_Manager</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_EN">Identifier</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Identifiant</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="Name" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">Movie_Manager</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_EN">Name</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Nom</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Poster" type="PICTURE">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">Movie_Manager</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_EN">Poster</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Affiche</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Backdrop" type="PICTURE">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">Movie_Manager</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_EN">Backdrop</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Toile de fond</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="Collection">
+            <xsd:selector xpath="."/>
+            <xsd:field xpath="Id"/>
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="Genre">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Write">Movie_Manager</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1" name="Id" type="UUID">
+                    <xsd:annotation>
+
+                        <xsd:appinfo source="X_Label_EN">Identifier</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Identifiant</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Movie_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="Name" type="xsd:string">
+                    <xsd:annotation>
+
+                        <xsd:appinfo source="X_Write">Movie_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="Genre">
+            <xsd:selector xpath="."/>
+            <xsd:field xpath="Id"/>
+        </xsd:unique>
+    </xsd:element>
+    <xsd:simpleType name="UUID">
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:simpleType name="Lang">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="English"/>
+            <xsd:enumeration value="French"/>
+            <xsd:enumeration value="Spanish"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="Status">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="Canceled"/>
+            <xsd:enumeration value="In Production"/>
+            <xsd:enumeration value="Planned"/>
+            <xsd:enumeration value="Post Production"/>
+            <xsd:enumeration value="Released"/>
+            <xsd:enumeration value="Rumored"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="LongString">
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="15000"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+</xsd:schema>

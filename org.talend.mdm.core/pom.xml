@@ -431,11 +431,6 @@
         </dependency>
         <dependency>
             <groupId>org.codehaus.woodstox</groupId>
-            <artifactId>woodstox-core-asl</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.woodstox</groupId>
             <artifactId>stax2-api</artifactId>
             <scope>runtime</scope>
         </dependency>

@@ -10,6 +10,7 @@
 
 package com.amalto.core.server;
 
+import java.io.ByteArrayInputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,6 +26,7 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
@@ -72,9 +74,14 @@ public class DefaultDataModel implements DataModel {
     @Override
     public DataModelPOJOPK putDataModel(DataModelPOJO dataModel) throws XtentisException {
         try {
-            if ((dataModel.getSchema() == null) || "".equals(dataModel.getSchema())) { //$NON-NLS-1$
+            String schemaAsString = dataModel.getSchema();
+            if (StringUtils.isEmpty(schemaAsString)) {
                 // put an empty schema
                 dataModel.setSchema(EMPTY_SCHEMA);
+            }
+            MetadataRepository repository = new MetadataRepository();
+            if (schemaAsString != null && !schemaAsString.isEmpty()) {
+                repository.load(new ByteArrayInputStream(schemaAsString.getBytes("UTF-8"))); //$NON-NLS-1$
             }
             ObjectPOJOPK pk = dataModel.store();
             if (pk == null) {

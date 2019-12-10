@@ -126,6 +126,15 @@ public class DataRecord {
         if (field == null) {
             throw new IllegalArgumentException("Field cannot be null.");
         }
+        if (field instanceof CompoundFieldMetadata) {
+            StringBuilder keyValue = new StringBuilder();
+            for (Object keyField : this.type.getKeyFields()) {
+                if (fieldToValue.containsKey(keyField)) {
+                    keyValue.append('[').append(fieldToValue.get(keyField)).append(']');
+                }
+            }
+            return keyValue.toString();
+        }
         ComplexTypeMetadata containingType = field.getContainingType();
         if (containingType != this.getType() && !this.getType().isAssignableFrom(containingType)) {
             if (fieldToValue.containsKey(field)) {
@@ -168,15 +177,6 @@ public class DataRecord {
             }
             return null; // Not found.
         } else {
-            if (field instanceof CompoundFieldMetadata) {
-                StringBuilder keyValue = new StringBuilder();
-                for (Object keyField : this.type.getKeyFields()) {
-                    if (fieldToValue.containsKey(keyField)) {
-                        keyValue.append('[').append(fieldToValue.get(keyField)).append(']');
-                    }
-                }
-                return keyValue.toString();
-            }
             if (fieldToValue.containsKey(field)) {
                 return fieldToValue.get(field);
             } else if (recordMetadata.getRecordProperties().containsKey(field.getName())) { // Try to read from metadata

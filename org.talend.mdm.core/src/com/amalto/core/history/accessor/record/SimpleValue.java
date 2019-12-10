@@ -32,7 +32,10 @@ class SimpleValue implements Setter, Getter {
             boolean needResetValue = true;
             if (record.get(element.field) != null) {
                 String oldValue = String.valueOf(record.get(fieldMetadata.getReferencedField()));
-                needResetValue = !value.equals('[' + oldValue + ']');
+                if (!(fieldMetadata.getReferencedField() instanceof CompoundFieldMetadata)) {
+                    oldValue = '[' + oldValue + ']';
+                }
+                needResetValue = !value.equals(oldValue);
             }
             if (needResetValue) {
                 ComplexTypeMetadata referencedType = fieldMetadata.getReferencedType();

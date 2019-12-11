@@ -12,6 +12,7 @@ package org.talend.mdm.webapp.browserecords.client.widget.integrity;
 import java.util.Map;
 
 import org.talend.mdm.webapp.base.client.SessionAwareAsyncCallback;
+import org.talend.mdm.webapp.base.client.util.ErrorMessageUtil;
 import org.talend.mdm.webapp.browserecords.client.BrowseRecordsServiceAsync;
 import org.talend.mdm.webapp.browserecords.client.model.ItemBean;
 import org.talend.mdm.webapp.browserecords.shared.FKIntegrityResult;
@@ -59,4 +60,8 @@ public class DeleteCallback extends SessionAwareAsyncCallback<Map<ItemBean, FKIn
         }
     }
 
+    @Override
+    protected void doOnFailure(Throwable caught) {
+        ErrorMessageUtil.showDetailErrorMessage(caught);
+    }
 }

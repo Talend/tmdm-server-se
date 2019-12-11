@@ -255,6 +255,11 @@ public class BrowseRecordsController extends Controller {
                         ae.setData(BrowseRecordsView.ITEMS_DETAIL_PANEL, detailPanel);
                         forwardToView(view, ae);
                     }
+
+                    @Override
+                    protected void doOnFailure(Throwable caught) {
+                        ErrorMessageUtil.showDetailErrorMessage(caught);
+                    }
                 });
 
     }

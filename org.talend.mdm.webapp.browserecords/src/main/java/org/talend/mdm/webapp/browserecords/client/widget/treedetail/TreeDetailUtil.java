@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.talend.mdm.webapp.base.client.SessionAwareAsyncCallback;
+import org.talend.mdm.webapp.base.client.util.ErrorMessageUtil;
 import org.talend.mdm.webapp.base.shared.AppHeader;
 import org.talend.mdm.webapp.base.shared.ComplexTypeModel;
 import org.talend.mdm.webapp.base.shared.EntityModel;
@@ -124,6 +125,11 @@ public class TreeDetailUtil {
                     }
                 });
             }
+
+            @Override
+            protected void doOnFailure(Throwable caught) {
+                ErrorMessageUtil.showDetailErrorMessage(caught);
+            }
         });
     }
 
@@ -153,6 +159,11 @@ public class TreeDetailUtil {
                         });
                     }
                 });
+            }
+
+            @Override
+            protected void doOnFailure(Throwable caught) {
+                ErrorMessageUtil.showDetailErrorMessage(caught);
             }
         });
     }

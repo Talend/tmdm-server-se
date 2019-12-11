@@ -16,6 +16,7 @@ import java.util.Map;
 
 import org.talend.mdm.webapp.base.client.SessionAwareAsyncCallback;
 import org.talend.mdm.webapp.base.client.model.ItemBaseModel;
+import org.talend.mdm.webapp.base.client.util.ErrorMessageUtil;
 import org.talend.mdm.webapp.base.client.util.MultilanguageMessageParser;
 import org.talend.mdm.webapp.base.client.util.UrlUtil;
 import org.talend.mdm.webapp.base.shared.Constants;
@@ -401,6 +402,11 @@ public class ItemDetailToolBar extends ToolBar {
                             itemsDetailPanel.clearBanner();
                             itemsDetailPanel.initBanner(itemBean.getPkInfoList(), itemBean.getDescription());
                         };
+
+                        @Override
+                        protected void doOnFailure(Throwable caught) {
+                            ErrorMessageUtil.showDetailErrorMessage(caught);
+                        }
                     });
         }
     }

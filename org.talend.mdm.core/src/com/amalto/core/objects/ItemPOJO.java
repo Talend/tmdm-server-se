@@ -40,7 +40,6 @@ import com.amalto.core.objects.marshalling.MarshallingFactory;
 import com.amalto.core.server.StorageAdmin;
 import com.amalto.core.server.api.XmlServer;
 import com.amalto.core.util.LocalUser;
-import com.amalto.core.util.UserManage;
 import com.amalto.core.util.Util;
 import com.amalto.core.util.XtentisException;
 

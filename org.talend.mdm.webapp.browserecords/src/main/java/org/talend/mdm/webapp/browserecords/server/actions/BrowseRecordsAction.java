@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 
 import javax.xml.parsers.DocumentBuilder;
 
+import com.amalto.core.util.XtentisException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.dom4j.DocumentHelper;
@@ -314,8 +315,9 @@ public class BrowseRecordsAction implements BrowseRecordsService {
         } catch (WebBaseException e) {
             throw new ServiceException(BASEMESSAGE.getMessage(e.getMessage(), e.getArgs()));
         } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
-            throw new ServiceException(e.getLocalizedMessage());
+            String message = CommonUtil.getRootThrowableMessage(e);
+            LOG.error(message, e);
+            throw new ServiceException(message);
         }
     }
 
@@ -1875,8 +1877,9 @@ public class BrowseRecordsAction implements BrowseRecordsService {
             ItemNodeModel nodeModel = getItemNodeModel(itemBean, viewBean.getBindingEntityModel(), isStaging, language);
             return new ForeignKeyModel(viewBean, itemBean, nodeModel);
         } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
-            throw new ServiceException(e.getLocalizedMessage());
+            String message = CommonUtil.getRootThrowableMessage(e);
+            LOG.error(message, e);
+            throw new ServiceException(message);
         }
     }
 
@@ -2212,8 +2215,9 @@ public class BrowseRecordsAction implements BrowseRecordsService {
         } catch (WebBaseException e) {
             throw new ServiceException(BASEMESSAGE.getMessage(LocaleUtil.getLocale(language), e.getMessage(), e.getArgs()));
         } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
-            throw new ServiceException(e.getLocalizedMessage());
+            String message = CommonUtil.getRootThrowableMessage(e);
+            LOG.error(message, e);
+            throw new ServiceException(message);
         }
     }
 
@@ -2250,6 +2254,10 @@ public class BrowseRecordsAction implements BrowseRecordsService {
                 if (cause != null && cause instanceof EntityNotFoundException) {
                     throw new ServiceException(MESSAGES.getMessage(locale, "record_not_found_msg")); //$NON-NLS-1$
                 }
+            }
+            if (e instanceof XtentisException && e.getStackTrace()[0].getClassName().equals("com.amalto.core.objects.ItemPOJO")
+                    && e.getStackTrace()[0].getMethodName().equals("checkAccess")) {
+                throw new ServiceException(CommonUtil.getRootThrowableMessage(e));
             }
             throw new ServiceException(MESSAGES.getMessage(locale, "parse_model_error")); //$NON-NLS-1$ 
         }

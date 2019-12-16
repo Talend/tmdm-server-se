@@ -35,7 +35,7 @@ public class DefaultCommitter implements SaverSession.Committer {
         xmlServerCtrlLocal = Util.getXmlServerCtrlLocal();
     }
 
-    public void begin(String dataCluster) {
+    public synchronized void begin(String dataCluster) {
         try {
             if (xmlServerCtrlLocal.supportTransaction()) {
                 xmlServerCtrlLocal.start(dataCluster);
@@ -45,7 +45,7 @@ public class DefaultCommitter implements SaverSession.Committer {
         }
     }
 
-    public void commit(String dataCluster) {
+    public synchronized void commit(String dataCluster) {
         try {
             if (xmlServerCtrlLocal.supportTransaction()) {
                 xmlServerCtrlLocal.commit(dataCluster);
@@ -55,7 +55,7 @@ public class DefaultCommitter implements SaverSession.Committer {
         }
     }
 
-    public void rollback(String dataCluster) {
+    public synchronized void rollback(String dataCluster) {
         try {
             if (xmlServerCtrlLocal.supportTransaction()) {
                 xmlServerCtrlLocal.rollback(dataCluster);
@@ -65,7 +65,7 @@ public class DefaultCommitter implements SaverSession.Committer {
         }
     }
 
-    public void save(Document document) {
+    public synchronized void save(Document document) {
         try {
             ComplexTypeMetadata type = document.getType();
             boolean putInCache = type.getSuperTypes().isEmpty() && type.getSubTypes().isEmpty();
@@ -93,7 +93,7 @@ public class DefaultCommitter implements SaverSession.Committer {
     }
 
     @Override
-    public void delete(Document document, DeleteType deleteType) {
+    public synchronized void delete(Document document, DeleteType deleteType) {
         try {
             ComplexTypeMetadata type = document.getType();
             boolean putInCache = type.getSuperTypes().isEmpty() && type.getSubTypes().isEmpty();

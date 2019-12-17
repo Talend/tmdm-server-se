@@ -192,8 +192,6 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
 
     private static final Map<String, AtomicInteger> DB_REQUESTS_MAP = new HashMap<String, AtomicInteger>();
 
-    private static final Integer MAX_DB_REQUESTS;
-
     private static final Long WAIT_MILLISECONDS = 10L;
 
     @Override
@@ -965,9 +963,18 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
     }
 
     private boolean isPutItemRequestLimited(String dataClusterName) {
+        String maxRequests = MDMConfiguration.getConfiguration().getProperty("putitem.concurrent.database.requests." + dataClusterName); //$NON-NLS-1$
+        return maxRequests != null;
+    }
+
+    private int getMaxDBRequests(String dataClusterName) {
         String maxRequests = MDMConfiguration.getConfiguration().getProperty(
                 "putitem.concurrent.database.requests." + dataClusterName); //$NON-NLS-1$
-        return maxRequests != null;
+        if (isPutItemRequestLimited(dataClusterName)) {
+            return Integer.valueOf(MDMConfiguration.getConfiguration().getProperty("bulkload.concurrent.database.requests")); //$NON-NLS-1$
+        } else {
+            return 0;
+        }
     }
 
     private void beginLimitation(String dataClusterName) {
@@ -977,7 +984,7 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
             synchronized (this) {
                 AtomicInteger dbRequests = getDbRequests(dataClusterName);
                 try {
-                    while (dbRequests.get() >= MAX_DB_REQUESTS) {
+                    while (dbRequests.get() >= getMaxDBRequests(dataClusterName)) {
                         if (LOGGER.isDebugEnabled()) {
                             LOGGER.debug("Up to " + dbRequests + " putitem requests, wait for " + WAIT_MILLISECONDS + " ms.");  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
                         }

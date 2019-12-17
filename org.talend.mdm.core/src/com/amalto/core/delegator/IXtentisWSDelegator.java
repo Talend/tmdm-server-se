@@ -924,12 +924,14 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
      */
     @Override
     public WSItemPK putItem(WSPutItem wsPutItem) throws RemoteException {
-        WSDataClusterPK dataClusterPK = wsPutItem.getWsDataClusterPK();
-        WSDataModelPK dataModelPK = wsPutItem.getWsDataModelPK();
-        String dataClusterName = dataClusterPK.getPk();
-        beginLimitation(dataClusterName);
+        String dataClusterName = StringUtils.EMPTY;
         try {
+            WSDataClusterPK dataClusterPK = wsPutItem.getWsDataClusterPK();
+            WSDataModelPK dataModelPK = wsPutItem.getWsDataModelPK();
+            dataClusterName = dataClusterPK.getPk();
+            beginRequestLimitation(dataClusterName);
             String dataModelName = dataModelPK.getPk();
+
             SaverSession session = SaverSession.newSession();
             DocumentSaver saver;
             try {
@@ -958,26 +960,27 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
                         .getLocalizedMessage()), e);
             }
         } finally {
-            endLimitation(dataClusterName);
+            endRequestLimitation(dataClusterName);
         }
     }
 
     private boolean isPutItemRequestLimited(String dataClusterName) {
-        String maxRequests = MDMConfiguration.getConfiguration().getProperty("putitem.concurrent.database.requests." + dataClusterName); //$NON-NLS-1$
-        return maxRequests != null;
+        return getMaxDBRequestsConfiguration(dataClusterName) != null;
     }
 
     private int getMaxDBRequests(String dataClusterName) {
-        String maxRequests = MDMConfiguration.getConfiguration().getProperty(
-                "putitem.concurrent.database.requests." + dataClusterName); //$NON-NLS-1$
         if (isPutItemRequestLimited(dataClusterName)) {
-            return Integer.valueOf(MDMConfiguration.getConfiguration().getProperty("bulkload.concurrent.database.requests")); //$NON-NLS-1$
+            return Integer.valueOf(getMaxDBRequestsConfiguration(dataClusterName));
         } else {
             return 0;
         }
     }
 
-    private void beginLimitation(String dataClusterName) {
+    private String getMaxDBRequestsConfiguration(String dataClusterName) {
+        return MDMConfiguration.getConfiguration().getProperty("putitem.concurrent.database.requests." + dataClusterName); //$NON-NLS-1$
+    }
+
+    private void beginRequestLimitation(String dataClusterName) {
         boolean isPutItemRequestLimited = isPutItemRequestLimited(dataClusterName);
         if (isPutItemRequestLimited) {
             // Wait until less that MAX_THREADS running
@@ -1001,7 +1004,7 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
         }
     }
 
-    private void endLimitation(String dataClusterName) {
+    private void endRequestLimitation(String dataClusterName) {
         boolean isPutItemRequestLimited = isPutItemRequestLimited(dataClusterName);
         if (isPutItemRequestLimited) {
             // Decrease total threads
@@ -1125,11 +1128,14 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
      */
     @Override
     public WSItemPK putItemWithReport(com.amalto.core.webservice.WSPutItemWithReport wsPutItemWithReport) throws RemoteException {
+        String dataClusterName = StringUtils.EMPTY;
         try {
             WSPutItem wsPutItem = wsPutItemWithReport.getWsPutItem();
             WSDataClusterPK dataClusterPK = wsPutItem.getWsDataClusterPK();
             WSDataModelPK dataModelPK = wsPutItem.getWsDataModelPK();
-            String dataClusterName = dataClusterPK.getPk();
+            dataClusterName = dataClusterPK.getPk();
+            beginRequestLimitation(dataClusterName);
+
             String dataModelName = dataModelPK.getPk();
             SaverSession session = SaverSession.newSession();
             DocumentSaver saver;
@@ -1162,6 +1168,8 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
         } catch (Exception e) {
             LOGGER.error("Error during save.", e); //$NON-NLS-1$
             throw handleException(e, SAVE_EXCEPTION_MESSAGE);
+        } finally {
+            endRequestLimitation(dataClusterName);
         }
     }
 
@@ -1173,12 +1181,15 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
     @Override
     public WSItemPK putItemWithCustomReport(com.amalto.core.webservice.WSPutItemWithCustomReport wsPutItemWithCustomReport)
             throws RemoteException {
+        String dataClusterName = StringUtils.EMPTY;
         try {
             WSPutItemWithReport wsPutItemWithReport = wsPutItemWithCustomReport.getWsPutItemWithReport();
             WSPutItem wsPutItem = wsPutItemWithReport.getWsPutItem();
             WSDataClusterPK dataClusterPK = wsPutItem.getWsDataClusterPK();
             WSDataModelPK dataModelPK = wsPutItem.getWsDataModelPK();
-            String dataClusterName = dataClusterPK.getPk();
+            dataClusterName = dataClusterPK.getPk();
+            beginRequestLimitation(dataClusterName);
+
             String dataModelName = dataModelPK.getPk();
             // This method uses a special user
             SaverSession session = SaverSession.newUserSession(wsPutItemWithCustomReport.getUser());
@@ -1206,6 +1217,8 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
         } catch (Exception e) {
             LOGGER.error("Error during save.", e); //$NON-NLS-1$
             throw new RemoteException((e.getCause() == null ? e.getLocalizedMessage() : e.getCause().getLocalizedMessage()), e);
+        } finally {
+            endRequestLimitation(dataClusterName);
         }
     }
 

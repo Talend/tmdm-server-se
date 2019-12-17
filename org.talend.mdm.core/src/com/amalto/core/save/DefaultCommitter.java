@@ -31,41 +31,49 @@ public class DefaultCommitter implements SaverSession.Committer {
 
     private final XmlServer xmlServerCtrlLocal;
 
+    private final Object lock = new Object();
+
     public DefaultCommitter() {
         xmlServerCtrlLocal = Util.getXmlServerCtrlLocal();
     }
 
-    public synchronized void begin(String dataCluster) {
+    public void begin(String dataCluster) {
         try {
             if (xmlServerCtrlLocal.supportTransaction()) {
-                xmlServerCtrlLocal.start(dataCluster);
+                synchronized (lock) {
+                    xmlServerCtrlLocal.start(dataCluster);
+                }
             }
         } catch (XtentisException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public synchronized void commit(String dataCluster) {
+    public void commit(String dataCluster) {
         try {
             if (xmlServerCtrlLocal.supportTransaction()) {
-                xmlServerCtrlLocal.commit(dataCluster);
+                synchronized (lock) {
+                    xmlServerCtrlLocal.commit(dataCluster);
+                }
             }
         } catch (XtentisException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public synchronized void rollback(String dataCluster) {
+    public void rollback(String dataCluster) {
         try {
             if (xmlServerCtrlLocal.supportTransaction()) {
-                xmlServerCtrlLocal.rollback(dataCluster);
+                synchronized (lock) {
+                    xmlServerCtrlLocal.rollback(dataCluster);
+                }
             }
         } catch (XtentisException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public synchronized void save(Document document) {
+    public void save(Document document) {
         try {
             ComplexTypeMetadata type = document.getType();
             boolean putInCache = type.getSuperTypes().isEmpty() && type.getSubTypes().isEmpty();
@@ -93,7 +101,7 @@ public class DefaultCommitter implements SaverSession.Committer {
     }
 
     @Override
-    public synchronized void delete(Document document, DeleteType deleteType) {
+    public void delete(Document document, DeleteType deleteType) {
         try {
             ComplexTypeMetadata type = document.getType();
             boolean putInCache = type.getSuperTypes().isEmpty() && type.getSubTypes().isEmpty();

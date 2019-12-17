@@ -31,8 +31,6 @@ public class DefaultCommitter implements SaverSession.Committer {
 
     private final XmlServer xmlServerCtrlLocal;
 
-    private final Object lock = new Object();
-
     public DefaultCommitter() {
         xmlServerCtrlLocal = Util.getXmlServerCtrlLocal();
     }
@@ -40,9 +38,17 @@ public class DefaultCommitter implements SaverSession.Committer {
     public void begin(String dataCluster) {
         try {
             if (xmlServerCtrlLocal.supportTransaction()) {
-                synchronized (lock) {
-                    xmlServerCtrlLocal.start(dataCluster);
-                }
+                xmlServerCtrlLocal.start(dataCluster);
+            }
+        } catch (XtentisException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void end(String dataCluster) {
+        try {
+            if (xmlServerCtrlLocal.supportTransaction()) {
+                xmlServerCtrlLocal.end(dataCluster);
             }
         } catch (XtentisException e) {
             throw new RuntimeException(e);
@@ -52,9 +58,7 @@ public class DefaultCommitter implements SaverSession.Committer {
     public void commit(String dataCluster) {
         try {
             if (xmlServerCtrlLocal.supportTransaction()) {
-                synchronized (lock) {
-                    xmlServerCtrlLocal.commit(dataCluster);
-                }
+                xmlServerCtrlLocal.commit(dataCluster);
             }
         } catch (XtentisException e) {
             throw new RuntimeException(e);
@@ -64,9 +68,7 @@ public class DefaultCommitter implements SaverSession.Committer {
     public void rollback(String dataCluster) {
         try {
             if (xmlServerCtrlLocal.supportTransaction()) {
-                synchronized (lock) {
-                    xmlServerCtrlLocal.rollback(dataCluster);
-                }
+                xmlServerCtrlLocal.rollback(dataCluster);
             }
         } catch (XtentisException e) {
             throw new RuntimeException(e);

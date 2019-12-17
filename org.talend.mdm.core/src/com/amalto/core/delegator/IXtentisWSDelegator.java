@@ -22,6 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.xpath.XPath;
@@ -188,6 +189,12 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
     
     // default remote error
     public static final String DEFAULT_REMOTE_ERROR_MESSAGE = "default_remote_error_message"; //$NON-NLS-1$
+
+    private static final Map<String, AtomicInteger> DB_REQUESTS_MAP = new HashMap<String, AtomicInteger>();
+
+    private static final Integer MAX_DB_REQUESTS;
+
+    private static final Long WAIT_MILLISECONDS = 10L;
 
     @Override
     public WSVersion getComponentVersion(WSGetComponentVersion wsGetComponentVersion) throws RemoteException {
@@ -919,10 +926,11 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
      */
     @Override
     public WSItemPK putItem(WSPutItem wsPutItem) throws RemoteException {
+        WSDataClusterPK dataClusterPK = wsPutItem.getWsDataClusterPK();
+        WSDataModelPK dataModelPK = wsPutItem.getWsDataModelPK();
+        String dataClusterName = dataClusterPK.getPk();
+        beginLimitation(dataClusterName);
         try {
-            WSDataClusterPK dataClusterPK = wsPutItem.getWsDataClusterPK();
-            WSDataModelPK dataModelPK = wsPutItem.getWsDataModelPK();
-            String dataClusterName = dataClusterPK.getPk();
             String dataModelName = dataModelPK.getPk();
             SaverSession session = SaverSession.newSession();
             DocumentSaver saver;
@@ -951,7 +959,67 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
                 throw new RemoteException((cause.getCause() == null ? cause.getLocalizedMessage() : cause.getCause()
                         .getLocalizedMessage()), e);
             }
+        } finally {
+            endLimitation(dataClusterName);
         }
+    }
+
+    private boolean isPutItemRequestLimited(String dataClusterName) {
+        String maxRequests = MDMConfiguration.getConfiguration().getProperty(
+                "putitem.concurrent.database.requests." + dataClusterName); //$NON-NLS-1$
+        return maxRequests != null;
+    }
+
+    private void beginLimitation(String dataClusterName) {
+        boolean isPutItemRequestLimited = isPutItemRequestLimited(dataClusterName);
+        if (isPutItemRequestLimited) {
+            // Wait until less that MAX_THREADS running
+            synchronized (this) {
+                AtomicInteger dbRequests = getDbRequests(dataClusterName);
+                try {
+                    while (dbRequests.get() >= MAX_DB_REQUESTS) {
+                        if (LOGGER.isDebugEnabled()) {
+                            LOGGER.debug("Up to " + dbRequests + " putitem requests, wait for " + WAIT_MILLISECONDS + " ms.");  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+                        }
+                        Thread.sleep(WAIT_MILLISECONDS);
+                    }
+                    int newDbRequests = increaseDbRequests(dataClusterName);
+                    if (LOGGER.isDebugEnabled()) {
+                        LOGGER.debug("Add 1 putitem request, currently " + newDbRequests + " requests left."); //$NON-NLS-1$ //$NON-NLS-2$
+                    }
+                } catch (InterruptedException e) {
+                    LOGGER.error("Waiting to start putitem request meets exception.", e); //$NON-NLS-1$
+                }
+            }
+        }
+    }
+
+    private void endLimitation(String dataClusterName) {
+        boolean isPutItemRequestLimited = isPutItemRequestLimited(dataClusterName);
+        if (isPutItemRequestLimited) {
+            // Decrease total threads
+            int newDbRequests = decreaseDbRequests(dataClusterName);
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Finish 1 putitem request, currently " + newDbRequests + " requests left."); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+        }
+    }
+
+    private int increaseDbRequests(String dataClusterName) {
+        return DB_REQUESTS_MAP.get(dataClusterName).incrementAndGet();
+    }
+
+    private int decreaseDbRequests(String dataClusterName) {
+        return DB_REQUESTS_MAP.get(dataClusterName).decrementAndGet();
+    }
+
+    private AtomicInteger getDbRequests(String dataClusterName) {
+        AtomicInteger value = DB_REQUESTS_MAP.get(dataClusterName);
+        if (value == null) {
+            value = new AtomicInteger(0);
+            DB_REQUESTS_MAP.put(dataClusterName, value);
+        }
+        return value;
     }
 
     /**

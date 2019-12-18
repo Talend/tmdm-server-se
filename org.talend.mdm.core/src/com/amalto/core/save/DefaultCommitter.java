@@ -45,16 +45,6 @@ public class DefaultCommitter implements SaverSession.Committer {
         }
     }
 
-    public void end(String dataCluster) {
-        try {
-            if (xmlServerCtrlLocal.supportTransaction()) {
-                xmlServerCtrlLocal.end(dataCluster);
-            }
-        } catch (XtentisException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     public void commit(String dataCluster) {
         try {
             if (xmlServerCtrlLocal.supportTransaction()) {

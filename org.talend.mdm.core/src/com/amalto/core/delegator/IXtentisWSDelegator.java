@@ -192,7 +192,11 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
 
     private static final Map<String, AtomicInteger> DB_REQUESTS_MAP = new HashMap<String, AtomicInteger>();
 
-    private static final Long WAIT_MILLISECONDS = 10L;
+    private static final Long WAIT_MILLISECONDS;
+
+    static {
+        WAIT_MILLISECONDS = Long.valueOf(MDMConfiguration.getConfiguration().getProperty("putitem.concurrent.wait.milliseconds", "10")); //$NON-NLS-1$ //$NON-NLS-2$
+    }
 
     @Override
     public WSVersion getComponentVersion(WSGetComponentVersion wsGetComponentVersion) throws RemoteException {
@@ -964,34 +968,15 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
         }
     }
 
-    private boolean isPutItemRequestLimited(String dataModelName) {
-        return getMaxDBRequestsConfiguration(dataModelName) != null;
-    }
-
-    private int getMaxDBRequests(String dataModelName) {
-        if (isPutItemRequestLimited(dataModelName)) {
-            return Integer.valueOf(getMaxDBRequestsConfiguration(dataModelName));
-        } else {
-            return 0;
-        }
-    }
-
-    private String getMaxDBRequestsConfiguration(String dataModelName) {
-        String dataModelLimit = MDMConfiguration.getConfiguration().getProperty("putitem.concurrent.database.requests." + dataModelName); //$NON-NLS-1$
-        String generalLimit = MDMConfiguration.getConfiguration().getProperty("putitem.concurrent.database.requests.*"); //$NON-NLS-1$
-        if (dataModelLimit != null) {
-            return dataModelLimit;
-        } else {
-            return generalLimit;
-        }
+    private static Integer getMaxDBRequests(String dataModelName) {
+        return Integer.valueOf(MDMConfiguration.getConfiguration().getProperty("putitem.concurrent.database.requests." + dataModelName)); //$NON-NLS-1$
     }
 
     private void beginRequestLimitation(String dataModelName) {
-        boolean isPutItemRequestLimited = isPutItemRequestLimited(dataModelName);
-        if (isPutItemRequestLimited) {
+        if (getMaxDBRequests(dataModelName) > 0) {
             // Wait until less that MAX_THREADS running
             synchronized (this) {
-                AtomicInteger dbRequests = getDbRequests(dataModelName);
+                AtomicInteger dbRequests = getDBRequests(dataModelName);
                 try {
                     while (dbRequests.get() >= getMaxDBRequests(dataModelName)) {
                         if (LOGGER.isDebugEnabled()) {
@@ -999,7 +984,7 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
                         }
                         Thread.sleep(WAIT_MILLISECONDS);
                     }
-                    int newDbRequests = increaseDbRequests(dataModelName);
+                    int newDbRequests = DB_REQUESTS_MAP.get(dataModelName).incrementAndGet();
                     if (LOGGER.isDebugEnabled()) {
                         LOGGER.debug("Add 1 putitem request, currently " + newDbRequests + " requests left."); //$NON-NLS-1$ //$NON-NLS-2$
                     }
@@ -1011,25 +996,16 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
     }
 
     private void endRequestLimitation(String dataModelName) {
-        boolean isPutItemRequestLimited = isPutItemRequestLimited(dataModelName);
-        if (isPutItemRequestLimited) {
+        if (getMaxDBRequests(dataModelName) > 0) {
             // Decrease total threads
-            int newDbRequests = decreaseDbRequests(dataModelName);
+            int newDbRequests = DB_REQUESTS_MAP.get(dataModelName).decrementAndGet();
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Finish 1 putitem request, currently " + newDbRequests + " requests left."); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
     }
 
-    private int increaseDbRequests(String dataModelName) {
-        return DB_REQUESTS_MAP.get(dataModelName).incrementAndGet();
-    }
-
-    private int decreaseDbRequests(String dataModelName) {
-        return DB_REQUESTS_MAP.get(dataModelName).decrementAndGet();
-    }
-
-    private AtomicInteger getDbRequests(String dataModelName) {
+    private static AtomicInteger getDBRequests(String dataModelName) {
         AtomicInteger value = DB_REQUESTS_MAP.get(dataModelName);
         if (value == null) {
             value = new AtomicInteger(0);

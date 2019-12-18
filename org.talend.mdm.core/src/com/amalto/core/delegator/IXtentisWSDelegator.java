@@ -192,11 +192,7 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
 
     private static final Map<String, AtomicInteger> DB_REQUESTS_MAP = new HashMap<String, AtomicInteger>();
 
-    private static final Long WAIT_MILLISECONDS;
-
-    static {
-        WAIT_MILLISECONDS = Long.valueOf(MDMConfiguration.getConfiguration().getProperty("putitem.concurrent.wait.milliseconds", "10")); //$NON-NLS-1$ //$NON-NLS-2$
-    }
+    private static Long WAIT_MILLISECONDS;
 
     @Override
     public WSVersion getComponentVersion(WSGetComponentVersion wsGetComponentVersion) throws RemoteException {
@@ -968,17 +964,26 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
         }
     }
 
-    private static Integer getMaxDBRequests(String dataModelName) {
-        return Integer.valueOf(MDMConfiguration.getConfiguration().getProperty("putitem.concurrent.database.requests." + dataModelName)); //$NON-NLS-1$
+    private static int getMaxDBRequests(String dataModelName) {
+        try {
+            return Integer.valueOf(MDMConfiguration.getConfiguration().getProperty("putitem.concurrent.database.requests." + dataModelName)); //$NON-NLS-1$
+        } catch (Exception e) {
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Invalid configuration of putitem request limitation.", e); //$NON-NLS-1$
+            }
+            return 0;
+        }
     }
 
-    private void beginRequestLimitation(String dataModelName) {
-        if (getMaxDBRequests(dataModelName) > 0) {
+    private static void beginRequestLimitation(String dataModelName) {
+        int maxDBRequests = getMaxDBRequests(dataModelName);
+        if (maxDBRequests > 0) {
+            WAIT_MILLISECONDS = Long.valueOf(MDMConfiguration.getConfiguration().getProperty("putitem.concurrent.wait.milliseconds." + dataModelName, "10")); //$NON-NLS-1$ //$NON-NLS-2$
             // Wait until less that MAX_THREADS running
-            synchronized (this) {
+            synchronized (IXtentisWSDelegator.class) {
                 AtomicInteger dbRequests = getDBRequests(dataModelName);
                 try {
-                    while (dbRequests.get() >= getMaxDBRequests(dataModelName)) {
+                    while (dbRequests.get() >= maxDBRequests) {
                         if (LOGGER.isDebugEnabled()) {
                             LOGGER.debug("Up to " + dbRequests + " putitem requests, wait for " + WAIT_MILLISECONDS + " ms.");  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
                         }
@@ -995,7 +1000,7 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
         }
     }
 
-    private void endRequestLimitation(String dataModelName) {
+    private static void endRequestLimitation(String dataModelName) {
         if (getMaxDBRequests(dataModelName) > 0) {
             // Decrease total threads
             int newDbRequests = DB_REQUESTS_MAP.get(dataModelName).decrementAndGet();

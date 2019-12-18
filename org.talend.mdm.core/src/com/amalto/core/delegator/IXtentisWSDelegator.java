@@ -972,10 +972,20 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
         }
     }
 
+    private static long getWaitMilliSeconds(String dataModelName) {
+        String putItemConfig = "putitem.concurrent.wait.milliseconds." + dataModelName; //$NON-NLS-1$
+        try {
+            return Long.valueOf(MDMConfiguration.getConfiguration().getProperty(putItemConfig, "10")); //$NON-NLS-1$
+        } catch (Exception e) {
+            LOGGER.error("Invalid configuration for: " + putItemConfig, e); //$NON-NLS-1$
+            return 10;
+        }
+    }
+
     private static void beginRequestLimitation(String dataModelName) {
         int maxDBRequests = getMaxDBRequests(dataModelName);
         if (maxDBRequests > 0) {
-            long waitMilliSeconds = Long.valueOf(MDMConfiguration.getConfiguration().getProperty("putitem.concurrent.wait.milliseconds." + dataModelName, "10")); //$NON-NLS-1$ //$NON-NLS-2$
+            long waitMilliSeconds = getWaitMilliSeconds(dataModelName);
             // Wait until less that MAX_THREADS running
             synchronized (IXtentisWSDelegator.class) {
                 AtomicInteger dbRequests = getDBRequests(dataModelName);

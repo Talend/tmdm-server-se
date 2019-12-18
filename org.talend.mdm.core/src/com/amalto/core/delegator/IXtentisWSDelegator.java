@@ -924,13 +924,13 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
      */
     @Override
     public WSItemPK putItem(WSPutItem wsPutItem) throws RemoteException {
-        String dataClusterName = StringUtils.EMPTY;
+        String dataModelName = StringUtils.EMPTY;
         try {
             WSDataClusterPK dataClusterPK = wsPutItem.getWsDataClusterPK();
             WSDataModelPK dataModelPK = wsPutItem.getWsDataModelPK();
-            dataClusterName = dataClusterPK.getPk();
-            beginRequestLimitation(dataClusterName);
-            String dataModelName = dataModelPK.getPk();
+            String dataClusterName = dataClusterPK.getPk();
+            dataModelName = dataModelPK.getPk();
+            beginRequestLimitation(dataModelName);
 
             SaverSession session = SaverSession.newSession();
             DocumentSaver saver;
@@ -960,40 +960,46 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
                         .getLocalizedMessage()), e);
             }
         } finally {
-            endRequestLimitation(dataClusterName);
+            endRequestLimitation(dataModelName);
         }
     }
 
-    private boolean isPutItemRequestLimited(String dataClusterName) {
-        return getMaxDBRequestsConfiguration(dataClusterName) != null;
+    private boolean isPutItemRequestLimited(String dataModelName) {
+        return getMaxDBRequestsConfiguration(dataModelName) != null;
     }
 
-    private int getMaxDBRequests(String dataClusterName) {
-        if (isPutItemRequestLimited(dataClusterName)) {
-            return Integer.valueOf(getMaxDBRequestsConfiguration(dataClusterName));
+    private int getMaxDBRequests(String dataModelName) {
+        if (isPutItemRequestLimited(dataModelName)) {
+            return Integer.valueOf(getMaxDBRequestsConfiguration(dataModelName));
         } else {
             return 0;
         }
     }
 
-    private String getMaxDBRequestsConfiguration(String dataClusterName) {
-        return MDMConfiguration.getConfiguration().getProperty("putitem.concurrent.database.requests." + dataClusterName); //$NON-NLS-1$
+    private String getMaxDBRequestsConfiguration(String dataModelName) {
+        String dataModelLimit = MDMConfiguration.getConfiguration().getProperty("putitem.concurrent.database.requests." + dataModelName); //$NON-NLS-1$
+        String generalLimit = MDMConfiguration.getConfiguration().getProperty("putitem.concurrent.database.requests.*"); //$NON-NLS-1$
+        if (dataModelLimit != null) {
+            return dataModelLimit;
+        } else {
+            return generalLimit;
+        }
     }
 
-    private void beginRequestLimitation(String dataClusterName) {
-        boolean isPutItemRequestLimited = isPutItemRequestLimited(dataClusterName);
+    private void beginRequestLimitation(String dataModelName) {
+        boolean isPutItemRequestLimited = isPutItemRequestLimited(dataModelName);
         if (isPutItemRequestLimited) {
             // Wait until less that MAX_THREADS running
             synchronized (this) {
-                AtomicInteger dbRequests = getDbRequests(dataClusterName);
+                AtomicInteger dbRequests = getDbRequests(dataModelName);
                 try {
-                    while (dbRequests.get() >= getMaxDBRequests(dataClusterName)) {
+                    while (dbRequests.get() >= getMaxDBRequests(dataModelName)) {
                         if (LOGGER.isDebugEnabled()) {
                             LOGGER.debug("Up to " + dbRequests + " putitem requests, wait for " + WAIT_MILLISECONDS + " ms.");  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
                         }
                         Thread.sleep(WAIT_MILLISECONDS);
                     }
-                    int newDbRequests = increaseDbRequests(dataClusterName);
+                    int newDbRequests = increaseDbRequests(dataModelName);
                     if (LOGGER.isDebugEnabled()) {
                         LOGGER.debug("Add 1 putitem request, currently " + newDbRequests + " requests left."); //$NON-NLS-1$ //$NON-NLS-2$
                     }
@@ -1004,30 +1010,30 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
         }
     }
 
-    private void endRequestLimitation(String dataClusterName) {
-        boolean isPutItemRequestLimited = isPutItemRequestLimited(dataClusterName);
+    private void endRequestLimitation(String dataModelName) {
+        boolean isPutItemRequestLimited = isPutItemRequestLimited(dataModelName);
         if (isPutItemRequestLimited) {
             // Decrease total threads
-            int newDbRequests = decreaseDbRequests(dataClusterName);
+            int newDbRequests = decreaseDbRequests(dataModelName);
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Finish 1 putitem request, currently " + newDbRequests + " requests left."); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
     }
 
-    private int increaseDbRequests(String dataClusterName) {
-        return DB_REQUESTS_MAP.get(dataClusterName).incrementAndGet();
+    private int increaseDbRequests(String dataModelName) {
+        return DB_REQUESTS_MAP.get(dataModelName).incrementAndGet();
     }
 
-    private int decreaseDbRequests(String dataClusterName) {
-        return DB_REQUESTS_MAP.get(dataClusterName).decrementAndGet();
+    private int decreaseDbRequests(String dataModelName) {
+        return DB_REQUESTS_MAP.get(dataModelName).decrementAndGet();
     }
 
-    private AtomicInteger getDbRequests(String dataClusterName) {
-        AtomicInteger value = DB_REQUESTS_MAP.get(dataClusterName);
+    private AtomicInteger getDbRequests(String dataModelName) {
+        AtomicInteger value = DB_REQUESTS_MAP.get(dataModelName);
         if (value == null) {
             value = new AtomicInteger(0);
-            DB_REQUESTS_MAP.put(dataClusterName, value);
+            DB_REQUESTS_MAP.put(dataModelName, value);
         }
         return value;
     }
@@ -1128,15 +1134,15 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
      */
     @Override
     public WSItemPK putItemWithReport(com.amalto.core.webservice.WSPutItemWithReport wsPutItemWithReport) throws RemoteException {
-        String dataClusterName = StringUtils.EMPTY;
+        String dataModelName = StringUtils.EMPTY;
         try {
             WSPutItem wsPutItem = wsPutItemWithReport.getWsPutItem();
             WSDataClusterPK dataClusterPK = wsPutItem.getWsDataClusterPK();
             WSDataModelPK dataModelPK = wsPutItem.getWsDataModelPK();
-            dataClusterName = dataClusterPK.getPk();
-            beginRequestLimitation(dataClusterName);
-
-            String dataModelName = dataModelPK.getPk();
+            String dataClusterName = dataClusterPK.getPk();
+            dataModelName = dataModelPK.getPk();
+            beginRequestLimitation(dataModelName);
+            
             SaverSession session = SaverSession.newSession();
             DocumentSaver saver;
             try {
@@ -1169,7 +1175,7 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
             LOGGER.error("Error during save.", e); //$NON-NLS-1$
             throw handleException(e, SAVE_EXCEPTION_MESSAGE);
         } finally {
-            endRequestLimitation(dataClusterName);
+            endRequestLimitation(dataModelName);
         }
     }
 
@@ -1181,16 +1187,16 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
     @Override
     public WSItemPK putItemWithCustomReport(com.amalto.core.webservice.WSPutItemWithCustomReport wsPutItemWithCustomReport)
             throws RemoteException {
-        String dataClusterName = StringUtils.EMPTY;
+        String dataModelName = StringUtils.EMPTY;
         try {
             WSPutItemWithReport wsPutItemWithReport = wsPutItemWithCustomReport.getWsPutItemWithReport();
             WSPutItem wsPutItem = wsPutItemWithReport.getWsPutItem();
             WSDataClusterPK dataClusterPK = wsPutItem.getWsDataClusterPK();
             WSDataModelPK dataModelPK = wsPutItem.getWsDataModelPK();
-            dataClusterName = dataClusterPK.getPk();
-            beginRequestLimitation(dataClusterName);
+            String dataClusterName = dataClusterPK.getPk();
+            dataModelName = dataModelPK.getPk();
+            beginRequestLimitation(dataModelName);
 
-            String dataModelName = dataModelPK.getPk();
             // This method uses a special user
             SaverSession session = SaverSession.newUserSession(wsPutItemWithCustomReport.getUser());
             DocumentSaver saver;
@@ -1218,7 +1224,7 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
             LOGGER.error("Error during save.", e); //$NON-NLS-1$
             throw new RemoteException((e.getCause() == null ? e.getLocalizedMessage() : e.getCause().getLocalizedMessage()), e);
         } finally {
-            endRequestLimitation(dataClusterName);
+            endRequestLimitation(dataModelName);
         }
     }
 

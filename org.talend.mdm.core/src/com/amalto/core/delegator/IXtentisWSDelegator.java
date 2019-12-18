@@ -192,8 +192,6 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
 
     private static final Map<String, AtomicInteger> DB_REQUESTS_MAP = new HashMap<String, AtomicInteger>();
 
-    private static Long WAIT_MILLISECONDS;
-
     @Override
     public WSVersion getComponentVersion(WSGetComponentVersion wsGetComponentVersion) throws RemoteException {
         try {
@@ -965,12 +963,11 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
     }
 
     private static int getMaxDBRequests(String dataModelName) {
+        String putItemConfig = "putitem.concurrent.database.requests."; //$NON-NLS-1$
         try {
-            return Integer.valueOf(MDMConfiguration.getConfiguration().getProperty("putitem.concurrent.database.requests." + dataModelName)); //$NON-NLS-1$
+            return Integer.valueOf(MDMConfiguration.getConfiguration().getProperty(putItemConfig + dataModelName));
         } catch (Exception e) {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Invalid configuration of putitem request limitation.", e); //$NON-NLS-1$
-            }
+            LOGGER.error("Invalid configuration for: " + putItemConfig + dataModelName, e); //$NON-NLS-1$
             return 0;
         }
     }
@@ -978,7 +975,7 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
     private static void beginRequestLimitation(String dataModelName) {
         int maxDBRequests = getMaxDBRequests(dataModelName);
         if (maxDBRequests > 0) {
-            WAIT_MILLISECONDS = Long.valueOf(MDMConfiguration.getConfiguration().getProperty("putitem.concurrent.wait.milliseconds." + dataModelName, "10")); //$NON-NLS-1$ //$NON-NLS-2$
+            long WAIT_MILLISECONDS = Long.valueOf(MDMConfiguration.getConfiguration().getProperty("putitem.concurrent.wait.milliseconds." + dataModelName, "10")); //$NON-NLS-1$ //$NON-NLS-2$
             // Wait until less that MAX_THREADS running
             synchronized (IXtentisWSDelegator.class) {
                 AtomicInteger dbRequests = getDBRequests(dataModelName);

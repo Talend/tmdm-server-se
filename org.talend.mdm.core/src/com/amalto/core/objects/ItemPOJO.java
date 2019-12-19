@@ -678,9 +678,9 @@ public class ItemPOJO implements Serializable {
         boolean isUpdatePersonalInfo = LocalUser.UpdatePersonalInfo.get();
 
         // HierarchySearchItem should be system objects SearchTemplate. Saved into SYSTEM STORAGE needn't check access.
-        boolean ishierarchy = StorageAdmin.SYSTEM_STORAGE.equals(dataCluster) && "HierarchySearchItem".equals(concept); //$NON-NLS-1$
+        boolean isHierarchySearchItem = StorageAdmin.SYSTEM_STORAGE.equals(dataCluster) && "HierarchySearchItem".equals(concept); //$NON-NLS-1$
 
-        if (isAdmin || isSystemObject || isUpdatePersonalInfo || ishierarchy) {
+        if (isAdmin || isSystemObject || isUpdatePersonalInfo || isHierarchySearchItem) {
             return;
         }
 

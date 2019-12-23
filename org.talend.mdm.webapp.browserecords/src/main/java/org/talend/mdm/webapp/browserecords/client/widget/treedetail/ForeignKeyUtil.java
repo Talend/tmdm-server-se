@@ -68,8 +68,8 @@ public class ForeignKeyUtil {
             root = ((ForeignKeyTreeDetail) widget).getRootModel();
         }
         if (isChangeValue(root)) {
-            MessageBox msgBox = MessageBox.confirm(MessagesFactory.getMessages().confirm_title(), MessagesFactory.getMessages()
-                    .msg_confirm_save_tree_detail(root.getLabel()), new Listener<MessageBoxEvent>() {
+            MessageBox msgBox = MessageBox.confirm(MessagesFactory.getMessages().confirm_title(), 
+                    org.talend.mdm.webapp.base.client.i18n.BaseMessagesFactory.getMessages().msg_confirm_save_tree_detail(root.getLabel()), new Listener<MessageBoxEvent>() {
 
                 @Override
                 public void handleEvent(MessageBoxEvent be) {

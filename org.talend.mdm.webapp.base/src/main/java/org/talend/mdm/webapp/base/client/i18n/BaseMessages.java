@@ -94,4 +94,6 @@ public interface BaseMessages extends Messages {
     String restore_success_prefix();
 
     String restore_fail_prefix();
+
+    String msg_confirm_save_tree_detail(String entityName);
 }

@@ -414,7 +414,7 @@ public class ItemsListPanel extends ContentPanel {
                         public void execute() {
                             if (isCurrentRecordChange()) {
                                 MessageBox msgBox = MessageBox.confirm(MessagesFactory.getMessages().confirm_title(),
-                                        MessagesFactory.getMessages().msg_confirm_save_tree_detail(root.getLabel()),
+                                        org.talend.mdm.webapp.base.client.i18n.BaseMessagesFactory.getMessages().msg_confirm_save_tree_detail(root.getLabel()),
                                         new Listener<MessageBoxEvent>() {
 
                                             @Override

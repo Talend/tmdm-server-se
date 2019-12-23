@@ -649,6 +649,11 @@ public class CommonUtilTest extends TestCase {
         public String server_unavailable_error() {
             return "";
         }
+
+        @Override
+        public String msg_confirm_save_tree_detail(String entityName) {
+            return "";
+        }
     }
 
     private class MockSimpleTypeFieldMetadata extends SimpleTypeFieldMetadata {

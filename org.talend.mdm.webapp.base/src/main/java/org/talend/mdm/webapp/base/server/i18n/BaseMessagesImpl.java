@@ -241,4 +241,9 @@ public final class BaseMessagesImpl implements BaseMessages {
     public String restore_fail_prefix() {
         return MESSAGES.getMessage("restore_fail_prefix");
     }
+
+    @Override
+    public String msg_confirm_save_tree_detail(String entityName) {
+        return MESSAGES.getMessage("msg_confirm_save_tree_detail");
+    }
 }

@@ -339,7 +339,7 @@ public class CommonUtilGWTTest extends GWTTestCase {
         OperationMessageWindow operationWindow = new OperationMessageWindow();
         CommonUtil.displayMsgBoxWindow(operationWindow, msgs);
         List<ItemResult> newMsgs = operationWindow.getMessages();
-        assertEquals("Deletion failed message: The record can not be deleted because of integrity constraints.", newMsgs.get(0).getMessage()); //$NON-NLS-1$
-        assertEquals("Deletion failed message: en error 1", newMsgs.get(1).getMessage()); //$NON-NLS-1$
+        assertEquals("Deletion failed message:The record can not be deleted because of integrity constraints.", newMsgs.get(0).getMessage()); //$NON-NLS-1$
+        assertEquals("Deletion failed message:en error 1", newMsgs.get(1).getMessage()); //$NON-NLS-1$
     }
 }

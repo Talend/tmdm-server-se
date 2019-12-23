@@ -136,6 +136,15 @@ public class DataRecord {
             return keyValue.toString();
         }
         ComplexTypeMetadata containingType = field.getContainingType();
+        if (field instanceof CompoundFieldMetadata) {
+            StringBuilder keyValue = new StringBuilder();
+            for (Object keyField : containingType.getKeyFields()) {
+                if (fieldToValue.containsKey(keyField)) {
+                    keyValue.append('[').append(fieldToValue.get(keyField)).append(']');
+                }
+            }
+            return keyValue.toString();
+        }
         if (containingType != this.getType() && !this.getType().isAssignableFrom(containingType)) {
             if (fieldToValue.containsKey(field)) {
                 return fieldToValue.get(field);

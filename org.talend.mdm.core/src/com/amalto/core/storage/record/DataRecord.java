@@ -126,15 +126,6 @@ public class DataRecord {
         if (field == null) {
             throw new IllegalArgumentException("Field cannot be null.");
         }
-        if (field instanceof CompoundFieldMetadata) {
-            StringBuilder keyValue = new StringBuilder();
-            for (Object keyField : this.type.getKeyFields()) {
-                if (fieldToValue.containsKey(keyField)) {
-                    keyValue.append('[').append(fieldToValue.get(keyField)).append(']');
-                }
-            }
-            return keyValue.toString();
-        }
         ComplexTypeMetadata containingType = field.getContainingType();
         if (field instanceof CompoundFieldMetadata) {
             StringBuilder keyValue = new StringBuilder();

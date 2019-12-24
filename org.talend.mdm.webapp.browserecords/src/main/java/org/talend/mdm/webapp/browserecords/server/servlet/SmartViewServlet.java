@@ -48,7 +48,7 @@ public class SmartViewServlet extends HttpServlet {
             return;
         }
         boolean isStaging = request.getParameter("isStaging") != null ? Boolean.parseBoolean(request.getParameter("isStaging")) : false; //$NON-NLS-1$ //$NON-NLS-2$
-        String[] ids = idsString.split("@");//$NON-NLS-1$
+        String[] ids = idsString.split("\\.");//$NON-NLS-1$
         String language = (request.getParameter("language") != null ? request.getParameter("language").toUpperCase() : "EN");//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         String smartViewName = request.getParameter("name");//$NON-NLS-1$
         String optname;

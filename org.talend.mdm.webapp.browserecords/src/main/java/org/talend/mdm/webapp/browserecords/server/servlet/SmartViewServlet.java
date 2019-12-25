@@ -11,6 +11,7 @@ package org.talend.mdm.webapp.browserecords.server.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -18,6 +19,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.talend.mdm.commmon.metadata.MetadataRepository;
+import org.talend.mdm.webapp.base.server.util.CommonUtil;
 import org.talend.mdm.webapp.browserecords.server.util.SmartViewUtil;
 
 import com.amalto.webapp.core.util.Util;
@@ -30,6 +34,8 @@ import com.amalto.core.webservice.WSTransformerV2PK;
 public class SmartViewServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
+
+    private static final Logger LOGGER = Logger.getLogger(SmartViewServlet.class);
 
     public SmartViewServlet() {
         super();
@@ -47,8 +53,15 @@ public class SmartViewServlet extends HttpServlet {
         if (concept == null || idsString == null) {
             return;
         }
-        boolean isStaging = request.getParameter("isStaging") != null ? Boolean.parseBoolean(request.getParameter("isStaging")) : false; //$NON-NLS-1$ //$NON-NLS-2$
-        String[] ids = idsString.split("\\.");//$NON-NLS-1$
+
+        boolean isStaging = request.getParameter("isStaging") != null && Boolean.parseBoolean(request.getParameter("isStaging")); //$NON-NLS-1$ //$NON-NLS-2$
+        String[] ids = null;
+        try {
+            MetadataRepository repository = CommonUtil.getCurrentRepository();
+            ids = CommonUtil.getItemId(repository, idsString, concept);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+        }
         String language = (request.getParameter("language") != null ? request.getParameter("language").toUpperCase() : "EN");//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         String smartViewName = request.getParameter("name");//$NON-NLS-1$
         String optname;
@@ -80,7 +93,7 @@ public class SmartViewServlet extends HttpServlet {
                 }
             }
         } catch (Exception e) {
-            org.apache.log4j.Logger.getLogger(this.getClass()).error(e);
+            LOGGER.error(e);
             throw new ServletException(e);
         }
 
@@ -107,18 +120,18 @@ public class SmartViewServlet extends HttpServlet {
                 // else take the content of the _DEFAULT_ entry
                 for (WSTransformerContextPipelinePipelineItem entrie : entries) {
                     if ("_DEFAULT_".equals(entrie.getVariable())) {//$NON-NLS-1$
-                        content = new String(entrie.getWsTypedContent().getWsBytes().getBytes(), "UTF-8");//$NON-NLS-1$
+                        content = new String(entrie.getWsTypedContent().getWsBytes().getBytes(), StandardCharsets.UTF_8);
                         contentType = entrie.getWsTypedContent().getContentType();
                     }
                     if ("html".equals(entrie.getVariable())) {//$NON-NLS-1$
-                        content = new String(entrie.getWsTypedContent().getWsBytes().getBytes(), "UTF-8");//$NON-NLS-1$
+                        content = new String(entrie.getWsTypedContent().getWsBytes().getBytes(), StandardCharsets.UTF_8);
                         contentType = entrie.getWsTypedContent().getContentType();
                         break;
                     }
                 }
             } catch (Exception e) {
                 String err = "Unable to run the transformer '" + transformer + "'"; //$NON-NLS-1$//$NON-NLS-2$
-                org.apache.log4j.Logger.getLogger(this.getClass()).error(err, e);
+                LOGGER.error(err, e);
                 throw new ServletException(err, e);
             }
         }

@@ -27,6 +27,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.regex.Matcher;
@@ -169,6 +170,8 @@ public class Util {
     private static RoutingOrder defaultRoutingOrder;
 
     private static com.amalto.core.server.api.Transformer defaultTransformer;
+
+    private static final AtomicInteger TRANSACTION_CURRENT_REQUESTS = new AtomicInteger();
 
     private static synchronized DocumentBuilderFactory getDocumentBuilderFactory() {
         if (nonValidatingDocumentBuilderFactory == null) {
@@ -1288,5 +1291,53 @@ public class Util {
             path = path.replaceAll("\\[\\d+\\]", "");
         }
         return path;
+    }
+
+    private static int getTransactionConcurrent() {
+        String config = MDMConfiguration.getTransactionConcurrentRequests();
+        if (config != null) {
+            try {
+                int i = Integer.valueOf(config);
+                return i;
+            } catch (Exception e) {
+                return 0;
+            }
+        }
+        return 0;
+    }
+
+    private static long getTransactionWaitMilliseconds() {
+        String config = MDMConfiguration.getTransactionConcurrentWaitMilliseconds();
+        if (config != null) {
+            try {
+                return Long.valueOf(config);
+            } catch (Exception e) {
+                return 100L;
+            }
+        } else {
+            return 100L;
+        }
+    }
+
+    public static void beginTransactionLimit() {
+        int count = getTransactionConcurrent();
+        if (count > 0) {
+            synchronized (Util.class) {
+                try {
+                    while (TRANSACTION_CURRENT_REQUESTS.get() >= count) {
+                        Thread.sleep(getTransactionWaitMilliseconds());
+                    }
+                    TRANSACTION_CURRENT_REQUESTS.incrementAndGet();
+                } catch (InterruptedException e) {
+                    // TODO
+                }
+            }
+        }
+    }
+
+    public static void endTransactionLimit() {
+        if (getTransactionConcurrent() > 0) {
+            TRANSACTION_CURRENT_REQUESTS.decrementAndGet();
+        }
     }
 }

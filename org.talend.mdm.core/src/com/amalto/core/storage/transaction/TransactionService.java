@@ -13,6 +13,7 @@ package com.amalto.core.storage.transaction;
 
 import com.amalto.core.server.ServerContext;
 import com.amalto.core.storage.task.staging.SerializableList;
+import com.amalto.core.util.Util;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -61,10 +62,15 @@ public class TransactionService {
     @ApiOperation("Commits the transaction identified by the provided id")
     public void commit(
             @ApiParam("Transaction id") @PathParam("id") String transactionId) {
-        TransactionManager transactionManager = ServerContext.INSTANCE.get().getTransactionManager();
-        Transaction transaction = transactionManager.get(transactionId);
-        if (transaction != null) {
-            transaction.commit();
+        try {
+            Util.beginTransactionLimit();
+            TransactionManager transactionManager = ServerContext.INSTANCE.get().getTransactionManager();
+            Transaction transaction = transactionManager.get(transactionId);
+            if (transaction != null) {
+                transaction.commit();
+            }
+        } finally {
+            Util.endTransactionLimit();
         }
     }
 
@@ -77,10 +83,15 @@ public class TransactionService {
     @ApiOperation("Rollbacks the transaction identified by the provided id")
     public void rollback(
             @ApiParam("Transaction id") @PathParam("id") String transactionId) {
-        TransactionManager transactionManager = ServerContext.INSTANCE.get().getTransactionManager();
-        Transaction transaction = transactionManager.get(transactionId);
-        if (transaction != null) {
-            transaction.rollback();
+        try {
+            Util.beginTransactionLimit();
+            TransactionManager transactionManager = ServerContext.INSTANCE.get().getTransactionManager();
+            Transaction transaction = transactionManager.get(transactionId);
+            if (transaction != null) {
+                transaction.rollback();
+            }
+        } finally {
+            Util.endTransactionLimit();
         }
     }
 }

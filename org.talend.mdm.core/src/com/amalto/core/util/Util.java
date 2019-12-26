@@ -173,6 +173,15 @@ public class Util {
 
     private static final AtomicInteger TRANSACTION_CURRENT_REQUESTS = new AtomicInteger();
 
+    private static final int MAX_TRANSACTION_REQUESTS;
+
+    private static final long TRANSACTION_WAIT_MILLISECONDS;
+
+    static {
+        MAX_TRANSACTION_REQUESTS = Integer.valueOf(MDMConfiguration.getTransactionConcurrent());
+        TRANSACTION_WAIT_MILLISECONDS = Long.valueOf(MDMConfiguration.getTransactionWaitMilliseconds());
+    }
+
     private static synchronized DocumentBuilderFactory getDocumentBuilderFactory() {
         if (nonValidatingDocumentBuilderFactory == null) {
             nonValidatingDocumentBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -1293,50 +1302,25 @@ public class Util {
         return path;
     }
 
-    private static int getTransactionConcurrent() {
-        String config = MDMConfiguration.getTransactionConcurrentRequests();
-        if (config != null) {
-            try {
-                int i = Integer.valueOf(config);
-                return i;
-            } catch (Exception e) {
-                return 0;
-            }
-        }
-        return 0;
-    }
-
-    private static long getTransactionWaitMilliseconds() {
-        String config = MDMConfiguration.getTransactionConcurrentWaitMilliseconds();
-        if (config != null) {
-            try {
-                return Long.valueOf(config);
-            } catch (Exception e) {
-                return 100L;
-            }
-        } else {
-            return 100L;
-        }
-    }
-
     public static void beginTransactionLimit() {
-        int count = getTransactionConcurrent();
-        if (count > 0) {
+        if (MAX_TRANSACTION_REQUESTS > 0) {
             synchronized (Util.class) {
                 try {
-                    while (TRANSACTION_CURRENT_REQUESTS.get() >= count) {
-                        Thread.sleep(getTransactionWaitMilliseconds());
+                    while (TRANSACTION_CURRENT_REQUESTS.get() >= MAX_TRANSACTION_REQUESTS) {
+                        Thread.sleep(TRANSACTION_WAIT_MILLISECONDS);
                     }
                     TRANSACTION_CURRENT_REQUESTS.incrementAndGet();
                 } catch (InterruptedException e) {
-                    // TODO
+                    if (LOGGER.isDebugEnabled()) {
+                        LOGGER.debug("Failed to wait thread.", e);
+                    }
                 }
             }
         }
     }
 
     public static void endTransactionLimit() {
-        if (getTransactionConcurrent() > 0) {
+        if (MAX_TRANSACTION_REQUESTS > 0) {
             TRANSACTION_CURRENT_REQUESTS.decrementAndGet();
         }
     }

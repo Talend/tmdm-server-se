@@ -63,10 +63,10 @@ public class TransactionService {
     public void commit(
             @ApiParam("Transaction id") @PathParam("id") String transactionId) {
         try {
-            Util.beginTransactionLimit();
             TransactionManager transactionManager = ServerContext.INSTANCE.get().getTransactionManager();
             Transaction transaction = transactionManager.get(transactionId);
             if (transaction != null) {
+                Util.beginTransactionLimit();
                 transaction.commit();
             }
         } finally {
@@ -84,10 +84,10 @@ public class TransactionService {
     public void rollback(
             @ApiParam("Transaction id") @PathParam("id") String transactionId) {
         try {
-            Util.beginTransactionLimit();
             TransactionManager transactionManager = ServerContext.INSTANCE.get().getTransactionManager();
             Transaction transaction = transactionManager.get(transactionId);
             if (transaction != null) {
+                Util.beginTransactionLimit();
                 transaction.rollback();
             }
         } finally {

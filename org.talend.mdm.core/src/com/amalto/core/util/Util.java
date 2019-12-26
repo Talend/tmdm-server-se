@@ -1312,7 +1312,7 @@ public class Util {
                     TRANSACTION_CURRENT_REQUESTS.incrementAndGet();
                 } catch (InterruptedException e) {
                     if (LOGGER.isDebugEnabled()) {
-                        LOGGER.debug("Failed to wait thread.", e);
+                        LOGGER.debug("Failed to sleep thread.", e);
                     }
                 }
             }

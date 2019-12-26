@@ -64,13 +64,13 @@ public class TransactionService {
             @ApiParam("Transaction id") @PathParam("id") String transactionId) {
         TransactionManager transactionManager = ServerContext.INSTANCE.get().getTransactionManager();
         Transaction transaction = transactionManager.get(transactionId);
-        try {
-            if (transaction != null) {
+        if (transaction != null) {
+            try {
                 Util.beginTransactionLimit();
                 transaction.commit();
+            } finally {
+                Util.endTransactionLimit();
             }
-        } finally {
-            Util.endTransactionLimit();
         }
     }
 
@@ -85,13 +85,13 @@ public class TransactionService {
             @ApiParam("Transaction id") @PathParam("id") String transactionId) {
         TransactionManager transactionManager = ServerContext.INSTANCE.get().getTransactionManager();
         Transaction transaction = transactionManager.get(transactionId);
-        try {
-            if (transaction != null) {
+        if (transaction != null) {
+            try {
                 Util.beginTransactionLimit();
                 transaction.rollback();
+            } finally {
+                Util.endTransactionLimit();
             }
-        } finally {
-            Util.endTransactionLimit();
         }
     }
 }

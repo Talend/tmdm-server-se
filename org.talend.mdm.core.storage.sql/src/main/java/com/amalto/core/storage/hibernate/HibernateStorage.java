@@ -2070,6 +2070,13 @@ public class HibernateStorage implements Storage {
                     String tableName = (String) property.getValue().accept(visitor);
                     if (!orderedTableNames.contains(tableName)) {
                         Value value = property.getValue();
+                        if (value instanceof org.hibernate.mapping.Collection) {
+                            orderedTableNames.add(0, tableName);
+                            String middleTableName = value.getTable().getName();
+                            if (StringUtils.isNoneBlank(middleTableName) && !orderedTableNames.contains(middleTableName)) {
+                                orderedTableNames.add(middleTableName);
+                            }
+                        }
                         if (value instanceof ToOne) {
                             PersistentClass referencedEntityClass = configuration
                                     .getClassMapping(((ToOne) value).getReferencedEntityName());

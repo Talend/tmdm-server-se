@@ -1,0 +1,96 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:import namespace="http://www.w3.org/2001/XMLSchema" />
+    <xsd:element name="Product">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Label_EN">Product</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
+            <xsd:appinfo source="X_PrimaryKeyInfo">Product/Name</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:sequence maxOccurs="1" minOccurs="1">
+                <xsd:element maxOccurs="1" minOccurs="1" name="Id" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Label_EN">Unique Id</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="Name" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Label_EN">Name</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Features0">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Label_EN">Features</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
+                    </xsd:annotation>
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element maxOccurs="unbounded" minOccurs="0" name="Sizes7">
+                                <xsd:annotation>
+                                    <xsd:appinfo source="X_Label_EN">Sizes</xsd:appinfo>
+                                    <xsd:appinfo source="X_Description_EN">A product may be available in
+                                        more than one size.
+                                    </xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
+                                </xsd:annotation>
+                                <xsd:complexType>
+                                    <xsd:sequence>
+                                        <xsd:element maxOccurs="unbounded" minOccurs="0" name="Sizes22">
+                                            <xsd:annotation>
+                                                <xsd:appinfo source="X_Label_EN">Sizes</xsd:appinfo>
+                                                <xsd:appinfo source="X_Description_EN">A product may be available in more than one size.
+                                                </xsd:appinfo>
+                                                <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                                                <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
+                                            </xsd:annotation>
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="Size8" type="Size">
+                                                        <xsd:annotation>
+                                                            <xsd:appinfo source="X_Label_EN">Size</xsd:appinfo>
+                                                            <xsd:appinfo source="X_Write">Demo_Manager
+                                                            </xsd:appinfo>
+                                                            <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
+                                                        </xsd:annotation>
+                                                    </xsd:element>
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                    </xsd:sequence>
+                                </xsd:complexType>
+                            </xsd:element>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+        <xsd:unique name="Product">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="Id" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:simpleType name="Size">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="Small" />
+            <xsd:enumeration value="Medium" />
+            <xsd:enumeration value="Large" />
+            <xsd:enumeration value="X-Large" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="AUTO_INCREMENT">
+        <xsd:restriction base="xsd:string" />
+    </xsd:simpleType>
+    <xsd:simpleType name="URL">
+        <xsd:restriction base="xsd:string" />
+    </xsd:simpleType>
+    <xsd:simpleType name="UUID">
+        <xsd:restriction base="xsd:string" />
+    </xsd:simpleType>
+</xsd:schema>

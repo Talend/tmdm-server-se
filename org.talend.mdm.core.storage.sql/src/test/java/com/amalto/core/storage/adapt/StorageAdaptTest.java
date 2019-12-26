@@ -572,6 +572,50 @@ public class StorageAdaptTest extends TestCase {
         storage.close(true);
     }
 
+    // TMDM-13009 Modify 0-many elements under 0-many complex type elements, redeploy will not delete the old value table in DB
+    public void testFindUnessentialTablesToDrop() throws Exception {
+        // Test preparation
+        DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
+        Storage storage = new HibernateStorage(STORAGE_NAME, StorageType.MASTER);
+        storage.init(dataSource);
+
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(StorageAdaptTest.class.getResourceAsStream("TMDM-13009.xsd"));
+        storage.prepare(repository, true);
+
+        // Drop Type Product
+        ComplexTypeMetadata composition = repository.getComplexType("Product");
+        Set<ComplexTypeMetadata> typesToDrop = new HashSet<ComplexTypeMetadata>();
+        typesToDrop.add(composition);
+
+        // Find all dependencies of Product
+        Set<ComplexTypeMetadata> allDependencies = new HashSet<ComplexTypeMetadata>();
+        allDependencies.addAll(typesToDrop);
+        Method findDependentTypesToDelete = storage.getClass().getDeclaredMethod("findDependentTypesToDelete", new Class[] { MetadataRepository.class, Set.class, Set.class });
+        findDependentTypesToDelete.setAccessible(true);
+        Object[] args = { repository, typesToDrop, allDependencies };
+        Set<ComplexTypeMetadata> dependentTypesToDrop = (Set<ComplexTypeMetadata>) findDependentTypesToDelete.invoke(storage, args);
+        typesToDrop.addAll(dependentTypesToDrop);
+
+        // Sort types
+        List<ComplexTypeMetadata> sortedTypesToDrop = new ArrayList<ComplexTypeMetadata>(typesToDrop);
+        sortedTypesToDrop = MetadataUtils.sortTypes(repository, sortedTypesToDrop, SortType.LENIENT);
+
+        // Find tables to drop
+        Method findTablesToDrop = storage.getClass().getDeclaredMethod("findTablesToDrop", new Class[] { List.class });
+        findTablesToDrop.setAccessible(true);
+        Object[] args1 = { sortedTypesToDrop };
+        Set<String> tables = (Set<String>) findTablesToDrop.invoke(storage, args1);
+        assertTrue(tables.contains("Product"));
+        assertTrue(tables.contains("X_ANONYMOUS0_x_sizes7_X_ANONYMOUS1"));
+        assertTrue(tables.contains("X_ANONYMOUS2_x_size8"));
+        assertTrue(tables.contains("X_ANONYMOUS1_x_sizes22_X_ANONYMOUS2"));
+        assertTrue(tables.contains("X_ANONYMOUS1"));
+        assertTrue(tables.contains("X_ANONYMOUS2"));
+        assertTrue(tables.contains("X_ANONYMOUS0"));
+        storage.close(true);
+    }
+
     // TMDM-9099 Increase the length of a string element should be low impact
     public void test9_IncreaseStringFieldLength() throws Exception {
         DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);

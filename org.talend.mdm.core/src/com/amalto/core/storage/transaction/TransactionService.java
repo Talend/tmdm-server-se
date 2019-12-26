@@ -62,9 +62,9 @@ public class TransactionService {
     @ApiOperation("Commits the transaction identified by the provided id")
     public void commit(
             @ApiParam("Transaction id") @PathParam("id") String transactionId) {
+        TransactionManager transactionManager = ServerContext.INSTANCE.get().getTransactionManager();
+        Transaction transaction = transactionManager.get(transactionId);
         try {
-            TransactionManager transactionManager = ServerContext.INSTANCE.get().getTransactionManager();
-            Transaction transaction = transactionManager.get(transactionId);
             if (transaction != null) {
                 Util.beginTransactionLimit();
                 transaction.commit();
@@ -83,9 +83,9 @@ public class TransactionService {
     @ApiOperation("Rollbacks the transaction identified by the provided id")
     public void rollback(
             @ApiParam("Transaction id") @PathParam("id") String transactionId) {
+        TransactionManager transactionManager = ServerContext.INSTANCE.get().getTransactionManager();
+        Transaction transaction = transactionManager.get(transactionId);
         try {
-            TransactionManager transactionManager = ServerContext.INSTANCE.get().getTransactionManager();
-            Transaction transaction = transactionManager.get(transactionId);
             if (transaction != null) {
                 Util.beginTransactionLimit();
                 transaction.rollback();

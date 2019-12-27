@@ -22,6 +22,7 @@ import javax.xml.xpath.XPathFactory;
 import junit.framework.TestCase;
 
 import org.apache.log4j.Logger;
+import org.talend.mdm.commmon.util.core.MDMConfiguration;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -49,7 +50,15 @@ import com.amalto.xmlserver.interfaces.WhereLogicOperator;
 public class UtilTestCase extends TestCase {
 
     IValidation validation = new IValidation();
-    
+
+    static {
+        try {
+            MDMConfiguration.createConfiguration("", true);
+        } catch (IllegalStateException e) {
+            // already configured;
+        }
+    }
+
     public void testDefaultValidate() throws IOException, ParserConfigurationException, SAXException {
         // missing mandontory field cvc-complex-type.2.4.b
         InputStream in = UtilTestCase.class.getResourceAsStream("Agency_ME02.xml");

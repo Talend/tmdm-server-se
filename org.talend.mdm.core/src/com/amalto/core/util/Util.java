@@ -27,6 +27,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.regex.Matcher;
@@ -169,6 +170,17 @@ public class Util {
     private static RoutingOrder defaultRoutingOrder;
 
     private static com.amalto.core.server.api.Transformer defaultTransformer;
+
+    private static final AtomicInteger TRANSACTION_CURRENT_REQUESTS = new AtomicInteger();
+
+    private static final int TRANSACTION_MAX_REQUESTS;
+
+    private static final long TRANSACTION_WAIT_MILLISECONDS;
+
+    static {
+        TRANSACTION_MAX_REQUESTS = Integer.valueOf(MDMConfiguration.getTransactionMaxRequests());
+        TRANSACTION_WAIT_MILLISECONDS = Long.valueOf(MDMConfiguration.getTransactionWaitMilliseconds());
+    }
 
     private static synchronized DocumentBuilderFactory getDocumentBuilderFactory() {
         if (nonValidatingDocumentBuilderFactory == null) {
@@ -1288,5 +1300,28 @@ public class Util {
             path = path.replaceAll("\\[\\d+\\]", "");
         }
         return path;
+    }
+
+    public static void beginTransactionLimit() {
+        if (TRANSACTION_MAX_REQUESTS > 0) {
+            synchronized (Util.class) {
+                try {
+                    while (TRANSACTION_CURRENT_REQUESTS.get() >= TRANSACTION_MAX_REQUESTS) {
+                        Thread.sleep(TRANSACTION_WAIT_MILLISECONDS);
+                    }
+                    TRANSACTION_CURRENT_REQUESTS.incrementAndGet();
+                } catch (InterruptedException e) {
+                    if (LOGGER.isDebugEnabled()) {
+                        LOGGER.debug("Failed to sleep thread.", e);
+                    }
+                }
+            }
+        }
+    }
+
+    public static void endTransactionLimit() {
+        if (TRANSACTION_MAX_REQUESTS > 0) {
+            TRANSACTION_CURRENT_REQUESTS.decrementAndGet();
+        }
     }
 }

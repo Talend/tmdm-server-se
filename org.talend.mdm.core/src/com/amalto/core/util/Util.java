@@ -173,12 +173,12 @@ public class Util {
 
     private static final AtomicInteger TRANSACTION_CURRENT_REQUESTS = new AtomicInteger();
 
-    private static final int MAX_TRANSACTION_REQUESTS;
+    private static final int TRANSACTION_MAX_REQUESTS;
 
     private static final long TRANSACTION_WAIT_MILLISECONDS;
 
     static {
-        MAX_TRANSACTION_REQUESTS = Integer.valueOf(MDMConfiguration.getTransactionConcurrent());
+        TRANSACTION_MAX_REQUESTS = Integer.valueOf(MDMConfiguration.getTransactionMaxRequests());
         TRANSACTION_WAIT_MILLISECONDS = Long.valueOf(MDMConfiguration.getTransactionWaitMilliseconds());
     }
 
@@ -1303,10 +1303,10 @@ public class Util {
     }
 
     public static void beginTransactionLimit() {
-        if (MAX_TRANSACTION_REQUESTS > 0) {
+        if (TRANSACTION_MAX_REQUESTS > 0) {
             synchronized (Util.class) {
                 try {
-                    while (TRANSACTION_CURRENT_REQUESTS.get() >= MAX_TRANSACTION_REQUESTS) {
+                    while (TRANSACTION_CURRENT_REQUESTS.get() >= TRANSACTION_MAX_REQUESTS) {
                         Thread.sleep(TRANSACTION_WAIT_MILLISECONDS);
                     }
                     TRANSACTION_CURRENT_REQUESTS.incrementAndGet();
@@ -1320,7 +1320,7 @@ public class Util {
     }
 
     public static void endTransactionLimit() {
-        if (MAX_TRANSACTION_REQUESTS > 0) {
+        if (TRANSACTION_MAX_REQUESTS > 0) {
             TRANSACTION_CURRENT_REQUESTS.decrementAndGet();
         }
     }

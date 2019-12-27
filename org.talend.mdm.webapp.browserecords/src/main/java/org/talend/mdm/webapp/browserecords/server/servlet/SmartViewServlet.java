@@ -60,7 +60,7 @@ public class SmartViewServlet extends HttpServlet {
             MetadataRepository repository = CommonUtil.getCurrentRepository();
             ids = CommonUtil.getItemId(repository, idsString, concept);
         } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
+            LOGGER.error("Failed to get the correct item id ", e);
         }
         String language = (request.getParameter("language") != null ? request.getParameter("language").toUpperCase() : "EN");//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         String smartViewName = request.getParameter("name");//$NON-NLS-1$
@@ -93,7 +93,7 @@ public class SmartViewServlet extends HttpServlet {
                 }
             }
         } catch (Exception e) {
-            LOGGER.error(e);
+            LOGGER.error("Failed to check smart view existence", e);
             throw new ServletException(e);
         }
 

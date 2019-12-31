@@ -13,6 +13,8 @@ package com.amalto.core.storage.hibernate;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.criterion.CriteriaQuery;
@@ -31,6 +33,10 @@ import com.amalto.core.query.user.Predicate;
 import com.amalto.core.storage.datasource.RDBMSDataSource;
 
 class ManyFieldCriterion extends SQLCriterion {
+
+    private static final long serialVersionUID = 1L;
+
+    private static final Logger LOGGER = Logger.getLogger(ManyFieldCriterion.class);
 
     private final RDBMSDataSource dataSource;
 
@@ -72,7 +78,11 @@ class ManyFieldCriterion extends SQLCriterion {
             if (value instanceof List) {
                 throw new UnsupportedOperationException("Do not support collection search criteria with multiple values."); //$NON-NLS-1$
             }
-            return field.accept(new ForeignKeySQLGenerator(criteriaQuery, value));
+            String whereCondition = field.accept(new ForeignKeySQLGenerator(criteriaQuery, value));
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("The final whereCondition is : " + whereCondition);
+            }
+            return whereCondition;
         } else {
             if (value instanceof Object[]) {
                 throw new UnsupportedOperationException("Do not support collection search criteria with multiple values."); //$NON-NLS-1$
@@ -130,6 +140,9 @@ class ManyFieldCriterion extends SQLCriterion {
                     .append(containingTypeKey).append(" = ") //$NON-NLS-1$
                     .append(containingTypeAlias).append(".") //$NON-NLS-1$
                     .append(containingTypeKey).append(") > 0"); //$NON-NLS-1$
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("The final whereCondition is : " + builder.toString());
+            }
             return builder.toString();
         }
     }
@@ -211,6 +224,9 @@ class ManyFieldCriterion extends SQLCriterion {
                         break;
                     }
                 }
+            }
+            if (dataSource.getDialectName() == RDBMSDataSource.DataSourceDialect.ORACLE_10G && ArrayUtils.contains(Types.DATES, name)) {
+                query.append("timestamp "); //$NON-NLS-1$
             }
             if (isStringType) {
                 query.append("'"); //$NON-NLS-1$

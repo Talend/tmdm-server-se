@@ -392,7 +392,7 @@ class ProjectionIterator implements CloseableIterator<DataRecord> {
                 Object[] fieldValues = new Object[length];
                 System.arraycopy(values, currentIndex, fieldValues, 0, length);
                 // Only include composite FK value if there's an actual key value.
-                currentElement.value = isNullValue(fieldValues) ? null : fieldValues;
+                currentElement.value = convertCompositeFKToString(fieldValues);
                 currentIndex += length;
             } else if (fieldMetadata.getType().getData(TypeMapping.SQL_TYPE) != null
                     && TypeMapping.SQL_TYPE_CLOB.equals(fieldMetadata.getType().getData(TypeMapping.SQL_TYPE))) {
@@ -410,6 +410,20 @@ class ProjectionIterator implements CloseableIterator<DataRecord> {
                 currentElement.value = values[currentIndex++];
             }
             return currentElement;
+        }
+
+        /*
+         * If entity refer to a composite FK, format it to expected character string, like "[11][22]"
+         */
+        private String convertCompositeFKToString(Object[] fieldValues) {
+            if (isNullValue(fieldValues)) {
+                return null;
+            }
+            StringBuilder sb = new StringBuilder();
+            for (Object item : fieldValues) {
+                sb.append("[".intern()).append(item).append("]".intern());
+            }
+            return sb.toString();
         }
 
         private boolean isNullValue(Object[] fieldValues) {

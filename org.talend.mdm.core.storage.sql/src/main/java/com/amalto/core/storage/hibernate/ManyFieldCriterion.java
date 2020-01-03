@@ -34,7 +34,7 @@ import com.amalto.core.storage.datasource.RDBMSDataSource;
 
 class ManyFieldCriterion extends SQLCriterion {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1416041576110629822L;
 
     private static final Logger LOGGER = Logger.getLogger(ManyFieldCriterion.class);
 

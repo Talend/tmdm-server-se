@@ -3200,10 +3200,7 @@ public class StorageQueryTest extends StorageTestCase {
             assertEquals(1, results.getCount());
             for (DataRecord result : results) {
                 Object b2Value = result.get("b2");
-                assertTrue(b2Value instanceof Object[]);
-                Object[] b2Values = (Object[]) b2Value;
-                assertEquals("1", b2Values[0]);
-                assertEquals("10", b2Values[1]);
+                assertEquals("[1][10]", b2Value);
             }
         } finally {
             storage.commit();

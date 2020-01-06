@@ -16,7 +16,6 @@ import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.talend.mdm.commmon.util.core.MDMConfiguration;
 
 import com.amalto.core.objects.ObjectPOJO;
 import com.amalto.core.objects.ObjectPOJOPK;
@@ -30,15 +29,7 @@ import junit.framework.TestCase;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ com.amalto.core.objects.ObjectPOJO.class })
 public class DefaultRoleTest extends TestCase {
-
-    static {
-        try {
-            MDMConfiguration.createConfiguration("", true);
-        } catch (IllegalStateException e) {
-            // already configured;
-        }
-    }
-
+    
     @Override
     public void setUp() throws Exception {
     }

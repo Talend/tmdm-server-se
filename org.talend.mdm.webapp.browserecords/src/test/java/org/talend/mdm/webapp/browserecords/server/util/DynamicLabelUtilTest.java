@@ -26,7 +26,6 @@ import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit3.PowerMockSuite;
-import org.talend.mdm.commmon.util.core.MDMConfiguration;
 import org.talend.mdm.commmon.util.datamodel.management.DataModelID;
 import org.talend.mdm.webapp.base.client.model.ForeignKeyBean;
 import org.talend.mdm.webapp.base.server.util.XmlUtil;
@@ -47,14 +46,6 @@ import com.extjs.gxt.ui.client.data.ModelData;
 @PrepareForTest({ Util.class })
 @SuppressWarnings("nls")
 public class DynamicLabelUtilTest extends TestCase {
-
-    static {
-        try {
-            MDMConfiguration.createConfiguration("", true);
-        } catch (IllegalStateException e) {
-            // already configured;
-        }
-    }
 
     @SuppressWarnings("unchecked")
     public static TestSuite suite() throws Exception {

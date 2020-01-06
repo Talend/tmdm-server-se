@@ -25,7 +25,7 @@ import com.amalto.core.storage.transaction.Transaction;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 
-class MDMTransaction implements Transaction {
+public class MDMTransaction implements Transaction {
 
     private static final Logger LOGGER = Logger.getLogger(MDMTransaction.class);
 
@@ -40,6 +40,8 @@ class MDMTransaction implements Transaction {
     private LockStrategy lockStrategy = LockStrategy.NO_LOCK;
     
     private StackTraceElement[] creationStackTrace = null;
+    
+    public volatile boolean isFree = false;
 
     MDMTransaction(Lifetime lifetime, String id) {
         this.lifetime = lifetime;
@@ -114,6 +116,7 @@ class MDMTransaction implements Transaction {
     public void commit() {
         try {
             synchronized (storageTransactions) {
+                isFree = false;
                 if (LOGGER.isDebugEnabled()) {
                     LOGGER.debug("[" + this + "] Transaction #" + this.hashCode() + " -> Commit.");
                 }
@@ -129,6 +132,7 @@ class MDMTransaction implements Transaction {
             LOGGER.warn("Commit failed for transaction " + getId() + ". Perform automatic rollback.", t);
             rollback();
         } finally {
+            isFree = true;
             transactionComplete();
         }
     }
@@ -136,6 +140,7 @@ class MDMTransaction implements Transaction {
     @Override
     public void rollback() {
         synchronized (storageTransactions) {
+            isFree = false;
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("[" + this + "] Transaction #" + this.hashCode() + " -> Rollback. ");
             }
@@ -148,6 +153,7 @@ class MDMTransaction implements Transaction {
                     LOGGER.debug("[" + this + "] Transaction #" + this.hashCode() + " -> Rollback done.");
                 }
             } finally {
+                isFree = true;
                 transactionComplete();
             }
         }

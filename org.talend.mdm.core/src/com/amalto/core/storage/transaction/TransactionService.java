@@ -11,21 +11,29 @@
 
 package com.amalto.core.storage.transaction;
 
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
+
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+
+import com.amalto.core.server.MDMTransaction;
 import com.amalto.core.server.ServerContext;
 import com.amalto.core.storage.task.staging.SerializableList;
-import com.amalto.core.util.Util;
+import org.apache.log4j.Logger;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
-import javax.ws.rs.*;
-
-import java.util.List;
-
 @Path("/transactions")
 @Api("Transactions")
 public class TransactionService {
-
+    private static final Logger LOGGER = Logger.getLogger(TransactionService.class);
     /**
      * Lists all actives transactions ({@link Transaction.Lifetime#LONG} and {@link Transaction.Lifetime#AD_HOC}).
      * @return A space-separated list of transaction ids (as UUID).
@@ -65,13 +73,28 @@ public class TransactionService {
         TransactionManager transactionManager = ServerContext.INSTANCE.get().getTransactionManager();
         Transaction transaction = transactionManager.get(transactionId);
         if (transaction != null) {
-            try {
-                Util.beginTransactionLimit();
+            if (((MDMTransaction)transaction).isFree) {
                 transaction.commit();
-            } finally {
-                Util.endTransactionLimit();
+            } else {
+                int randomNum = waitRandomSeconds();
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("After sleep " + randomNum + " seconds, begin to commit for: " + transaction); //$NON-NLS-1$ //$NON-NLS-2$
+                }
+                transaction.commit();
             }
         }
+    }
+
+    private int waitRandomSeconds() {
+        int randomNum = 0;
+        try {
+            // create random number between 3 and 6.
+            randomNum = ThreadLocalRandom.current().nextInt(3, 7);
+            TimeUnit.SECONDS.sleep(randomNum);
+        } catch (InterruptedException e) {
+            LOGGER.warn("Issue found during sleep.", e); //$NON-NLS-1$
+        }
+        return randomNum;
     }
 
     /**
@@ -86,11 +109,14 @@ public class TransactionService {
         TransactionManager transactionManager = ServerContext.INSTANCE.get().getTransactionManager();
         Transaction transaction = transactionManager.get(transactionId);
         if (transaction != null) {
-            try {
-                Util.beginTransactionLimit();
+            if (((MDMTransaction)transaction).isFree) {
                 transaction.rollback();
-            } finally {
-                Util.endTransactionLimit();
+            } else {
+                int randomNum = waitRandomSeconds();
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("After sleep " + randomNum + " seconds, begin to rollback for: " + transaction); //$NON-NLS-1$ //$NON-NLS-2$
+                }
+                transaction.rollback();
             }
         }
     }

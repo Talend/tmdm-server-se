@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.log4j.Logger;
@@ -41,7 +42,7 @@ public class MDMTransaction implements Transaction {
     
     private StackTraceElement[] creationStackTrace = null;
     
-    public volatile boolean isFree = false;
+    public final AtomicBoolean isFree = new AtomicBoolean(false);
 
     MDMTransaction(Lifetime lifetime, String id) {
         this.lifetime = lifetime;
@@ -115,7 +116,6 @@ public class MDMTransaction implements Transaction {
     @Override
     public void commit() {
         synchronized (storageTransactions) {
-            isFree = false;
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("[" + this + "] Transaction #" + this.hashCode() + " -> Commit.");
             }
@@ -131,7 +131,7 @@ public class MDMTransaction implements Transaction {
                 LOGGER.warn("Commit failed for transaction " + getId() + ". Perform automatic rollback.", t);
                 rollback();
             } finally {
-                isFree = true;
+                isFree.set(true);
                 transactionComplete();
             }
         }
@@ -140,7 +140,6 @@ public class MDMTransaction implements Transaction {
     @Override
     public void rollback() {
         synchronized (storageTransactions) {
-            isFree = false;
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("[" + this + "] Transaction #" + this.hashCode() + " -> Rollback. ");
             }
@@ -153,7 +152,7 @@ public class MDMTransaction implements Transaction {
                     LOGGER.debug("[" + this + "] Transaction #" + this.hashCode() + " -> Rollback done.");
                 }
             } finally {
-                isFree = true;
+                isFree.set(true);
                 transactionComplete();
             }
         }

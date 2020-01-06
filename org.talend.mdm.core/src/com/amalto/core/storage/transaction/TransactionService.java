@@ -73,7 +73,7 @@ public class TransactionService {
         TransactionManager transactionManager = ServerContext.INSTANCE.get().getTransactionManager();
         Transaction transaction = transactionManager.get(transactionId);
         if (transaction != null) {
-            if (((MDMTransaction)transaction).isFree) {
+            if (((MDMTransaction)transaction).isFree.get()) {
                 transaction.commit();
             } else {
                 int randomNum = waitRandomSeconds();
@@ -109,7 +109,7 @@ public class TransactionService {
         TransactionManager transactionManager = ServerContext.INSTANCE.get().getTransactionManager();
         Transaction transaction = transactionManager.get(transactionId);
         if (transaction != null) {
-            if (((MDMTransaction)transaction).isFree) {
+            if (((MDMTransaction)transaction).isFree.get()) {
                 transaction.rollback();
             } else {
                 int randomNum = waitRandomSeconds();

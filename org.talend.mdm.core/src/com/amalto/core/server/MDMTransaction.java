@@ -114,12 +114,12 @@ public class MDMTransaction implements Transaction {
 
     @Override
     public void commit() {
-        try {
-            synchronized (storageTransactions) {
-                isFree = false;
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("[" + this + "] Transaction #" + this.hashCode() + " -> Commit.");
-                }
+        synchronized (storageTransactions) {
+            isFree = false;
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("[" + this + "] Transaction #" + this.hashCode() + " -> Commit.");
+            }
+            try {
                 Collection<StorageTransaction> values = new ArrayList<StorageTransaction>(storageTransactions.values());
                 for (StorageTransaction storageTransaction : values) {
                     storageTransaction.autonomous().commit();
@@ -127,13 +127,13 @@ public class MDMTransaction implements Transaction {
                 if (LOGGER.isDebugEnabled()) {
                     LOGGER.debug("[" + this + "] Transaction #" + this.hashCode() + " -> Commit done.");
                 }
+            } catch (Throwable t) {
+                LOGGER.warn("Commit failed for transaction " + getId() + ". Perform automatic rollback.", t);
+                rollback();
+            } finally {
+                isFree = true;
+                transactionComplete();
             }
-        } catch (Throwable t) {
-            LOGGER.warn("Commit failed for transaction " + getId() + ". Perform automatic rollback.", t);
-            rollback();
-        } finally {
-            isFree = true;
-            transactionComplete();
         }
     }
 

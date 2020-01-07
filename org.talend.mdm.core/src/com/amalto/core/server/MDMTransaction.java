@@ -26,7 +26,7 @@ import com.amalto.core.storage.transaction.Transaction;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 
-public class MDMTransaction implements Transaction {
+class MDMTransaction implements Transaction {
 
     private static final Logger LOGGER = Logger.getLogger(MDMTransaction.class);
 
@@ -42,7 +42,13 @@ public class MDMTransaction implements Transaction {
     
     private StackTraceElement[] creationStackTrace = null;
     
-    public final AtomicBoolean isFree = new AtomicBoolean(false);
+    private static AtomicBoolean isFree = new AtomicBoolean(true);
+
+    private final Object transactionLock = new Object();
+    
+    public boolean isFree() {
+        return isFree.get();
+    }
 
     MDMTransaction(Lifetime lifetime, String id) {
         this.lifetime = lifetime;
@@ -115,6 +121,7 @@ public class MDMTransaction implements Transaction {
 
     @Override
     public void commit() {
+        synchronized (lock) {
         synchronized (storageTransactions) {
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("[" + this + "] Transaction #" + this.hashCode() + " -> Commit.");
@@ -131,14 +138,15 @@ public class MDMTransaction implements Transaction {
                 LOGGER.warn("Commit failed for transaction " + getId() + ". Perform automatic rollback.", t);
                 rollback();
             } finally {
-                isFree.set(true);
                 transactionComplete();
             }
+        }
         }
     }
 
     @Override
     public void rollback() {
+        synchronized (lock) {
         synchronized (storageTransactions) {
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("[" + this + "] Transaction #" + this.hashCode() + " -> Rollback. ");
@@ -152,14 +160,15 @@ public class MDMTransaction implements Transaction {
                     LOGGER.debug("[" + this + "] Transaction #" + this.hashCode() + " -> Rollback done.");
                 }
             } finally {
-                isFree.set(true);
                 transactionComplete();
             }
+        }
         }
     }
 
     @Override
     public StorageTransaction exclude(Storage storage) {
+        synchronized (lock) {
         synchronized (storageTransactions) {
             StorageTransaction transaction = (StorageTransaction) storageTransactions.remove(storage.asInternal(), Thread.currentThread());
             if (storageTransactions.isEmpty()) {
@@ -168,7 +177,9 @@ public class MDMTransaction implements Transaction {
                 }
                 transactionComplete();
             }
+            isFree.set(true);
             return transaction;
+        }
         }
     }
 
@@ -189,26 +200,32 @@ public class MDMTransaction implements Transaction {
         if ((storage.getCapabilities() & Storage.CAP_TRANSACTION) != Storage.CAP_TRANSACTION) {
             throw new IllegalArgumentException("Storage '" + storage.getName() + "' does not support transactions.");
         }
+        synchronized (lock) {
         StorageTransaction storageTransaction = null;
         synchronized (storageTransactions) {
-            if(this.getLifetime() == Lifetime.LONG){
-                Map<Thread, StorageTransaction> row = storageTransactions.row(storage.asInternal());
-                if(row.size() == 1){
-                    return row.values().iterator().next().dependent();
+            try {
+                if (this.getLifetime() == Lifetime.LONG) {
+                    Map<Thread, StorageTransaction> row = storageTransactions.row(storage.asInternal());
+                    if (row.size() == 1) {
+                        return row.values().iterator().next().dependent();
+                    } else if (row.size() != 0) {
+                        throw new IllegalStateException(
+                                "StorageTransactions table contains more than one StorageTransaction for a storage but it is a long transaction");
+                    }
+                } else {
+                    storageTransaction =
+                            (StorageTransaction) storageTransactions.get(storage.asInternal(), Thread.currentThread());
                 }
-                else if(row.size() != 0){
-                    throw new IllegalStateException("StorageTransactions table contains more than one StorageTransaction for a storage but it is a long transaction");
+                // if transaction is null, create a new storage transaction
+                if (storageTransaction == null) {
+                    storageTransaction = storage.newStorageTransaction();
+                    storageTransaction.setLockStrategy(lockStrategy);
+                    storageTransactions.put(storage.asInternal(), Thread.currentThread(), storageTransaction);
                 }
+            } finally {
+                isFree.set(true);
             }
-            else {
-                storageTransaction = (StorageTransaction) storageTransactions.get(storage.asInternal(), Thread.currentThread());
-            }
-            // if transaction is null, create a new storage transaction
-            if (storageTransaction == null) {
-                storageTransaction = storage.newStorageTransaction();
-                storageTransaction.setLockStrategy(lockStrategy);
-                storageTransactions.put(storage.asInternal(), Thread.currentThread(), storageTransaction);
-            }
+        }
         }
         switch (lifetime) {
         case AD_HOC:

@@ -76,6 +76,8 @@ public interface Transaction {
      */
     String getId();
 
+    boolean isFree();
+
     /**
      * Begin the transaction: all underlying {@link StorageTransaction#begin()} get also called.
      */

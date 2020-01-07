@@ -12,8 +12,12 @@
 package com.amalto.core.storage.transaction;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -73,28 +77,29 @@ public class TransactionService {
         TransactionManager transactionManager = ServerContext.INSTANCE.get().getTransactionManager();
         Transaction transaction = transactionManager.get(transactionId);
         if (transaction != null) {
-            if (((MDMTransaction)transaction).isFree.get()) {
+            if (transaction.isFree()) {
                 transaction.commit();
             } else {
-                int randomNum = waitRandomSeconds();
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("After sleep " + randomNum + " seconds, begin to commit for: " + transaction); //$NON-NLS-1$ //$NON-NLS-2$
+                final ExecutorService service = Executors.newSingleThreadExecutor();
+                Future<Object> futureResult = null;
+                try {
+                    futureResult = service.submit(() -> {
+                        while (transaction.isFree()) {
+                            LOGGER.error("******* while commit."); //$NON-NLS-1$
+                            transaction.commit();
+                        }
+                        return null;
+                    });
+                    String result = (String)futureResult.get(20, TimeUnit.SECONDS);
+                } catch (TimeoutException e) {
+                    LOGGER.warn("Timeout during commit.", e); //$NON-NLS-1$
+                } catch (Exception e) {
+                    LOGGER.warn("Issue found during commit.", e); //$NON-NLS-1$
+                } finally {
+                    service.shutdown();
                 }
-                transaction.commit();
             }
         }
-    }
-
-    private int waitRandomSeconds() {
-        int randomNum = 0;
-        try {
-            // create random number between 3 and 6.
-            randomNum = ThreadLocalRandom.current().nextInt(3, 7);
-            TimeUnit.SECONDS.sleep(randomNum);
-        } catch (InterruptedException e) {
-            LOGGER.warn("Issue found during sleep.", e); //$NON-NLS-1$
-        }
-        return randomNum;
     }
 
     /**
@@ -109,15 +114,31 @@ public class TransactionService {
         TransactionManager transactionManager = ServerContext.INSTANCE.get().getTransactionManager();
         Transaction transaction = transactionManager.get(transactionId);
         if (transaction != null) {
-            if (((MDMTransaction)transaction).isFree.get()) {
+            //if (((MDMTransaction)transaction).isFrees) 
+            {
+                LOGGER.error("******* begin rollback.");
                 transaction.rollback();
-            } else {
-                int randomNum = waitRandomSeconds();
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("After sleep " + randomNum + " seconds, begin to rollback for: " + transaction); //$NON-NLS-1$ //$NON-NLS-2$
+            } /*else {
+                final ExecutorService service = Executors.newSingleThreadExecutor();
+                Future<Object> futureResult = null;
+                try {
+                    LOGGER.error("******* while rollback 1.");
+                    futureResult = service.submit(() -> {
+                        while (transaction.isFree()) {
+                            LOGGER.error("******* while rollback."); //$NON-NLS-1$
+                            transaction.rollback();
+                        }
+                        return null;
+                    });
+                    String result = (String)futureResult.get(20, TimeUnit.SECONDS);
+                } catch (TimeoutException e) {
+                    LOGGER.warn("Timeout during rollback.", e); //$NON-NLS-1$
+                } catch (Exception e) {
+                    LOGGER.warn("Issue found during rollback.", e); //$NON-NLS-1$
+                } finally {
+                    service.shutdown();
                 }
-                transaction.rollback();
-            }
+            }*/
         }
     }
 }

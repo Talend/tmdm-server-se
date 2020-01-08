@@ -11,7 +11,7 @@ package org.talend.mdm.webapp.browserecords.client.widget.treedetail;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -47,7 +47,7 @@ public class IncrementalBuildTree implements IncrementalCommand {
 
 	private boolean withDefaultValue;
 
-	private Map<TypeModel, List<ItemNodeModel>> foreighKeyMap = new HashMap<TypeModel, List<ItemNodeModel>>();
+	private Map<TypeModel, List<ItemNodeModel>> foreighKeyMap = new LinkedHashMap<TypeModel, List<ItemNodeModel>>();
 
 	private String operation;
 

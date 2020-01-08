@@ -11,14 +11,22 @@
 package com.amalto.core.load.context;
 
 import com.amalto.core.load.LoadParserCallback;
+import com.amalto.core.load.path.PathMatch;
+import com.amalto.core.load.path.PathMatcher;
+import com.amalto.core.save.generator.AutoIdGenerator;
 import com.amalto.core.server.api.XmlServer;
 
 import javax.xml.stream.XMLStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
 
-/**
- *
- */
+@SuppressWarnings("nls")
 public interface StateContext {
+
+    List<PathMatcher> getNormalFieldPaths();
+
+    List<String> getNormalFieldInXML();
 
     void parse(XMLStreamReader reader);
 
@@ -27,6 +35,8 @@ public interface StateContext {
     StateContextWriter getWriter();
 
     void setCurrent(com.amalto.core.load.State state);
+
+    com.amalto.core.load.State getCurrent();
 
     LoadParserCallback getCallback();
 
@@ -59,4 +69,34 @@ public interface StateContext {
     boolean skipElement();
 
     void close(XmlServer server);
+
+    AutoIdGenerator[] getAutoFieldGenerator();
+
+    Stack<String> getReadElementPath();
+
+    default String[] needAutoIncGeneratorField() {
+        List<String> normalFieldPathList = new ArrayList<>(getNormalFieldPaths().size());
+        for (PathMatcher pathMatcher : getNormalFieldPaths()) {
+            boolean isMatched = false;
+            for (String path : getNormalFieldInXML()) {
+                if (path.contains("/")) {
+                    for (String s : path.split("/")) {
+                        if (pathMatcher.match(s) == PathMatch.FULL) {
+                            isMatched = true;
+                        }
+                    }
+                } else {
+                    if (pathMatcher.match(path) == PathMatch.FULL) {
+                        isMatched = true;
+                    }
+                }
+            }
+            if (!isMatched) {
+                normalFieldPathList.add(pathMatcher.toString());
+            } else {
+                normalFieldPathList.add(null);
+            }
+        }
+        return normalFieldPathList.toArray(new String[] {});
+    }
 }

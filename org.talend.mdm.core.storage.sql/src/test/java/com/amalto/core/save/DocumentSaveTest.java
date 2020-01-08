@@ -16,6 +16,7 @@ import static com.amalto.core.query.user.UserQueryBuilder.from;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,6 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
@@ -32,7 +34,16 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import com.amalto.core.delegator.MockILocalUser;
+import com.amalto.core.load.action.LoadAction;
+import com.amalto.core.load.action.OptimizedLoadAction;
+import com.amalto.core.objects.datacluster.DataClusterPOJO;
+import com.amalto.core.server.MetadataRepositoryAdmin;
+import com.amalto.core.server.api.XmlServer;
+import com.amalto.core.servlet.LoadServlet;
+import com.amalto.core.util.XSDKey;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
 import org.springframework.context.ApplicationContext;
@@ -40,8 +51,10 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
+import org.talend.mdm.commmon.util.core.EUUIDCustomType;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
 import org.talend.mdm.commmon.util.core.MDMXMLUtils;
+import org.talend.mdm.commmon.util.webapp.XSystemObjects;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -4622,31 +4635,6 @@ public class DocumentSaveTest extends TestCase {
             // nothing to do
         }
 
-    }
-
-    private static class MockILocalUser extends ILocalUser {
-
-        @Override
-        public ILocalUser getILocalUser() throws XtentisException {
-            return this;
-        }
-
-        @Override
-        public HashSet<String> getRoles() {
-            HashSet<String> roleSet = new HashSet<>();
-            roleSet.add("Demo_Manager");
-            return roleSet;
-        }
-
-        @Override
-        public String getUsername() {
-            return "Admin";
-        }
-
-        @Override
-        public boolean isAdmin(Class<?> objectTypeClass) throws XtentisException {
-            return true;
-        }
     }
 
     private static class TestSaverSource implements SaverSource {

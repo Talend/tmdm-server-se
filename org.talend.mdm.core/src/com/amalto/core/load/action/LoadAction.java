@@ -32,10 +32,11 @@ public interface LoadAction {
      * Loads XML documents from <code>request</code> in <code>server</code>.
      * @param stream      The stream that contains all XML documents to be loaded in MDM.
      * @param keyMetadata Key metadata <b>or <code>null</code> in case of autoGenPK</b>.
+     * @param allAutoMetadata All auto increment or UUID field metadata <b>or <code>null</code> in case of autoGenAutoField</b>.
      * @param server      The database where the documents must be persisted.
      * @param session     The {@link SaverSession} to be used for saving records.
      */
-    void load(InputStream stream, XSDKey keyMetadata, XmlServer server, SaverSession session);
+    void load(InputStream stream, XSDKey keyMetadata,XSDKey allAutoMetadata, XmlServer server, SaverSession session);
 
     /**
      * End load and perform all post-load actions (such as save counter state in case of autogen pk).

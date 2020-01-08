@@ -30,6 +30,16 @@ public class StartElement implements State {
     public void parse(StateContext context, XMLStreamReader reader) throws XMLStreamException {
         String elementLocalName = reader.getName().getLocalPart();
         context.enterElement(elementLocalName);
+        context.getReadElementPath().push(elementLocalName);
+        StringBuilder name = new StringBuilder();
+        int i = 0;
+        for (String elementName : context.getReadElementPath()) {
+            if (i++ > 0) {
+                name.append("/").append(elementName);
+            }
+        }
+        name.delete(0, 1);
+        context.getNormalFieldInXML().add(name.toString());
 
         if (context.skipElement()) {
             while (reader.next() != XMLEvent.END_ELEMENT) {

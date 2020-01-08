@@ -101,7 +101,8 @@ public class SaverContextFactory {
      *
      * @param dataCluster    Data container name (must exist).
      * @param dataModelName  Data model name (must exist).
-     * @param keyMetadata    Key for all records contained in <code>documentStream</code>
+     * @param autoKeyMetadata    Key for all records contained in <code>documentStream</code>
+     * @param autoFieldMetadata  All Auto Increment/UUID field in <code>dataModelName</code>
      * @param documentStream AData model name (must exist).
      * @param loadAction     {@link com.amalto.core.load.action.LoadAction} to be used to bulk load records.
      * @param server         Abstraction of the underlying MDM database.
@@ -109,11 +110,13 @@ public class SaverContextFactory {
      */
     public DocumentSaverContext createBulkLoad(String dataCluster,
                                                String dataModelName,
-                                               XSDKey keyMetadata,
+                                               XSDKey autoKeyMetadata,
+                                               XSDKey autoFieldMetadata,
                                                InputStream documentStream,
                                                LoadAction loadAction,
                                                XmlServer server) {
-        return new BulkLoadContext(dataCluster, dataModelName, keyMetadata, documentStream, loadAction, server);
+        return new BulkLoadContext(dataCluster, dataModelName, autoKeyMetadata, autoFieldMetadata, documentStream, loadAction,
+                server);
     }
 
     /**

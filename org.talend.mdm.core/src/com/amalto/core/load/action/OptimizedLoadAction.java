@@ -37,52 +37,89 @@ public class OptimizedLoadAction implements LoadAction {
     private final String typeName;
     private final String dataModelName;
     private final boolean needAutoGenPK;
+    private final boolean needAutoGenAutoFields;
     private StateContext context;
 
     public OptimizedLoadAction(String dataClusterName, String typeName, String dataModelName, boolean needAutoGenPK) {
+        this(dataClusterName, typeName, dataModelName, needAutoGenPK, false);
+    }
+
+    public OptimizedLoadAction(String dataClusterName, String typeName, String dataModelName, boolean needAutoGenPK, boolean needAutoGenNor){
         this.dataClusterName = dataClusterName;
         this.typeName = typeName;
         this.dataModelName = dataModelName;
         this.needAutoGenPK = needAutoGenPK;
+        this.needAutoGenAutoFields = needAutoGenNor;
     }
 
     public boolean supportValidation() {
         return false;
     }
 
-    public void load(InputStream stream, XSDKey keyMetadata, XmlServer server, SaverSession session) {
-        if (!".".equals(keyMetadata.getSelector())) { //$NON-NLS-1$
-            throw new UnsupportedOperationException("Selector '" + keyMetadata.getSelector() + "' isn't supported.");
+    @Override
+    public void load(InputStream stream, XSDKey autoKeyMetadata, XSDKey autoFieldMetadata, XmlServer server, SaverSession session) {
+        if (!".".equals(autoKeyMetadata.getSelector())) { //$NON-NLS-1$
+            throw new UnsupportedOperationException("Selector '" + autoKeyMetadata.getSelector() + "' isn't supported.");
         }
-        AutoIdGenerator idGenerator = null;
-        if (needAutoGenPK) {
-            String[] idFieldTypes = keyMetadata.getFieldTypes();
-            for (String idFieldType : idFieldTypes) {
-                if (EUUIDCustomType.AUTO_INCREMENT.getName().equals(idFieldType)) {
-                    idGenerator = AutoIncrementGenerator.get();
-                } else if (EUUIDCustomType.UUID.getName().equals(idFieldType)) {
-                    idGenerator = new UUIDIdGenerator();
-                } else {
-                    throw new UnsupportedOperationException("No support for key field type '" + idFieldType + "' with autogen pk on.");
-                }
-            }
-        }
+        AutoIdGenerator idGenerator = getAutoKeyGenerator(autoKeyMetadata, needAutoGenPK);
+        AutoIdGenerator[] autoFieldGenerator = getAutoFieldGenerator(autoFieldMetadata, needAutoGenAutoFields);
 
         // Creates a load parser callback that loads data in server using a SAX handler
         ServerParserCallback callback = new ServerParserCallback(server, dataClusterName);
 
         java.io.InputStream inputStream = new XMLRootInputStream(stream, "root"); //$NON-NLS-1$
-        LoadParser.Configuration configuration = new LoadParser.Configuration(typeName,
-                keyMetadata.getFields(),
-                needAutoGenPK,
-                dataClusterName,
-                dataModelName,
-                idGenerator);
+        LoadParser.Configuration configuration = null;
+        if (needAutoGenAutoFields) {
+            configuration = new LoadParser.Configuration(typeName, autoKeyMetadata.getFields(), autoFieldMetadata.getFields(),
+                    needAutoGenPK, dataClusterName, dataModelName, idGenerator, autoFieldGenerator);
+        } else {
+            configuration = new LoadParser.Configuration(typeName, autoKeyMetadata.getFields(), needAutoGenPK, dataClusterName,
+                    dataModelName, idGenerator);
+        }
+
         context = LoadParser.parse(inputStream, configuration, callback);
 
         if (log.isDebugEnabled()) {
             log.debug("Number of documents loaded: " + callback.getCount()); //$NON-NLS-1$
         }
+    }
+
+    private AutoIdGenerator getAutoKeyGenerator(XSDKey normalMetadata, boolean needAutoGen) {
+        if (!needAutoGen) {
+            return null;
+        }
+        String[] idFieldTypes = normalMetadata.getFieldTypes();
+        for (String idFieldType : idFieldTypes) {
+            if (EUUIDCustomType.AUTO_INCREMENT.getName().equals(idFieldType)) {
+                return AutoIncrementGenerator.get();
+            } else if (EUUIDCustomType.UUID.getName().equals(idFieldType)) {
+                return new UUIDIdGenerator();
+            } else {
+                throw new UnsupportedOperationException(
+                        "No support for key field type '" + idFieldType + "' with autogen pk on.");
+            }
+        }
+        return null;
+    }
+
+    private AutoIdGenerator[] getAutoFieldGenerator(XSDKey normalMetadata, boolean needAutoGen) {
+        if (!needAutoGen) {
+            return null;
+        }
+        String[] idFieldTypes = normalMetadata.getFieldTypes();
+        AutoIdGenerator[] generator = new AutoIdGenerator[idFieldTypes.length];
+        int i = 0;
+        for (String idFieldType : idFieldTypes) {
+            if (EUUIDCustomType.AUTO_INCREMENT.getName().equals(idFieldType)) {
+                generator[i++] = AutoIncrementGenerator.get();
+            } else if (EUUIDCustomType.UUID.getName().equals(idFieldType)) {
+                generator[i++] = new UUIDIdGenerator();
+            } else {
+                throw new UnsupportedOperationException(
+                        "No support for key field type '" + idFieldType + "' with autogen pk on.");
+            }
+        }
+        return generator;
     }
 
     public void endLoad(XmlServer server) {

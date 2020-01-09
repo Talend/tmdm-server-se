@@ -29,6 +29,7 @@ import io.swagger.annotations.ApiParam;
 @Path("/transactions")
 @Api("Transactions")
 public class TransactionService {
+
     /**
      * Lists all actives transactions ({@link Transaction.Lifetime#LONG} and {@link Transaction.Lifetime#AD_HOC}).
      * @return A space-separated list of transaction ids (as UUID).

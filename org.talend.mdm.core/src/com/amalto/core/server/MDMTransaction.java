@@ -38,7 +38,7 @@ class MDMTransaction implements Transaction {
     private final Object[] lockChange = new Object[0];
 
     private LockStrategy lockStrategy = LockStrategy.NO_LOCK;
-
+    
     private StackTraceElement[] creationStackTrace = null;
 
     MDMTransaction(Lifetime lifetime, String id) {

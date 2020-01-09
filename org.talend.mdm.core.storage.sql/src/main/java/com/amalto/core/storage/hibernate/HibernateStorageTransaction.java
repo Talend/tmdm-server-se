@@ -39,7 +39,6 @@ import com.amalto.core.storage.record.DataRecordXmlWriter;
 import com.amalto.core.storage.record.ObjectDataRecordReader;
 import com.amalto.core.storage.transaction.StorageTransaction;
 
-
 class HibernateStorageTransaction extends StorageTransaction {
 
     private static final Logger LOGGER = Logger.getLogger(HibernateStorageTransaction.class);
@@ -93,7 +92,7 @@ class HibernateStorageTransaction extends StorageTransaction {
             this.releaseLock();
         }
     }
-
+    
     public void acquireLock() {
         GlobalTransactionLockHolder.acquireGlobalLock();
         if (LOGGER.isDebugEnabled()) {
@@ -111,7 +110,7 @@ class HibernateStorageTransaction extends StorageTransaction {
             LOGGER.debug("Lock acquired for " + this + " on thread " + Thread.currentThread().getName()); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
-
+    
     public void releaseLock(){
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Trying to release for " + this + " on thread " + Thread.currentThread().getName()); //$NON-NLS-1$ //$NON-NLS-2$

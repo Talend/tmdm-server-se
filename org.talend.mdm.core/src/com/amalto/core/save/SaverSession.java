@@ -20,6 +20,7 @@ import org.apache.log4j.Logger;
 
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.util.core.EUUIDCustomType;
+import org.talend.mdm.commmon.util.core.MDMConfiguration;
 import org.talend.mdm.commmon.util.webapp.XSystemObjects;
 
 import com.amalto.core.history.DeleteType;
@@ -54,6 +55,12 @@ public class SaverSession {
     private final SaverSource dataSource;
 
     private boolean hasMetAutoIncrement = false;
+
+    private static final long TRANSACTION_WAIT_MILLISECONDS;
+
+    static {
+        TRANSACTION_WAIT_MILLISECONDS = Long.valueOf(MDMConfiguration.getTransactionWaitMilliseconds());
+    }
 
     public SaverSession(SaverSource dataSource) {
         this.dataSource = dataSource;
@@ -183,7 +190,7 @@ public class SaverSession {
             boolean needResetAutoIncrement = false;
             for (Map.Entry<String, List<Document>> currentTransaction : itemsToUpdate.entrySet()) {
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(TRANSACTION_WAIT_MILLISECONDS);
                 } catch (InterruptedException e) {
                     LOGGER.warn("SaverSession update record interrupted thread sleep.", e); //$NON-NLS-1$
                 }

@@ -28,22 +28,23 @@ public class GlobalTransactionLockHolder {
     public static void acquireGlobalLock() {
         try {
             ReentrantLock mylock = (ReentrantLock)globalLock;
-/*            LOGGER.info("******* global lock is locked  : " + mylock.isLocked());
-            LOGGER.info("******* global lock self locked: " + mylock.isHeldByCurrentThread());
-            StackTraceElement[] mStacks = Thread.currentThread().getStackTrace();
-            StringBuilder sb = new StringBuilder();
-            int i = 0;
-            for (StackTraceElement s : mStacks) {
-                i++;
-                if (i > 20)
-                    break;
-                sb.append("ClassName: " + s.getClassName() + ", MethodName: " + s.getMethodName() + ",Row:"
-                                + s.getLineNumber()).append("\n");
+            if (LOGGER.isTraceEnabled()) {
+                LOGGER.trace("******* global lock is locked  : " + mylock.isLocked());
+                LOGGER.trace("******* global lock self locked: " + mylock.isHeldByCurrentThread());
+                StackTraceElement[] mStacks = Thread.currentThread().getStackTrace();
+                StringBuilder sb = new StringBuilder();
+                int i = 0;
+                for (StackTraceElement s : mStacks) {
+                    i++;
+                    if (i > 20)
+                        break;
+                    sb.append("ClassName: " + s.getClassName() + ", MethodName: " + s.getMethodName() + ",Row:"
+                                    + s.getLineNumber()).append("\n");
+                }
+
+                LOGGER.trace("*******get lock Current thread name: " + Thread.currentThread().getName());
+                LOGGER.trace(sb.toString());
             }
-
-            LOGGER.info("*******get lock Current thread name: " + Thread.currentThread().getName());
-            LOGGER.info(sb.toString());*/
-
             if (!globalLock.tryLock(LOCK_TIMEOUT_SECONDS, TimeUnit.SECONDS)) {
                 LOGGER.error("Failed to acquire global lock within 30 seconds."); //$NON-NLS-1$
                 throw new RuntimeException("Failed to acquire globalLock within " + LOCK_TIMEOUT_SECONDS + " seconds"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -58,18 +59,19 @@ public class GlobalTransactionLockHolder {
         if (mylock.isHeldByCurrentThread()) {
             globalLock.unlock();
         }
-
-/*        StackTraceElement[] mStacks = Thread.currentThread().getStackTrace();
-        StringBuilder sb = new StringBuilder();
-        int i = 0;
-        for (StackTraceElement s : mStacks) {
-            i++;
-            if (i > 6)
-                break;
-            sb.append("ClassName: " + s.getClassName() + ", MethodName: " + s.getMethodName() + ",Row:"
-                            + s.getLineNumber()).append("\n");
+        if (LOGGER.isTraceEnabled()) {
+            StackTraceElement[] mStacks = Thread.currentThread().getStackTrace();
+            StringBuilder sb = new StringBuilder();
+            int i = 0;
+            for (StackTraceElement s : mStacks) {
+                i++;
+                if (i > 6)
+                    break;
+                sb.append("ClassName: " + s.getClassName() + ", MethodName: " + s.getMethodName() + ",Row:"
+                                + s.getLineNumber()).append("\n");
+            }
+            LOGGER.trace("*******release lock thread: " + Thread.currentThread().getName());
+            LOGGER.trace(sb.toString());
         }
-        LOGGER.info("*******release lock thread: " + Thread.currentThread().getName());
-        LOGGER.info(sb.toString());*/
     }
 }

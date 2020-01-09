@@ -12,12 +12,6 @@
 package com.amalto.core.storage.transaction;
 
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -26,10 +20,8 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 
-import com.amalto.core.server.MDMTransaction;
 import com.amalto.core.server.ServerContext;
 import com.amalto.core.storage.task.staging.SerializableList;
-import org.apache.log4j.Logger;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -37,7 +29,6 @@ import io.swagger.annotations.ApiParam;
 @Path("/transactions")
 @Api("Transactions")
 public class TransactionService {
-    private static final Logger LOGGER = Logger.getLogger(TransactionService.class);
     /**
      * Lists all actives transactions ({@link Transaction.Lifetime#LONG} and {@link Transaction.Lifetime#AD_HOC}).
      * @return A space-separated list of transaction ids (as UUID).
@@ -77,28 +68,7 @@ public class TransactionService {
         TransactionManager transactionManager = ServerContext.INSTANCE.get().getTransactionManager();
         Transaction transaction = transactionManager.get(transactionId);
         if (transaction != null) {
-            if (transaction.isFree()) {
-                transaction.commit();
-            } else {
-                final ExecutorService service = Executors.newSingleThreadExecutor();
-                Future<Object> futureResult = null;
-                try {
-                    futureResult = service.submit(() -> {
-                        while (transaction.isFree()) {
-                            LOGGER.error("******* while commit."); //$NON-NLS-1$
-                            transaction.commit();
-                        }
-                        return null;
-                    });
-                    String result = (String)futureResult.get(20, TimeUnit.SECONDS);
-                } catch (TimeoutException e) {
-                    LOGGER.warn("Timeout during commit.", e); //$NON-NLS-1$
-                } catch (Exception e) {
-                    LOGGER.warn("Issue found during commit.", e); //$NON-NLS-1$
-                } finally {
-                    service.shutdown();
-                }
-            }
+            transaction.commit();
         }
     }
 
@@ -114,31 +84,7 @@ public class TransactionService {
         TransactionManager transactionManager = ServerContext.INSTANCE.get().getTransactionManager();
         Transaction transaction = transactionManager.get(transactionId);
         if (transaction != null) {
-            //if (((MDMTransaction)transaction).isFrees) 
-            {
-                LOGGER.error("******* begin rollback.");
-                transaction.rollback();
-            } /*else {
-                final ExecutorService service = Executors.newSingleThreadExecutor();
-                Future<Object> futureResult = null;
-                try {
-                    LOGGER.error("******* while rollback 1.");
-                    futureResult = service.submit(() -> {
-                        while (transaction.isFree()) {
-                            LOGGER.error("******* while rollback."); //$NON-NLS-1$
-                            transaction.rollback();
-                        }
-                        return null;
-                    });
-                    String result = (String)futureResult.get(20, TimeUnit.SECONDS);
-                } catch (TimeoutException e) {
-                    LOGGER.warn("Timeout during rollback.", e); //$NON-NLS-1$
-                } catch (Exception e) {
-                    LOGGER.warn("Issue found during rollback.", e); //$NON-NLS-1$
-                } finally {
-                    service.shutdown();
-                }
-            }*/
+            transaction.rollback();
         }
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2020 Talend Inc. - www.talend.com
  * 
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.log4j.Logger;
@@ -39,16 +38,8 @@ class MDMTransaction implements Transaction {
     private final Object[] lockChange = new Object[0];
 
     private LockStrategy lockStrategy = LockStrategy.NO_LOCK;
-    
-    private StackTraceElement[] creationStackTrace = null;
-    
-    private static AtomicBoolean isFree = new AtomicBoolean(true);
 
-    private final Object transactionLock = new Object();
-    
-    public boolean isFree() {
-        return isFree.get();
-    }
+    private StackTraceElement[] creationStackTrace = null;
 
     MDMTransaction(Lifetime lifetime, String id) {
         this.lifetime = lifetime;
@@ -102,85 +93,100 @@ class MDMTransaction implements Transaction {
 
     @Override
     public void begin() {
-        synchronized (storageTransactions) {
-            if(LOGGER.isDebugEnabled()){
-                LOGGER.debug("[" + this + "] Transaction #" + this.hashCode() + " -> Begin.");
-            }
-            Collection<StorageTransaction> values = new ArrayList<StorageTransaction>(storageTransactions.values());
-            for (StorageTransaction storageTransaction : values) {
-                if(LOGGER.isDebugEnabled()){
-                    LOGGER.debug("[" + this + "] Transaction #" + this.hashCode() + " -> Beginning storage transaction: " + storageTransaction);
+        GlobalTransactionLockHolder.acquireGlobalLock();
+        try {
+            synchronized (storageTransactions) {
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("[" + this + "] Transaction #" + this.hashCode() + " -> Begin.");
                 }
-                storageTransaction.autonomous().begin();
+                Collection<StorageTransaction> values = new ArrayList<StorageTransaction>(storageTransactions.values());
+                for (StorageTransaction storageTransaction : values) {
+                    if (LOGGER.isDebugEnabled()) {
+                        LOGGER.debug("[" + this + "] Transaction #" + this.hashCode()
+                                + " -> Beginning storage transaction: " + storageTransaction);
+                    }
+                    storageTransaction.autonomous().begin();
+                }
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("[" + this + "] Transaction #" + this.hashCode() + " -> Begin done.");
+                }
             }
-            if(LOGGER.isDebugEnabled()){
-                LOGGER.debug("[" + this + "] Transaction #" + this.hashCode() + " -> Begin done.");
-            }
+        } finally {
+            GlobalTransactionLockHolder.releaseGlobalLock();
         }
     }
 
     @Override
     public void commit() {
-        synchronized (lock) {
-        synchronized (storageTransactions) {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("[" + this + "] Transaction #" + this.hashCode() + " -> Commit.");
-            }
-            try {
-                Collection<StorageTransaction> values = new ArrayList<StorageTransaction>(storageTransactions.values());
-                for (StorageTransaction storageTransaction : values) {
-                    storageTransaction.autonomous().commit();
-                }
+        GlobalTransactionLockHolder.acquireGlobalLock();
+        try {
+            synchronized (storageTransactions) {
                 if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("[" + this + "] Transaction #" + this.hashCode() + " -> Commit done.");
+                    LOGGER.debug("[" + this + "] Transaction #" + this.hashCode() + " -> Commit.");
                 }
-            } catch (Throwable t) {
-                LOGGER.warn("Commit failed for transaction " + getId() + ". Perform automatic rollback.", t);
-                rollback();
-            } finally {
-                transactionComplete();
+                try {
+                    Collection<StorageTransaction> values = new ArrayList<StorageTransaction>(storageTransactions.values());
+                    for (StorageTransaction storageTransaction : values) {
+                        storageTransaction.autonomous().commit();
+                    }
+                    if (LOGGER.isDebugEnabled()) {
+                        LOGGER.debug("[" + this + "] Transaction #" + this.hashCode() + " -> Commit done.");
+                    }
+                } catch (Throwable t) {
+                    LOGGER.warn("Commit failed for transaction " + getId() + ". Perform automatic rollback.", t);
+                    rollback();
+                } finally {
+                    transactionComplete();
+                }
             }
-        }
+        } finally {
+            GlobalTransactionLockHolder.releaseGlobalLock();
         }
     }
 
     @Override
     public void rollback() {
-        synchronized (lock) {
-        synchronized (storageTransactions) {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("[" + this + "] Transaction #" + this.hashCode() + " -> Rollback. ");
-            }
-            try {
-                Collection<StorageTransaction> values = new ArrayList<StorageTransaction>(storageTransactions.values());
-                for (StorageTransaction storageTransaction : values) {
-                    storageTransaction.autonomous().rollback();
-                }
+        GlobalTransactionLockHolder.acquireGlobalLock();
+        try {
+            synchronized (storageTransactions) {
                 if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("[" + this + "] Transaction #" + this.hashCode() + " -> Rollback done.");
+                    LOGGER.debug("[" + this + "] Transaction #" + this.hashCode() + " -> Rollback. ");
                 }
-            } finally {
-                transactionComplete();
+                try {
+                    Collection<StorageTransaction> values = new ArrayList<StorageTransaction>(storageTransactions.values());
+                    for (StorageTransaction storageTransaction : values) {
+                        storageTransaction.autonomous().rollback();
+                    }
+                    if (LOGGER.isDebugEnabled()) {
+                        LOGGER.debug("[" + this + "] Transaction #" + this.hashCode() + " -> Rollback done.");
+                    }
+                } finally {
+                    transactionComplete();
+                }
             }
-        }
+        } finally {
+            GlobalTransactionLockHolder.releaseGlobalLock();
         }
     }
 
     @Override
     public StorageTransaction exclude(Storage storage) {
-        synchronized (lock) {
-        synchronized (storageTransactions) {
-            StorageTransaction transaction = (StorageTransaction) storageTransactions.remove(storage.asInternal(), Thread.currentThread());
-            if (storageTransactions.isEmpty()) {
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("Transaction '" + getId() + "' no longer has storage transactions. Removing it."); //$NON-NLS-1$ //$NON-NLS-2$
+        StorageTransaction transaction = null;
+        GlobalTransactionLockHolder.acquireGlobalLock();
+        try {
+            synchronized (storageTransactions) {
+                transaction = (StorageTransaction) storageTransactions.remove(storage.asInternal(), Thread.currentThread());
+                if (storageTransactions.isEmpty()) {
+                    if (LOGGER.isDebugEnabled()) {
+                        LOGGER.debug("Transaction '" + getId() + "' no longer has storage transactions. Removing it."); //$NON-NLS-1$ //$NON-NLS-2$
+                    }
+                    transactionComplete();
                 }
-                transactionComplete();
             }
-            isFree.set(true);
-            return transaction;
+        } finally {
+            GlobalTransactionLockHolder.releaseGlobalLock();
         }
-        }
+        return transaction;
     }
 
     @Override
@@ -200,21 +206,21 @@ class MDMTransaction implements Transaction {
         if ((storage.getCapabilities() & Storage.CAP_TRANSACTION) != Storage.CAP_TRANSACTION) {
             throw new IllegalArgumentException("Storage '" + storage.getName() + "' does not support transactions.");
         }
-        synchronized (lock) {
         StorageTransaction storageTransaction = null;
-        synchronized (storageTransactions) {
-            try {
-                if (this.getLifetime() == Lifetime.LONG) {
+        GlobalTransactionLockHolder.acquireGlobalLock();
+        try {
+            synchronized (storageTransactions) {
+                if(this.getLifetime() == Lifetime.LONG){
                     Map<Thread, StorageTransaction> row = storageTransactions.row(storage.asInternal());
-                    if (row.size() == 1) {
+                    if(row.size() == 1){
                         return row.values().iterator().next().dependent();
-                    } else if (row.size() != 0) {
-                        throw new IllegalStateException(
-                                "StorageTransactions table contains more than one StorageTransaction for a storage but it is a long transaction");
                     }
-                } else {
-                    storageTransaction =
-                            (StorageTransaction) storageTransactions.get(storage.asInternal(), Thread.currentThread());
+                    else if(row.size() != 0){
+                        throw new IllegalStateException("StorageTransactions table contains more than one StorageTransaction for a storage but it is a long transaction");
+                    }
+                }
+                else {
+                    storageTransaction = (StorageTransaction) storageTransactions.get(storage.asInternal(), Thread.currentThread());
                 }
                 // if transaction is null, create a new storage transaction
                 if (storageTransaction == null) {
@@ -222,10 +228,9 @@ class MDMTransaction implements Transaction {
                     storageTransaction.setLockStrategy(lockStrategy);
                     storageTransactions.put(storage.asInternal(), Thread.currentThread(), storageTransaction);
                 }
-            } finally {
-                isFree.set(true);
             }
-        }
+        } finally {
+            GlobalTransactionLockHolder.releaseGlobalLock();
         }
         switch (lifetime) {
         case AD_HOC:

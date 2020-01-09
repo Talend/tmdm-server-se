@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2018 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2020 Talend Inc. - www.talend.com
  *
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -31,12 +31,14 @@ import org.hibernate.internal.SessionImpl;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 
 import com.amalto.core.load.io.ResettableStringWriter;
+import com.amalto.core.server.GlobalTransactionLockHolder;
 import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.exception.ConstraintViolationException;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.record.DataRecordXmlWriter;
 import com.amalto.core.storage.record.ObjectDataRecordReader;
 import com.amalto.core.storage.transaction.StorageTransaction;
+
 
 class HibernateStorageTransaction extends StorageTransaction {
 
@@ -91,32 +93,37 @@ class HibernateStorageTransaction extends StorageTransaction {
             this.releaseLock();
         }
     }
-    
+
     public void acquireLock() {
-        if(LOGGER.isDebugEnabled()){
+        GlobalTransactionLockHolder.acquireGlobalLock();
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Trying to acquire lock for " + this + " on thread " + Thread.currentThread().getName()); //$NON-NLS-1$ //$NON-NLS-2$
         }
         try {
-            if(!this.lock.tryLock(LOCK_TIMEOUT_SECONDS, TimeUnit.SECONDS)){
-                LOGGER.error("Failed to acquire lock within "+ LOCK_TIMEOUT_SECONDS + " seconds"); //$NON-NLS-1$ //$NON-NLS-2$
+            if (!this.lock.tryLock(LOCK_TIMEOUT_SECONDS, TimeUnit.SECONDS)) {
+                LOGGER.error("Failed to acquire lock within " + LOCK_TIMEOUT_SECONDS + " seconds"); //$NON-NLS-1$ //$NON-NLS-2$
                 throw new RuntimeException("Failed to acquire lock within " + LOCK_TIMEOUT_SECONDS + " seconds"); //$NON-NLS-1$ //$NON-NLS-2$
             }
         } catch (InterruptedException e) {
             LOGGER.error("Interrupted while trying to acquire lock on " + this); //$NON-NLS-1$
         }
-        if(LOGGER.isDebugEnabled()){
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Lock acquired for " + this + " on thread " + Thread.currentThread().getName()); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
-    
+
     public void releaseLock(){
-        if(LOGGER.isDebugEnabled()){
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Trying to release for " + this + " on thread " + Thread.currentThread().getName()); //$NON-NLS-1$ //$NON-NLS-2$
         }
-        lock.unlock();
-        if(LOGGER.isDebugEnabled()){
+        ReentrantLock mylock = (ReentrantLock) lock;
+        if (mylock.isHeldByCurrentThread()) {
+            mylock.unlock();
+        }
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Lock released for " + this + " on thread " + Thread.currentThread().getName()); //$NON-NLS-1$ //$NON-NLS-2$
         }
+        GlobalTransactionLockHolder.releaseGlobalLock();
     }
 
     @Override

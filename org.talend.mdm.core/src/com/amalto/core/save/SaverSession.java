@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import org.apache.log4j.Logger;
 
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.util.core.EUUIDCustomType;
@@ -32,6 +33,7 @@ import com.amalto.core.save.generator.AutoIncrementGenerator;
 import com.amalto.core.storage.record.DataRecord;
 
 public class SaverSession {
+    private static final Logger LOGGER = Logger.getLogger(SaverSession.class);
 
     private static final String AUTO_INCREMENT_TYPE_NAME = "AutoIncrement"; //$NON-NLS-1$
 
@@ -180,6 +182,11 @@ public class SaverSession {
         synchronized (itemsToUpdate) {
             boolean needResetAutoIncrement = false;
             for (Map.Entry<String, List<Document>> currentTransaction : itemsToUpdate.entrySet()) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    LOGGER.warn("SaverSession update record interrupted thread sleep.", e); //$NON-NLS-1$
+                }
                 String dataCluster = currentTransaction.getKey();
                 int itemCounter = 0;
                 String recordId = ""; //$NON-NLS-1$

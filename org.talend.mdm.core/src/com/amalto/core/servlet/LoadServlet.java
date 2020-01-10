@@ -118,7 +118,7 @@ public class LoadServlet extends HttpServlet {
         String dataModelName = request.getParameter(PARAMETER_DATAMODEL);
         boolean needValidate = Boolean.parseBoolean(request.getParameter(PARAMETER_VALIDATE));
         boolean needAutoGenPK = Boolean.parseBoolean(request.getParameter(PARAMETER_SMARTPK));
-        boolean needAutoGenAutoFields = Boolean.parseBoolean(request.getParameter(PARAMETER_SMARTFIELDS));
+        boolean needAutoGenAutoFields = request.getParameter(PARAMETER_SMARTFIELDS) == null ? true : false;
         boolean insertOnly = Boolean.parseBoolean(request.getParameter(PARAMETER_INSERTONLY));
 
         try {

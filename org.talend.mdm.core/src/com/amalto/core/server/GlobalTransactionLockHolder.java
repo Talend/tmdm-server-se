@@ -13,7 +13,6 @@
 package com.amalto.core.server;
 
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import org.apache.log4j.Logger;
 
@@ -23,14 +22,13 @@ public class GlobalTransactionLockHolder {
 
     private static final int LOCK_TIMEOUT_SECONDS = 30;
 
-    private static final Lock globalLock = new ReentrantLock();
+    private static final ReentrantLock globalLock = new ReentrantLock();
 
     public static void acquireGlobalLock() {
         try {
-            ReentrantLock mylock = (ReentrantLock)globalLock;
             if (LOGGER.isTraceEnabled()) {
-                LOGGER.trace("******* global lock is locked  : " + mylock.isLocked());
-                LOGGER.trace("******* global lock self locked: " + mylock.isHeldByCurrentThread());
+                LOGGER.trace("******* global lock is locked  : " + globalLock.isLocked());
+                LOGGER.trace("******* global lock self locked: " + globalLock.isHeldByCurrentThread());
                 StackTraceElement[] mStacks = Thread.currentThread().getStackTrace();
                 StringBuilder sb = new StringBuilder();
                 int i = 0;
@@ -46,7 +44,7 @@ public class GlobalTransactionLockHolder {
                 LOGGER.trace(sb.toString());
             }
             if (!globalLock.tryLock(LOCK_TIMEOUT_SECONDS, TimeUnit.SECONDS)) {
-                LOGGER.error("Failed to acquire global lock within 30 seconds."); //$NON-NLS-1$
+                LOGGER.error("Failed to acquire global lock within " + LOCK_TIMEOUT_SECONDS + " seconds."); //$NON-NLS-1$
                 throw new RuntimeException("Failed to acquire globalLock within " + LOCK_TIMEOUT_SECONDS + " seconds"); //$NON-NLS-1$ //$NON-NLS-2$
             }
         } catch (InterruptedException e) {
@@ -55,23 +53,22 @@ public class GlobalTransactionLockHolder {
     }
 
     public static void releaseGlobalLock() {
-        ReentrantLock mylock = (ReentrantLock)globalLock;
-        if (mylock.isHeldByCurrentThread()) {
+        if (globalLock.isHeldByCurrentThread()) {
             globalLock.unlock();
-        }
-        if (LOGGER.isTraceEnabled()) {
-            StackTraceElement[] mStacks = Thread.currentThread().getStackTrace();
-            StringBuilder sb = new StringBuilder();
-            int i = 0;
-            for (StackTraceElement s : mStacks) {
-                i++;
-                if (i > 6)
-                    break;
-                sb.append("ClassName: " + s.getClassName() + ", MethodName: " + s.getMethodName() + ",Row:"
-                                + s.getLineNumber()).append("\n");
+            if (LOGGER.isTraceEnabled()) {
+                StackTraceElement[] mStacks = Thread.currentThread().getStackTrace();
+                StringBuilder sb = new StringBuilder();
+                int i = 0;
+                for (StackTraceElement s : mStacks) {
+                    i++;
+                    if (i > 6)
+                        break;
+                    sb.append("ClassName: " + s.getClassName() + ", MethodName: " + s.getMethodName() + ",Row:"
+                                    + s.getLineNumber()).append("\n");
+                }
+                LOGGER.trace("*******release lock thread: " + Thread.currentThread().getName());
+                LOGGER.trace(sb.toString());
             }
-            LOGGER.trace("*******release lock thread: " + Thread.currentThread().getName());
-            LOGGER.trace(sb.toString());
         }
     }
 }

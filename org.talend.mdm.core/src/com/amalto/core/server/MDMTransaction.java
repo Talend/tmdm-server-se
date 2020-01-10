@@ -207,30 +207,25 @@ class MDMTransaction implements Transaction {
             throw new IllegalArgumentException("Storage '" + storage.getName() + "' does not support transactions.");
         }
         StorageTransaction storageTransaction = null;
-        GlobalTransactionLockHolder.acquireGlobalLock();
-        try {
-            synchronized (storageTransactions) {
-                if(this.getLifetime() == Lifetime.LONG){
-                    Map<Thread, StorageTransaction> row = storageTransactions.row(storage.asInternal());
-                    if(row.size() == 1){
-                        return row.values().iterator().next().dependent();
-                    }
-                    else if(row.size() != 0){
-                        throw new IllegalStateException("StorageTransactions table contains more than one StorageTransaction for a storage but it is a long transaction");
-                    }
+        synchronized (storageTransactions) {
+            if(this.getLifetime() == Lifetime.LONG){
+                Map<Thread, StorageTransaction> row = storageTransactions.row(storage.asInternal());
+                if(row.size() == 1){
+                    return row.values().iterator().next().dependent();
                 }
-                else {
-                    storageTransaction = (StorageTransaction) storageTransactions.get(storage.asInternal(), Thread.currentThread());
-                }
-                // if transaction is null, create a new storage transaction
-                if (storageTransaction == null) {
-                    storageTransaction = storage.newStorageTransaction();
-                    storageTransaction.setLockStrategy(lockStrategy);
-                    storageTransactions.put(storage.asInternal(), Thread.currentThread(), storageTransaction);
+                else if(row.size() != 0){
+                    throw new IllegalStateException("StorageTransactions table contains more than one StorageTransaction for a storage but it is a long transaction");
                 }
             }
-        } finally {
-            GlobalTransactionLockHolder.releaseGlobalLock();
+            else {
+                storageTransaction = (StorageTransaction) storageTransactions.get(storage.asInternal(), Thread.currentThread());
+            }
+            // if transaction is null, create a new storage transaction
+            if (storageTransaction == null) {
+                storageTransaction = storage.newStorageTransaction();
+                storageTransaction.setLockStrategy(lockStrategy);
+                storageTransactions.put(storage.asInternal(), Thread.currentThread(), storageTransaction);
+            }
         }
         switch (lifetime) {
         case AD_HOC:

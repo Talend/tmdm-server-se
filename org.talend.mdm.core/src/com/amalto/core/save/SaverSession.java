@@ -192,7 +192,7 @@ public class SaverSession {
                 try {
                     Thread.sleep(TRANSACTION_WAIT_MILLISECONDS);
                 } catch (InterruptedException e) {
-                    LOGGER.warn("SaverSession update record interrupted thread sleep.", e); //$NON-NLS-1$
+                    LOGGER.warn("Update process has been interrupted.", e); //$NON-NLS-1$
                 }
                 String dataCluster = currentTransaction.getKey();
                 int itemCounter = 0;

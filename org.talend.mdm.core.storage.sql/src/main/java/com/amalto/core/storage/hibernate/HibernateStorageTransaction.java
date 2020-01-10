@@ -14,7 +14,6 @@ package com.amalto.core.storage.hibernate;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.lang.NotImplementedException;
@@ -53,7 +52,7 @@ class HibernateStorageTransaction extends StorageTransaction {
 
     private final Thread initiatorThread;
     
-    private final Lock lock = new ReentrantLock();
+    private final ReentrantLock lock = new ReentrantLock();
 
     private boolean hasFailed;
 
@@ -115,9 +114,8 @@ class HibernateStorageTransaction extends StorageTransaction {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Trying to release for " + this + " on thread " + Thread.currentThread().getName()); //$NON-NLS-1$ //$NON-NLS-2$
         }
-        ReentrantLock mylock = (ReentrantLock) lock;
-        if (mylock.isHeldByCurrentThread()) {
-            mylock.unlock();
+        if (lock.isHeldByCurrentThread()) {
+            lock.unlock();
         }
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Lock released for " + this + " on thread " + Thread.currentThread().getName()); //$NON-NLS-1$ //$NON-NLS-2$

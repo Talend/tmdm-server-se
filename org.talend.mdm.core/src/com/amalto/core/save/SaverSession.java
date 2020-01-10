@@ -189,11 +189,6 @@ public class SaverSession {
         synchronized (itemsToUpdate) {
             boolean needResetAutoIncrement = false;
             for (Map.Entry<String, List<Document>> currentTransaction : itemsToUpdate.entrySet()) {
-                try {
-                    Thread.sleep(TRANSACTION_WAIT_MILLISECONDS);
-                } catch (InterruptedException e) {
-                    LOGGER.warn("Update process has been interrupted.", e); //$NON-NLS-1$
-                }
                 String dataCluster = currentTransaction.getKey();
                 int itemCounter = 0;
                 String recordId = ""; //$NON-NLS-1$
@@ -223,6 +218,11 @@ public class SaverSession {
                         throw new MultiRecordsSaveException(getCauseMessage(e), e.getCause(), recordId, itemCounter);
                     }
                     throw e;
+                }
+                try {
+                    Thread.sleep(TRANSACTION_WAIT_MILLISECONDS);
+                } catch (InterruptedException e) {
+                    LOGGER.warn("Update process has been interrupted.", e); //$NON-NLS-1$
                 }
             }
             // If any change was made to data cluster "UpdateReport", route committed update reports.

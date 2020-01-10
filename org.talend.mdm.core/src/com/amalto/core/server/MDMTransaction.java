@@ -156,17 +156,16 @@ class MDMTransaction implements Transaction {
 
     @Override
     public StorageTransaction exclude(Storage storage) {
-        StorageTransaction transaction = null;
         synchronized (storageTransactions) {
-            transaction = (StorageTransaction) storageTransactions.remove(storage.asInternal(), Thread.currentThread());
+            StorageTransaction transaction = (StorageTransaction) storageTransactions.remove(storage.asInternal(), Thread.currentThread());
             if (storageTransactions.isEmpty()) {
                 if (LOGGER.isDebugEnabled()) {
                     LOGGER.debug("Transaction '" + getId() + "' no longer has storage transactions. Removing it."); //$NON-NLS-1$ //$NON-NLS-2$
                 }
                 transactionComplete();
             }
+            return transaction;
         }
-        return transaction;
     }
 
     @Override

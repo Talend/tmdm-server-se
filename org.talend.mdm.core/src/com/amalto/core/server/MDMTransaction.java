@@ -93,79 +93,64 @@ class MDMTransaction implements Transaction {
 
     @Override
     public void begin() {
-        GlobalTransactionLockHolder.acquireGlobalLock();
-        try {
-            synchronized (storageTransactions) {
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("[" + this + "] Transaction #" + this.hashCode() + " -> Begin.");
-                }
-                Collection<StorageTransaction> values = new ArrayList<StorageTransaction>(storageTransactions.values());
-                for (StorageTransaction storageTransaction : values) {
-                    if (LOGGER.isDebugEnabled()) {
-                        LOGGER.debug("[" + this + "] Transaction #" + this.hashCode()
-                                + " -> Beginning storage transaction: " + storageTransaction);
-                    }
-                    storageTransaction.autonomous().begin();
-                }
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("[" + this + "] Transaction #" + this.hashCode() + " -> Begin done.");
-                }
+        synchronized (storageTransactions) {
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("[" + this + "] Transaction #" + this.hashCode() + " -> Begin.");
             }
-        } finally {
-            GlobalTransactionLockHolder.releaseGlobalLock();
+            Collection<StorageTransaction> values = new ArrayList<StorageTransaction>(storageTransactions.values());
+            for (StorageTransaction storageTransaction : values) {
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("[" + this + "] Transaction #" + this.hashCode()
+                            + " -> Beginning storage transaction: " + storageTransaction);
+                }
+                storageTransaction.autonomous().begin();
+            }
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("[" + this + "] Transaction #" + this.hashCode() + " -> Begin done.");
+            }
         }
     }
 
     @Override
     public void commit() {
-        GlobalTransactionLockHolder.acquireGlobalLock();
-        try {
-            synchronized (storageTransactions) {
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("[" + this + "] Transaction #" + this.hashCode() + " -> Commit.");
-                }
-                try {
-                    Collection<StorageTransaction> values = new ArrayList<StorageTransaction>(storageTransactions.values());
-                    for (StorageTransaction storageTransaction : values) {
-                        storageTransaction.autonomous().commit();
-                    }
-                    if (LOGGER.isDebugEnabled()) {
-                        LOGGER.debug("[" + this + "] Transaction #" + this.hashCode() + " -> Commit done.");
-                    }
-                } catch (Throwable t) {
-                    LOGGER.warn("Commit failed for transaction " + getId() + ". Perform automatic rollback.", t);
-                    rollback();
-                } finally {
-                    transactionComplete();
-                }
+        synchronized (storageTransactions) {
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("[" + this + "] Transaction #" + this.hashCode() + " -> Commit.");
             }
-        } finally {
-            GlobalTransactionLockHolder.releaseGlobalLock();
+            try {
+                Collection<StorageTransaction> values = new ArrayList<StorageTransaction>(storageTransactions.values());
+                for (StorageTransaction storageTransaction : values) {
+                    storageTransaction.autonomous().commit();
+                }
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("[" + this + "] Transaction #" + this.hashCode() + " -> Commit done.");
+                }
+            } catch (Throwable t) {
+                LOGGER.warn("Commit failed for transaction " + getId() + ". Perform automatic rollback.", t);
+                rollback();
+            } finally {
+                transactionComplete();
+            }
         }
     }
 
     @Override
     public void rollback() {
-        GlobalTransactionLockHolder.acquireGlobalLock();
-        try {
-            synchronized (storageTransactions) {
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("[" + this + "] Transaction #" + this.hashCode() + " -> Rollback. ");
-                }
-                try {
-                    Collection<StorageTransaction> values = new ArrayList<StorageTransaction>(storageTransactions.values());
-                    for (StorageTransaction storageTransaction : values) {
-                        storageTransaction.autonomous().rollback();
-                    }
-                    if (LOGGER.isDebugEnabled()) {
-                        LOGGER.debug("[" + this + "] Transaction #" + this.hashCode() + " -> Rollback done.");
-                    }
-                } finally {
-                    transactionComplete();
-                }
+        synchronized (storageTransactions) {
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("[" + this + "] Transaction #" + this.hashCode() + " -> Rollback. ");
             }
-        } finally {
-            GlobalTransactionLockHolder.releaseGlobalLock();
+            try {
+                Collection<StorageTransaction> values = new ArrayList<StorageTransaction>(storageTransactions.values());
+                for (StorageTransaction storageTransaction : values) {
+                    storageTransaction.autonomous().rollback();
+                }
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("[" + this + "] Transaction #" + this.hashCode() + " -> Rollback done.");
+                }
+            } finally {
+                transactionComplete();
+            }
         }
     }
 

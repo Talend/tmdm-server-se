@@ -30,7 +30,6 @@ import org.hibernate.internal.SessionImpl;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 
 import com.amalto.core.load.io.ResettableStringWriter;
-import com.amalto.core.server.GlobalTransactionLockHolder;
 import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.exception.ConstraintViolationException;
 import com.amalto.core.storage.record.DataRecord;
@@ -93,7 +92,6 @@ class HibernateStorageTransaction extends StorageTransaction {
     }
     
     public void acquireLock() {
-        GlobalTransactionLockHolder.acquireGlobalLock();
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Trying to acquire lock for " + this + " on thread " + Thread.currentThread().getName()); //$NON-NLS-1$ //$NON-NLS-2$
         }
@@ -120,7 +118,6 @@ class HibernateStorageTransaction extends StorageTransaction {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Lock released for " + this + " on thread " + Thread.currentThread().getName()); //$NON-NLS-1$ //$NON-NLS-2$
         }
-        GlobalTransactionLockHolder.releaseGlobalLock();
     }
 
     @Override

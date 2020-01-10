@@ -172,19 +172,14 @@ class MDMTransaction implements Transaction {
     @Override
     public StorageTransaction exclude(Storage storage) {
         StorageTransaction transaction = null;
-        GlobalTransactionLockHolder.acquireGlobalLock();
-        try {
-            synchronized (storageTransactions) {
-                transaction = (StorageTransaction) storageTransactions.remove(storage.asInternal(), Thread.currentThread());
-                if (storageTransactions.isEmpty()) {
-                    if (LOGGER.isDebugEnabled()) {
-                        LOGGER.debug("Transaction '" + getId() + "' no longer has storage transactions. Removing it."); //$NON-NLS-1$ //$NON-NLS-2$
-                    }
-                    transactionComplete();
+        synchronized (storageTransactions) {
+            transaction = (StorageTransaction) storageTransactions.remove(storage.asInternal(), Thread.currentThread());
+            if (storageTransactions.isEmpty()) {
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("Transaction '" + getId() + "' no longer has storage transactions. Removing it."); //$NON-NLS-1$ //$NON-NLS-2$
                 }
+                transactionComplete();
             }
-        } finally {
-            GlobalTransactionLockHolder.releaseGlobalLock();
         }
         return transaction;
     }

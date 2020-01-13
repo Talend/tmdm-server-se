@@ -38,6 +38,8 @@ import static com.amalto.core.util.MDMEhCacheUtil.UPDATE_REPORT_EVENT_CACHE;
 
 public class SaverSession {
 
+    private static final Logger LOGGER = Logger.getLogger(SaverSession.class);
+
     private static final String AUTO_INCREMENT_TYPE_NAME = "AutoIncrement"; //$NON-NLS-1$
 
     private static final Map<String, SaverSource> saverSourcePerUser = new HashMap<String, SaverSource>();
@@ -57,6 +59,12 @@ public class SaverSession {
     private final SaverSource dataSource;
 
     private boolean hasMetAutoIncrement = false;
+
+    private static final long TRANSACTION_WAIT_MILLISECONDS;
+
+    static {
+        TRANSACTION_WAIT_MILLISECONDS = Long.valueOf(MDMConfiguration.getTransactionWaitMilliseconds());
+    }
 
     public SaverSession(SaverSource dataSource) {
         this.dataSource = dataSource;
@@ -214,6 +222,11 @@ public class SaverSession {
                         throw new MultiRecordsSaveException(getCauseMessage(e), e.getCause(), recordId, itemCounter);
                     }
                     throw e;
+                }
+                try {
+                    Thread.sleep(TRANSACTION_WAIT_MILLISECONDS);
+                } catch (InterruptedException e) {
+                    LOGGER.warn("Update process has been interrupted.", e); //$NON-NLS-1$
                 }
             }
 

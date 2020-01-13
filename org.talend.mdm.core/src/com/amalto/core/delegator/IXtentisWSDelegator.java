@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.xpath.XPath;
@@ -194,8 +193,6 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
     
     // default remote error
     public static final String DEFAULT_REMOTE_ERROR_MESSAGE = "default_remote_error_message"; //$NON-NLS-1$
-
-    private static final Map<String, AtomicInteger> DB_REQUESTS_MAP = new HashMap<String, AtomicInteger>();
 
     @Override
     public WSVersion getComponentVersion(WSGetComponentVersion wsGetComponentVersion) throws RemoteException {
@@ -930,14 +927,11 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
      */
     @Override
     public WSItemPK putItem(WSPutItem wsPutItem) throws RemoteException {
-        String dataModelName = StringUtils.EMPTY;
         try {
             WSDataClusterPK dataClusterPK = wsPutItem.getWsDataClusterPK();
             WSDataModelPK dataModelPK = wsPutItem.getWsDataModelPK();
             String dataClusterName = dataClusterPK.getPk();
-            dataModelName = dataModelPK.getPk();
-            beginRequestLimitation(dataModelName);
-
+            String dataModelName = dataModelPK.getPk();
             SaverSession session = SaverSession.newSession();
             DocumentSaver saver;
             try {
@@ -965,73 +959,7 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
                 throw new RemoteException((cause.getCause() == null ? cause.getLocalizedMessage() : cause.getCause()
                         .getLocalizedMessage()), e);
             }
-        } finally {
-            endRequestLimitation(dataModelName);
         }
-    }
-
-    private static int getMaxDBRequests(String dataModelName) {
-        String putItemConfig = "putitem.concurrent.database.requests." + dataModelName; //$NON-NLS-1$
-        try {
-            return Integer.valueOf(MDMConfiguration.getConfiguration().getProperty(putItemConfig));
-        } catch (Exception e) {
-            LOGGER.error("Invalid configuration for: " + putItemConfig, e); //$NON-NLS-1$
-            return 0;
-        }
-    }
-
-    private static long getWaitMilliSeconds(String dataModelName) {
-        String putItemConfig = "putitem.concurrent.wait.milliseconds." + dataModelName; //$NON-NLS-1$
-        try {
-            return Long.valueOf(MDMConfiguration.getConfiguration().getProperty(putItemConfig, "10")); //$NON-NLS-1$
-        } catch (Exception e) {
-            LOGGER.error("Invalid configuration for: " + putItemConfig, e); //$NON-NLS-1$
-            return 10;
-        }
-    }
-
-    private static void beginRequestLimitation(String dataModelName) {
-        int maxDBRequests = getMaxDBRequests(dataModelName);
-        if (maxDBRequests > 0) {
-            long waitMilliSeconds = getWaitMilliSeconds(dataModelName);
-            // Wait until less that MAX_THREADS running
-            synchronized (IXtentisWSDelegator.class) {
-                AtomicInteger dbRequests = getDBRequests(dataModelName);
-                try {
-                    while (dbRequests.get() >= maxDBRequests) {
-                        if (LOGGER.isDebugEnabled()) {
-                            LOGGER.debug("Up to " + dbRequests + " putitem requests, wait for " + waitMilliSeconds + " ms.");  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
-                        }
-                        Thread.sleep(waitMilliSeconds);
-                    }
-                    int newDbRequests = DB_REQUESTS_MAP.get(dataModelName).incrementAndGet();
-                    if (LOGGER.isDebugEnabled()) {
-                        LOGGER.debug("Add 1 putitem request, currently " + newDbRequests + " requests left."); //$NON-NLS-1$ //$NON-NLS-2$
-                    }
-                } catch (InterruptedException e) {
-                    LOGGER.error("Waiting to start putitem request meets exception.", e); //$NON-NLS-1$
-                }
-            }
-        }
-    }
-
-    private static void endRequestLimitation(String dataModelName) {
-        if (getMaxDBRequests(dataModelName) > 0) {
-            // Decrease total threads
-            int newDbRequests = DB_REQUESTS_MAP.get(dataModelName).decrementAndGet();
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Finish 1 putitem request, currently " + newDbRequests + " requests left."); //$NON-NLS-1$ //$NON-NLS-2$
-            }
-        }
-    }
-
-    private static AtomicInteger getDBRequests(String dataModelName) {
-        AtomicInteger value = DB_REQUESTS_MAP.get(dataModelName);
-        if (value == null) {
-            value = new AtomicInteger(0);
-            DB_REQUESTS_MAP.put(dataModelName, value);
-        }
-        return value;
     }
 
     /**
@@ -1130,15 +1058,12 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
      */
     @Override
     public WSItemPK putItemWithReport(com.amalto.core.webservice.WSPutItemWithReport wsPutItemWithReport) throws RemoteException {
-        String dataModelName = StringUtils.EMPTY;
         try {
             WSPutItem wsPutItem = wsPutItemWithReport.getWsPutItem();
             WSDataClusterPK dataClusterPK = wsPutItem.getWsDataClusterPK();
             WSDataModelPK dataModelPK = wsPutItem.getWsDataModelPK();
             String dataClusterName = dataClusterPK.getPk();
-            dataModelName = dataModelPK.getPk();
-            beginRequestLimitation(dataModelName);
-            
+            String dataModelName = dataModelPK.getPk();
             SaverSession session = SaverSession.newSession();
             DocumentSaver saver;
             try {
@@ -1170,8 +1095,6 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
         } catch (Exception e) {
             LOGGER.error("Error during save.", e); //$NON-NLS-1$
             throw handleException(e, SAVE_EXCEPTION_MESSAGE);
-        } finally {
-            endRequestLimitation(dataModelName);
         }
     }
 
@@ -1183,16 +1106,13 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
     @Override
     public WSItemPK putItemWithCustomReport(com.amalto.core.webservice.WSPutItemWithCustomReport wsPutItemWithCustomReport)
             throws RemoteException {
-        String dataModelName = StringUtils.EMPTY;
         try {
             WSPutItemWithReport wsPutItemWithReport = wsPutItemWithCustomReport.getWsPutItemWithReport();
             WSPutItem wsPutItem = wsPutItemWithReport.getWsPutItem();
             WSDataClusterPK dataClusterPK = wsPutItem.getWsDataClusterPK();
             WSDataModelPK dataModelPK = wsPutItem.getWsDataModelPK();
             String dataClusterName = dataClusterPK.getPk();
-            dataModelName = dataModelPK.getPk();
-            beginRequestLimitation(dataModelName);
-
+            String dataModelName = dataModelPK.getPk();
             // This method uses a special user
             SaverSession session = SaverSession.newUserSession(wsPutItemWithCustomReport.getUser());
             DocumentSaver saver;
@@ -1219,8 +1139,6 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
         } catch (Exception e) {
             LOGGER.error("Error during save.", e); //$NON-NLS-1$
             throw new RemoteException((e.getCause() == null ? e.getLocalizedMessage() : e.getCause().getLocalizedMessage()), e);
-        } finally {
-            endRequestLimitation(dataModelName);
         }
     }
 

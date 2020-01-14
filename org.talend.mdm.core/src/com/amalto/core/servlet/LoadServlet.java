@@ -295,6 +295,10 @@ public class LoadServlet extends HttpServlet {
         return new XSDKey(".", fields, fieldTypes); //$NON-NLS-1$
     }
 
+    /**
+     * @param fieldList all field except the PK in one entity
+     * @return all AUTO_INCREMENT/UUID type field, include this type field existed in the complex type
+     */
     private XSDKey getTypeAutoField(Collection<FieldMetadata> fieldList) {
         List<String> fieldsList = new ArrayList<>(fieldList.size());
         List<String> fieldTypesList = new ArrayList<>(fieldList.size());

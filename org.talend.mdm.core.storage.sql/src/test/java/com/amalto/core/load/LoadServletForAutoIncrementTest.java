@@ -28,7 +28,9 @@ import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
@@ -45,8 +47,10 @@ import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class LoadServletForAutoIncrementTest {
 
     private static final Logger LOG = Logger.getLogger(LoadServletForAutoIncrementTest.class);
@@ -58,10 +62,6 @@ public class LoadServletForAutoIncrementTest {
     private static class MockISecurityCheck extends BaseSecurityCheck {
 
     }
-
-    private static int PKCount = 1;
-
-    private static int autoFieldCount = 1;
 
     private static void createBeanDelegatorContainer() {
         if (!beanDelegatorContainerFlag) {
@@ -87,7 +87,7 @@ public class LoadServletForAutoIncrementTest {
     }
 
     @Test
-    public void testBulkLoadGeneratePK() throws Exception {
+    public void test_01_BulkLoadGeneratePK() throws Exception {
         String dataClusterName = "AutoInc";
         String typeName = "Person";
         String dataModelName = "AutoInc";
@@ -118,17 +118,16 @@ public class LoadServletForAutoIncrementTest {
         bulkLoadSaveMethod.setAccessible(true);
 
         bulkLoadSaveMethod.invoke(loadServlet, dataClusterName, dataModelName, recordXml, loadAction, keyMetadata, null);
-        String result = server.getDocumentAsString(dataClusterName, dataClusterName + "." + typeName + "." + PKCount);
+        String result = server.getDocumentAsString(dataClusterName, dataClusterName + "." + typeName + ".1");
         Document xmlDocument = DocumentHelper.parseText(result);
         assertEquals(2, xmlDocument.getRootElement().element("p").element("Person").elements().size());
-        assertEquals(PKCount,
+        assertEquals(1,
                 Integer.parseInt(xmlDocument.getRootElement().element("p").element("Person").element("Id").getText()));
         assertEquals("T-Shirt", xmlDocument.getRootElement().element("p").element("Person").element("Name").getText());
-        PKCount++;
     }
 
     @Test
-    public void testBulkLoadNotGeneratePK() throws Exception {
+    public void test_02_BulkLoadNotGeneratePK() throws Exception {
         String dataClusterName = "AutoInc";
         String typeName = "Person";
         String dataModelName = "AutoInc";
@@ -175,7 +174,7 @@ public class LoadServletForAutoIncrementTest {
     }
 
     @Test
-    public void testBulkLoadGenerateAutoField() throws Exception {
+    public void test_03_BulkLoadGenerateAutoField() throws Exception {
         String dataClusterName = "AutoInc";
         String typeName = "Person";
         String dataModelName = "AutoInc";
@@ -217,26 +216,24 @@ public class LoadServletForAutoIncrementTest {
 
         bulkLoadSaveMethod
                 .invoke(loadServlet, dataClusterName, dataModelName, recordXml, loadAction, keyMetadata, autoFieldMetadata);
-        String result = server.getDocumentAsString(dataClusterName, dataClusterName + "." + typeName + "." + PKCount);
+        String result = server.getDocumentAsString(dataClusterName, dataClusterName + "." + typeName + ".2");
         Document xmlDocument = DocumentHelper.parseText(result);
         assertEquals(7, xmlDocument.getRootElement().element("p").element("Person").elements().size());
-        assertEquals(PKCount,
+        assertEquals(2,
                 Integer.parseInt(xmlDocument.getRootElement().element("p").element("Person").element("Id").getText()));
         assertEquals("T-Shirt", xmlDocument.getRootElement().element("p").element("Person").element("Name").getText());
-        assertEquals(autoFieldCount,
+        assertEquals(1,
                 Integer.parseInt(xmlDocument.getRootElement().element("p").element("Person").element("AA").getText()));
-        assertEquals(autoFieldCount,
+        assertEquals(1,
                 Integer.parseInt(xmlDocument.getRootElement().element("p").element("Person").element("BB").getText()));
-        assertEquals(autoFieldCount,
+        assertEquals(1,
                 Integer.parseInt(xmlDocument.getRootElement().element("p").element("Person").element("CC").getText()));
         assertEquals(36, xmlDocument.getRootElement().element("p").element("Person").element("DD").getText().length());
         assertEquals(36, xmlDocument.getRootElement().element("p").element("Person").element("EE").getText().length());
-        PKCount++;
-        autoFieldCount++;
     }
 
     @Test
-    public void testBulkLoadNotGenerateAutoField() throws Exception {
+    public void test_04_BulkLoadNotGenerateAutoField() throws Exception {
         String dataClusterName = "AutoInc";
         String typeName = "Person";
         String dataModelName = "AutoInc";
@@ -281,7 +278,7 @@ public class LoadServletForAutoIncrementTest {
     }
 
     @Test
-    public void testBulkLoadNotGenerateAutoField2() throws Exception {
+    public void test_05_BulkLoadNotGenerateAutoField2() throws Exception {
         String dataClusterName = "AutoInc";
         String typeName = "Person";
         String dataModelName = "AutoInc";
@@ -314,20 +311,19 @@ public class LoadServletForAutoIncrementTest {
         bulkLoadSaveMethod.setAccessible(true);
 
         bulkLoadSaveMethod.invoke(loadServlet, dataClusterName, dataModelName, recordXml, loadAction, keyMetadata, null);
-        String result = server.getDocumentAsString(dataClusterName, dataClusterName + "." + typeName + "." + PKCount);
+        String result = server.getDocumentAsString(dataClusterName, dataClusterName + "." + typeName + ".3");
         Document xmlDocument = DocumentHelper.parseText(result);
         assertEquals(5, xmlDocument.getRootElement().element("p").element("Person").elements().size());
-        assertEquals(PKCount,
+        assertEquals(3,
                 Integer.parseInt(xmlDocument.getRootElement().element("p").element("Person").element("Id").getText()));
         assertEquals("T-Shirt", xmlDocument.getRootElement().element("p").element("Person").element("Name").getText());
         assertEquals(1, Integer.parseInt(xmlDocument.getRootElement().element("p").element("Person").element("AA").getText()));
         assertEquals(1, Integer.parseInt(xmlDocument.getRootElement().element("p").element("Person").element("BB").getText()));
         assertEquals(1, Integer.parseInt(xmlDocument.getRootElement().element("p").element("Person").element("CC").getText()));
-        PKCount++;
     }
 
     @Test
-    public void testBulkLoadDefaultLoad() throws Exception {
+    public void test_06_BulkLoadDefaultLoad() throws Exception {
         String dataClusterName = "Product";
         String typeName = "Product";
         String dataModelName = "Product";
@@ -373,7 +369,7 @@ public class LoadServletForAutoIncrementTest {
     }
 
     @Test
-    public void testBulkLoadDefaultLoadGenerate() throws Exception {
+    public void test_07_BulkLoadDefaultLoadGenerate() throws Exception {
         String dataClusterName = "Product";
         String typeName = "Product";
         String dataModelName = "Product";
@@ -429,7 +425,7 @@ public class LoadServletForAutoIncrementTest {
     }
 
     @Test
-    public void testBulkLoadForComplexType() throws Exception {
+    public void test_08_BulkLoadForComplexType() throws Exception {
         String dataClusterName = "Student";
         String typeName = "Student";
         String dataModelName = "Student";
@@ -486,7 +482,7 @@ public class LoadServletForAutoIncrementTest {
     }
 
     @Test
-    public void testBulkLoadForComplexTypeGenerate() throws Exception {
+    public void test_09_BulkLoadForComplexTypeGenerate() throws Exception {
         String dataClusterName = "Student";
         String typeName = "Student";
         String dataModelName = "Student";
@@ -548,7 +544,7 @@ public class LoadServletForAutoIncrementTest {
     }
 
     @Test
-    public void testBulkLoadForComplexTypeGeneratePartial() throws Exception {
+    public void test_10_BulkLoadForComplexTypeGeneratePartial() throws Exception {
         String dataClusterName = "Student";
         String typeName = "Student";
         String dataModelName = "Student";
@@ -566,7 +562,7 @@ public class LoadServletForAutoIncrementTest {
 
         DataRecord.CheckExistence.set(!insertOnly);
         InputStream recordXml = new ByteArrayInputStream(
-                ("<Student><Id>2</Id><Name>John</Name><Age>23</Age><Site>10</Site><Course><Id>English</Id><Teacher>Mike</Teacher><Score>10</Score></Course></Student>")
+                ("<Student><Id>3</Id><Name>John</Name><Age>23</Age><Site>20</Site><Course><Id>English</Id><Teacher>Mike</Teacher><Score>10</Score></Course></Student>")
                         .getBytes(StandardCharsets.UTF_8));
 
         Method getTypeKeyMethod = loadServlet.getClass().getDeclaredMethod("getTypeKey", Collection.class);
@@ -591,15 +587,15 @@ public class LoadServletForAutoIncrementTest {
 
         bulkLoadSaveMethod
                 .invoke(loadServlet, dataClusterName, dataModelName, recordXml, loadAction, keyMetadata, autoFieldMetadata);
-        String result = server.getDocumentAsString(dataClusterName, dataClusterName + "." + typeName + ".2");
+        String result = server.getDocumentAsString(dataClusterName, dataClusterName + "." + typeName + ".3");
         Document xmlDocument = DocumentHelper.parseText(result);
         Element typeElement = xmlDocument.getRootElement().element("p").element(typeName);
         assertEquals(6, typeElement.elements().size());
-        assertEquals(2, Integer.parseInt(typeElement.element("Id").getText()));
+        assertEquals(3, Integer.parseInt(typeElement.element("Id").getText()));
         assertEquals("John", typeElement.element("Name").getText());
         assertEquals("23", typeElement.element("Age").getText());
         assertEquals(36, typeElement.element("Account").getText().length());
-        assertEquals("10", typeElement.element("Site").getText());
+        assertEquals("20", typeElement.element("Site").getText());
         Element courseElement = typeElement.element("Course");
         assertNotNull(courseElement);
         assertEquals(4, courseElement.elements().size());
@@ -607,6 +603,63 @@ public class LoadServletForAutoIncrementTest {
         assertEquals("Mike", courseElement.element("Teacher").getText());
         assertEquals("10", courseElement.element("Score").getText());
         assertEquals(36, courseElement.element("Like").getText().length());
+    }
+
+    @Test
+    public void test_11_BulkLoadForComplexTypeNotGenerated() throws Exception {
+        String dataClusterName = "Student";
+        String typeName = "Student";
+        String dataModelName = "Student";
+        boolean needAutoGenPK = false;
+        boolean needAutoGenAutoFields = true;
+        boolean insertOnly = false;
+
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(LoadServletForAutoIncrementTest.class.getResourceAsStream("metadata03.xsd"));
+        MockMetadataRepositoryAdmin.INSTANCE.register(dataClusterName, repository);
+        ComplexTypeMetadata type = repository.getComplexType(typeName);
+
+        LoadAction loadAction = new OptimizedLoadAction(dataClusterName, typeName, dataModelName, needAutoGenPK,
+                needAutoGenAutoFields);
+
+        DataRecord.CheckExistence.set(!insertOnly);
+        InputStream recordXml = new ByteArrayInputStream(
+                ("<Student><Id>4</Id><Name>John</Name><Age>23</Age><Site>10</Site></Student>")
+                        .getBytes(StandardCharsets.UTF_8));
+
+        Method getTypeKeyMethod = loadServlet.getClass().getDeclaredMethod("getTypeKey", Collection.class);
+        getTypeKeyMethod.setAccessible(true);
+
+        XSDKey keyMetadata = (XSDKey) getTypeKeyMethod.invoke(loadServlet, type.getKeyFields());
+        XSDKey autoFieldMetadata = null;
+        if (needAutoGenAutoFields) {
+            Collection<FieldMetadata> fields = type.getFields();
+            Collection<FieldMetadata> autoFields = fields.stream().filter(filed -> (!filed.isKey())).collect(Collectors.toList());
+            Method getTypeAutoFieldMethod = loadServlet.getClass().getDeclaredMethod("getTypeAutoField", Collection.class);
+            getTypeAutoFieldMethod.setAccessible(true);
+            autoFieldMetadata = (XSDKey) getTypeAutoFieldMethod.invoke(loadServlet, autoFields);
+        }
+
+        XmlServer server = Util.getXmlServerCtrlLocal();
+
+        Method bulkLoadSaveMethod = loadServlet.getClass()
+                .getDeclaredMethod("bulkLoadSave", String.class, String.class, InputStream.class, LoadAction.class, XSDKey.class,
+                        XSDKey.class);
+        bulkLoadSaveMethod.setAccessible(true);
+
+        bulkLoadSaveMethod
+                .invoke(loadServlet, dataClusterName, dataModelName, recordXml, loadAction, keyMetadata, autoFieldMetadata);
+        String result = server.getDocumentAsString(dataClusterName, dataClusterName + "." + typeName + ".4");
+        Document xmlDocument = DocumentHelper.parseText(result);
+        Element typeElement = xmlDocument.getRootElement().element("p").element(typeName);
+        assertEquals(5, typeElement.elements().size());
+        assertEquals(4, Integer.parseInt(typeElement.element("Id").getText()));
+        assertEquals("John", typeElement.element("Name").getText());
+        assertEquals("23", typeElement.element("Age").getText());
+        assertEquals(36, typeElement.element("Account").getText().length());
+        assertEquals("10", typeElement.element("Site").getText());
+        Element courseElement = typeElement.element("Course");
+        assertNull(courseElement);
     }
 
     @Test

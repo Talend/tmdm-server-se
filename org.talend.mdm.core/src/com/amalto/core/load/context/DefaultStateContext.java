@@ -271,7 +271,16 @@ public class DefaultStateContext implements StateContext {
     }
 
     public void close(XmlServer server) {
-        // Nothing to do
+        // if one normal field is AUTO_INCREMENT, it also need to store.
+        if (autoNormalFieldGenerator == null) {
+            return;
+        }
+        for (AutoIdGenerator generator : autoNormalFieldGenerator) {
+            if (generator instanceof AutoIdGenerator) {
+                generator.saveState(server);
+                continue;
+            }
+        }
     }
 
     @Override

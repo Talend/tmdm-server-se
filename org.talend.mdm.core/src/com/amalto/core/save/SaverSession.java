@@ -35,6 +35,8 @@ import com.amalto.core.storage.record.DataRecord;
 
 public class SaverSession {
 
+    private static final Logger LOGGER = Logger.getLogger(SaverSession.class);
+
     private static final String AUTO_INCREMENT_TYPE_NAME = "AutoIncrement"; //$NON-NLS-1$
 
     private static final Map<String, SaverSource> saverSourcePerUser = new HashMap<String, SaverSource>();

@@ -249,13 +249,24 @@ public class SchemaWebAgent extends SchemaAbstractWebAgent {
             if (fkPaths != null) {
                 for (String fkPath : fkPaths) {
                     // if the fkpath is pointing to this entity
-                    if (fkPath != null && getEntityNameFromXPath(fkPath) != null
-                            && getEntityNameFromXPath(fkPath).equals(entityName)) {
-                        if (!references.contains(businessConcept.getName())) {
+                    if (fkPath != null && getEntityNameFromXPath(fkPath) != null) {
+                        String entity = getEntityNameFromXPath(fkPath);
+                        boolean isReference = false;
+                        if (entity.equals(entityName)) {
+                            isReference = true;
+                        } else if (!reuseTypeList.isEmpty()) {
+                            List<ReusableType> subTypes = getMySubtypes(
+                                    dataModelBean.getBusinessConcept(entity).getCorrespondTypeName());
+                            ReusableType type = getReusableType(
+                                    dataModelBean.getBusinessConcept(entityName).getCorrespondTypeName());
+                            if (subTypes.contains(type)) {
+                                isReference = true;
+                            }
+                        }
+                        if (isReference && !references.contains(businessConcept.getName())) {
                             references.add(businessConcept.getName());
                         }
                     }
-
                 }
             }
         }

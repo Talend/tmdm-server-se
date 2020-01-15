@@ -97,27 +97,33 @@ public interface StateContext {
         for (PathMatcher pathMatcher : getNormalFieldPaths()) {
             boolean isMatched = false; // mark it as  full matched
             boolean isParentMatched = false; // mark it as partial matched
+            String pathMatchedStr = pathMatcher.toString();
             for (String path : getNormalFieldInXML()) {
-                if (path.contains("/")) {
+                if (pathMatchedStr.contains("/") && path.contains("/")) {
                     int i = 0;
                     String[] pathArray = path.split("/");
+                    if (isMatched) {
+                        continue;
+                    }
                     for (String s : pathArray) {
                         PathMatch match = pathMatcher.match(s);
                         if (match == PathMatch.FULL) {
                             isMatched = true;
                             isParentMatched = false;
+                            continue;
                         } else if (match == PathMatch.PARTIAL && i++ == pathArray.length - 2) {
                             isParentMatched = true;
                         }
                     }
-                } else {
+                } else if (!pathMatchedStr.contains("/") && !path.contains("/")) {
                     if (pathMatcher.match(path) == PathMatch.FULL) {
                         isMatched = true;
+                        continue;
                     }
                 }
             }
-            if ((!isMatched && !pathMatcher.toString().contains("/")) || isParentMatched) {
-                normalFieldPathList.add(pathMatcher.toString());
+            if ((!isMatched && !pathMatchedStr.contains("/")) || isParentMatched) {
+                normalFieldPathList.add(pathMatchedStr);
             } else {
                 normalFieldPathList.add(null);
             }

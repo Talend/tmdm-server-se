@@ -65,11 +65,11 @@ public class DefaultStateContext implements StateContext {
 
     private AutoIdGenerator[] autoNormalFieldGenerator;
 
-    List<PathMatcher> normalFieldPaths = new ArrayList<>();
+    private List<PathMatcher> normalFieldPaths;
 
-    List<String> normalFieldInXML = new ArrayList<>();
+    private List<String> normalFieldInXML;
 
-    Stack<String> readElementPath;
+    private Stack<String> readElementPath;
 
     public DefaultStateContext(String payLoadElementName, String[] idPaths, String[] normalFieldPaths, String dataClusterName,
             String dataModelName, int payloadLimit, LoadParserCallback callback, AutoIdGenerator[] autoNormalFieldGenerator) {
@@ -82,7 +82,9 @@ public class DefaultStateContext implements StateContext {
         if (payLoadElementName == null) {
             throw new IllegalArgumentException("Payload element name cannot be null.");
         }
-
+        this.normalFieldPaths = new ArrayList<>();
+        this.normalFieldInXML = new ArrayList<>();
+        this.readElementPath = new Stack<>();
         paths = new HashSet<>(idPaths.length + 1);
         for (String idPath : idPaths) {
             paths.add(new PathMatcher(idPath));
@@ -97,8 +99,6 @@ public class DefaultStateContext implements StateContext {
         this.payLoadElementName = payLoadElementName;
 
         this.autoNormalFieldGenerator = autoNormalFieldGenerator;
-
-        this.readElementPath = new Stack<>();
 
         metadata = new DefaultMetadata();
         metadata.setName(payLoadElementName);
@@ -135,6 +135,9 @@ public class DefaultStateContext implements StateContext {
         currentLocation.empty();
         idToMatchCount = paths.size();
         metadata.reset();
+        normalFieldPaths.clear();
+        normalFieldInXML.clear();
+        readElementPath.clear();
     }
 
     public StateContextWriter getWriter() {
@@ -275,8 +278,8 @@ public class DefaultStateContext implements StateContext {
         if (autoNormalFieldGenerator == null) {
             return;
         }
-        for (AutoIdGenerator generator : autoNormalFieldGenerator) {
-            if (generator instanceof AutoIdGenerator) {
+        for(AutoIdGenerator generator: autoNormalFieldGenerator){
+            if(generator instanceof AutoIdGenerator){
                 generator.saveState(server);
                 continue;
             }

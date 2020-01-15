@@ -96,7 +96,7 @@ public class OptimizedLoadAction implements LoadAction {
                 return new UUIDIdGenerator();
             } else {
                 throw new UnsupportedOperationException(
-                        "No support for key field type '" + idFieldType + "' with autogen pk on.");
+                        "No support for key field type '" + idFieldType + "' with autogen pk on."); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
         return null;
@@ -116,7 +116,7 @@ public class OptimizedLoadAction implements LoadAction {
                 generator[i++] = new UUIDIdGenerator();
             } else {
                 throw new UnsupportedOperationException(
-                        "No support for key field type '" + idFieldType + "' with autogen pk on.");
+                        "No support for key field type '" + idFieldType + "' with autogen pk on."); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
         return generator;

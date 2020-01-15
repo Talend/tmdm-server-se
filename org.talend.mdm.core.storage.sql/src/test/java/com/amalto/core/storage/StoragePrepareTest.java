@@ -23,12 +23,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.junit.Assert;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 
 import com.amalto.core.query.StorageTestCase;
 import com.amalto.core.query.user.Expression;
+import com.amalto.core.query.user.OrderBy;
 import com.amalto.core.query.user.UserQueryBuilder;
 import com.amalto.core.server.MockMetadataRepositoryAdmin;
 import com.amalto.core.server.MockServerLifecycle;
@@ -704,6 +706,77 @@ public class StoragePrepareTest extends TestCase {
         } finally {
             storage.close();
         }
+    }
+
+    // TMDM-14399 [REST Api] PUT /data/{containerName}/query : issue when sort & paging (order_by & (start limit) )
+    public void testQueryWithSortHandle() {
+        Storage storage = new SecuredStorage(new HibernateStorage("Goods", StorageType.MASTER), userSecurity); //$NON-NLS-1$
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(StoragePrepareTest.class.getResourceAsStream("GoodsDecimal.xml")); //$NON-NLS-1$
+        MockMetadataRepositoryAdmin.INSTANCE.register("Goods", repository); //$NON-NLS-1$
+
+        storage.init(getDatasource("H2-DS3")); //$NON-NLS-1$
+        storage.prepare(repository, Collections.<Expression> emptySet(), true, true);
+        ((MockStorageAdmin) ServerContext.INSTANCE.get().getStorageAdmin()).register(storage);
+
+        storage.begin();
+        ComplexTypeMetadata goods = repository.getComplexType("Goods"); //$NON-NLS-1$
+        List<DataRecord> records = new ArrayList<DataRecord>();
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+        records.add(factory.read(repository, goods, "<Goods><Id>1</Id><Price>12.00</Price></Goods>")); //$NON-NLS-1$
+        records.add(factory.read(repository, goods, "<Goods><Id>2</Id><Price>3.00</Price></Goods>")); //$NON-NLS-1$
+        records.add(factory.read(repository, goods, "<Goods><Id>3</Id><Price>15.00</Price></Goods>")); //$NON-NLS-1$
+        records.add(factory.read(repository, goods, "<Goods><Id>4</Id><Price>5.00</Price></Goods>")); //$NON-NLS-1$
+        records.add(factory.read(repository, goods, "<Goods><Id>5</Id><Price>2.00</Price></Goods>")); //$NON-NLS-1$
+        try {
+            storage.begin();
+            storage.update(records);
+            storage.commit();
+        } finally {
+            storage.end();
+        }
+        FieldMetadata price = goods.getField("Price");
+        UserQueryBuilder qb = from(goods).orderBy(price, OrderBy.Direction.DESC);
+        qb.getSelect().getPaging().setLimit(10);
+        storage.begin();
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(5, results.getCount());
+            String[] ids = new String[5];
+            int index = 0;
+            for (DataRecord result : results) {
+                ids[index++] = result.get("Id").toString();
+            }
+            Assert.assertArrayEquals(new String[] { "3", "1", "4", "2", "5" }, ids);
+        } finally {
+            results.close();
+        }
+        storage.end();
+
+        // only return field Id, order by Price ASC, start 2 and limit 3
+        qb = from(goods).select(goods.getField("Id")).orderBy(price, OrderBy.Direction.ASC);
+        qb.getSelect().getPaging().setStart(2);
+        qb.getSelect().getPaging().setLimit(3);
+        storage.begin();
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(5, results.getCount());
+            String[] ids = new String[3];
+            int index = 0;
+            for (DataRecord result : results) {
+                ids[index++] = result.get("Id").toString();
+                try {
+                    result.get("Price").toString();
+                    fail("could not execute get");//$NON-NLS-1$
+                } catch (Exception e) {
+                    assertTrue(e instanceof NullPointerException);
+                }
+            }
+            Assert.assertArrayEquals(new String[] { "4", "1", "3" }, ids);
+        } finally {
+            results.close();
+        }
+        storage.end();
     }
 
     // TMDM-14115 Deploy the customer's datamodel failed(MS SQLServerDB)

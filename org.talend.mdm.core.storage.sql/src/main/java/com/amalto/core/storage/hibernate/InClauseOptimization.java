@@ -34,6 +34,7 @@ import org.hibernate.type.IntegerType;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 
+import com.amalto.core.query.user.OrderBy;
 import com.amalto.core.query.user.Paging;
 import com.amalto.core.query.user.Select;
 import com.amalto.core.query.user.TypedExpression;
@@ -91,6 +92,9 @@ public class InClauseOptimization extends StandardQueryHandler {
                 constants = new ArrayList<Object[]>(limit);
             } else {
                 constants = new LinkedList<Object[]>();
+            }
+            for (OrderBy orderByItem : select.getOrderBy()) {
+                qb.orderBy(orderByItem.getExpression(), orderByItem.getDirection());
             }
             // Get ids for constant list
             StorageResults records = storage.fetch(qb.getSelect()); // Expects an active transaction here

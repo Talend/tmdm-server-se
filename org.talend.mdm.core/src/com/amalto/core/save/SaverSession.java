@@ -56,10 +56,12 @@ public class SaverSession {
 
     private boolean hasMetAutoIncrement = false;
 
+    private static final String TRANSACTION_WAIT_MILLISECONDS = "transaction.concurrent.wait.milliseconds"; //$NON-NLS-1$
+
     private static final String TRANSACTION_WAIT_MILLISECONDS_CONFIG;
 
     static {
-        TRANSACTION_WAIT_MILLISECONDS_CONFIG = MDMConfiguration.getConfiguration().getProperty(MDMConfiguration.TRANSACTION_WAIT_MILLISECONDS);
+        TRANSACTION_WAIT_MILLISECONDS_CONFIG = MDMConfiguration.getConfiguration().getProperty(TRANSACTION_WAIT_MILLISECONDS);
     }
 
     private static long getTransactionWaitMilliseconds() {
@@ -68,7 +70,7 @@ public class SaverSession {
                 return Long.valueOf(TRANSACTION_WAIT_MILLISECONDS_CONFIG);
             } catch (Exception e) {
                 if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("Failed to read configuration: " + MDMConfiguration.TRANSACTION_WAIT_MILLISECONDS, e); //$NON-NLS-1$
+                    LOGGER.debug("Failed to read configuration: " + TRANSACTION_WAIT_MILLISECONDS, e); //$NON-NLS-1$
                 }
                 return 0L;
             }

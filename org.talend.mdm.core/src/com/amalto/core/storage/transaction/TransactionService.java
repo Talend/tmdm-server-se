@@ -11,16 +11,20 @@
 
 package com.amalto.core.storage.transaction;
 
+import java.util.List;
+
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+
 import com.amalto.core.server.ServerContext;
 import com.amalto.core.storage.task.staging.SerializableList;
-import com.amalto.core.util.Util;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-
-import javax.ws.rs.*;
-
-import java.util.List;
 
 @Path("/transactions")
 @Api("Transactions")
@@ -65,12 +69,7 @@ public class TransactionService {
         TransactionManager transactionManager = ServerContext.INSTANCE.get().getTransactionManager();
         Transaction transaction = transactionManager.get(transactionId);
         if (transaction != null) {
-            try {
-                Util.beginTransactionLimit();
-                transaction.commit();
-            } finally {
-                Util.endTransactionLimit();
-            }
+            transaction.commit();
         }
     }
 
@@ -86,12 +85,7 @@ public class TransactionService {
         TransactionManager transactionManager = ServerContext.INSTANCE.get().getTransactionManager();
         Transaction transaction = transactionManager.get(transactionId);
         if (transaction != null) {
-            try {
-                Util.beginTransactionLimit();
-                transaction.rollback();
-            } finally {
-                Util.endTransactionLimit();
-            }
+            transaction.rollback();
         }
     }
 }

@@ -276,8 +276,8 @@ public class DefaultStateContext implements StateContext {
         if (autoNormalFieldGenerator == null) {
             return;
         }
-        for(AutoIdGenerator generator: autoNormalFieldGenerator){
-            if(generator instanceof AutoIdGenerator){
+        for (AutoIdGenerator generator : autoNormalFieldGenerator) {
+            if (generator instanceof AutoIdGenerator) {
                 generator.saveState(server);
                 continue;
             }

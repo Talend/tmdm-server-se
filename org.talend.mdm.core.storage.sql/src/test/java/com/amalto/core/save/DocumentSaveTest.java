@@ -649,7 +649,6 @@ public class DocumentSaveTest extends TestCase {
         committedElement = committer.getCommittedElement();
         assertEquals("1", evaluate(committedElement, "/Address/Id"));
         assertEquals("1", evaluate(committedElement, "/Address/Port"));
-
     }
 
     public void testUpdateWithUUID() throws Exception {

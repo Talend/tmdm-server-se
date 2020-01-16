@@ -51,6 +51,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@SuppressWarnings("nls")
 public class LoadServletForAutoIncrementTest {
 
     private static final Logger LOG = Logger.getLogger(LoadServletForAutoIncrementTest.class);
@@ -78,8 +79,8 @@ public class LoadServletForAutoIncrementTest {
         LOG.info("MDM server environment set.");
 
         Map<String, Object> delegatorInstancePool = new HashMap<>();
-        delegatorInstancePool.put("LocalUser", new MockILocalUser()); //$NON-NLS-1$
-        delegatorInstancePool.put("SecurityCheck", new MockISecurityCheck()); //$NON-NLS-1$
+        delegatorInstancePool.put("LocalUser", new MockILocalUser());
+        delegatorInstancePool.put("SecurityCheck", new MockISecurityCheck());
         createBeanDelegatorContainer();
         BeanDelegatorContainer.getInstance().setDelegatorInstancePool(delegatorInstancePool);
 

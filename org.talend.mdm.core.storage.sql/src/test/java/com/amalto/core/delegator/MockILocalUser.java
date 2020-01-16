@@ -14,6 +14,7 @@ import com.amalto.core.util.XtentisException;
 
 import java.util.HashSet;
 
+@SuppressWarnings("nls")
 public class MockILocalUser extends ILocalUser {
 
     @Override

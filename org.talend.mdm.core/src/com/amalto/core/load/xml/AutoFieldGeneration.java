@@ -36,6 +36,11 @@ public class AutoFieldGeneration implements State {
         try {
             AutoIdGenerator[] autoGenerator = context.getAutoFieldGenerator();
             int i = 0;
+            /*
+            fielldPaths store the all need to generate value the field,  if doesn't existed, it means don't generate the value.
+            if the field path is 'Course/Score', it should be first write '<Course>', and next is '<Score>',
+            but it inverse for the end element, first is '<Score>', first is '<Course>'
+             */
             for (String idPath : fieldPaths) {
                 if(idPath == null){
                     i++;

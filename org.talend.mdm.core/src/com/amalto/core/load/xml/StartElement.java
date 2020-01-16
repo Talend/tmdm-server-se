@@ -31,6 +31,31 @@ public class StartElement implements State {
         String elementLocalName = reader.getName().getLocalPart();
         context.enterElement(elementLocalName);
         context.getReadElementPath().push(elementLocalName);
+        /*
+        add the field path into the stack from xml content.
+        eg:
+            <Student>
+              <Id>2</Id>
+              <Name>Mike</Name>
+              <Age>25</Age>
+              <Account>8bf3d65e-8350-4a49-a651-c4cb5fdaf91f</Account>
+              <Site>6</Site>
+              <Course>
+                <Id>Chinese</Id>
+                <Score>6</Score>
+                <Like>1efa8311-3be5-4c42-a015-216780c46ab4</Like>
+              </Course>
+            </Student>
+            stack result like below:
+                Id
+                Name
+                Age
+                Account
+                Site
+                Course/Id
+                Course/Score
+                Course/Like
+         */
         StringBuilder name = new StringBuilder();
         int i = 0;
         for (String elementName : context.getReadElementPath()) {

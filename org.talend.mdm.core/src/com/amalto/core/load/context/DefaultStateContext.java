@@ -89,7 +89,6 @@ public class DefaultStateContext implements StateContext {
         for (String idPath : idPaths) {
             paths.add(new PathMatcher(idPath));
         }
-
         for (String idPath : normalFieldPaths) {
             getNormalFieldPaths().add(new PathMatcher(idPath));
         }
@@ -97,9 +96,7 @@ public class DefaultStateContext implements StateContext {
         contextWriter = bufferStateContextWriter;
         this.callback = callback;
         this.payLoadElementName = payLoadElementName;
-
         this.autoNormalFieldGenerator = autoNormalFieldGenerator;
-
         metadata = new DefaultMetadata();
         metadata.setName(payLoadElementName);
         metadata.setDmn(payLoadElementName);
@@ -148,7 +145,8 @@ public class DefaultStateContext implements StateContext {
         currentState = state;
     }
 
-    @Override public State getCurrent() {
+    @Override
+    public State getCurrent() {
         return currentState;
     }
 

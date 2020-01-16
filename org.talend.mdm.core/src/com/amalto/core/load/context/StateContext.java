@@ -103,14 +103,14 @@ public interface StateContext {
                     int i = 0;
                     String[] pathArray = path.split("/");
                     if (isMatched) {
-                        continue;
+                        break;
                     }
                     for (String s : pathArray) {
                         PathMatch match = pathMatcher.match(s);
                         if (match == PathMatch.FULL) {
                             isMatched = true;
                             isParentMatched = false;
-                            continue;
+                            break;
                         } else if (match == PathMatch.PARTIAL && i++ == pathArray.length - 2) {
                             isParentMatched = true;
                         }
@@ -118,7 +118,7 @@ public interface StateContext {
                 } else if (!pathMatchedStr.contains("/") && !path.contains("/")) {
                     if (pathMatcher.match(path) == PathMatch.FULL) {
                         isMatched = true;
-                        continue;
+                        break;
                     }
                 }
             }

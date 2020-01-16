@@ -121,7 +121,8 @@ public class AutoGenStateContext implements StateContext {
         }
     }
 
-    @Override public State getCurrent() {
+    @Override
+    public State getCurrent() {
         return currentState;
     }
 
@@ -203,6 +204,7 @@ public class AutoGenStateContext implements StateContext {
         return this.readElementPath;
     }
 
+    @Override
     public AutoIdGenerator[] getAutoFieldGenerator() {
         return autoNormalFieldGenerator;
     }

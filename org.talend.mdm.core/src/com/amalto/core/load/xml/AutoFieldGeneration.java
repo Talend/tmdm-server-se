@@ -42,7 +42,7 @@ public class AutoFieldGeneration implements State {
             but it inverse for the end element, first is '<Score>', first is '<Course>'
              */
             for (String idPath : fieldPaths) {
-                if(idPath == null){
+                if (idPath == null) {
                     i++;
                     continue;
                 }
@@ -70,7 +70,7 @@ public class AutoFieldGeneration implements State {
 
             }
         } catch (Exception e) {
-            throw new RuntimeException("Unable to generate automatic id");
+            throw new RuntimeException("Unable to generate automatic id", e);
         }
 
         context.setCurrent(previousState);

@@ -63,7 +63,7 @@ public class DefaultStateContext implements StateContext {
 
     private String currentIdElementName;
 
-    private AutoIdGenerator[] autoNormalFieldGenerator;
+    private AutoIdGenerator[] normalFieldGenerator;
 
     private List<PathMatcher> normalFieldPaths;
 
@@ -72,13 +72,13 @@ public class DefaultStateContext implements StateContext {
     private Stack<String> readElementPath;
 
     public DefaultStateContext(String payLoadElementName, String[] idPaths, String[] normalFieldPaths, String dataClusterName,
-            String dataModelName, int payloadLimit, LoadParserCallback callback, AutoIdGenerator[] autoNormalFieldGenerator) {
-        this(payLoadElementName, idPaths, normalFieldPaths, dataClusterName, dataModelName, callback, autoNormalFieldGenerator);
+            String dataModelName, int payloadLimit, LoadParserCallback callback, AutoIdGenerator[] normalFieldGenerator) {
+        this(payLoadElementName, idPaths, normalFieldPaths, dataClusterName, dataModelName, callback, normalFieldGenerator);
         this.payloadLimit = payloadLimit;
     }
 
     private DefaultStateContext(String payLoadElementName, String[] idPaths, String[] normalFieldPaths, String dataClusterName,
-            String dataModelName, LoadParserCallback callback, AutoIdGenerator[] autoNormalFieldGenerator) {
+            String dataModelName, LoadParserCallback callback, AutoIdGenerator[] normalFieldGenerator) {
         if (payLoadElementName == null) {
             throw new IllegalArgumentException("Payload element name cannot be null.");
         }
@@ -96,7 +96,7 @@ public class DefaultStateContext implements StateContext {
         contextWriter = bufferStateContextWriter;
         this.callback = callback;
         this.payLoadElementName = payLoadElementName;
-        this.autoNormalFieldGenerator = autoNormalFieldGenerator;
+        this.normalFieldGenerator = normalFieldGenerator;
         metadata = new DefaultMetadata();
         metadata.setName(payLoadElementName);
         metadata.setDmn(payLoadElementName);
@@ -273,10 +273,10 @@ public class DefaultStateContext implements StateContext {
 
     public void close(XmlServer server) {
         // if one normal field is AUTO_INCREMENT, it also need to store.
-        if (autoNormalFieldGenerator == null) {
+        if (normalFieldGenerator == null) {
             return;
         }
-        for (AutoIdGenerator generator : autoNormalFieldGenerator) {
+        for (AutoIdGenerator generator : normalFieldGenerator) {
             if (generator instanceof AutoIdGenerator) {
                 generator.saveState(server);
                 continue;
@@ -286,7 +286,7 @@ public class DefaultStateContext implements StateContext {
 
     @Override
     public AutoIdGenerator[] getAutoFieldGenerator() {
-        return autoNormalFieldGenerator;
+        return normalFieldGenerator;
     }
 
     @Override

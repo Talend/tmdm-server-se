@@ -118,7 +118,7 @@ public class LoadServlet extends HttpServlet {
         String dataModelName = request.getParameter(PARAMETER_DATAMODEL);
         boolean needValidate = Boolean.parseBoolean(request.getParameter(PARAMETER_VALIDATE));
         boolean needAutoGenPK = Boolean.parseBoolean(request.getParameter(PARAMETER_SMARTPK));
-        boolean needAutoGenAutoFields = request.getParameter(PARAMETER_SMARTFIELDS) == null ? true : false;
+        boolean needAutoGenNormalFields = request.getParameter(PARAMETER_SMARTFIELDS) == null ? true : false;
         boolean insertOnly = Boolean.parseBoolean(request.getParameter(PARAMETER_INSERTONLY));
 
         try {
@@ -137,7 +137,7 @@ public class LoadServlet extends HttpServlet {
         ServletInputStream inputStream = request.getInputStream();
 
         LoadAction loadAction = getLoadAction(dataClusterName, typeName, dataModelName, needValidate, needAutoGenPK, updateReport,
-                source, needAutoGenAutoFields);
+                source, needAutoGenNormalFields);
         if (needValidate && !loadAction.supportValidation()) {
             throw new ServletException(new UnsupportedOperationException("XML Validation isn't supported")); //$NON-NLS-1$
         }
@@ -149,7 +149,7 @@ public class LoadServlet extends HttpServlet {
             MetadataRepository repository = repositoryAdmin.get(dataModelName);
             ComplexTypeMetadata type = repository.getComplexType(typeName);
             keyMetadata = getTypeKey(type.getKeyFields());
-            if (needAutoGenAutoFields) {
+            if (needAutoGenNormalFields) {
                 Collection<FieldMetadata> fields = type.getFields();
                 Collection<FieldMetadata> autoFields = fields.stream().filter(filed -> (!filed.isKey()))
                         .collect(Collectors.toList());
@@ -165,12 +165,7 @@ public class LoadServlet extends HttpServlet {
 
     protected void bulkLoadSave(String dataClusterName, String dataModelName, InputStream inputStream, LoadAction loadAction,
             XSDKey keyMetadata, XSDKey autoFieldMetadata) throws ServletException {
-        XmlServer server;
-        try {
-            server = Util.getXmlServerCtrlLocal();
-        } catch (Exception e) {
-            throw new ServletException(e);
-        }
+        XmlServer server = Util.getXmlServerCtrlLocal();
 
         SaverSession session = SaverSession.newSession();
         SaverContextFactory contextFactory = session.getContextFactory();
@@ -316,7 +311,7 @@ public class LoadServlet extends HttpServlet {
     private void getFieldIntactName(FieldMetadata field, List<FieldMetadata> fieldList) {
         if (field instanceof SimpleTypeFieldMetadata) {
             String name = field.getType().getName();
-            if (EUUIDCustomType.AUTO_INCREMENT.getName().equals(name) || EUUIDCustomType.UUID.getName().equals(name)) { // See
+            if (EUUIDCustomType.AUTO_INCREMENT.getName().equals(name) || EUUIDCustomType.UUID.getName().equals(name)) {
                 fieldList.add(field);
             }
         } else if (field instanceof ContainedTypeFieldMetadata) {

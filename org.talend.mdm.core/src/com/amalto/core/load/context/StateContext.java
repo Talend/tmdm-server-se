@@ -84,15 +84,15 @@ public interface StateContext {
      * judge the AUTO_INCREMENT/UUID field is existed in the supplied xml content.
      * 1. if the field is in the entity,
      *   1) supplied the value in the xml content: don't add
-     *   2) don't supplied in the xml content: added this field.
+     *   2) not supplied in the xml content: added this field.
      * 2. the field is existed in one complex type such as Course/Like,
      *   1). supplied in the xml content, don't add.
-     *   2). don't supplied in the xml content:
+     *   2). not supplied in the xml content:
      *     I. contains other field's value of this complex type, added this field.
      *     II. have no any fields'value of this complex type,  don't add.
      * @return all fields of type are AUTO_INCREMENT or UUID field except PK, which need to generate value.
      */
-    default String[] needAutoIncGeneratorField() {
+    default String[] getAutoIncrementNormalFields() {
         List<String> normalFieldPathList = new ArrayList<>(getNormalFieldPaths().size());
         for (PathMatcher pathMatcher : getNormalFieldPaths()) {
             boolean isMatched = false; // mark it as  full matched

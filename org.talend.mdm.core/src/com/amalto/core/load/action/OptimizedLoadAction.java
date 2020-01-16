@@ -37,7 +37,7 @@ public class OptimizedLoadAction implements LoadAction {
     private final String typeName;
     private final String dataModelName;
     private final boolean needAutoGenPK;
-    private final boolean needAutoGenAutoFields;
+    private final boolean needAutoGenFields;
     private StateContext context;
 
     public OptimizedLoadAction(String dataClusterName, String typeName, String dataModelName, boolean needAutoGenPK) {
@@ -49,7 +49,7 @@ public class OptimizedLoadAction implements LoadAction {
         this.typeName = typeName;
         this.dataModelName = dataModelName;
         this.needAutoGenPK = needAutoGenPK;
-        this.needAutoGenAutoFields = needAutoGenNor;
+        this.needAutoGenFields = needAutoGenNor;
     }
 
     public boolean supportValidation() {
@@ -62,16 +62,16 @@ public class OptimizedLoadAction implements LoadAction {
             throw new UnsupportedOperationException("Selector '" + autoKeyMetadata.getSelector() + "' isn't supported.");
         }
         AutoIdGenerator idGenerator = getAutoKeyGenerator(autoKeyMetadata, needAutoGenPK);
-        AutoIdGenerator[] autoFieldGenerator = getAutoFieldGenerator(autoFieldMetadata, needAutoGenAutoFields);
+        AutoIdGenerator[] normalFieldGenerator = getNormalFieldGenerator(autoFieldMetadata, needAutoGenFields);
 
         // Creates a load parser callback that loads data in server using a SAX handler
         ServerParserCallback callback = new ServerParserCallback(server, dataClusterName);
 
         java.io.InputStream inputStream = new XMLRootInputStream(stream, "root"); //$NON-NLS-1$
         LoadParser.Configuration configuration = null;
-        if (needAutoGenAutoFields) {
+        if (needAutoGenFields) {
             configuration = new LoadParser.Configuration(typeName, autoKeyMetadata.getFields(), autoFieldMetadata.getFields(),
-                    needAutoGenPK, dataClusterName, dataModelName, idGenerator, autoFieldGenerator);
+                    needAutoGenPK, dataClusterName, dataModelName, idGenerator, normalFieldGenerator);
         } else {
             configuration = new LoadParser.Configuration(typeName, autoKeyMetadata.getFields(), needAutoGenPK, dataClusterName,
                     dataModelName, idGenerator);
@@ -102,7 +102,7 @@ public class OptimizedLoadAction implements LoadAction {
         return null;
     }
 
-    private AutoIdGenerator[] getAutoFieldGenerator(XSDKey normalMetadata, boolean needAutoGen) {
+    private AutoIdGenerator[] getNormalFieldGenerator(XSDKey normalMetadata, boolean needAutoGen) {
         if (!needAutoGen) {
             return null;
         }

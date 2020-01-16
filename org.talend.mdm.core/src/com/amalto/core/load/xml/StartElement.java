@@ -18,6 +18,7 @@ import com.google.common.base.Joiner;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.events.XMLEvent;
+import java.util.Iterator;
 
 /**
  *
@@ -57,7 +58,11 @@ public class StartElement implements State {
                 Course/Score
                 Course/Like
          */
-        String name = Joiner.on("/").join(context.getReadElementPath());
+        Iterator<String> iterator = context.getReadElementPath().iterator();
+        if (iterator.hasNext()) {
+            iterator.next();
+        }
+        String name = Joiner.on("/").join(iterator);
         context.getNormalFieldInXML().add(name);
 
         if (context.skipElement()) {

@@ -154,9 +154,6 @@ public class AutoGenStateContext implements StateContext {
         hasGeneratedAutomaticId = false;
         delegate.reset();
         metadata.reset();
-        normalFieldPaths.clear();
-        normalFieldInXML.clear();
-        readElementPath.clear();
     }
 
     public void leaveElement() {

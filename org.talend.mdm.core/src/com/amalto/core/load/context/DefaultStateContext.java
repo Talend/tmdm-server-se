@@ -132,9 +132,6 @@ public class DefaultStateContext implements StateContext {
         currentLocation.empty();
         idToMatchCount = paths.size();
         metadata.reset();
-        normalFieldPaths.clear();
-        normalFieldInXML.clear();
-        readElementPath.clear();
     }
 
     public StateContextWriter getWriter() {

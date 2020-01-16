@@ -664,6 +664,102 @@ public class LoadServletForAutoIncrementTest {
     }
 
     @Test
+    public void test_12_BulkLoadForComplexTypeGenerateMultipleRecords() throws Exception {
+        String dataClusterName = "Student";
+        String typeName = "Student";
+        String dataModelName = "Student";
+        boolean needAutoGenPK = false;
+        boolean needAutoGenAutoFields = true;
+        boolean insertOnly = false;
+
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(LoadServletForAutoIncrementTest.class.getResourceAsStream("metadata03.xsd"));
+        MockMetadataRepositoryAdmin.INSTANCE.register(dataClusterName, repository);
+        ComplexTypeMetadata type = repository.getComplexType(typeName);
+
+        LoadAction loadAction = new OptimizedLoadAction(dataClusterName, typeName, dataModelName, needAutoGenPK,
+                needAutoGenAutoFields);
+
+        DataRecord.CheckExistence.set(!insertOnly);
+        InputStream recordXml = new ByteArrayInputStream(
+                ("<Student><Id>5</Id><Name>John</Name><Age>23</Age><Course><Id>English</Id><Teacher>Mike</Teacher></Course></Student><Student><Id>6</Id><Name>John</Name><Age>23</Age><Course><Id>English</Id><Teacher>Mike</Teacher></Course></Student><Student><Id>7</Id><Name>John</Name><Age>23</Age><Course><Id>English</Id><Teacher>Mike</Teacher></Course></Student>")
+                        .getBytes(StandardCharsets.UTF_8));
+
+        Method getTypeKeyMethod = loadServlet.getClass().getDeclaredMethod("getTypeKey", Collection.class);
+        getTypeKeyMethod.setAccessible(true);
+
+        XSDKey keyMetadata = (XSDKey) getTypeKeyMethod.invoke(loadServlet, type.getKeyFields());
+        XSDKey autoFieldMetadata = null;
+        if (needAutoGenAutoFields) {
+            Collection<FieldMetadata> fields = type.getFields();
+            Collection<FieldMetadata> autoFields = fields.stream().filter(filed -> (!filed.isKey())).collect(Collectors.toList());
+            Method getTypeAutoFieldMethod = loadServlet.getClass().getDeclaredMethod("getTypeAutoField", Collection.class);
+            getTypeAutoFieldMethod.setAccessible(true);
+            autoFieldMetadata = (XSDKey) getTypeAutoFieldMethod.invoke(loadServlet, autoFields);
+        }
+
+        XmlServer server = Util.getXmlServerCtrlLocal();
+
+        Method bulkLoadSaveMethod = loadServlet.getClass()
+                .getDeclaredMethod("bulkLoadSave", String.class, String.class, InputStream.class, LoadAction.class, XSDKey.class,
+                        XSDKey.class);
+        bulkLoadSaveMethod.setAccessible(true);
+
+        bulkLoadSaveMethod
+                .invoke(loadServlet, dataClusterName, dataModelName, recordXml, loadAction, keyMetadata, autoFieldMetadata);
+        String result = server.getDocumentAsString(dataClusterName, dataClusterName + "." + typeName + ".5");
+        Document xmlDocument = DocumentHelper.parseText(result);
+        Element typeElement = xmlDocument.getRootElement().element("p").element(typeName);
+        assertEquals(6, typeElement.elements().size());
+        assertEquals(5, Integer.parseInt(typeElement.element("Id").getText()));
+        assertEquals("John", typeElement.element("Name").getText());
+        assertEquals("23", typeElement.element("Age").getText());
+        assertEquals(36, typeElement.element("Account").getText().length());
+        assertEquals("2", typeElement.element("Site").getText());
+        Element courseElement = typeElement.element("Course");
+        assertNotNull(courseElement);
+        assertEquals(4, courseElement.elements().size());
+        assertEquals("English", courseElement.element("Id").getText());
+        assertEquals("Mike", courseElement.element("Teacher").getText());
+        assertEquals("2", courseElement.element("Score").getText());
+        assertEquals(36, courseElement.element("Like").getText().length());
+
+        result = server.getDocumentAsString(dataClusterName, dataClusterName + "." + typeName + ".6");
+        xmlDocument = DocumentHelper.parseText(result);
+        typeElement = xmlDocument.getRootElement().element("p").element(typeName);
+        assertEquals(6, typeElement.elements().size());
+        assertEquals(6, Integer.parseInt(typeElement.element("Id").getText()));
+        assertEquals("John", typeElement.element("Name").getText());
+        assertEquals("23", typeElement.element("Age").getText());
+        assertEquals(36, typeElement.element("Account").getText().length());
+        assertEquals("3", typeElement.element("Site").getText());
+        courseElement = typeElement.element("Course");
+        assertNotNull(courseElement);
+        assertEquals(4, courseElement.elements().size());
+        assertEquals("English", courseElement.element("Id").getText());
+        assertEquals("Mike", courseElement.element("Teacher").getText());
+        assertEquals("3", courseElement.element("Score").getText());
+        assertEquals(36, courseElement.element("Like").getText().length());
+
+        result = server.getDocumentAsString(dataClusterName, dataClusterName + "." + typeName + ".7");
+        xmlDocument = DocumentHelper.parseText(result);
+        typeElement = xmlDocument.getRootElement().element("p").element(typeName);
+        assertEquals(6, typeElement.elements().size());
+        assertEquals(7, Integer.parseInt(typeElement.element("Id").getText()));
+        assertEquals("John", typeElement.element("Name").getText());
+        assertEquals("23", typeElement.element("Age").getText());
+        assertEquals(36, typeElement.element("Account").getText().length());
+        assertEquals("4", typeElement.element("Site").getText());
+        courseElement = typeElement.element("Course");
+        assertNotNull(courseElement);
+        assertEquals(4, courseElement.elements().size());
+        assertEquals("English", courseElement.element("Id").getText());
+        assertEquals("Mike", courseElement.element("Teacher").getText());
+        assertEquals("4", courseElement.element("Score").getText());
+        assertEquals(36, courseElement.element("Like").getText().length());
+    }
+
+    @Test
     public void testGetTypeAutoField() throws Exception {
         String dataClusterName = "AutoInc";
         String typeName = "Person";

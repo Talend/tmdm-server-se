@@ -13,6 +13,7 @@ package com.amalto.core.load.xml;
 import com.amalto.core.load.Constants;
 import com.amalto.core.load.State;
 import com.amalto.core.load.context.StateContext;
+import com.google.common.base.Joiner;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -56,15 +57,8 @@ public class StartElement implements State {
                 Course/Score
                 Course/Like
          */
-        StringBuilder name = new StringBuilder();
-        int i = 0;
-        for (String elementName : context.getReadElementPath()) {
-            if (i++ > 0) {
-                name.append("/").append(elementName);
-            }
-        }
-        name.delete(0, 1);
-        context.getNormalFieldInXML().add(name.toString());
+        String name = Joiner.on("/").join(context.getReadElementPath());
+        context.getNormalFieldInXML().add(name);
 
         if (context.skipElement()) {
             while (reader.next() != XMLEvent.END_ELEMENT) {

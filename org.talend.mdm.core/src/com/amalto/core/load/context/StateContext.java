@@ -128,6 +128,6 @@ public interface StateContext {
                 normalFieldPathList.add(null);
             }
         }
-        return normalFieldPathList.toArray(new String[] {});
+        return normalFieldPathList.toArray(new String[normalFieldPathList.size()]);
     }
 }

@@ -44,12 +44,13 @@ public class OptimizedLoadAction implements LoadAction {
         this(dataClusterName, typeName, dataModelName, needAutoGenPK, false);
     }
 
-    public OptimizedLoadAction(String dataClusterName, String typeName, String dataModelName, boolean needAutoGenPK, boolean needAutoGenNor){
+    public OptimizedLoadAction(String dataClusterName, String typeName, String dataModelName, boolean needAutoGenPK,
+            boolean needAutoGenFields) {
         this.dataClusterName = dataClusterName;
         this.typeName = typeName;
         this.dataModelName = dataModelName;
         this.needAutoGenPK = needAutoGenPK;
-        this.needAutoGenFields = needAutoGenNor;
+        this.needAutoGenFields = needAutoGenFields;
     }
 
     public boolean supportValidation() {
@@ -62,7 +63,7 @@ public class OptimizedLoadAction implements LoadAction {
             throw new UnsupportedOperationException("Selector '" + autoKeyMetadata.getSelector() + "' isn't supported.");
         }
         AutoIdGenerator idGenerator = getAutoKeyGenerator(autoKeyMetadata, needAutoGenPK);
-        AutoIdGenerator[] normalFieldGenerator = getNormalFieldGenerator(autoFieldMetadata, needAutoGenFields);
+        AutoIdGenerator[] normalFieldGenerator = getAutoFieldGenerator(autoFieldMetadata, needAutoGenFields);
 
         // Creates a load parser callback that loads data in server using a SAX handler
         ServerParserCallback callback = new ServerParserCallback(server, dataClusterName);
@@ -102,7 +103,7 @@ public class OptimizedLoadAction implements LoadAction {
         return null;
     }
 
-    private AutoIdGenerator[] getNormalFieldGenerator(XSDKey normalMetadata, boolean needAutoGen) {
+    private AutoIdGenerator[] getAutoFieldGenerator(XSDKey normalMetadata, boolean needAutoGen) {
         if (!needAutoGen) {
             return null;
         }

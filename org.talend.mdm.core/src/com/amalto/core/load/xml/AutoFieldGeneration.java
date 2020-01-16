@@ -34,7 +34,7 @@ public class AutoFieldGeneration implements State {
     @Override
     public void parse(StateContext context, XMLStreamReader reader) throws XMLStreamException {
         try {
-            AutoIdGenerator[] autoGenerator = context.getAutoFieldGenerator();
+            AutoIdGenerator[] normalFieldGenerators = context.getNormalFieldGenerators();
             int i = 0;
             /*
             fielldPaths store the all need to generate value the field,  if doesn't existed, it means don't generate the value.
@@ -56,7 +56,7 @@ public class AutoFieldGeneration implements State {
                     context.getWriter().writeStartElement(idPath);
                 }
 
-                context.getWriter().writeCharacters(autoGenerator[i++]
+                context.getWriter().writeCharacters(normalFieldGenerators[i++]
                         .generateId(context.getMetadata().getDataClusterName(), context.getMetadata().getName(), idPath.replaceAll("/", ".")));
 
                 if (idPath.contains("/")) {

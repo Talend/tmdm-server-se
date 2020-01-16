@@ -55,17 +55,17 @@ public class AutoGenStateContext implements StateContext {
 
     private Stack<String> readElementPath;
 
-    private final AutoIdGenerator[] autoNormalFieldGenerator;
+    private final AutoIdGenerator[] normalFieldGenerator;
 
     private AutoGenStateContext(StateContext delegate, String[] idPaths, AutoIdGenerator generator, String[] normalFieldPaths,
-            AutoIdGenerator[] autoNormalFieldGenerator) {
+            AutoIdGenerator[] normalFieldGenerator) {
         this.delegate = delegate;
         this.idPaths = idPaths;
         this.generator = generator;
         this.readElementPath = new Stack<>();
         this.normalFieldInXML = new ArrayList<>();
         this.normalFieldPaths = new ArrayList<>();
-        this.autoNormalFieldGenerator = autoNormalFieldGenerator;
+        this.normalFieldGenerator = normalFieldGenerator;
         for (String idPath : normalFieldPaths) {
             getNormalFieldPaths().add(new PathMatcher(idPath));
         }
@@ -205,8 +205,8 @@ public class AutoGenStateContext implements StateContext {
     }
 
     @Override
-    public AutoIdGenerator[] getAutoFieldGenerator() {
-        return autoNormalFieldGenerator;
+    public AutoIdGenerator[] getNormalFieldGenerators() {
+        return normalFieldGenerator;
     }
 
 }

@@ -76,7 +76,7 @@ public interface StateContext {
 
     void close(XmlServer server);
 
-    AutoIdGenerator[] getAutoFieldGenerator();
+    AutoIdGenerator[] getNormalFieldGenerators();
 
     Stack<String> getReadElementPath();
 

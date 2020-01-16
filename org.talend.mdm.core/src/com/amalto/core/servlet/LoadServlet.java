@@ -238,7 +238,7 @@ public class LoadServlet extends HttpServlet {
     }
 
     protected LoadAction getLoadAction(String dataClusterName, String typeName, String dataModelName, boolean needValidate,
-            boolean needAutoGenPK, boolean updateReport, String source, boolean needAutoGenAutoFields) {
+            boolean needAutoGenPK, boolean updateReport, String source, boolean needAutoGenNormalFields) {
         // Test if the data cluster actually exists
         DataClusterPOJO dataCluster = getDataCluster(dataClusterName);
         if (dataCluster == null) {
@@ -251,7 +251,7 @@ public class LoadServlet extends HttpServlet {
         if (needValidate || updateReport || XSystemObjects.DC_PROVISIONING.getName().equals(dataClusterName)) {
             loadAction = new DefaultLoadAction(dataClusterName, dataModelName, needValidate, updateReport, source);
         } else {
-            loadAction = new OptimizedLoadAction(dataClusterName, typeName, dataModelName, needAutoGenPK, needAutoGenAutoFields);
+            loadAction = new OptimizedLoadAction(dataClusterName, typeName, dataModelName, needAutoGenPK, needAutoGenNormalFields);
         }
         if (LOG.isDebugEnabled()) {
             LOG.debug("Load action selected for load: " + loadAction.getClass().getName() //$NON-NLS-1$
@@ -291,6 +291,8 @@ public class LoadServlet extends HttpServlet {
     }
 
     /**
+     * Filter the AUTO_INCREMENT/UUID type field from the entity's all list.
+     * if contains the complex type, it also filter.
      * @param fieldList all field except the PK in one entity
      * @return all AUTO_INCREMENT/UUID type field, include this type field existed in the complex type
      */

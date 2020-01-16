@@ -31,11 +31,11 @@ class BulkLoadSaver implements DocumentSaver {
 
     private final XmlServer server;
 
-    BulkLoadSaver(LoadAction loadAction, InputStream documentStream, XSDKey keyMetadata, XSDKey autoFieldMetadata,
+    BulkLoadSaver(LoadAction loadAction, InputStream documentStream, XSDKey autoKeyMetadata, XSDKey autoFieldMetadata,
             XmlServer server) {
         this.loadAction = loadAction;
         this.documentStream = documentStream;
-        this.autoKeyMetadata = keyMetadata;
+        this.autoKeyMetadata = autoKeyMetadata;
         this.autoFieldMetadata = autoFieldMetadata;
         this.server = server;
     }

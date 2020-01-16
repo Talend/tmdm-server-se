@@ -118,10 +118,10 @@ public class FlushXMLReader implements XMLReader {
                 context.parse(reader);
             }
 
-            String[] needAutoIncGeneratorField = context.getAutoIncrementNormalFields();
-            if (needAutoIncGeneratorField.length > 0) {
+            String[] autoIncrementNormalFields = context.getAutoIncrementNormalFields();
+            if (autoIncrementNormalFields.length > 0) {
                 com.amalto.core.load.State state = context.getCurrent();
-                AutoFieldGeneration autoGenMetadata = new AutoFieldGeneration(state, needAutoIncGeneratorField);
+                AutoFieldGeneration autoGenMetadata = new AutoFieldGeneration(state, autoIncrementNormalFields);
                 context.setCurrent(autoGenMetadata);
                 context.parse(reader);
             }

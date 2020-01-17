@@ -12,6 +12,7 @@ package com.amalto.core.load.action;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -49,7 +50,8 @@ public class DefaultLoadAction implements LoadAction {
     }
 
     @Override
-    public void load(InputStream stream, XSDKey keyMetadata, XmlServer server, SaverSession session) {
+    public void load(InputStream stream, XSDKey keyMetadata, XSDKey allAutoMetadata, XmlServer server,
+            SaverSession session) {
         try {
             SaverContextFactory contextFactory = session.getContextFactory();
             // If you wish to debug content sent to server evaluate 'IOUtils.toString(request.getInputStream())'
@@ -60,7 +62,7 @@ public class DefaultLoadAction implements LoadAction {
                     // Note: in case you wish to change the "replace" behavior, also check
                     // com.amalto.core.save.context.BulkLoadContext.isReplace()
                     DocumentSaverContext context = contextFactory.create(dataClusterName, dataModelName, StringUtils.EMPTY,
-                            new ByteArrayInputStream(xmlData.getBytes("UTF-8")), //$NON-NLS-1$
+                            new ByteArrayInputStream(xmlData.getBytes(StandardCharsets.UTF_8)),
                             true, // Always replace in this case (bulk load).
                             needValidate, false, false, XSystemObjects.DC_PROVISIONING.getName().equals(dataClusterName)); // Enforce
                                                                                                                            // auto

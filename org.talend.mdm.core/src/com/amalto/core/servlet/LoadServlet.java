@@ -232,6 +232,11 @@ public class LoadServlet extends HttpServlet {
     }
 
     protected LoadAction getLoadAction(String dataClusterName, String typeName, String dataModelName, boolean needValidate,
+            boolean needAutoGenPK) {
+        return getLoadAction(dataClusterName, typeName, dataModelName, needValidate, needAutoGenPK, false);
+    }
+
+    protected LoadAction getLoadAction(String dataClusterName, String typeName, String dataModelName, boolean needValidate,
             boolean needAutoGenPK, boolean needAutoGenNormalFields) {
         // Test if the data cluster actually exists
         DataClusterPOJO dataCluster = getDataCluster(dataClusterName);

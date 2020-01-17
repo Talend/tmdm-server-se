@@ -31,11 +31,11 @@ class BulkLoadContext implements DocumentSaverContext {
 
     private final BulkLoadSaver bulkLoadSaver;
 
-    public BulkLoadContext(String dataCluster, String dataModelName, XSDKey keyMetadata, InputStream documentStream,
-            LoadAction loadAction, XmlServer server) {
+    public BulkLoadContext(String dataCluster, String dataModelName, XSDKey autoKeyMetadata, XSDKey autoFieldMetadata,
+            InputStream documentStream, LoadAction loadAction, XmlServer server) {
         this.dataCluster = dataCluster;
         this.dataModelName = dataModelName;
-        bulkLoadSaver = new BulkLoadSaver(loadAction, documentStream, keyMetadata, server);
+        bulkLoadSaver = new BulkLoadSaver(loadAction, documentStream, autoKeyMetadata, autoFieldMetadata, server);
     }
 
     @Override

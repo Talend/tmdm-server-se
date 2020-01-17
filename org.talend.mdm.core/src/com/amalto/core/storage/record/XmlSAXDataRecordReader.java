@@ -71,11 +71,11 @@ public class XmlSAXDataRecordReader implements DataRecordReader<XmlSAXDataRecord
 
     private static class DataRecordContentHandler implements ContentHandler {
 
-        private final Stack<TypeMetadata> currentType = new Stack<TypeMetadata>();
+        private final Stack<TypeMetadata> currentType = new Stack<>();
 
-        private final Stack<DataRecord> dataRecordStack = new Stack<DataRecord>();
+        private final Stack<DataRecord> dataRecordStack = new Stack<>();
 
-        private final Stack<FieldMetadata> currentField = new Stack<FieldMetadata>();
+        private final Stack<FieldMetadata> currentField = new Stack<>();
 
         private final ResettableStringWriter charactersBuffer = new ResettableStringWriter();
 
@@ -83,7 +83,7 @@ public class XmlSAXDataRecordReader implements DataRecordReader<XmlSAXDataRecord
 
         private final MetadataRepository repository;
 
-        private boolean hasMetUserElement = false;
+        private boolean hasMetUserElement;
 
         private boolean isReadingTimestamp = false;
 
@@ -172,7 +172,12 @@ public class XmlSAXDataRecordReader implements DataRecordReader<XmlSAXDataRecord
                                 }
                             }
                         }
-                        DataRecord containedRecord = new DataRecord(actualType, UnsupportedDataRecordMetadata.INSTANCE);
+                        DataRecord containedRecord;
+                        if (actualType.getContainer() == null || dataRecordStack.peek().get(actualType.getContainer()) == null) {
+                            containedRecord = new DataRecord(actualType, UnsupportedDataRecordMetadata.INSTANCE);
+                        } else {
+                            containedRecord = (DataRecord) dataRecordStack.peek().get(actualType.getContainer());
+                        }
                         dataRecordStack.peek().set(field, containedRecord);
                         dataRecordStack.push(containedRecord);
                         currentType.push(actualType);

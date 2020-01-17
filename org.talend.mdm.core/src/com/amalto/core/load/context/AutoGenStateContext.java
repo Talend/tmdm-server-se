@@ -15,6 +15,7 @@ import com.amalto.core.load.LoadParserCallback;
 import com.amalto.core.load.Metadata;
 import com.amalto.core.load.State;
 import com.amalto.core.load.exception.ParserCallbackException;
+import com.amalto.core.load.path.PathMatcher;
 import com.amalto.core.load.payload.EndPayload;
 import com.amalto.core.load.payload.StartPayload;
 import com.amalto.core.load.xml.Selector;
@@ -23,6 +24,9 @@ import com.amalto.core.server.api.XmlServer;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
 
 /**
  * Load parser context implementation that has 2 main features:
@@ -45,10 +49,26 @@ public class AutoGenStateContext implements StateContext {
 
     private final AutoIdGenerator generator;
 
-    private AutoGenStateContext(StateContext delegate, String[] idPaths, AutoIdGenerator generator) {
+    private List<PathMatcher> normalFieldPaths;
+
+    private List<String> normalFieldInXML;
+
+    private Stack<String> readElementPath;
+
+    private final AutoIdGenerator[] normalFieldGenerator;
+
+    private AutoGenStateContext(StateContext delegate, String[] idPaths, AutoIdGenerator generator, String[] normalFieldPaths,
+            AutoIdGenerator[] normalFieldGenerator) {
         this.delegate = delegate;
         this.idPaths = idPaths;
         this.generator = generator;
+        this.readElementPath = new Stack<>();
+        this.normalFieldInXML = new ArrayList<>();
+        this.normalFieldPaths = new ArrayList<>();
+        this.normalFieldGenerator = normalFieldGenerator;
+        for (String idPath : normalFieldPaths) {
+            getNormalFieldPaths().add(new PathMatcher(idPath));
+        }
         metadata = new AutoGenMetadata(this.delegate.getMetadata(), idPaths, this.generator);
     }
 
@@ -59,8 +79,9 @@ public class AutoGenStateContext implements StateContext {
      * @param autoIdGenerator Implementation of {@link com.amalto.core.save.generator.AutoIdGenerator} able to generate id in this context.  @return A context that generate metadata automatically.
      * @return A {@link StateContext} implementation able to generate automatic ids.
      */
-    public static StateContext decorate(StateContext context, String[] idPaths, AutoIdGenerator autoIdGenerator) {
-        return new AutoGenStateContext(context, idPaths, autoIdGenerator);
+    public static StateContext decorate(StateContext context, String[] idPaths, AutoIdGenerator autoIdGenerator,
+            String[] normalFieldPaths, AutoIdGenerator[] autoNormalFieldGenerator) {
+        return new AutoGenStateContext(context, idPaths, autoIdGenerator, normalFieldPaths, autoNormalFieldGenerator);
     }
 
     public Metadata getMetadata() {
@@ -98,6 +119,11 @@ public class AutoGenStateContext implements StateContext {
             currentState = new AutoIdGeneration(state, idPaths);
             hasGeneratedAutomaticId = true;
         }
+    }
+
+    @Override
+    public State getCurrent() {
+        return currentState;
     }
 
     public LoadParserCallback getCallback() {
@@ -158,6 +184,26 @@ public class AutoGenStateContext implements StateContext {
         // This line is rather important since the generator might need to persist its state
         // see DefaultAutoIdGenerator for instance.
         generator.saveState(server);
+    }
+
+    @Override
+    public List<PathMatcher> getNormalFieldPaths(){
+        return this.normalFieldPaths;
+    }
+
+    @Override
+    public List<String> getNormalFieldInXML() {
+        return this.normalFieldInXML;
+    }
+
+    @Override
+    public Stack<String> getReadElementPath() {
+        return this.readElementPath;
+    }
+
+    @Override
+    public AutoIdGenerator[] getNormalFieldGenerators() {
+        return normalFieldGenerator;
     }
 
 }

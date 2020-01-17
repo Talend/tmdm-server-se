@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.talend.mdm.webapp.base.client.model.DataTypeConstants;
 import org.talend.mdm.webapp.base.shared.TypeModel;
 import org.talend.mdm.webapp.browserecords.client.i18n.MessagesFactory;
 import org.talend.mdm.webapp.browserecords.client.model.ItemNodeModel;
@@ -221,7 +222,10 @@ public class MultiOccurrenceManager {
             if (mandatory != null) {
                 multiItem.warnMandatory();
                 childItem.setTitle(mandatory);
-                nodeModel.setValid(false);
+                if (this.metaDataTypes.get(nodeModel.getTypePath()).getType() != DataTypeConstants.AUTO_INCREMENT
+                        && this.metaDataTypes.get(nodeModel.getTypePath()).getType() != DataTypeConstants.UUID) {
+                    nodeModel.setValid(false);
+                }
             }
 
         }

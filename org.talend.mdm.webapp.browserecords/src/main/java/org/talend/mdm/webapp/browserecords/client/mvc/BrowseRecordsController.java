@@ -326,6 +326,11 @@ public class BrowseRecordsController extends Controller {
                     }
                 });
             }
+            
+            @Override
+            protected void doOnFailure(Throwable caught) {
+                ErrorMessageUtil.showDetailErrorMessage(caught);
+            }
         });
     }
 

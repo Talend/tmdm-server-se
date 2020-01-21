@@ -41,4 +41,17 @@ public class AutoIncrementUtil {
         return concept;
     }
 
+    public static String getAutoIncrementFieldName(String storageName, String concept, String conceptName) {
+        if (concept == null) {
+            return null;
+        }
+        String autoIncrementFieldName;
+        if (getConceptForAutoIncrement(storageName, conceptName).equals(concept) && conceptName.contains(".")) {
+            autoIncrementFieldName = conceptName.substring(conceptName.indexOf(".") + 1);
+        } else {
+            autoIncrementFieldName = conceptName;
+        }
+        return autoIncrementFieldName;
+    }
+
 }

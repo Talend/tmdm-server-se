@@ -41,17 +41,27 @@ public class AutoIncrementUtil {
         return concept;
     }
 
-    public static String getAutoIncrementFieldName(String storageName, String concept, String conceptName) {
-        if (concept == null) {
+    /**
+     * For inherited type, the origin fieldPath is like this: B.Id or C.id, B and C super type is A,
+     * it used the super type as the concept. so it will return to A.id
+     *
+     * If the field path is in one complex type, like Course/Detail/Count, Course and Detail, both are the complex type,
+     * the field path is don't modify.
+     *
+     * @param storageName the storage name
+     * @param concept concept name, if it's the inherited, it is the super type name.
+     * @param fieldPath the AUTO_INCREMENT type field's field path, with the concept name as the prefix.
+     * @return the field path
+     */
+    public static String getAutoIncrementFieldPath(String storageName, String concept, String fieldPath) {
+        if (storageName == null || concept == null || fieldPath == null) {
             return null;
         }
-        String autoIncrementFieldName;
-        if (getConceptForAutoIncrement(storageName, conceptName).equals(concept) && conceptName.contains(".")) {
-            autoIncrementFieldName = conceptName.substring(conceptName.indexOf(".") + 1);
-        } else {
-            autoIncrementFieldName = conceptName;
+        // if the field is inherited, it should be remove the concept name from the fieldPath
+        if (concept.equals(getConceptForAutoIncrement(storageName, fieldPath)) && fieldPath.contains(".")) {
+            return fieldPath.substring(fieldPath.indexOf(".") + 1);
         }
-        return autoIncrementFieldName;
+        return fieldPath;
     }
 
 }

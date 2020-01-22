@@ -65,10 +65,10 @@ public class AutoIncrementUtilTest {
         repository.load(AutoIncrementUtilTest.class.getResourceAsStream("metadata01.xsd"));
         MockMetadataRepositoryAdmin.INSTANCE.register("AutoInc", repository);
 
-        assertEquals("Id", AutoIncrementUtil.getAutoIncrementFieldName("Person", "Person", "Person.Id"));
-        assertEquals("AA", AutoIncrementUtil.getAutoIncrementFieldName("Person", "Person", "Person.AA"));
-        assertEquals("BB", AutoIncrementUtil.getAutoIncrementFieldName("Person", "Person", "Person.BB"));
-        assertEquals("CC", AutoIncrementUtil.getAutoIncrementFieldName("Person", "Person", "Person.CC"));
+        assertEquals("Id", AutoIncrementUtil.getAutoIncrementFieldPath("Person", "Person", "Person.Id"));
+        assertEquals("AA", AutoIncrementUtil.getAutoIncrementFieldPath("Person", "Person", "Person.AA"));
+        assertEquals("BB", AutoIncrementUtil.getAutoIncrementFieldPath("Person", "Person", "Person.BB"));
+        assertEquals("CC", AutoIncrementUtil.getAutoIncrementFieldPath("Person", "Person", "Person.CC"));
 
     }
 
@@ -78,10 +78,10 @@ public class AutoIncrementUtilTest {
         repository.load(AutoIncrementUtilTest.class.getResourceAsStream("metadata02.xsd"));
         MockMetadataRepositoryAdmin.INSTANCE.register("AutoInc", repository);
 
-        assertEquals("Id", AutoIncrementUtil.getAutoIncrementFieldName("Product", "Product", "Product.Id"));
-        assertEquals("Support", AutoIncrementUtil.getAutoIncrementFieldName("Product", "Product", "Product.Support"));
-        assertEquals("Id", AutoIncrementUtil.getAutoIncrementFieldName("Product", "ProductFamily", "ProductFamily.Id"));
-        assertEquals("Name", AutoIncrementUtil.getAutoIncrementFieldName("Product", "ProductFamily", "ProductFamily.Name"));
+        assertEquals("Id", AutoIncrementUtil.getAutoIncrementFieldPath("Product", "Product", "Product.Id"));
+        assertEquals("Support", AutoIncrementUtil.getAutoIncrementFieldPath("Product", "Product", "Product.Support"));
+        assertEquals("Id", AutoIncrementUtil.getAutoIncrementFieldPath("Product", "ProductFamily", "ProductFamily.Id"));
+        assertEquals("Name", AutoIncrementUtil.getAutoIncrementFieldPath("Product", "ProductFamily", "ProductFamily.Name"));
     }
 
     @Test
@@ -90,8 +90,8 @@ public class AutoIncrementUtilTest {
         repository.load(AutoIncrementUtilTest.class.getResourceAsStream("metadata03.xsd"));
         MockMetadataRepositoryAdmin.INSTANCE.register("AutoInc", repository);
 
-        assertEquals("Site", AutoIncrementUtil.getAutoIncrementFieldName("Student", "Student", "Student.Site"));
-        assertEquals("Course.Score", AutoIncrementUtil.getAutoIncrementFieldName("Student", "Student", "Course.Score"));
+        assertEquals("Site", AutoIncrementUtil.getAutoIncrementFieldPath("Student", "Student", "Student.Site"));
+        assertEquals("Course.Score", AutoIncrementUtil.getAutoIncrementFieldPath("Student", "Student", "Course.Score"));
     }
 
     @Test
@@ -100,8 +100,8 @@ public class AutoIncrementUtilTest {
         repository.load(AutoIncrementUtilTest.class.getResourceAsStream("metadata04.xsd"));
         MockMetadataRepositoryAdmin.INSTANCE.register("Party", repository);
 
-        assertEquals("Id", AutoIncrementUtil.getAutoIncrementFieldName("Party", "A", "B.Id"));
-        assertEquals("Id", AutoIncrementUtil.getAutoIncrementFieldName("Party", "A", "C.Id"));
+        assertEquals("Id", AutoIncrementUtil.getAutoIncrementFieldPath("Party", "A", "B.Id"));
+        assertEquals("Id", AutoIncrementUtil.getAutoIncrementFieldPath("Party", "A", "C.Id"));
     }
 
     @Test
@@ -112,6 +112,6 @@ public class AutoIncrementUtilTest {
         ComplexTypeMetadata type = repository.getComplexType("Person");
 
         assertEquals("Habit.Detail.Count",
-                AutoIncrementUtil.getAutoIncrementFieldName("Person", "Person", "Habit.Detail.Count"));
+                AutoIncrementUtil.getAutoIncrementFieldPath("Person", "Person", "Habit.Detail.Count"));
     }
 }

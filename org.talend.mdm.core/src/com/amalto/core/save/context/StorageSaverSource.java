@@ -218,7 +218,9 @@ public class StorageSaverSource implements SaverSource {
         String concept = AutoIncrementUtil.getConceptForAutoIncrement(dataModelName, conceptName);
         if (concept != null) {
             String autoIncrementFieldPath = AutoIncrementUtil.getAutoIncrementFieldPath(dataModelName, concept, conceptName);
-            autoIncrementId = AutoIncrementGenerator.get().generateId(dataCluster, concept, autoIncrementFieldPath);
+            if (autoIncrementFieldPath != null) {
+                autoIncrementId = AutoIncrementGenerator.get().generateId(dataCluster, concept, autoIncrementFieldPath);
+            }
         }
         return autoIncrementId;
     }

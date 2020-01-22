@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 @SuppressWarnings("nls")
 public class AutoIncrementUtilTest {
@@ -65,6 +66,9 @@ public class AutoIncrementUtilTest {
         repository.load(AutoIncrementUtilTest.class.getResourceAsStream("metadata01.xsd"));
         MockMetadataRepositoryAdmin.INSTANCE.register("AutoInc", repository);
 
+        assertNull(AutoIncrementUtil.getAutoIncrementFieldPath(null, "Person", "Person.Id"));
+        assertNull(AutoIncrementUtil.getAutoIncrementFieldPath("Person", null, "Person.Id"));
+        assertNull(AutoIncrementUtil.getAutoIncrementFieldPath("Person", "Person", null));
         assertEquals("Id", AutoIncrementUtil.getAutoIncrementFieldPath("Person", "Person", "Person.Id"));
         assertEquals("AA", AutoIncrementUtil.getAutoIncrementFieldPath("Person", "Person", "Person.AA"));
         assertEquals("BB", AutoIncrementUtil.getAutoIncrementFieldPath("Person", "Person", "Person.BB"));

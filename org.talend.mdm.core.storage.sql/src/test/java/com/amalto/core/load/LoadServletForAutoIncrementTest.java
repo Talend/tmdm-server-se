@@ -27,6 +27,7 @@ import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.dom4j.tree.DefaultElement;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -42,6 +43,7 @@ import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -125,6 +127,12 @@ public class LoadServletForAutoIncrementTest {
         assertEquals(1,
                 Integer.parseInt(xmlDocument.getRootElement().element("p").element("Person").element("Id").getText()));
         assertEquals("T-Shirt", xmlDocument.getRootElement().element("p").element("Person").element("Name").getText());
+
+        //Test System auto increment value
+        String confResult = server.getDocumentAsString("CONF", "CONF.AutoIncrement.AutoIncrement");
+        assertNotNull(confResult);
+        Document xml = DocumentHelper.parseText(confResult);
+        assertKeyValue("AutoInc.Person.Id", "1", xml);
     }
 
     @Test
@@ -231,6 +239,15 @@ public class LoadServletForAutoIncrementTest {
                 Integer.parseInt(xmlDocument.getRootElement().element("p").element("Person").element("CC").getText()));
         assertEquals(36, xmlDocument.getRootElement().element("p").element("Person").element("DD").getText().length());
         assertEquals(36, xmlDocument.getRootElement().element("p").element("Person").element("EE").getText().length());
+
+        //Test System auto increment value
+        String confResult = server.getDocumentAsString("CONF", "CONF.AutoIncrement.AutoIncrement");
+        assertNotNull(confResult);
+        Document xml = DocumentHelper.parseText(confResult);
+        assertKeyValue("AutoInc.Person.Id", "2", xml);
+        assertKeyValue("AutoInc.Person.AA", "1", xml);
+        assertKeyValue("AutoInc.Person.BB", "1", xml);
+        assertKeyValue("AutoInc.Person.CC", "1", xml);
     }
 
     @Test
@@ -276,6 +293,15 @@ public class LoadServletForAutoIncrementTest {
         assertEquals(1, Integer.parseInt(xmlDocument.getRootElement().element("p").element("Person").element("AA").getText()));
         assertEquals(1, Integer.parseInt(xmlDocument.getRootElement().element("p").element("Person").element("BB").getText()));
         assertEquals(1, Integer.parseInt(xmlDocument.getRootElement().element("p").element("Person").element("CC").getText()));
+
+        //Test System auto increment value
+        String confResult = server.getDocumentAsString("CONF", "CONF.AutoIncrement.AutoIncrement");
+        assertNotNull(confResult);
+        Document xml = DocumentHelper.parseText(confResult);
+        assertKeyValue("AutoInc.Person.Id", "2", xml);
+        assertKeyValue("AutoInc.Person.AA", "1", xml);
+        assertKeyValue("AutoInc.Person.BB", "1", xml);
+        assertKeyValue("AutoInc.Person.CC", "1", xml);
     }
 
     @Test
@@ -321,6 +347,15 @@ public class LoadServletForAutoIncrementTest {
         assertEquals(1, Integer.parseInt(xmlDocument.getRootElement().element("p").element("Person").element("AA").getText()));
         assertEquals(1, Integer.parseInt(xmlDocument.getRootElement().element("p").element("Person").element("BB").getText()));
         assertEquals(1, Integer.parseInt(xmlDocument.getRootElement().element("p").element("Person").element("CC").getText()));
+
+        //Test System auto increment value
+        String confResult = server.getDocumentAsString("CONF", "CONF.AutoIncrement.AutoIncrement");
+        assertNotNull(confResult);
+        Document xml = DocumentHelper.parseText(confResult);
+        assertKeyValue("AutoInc.Person.Id", "3", xml);
+        assertKeyValue("AutoInc.Person.AA", "1", xml);
+        assertKeyValue("AutoInc.Person.BB", "1", xml);
+        assertKeyValue("AutoInc.Person.CC", "1", xml);
     }
 
     @Test
@@ -367,6 +402,12 @@ public class LoadServletForAutoIncrementTest {
                 xmlDocument.getRootElement().element("p").element("Product").element("Description").getText());
         assertEquals("12.30", xmlDocument.getRootElement().element("p").element("Product").element("Price").getText());
         assertEquals("1", xmlDocument.getRootElement().element("p").element("Product").element("Support").getText());
+
+        //Test System auto increment value
+        String confResult = server.getDocumentAsString("CONF", "CONF.AutoIncrement.AutoIncrement");
+        assertNotNull(confResult);
+        Document xml = DocumentHelper.parseText(confResult);
+        assertNotKeyValue("Product.Product.Support", xml);
     }
 
     @Test
@@ -423,10 +464,16 @@ public class LoadServletForAutoIncrementTest {
         assertEquals("12.30", xmlDocument.getRootElement().element("p").element("Product").element("Price").getText());
         assertEquals("1", xmlDocument.getRootElement().element("p").element("Product").element("Support").getText());
         assertEquals(36, xmlDocument.getRootElement().element("p").element("Product").element("Supply").getText().length());
+
+        //Test System auto increment value
+        String confResult = server.getDocumentAsString("CONF", "CONF.AutoIncrement.AutoIncrement");
+        assertNotNull(confResult);
+        Document xml = DocumentHelper.parseText(confResult);
+        assertKeyValue("Product.Product.Support", "1", xml);
     }
 
     @Test
-    public void test_08_BulkLoadForComplexType() throws Exception {
+    public void test_08_BulkLoadForComplexTypeNotGenerate() throws Exception {
         String dataClusterName = "Student";
         String typeName = "Student";
         String dataModelName = "Student";
@@ -480,6 +527,13 @@ public class LoadServletForAutoIncrementTest {
         assertNotNull(courseElement);
         assertEquals("English", courseElement.element("Id").getText());
         assertEquals("Mike", courseElement.element("Teacher").getText());
+
+        //Test System auto increment value
+        String confResult = server.getDocumentAsString("CONF", "CONF.AutoIncrement.AutoIncrement");
+        assertNotNull(confResult);
+        Document xml = DocumentHelper.parseText(confResult);
+        assertNotKeyValue("Student.Student.Site", xml);
+        assertNotKeyValue("Student.Student.Course.Score", xml);
     }
 
     @Test
@@ -542,6 +596,13 @@ public class LoadServletForAutoIncrementTest {
         assertEquals("Mike", courseElement.element("Teacher").getText());
         assertEquals("1", courseElement.element("Score").getText());
         assertEquals(36, courseElement.element("Like").getText().length());
+
+        //Test System auto increment value
+        String confResult = server.getDocumentAsString("CONF", "CONF.AutoIncrement.AutoIncrement");
+        assertNotNull(confResult);
+        Document xml = DocumentHelper.parseText(confResult);
+        assertKeyValue("Student.Student.Site", "1", xml);
+        assertKeyValue("Student.Student.Course.Score", "1", xml);
     }
 
     @Test
@@ -604,6 +665,13 @@ public class LoadServletForAutoIncrementTest {
         assertEquals("Mike", courseElement.element("Teacher").getText());
         assertEquals("10", courseElement.element("Score").getText());
         assertEquals(36, courseElement.element("Like").getText().length());
+
+        //Test System auto increment value
+        String confResult = server.getDocumentAsString("CONF", "CONF.AutoIncrement.AutoIncrement");
+        assertNotNull(confResult);
+        Document xml = DocumentHelper.parseText(confResult);
+        assertKeyValue("Student.Student.Site", "1", xml);
+        assertKeyValue("Student.Student.Course.Score", "1", xml);
     }
 
     @Test
@@ -661,6 +729,13 @@ public class LoadServletForAutoIncrementTest {
         assertEquals("10", typeElement.element("Site").getText());
         Element courseElement = typeElement.element("Course");
         assertNull(courseElement);
+
+        //Test System auto increment value
+        String confResult = server.getDocumentAsString("CONF", "CONF.AutoIncrement.AutoIncrement");
+        assertNotNull(confResult);
+        Document xml = DocumentHelper.parseText(confResult);
+        assertKeyValue("Student.Student.Site", "1", xml);
+        assertKeyValue("Student.Student.Course.Score", "1", xml);
     }
 
     @Test
@@ -757,6 +832,83 @@ public class LoadServletForAutoIncrementTest {
         assertEquals("Mike", courseElement.element("Teacher").getText());
         assertEquals("4", courseElement.element("Score").getText());
         assertEquals(36, courseElement.element("Like").getText().length());
+
+        //Test System auto increment value
+        String confResult = server.getDocumentAsString("CONF", "CONF.AutoIncrement.AutoIncrement");
+        assertNotNull(confResult);
+        Document xml = DocumentHelper.parseText(confResult);
+        assertKeyValue("Student.Student.Site", "4", xml);
+        assertKeyValue("Student.Student.Course.Score", "4", xml);
+    }
+
+    @Test
+    public void test_13_BulkLoadForMultipleLayer() throws Exception {
+        String dataClusterName = "Person";
+        String typeName = "Person";
+        String dataModelName = "Person";
+        boolean needAutoGenPK = false;
+        boolean needAutoGenAutoFields = true;
+        boolean insertOnly = false;
+
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(LoadServletForAutoIncrementTest.class.getResourceAsStream("metadata05.xsd"));
+        MockMetadataRepositoryAdmin.INSTANCE.register(dataClusterName, repository);
+        ComplexTypeMetadata type = repository.getComplexType(typeName);
+
+        LoadAction loadAction = new OptimizedLoadAction(dataClusterName, typeName, dataModelName, needAutoGenPK,
+                needAutoGenAutoFields);
+
+        DataRecord.CheckExistence.set(!insertOnly);
+        InputStream recordXml = new ByteArrayInputStream(
+                ("<Person><Id>1</Id><Name>John</Name><Habit><Content>Study</Content><Detail><Name>Play game</Name><Description>I want to play basketball</Description></Detail></Habit></Person>")
+                        .getBytes(StandardCharsets.UTF_8));
+
+        Method getTypeKeyMethod = loadServlet.getClass().getDeclaredMethod("getTypeKey", Collection.class);
+        getTypeKeyMethod.setAccessible(true);
+
+        XSDKey keyMetadata = (XSDKey) getTypeKeyMethod.invoke(loadServlet, type.getKeyFields());
+        XSDKey autoFieldMetadata = null;
+        if (needAutoGenAutoFields) {
+            Collection<FieldMetadata> fields = type.getFields();
+            Collection<FieldMetadata> autoFields = fields.stream().filter(filed -> (!filed.isKey())).collect(Collectors.toList());
+            Method getTypeAutoFieldMethod = loadServlet.getClass().getDeclaredMethod("getTypeAutoField", Collection.class);
+            getTypeAutoFieldMethod.setAccessible(true);
+            autoFieldMetadata = (XSDKey) getTypeAutoFieldMethod.invoke(loadServlet, autoFields);
+        }
+
+        XmlServer server = Util.getXmlServerCtrlLocal();
+
+        Method bulkLoadSaveMethod = loadServlet.getClass()
+                .getDeclaredMethod("bulkLoadSave", String.class, String.class, InputStream.class, LoadAction.class, XSDKey.class,
+                        XSDKey.class);
+        bulkLoadSaveMethod.setAccessible(true);
+
+        bulkLoadSaveMethod
+                .invoke(loadServlet, dataClusterName, dataModelName, recordXml, loadAction, keyMetadata, autoFieldMetadata);
+        String result = server.getDocumentAsString(dataClusterName, dataClusterName + "." + typeName + ".1");
+        Document xmlDocument = DocumentHelper.parseText(result);
+        Element typeElement = xmlDocument.getRootElement().element("p").element(typeName);
+        assertEquals(3, typeElement.elements().size());
+        assertEquals(1, Integer.parseInt(typeElement.element("Id").getText()));
+        assertEquals("John", typeElement.element("Name").getText());
+
+        Element habitElement = typeElement.element("Habit");
+        assertNotNull(habitElement);
+        assertEquals(2, habitElement.elements().size());
+        assertEquals("Study", habitElement.element("Content").getText());
+
+        Element detailElement = habitElement.element("Detail");
+        assertNotNull(habitElement);
+        assertEquals(3, detailElement.elements().size());
+        assertEquals("Play game", detailElement.element("Name").getText());
+        assertEquals("I want to play basketball", detailElement.element("Description").getText());
+        assertEquals("1", detailElement.element("Count").getText());
+
+        //Test System auto increment value
+        String confResult = server.getDocumentAsString("CONF", "CONF.AutoIncrement.AutoIncrement");
+        assertNotNull(confResult);
+        Document xml = DocumentHelper.parseText(confResult);
+        assertKeyValue("Person.Person.Habit.Detail.Count", "1", xml);
     }
 
     @Test
@@ -835,5 +987,26 @@ public class LoadServletForAutoIncrementTest {
         assertEquals("AUTO_INCREMENT", autoFieldMetadata.getFieldTypes()[1]);
         assertEquals("AUTO_INCREMENT", autoFieldMetadata.getFieldTypes()[2]);
         assertEquals("UUID", autoFieldMetadata.getFieldTypes()[3]);
+    }
+
+    private void assertKeyValue(String key, String value, Document document) {
+        Element autoIncrementElement = document.getRootElement().element("p").element("AutoIncrement");
+        List<DefaultElement> list = autoIncrementElement.elements();
+        for (DefaultElement element : list) {
+            if (element.element("key") != null && element.element("key").getText().equals(key)) {
+                assertEquals(value, element.element("value").getText());
+                return;
+            }
+        }
+    }
+
+    private void assertNotKeyValue(String key, Document document) {
+        Element autoIncrementElement = document.getRootElement().element("p").element("AutoIncrement");
+        List<DefaultElement> list = autoIncrementElement.elements();
+        for (DefaultElement element : list) {
+            if (element.element("key") != null && element.element("key").getText().equals(key)) {
+                fail("System AutoIncrement value should not contains path: '" + key + " value");
+            }
+        }
     }
 }

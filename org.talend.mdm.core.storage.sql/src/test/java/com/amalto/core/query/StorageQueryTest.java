@@ -6205,15 +6205,15 @@ public class StorageQueryTest extends StorageTestCase {
         try {
             storage.delete(from(contrat).getExpression());
             storage.delete(from(eda).getExpression());
-            //storage.delete(from(interlocuteur).getExpression());
-            //storage.delete(from(useUrse).getExpression());
+            storage.delete(from(interlocuteur).getExpression());
+            storage.delete(from(useUrse).getExpression());
         } catch (Exception e) {
             assertNull(e);
         } finally {
             storage.commit();
         }
 
-        /*qb = from(useUrse);
+        qb = from(useUrse);
         results = storage.fetch(qb.getSelect());
         assertEquals(0, results.getCount());
 
@@ -6227,7 +6227,6 @@ public class StorageQueryTest extends StorageTestCase {
 
         qb = from(contrat);
         results = storage.fetch(qb.getSelect());
-        assertEquals(0, results.getCount());*/
-
+        assertEquals(0, results.getCount());
     }
 }

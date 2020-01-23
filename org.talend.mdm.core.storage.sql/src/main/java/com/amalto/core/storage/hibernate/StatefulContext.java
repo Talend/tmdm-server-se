@@ -131,7 +131,7 @@ public class StatefulContext implements MappingCreatorContext {
             if (topType.getName().equals(rawTypeName) && curName.length() == expectedLength) {
                 return true;
             }
-            Boolean isSameName = null;
+            Boolean isSameName = false;
             boolean isExist = topType.getSubTypes().stream()
                     .anyMatch(action -> action.getUsages().stream().anyMatch(item -> {
                         if (item.getContainer() != null && item.getContainer().getContainingType() != null) {
@@ -142,10 +142,16 @@ public class StatefulContext implements MappingCreatorContext {
                     }));
             if (isExist) {
                 //This logic code only use in RTE DM
-                isSameName = topType.getSubTypes().stream().anyMatch(action -> action.getFields().stream().anyMatch(
-                        item -> !item.equals(field) && !item.getContainingType().equals(field.getContainingType())
-                                && field.getContainingType().getUsages().size() == item.getContainingType().getUsages().size()
-                                && item.getName().equals(field.getName())));
+                Collection<ComplexTypeMetadata> subTypeList = topType.getSubTypes();
+                outLoop: for (ComplexTypeMetadata subTribe : subTypeList) {
+                    for (FieldMetadata subField : subTribe.getFields()) {
+                        if (!subField.equals(field) && !subField.getContainingType().equals(field.getContainingType())
+                                && subField.getName().equals(field.getName())) {
+                            isSameName = true;
+                            break outLoop;
+                        }
+                    }
+                }
             }
             return isExist && !isSameName;
         }

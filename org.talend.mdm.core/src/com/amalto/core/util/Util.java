@@ -27,6 +27,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.regex.Matcher;
@@ -169,6 +170,26 @@ public class Util {
     private static RoutingOrder defaultRoutingOrder;
 
     private static com.amalto.core.server.api.Transformer defaultTransformer;
+
+    private static final AtomicInteger TRANSACTION_CURRENT_REQUESTS = new AtomicInteger();
+
+    private static final String TRANSACTION_WAIT_MILLISECONDS_KEY = "transaction.concurrent.wait.milliseconds"; //$NON-NLS-1$
+
+    private static long TRANSACTION_WAIT_MILLISECONDS_VALUE = 0L;
+
+    static {
+        String config = MDMConfiguration.getConfiguration().getProperty(TRANSACTION_WAIT_MILLISECONDS_KEY);
+        if (config != null) {
+            try {
+                TRANSACTION_WAIT_MILLISECONDS_VALUE = Long.valueOf(config);
+            } catch (Exception e) {
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("Failed to read configuration: " + TRANSACTION_WAIT_MILLISECONDS_KEY, e); //$NON-NLS-1$
+                }
+                TRANSACTION_WAIT_MILLISECONDS_VALUE = 0L;
+            }
+        }
+    }
 
     private static synchronized DocumentBuilderFactory getDocumentBuilderFactory() {
         if (nonValidatingDocumentBuilderFactory == null) {
@@ -1288,5 +1309,28 @@ public class Util {
             path = path.replaceAll("\\[\\d+\\]", "");
         }
         return path;
+    }
+
+    public static void beginTransactionLimit() {
+        if (TRANSACTION_WAIT_MILLISECONDS_VALUE > 0) {
+            synchronized (Util.class) {
+                try {
+                    while (TRANSACTION_CURRENT_REQUESTS.get() >= 1) {
+                        Thread.sleep(TRANSACTION_WAIT_MILLISECONDS_VALUE);
+                    }
+                    TRANSACTION_CURRENT_REQUESTS.incrementAndGet();
+                } catch (InterruptedException e) {
+                    if (LOGGER.isDebugEnabled()) {
+                        LOGGER.debug("Failed to sleep thread.", e);
+                    }
+                }
+            }
+        }
+    }
+
+    public static void endTransactionLimit() {
+        if (TRANSACTION_WAIT_MILLISECONDS_VALUE > 0) {
+            TRANSACTION_CURRENT_REQUESTS.decrementAndGet();
+        }
     }
 }

@@ -333,7 +333,7 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
                 } else if (EUUIDCustomType.AUTO_INCREMENT.getName().equalsIgnoreCase(comparedField.getType().getName())
                         && isCreateAction == false) {
                     generateNoOp(lastMatchPath);
-                    String conceptName = rootTypeName + "." + comparedField.getName().replaceAll("/", "."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    String conceptName = rootTypeName + "." + comparedField.getPath().replaceAll("/", "."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                     String autoIncrementValue = saverSource.nextAutoIncrementId(dataCluster, dataModel, conceptName);
                     actions.add(new FieldUpdateAction(date, source, userName, path, StringUtils.EMPTY, autoIncrementValue, comparedField, userAction));
                     generateNoOp(path);

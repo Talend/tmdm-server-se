@@ -175,7 +175,7 @@ public class Util {
 
     private static final String TRANSACTION_WAIT_MILLISECONDS_KEY = "transaction.concurrent.wait.milliseconds"; //$NON-NLS-1$
 
-    private static long TRANSACTION_WAIT_MILLISECONDS_VALUE = 0L;
+    public static long TRANSACTION_WAIT_MILLISECONDS_VALUE = 0L;
 
     static {
         String config = MDMConfiguration.getConfiguration().getProperty(TRANSACTION_WAIT_MILLISECONDS_KEY);

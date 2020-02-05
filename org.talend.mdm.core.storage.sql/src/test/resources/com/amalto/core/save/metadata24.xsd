@@ -6,6 +6,25 @@
                 <xsd:element maxOccurs="1" minOccurs="1" name="Id" type="xsd:string"/>
                 <xsd:element maxOccurs="1" minOccurs="0" name="Name" type="xsd:string"/>
                 <xsd:element maxOccurs="1" minOccurs="1" name="N_Index" type="AUTO_INCREMENT"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="complex">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                    <xsd:complexType>
+                        <xsd:all>
+                            <xsd:element maxOccurs="1" minOccurs="0" name="autoIncrement2" type="AUTO_INCREMENT">
+                                <xsd:annotation>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                                </xsd:annotation>
+                            </xsd:element>
+                            <xsd:element maxOccurs="1" minOccurs="0" name="test2" type="xsd:string">
+                                <xsd:annotation>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                                </xsd:annotation>
+                            </xsd:element>
+                        </xsd:all>
+                    </xsd:complexType>
+                </xsd:element>
             </xsd:all>
         </xsd:complexType>
         <xsd:unique name="Person">

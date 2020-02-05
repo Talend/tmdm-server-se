@@ -623,6 +623,40 @@ public class DocumentSaveTest extends TestCase {
         committedElement = committer.getCommittedElement();
         assertEquals("1", evaluate(committedElement, "/Address/Id"));
         assertEquals("1", evaluate(committedElement, "/Address/Port"));
+
+        //5, for Entity Person, normal field is N_Index, and autoIncrement2 in the complex type Create
+        source = new TestSaverSource(repository, false, "", "metadata24.xsd");
+        session = SaverSession.newSession(source);
+        recordXml = DocumentSaveTest.class.getResourceAsStream("test83.xml");
+        context = session.getContextFactory().create("MDM", "PersonAddress", "Source", recordXml, true, true, true, true, false);
+        saver = context.createSaver();
+        saver.save(session, context);
+        assertFalse(source.hasSavedAutoIncrement());
+        committer = new MockCommitter();
+        session.end(committer);
+
+        assertTrue(source.hasSavedAutoIncrement());
+        assertTrue(committer.hasSaved());
+        committedElement = committer.getCommittedElement();
+        assertEquals("1", evaluate(committedElement, "/Person/N_Index"));
+        assertEquals("1", evaluate(committedElement, "/Person/complex/autoIncrement2"));
+
+        //6, for Entity Person, normal field is N_Index, and autoIncrement2 in the complex type Update
+        source = new TestSaverSource(repository, false, "test83_original.xml", "metadata24.xsd");
+        session = SaverSession.newSession(source);
+        recordXml = DocumentSaveTest.class.getResourceAsStream("test83.xml");
+        context = session.getContextFactory().create("MDM", "PersonAddress", "Source", recordXml, true, true, true, true, false);
+        saver = context.createSaver();
+        saver.save(session, context);
+        assertFalse(source.hasSavedAutoIncrement());
+        committer = new MockCommitter();
+        session.end(committer);
+
+        assertTrue(source.hasSavedAutoIncrement());
+        assertTrue(committer.hasSaved());
+        committedElement = committer.getCommittedElement();
+        assertEquals("1", evaluate(committedElement, "/Person/N_Index"));
+        assertEquals("1", evaluate(committedElement, "/Person/complex/autoIncrement2"));
     }
 
     public void testUpdateWithUUID() throws Exception {

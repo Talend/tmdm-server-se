@@ -1328,6 +1328,10 @@ public class Util {
         }
     }
 
+    /*
+     * It is needed to invoked a pair of beginTransactionLimit and endTransactionLimit.
+     * And they shouldn't be nested invoked in the same thread. otherwise, the second calling will be blocked.
+     */
     public static void endTransactionLimit() {
         if (TRANSACTION_WAIT_MILLISECONDS_VALUE > 0) {
             TRANSACTION_CURRENT_REQUESTS.decrementAndGet();

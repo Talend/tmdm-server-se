@@ -172,11 +172,12 @@ public class XmlSAXDataRecordReader implements DataRecordReader<XmlSAXDataRecord
                                 }
                             }
                         }
-                        DataRecord containedRecord;
-                        if (actualType.getContainer() == null || dataRecordStack.peek().get(actualType.getContainer()) == null) {
-                            containedRecord = new DataRecord(actualType, UnsupportedDataRecordMetadata.INSTANCE);
-                        } else {
+                        DataRecord containedRecord = null;
+                        if (actualType.getContainer() != null) {
                             containedRecord = (DataRecord) dataRecordStack.peek().get(actualType.getContainer());
+                        }
+                        if (containedRecord == null || actualType.getContainer() == null) {
+                            containedRecord = new DataRecord(actualType, UnsupportedDataRecordMetadata.INSTANCE);
                         }
                         dataRecordStack.peek().set(field, containedRecord);
                         dataRecordStack.push(containedRecord);

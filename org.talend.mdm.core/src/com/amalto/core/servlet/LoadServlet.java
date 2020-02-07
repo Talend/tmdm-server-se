@@ -307,7 +307,8 @@ public class LoadServlet extends HttpServlet {
                 fieldTypesList.add(subField.getType().getName());
             }
         }
-        return new XSDKey(".", fieldsList.toArray(new String[] {}), fieldTypesList.toArray(new String[] {})); //$NON-NLS-1$
+        return new XSDKey(".", fieldsList.toArray(new String[fieldsList.size()]), //$NON-NLS-1$
+                fieldTypesList.toArray(new String[fieldTypesList.size()]));
     }
 
     private void getFieldIntactName(FieldMetadata field, List<FieldMetadata> fieldList) {

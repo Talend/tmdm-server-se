@@ -1,0 +1,608 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:import namespace="http://www.w3.org/2001/XMLSchema"/>
+    <xsd:element name="Party">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Write">PartyAdmin</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element maxOccurs="1" minOccurs="1" name="MDMPartyID" type="AUTO_INCREMENT"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Title" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="FirstName" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="MiddleName" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="LastName" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Suffix" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="DOB" type="xsd:date"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Gender" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="MaritalStatus" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="PartyStatus" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="DeceasedInd" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="PartyType" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="CreatedDate" type="xsd:dateTime"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="CreatedBy" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="UpdatedDate" type="xsd:dateTime"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="UpdatedBy" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Addresses" type="AddressRelListType"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Contactpoints" type="ContactpointRelListType"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="ReviewFlag" type="xsd:string"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="MDMLoadKey" type="xsd:integer"/>
+            </xsd:sequence>
+        </xsd:complexType>
+        <xsd:unique name="Party">
+            <xsd:selector xpath="."/>
+            <xsd:field xpath="MDMPartyID"/>
+        </xsd:unique>
+    </xsd:element>
+    <xsd:simpleType name="AUTO_INCREMENT">
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="10"/>
+            <xsd:minLength value="1"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:element name="Xref_Party">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Write">PartyAdmin</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1" name="XrefPartyID" type="AUTO_INCREMENT"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="SSID" type="xsd:string"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Title" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="FirstName" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="MiddleName" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="LastName" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Suffix" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="OrganizationName" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="DOB" type="xsd:date"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Gender" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="MaritalStatus" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="PartyStatus" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="DeceasedInd" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="PartyType" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="ExternalKey1" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="ExternalKey2" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="ExternalKey3" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="ExternalKey4" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="ExternalKey5" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Language" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="CreatedDate" type="xsd:dateTime"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="CreatedBy" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="UpdatedDate" type="xsd:dateTime"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="UpdatedBy" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="FkMDMPartyID" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_ForeignKey">Party/MDMPartyID</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">PartyAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Status" type="StatusEnumType"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="MDMLoadKey" type="xsd:integer"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="DeletedFlag" type="xsd:string"/>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="Xref_Party">
+            <xsd:selector xpath="."/>
+            <xsd:field xpath="XrefPartyID"/>
+        </xsd:unique>
+    </xsd:element>
+    <xsd:simpleType name="String255Type">
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="255"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:element name="Address">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Write">PartyAdmin</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1" name="MDMAddressID" type="AUTO_INCREMENT"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="PropertyType" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="FlatNumber" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="BuildingName" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="BuildingNumber" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="DependentStreet" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Street" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="DependentLocality" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Locality" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="City" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="CountyStateProvince" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Postcode" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Country" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="POBox" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="DPS" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="AddressLine1" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="AddressLine2" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="AddressLine3" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="AddressLine4" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="AddressLine5" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="ExternalAddressKey1" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="ExternalAddressKey2" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="CreatedDate" type="xsd:dateTime"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="CreatedBy" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="UpdatedDate" type="xsd:dateTime"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="UpdatedBy" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="PAFValidInd" type="xsd:string"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="MDMLoadKey" type="xsd:integer"/>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="Address">
+            <xsd:selector xpath="."/>
+            <xsd:field xpath="MDMAddressID"/>
+        </xsd:unique>
+    </xsd:element>
+    <xsd:complexType name="AddressRelType">
+        <xsd:all>
+            <xsd:element maxOccurs="1" minOccurs="1" name="FkMDMAddressID" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_ForeignKey">Address/MDMAddressID</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKeyInfo">Address/MDMAddressID</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKeyInfo">Address/Postcode</xsd:appinfo>
+                    <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">PartyAdmin</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="AddressStatus" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Write">PartyAdmin</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="CreatedDate" type="xsd:dateTime">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Write">PartyAdmin</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="CreatedBy" type="String255Type">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Write">PartyAdmin</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="UpdatedDate" type="xsd:dateTime">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Write">PartyAdmin</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="UpdatedBy" type="String255Type">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Write">PartyAdmin</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:all>
+    </xsd:complexType>
+    <xsd:simpleType name="StatusEnumType">
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="Xref_Address">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Write">PartyAdmin</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1" name="XrefAddressID" type="AUTO_INCREMENT"/>
+                <xsd:element maxOccurs="1" minOccurs="1" name="FkXrefPartyID" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_ForeignKey">Xref_Party/XrefPartyID</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">PartyAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="PropertyType" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="FlatNumber" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="BuildingName" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="BuildingNumber" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="DependentStreet" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Street" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="DependentLocality" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Locality" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="City" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="CountyStateProvince" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="CountyCode" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Postcode" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="CountryCode" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="POBox" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="DPS" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="AddressLine1" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="AddressLine2" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="AddressLine3" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="AddressLine4" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="AddressLine5" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="ExternalAddressKey1" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="ExternalAddressKey2" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="CreatedDate" type="xsd:dateTime"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="CreatedBy" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="UpdatedDate" type="xsd:dateTime"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="UpdatedBy" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="FkMDMAddressID" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_ForeignKey">Address/MDMAddressID</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">PartyAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="SSID" type="xsd:string"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Status" type="StatusEnumType"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="DeletedFlag" type="xsd:string"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="MDMLoadKey" type="xsd:integer"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="ExternalAddressKey3" type="xsd:string"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="ExternalAddressKey4" type="xsd:string"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="ExternalAddressKey5" type="xsd:string"/>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="Xref_Address">
+            <xsd:selector xpath="."/>
+            <xsd:field xpath="XrefAddressID"/>
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="Contactpoint">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Write">PartyAdmin</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1" name="MDMContactpointID" type="AUTO_INCREMENT"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="ContactpointType" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="ContactpointSubtype" type="xsd:string"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="CountryCode" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="ContactpointValue" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="CreatedDate" type="xsd:dateTime"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="CreatedBy" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="UpdatedDate" type="xsd:dateTime"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="UpdatedBy" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="MDMLoadKey" type="xsd:integer"/>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="Contactpoint">
+            <xsd:selector xpath="."/>
+            <xsd:field xpath="MDMContactpointID"/>
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="CustomerAccountReference">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Write">PartyAdmin</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1" name="CustomerAccountNumber" type="xsd:string"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="CustomerAccountName" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="CustomerAccountStatus" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="1" name="FkMDMPartyID" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_ForeignKey">Party/MDMPartyID</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">PartyAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="SSID" type="xsd:string"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="CreatedDate" type="xsd:dateTime"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="CreatedBy" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="UpdatedDate" type="xsd:dateTime"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="UpdatedBy" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Contracts" type="ContractRelListType"/>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="CustomerAccountReference">
+            <xsd:selector xpath="."/>
+            <xsd:field xpath="CustomerAccountNumber"/>
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="ContractReference">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Write">PartyAdmin</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1" name="ContractRefID" type="xsd:string"/>
+                <xsd:element maxOccurs="1" minOccurs="1" name="ContractID" type="xsd:string"/>
+                <xsd:element maxOccurs="1" minOccurs="1" name="SSID" type="xsd:string"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="MajorVersionNo" type="xsd:string"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="ContractStatus" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="ContractCreatedDate" type="xsd:date"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="ContractStartDate" type="xsd:date"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="ContractEndDate" type="xsd:date"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="ContractCancelledDate" type="xsd:date"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="ContractType" type="xsd:string"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="PartnerCode" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="CreatedDate" type="xsd:dateTime"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="CreatedBy" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="UpdatedDate" type="xsd:dateTime"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="UpdatedBy" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="ScheduleID" type="xsd:string"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Offers" type="OfferRelListType"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="FkMDMAddressID" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">PartyAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey">Address/MDMAddressID</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="ContractReference">
+            <xsd:selector xpath="."/>
+            <xsd:field xpath="ContractRefID"/>
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="Xref_PartyTelephone">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Write">PartyAdmin</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1" name="XrefTelID" type="AUTO_INCREMENT"/>
+                <xsd:element maxOccurs="1" minOccurs="1" name="FkXrefPartyID" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_ForeignKey">Xref_Party/XrefPartyID</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">PartyAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="CountryCode" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="StdCode" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="PhoneNumber" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="FullPhoneNumber" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Extension" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="PhoneType" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="PhoneStatus" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="CreatedDate" type="xsd:dateTime"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="CreatedBy" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="UpdatedDate" type="xsd:dateTime"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="UpdatedBy" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="SSID" type="xsd:string"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="DeletedFlag" type="xsd:string"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="MDMLoadKey" type="xsd:integer"/>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="Xref_PartyTelephone">
+            <xsd:selector xpath="."/>
+            <xsd:field xpath="XrefTelID"/>
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="Xref_PartyEmail">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Write">PartyAdmin</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1" name="XrefEmailID" type="AUTO_INCREMENT"/>
+                <xsd:element maxOccurs="1" minOccurs="1" name="FkXrefPartyID" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_ForeignKey">Xref_Party/XrefPartyID</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">PartyAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="EmailAddress" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="EmailType" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="CreatedDate" type="xsd:dateTime"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="CreatedBy" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="UpdatedDate" type="xsd:dateTime"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="UpdatedBy" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="SSID" type="xsd:string"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="DeletedFlag" type="xsd:string"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="MDMLoadKey" type="xsd:integer"/>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="Xref_PartyEmail">
+            <xsd:selector xpath="."/>
+            <xsd:field xpath="XrefEmailID"/>
+        </xsd:unique>
+    </xsd:element>
+    <xsd:complexType name="ContactpointRelType">
+        <xsd:all>
+            <xsd:element maxOccurs="1" minOccurs="1" name="FkContactpointID" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_ForeignKey">Contactpoint/MDMContactpointID</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">PartyAdmin</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="ContactpointStatus" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Write">PartyAdmin</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="CreatedDate" type="xsd:dateTime">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Write">PartyAdmin</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="CreatedBy" type="String255Type">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Write">PartyAdmin</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="UpdatedDate" type="xsd:dateTime">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Write">PartyAdmin</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="UpdatedBy" type="String255Type">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Write">PartyAdmin</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:all>
+    </xsd:complexType>
+    <xsd:complexType name="ContactpointRelListType">
+        <xsd:sequence>
+            <xsd:element maxOccurs="unbounded" minOccurs="0" name="ContactpointRel" type="ContactpointRelType">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Write">PartyAdmin</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="AddressRelListType">
+        <xsd:sequence>
+            <xsd:element maxOccurs="unbounded" minOccurs="0" name="AddressRel" type="AddressRelType">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Write">PartyAdmin</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="ContractRelListType">
+        <xsd:sequence>
+            <xsd:element maxOccurs="unbounded" minOccurs="0" name="ContractRel" type="ContractRelType">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Write">PartyAdmin</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="ContractRelType">
+        <xsd:all>
+            <xsd:element maxOccurs="1" minOccurs="1" name="FkContractRefID" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_ForeignKey">ContractReference/ContractRefID</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">PartyAdmin</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="SSID" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Write">PartyAdmin</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="Status" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Write">PartyAdmin</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="CreatedDate" type="xsd:dateTime">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Write">PartyAdmin</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="CreatedBy" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Write">PartyAdmin</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="UpdatedDate" type="xsd:dateTime">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Write">PartyAdmin</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="UpdatedBy" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Write">PartyAdmin</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:all>
+    </xsd:complexType>
+    <xsd:element name="Offer">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Write">PartyAdmin</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element maxOccurs="1" minOccurs="1" name="OfferRefID" type="xsd:string"/>
+                <xsd:element name="OfferId" type="xsd:string"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="OfferVersion" type="xsd:string"/>
+            </xsd:sequence>
+        </xsd:complexType>
+        <xsd:unique name="Offer">
+            <xsd:selector xpath="."/>
+            <xsd:field xpath="OfferRefID"/>
+        </xsd:unique>
+    </xsd:element>
+    <xsd:complexType name="OfferRelListType">
+        <xsd:sequence>
+            <xsd:element maxOccurs="unbounded" minOccurs="1" name="OfferRel" type="OfferRelType">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Write">PartyAdmin</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="OfferRelType">
+        <xsd:all>
+            <xsd:element maxOccurs="1" minOccurs="0" name="FkOfferRefId" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_ForeignKey">Offer/OfferRefID</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">PartyAdmin</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="CreatedDate" type="xsd:dateTime">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Write">PartyAdmin</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="CreatedBy" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Write">PartyAdmin</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="UpdatedDate" type="xsd:dateTime">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Write">PartyAdmin</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="UpdatedBy" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Write">PartyAdmin</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:all>
+    </xsd:complexType>
+    <xsd:element name="AssetAttributeReference">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Write">PartyAdmin</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element name="AssetAttributeReferenceId" type="xsd:string"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="AssetID" type="xsd:string"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="AssetAttributeID" type="xsd:string"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="AssetEffectiveDate" type="xsd:dateTime"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="AssetExpiryDate" type="xsd:dateTime"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="AssetTypeID" type="xsd:string"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="AssetTypeName" type="xsd:string"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="AssetPropertyName" type="xsd:string"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="AssetPropertyValue" type="xsd:string"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="CreatedDate" type="xsd:dateTime"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="CreatedBy" type="String255Type"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="UpdatedDate" type="xsd:dateTime"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="UpdatedBy" type="String255Type"/>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="AssetAttributeReference">
+            <xsd:selector xpath="."/>
+            <xsd:field xpath="AssetAttributeReferenceId"/>
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="PartyAssetContractRef">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Write">PartyAdmin</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element name="PartyAssetContractRefId" type="AUTO_INCREMENT"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="MDMPartyID" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_ForeignKey">Party/MDMPartyID</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">PartyAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="ContractRefID" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_ForeignKey">ContractReference/ContractRefID</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">PartyAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="AssetID" type="xsd:string"/>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Status" type="xsd:string"/>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="PartyAssetContractRef">
+            <xsd:selector xpath="."/>
+            <xsd:field xpath="PartyAssetContractRefId"/>
+        </xsd:unique>
+    </xsd:element>
+</xsd:schema>

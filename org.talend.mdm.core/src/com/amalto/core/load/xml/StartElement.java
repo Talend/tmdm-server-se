@@ -58,12 +58,15 @@ public class StartElement implements State {
                 Course/Score
                 Course/Like
          */
-        Iterator<String> iterator = context.getReadElementPath().iterator();
-        if (iterator.hasNext()) {
-            iterator.next();
+        StringBuilder name = new StringBuilder();
+        int i = 0;
+        for (String elementName : context.getReadElementPath()) {
+            if (i++ > 0) {
+                name.append("/").append(elementName);
+            }
         }
-        String name = Joiner.on("/").join(iterator);
-        context.getNormalFieldInXML().add(name);
+        name.delete(0, 1);
+        context.getNormalFieldInXML().add(name.toString());
 
         if (context.skipElement()) {
             while (reader.next() != XMLEvent.END_ELEMENT) {

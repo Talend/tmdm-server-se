@@ -93,8 +93,12 @@ public interface StateContext {
      * @return all fields of type are AUTO_INCREMENT or UUID field except PK, which need to generate value.
      */
     default String[] getAutoIncrementNormalFields() {
-        List<String> normalFieldPathList = new ArrayList<>(getNormalFieldPaths().size());
-        for (PathMatcher pathMatcher : getNormalFieldPaths()) {
+        List<PathMatcher> normalFieldPaths = getNormalFieldPaths();
+        if (normalFieldPaths.isEmpty()) {
+            return new String[0];
+        }
+        List<String> normalFieldPathList = new ArrayList<>(normalFieldPaths.size());
+        for (PathMatcher pathMatcher : normalFieldPaths) {
             boolean isMatched = false; // mark it as  full matched
             boolean isParentMatched = false; // mark it as partial matched
             String pathMatchedStr = pathMatcher.toString();

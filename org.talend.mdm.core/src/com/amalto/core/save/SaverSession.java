@@ -16,11 +16,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import org.apache.log4j.Logger;
 
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.util.core.EUUIDCustomType;
-import org.talend.mdm.commmon.util.core.MDMConfiguration;
 import org.talend.mdm.commmon.util.webapp.XSystemObjects;
 
 import com.amalto.core.history.DeleteType;
@@ -54,12 +52,6 @@ public class SaverSession {
     private final SaverSource dataSource;
 
     private boolean hasMetAutoIncrement = false;
-
-    private static final long TRANSACTION_WAIT_MILLISECONDS;
-
-    static {
-        TRANSACTION_WAIT_MILLISECONDS = Long.valueOf(MDMConfiguration.getTransactionWaitMilliseconds());
-    }
 
     public SaverSession(SaverSource dataSource) {
         this.dataSource = dataSource;
@@ -217,11 +209,6 @@ public class SaverSession {
                         throw new MultiRecordsSaveException(getCauseMessage(e), e.getCause(), recordId, itemCounter);
                     }
                     throw e;
-                }
-                try {
-                    Thread.sleep(TRANSACTION_WAIT_MILLISECONDS);
-                } catch (InterruptedException e) {
-                    LOGGER.warn("Update process has been interrupted.", e); //$NON-NLS-1$
                 }
             }
             // If any change was made to data cluster "UpdateReport", route committed update reports.

@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.talend.mdm.commmon.util.datamodel.management.BusinessConcept;
 import org.talend.mdm.commmon.util.datamodel.management.DataModelBean;
 import org.talend.mdm.commmon.util.datamodel.management.DataModelID;
@@ -251,14 +252,16 @@ public class SchemaWebAgent extends SchemaAbstractWebAgent {
                     // if the fkpath is pointing to this entity
                     if (fkPath != null && getEntityNameFromXPath(fkPath) != null) {
                         String entity = getEntityNameFromXPath(fkPath);
+                        if (StringUtils.isBlank(entity)) {
+                            continue;
+                        }
+                        entity = entity.trim();
                         boolean isReference = false;
                         if (entity.equals(entityName)) {
                             isReference = true;
                         } else if (!reuseTypeList.isEmpty()) {
-                            List<ReusableType> subTypes = getMySubtypes(
-                                    dataModelBean.getBusinessConcept(entity).getCorrespondTypeName());
-                            ReusableType type = getReusableType(
-                                    dataModelBean.getBusinessConcept(entityName).getCorrespondTypeName());
+                            List<ReusableType> subTypes = getMySubtypes(dataModelBean.getBusinessConcept(entity).getCorrespondTypeName());
+                            ReusableType type = getReusableType(dataModelBean.getBusinessConcept(entityName).getCorrespondTypeName());
                             if (subTypes.contains(type)) {
                                 isReference = true;
                             }

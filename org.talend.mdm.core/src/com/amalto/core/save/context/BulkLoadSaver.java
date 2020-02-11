@@ -25,20 +25,24 @@ class BulkLoadSaver implements DocumentSaver {
 
     private final InputStream documentStream;
 
-    private final XSDKey keyMetadata;
+    private final XSDKey autoKeyMetadata;
+
+    private final XSDKey autoFieldMetadata;
 
     private final XmlServer server;
 
-    BulkLoadSaver(LoadAction loadAction, InputStream documentStream, XSDKey keyMetadata, XmlServer server) {
+    BulkLoadSaver(LoadAction loadAction, InputStream documentStream, XSDKey autoKeyMetadata, XSDKey autoFieldMetadata,
+            XmlServer server) {
         this.loadAction = loadAction;
         this.documentStream = documentStream;
-        this.keyMetadata = keyMetadata;
+        this.autoKeyMetadata = autoKeyMetadata;
+        this.autoFieldMetadata = autoFieldMetadata;
         this.server = server;
     }
 
     public void save(SaverSession session, DocumentSaverContext context) {
         try {
-            loadAction.load(documentStream, keyMetadata, server, session);
+            loadAction.load(documentStream, autoKeyMetadata, autoFieldMetadata, server, session);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

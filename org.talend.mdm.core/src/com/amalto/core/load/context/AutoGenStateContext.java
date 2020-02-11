@@ -25,8 +25,8 @@ import com.amalto.core.server.api.XmlServer;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Stack;
 
 /**
  * Load parser context implementation that has 2 main features:
@@ -53,7 +53,7 @@ public class AutoGenStateContext implements StateContext {
 
     private List<String> normalFieldInXML;
 
-    private Stack<String> readElementPath;
+    private LinkedList<String> readElementPath;
 
     private final AutoIdGenerator[] normalFieldGenerator;
 
@@ -62,9 +62,9 @@ public class AutoGenStateContext implements StateContext {
         this.delegate = delegate;
         this.idPaths = idPaths;
         this.generator = generator;
-        this.readElementPath = new Stack<>();
+        this.readElementPath = new LinkedList<>();
         this.normalFieldInXML = new ArrayList<>();
-        this.normalFieldPaths = new ArrayList<>();
+        this.normalFieldPaths = new ArrayList<>(normalFieldPaths.length);
         this.normalFieldGenerator = normalFieldGenerator;
         for (String idPath : normalFieldPaths) {
             getNormalFieldPaths().add(new PathMatcher(idPath));
@@ -197,7 +197,7 @@ public class AutoGenStateContext implements StateContext {
     }
 
     @Override
-    public Stack<String> getReadElementPath() {
+    public LinkedList<String> getReadElementPath() {
         return this.readElementPath;
     }
 

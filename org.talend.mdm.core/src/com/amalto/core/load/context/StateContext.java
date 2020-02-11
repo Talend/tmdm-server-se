@@ -18,8 +18,8 @@ import com.amalto.core.server.api.XmlServer;
 
 import javax.xml.stream.XMLStreamReader;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Stack;
 
 @SuppressWarnings("nls")
 public interface StateContext {
@@ -78,7 +78,7 @@ public interface StateContext {
 
     AutoIdGenerator[] getNormalFieldGenerators();
 
-    Stack<String> getReadElementPath();
+    LinkedList<String> getReadElementPath();
 
     /**
      * judge the AUTO_INCREMENT/UUID field is existed in the supplied xml content.

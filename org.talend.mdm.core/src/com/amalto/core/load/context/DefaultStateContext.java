@@ -25,6 +25,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.Stack;
@@ -69,7 +70,7 @@ public class DefaultStateContext implements StateContext {
 
     private List<String> normalFieldInXML;
 
-    private Stack<String> readElementPath;
+    private LinkedList<String> readElementPath;
 
     public DefaultStateContext(String payLoadElementName, String[] idPaths, String[] normalFieldPaths, String dataClusterName,
             String dataModelName, int payloadLimit, LoadParserCallback callback, AutoIdGenerator[] normalFieldGenerators) {
@@ -82,9 +83,9 @@ public class DefaultStateContext implements StateContext {
         if (payLoadElementName == null) {
             throw new IllegalArgumentException("Payload element name cannot be null.");
         }
-        this.normalFieldPaths = new ArrayList<>();
+        this.normalFieldPaths = new ArrayList<>(normalFieldPaths.length);
         this.normalFieldInXML = new ArrayList<>();
-        this.readElementPath = new Stack<>();
+        this.readElementPath = new LinkedList<>();
         paths = new HashSet<>(idPaths.length + 1);
         for (String idPath : idPaths) {
             paths.add(new PathMatcher(idPath));
@@ -287,7 +288,7 @@ public class DefaultStateContext implements StateContext {
     }
 
     @Override
-    public Stack<String> getReadElementPath() {
+    public LinkedList<String> getReadElementPath() {
         return this.readElementPath;
     }
 

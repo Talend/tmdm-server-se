@@ -13,12 +13,11 @@ package com.amalto.core.load.xml;
 import com.amalto.core.load.Constants;
 import com.amalto.core.load.State;
 import com.amalto.core.load.context.StateContext;
-import com.google.common.base.Joiner;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.events.XMLEvent;
-import java.util.Iterator;
+import java.util.LinkedList;
 
 /**
  *
@@ -32,7 +31,8 @@ public class StartElement implements State {
     public void parse(StateContext context, XMLStreamReader reader) throws XMLStreamException {
         String elementLocalName = reader.getName().getLocalPart();
         context.enterElement(elementLocalName);
-        context.getReadElementPath().push(elementLocalName);
+        LinkedList<String> readElementPath = context.getReadElementPath();
+        readElementPath.push(elementLocalName);
         /*
         add the field path into the stack from xml content.
         eg:
@@ -60,7 +60,7 @@ public class StartElement implements State {
          */
         StringBuilder name = new StringBuilder();
         int i = 0;
-        for (String elementName : context.getReadElementPath()) {
+        for (String elementName : readElementPath) {
             if (i++ > 0) {
                 name.append("/").append(elementName);
             }

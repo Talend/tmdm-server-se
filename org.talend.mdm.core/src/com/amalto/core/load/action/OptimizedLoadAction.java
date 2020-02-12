@@ -33,7 +33,7 @@ import java.io.InputStream;
  */
 public class OptimizedLoadAction implements LoadAction {
     private static final Logger log = Logger.getLogger(OptimizedLoadAction.class);
-    private final AutoIdGenerator uuidGenerator = new UUIDIdGenerator();
+    private static final AutoIdGenerator uuidGenerator = new UUIDIdGenerator();
     private final String dataClusterName;
     private final String typeName;
     private final String dataModelName;

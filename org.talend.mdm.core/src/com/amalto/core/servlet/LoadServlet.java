@@ -145,10 +145,6 @@ public class LoadServlet extends HttpServlet {
         MetadataRepository repository = repositoryAdmin.get(dataModelName);
         ComplexTypeMetadata type = repository.getComplexType(typeName);
         XSDKey keyMetadata = getTypeKey(type.getKeyFields());
-
-
-        Collection<FieldMetadata> fields = type.getFields();
-        Collection<FieldMetadata> autoFields = fields.stream().filter(filed -> (!filed.isKey())).collect(Collectors.toList());
         XSDKey autoFieldMetadata = getTypeAutoField(type);
 
 

@@ -37,40 +37,40 @@ public class AutoFieldGeneration implements State {
             AutoIdGenerator[] normalFieldGenerators = context.getNormalFieldGenerators();
             int i = 0;
             /*
-            fielldPaths store the all need to generate value the field,  if doesn't existed, it means don't generate the value.
+            field Paths store the all need to generate value the field,  if doesn't existed, it means don't generate the value.
             if the field path is 'Course/Score', it should be first write '<Course>', and next is '<Score>',
             but it inverse for the end element, first is '<Score>', first is '<Course>'
              */
-            for (String idPath : fieldPaths) {
-                if (idPath == null) {
+            for (String fieldPath : fieldPaths) {
+                if (fieldPath == null) {
                     i++;
                     continue;
                 }
-                if (idPath.contains("/")) {
-                    StringTokenizer tokenizer = new StringTokenizer(idPath, "/");
+                if (fieldPath.contains("/")) {
+                    StringTokenizer tokenizer = new StringTokenizer(fieldPath, "/");
                     while (tokenizer.hasMoreTokens()) {
                         String pathElement = tokenizer.nextToken();
                         context.getWriter().writeStartElement(pathElement);
                     }
                 } else {
-                    context.getWriter().writeStartElement(idPath);
+                    context.getWriter().writeStartElement(fieldPath);
                 }
 
                 context.getWriter().writeCharacters(normalFieldGenerators[i++]
-                        .generateId(context.getMetadata().getDataClusterName(), context.getMetadata().getName(), idPath.replaceAll("/", ".")));
+                        .generateId(context.getMetadata().getDataClusterName(), context.getMetadata().getName(), fieldPath.replaceAll("/", ".")));
 
-                if (idPath.contains("/")) {
-                    String[] idPathArray = idPath.split("/");
+                if (fieldPath.contains("/")) {
+                    String[] idPathArray = fieldPath.split("/");
                     for (int j = idPathArray.length - 1; j >= 0; j--) {
                         context.getWriter().writeEndElement(idPathArray[j]);
                     }
                 } else {
-                    context.getWriter().writeEndElement(idPath);
+                    context.getWriter().writeEndElement(fieldPath);
                 }
 
             }
         } catch (Exception e) {
-            throw new RuntimeException("Unable to generate automatic id", e);
+            throw new RuntimeException("Unable to generate automatic field", e);
         }
 
         context.setCurrent(previousState);

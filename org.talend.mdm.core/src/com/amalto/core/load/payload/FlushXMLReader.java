@@ -12,6 +12,7 @@ package com.amalto.core.load.payload;
 
 import com.amalto.core.load.Constants;
 import com.amalto.core.load.Metadata;
+import com.amalto.core.load.State;
 import com.amalto.core.load.context.StateContext;
 import com.amalto.core.load.context.StateContextSAXWriter;
 import com.amalto.core.load.xml.AutoFieldGeneration;
@@ -120,9 +121,9 @@ public class FlushXMLReader implements XMLReader {
 
             String[] autoIncrementNormalFields = context.getAutoIncrementNormalFields();
             if (autoIncrementNormalFields.length > 0) {
-                com.amalto.core.load.State state = context.getCurrent();
-                AutoFieldGeneration autoGenMetadata = new AutoFieldGeneration(state, autoIncrementNormalFields);
-                context.setCurrent(autoGenMetadata);
+                State state = context.getCurrent();
+                AutoFieldGeneration generation = new AutoFieldGeneration(state, autoIncrementNormalFields);
+                context.setCurrent(generation);
                 context.parse(reader);
             }
             if (context.getDepth() == 1) {

@@ -56,7 +56,7 @@ public class DefaultLoadAction implements LoadAction {
     }
 
     @Override
-    public void load(InputStream stream, XSDKey keyMetadata, XSDKey allAutoMetadata, XmlServer server,
+    public void load(InputStream stream, XSDKey keyMetadata, XSDKey normalFieldMetadata, XmlServer server,
             SaverSession session) {
         try {
             SaverContextFactory contextFactory = session.getContextFactory();

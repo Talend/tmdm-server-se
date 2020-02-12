@@ -11,8 +11,7 @@
 package com.amalto.core.load.context;
 
 import com.amalto.core.load.LoadParserCallback;
-import com.amalto.core.load.path.PathMatch;
-import com.amalto.core.load.path.PathMatcher;
+import com.amalto.core.load.State;
 import com.amalto.core.save.generator.AutoIdGenerator;
 import com.amalto.core.server.api.XmlServer;
 
@@ -20,6 +19,8 @@ import javax.xml.stream.XMLStreamReader;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
+import java.util.Stack;
 
 @SuppressWarnings("nls")
 public interface StateContext {
@@ -27,12 +28,12 @@ public interface StateContext {
     /**
      * @return all AUTO_INCREMENT or UUID fields except the Primary key
      */
-    List<PathMatcher> getNormalFieldPaths();
+    String[] getNormalFieldPaths();
 
     /**
      * @return all field path which supplied in the xml content.
      */
-    List<String> getNormalFieldInXML();
+    Set<String> getNormalFieldInXML();
 
     void parse(XMLStreamReader reader);
 
@@ -40,9 +41,9 @@ public interface StateContext {
 
     StateContextWriter getWriter();
 
-    void setCurrent(com.amalto.core.load.State state);
+    void setCurrent(State state);
 
-    com.amalto.core.load.State getCurrent();
+    State getCurrent();
 
     LoadParserCallback getCallback();
 
@@ -78,7 +79,7 @@ public interface StateContext {
 
     AutoIdGenerator[] getNormalFieldGenerators();
 
-    LinkedList<String> getReadElementPath();
+    Stack<String> getReadElementPath();
 
     /**
      * judge the AUTO_INCREMENT/UUID field is existed in the supplied xml content.
@@ -93,43 +94,15 @@ public interface StateContext {
      * @return all fields of type are AUTO_INCREMENT or UUID field except PK, which need to generate value.
      */
     default String[] getAutoIncrementNormalFields() {
-        List<PathMatcher> normalFieldPaths = getNormalFieldPaths();
-        if (normalFieldPaths.isEmpty()) {
-            return new String[0];
-        }
-        List<String> normalFieldPathList = new ArrayList<>(normalFieldPaths.size());
-        for (PathMatcher pathMatcher : normalFieldPaths) {
-            boolean isMatched = false; // mark it as  full matched
-            boolean isParentMatched = false; // mark it as partial matched
-            String pathMatchedStr = pathMatcher.toString();
-            for (String path : getNormalFieldInXML()) {
-                if (pathMatchedStr.contains("/") && path.contains("/")) {
-                    int i = 0;
-                    String[] pathArray = path.split("/");
-                    if (isMatched) {
-                        break;
-                    }
-                    for (String s : pathArray) {
-                        PathMatch match = pathMatcher.match(s);
-                        if (match == PathMatch.FULL) {
-                            isMatched = true;
-                            isParentMatched = false;
-                            break;
-                        } else if (match == PathMatch.PARTIAL && i++ == pathArray.length - 2) {
-                            isParentMatched = true;
-                        }
-                    }
-                } else if (!pathMatchedStr.contains("/") && !path.contains("/")) {
-                    if (pathMatcher.match(path) == PathMatch.FULL) {
-                        isMatched = true;
-                        break;
-                    }
-                }
-            }
-            if ((!isMatched && !pathMatchedStr.contains("/")) || isParentMatched) {
-                normalFieldPathList.add(pathMatchedStr);
-            } else {
+        String[] normalFieldPaths = getNormalFieldPaths();
+        List<String> normalFieldPathList = new ArrayList<>(normalFieldPaths.length);
+        Set<String> normalFieldInXML = getNormalFieldInXML();
+
+        for (String fieldPath : normalFieldPaths) {
+            if (normalFieldInXML.contains(fieldPath)) {
                 normalFieldPathList.add(null);
+            } else {
+                normalFieldPathList.add(fieldPath);
             }
         }
         return normalFieldPathList.toArray(new String[normalFieldPathList.size()]);

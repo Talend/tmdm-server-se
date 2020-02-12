@@ -37,20 +37,13 @@ public class OptimizedLoadAction implements LoadAction {
     private final String typeName;
     private final String dataModelName;
     private final boolean needAutoGenPK;
-    private final boolean needAutoGenFields;
     private StateContext context;
 
     public OptimizedLoadAction(String dataClusterName, String typeName, String dataModelName, boolean needAutoGenPK) {
-        this(dataClusterName, typeName, dataModelName, needAutoGenPK, false);
-    }
-
-    public OptimizedLoadAction(String dataClusterName, String typeName, String dataModelName, boolean needAutoGenPK,
-            boolean needAutoGenFields) {
         this.dataClusterName = dataClusterName;
         this.typeName = typeName;
         this.dataModelName = dataModelName;
         this.needAutoGenPK = needAutoGenPK;
-        this.needAutoGenFields = needAutoGenFields;
     }
 
     public boolean supportValidation() {
@@ -58,25 +51,23 @@ public class OptimizedLoadAction implements LoadAction {
     }
 
     @Override
-    public void load(InputStream stream, XSDKey autoKeyMetadata, XSDKey autoFieldMetadata, XmlServer server, SaverSession session) {
+    public void load(InputStream stream, XSDKey autoKeyMetadata, XSDKey normalFieldMetadata, XmlServer server, SaverSession session) {
         if (!".".equals(autoKeyMetadata.getSelector())) { //$NON-NLS-1$
             throw new UnsupportedOperationException("Selector '" + autoKeyMetadata.getSelector() + "' isn't supported.");
         }
-        AutoIdGenerator idGenerator = getAutoFieldGenerator(autoKeyMetadata, needAutoGenPK)[0];
-        AutoIdGenerator[] normalFieldGenerator = getAutoFieldGenerator(autoFieldMetadata, needAutoGenFields);
+        AutoIdGenerator idGenerator = null;
+        if (needAutoGenPK) {
+            idGenerator = getAutoFieldGenerators(autoKeyMetadata)[0];
+        }
+        AutoIdGenerator[] normalFieldGenerator = getAutoFieldGenerators(normalFieldMetadata);
 
         // Creates a load parser callback that loads data in server using a SAX handler
         ServerParserCallback callback = new ServerParserCallback(server, dataClusterName);
 
         java.io.InputStream inputStream = new XMLRootInputStream(stream, "root"); //$NON-NLS-1$
-        LoadParser.Configuration configuration = null;
-        if (needAutoGenFields) {
-            configuration = new LoadParser.Configuration(typeName, autoKeyMetadata.getFields(), autoFieldMetadata.getFields(),
-                    needAutoGenPK, dataClusterName, dataModelName, idGenerator, normalFieldGenerator);
-        } else {
-            configuration = new LoadParser.Configuration(typeName, autoKeyMetadata.getFields(), needAutoGenPK, dataClusterName,
-                    dataModelName, idGenerator);
-        }
+        LoadParser.Configuration configuration = new LoadParser.Configuration(typeName, autoKeyMetadata.getFields(),
+                normalFieldMetadata.getFields(), needAutoGenPK, dataClusterName, dataModelName, idGenerator,
+                normalFieldGenerator);
 
         context = LoadParser.parse(inputStream, configuration, callback);
 
@@ -85,21 +76,26 @@ public class OptimizedLoadAction implements LoadAction {
         }
     }
 
-    private AutoIdGenerator[] getAutoFieldGenerator(XSDKey normalMetadata, boolean needAutoGen) {
-        if (!needAutoGen) {
-            return new AutoIdGenerator[] { null };
-        }
-        String[] idFieldTypes = normalMetadata.getFieldTypes();
-        AutoIdGenerator[] generator = new AutoIdGenerator[idFieldTypes.length];
+    private AutoIdGenerator[] getAutoFieldGenerators(XSDKey fieldMetadata) {
+        String[] fieldTypes = fieldMetadata.getFieldTypes();
+        AutoIdGenerator idGenerator = null;
+        AutoIdGenerator uuidGenerator = null;
+        AutoIdGenerator[] generator = new AutoIdGenerator[fieldTypes.length];
         int i = 0;
-        for (String idFieldType : idFieldTypes) {
+        for (String idFieldType : fieldTypes) {
             if (EUUIDCustomType.AUTO_INCREMENT.getName().equals(idFieldType)) {
-                generator[i++] = AutoIncrementGenerator.get();
+                if (idGenerator == null) {
+                    idGenerator = AutoIncrementGenerator.get();
+                }
+                generator[i++] = idGenerator;
             } else if (EUUIDCustomType.UUID.getName().equals(idFieldType)) {
-                generator[i++] = new UUIDIdGenerator();
+                if (uuidGenerator == null) {
+                    uuidGenerator = new UUIDIdGenerator();
+                }
+                generator[i++] = uuidGenerator;
             } else {
                 throw new UnsupportedOperationException(
-                        "No support for key field type '" + idFieldType + "' with autogen pk on."); //$NON-NLS-1$ //$NON-NLS-2$
+                        "No support for  field type '" + idFieldType + "' with autogen on."); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
         return generator;

@@ -33,8 +33,7 @@ import java.io.InputStream;
  */
 public class OptimizedLoadAction implements LoadAction {
     private static final Logger log = Logger.getLogger(OptimizedLoadAction.class);
-    final AutoIdGenerator idGenerator = AutoIncrementGenerator.get();
-    final AutoIdGenerator uuidGenerator = new UUIDIdGenerator();
+    private final AutoIdGenerator uuidGenerator = new UUIDIdGenerator();
     private final String dataClusterName;
     private final String typeName;
     private final String dataModelName;
@@ -61,7 +60,7 @@ public class OptimizedLoadAction implements LoadAction {
         if (needAutoGenPK) {
             idGenerator = getAutoFieldGenerators(autoKeyMetadata)[0];
         }
-        AutoIdGenerator[] normalFieldGenerator = getAutoFieldGenerators(normalFieldMetadata);
+        AutoIdGenerator[] normalFieldGenerators = getAutoFieldGenerators(normalFieldMetadata);
 
         // Creates a load parser callback that loads data in server using a SAX handler
         ServerParserCallback callback = new ServerParserCallback(server, dataClusterName);
@@ -69,7 +68,7 @@ public class OptimizedLoadAction implements LoadAction {
         java.io.InputStream inputStream = new XMLRootInputStream(stream, "root"); //$NON-NLS-1$
         LoadParser.Configuration configuration = new LoadParser.Configuration(typeName, autoKeyMetadata.getFields(),
                 normalFieldMetadata.getFields(), needAutoGenPK, dataClusterName, dataModelName, idGenerator,
-                normalFieldGenerator);
+                normalFieldGenerators);
 
         context = LoadParser.parse(inputStream, configuration, callback);
 
@@ -84,7 +83,7 @@ public class OptimizedLoadAction implements LoadAction {
         int i = 0;
         for (String fieldType : fieldTypes) {
             if (EUUIDCustomType.AUTO_INCREMENT.getName().equals(fieldType)) {
-                generator[i++] = idGenerator;
+                generator[i++] = AutoIncrementGenerator.get();;
             } else if (EUUIDCustomType.UUID.getName().equals(fieldType)) {
                 generator[i++] = uuidGenerator;
             } else {

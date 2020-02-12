@@ -93,7 +93,7 @@ public interface StateContext {
      *     II. have no any fields'value of this complex type,  don't add.
      * @return all fields of type are AUTO_INCREMENT or UUID field except PK, which need to generate value.
      */
-    default String[] getAutoIncrementNormalFields() {
+    default String[] getAutoNormalFields() {
         String[] normalFieldPaths = getNormalFieldPaths();
         List<String> normalFieldPathList = new ArrayList<>(normalFieldPaths.length);
         Set<String> normalFieldInXML = getNormalFieldInXML();

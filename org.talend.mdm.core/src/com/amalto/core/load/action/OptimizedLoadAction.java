@@ -33,6 +33,8 @@ import java.io.InputStream;
  */
 public class OptimizedLoadAction implements LoadAction {
     private static final Logger log = Logger.getLogger(OptimizedLoadAction.class);
+    final AutoIdGenerator idGenerator = AutoIncrementGenerator.get();
+    final AutoIdGenerator uuidGenerator = new UUIDIdGenerator();
     private final String dataClusterName;
     private final String typeName;
     private final String dataModelName;
@@ -78,24 +80,16 @@ public class OptimizedLoadAction implements LoadAction {
 
     private AutoIdGenerator[] getAutoFieldGenerators(XSDKey fieldMetadata) {
         String[] fieldTypes = fieldMetadata.getFieldTypes();
-        AutoIdGenerator idGenerator = null;
-        AutoIdGenerator uuidGenerator = null;
         AutoIdGenerator[] generator = new AutoIdGenerator[fieldTypes.length];
         int i = 0;
-        for (String idFieldType : fieldTypes) {
-            if (EUUIDCustomType.AUTO_INCREMENT.getName().equals(idFieldType)) {
-                if (idGenerator == null) {
-                    idGenerator = AutoIncrementGenerator.get();
-                }
+        for (String fieldType : fieldTypes) {
+            if (EUUIDCustomType.AUTO_INCREMENT.getName().equals(fieldType)) {
                 generator[i++] = idGenerator;
-            } else if (EUUIDCustomType.UUID.getName().equals(idFieldType)) {
-                if (uuidGenerator == null) {
-                    uuidGenerator = new UUIDIdGenerator();
-                }
+            } else if (EUUIDCustomType.UUID.getName().equals(fieldType)) {
                 generator[i++] = uuidGenerator;
             } else {
                 throw new UnsupportedOperationException(
-                        "No support for  field type '" + idFieldType + "' with autogen on."); //$NON-NLS-1$ //$NON-NLS-2$
+                        "No support for  field type '" + fieldType + "' with autogen on."); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
         return generator;

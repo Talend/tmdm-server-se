@@ -94,12 +94,10 @@ public interface StateContext {
      * @return all fields of type are AUTO_INCREMENT or UUID field except PK, which need to generate value.
      */
     default String[] getAutoNormalFields() {
-        String[] normalFieldPaths = getNormalFieldPaths();
-        List<String> normalFieldPathList = new ArrayList<>(normalFieldPaths.length);
-        Set<String> normalFieldInXML = getNormalFieldInXML();
+        List<String> normalFieldPathList = new ArrayList<>(getNormalFieldPaths().length);
 
-        for (String fieldPath : normalFieldPaths) {
-            if (normalFieldInXML.contains(fieldPath)) {
+        for (String fieldPath : getNormalFieldPaths()) {
+            if (getNormalFieldInXML().contains(fieldPath)) {
                 normalFieldPathList.add(null);
             } else {
                 normalFieldPathList.add(fieldPath);

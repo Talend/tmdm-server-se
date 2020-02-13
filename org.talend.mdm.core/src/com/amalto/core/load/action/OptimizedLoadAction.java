@@ -65,7 +65,7 @@ public class OptimizedLoadAction implements LoadAction {
             try {
                 content = IOUtils.toString(stream);
             } catch (Exception e) {
-                throw new IllegalArgumentException("Failed to parse input stream to string", e);
+                throw new UnsupportedOperationException("Failed to parse input stream to string", e);
             }
         }
         String[] fieldsToGenerate = AutoIncrementUtil.getAutoNormalFieldsToGenerate(autoFieldTypeMap.keySet(), content);
@@ -75,7 +75,7 @@ public class OptimizedLoadAction implements LoadAction {
         // Creates a load parser callback that loads data in server using a SAX handler
         ServerParserCallback callback = new ServerParserCallback(server, dataClusterName);
 
-        java.io.InputStream inputStream;
+        InputStream inputStream;
         if (!autoFieldTypeMap.isEmpty()) {
             inputStream = new XMLRootInputStream(new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8)),
                     "root"); //$NON-NLS-1$

@@ -13,6 +13,7 @@ package com.amalto.core.load;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.xml.stream.XMLStreamException;
@@ -206,7 +207,7 @@ public class LoadParser {
         }
 
         public Map<String, AutoIdGenerator> getNormalFieldGenerators() {
-            return normalFieldGenerators;
+            return normalFieldGenerators == null ? new HashMap<>() : normalFieldGenerators;
         }
     }
 }

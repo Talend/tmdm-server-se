@@ -61,7 +61,6 @@ public class OptimizedLoadAction implements LoadAction {
             throw new UnsupportedOperationException("Selector '" + autoKeyMetadata.getSelector() + "' isn't supported.");
         }
         String content = StringUtils.EMPTY;
-        String[] fieldsToGenerate;
         if (!autoFieldTypeMap.isEmpty()) {
             try {
                 content = IOUtils.toString(stream);
@@ -69,7 +68,7 @@ public class OptimizedLoadAction implements LoadAction {
                 throw new IllegalArgumentException("Failed to parse input stream to string", e);
             }
         }
-        fieldsToGenerate = AutoIncrementUtil.getAutoNormalFieldsToGenerate(autoFieldTypeMap.keySet(), content);
+        String[] fieldsToGenerate = AutoIncrementUtil.getAutoNormalFieldsToGenerate(autoFieldTypeMap.keySet(), content);
         Map<String, AutoIdGenerator> normalFieldGenerators = getNormalFieldGenerators(autoFieldTypeMap, fieldsToGenerate);
         AutoIdGenerator idGenerator = needAutoGenPK ? getAutoIdGenerators(autoKeyMetadata)[0] : null;
 

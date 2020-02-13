@@ -65,8 +65,8 @@ public class AutoGenStateContext implements StateContext {
      * @return A {@link StateContext} implementation able to generate automatic ids.
      */
     public static StateContext decorate(StateContext context, String[] idPaths, AutoIdGenerator autoIdGenerator,
-            Map<String, AutoIdGenerator> normalFieldGenerator) {
-        return new AutoGenStateContext(context, idPaths, autoIdGenerator, normalFieldGenerator);
+            Map<String, AutoIdGenerator> normalFieldGenerators) {
+        return new AutoGenStateContext(context, idPaths, autoIdGenerator, normalFieldGenerators);
     }
 
     public Metadata getMetadata() {

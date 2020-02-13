@@ -120,10 +120,10 @@ public class FlushXMLReader implements XMLReader {
                 context.parse(reader);
             }
 
-            Map<String, AutoIdGenerator> normalFieldGenerator = context.getNormalFieldGenerator();
-            if (!normalFieldGenerator.isEmpty()) {
+            Map<String, AutoIdGenerator> normalFieldGenerators = context.getNormalFieldGenerators();
+            if (!normalFieldGenerators.isEmpty()) {
                 State state = context.getCurrent();
-                AutoFieldGeneration generation = new AutoFieldGeneration(state, normalFieldGenerator);
+                AutoFieldGeneration generation = new AutoFieldGeneration(state, normalFieldGenerators);
                 context.setCurrent(generation);
                 context.parse(reader);
             }

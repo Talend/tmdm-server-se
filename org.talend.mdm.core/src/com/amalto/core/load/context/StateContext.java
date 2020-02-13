@@ -62,5 +62,5 @@ public interface StateContext {
 
     void close(XmlServer server);
 
-    Map<String, AutoIdGenerator> getNormalFieldGenerator();
+    Map<String, AutoIdGenerator> getNormalFieldGenerators();
 }

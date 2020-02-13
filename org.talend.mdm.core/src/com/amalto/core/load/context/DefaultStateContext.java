@@ -63,16 +63,16 @@ public class DefaultStateContext implements StateContext {
 
     private String currentIdElementName;
 
-    private Map<String, AutoIdGenerator> normalFieldGenerator;
+    private Map<String, AutoIdGenerator> normalFieldGenerators;
 
     public DefaultStateContext(String payLoadElementName, String[] idPaths, String dataClusterName,
-            String dataModelName, int payloadLimit, LoadParserCallback callback, Map<String, AutoIdGenerator> normalFieldGenerator) {
-        this(payLoadElementName, idPaths, dataClusterName, dataModelName, callback, normalFieldGenerator);
+            String dataModelName, int payloadLimit, LoadParserCallback callback, Map<String, AutoIdGenerator> normalFieldGenerators) {
+        this(payLoadElementName, idPaths, dataClusterName, dataModelName, callback, normalFieldGenerators);
         this.payloadLimit = payloadLimit;
     }
 
     private DefaultStateContext(String payLoadElementName, String[] idPaths,  String dataClusterName,
-            String dataModelName, LoadParserCallback callback, Map<String, AutoIdGenerator> normalFieldGenerator) {
+            String dataModelName, LoadParserCallback callback, Map<String, AutoIdGenerator> normalFieldGenerators) {
         if (payLoadElementName == null) {
             throw new IllegalArgumentException("Payload element name cannot be null.");
         }
@@ -84,7 +84,7 @@ public class DefaultStateContext implements StateContext {
         contextWriter = bufferStateContextWriter;
         this.callback = callback;
         this.payLoadElementName = payLoadElementName;
-        this.normalFieldGenerator = normalFieldGenerator;
+        this.normalFieldGenerators = normalFieldGenerators;
         metadata = new DefaultMetadata();
         metadata.setName(payLoadElementName);
         metadata.setDmn(payLoadElementName);
@@ -258,7 +258,7 @@ public class DefaultStateContext implements StateContext {
 
     public void close(XmlServer server) {
         // if one normal field is AUTO_INCREMENT, it also need to store.
-        for (AutoIdGenerator generator : getNormalFieldGenerator().values()) {
+        for (AutoIdGenerator generator : getNormalFieldGenerators().values()) {
             if (!(generator instanceof UUIDIdGenerator)) {
                 generator.saveState(server);
                 break;
@@ -267,7 +267,7 @@ public class DefaultStateContext implements StateContext {
     }
 
     @Override
-    public Map<String, AutoIdGenerator> getNormalFieldGenerator() {
-        return normalFieldGenerator;
+    public Map<String, AutoIdGenerator> getNormalFieldGenerators() {
+        return normalFieldGenerators;
     }
 }

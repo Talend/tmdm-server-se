@@ -25,17 +25,17 @@ import java.util.StringTokenizer;
 public class AutoFieldGeneration implements State {
     private final State previousState;
 
-    private final Map<String , AutoIdGenerator> normalFieldGenerator;
+    private final Map<String , AutoIdGenerator> normalFieldGenerators;
 
-    public AutoFieldGeneration(State previousState, Map<String , AutoIdGenerator> normalFieldGenerator) {
+    public AutoFieldGeneration(State previousState, Map<String , AutoIdGenerator> normalFieldGenerators) {
         this.previousState = previousState;
-        this.normalFieldGenerator = normalFieldGenerator;
+        this.normalFieldGenerators = normalFieldGenerators;
     }
 
     @Override
     public void parse(StateContext context, XMLStreamReader reader) throws XMLStreamException {
         try {
-            for (Map.Entry<String, AutoIdGenerator> entry : normalFieldGenerator.entrySet()) {
+            for (Map.Entry<String, AutoIdGenerator> entry : normalFieldGenerators.entrySet()) {
                 String fieldPath = entry.getKey();
                 if (fieldPath.contains("/")) {
                     StringTokenizer tokenizer = new StringTokenizer(fieldPath, "/");

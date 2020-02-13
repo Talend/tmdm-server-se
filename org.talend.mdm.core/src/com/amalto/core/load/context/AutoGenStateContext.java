@@ -46,14 +46,14 @@ public class AutoGenStateContext implements StateContext {
 
     private final AutoIdGenerator generator;
 
-    private Map<String , AutoIdGenerator> normalFieldGenerator;
+    private Map<String , AutoIdGenerator> normalFieldGenerators;
 
     private AutoGenStateContext(StateContext delegate, String[] idPaths, AutoIdGenerator generator,
-            Map<String, AutoIdGenerator> normalFieldGenerator) {
+            Map<String, AutoIdGenerator> normalFieldGenerators) {
         this.delegate = delegate;
         this.idPaths = idPaths;
         this.generator = generator;
-        this.normalFieldGenerator = normalFieldGenerator;
+        this.normalFieldGenerators = normalFieldGenerators;
         metadata = new AutoGenMetadata(this.delegate.getMetadata(), idPaths, this.generator);
     }
 
@@ -172,8 +172,8 @@ public class AutoGenStateContext implements StateContext {
     }
 
     @Override
-    public Map<String, AutoIdGenerator> getNormalFieldGenerator() {
-        return normalFieldGenerator;
+    public Map<String, AutoIdGenerator> getNormalFieldGenerators() {
+        return normalFieldGenerators;
     }
 
 }

@@ -118,12 +118,12 @@ public class LoadParser {
             }
 
             StateContext context = new DefaultStateContext(config.getPayLoadElementName(), config.getIdPaths(),
-                    config.getDataClusterName(), config.getDataModelName(), limit, callback, config.getNormalFieldGenerator());
+                    config.getDataClusterName(), config.getDataModelName(), limit, callback, config.getNormalFieldGenerators());
             if (config.isAutoGenPK()) {
                 AutoIdGenerator autoIdGenerator = config.getIdGenerator();
                 // Change the context to auto-generate metadata
                 context = AutoGenStateContext
-                        .decorate(context, config.getIdPaths(), autoIdGenerator, config.getNormalFieldGenerator());
+                        .decorate(context, config.getIdPaths(), autoIdGenerator, config.getNormalFieldGenerators());
             }
 
             while (!context.hasFinished()) {
@@ -153,17 +153,17 @@ public class LoadParser {
         private final String dataClusterName;
         private final String dataModelName;
         private final AutoIdGenerator idGenerator;
-        private final Map<String, AutoIdGenerator> normalFieldGenerator;
+        private final Map<String, AutoIdGenerator> normalFieldGenerators;
 
         public Configuration(String payLoadElementName, String[] idPaths, boolean autoGenPK, String dataClusterName,
-                String dataModelName, AutoIdGenerator idGenerator, Map<String, AutoIdGenerator> normalFieldGenerator) {
+                String dataModelName, AutoIdGenerator idGenerator, Map<String, AutoIdGenerator> normalFieldGenerators) {
             this.payLoadElementName = payLoadElementName;
             this.idPaths = idPaths;
             this.autoGenPK = autoGenPK;
             this.dataClusterName = dataClusterName;
             this.dataModelName = dataModelName;
             this.idGenerator = idGenerator;
-            this.normalFieldGenerator = normalFieldGenerator;
+            this.normalFieldGenerators = normalFieldGenerators;
         }
 
         public Configuration(String payLoadElementName, String[] idPaths, boolean autoGenPK,
@@ -205,8 +205,8 @@ public class LoadParser {
             return idGenerator;
         }
 
-        public Map<String, AutoIdGenerator> getNormalFieldGenerator() {
-            return normalFieldGenerator;
+        public Map<String, AutoIdGenerator> getNormalFieldGenerators() {
+            return normalFieldGenerators;
         }
     }
 }

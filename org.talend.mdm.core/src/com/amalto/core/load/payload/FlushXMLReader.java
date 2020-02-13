@@ -119,10 +119,10 @@ public class FlushXMLReader implements XMLReader {
                 context.parse(reader);
             }
 
-            String[] autoIncrementNormalFields = context.getAutoNormalFields();
-            if (autoIncrementNormalFields .length > 0) {
+            String[] autoNormalFields = context.getAutoNormalFields();
+            if (autoNormalFields.length > 0) {
                 State state = context.getCurrent();
-                AutoFieldGeneration generation = new AutoFieldGeneration(state, autoIncrementNormalFields );
+                AutoFieldGeneration generation = new AutoFieldGeneration(state, autoNormalFields);
                 context.setCurrent(generation);
                 context.parse(reader);
             }

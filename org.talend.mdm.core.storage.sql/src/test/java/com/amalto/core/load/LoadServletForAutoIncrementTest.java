@@ -107,9 +107,9 @@ import static org.junit.Assert.fail;
 
         XSDKey keyMetadata = (XSDKey) getTypeKeyMethod.invoke(loadServlet, type.getKeyFields());
 
-        Method getTypeAutoFieldMethod = loadServlet.getClass().getDeclaredMethod("getTypeAutoField", ComplexTypeMetadata.class);
+        Method getTypeAutoFieldMethod = loadServlet.getClass().getDeclaredMethod("getTypeAutoField", Collection.class);
         getTypeAutoFieldMethod.setAccessible(true);
-        XSDKey autoFieldMetadata = (XSDKey) getTypeAutoFieldMethod.invoke(loadServlet, type);
+        XSDKey autoFieldMetadata = (XSDKey) getTypeAutoFieldMethod.invoke(loadServlet, type.getKeyFields());
 
         Method bulkLoadSaveMethod = loadServlet.getClass()
                 .getDeclaredMethod("bulkLoadSave", String.class, String.class, InputStream.class, LoadAction.class, XSDKey.class,
@@ -146,9 +146,9 @@ import static org.junit.Assert.fail;
         getTypeKeyMethod.setAccessible(true);
         XSDKey keyMetadata = (XSDKey) getTypeKeyMethod.invoke(loadServlet, type.getKeyFields());
 
-        Method getTypeAutoFieldMethod = loadServlet.getClass().getDeclaredMethod("getTypeAutoField", ComplexTypeMetadata.class);
+        Method getTypeAutoFieldMethod = loadServlet.getClass().getDeclaredMethod("getTypeAutoField", Collection.class);
         getTypeAutoFieldMethod.setAccessible(true);
-        XSDKey autoFieldMetadata = (XSDKey) getTypeAutoFieldMethod.invoke(loadServlet, type);
+        XSDKey autoFieldMetadata = (XSDKey) getTypeAutoFieldMethod.invoke(loadServlet, type.getFields());
 
         XmlServer server = Util.getXmlServerCtrlLocal();
 
@@ -205,9 +205,9 @@ import static org.junit.Assert.fail;
 
         XSDKey keyMetadata = (XSDKey) getTypeKeyMethod.invoke(loadServlet, type.getKeyFields());
 
-        Method getTypeAutoFieldMethod = loadServlet.getClass().getDeclaredMethod("getTypeAutoField", ComplexTypeMetadata.class);
+        Method getTypeAutoFieldMethod = loadServlet.getClass().getDeclaredMethod("getTypeAutoField", Collection.class);
         getTypeAutoFieldMethod.setAccessible(true);
-        XSDKey autoFieldMetadata = (XSDKey) getTypeAutoFieldMethod.invoke(loadServlet, type);
+        XSDKey autoFieldMetadata = (XSDKey) getTypeAutoFieldMethod.invoke(loadServlet, type.getFields());
 
         XmlServer server = Util.getXmlServerCtrlLocal();
 
@@ -260,9 +260,9 @@ import static org.junit.Assert.fail;
 
         XSDKey keyMetadata = (XSDKey) getTypeKeyMethod.invoke(loadServlet, type.getKeyFields());
 
-        Method getTypeAutoFieldMethod = loadServlet.getClass().getDeclaredMethod("getTypeAutoField", ComplexTypeMetadata.class);
+        Method getTypeAutoFieldMethod = loadServlet.getClass().getDeclaredMethod("getTypeAutoField", Collection.class);
         getTypeAutoFieldMethod.setAccessible(true);
-        XSDKey autoFieldMetadata = (XSDKey) getTypeAutoFieldMethod.invoke(loadServlet, type);
+        XSDKey autoFieldMetadata = (XSDKey) getTypeAutoFieldMethod.invoke(loadServlet, type.getFields());
 
         XmlServer server = Util.getXmlServerCtrlLocal();
 
@@ -318,9 +318,9 @@ import static org.junit.Assert.fail;
 
         XSDKey keyMetadata = (XSDKey) getTypeKeyMethod.invoke(loadServlet, type.getKeyFields());
 
-        Method getTypeAutoFieldMethod = loadServlet.getClass().getDeclaredMethod("getTypeAutoField", ComplexTypeMetadata.class);
+        Method getTypeAutoFieldMethod = loadServlet.getClass().getDeclaredMethod("getTypeAutoField", Collection.class);
         getTypeAutoFieldMethod.setAccessible(true);
-        XSDKey autoFieldMetadata = (XSDKey) getTypeAutoFieldMethod.invoke(loadServlet, type);
+        XSDKey autoFieldMetadata = (XSDKey) getTypeAutoFieldMethod.invoke(loadServlet, type.getFields());
 
         XmlServer server = Util.getXmlServerCtrlLocal();
 
@@ -381,9 +381,9 @@ import static org.junit.Assert.fail;
 
         XSDKey keyMetadata = (XSDKey) getTypeKeyMethod.invoke(loadServlet, type.getKeyFields());
 
-        Method getTypeAutoFieldMethod = loadServlet.getClass().getDeclaredMethod("getTypeAutoField", ComplexTypeMetadata.class);
+        Method getTypeAutoFieldMethod = loadServlet.getClass().getDeclaredMethod("getTypeAutoField", Collection.class);
         getTypeAutoFieldMethod.setAccessible(true);
-        XSDKey autoFieldMetadata = (XSDKey) getTypeAutoFieldMethod.invoke(loadServlet, type);
+        XSDKey autoFieldMetadata = (XSDKey) getTypeAutoFieldMethod.invoke(loadServlet, type.getFields());
 
         XmlServer server = Util.getXmlServerCtrlLocal();
 
@@ -444,9 +444,9 @@ import static org.junit.Assert.fail;
 
         XSDKey keyMetadata = (XSDKey) getTypeKeyMethod.invoke(loadServlet, type.getKeyFields());
 
-        Method getTypeAutoFieldMethod = loadServlet.getClass().getDeclaredMethod("getTypeAutoField", ComplexTypeMetadata.class);
+        Method getTypeAutoFieldMethod = loadServlet.getClass().getDeclaredMethod("getTypeAutoField", Collection.class);
         getTypeAutoFieldMethod.setAccessible(true);
-        XSDKey autoFieldMetadata = (XSDKey) getTypeAutoFieldMethod.invoke(loadServlet, type);
+        XSDKey autoFieldMetadata = (XSDKey) getTypeAutoFieldMethod.invoke(loadServlet, type.getFields());
 
         XmlServer server = Util.getXmlServerCtrlLocal();
 
@@ -541,9 +541,9 @@ import static org.junit.Assert.fail;
 
         XSDKey keyMetadata = (XSDKey) getTypeKeyMethod.invoke(loadServlet, type.getKeyFields());
 
-        Method getTypeAutoFieldMethod = loadServlet.getClass().getDeclaredMethod("getTypeAutoField", ComplexTypeMetadata.class);
+        Method getTypeAutoFieldMethod = loadServlet.getClass().getDeclaredMethod("getTypeAutoField", Collection.class);
         getTypeAutoFieldMethod.setAccessible(true);
-        XSDKey autoFieldMetadata = (XSDKey) getTypeAutoFieldMethod.invoke(loadServlet, type);
+        XSDKey autoFieldMetadata = (XSDKey) getTypeAutoFieldMethod.invoke(loadServlet, type.getFields());
 
         XmlServer server = Util.getXmlServerCtrlLocal();
 
@@ -589,9 +589,9 @@ import static org.junit.Assert.fail;
         MockMetadataRepositoryAdmin.INSTANCE.register(dataClusterName, repository);
         ComplexTypeMetadata type = repository.getComplexType(typeName);
 
-        Method getTypeAutoFieldMethod = loadServlet.getClass().getDeclaredMethod("getTypeAutoField", ComplexTypeMetadata.class);
+        Method getTypeAutoFieldMethod = loadServlet.getClass().getDeclaredMethod("getTypeAutoField", Collection.class);
         getTypeAutoFieldMethod.setAccessible(true);
-        XSDKey autoFieldMetadata = (XSDKey) getTypeAutoFieldMethod.invoke(loadServlet, type);
+        XSDKey autoFieldMetadata = (XSDKey) getTypeAutoFieldMethod.invoke(loadServlet, type.getFields());
 
         assertNotNull(autoFieldMetadata);
         assertEquals(5, autoFieldMetadata.getFields().length);
@@ -615,7 +615,7 @@ import static org.junit.Assert.fail;
         MockMetadataRepositoryAdmin.INSTANCE.register(dataClusterName, repository);
         type = repository.getComplexType(typeName);
 
-        autoFieldMetadata = (XSDKey) getTypeAutoFieldMethod.invoke(loadServlet, type);
+        autoFieldMetadata = (XSDKey) getTypeAutoFieldMethod.invoke(loadServlet, type.getFields());
 
         assertNotNull(autoFieldMetadata);
         assertEquals(2, autoFieldMetadata.getFields().length);
@@ -633,7 +633,7 @@ import static org.junit.Assert.fail;
         MockMetadataRepositoryAdmin.INSTANCE.register(dataClusterName, repository);
         type = repository.getComplexType(typeName);
 
-        autoFieldMetadata = (XSDKey) getTypeAutoFieldMethod.invoke(loadServlet, type);
+        autoFieldMetadata = (XSDKey) getTypeAutoFieldMethod.invoke(loadServlet, type.getFields());
 
         assertNotNull(autoFieldMetadata);
         assertEquals(4, autoFieldMetadata.getFields().length);

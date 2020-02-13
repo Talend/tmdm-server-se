@@ -145,7 +145,7 @@ public class LoadServlet extends HttpServlet {
         MetadataRepository repository = repositoryAdmin.get(dataModelName);
         ComplexTypeMetadata type = repository.getComplexType(typeName);
         XSDKey keyMetadata = getTypeKey(type.getKeyFields());
-        XSDKey autoFieldMetadata = getTypeAutoField(type);
+        XSDKey autoFieldMetadata = getTypeAutoField(type.getKeyFields());
 
 
         DataRecord.CheckExistence.set(!insertOnly);
@@ -278,14 +278,13 @@ public class LoadServlet extends HttpServlet {
     /**
      * Filter the AUTO_INCREMENT/UUID type field from the entity's all list.
      * if contains the complex type, it also filter.
-     * @param type need parse complex type metadata
+     * @param fieldList all field list
      * @return all AUTO_INCREMENT/UUID type field, include this type field existed in the complex type
      */
-    private XSDKey getTypeAutoField(ComplexTypeMetadata type) {
-        Collection<FieldMetadata> allFieldList = type.getFields();
-        List<String> fieldsList = new ArrayList<>(allFieldList.size());
-        List<String> fieldTypesList = new ArrayList<>(allFieldList.size());
-        for (FieldMetadata field : allFieldList) {
+    private XSDKey getTypeAutoField(Collection<FieldMetadata> fieldList) {
+        List<String> fieldsList = new ArrayList<>(fieldList.size());
+        List<String> fieldTypesList = new ArrayList<>(fieldList.size());
+        for (FieldMetadata field : fieldList) {
             if (field.isKey()) {
                 continue;
             }

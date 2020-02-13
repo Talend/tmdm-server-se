@@ -86,7 +86,7 @@ public class AutoIncrementUtil {
      * @param content supplied value context
      * @return
      */
-    public static String[] generatedNormalField(Collection<String> normalFields, String content) {
+    public static String[] getAutoNormalFieldsToGenerates(Collection<String> normalFields, String content) {
         List<String> generatedField = new ArrayList<>(normalFields.size());
         if (normalFields.isEmpty()) {
             return generatedField.toArray(new String[0]);

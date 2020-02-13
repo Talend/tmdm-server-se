@@ -69,8 +69,8 @@ public class OptimizedLoadAction implements LoadAction {
         } catch (Exception e) {
             LOG.error("Faield to parse input stream to string", e);
         }
-        String[] generatedField = AutoIncrementUtil.generatedNormalField(autoFieldTypeMap.keySet(), content);
-        Map<String, AutoIdGenerator> normalFieldGenerator = getNormalFieldGenerator(autoFieldTypeMap, generatedField);
+        String[] generatedField = AutoIncrementUtil.getAutoNormalFieldsToGenerates(autoFieldTypeMap.keySet(), content);
+        Map<String, AutoIdGenerator> normalFieldGenerator = getNormalFieldGenerators(autoFieldTypeMap, generatedField);
         AutoIdGenerator idGenerator = needAutoGenPK ? getAutoIdGenerators(autoKeyMetadata)[0] : null;
 
         // Creates a load parser callback that loads data in server using a SAX handler
@@ -105,7 +105,7 @@ public class OptimizedLoadAction implements LoadAction {
         return generator;
     }
 
-    private Map<String, AutoIdGenerator> getNormalFieldGenerator(Map<String, String> autoFieldTypeMap, String[] normalFields) {
+    private Map<String, AutoIdGenerator> getNormalFieldGenerators(Map<String, String> autoFieldTypeMap, String[] normalFields) {
         Map<String, AutoIdGenerator> normalFieldGenerator = new HashMap<>();
         if (normalFields.length == 0) {
             return normalFieldGenerator;

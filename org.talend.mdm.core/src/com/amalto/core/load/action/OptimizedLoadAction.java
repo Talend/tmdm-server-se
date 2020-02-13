@@ -64,20 +64,29 @@ public class OptimizedLoadAction implements LoadAction {
             throw new UnsupportedOperationException("Selector '" + autoKeyMetadata.getSelector() + "' isn't supported.");
         }
         String content = StringUtils.EMPTY;
-        try {
-            content = IOUtils.toString(stream);
-        } catch (Exception e) {
-            LOG.error("Faield to parse input stream to string", e);
+        String[] fieldsToGenerate;
+        if (!autoFieldTypeMap.isEmpty()) {
+            try {
+                content = IOUtils.toString(stream);
+            } catch (Exception e) {
+                throw new IllegalArgumentException("Failed to parse input stream to string", e);
+            }
         }
-        String[] fieldsToGenerate = AutoIncrementUtil.getAutoNormalFieldsToGenerate(autoFieldTypeMap.keySet(), content);
+        fieldsToGenerate = AutoIncrementUtil.getAutoNormalFieldsToGenerate(autoFieldTypeMap.keySet(), content);
         Map<String, AutoIdGenerator> normalFieldGenerators = getNormalFieldGenerators(autoFieldTypeMap, fieldsToGenerate);
         AutoIdGenerator idGenerator = needAutoGenPK ? getAutoIdGenerators(autoKeyMetadata)[0] : null;
 
         // Creates a load parser callback that loads data in server using a SAX handler
         ServerParserCallback callback = new ServerParserCallback(server, dataClusterName);
 
-        java.io.InputStream inputStream = new XMLRootInputStream(
-                new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8)), "root"); //$NON-NLS-1$
+        java.io.InputStream inputStream;
+        if (!autoFieldTypeMap.isEmpty()) {
+            inputStream = new XMLRootInputStream(new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8)),
+                    "root"); //$NON-NLS-1$
+        } else {
+            inputStream = new XMLRootInputStream(stream, "root"); //$NON-NLS-1$
+        }
+
         LoadParser.Configuration configuration = new LoadParser.Configuration(typeName, autoKeyMetadata.getFields(),
                 needAutoGenPK, dataClusterName, dataModelName, idGenerator, normalFieldGenerators);
 
@@ -117,7 +126,7 @@ public class OptimizedLoadAction implements LoadAction {
             } else if (EUUIDCustomType.UUID.getName().equals(autoFieldTypeMap.get(fieldPath))) {
                 normalFieldGenerators.put(fieldPath, UUID_ID_GENERATOR);
             } else {
-                throw new UnsupportedOperationException("No support for  field type '" + autoFieldTypeMap.get(fieldPath)
+                throw new UnsupportedOperationException("No support for field type '" + autoFieldTypeMap.get(fieldPath)
                         + "' with autogen on."); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }

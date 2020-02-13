@@ -88,7 +88,7 @@ public class AutoIncrementUtil {
      */
     public static String[] getAutoNormalFieldsToGenerate(Collection<String> normalFields, String content) {
         List<String> generatedField = new ArrayList<>(normalFields.size());
-        if (normalFields.isEmpty()) {
+        if (normalFields.isEmpty() || content.equals(StringUtils.EMPTY)) {
             return generatedField.toArray(new String[0]);
         }
         String beginName = content.substring(content.indexOf("<") + 1, content.indexOf(">"));
@@ -121,7 +121,7 @@ public class AutoIncrementUtil {
                 }
             }
         } catch (Exception e) {
-            LOG.error("Faield to parse stream to Document");
+            LOG.error("Failed to parse stream to Document");
         }
 
         return generatedField.toArray(new String[generatedField.size()]);

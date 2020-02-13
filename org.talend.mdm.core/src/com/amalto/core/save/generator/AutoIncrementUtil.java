@@ -110,8 +110,7 @@ public class AutoIncrementUtil {
                     for (int i = 0; i < allFieldPaths.length; i++) {
                         element = element.element(allFieldPaths[i]);
                         if (element == null) {
-                            // Address/Id, if parse Address is not exist in the content,
-                            // don't need to generate
+                            // Address/Id, if Address doesn't exist
                             if (i == 0) {
                                 break;
                             }

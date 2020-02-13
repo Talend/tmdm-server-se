@@ -104,7 +104,7 @@ public class OptimizedLoadAction implements LoadAction {
                 generator[i++] = UUID_ID_GENERATOR;
             } else {
                 throw new UnsupportedOperationException(
-                        "No support for  field type '" + fieldType + "' with autogen on."); //$NON-NLS-1$ //$NON-NLS-2$
+                        "No support for field type '" + fieldType + "' with autogen on."); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
         return generator;

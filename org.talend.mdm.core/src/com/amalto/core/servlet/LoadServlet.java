@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -145,21 +144,21 @@ public class LoadServlet extends HttpServlet {
         MetadataRepository repository = repositoryAdmin.get(dataModelName);
         ComplexTypeMetadata type = repository.getComplexType(typeName);
         XSDKey keyMetadata = getTypeKey(type.getKeyFields());
-        XSDKey autoFieldMetadata = getTypeAutoField(type.getFields());
+        Map<String, String> fieldMapType = getFieldMapType(type.getFields());
 
         DataRecord.CheckExistence.set(!insertOnly);
-        bulkLoadSave(dataClusterName, dataModelName, inputStream, loadAction, keyMetadata, autoFieldMetadata);
+        bulkLoadSave(dataClusterName, dataModelName, inputStream, loadAction, keyMetadata, fieldMapType);
         writer.write("</body></html>"); //$NON-NLS-1$
     }
 
     private void bulkLoadSave(String dataClusterName, String dataModelName, InputStream inputStream, LoadAction loadAction,
-            XSDKey keyMetadata, XSDKey autoFieldMetadata) throws ServletException {
+            XSDKey keyMetadata, Map<String, String> fieldMapType) throws ServletException {
         XmlServer server = Util.getXmlServerCtrlLocal();
 
         SaverSession session = SaverSession.newSession();
         SaverContextFactory contextFactory = session.getContextFactory();
         DocumentSaverContext context = contextFactory
-                .createBulkLoad(dataClusterName, dataModelName, keyMetadata, autoFieldMetadata, inputStream, loadAction, server);
+                .createBulkLoad(dataClusterName, dataModelName, keyMetadata, fieldMapType, inputStream, loadAction, server);
         DocumentSaver saver = context.createSaver();
 
         // Wait until less that MAX_THREADS running
@@ -278,11 +277,10 @@ public class LoadServlet extends HttpServlet {
      * Filter the AUTO_INCREMENT/UUID type field from the entity's all list.
      * if contains the complex type, it also filter.
      * @param fieldList all field list
-     * @return all AUTO_INCREMENT/UUID type field, include this type field existed in the complex type
+     * @return all AUTO_INCREMENT/UUID field type, include this type field existed in the complex type
      */
-    private XSDKey getTypeAutoField(Collection<FieldMetadata> fieldList) {
-        List<String> fieldsList = new ArrayList<>(fieldList.size());
-        List<String> fieldTypesList = new ArrayList<>(fieldList.size());
+    private Map<String, String> getFieldMapType(Collection<FieldMetadata> fieldList) {
+        Map<String, String> fieldMapType = new HashMap<>();
         for (FieldMetadata field : fieldList) {
             if (field.isKey()) {
                 continue;
@@ -290,12 +288,9 @@ public class LoadServlet extends HttpServlet {
             List<FieldMetadata> fieldMetadataList = new ArrayList<>();
             getFieldIntactName(field, fieldMetadataList);
             for (FieldMetadata subField : fieldMetadataList) {
-                fieldsList.add(subField.getPath());
-                fieldTypesList.add(subField.getType().getName());
+                fieldMapType.put(subField.getPath(), subField.getType().getName());
             }
-        }
-        return new XSDKey(".", fieldsList.toArray(new String[fieldsList.size()]), //$NON-NLS-1$
-                fieldTypesList.toArray(new String[fieldTypesList.size()]));
+        } return fieldMapType;
     }
 
     private void getFieldIntactName(FieldMetadata field, List<FieldMetadata> fieldList) {

@@ -12,6 +12,7 @@ package com.amalto.core.save.context;
 
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 
 import com.amalto.core.save.DocumentSaverContext;
 import com.amalto.core.server.api.XmlServer;
@@ -31,11 +32,11 @@ class BulkLoadContext implements DocumentSaverContext {
 
     private final BulkLoadSaver bulkLoadSaver;
 
-    public BulkLoadContext(String dataCluster, String dataModelName, XSDKey autoKeyMetadata, XSDKey autoFieldMetadata,
+    public BulkLoadContext(String dataCluster, String dataModelName, XSDKey autoKeyMetadata, Map<String, String> fieldMapType,
             InputStream documentStream, LoadAction loadAction, XmlServer server) {
         this.dataCluster = dataCluster;
         this.dataModelName = dataModelName;
-        bulkLoadSaver = new BulkLoadSaver(loadAction, documentStream, autoKeyMetadata, autoFieldMetadata, server);
+        bulkLoadSaver = new BulkLoadSaver(loadAction, documentStream, autoKeyMetadata, fieldMapType, server);
     }
 
     @Override

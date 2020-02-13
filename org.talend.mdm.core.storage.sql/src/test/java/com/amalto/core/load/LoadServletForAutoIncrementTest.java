@@ -47,6 +47,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING) @SuppressWarnings("nls") public class LoadServletForAutoIncrementTest {
@@ -107,17 +108,17 @@ import static org.junit.Assert.fail;
 
         XSDKey keyMetadata = (XSDKey) getTypeKeyMethod.invoke(loadServlet, type.getKeyFields());
 
-        Method getTypeAutoFieldMethod = loadServlet.getClass().getDeclaredMethod("getTypeAutoField", Collection.class);
+        Method getTypeAutoFieldMethod = loadServlet.getClass().getDeclaredMethod("getFieldMapType", Collection.class);
         getTypeAutoFieldMethod.setAccessible(true);
-        XSDKey autoFieldMetadata = (XSDKey) getTypeAutoFieldMethod.invoke(loadServlet, type.getKeyFields());
+        Map<String, String> fieldMapType = (Map<String, String>) getTypeAutoFieldMethod.invoke(loadServlet, type.getFields());
 
         Method bulkLoadSaveMethod = loadServlet.getClass()
                 .getDeclaredMethod("bulkLoadSave", String.class, String.class, InputStream.class, LoadAction.class, XSDKey.class,
-                        XSDKey.class);
+                        Map.class);
         bulkLoadSaveMethod.setAccessible(true);
         try {
             bulkLoadSaveMethod
-                    .invoke(loadServlet, dataClusterName, dataModelName, recordXml, loadAction, keyMetadata, autoFieldMetadata);
+                    .invoke(loadServlet, dataClusterName, dataModelName, recordXml, loadAction, keyMetadata, fieldMapType);
             fail("Failed to save the autoincrement field.");
         } catch (Exception e) {
             assertNotNull(e);
@@ -146,19 +147,19 @@ import static org.junit.Assert.fail;
         getTypeKeyMethod.setAccessible(true);
         XSDKey keyMetadata = (XSDKey) getTypeKeyMethod.invoke(loadServlet, type.getKeyFields());
 
-        Method getTypeAutoFieldMethod = loadServlet.getClass().getDeclaredMethod("getTypeAutoField", Collection.class);
+        Method getTypeAutoFieldMethod = loadServlet.getClass().getDeclaredMethod("getFieldMapType", Collection.class);
         getTypeAutoFieldMethod.setAccessible(true);
-        XSDKey autoFieldMetadata = (XSDKey) getTypeAutoFieldMethod.invoke(loadServlet, type.getFields());
+        Map<String, String> fieldMapType = (Map<String, String>) getTypeAutoFieldMethod.invoke(loadServlet, type.getFields());
 
         XmlServer server = Util.getXmlServerCtrlLocal();
 
         Method bulkLoadSaveMethod = loadServlet.getClass()
                 .getDeclaredMethod("bulkLoadSave", String.class, String.class, InputStream.class, LoadAction.class, XSDKey.class,
-                        XSDKey.class);
+                        Map.class);
         bulkLoadSaveMethod.setAccessible(true);
 
         bulkLoadSaveMethod
-                .invoke(loadServlet, dataClusterName, dataModelName, recordXml, loadAction, keyMetadata, autoFieldMetadata);
+                .invoke(loadServlet, dataClusterName, dataModelName, recordXml, loadAction, keyMetadata, fieldMapType);
         String result = server.getDocumentAsString(dataClusterName, dataClusterName + "." + typeName + ".1");
         Document xmlDocument = DocumentHelper.parseText(result);
         assertEquals(7, xmlDocument.getRootElement().element("p").element("Person").elements().size());
@@ -205,18 +206,18 @@ import static org.junit.Assert.fail;
 
         XSDKey keyMetadata = (XSDKey) getTypeKeyMethod.invoke(loadServlet, type.getKeyFields());
 
-        Method getTypeAutoFieldMethod = loadServlet.getClass().getDeclaredMethod("getTypeAutoField", Collection.class);
+        Method getTypeAutoFieldMethod = loadServlet.getClass().getDeclaredMethod("getFieldMapType", Collection.class);
         getTypeAutoFieldMethod.setAccessible(true);
-        XSDKey autoFieldMetadata = (XSDKey) getTypeAutoFieldMethod.invoke(loadServlet, type.getFields());
+        Map<String, String> fieldMapType = (Map<String, String>) getTypeAutoFieldMethod.invoke(loadServlet, type.getFields());
 
         XmlServer server = Util.getXmlServerCtrlLocal();
 
         Method bulkLoadSaveMethod = loadServlet.getClass()
                 .getDeclaredMethod("bulkLoadSave", String.class, String.class, InputStream.class, LoadAction.class, XSDKey.class,
-                        XSDKey.class);
+                        Map.class);
         bulkLoadSaveMethod.setAccessible(true);
 
-        bulkLoadSaveMethod.invoke(loadServlet, dataClusterName, dataModelName, recordXml, loadAction, keyMetadata, autoFieldMetadata);
+        bulkLoadSaveMethod.invoke(loadServlet, dataClusterName, dataModelName, recordXml, loadAction, keyMetadata, fieldMapType);
         String result = server.getDocumentAsString(dataClusterName, dataClusterName + "." + typeName + ".1");
         Document xmlDocument = DocumentHelper.parseText(result);
         assertEquals(8, xmlDocument.getRootElement().element("p").element("Product").elements().size());
@@ -260,19 +261,19 @@ import static org.junit.Assert.fail;
 
         XSDKey keyMetadata = (XSDKey) getTypeKeyMethod.invoke(loadServlet, type.getKeyFields());
 
-        Method getTypeAutoFieldMethod = loadServlet.getClass().getDeclaredMethod("getTypeAutoField", Collection.class);
+        Method getTypeAutoFieldMethod = loadServlet.getClass().getDeclaredMethod("getFieldMapType", Collection.class);
         getTypeAutoFieldMethod.setAccessible(true);
-        XSDKey autoFieldMetadata = (XSDKey) getTypeAutoFieldMethod.invoke(loadServlet, type.getFields());
+        Map<String, String> fieldMapType = (Map<String, String>) getTypeAutoFieldMethod.invoke(loadServlet, type.getFields());
 
         XmlServer server = Util.getXmlServerCtrlLocal();
 
         Method bulkLoadSaveMethod = loadServlet.getClass()
                 .getDeclaredMethod("bulkLoadSave", String.class, String.class, InputStream.class, LoadAction.class, XSDKey.class,
-                        XSDKey.class);
+                        Map.class);
         bulkLoadSaveMethod.setAccessible(true);
 
         bulkLoadSaveMethod
-                .invoke(loadServlet, dataClusterName, dataModelName, recordXml, loadAction, keyMetadata, autoFieldMetadata);
+                .invoke(loadServlet, dataClusterName, dataModelName, recordXml, loadAction, keyMetadata, fieldMapType);
         String result = server.getDocumentAsString(dataClusterName, dataClusterName + "." + typeName + ".2");
         Document xmlDocument = DocumentHelper.parseText(result);
         assertEquals(8, xmlDocument.getRootElement().element("p").element("Product").elements().size());
@@ -290,8 +291,6 @@ import static org.junit.Assert.fail;
         Document xml = DocumentHelper.parseText(confResult);
         assertKeyValue("Product.Product.Support", "1", xml);
     }
-
-
 
     @Test public void test_05_BulkLoadForComplexTypeGenerate() throws Exception {
         String dataClusterName = "Student";
@@ -318,19 +317,19 @@ import static org.junit.Assert.fail;
 
         XSDKey keyMetadata = (XSDKey) getTypeKeyMethod.invoke(loadServlet, type.getKeyFields());
 
-        Method getTypeAutoFieldMethod = loadServlet.getClass().getDeclaredMethod("getTypeAutoField", Collection.class);
+        Method getTypeAutoFieldMethod = loadServlet.getClass().getDeclaredMethod("getFieldMapType", Collection.class);
         getTypeAutoFieldMethod.setAccessible(true);
-        XSDKey autoFieldMetadata = (XSDKey) getTypeAutoFieldMethod.invoke(loadServlet, type.getFields());
+        Map<String, String> fieldMapType = (Map<String, String>) getTypeAutoFieldMethod.invoke(loadServlet, type.getFields());
 
         XmlServer server = Util.getXmlServerCtrlLocal();
 
         Method bulkLoadSaveMethod = loadServlet.getClass()
                 .getDeclaredMethod("bulkLoadSave", String.class, String.class, InputStream.class, LoadAction.class, XSDKey.class,
-                        XSDKey.class);
+                        Map.class);
         bulkLoadSaveMethod.setAccessible(true);
 
         bulkLoadSaveMethod
-                .invoke(loadServlet, dataClusterName, dataModelName, recordXml, loadAction, keyMetadata, autoFieldMetadata);
+                .invoke(loadServlet, dataClusterName, dataModelName, recordXml, loadAction, keyMetadata, fieldMapType);
         String result = server.getDocumentAsString(dataClusterName, dataClusterName + "." + typeName + ".2");
         Document xmlDocument = DocumentHelper.parseText(result);
         Element typeElement = xmlDocument.getRootElement().element("p").element(typeName);
@@ -381,19 +380,19 @@ import static org.junit.Assert.fail;
 
         XSDKey keyMetadata = (XSDKey) getTypeKeyMethod.invoke(loadServlet, type.getKeyFields());
 
-        Method getTypeAutoFieldMethod = loadServlet.getClass().getDeclaredMethod("getTypeAutoField", Collection.class);
+        Method getTypeAutoFieldMethod = loadServlet.getClass().getDeclaredMethod("getFieldMapType", Collection.class);
         getTypeAutoFieldMethod.setAccessible(true);
-        XSDKey autoFieldMetadata = (XSDKey) getTypeAutoFieldMethod.invoke(loadServlet, type.getFields());
+        Map<String, String> fieldMapType = (Map<String, String>) getTypeAutoFieldMethod.invoke(loadServlet, type.getFields());
 
         XmlServer server = Util.getXmlServerCtrlLocal();
 
         Method bulkLoadSaveMethod = loadServlet.getClass()
                 .getDeclaredMethod("bulkLoadSave", String.class, String.class, InputStream.class, LoadAction.class, XSDKey.class,
-                        XSDKey.class);
+                        Map.class);
         bulkLoadSaveMethod.setAccessible(true);
 
         bulkLoadSaveMethod
-                .invoke(loadServlet, dataClusterName, dataModelName, recordXml, loadAction, keyMetadata, autoFieldMetadata);
+                .invoke(loadServlet, dataClusterName, dataModelName, recordXml, loadAction, keyMetadata, fieldMapType);
         String result = server.getDocumentAsString(dataClusterName, dataClusterName + "." + typeName + ".3");
         Document xmlDocument = DocumentHelper.parseText(result);
         Element typeElement = xmlDocument.getRootElement().element("p").element(typeName);
@@ -444,19 +443,19 @@ import static org.junit.Assert.fail;
 
         XSDKey keyMetadata = (XSDKey) getTypeKeyMethod.invoke(loadServlet, type.getKeyFields());
 
-        Method getTypeAutoFieldMethod = loadServlet.getClass().getDeclaredMethod("getTypeAutoField", Collection.class);
+        Method getTypeAutoFieldMethod = loadServlet.getClass().getDeclaredMethod("getFieldMapType", Collection.class);
         getTypeAutoFieldMethod.setAccessible(true);
-        XSDKey autoFieldMetadata = (XSDKey) getTypeAutoFieldMethod.invoke(loadServlet, type.getFields());
+        Map<String, String> fieldMapType = (Map<String, String>) getTypeAutoFieldMethod.invoke(loadServlet, type.getFields());
 
         XmlServer server = Util.getXmlServerCtrlLocal();
 
         Method bulkLoadSaveMethod = loadServlet.getClass()
                 .getDeclaredMethod("bulkLoadSave", String.class, String.class, InputStream.class, LoadAction.class, XSDKey.class,
-                        XSDKey.class);
+                        Map.class);
         bulkLoadSaveMethod.setAccessible(true);
 
         bulkLoadSaveMethod
-                .invoke(loadServlet, dataClusterName, dataModelName, recordXml, loadAction, keyMetadata, autoFieldMetadata);
+                .invoke(loadServlet, dataClusterName, dataModelName, recordXml, loadAction, keyMetadata, fieldMapType);
         String result = server.getDocumentAsString(dataClusterName, dataClusterName + "." + typeName + ".5");
         Document xmlDocument = DocumentHelper.parseText(result);
         Element typeElement = xmlDocument.getRootElement().element("p").element(typeName);
@@ -541,19 +540,19 @@ import static org.junit.Assert.fail;
 
         XSDKey keyMetadata = (XSDKey) getTypeKeyMethod.invoke(loadServlet, type.getKeyFields());
 
-        Method getTypeAutoFieldMethod = loadServlet.getClass().getDeclaredMethod("getTypeAutoField", Collection.class);
+        Method getTypeAutoFieldMethod = loadServlet.getClass().getDeclaredMethod("getFieldMapType", Collection.class);
         getTypeAutoFieldMethod.setAccessible(true);
-        XSDKey autoFieldMetadata = (XSDKey) getTypeAutoFieldMethod.invoke(loadServlet, type.getFields());
+        Map<String, String> fieldMapType = (Map<String, String>) getTypeAutoFieldMethod.invoke(loadServlet, type.getFields());
 
         XmlServer server = Util.getXmlServerCtrlLocal();
 
         Method bulkLoadSaveMethod = loadServlet.getClass()
                 .getDeclaredMethod("bulkLoadSave", String.class, String.class, InputStream.class, LoadAction.class, XSDKey.class,
-                        XSDKey.class);
+                        Map.class);
         bulkLoadSaveMethod.setAccessible(true);
 
         bulkLoadSaveMethod
-                .invoke(loadServlet, dataClusterName, dataModelName, recordXml, loadAction, keyMetadata, autoFieldMetadata);
+                .invoke(loadServlet, dataClusterName, dataModelName, recordXml, loadAction, keyMetadata, fieldMapType);
         String result = server.getDocumentAsString(dataClusterName, dataClusterName + "." + typeName + ".1");
         Document xmlDocument = DocumentHelper.parseText(result);
         Element typeElement = xmlDocument.getRootElement().element("p").element(typeName);
@@ -589,24 +588,23 @@ import static org.junit.Assert.fail;
         MockMetadataRepositoryAdmin.INSTANCE.register(dataClusterName, repository);
         ComplexTypeMetadata type = repository.getComplexType(typeName);
 
-        Method getTypeAutoFieldMethod = loadServlet.getClass().getDeclaredMethod("getTypeAutoField", Collection.class);
+        Method getTypeAutoFieldMethod = loadServlet.getClass().getDeclaredMethod("getFieldMapType", Collection.class);
         getTypeAutoFieldMethod.setAccessible(true);
-        XSDKey autoFieldMetadata = (XSDKey) getTypeAutoFieldMethod.invoke(loadServlet, type.getFields());
+        Map<String, String> fieldMapType = (Map<String, String>) getTypeAutoFieldMethod.invoke(loadServlet, type.getFields());
 
-        assertNotNull(autoFieldMetadata);
-        assertEquals(5, autoFieldMetadata.getFields().length);
-        assertEquals("AA", autoFieldMetadata.getFields()[0]);
-        assertEquals("BB", autoFieldMetadata.getFields()[1]);
-        assertEquals("CC", autoFieldMetadata.getFields()[2]);
-        assertEquals("DD", autoFieldMetadata.getFields()[3]);
-        assertEquals("EE", autoFieldMetadata.getFields()[4]);
+        assertNotNull(fieldMapType);
+        assertEquals(5, fieldMapType.size());
+        assertTrue(fieldMapType.keySet().contains("AA"));
+        assertTrue(fieldMapType.keySet().contains("BB"));
+        assertTrue(fieldMapType.keySet().contains("CC"));
+        assertTrue(fieldMapType.keySet().contains("DD"));
+        assertTrue(fieldMapType.keySet().contains("EE"));
 
-        assertEquals(5, autoFieldMetadata.getFieldTypes().length);
-        assertEquals("AUTO_INCREMENT", autoFieldMetadata.getFieldTypes()[0]);
-        assertEquals("AUTO_INCREMENT", autoFieldMetadata.getFieldTypes()[1]);
-        assertEquals("AUTO_INCREMENT", autoFieldMetadata.getFieldTypes()[2]);
-        assertEquals("UUID", autoFieldMetadata.getFieldTypes()[3]);
-        assertEquals("UUID", autoFieldMetadata.getFieldTypes()[4]);
+        assertEquals("AUTO_INCREMENT", fieldMapType.get("AA"));
+        assertEquals("AUTO_INCREMENT", fieldMapType.get("BB"));
+        assertEquals("AUTO_INCREMENT", fieldMapType.get("CC"));
+        assertEquals("UUID", fieldMapType.get("DD"));
+        assertEquals("UUID", fieldMapType.get("EE"));
 
         dataClusterName = "Product";
         typeName = "Product";
@@ -615,16 +613,15 @@ import static org.junit.Assert.fail;
         MockMetadataRepositoryAdmin.INSTANCE.register(dataClusterName, repository);
         type = repository.getComplexType(typeName);
 
-        autoFieldMetadata = (XSDKey) getTypeAutoFieldMethod.invoke(loadServlet, type.getFields());
+        fieldMapType =  (Map<String, String>)getTypeAutoFieldMethod.invoke(loadServlet, type.getFields());
 
-        assertNotNull(autoFieldMetadata);
-        assertEquals(2, autoFieldMetadata.getFields().length);
-        assertEquals("Support", autoFieldMetadata.getFields()[0]);
-        assertEquals("Supply", autoFieldMetadata.getFields()[1]);
+        assertNotNull(fieldMapType);
+        assertEquals(2, fieldMapType.size());
+        assertTrue(fieldMapType.keySet().contains("Support"));
+        assertTrue(fieldMapType.keySet().contains("Supply"));
 
-        assertEquals(2, autoFieldMetadata.getFieldTypes().length);
-        assertEquals("AUTO_INCREMENT", autoFieldMetadata.getFieldTypes()[0]);
-        assertEquals("UUID", autoFieldMetadata.getFieldTypes()[1]);
+        assertEquals("AUTO_INCREMENT", fieldMapType.get("Support"));
+        assertEquals("UUID", fieldMapType.get("Supply"));
 
         dataClusterName = "Student";
         typeName = "Student";
@@ -633,20 +630,19 @@ import static org.junit.Assert.fail;
         MockMetadataRepositoryAdmin.INSTANCE.register(dataClusterName, repository);
         type = repository.getComplexType(typeName);
 
-        autoFieldMetadata = (XSDKey) getTypeAutoFieldMethod.invoke(loadServlet, type.getFields());
+        fieldMapType = (Map<String, String>)getTypeAutoFieldMethod.invoke(loadServlet, type.getFields());
 
-        assertNotNull(autoFieldMetadata);
-        assertEquals(4, autoFieldMetadata.getFields().length);
-        assertEquals("Account", autoFieldMetadata.getFields()[0]);
-        assertEquals("Site", autoFieldMetadata.getFields()[1]);
-        assertEquals("Course/Score", autoFieldMetadata.getFields()[2]);
-        assertEquals("Course/Like", autoFieldMetadata.getFields()[3]);
+        assertNotNull(fieldMapType);
+        assertEquals(4, fieldMapType.size());
+        assertTrue(fieldMapType.keySet().contains("Account"));
+        assertTrue(fieldMapType.keySet().contains("Site"));
+        assertTrue(fieldMapType.keySet().contains("Course/Score"));
+        assertTrue(fieldMapType.keySet().contains("Course/Like"));
 
-        assertEquals(4, autoFieldMetadata.getFieldTypes().length);
-        assertEquals("UUID", autoFieldMetadata.getFieldTypes()[0]);
-        assertEquals("AUTO_INCREMENT", autoFieldMetadata.getFieldTypes()[1]);
-        assertEquals("AUTO_INCREMENT", autoFieldMetadata.getFieldTypes()[2]);
-        assertEquals("UUID", autoFieldMetadata.getFieldTypes()[3]);
+        assertEquals("UUID", fieldMapType.get("Account"));
+        assertEquals("AUTO_INCREMENT", fieldMapType.get("Site"));
+        assertEquals("AUTO_INCREMENT", fieldMapType.get("Course/Score"));
+        assertEquals("UUID", fieldMapType.get("Course/Like"));
     }
 
     private void assertKeyValue(String key, String value, Document document) {

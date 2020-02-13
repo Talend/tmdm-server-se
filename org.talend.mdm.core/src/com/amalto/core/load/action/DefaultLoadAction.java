@@ -13,6 +13,7 @@ package com.amalto.core.load.action;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.util.webapp.XSystemObjects;
@@ -56,7 +57,7 @@ public class DefaultLoadAction implements LoadAction {
     }
 
     @Override
-    public void load(InputStream stream, XSDKey keyMetadata, XSDKey normalFieldMetadata, XmlServer server,
+    public void load(InputStream stream, XSDKey keyMetadata, Map<String, String> fieldMapType, XmlServer server,
             SaverSession session) {
         try {
             SaverContextFactory contextFactory = session.getContextFactory();

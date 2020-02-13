@@ -23,7 +23,9 @@ import com.amalto.core.server.StorageAdmin;
 import com.amalto.core.storage.Storage;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("nls")
 public class AutoIncrementUtil {
@@ -73,9 +75,20 @@ public class AutoIncrementUtil {
         return fieldPath;
     }
 
-    public static String[] generatedNormalField(String[] normalFields, String content) {
-        List<String> generatedField = new ArrayList<>(normalFields.length);
-        if (normalFields.length == 0) {
+    /**
+     * Get the field which need to generated value,
+     * parse supplied value <code>context</code>, if the field is supplied value, this field don't need to generate
+     * if the field is in complex type,
+     *   1. if the complex is empty, this field don't need to generate
+     *   2. if supplied other field's value of this complex type, this field need to generate
+     *
+     * @param normalFields all AUTO_INCREMENT/UUID filed defined in schema
+     * @param content supplied value context
+     * @return
+     */
+    public static String[] generatedNormalField(Collection<String> normalFields, String content) {
+        List<String> generatedField = new ArrayList<>(normalFields.size());
+        if (normalFields.isEmpty()) {
             return generatedField.toArray(new String[0]);
         }
         String beginName = content.substring(content.indexOf("<") + 1, content.indexOf(">"));
@@ -88,13 +101,17 @@ public class AutoIncrementUtil {
             Element root = document.getRootElement();
             for (String fieldPath : normalFields) {
                 Element element = root;
+                // if the filed is not in one complex type
                 if (!fieldPath.contains("/") && element.element(fieldPath) == null) {
                     generatedField.add(fieldPath);
                 } else if (fieldPath.contains("/")) {
+                    // if field is in one complex type
                     String[] allFieldPaths = fieldPath.split("/");
                     for (int i = 0; i < allFieldPaths.length; i++) {
                         element = element.element(allFieldPaths[i]);
                         if (element == null) {
+                            // Address/Id, if parse Address is not exist in the content,
+                            // don't need to generate
                             if (i == 0) {
                                 break;
                             }
@@ -102,7 +119,6 @@ public class AutoIncrementUtil {
                         }
                     }
                 }
-
             }
         } catch (Exception e) {
             LOG.error("Faield to parse stream to Document");

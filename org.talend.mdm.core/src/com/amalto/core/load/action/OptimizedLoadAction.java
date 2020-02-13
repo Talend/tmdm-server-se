@@ -59,7 +59,7 @@ public class OptimizedLoadAction implements LoadAction {
     }
 
     @Override
-    public void load(InputStream stream, XSDKey autoKeyMetadata, XSDKey normalFieldMetadata, XmlServer server, SaverSession session) {
+    public void load(InputStream stream, XSDKey autoKeyMetadata, Map<String, String> fieldMapType, XmlServer server, SaverSession session) {
         if (!".".equals(autoKeyMetadata.getSelector())) { //$NON-NLS-1$
             throw new UnsupportedOperationException("Selector '" + autoKeyMetadata.getSelector() + "' isn't supported.");
         }
@@ -69,8 +69,8 @@ public class OptimizedLoadAction implements LoadAction {
         } catch (Exception e) {
             LOG.error("Faield to parse input stream to string", e);
         }
-        String[] generatedField = AutoIncrementUtil.generatedNormalField(normalFieldMetadata.getFields(), content);
-        Map<String, AutoIdGenerator> normalFieldGenerator = getNormalFieldGenerator(normalFieldMetadata, generatedField);
+        String[] generatedField = AutoIncrementUtil.generatedNormalField(fieldMapType.keySet(), content);
+        Map<String, AutoIdGenerator> normalFieldGenerator = getNormalFieldGenerator(fieldMapType, generatedField);
         AutoIdGenerator idGenerator = needAutoGenPK ? getAutoIdGenerators(autoKeyMetadata)[0] : null;
 
         // Creates a load parser callback that loads data in server using a SAX handler
@@ -105,31 +105,19 @@ public class OptimizedLoadAction implements LoadAction {
         return generator;
     }
 
-    private Map<String, AutoIdGenerator> getNormalFieldGenerator(XSDKey fieldMetadata, String[] normalFields) {
+    private Map<String, AutoIdGenerator> getNormalFieldGenerator(Map<String, String> filedMapType, String[] normalFields) {
         Map<String, AutoIdGenerator> normalFieldGenerator = new HashMap<>();
         if (normalFields.length == 0) {
             return normalFieldGenerator;
         }
-        String[] fieldTypes = fieldMetadata.getFieldTypes();
-        String[] fields = fieldMetadata.getFields();
-        int m = 0, n = 0;
-        AutoIdGenerator autoIdGenerator;
-        AutoIdGenerator uuidIdGenerator = new UUIDIdGenerator();
-        for (String fieldType : fieldTypes) {
-            if (!normalFields[m].equals(fields[n++])) {
-                continue;
-            }
-            if (EUUIDCustomType.AUTO_INCREMENT.getName().equals(fieldType)) {
-                autoIdGenerator = AutoIncrementGenerator.get();
-            } else if (EUUIDCustomType.UUID.getName().equals(fieldType)) {
-                autoIdGenerator = uuidIdGenerator;
+        for (String fieldPath : normalFields) {
+            if (EUUIDCustomType.AUTO_INCREMENT.getName().equals(filedMapType.get(fieldPath))) {
+                normalFieldGenerator.put(fieldPath, AutoIncrementGenerator.get());
+            } else if (EUUIDCustomType.UUID.getName().equals(filedMapType.get(fieldPath))) {
+                normalFieldGenerator.put(fieldPath, UUID_ID_GENERATOR);
             } else {
-                throw new UnsupportedOperationException(
-                        "No support for  field type '" + fieldType + "' with autogen on."); //$NON-NLS-1$ //$NON-NLS-2$
-            }
-            normalFieldGenerator.put(normalFields[m], autoIdGenerator);
-            if (++m == normalFields.length) {
-                break;
+                throw new UnsupportedOperationException("No support for  field type '" + filedMapType.get(fieldPath)
+                        + "' with autogen on."); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
         return normalFieldGenerator;

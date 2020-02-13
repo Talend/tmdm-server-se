@@ -79,8 +79,8 @@ public class AutoIncrementUtil {
      * Get the field which need to generated value,
      * parse supplied value <code>context</code>, if the field is supplied value, this field don't need to generate
      * if the field is in complex type,
-     *   1. if the complex is empty, this field don't need to generate
-     *   2. if supplied other field's value of this complex type, this field need to generate
+     *   1. If the parent node is empty, this field does't need to generate
+     *   2. If only target field is empty, this field needs to generate
      *
      * @param normalFields all AUTO_INCREMENT/UUID filed defined in schema
      * @param content supplied value context

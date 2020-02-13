@@ -144,21 +144,21 @@ public class LoadServlet extends HttpServlet {
         MetadataRepository repository = repositoryAdmin.get(dataModelName);
         ComplexTypeMetadata type = repository.getComplexType(typeName);
         XSDKey keyMetadata = getTypeKey(type.getKeyFields());
-        Map<String, String> fieldMapType = getFieldMapType(type.getFields());
+        Map<String, String> autoFieldTypeMap = getAutoFieldTypeMap(type.getFields());
 
         DataRecord.CheckExistence.set(!insertOnly);
-        bulkLoadSave(dataClusterName, dataModelName, inputStream, loadAction, keyMetadata, fieldMapType);
+        bulkLoadSave(dataClusterName, dataModelName, inputStream, loadAction, keyMetadata, autoFieldTypeMap);
         writer.write("</body></html>"); //$NON-NLS-1$
     }
 
     private void bulkLoadSave(String dataClusterName, String dataModelName, InputStream inputStream, LoadAction loadAction,
-            XSDKey keyMetadata, Map<String, String> fieldMapType) throws ServletException {
+            XSDKey keyMetadata, Map<String, String> autoFieldTypeMap) throws ServletException {
         XmlServer server = Util.getXmlServerCtrlLocal();
 
         SaverSession session = SaverSession.newSession();
         SaverContextFactory contextFactory = session.getContextFactory();
         DocumentSaverContext context = contextFactory
-                .createBulkLoad(dataClusterName, dataModelName, keyMetadata, fieldMapType, inputStream, loadAction, server);
+                .createBulkLoad(dataClusterName, dataModelName, keyMetadata, autoFieldTypeMap, inputStream, loadAction, server);
         DocumentSaver saver = context.createSaver();
 
         // Wait until less that MAX_THREADS running
@@ -279,8 +279,8 @@ public class LoadServlet extends HttpServlet {
      * @param fieldList all field list
      * @return all AUTO_INCREMENT/UUID field type, include this type field existed in the complex type
      */
-    private Map<String, String> getFieldMapType(Collection<FieldMetadata> fieldList) {
-        Map<String, String> fieldMapType = new HashMap<>();
+    private Map<String, String> getAutoFieldTypeMap(Collection<FieldMetadata> fieldList) {
+        Map<String, String> autoFieldTypeMap = new HashMap<>();
         for (FieldMetadata field : fieldList) {
             if (field.isKey()) {
                 continue;
@@ -288,9 +288,9 @@ public class LoadServlet extends HttpServlet {
             List<FieldMetadata> fieldMetadataList = new ArrayList<>();
             getFieldIntactName(field, fieldMetadataList);
             for (FieldMetadata subField : fieldMetadataList) {
-                fieldMapType.put(subField.getPath(), subField.getType().getName());
+                autoFieldTypeMap.put(subField.getPath(), subField.getType().getName());
             }
-        } return fieldMapType;
+        } return autoFieldTypeMap;
     }
 
     private void getFieldIntactName(FieldMetadata field, List<FieldMetadata> fieldList) {

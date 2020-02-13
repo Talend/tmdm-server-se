@@ -28,22 +28,22 @@ class BulkLoadSaver implements DocumentSaver {
 
     private final XSDKey autoKeyMetadata;
 
-    private final Map<String, String> fieldMapType;
+    private final Map<String, String> autoFieldTypeMap;
 
     private final XmlServer server;
 
-    BulkLoadSaver(LoadAction loadAction, InputStream documentStream, XSDKey autoKeyMetadata, Map<String, String> fieldMapType,
+    BulkLoadSaver(LoadAction loadAction, InputStream documentStream, XSDKey autoKeyMetadata, Map<String, String> autoFieldTypeMap,
             XmlServer server) {
         this.loadAction = loadAction;
         this.documentStream = documentStream;
         this.autoKeyMetadata = autoKeyMetadata;
-        this.fieldMapType = fieldMapType;
+        this.autoFieldTypeMap = autoFieldTypeMap;
         this.server = server;
     }
 
     public void save(SaverSession session, DocumentSaverContext context) {
         try {
-            loadAction.load(documentStream, autoKeyMetadata, fieldMapType, server, session);
+            loadAction.load(documentStream, autoKeyMetadata, autoFieldTypeMap, server, session);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

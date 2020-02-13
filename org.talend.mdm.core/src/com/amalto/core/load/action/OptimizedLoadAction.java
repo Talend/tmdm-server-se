@@ -56,10 +56,7 @@ public class OptimizedLoadAction implements LoadAction {
         if (!".".equals(autoKeyMetadata.getSelector())) { //$NON-NLS-1$
             throw new UnsupportedOperationException("Selector '" + autoKeyMetadata.getSelector() + "' isn't supported.");
         }
-        AutoIdGenerator idGenerator = null;
-        if (needAutoGenPK) {
-            idGenerator = getAutoFieldGenerators(autoKeyMetadata)[0];
-        }
+        AutoIdGenerator idGenerator = needAutoGenPK ? getAutoFieldGenerators(autoKeyMetadata)[0] : null;
         AutoIdGenerator[] normalFieldGenerators = getAutoFieldGenerators(normalFieldMetadata);
 
         // Creates a load parser callback that loads data in server using a SAX handler
@@ -83,7 +80,7 @@ public class OptimizedLoadAction implements LoadAction {
         int i = 0;
         for (String fieldType : fieldTypes) {
             if (EUUIDCustomType.AUTO_INCREMENT.getName().equals(fieldType)) {
-                generator[i++] = AutoIncrementGenerator.get();;
+                generator[i++] = AutoIncrementGenerator.get();
             } else if (EUUIDCustomType.UUID.getName().equals(fieldType)) {
                 generator[i++] = UUID_ID_GENERATOR;
             } else {

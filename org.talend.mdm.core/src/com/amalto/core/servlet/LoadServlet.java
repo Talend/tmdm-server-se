@@ -147,7 +147,6 @@ public class LoadServlet extends HttpServlet {
         XSDKey keyMetadata = getTypeKey(type.getKeyFields());
         XSDKey autoFieldMetadata = getTypeAutoField(type.getFields());
 
-
         DataRecord.CheckExistence.set(!insertOnly);
         bulkLoadSave(dataClusterName, dataModelName, inputStream, loadAction, keyMetadata, autoFieldMetadata);
         writer.write("</body></html>"); //$NON-NLS-1$

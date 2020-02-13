@@ -32,7 +32,7 @@ import java.io.InputStream;
  *
  */
 public class OptimizedLoadAction implements LoadAction {
-    private static final Logger log = Logger.getLogger(OptimizedLoadAction.class);
+    private static final Logger LOG = Logger.getLogger(OptimizedLoadAction.class);
     private static final AutoIdGenerator UUID_ID_GENERATOR = new UUIDIdGenerator();
     private final String dataClusterName;
     private final String typeName;
@@ -69,8 +69,8 @@ public class OptimizedLoadAction implements LoadAction {
 
         context = LoadParser.parse(inputStream, configuration, callback);
 
-        if (log.isDebugEnabled()) {
-            log.debug("Number of documents loaded: " + callback.getCount()); //$NON-NLS-1$
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Number of documents loaded: " + callback.getCount()); //$NON-NLS-1$
         }
     }
 
@@ -102,9 +102,9 @@ public class OptimizedLoadAction implements LoadAction {
                 try {
                     server.rollback(XSystemObjects.DC_CONF.getName());
                 } catch (XtentisException e1) {
-                    log.error("Unable to rollback upon error.", e); //$NON-NLS-1$
+                    LOG.error("Unable to rollback upon error.", e); //$NON-NLS-1$
                 }
-                log.error(e.getLocalizedMessage(), e);
+                LOG.error(e.getLocalizedMessage(), e);
             }
         }
     }

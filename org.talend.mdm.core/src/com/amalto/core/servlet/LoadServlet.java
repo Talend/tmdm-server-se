@@ -145,7 +145,7 @@ public class LoadServlet extends HttpServlet {
         MetadataRepository repository = repositoryAdmin.get(dataModelName);
         ComplexTypeMetadata type = repository.getComplexType(typeName);
         XSDKey keyMetadata = getTypeKey(type.getKeyFields());
-        XSDKey autoFieldMetadata = getTypeAutoField(type.getKeyFields());
+        XSDKey autoFieldMetadata = getTypeAutoField(type.getFields());
 
 
         DataRecord.CheckExistence.set(!insertOnly);
@@ -264,8 +264,8 @@ public class LoadServlet extends HttpServlet {
         for (FieldMetadata keyField : fieldList) {
             fields[i] = keyField.getPath();
             String name = keyField.getType().getName();
-            if (EUUIDCustomType.AUTO_INCREMENT.getName().equals(name) || EUUIDCustomType.UUID.getName()
-                    .equals(name)) { // See TMDM-6687
+            if (EUUIDCustomType.AUTO_INCREMENT.getName().equals(name) || EUUIDCustomType.UUID.getName().equals(name)) { // See
+                                                                                                                        // TMDM-6687
                 fieldTypes[i] = name;
             } else {
                 fieldTypes[i] = "xsd:" + name; //$NON-NLS-1$

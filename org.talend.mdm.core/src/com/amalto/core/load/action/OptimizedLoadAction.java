@@ -104,7 +104,7 @@ public class OptimizedLoadAction implements LoadAction {
                 } catch (XtentisException e1) {
                     LOG.error("Unable to rollback upon error.", e); //$NON-NLS-1$
                 }
-                LOG.error(e.getLocalizedMessage(), e);
+                LOG.error("Failed to load data", e);
             }
         }
     }

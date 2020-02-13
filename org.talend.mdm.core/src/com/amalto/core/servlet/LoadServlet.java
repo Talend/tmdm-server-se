@@ -263,8 +263,8 @@ public class LoadServlet extends HttpServlet {
         for (FieldMetadata keyField : fieldList) {
             fields[i] = keyField.getPath();
             String name = keyField.getType().getName();
-            if (EUUIDCustomType.AUTO_INCREMENT.getName().equals(name) || EUUIDCustomType.UUID.getName().equals(name)) { // See
-                                                                                                                        // TMDM-6687
+            // See TMDM-6687
+            if (EUUIDCustomType.AUTO_INCREMENT.getName().equals(name) || EUUIDCustomType.UUID.getName().equals(name)) {
                 fieldTypes[i] = name;
             } else {
                 fieldTypes[i] = "xsd:" + name; //$NON-NLS-1$

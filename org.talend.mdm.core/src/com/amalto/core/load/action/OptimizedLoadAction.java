@@ -33,7 +33,7 @@ import java.io.InputStream;
  */
 public class OptimizedLoadAction implements LoadAction {
     private static final Logger log = Logger.getLogger(OptimizedLoadAction.class);
-    private static final AutoIdGenerator uuidGenerator = new UUIDIdGenerator();
+    private static final AutoIdGenerator UUID_ID_GENERATOR = new UUIDIdGenerator();
     private final String dataClusterName;
     private final String typeName;
     private final String dataModelName;
@@ -85,7 +85,7 @@ public class OptimizedLoadAction implements LoadAction {
             if (EUUIDCustomType.AUTO_INCREMENT.getName().equals(fieldType)) {
                 generator[i++] = AutoIncrementGenerator.get();;
             } else if (EUUIDCustomType.UUID.getName().equals(fieldType)) {
-                generator[i++] = uuidGenerator;
+                generator[i++] = UUID_ID_GENERATOR;
             } else {
                 throw new UnsupportedOperationException(
                         "No support for  field type '" + fieldType + "' with autogen on."); //$NON-NLS-1$ //$NON-NLS-2$

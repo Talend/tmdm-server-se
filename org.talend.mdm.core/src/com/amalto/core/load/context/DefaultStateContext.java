@@ -24,9 +24,8 @@ import com.amalto.core.server.api.XmlServer;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
@@ -64,22 +63,16 @@ public class DefaultStateContext implements StateContext {
 
     private String currentIdElementName;
 
-    private AutoIdGenerator[] normalFieldGenerators;
+    private Map<String, AutoIdGenerator> normalFieldGenerator;
 
-    private String[] normalFieldPaths;
-
-    private Set<String> normalFieldInXML = new HashSet<>();
-
-    private Stack<String> readElementPath = new Stack<>();
-
-    public DefaultStateContext(String payLoadElementName, String[] idPaths, String[] normalFieldPaths, String dataClusterName,
-            String dataModelName, int payloadLimit, LoadParserCallback callback, AutoIdGenerator[] normalFieldGenerators) {
-        this(payLoadElementName, idPaths, normalFieldPaths, dataClusterName, dataModelName, callback, normalFieldGenerators);
+    public DefaultStateContext(String payLoadElementName, String[] idPaths, String dataClusterName,
+            String dataModelName, int payloadLimit, LoadParserCallback callback, Map<String, AutoIdGenerator> normalFieldGenerator) {
+        this(payLoadElementName, idPaths, dataClusterName, dataModelName, callback, normalFieldGenerator);
         this.payloadLimit = payloadLimit;
     }
 
-    private DefaultStateContext(String payLoadElementName, String[] idPaths, String[] normalFieldPaths, String dataClusterName,
-            String dataModelName, LoadParserCallback callback, AutoIdGenerator[] normalFieldGenerators) {
+    private DefaultStateContext(String payLoadElementName, String[] idPaths,  String dataClusterName,
+            String dataModelName, LoadParserCallback callback, Map<String, AutoIdGenerator> normalFieldGenerator) {
         if (payLoadElementName == null) {
             throw new IllegalArgumentException("Payload element name cannot be null.");
         }
@@ -87,12 +80,11 @@ public class DefaultStateContext implements StateContext {
         for (String idPath : idPaths) {
             paths.add(new PathMatcher(idPath));
         }
-        this.normalFieldPaths = normalFieldPaths;
         idToMatchCount = idPaths.length;
         contextWriter = bufferStateContextWriter;
         this.callback = callback;
         this.payLoadElementName = payLoadElementName;
-        this.normalFieldGenerators = normalFieldGenerators;
+        this.normalFieldGenerator = normalFieldGenerator;
         metadata = new DefaultMetadata();
         metadata.setName(payLoadElementName);
         metadata.setDmn(payLoadElementName);
@@ -266,10 +258,7 @@ public class DefaultStateContext implements StateContext {
 
     public void close(XmlServer server) {
         // if one normal field is AUTO_INCREMENT, it also need to store.
-        if (normalFieldGenerators == null) {
-            return;
-        }
-        for (AutoIdGenerator generator : normalFieldGenerators) {
+        for (AutoIdGenerator generator : getNormalFieldGenerator().values()) {
             if (!(generator instanceof UUIDIdGenerator)) {
                 generator.saveState(server);
                 break;
@@ -278,22 +267,7 @@ public class DefaultStateContext implements StateContext {
     }
 
     @Override
-    public AutoIdGenerator[] getNormalFieldGenerators() {
-        return normalFieldGenerators;
-    }
-
-    @Override
-    public Stack<String> getReadElementPath() {
-        return this.readElementPath;
-    }
-
-    @Override
-    public String[] getNormalFieldPaths(){
-        return this.normalFieldPaths;
-    }
-
-    @Override
-    public Set<String> getNormalFieldInXML() {
-        return this.normalFieldInXML;
+    public Map<String, AutoIdGenerator> getNormalFieldGenerator() {
+        return normalFieldGenerator;
     }
 }

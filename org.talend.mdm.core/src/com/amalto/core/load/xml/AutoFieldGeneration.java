@@ -18,34 +18,25 @@ import com.amalto.core.save.generator.AutoIdGenerator;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 @SuppressWarnings("nls")
 public class AutoFieldGeneration implements State {
     private final State previousState;
 
-    private final String[] fieldPaths;
+    private final Map<String , AutoIdGenerator> normalFieldGenerator;
 
-    public AutoFieldGeneration(State previousState, String[] fieldPaths) {
+    public AutoFieldGeneration(State previousState, Map<String , AutoIdGenerator> normalFieldGenerator) {
         this.previousState = previousState;
-        this.fieldPaths = fieldPaths;
+        this.normalFieldGenerator = normalFieldGenerator;
     }
 
     @Override
     public void parse(StateContext context, XMLStreamReader reader) throws XMLStreamException {
         try {
-            AutoIdGenerator[] normalFieldGenerators = context.getNormalFieldGenerators();
-            int i = 0;
-            /*
-            field Paths store the all need to generate value the field,  if doesn't existed, it means don't generate the value.
-            if the field path is 'Course/Score', it should be first write '<Course>', and next is '<Score>',
-            but it inverse for the end element, first is '<Score>', first is '<Course>'
-             */
-            for (String fieldPath : fieldPaths) {
-                if (fieldPath == null) {
-                    i++;
-                    continue;
-                }
+            for (Map.Entry<String, AutoIdGenerator> entry : normalFieldGenerator.entrySet()) {
+                String fieldPath = entry.getKey();
                 if (fieldPath.contains("/")) {
                     StringTokenizer tokenizer = new StringTokenizer(fieldPath, "/");
                     while (tokenizer.hasMoreTokens()) {
@@ -56,8 +47,9 @@ public class AutoFieldGeneration implements State {
                     context.getWriter().writeStartElement(fieldPath);
                 }
 
-                context.getWriter().writeCharacters(normalFieldGenerators[i++]
-                        .generateId(context.getMetadata().getDataClusterName(), context.getMetadata().getName(), fieldPath.replaceAll("/", ".")));
+                context.getWriter().writeCharacters(entry.getValue()
+                        .generateId(context.getMetadata().getDataClusterName(), context.getMetadata().getName(),
+                                fieldPath.replaceAll("/", ".")));
 
                 if (fieldPath.contains("/")) {
                     String[] idPathArray = fieldPath.split("/");
@@ -67,7 +59,6 @@ public class AutoFieldGeneration implements State {
                 } else {
                     context.getWriter().writeEndElement(fieldPath);
                 }
-
             }
         } catch (Exception e) {
             throw new RuntimeException("Unable to generate automatic field", e);

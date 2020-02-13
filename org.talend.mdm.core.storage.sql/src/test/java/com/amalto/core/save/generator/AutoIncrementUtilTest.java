@@ -118,4 +118,45 @@ public class AutoIncrementUtilTest {
         assertEquals("Habit.Detail.Count",
                 AutoIncrementUtil.getAutoIncrementFieldPath("Person", "Person", "Habit.Detail.Count"));
     }
+
+    @Test
+    public void generatedNormalField() throws Exception {
+        String[] normalFields = new String[4];
+
+        normalFields[0] = "Account";
+        normalFields[1] = "Site";
+        normalFields[2] = "Course/Score";
+        normalFields[3] = "Course/Like";
+
+        String recordXml = "<Student><Id>3</Id><Name>John</Name><Age>23</Age><Site>20</Site><Course><Id>English</Id><Teacher>Mike</Teacher><Score>10</Score></Course></Student>";
+
+        String[] result = AutoIncrementUtil.generatedNormalField(normalFields, recordXml);
+        assertEquals("Account", result[0]);
+        assertEquals("Course/Like", result[1]);
+
+
+        recordXml ="<Student><Id>3</Id><Name>John</Name><Age>23</Age><Site>20</Site><Course><Id>English</Id><Teacher>Mike</Teacher></Course></Student>";
+        result = AutoIncrementUtil.generatedNormalField(normalFields, recordXml);
+        assertEquals("Account", result[0]);
+        assertEquals("Course/Score", result[1]);
+        assertEquals("Course/Like", result[2]);
+
+        recordXml ="<Student><Id>3</Id><Name>John</Name><Age>23</Age><Site>20</Site></Student>";
+        result = AutoIncrementUtil.generatedNormalField(normalFields, recordXml);
+        assertEquals("Account", result[0]);
+
+        recordXml ="<Student><Id>5</Id><Name>John</Name><Age>23</Age><Course><Id>English</Id><Teacher>Mike</Teacher></Course></Student><Student><Id>6</Id><Name>John</Name><Age>23</Age><Course><Id>English</Id><Teacher>Mike</Teacher></Course></Student><Student><Id>7</Id><Name>John</Name><Age>23</Age><Course><Id>English</Id><Teacher>Mike</Teacher></Course></Student>";
+        result = AutoIncrementUtil.generatedNormalField(normalFields, recordXml);
+        assertEquals("Account", result[0]);
+        assertEquals("Site", result[1]);
+
+        normalFields = new String[4];
+
+        normalFields[0] = "Account";
+
+        recordXml ="<Student><Id>5</Id><Name>John</Name><Age>23</Age><Course><Id>English</Id><Teacher>Mike</Teacher></Course></Student>";
+        result = AutoIncrementUtil.generatedNormalField(normalFields, recordXml);
+        assertEquals("Account", result[0]);
+
+    }
 }

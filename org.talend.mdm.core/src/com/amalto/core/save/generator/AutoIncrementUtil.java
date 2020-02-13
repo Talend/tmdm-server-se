@@ -9,6 +9,11 @@
  */
 package com.amalto.core.save.generator;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.metadata.MetadataUtils;
@@ -17,8 +22,12 @@ import com.amalto.core.server.ServerContext;
 import com.amalto.core.server.StorageAdmin;
 import com.amalto.core.storage.Storage;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @SuppressWarnings("nls")
 public class AutoIncrementUtil {
+    private static final Logger LOG = Logger.getLogger(AutoIncrementUtil.class);
 
     public static String getConceptForAutoIncrement(String storageName, String conceptName) {
         String concept = null;
@@ -64,4 +73,41 @@ public class AutoIncrementUtil {
         return fieldPath;
     }
 
+    public static String[] generatedNormalField(String[] normalFields, String content) {
+        List<String> generatedField = new ArrayList<>(normalFields.length);
+        if (normalFields.length == 0) {
+            return generatedField.toArray(new String[0]);
+        }
+        String beginName = content.substring(content.indexOf("<") + 1, content.indexOf(">"));
+        if (StringUtils.countMatches(content, beginName) > 2) {
+            String endName = "</" + beginName + ">";
+            content = content.substring(0, content.indexOf(endName) + endName.length());
+        }
+        try {
+            Document document = DocumentHelper.parseText(content);
+            Element root = document.getRootElement();
+            for (String fieldPath : normalFields) {
+                Element element = root;
+                if (!fieldPath.contains("/") && element.element(fieldPath) == null) {
+                    generatedField.add(fieldPath);
+                } else if (fieldPath.contains("/")) {
+                    String[] allFieldPaths = fieldPath.split("/");
+                    for (int i = 0; i < allFieldPaths.length; i++) {
+                        element = element.element(allFieldPaths[i]);
+                        if (element == null) {
+                            if (i == 0) {
+                                break;
+                            }
+                            generatedField.add(fieldPath);
+                        }
+                    }
+                }
+
+            }
+        } catch (Exception e) {
+            LOG.error("Faield to parse stream to Document");
+        }
+
+        return generatedField.toArray(new String[generatedField.size()]);
+    }
 }

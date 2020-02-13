@@ -28,9 +28,6 @@ public class EndElement implements State {
 
     public void parse(StateContext context, XMLStreamReader reader) throws XMLStreamException {
         context.leaveElement();
-        if (context.getNormalFieldPaths() != null && context.getNormalFieldPaths().length > 0) {
-            context.getReadElementPath().pop();
-        }
         try {
             context.getWriter().writeEndElement(reader);
         } catch (Exception e) {

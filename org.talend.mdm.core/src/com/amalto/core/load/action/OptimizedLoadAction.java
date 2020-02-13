@@ -15,6 +15,7 @@ import com.amalto.core.load.LoadParser;
 import com.amalto.core.save.generator.AutoIdGenerator;
 import com.amalto.core.load.context.StateContext;
 import com.amalto.core.save.generator.AutoIncrementGenerator;
+import com.amalto.core.save.generator.AutoIncrementUtil;
 import com.amalto.core.save.generator.UUIDIdGenerator;
 import com.amalto.core.load.io.XMLRootInputStream;
 import com.amalto.core.save.SaverSession;
@@ -22,11 +23,17 @@ import com.amalto.core.server.api.XmlServer;
 import com.amalto.core.util.XSDKey;
 import com.amalto.core.util.XtentisException;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.util.core.EUUIDCustomType;
 import org.talend.mdm.commmon.util.webapp.XSystemObjects;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -56,16 +63,23 @@ public class OptimizedLoadAction implements LoadAction {
         if (!".".equals(autoKeyMetadata.getSelector())) { //$NON-NLS-1$
             throw new UnsupportedOperationException("Selector '" + autoKeyMetadata.getSelector() + "' isn't supported.");
         }
-        AutoIdGenerator idGenerator = needAutoGenPK ? getAutoFieldGenerators(autoKeyMetadata)[0] : null;
-        AutoIdGenerator[] normalFieldGenerators = getAutoFieldGenerators(normalFieldMetadata);
+        String content = StringUtils.EMPTY;
+        try {
+            content = IOUtils.toString(stream);
+        } catch (Exception e) {
+            LOG.error("Faield to parse input stream to string", e);
+        }
+        String[] generatedField = AutoIncrementUtil.generatedNormalField(normalFieldMetadata.getFields(), content);
+        Map<String, AutoIdGenerator> normalFieldGenerator = getNormalFieldGenerator(normalFieldMetadata, generatedField);
+        AutoIdGenerator idGenerator = needAutoGenPK ? getAutoIdGenerators(autoKeyMetadata)[0] : null;
 
         // Creates a load parser callback that loads data in server using a SAX handler
         ServerParserCallback callback = new ServerParserCallback(server, dataClusterName);
 
-        java.io.InputStream inputStream = new XMLRootInputStream(stream, "root"); //$NON-NLS-1$
+        java.io.InputStream inputStream = new XMLRootInputStream(
+                new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8)), "root"); //$NON-NLS-1$
         LoadParser.Configuration configuration = new LoadParser.Configuration(typeName, autoKeyMetadata.getFields(),
-                normalFieldMetadata.getFields(), needAutoGenPK, dataClusterName, dataModelName, idGenerator,
-                normalFieldGenerators);
+                needAutoGenPK, dataClusterName, dataModelName, idGenerator, normalFieldGenerator);
 
         context = LoadParser.parse(inputStream, configuration, callback);
 
@@ -74,7 +88,7 @@ public class OptimizedLoadAction implements LoadAction {
         }
     }
 
-    private AutoIdGenerator[] getAutoFieldGenerators(XSDKey fieldMetadata) {
+    private AutoIdGenerator[] getAutoIdGenerators(XSDKey fieldMetadata) {
         String[] fieldTypes = fieldMetadata.getFieldTypes();
         AutoIdGenerator[] generator = new AutoIdGenerator[fieldTypes.length];
         int i = 0;
@@ -89,6 +103,36 @@ public class OptimizedLoadAction implements LoadAction {
             }
         }
         return generator;
+    }
+
+    private Map<String, AutoIdGenerator> getNormalFieldGenerator(XSDKey fieldMetadata, String[] normalFields) {
+        Map<String, AutoIdGenerator> normalFieldGenerator = new HashMap<>();
+        if (normalFields.length == 0) {
+            return normalFieldGenerator;
+        }
+        String[] fieldTypes = fieldMetadata.getFieldTypes();
+        String[] fields = fieldMetadata.getFields();
+        int m = 0, n = 0;
+        AutoIdGenerator autoIdGenerator;
+        AutoIdGenerator uuidIdGenerator = new UUIDIdGenerator();
+        for (String fieldType : fieldTypes) {
+            if (!normalFields[m].equals(fields[n++])) {
+                continue;
+            }
+            if (EUUIDCustomType.AUTO_INCREMENT.getName().equals(fieldType)) {
+                autoIdGenerator = AutoIncrementGenerator.get();
+            } else if (EUUIDCustomType.UUID.getName().equals(fieldType)) {
+                autoIdGenerator = uuidIdGenerator;
+            } else {
+                throw new UnsupportedOperationException(
+                        "No support for  field type '" + fieldType + "' with autogen on."); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+            normalFieldGenerator.put(normalFields[m], autoIdGenerator);
+            if (++m == normalFields.length) {
+                break;
+            }
+        }
+        return normalFieldGenerator;
     }
 
     public void endLoad(XmlServer server) {

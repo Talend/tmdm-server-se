@@ -13,12 +13,10 @@ package com.amalto.core.load.xml;
 import com.amalto.core.load.Constants;
 import com.amalto.core.load.State;
 import com.amalto.core.load.context.StateContext;
-import com.google.common.base.Joiner;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.events.XMLEvent;
-import java.util.Iterator;
 
 /**
  *
@@ -32,43 +30,6 @@ public class StartElement implements State {
     public void parse(StateContext context, XMLStreamReader reader) throws XMLStreamException {
         String elementLocalName = reader.getName().getLocalPart();
         context.enterElement(elementLocalName);
-        if (context.getNormalFieldPaths() != null && context.getNormalFieldPaths().length > 0) {
-            context.getReadElementPath().push(elementLocalName);
-            /*
-            add the field path into the stack from xml content.
-            eg:
-                <Student>
-                  <Id>2</Id>
-                  <Name>Mike</Name>
-                  <Age>25</Age>
-                  <Account>8bf3d65e-8350-4a49-a651-c4cb5fdaf91f</Account>
-                  <Site>6</Site>
-                  <Course>
-                    <Id>Chinese</Id>
-                    <Score>6</Score>
-                    <Like>1efa8311-3be5-4c42-a015-216780c46ab4</Like>
-                  </Course>
-                </Student>
-                stack result like below:
-                    Id
-                    Name
-                    Age
-                    Account
-                    Site
-                    Course/Id
-                    Course/Score
-                    Course/Like
-             */
-            StringBuilder name = new StringBuilder();
-            int i = 0;
-            for (String elementName : context.getReadElementPath()) {
-                if (i++ > 0) {
-                    name.append("/").append(elementName);
-                }
-            }
-            name.delete(0, 1);
-            context.getNormalFieldInXML().add(name.toString());
-        }
 
         if (context.skipElement()) {
             while (reader.next() != XMLEvent.END_ELEMENT) {

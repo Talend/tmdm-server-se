@@ -69,8 +69,8 @@ public class OptimizedLoadAction implements LoadAction {
         } catch (Exception e) {
             LOG.error("Faield to parse input stream to string", e);
         }
-        String[] generatedField = AutoIncrementUtil.getAutoNormalFieldsToGenerate(autoFieldTypeMap.keySet(), content);
-        Map<String, AutoIdGenerator> normalFieldGenerators = getNormalFieldGenerators(autoFieldTypeMap, generatedField);
+        String[] fieldsToGenerate = AutoIncrementUtil.getAutoNormalFieldsToGenerate(autoFieldTypeMap.keySet(), content);
+        Map<String, AutoIdGenerator> normalFieldGenerators = getNormalFieldGenerators(autoFieldTypeMap, fieldsToGenerate);
         AutoIdGenerator idGenerator = needAutoGenPK ? getAutoIdGenerators(autoKeyMetadata)[0] : null;
 
         // Creates a load parser callback that loads data in server using a SAX handler
@@ -105,12 +105,13 @@ public class OptimizedLoadAction implements LoadAction {
         return generator;
     }
 
-    private Map<String, AutoIdGenerator> getNormalFieldGenerators(Map<String, String> autoFieldTypeMap, String[] normalFields) {
+    private Map<String, AutoIdGenerator> getNormalFieldGenerators(Map<String, String> autoFieldTypeMap,
+            String[] fieldsToGenerate) {
         Map<String, AutoIdGenerator> normalFieldGenerators = new HashMap<>();
-        if (normalFields.length == 0) {
+        if (fieldsToGenerate.length == 0) {
             return normalFieldGenerators;
         }
-        for (String fieldPath : normalFields) {
+        for (String fieldPath : fieldsToGenerate) {
             if (EUUIDCustomType.AUTO_INCREMENT.getName().equals(autoFieldTypeMap.get(fieldPath))) {
                 normalFieldGenerators.put(fieldPath, AutoIncrementGenerator.get());
             } else if (EUUIDCustomType.UUID.getName().equals(autoFieldTypeMap.get(fieldPath))) {

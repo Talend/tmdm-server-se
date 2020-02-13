@@ -25,15 +25,14 @@ import java.util.StringTokenizer;
 public class AutoFieldGeneration implements State {
     private final State previousState;
 
-    private final Map<String , AutoIdGenerator> normalFieldGenerators;
+    private final Map<String, AutoIdGenerator> normalFieldGenerators;
 
-    public AutoFieldGeneration(State previousState, Map<String , AutoIdGenerator> normalFieldGenerators) {
+    public AutoFieldGeneration(State previousState, Map<String, AutoIdGenerator> normalFieldGenerators) {
         this.previousState = previousState;
         this.normalFieldGenerators = normalFieldGenerators;
     }
 
-    @Override
-    public void parse(StateContext context, XMLStreamReader reader) throws XMLStreamException {
+    @Override public void parse(StateContext context, XMLStreamReader reader) throws XMLStreamException {
         try {
             for (Map.Entry<String, AutoIdGenerator> entry : normalFieldGenerators.entrySet()) {
                 String fieldPath = entry.getKey();

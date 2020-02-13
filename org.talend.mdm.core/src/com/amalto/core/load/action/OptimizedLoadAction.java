@@ -35,9 +35,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- *
- */
 public class OptimizedLoadAction implements LoadAction {
     private static final Logger LOG = Logger.getLogger(OptimizedLoadAction.class);
     private static final AutoIdGenerator UUID_ID_GENERATOR = new UUIDIdGenerator();

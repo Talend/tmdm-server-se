@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -118,7 +117,6 @@ public class LoadServlet extends HttpServlet {
         String dataModelName = request.getParameter(PARAMETER_DATAMODEL);
         boolean needValidate = Boolean.parseBoolean(request.getParameter(PARAMETER_VALIDATE));
         boolean needAutoGenPK = Boolean.parseBoolean(request.getParameter(PARAMETER_SMARTPK));
-        boolean needAutoGenNormalFields = request.getParameter(PARAMETER_SMARTFIELDS) == null ? true : false;
         boolean insertOnly = Boolean.parseBoolean(request.getParameter(PARAMETER_INSERTONLY));
 
         try {
@@ -137,40 +135,30 @@ public class LoadServlet extends HttpServlet {
         ServletInputStream inputStream = request.getInputStream();
 
         LoadAction loadAction = getLoadAction(dataClusterName, typeName, dataModelName, needValidate, needAutoGenPK, updateReport,
-                source, needAutoGenNormalFields);
+                source);
         if (needValidate && !loadAction.supportValidation()) {
             throw new ServletException(new UnsupportedOperationException("XML Validation isn't supported")); //$NON-NLS-1$
         }
         // Get xml server and key information
-        XSDKey keyMetadata;
-        XSDKey autoFieldMetadata = null;
-        try {
-            MetadataRepositoryAdmin repositoryAdmin = ServerContext.INSTANCE.get().getMetadataRepositoryAdmin();
-            MetadataRepository repository = repositoryAdmin.get(dataModelName);
-            ComplexTypeMetadata type = repository.getComplexType(typeName);
-            keyMetadata = getTypeKey(type.getKeyFields());
-            if (needAutoGenNormalFields) {
-                Collection<FieldMetadata> fields = type.getFields();
-                Collection<FieldMetadata> autoFields = fields.stream().filter(filed -> (!filed.isKey()))
-                        .collect(Collectors.toList());
-                autoFieldMetadata = getTypeAutoField(autoFields);
-            }
-        } catch (Exception e) {
-            throw new ServletException(e);
-        }
+        MetadataRepositoryAdmin repositoryAdmin = ServerContext.INSTANCE.get().getMetadataRepositoryAdmin();
+        MetadataRepository repository = repositoryAdmin.get(dataModelName);
+        ComplexTypeMetadata type = repository.getComplexType(typeName);
+        XSDKey keyMetadata = getTypeKey(type.getKeyFields());
+        Map<String, String> autoFieldTypeMap = getAutoFieldTypeMap(type.getFields());
+
         DataRecord.CheckExistence.set(!insertOnly);
-        bulkLoadSave(dataClusterName, dataModelName, inputStream, loadAction, keyMetadata, autoFieldMetadata);
+        bulkLoadSave(dataClusterName, dataModelName, inputStream, loadAction, keyMetadata, autoFieldTypeMap);
         writer.write("</body></html>"); //$NON-NLS-1$
     }
 
-    protected void bulkLoadSave(String dataClusterName, String dataModelName, InputStream inputStream, LoadAction loadAction,
-            XSDKey keyMetadata, XSDKey autoFieldMetadata) throws ServletException {
+    private void bulkLoadSave(String dataClusterName, String dataModelName, InputStream inputStream, LoadAction loadAction,
+            XSDKey keyMetadata, Map<String, String> autoFieldTypeMap) throws ServletException {
         XmlServer server = Util.getXmlServerCtrlLocal();
 
         SaverSession session = SaverSession.newSession();
         SaverContextFactory contextFactory = session.getContextFactory();
         DocumentSaverContext context = contextFactory
-                .createBulkLoad(dataClusterName, dataModelName, keyMetadata, autoFieldMetadata, inputStream, loadAction, server);
+                .createBulkLoad(dataClusterName, dataModelName, keyMetadata, autoFieldTypeMap, inputStream, loadAction, server);
         DocumentSaver saver = context.createSaver();
 
         // Wait until less that MAX_THREADS running
@@ -234,11 +222,6 @@ public class LoadServlet extends HttpServlet {
 
     protected LoadAction getLoadAction(String dataClusterName, String typeName, String dataModelName, boolean needValidate,
             boolean needAutoGenPK, boolean updateReport, String source) {
-        return getLoadAction(dataClusterName, typeName, dataModelName, needValidate, needAutoGenPK, updateReport, source, false);
-    }
-
-    protected LoadAction getLoadAction(String dataClusterName, String typeName, String dataModelName, boolean needValidate,
-            boolean needAutoGenPK, boolean updateReport, String source, boolean needAutoGenNormalFields) {
         // Test if the data cluster actually exists
         DataClusterPOJO dataCluster = getDataCluster(dataClusterName);
         if (dataCluster == null) {
@@ -251,7 +234,7 @@ public class LoadServlet extends HttpServlet {
         if (needValidate || updateReport || XSystemObjects.DC_PROVISIONING.getName().equals(dataClusterName)) {
             loadAction = new DefaultLoadAction(dataClusterName, dataModelName, needValidate, updateReport, source);
         } else {
-            loadAction = new OptimizedLoadAction(dataClusterName, typeName, dataModelName, needAutoGenPK, needAutoGenNormalFields);
+            loadAction = new OptimizedLoadAction(dataClusterName, typeName, dataModelName, needAutoGenPK);
         }
         if (LOG.isDebugEnabled()) {
             LOG.debug("Load action selected for load: " + loadAction.getClass().getName() //$NON-NLS-1$
@@ -279,8 +262,8 @@ public class LoadServlet extends HttpServlet {
         for (FieldMetadata keyField : fieldList) {
             fields[i] = keyField.getPath();
             String name = keyField.getType().getName();
-            if (EUUIDCustomType.AUTO_INCREMENT.getName().equals(name) || EUUIDCustomType.UUID.getName().equals(name)) { // See
-                                                                                                                        // TMDM-6687
+            // See TMDM-6687
+            if (EUUIDCustomType.AUTO_INCREMENT.getName().equals(name) || EUUIDCustomType.UUID.getName().equals(name)) {
                 fieldTypes[i] = name;
             } else {
                 fieldTypes[i] = "xsd:" + name; //$NON-NLS-1$
@@ -293,21 +276,21 @@ public class LoadServlet extends HttpServlet {
     /**
      * Filter the AUTO_INCREMENT/UUID type field from the entity's all list.
      * if contains the complex type, it also filter.
-     * @param fieldList all field except the PK in one entity
-     * @return all AUTO_INCREMENT/UUID type field, include this type field existed in the complex type
+     * @param fieldList all field list
+     * @return all AUTO_INCREMENT/UUID field type, include this type field existed in the complex type
      */
-    private XSDKey getTypeAutoField(Collection<FieldMetadata> fieldList) {
-        List<String> fieldsList = new ArrayList<>(fieldList.size());
-        List<String> fieldTypesList = new ArrayList<>(fieldList.size());
+    private Map<String, String> getAutoFieldTypeMap(Collection<FieldMetadata> fieldList) {
+        Map<String, String> autoFieldTypeMap = new HashMap<>();
         for (FieldMetadata field : fieldList) {
+            if (field.isKey()) {
+                continue;
+            }
             List<FieldMetadata> fieldMetadataList = new ArrayList<>();
             getFieldIntactName(field, fieldMetadataList);
             for (FieldMetadata subField : fieldMetadataList) {
-                fieldsList.add(subField.getPath());
-                fieldTypesList.add(subField.getType().getName());
+                autoFieldTypeMap.put(subField.getPath(), subField.getType().getName());
             }
-        }
-        return new XSDKey(".", fieldsList.toArray(new String[] {}), fieldTypesList.toArray(new String[] {})); //$NON-NLS-1$
+        } return autoFieldTypeMap;
     }
 
     private void getFieldIntactName(FieldMetadata field, List<FieldMetadata> fieldList) {

@@ -9,6 +9,11 @@
  */
 package com.amalto.core.save.generator;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.metadata.MetadataUtils;
@@ -17,8 +22,14 @@ import com.amalto.core.server.ServerContext;
 import com.amalto.core.server.StorageAdmin;
 import com.amalto.core.storage.Storage;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
 @SuppressWarnings("nls")
 public class AutoIncrementUtil {
+    private static final Logger LOG = Logger.getLogger(AutoIncrementUtil.class);
 
     public static String getConceptForAutoIncrement(String storageName, String conceptName) {
         String concept = null;
@@ -64,4 +75,54 @@ public class AutoIncrementUtil {
         return fieldPath;
     }
 
+    /**
+     * Get the field which need to generated value,
+     * parse supplied value <code>context</code>, if the field is supplied value, this field don't need to generate
+     * if the field is in complex type,
+     *   1. If the parent node is empty, this field does't need to generate
+     *   2. If only target field is empty, this field needs to generate
+     *
+     * @param normalFields all AUTO_INCREMENT/UUID filed defined in schema
+     * @param content supplied value context
+     * @return
+     */
+    public static String[] getAutoNormalFieldsToGenerate(Collection<String> normalFields, String content) {
+        List<String> generatedField = new ArrayList<>(normalFields.size());
+        if (normalFields.isEmpty() || content.equals(StringUtils.EMPTY)) {
+            return generatedField.toArray(new String[0]);
+        }
+        String beginName = content.substring(content.indexOf("<") + 1, content.indexOf(">"));
+        if (StringUtils.countMatches(content, beginName) > 2) {
+            String endName = "</" + beginName + ">";
+            content = content.substring(0, content.indexOf(endName) + endName.length());
+        }
+        try {
+            Document document = DocumentHelper.parseText(content);
+            Element root = document.getRootElement();
+            for (String fieldPath : normalFields) {
+                Element element = root;
+                // if the filed is not in one complex type
+                if (!fieldPath.contains("/") && element.element(fieldPath) == null) {
+                    generatedField.add(fieldPath);
+                } else if (fieldPath.contains("/")) {
+                    // if field is in one complex type
+                    String[] allFieldPaths = fieldPath.split("/");
+                    for (int i = 0; i < allFieldPaths.length; i++) {
+                        element = element.element(allFieldPaths[i]);
+                        if (element == null) {
+                            // Address/Id, if Address doesn't exist
+                            if (i == 0) {
+                                break;
+                            }
+                            generatedField.add(fieldPath);
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            LOG.error("Failed to parse stream to Document");
+        }
+
+        return generatedField.toArray(new String[generatedField.size()]);
+    }
 }

@@ -1,0 +1,64 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:import namespace="http://www.w3.org/2001/XMLSchema" />
+    <!-- Objet INTERLOCUTEUR -->
+    <xsd:element name="Interlocuteur" type="InterlocuteurType">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Label_FR">Interlocuteur</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:unique name="Interlocuteur">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="idGrc" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:complexType name="InterlocuteurType">
+        <xsd:sequence>
+            <xsd:element maxOccurs="1" minOccurs="0" name="titre" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="1" name="idGrc" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Label_FR">Code Partenaire GRC</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="use" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                    <xsd:appinfo source="X_ForeignKey">UseUrse/codeUSE</xsd:appinfo>
+                    <xsd:appinfo source="X_Label_FR">USE</xsd:appinfo>
+                    <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <!-- Objet UseURSE -->
+    <xsd:element name="UseUrse" type="UseUrseType">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Label_FR">USE/URSE</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:unique name="UseUrse">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="codeUSE" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:complexType name="UseUrseType">
+        <xsd:all>
+            <xsd:element maxOccurs="1" minOccurs="1" name="codeUSE" type="xsd:integer">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Label_FR">Code</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="1" name="nomUse" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Label_FR">Nom</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:all>
+    </xsd:complexType>
+</xsd:schema>

@@ -416,6 +416,27 @@ public class InboundReferencesTest extends TestCase {
         assertEquals(FKIntegrityCheckResult.ALLOWED, policy);
     }
 
+    // TMDM-14432 Unexpected error promotion while delete a record referenced to other entity using RTE datamodel
+    public void testModelRTEWithFK() throws Exception {
+        MetadataRepository repository = getMetadataRepository("RTE_3.xsd");
+
+        ComplexTypeMetadata interlocuteur = repository.getComplexType("Interlocuteur");
+        FieldMetadata fieldUse = interlocuteur.getField("use");
+        assertEquals(ReferenceFieldMetadata.class, fieldUse.getClass());
+        ReferenceFieldMetadata referenceFieldMetadata = (ReferenceFieldMetadata) fieldUse;
+        assertTrue(referenceFieldMetadata.isFKIntegrity());
+        assertFalse(referenceFieldMetadata.allowFKIntegrityOverride());
+
+        IntegrityCheckDataSourceMock dataSource = new IntegrityCheckDataSourceMock(repository);
+        FKIntegrityChecker integrityChecker = FKIntegrityChecker.getInstance();
+        String dataCluster = "RTE";
+        String typeName = "Interlocuteur";
+        String[] fkIds = {"1"};
+        assertTrue(integrityChecker.allowDelete(dataCluster, typeName, fkIds, false, dataSource));
+        FKIntegrityCheckResult policy = integrityChecker.getFKIntegrityPolicy(dataCluster, typeName, fkIds, dataSource);
+        assertEquals(FKIntegrityCheckResult.ALLOWED, policy);
+    }
+
     public void testModel15() throws Exception {
         MetadataRepository repository = getMetadataRepository("model15.xsd");
 

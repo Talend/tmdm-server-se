@@ -10,11 +10,17 @@
 
 package com.amalto.core.integrity;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
-import org.talend.mdm.commmon.metadata.*;
+import org.talend.mdm.commmon.metadata.FieldMetadata;
+import org.talend.mdm.commmon.metadata.InboundReferences;
+import org.talend.mdm.commmon.metadata.MetadataRepository;
+import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
+import org.talend.mdm.commmon.metadata.TypeMetadata;
+
 import com.amalto.core.util.XtentisException;
 
 /**
@@ -25,6 +31,8 @@ class IntegrityCheckDataSourceMock implements FKIntegrityCheckDataSource {
     private final MetadataRepository repository;
 
     private boolean hasMetConflict;
+
+    private String[] pkIds = new String[] { "1" };
 
     public IntegrityCheckDataSourceMock(MetadataRepository repository) {
         this.repository = repository;
@@ -41,7 +49,7 @@ class IntegrityCheckDataSourceMock implements FKIntegrityCheckDataSource {
 
     public boolean isFKReferencedBySelf(String clusterName, String[] ids, String fromTypeName,
             ReferenceFieldMetadata fromReference) throws XtentisException {
-        if (fromReference.getReferencedType().getName().equalsIgnoreCase(fromTypeName)) {
+        if (Arrays.equals(ids, pkIds) && fromReference.getReferencedType().getName().equalsIgnoreCase(fromTypeName)) {
             return true;
         }
         return false;

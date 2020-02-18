@@ -109,7 +109,7 @@ class DefaultCheckDataSource implements FKIntegrityCheckDataSource {
             return false;
         }
         String[] pkIds = getItemPKsByCriteria(clusterName, fkIds, fromTypeName, fromReference);
-        if (Arrays.equals(fkIds, pkIds)) {
+        if (Arrays.equals(fkIds, pkIds) && fromTypeName.equals(fromReference.getReferencedType().getName())) {
             return true;
         }
         return false;

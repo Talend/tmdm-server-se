@@ -18,6 +18,7 @@ import java.util.Stack;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.talend.mdm.commmon.util.core.MDMConfiguration;
 import org.talend.mdm.webapp.base.client.model.Criteria;
 import org.talend.mdm.webapp.base.client.model.DataTypeConstants;
 import org.talend.mdm.webapp.base.client.model.MultipleCriteria;
@@ -37,6 +38,14 @@ import com.extjs.gxt.ui.client.data.ModelData;
 
 @SuppressWarnings("nls")
 public class CommonUtilTest extends TestCase {
+
+    static {
+        try {
+            MDMConfiguration.createConfiguration("", true);
+        } catch (IllegalStateException e) {
+            // already configured;
+        }
+    }
 
     public void testParseSimpleSearchExpression() throws Exception {
         String s = "(foo/bar EQUALS 3/4)";

@@ -27,6 +27,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.UUID;
@@ -164,6 +165,54 @@ public class Util extends XmlUtil {
     private static RoutingOrder defaultRoutingOrder;
 
     private static com.amalto.core.server.api.Transformer defaultTransformer;
+
+    private static final AtomicInteger TRANSACTION_CURRENT_REQUESTS = new AtomicInteger();
+
+    private static final String TRANSACTION_WAIT_MILLISECONDS_KEY = "transaction.concurrent.wait.milliseconds"; //$NON-NLS-1$
+
+    public static long TRANSACTION_WAIT_MILLISECONDS_VALUE = 0L;
+
+    static {
+        String config = MDMConfiguration.getConfiguration().getProperty(TRANSACTION_WAIT_MILLISECONDS_KEY);
+        if (config != null) {
+            try {
+                TRANSACTION_WAIT_MILLISECONDS_VALUE = Long.valueOf(config);
+            } catch (Exception e) {
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("Failed to read configuration: " + TRANSACTION_WAIT_MILLISECONDS_KEY, e); //$NON-NLS-1$
+                }
+                TRANSACTION_WAIT_MILLISECONDS_VALUE = 0L;
+            }
+        }
+    }
+
+    private static synchronized DocumentBuilderFactory getDocumentBuilderFactory() {
+        if (nonValidatingDocumentBuilderFactory == null) {
+            nonValidatingDocumentBuilderFactory = DocumentBuilderFactory.newInstance();
+            nonValidatingDocumentBuilderFactory.setNamespaceAware(true);
+            nonValidatingDocumentBuilderFactory.setValidating(false);
+            nonValidatingDocumentBuilderFactory.setExpandEntityReferences(false);
+        }
+        return nonValidatingDocumentBuilderFactory;
+    }
+
+    public static Document parse(String xmlString) throws ParserConfigurationException, IOException, SAXException {
+        DocumentBuilderFactory factory;
+        factory = getDocumentBuilderFactory();
+        factory.setExpandEntityReferences(false);
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        SAXErrorHandler seh = new SAXErrorHandler();
+        builder.setErrorHandler(seh);
+        Document d = builder.parse(new InputSource(new StringReader(xmlString)));
+        // check if document parsed correctly against the schema
+        String errors = seh.getErrors();
+        if (errors.length() != 0) {
+            String err = "Document did not parse against schema: \n" + errors + "\n"
+                    + xmlString.substring(0, Math.min(100, xmlString.length()));
+            throw new SAXException(err);
+        }
+        return d;
+    }
 
     public static Document validate(Element element, String schema) throws Exception {
         return BeanDelegatorContainer.getInstance().getValidationDelegator().validation(element, schema);
@@ -1198,5 +1247,32 @@ public class Util extends XmlUtil {
             path = path.replaceAll("\\[\\d+\\]", "");
         }
         return path;
+    }
+
+    public static void beginTransactionLimit() {
+        if (TRANSACTION_WAIT_MILLISECONDS_VALUE > 0) {
+            synchronized (Util.class) {
+                try {
+                    while (TRANSACTION_CURRENT_REQUESTS.get() >= 1) {
+                        Thread.sleep(TRANSACTION_WAIT_MILLISECONDS_VALUE);
+                    }
+                    TRANSACTION_CURRENT_REQUESTS.incrementAndGet();
+                } catch (InterruptedException e) {
+                    if (LOGGER.isDebugEnabled()) {
+                        LOGGER.debug("Failed to sleep thread.", e);
+                    }
+                }
+            }
+        }
+    }
+
+    /*
+     * It is needed to invoked a pair of beginTransactionLimit and endTransactionLimit.
+     * And they shouldn't be nested invoked in the same thread. otherwise, the second calling will be blocked.
+     */
+    public static void endTransactionLimit() {
+        if (TRANSACTION_WAIT_MILLISECONDS_VALUE > 0) {
+            TRANSACTION_CURRENT_REQUESTS.decrementAndGet();
+        }
     }
 }

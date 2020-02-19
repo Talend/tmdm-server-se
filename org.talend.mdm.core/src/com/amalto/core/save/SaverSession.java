@@ -30,6 +30,7 @@ import com.amalto.core.save.context.StorageDocument;
 import com.amalto.core.save.context.StorageSaverSource;
 import com.amalto.core.save.generator.AutoIncrementGenerator;
 import com.amalto.core.storage.record.DataRecord;
+import com.amalto.core.util.Util;
 
 public class SaverSession {
 
@@ -209,6 +210,14 @@ public class SaverSession {
                         throw new MultiRecordsSaveException(getCauseMessage(e), e.getCause(), recordId, itemCounter);
                     }
                     throw e;
+                }
+
+                if (Util.TRANSACTION_WAIT_MILLISECONDS_VALUE > 0) {
+                    try {
+                        Thread.sleep(Util.TRANSACTION_WAIT_MILLISECONDS_VALUE);
+                    } catch (InterruptedException e) {
+                        LOGGER.warn("Update process has been interrupted.", e); //$NON-NLS-1$
+                    }
                 }
             }
             // If any change was made to data cluster "UpdateReport", route committed update reports.

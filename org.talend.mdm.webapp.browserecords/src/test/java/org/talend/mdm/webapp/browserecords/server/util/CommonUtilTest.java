@@ -30,6 +30,7 @@ import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit3.PowerMockSuite;
+import org.talend.mdm.commmon.util.core.MDMConfiguration;
 import org.talend.mdm.commmon.util.datamodel.management.DataModelID;
 import org.talend.mdm.webapp.base.client.exception.ServiceException;
 import org.talend.mdm.webapp.base.client.model.DataTypeConstants;
@@ -55,6 +56,14 @@ import com.google.gwt.user.client.rpc.core.java.util.Collections;
 @PrepareForTest({ Util.class })
 @SuppressWarnings("nls")
 public class CommonUtilTest extends TestCase {
+
+    static {
+        try {
+            MDMConfiguration.createConfiguration("", true);
+        } catch (IllegalStateException e) {
+            // already configured;
+        }
+    }
 
     private static final Logger LOG = Logger.getLogger(CommonUtilTest.class);
 

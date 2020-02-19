@@ -37,6 +37,7 @@ import org.powermock.reflect.Whitebox;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadataImpl;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
+import org.talend.mdm.commmon.util.core.MDMConfiguration;
 import org.talend.mdm.commmon.util.datamodel.management.DataModelID;
 import org.talend.mdm.webapp.base.client.exception.ServiceException;
 import org.talend.mdm.webapp.base.client.model.ForeignKeyBean;
@@ -115,6 +116,14 @@ import junit.framework.TestSuite;
         BrowseRecordsAction.class, Configuration.class })
 @SuppressWarnings("nls")
 public class BrowseRecordsActionTest extends TestCase {
+
+    static {
+        try {
+            MDMConfiguration.createConfiguration("", true);
+        } catch (IllegalStateException e) {
+            // already configured;
+        }
+    }
 
     private final Messages MESSAGES = MessagesFactory.getMessages(
             "org.talend.mdm.webapp.browserecords.client.i18n.BrowseRecordsMessages", this.getClass().getClassLoader()); //$NON-NLS-1$

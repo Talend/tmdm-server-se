@@ -25,6 +25,7 @@ import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit3.PowerMockSuite;
+import org.talend.mdm.commmon.util.core.MDMConfiguration;
 import org.talend.mdm.webapp.base.shared.EntityModel;
 import org.talend.mdm.webapp.browserecords.server.bizhelpers.DataModelHelper;
 import org.talend.mdm.webapp.journal.shared.JournalGridModel;
@@ -48,6 +49,14 @@ import com.sun.xml.xsom.XSElementDecl;
 @SuppressWarnings("nls")
 @PrepareForTest({ Util.class, XtentisPort.class, WSDataModelPKArray.class, WSRegexDataModelPKs.class})
 public class JournalDBServiceTest extends TestCase {
+
+    static {
+        try {
+            MDMConfiguration.createConfiguration("", true);
+        } catch (IllegalStateException e) {
+            // already configured;
+        }
+    }
 
     private WebServiceMock mock = new WebServiceMock();
 

@@ -17,6 +17,7 @@ import java.io.InputStreamReader;
 import javax.xml.parsers.DocumentBuilder;
 
 import org.apache.commons.lang.StringUtils;
+import org.talend.mdm.commmon.util.core.MDMConfiguration;
 import org.talend.mdm.commmon.util.core.MDMXMLUtils;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
@@ -29,6 +30,14 @@ import junit.framework.TestCase;
 
 @SuppressWarnings("nls")
 public class DOMDocumentTest extends TestCase {
+
+    static {
+        try {
+            MDMConfiguration.createConfiguration("", true);
+        } catch (IllegalStateException e) {
+            // already configured;
+        }
+    }
 
     public void testExportToString() throws Exception {
         BufferedReader in = new BufferedReader(new InputStreamReader(DOMDocumentTest.class.getResourceAsStream("test1.xml")));

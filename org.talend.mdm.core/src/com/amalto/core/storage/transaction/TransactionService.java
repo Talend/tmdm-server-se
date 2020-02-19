@@ -13,6 +13,7 @@ package com.amalto.core.storage.transaction;
 
 import com.amalto.core.server.ServerContext;
 import com.amalto.core.storage.task.staging.SerializableList;
+import com.amalto.core.util.Util;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -66,8 +67,13 @@ public class TransactionService {
         TransactionManager transactionManager = ServerContext.INSTANCE.get().getTransactionManager();
         Transaction transaction = transactionManager.get(transactionId);
         if (transaction != null) {
-            transaction.commit();
-            transactionListener.transactionCommitted(transactionId);
+            try {
+                Util.beginTransactionLimit();
+                transaction.commit();
+                transactionListener.transactionCommitted(transactionId);
+            } finally {
+                Util.endTransactionLimit();
+            }
         }
     }
 
@@ -83,8 +89,13 @@ public class TransactionService {
         TransactionManager transactionManager = ServerContext.INSTANCE.get().getTransactionManager();
         Transaction transaction = transactionManager.get(transactionId);
         if (transaction != null) {
-            transaction.rollback();
-            transactionListener.transactionRollbacked(transactionId);
+            try {
+                Util.beginTransactionLimit();
+                transaction.rollback();
+                transactionListener.transactionRollbacked(transactionId);
+            } finally {
+                Util.endTransactionLimit();
+            }
         }
     }
 }

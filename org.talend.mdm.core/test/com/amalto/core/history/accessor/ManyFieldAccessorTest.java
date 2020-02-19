@@ -15,11 +15,20 @@ import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
+import org.talend.mdm.commmon.util.core.MDMConfiguration;
 import org.xml.sax.SAXException;
 import com.amalto.core.save.DOMDocument;
 import com.amalto.core.util.Util;
 
 public class ManyFieldAccessorTest {
+
+    static {
+        try {
+            MDMConfiguration.createConfiguration("", true);
+        } catch (IllegalStateException e) {
+            // already configured;
+        }
+    }
 
     @Test
     public void testCreateEmptyChildNode() throws Exception {

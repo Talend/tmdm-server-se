@@ -14,6 +14,7 @@ import static com.amalto.core.query.user.UserQueryBuilder.from;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
+import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,6 +30,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import com.amalto.core.query.user.Select;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.util.core.MDMXMLUtils;
@@ -289,6 +291,24 @@ public class StorageWrapperTest extends TestCase {
         List<String> result = wrapper.getItemPKsByCriteria(criteria);
         assertEquals("<totalCount>1</totalCount>", result.get(0)); //$NON-NLS-1$
         assertTrue(result.get(1).contains("<n>Feature</n><ids><i>1111</i>")); //$NON-NLS-1$
+    }
+
+    public void testGetSelectTypeByIdForInherited() throws Exception {
+        StorageWrapper wrapper = new StorageWrapper();
+        Method getSelectTypeByIdMethod = wrapper.getClass().getDeclaredMethod("getSelectTypeById", ComplexTypeMetadata.class, String.class); //$NON-NLS-1$
+        getSelectTypeByIdMethod.setAccessible(true);
+
+        MetadataRepository repository = prepareMetadata("Party.xsd"); //$NON-NLS-1$
+        ComplexTypeMetadata companyType = repository.getComplexType("Company"); //$NON-NLS-1$
+        ComplexTypeMetadata Individual = repository.getComplexType("Individual"); //$NON-NLS-1$
+        Select select = (Select)getSelectTypeByIdMethod.invoke(wrapper, companyType, "Party.Company.1"); //$NON-NLS-1$
+        assertNotNull(select);
+        assertEquals(1, select.getTypes().size());
+        assertEquals(companyType.getName(), select.getTypes().get(0).getName());
+        select = (Select)getSelectTypeByIdMethod.invoke(wrapper, Individual, "Party.Individual.1"); //$NON-NLS-1$
+        assertNotNull(select);
+        assertEquals(1, select.getTypes().size());
+        assertEquals(Individual.getName(), select.getTypes().get(0).getName());
     }
 
     private MetadataRepository prepareMetadata(String xsd) {

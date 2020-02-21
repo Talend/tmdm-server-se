@@ -81,10 +81,6 @@ public class StorageWrapper implements IXmlServerSLWrapper {
 
     private Select getSelectTypeById(ComplexTypeMetadata type, String uniqueID) {
         ComplexTypeMetadata typeForSelect = type;
-        while (typeForSelect.getSuperTypes() != null && !typeForSelect.getSuperTypes().isEmpty()
-                && typeForSelect.getSuperTypes().size() > 0) {
-            typeForSelect = (ComplexTypeMetadata) typeForSelect.getSuperTypes().iterator().next();
-        }
         String[] splitUniqueID = uniqueID.split("\\."); //$NON-NLS-1$
         UserQueryBuilder qb = UserQueryBuilder.from(typeForSelect);
         Collection<FieldMetadata> keyFields = type.getKeyFields();

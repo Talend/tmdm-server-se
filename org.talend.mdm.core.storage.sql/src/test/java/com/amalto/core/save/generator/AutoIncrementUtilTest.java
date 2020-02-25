@@ -30,6 +30,7 @@ import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 @SuppressWarnings("nls")
 public class AutoIncrementUtilTest {
@@ -157,6 +158,43 @@ public class AutoIncrementUtilTest {
         recordXml ="<Student><Id>5</Id><Name>John</Name><Age>23</Age><Course><Id>English</Id><Teacher>Mike</Teacher></Course></Student>";
         result = AutoIncrementUtil.getAutoNormalFieldsToGenerate(normalFields, recordXml);
         assertEquals("Account", result[0]);
-
     }
+
+    @Test
+    public void normalAutoIncrementField(){
+        Set<String> normalFields = new HashSet<>();
+        normalFields.add("Course/Like");
+        normalFields.add("Course/Score");
+        normalFields.add("Account");
+        normalFields.add("Site");
+
+        Set<String> results = AutoIncrementUtil.normalAutoIncrementField("",normalFields);
+        assertEquals(2, results.size());
+        assertTrue(results.contains("Account"));
+        assertTrue(results.contains("Site"));
+
+        results = AutoIncrementUtil.normalAutoIncrementField(null,normalFields);
+        assertEquals(0, results.size());
+
+        results = AutoIncrementUtil.normalAutoIncrementField("Support",null);
+        assertEquals(0, results.size());
+
+        results = AutoIncrementUtil.normalAutoIncrementField("Course",normalFields);
+        assertEquals(2, results.size());
+        assertTrue(results.contains("Course/Like"));
+        assertTrue(results.contains("Course/Score"));
+
+        results = AutoIncrementUtil.normalAutoIncrementField("Support",normalFields);
+        assertEquals(0, results.size());
+
+        results = AutoIncrementUtil.normalAutoIncrementField("Course/Score",normalFields);
+        assertEquals(0, results.size());
+
+        normalFields.add("Course/Score/Name");
+        results = AutoIncrementUtil.normalAutoIncrementField("Course/Score",normalFields);
+        assertEquals(1, results.size());
+        assertTrue(results.contains("Course/Score/Name"));
+    }
+
+
 }

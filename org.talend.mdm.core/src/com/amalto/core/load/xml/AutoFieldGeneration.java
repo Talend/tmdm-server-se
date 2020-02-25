@@ -13,61 +13,33 @@ package com.amalto.core.load.xml;
 
 import com.amalto.core.load.State;
 import com.amalto.core.load.context.StateContext;
-import com.amalto.core.load.context.Utils;
-import com.amalto.core.save.generator.AutoIdGenerator;
+import com.amalto.core.save.generator.AutoIncrementUtil;
+import org.apache.commons.lang.StringUtils;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import java.util.Map;
-import java.util.StringTokenizer;
+import java.util.Set;
 
 @SuppressWarnings("nls")
 public class AutoFieldGeneration implements State {
-    private final State previousState;
-
-    private final Map<String, AutoIdGenerator> normalFieldGenerators;
-
-    public AutoFieldGeneration(State previousState, Map<String, AutoIdGenerator> normalFieldGenerators) {
-        this.previousState = previousState;
-        this.normalFieldGenerators = normalFieldGenerators;
-    }
 
     @Override public void parse(StateContext context, XMLStreamReader reader) throws XMLStreamException {
         try {
-            for (Map.Entry<String, AutoIdGenerator> entry : normalFieldGenerators.entrySet()) {
-                String fieldPath = entry.getKey();
-                if (fieldPath.contains("/")) {
-                    StringTokenizer tokenizer = new StringTokenizer(fieldPath, "/");
-                    while (tokenizer.hasMoreTokens()) {
-                        String pathElement = tokenizer.nextToken();
-                        context.getWriter().writeStartElement(pathElement);
-                    }
-                } else {
-                    context.getWriter().writeStartElement(fieldPath);
-                }
-
-                context.getWriter().writeCharacters(entry.getValue()
+            String currentContainerPath = AutoIncrementUtil.getCurrentPath(context.getCurrentLocation());
+            Set<String> autoFields = AutoIncrementUtil.normalAutoIncrementField(currentContainerPath, context.getNormalFieldGenerators().keySet());
+            for (String path : autoFields) {
+                String normalFieldPath = StringUtils.substringAfter(path, currentContainerPath);
+                normalFieldPath = normalFieldPath.startsWith("/") ? normalFieldPath.substring(1): normalFieldPath;
+                context.getWriter().writeStartElement(normalFieldPath);
+                context.getWriter().writeCharacters(context.getNormalFieldGenerators().get(path)
                         .generateId(context.getMetadata().getDataClusterName(), context.getMetadata().getName(),
-                                fieldPath.replaceAll("/", ".")));
-
-                if (fieldPath.contains("/")) {
-                    String[] idPathArray = fieldPath.split("/");
-                    for (int j = idPathArray.length - 1; j >= 0; j--) {
-                        context.getWriter().writeEndElement(idPathArray[j]);
-                    }
-                } else {
-                    context.getWriter().writeEndElement(fieldPath);
-                }
+                                path.replaceAll("/", ".")));
+                context.getWriter().writeEndElement(normalFieldPath);
             }
         } catch (Exception e) {
             throw new RuntimeException("Unable to generate automatic field", e);
         }
 
-        context.setCurrent(previousState);
-
-        if (!context.isFlushDone()) {
-            Utils.doParserCallback(context, reader, context.getMetadata());
-        }
     }
 
     public boolean isFinal() {

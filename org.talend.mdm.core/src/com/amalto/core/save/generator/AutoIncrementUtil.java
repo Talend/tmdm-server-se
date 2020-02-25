@@ -24,8 +24,10 @@ import com.amalto.core.storage.Storage;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
+import java.util.Stack;
 
 @SuppressWarnings("nls")
 public class AutoIncrementUtil {
@@ -124,5 +126,44 @@ public class AutoIncrementUtil {
         }
 
         return generatedField.toArray(new String[generatedField.size()]);
+    }
+
+    /**
+     * return the normal auto/uuid field in this container
+     * if {code}currentContainerPath{code} is empty, return the auto/uuid fields in this entity
+     * @param currentContainerPath the container's path
+     * @param allNormalFields all normal auto/uuid fields
+     * @return the normal auto/uuid fields in this container
+     */
+    public static Set<String> normalAutoIncrementField(String currentContainerPath, Set<String> allNormalFields) {
+        Set<String> normalFields = new HashSet<>();
+        if (currentContainerPath == null || allNormalFields == null) {
+            return normalFields;
+        }
+        if (StringUtils.isEmpty(currentContainerPath)) {
+            for (String path : allNormalFields) {
+                if (StringUtils.countMatches(StringUtils.substringAfter(path, currentContainerPath), "/") == 0) {
+                    normalFields.add(path);
+                }
+            }
+            return normalFields;
+        }
+        for (String path : allNormalFields) {
+            if (StringUtils.countMatches(StringUtils.substringAfter(path, currentContainerPath), "/") == 1) {
+                normalFields.add(path);
+            }
+        }
+        return normalFields;
+    }
+
+    public static String getCurrentPath(Stack<String> currentLocation) {
+        StringBuilder currentPathStr = new StringBuilder();
+        for (int i = 1; i < currentLocation.size(); i++) {
+            if (i > 1) {
+                currentPathStr.append("/");
+            }
+            currentPathStr.append(currentLocation.get(i));
+        }
+        return currentPathStr.toString();
     }
 }

@@ -10,6 +10,7 @@
 
 package com.amalto.core.storage.record;
 
+import java.util.List;
 import java.util.Stack;
 
 import javax.xml.XMLConstants;
@@ -172,13 +173,7 @@ public class XmlSAXDataRecordReader implements DataRecordReader<XmlSAXDataRecord
                                 }
                             }
                         }
-                        DataRecord containedRecord = null;
-                        if (actualType.getContainer() != null) {
-                            containedRecord = (DataRecord) dataRecordStack.peek().get(actualType.getContainer());
-                        }
-                        if (containedRecord == null || actualType.getContainer() == null) {
-                            containedRecord = new DataRecord(actualType, UnsupportedDataRecordMetadata.INSTANCE);
-                        }
+                        DataRecord containedRecord = new DataRecord(actualType, UnsupportedDataRecordMetadata.INSTANCE);;
                         dataRecordStack.peek().set(field, containedRecord);
                         dataRecordStack.push(containedRecord);
                         currentType.push(actualType);

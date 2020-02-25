@@ -579,6 +579,77 @@ import static org.junit.Assert.fail;
         assertKeyValue("Person.Person.Habit.Detail.Count", "1", xml);
     }
 
+    @Test public void test_09_BulkLoadForComplexTypeNoAuto() throws Exception {
+        String dataClusterName = "StudentM";
+        String typeName = "StudentM";
+        String dataModelName = "StudentM";
+        boolean needAutoGenPK = false;
+
+        boolean insertOnly = false;
+
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(LoadServletForAutoIncrementTest.class.getResourceAsStream("metadata07.xsd"));
+        MockMetadataRepositoryAdmin.INSTANCE.register(dataClusterName, repository);
+        ComplexTypeMetadata type = repository.getComplexType(typeName);
+
+        LoadAction loadAction = new OptimizedLoadAction(dataClusterName, typeName, dataModelName, needAutoGenPK);
+
+        DataRecord.CheckExistence.set(!insertOnly);
+        InputStream recordXml = new ByteArrayInputStream(
+                ("<StudentM><Id>8</Id><Name>John</Name><Age>23</Age><Course><Id>English</Id><Teacher>Mike</Teacher></Course><Course><Id>Chinese</Id><Teacher>John</Teacher></Course></StudentM>")
+                        .getBytes(StandardCharsets.UTF_8));
+
+        Method getTypeKeyMethod = loadServlet.getClass().getDeclaredMethod("getTypeKey", Collection.class);
+        getTypeKeyMethod.setAccessible(true);
+
+        XSDKey keyMetadata = (XSDKey) getTypeKeyMethod.invoke(loadServlet, type.getKeyFields());
+
+        Method getTypeAutoFieldMethod = loadServlet.getClass().getDeclaredMethod("getAutoFieldTypeMap", Collection.class);
+        getTypeAutoFieldMethod.setAccessible(true);
+        Map<String, String> autoFieldTypeMap = (Map<String, String>) getTypeAutoFieldMethod.invoke(loadServlet, type.getFields());
+
+        XmlServer server = Util.getXmlServerCtrlLocal();
+
+        Method bulkLoadSaveMethod = loadServlet.getClass()
+                .getDeclaredMethod("bulkLoadSave", String.class, String.class, InputStream.class, LoadAction.class, XSDKey.class,
+                        Map.class);
+        bulkLoadSaveMethod.setAccessible(true);
+
+        bulkLoadSaveMethod
+                .invoke(loadServlet, dataClusterName, dataModelName, recordXml, loadAction, keyMetadata, autoFieldTypeMap);
+        String result = server.getDocumentAsString(dataClusterName, dataClusterName + "." + typeName + ".8");
+        Document xmlDocument = DocumentHelper.parseText(result);
+        Element typeElement = xmlDocument.getRootElement().element("p").element(typeName);
+        assertEquals(7, typeElement.elements().size());
+        assertEquals(8, Integer.parseInt(typeElement.element("Id").getText()));
+        assertEquals("John", typeElement.element("Name").getText());
+        assertEquals("23", typeElement.element("Age").getText());
+        assertEquals(36, typeElement.element("Account").getText().length());
+        assertEquals("1", typeElement.element("Site").getText());
+        List<Element>courseElements = typeElement.elements("Course");
+        assertNotNull(courseElements);
+        assertEquals(4, courseElements.get(0).elements().size());
+        assertEquals("English", courseElements.get(0).element("Id").getText());
+        assertEquals("Mike", courseElements.get(0).element("Teacher").
+                getText());
+        assertEquals("1", courseElements.get(0).element("Score").getText());
+        assertEquals(36, courseElements.get(0).element("Like").getText().length());
+
+        assertEquals(4, courseElements.get(1).elements().size());
+        assertEquals("Chinese", courseElements.get(1).element("Id").getText());
+        assertEquals("John", courseElements.get(1).element("Teacher").
+                getText());
+        assertEquals("2", courseElements.get(1).element("Score").getText());
+        assertEquals(36, courseElements.get(1).element("Like").getText().length());
+
+        //Test System auto increment value
+        String confResult = server.getDocumentAsString("CONF", "CONF.AutoIncrement.AutoIncrement");
+        assertNotNull(confResult);
+        Document xml = DocumentHelper.parseText(confResult);
+        assertKeyValue("StudentM.Student.Site", "1", xml);
+        assertKeyValue("StudentM.Student.Course.Score", "1", xml);
+    }
+
     @Test public void testGetTypeAutoField() throws Exception {
         String dataClusterName = "AutoInc";
         String typeName = "Person";

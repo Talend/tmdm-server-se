@@ -130,7 +130,7 @@ public class AutoIncrementUtil {
 
     /**
      * return the normal auto/uuid field in this container
-     * if {code}currentContainerPath{code} is empty, return the auto/uuid fields in this entity
+     * if <code>currentContainerPath</code> is empty, return the auto/uuid fields in this entity
      * @param currentContainerPath the container's path
      * @param allNormalFields all normal auto/uuid fields
      * @return the normal auto/uuid fields in this container

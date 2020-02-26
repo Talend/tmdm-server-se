@@ -173,7 +173,7 @@ public class XmlSAXDataRecordReader implements DataRecordReader<XmlSAXDataRecord
                                 }
                             }
                         }
-                        DataRecord containedRecord = new DataRecord(actualType, UnsupportedDataRecordMetadata.INSTANCE);;
+                        DataRecord containedRecord = new DataRecord(actualType, UnsupportedDataRecordMetadata.INSTANCE);
                         dataRecordStack.peek().set(field, containedRecord);
                         dataRecordStack.push(containedRecord);
                         currentType.push(actualType);

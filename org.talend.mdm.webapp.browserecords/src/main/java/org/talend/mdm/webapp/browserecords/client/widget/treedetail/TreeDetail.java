@@ -321,7 +321,7 @@ public class TreeDetail extends ContentPanel {
 
                         @Override
                         public void execute() {
-                            renderChildren(itemNode, parentItem, withDefaultValue, operation);
+                            renderFkTab(itemNode, parentItem, withDefaultValue, operation);
                         }
                     });
                 } else {
@@ -406,6 +406,12 @@ public class TreeDetail extends ContentPanel {
         } else {
             addCommand(incCommand, false);
         }
+    }
+
+    // Render FK tab doesn't need to consider FK record's size, because they are loaded on demand already
+    private void renderFkTab(ItemNodeModel itemNode, DynamicTreeItem item, boolean withDefaultValue, String operation) {
+        IncrementalBuildTree incCommand = new IncrementalBuildTree(this, itemNode, viewBean, withDefaultValue, operation, item);
+        addCommand(incCommand, true);
     }
 
     public static void addCommand(IncrementalBuildTree command, boolean sync) {

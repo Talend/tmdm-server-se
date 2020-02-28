@@ -24,6 +24,7 @@ import com.amalto.core.server.api.XmlServer;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.util.Map;
+import java.util.Stack;
 
 /**
  * Load parser context implementation that has 2 main features:
@@ -176,4 +177,7 @@ public class AutoGenStateContext implements StateContext {
         return normalFieldGenerators;
     }
 
+    public Stack<String> getCurrentLocation() {
+        return delegate.getCurrentLocation();
+    }
 }

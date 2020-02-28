@@ -26,7 +26,7 @@ public class AutoFieldGeneration implements State {
     @Override public void parse(StateContext context, XMLStreamReader reader) throws XMLStreamException {
         try {
             String currentContainerPath = AutoIncrementUtil.getCurrentPath(context.getCurrentLocation());
-            Set<String> autoFields = AutoIncrementUtil.normalAutoIncrementField(currentContainerPath, context.getNormalFieldGenerators().keySet());
+            Set<String> autoFields = AutoIncrementUtil.getNormalAutoIncrementFields(currentContainerPath, context.getNormalFieldGenerators().keySet());
             for (String path : autoFields) {
                 String normalFieldPath = StringUtils.substringAfter(path, currentContainerPath);
                 normalFieldPath = normalFieldPath.startsWith("/") ? normalFieldPath.substring(1): normalFieldPath;

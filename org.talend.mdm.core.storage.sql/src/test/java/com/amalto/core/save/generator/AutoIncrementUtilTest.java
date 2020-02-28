@@ -161,40 +161,38 @@ public class AutoIncrementUtilTest {
     }
 
     @Test
-    public void normalAutoIncrementField(){
+    public void testGetNormalAutoIncrementFields(){
         Set<String> normalFields = new HashSet<>();
         normalFields.add("Course/Like");
         normalFields.add("Course/Score");
         normalFields.add("Account");
         normalFields.add("Site");
 
-        Set<String> results = AutoIncrementUtil.normalAutoIncrementField("",normalFields);
+        Set<String> results = AutoIncrementUtil.getNormalAutoIncrementFields("",normalFields);
         assertEquals(2, results.size());
         assertTrue(results.contains("Account"));
         assertTrue(results.contains("Site"));
 
-        results = AutoIncrementUtil.normalAutoIncrementField(null,normalFields);
+        results = AutoIncrementUtil.getNormalAutoIncrementFields(null,normalFields);
         assertEquals(0, results.size());
 
-        results = AutoIncrementUtil.normalAutoIncrementField("Support",null);
+        results = AutoIncrementUtil.getNormalAutoIncrementFields("Support",null);
         assertEquals(0, results.size());
 
-        results = AutoIncrementUtil.normalAutoIncrementField("Course",normalFields);
+        results = AutoIncrementUtil.getNormalAutoIncrementFields("Course",normalFields);
         assertEquals(2, results.size());
         assertTrue(results.contains("Course/Like"));
         assertTrue(results.contains("Course/Score"));
 
-        results = AutoIncrementUtil.normalAutoIncrementField("Support",normalFields);
+        results = AutoIncrementUtil.getNormalAutoIncrementFields("Support",normalFields);
         assertEquals(0, results.size());
 
-        results = AutoIncrementUtil.normalAutoIncrementField("Course/Score",normalFields);
+        results = AutoIncrementUtil.getNormalAutoIncrementFields("Course/Score",normalFields);
         assertEquals(0, results.size());
 
         normalFields.add("Course/Score/Name");
-        results = AutoIncrementUtil.normalAutoIncrementField("Course/Score",normalFields);
+        results = AutoIncrementUtil.getNormalAutoIncrementFields("Course/Score",normalFields);
         assertEquals(1, results.size());
         assertTrue(results.contains("Course/Score/Name"));
     }
-
-
 }

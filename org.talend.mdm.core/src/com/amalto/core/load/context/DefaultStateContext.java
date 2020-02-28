@@ -176,7 +176,7 @@ public class DefaultStateContext implements StateContext {
             if (!normalFieldGenerators.isEmpty()) {
                 String currentPath = AutoIncrementUtil.getCurrentPath(currentLocation);
                 // If current path is the one complex type or the entity, when leaving, generate the normal field's value
-                if (!AutoIncrementUtil.normalAutoIncrementField(currentPath, normalFieldGenerators.keySet()).isEmpty()) {
+                if (!AutoIncrementUtil.getNormalAutoIncrementFields(currentPath, normalFieldGenerators.keySet()).isEmpty()) {
                     AutoFieldGeneration normalFieldGenerators = new AutoFieldGeneration();
                     try {
                         normalFieldGenerators.parse(this, null);

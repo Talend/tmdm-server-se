@@ -129,13 +129,13 @@ public class AutoIncrementUtil {
     }
 
     /**
-     * return the normal auto/uuid field in this container
-     * if <code>currentContainerPath</code> is empty, return the auto/uuid fields in this entity
+     * Return the normal auto/uuid field in this container
+     * If <code>currentContainerPath</code> is empty, return the auto/uuid fields in this entity
      * @param currentContainerPath the container's path
      * @param allNormalFields all normal auto/uuid fields
      * @return the normal auto/uuid fields in this container
      */
-    public static Set<String> normalAutoIncrementField(String currentContainerPath, Set<String> allNormalFields) {
+    public static Set<String> getNormalAutoIncrementFields(String currentContainerPath, Set<String> allNormalFields) {
         Set<String> normalFields = new HashSet<>();
         if (currentContainerPath == null || allNormalFields == null) {
             return normalFields;

@@ -50,7 +50,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-@FixMethodOrder(MethodSorters.NAME_ASCENDING) @SuppressWarnings("nls")
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@SuppressWarnings("nls")
 public class LoadServletForAutoIncrementTest {
 
     private static final Logger LOG = Logger.getLogger(LoadServletForAutoIncrementTest.class);

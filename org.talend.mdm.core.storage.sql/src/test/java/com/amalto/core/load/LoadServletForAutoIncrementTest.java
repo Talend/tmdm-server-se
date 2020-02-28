@@ -92,7 +92,6 @@ public class LoadServletForAutoIncrementTest {
         String typeName = "Person";
         String dataModelName = "AutoInc";
         boolean needAutoGenPK = false;
-
         boolean insertOnly = false;
 
         MetadataRepository repository = new MetadataRepository();
@@ -191,7 +190,6 @@ public class LoadServletForAutoIncrementTest {
         String typeName = "Product";
         String dataModelName = "Product";
         boolean needAutoGenPK = false;
-
         boolean insertOnly = false;
 
         MetadataRepository repository = new MetadataRepository();
@@ -247,7 +245,6 @@ public class LoadServletForAutoIncrementTest {
         String typeName = "Product";
         String dataModelName = "Product";
         boolean needAutoGenPK = false;
-
         boolean insertOnly = false;
 
         MetadataRepository repository = new MetadataRepository();
@@ -304,7 +301,6 @@ public class LoadServletForAutoIncrementTest {
         String typeName = "Student";
         String dataModelName = "Student";
         boolean needAutoGenPK = false;
-
         boolean insertOnly = false;
 
         MetadataRepository repository = new MetadataRepository();
@@ -368,7 +364,6 @@ public class LoadServletForAutoIncrementTest {
         String typeName = "Student";
         String dataModelName = "Student";
         boolean needAutoGenPK = false;
-
         boolean insertOnly = false;
 
         MetadataRepository repository = new MetadataRepository();
@@ -432,7 +427,6 @@ public class LoadServletForAutoIncrementTest {
         String typeName = "Student";
         String dataModelName = "Student";
         boolean needAutoGenPK = false;
-
         boolean insertOnly = false;
 
         MetadataRepository repository = new MetadataRepository();
@@ -531,7 +525,6 @@ public class LoadServletForAutoIncrementTest {
         String typeName = "Person";
         String dataModelName = "Person";
         boolean needAutoGenPK = false;
-
         boolean insertOnly = false;
 
         MetadataRepository repository = new MetadataRepository();
@@ -555,9 +548,7 @@ public class LoadServletForAutoIncrementTest {
         getTypeAutoFieldMethod.setAccessible(true);
         Map<String, String> autoFieldTypeMap = (Map<String, String>) getTypeAutoFieldMethod
                 .invoke(LOAD_SERVLET, type.getFields());
-
         XmlServer server = Util.getXmlServerCtrlLocal();
-
         Method bulkLoadSaveMethod = LOAD_SERVLET.getClass()
                 .getDeclaredMethod("bulkLoadSave", String.class, String.class, InputStream.class, LoadAction.class, XSDKey.class,
                         Map.class);
@@ -597,14 +588,12 @@ public class LoadServletForAutoIncrementTest {
         String typeName = "StudentM";
         String dataModelName = "StudentM";
         boolean needAutoGenPK = false;
-
         boolean insertOnly = false;
 
         MetadataRepository repository = new MetadataRepository();
         repository.load(LoadServletForAutoIncrementTest.class.getResourceAsStream("metadata07.xsd"));
         MockMetadataRepositoryAdmin.INSTANCE.register(dataClusterName, repository);
         ComplexTypeMetadata type = repository.getComplexType(typeName);
-
         LoadAction loadAction = new OptimizedLoadAction(dataClusterName, typeName, dataModelName, needAutoGenPK);
 
         DataRecord.CheckExistence.set(!insertOnly);

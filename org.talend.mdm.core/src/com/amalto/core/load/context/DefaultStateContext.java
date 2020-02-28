@@ -18,7 +18,9 @@ import com.amalto.core.load.path.PathMatch;
 import com.amalto.core.load.path.PathMatcher;
 import com.amalto.core.load.payload.EndPayload;
 import com.amalto.core.load.payload.StartPayload;
+import com.amalto.core.load.xml.AutoFieldGeneration;
 import com.amalto.core.save.generator.AutoIdGenerator;
+import com.amalto.core.save.generator.AutoIncrementUtil;
 import com.amalto.core.save.generator.UUIDIdGenerator;
 import com.amalto.core.server.api.XmlServer;
 
@@ -171,6 +173,18 @@ public class DefaultStateContext implements StateContext {
 
     public void leaveElement() {
         if (!currentLocation.isEmpty()) {
+            if (!normalFieldGenerators.isEmpty()) {
+                String currentPath = AutoIncrementUtil.getCurrentPath(currentLocation);
+                // If current path is the one complex type or the entity, when leaving, generate the normal field's value
+                if (!AutoIncrementUtil.getNormalAutoIncrementFields(currentPath, normalFieldGenerators.keySet()).isEmpty()) {
+                    AutoFieldGeneration normalFieldGenerators = new AutoFieldGeneration();
+                    try {
+                        normalFieldGenerators.parse(this, null);
+                    } catch (Exception e) {
+                        throw new UnsupportedOperationException("Failed to generate the normal autoincrement field value", e);
+                    }
+                }
+            }
             currentLocation.pop();
         }
         isIdElement = false;
@@ -269,5 +283,9 @@ public class DefaultStateContext implements StateContext {
     @Override
     public Map<String, AutoIdGenerator> getNormalFieldGenerators() {
         return normalFieldGenerators;
+    }
+
+    public Stack<String> getCurrentLocation() {
+        return currentLocation;
     }
 }

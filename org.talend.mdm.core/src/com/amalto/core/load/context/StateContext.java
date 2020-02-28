@@ -17,6 +17,7 @@ import com.amalto.core.server.api.XmlServer;
 
 import javax.xml.stream.XMLStreamReader;
 import java.util.Map;
+import java.util.Stack;
 
 public interface StateContext {
 
@@ -63,4 +64,6 @@ public interface StateContext {
     void close(XmlServer server);
 
     Map<String, AutoIdGenerator> getNormalFieldGenerators();
+
+    Stack<String> getCurrentLocation();
 }

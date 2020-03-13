@@ -1772,13 +1772,20 @@ class StandardQueryHandler extends AbstractQueryHandler {
     }
 
     private void addCondition(FieldCondition condition, String alias, FieldMetadata fieldMetadata) {
-        if (fieldMetadata instanceof CompoundFieldMetadata) {
-            FieldMetadata[] fields = ((CompoundFieldMetadata) fieldMetadata).getFields();
-            for (FieldMetadata subFieldMetadata : fields) {
-                condition.criterionFieldNames.add(alias + '.' + subFieldMetadata.getName());
+        boolean isCompoundField = fieldMetadata instanceof CompoundFieldMetadata;
+        boolean isReferenceField = fieldMetadata instanceof ReferenceFieldMetadata;
+        boolean isContainedInMain = mainType.equals(fieldMetadata.getContainingType());
+        boolean isSelfReference = isSelfReference(fieldMetadata);
+        if (isCompoundField) {
+            addConditionForCompoundField(condition, alias, fieldMetadata);
+        } else if (isReferenceField && isContainedInMain) {
+            if (isSelfReference) {
+                addConditionForSelfReferenceField(condition, alias, ((ReferenceFieldMetadata) fieldMetadata).getReferencedField());
+            } else {
+                condition.criterionFieldNames.add(getFieldName(fieldMetadata, true));
             }
-        } else if (fieldMetadata instanceof ReferenceFieldMetadata && mainType.equals(fieldMetadata.getContainingType())) {
-            condition.criterionFieldNames.add(getFieldName(fieldMetadata, true));
+        } else if (isReferenceField && !isContainedInMain && isSelfReference) {
+            addConditionForSelfReferenceField(condition, alias, ((ReferenceFieldMetadata) fieldMetadata).getReferencedField());
         } else {
             String language = OrderBy.SortLanguage.get();
             if (StringUtils.isNotBlank(language) && Types.MULTI_LINGUAL.equals(fieldMetadata.getType().getName())) {
@@ -1787,6 +1794,28 @@ class StandardQueryHandler extends AbstractQueryHandler {
                 condition.criterionFieldNames.add(alias + '.' + fieldMetadata.getName());
             }
         }
+    }
+
+    private void addConditionForCompoundField(FieldCondition condition, String alias, FieldMetadata referencedField) {
+        FieldMetadata[] fields = ((CompoundFieldMetadata) referencedField).getFields();
+        for (FieldMetadata subFieldMetadata : fields) {
+            condition.criterionFieldNames.add(alias + '.' + subFieldMetadata.getName());
+        }
+    }
+
+    private void addConditionForSelfReferenceField(FieldCondition condition, String alias, FieldMetadata referencedField) {
+        if (referencedField instanceof CompoundFieldMetadata) {
+            addConditionForCompoundField(condition, alias, referencedField);
+        } else {
+            condition.criterionFieldNames.add(alias + '.' + referencedField.getName());
+        }
+    }
+
+    private boolean isSelfReference(FieldMetadata fieldMetadata) {
+        if (fieldMetadata instanceof ReferenceFieldMetadata) {
+            return mainType.equals(((ReferenceFieldMetadata) fieldMetadata).getReferencedType());
+        }
+        return false;
     }
 
     private void addCondition(FieldCondition condition, FieldMetadata fieldMetadata) {
@@ -1901,10 +1930,11 @@ class StandardQueryHandler extends AbstractQueryHandler {
             // condition.criterionFieldNames = field.getFieldMetadata().isMany() ? "elements" : getFieldName(field,
             // StandardQueryHandler.this.mappingMetadataRepository);
             Set<String> aliases = getAliases(mainType, field);
+            boolean isSelfReference = isSelfReference(field.getFieldMetadata());
             if (aliases.size() > 0) {
                 for (String alias : aliases) {
                     List<FieldMetadata> path = field.getPath();
-                    if (path.size() > 1) {
+                    if (path.size() > 1 && !isSelfReference) {
                         // For path with more than 1 element, the alias for the criterion is the *containing* one(s).
                         String containerAlias = getRealAlias(pathToAlias, mainType.getName() + "/" + path.get(path.size() - 2).getPath()); //$NON-NLS-1$
                         addCondition(condition, containerAlias, field.getFieldMetadata());

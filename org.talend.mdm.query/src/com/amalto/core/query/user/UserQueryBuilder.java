@@ -929,14 +929,39 @@ public class UserQueryBuilder {
         if (field == null) {
             throw new IllegalArgumentException("Field cannot be null");
         }
-        if (field instanceof ReferenceFieldMetadata) {
+        if (field instanceof ReferenceFieldMetadata && !isSelfReference((ReferenceFieldMetadata) field)) {
             // Order by a FK field is equivalent to a join on FK + a order by clause on referenced field.
-            return join(field)
-                    .orderBy(new Field(((ReferenceFieldMetadata) field).getReferencedField()), direction);
+            return join(field).orderBy(new Field(((ReferenceFieldMetadata) field).getReferencedField()), direction);
         } else {
             expressionAsSelect().addOrderBy(new OrderBy(new Field(field), direction));
         }
         return this;
+    }
+
+    private boolean isSelfReference(ReferenceFieldMetadata field) {
+        ComplexTypeMetadata referencedType = field.getReferencedType();
+        ComplexTypeMetadata containingType = field.getContainingType();
+        /**
+         * EntiyA
+         * --FieldX
+         * --FKEntityA->EntityA
+         */
+        while (!(containingType instanceof ComplexTypeMetadataImpl)) {
+            FieldMetadata container = ((ContainedComplexTypeMetadata) containingType).getContainer();
+            containingType = ((ContainedTypeFieldMetadata) container).getContainingType();
+        }
+        FieldMetadata container = ((ComplexTypeMetadataImpl)containingType).getContainer();
+        /**
+         * EntityA
+         * --FieldX
+         * --FieldA
+         *   --FKEntityA->EntityA
+         */
+        while(container != null && container instanceof ReferenceFieldMetadata) {
+            containingType = ((ReferenceFieldMetadata) container).getContainingType();
+            container = ((ComplexTypeMetadataImpl)containingType).getContainer();
+        }
+        return referencedType.equals(containingType);
     }
 
     public UserQueryBuilder orderBy(TypedExpression expression, OrderBy.Direction direction) {

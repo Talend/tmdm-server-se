@@ -33,6 +33,7 @@ import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.util.Util;
 
 public class SaverSession {
+    private static final Logger LOGGER = Logger.getLogger(SaverSession.class);
 
     private static final String AUTO_INCREMENT_TYPE_NAME = "AutoIncrement"; //$NON-NLS-1$
 

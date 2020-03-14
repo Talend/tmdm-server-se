@@ -38,6 +38,7 @@ import static com.amalto.core.util.MDMEhCacheUtil.UPDATE_REPORT_EVENT_CACHE;
 import com.amalto.core.util.Util;
 
 public class SaverSession {
+    private static final Logger LOGGER = Logger.getLogger(SaverSession.class);
 
     private static final String AUTO_INCREMENT_TYPE_NAME = "AutoIncrement"; //$NON-NLS-1$
 

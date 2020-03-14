@@ -198,34 +198,6 @@ public class Util extends XmlUtil {
         }
     }
 
-    private static synchronized DocumentBuilderFactory getDocumentBuilderFactory() {
-        if (nonValidatingDocumentBuilderFactory == null) {
-            nonValidatingDocumentBuilderFactory = DocumentBuilderFactory.newInstance();
-            nonValidatingDocumentBuilderFactory.setNamespaceAware(true);
-            nonValidatingDocumentBuilderFactory.setValidating(false);
-            nonValidatingDocumentBuilderFactory.setExpandEntityReferences(false);
-        }
-        return nonValidatingDocumentBuilderFactory;
-    }
-
-    public static Document parse(String xmlString) throws ParserConfigurationException, IOException, SAXException {
-        DocumentBuilderFactory factory;
-        factory = getDocumentBuilderFactory();
-        factory.setExpandEntityReferences(false);
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        SAXErrorHandler seh = new SAXErrorHandler();
-        builder.setErrorHandler(seh);
-        Document d = builder.parse(new InputSource(new StringReader(xmlString)));
-        // check if document parsed correctly against the schema
-        String errors = seh.getErrors();
-        if (errors.length() != 0) {
-            String err = "Document did not parse against schema: \n" + errors + "\n"
-                    + xmlString.substring(0, Math.min(100, xmlString.length()));
-            throw new SAXException(err);
-        }
-        return d;
-    }
-
     public static Document validate(Element element, String schema) throws Exception {
         return BeanDelegatorContainer.getInstance().getValidationDelegator().validation(element, schema);
     }

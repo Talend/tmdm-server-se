@@ -278,7 +278,14 @@ public class SystemStorageWrapper extends StorageWrapper {
     public String[] getAllDocumentsUniqueID(String clusterName) throws XmlServerException {
         String pureClusterName = getPureClusterName(clusterName);
         boolean includeClusterAndTypeName = getClusterTypes(pureClusterName).size() > 1;
-        return getAllDocumentsUniqueID(clusterName, includeClusterAndTypeName);
+        return getAllDocumentsUniqueID(clusterName, includeClusterAndTypeName, false);
+    }
+
+    @Override
+    public String[] getAllDocumentsUniqueID(String clusterName, final boolean ignoreChild) throws XmlServerException {
+        String pureClusterName = getPureClusterName(clusterName);
+        boolean includeClusterAndTypeName = getClusterTypes(pureClusterName).size() > 1;
+        return getAllDocumentsUniqueID(clusterName, includeClusterAndTypeName, ignoreChild);
     }
 
     @Override

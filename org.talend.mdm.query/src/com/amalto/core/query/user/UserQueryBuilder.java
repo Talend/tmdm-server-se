@@ -227,6 +227,10 @@ public class UserQueryBuilder {
         return new Compare(left, Predicate.IN, right);
     }
 
+    public static Condition in(Expression left, Expression right) {
+        return new Compare(left, Predicate.IN, right);
+    }
+
     public static Condition in(TypedExpression expression, String constant) {
         assertNullField(expression);
         if (expression instanceof Field) {

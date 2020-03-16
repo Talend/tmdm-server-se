@@ -10,6 +10,18 @@
 
 package com.amalto.core.storage;
 
+import static com.amalto.core.query.user.UserQueryBuilder.alias;
+import static com.amalto.core.query.user.UserQueryBuilder.contains;
+import static com.amalto.core.query.user.UserQueryBuilder.eq;
+import static com.amalto.core.query.user.UserQueryBuilder.from;
+import static com.amalto.core.query.user.UserQueryBuilder.fullText;
+import static com.amalto.core.query.user.UserQueryBuilder.gte;
+import static com.amalto.core.query.user.UserQueryBuilder.in;
+import static com.amalto.core.query.user.UserQueryBuilder.lte;
+import static com.amalto.core.query.user.UserQueryBuilder.or;
+import static com.amalto.core.query.user.UserQueryBuilder.taskId;
+import static com.amalto.core.query.user.UserQueryBuilder.timestamp;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -43,6 +55,7 @@ import org.xml.sax.XMLReader;
 import com.amalto.core.load.io.ResettableStringWriter;
 import com.amalto.core.metadata.ClassRepository;
 import com.amalto.core.query.user.Condition;
+import com.amalto.core.query.user.Id;
 import com.amalto.core.query.user.Select;
 import com.amalto.core.query.user.Split;
 import com.amalto.core.query.user.UserQueryBuilder;
@@ -51,9 +64,9 @@ import com.amalto.core.query.user.metadata.Timestamp;
 import com.amalto.core.server.ServerContext;
 import com.amalto.core.server.StorageAdmin;
 import com.amalto.core.storage.record.DataRecord;
+import com.amalto.core.storage.record.DataRecordIncludeNullValueXmlWriter;
 import com.amalto.core.storage.record.DataRecordReader;
 import com.amalto.core.storage.record.DataRecordWriter;
-import com.amalto.core.storage.record.DataRecordIncludeNullValueXmlWriter;
 import com.amalto.core.storage.record.DataRecordXmlWriter;
 import com.amalto.core.storage.record.SystemDataRecordXmlWriter;
 import com.amalto.core.storage.record.XmlDOMDataRecordReader;
@@ -63,8 +76,6 @@ import com.amalto.xmlserver.interfaces.IWhereItem;
 import com.amalto.xmlserver.interfaces.IXmlServerSLWrapper;
 import com.amalto.xmlserver.interfaces.ItemPKCriteria;
 import com.amalto.xmlserver.interfaces.XmlServerException;
-
-import static com.amalto.core.query.user.UserQueryBuilder.*;
 
 public class StorageWrapper implements IXmlServerSLWrapper {
 
@@ -291,10 +302,15 @@ public class StorageWrapper implements IXmlServerSLWrapper {
 
     @Override
     public String[] getAllDocumentsUniqueID(String clusterName) throws XmlServerException {
-        return getAllDocumentsUniqueID(clusterName, true);
+        return getAllDocumentsUniqueID(clusterName, true, false);
     }
 
-    protected String[] getAllDocumentsUniqueID(String clusterName, boolean includeClusterAndTypeName) throws XmlServerException {
+    @Override
+    public String[] getAllDocumentsUniqueID(String clusterName, final boolean ignoreChild) throws XmlServerException {
+        return getAllDocumentsUniqueID(clusterName, true, ignoreChild);
+    }
+
+    protected String[] getAllDocumentsUniqueID(String clusterName, boolean includeClusterAndTypeName, final boolean ignoreChild) throws XmlServerException {
         String pureClusterName = getPureClusterName(clusterName);
         Storage storage = getStorage(pureClusterName);
         MetadataRepository repository = storage.getMetadataRepository();
@@ -314,6 +330,10 @@ public class StorageWrapper implements IXmlServerSLWrapper {
             storage.begin();
             for (ComplexTypeMetadata currentType : typeToQuery) {
                 UserQueryBuilder qb = from(currentType).selectId(currentType);
+                if (ignoreChild && !currentType.getSubTypes().isEmpty()) {
+                    Id currentIdRef = new Id(currentType, StringUtils.EMPTY);
+                    qb.where(in(currentIdRef, currentIdRef));
+                }
                 StorageResults results = storage.fetch(qb.getSelect());
                 try {
                     for (DataRecord result : results) {

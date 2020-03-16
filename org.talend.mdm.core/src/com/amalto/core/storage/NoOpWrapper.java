@@ -95,6 +95,10 @@ class NoOpWrapper implements IXmlServerSLWrapper{
         return new String[0];
     }
 
+    public String[] getAllDocumentsUniqueID(String clusterName, final boolean ignoreChild) throws XmlServerException {
+        return new String[0];
+    }
+
     public long deleteDocument(String clusterName, String uniqueID, String documentType) throws XmlServerException {
         return 0;
     }

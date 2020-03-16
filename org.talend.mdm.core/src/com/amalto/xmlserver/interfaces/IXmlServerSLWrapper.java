@@ -227,6 +227,16 @@ public interface IXmlServerSLWrapper {
     public String[] getAllDocumentsUniqueID(String clusterName) throws XmlServerException;
 
     /**
+     * The list of documents unique ids in a cluster of a particular revision
+     *
+     * @param clusterName The unique ID of the cluster
+     * @param ignoreChild exclude the sub node record
+     * @return the list of document unique IDs
+     * @throws XmlServerException
+     */
+    public String[] getAllDocumentsUniqueID(String clusterName, final boolean ignoreChild) throws XmlServerException;
+
+    /**
      * Delete a document
      * @param revisionID
      *          The ID of the revision, <code>null</code> for the head

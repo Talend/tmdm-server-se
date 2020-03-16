@@ -62,13 +62,24 @@ import junit.framework.TestCase;
 public class StorageWrapperTest extends TestCase {
 
     public static String[] XMLS_PRODUCT = {
-        "<ii><c>Product</c><n>Product</n><dmn>Product</dmn><i>333</i><t>1372654669313</t><taskId></taskId><p><Product><Id>333</Id><Name>333</Name><Description>333</Description><Price>333</Price></Product></p></ii>", //$NON-NLS-1$
-        "<ii><c>Product</c><n>Product</n><dmn>Product</dmn><i>33&amp;44</i><t>1372654669313</t><taskId></taskId><p><Product><Id>33&amp;44</Id><Name>333</Name><Description>333</Description><Price>333</Price></Product></p></ii>", //$NON-NLS-1$
-        "<ii><c>Product</c><n>Product</n><dmn>Product</dmn><i>&quot;555&lt;666&gt;444&quot;</i><t>1372654669313</t><taskId></taskId><p><Product><Id>&quot;555&lt;666&gt;444&quot;</Id><Name>333</Name><Description>333</Description><Price>333</Price></Product></p></ii>", //$NON-NLS-1$
-        "<ii><c>Product</c><dmn>Product</dmn><dmr/><sp/><t>1442298182088</t><taskId>null</taskId><i>1</i><p><ProductFamily><Id>1</Id><Name>1</Name><ChangeStatus>Approved</ChangeStatus></ProductFamily></p></ii>", //$NON-NLS-1$
-        "<ii><c>Product</c><dmn>Product</dmn><dmr/><sp/><t>1442298185640</t><taskId>null</taskId><i>1</i><p><Store><Id>1</Id><Address>1</Address><Lat>1.0</Lat><Long>1.0</Long></Store></p></ii>" //$NON-NLS-1$
+            "<ii><c>Product</c><n>Product</n><dmn>Product</dmn><i>333</i><t>1372654669313</t><taskId></taskId><p><Product><Id>333</Id><Name>333</Name><Description>333</Description><Price>333</Price></Product></p></ii>", //$NON-NLS-1$
+            "<ii><c>Product</c><n>Product</n><dmn>Product</dmn><i>33&amp;44</i><t>1372654669313</t><taskId></taskId><p><Product><Id>33&amp;44</Id><Name>333</Name><Description>333</Description><Price>333</Price></Product></p></ii>", //$NON-NLS-1$
+            "<ii><c>Product</c><n>Product</n><dmn>Product</dmn><i>&quot;555&lt;666&gt;444&quot;</i><t>1372654669313</t><taskId></taskId><p><Product><Id>&quot;555&lt;666&gt;444&quot;</Id><Name>333</Name><Description>333</Description><Price>333</Price></Product></p></ii>", //$NON-NLS-1$
+            "<ii><c>Product</c><dmn>Product</dmn><dmr/><sp/><t>1442298182088</t><taskId>null</taskId><i>1</i><p><ProductFamily><Id>1</Id><Name>1</Name><ChangeStatus>Approved</ChangeStatus></ProductFamily></p></ii>", //$NON-NLS-1$
+            "<ii><c>Product</c><dmn>Product</dmn><dmr/><sp/><t>1442298185640</t><taskId>null</taskId><i>1</i><p><Store><Id>1</Id><Address>1</Address><Lat>1.0</Lat><Long>1.0</Long></Store></p></ii>" //$NON-NLS-1$
+    };
+
+    public static String[] XMLS_PARTY = {
+        "<ii><c>Party</c><n>Party</n><dmn>Party</dmn><i>11</i><t>1372654669301</t><taskId></taskId><p><Party><code>11</code><name>party-11</name></Party></p></ii>", //$NON-NLS-1$
+        "<ii><c>Party</c><n>Party</n><dmn>Party</dmn><i>12</i><t>1372654669302</t><taskId></taskId><p><Party><code>12</code><name>party-12</name></Party></p></ii>", //$NON-NLS-1$
+        "<ii><c>Company</c><n>Company</n><dmn>Company</dmn><i>21</i><t>1372654669303</t><taskId></taskId><p><Company><code>21</code><name>company-21</name><legalname>company-name-21</legalname></Company></p></ii>", //$NON-NLS-1$
+        "<ii><c>Company</c><n>Company</n><dmn>Company</dmn><i>22</i><t>1372654669304</t><taskId></taskId><p><Company><code>22</code><name>company-22</name><legalname>company-name-22</legalname></Company></p></ii>", //$NON-NLS-1$
+        "<ii><c>Individual</c><n>Individual</n><dmn>Individual</dmn><i>31</i><t>1372654669305</t><taskId></taskId><p><Individual><code>31</code><name>individual-31</name><firstName>firstName-31</firstName><lastName>lastName-31</lastName></Individual></p></ii>", //$NON-NLS-1$
+        "<ii><c>Individual</c><n>Individual</n><dmn>Individual</dmn><i>32</i><t>1372654669306</t><taskId></taskId><p><Individual><code>32</code><name>individual-32</name><firstName>firstName-32</firstName><lastName>lastName-32</lastName></Individual></p></ii>" //$NON-NLS-1$
        };
     public static String[] IDS_PRODUCT = {"Product.Product.333", "Product.Product.33&44", "Product.Product.\"555<666>444\"", "Product.ProductFamily.1", "Product.Store.1"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+
+    public static String[] IDS_PARTY = {"Party.Party.11", "Party.Party.12", "Party.Company.21", "Party.Company.22", "Party.Individual.31", "Party.Individual.32"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 
     public static String[] XMLS_INHERIT = { "<ii><c>InheritTest</c><n>InheritEntity</n><dmn>InheritTest</dmn><i>123</i><t>1372654669313</t><taskId></taskId><p><InheritEntity><id>123</id><field1>a</field1><field2>b</field2></InheritEntity></p></ii>" }; //$NON-NLS-1$
 
@@ -85,6 +96,42 @@ public class StorageWrapperTest extends TestCase {
         assertTrue(uniqueIDs.containsAll(uniqueIDs_1));
         List<String> uniqueIDs_2 = Arrays.asList(wrapper.getAllDocumentsUniqueID("Product/Product")); //$NON-NLS-1$
         assertTrue(uniqueIDs.containsAll(uniqueIDs_2));
+    }
+
+    // TMDM-12599 Unable to load the polymorphism record after migration
+    public void testGetAllDocumentsUniqueIDForInherited() throws Exception {
+        StorageWrapper wrapper = prepareWrapper("Party", "Party.xsd", XMLS_PARTY, IDS_PARTY); //$NON-NLS-1$ $NON-NLS-2$
+        List<String> uniqueIDs = Arrays.asList(new String[]{"Party.Party.11", "Party.Party.12", "Party.Company.21", "Party.Company.22", "Party.Individual.31", "Party.Individual.32"}); //$NON-NLS-1$ $NON-NLS-2$ $NON-NLS-3$ $NON-NLS-4$ $NON-NLS-5$ $NON-NLS-6$
+
+        // case 1 : return all record, including Party/Company/Individual
+        List<String> uniqueIDs_0 = Arrays.asList(wrapper.getAllDocumentsUniqueID("Party/Party", false)); //$NON-NLS-1$
+        assertEquals(6, uniqueIDs_0.size());
+        uniqueIDs_0.stream().allMatch((x) -> uniqueIDs.contains(x));
+        // case 2 : return Party record
+        List<String> uniqueIDs_1 = Arrays.asList(wrapper.getAllDocumentsUniqueID("Party/Party", true)); //$NON-NLS-1$
+        assertEquals(2, uniqueIDs_1.size());
+        final List<String> expectedIDs = Arrays.asList(new String[] { "Party.Party.11", "Party.Party.12" });
+        uniqueIDs_1.stream().allMatch((x) -> expectedIDs.contains(x));
+
+        // case 3 : return Company record
+        List<String> uniqueIDs_2 = Arrays.asList(wrapper.getAllDocumentsUniqueID("Party/Company", false)); //$NON-NLS-1$
+        assertEquals(2, uniqueIDs_2.size());
+        final List<String> expectedID_2s = Arrays.asList(new String[] { "Party.Company.21", "Party.Company.22" });
+        uniqueIDs_2.stream().allMatch((x) -> expectedID_2s.contains(x));
+        // case 4 : return Company record
+        List<String> uniqueIDs_3 = Arrays.asList(wrapper.getAllDocumentsUniqueID("Party/Company", true)); //$NON-NLS-1$
+        assertEquals(2, uniqueIDs_3.size());
+        uniqueIDs_3.stream().allMatch((x) -> expectedID_2s.contains(x));
+
+        // case 5 : return Individual record
+        List<String> uniqueIDs_4 = Arrays.asList(wrapper.getAllDocumentsUniqueID("Party/Individual", false)); //$NON-NLS-1$
+        assertEquals(2, uniqueIDs_4.size());
+        final List<String> expectedID_3s = Arrays.asList(new String[] { "Party.Individual.31", "Party.Individual.32" });
+        uniqueIDs_4.stream().allMatch((x) -> expectedID_3s.contains(x));
+        // case 6 : return Individual record
+        List<String> uniqueIDs_5 = Arrays.asList(wrapper.getAllDocumentsUniqueID("Party/Individual", true)); //$NON-NLS-1$
+        assertEquals(2, uniqueIDs_5.size());
+        uniqueIDs_5.stream().allMatch((x) -> expectedID_3s.contains(x));
     }
 
     public void testGetDocumentAsString() throws Exception {

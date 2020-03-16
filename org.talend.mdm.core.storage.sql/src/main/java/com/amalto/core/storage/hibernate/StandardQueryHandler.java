@@ -1386,6 +1386,13 @@ class StandardQueryHandler extends AbstractQueryHandler {
                 if (LOGGER.isDebugEnabled()) {
                     LOGGER.debug("Query on '" + leftFieldCondition + "' is not a user set property. Ignore this condition."); //$NON-NLS-1$ //$NON-NLS-2$
                 }
+
+                if (!rightFieldCondition.isProperty && predicate == Predicate.IN
+                        && condition.getLeft().equals(condition.getRight()) && condition.getLeft() instanceof Id) {
+                    Id leftField = (Id) condition.getLeft();
+                    return new SingleTableCriterion(criteria, resolver, leftField.getType());
+                }
+
                 return TRUE_CRITERION;
             }
             if (condition.getLeft() instanceof Field) {

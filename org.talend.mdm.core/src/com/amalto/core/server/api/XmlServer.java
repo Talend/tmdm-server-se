@@ -147,6 +147,19 @@ public interface XmlServer {
     String[] getAllDocumentsUniqueID(String clusterName) throws XtentisException;
 
     /**
+     * The list of documents unique ids in a cluster of a particular revision, the second parameter only be used in
+     * Inheratance entity, this is to say if each of entity be mapped into its own table, now we want to get record from
+     * basic table, let's add the parameter ignoreChild with value <b> True </b>.
+     *
+     * @param clusterName The unique ID of the cluster
+     * @param ignoreChild : Determine whether to ignore the sub type record, by default false.
+     * @return the list of document unique IDs
+     */
+    default String[] getAllDocumentsUniqueID(String clusterName, final boolean ignoreChild) throws XtentisException {
+        return new String[0];
+    }
+
+    /**
      * Delete an XML document
      *
      * @param revisionID  The ID of the revision, <code>null</code> for the head

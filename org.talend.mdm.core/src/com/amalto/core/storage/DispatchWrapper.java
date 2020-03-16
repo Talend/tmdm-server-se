@@ -276,6 +276,14 @@ public class DispatchWrapper implements IXmlServerSLWrapper {
         }
     }
 
+    public String[] getAllDocumentsUniqueID(String clusterName, final boolean ignoreChild) throws XmlServerException {
+        if (isMDMInternal(clusterName)) {
+            return mdmInternalWrapper.getAllDocumentsUniqueID(clusterName, ignoreChild);
+        } else {
+            return userStorageWrapper.getAllDocumentsUniqueID(clusterName, ignoreChild);
+        }
+    }
+
     public long deleteDocument(String clusterName, String uniqueID, String documentType) throws XmlServerException {
         if (isMDMInternal(clusterName)) {
             return mdmInternalWrapper.deleteDocument(clusterName, uniqueID, documentType);

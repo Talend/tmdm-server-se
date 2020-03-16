@@ -9,10 +9,20 @@
  */
 package com.amalto.core.save.context;
 
+import org.talend.mdm.commmon.util.core.MDMConfiguration;
+
 import junit.framework.TestCase;
 
 @SuppressWarnings("nls")
 public class BeforeSavingTest extends TestCase {
+
+    static {
+        try {
+            MDMConfiguration.createConfiguration("", true);
+        } catch (IllegalStateException e) {
+            // already configured;
+        }
+    }
 
     public void testValidateFormat() throws Exception {
         BeforeSaving bs = new BeforeSaving(null);

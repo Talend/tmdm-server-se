@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import org.talend.mdm.commmon.util.core.MDMConfiguration;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
@@ -25,7 +26,15 @@ import junit.framework.TestCase;
 @SuppressWarnings("nls")
 public class UniqueIdTransformerTest extends TestCase {
 
-    public void testAddIds() throws Exception {
+    static {
+        try {
+            MDMConfiguration.createConfiguration("", true);
+        } catch (IllegalStateException e) {
+            // already configured;
+        }
+    }
+
+    public void testAddIds() throws Exception {        
         String beforeXML = file2String(this.getClass().getResourceAsStream("before.xml"));
         Document beforeDoc = Util.parse(beforeXML);
         assertNotNull(beforeDoc);

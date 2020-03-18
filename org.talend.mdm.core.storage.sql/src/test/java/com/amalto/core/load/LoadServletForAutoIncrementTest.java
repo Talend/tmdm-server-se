@@ -257,7 +257,7 @@ public class LoadServletForAutoIncrementTest {
 
         DataRecord.CheckExistence.set(!insertOnly);
         InputStream recordXml = new ByteArrayInputStream(
-                ("<Product><Id>2</Id><Name>T-Shirt</Name><Description>Talend T-Shirt</Description><Price>12.3</Price><Support></Support><Supply/></Product>")
+                ("<Product><Id>2</Id><Name>T-Shirt</Name><Description>Talend T-Shirt</Description><Price>12.3</Price><Supply/></Product>")
                         .getBytes(StandardCharsets.UTF_8));
 
         Method getTypeKeyMethod = LOAD_SERVLET.getClass().getDeclaredMethod("getTypeKey", Collection.class);
@@ -313,7 +313,7 @@ public class LoadServletForAutoIncrementTest {
 
         DataRecord.CheckExistence.set(!insertOnly);
         InputStream recordXml = new ByteArrayInputStream(
-                ("<Student><Id>2</Id><Name>John</Name><Age>23</Age><Account/><Site/><Course><Id>English</Id><Teacher>Mike</Teacher><Score/><Like/></Course></Student>")
+                ("<Student><Id>2</Id><Name>John</Name><Age>23</Age><Course><Id>English</Id><Teacher>Mike</Teacher><Score/><Like/></Course></Student>")
                         .getBytes(StandardCharsets.UTF_8));
 
         Method getTypeKeyMethod = LOAD_SERVLET.getClass().getDeclaredMethod("getTypeKey", Collection.class);
@@ -376,7 +376,7 @@ public class LoadServletForAutoIncrementTest {
 
         DataRecord.CheckExistence.set(!insertOnly);
         InputStream recordXml = new ByteArrayInputStream(
-                ("<Student><Id>3</Id><Name>John</Name><Age>23</Age><Account/><Site>20</Site><Course><Id>English</Id><Teacher>Mike</Teacher><Score>10</Score><Like/></Course></Student>")
+                ("<Student><Id>3</Id><Name>John</Name><Age>23</Age><Account/><Site>20</Site><Course><Id>English</Id><Teacher>Mike</Teacher><Score>10</Score></Course></Student>")
                         .getBytes(StandardCharsets.UTF_8));
 
         Method getTypeKeyMethod = LOAD_SERVLET.getClass().getDeclaredMethod("getTypeKey", Collection.class);
@@ -439,7 +439,7 @@ public class LoadServletForAutoIncrementTest {
 
         DataRecord.CheckExistence.set(!insertOnly);
         InputStream recordXml = new ByteArrayInputStream(
-                ("<Student><Id>5</Id><Name>John</Name><Age>23</Age><Account/><Site/><Course><Id>English</Id><Teacher>Mike</Teacher><Score/><Like/></Course></Student><Student><Id>6</Id><Name>John</Name><Age>23</Age><Course><Id>English</Id><Teacher>Mike</Teacher><Score/><Like/></Course></Student><Student><Id>7</Id><Name>John</Name><Age>23</Age><Course><Id>English</Id><Teacher>Mike</Teacher><Score/><Like/></Course></Student>")
+                ("<Student><Id>5</Id><Name>John</Name><Age>23</Age><Account/><Course><Id>English</Id><Teacher>Mike</Teacher><Like/></Course></Student><Student><Id>6</Id><Name>John</Name><Age>23</Age><Course><Id>English</Id><Teacher>Mike</Teacher><Score/></Course></Student><Student><Id>7</Id><Name>John</Name><Age>23</Age><Course><Id>English</Id><Teacher>Mike</Teacher></Course></Student>")
                         .getBytes(StandardCharsets.UTF_8));
 
         Method getTypeKeyMethod = LOAD_SERVLET.getClass().getDeclaredMethod("getTypeKey", Collection.class);
@@ -537,7 +537,7 @@ public class LoadServletForAutoIncrementTest {
 
         DataRecord.CheckExistence.set(!insertOnly);
         InputStream recordXml = new ByteArrayInputStream(
-                ("<Person><Id>1</Id><Name>John</Name><Habit><Content>Study</Content><Detail><Count/><Name>Play game</Name><Description>I want to play basketball</Description></Detail></Habit></Person>")
+                ("<Person><Id>1</Id><Name>John</Name><Habit><Content>Study</Content><Detail><Name>Play game</Name><Description>I want to play basketball</Description></Detail></Habit></Person>")
                         .getBytes(StandardCharsets.UTF_8));
 
         Method getTypeKeyMethod = LOAD_SERVLET.getClass().getDeclaredMethod("getTypeKey", Collection.class);
@@ -599,7 +599,7 @@ public class LoadServletForAutoIncrementTest {
 
         DataRecord.CheckExistence.set(!insertOnly);
         InputStream recordXml = new ByteArrayInputStream(
-                ("<StudentM><Id>8</Id><Name>John</Name><Age>23</Age><Account/><Site/><Course><Id>English</Id><Teacher>Mike</Teacher><Score/><Like/></Course><Course><Id>Chinese</Id><Teacher>John</Teacher><Score/><Like/></Course></StudentM>")
+                ("<StudentM><Id>8</Id><Name>John</Name><Age>23</Age><Site/><Course><Id>English</Id><Teacher>Mike</Teacher><Score/></Course><Course><Id>Chinese</Id><Teacher>John</Teacher><Score/><Like/></Course></StudentM>")
                         .getBytes(StandardCharsets.UTF_8));
 
         Method getTypeKeyMethod = LOAD_SERVLET.getClass().getDeclaredMethod("getTypeKey", Collection.class);

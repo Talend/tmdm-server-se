@@ -106,19 +106,21 @@ public class AutoIncrementUtil {
                 // if the filed is not in one complex type
                 if (!fieldPath.contains("/")) {
                     element = element.element(fieldPath);
-                    if (element != null && StringUtils.isBlank(element.getText())) {
+                    if (element == null || (
+                            element != null && StringUtils.isBlank(element.getText()))) {
                         generatedField.add(fieldPath);
                     }
                 } else if (fieldPath.contains("/")) {
-                    // if field is in one complex type
+                    // if field is in one complex type and parent existed.
                     String[] allFieldPaths = fieldPath.split("/");
                     for (int i = 0; i < allFieldPaths.length; i++) {
                         if (element == null) {
                             continue;
                         }
                         element = element.element(allFieldPaths[i]);
-                        if (element != null && element.isTextOnly() && 
-                                StringUtils.isBlank(element.getText())) {
+                        if (element == null || 
+                                (element != null && element.isTextOnly() && 
+                                StringUtils.isBlank(element.getText()))) {
                             generatedField.add(fieldPath);
                         }
                     }

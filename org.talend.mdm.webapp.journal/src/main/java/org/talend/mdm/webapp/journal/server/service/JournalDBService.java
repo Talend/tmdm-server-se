@@ -18,6 +18,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -94,6 +95,10 @@ public class JournalDBService {
             if (HibernateStorageUtils.isOracle(dataSource.getDialectName())) {
                 field = null;
             }
+        }
+        if (isClusterEnabled()) { 
+            field = "operationTime"; //$NON-NLS-1$
+            sortDir = SortDir.ASC.name();
         }
         if (field != null) {
             if (SortDir.ASC.equals(SortDir.findDir(sort))) {
@@ -334,14 +339,7 @@ public class JournalDBService {
         model.setOperationDate(sdf.format(new Date(Long.parseLong(timeInMillis))));
         model.setSource(source);
         model.setUserName(checkNull(Util.getFirstTextNode(doc, "result/Update/UserName"))); //$NON-NLS-1$
-        boolean isClusterEnabled = false;
-        try {
-            isClusterEnabled = MDMConfiguration.isClusterEnabled();
-        } catch (Exception e) {
-            LOG.error("Failed to fetch the current server running mode.", e);
-            isClusterEnabled = false;
-        }
-        if (isClusterEnabled) {
+        if (isClusterEnabled()) {
             model.setIds(checkNull(Util.getFirstTextNode(doc, "result/Update/UUID")));//$NON-NLS-1$
         } else {
             model.setIds(Util.joinStrings(new String[] { source, timeInMillis }, ".")); //$NON-NLS-1$
@@ -429,6 +427,17 @@ public class JournalDBService {
                 }
             }
         }
+    }
+
+    private boolean isClusterEnabled() {
+        boolean isClusterEnabled = false;
+        try {
+            isClusterEnabled = MDMConfiguration.isClusterEnabled();
+        } catch (Exception e) {
+            LOG.error("Failed to fetch the current server running mode.", e);
+            isClusterEnabled = false;
+        }
+        return isClusterEnabled;
     }
 
     private String checkNull(String str) {

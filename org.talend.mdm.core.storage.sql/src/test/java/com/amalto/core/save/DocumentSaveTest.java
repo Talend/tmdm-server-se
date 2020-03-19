@@ -671,6 +671,9 @@ public class DocumentSaveTest extends TestCase {
         assertEquals("1", evaluate(committedElement, "/Person/complex/autoIncrement2"));
     }
 
+    /**
+     * TMDM-14507: SOAP/REST API work unexpected when provide value for non-PK autoincrement fields
+     */
     public void testNormalFieldAutoIncrementValueProvided() throws Exception {
         final MetadataRepository repository = new MetadataRepository();
         repository.load(DocumentSaveTest.class.getResourceAsStream("metadata24.xsd"));

@@ -247,10 +247,15 @@ class CreateActions extends DefaultMetadataVisitor<List<Action>> {
         // TMDM-3900).
         // Note #2: This code generate values even for non-mandatory fields (but this is expected behavior).
         if (EUUIDCustomType.AUTO_INCREMENT.getName().equalsIgnoreCase(field.getType().getName()) && doCreate) {
-            String conceptName = rootTypeName + "." + field.getPath().replaceAll("/", "."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            String autoIncrementValue = saverSource.nextAutoIncrementId(dataCluster, dataModel, conceptName);
-            actions.add(new FieldUpdateAction(date, source, userName, currentPath, StringUtils.EMPTY, autoIncrementValue,
-                    field, userAction));
+            Accessor accessor = document.createAccessor(currentPath);
+            if (accessor.exist() && !StringUtils.isBlank(accessor.get())) {
+                actions.add(new FieldUpdateAction(date, source, userName, currentPath, StringUtils.EMPTY, accessor.get(), field, userAction));
+            } else {
+                String conceptName = rootTypeName + "." + field.getPath().replaceAll("/", "."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                String autoIncrementValue = saverSource.nextAutoIncrementId(dataCluster, dataModel, conceptName);
+                actions.add(new FieldUpdateAction(date, source, userName, currentPath, StringUtils.EMPTY, autoIncrementValue,
+                        field, userAction));
+            }
         } else if (EUUIDCustomType.UUID.getName().equalsIgnoreCase(field.getType().getName()) && doCreate) {
             String uuidValue = UUID.randomUUID().toString();
             actions.add(new FieldUpdateAction(date, source, userName, currentPath, StringUtils.EMPTY, uuidValue, field, userAction));

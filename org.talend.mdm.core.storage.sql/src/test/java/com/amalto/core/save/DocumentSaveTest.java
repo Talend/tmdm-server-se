@@ -671,6 +671,204 @@ public class DocumentSaveTest extends TestCase {
         assertEquals("1", evaluate(committedElement, "/Person/complex/autoIncrement2"));
     }
 
+    /**
+     * TMDM-14507: SOAP/REST API work unexpected when provide value for non-PK autoincrement fields
+     */
+    public void testNormalFieldAutoIncrementValueProvided() throws Exception {
+        final MetadataRepository repository = new MetadataRepository();
+        repository.load(DocumentSaveTest.class.getResourceAsStream("metadata24.xsd"));
+        MockMetadataRepositoryAdmin.INSTANCE.register("PersonAddress", repository);
+
+        TestSaverSource source = new TestSaverSource(repository, false, "", "metadata24.xsd");
+
+        SaverSession session = SaverSession.newSession(source);
+        // 1. Entity Person: normal field N_Index is AutoIncrement, Create
+        // Provided value for AutoIncrement normal field
+        InputStream recordXml = DocumentSaveTest.class.getResourceAsStream("test79_1.xml");
+        DocumentSaverContext context = session.getContextFactory().create("MDM", "PersonAddress", "Source", recordXml,
+                true, true, true, true, false);
+        DocumentSaver saver = context.createSaver();
+        saver.save(session, context);
+        assertFalse(source.hasSavedAutoIncrement());
+        MockCommitter committer = new MockCommitter();
+        session.end(committer);
+
+        assertTrue(source.hasSavedAutoIncrement());
+        assertTrue(committer.hasSaved());
+        Element committedElement = committer.getCommittedElement();
+        assertEquals("n_index", evaluate(committedElement, "/Person/N_Index"));
+
+        // Not provided value for AutoIncrement normal field
+        recordXml = DocumentSaveTest.class.getResourceAsStream("test79.xml");
+        context = session.getContextFactory().create("MDM", "PersonAddress", "Source", recordXml, true, true, true,
+                true, false);
+        saver = context.createSaver();
+        saver.save(session, context);
+        committer = new MockCommitter();
+        session.end(committer);
+
+        committedElement = committer.getCommittedElement();
+        assertEquals("1", evaluate(committedElement, "/Person/N_Index"));
+
+        // 2. Entity Person: normal field N_Index is AutoIncrement, Update
+        // Provided value for AutoIncrement normal field
+        source = new TestSaverSource(repository, false, "test81_original.xml", "metadata24.xsd");
+        session = SaverSession.newSession(source);
+        recordXml = DocumentSaveTest.class.getResourceAsStream("test79_1.xml");
+        context = session.getContextFactory().create("MDM", "PersonAddress", "Source", recordXml, true, true, true,
+                true, false);
+        saver = context.createSaver();
+        saver.save(session, context);
+        assertFalse(source.hasSavedAutoIncrement());
+        committer = new MockCommitter();
+        session.end(committer);
+
+        assertTrue(source.hasSavedAutoIncrement());
+        assertTrue(committer.hasSaved());
+        committedElement = committer.getCommittedElement();
+        assertEquals("n_index", evaluate(committedElement, "/Person/N_Index"));
+
+        // Not provided value for AutoIncrement normal field
+        recordXml = DocumentSaveTest.class.getResourceAsStream("test79.xml");
+        context = session.getContextFactory().create("MDM", "PersonAddress", "Source", recordXml, true, true, true,
+                true, false);
+        saver = context.createSaver();
+        saver.save(session, context);
+        committer = new MockCommitter();
+        session.end(committer);
+
+        committedElement = committer.getCommittedElement();
+        assertEquals("1", evaluate(committedElement, "/Person/N_Index"));
+
+        // 3. Entity Address, PK Id and normal field Port is AutoIncrement, Create
+        // Provided value for AutoIncrement normal field
+        source = new TestSaverSource(repository, false, "", "metadata24.xsd");
+        session = SaverSession.newSession(source);
+        recordXml = DocumentSaveTest.class.getResourceAsStream("test80_1.xml");
+        context = session.getContextFactory().create("MDM", "PersonAddress", "Source", recordXml, true, true, true,
+                true, false);
+        saver = context.createSaver();
+        saver.save(session, context);
+        assertFalse(source.hasSavedAutoIncrement());
+        committer = new MockCommitter();
+        session.end(committer);
+
+        assertTrue(source.hasSavedAutoIncrement());
+        assertTrue(committer.hasSaved());
+        committedElement = committer.getCommittedElement();
+        assertEquals("1", evaluate(committedElement, "/Address/Id"));
+        assertEquals("port", evaluate(committedElement, "/Address/Port"));
+
+        // Not provided value for AutoIncrement normal field
+        recordXml = DocumentSaveTest.class.getResourceAsStream("test80.xml");
+        context = session.getContextFactory().create("MDM", "PersonAddress", "Source", recordXml, true, true, true,
+                true, false);
+        saver = context.createSaver();
+        saver.save(session, context);
+        committer = new MockCommitter();
+        session.end(committer);
+
+        committedElement = committer.getCommittedElement();
+        assertEquals("2", evaluate(committedElement, "/Address/Id"));
+        assertEquals("1", evaluate(committedElement, "/Address/Port"));
+
+        // 4. Entity Address, PK Id and normal field Port is AutoIncrement, Update
+        // Provided value for AutoIncrement normal field
+        source = new TestSaverSource(repository, false, "test82_original.xml", "metadata24.xsd");
+        session = SaverSession.newSession(source);
+        recordXml = DocumentSaveTest.class.getResourceAsStream("test80_1.xml");
+        context = session.getContextFactory().create("MDM", "PersonAddress", "Source", recordXml, true, true, true,
+                true, false);
+        saver = context.createSaver();
+        saver.save(session, context);
+        assertFalse(source.hasSavedAutoIncrement());
+        committer = new MockCommitter();
+        session.end(committer);
+
+        assertTrue(source.hasSavedAutoIncrement());
+        assertTrue(committer.hasSaved());
+        committedElement = committer.getCommittedElement();
+        assertEquals("1", evaluate(committedElement, "/Address/Id"));
+        assertEquals("port", evaluate(committedElement, "/Address/Port"));
+
+        // Not provided value for AutoIncrement normal field
+        recordXml = DocumentSaveTest.class.getResourceAsStream("test80.xml");
+        context = session.getContextFactory().create("MDM", "PersonAddress", "Source", recordXml, true, true, true,
+                true, false);
+        saver = context.createSaver();
+        saver.save(session, context);
+        committer = new MockCommitter();
+        session.end(committer);
+
+        committedElement = committer.getCommittedElement();
+        assertEquals("2", evaluate(committedElement, "/Address/Id"));
+        assertEquals("1", evaluate(committedElement, "/Address/Port"));
+
+        // 5, Entity Person, normal field N_Index and autoIncrement2 in complex type, Create
+        // Provided value for AutoIncrement normal field
+        source = new TestSaverSource(repository, false, "", "metadata24.xsd");
+        session = SaverSession.newSession(source);
+        recordXml = DocumentSaveTest.class.getResourceAsStream("test83_1.xml");
+        context = session.getContextFactory().create("MDM", "PersonAddress", "Source", recordXml, true, true, true,
+                true, false);
+        saver = context.createSaver();
+        saver.save(session, context);
+        assertFalse(source.hasSavedAutoIncrement());
+        committer = new MockCommitter();
+        session.end(committer);
+
+        assertTrue(source.hasSavedAutoIncrement());
+        assertTrue(committer.hasSaved());
+        committedElement = committer.getCommittedElement();
+        assertEquals("1", evaluate(committedElement, "/Person/N_Index"));
+        assertEquals("autoIncrement2", evaluate(committedElement, "/Person/complex/autoIncrement2"));
+
+        // Not provided value for AutoIncrement normal field
+        recordXml = DocumentSaveTest.class.getResourceAsStream("test83.xml");
+        context = session.getContextFactory().create("MDM", "PersonAddress", "Source", recordXml, true, true, true,
+                true, false);
+        saver = context.createSaver();
+        saver.save(session, context);
+        committer = new MockCommitter();
+        session.end(committer);
+
+        committedElement = committer.getCommittedElement();
+        assertEquals("2", evaluate(committedElement, "/Person/N_Index"));
+        assertEquals("1", evaluate(committedElement, "/Person/complex/autoIncrement2"));
+
+        // 6, Entity Person, normal field N_Index and autoIncrement2 in complex type, Update
+        // Provided value for AutoIncrement normal field
+        source = new TestSaverSource(repository, false, "test83_original.xml", "metadata24.xsd");
+        session = SaverSession.newSession(source);
+        recordXml = DocumentSaveTest.class.getResourceAsStream("test83_1.xml");
+        context = session.getContextFactory().create("MDM", "PersonAddress", "Source", recordXml, true, true, true,
+                true, false);
+        saver = context.createSaver();
+        saver.save(session, context);
+        assertFalse(source.hasSavedAutoIncrement());
+        committer = new MockCommitter();
+        session.end(committer);
+
+        assertTrue(source.hasSavedAutoIncrement());
+        assertTrue(committer.hasSaved());
+        committedElement = committer.getCommittedElement();
+        assertEquals("1", evaluate(committedElement, "/Person/N_Index"));
+        assertEquals("autoIncrement2", evaluate(committedElement, "/Person/complex/autoIncrement2"));
+
+        // Not provided value for AutoIncrement normal field
+        recordXml = DocumentSaveTest.class.getResourceAsStream("test83.xml");
+        context = session.getContextFactory().create("MDM", "PersonAddress", "Source", recordXml, true, true, true,
+                true, false);
+        saver = context.createSaver();
+        saver.save(session, context);
+        committer = new MockCommitter();
+        session.end(committer);
+
+        committedElement = committer.getCommittedElement();
+        assertEquals("2", evaluate(committedElement, "/Person/N_Index"));
+        assertEquals("1", evaluate(committedElement, "/Person/complex/autoIncrement2"));
+    }
+
     public void testUpdateWithUUID() throws Exception {
         final MetadataRepository repository = new MetadataRepository();
         repository.load(DocumentSaveTest.class.getResourceAsStream("personWithAddressOfUUID.xsd"));

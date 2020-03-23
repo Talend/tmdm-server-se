@@ -141,7 +141,7 @@ import static org.junit.Assert.fail;
 
         DataRecord.CheckExistence.set(!insertOnly);
         InputStream recordXml = new ByteArrayInputStream(
-                ("<Person><Name>T-Shirt</Name></Person>").getBytes(StandardCharsets.UTF_8));
+                ("<Person><Name>T-Shirt</Name><AA/><BB/><CC/><DD/><EE/></Person>").getBytes(StandardCharsets.UTF_8));
 
         Method getTypeKeyMethod = loadServlet.getClass().getDeclaredMethod("getTypeKey", Collection.class);
         getTypeKeyMethod.setAccessible(true);
@@ -198,7 +198,7 @@ import static org.junit.Assert.fail;
 
         DataRecord.CheckExistence.set(!insertOnly);
         InputStream recordXml = new ByteArrayInputStream(
-                ("<Product><Id>1</Id><Name>T-Shirt</Name><Description>Talend T-Shirt</Description><Price>12.3</Price><Support>1</Support></Product>")
+                ("<Product><Id>1</Id><Name>T-Shirt</Name><Description>Talend T-Shirt</Description><Price>12.3</Price><Support>1</Support><Supply/></Product>")
                         .getBytes(StandardCharsets.UTF_8));
 
         Method getTypeKeyMethod = loadServlet.getClass().getDeclaredMethod("getTypeKey", Collection.class);
@@ -253,7 +253,7 @@ import static org.junit.Assert.fail;
 
         DataRecord.CheckExistence.set(!insertOnly);
         InputStream recordXml = new ByteArrayInputStream(
-                ("<Product><Id>2</Id><Name>T-Shirt</Name><Description>Talend T-Shirt</Description><Price>12.3</Price></Product>")
+                ("<Product><Id>2</Id><Name>T-Shirt</Name><Description>Talend T-Shirt</Description><Price>12.3</Price><Supply/></Product>")
                         .getBytes(StandardCharsets.UTF_8));
 
         Method getTypeKeyMethod = loadServlet.getClass().getDeclaredMethod("getTypeKey", Collection.class);
@@ -309,7 +309,7 @@ import static org.junit.Assert.fail;
 
         DataRecord.CheckExistence.set(!insertOnly);
         InputStream recordXml = new ByteArrayInputStream(
-                ("<Student><Id>2</Id><Name>John</Name><Age>23</Age><Course><Id>English</Id><Teacher>Mike</Teacher></Course></Student>")
+                ("<Student><Id>2</Id><Name>John</Name><Age>23</Age><Course><Id>English</Id><Teacher>Mike</Teacher><Score/><Like/></Course></Student>")
                         .getBytes(StandardCharsets.UTF_8));
 
         Method getTypeKeyMethod = loadServlet.getClass().getDeclaredMethod("getTypeKey", Collection.class);
@@ -372,7 +372,7 @@ import static org.junit.Assert.fail;
 
         DataRecord.CheckExistence.set(!insertOnly);
         InputStream recordXml = new ByteArrayInputStream(
-                ("<Student><Id>3</Id><Name>John</Name><Age>23</Age><Site>20</Site><Course><Id>English</Id><Teacher>Mike</Teacher><Score>10</Score></Course></Student>")
+                ("<Student><Id>3</Id><Name>John</Name><Age>23</Age><Account/><Site>20</Site><Course><Id>English</Id><Teacher>Mike</Teacher><Score>10</Score></Course></Student>")
                         .getBytes(StandardCharsets.UTF_8));
 
         Method getTypeKeyMethod = loadServlet.getClass().getDeclaredMethod("getTypeKey", Collection.class);
@@ -435,7 +435,7 @@ import static org.junit.Assert.fail;
 
         DataRecord.CheckExistence.set(!insertOnly);
         InputStream recordXml = new ByteArrayInputStream(
-                ("<Student><Id>5</Id><Name>John</Name><Age>23</Age><Course><Id>English</Id><Teacher>Mike</Teacher></Course></Student><Student><Id>6</Id><Name>John</Name><Age>23</Age><Course><Id>English</Id><Teacher>Mike</Teacher></Course></Student><Student><Id>7</Id><Name>John</Name><Age>23</Age><Course><Id>English</Id><Teacher>Mike</Teacher></Course></Student>")
+                ("<Student><Id>5</Id><Name>John</Name><Age>23</Age><Account/><Course><Id>English</Id><Teacher>Mike</Teacher><Like/></Course></Student><Student><Id>6</Id><Name>John</Name><Age>23</Age><Course><Id>English</Id><Teacher>Mike</Teacher><Score/></Course></Student><Student><Id>7</Id><Name>John</Name><Age>23</Age><Course><Id>English</Id><Teacher>Mike</Teacher></Course></Student>")
                         .getBytes(StandardCharsets.UTF_8));
 
         Method getTypeKeyMethod = loadServlet.getClass().getDeclaredMethod("getTypeKey", Collection.class);
@@ -579,7 +579,77 @@ import static org.junit.Assert.fail;
         assertKeyValue("Person.Person.Habit.Detail.Count", "1", xml);
     }
 
-    @Test public void testGetTypeAutoField() throws Exception {
+    @Test
+    public void test_09_BulkLoadForComplexTypeNoAuto() throws Exception {
+        String dataClusterName = "StudentM";
+        String typeName = "StudentM";
+        String dataModelName = "StudentM";
+        boolean needAutoGenPK = false;
+        boolean insertOnly = false;
+
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(LoadServletForAutoIncrementTest.class.getResourceAsStream("metadata07.xsd"));
+        MockMetadataRepositoryAdmin.INSTANCE.register(dataClusterName, repository);
+        ComplexTypeMetadata type = repository.getComplexType(typeName);
+        LoadAction loadAction = new OptimizedLoadAction(dataClusterName, typeName, dataModelName, needAutoGenPK);
+
+        DataRecord.CheckExistence.set(!insertOnly);
+        InputStream recordXml = new ByteArrayInputStream(
+                ("<StudentM><Id>8</Id><Name>John</Name><Age>23</Age><Site/><Course><Id>English</Id><Teacher>Mike</Teacher><Score/></Course><Course><Id>Chinese</Id><Teacher>John</Teacher><Score/><Like/></Course></StudentM>")
+                        .getBytes(StandardCharsets.UTF_8));
+
+        Method getTypeKeyMethod = LOAD_SERVLET.getClass().getDeclaredMethod("getTypeKey", Collection.class);
+        getTypeKeyMethod.setAccessible(true);
+
+        XSDKey keyMetadata = (XSDKey) getTypeKeyMethod.invoke(LOAD_SERVLET, type.getKeyFields());
+
+        Method getTypeAutoFieldMethod = LOAD_SERVLET.getClass().getDeclaredMethod("getAutoFieldTypeMap", Collection.class);
+        getTypeAutoFieldMethod.setAccessible(true);
+        Map<String, String> autoFieldTypeMap = (Map<String, String>) getTypeAutoFieldMethod
+                .invoke(LOAD_SERVLET, type.getFields());
+
+        XmlServer server = Util.getXmlServerCtrlLocal();
+
+        Method bulkLoadSaveMethod = LOAD_SERVLET.getClass()
+                .getDeclaredMethod("bulkLoadSave", String.class, String.class, InputStream.class, LoadAction.class, XSDKey.class,
+                        Map.class);
+        bulkLoadSaveMethod.setAccessible(true);
+
+        bulkLoadSaveMethod
+                .invoke(LOAD_SERVLET, dataClusterName, dataModelName, recordXml, loadAction, keyMetadata, autoFieldTypeMap);
+        String result = server.getDocumentAsString(dataClusterName, dataClusterName + "." + typeName + ".8");
+        Document xmlDocument = DocumentHelper.parseText(result);
+        Element typeElement = xmlDocument.getRootElement().element("p").element(typeName);
+        assertEquals(7, typeElement.elements().size());
+        assertEquals(8, Integer.parseInt(typeElement.element("Id").getText()));
+        assertEquals("John", typeElement.element("Name").getText());
+        assertEquals("23", typeElement.element("Age").getText());
+        assertEquals(36, typeElement.element("Account").getText().length());
+        assertEquals("1", typeElement.element("Site").getText());
+        List<Element> courseElements = typeElement.elements("Course");
+        assertNotNull(courseElements);
+        assertEquals(4, courseElements.get(0).elements().size());
+        assertEquals("English", courseElements.get(0).element("Id").getText());
+        assertEquals("Mike", courseElements.get(0).element("Teacher").getText());
+        assertEquals("1", courseElements.get(0).element("Score").getText());
+        assertEquals(36, courseElements.get(0).element("Like").getText().length());
+
+        assertEquals(4, courseElements.get(1).elements().size());
+        assertEquals("Chinese", courseElements.get(1).element("Id").getText());
+        assertEquals("John", courseElements.get(1).element("Teacher").getText());
+        assertEquals("2", courseElements.get(1).element("Score").getText());
+        assertEquals(36, courseElements.get(1).element("Like").getText().length());
+
+        //Test System auto increment value
+        String confResult = server.getDocumentAsString("CONF", "CONF.AutoIncrement.AutoIncrement");
+        assertNotNull(confResult);
+        Document xml = DocumentHelper.parseText(confResult);
+        assertKeyValue("StudentM.Student.Site", "1", xml);
+        assertKeyValue("StudentM.Student.Course.Score", "1", xml);
+    }
+
+    @Test
+    public void testGetTypeAutoField() throws Exception {
         String dataClusterName = "AutoInc";
         String typeName = "Person";
         String dataModelName = "AutoInc";

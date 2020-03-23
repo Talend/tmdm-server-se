@@ -102,25 +102,30 @@ public class AutoIncrementUtil {
             for (String fieldPath : normalFields) {
                 Element element = root;
                 // if the filed is not in one complex type
-                if (!fieldPath.contains("/") && element.element(fieldPath) == null) {
-                    generatedField.add(fieldPath);
+                if (!fieldPath.contains("/")) {
+                    element = element.element(fieldPath);
+                    if (element == null || (
+                            element != null && StringUtils.isBlank(element.getText()))) {
+                        generatedField.add(fieldPath);
+                    }
                 } else if (fieldPath.contains("/")) {
-                    // if field is in one complex type
+                    // if field is in one complex type and parent existed.
                     String[] allFieldPaths = fieldPath.split("/");
                     for (int i = 0; i < allFieldPaths.length; i++) {
-                        element = element.element(allFieldPaths[i]);
                         if (element == null) {
-                            // Address/Id, if Address doesn't exist
-                            if (i == 0) {
-                                break;
-                            }
+                            continue;
+                        }
+                        element = element.element(allFieldPaths[i]);
+                        if (element == null || 
+                                (element != null && element.isTextOnly() && 
+                                StringUtils.isBlank(element.getText()))) {
                             generatedField.add(fieldPath);
                         }
                     }
                 }
             }
         } catch (Exception e) {
-            LOG.error("Failed to parse stream to Document");
+            LOG.error("Failed to parse stream to document.", e);
         }
 
         return generatedField.toArray(new String[generatedField.size()]);

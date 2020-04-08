@@ -226,7 +226,7 @@ public class ForeignKeyInfoTransformer implements DocumentTransformer {
             String[] key = new String[allKeys.length];
             int i = 0;
             for (String currentKey : allKeys) {
-                key[i++] = currentKey.substring(1);
+                key[i++] = currentKey.startsWith("[")?currentKey.substring(1):currentKey;
             }
             pk.setIds(key);
 

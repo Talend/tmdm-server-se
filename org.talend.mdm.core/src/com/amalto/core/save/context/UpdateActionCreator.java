@@ -367,6 +367,9 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
             } else { // new accessor exist
                 String newValue = newAccessor.get();
                 if (newValue != null && !(comparedField instanceof ContainedTypeFieldMetadata)) {
+                	if (comparedField instanceof ReferenceFieldMetadata && !newValue.startsWith("[")) {
+                		newValue = "[" + newValue + "]";
+                	}
                     if (comparedField.isMany() && preserveCollectionOldValues) {
                         // Append at the end of the collection
                         if (!originalFieldToLastIndex.containsKey(comparedField)) {

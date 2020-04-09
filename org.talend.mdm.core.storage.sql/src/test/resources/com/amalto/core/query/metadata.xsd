@@ -1943,44 +1943,29 @@
 	</xsd:element>
 	<xsd:element name="Compte">
 		<xsd:annotation>
-
 			<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:all>
-				<xsd:element maxOccurs="1" minOccurs="1" name="Level">
-					<xsd:annotation>
-						<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
-					</xsd:annotation>
-					<xsd:simpleType>
-						<xsd:restriction base="xsd:string">
-							<xsd:enumeration value="Compte SF" />
-							<xsd:enumeration value="Nature Comptable SF" />
-							<xsd:enumeration value="Compte Procofiev" />
-							<xsd:enumeration value="Nature Comptable SIUS" />
-							<xsd:enumeration value="Nature Comptable SIUSMCA" />
-						</xsd:restriction>
-					</xsd:simpleType>
-				</xsd:element>
-				<xsd:element maxOccurs="1" minOccurs="1" name="Code"
-					type="xsd:string">
+				<xsd:element maxOccurs="1" minOccurs="1" name="Level" type="xsd:string">
 					<xsd:annotation>
 						<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 					</xsd:annotation>
 				</xsd:element>
-				<xsd:element maxOccurs="1" minOccurs="0" name="Label"
-					type="xsd:string">
+				<xsd:element maxOccurs="1" minOccurs="1" name="Code" type="xsd:string">
 					<xsd:annotation>
-
 						<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 					</xsd:annotation>
 				</xsd:element>
-				<xsd:element maxOccurs="1" minOccurs="0" name="childOf"
-					type="xsd:string">
+				<xsd:element maxOccurs="1" minOccurs="0" name="Label" type="xsd:string">
+					<xsd:annotation>
+						<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element maxOccurs="1" minOccurs="0" name="childOf" type="xsd:string">
 					<xsd:annotation>
 						<xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
 						<xsd:appinfo source="X_ForeignKey">Compte</xsd:appinfo>
-
 						<xsd:appinfo source="X_ForeignKeyInfo">Compte/Code</xsd:appinfo>
 						<xsd:appinfo source="X_ForeignKeyInfo">Compte/Label</xsd:appinfo>
 						<xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
@@ -3045,6 +3030,162 @@
         <xsd:unique name="RefSourceSystem">
             <xsd:selector xpath="." />
             <xsd:field xpath="RefSourceSystemId" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="OrgActivity">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1" name="idOrgActivity" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="libelleFR" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="libelleEN" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="libelleES" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="codeOrgActivityMaestro" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="idOrgActivityMere" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_ForeignKey">OrgActivity/idOrgActivity</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                        <xsd:appinfo source="X_FKIntegrity">false</xsd:appinfo>
+                        <xsd:appinfo source="X_FKIntegrity_Override">false</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="niveauActivity" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="OrgActivity">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="idOrgActivity" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="OrgPerson">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element name="PersonId" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Name" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Address" type="OrgEUAddress">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="OrgPerson">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="PersonId" />
+        </xsd:unique>
+    </xsd:element>
+	<xsd:complexType name="OrgAddress">
+		<xsd:sequence>
+			<xsd:element maxOccurs="1" minOccurs="1" name="zip" type="xsd:string">
+				<xsd:annotation>
+					<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="OrgEUAddress">
+		<xsd:complexContent>
+			<xsd:extension base="OrgAddress">
+				<xsd:sequence>
+					<xsd:element maxOccurs="1" minOccurs="0" name="FKPerson" type="xsd:string">
+						<xsd:annotation>
+							<xsd:appinfo source="X_ForeignKey">OrgPerson/PersonId</xsd:appinfo>
+							<xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
+							<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element maxOccurs="1" minOccurs="0" name="Code" type="xsd:string">
+						<xsd:annotation>
+							<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:element name="OrgEntity">
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1" name="ID_0" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="ID_1" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="FieldX" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="FieldA">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                    <xsd:complexType>
+                        <xsd:all>
+                            <xsd:element maxOccurs="1" minOccurs="0" name="Name" type="xsd:string">
+                                <xsd:annotation>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                                </xsd:annotation>
+                            </xsd:element>
+                            <xsd:element maxOccurs="1" minOccurs="0" name="FKEntity" type="xsd:string">
+                                <xsd:annotation>
+                                    <xsd:appinfo source="X_ForeignKey">OrgEntity</xsd:appinfo>
+                                    <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
+                                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                                </xsd:annotation>
+                            </xsd:element>
+                        </xsd:all>
+                    </xsd:complexType>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="OrgEntity">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="ID_0" />
+            <xsd:field xpath="ID_1" />
         </xsd:unique>
     </xsd:element>
 </xsd:schema>

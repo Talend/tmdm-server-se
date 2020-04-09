@@ -151,11 +151,17 @@ public class StorageQueryTest extends StorageTestCase {
     private final String TT_Record2 = " <TT><Id>T2</Id><MUl><E1>2</E1><E2>2</E2><E3>[R2]</E3></MUl></TT>";
 
     private final String TT_Record3 = " <TT><Id>T3</Id><MUl><E1>3</E1><E2>3</E2><E3>[R3]</E3></MUl></TT>";
-    
-    private final String COMPTE_Record1 = "<Compte><Level>Compte SF</Level><Code>1</Code><Label>1</Label></Compte>";
 
-    private final String COMPTE_Record2 = "<Compte><Level>Nature Comptable SF</Level><Code>11</Code><Label>11</Label><childOf>[Compte SF][1]</childOf></Compte>";
-    
+    private final String COMPTE_Record1 = "<Compte><Level>1</Level><Code>1</Code><Label>1</Label></Compte>";
+
+    private final String COMPTE_Record5 = "<Compte><Level>5</Level><Code>5</Code><Label>5</Label></Compte>";
+
+    private final String COMPTE_Record2 = "<Compte><Level>2</Level><Code>2</Code><Label>2</Label><childOf>[5][5]</childOf></Compte>";
+
+    private final String COMPTE_Record3 = "<Compte><Level>3</Level><Code>3</Code><Label>2</Label><childOf>[2][2]</childOf></Compte>";
+
+    private final String COMPTE_Record4 = "<Compte><Level>4</Level><Code>4</Code><Label>2</Label><childOf>[1][1]</childOf></Compte>";
+
     private static boolean beanDelegatorContainerFlag = false;
 
     private static void createBeanDelegatorContainer() {
@@ -344,7 +350,10 @@ public class StorageQueryTest extends StorageTestCase {
         allRecords.add(factory.read(repository, tt, TT_Record2));
         allRecords.add(factory.read(repository, tt, TT_Record3));
         allRecords.add(factory.read(repository, compte, COMPTE_Record1));
+        allRecords.add(factory.read(repository, compte, COMPTE_Record5));
         allRecords.add(factory.read(repository, compte, COMPTE_Record2));
+        allRecords.add(factory.read(repository, compte, COMPTE_Record3));
+        allRecords.add(factory.read(repository, compte, COMPTE_Record4));
 
         allRecords.add(factory.read(repository, contexte, "<Contexte><IdContexte>111</IdContexte><name>aaa</name><name>bbb</name></Contexte>"));
         allRecords.add(factory.read(repository, contexte, "<Contexte><IdContexte>222</IdContexte><name>ccc</name></Contexte>"));
@@ -385,6 +394,22 @@ public class StorageQueryTest extends StorageTestCase {
                 .read(repository,
                         type,
                         "<TypeA><Id>4</Id><string>4</string><float>4.0</float><double>4.0</double><decimal>4.00</decimal><dateTime>2017-09-18T12:00:00</dateTime><time>16:00:00</time><date>2017-09-18</date><integer>4</integer><long>4</long><int>4</int><short>4</short><byte>4</byte></TypeA>"));
+
+        allRecords.add(factory.read(repository, orgActivity, "<OrgActivity><idOrgActivity>2</idOrgActivity><libelleFR>2</libelleFR><libelleEN>2</libelleEN><libelleES>2</libelleES><codeOrgActivityMaestro>2</codeOrgActivityMaestro><niveauActivity>2</niveauActivity></OrgActivity>"));
+        allRecords.add(factory.read(repository, orgActivity, "<OrgActivity><idOrgActivity>3</idOrgActivity><libelleFR>3</libelleFR><libelleEN>3</libelleEN><libelleES>3</libelleES><codeOrgActivityMaestro>3</codeOrgActivityMaestro><niveauActivity>3</niveauActivity></OrgActivity>"));
+        allRecords.add(factory.read(repository, orgActivity, "<OrgActivity><idOrgActivity>1</idOrgActivity><libelleFR>1</libelleFR><libelleEN>1</libelleEN><libelleES>1</libelleES><codeOrgActivityMaestro>1</codeOrgActivityMaestro><idOrgActivityMere>[3]</idOrgActivityMere><niveauActivity>1</niveauActivity></OrgActivity>"));
+        allRecords.add(factory.read(repository, orgActivity, "<OrgActivity><idOrgActivity>4</idOrgActivity><libelleFR>4</libelleFR><libelleEN>4</libelleEN><libelleES>4</libelleES><codeOrgActivityMaestro>4</codeOrgActivityMaestro><idOrgActivityMere>[4]</idOrgActivityMere><niveauActivity>4</niveauActivity></OrgActivity>"));
+        allRecords.add(factory.read(repository, orgActivity, "<OrgActivity><idOrgActivity>5</idOrgActivity><libelleFR>5</libelleFR><libelleEN>5</libelleEN><libelleES>5</libelleES><codeOrgActivityMaestro>5</codeOrgActivityMaestro><idOrgActivityMere>[2]</idOrgActivityMere><niveauActivity>5</niveauActivity></OrgActivity>"));
+        allRecords.add(factory.read(repository, orgPerson, "<OrgPerson><PersonId>1</PersonId><Name>1</Name><Address><zip>1</zip><Code>1</Code></Address></OrgPerson>"));
+        allRecords.add(factory.read(repository, orgPerson, "<OrgPerson><PersonId>2</PersonId><Name>2</Name><Address><zip>2</zip><Code>2</Code></Address></OrgPerson>"));
+        allRecords.add(factory.read(repository, orgPerson, "<OrgPerson><PersonId>3</PersonId><Name>3</Name><Address><zip>3</zip><FKPerson>[2]</FKPerson><Code>3</Code></Address></OrgPerson>"));
+        allRecords.add(factory.read(repository, orgPerson, "<OrgPerson><PersonId>4</PersonId><Name>4</Name><Address><zip>4</zip><FKPerson>[1]</FKPerson><Code>4</Code></Address></OrgPerson>"));
+        allRecords.add(factory.read(repository, orgEntity, "<OrgEntity><ID_0>1</ID_0><ID_1>1</ID_1><FieldX>1</FieldX><FieldA><Name>1</Name></FieldA></OrgEntity>"));
+        allRecords.add(factory.read(repository, orgEntity, "<OrgEntity><ID_0>5</ID_0><ID_1>5</ID_1><FieldX>5</FieldX><FieldA><Name>5</Name></FieldA></OrgEntity>"));
+        allRecords.add(factory.read(repository, orgEntity, "<OrgEntity><ID_0>2</ID_0><ID_1>2</ID_1><FieldX>2</FieldX><FieldA><Name>2</Name><FKEntity>[5][5]</FKEntity></FieldA></OrgEntity>"));
+        allRecords.add(factory.read(repository, orgEntity, "<OrgEntity><ID_0>3</ID_0><ID_1>3</ID_1><FieldX>3</FieldX><FieldA><Name>3</Name><FKEntity>[2][2]</FKEntity></FieldA></OrgEntity>"));
+        allRecords.add(factory.read(repository, orgEntity, "<OrgEntity><ID_0>4</ID_0><ID_1>4</ID_1><FieldX>4</FieldX><FieldA><Name>4</Name><FKEntity>[1][1]</FKEntity></FieldA></OrgEntity>"));
+
         try {
             storage.begin();
             storage.update(allRecords);
@@ -935,32 +960,37 @@ public class StorageQueryTest extends StorageTestCase {
     }
     
     public void testOrderByCompoundField() throws Exception {
-        FieldMetadata code = compte.getField("Code");
-        String[] ascExpectedValues = { "1", "11" };
-        UserQueryBuilder qb = from(compte).select(compte.getField("Code")).select(compte.getField("Label"))
-                .select(compte.getField("childOf")).orderBy(compte.getField("childOf"), OrderBy.Direction.ASC);
+        FieldMetadata codeField = compte.getField("Code");
+        FieldMetadata childOfField = compte.getField("childOf");
+        /**
+         * |   Data     |    ASC     |    DESC    |
+         * | 1,1        | 1,1        | 2,2 [5][5] |
+         * | 5,5        | 5,5        | 3,3 [2][2] |
+         * | 2,2 [5][5] | 4,4 [1][1] | 4,4 [1][1] |
+         * | 3,3 [2][2] | 3,3 [2][2] | 1,1        |
+         * | 4,4 [1][1] | 2,2 [5][5] | 5,5        |
+         */
+        String[] ascExpectedValues = { "1", "5", "4" , "3", "2" };
+        UserQueryBuilder qb = from(compte).select(codeField).select(childOfField).orderBy(childOfField, OrderBy.Direction.ASC);
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(2, results.getSize());
-            assertEquals(2, results.getCount());
+            assertEquals(5, results.getCount());
             int i = 0;
             for (DataRecord result : results) {
-                assertEquals(ascExpectedValues[i++], result.get(code));
+                assertEquals(ascExpectedValues[i++], result.get(codeField));
             }
         } finally {
             results.close();
         }
 
-        String[] descExpectedValues = { "11", "1" };
-        qb = from(compte).select(compte.getField("Code")).select(compte.getField("Label")).select(compte.getField("childOf"))
-                .orderBy(compte.getField("childOf"), OrderBy.Direction.DESC);
+        String[] descExpectedValues = { "2", "3", "4"};
+        qb = from(compte).select(codeField).select(childOfField).where(not(isNull(childOfField))).orderBy(childOfField, OrderBy.Direction.DESC);
         results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(2, results.getSize());
-            assertEquals(2, results.getCount());
+            assertEquals(3, results.getSize());
             int i = 0;
             for (DataRecord result : results) {
-                assertEquals(descExpectedValues[i++], result.get(code));
+                assertEquals(descExpectedValues[i++], result.get(codeField));
             }
         } finally {
             results.close();
@@ -1857,6 +1887,89 @@ public class StorageQueryTest extends StorageTestCase {
         StorageResults results = storage.fetch(qb.getSelect());
         try {
             assertEquals(3, results.getCount());
+        } finally {
+            results.close();
+        }
+    }
+
+    // TMDM-14546
+    public void testFKOrderBySelfReference() throws Exception {
+        /**
+         * Non-Inherit scenario
+         * |  Data | ASC   |
+         * | 1 [3] | 5 [2] |
+         * | 2     | 1 [3] |
+         * | 3     | 4 [4] |
+         * | 4 [4] |
+         * | 5 [2] |
+         */
+
+        FieldMetadata idOrgActivityField = orgActivity.getField("idOrgActivity");
+        FieldMetadata idOrgActivityMereField = orgActivity.getField("idOrgActivityMere");
+
+        UserQueryBuilder qb = from(orgActivity).selectId(orgActivity).select(idOrgActivityMereField)
+                .where(not(isNull(idOrgActivityMereField))).orderBy(idOrgActivityMereField, OrderBy.Direction.ASC);
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(3, results.getCount());
+            String[] expected = { "5", "1", "4" };
+            int i = 0;
+            for (DataRecord result : results) {
+                assertEquals(expected[i++], result.get(idOrgActivityField));
+            }
+        } finally {
+            results.close();
+        }
+
+        /**
+         * Inherit + Complex scenario
+         * |  Data | DESC  |
+         * | 1     | 3 [2] |
+         * | 2     | 4 [1] |
+         * | 3 [2] |
+         * | 4 [1] |
+         */
+
+        FieldMetadata personIdField = orgPerson.getField("PersonId");
+        FieldMetadata fkPersonField = orgPerson.getField("Address/FKPerson");
+
+        qb = from(orgPerson).selectId(orgPerson).select(fkPersonField).where(not(isNull(fkPersonField)))
+                .orderBy(fkPersonField, OrderBy.Direction.DESC);
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(2, results.getCount());
+            String[] expected = {"3", "4" };
+            int i = 0;
+            for (DataRecord result : results) {
+                assertEquals(expected[i++], result.get(personIdField));
+            }
+        } finally {
+            results.close();
+        }
+
+        /**
+         * Complex + Compound scenario
+         * |  Data      |    ASC     |
+         * | 1,1        | 4,4 [1][1] |
+         * | 2,2 [5][5] | 3,3 [2][2] |
+         * | 3,3 [2][2] | 2,2 [5][5] |
+         * | 4,4 [1][1] |
+         * | 5,5        |
+         */
+
+        FieldMetadata id0Field = orgEntity.getField("ID_0");
+        FieldMetadata fkEntityField = orgEntity.getField("FieldA/FKEntity");
+
+        qb = from(orgEntity).select(id0Field).select(fkEntityField).where(not(isNull(fkEntityField)))
+                .orderBy(fkEntityField, OrderBy.Direction.ASC);
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(3, results.getCount());
+            String[] expected = { "4", "3", "2"};
+            int i = 0;
+            for (DataRecord result : results) {
+                assertEquals(expected[i++], result.get(id0Field));
+            }
         } finally {
             results.close();
         }

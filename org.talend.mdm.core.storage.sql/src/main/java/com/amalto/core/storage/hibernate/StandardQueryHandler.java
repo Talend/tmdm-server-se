@@ -1778,14 +1778,10 @@ class StandardQueryHandler extends AbstractQueryHandler {
         boolean isSelfReference = isSelfReference(fieldMetadata);
         if (isCompoundField) {
             addConditionForCompoundField(condition, alias, fieldMetadata);
-        } else if (isReferenceField && isContainedInMain) {
-            if (isSelfReference) {
-                addConditionForSelfReferenceField(condition, alias, ((ReferenceFieldMetadata) fieldMetadata).getReferencedField());
-            } else {
-                condition.criterionFieldNames.add(getFieldName(fieldMetadata, true));
-            }
-        } else if (isReferenceField && !isContainedInMain && isSelfReference) {
+        } else if (isReferenceField && isSelfReference) {
             addConditionForSelfReferenceField(condition, alias, ((ReferenceFieldMetadata) fieldMetadata).getReferencedField());
+        } else if (isReferenceField && isContainedInMain) {
+            condition.criterionFieldNames.add(getFieldName(fieldMetadata, true));
         } else {
             String language = OrderBy.SortLanguage.get();
             if (StringUtils.isNotBlank(language) && Types.MULTI_LINGUAL.equals(fieldMetadata.getType().getName())) {

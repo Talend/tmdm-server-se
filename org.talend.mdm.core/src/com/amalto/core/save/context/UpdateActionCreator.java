@@ -311,9 +311,13 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
         Accessor newAccessor = newDocument.createAccessor(path);
         if (!originalAccessor.exist()) {
             if (newAccessor.exist()) { // new accessor exist
-                if (newAccessor.get() != null && !newAccessor.get().isEmpty()) { // Empty accessor means no op to ensure legacy behavior
+            	String newValue = newAccessor.get();
+                if (StringUtils.isNotEmpty(newValue)) { // Empty accessor means no op to ensure legacy behavior
                     generateNoOp(lastMatchPath);
-                    actions.add(new FieldUpdateAction(date, source, userName, path, StringUtils.EMPTY, newAccessor.get(), comparedField));
+                    if (comparedField instanceof ReferenceFieldMetadata && !newValue.startsWith("[")) {
+                		newValue = "[" + newValue + "]";
+                	}
+                    actions.add(new FieldUpdateAction(date, source, userName, path, StringUtils.EMPTY, newValue, comparedField));
                     generateNoOp(path);
                 } else if (EUUIDCustomType.AUTO_INCREMENT.getName().equalsIgnoreCase(comparedField.getType().getName())
                         && isCreateAction == false) {
@@ -367,7 +371,7 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
             } else { // new accessor exist
                 String newValue = newAccessor.get();
                 if (newValue != null && !(comparedField instanceof ContainedTypeFieldMetadata)) {
-                	if (comparedField instanceof ReferenceFieldMetadata && !newValue.startsWith("[")) {
+                	if (comparedField instanceof ReferenceFieldMetadata && !newValue.isEmpty() && !newValue.startsWith("[")) {
                 		newValue = "[" + newValue + "]";
                 	}
                     if (comparedField.isMany() && preserveCollectionOldValues) {

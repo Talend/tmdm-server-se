@@ -11,47 +11,60 @@ package com.amalto.core.objects;
 
 import java.io.Serializable;
 
+import org.apache.log4j.Logger;
+import org.talend.mdm.commmon.util.core.MDMConfiguration;
+
 import com.amalto.core.util.Util;
 
+public class ObjectPOJOPK implements Serializable {
 
-public class ObjectPOJOPK implements Serializable{
+    private static final long serialVersionUID = 8946570431961920706L;
 
-	String[] ids = null;
+    private static final Logger LOGGER = Logger.getLogger(ObjectPOJOPK.class);
 
-	public ObjectPOJOPK (String[] itemIds) {
-		this.ids = itemIds;
-	}
+    String[] ids = null;
 
-	public ObjectPOJOPK (String uniqueid) {
-        this(uniqueid == null ? null : uniqueid.split("\\.\\.")); //$NON-NLS-1$
-	}
-
-	/**
-	 * For marshalling purposes only
-	 */
-	public ObjectPOJOPK () {
-	}
-
-	public String[] getIds() {
-		return ids;
-	}
-
-	public void setIds(String[] ids) {
-		this.ids = ids;
-	}
-
-	@Override
-    public String toString() {
-        return Util.joinStrings(ids, ".."); //$NON-NLS-1$
-	}
-
-	public String getUniqueId() {
-		return toString();
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-        return obj instanceof ObjectPOJOPK && this.getUniqueId().equals(((ObjectPOJOPK) obj).getUniqueId());
+    static {
+        try {
+            MDMConfiguration.createConfiguration("", true);
+        } catch (IllegalStateException e) {
+            LOGGER.warn("MDMConfiguration had been initialized");
+        }
     }
 
+    public ObjectPOJOPK(String[] itemIds) {
+        this.ids = itemIds;
+    }
+
+    public ObjectPOJOPK(String uniqueid) {
+        this(uniqueid == null ? null : uniqueid.split("\\.\\.")); //$NON-NLS-1$
+    }
+
+    /**
+     * For marshalling purposes only
+     */
+    public ObjectPOJOPK() {
+    }
+
+    public String[] getIds() {
+        return ids;
+    }
+
+    public void setIds(String[] ids) {
+        this.ids = ids;
+    }
+
+    @Override
+    public String toString() {
+        return Util.joinStrings(ids, ".."); //$NON-NLS-1$
+    }
+
+    public String getUniqueId() {
+        return toString();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof ObjectPOJOPK && this.getUniqueId().equals(((ObjectPOJOPK) obj).getUniqueId());
+    }
 }

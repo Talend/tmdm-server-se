@@ -311,7 +311,7 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
         Accessor newAccessor = newDocument.createAccessor(path);
         if (!originalAccessor.exist()) {
             if (newAccessor.exist()) { // new accessor exist
-            	String newValue = newAccessor.get();
+                String newValue = newAccessor.get();
                 if (StringUtils.isNotEmpty(newValue)) { // Empty accessor means no op to ensure legacy behavior
                     generateNoOp(lastMatchPath);
                     if (comparedField instanceof ReferenceFieldMetadata && !newValue.startsWith("[")) {

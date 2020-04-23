@@ -320,9 +320,19 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
         Accessor newAccessor = newDocument.createAccessor(path);
         if (!originalAccessor.exist()) {
             if (newAccessor.exist()) { // new accessor exist
-                if (newAccessor.get() != null && !newAccessor.get().isEmpty()) { // Empty accessor means no op to ensure legacy behavior
+                String newValue = newAccessor.get();
+                if (StringUtils.isNotEmpty(newValue)) { // Empty accessor means no op to ensure legacy behavior
                     generateNoOp(lastMatchPath);
-                    actions.add(new FieldUpdateAction(date, source, userName, path, StringUtils.EMPTY, newAccessor.get(), comparedField, userAction));
+                    if (comparedField instanceof ReferenceFieldMetadata && !newValue.startsWith("[")) {
+                		newValue = "[" + newValue + "]";
+                    }
+                    if (comparedField.isMany() && preserveCollectionOldValues) {
+                        int newItemIndex = Integer.parseInt(StringUtils.substringBetween(path, "[", "]"));//$NON-NLS-1$ //$NON-NLS-2$
+                        int oldItemIndex = originalDocument.createAccessor(StringUtils.substringBeforeLast(path, "[")).size();//$NON-NLS-1$
+                        int insertIndex = newItemIndex + oldItemIndex;
+                        path = path.replaceAll("\\[\\d+\\]", "[" + insertIndex + "]");//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    }
+                    actions.add(new FieldUpdateAction(date, source, userName, path, StringUtils.EMPTY, newValue, comparedField, userAction));
                     generateNoOp(path);
                 } else if (EUUIDCustomType.AUTO_INCREMENT.getName().equalsIgnoreCase(comparedField.getType().getName())
                         && isCreateAction == false) {
@@ -376,6 +386,9 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
             } else { // new accessor exist
                 String newValue = newAccessor.get();
                 if (newValue != null && !(comparedField instanceof ContainedTypeFieldMetadata)) {
+                	if (comparedField instanceof ReferenceFieldMetadata && !newValue.isEmpty() && !newValue.startsWith("[")) {
+                		newValue = "[" + newValue + "]";
+                	}
                     if (comparedField.isMany() && preserveCollectionOldValues) {
                         // Append at the end of the collection
                         if (!originalFieldToLastIndex.containsKey(comparedField)) {

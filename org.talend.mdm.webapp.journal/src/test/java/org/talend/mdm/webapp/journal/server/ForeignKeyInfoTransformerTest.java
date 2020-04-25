@@ -118,7 +118,7 @@ public class ForeignKeyInfoTransformerTest extends TestCase {
     }
 
     public void testCase0_FK_defined_in_anonymoustype_and_fKInfo_directly_under_root() {
-        String recordId = "d1";
+        String recordId = "d1-x";
         String conceptName = "D";
         executeTestFor(recordId, conceptName);
     }
@@ -407,6 +407,7 @@ public class ForeignKeyInfoTransformerTest extends TestCase {
 
         // case 0:
         xmlDomRecordInputs.put("d1", "<D><D_Id>d1</D_Id><D_Name>dName1</D_Name><FK_to_E>[e1]</FK_to_E></D>");
+        xmlDomRecordInputs.put("d1-x", "<D><D_Id>d1</D_Id><D_Name>dName1</D_Name><FK_to_E>e1</FK_to_E></D>");
         // case 1:
         xmlDomRecordInputs.put("a1", "<A><A_Id>a1</A_Id><A_Name>aName1</A_Name><FK_to_B>[b1]</FK_to_B></A>");
         xmlDomRecordInputs.put("a11", "<A><A_Id>a11</A_Id><A_Name>aName11</A_Name><FK_to_B>[b11]</FK_to_B></A>");

@@ -202,11 +202,7 @@ public class LineageListPanel extends ContentPanel {
     }
 
     private LineageListPanel() {
-        this.cluster = BrowseRecords.getSession().getAppHeader().getDatacluster();
-        this.cluster = this.cluster.endsWith(StorageAdmin.STAGING_SUFFIX) ? this.cluster : this.cluster
-                + StorageAdmin.STAGING_SUFFIX;
-        this.viewBean = BrowseRecords.getSession().getCurrentView();
-        this.entityModel = BrowseRecords.getSession().getCurrentEntityModel();
+    	updateDataModel();
 
         setLayout(new FitLayout());
         setHeaderVisible(false);
@@ -280,7 +276,34 @@ public class LineageListPanel extends ContentPanel {
         refresh();
     }
 
+    private void updateDataModel() {
+        this.cluster = BrowseRecords.getSession().getAppHeader().getDatacluster();
+        this.cluster = this.cluster.endsWith(StorageAdmin.STAGING_SUFFIX) ? this.cluster : this.cluster
+                + StorageAdmin.STAGING_SUFFIX;
+        this.viewBean = BrowseRecords.getSession().getCurrentView();
+        this.entityModel = BrowseRecords.getSession().getCurrentEntityModel();
+    }
+
+    private boolean isDataModelChanged() {
+        String sessionCluster = BrowseRecords.getSession().getAppHeader().getDatacluster();
+        sessionCluster = sessionCluster.endsWith(StorageAdmin.STAGING_SUFFIX) ? sessionCluster : sessionCluster
+                + StorageAdmin.STAGING_SUFFIX;
+
+        String sessionConceptName = BrowseRecords.getSession().getCurrentEntityModel().getConceptName();
+        List<String> sessionViewableXpaths = BrowseRecords.getSession().getCurrentView().getViewableXpaths();
+        List<String> cloneList = new ArrayList<String>(sessionViewableXpaths);
+        cloneList.removeAll(this.viewBean.getViewableXpaths());
+
+        return ((cloneList.size() > 0) ||
+        		!this.entityModel.getConceptName().equals(sessionConceptName) ||
+                !this.cluster.equals(sessionCluster));
+    }
+
     public void refresh() {
+    	final boolean isDataModelChanged = isDataModelChanged();
+    	if (isDataModelChanged) {
+    		updateDataModel();
+    	}
         selectStagingGridPanel();
         browseStagingRecordService.checkTask(cluster, entityModel.getConceptName(), taskId,
                 new SessionAwareAsyncCallback<Map<String, Integer>>() {
@@ -298,6 +321,12 @@ public class LineageListPanel extends ContentPanel {
                         config.setOffset(0);
                         int pageSize = pagingBar.getPageSize();
                         config.setLimit(pageSize);
+
+                        if (isDataModelChanged) {
+	                        ColumnModel columnModel = new ColumnModel(generateColumnList());
+	                        grid.reconfigure(store, columnModel);
+                        }
+
                         loader.load(config);
                         pagingBar.setVisible(true);
                         gridContainer.setHeight(gridContainerHeight);

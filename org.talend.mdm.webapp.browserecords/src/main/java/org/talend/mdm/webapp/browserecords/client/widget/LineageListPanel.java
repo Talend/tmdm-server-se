@@ -202,7 +202,7 @@ public class LineageListPanel extends ContentPanel {
     }
 
     private LineageListPanel() {
-    	updateDataModel();
+        updateDataModel();
 
         setLayout(new FitLayout());
         setHeaderVisible(false);
@@ -278,32 +278,31 @@ public class LineageListPanel extends ContentPanel {
 
     private void updateDataModel() {
         this.cluster = BrowseRecords.getSession().getAppHeader().getDatacluster();
-        this.cluster = this.cluster.endsWith(StorageAdmin.STAGING_SUFFIX) ? this.cluster : this.cluster
-                + StorageAdmin.STAGING_SUFFIX;
+        this.cluster = this.cluster.endsWith(StorageAdmin.STAGING_SUFFIX) ? this.cluster
+                : this.cluster + StorageAdmin.STAGING_SUFFIX;
         this.viewBean = BrowseRecords.getSession().getCurrentView();
         this.entityModel = BrowseRecords.getSession().getCurrentEntityModel();
     }
 
     private boolean isDataModelChanged() {
         String sessionCluster = BrowseRecords.getSession().getAppHeader().getDatacluster();
-        sessionCluster = sessionCluster.endsWith(StorageAdmin.STAGING_SUFFIX) ? sessionCluster : sessionCluster
-                + StorageAdmin.STAGING_SUFFIX;
+        sessionCluster = sessionCluster.endsWith(StorageAdmin.STAGING_SUFFIX) ? sessionCluster
+                : sessionCluster + StorageAdmin.STAGING_SUFFIX;
 
         String sessionConceptName = BrowseRecords.getSession().getCurrentEntityModel().getConceptName();
         List<String> sessionViewableXpaths = BrowseRecords.getSession().getCurrentView().getViewableXpaths();
         List<String> cloneList = new ArrayList<String>(sessionViewableXpaths);
         cloneList.removeAll(this.viewBean.getViewableXpaths());
 
-        return ((cloneList.size() > 0) ||
-        		!this.entityModel.getConceptName().equals(sessionConceptName) ||
-                !this.cluster.equals(sessionCluster));
+        return ((cloneList.size() > 0) || !this.entityModel.getConceptName().equals(sessionConceptName)
+                || !this.cluster.equals(sessionCluster));
     }
 
     public void refresh() {
-    	final boolean isDataModelChanged = isDataModelChanged();
-    	if (isDataModelChanged) {
-    		updateDataModel();
-    	}
+        final boolean isDataModelChanged = isDataModelChanged();
+        if (isDataModelChanged) {
+            updateDataModel();
+        }
         selectStagingGridPanel();
         browseStagingRecordService.checkTask(cluster, entityModel.getConceptName(), taskId,
                 new SessionAwareAsyncCallback<Map<String, Integer>>() {

@@ -4748,7 +4748,7 @@ public class DocumentSaveTest extends TestCase {
     	MetadataRepository repository = new MetadataRepository();
         repository.load(DocumentSaveTest.class.getResourceAsStream("testSpecialFK.xsd"));
         MockMetadataRepositoryAdmin.INSTANCE.register("testSpecialFK", repository);
-        SaverSource source = new TestSaverSource(repository, false, "testSpecialFK_original.xml", "testSpecialFK.xsd");
+        SaverSource source = new TestSaverSource(repository, true, "testSpecialFK_original.xml", "testSpecialFK.xsd");
 
         //Case 1 update foreign key refer to it self
         SaverSession session = SaverSession.newSession(source);

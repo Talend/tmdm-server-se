@@ -4743,6 +4743,39 @@ public class DocumentSaveTest extends TestCase {
         assertEquals("3", evaluate(committedElement, "/TestC/Id"));
         assertEquals("[11]", evaluate(committedElement, "/TestC/DocterField/BaseField/TestA_FK"));
     }
+    
+    public void test_UpdateSpecialFK() throws Exception {
+    	MetadataRepository repository = new MetadataRepository();
+        repository.load(DocumentSaveTest.class.getResourceAsStream("testSpecialFK.xsd"));
+        MockMetadataRepositoryAdmin.INSTANCE.register("testSpecialFK", repository);
+        SaverSource source = new TestSaverSource(repository, false, "testSpecialFK_original.xml", "testSpecialFK.xsd");
+
+        //Case 1 update foreign key refer to it self
+        SaverSession session = SaverSession.newSession(source);
+        InputStream recordXml = new ByteArrayInputStream(("<OrgActivity><idOrgActivity>id1</idOrgActivity><idOrgActivityMere>[id1]</idOrgActivityMere><FK1>[1]</FK1><FK2>[2]</FK2></OrgActivity>").getBytes("UTF-8"));
+        DocumentSaverContext context = session.getContextFactory().create("testSpecialFK", "testSpecialFK", "Source", recordXml, false, true, true, false, false);
+        DocumentSaver saver = context.createSaver();
+        saver.save(session, context);
+        MockCommitter committer = new MockCommitter();
+        session.end(committer);
+        
+        assertTrue(committer.hasSaved());
+        Element committedElement = committer.getCommittedElement();
+        assertEquals("[id1]", evaluate(committedElement, "/OrgActivity/idOrgActivityMere"));
+        
+        //Case 2 update foreign key FK2 that refer to the same type with FK1.
+        session = SaverSession.newSession(source);
+        recordXml = new ByteArrayInputStream(("<OrgActivity><idOrgActivity>id1</idOrgActivity><idOrgActivityMere>[id1]</idOrgActivityMere><FK1>[1]</FK1><FK2>[1]</FK2></OrgActivity>").getBytes("UTF-8"));
+        context = session.getContextFactory().create("testSpecialFK", "testSpecialFK", "Source", recordXml, false, true, true, false, false);
+        saver = context.createSaver();
+        saver.save(session, context);
+        committer = new MockCommitter();
+        session.end(committer);
+        
+        assertTrue(committer.hasSaved());
+        committedElement = committer.getCommittedElement();
+        assertEquals("[1]", evaluate(committedElement, "/OrgActivity/FK2"));
+    }
 
     private void assertUpdateReportAction(Document doc, int index, String expectedPath, String expectedOldValue,
             String expectedNewValue) throws Exception {

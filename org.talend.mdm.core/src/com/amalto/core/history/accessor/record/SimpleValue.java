@@ -31,7 +31,7 @@ class SimpleValue implements Setter, Getter {
             ReferenceFieldMetadata fieldMetadata = (ReferenceFieldMetadata) element.field;
             boolean needResetValue = true;
             if (record.get(element.field) != null) {
-                String oldValue = String.valueOf(record.get(fieldMetadata.getReferencedField()));
+                String oldValue = String.valueOf(DataRecord.getId((DataRecord) record.get(element.field)));
                 if (!(fieldMetadata.getReferencedField() instanceof CompoundFieldMetadata)) {
                     oldValue = '[' + oldValue + ']';
                 }

@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<ii>
+    <c>testSpecialFK</c>
+    <n>testSpecialFK</n>
+    <dmn>testSpecialFK</dmn>
+    <i>231035933</i>
+    <t>1327653438644</t>
+    <p>
+        <OrgActivity>
+		  <idOrgActivity>id1</idOrgActivity>
+		  <idOrgActivityMere>[fkA]</idOrgActivityMere>
+		  <FK1>[1]</FK1>
+		  <FK2>[2]</FK2>
+		</OrgActivity>
+    </p>
+</ii>

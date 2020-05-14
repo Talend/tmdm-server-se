@@ -4750,7 +4750,7 @@ public class DocumentSaveTest extends TestCase {
         MockMetadataRepositoryAdmin.INSTANCE.register("testSpecialFK", repository);
         SaverSource source = new TestSaverSource(repository, true, "testSpecialFK_original.xml", "testSpecialFK.xsd");
 
-        //Case 1 update foreign key refer to it self
+        // Case 1, update foreign key refer to itself
         SaverSession session = SaverSession.newSession(source);
         InputStream recordXml = new ByteArrayInputStream(("<OrgActivity><idOrgActivity>id1</idOrgActivity><idOrgActivityMere>[id1]</idOrgActivityMere><FK1>[1]</FK1><FK2>[2]</FK2></OrgActivity>").getBytes("UTF-8"));
         DocumentSaverContext context = session.getContextFactory().create("testSpecialFK", "testSpecialFK", "Source", recordXml, false, true, true, false, false);
@@ -4763,7 +4763,7 @@ public class DocumentSaveTest extends TestCase {
         Element committedElement = committer.getCommittedElement();
         assertEquals("[id1]", evaluate(committedElement, "/OrgActivity/idOrgActivityMere"));
         
-        //Case 2 update foreign key FK2 that refer to the same type with FK1.
+        // Case 2, update foreign key FK2 that refer to the same type with FK1.
         session = SaverSession.newSession(source);
         recordXml = new ByteArrayInputStream(("<OrgActivity><idOrgActivity>id1</idOrgActivity><idOrgActivityMere>[id1]</idOrgActivityMere><FK1>[1]</FK1><FK2>[1]</FK2></OrgActivity>").getBytes("UTF-8"));
         context = session.getContextFactory().create("testSpecialFK", "testSpecialFK", "Source", recordXml, false, true, true, false, false);

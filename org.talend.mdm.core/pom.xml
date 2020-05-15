@@ -13,8 +13,8 @@
     <name>org.talend.mdm.core</name>
 
     <properties>
-        <jackson.version>2.9.10</jackson.version>
-        <jackson.provider.version>2.9.10</jackson.provider.version>
+        <jackson.version>2.10.1</jackson.version>
+        <jackson.provider.version>2.10.1</jackson.provider.version>
         <activemq.version>5.15.9</activemq.version>
         <woodstox.core.version>5.3.0</woodstox.core.version>
         <joda.time.version>2.10</joda.time.version>

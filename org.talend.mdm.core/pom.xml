@@ -18,6 +18,7 @@
         <activemq.version>5.15.9</activemq.version>
         <woodstox.core.version>5.3.0</woodstox.core.version>
         <joda.time.version>2.10</joda.time.version>
+        <hazelcast.version>3.10.7</hazelcast.version>
     </properties>
 
     <build>
@@ -532,12 +533,12 @@
         <dependency>
             <groupId>com.hazelcast</groupId>
             <artifactId>hazelcast-spring</artifactId>
-            <version>3.7.4</version>
+            <version>${hazelcast.version}</version>
         </dependency>
         <dependency>
             <groupId>com.hazelcast</groupId>
             <artifactId>hazelcast</artifactId>
-            <version>3.7.4</version>
+            <version>${hazelcast.version}</version>
         </dependency>
     </dependencies>
     

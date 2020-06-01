@@ -233,9 +233,6 @@ public class ItemsDetailPanel extends ContentPanel {
     }
 
     public ItemDetailTabPanelContentHandle addTabItem(String title, ContentPanel panel, String pattern, String id) {
-        if (itemsDetailTabPanel.getTabTitles().contains(title)) {
-            itemsDetailTabPanel.closeTabPanelWithTitle(title);
-        }
         return itemsDetailTabPanel.addTabItem(title, panel, pattern, id);
     }
 
@@ -463,9 +460,7 @@ public class ItemsDetailPanel extends ContentPanel {
          * @param id
          */
         public ItemDetailTabPanelContentHandle addTabItem(String title, ContentPanel panel, String pattern, String id) {
-            if (pattern.equalsIgnoreCase(ItemsDetailPanel.MULTIPLE)) {
-                this.closeTabPanelWithId(id);
-
+            if (pattern.equalsIgnoreCase(ItemsDetailPanel.MULTIPLE)) {               
                 if (this.getTabCount() == 0) {
                     // Adding a first tab
 

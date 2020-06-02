@@ -6407,6 +6407,75 @@ public class StorageQueryTest extends StorageTestCase {
         });
     }
 
+    // TMDM-14671 Error while query composite key and multi-occurence field
+    public void testCompositeKeyWithOneToManyField() throws Exception {
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(DataRecordCreationTest.class.getResourceAsStream("CKTest_1.xsd"));
+
+        Storage storage = new HibernateStorage("H2-DS1", StorageType.MASTER);
+        storage.init(ServerContext.INSTANCE.get().getDefinition("H2-DS1", "MDM"));
+        storage.prepare(repository, true);
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+
+        List<DataRecord> records = new LinkedList<DataRecord>();
+        ComplexTypeMetadata compositeKey = repository.getComplexType("CompositeKey");
+        records.add(factory.read(repository, compositeKey, "<CompositeKey><Id1>11</Id1><Id2>22</Id2><Id3>2020-06-02</Id3><name>hello</name><name>world</name><name>well</name><Address>beijing</Address><Name3>n1</Name3><Name3>n2</Name3><Name3>n3</Name3><Name2>na1</Name2><Name2>na2</Name2><Name5>nam1</Name5><Name5>nam2</Name5><Name5>nam3</Name5></CompositeKey>"));
+        records.add(factory.read(repository, compositeKey, "<CompositeKey><Id1>11</Id1><Id2>44</Id2><Id3>2020-06-03</Id3><name>hello</name><name>world</name><name>well</name><Address>beijing</Address><Name3>n1</Name3><Name3>n2</Name3><Name3>n3</Name3><Name2>na1</Name2><Name2>na2</Name2><Name5>nam1</Name5><Name5>nam2</Name5><Name5>nam3</Name5></CompositeKey>"));
+
+        ComplexTypeMetadata singleEntity = repository.getComplexType("SingleEntity");
+        records.add(factory.read(repository, singleEntity, "<SingleEntity><Id>11</Id><Name>he</Name><Name>good</Name><Name>well</Name></SingleEntity>"));
+        records.add(factory.read(repository, singleEntity, "<SingleEntity><Id>22</Id><Name>he</Name><Name>good</Name><Name>well</Name></SingleEntity>"));
+        storage.begin();
+        storage.update(records);
+        storage.commit();
+
+        // Query CompositeKey data
+        storage.begin();
+        final ComplexTypeMetadata complexTypeMetadata = repository.getComplexType("CompositeKey");
+        UserQueryBuilder qb = from(complexTypeMetadata);
+        StorageResults results = storage.fetch(qb.getSelect());
+        int[] idx = { 1 };
+        try {
+            assertEquals(2, results.getCount());
+            idx[0] = 1;
+            results.forEach((DataRecord record) -> {
+                if (idx[0]++ == 1) {
+                    assertEquals(record.get(compositeKey.getField("Id1")), "11");
+                    assertEquals(record.get(compositeKey.getField("Id2")), "22");
+                    assertEquals(Arrays.equals(((ArrayList<Object>)record.get(compositeKey.getField("name"))).toArray(), new Object[] {"hello", "world", "well"}), true);
+                } else {
+                    assertEquals(record.get(compositeKey.getField("Id1")), "11");
+                    assertEquals(record.get(compositeKey.getField("Id2")), "44");
+                    assertEquals(Arrays.equals(((ArrayList<Object>)record.get(compositeKey.getField("name"))).toArray(), new Object[] {"hello", "world", "well"}), true);
+                }
+            });
+        } finally {
+            results.close();
+        }
+
+        // Query SingleEntity data
+        storage.begin();
+        final ComplexTypeMetadata complexTypeMetadata1 = repository.getComplexType("SingleEntity");
+        qb = from(complexTypeMetadata1);
+        results = storage.fetch(qb.getSelect());
+        idx[0] = 1;
+        try {
+            assertEquals(2, results.getCount());
+            idx[0] = 1;
+            results.forEach((DataRecord record) -> {
+                if (idx[0]++ == 1) {
+                    assertEquals(record.get(singleEntity.getField("Id")), "11");
+                    assertEquals(Arrays.equals(((ArrayList<Object>)record.get(singleEntity.getField("Name"))).toArray(), new Object[] {"he", "good", "well"}), true);
+                } else {
+                    assertEquals(record.get(singleEntity.getField("Id")), "22");
+                    assertEquals(Arrays.equals(((ArrayList<Object>)record.get(singleEntity.getField("Name"))).toArray(), new Object[] {"he", "good", "well"}), true);
+                }
+            });
+        } finally {
+            results.close();
+        }
+    }
+
     public void testEntityRTE() {
         MetadataRepository repository = new MetadataRepository();
         repository.load(StorageQueryTest.class.getResourceAsStream("RTE.xsd"));

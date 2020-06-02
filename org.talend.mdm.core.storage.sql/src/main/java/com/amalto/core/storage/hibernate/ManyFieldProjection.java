@@ -153,6 +153,10 @@ class ManyFieldProjection extends SimpleProjection {
             this.dataSourceDialect = dataSourceDialect;
         }
 
+        /**
+         * Due to different DB to use separate aggregation function, The special enum instance will overwrite the
+         * <b>toFunctionNames</b> method.
+         */
         public abstract void toFunctionNames(StringBuilder sqlFragment, String containerTable, String collectionTable);
 
         public void toJoinEnd(StringBuilder sqlFragment) {

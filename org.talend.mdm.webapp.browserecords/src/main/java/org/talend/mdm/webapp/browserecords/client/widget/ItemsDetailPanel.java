@@ -484,7 +484,7 @@ public class ItemsDetailPanel extends ContentPanel {
                     // Select the tab
                     this.tabBar.selectTab(0);
                 } else {
-                    int itemIndex = this.tabIds.indexOf(title);
+                    int itemIndex = this.tabTitles.indexOf(title);
                     if (itemIndex == -1) {
                     	// Create the tab
                         Label tabLabel = this.createTabLabel(title);

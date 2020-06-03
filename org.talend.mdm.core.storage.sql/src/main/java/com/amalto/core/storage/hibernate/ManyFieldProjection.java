@@ -154,8 +154,10 @@ class ManyFieldProjection extends SimpleProjection {
         }
 
         /**
-         * Due to different DB to use separate aggregation function, The special enum instance will overwrite the
-         * <b>toFunctionNames</b> method.
+         * The special functions, like (<b>group_concat</b> in Mysql) are identical in SQL due to different DB to use
+         * separate one, The special enum instance will overwrite the <b>toFunctionNames</b> method. And the we retrieve
+         * the data one-to-many association from the database store it in that Query object and iterate this object with
+         * the help of Iterator and finally displays the requested data on the front-end.
          */
         public abstract void toFunctionNames(StringBuilder sqlFragment, String containerTable, String collectionTable);
 
@@ -173,7 +175,7 @@ class ManyFieldProjection extends SimpleProjection {
          *  WHERE CompositeKeyTable.x_id2 = this_.x_id2 AND CompositeKeyTable.x_id1 = this_.x_id1)
          * </pre>
          */
-        public void toSqlString(StringBuilder sqlFragment, CriteriaQuery criteriaQuery, Criteria subCriteria,
+        private void toSqlString(StringBuilder sqlFragment, CriteriaQuery criteriaQuery, Criteria subCriteria,
                 String containerTable, String collectionTable, Set<String> keyNameSet) {
             toFunctionNames(sqlFragment, containerTable, collectionTable);
             treatedManyFieldJoin(sqlFragment, criteriaQuery, subCriteria, containerTable, collectionTable, keyNameSet);
@@ -209,7 +211,7 @@ class ManyFieldProjection extends SimpleProjection {
             toJoinEnd(sqlFragment);
         }
 
-        public static SpecialDBSQLProvider selectDataSource(DataSourceDialect dataSourceDialect) {
+        private static SpecialDBSQLProvider selectDataSource(DataSourceDialect dataSourceDialect) {
             for (SpecialDBSQLProvider item : SpecialDBSQLProvider.values()) {
                 if (item.dataSourceDialect.equals(dataSourceDialect)) {
                     return item;

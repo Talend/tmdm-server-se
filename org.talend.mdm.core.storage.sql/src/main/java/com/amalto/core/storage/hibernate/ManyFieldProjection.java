@@ -76,8 +76,11 @@ class ManyFieldProjection extends SimpleProjection {
             sqlFragment.append("distinct "); //$NON-NLS-1$
         }
         Set<String> keyNameSet = containingType.getKeyFields().stream().map((item) -> resolver.get(item)).collect(Collectors.toSet());
-        SpecialDBSQLProvider.selectDataSource(dataSource.getDialectName()).toSqlString(sqlFragment, criteriaQuery, subCriteria,
-                containerTable, collectionTable, keyNameSet);
+        SQLGenerator currentSQLGenerator = SQLGenerator.selectDataSource(dataSource.getDialectName());
+        sqlFragment.append(currentSQLGenerator.getSelectFragment(containerTable, collectionTable))
+                   .append(currentSQLGenerator.getJoinFragment(criteriaQuery, subCriteria, containerTable, collectionTable, keyNameSet))
+                   .append(currentSQLGenerator.getWhereFragment(criteriaQuery, subCriteria, containerTable, collectionTable, keyNameSet))
+                   .append(currentSQLGenerator.getEndFragment());
 
         if (count && !isMSSQLDataDource()) {
             sqlFragment.append(")"); //$NON-NLS-1$
@@ -89,130 +92,150 @@ class ManyFieldProjection extends SimpleProjection {
         return sqlFragment.toString();
     }
 
-    private static enum SpecialDBSQLProvider {
+    private static enum SQLGenerator {
           INNER_POSTGRES(DataSourceDialect.POSTGRES) {
 
-              public void toFunctionNames(StringBuilder sqlFragment, String containerTable, String collectionTable) {
-                  sqlFragment.append("(select string_agg(") //$NON-NLS-1$
+              @Override
+              protected String getSelectFragment(String containerTable, String collectionTable) {
+                  StringBuilder selectFragment = new StringBuilder();
+                  selectFragment.append("(SELECT string_agg(") //$NON-NLS-1$
                       .append(collectionTable)
                       .append(".value, ',') FROM ").append(containerTable);
+                  return selectFragment.toString();
               }
           },
 
           INNER_H2(DataSourceDialect.H2) {
 
-              public void toFunctionNames(StringBuilder sqlFragment, String containerTable, String collectionTable) {
-                  INNER_MYSQL.toFunctionNames(sqlFragment, containerTable, collectionTable);
+              @Override
+              protected String getSelectFragment(String containerTable, String collectionTable) {
+                  return INNER_MYSQL.getSelectFragment(containerTable, collectionTable);
               }
           },
 
           INNER_MYSQL(DataSourceDialect.MYSQL) {
 
-              public void toFunctionNames(StringBuilder sqlFragment, String containerTable, String collectionTable) {
-                  sqlFragment.append("(select group_concat(") //$NON-NLS-1$
+              @Override
+              protected String getSelectFragment(String containerTable, String collectionTable) {
+                  StringBuilder selectFragment = new StringBuilder();
+                  selectFragment.append("(SELECT group_concat(") //$NON-NLS-1$
                       .append(collectionTable)
                       .append(".value separator ',') FROM ").append(containerTable); //$NON-NLS-1$
+                  return selectFragment.toString();
               }
           },
 
           INNER_ORACLE_10G(DataSourceDialect.ORACLE_10G) {
 
-              public void toFunctionNames(StringBuilder sqlFragment, String containerTable, String collectionTable) {
-                  sqlFragment.append("(select listagg(") //$NON-NLS-1$
+              @Override
+              protected String getSelectFragment(String containerTable, String collectionTable) {
+                  StringBuilder selectFragment = new StringBuilder();
+                  selectFragment.append("(SELECT listagg(") //$NON-NLS-1$
                       .append(collectionTable)
                       .append(".value, ',') WITHIN GROUP (ORDER BY pos) FROM ").append(containerTable); //$NON-NLS-1$
+                  return selectFragment.toString();
               }
           },
 
           INNER_SQL_SERVER(DataSourceDialect.SQL_SERVER) {
 
-              public void toFunctionNames(StringBuilder sqlFragment, String containerTable, String collectionTable) {
-                  sqlFragment.append("STUFF((select ',' + ") //$NON-NLS-1$
+              @Override
+              protected String getSelectFragment(String containerTable, String collectionTable) {
+                  StringBuilder selectFragment = new StringBuilder();
+                  selectFragment.append("STUFF((select ',' + ") //$NON-NLS-1$
                       .append(collectionTable)
                       .append(".value FROM ").append(containerTable); //$NON-NLS-1$
+                  return selectFragment.toString();
               }
 
               @Override
-              public void toJoinEnd(StringBuilder sqlFragment) {
-                  sqlFragment.append(" FOR XML PATH ('')), 1, 1, '')"); //$NON-NLS-1$
+              protected String getEndFragment() {
+                  return " FOR XML PATH ('')), 1, 1, '')"; //$NON-NLS-1$
               }
           },
 
           INNER_DB2(DataSourceDialect.DB2) {
 
-              public void toFunctionNames(StringBuilder sqlFragment, String containerTable, String collectionTable) {
-                  sqlFragment.append("(select listagg(") //$NON-NLS-1$
+              @Override
+              protected String getSelectFragment(String containerTable, String collectionTable) {
+                  StringBuilder selectFragment = new StringBuilder();
+                  selectFragment.append("(SELECT listagg(") //$NON-NLS-1$
                       .append(collectionTable)
                       .append(".value, ',') WITHIN GROUP (ORDER BY pos) FROM ").append(containerTable); //$NON-NLS-1$
+                  return selectFragment.toString();
               }
           };
 
         private DataSourceDialect dataSourceDialect;
 
-        private SpecialDBSQLProvider(DataSourceDialect dataSourceDialect) {
+        private SQLGenerator(DataSourceDialect dataSourceDialect) {
             this.dataSourceDialect = dataSourceDialect;
         }
 
         /**
          * The special functions, like (<b>group_concat</b> in Mysql) are identical in SQL due to different DB to use
-         * separate one, The special enum instance will overwrite the <b>toFunctionNames</b> method. And the we retrieve
+         * separate one, The special enum instance will overwrite the <b>getSelectFragment</b> method. And the we retrieve
          * the data one-to-many association from the database store it in that Query object and iterate this object with
          * the help of Iterator and finally displays the requested data on the front-end.
          */
-        public abstract void toFunctionNames(StringBuilder sqlFragment, String containerTable, String collectionTable);
+        protected abstract String getSelectFragment(String containerTable, String collectionTable);
 
-        public void toJoinEnd(StringBuilder sqlFragment) {
-            sqlFragment.append(")"); //$NON-NLS-1$
-        }
-
-        /**
-         * That is a entry point to generate the query statement from multiple tables against different DB. like the
-         * following SQL cause from Mysql will be return:
-         * 
-         * <pre>
-         * (select group_concat(AA.value separator ',') FROM CompositeKeyTable INNER JOIN AA 
-         *  ON CompositeKeyTable.x_id2 = AA.x_id2 AND CompositeKeyTable.x_id1 = AA.x_id1 
-         *  WHERE CompositeKeyTable.x_id2 = this_.x_id2 AND CompositeKeyTable.x_id1 = this_.x_id1)
-         * </pre>
-         */
-        private void toSqlString(StringBuilder sqlFragment, CriteriaQuery criteriaQuery, Criteria subCriteria,
-                String containerTable, String collectionTable, Set<String> keyNameSet) {
-            toFunctionNames(sqlFragment, containerTable, collectionTable);
-            treatedManyFieldJoin(sqlFragment, criteriaQuery, subCriteria, containerTable, collectionTable, keyNameSet);
+        protected String getEndFragment() {
+            return ")"; //$NON-NLS-1$
         }
 
         /**
          * The implementation of method to query data from multiple tables using SQL INNER JOIN statement. we often want
          * to query data from multiple tables to have a complete result set for analysis. To query data from multiple
          * tables using join statements. The join condition is specified in the INNER JOIN clause after the ON keyword
-         * as the expression:<b> ON SingleEntity.x_id1 = SingleEntity_x_name.x_id1 AND SingleEntity.x_id2 =
-         * SingleEntity_x_name.x_id2 </b>, if that's a composite key, these key will be related with AND keyword.
+         * as the expression: <b>(Table_1 INNER JOIN Table_2 ON Table_1.x_id1 = Table_2.x_id1 AND Table_1.x_id2 =
+         * Table_2.x_id2) </b>, if that's a composite key, these key will be related with AND keyword.
          */
-        private void treatedManyFieldJoin(StringBuilder sqlFragment, CriteriaQuery criteriaQuery, Criteria subCriteria,
-                String containerTable, String collectionTable, Set<String> keyNameSet) {
+        private String getJoinFragment(CriteriaQuery criteriaQuery, Criteria subCriteria, String containerTable,
+                String collectionTable, Set<String> keyNameSet) {
+            StringBuilder joinFragment = new StringBuilder();
             boolean flag = true;
-            StringBuilder whereClause = new StringBuilder();
             for (String keyName : keyNameSet) {
                 if (flag) {
-                    sqlFragment.append(" INNER JOIN ").append(collectionTable).append(" ON "); //$NON-NLS-1$ $NON-NLS-1$
+                    joinFragment.append(" INNER JOIN ").append(collectionTable).append(" ON "); //$NON-NLS-1$ $NON-NLS-1$
+                    flag = false;
+                } else {
+                    joinFragment.append(" AND "); //$NON-NLS-1$
+                }
+                joinFragment.append(containerTable).append('.').append(keyName).append(" = ") //$NON-NLS-1$
+                .append(collectionTable).append('.').append(keyName);
+            }
+            return joinFragment.toString();
+        }
+
+        /**
+         * The WHERE condition is specified by below method, if the major table is composite key, multiple condition
+         * will be generated and appented by ON keyword as the final expression. like the following fragment:
+         *
+         * <pre>
+         * WHERE Table_1.x_id1 = Table_2.x_id1 AND Table_1.x_id2 = Table_2.x_id2;
+         * </pre>
+         */
+        private String getWhereFragment(CriteriaQuery criteriaQuery, Criteria subCriteria,
+                String containerTable, String collectionTable, Set<String> keyNameSet) {
+            StringBuilder whereClause = new StringBuilder();
+            boolean flag = true;
+            for (String keyName : keyNameSet) {
+                if (flag) {
                     whereClause.append(" WHERE "); //$NON-NLS-1$
                     flag = false;
                 } else {
-                    sqlFragment.append(" AND "); //$NON-NLS-1$
                     whereClause.append(" AND "); //$NON-NLS-1$
                 }
-                sqlFragment.append(containerTable).append('.').append(keyName).append(" = ") //$NON-NLS-1$
-                        .append(collectionTable).append('.').append(keyName);
 
                 whereClause.append(containerTable).append('.').append(keyName).append(" = ") //$NON-NLS-1$
                     .append(criteriaQuery.getSQLAlias(subCriteria)).append('.').append(keyName);
             }
-            sqlFragment.append(whereClause);
-            toJoinEnd(sqlFragment);
+            return whereClause.toString();
         }
 
-        private static SpecialDBSQLProvider selectDataSource(DataSourceDialect dataSourceDialect) {
-            for (SpecialDBSQLProvider item : SpecialDBSQLProvider.values()) {
+        private static SQLGenerator selectDataSource(DataSourceDialect dataSourceDialect) {
+            for (SQLGenerator item : SQLGenerator.values()) {
                 if (item.dataSourceDialect.equals(dataSourceDialect)) {
                     return item;
                 }

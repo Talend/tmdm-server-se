@@ -233,9 +233,6 @@ public class ItemsDetailPanel extends ContentPanel {
     }
 
     public ItemDetailTabPanelContentHandle addTabItem(String title, ContentPanel panel, String pattern, String id) {
-        if (itemsDetailTabPanel.getTabTitles().contains(title)) {
-            itemsDetailTabPanel.closeTabPanelWithTitle(title);
-        }
         return itemsDetailTabPanel.addTabItem(title, panel, pattern, id);
     }
 
@@ -463,9 +460,7 @@ public class ItemsDetailPanel extends ContentPanel {
          * @param id
          */
         public ItemDetailTabPanelContentHandle addTabItem(String title, ContentPanel panel, String pattern, String id) {
-            if (pattern.equalsIgnoreCase(ItemsDetailPanel.MULTIPLE)) {
-                this.closeTabPanelWithId(id);
-
+            if (pattern.equalsIgnoreCase(ItemsDetailPanel.MULTIPLE)) {               
                 if (this.getTabCount() == 0) {
                     // Adding a first tab
 
@@ -489,18 +484,23 @@ public class ItemsDetailPanel extends ContentPanel {
                     // Select the tab
                     this.tabBar.selectTab(0);
                 } else {
-                    // Create the tab
-                    Label tabLabel = this.createTabLabel(title);
-                    this.tabBar.addTab(tabLabel);
+                    int itemIndex = this.tabTitles.indexOf(title);
+                    if (itemIndex == -1) {
+                        // Create the tab
+                        Label tabLabel = this.createTabLabel(title);
+                        this.tabBar.addTab(tabLabel);
 
-                    // Save the ID
-                    this.tabIds.add(id);
+                        // Save the ID
+                        this.tabIds.add(id);
 
-                    // Save the ID
-                    this.tabTitles.add(title);
+                        // Save the ID
+                        this.tabTitles.add(title);
 
-                    // Save the panel
-                    this.tabPanels.add(panel);
+                        // Save the panel
+                        this.tabPanels.add(panel);
+                    } else {
+                        this.tabPanels.set(itemIndex, panel);
+                    }
                 }
 
             } else {

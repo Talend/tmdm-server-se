@@ -76,11 +76,11 @@ class ManyFieldProjection extends SimpleProjection {
             sqlFragment.append("distinct "); //$NON-NLS-1$
         }
         Set<String> keyNameSet = containingType.getKeyFields().stream().map((item) -> resolver.get(item)).collect(Collectors.toSet());
-        SQLGenerator currentSQLGenerator = SQLGenerator.selectDataSource(dataSource.getDialectName());
-        sqlFragment.append(currentSQLGenerator.getSelectFragment(containerTable, collectionTable))
-                   .append(currentSQLGenerator.getJoinFragment(criteriaQuery, subCriteria, containerTable, collectionTable, keyNameSet))
-                   .append(currentSQLGenerator.getWhereFragment(criteriaQuery, subCriteria, containerTable, collectionTable, keyNameSet))
-                   .append(currentSQLGenerator.getEndFragment());
+        SQLGenerator sqlGenerator = SQLGenerator.selectDataSource(dataSource.getDialectName());
+        sqlFragment.append(sqlGenerator.getSelectFragment(containerTable, collectionTable))
+                   .append(sqlGenerator.getJoinFragment(criteriaQuery, subCriteria, containerTable, collectionTable, keyNameSet))
+                   .append(sqlGenerator.getWhereFragment(criteriaQuery, subCriteria, containerTable, collectionTable, keyNameSet))
+                   .append(sqlGenerator.getEndFragment());
 
         if (count && !isMSSQLDataDource()) {
             sqlFragment.append(")"); //$NON-NLS-1$
@@ -97,11 +97,9 @@ class ManyFieldProjection extends SimpleProjection {
 
               @Override
               protected String getSelectFragment(String containerTable, String collectionTable) {
-                  StringBuilder selectFragment = new StringBuilder();
-                  selectFragment.append("(SELECT string_agg(") //$NON-NLS-1$
-                      .append(collectionTable)
-                      .append(".value, ',') FROM ").append(containerTable);
-                  return selectFragment.toString();
+                  return new StringBuilder().append("(SELECT string_agg(") //$NON-NLS-1$
+                          .append(collectionTable).append(".value, ',') FROM ").append(containerTable)
+                          .toString();
               }
           },
 
@@ -117,11 +115,9 @@ class ManyFieldProjection extends SimpleProjection {
 
               @Override
               protected String getSelectFragment(String containerTable, String collectionTable) {
-                  StringBuilder selectFragment = new StringBuilder();
-                  selectFragment.append("(SELECT group_concat(") //$NON-NLS-1$
+                  return new StringBuilder().append("(SELECT group_concat(") //$NON-NLS-1$
                       .append(collectionTable)
-                      .append(".value separator ',') FROM ").append(containerTable); //$NON-NLS-1$
-                  return selectFragment.toString();
+                      .append(".value separator ',') FROM ").append(containerTable).toString(); //$NON-NLS-1$
               }
           },
 
@@ -129,11 +125,9 @@ class ManyFieldProjection extends SimpleProjection {
 
               @Override
               protected String getSelectFragment(String containerTable, String collectionTable) {
-                  StringBuilder selectFragment = new StringBuilder();
-                  selectFragment.append("(SELECT listagg(") //$NON-NLS-1$
+                  return new StringBuilder().append("(SELECT listagg(") //$NON-NLS-1$
                       .append(collectionTable)
-                      .append(".value, ',') WITHIN GROUP (ORDER BY pos) FROM ").append(containerTable); //$NON-NLS-1$
-                  return selectFragment.toString();
+                      .append(".value, ',') WITHIN GROUP (ORDER BY pos) FROM ").append(containerTable).toString(); //$NON-NLS-1$
               }
           },
 
@@ -141,11 +135,9 @@ class ManyFieldProjection extends SimpleProjection {
 
               @Override
               protected String getSelectFragment(String containerTable, String collectionTable) {
-                  StringBuilder selectFragment = new StringBuilder();
-                  selectFragment.append("STUFF((select ',' + ") //$NON-NLS-1$
+                  return new StringBuilder().append("STUFF((select ',' + ") //$NON-NLS-1$
                       .append(collectionTable)
-                      .append(".value FROM ").append(containerTable); //$NON-NLS-1$
-                  return selectFragment.toString();
+                      .append(".value FROM ").append(containerTable).toString(); //$NON-NLS-1$
               }
 
               @Override
@@ -158,11 +150,9 @@ class ManyFieldProjection extends SimpleProjection {
 
               @Override
               protected String getSelectFragment(String containerTable, String collectionTable) {
-                  StringBuilder selectFragment = new StringBuilder();
-                  selectFragment.append("(SELECT listagg(") //$NON-NLS-1$
+                  return new StringBuilder().append("(SELECT listagg(") //$NON-NLS-1$
                       .append(collectionTable)
-                      .append(".value, ',') WITHIN GROUP (ORDER BY pos) FROM ").append(containerTable); //$NON-NLS-1$
-                  return selectFragment.toString();
+                      .append(".value, ',') WITHIN GROUP (ORDER BY pos) FROM ").append(containerTable).toString(); //$NON-NLS-1$
               }
           };
 
@@ -227,7 +217,6 @@ class ManyFieldProjection extends SimpleProjection {
                 } else {
                     whereClause.append(" AND "); //$NON-NLS-1$
                 }
-
                 whereClause.append(containerTable).append('.').append(keyName).append(" = ") //$NON-NLS-1$
                     .append(criteriaQuery.getSQLAlias(subCriteria)).append('.').append(keyName);
             }

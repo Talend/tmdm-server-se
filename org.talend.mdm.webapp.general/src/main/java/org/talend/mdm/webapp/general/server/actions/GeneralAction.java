@@ -275,7 +275,7 @@ public class GeneralAction implements GeneralService {
     public String logout() throws ServiceException {
         try {
             if (com.amalto.core.util.Util.isEnterprise()) {
-                return "/logout"; //$NON-NLS-1$
+                return "logout"; //$NON-NLS-1$
             } else {
                 Util.getPort().logout(new WSLogout(StringUtils.EMPTY)).getValue();
                 HttpSession session = SessionContextHolder.currentSession();

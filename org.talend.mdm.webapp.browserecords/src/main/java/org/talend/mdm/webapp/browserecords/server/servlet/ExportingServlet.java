@@ -186,7 +186,7 @@ public class ExportingServlet extends HttpServlet {
             // create a cell style
             HSSFCellStyle cs = wb.createCellStyle();
             HSSFFont f = wb.createFont();
-            f.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+            f.setBold(true);
             cs.setFont(f);
             HSSFRow row = sheet.createRow((short) 0);
 

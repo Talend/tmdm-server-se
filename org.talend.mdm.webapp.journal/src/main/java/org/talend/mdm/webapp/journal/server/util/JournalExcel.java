@@ -62,7 +62,7 @@ public class JournalExcel {
     private void createCellStyle() {
         cellStyle = workbook.createCellStyle();
         HSSFFont f = workbook.createFont();
-        f.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+        f.setBold(true);
         cellStyle.setFont(f);
     }
 

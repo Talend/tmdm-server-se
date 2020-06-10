@@ -14,7 +14,6 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFFont;
@@ -50,7 +49,7 @@ public class ExcelWriter extends DownloadWriter {
         workbook = new XSSFWorkbook();
         cs = workbook.createCellStyle();
         XSSFFont font = workbook.createFont();
-        font.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+        font.setBold(true);
         cs.setFont(font);
         sheet = workbook.createSheet(SHEET_LABEL);
         sheet.setDefaultColumnWidth((short) 20);

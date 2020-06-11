@@ -31,6 +31,7 @@ public abstract class SessionAwareAsyncCallback<T> implements AsyncCallback<T> {
 
     final private static String OIDC_REDIRECTION_META = "<meta name=\"description\" content=\"Redirection to UI site\" />"; //$NON-NLS-1$
 
+    @Override
     public final void onFailure(Throwable caught) {
         if (Log.isErrorEnabled()) {
             Log.error(caught.toString());
@@ -39,10 +40,11 @@ public abstract class SessionAwareAsyncCallback<T> implements AsyncCallback<T> {
             MessageBox.alert(BaseMessagesFactory.getMessages().warning_title(),
                     BaseMessagesFactory.getMessages().session_timeout_error(), new Listener<MessageBoxEvent>() {
 
+                        @Override
                         public void handleEvent(MessageBoxEvent be) {
                             Cookies.removeCookie("JSESSIONID"); //$NON-NLS-1$
                             Cookies.removeCookie("JSESSIONIDSSO"); //$NON-NLS-1$
-                            Window.Location.replace(GWT.getHostPageBaseURL() + "/logout"); //$NON-NLS-1$
+                            Window.Location.replace(GWT.getHostPageBaseURL() + "logout"); //$NON-NLS-1$
                         }
                     });
         } else {

@@ -54,9 +54,12 @@
         </dependency>
         <!-- 3rd party dependencies -->
         <dependency>
-            <!-- for login.jsp -->
-            <groupId>jstl</groupId>
-            <artifactId>jstl</artifactId>
+            <groupId>org.apache.taglibs</groupId>
+            <artifactId>taglibs-standard-spec</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.taglibs</groupId>
+            <artifactId>taglibs-standard-impl</artifactId>
         </dependency>
         <dependency>
             <groupId>commons-codec</groupId>

@@ -27,6 +27,7 @@ import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -401,7 +402,7 @@ public class UploadService {
                 Iterator<Cell> headerIterator = headerRow.cellIterator();
                 while (headerIterator.hasNext()) {
                     Cell cell = headerIterator.next();
-                    if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
+                    if (cell.getCellTypeEnum() == CellType.STRING) {
                         header = cell.getRichStringCellValue().getString();
                         headers.add(handleHeader(header, index));
                     }
@@ -668,18 +669,18 @@ public class UploadService {
 
     protected String getExcelFieldValue(Cell cell) throws Exception {
         String fieldValue = null;
-        int cellType = cell.getCellType();
+        CellType cellType = cell.getCellTypeEnum();
         switch (cellType) {
-            case Cell.CELL_TYPE_NUMERIC: {
+            case NUMERIC: {
                 double tmp = cell.getNumericCellValue();
                 fieldValue = getStringRepresentation(tmp);
                 break;
             }
-            case Cell.CELL_TYPE_STRING: {
+            case STRING: {
                 fieldValue = cell.getRichStringCellValue().getString();
                 break;
             }
-            case Cell.CELL_TYPE_BOOLEAN: {
+            case BOOLEAN: {
                 boolean tmp = cell.getBooleanCellValue();
                 if (tmp) {
                     fieldValue = "true"; //$NON-NLS-1$
@@ -688,14 +689,14 @@ public class UploadService {
                 }
                 break;
             }
-            case Cell.CELL_TYPE_FORMULA: {
+            case FORMULA: {
                 fieldValue = cell.getCellFormula();
                 break;
             }
-            case Cell.CELL_TYPE_ERROR: {
+            case ERROR: {
                 break;
             }
-            case Cell.CELL_TYPE_BLANK: {
+            case BLANK: {
                 fieldValue = ""; //$NON-NLS-1$
             }
             default: {
@@ -740,7 +741,7 @@ public class UploadService {
     private void setFieldValue(Element currentElement, String value) throws Exception {
         if (currentElement.elements() != null && currentElement.elements().size() > 0) {
             Element complexeElement = XmlUtil.parseDocument(Util.parse(StringEscapeUtils.unescapeXml(value))).getRootElement();
-            List<Element> contentList = currentElement.getParent().content();
+            List<Element> contentList = currentElement.getParent().elements();
             int index = contentList.indexOf(currentElement);
             contentList.remove(currentElement);
             contentList.add(index, complexeElement);
@@ -755,7 +756,7 @@ public class UploadService {
                     Constants.XSI_TYPE_QUALIFIED_NAME);
         }
         if (!value.equals(currentElement.attributeValue(xsiTypeQName))) {
-            currentElement.setAttributeValue(xsiTypeQName, value);
+            currentElement.addAttribute(xsiTypeQName, value);
         }
     }
 

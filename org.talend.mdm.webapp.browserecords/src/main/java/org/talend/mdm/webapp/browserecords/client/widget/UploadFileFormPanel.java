@@ -434,7 +434,7 @@ public class UploadFileFormPanel extends FormPanel implements Listener<FormEvent
     }
 
     protected String getActionUrl() {
-        return GWT.getHostPageBaseURL() + "/browserecords/upload"; //$NON-NLS-1$
+        return GWT.getHostPageBaseURL() + "browserecords/upload"; //$NON-NLS-1$
     }
 
     private String filterFormatTag(String message) {

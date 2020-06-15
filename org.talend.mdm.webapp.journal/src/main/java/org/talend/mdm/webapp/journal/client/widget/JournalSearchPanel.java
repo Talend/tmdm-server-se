@@ -544,7 +544,7 @@ public class JournalSearchPanel extends FormPanel {
     }
 
     protected void exportAction() {
-        PostDataUtil.postData(GWT.getHostPageBaseURL() + "/journal/journalExport", getCriteriaMap()); //$NON-NLS-1$
+        PostDataUtil.postData(GWT.getHostPageBaseURL() + "journal/journalExport", getCriteriaMap()); //$NON-NLS-1$
     }
 
     protected List<String> generateOperatorList() {

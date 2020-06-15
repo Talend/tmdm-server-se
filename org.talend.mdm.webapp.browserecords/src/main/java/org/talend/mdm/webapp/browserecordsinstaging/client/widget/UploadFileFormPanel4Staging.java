@@ -28,6 +28,6 @@ public class UploadFileFormPanel4Staging extends UploadFileFormPanel {
 
     @Override
     protected String getActionUrl() {
-        return GWT.getHostPageBaseURL() + "/browserecords/upload4Staging"; //$NON-NLS-1$
+        return GWT.getHostPageBaseURL() + "browserecords/upload4Staging"; //$NON-NLS-1$
     }
 }

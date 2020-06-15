@@ -24,6 +24,6 @@ public class DownloadFilePanel4Staging extends DownloadFilePanel {
 
     @Override
     protected String getActionUrl() {
-        return GWT.getHostPageBaseURL() + "/browserecords/download4Staging"; //$NON-NLS-1$
+        return GWT.getHostPageBaseURL() + "browserecords/download4Staging"; //$NON-NLS-1$
     }
 }

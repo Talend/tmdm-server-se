@@ -345,6 +345,6 @@ public class DownloadFilePanel extends FormPanel {
     }
 
     protected String getActionUrl() {
-        return GWT.getHostPageBaseURL() + "/browserecords/download"; //$NON-NLS-1$
+        return GWT.getHostPageBaseURL() + "browserecords/download"; //$NON-NLS-1$
     }
 }

@@ -10,6 +10,32 @@
 
 package com.amalto.core.load;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
+import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
+import org.junit.Test;
+import org.junit.runners.MethodSorters;
+import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.MetadataRepository;
+import org.talend.mdm.commmon.util.core.MDMConfiguration;
+
 import com.amalto.core.delegator.BaseSecurityCheck;
 import com.amalto.core.delegator.BeanDelegatorContainer;
 import com.amalto.core.delegator.MockILocalUser;
@@ -23,32 +49,6 @@ import com.amalto.core.servlet.LoadServlet;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.util.Util;
 import com.amalto.core.util.XSDKey;
-import org.apache.log4j.Logger;
-import org.dom4j.Document;
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
-import org.dom4j.tree.DefaultElement;
-import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
-import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
-import org.talend.mdm.commmon.metadata.MetadataRepository;
-import org.talend.mdm.commmon.util.core.MDMConfiguration;
-
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.lang.reflect.Method;
-import java.nio.charset.StandardCharsets;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @SuppressWarnings("nls")
@@ -722,8 +722,8 @@ public class LoadServletForAutoIncrementTest {
 
     private void assertKeyValue(String key, String value, Document document) {
         Element autoIncrementElement = document.getRootElement().element("p").element("AutoIncrement");
-        List<DefaultElement> list = autoIncrementElement.elements();
-        for (DefaultElement element : list) {
+        List<Element> list = autoIncrementElement.elements();
+        for (Element element : list) {
             if (element.element("key") != null && element.element("key").getText().equals(key)) {
                 assertEquals(value, element.element("value").getText());
                 return;
@@ -733,8 +733,8 @@ public class LoadServletForAutoIncrementTest {
 
     private void assertNotKeyValue(String key, Document document) {
         Element autoIncrementElement = document.getRootElement().element("p").element("AutoIncrement");
-        List<DefaultElement> list = autoIncrementElement.elements();
-        for (DefaultElement element : list) {
+        List<Element> list = autoIncrementElement.elements();
+        for (Element element : list) {
             if (element.element("key") != null && element.element("key").getText().equals(key)) {
                 fail("System AutoIncrement value should not contains path: '" + key + " value");
             }

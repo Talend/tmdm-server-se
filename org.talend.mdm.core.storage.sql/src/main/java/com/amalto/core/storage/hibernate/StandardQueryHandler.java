@@ -39,6 +39,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
+import org.hibernate.NullPrecedence;
 import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
@@ -860,10 +861,10 @@ class StandardQueryHandler extends AbstractQueryHandler {
             list.add(Projections.count(propertyName).as(alias));
             switch (orderBy.getDirection()) {
             case ASC:
-                criteria.addOrder(Order.asc(alias));
+                criteria.addOrder(Order.asc(alias).nulls(NullPrecedence.FIRST));
                 break;
             case DESC:
-                criteria.addOrder(Order.desc(alias));
+                criteria.addOrder(Order.desc(alias).nulls(NullPrecedence.LAST));
                 break;
             }
         }
@@ -872,10 +873,10 @@ class StandardQueryHandler extends AbstractQueryHandler {
                 OrderBy.Direction direction = orderBy.getDirection();
                 switch (direction) {
                 case ASC:
-                    criteria.addOrder(Order.asc(fieldName));
+                    criteria.addOrder(Order.asc(fieldName).nulls(NullPrecedence.FIRST));
                     break;
                 case DESC:
-                    criteria.addOrder(Order.desc(fieldName));
+                    criteria.addOrder(Order.desc(fieldName).nulls(NullPrecedence.LAST));
                     break;
                 }
             }

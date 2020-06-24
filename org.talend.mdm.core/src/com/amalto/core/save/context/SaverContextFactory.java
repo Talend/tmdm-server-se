@@ -84,7 +84,8 @@ public class SaverContextFactory {
         factory.setExpandEntityReferences(false);
         try {
             factory.setFeature(MDMXMLUtils.FEATURE_DISALLOW_DOCTYPE, true);
-            factory.setFeature(MDMXMLUtils.FEATURE_DEFER_NODE_EXPANSION, false); //$NON-NLS-1$
+            factory.setFeature(MDMXMLUtils.FEATURE_DEFER_NODE_EXPANSION, false);
+            factory.setFeature(javax.xml.XMLConstants.FEATURE_SECURE_PROCESSING, Boolean.TRUE);
             DOCUMENT_BUILDER = factory.newDocumentBuilder();
         } catch (ParserConfigurationException e) {
             throw new RuntimeException("Could not acquire a document builder.", e); //$NON-NLS-1$

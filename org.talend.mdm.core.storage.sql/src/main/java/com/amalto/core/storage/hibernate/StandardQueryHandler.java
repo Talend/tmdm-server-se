@@ -39,6 +39,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
+import org.hibernate.NullPrecedence;
 import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
@@ -118,6 +119,7 @@ import com.amalto.core.query.user.metadata.StagingStatus;
 import com.amalto.core.query.user.metadata.TaskId;
 import com.amalto.core.query.user.metadata.Timestamp;
 import com.amalto.core.storage.CloseableIterator;
+import com.amalto.core.storage.HibernateStorageUtils;
 import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.StorageMetadataUtils;
 import com.amalto.core.storage.StorageResults;
@@ -913,29 +915,36 @@ class StandardQueryHandler extends AbstractQueryHandler {
             list.add(Projections.groupProperty(propertyName));
             String alias = "x_talend_countField" + countAggregateIndex++; //$NON-NLS-1$
             list.add(Projections.count(propertyName).as(alias));
-            switch (orderBy.getDirection()) {
-            case ASC:
-                criteria.addOrder(Order.asc(alias));
-                break;
-            case DESC:
-                criteria.addOrder(Order.desc(alias));
-                break;
-            }
+            orderByWithNulls(orderBy.getDirection(), alias);
         }
         if (condition != null) {
             for (String fieldName : condition.criterionFieldNames) {
-                OrderBy.Direction direction = orderBy.getDirection();
-                switch (direction) {
-                case ASC:
-                    criteria.addOrder(Order.asc(fieldName));
-                    break;
-                case DESC:
-                    criteria.addOrder(Order.desc(fieldName));
-                    break;
-                }
+            	orderByWithNulls(orderBy.getDirection(), fieldName);                
             }
         }
         return null;
+    }
+    
+    // Nulls first when order by with ASC direction, nulls last when order by DESC direction
+    private void orderByWithNulls(OrderBy.Direction direction, String field) {
+    	RDBMSDataSource dataSource = (RDBMSDataSource) storage.getDataSource();
+        switch (direction) {
+        case ASC:
+        	// Nulls first/last not supported by SQLServer, its default behavior is the same as expected
+        	if (HibernateStorageUtils.isSQLServer(dataSource.getDialectName())) {
+        		criteria.addOrder(Order.asc(field));
+        	} else {
+        		criteria.addOrder(Order.asc(field).nulls(NullPrecedence.FIRST));
+        	}
+            break;
+        case DESC:
+        	if (HibernateStorageUtils.isSQLServer(dataSource.getDialectName())) {
+        		criteria.addOrder(Order.desc(field));
+        	} else {
+        		criteria.addOrder(Order.desc(field).nulls(NullPrecedence.LAST));
+        	}
+        	break;
+        }
     }
 
     @Override

@@ -1960,12 +1960,12 @@ public class StorageQueryTest extends StorageTestCase {
         FieldMetadata id0Field = orgEntity.getField("ID_0");
         FieldMetadata fkEntityField = orgEntity.getField("FieldA/FKEntity");
 
-        qb = from(orgEntity).select(id0Field).select(fkEntityField).where(not(isNull(fkEntityField)))
+        qb = from(orgEntity).select(id0Field).select(fkEntityField)
                 .orderBy(fkEntityField, OrderBy.Direction.ASC);
         results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(3, results.getCount());
-            String[] expected = { "4", "3", "2"};
+            assertEquals(5, results.getCount());
+            String[] expected = { "1","5","4", "3", "2"};
             int i = 0;
             for (DataRecord result : results) {
                 assertEquals(expected[i++], result.get(id0Field));

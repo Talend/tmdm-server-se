@@ -6000,6 +6000,75 @@ public class StorageQueryTest extends StorageTestCase {
         }
     }
 
+    //TMDM-14687 [REST] PUT query with multiple joins does not return correct value 
+    public void testMultipleJoinsQueryWithForeignKey() throws Exception {
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(DataRecordCreationTest.class.getResourceAsStream("MultipleJoinQuery14687.xsd"));
+        Storage storage = new HibernateStorage("H2-DS1", StorageType.MASTER);
+        storage.init(ServerContext.INSTANCE.get().getDefinition("H2-DS1", "MDM"));
+        storage.prepare(repository, true);
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+
+        List<DataRecord> records = new LinkedList<DataRecord>();
+        records.add(factory.read(repository, repository.getComplexType("commune"),
+                "<commune><communeId>1</communeId><decoupage_canton_com>1</decoupage_canton_com><code_dept_com>1</code_dept_com><code_commune_com>1</code_commune_com><code_insee_com>1</code_insee_com><libelle_long_ref>1</libelle_long_ref><date_debut_validite_ref>2000-01-01</date_debut_validite_ref><version>1</version></commune>"));
+        records.add(factory.read(repository, repository.getComplexType("site"),
+                "<site><siteId>1</siteId><Fk_id_commune>[1]</Fk_id_commune><version>1</version></site>"));
+        records.add(factory.read(repository, repository.getComplexType("appli_src"),
+                "<appli_src><appli_srcId>1</appli_srcId><code_appli_src>1</code_appli_src><libelle_long_ref>1</libelle_long_ref><date_debut_validite_ref>2000-01-01</date_debut_validite_ref><version>1</version></appli_src>"));
+        records.add(factory.read(repository, repository.getComplexType("entite_gestion_adm"),
+                "<entite_gestion_adm><entite_gestion_admId>1</entite_gestion_admId><libelle_long_ref>1</libelle_long_ref><date_debut_validite_ref>2020-01-01</date_debut_validite_ref><version>1</version></entite_gestion_adm>"));
+        records.add(factory.read(repository, repository.getComplexType("service"),
+                "<service><serviceId>1</serviceId><Fk_id_site>[1]</Fk_id_site><Fk_id_entite_gest_adm>[1]</Fk_id_entite_gest_adm><Fk_id_appli_src>[1]</Fk_id_appli_src><libelle_long_ref>1</libelle_long_ref><date_debut_validite_ref>2020-01-01</date_debut_validite_ref><code_srv>1</code_srv><est_adm_srv>true</est_adm_srv><est_oper_srv>true</est_oper_srv><est_actif_srv>true</est_actif_srv><date_effet_actif_srv>2020-01-01</date_effet_actif_srv><niv_hierarchique_srv>1</niv_hierarchique_srv><date_creation_srv>2020-01-01T00:00:00</date_creation_srv></service>"));
+        records.add(factory.read(repository, repository.getComplexType("confidentialite"),
+                "<confidentialite><confidentialiteId>1</confidentialiteId><libelle_long_ref>1</libelle_long_ref><date_debut_validite_ref>2000-01-01</date_debut_validite_ref><version>1</version></confidentialite>"));
+        records.add(factory.read(repository, repository.getComplexType("service_pub"),
+                "<service_pub><service_pubId>11</service_pubId><Fk_id_service>[1]</Fk_id_service><Fk_id_confidentialite>[1]</Fk_id_confidentialite><id_maia>1</id_maia><localite>1</localite><adresse_postale>1</adresse_postale><version>1</version></service_pub>"));
+        records.add(factory.read(repository, repository.getComplexType("personne_pub"),
+                "<personne_pub><rio_agt_pubId>1</rio_agt_pubId><nom_naissance_agt>1</nom_naissance_agt><premier_prenom_agt>1</premier_prenom_agt><date_naissance_agt>2020-01-01</date_naissance_agt><version>1</version></personne_pub>"));
+        records.add(factory.read(repository, repository.getComplexType("grade"),
+                "<grade><gradeId>1</gradeId><Fk_id_appli_src>[1]</Fk_id_appli_src><libelle_long_ref>1</libelle_long_ref><date_debut_validite_ref>2020-01-01</date_debut_validite_ref><version>1</version></grade>"));
+        records.add(factory.read(repository, repository.getComplexType("responsabilite"),
+                "<responsabilite><responsabiliteId>1</responsabiliteId><version>1</version></responsabilite>"));
+        records.add(factory.read(repository, repository.getComplexType("agent_pub"),
+                "<agent_pub><agent_pubId>7</agent_pubId><Fk_id_grade>[1]</Fk_id_grade><Fk_id_appli_src>[1]</Fk_id_appli_src><Fk_id_rio_agt_pub>[1]</Fk_id_rio_agt_pub><Fk_id_confidentialite>[1]</Fk_id_confidentialite><est_actif_agt>true</est_actif_agt><nom_naissance_agt>1</nom_naissance_agt><premier_prenom_agt>1</premier_prenom_agt><date_naissance_agt>2020-01-01</date_naissance_agt><est_valide>true</est_valide><est_titulaire_agt>true</est_titulaire_agt><nom_complet_agt>1</nom_complet_agt><initiales_agt>1</initiales_agt><est_reference_agt>false</est_reference_agt><version>1</version><accepte_publi_photo>true</accepte_publi_photo><Fk_id_responsabilite>[1]</Fk_id_responsabilite></agent_pub>"));
+        records.add(factory.read(repository, repository.getComplexType("affecte_reel_pub"),
+                "<affecte_reel_pub><affecte_reel_pubId>4</affecte_reel_pubId><Fk_id_agt_pub>[7]</Fk_id_agt_pub><Fk_id_srv_pub>[11]</Fk_id_srv_pub><commune_affect>1</commune_affect><version>1</version></affecte_reel_pub>"));
+
+        storage.begin();
+        storage.update(records);
+        storage.commit();
+
+        storage.begin();
+        ComplexTypeMetadata affecte_reel_pub = repository.getComplexType("affecte_reel_pub");
+        ComplexTypeMetadata service_pub = repository.getComplexType("service_pub");
+        ComplexTypeMetadata service = repository.getComplexType("service");
+        ComplexTypeMetadata site = repository.getComplexType("site");
+        UserQueryBuilder qb = from(affecte_reel_pub).select(site.getField("siteId"))
+                .where(eq(affecte_reel_pub.getField("affecte_reel_pubId"), "4"))
+                .join(affecte_reel_pub.getField("Fk_id_srv_pub"), service_pub.getField("service_pubId"))
+                .join(service_pub.getField("Fk_id_service"), service.getField("serviceId"))
+                .join(service.getField("Fk_id_site"), site.getField("siteId"));
+
+        StorageResults results = storage.fetch(qb.getSelect());
+        assertEquals(1, results.getCount());
+        for (DataRecord record : results) {
+            assertEquals("1", record.get("siteId"));
+        }
+        
+        qb = from(affecte_reel_pub).select(service.getField("Fk_id_site"))
+                .where(eq(affecte_reel_pub.getField("affecte_reel_pubId"), "4"))
+                .join(affecte_reel_pub.getField("Fk_id_srv_pub"), service_pub.getField("service_pubId"))
+                .join(service_pub.getField("Fk_id_service"), service.getField("serviceId"))
+                .join(service.getField("Fk_id_site"), site.getField("siteId"));
+
+        results = storage.fetch(qb.getSelect());
+        assertEquals(1, results.getCount());
+        for (DataRecord record : results) {
+            assertEquals("1", record.get("Fk_id_site"));
+        }
+    }
+
     // TMDM-12572 Wrong value returned by MDM REST API select query when 2 fields with same name in 2 different
     // entities.
     public void testQueryFKFieldWithSameName() throws Exception {

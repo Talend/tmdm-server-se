@@ -1,0 +1,1876 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:import namespace="http://www.w3.org/2001/XMLSchema" />
+    <xsd:element name="affecte_reel_pub">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Description_FR">Table : 'Affectation opérationnelle réelle d un agent, susceptible d être publiée.'</xsd:appinfo>
+            <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+            <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1" name="affecte_reel_pubId" type="AUTO_INCREMENT">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Identifiant technique de l affectation opérationnelle réelle de cet agent.'</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="Fk_id_agt_pub" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Identifiant technique de l agent affecté, spécifique au niveau publication.'</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey">agent_pub/agent_pubId</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Fk_id_fonction" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Identifiant technique de la fonction associée à cette affectation.'</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey">fonction/fonctionId</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="Fk_id_srv_pub" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Identifiant technique du service publié qui gère cette affectation réelle.'</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey">service_pub/service_pubId</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="date_effet_affect" type="xsd:date">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Date d effet de l affectation.'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="num_tel_prof_affect" type="Varchar100Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Numéro de téléphone professionnel'</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="num_fax_prof_affect" type="Varchar100Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Numéro de fax professionnel'</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="num_bureau_affect" type="TextType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Bien que les numéros de bureau et de bâtiment ne sont pas distincts à la source, 2 champs
+                            sont maintenus pour usage ultérieur. Un seul sera renseigné à l’intégration.</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="num_batiment_affect" type="TextType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Bien que les numéros de bureau et de bâtiment ne sont pas distincts à la source, 2 champs
+                            sont maintenus pour usage ultérieur. Un seul sera renseigné à l’intégration.'</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="emplacement_affect" type="TextType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Assemblage du numéro de bureau et de bâtiment'</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="commune_affect" type="TextType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Commune de l affectation (format INSEE)'</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="version" type="xsd:integer">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Version insérée pour permettre la détection d un même objet par plusieurs opérateurs.'
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="fonction_icasso_agent" type="TextType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Fonction de l''agent transmise par ICASSO.'</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="num_service_icasso_affect" type="TextType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Service de l'agent transmis par ICASSO.'</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="affecte_reel_pub">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="affecte_reel_pubId" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:simpleType name="AUTO_INCREMENT">
+        <xsd:restriction base="xsd:string" />
+    </xsd:simpleType>
+    <xsd:element name="agent_pub">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Description_FR">Table : 'Agent dont les caractéristiques sont susceptibles d être publiées.'</xsd:appinfo>
+            <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+            <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1" name="agent_pubId" type="AUTO_INCREMENT">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Identifiant technique d une occurence agent, spécifique au niveau publication.'</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="Fk_id_grade" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Identifiant technique du grade de l agent.'</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey">grade/gradeId</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Fk_id_qual_pers" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Identifiant technique de la qualité de personne de cet agent.'</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey">qualite_pers/qualite_persId</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Fk_id_qual_jud" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Identifiant technique de la qualité judiciaire de cet agent.'</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey">qualite_jud/qualite_judId</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="Fk_id_appli_src" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Identifiant technique de l application source de cet agent.'</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey">appli_src/appli_srcId</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Fk_id_srv_affect_adm" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Identifiant du service d affectation administratif de l agent.'</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey">service_pub/service_pubId</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="Fk_id_rio_agt_pub" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Identifiant technique de la personne correspondant à cet agent.'</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey">personne_pub/rio_agt_pubId</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="Fk_id_confidentialite" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Identifiant technique d une application cliente référencée.'</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey">confidentialite/confidentialiteId</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Fk_id_entite_gestion_adm" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Identifiant technique d une entité de gestion administrative référencée.'</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey">entite_gestion_adm/entite_gestion_admId</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="id_rio_signifiant_agt" type="TextType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Cet identifiant est fabriqué à l’intégration en concaténant : l identifiant de l application
+                            source et le code de l application source.'</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="id_src_agt" type="TextType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Identifiant unique de l agent dans la source.'</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="est_actif_agt" type="xsd:boolean">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Exigence [EXI_45] : Toute identité dispose d’un indicateur précisant la présence ou l’absence
+                            de la personne : actif ou inactif.'</xsd:appinfo>
+                        <xsd:appinfo source="X_Default_Value_Rule">fn:true()</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="statut_agt" type="Varchar10Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Statut de l agent'</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="nom_usage_agt" type="TextType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Nom d’usage'</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="nom_naissance_agt" type="TextType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Nom de naissance'</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="premier_prenom_agt" type="TextType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'1er prénom'</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="deuxieme_prenom_agt" type="TextType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'2ème prénom'</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="date_naissance_agt" type="xsd:date">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Date de naissance'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="est_nation_franc_agt" type="char1Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Indicateur de nationalité française'</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="date_entree_adm_agt" type="xsd:date">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Date d’entrée dans l’administration'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="date_prev_fin_presence_agt" type="xsd:date">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Exigence 22 - Pour les identités en provenance d’une source, cette date peut être une date de
+                            fin de mutation, de fin de fonction ou à défaut la date de fin de service (retraite).'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="num_tel_mobile_prof_agt" type="Varchar100Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Numéro de téléphone mobile professionnel'</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="adr_msg_prof_reelle_agt" type="Varchar100Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Adresse de messagerie professionnelle réelle.'</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="activite_agt" type="TextType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Activité de l agent.'</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="est_valide" type="xsd:boolean">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Calculé par le RIO : invalide si une anomalie a été détectée.'</xsd:appinfo>
+                        <xsd:appinfo source="X_Default_Value_Rule">fn:true()</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="est_titulaire_agt" type="xsd:boolean">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Précise si l agent est titulaire (TRUE) ou non (FALSE).'</xsd:appinfo>
+                        <xsd:appinfo source="X_Default_Value_Rule">fn:true()</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="justificatif_identite_agt" type="TextType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Référence d un document officiel d identité. Texte libre. Saisie manuelle. L information n
+                            existe pas à la source. '</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="nom_complet_agt" type="TextType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Créé pour les besoins de la publication.</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="nom_d_affichage_agt" type="TextType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Créé pour les besoins de la publication.ORIGINE :Construit par le RIO à partir du nom, du
+                            prénom et du grade</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="prenoms_agt" type="TextType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Assemblage des prénoms de l agent'</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="initiales_agt" type="TextType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Initiales de l agent. Exigence 108.Bien que cette données ne soit utile qu à partir du stade
+                            publication, elle est créée dès l enrichissement afin de pouvoir être consultée.';</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="est_reference_agt" type="xsd:boolean">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Précise si cet agent est l agent de référence qui détermine l état civil de la personne
+                            physique correspondant à cet agent. ORIGINE : cette valeur est issue d un calcul après mise à jour de l ensemble des
+                            agents. Parmi tous les agents correspondant à une même Personne, - si l un de ces agents est actif et valide, alors cet
+                            agent est l agent de référence. - sinon tous les agents sont inactifs. L agent de référence est l agent inactif invalide
+                            dont la date de dernière mise à jour est la plus récente.';</xsd:appinfo>
+                        <xsd:appinfo source="X_Default_Value_Rule">fn:false()</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="date_effet_affect_adm" type="xsd:date">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Date d effet de l affectation administrative.'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="id_upn_agt" type="Varchar100Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Identifiant AD pour smart card logon'</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="id_kbr_agt" type="Varchar100Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Identifiant Kerberos pour smart card logon'</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="version" type="xsd:integer">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Version insérée pour permettre la détection d un même objet par plusieurs opérateurs.'
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="ael" type="xsd:long">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="adr" type="xsd:long">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="accepte_publi_photo" type="xsd:boolean">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Default_Value_Rule">fn:true()</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Fk_id_responsabilite" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_ForeignKey">responsabilite/responsabiliteId</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="agent_pub">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="agent_pubId" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="appli_src">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Description_FR">Table: 'Description d une application pourvoyeuse d informations au RIO : ces informations sont relatives
+                à : 1. des agents 2. ou des services 3. ou des codifications.';</xsd:appinfo>
+            <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+            <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1" name="appli_srcId" type="Varchar10Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Identifiant technique d une application source référencée.'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="code_appli_src" type="Varchar3Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Code de l application source.'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="libelle_long_ref" type="Varchar100Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Libellé long'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="libelle_court_ref" type="Varchar30Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Libellé court'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="date_debut_validite_ref" type="xsd:date">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Date de début de validité'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="date_fin_validite_ref" type="xsd:date">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Date de fin de validité'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="version" type="xsd:int">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Version insérée pour permettre la détection d un même objet par plusieurs opérateurs.'
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="appli_src">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="appli_srcId" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="commune">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Description_FR">Table : 'Description d une commune. Règles de gestion : Une commune est représentée par une seule
+                occurence. Aussi seules les communes dont le code CDC vaut 0 ou 2 seront insérés dans le référentiel. Le code INSEE est créée en
+                concaténant les valeurs présentes la colonne DEP et la colonne COM de la commune.</xsd:appinfo>
+            <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+            <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1" name="communeId" type="Varchar10Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Identifiant technique d une commune référencée.'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="code_actualite_com" type="xsd:int">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'ACTUAL - Code actualité de la commune'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="chef_lieu_com" type="xsd:int">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'CHEFLIEU - Chef-lieu de canton, d arrondissement, de département, de région'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="decoupage_canton_com" type="xsd:int">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'CDC - Découpage de la commune en cantons'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="rang_com" type="xsd:int">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'RANG - Nombre de fractions cantonales + 1 de la commune lorsqu elle est multicantonale.'
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="code_region_com" type="TextType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'REG - Code région';</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="code_dept_com" type="TextType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'DEP - Code département'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="code_commune_com" type="TextType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'COM - Code commune'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="code_arrondi_com" type="xsd:integer">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'AR - Code arrondissement'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="pole_com" type="TextType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'MODIF - Indicateur de modification subie par la commune'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="code_canton_com" type="TextType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'CT - Code canton'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="type_de_nom_en_clair_com" type="xsd:integer">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'TNCC - Type de nom en clair'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="article_com" type="TextType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'ARTMAJ - Article (majuscules)'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="nom_en_clair_com" type="TextType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'NCC - Nom en clair (majuscules)'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="article_typo_riche_com" type="TextType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'ARTMIN - Article (typographie riche)'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="nom_en_clair_typo_com" type="TextType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'NCCENR - Nom en clair (typographie riche)'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="article_canton_com" type="TextType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'ARTICLCT - Article (canton)'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="nom_clair_canton_com" type="TextType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'NCCCT - Nom en clair du canton (typographie riche)'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="code_insee_com" type="Varchar5Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Code INSEE de la commune</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="libelle_long_ref" type="Varchar100Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Libellé long'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="libelle_court_ref" type="Varchar30Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Libellé court'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="date_debut_validite_ref" type="xsd:date">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Date de début de validité'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="date_fin_validite_ref" type="xsd:date">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Date de fin de validité'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="version" type="xsd:integer">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Version insérée pour permettre la détection d un même objet par plusieurs opérateurs.'
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="commune">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="communeId" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="confidentialite">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Description_FR">Table : 'Liste des confidentialités pour les agents, services et applications'</xsd:appinfo>
+            <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+            <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1" name="confidentialiteId" type="Varchar20Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Identifiant technique d une application cliente référencée.'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="libelle_long_ref" type="Varchar100Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Libellé long'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="libelle_court_ref" type="Varchar30Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Libellé court'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="date_debut_validite_ref" type="xsd:date">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Date de début de validité'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="date_fin_validite_ref" type="xsd:date">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Date de fin de validité'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="version" type="xsd:integer">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Version insérée pour permettre la détection d un même objet par plusieurs opérateurs.'
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="confidentialite">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="confidentialiteId" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="corps">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Description_FR">Table : 'Description d un corps de métier.'</xsd:appinfo>
+            <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+            <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1" name="corpsId" type="Varchar10Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Identifiant technique d un corps référencé.';</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="libelle_long_ref" type="Varchar100Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Libellé long'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="libelle_court_ref" type="Varchar30Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Libellé court'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="libelle_carte_ligne_1" type="Varchar30Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Libellé pouvant être imprimé sur la carte (1ère ligne)'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="libelle_carte_ligne_2" type="Varchar30Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Libellé pouvant être imprimé sur la carte (2ème ligne)'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="date_debut_validite_ref" type="xsd:date">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Date de début de validité'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="date_fin_validite_ref" type="xsd:date">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Date de fin de validité'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="version" type="xsd:integer">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Version insérée pour permettre la détection d un même objet par plusieurs opérateurs.'
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="corps">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="corpsId" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="entite_gestion_adm">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Description_FR">Table : 'Entité de gestion administrative.'</xsd:appinfo>
+            <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+            <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1" name="entite_gestion_admId" type="Varchar10Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Identifiant technique d une entité de gestion administrative référencée.'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="libelle_long_ref" type="Varchar100Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Libellé long'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="libelle_court_ref" type="Varchar30Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Libellé court'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="date_debut_validite_ref" type="xsd:date">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Date de début de validité'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="date_fin_validite_ref" type="xsd:date">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Date de fin de validité'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="version" type="xsd:integer">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Version insérée pour permettre la détection d un même objet par plusieurs opérateurs.'
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Hide">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="entite_gestion_adm">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="entite_gestion_admId" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="filiere">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Description_FR">Table : 'Description d une filière de métiers. Par exemple la filière "ACTIFS PN" regroupe tous les grades
+                des actifs de la police.'</xsd:appinfo>
+            <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+            <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1" name="filiereId" type="Varchar10Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Identifiant technique d une filière'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="libelle_long_ref" type="Varchar100Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Libellé long'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="libelle_court_ref" type="Varchar30Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Libellé court'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="date_debut_validite_ref" type="xsd:date">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Date de début de validité'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="date_fin_validite_ref" type="xsd:date">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Date de fin de validité';</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="version" type="xsd:integer">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Version insérée pour permettre la détection d un même objet par plusieurs opérateurs.'
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="filiere">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="filiereId" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="fonction">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Description_FR">Table : 'Fonction exercée par un agent.'</xsd:appinfo>
+            <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+            <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1" name="fonctionId" type="Varchar10Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Identifiant technique d une fonction exercée référencée.'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="libelle_long_ref" type="Varchar100Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Libellé long'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="libelle_court_ref" type="Varchar30Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Libellé court'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="date_debut_validite_ref" type="xsd:date">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Date de début de validité'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="date_fin_validite_ref" type="xsd:date">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Date de fin de validité';</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="version" type="xsd:integer">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Version insérée pour permettre la détection d un même objet par plusieurs opérateurs.'
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="fonction">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="fonctionId" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="grade">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Description_FR">Table : 'Référentiel des grades. Le libellé court doit correspondre au grade abrégé.'</xsd:appinfo>
+            <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+            <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1" name="gradeId" type="Varchar10Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Identifiant technique d un grade référencé.'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Fk_id_corps" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Identifiant technique d un corps référencé.'</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey">corps/corpsId</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Fk_id_filiere" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Identifiant technique d une filière'</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey">filiere/filiereId</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="Fk_id_appli_src" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Identifiant technique d une application source référencée.'</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey">appli_src/appli_srcId</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="libelle_long_ref" type="Varchar100Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Libellé long'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="libelle_court_ref" type="Varchar30Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Libellé court'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="libelle_carte_ligne_1" type="Varchar30Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Libellé pouvant être imprimé sur la carte agent (1ère ligne)';</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="libelle_carte_ligne_2" type="Varchar30Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Libellé pouvant être imprimé sur la carte agent (2ème ligne)'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="date_debut_validite_ref" type="xsd:date">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Date de début de validité'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="date_fin_validite_ref" type="xsd:date">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Date de fin de validité'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="version" type="xsd:integer">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Version insérée pour permettre la détection d un même objet par plusieurs opérateurs.'
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="grade">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="gradeId" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="personne_pub">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+            <xsd:appinfo source="X_Description_FR">'Une personne physique. Un agent ne peut correspondre qu à une seule personne, quelque soit la situation
+                de cet agent dans le temps ou à un moment t.';</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1" name="rio_agt_pubId" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Description_FR">'Identifiant technique d une personne.'</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="nom_usage_agt" type="TextType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Nom d’usage'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="nom_naissance_agt" type="TextType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Nom de naissance'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="premier_prenom_agt" type="TextType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'1er prénom'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="deuxieme_prenom_agt" type="TextType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'2ème prénom'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="date_naissance_agt" type="xsd:date">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Date de naissance';</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="date_creation_agt" type="xsd:dateTime">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Date et heure de la création de l occurence.'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="date_modif_agt" type="xsd:dateTime">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Date et heure de la dernière mise à jour de l occurence.'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="version" type="xsd:integer">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Version insérée pour permettre la détection d un même objet par plusieurs opérateurs.'
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="personne_pub">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="rio_agt_pubId" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:simpleType name="URL">
+        <xsd:restriction base="xsd:string" />
+    </xsd:simpleType>
+    <xsd:simpleType name="PICTURE">
+        <xsd:restriction base="xsd:string" />
+    </xsd:simpleType>
+    <xsd:element name="qualite_jud">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Description_FR">Table : 'Qualité judiciaire.'</xsd:appinfo>
+            <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+            <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1" name="qualite_judId" type="Varchar10Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Identifiant technique d une qualité judiciaire référencée.'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="libelle_long_ref" type="Varchar100Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Libellé long'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="libelle_court_ref" type="Varchar30Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Libellé court'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="date_debut_validite_ref" type="xsd:date">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Date de début de validité'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="date_fin_validite_ref" type="xsd:date">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Date de fin de validité';</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="version" type="xsd:integer">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Version insérée pour permettre la détection d un même objet par plusieurs opérateurs.'
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="qualite_jud">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="qualite_judId" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="qualite_pers">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Description_FR">Table : 'Qualité de la personne. Ex : Melle pour Mademoiselle.'</xsd:appinfo>
+            <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+            <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1" name="qualite_persId" type="Varchar10Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Identifiant technique d une qualité de personne référencée.'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="libelle_long_ref" type="Varchar100Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Libellé long'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="libelle_court_ref" type="Varchar30Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Libellé court'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="date_debut_validite_ref" type="xsd:date">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Date de début de validité'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="date_fin_validite_ref" type="xsd:date">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Date de fin de validité';</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="version" type="xsd:integer">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Version insérée pour permettre la détection d un même objet par plusieurs opérateurs.'
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="qualite_pers">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="qualite_persId" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="regroupement">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Description_FR">Table : 'Regroupement des services par grands métiers (services de police, du SG, ...)'</xsd:appinfo>
+            <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+            <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1" name="regroupementId" type="Varchar10Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Identifiant technique d un regroupement.'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="libelle_long_ref" type="Varchar100Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Libellé long'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="libelle_court_ref" type="Varchar30Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Libellé court'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="date_debut_validite_ref" type="xsd:date">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Date de début de validité'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="date_fin_validite_ref" type="xsd:date">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Date de fin de validité';</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="version" type="xsd:integer">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Version insérée pour permettre la détection d un même objet par plusieurs opérateurs.'
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="regroupement">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="regroupementId" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="responsabilite">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Description_FR">pas d'information</xsd:appinfo>
+            <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+            <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1" name="responsabiliteId" type="AUTO_INCREMENT">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">pas d'information</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="code" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">pas d'information</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="libelle" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">pas d'information</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="version" type="xsd:integer">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">pas d'information</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="responsabilite">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="responsabiliteId" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="service">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Description_FR">Table : 'Description d un service dans l organisation du Ministère.'</xsd:appinfo>
+            <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+            <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1" name="serviceId" type="Varchar10Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Identifiant technique d un service référencé.';</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Fk_id_site" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Identifiant technique d un site référencé.'</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey">site/siteId</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="Fk_id_entite_gest_adm" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Identifiant technique d une entité de gestion administrative.'</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey">entite_gestion_adm/entite_gestion_admId</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="Fk_id_appli_src" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Identifiant technique d une application source.'</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey">appli_src/appli_srcId</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Fk_id_srv_pere" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Identifiant technique du service père référencé pour ce service.'</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey">service/serviceId</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Fk_id_srv_sic" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Identifiant technique du service SIC référencé pour ce service.'</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey">service/serviceId</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Fk_id_regroupement" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Identifiant technique d un regroupement.'</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey">regroupement/regroupementId</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="libelle_long_ref" type="Varchar100Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Libellé long';</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="libelle_court_ref" type="Varchar30Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Libellé court'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="date_debut_validite_ref" type="xsd:date">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Date de début de validité'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="date_fin_validite_ref" type="xsd:date">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Date de fin de validité'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="code_srv" type="Varchar20Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Code du service. Unique par application source.'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="est_adm_srv" type="xsd:boolean">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Indicateur affectation administrative. Précise s il s agit ou non d un service
+                            administratif.';</xsd:appinfo>
+                        <xsd:appinfo source="X_Default_Value_Rule">fn:true()</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="est_oper_srv" type="xsd:boolean">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Indicateur affectation opérationnelle. Précise s il s agit ou non d un service opérationnel.'
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Default_Value_Rule">fn:true()</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="est_actif_srv" type="xsd:boolean">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Indicateur d’activité du service. Précise si le service est actif ou inactif.';</xsd:appinfo>
+                        <xsd:appinfo source="X_Default_Value_Rule">fn:true()</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="date_effet_actif_srv" type="xsd:date">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Date a partir de laquelle le service est actif';</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="dir_centrale_niv1_srv" type="TextType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Direction centrale niveau 1'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="dir_centrale_niv2_srv" type="TextType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Direction centrale niveau 2'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="dir_locale_niv1_srv" type="TextType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Direction locale niveau 1'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="dir_locale_niv2_srv" type="TextType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Direction locale niveau 2'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="niv_hierarchique_srv" type="Varchar3Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Niveau hiérarchique'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="responsable_srv" type="TextType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Responsable du service.'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="secretaire_srv" type="TextType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Secrétaire du service.';</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="date_creation_srv" type="xsd:dateTime">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Date et heure de la création de l occurence.'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="date_modif_srv" type="xsd:dateTime">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Date et heure de dernière modification de l occurence.'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="num_tel_srv" type="Varchar100Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Téléphone du service'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="num_fax_srv" type="Varchar100Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Fax du service'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="adr_msg_srv" type="Varchar100Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Email du service'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="chemin_complet_srv" type="TextType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Chemin complet décrivant l accès à ce service. Cette données est créée pour : - être utilisée
+                            en tant que filtre pour vérifier l exigence 31 : quand un mouvement d affectation en provenance de la source est en
+                            contradiction avec l’anticipation, une alerte est générée et l’affectation est mise à jour en cohérence avec la source. -
+                            être consultée au niveau enrichissement.';</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="version" type="xsd:integer">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Version insérée pour permettre la détection d un même objet par plusieurs opérateurs.'
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="ael" type="xsd:long">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="adr" type="xsd:long">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Fk_id_typeservice" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Identifiant technique RIO d’un type de service'</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey">type_service/type_serviceId</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Fk_id_site_geo" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Identifiant technique d un site géographique référencé.'</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey">site/siteId</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="service">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="serviceId" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="service_pub">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Description_FR">Table : 'Service dont les caractéristiques sont susceptibles d''être publiées.'</xsd:appinfo>
+            <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1" name="service_pubId" type="AUTO_INCREMENT">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Identifiant technique d''un service publié.'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="Fk_id_service" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Identifiant technique d''un service référencé.'</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey">service/serviceId</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="Fk_id_confidentialite" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Identifiant technique d''une application cliente référencée.'</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey">confidentialite/confidentialiteId</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="id_maia" type="TextType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Identifiant MAIA. Chemin complet tronqué à 120 caractères.'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="localite" type="TextType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Nom de la localité d''implantation (format INSEE avec article)'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="adresse_postale" type="TextType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Adresse postale complète du service'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="adresse" type="TextType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Adresse (n° voie, complément n° voie, voie)'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="profondeur_arbre" type="xsd:integer">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Profondeur au sein de l''arbre (1 = racine)'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="version" type="xsd:integer">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Version insérée pour permettre la détection d''un même objet par plusieurs opérateurs.'
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="geo_localite" type="TextType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="geo_adresse_postale" type="TextType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="geo_adresse" type="TextType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="service_pub">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="service_pubId" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="site">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Description_FR">'Un site décrit un lieu, utilisé par au moins un service en tant que lieu d affectation administrative ou
+                d affectation opérationnelle. Le lieu est situé sur une commune.'</xsd:appinfo>
+            <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+            <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1" name="siteId" type="Varchar10Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Identifiant technique d un site référencé.'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Fk_id_commune" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Identifiant technique d une commune référencée.'</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey">commune/communeId</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="denomination_adresse" type="Varchar80Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Dénomination de l adresse du service (1ère ligne d adresse)'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="num_voie_site" type="Varchar80Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Numéro de voie'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="num_voie_compl_site" type="Varchar5Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Complément n° de voie';</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="voie_site" type="Varchar80Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Nom de la voie.'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="complement_adresse" type="Varchar80Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Complément d adresse (BP, ...)'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="code_postal_site" type="Varchar5Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Code postal du site.'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="bureau_distrib_site" type="TextType">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Bureau distributeur utilisé par le site.'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioConsul</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="version" type="xsd:integer">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Version insérée pour permettre la détection d un même objet par plusieurs opérateurs.'
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="site">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="siteId" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="type_service">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Description_FR">Table : 'Permet d’identifier les différents types de service de la Police Nationale (PN).'</xsd:appinfo>
+            <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+            <xsd:appinfo source="X_Deny_Create">RoleRioAdmin</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1" name="type_serviceId" type="Varchar10Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Identifiant technique RIO d’un type de service'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="libelle_long_ref" type="Varchar100Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Libellé long'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="libelle_court_ref" type="Varchar30Type">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Libellé court'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                        <xsd:appinfo source="X_Deny_Create">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="date_debut_validite_ref" type="xsd:date">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Date de début de validité'</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="date_fin_validite_ref" type="xsd:date">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Date de fin de validité';</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="version" type="xsd:integer">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Description_FR">'Version insérée pour permettre la détection d un même objet par plusieurs opérateurs.'
+                        </xsd:appinfo>
+                        <xsd:appinfo source="X_Write">RoleRioAdmin</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="type_service">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="type_serviceId" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:simpleType name="Varchar100Type">
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="100" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="Varchar10Type">
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="10" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="Varchar20Type">
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="20" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="Varchar5Type">
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="5" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="Varchar30Type">
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="30" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="Varchar80Type">
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="80" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="Varchar1Type">
+        <xsd:restriction base="xsd:string">
+            <xsd:length value="1" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="TextType">
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="100000" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="Varchar3Type">
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="3" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="Varchar40Type">
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="40" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="char1Type">
+        <xsd:restriction base="xsd:string">
+            <xsd:length value="1" />
+        </xsd:restriction>
+    </xsd:simpleType>
+</xsd:schema>

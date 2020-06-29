@@ -144,7 +144,7 @@ class StandardQueryHandler extends AbstractQueryHandler {
     private final Map<String, String> aliasToPath = new HashMap<>();
 
     private final Map<String, String> fieldNameAliasMap = new HashMap<>();
-    
+
     protected final MappingRepository mappings;
 
     protected final TableResolver resolver;
@@ -289,7 +289,6 @@ class StandardQueryHandler extends AbstractQueryHandler {
         
         while (pathIterator.hasNext()) {
             FieldMetadata nextField = pathIterator.next();
-
             aliasPathKey = getReferenceFieldJoinPath(previousRefFieldMetadata, nextField, aliasPathKey);
             String pathToAliasKey = previousAlias + "/" + aliasPathKey; //$NON-NLS-1$
             // TODO One interesting improvement here: can add conditions on rightTable when defining join.
@@ -302,9 +301,7 @@ class StandardQueryHandler extends AbstractQueryHandler {
                         continue;
                     }
                     criteria.createAlias(previousAlias + '.' + fieldName, newAlias, joinType);
-                    if (!fieldNameAliasMap.containsKey(fieldName)) {
-                        pathToAlias.put(pathToAliasKey, newAlias);
-                    }
+                    pathToAlias.put(pathToAliasKey, newAlias);
                     previousAlias = newAlias;
                 } else {
                     previousAlias = pathToAlias.get(pathToAliasKey);
@@ -322,8 +319,8 @@ class StandardQueryHandler extends AbstractQueryHandler {
                     previousAlias = pathToAlias.get(pathToAliasKey);
                 }
             }
-            if(nextField instanceof ReferenceFieldMetadata){
-                previousRefFieldMetadata = (ReferenceFieldMetadata)nextField;
+            if (nextField instanceof ReferenceFieldMetadata) {
+                previousRefFieldMetadata = (ReferenceFieldMetadata) nextField;
             }
         }
     }

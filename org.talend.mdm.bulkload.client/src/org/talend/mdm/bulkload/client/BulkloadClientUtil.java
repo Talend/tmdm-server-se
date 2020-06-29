@@ -11,6 +11,7 @@
 package org.talend.mdm.bulkload.client;
 
 import java.io.InputStream;
+import java.util.Base64;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -59,7 +60,8 @@ public class BulkloadClientUtil {
                 new NameValuePair("source", String.valueOf(source)) }; //$NON-NLS-1$
 
         HttpClient client = new HttpClient();
-        client.getState().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(username, password));
+        byte[] authBytes = (username + ":" + password).getBytes("UTF-8");
+        String authString = Base64.getEncoder().encodeToString(authBytes);
         HttpClientParams clientParams = client.getParams();
         clientParams.setAuthenticationPreemptive(true);
         clientParams.setCookiePolicy(CookiePolicy.IGNORE_COOKIES);
@@ -72,6 +74,7 @@ public class BulkloadClientUtil {
         String responseBody;
         try {
             // Configuration
+            putMethod.setRequestHeader("Authorization", "Basic " + authString);
             putMethod.setRequestHeader("Content-Type", "text/xml; charset=utf8"); //$NON-NLS-1$ //$NON-NLS-2$
             if (transactionId != null) {
                 putMethod.setRequestHeader("transaction-id", transactionId); //$NON-NLS-1$

@@ -11,6 +11,7 @@
 package org.talend.mdm.bulkload.client;
 
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -19,8 +20,6 @@ import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.URI;
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
-import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.cookie.CookiePolicy;
 import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
 import org.apache.commons.httpclient.methods.PutMethod;
@@ -46,7 +45,7 @@ public class BulkloadClientUtil {
             boolean insertonly, boolean updateReport, String source, InputStream itemdata, String username, String password,
             String transactionId, List<String> cookies, String tokenKey, String tokenValue) throws Exception {
         HostConfiguration config = new HostConfiguration();
-        URI uri = new URI(url, false, "UTF-8"); //$NON-NLS-1$
+        URI uri = new URI(url, false, StandardCharsets.UTF_8.name());
         config.setHost(uri);
 
         NameValuePair[] parameters = { new NameValuePair("cluster", cluster), //$NON-NLS-1$
@@ -60,7 +59,7 @@ public class BulkloadClientUtil {
                 new NameValuePair("source", String.valueOf(source)) }; //$NON-NLS-1$
 
         HttpClient client = new HttpClient();
-        byte[] authBytes = (username + ":" + password).getBytes("UTF-8");
+        byte[] authBytes = (username + ":" + password).getBytes(StandardCharsets.UTF_8.name());
         String authString = Base64.getEncoder().encodeToString(authBytes);
         HttpClientParams clientParams = client.getParams();
         clientParams.setAuthenticationPreemptive(true);

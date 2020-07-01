@@ -54,6 +54,7 @@ import liquibase.change.core.DropColumnChange;
 import liquibase.change.core.DropForeignKeyConstraintChange;
 import liquibase.change.core.DropIndexChange;
 import liquibase.change.core.DropNotNullConstraintChange;
+import liquibase.change.core.DropTableChange;
 import liquibase.database.DatabaseConnection;
 import liquibase.resource.FileSystemResourceAccessor;
 
@@ -200,6 +201,7 @@ public class LiquibaseSchemaAdapter extends AbstractLiquibaseSchemaAdapter {
         Map<String, List<String>> dropColumnMap = new HashMap<>();
         Map<String, List<String>> dropFKMap = new HashMap<>();
         Map<String, List<String[]>> dropIndexMap = new HashMap<>();
+        List<String> dropTableList = new ArrayList<String>();
 
         for (RemoveChange removeAction : diffResults.getRemoveChanges()) {
 
@@ -232,12 +234,17 @@ public class LiquibaseSchemaAdapter extends AbstractLiquibaseSchemaAdapter {
                     fkList.add(fkName);
                     dropFKMap.put(tableName, fkList);
                 }
-                List<String> columnList = dropColumnMap.get(tableName);
-                if (columnList == null) {
-                    columnList = new ArrayList<String>();
-                }
-                columnList.add(columnName);
-                dropColumnMap.put(tableName, columnList);
+                // Remove the table for 0-many simple field.
+                if (field.isMany()) {
+                    dropTableList.add(tableName + "_" + columnName);
+                } else {
+                    List<String> columnList = dropColumnMap.get(tableName);
+                    if (columnList == null) {
+                        columnList = new ArrayList<String>();
+                    }
+                    columnList.add(columnName);
+                    dropColumnMap.put(tableName, columnList);
+                }                               
 
                 List<String[]> indexList = dropIndexMap.get(tableName);
                 if (indexList == null) {
@@ -265,6 +272,12 @@ public class LiquibaseSchemaAdapter extends AbstractLiquibaseSchemaAdapter {
                 dropFKChange.setConstraintName(fk);
                 changeActionList.add(dropFKChange);
             }
+        }
+        
+        for (String tableName : dropTableList) {
+            DropTableChange dropTableChange = new DropTableChange();
+            dropTableChange.setTableName(tableName);
+            changeActionList.add(dropTableChange);
         }
 
         for (Map.Entry<String, List<String>> entry : dropColumnMap.entrySet()) {

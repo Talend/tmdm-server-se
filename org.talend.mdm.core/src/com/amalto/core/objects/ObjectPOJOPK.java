@@ -11,26 +11,14 @@ package com.amalto.core.objects;
 
 import java.io.Serializable;
 
-import org.apache.log4j.Logger;
-import org.talend.mdm.commmon.util.core.MDMConfiguration;
-
 import com.amalto.core.util.Util;
 
 public class ObjectPOJOPK implements Serializable {
 
     private static final long serialVersionUID = 8946570431961920706L;
 
-    private static final Logger LOGGER = Logger.getLogger(ObjectPOJOPK.class);
-
     String[] ids = null;
 
-    static {
-        try {
-            MDMConfiguration.createConfiguration("", true);
-        } catch (IllegalStateException e) {
-            LOGGER.warn("MDMConfiguration had been initialized");
-        }
-    }
 
     public ObjectPOJOPK(String[] itemIds) {
         this.ids = itemIds;

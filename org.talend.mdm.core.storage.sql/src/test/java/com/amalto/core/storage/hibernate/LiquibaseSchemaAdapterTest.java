@@ -165,7 +165,7 @@ public class LiquibaseSchemaAdapterTest {
         Compare.DiffResults diffResults = Compare.compare(original, updated2);
 
         assertEquals(8, diffResults.getActions().size());
-        assertEquals(7, diffResults.getModifyChanges().size());
+        assertEquals(6, diffResults.getModifyChanges().size());
         assertEquals(0, diffResults.getAddChanges().size());
 
         List<AbstractChange> changeList = adapter.analyzeModifyChange(diffResults);
@@ -184,12 +184,13 @@ public class LiquibaseSchemaAdapterTest {
         updated2.load(LiquibaseSchemaAdapterTest.class.getResourceAsStream("schema2_2.xsd")); //$NON-NLS-1$
 
         Compare.DiffResults diffResults = Compare.compare(original, updated2);
-        assertEquals(1, diffResults.getRemoveChanges().size());
+        assertEquals(2, diffResults.getRemoveChanges().size());
 
         List<AbstractChange> removeChangeList = adapter.analyzeRemoveChange(diffResults);
-        assertEquals(2, removeChangeList.size());
+        assertEquals(3, removeChangeList.size());
         assertEquals("liquibase.change.core.DropForeignKeyConstraintChange", removeChangeList.get(0).getClass().getName());
-        assertEquals("liquibase.change.core.DropColumnChange", removeChangeList.get(1).getClass().getName());
+        assertEquals("liquibase.change.core.DropTableChange", removeChangeList.get(1).getClass().getName());
+        assertEquals("liquibase.change.core.DropColumnChange", removeChangeList.get(2).getClass().getName());
     }
 
     @Test

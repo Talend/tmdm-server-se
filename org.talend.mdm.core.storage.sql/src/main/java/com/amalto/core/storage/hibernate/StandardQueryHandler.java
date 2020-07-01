@@ -141,6 +141,8 @@ class StandardQueryHandler extends AbstractQueryHandler {
 
     private final Map<String, String> aliasToPath = new HashMap<>();
 
+    private final Map<String, String> fieldNameAliasMap = new HashMap<>();
+
     protected final MappingRepository mappings;
 
     protected final TableResolver resolver;
@@ -285,13 +287,18 @@ class StandardQueryHandler extends AbstractQueryHandler {
         
         while (pathIterator.hasNext()) {
             FieldMetadata nextField = pathIterator.next();
-            String newAlias = createNewAlias();
             aliasPathKey = getReferenceFieldJoinPath(previousRefFieldMetadata, nextField, aliasPathKey);
             String pathToAliasKey = previousAlias + "/" + aliasPathKey; //$NON-NLS-1$
             // TODO One interesting improvement here: can add conditions on rightTable when defining join.
+            String fieldName = nextField.getName();
             if (pathIterator.hasNext()) {
                 if (!pathToAlias.containsKey(pathToAliasKey)) {
-                    criteria.createAlias(previousAlias + '.' + nextField.getName(), newAlias, joinType);
+                    String newAlias = createNewAlias();
+                    if (fieldNameAliasMap.containsKey(fieldName)) {
+                        previousAlias = fieldNameAliasMap.get(fieldName);
+                        continue;
+                    }
+                    criteria.createAlias(previousAlias + '.' + fieldName, newAlias, joinType);
                     pathToAlias.put(pathToAliasKey, newAlias);
                     previousAlias = newAlias;
                 } else {
@@ -300,17 +307,18 @@ class StandardQueryHandler extends AbstractQueryHandler {
             } else {
                 if (!pathToAlias.containsKey(pathToAliasKey)) {
                     for (String rightTableAlias : rightTableAliases) {
-                        criteria.createAlias(previousAlias + '.' + nextField.getName(), rightTableAlias, joinType);
+                        criteria.createAlias(previousAlias + '.' + fieldName, rightTableAlias, joinType);
                         pathToAlias.put(pathToAliasKey, rightTableAlias);
                         aliasToPath.put(rightTableAlias, aliasPathKey);
+                        fieldNameAliasMap.put(fieldName, rightTableAlias);
                     }
                     previousAlias = rightTableAliases.iterator().next();
                 } else {
                     previousAlias = pathToAlias.get(pathToAliasKey);
                 }
             }
-            if(nextField instanceof ReferenceFieldMetadata){
-                previousRefFieldMetadata = (ReferenceFieldMetadata)nextField;
+            if (nextField instanceof ReferenceFieldMetadata) {
+                previousRefFieldMetadata = (ReferenceFieldMetadata) nextField;
             }
         }
     }

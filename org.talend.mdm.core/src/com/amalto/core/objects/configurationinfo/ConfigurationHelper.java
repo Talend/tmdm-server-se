@@ -10,7 +10,8 @@
 package com.amalto.core.objects.configurationinfo;
 
 import com.amalto.core.server.api.XmlServer;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.amalto.core.objects.ObjectPOJO;
 import com.amalto.core.util.Util;
@@ -18,7 +19,7 @@ import com.amalto.core.util.XtentisException;
 
 public class ConfigurationHelper {
 
-    private static final Logger LOGGER = Logger.getLogger(ConfigurationHelper.class);
+    private static final Logger LOGGER = LogManager.getLogger(ConfigurationHelper.class);
 
     private static XmlServer server = null;// Do not use this field directly
 

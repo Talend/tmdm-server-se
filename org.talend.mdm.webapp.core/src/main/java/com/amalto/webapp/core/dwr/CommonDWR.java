@@ -12,7 +12,8 @@ package com.amalto.webapp.core.dwr;
 import java.util.*;
 
 import com.amalto.core.server.ServerContext;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.util.webapp.XObjectType;
@@ -34,7 +35,7 @@ import com.sun.xml.xsom.XSElementDecl;
 
 public class CommonDWR {
 
-    private static final Logger LOGGER = Logger.getLogger(CommonDWR.class);
+    private static final Logger LOGGER = LogManager.getLogger(CommonDWR.class);
 
     public static String[] getClusters() {
         try {

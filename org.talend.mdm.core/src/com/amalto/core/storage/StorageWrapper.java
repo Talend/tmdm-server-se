@@ -39,7 +39,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.CompoundFieldMetadata;
 import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
@@ -79,7 +80,7 @@ import com.amalto.xmlserver.interfaces.XmlServerException;
 
 public class StorageWrapper implements IXmlServerSLWrapper {
 
-    private static final Logger LOGGER = Logger.getLogger(StorageWrapper.class);
+    private static final Logger LOGGER = LogManager.getLogger(StorageWrapper.class);
 
     protected static final String PROVISIONING_PREFIX_INFO = "PROVISIONING.User."; //$NON-NLS-1$
 

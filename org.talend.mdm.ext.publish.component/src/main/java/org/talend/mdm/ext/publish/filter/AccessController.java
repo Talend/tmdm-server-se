@@ -11,11 +11,12 @@ package org.talend.mdm.ext.publish.filter;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 public abstract class AccessController {
 
-    private static final Logger logger = Logger.getLogger(AccessController.class);
+    private static final Logger logger = LogManager.getLogger(AccessController.class);
 
     protected Logger getLocalLogger() {
         return logger;

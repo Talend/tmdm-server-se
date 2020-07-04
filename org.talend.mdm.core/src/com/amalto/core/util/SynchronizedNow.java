@@ -11,7 +11,8 @@
 
 package com.amalto.core.util;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -31,7 +32,7 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class SynchronizedNow {
 
-    private static final Logger LOGGER = Logger.getLogger(SynchronizedNow.class);
+    private static final Logger LOGGER = LogManager.getLogger(SynchronizedNow.class);
 
     private static final AtomicLong lastUpdateTime = new AtomicLong();
 

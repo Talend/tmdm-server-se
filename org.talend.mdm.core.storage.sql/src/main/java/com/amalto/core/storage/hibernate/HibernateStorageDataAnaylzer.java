@@ -20,7 +20,8 @@ import java.util.Map;
 
 import com.amalto.core.storage.HibernateStorageUtils;
 import com.amalto.core.storage.datasource.RDBMSDataSource;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.*;
 import org.talend.mdm.commmon.metadata.compare.AddChange;
 import org.talend.mdm.commmon.metadata.compare.Change;
@@ -36,7 +37,7 @@ import org.talend.mdm.commmon.util.core.CommonUtil;
 @SuppressWarnings("nls")
 public class HibernateStorageDataAnaylzer extends HibernateStorageImpactAnalyzer {
 
-    private static final Logger LOGGER = Logger.getLogger(HibernateStorageDataAnaylzer.class);
+    private static final Logger LOGGER = LogManager.getLogger(HibernateStorageDataAnaylzer.class);
 
     private HibernateStorage storage;
 

@@ -11,7 +11,8 @@ package com.amalto.core.util;
 
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ import com.amalto.core.objects.Service;
 
 public class PluginRegistry {
 
-    private static final Logger LOGGER = Logger.getLogger(PluginRegistry.class);
+    private static final Logger LOGGER = LogManager.getLogger(PluginRegistry.class);
 
     public static final String PLUGIN_PREFIX = "amalto/local/transformer/plugin"; //$NON-NLS-1$
 

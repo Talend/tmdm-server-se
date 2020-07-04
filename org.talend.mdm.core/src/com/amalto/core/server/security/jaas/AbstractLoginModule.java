@@ -24,7 +24,8 @@ import javax.security.auth.login.FailedLoginException;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.talend.mdm.commmon.util.core.ICoreConstants;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
@@ -34,7 +35,7 @@ import com.amalto.core.util.LocalUser;
 
 public abstract class AbstractLoginModule implements LoginModule {
 
-    private static final Logger LOGGER = Logger.getLogger(AbstractLoginModule.class);
+    private static final Logger LOGGER = LogManager.getLogger(AbstractLoginModule.class);
 
     public static final String AUTH_LOGIN_NAME = "javax.security.auth.login.name"; //$NON-NLS-1$
 

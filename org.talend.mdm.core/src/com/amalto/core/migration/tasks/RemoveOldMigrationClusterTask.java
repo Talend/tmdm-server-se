@@ -11,6 +11,7 @@ package com.amalto.core.migration.tasks;
 
 import com.amalto.core.migration.AbstractMigrationTask;
 import com.amalto.core.objects.configurationinfo.ConfigurationHelper;
+import org.apache.logging.log4j.LogManager;
 
 public class RemoveOldMigrationClusterTask extends AbstractMigrationTask{
 
@@ -25,7 +26,7 @@ public class RemoveOldMigrationClusterTask extends AbstractMigrationTask{
 
 		} catch (Exception e) {
 			String err = "Unable to Remove Old Migration Cluster";
-			org.apache.log4j.Logger.getLogger(RemoveOldMigrationClusterTask.class).error(err, e);
+			LogManager.getLogger(RemoveOldMigrationClusterTask.class).error(err, e);
 			return false;
 		}
 

@@ -14,7 +14,8 @@ package com.amalto.core.server;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.amalto.core.objects.ObjectPOJO;
 import com.amalto.core.objects.ObjectPOJOPK;
@@ -25,7 +26,7 @@ import com.amalto.core.util.XtentisException;
 
 public class DefaultConfigurationInfo implements ConfigurationInfo {
 
-    private static final Logger LOGGER = Logger.getLogger(DefaultConfigurationInfo.class);
+    private static final Logger LOGGER = LogManager.getLogger(DefaultConfigurationInfo.class);
 
     @Override
     public ConfigurationInfoPOJOPK putConfigurationInfo(ConfigurationInfoPOJO configurationInfo) throws XtentisException {

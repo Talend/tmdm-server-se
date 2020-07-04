@@ -13,7 +13,8 @@ import com.amalto.core.objects.datacluster.DataClusterPOJOPK;
 import com.amalto.xmlserver.interfaces.IWhereItem;
 import com.amalto.xmlserver.interfaces.WhereAnd;
 import com.amalto.xmlserver.interfaces.WhereCondition;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import com.amalto.core.server.api.Item;
 
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ import java.util.Set;
 
 public class UserManageOptimizedImpl extends UserManage {
 
-    private static final Logger LOG = Logger.getLogger(UserManageOptimizedImpl.class);
+    private static final Logger LOG = LogManager.getLogger(UserManageOptimizedImpl.class);
 
     private boolean isFromRemote = false;
 

@@ -14,7 +14,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.util.core.ICoreConstants;
 
 import com.amalto.core.objects.ObjectPOJO;
@@ -26,7 +27,7 @@ import com.amalto.core.util.XtentisException;
 
 public class DefaultRole implements Role {
 
-    private static final Logger LOGGER = Logger.getLogger(DefaultRole.class);
+    private static final Logger LOGGER = LogManager.getLogger(DefaultRole.class);
 
     public RolePOJOPK putRole(RolePOJO role) throws XtentisException {
         LOGGER.trace("putRole() ");

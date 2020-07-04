@@ -26,7 +26,8 @@ import com.amalto.core.storage.inmemory.InMemoryJoinStrategy;
 import com.amalto.core.storage.transaction.Transaction;
 import com.amalto.core.storage.transaction.TransactionManager;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.hibernate.Session;
 import org.talend.mdm.commmon.metadata.*;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
@@ -38,7 +39,7 @@ import java.util.Set;
 
 class SelectAnalyzer extends VisitorAdapter<Visitor<StorageResults>> {
 
-    private static final Logger LOGGER = Logger.getLogger(SelectAnalyzer.class);
+    private static final Logger LOGGER = LogManager.getLogger(SelectAnalyzer.class);
 
     private static final boolean ALLOW_IN_MEMORY_JOINS = Boolean.valueOf(MDMConfiguration.getConfiguration().getProperty("db.allow.memory.join", "false")); //$NON-NLS-1$ //$NON-NLS-2$
 

@@ -27,7 +27,8 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.amalto.core.jobox.JobInfo;
 import com.amalto.core.jobox.util.JoboxConfig;
@@ -42,7 +43,7 @@ public class JobAware {
 
     private final String workDir;
 
-    private static final Logger LOGGER = Logger.getLogger(JobAware.class);
+    private static final Logger LOGGER = LogManager.getLogger(JobAware.class);
 
     public JobAware(JoboxConfig joboxConfig) {
         this.workDir = joboxConfig.getWorkPath();

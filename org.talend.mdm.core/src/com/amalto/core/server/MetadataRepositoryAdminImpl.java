@@ -21,7 +21,8 @@ import com.amalto.core.util.XtentisException;
 import com.amalto.xmlserver.interfaces.IWhereItem;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.util.webapp.XObjectType;
@@ -39,7 +40,7 @@ import static com.amalto.core.query.user.UserQueryBuilder.isNull;
 
 class MetadataRepositoryAdminImpl implements MetadataRepositoryAdmin {
 
-    private static final Logger LOGGER = Logger.getLogger(MetadataRepositoryAdminImpl.class);
+    private static final Logger LOGGER = LogManager.getLogger(MetadataRepositoryAdminImpl.class);
 
     private final Map<String, MetadataRepository> metadataRepository = new HashMap<String, MetadataRepository>();
 

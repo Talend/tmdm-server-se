@@ -16,7 +16,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.hibernate.ObjectNotFoundException;
 import org.hibernate.Session;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
@@ -27,7 +28,7 @@ import com.amalto.core.storage.record.DataRecordConverter;
 
 public class ObjectDataRecordConverter implements DataRecordConverter<Object> {
 
-    private static final Logger LOGGER = Logger.getLogger(ObjectDataRecordConverter.class);
+    private static final Logger LOGGER = LogManager.getLogger(ObjectDataRecordConverter.class);
 
     private final StorageClassLoader storageClassLoader;
 

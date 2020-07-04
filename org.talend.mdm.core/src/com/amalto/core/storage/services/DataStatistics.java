@@ -31,7 +31,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONWriter;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
@@ -52,7 +53,7 @@ import io.swagger.annotations.ApiParam;
 @Api(value="Data statistics", tags="Statistics")
 public class DataStatistics {
 
-    private static final Logger LOGGER = Logger.getLogger(DataStatistics.class);
+    private static final Logger LOGGER = LogManager.getLogger(DataStatistics.class);
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)

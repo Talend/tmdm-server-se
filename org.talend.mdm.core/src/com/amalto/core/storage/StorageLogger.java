@@ -13,7 +13,8 @@ package com.amalto.core.storage;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ConsoleDumpMetadataVisitor;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
@@ -29,7 +30,7 @@ import com.amalto.core.storage.transaction.StorageTransaction;
 
 public class StorageLogger implements Storage {
 
-    private static final Logger LOGGER = Logger.getLogger(StorageLogger.class);
+    private static final Logger LOGGER = LogManager.getLogger(StorageLogger.class);
 
     private final Storage delegate;
 

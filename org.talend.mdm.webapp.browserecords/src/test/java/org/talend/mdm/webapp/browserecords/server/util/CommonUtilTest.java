@@ -24,7 +24,8 @@ import java.util.Map;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.dom4j.Node;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
@@ -65,7 +66,7 @@ public class CommonUtilTest extends TestCase {
         }
     }
 
-    private static final Logger LOG = Logger.getLogger(CommonUtilTest.class);
+    private static final Logger LOG = LogManager.getLogger(CommonUtilTest.class);
 
     @SuppressWarnings("unchecked")
     public static TestSuite suite() throws Exception {

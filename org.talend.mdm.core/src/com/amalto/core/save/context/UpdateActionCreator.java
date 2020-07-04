@@ -26,7 +26,8 @@ import java.util.Stack;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
 import org.talend.mdm.commmon.metadata.DefaultMetadataVisitor;
@@ -54,7 +55,7 @@ import com.amalto.core.storage.StorageResults;
 
 public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
 
-    private static final Logger LOGGER = Logger.getLogger(UpdateActionCreator.class);
+    private static final Logger LOGGER = LogManager.getLogger(UpdateActionCreator.class);
 
     protected final LinkedList<Action> actions = new LinkedList<>();
 

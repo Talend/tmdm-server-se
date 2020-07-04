@@ -12,7 +12,8 @@ package com.amalto.webapp.core.bean;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -35,7 +36,7 @@ import com.amalto.webapp.core.util.Util;
 
 public class Configuration {
 
-    private static final Logger LOG = Logger.getLogger(Configuration.class);
+    private static final Logger LOG = LogManager.getLogger(Configuration.class);
 
     private static final String MDM_CONFIGURATION_ATTRIBUTE = "MDM_CONFIGURATION_ATTRIBUTE"; //$NON-NLS-1$
 

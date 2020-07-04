@@ -26,13 +26,14 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.amalto.core.jobox.JobInfo;
 
 public class JoboxUtil {
 
-    private static final Logger LOGGER = Logger.getLogger(JoboxUtil.class);
+    private static final Logger LOGGER = LogManager.getLogger(JoboxUtil.class);
 
     private JoboxUtil() {
     }

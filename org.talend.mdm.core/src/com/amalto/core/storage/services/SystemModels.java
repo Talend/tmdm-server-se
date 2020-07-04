@@ -43,7 +43,8 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.metadata.compare.Change;
@@ -83,7 +84,7 @@ import io.swagger.annotations.ApiParam;
 @Api(value="Models management", tags="Administration")
 public class SystemModels {
 
-    private static final Logger LOGGER = Logger.getLogger(SystemModels.class);
+    private static final Logger LOGGER = LogManager.getLogger(SystemModels.class);
 
     private final Storage systemStorage;
 

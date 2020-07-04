@@ -20,7 +20,8 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.util.core.ICoreConstants;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
 import org.talend.mdm.commmon.util.webapp.XObjectType;
@@ -56,7 +57,7 @@ public class ItemPOJO implements Serializable {
 
     private static Map<String, XSystemObjects> DATA_CLUSTER_SYSTEM_OBJECTS = new HashMap<String, XSystemObjects>();
 
-    public static Logger LOG = Logger.getLogger(ItemPOJO.class);
+    public static Logger LOG = LogManager.getLogger(ItemPOJO.class);
 
     public static Pattern pathWithoutConditions = Pattern.compile("(.*?)[\\[|/].*");
 

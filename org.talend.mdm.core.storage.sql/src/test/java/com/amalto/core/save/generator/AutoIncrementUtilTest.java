@@ -16,7 +16,8 @@ import com.amalto.core.delegator.MockILocalUser;
 import com.amalto.core.server.MockMetadataRepositoryAdmin;
 import com.amalto.core.server.MockServerLifecycle;
 import com.amalto.core.server.ServerContext;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
@@ -34,7 +35,7 @@ import static org.junit.Assert.assertTrue;
 
 @SuppressWarnings("nls")
 public class AutoIncrementUtilTest {
-    private static final Logger LOG = Logger.getLogger(AutoIncrementUtilTest.class);
+    private static final Logger LOG = LogManager.getLogger(AutoIncrementUtilTest.class);
 
     private static boolean beanDelegatorContainerFlag = false;
     private static class MockISecurityCheck extends BaseSecurityCheck {

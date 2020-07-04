@@ -21,7 +21,8 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
@@ -43,7 +44,7 @@ import com.amalto.core.server.api.XmlServer;
 @SuppressWarnings("nls")
 public class LoadParserTest extends TestCase {
 
-    private static Logger LOG = Logger.getLogger(LoadParserTest.class);
+    private static Logger LOG = LogManager.getLogger(LoadParserTest.class);
 
     private final TestAutoIdGenerator idGenerator = null; // Intentionally null to test cases when no id generator is needed.
 

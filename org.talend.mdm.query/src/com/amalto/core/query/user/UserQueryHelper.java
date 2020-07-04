@@ -20,7 +20,8 @@ import com.amalto.xmlserver.interfaces.WhereLogicOperator;
 import com.amalto.xmlserver.interfaces.WhereOr;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
@@ -57,7 +58,7 @@ public class UserQueryHelper {
 
     public static final Condition FALSE = new FalseCondition();
 
-    private static final Logger LOGGER = Logger.getLogger(UserQueryHelper.class);
+    private static final Logger LOGGER = LogManager.getLogger(UserQueryHelper.class);
 
     private UserQueryHelper() {
     }

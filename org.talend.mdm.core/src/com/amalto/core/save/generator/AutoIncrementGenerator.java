@@ -9,12 +9,13 @@
  */
 package com.amalto.core.save.generator;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 @SuppressWarnings("nls")
 public class AutoIncrementGenerator {
 
-    private static final Logger LOGGER = Logger.getLogger(AutoIncrementGenerator.class);
+    private static final Logger LOGGER = LogManager.getLogger(AutoIncrementGenerator.class);
 
     private static final AutoIdGenerator AUTO_ID_GENERATOR;
 

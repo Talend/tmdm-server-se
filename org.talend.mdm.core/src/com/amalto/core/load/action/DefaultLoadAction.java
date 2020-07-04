@@ -15,7 +15,8 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.util.webapp.XSystemObjects;
 
 import com.amalto.core.load.io.XMLStreamTokenizer;
@@ -30,7 +31,7 @@ import com.amalto.core.util.XSDKey;
  */
 public class DefaultLoadAction implements LoadAction {
 
-    private static final Logger LOGGER = Logger.getLogger(DefaultLoadAction.class);
+    private static final Logger LOGGER = LogManager.getLogger(DefaultLoadAction.class);
 
     private final String dataClusterName;
 

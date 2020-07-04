@@ -27,7 +27,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
 
@@ -39,7 +40,7 @@ import org.springframework.jms.core.MessageCreator;
  */
 public class ClusteredStagingTaskManager extends LocalStagingTaskManager implements MessageListener {
 
-    private static final Logger LOGGER = Logger.getLogger(ClusteredStagingTaskManager.class);
+    private static final Logger LOGGER = LogManager.getLogger(ClusteredStagingTaskManager.class);
 
     private JmsTemplate jmsTemplate;
 

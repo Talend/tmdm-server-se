@@ -17,7 +17,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 
 import com.amalto.core.query.user.Expression;
@@ -26,7 +27,7 @@ public class MockMetadataRepositoryAdmin implements MetadataRepositoryAdmin {
 
     public static MockMetadataRepositoryAdmin INSTANCE = new MockMetadataRepositoryAdmin();
 
-    private static final Logger LOGGER = Logger.getLogger(MockMetadataRepositoryAdmin.class);
+    private static final Logger LOGGER = LogManager.getLogger(MockMetadataRepositoryAdmin.class);
 
     private final Map<String, MetadataRepository> metadataRepository = new HashMap<String, MetadataRepository>();
 

@@ -27,7 +27,8 @@ import org.apache.commons.collections.map.MultiKeyMap;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
 import org.talend.mdm.commmon.util.webapp.XObjectType;
@@ -46,7 +47,7 @@ public class StorageAdminImpl implements StorageAdmin {
 
     public static final String MATCH_RULE_POJO_CLASS = "com.amalto.core.storage.task.config.MatchRulePOJO"; //$NON-NLS-1$
 
-    private static final Logger LOGGER = Logger.getLogger(StorageAdminImpl.class);
+    private static final Logger LOGGER = LogManager.getLogger(StorageAdminImpl.class);
 
     /**
      * Default datasource name to be used for user/master data (from datasources configuration content).

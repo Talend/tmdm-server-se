@@ -15,7 +15,8 @@ import com.amalto.core.storage.CloseableIterator;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.record.ObjectDataRecordReader;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.hibernate.HibernateException;
 
 import java.io.IOException;
@@ -26,7 +27,7 @@ import java.util.Set;
 
 class ListIterator implements CloseableIterator<DataRecord> {
 
-    private final static Logger LOGGER = Logger.getLogger(ListIterator.class);
+    private final static Logger LOGGER = LogManager.getLogger(ListIterator.class);
 
     private final static Map<ComplexTypeMetadata, ObjectDataRecordReader> typeToReader = new HashMap<ComplexTypeMetadata, ObjectDataRecordReader>();
 

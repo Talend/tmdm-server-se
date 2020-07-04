@@ -16,7 +16,8 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
@@ -38,7 +39,7 @@ import junit.framework.TestCase;
 @SuppressWarnings("nls")
 public class StorageTestCase extends TestCase {
 
-    private static Logger LOG = Logger.getLogger(StorageTestCase.class);
+    private static Logger LOG = LogManager.getLogger(StorageTestCase.class);
 
     protected static final Storage systemStorage;
 

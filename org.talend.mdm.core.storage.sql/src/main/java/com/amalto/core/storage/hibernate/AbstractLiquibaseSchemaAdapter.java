@@ -19,7 +19,8 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.apache.tools.ant.util.DateUtils;
 import org.talend.mdm.commmon.metadata.compare.Compare;
 
@@ -35,7 +36,7 @@ import liquibase.serializer.core.xml.XMLChangeLogSerializer;
 
 public abstract class AbstractLiquibaseSchemaAdapter {
 
-    protected static final Logger LOGGER = Logger.getLogger(AbstractLiquibaseSchemaAdapter.class);
+    protected static final Logger LOGGER = LogManager.getLogger(AbstractLiquibaseSchemaAdapter.class);
 
     private static final String SEPARATOR = "-"; //$NON-NLS-1$
 

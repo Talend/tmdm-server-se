@@ -27,7 +27,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Response;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
@@ -59,7 +60,7 @@ import com.amalto.core.util.XtentisException;
 
 public class LoadServlet extends HttpServlet {
 
-    private static final Logger LOG = Logger.getLogger(LoadServlet.class);
+    private static final Logger LOG = LogManager.getLogger(LoadServlet.class);
 
     private static final long serialVersionUID = 1L;
 

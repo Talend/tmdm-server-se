@@ -16,14 +16,15 @@ import com.amalto.core.objects.datacluster.DataClusterPOJOPK;
 import com.amalto.core.server.api.XmlServer;
 import com.amalto.core.util.Util;
 import com.amalto.core.util.XtentisException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.util.Collection;
 
 
 public class StoredProcedurePOJO extends ObjectPOJO {
 
-    private final Logger LOGGER = Logger.getLogger(StoredProcedurePOJO.class);
+    private final Logger LOGGER = LogManager.getLogger(StoredProcedurePOJO.class);
 
     private String name;
 

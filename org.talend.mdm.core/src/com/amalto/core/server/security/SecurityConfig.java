@@ -14,7 +14,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.core.task.SyncTaskExecutor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.concurrent.DelegatingSecurityContextExecutor;
@@ -27,7 +28,7 @@ import org.talend.mdm.commmon.util.core.ICoreConstants;
 
 public class SecurityConfig {
 
-    private static final Logger LOGGER = Logger.getLogger(SecurityConfig.class);
+    private static final Logger LOGGER = LogManager.getLogger(SecurityConfig.class);
 
     private static final String PRIVATE_INTERNAL_USER = "MDMInternalUser"; //$NON-NLS-1$
 

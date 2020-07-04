@@ -19,13 +19,14 @@ import org.talend.mdm.commmon.metadata.TypeMetadata;
 import com.amalto.core.query.user.*;
 import com.amalto.core.server.Server;
 import com.amalto.core.server.ServerContext;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.util.List;
 
 public class UpdateReportOptimizer implements Optimizer {
 
-    private static final Logger LOGGER = Logger.getLogger(UpdateReportOptimizer.class);
+    private static final Logger LOGGER = LogManager.getLogger(UpdateReportOptimizer.class);
 
     private static final UpdateReportDataModel REPORT_DATA_MODEL = new UpdateReportDataModel();
 

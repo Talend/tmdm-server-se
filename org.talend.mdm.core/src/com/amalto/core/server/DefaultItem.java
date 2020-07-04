@@ -25,7 +25,8 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.metadata.MetadataUtils;
@@ -75,7 +76,7 @@ public class DefaultItem implements Item {
 
     private static final String DEFAULT_VARIABLE = "_DEFAULT_"; //$NON-NLS-1$
 
-    private static final Logger LOGGER = Logger.getLogger(DefaultItem.class);
+    private static final Logger LOGGER = LogManager.getLogger(DefaultItem.class);
 
     /**
      * Creates or updates a item

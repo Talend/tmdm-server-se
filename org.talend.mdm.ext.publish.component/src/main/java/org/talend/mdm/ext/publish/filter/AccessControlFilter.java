@@ -15,7 +15,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.restlet.Filter;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
@@ -24,7 +25,7 @@ import org.talend.mdm.ext.publish.ServerServletApplication;
 
 public class AccessControlFilter extends Filter {
 
-    private static Logger log = Logger.getLogger(AccessControlFilter.class);
+    private static Logger log = LogManager.getLogger(AccessControlFilter.class);
 
     protected int beforeHandle(Request request, Response response) {
 

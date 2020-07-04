@@ -23,7 +23,8 @@ import javax.xml.XMLConstants;
 import com.amalto.core.storage.record.StorageConstants;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.hibernate.ScrollableResults;
 import org.talend.mdm.commmon.metadata.AliasedFieldMetadata;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
@@ -62,7 +63,7 @@ import com.amalto.core.storage.record.metadata.UnsupportedDataRecordMetadata;
 
 class ProjectionIterator implements CloseableIterator<DataRecord> {
 
-    private static final Logger LOGGER = Logger.getLogger(ProjectionIterator.class);
+    private static final Logger LOGGER = LogManager.getLogger(ProjectionIterator.class);
 
     private final CloseableIterator<Object> iterator;
 

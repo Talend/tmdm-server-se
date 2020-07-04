@@ -23,7 +23,8 @@ import com.amalto.xmlserver.interfaces.IWhereItem;
 import com.amalto.xmlserver.interfaces.ItemPKCriteria;
 import com.amalto.xmlserver.interfaces.WhereCondition;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.*;
 import org.talend.mdm.commmon.util.core.MDMXMLUtils;
 import org.w3c.dom.Element;
@@ -42,7 +43,7 @@ import static com.amalto.core.integrity.FKIntegrityCheckResult.*;
 
 class DefaultCheckDataSource implements FKIntegrityCheckDataSource {
 
-    private final static Logger logger = Logger.getLogger(DefaultCheckDataSource.class);
+    private final static Logger logger = LogManager.getLogger(DefaultCheckDataSource.class);
 
     public String getDataModel(String clusterName, String concept, String[] ids) throws XtentisException {
         String dataModel;

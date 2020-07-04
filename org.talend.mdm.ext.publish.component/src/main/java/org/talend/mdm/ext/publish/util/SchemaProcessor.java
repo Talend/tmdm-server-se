@@ -12,7 +12,8 @@ package org.talend.mdm.ext.publish.util;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
@@ -20,7 +21,7 @@ import org.dom4j.Element;
 
 public class SchemaProcessor {
 
-    private static final Logger LOGGER = Logger.getLogger(SchemaProcessor.class);
+    private static final Logger LOGGER = LogManager.getLogger(SchemaProcessor.class);
 
     private static final String elementID = "xsd:element"; //$NON-NLS-1$
 

@@ -22,7 +22,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.amalto.core.server.Server;
 import com.amalto.core.server.ServerContext;
@@ -32,7 +33,7 @@ import com.amalto.core.storage.transaction.TransactionState;
 
 public class TransactionFilter implements Filter {
 
-    private static final Logger LOGGER = Logger.getLogger(TransactionFilter.class);
+    private static final Logger LOGGER = LogManager.getLogger(TransactionFilter.class);
 
     public static final String TRANSACTION_ID = "transaction-id"; //$NON-NLS-1$
 

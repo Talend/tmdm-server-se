@@ -13,6 +13,7 @@ import java.io.Serializable;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.logging.log4j.LogManager;
 
 import com.amalto.core.objects.marshalling.MarshallingFactory;
 
@@ -49,7 +50,7 @@ public class MigrationTaskBox implements  Serializable{
 			MarshallingFactory.getInstance().getMarshaller(this.getClass()).marshal(this, sw);
 			return sw.toString();
 	    } catch (Exception e) {
-		    org.apache.log4j.Logger.getLogger(this.getClass()).error(e);
+		    LogManager.getLogger(this.getClass()).error(e);
 		    return null;
 	    }
 	}

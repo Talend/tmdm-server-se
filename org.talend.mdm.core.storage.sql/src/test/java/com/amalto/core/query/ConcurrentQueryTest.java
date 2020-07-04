@@ -17,7 +17,8 @@ import com.amalto.core.storage.StorageResults;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.record.DataRecordReader;
 import com.amalto.core.storage.record.XmlStringDataRecordReader;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 
@@ -27,7 +28,7 @@ import static com.amalto.core.query.user.UserQueryBuilder.eq;
 
 public class ConcurrentQueryTest extends StorageTestCase {
 
-    private static final Logger LOGGER = Logger.getLogger(ConcurrentQueryTest.class);
+    private static final Logger LOGGER = LogManager.getLogger(ConcurrentQueryTest.class);
 
     private final static int COUNT = 100;
 

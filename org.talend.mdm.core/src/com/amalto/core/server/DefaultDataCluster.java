@@ -16,7 +16,8 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.amalto.core.delegator.ILocalUser;
 import com.amalto.core.objects.ObjectPOJO;
@@ -32,7 +33,7 @@ import com.amalto.core.util.XtentisException;
 
 public class DefaultDataCluster implements DataCluster {
 
-    private static final Logger LOGGER = Logger.getLogger(DefaultDataCluster.class);
+    private static final Logger LOGGER = LogManager.getLogger(DefaultDataCluster.class);
 
 
 

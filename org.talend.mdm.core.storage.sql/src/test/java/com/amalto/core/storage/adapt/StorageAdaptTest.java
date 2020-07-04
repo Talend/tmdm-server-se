@@ -27,7 +27,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.h2.jdbc.JdbcSQLException;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
@@ -57,7 +58,7 @@ public class StorageAdaptTest extends TestCase {
 
     protected static final String STORAGE_NAME = "Test";
 
-    private static final Logger LOGGER = Logger.getLogger(StorageAdaptTest.class);
+    private static final Logger LOGGER = LogManager.getLogger(StorageAdaptTest.class);
 
     @Override
     public void setUp() throws Exception {

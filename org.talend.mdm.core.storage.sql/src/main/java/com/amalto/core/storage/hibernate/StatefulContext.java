@@ -17,7 +17,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
@@ -32,7 +33,7 @@ import com.amalto.core.storage.datasource.RDBMSDataSource;
 
 public class StatefulContext implements MappingCreatorContext {
 
-    private static final Logger LOGGER = Logger.getLogger(StatefulContext.class);
+    private static final Logger LOGGER = LogManager.getLogger(StatefulContext.class);
 
     private final Map<String, String> enforcedUniqueNames = new HashMap<String, String>();
 

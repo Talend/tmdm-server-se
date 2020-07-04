@@ -19,7 +19,8 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
@@ -70,7 +71,7 @@ import com.extjs.gxt.ui.client.Style.SortDir;
 
 public class ForeignKeyHelper {
 
-    private static final Logger LOG = Logger.getLogger(ForeignKeyHelper.class);
+    private static final Logger LOG = LogManager.getLogger(ForeignKeyHelper.class);
 
     private static final Pattern TOTAL_COUNT_PATTERN = Pattern.compile("<totalCount>(.*)</totalCount>"); //$NON-NLS-1$
 

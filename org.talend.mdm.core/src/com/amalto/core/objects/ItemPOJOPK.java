@@ -12,6 +12,7 @@ package com.amalto.core.objects;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.io.StringWriter;
+import org.apache.logging.log4j.LogManager;
 
 import com.amalto.core.objects.datacluster.DataClusterPOJOPK;
 import com.amalto.core.objects.marshalling.MarshallingFactory;
@@ -94,7 +95,7 @@ public class ItemPOJOPK implements Serializable,Comparable{
 		    } catch (Exception e) {
 	    	    String err = "Unable to marshal the PK "+getDataClusterPOJOPK()+"."+getConceptName()+"."+Util.joinStrings(getIds(),".")
 	    	    		+": "+e.getClass().getName()+": "+e.getLocalizedMessage();
-	    	    org.apache.log4j.Logger.getLogger(this.getClass()).error(err,e);
+	    	    LogManager.getLogger(this.getClass()).error(err,e);
 	    	    throw new XtentisException(err);
 		    }
 	 }
@@ -110,7 +111,7 @@ public class ItemPOJOPK implements Serializable,Comparable{
 		    } catch (Exception e) {
 	    	    String err = "Unable to unmarshal the PK "+marshalledItemPOJOPK
 	    	    		+": "+e.getClass().getName()+": "+e.getLocalizedMessage();
-	    	    org.apache.log4j.Logger.getLogger(ItemPOJOPK.class).error(err,e);
+	    	    LogManager.getLogger(ItemPOJOPK.class).error(err,e);
 	    	    throw new XtentisException(err);
 		    }
 	 }

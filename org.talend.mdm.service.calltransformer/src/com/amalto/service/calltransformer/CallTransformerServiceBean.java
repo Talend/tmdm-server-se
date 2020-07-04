@@ -22,7 +22,8 @@ import com.amalto.core.server.api.Transformer;
 import com.amalto.core.util.Util;
 import com.amalto.core.util.XtentisException;
 import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.w3c.dom.Document;
 
 import java.io.Serializable;
@@ -35,7 +36,7 @@ import java.util.HashMap;
 @org.springframework.stereotype.Service("amalto/local/service/callprocess")
 public class CallTransformerServiceBean extends Service {
 
-    public static final Logger         LOGGER                 = Logger.getLogger(CallTransformerServiceBean.class);
+    public static final Logger         LOGGER                 = LogManager.getLogger(CallTransformerServiceBean.class);
 
     private static final String        Param_Transformer_Name = "process"; //$NON-NLS-1$
 

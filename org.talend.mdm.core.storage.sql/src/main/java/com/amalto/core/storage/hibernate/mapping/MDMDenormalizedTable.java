@@ -14,7 +14,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.hibernate.HibernateException;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.PostgreSQLDialect;
@@ -35,7 +36,7 @@ import org.hibernate.tool.hbm2ddl.TableMetadata;
 @SuppressWarnings("nls")
 public class MDMDenormalizedTable extends DenormalizedTable {
 
-    private static final Logger LOGGER = Logger.getLogger(MDMDenormalizedTable.class);
+    private static final Logger LOGGER = LogManager.getLogger(MDMDenormalizedTable.class);
 
     public MDMDenormalizedTable(Table includedTable) {
         super(includedTable);

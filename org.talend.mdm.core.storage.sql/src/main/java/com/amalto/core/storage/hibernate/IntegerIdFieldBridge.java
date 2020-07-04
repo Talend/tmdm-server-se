@@ -9,11 +9,12 @@
  */
 package com.amalto.core.storage.hibernate;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.apache.lucene.document.Document;
 
 public class IntegerIdFieldBridge extends ToLowerCaseFieldBridge {
-    private static final Logger LOGGER = Logger.getLogger(IntegerIdFieldBridge.class);
+    private static final Logger LOGGER = LogManager.getLogger(IntegerIdFieldBridge.class);
 
     @Override
     public Object get(String name, Document document) {

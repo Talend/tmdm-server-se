@@ -15,13 +15,14 @@ import com.amalto.core.storage.datasource.RDBMSDataSource;
 import com.amalto.core.storage.datasource.RDBMSDataSource.DataSourceDialect;
 
 import org.talend.mdm.commmon.metadata.*;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.util.Collection;
 
 public abstract class InternalRepository implements MetadataVisitor<MetadataRepository> {
 
-    private static final Logger LOGGER = Logger.getLogger(InternalRepository.class);
+    private static final Logger LOGGER = LogManager.getLogger(InternalRepository.class);
 
     private final MappingCreatorContext scatteredContext;
 

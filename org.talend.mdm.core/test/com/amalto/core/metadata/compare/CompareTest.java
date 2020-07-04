@@ -20,7 +20,8 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.metadata.compare.Change;
 import org.talend.mdm.commmon.metadata.compare.Compare;
@@ -34,7 +35,7 @@ import com.amalto.core.objects.datamodel.DataModelPOJO;
 @SuppressWarnings("nls")
 public class CompareTest extends TestCase {
 
-    private static Logger LOG = Logger.getLogger(CompareTest.class);
+    private static Logger LOG = LogManager.getLogger(CompareTest.class);
 
     public void test1() throws Exception {
         MetadataRepository original = new MetadataRepository();

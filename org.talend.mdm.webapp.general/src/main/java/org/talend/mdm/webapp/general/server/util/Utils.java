@@ -19,7 +19,8 @@ import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.util.core.MDMXMLUtils;
 import org.talend.mdm.webapp.base.client.exception.ServiceException;
 import org.talend.mdm.webapp.base.shared.Constants;
@@ -53,7 +54,7 @@ import com.amalto.webapp.core.util.Util;
 
 public class Utils {
 
-    private static final Logger LOG = Logger.getLogger(Utils.class);
+    private static final Logger LOG = LogManager.getLogger(Utils.class);
 
     private static final String WELCOMECONTEXT = "welcomeportal"; // $NON-NLS-2$
 

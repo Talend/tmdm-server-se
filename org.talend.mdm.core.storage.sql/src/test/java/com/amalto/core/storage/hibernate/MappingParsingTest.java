@@ -23,8 +23,9 @@ import junit.framework.TestCase;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 
@@ -39,7 +40,7 @@ import com.amalto.core.storage.datasource.RDBMSDataSource;
 
 public class MappingParsingTest extends TestCase {
 
-    Logger LOGGER = Logger.getLogger(HibernateStorage.class);
+    Logger LOGGER = LogManager.getLogger(HibernateStorage.class);
     private Level previousLevel;
 
     public MappingParsingTest() {

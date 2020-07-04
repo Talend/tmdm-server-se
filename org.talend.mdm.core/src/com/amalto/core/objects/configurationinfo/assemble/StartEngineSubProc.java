@@ -11,12 +11,13 @@ package com.amalto.core.objects.configurationinfo.assemble;
 
 import com.amalto.core.server.api.RoutingEngine;
 import com.amalto.core.util.Util;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
 
 public class StartEngineSubProc extends AssembleSubProc{
 
-    private final static Logger LOGGER = Logger.getLogger(StartEngineSubProc.class);
+    private final static Logger LOGGER = LogManager.getLogger(StartEngineSubProc.class);
 
 	@Override
 	public void run() throws Exception {

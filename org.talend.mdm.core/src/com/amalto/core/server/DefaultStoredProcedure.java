@@ -15,7 +15,8 @@ import com.amalto.core.objects.datacluster.DataClusterPOJOPK;
 import com.amalto.core.objects.storedprocedure.StoredProcedurePOJO;
 import com.amalto.core.objects.storedprocedure.StoredProcedurePOJOPK;
 import com.amalto.core.util.XtentisException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import com.amalto.core.server.api.StoredProcedure;
 
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ import java.util.Collection;
 
 public class DefaultStoredProcedure implements StoredProcedure {
 
-    private static final Logger LOGGER = Logger.getLogger(DefaultStoredProcedure.class);
+    private static final Logger LOGGER = LogManager.getLogger(DefaultStoredProcedure.class);
 
     /**
      * Creates or updates a Stored Procedure

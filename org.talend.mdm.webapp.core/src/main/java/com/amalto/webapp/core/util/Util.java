@@ -30,7 +30,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.util.core.MDMXMLUtils;
 import org.talend.mdm.commmon.util.datamodel.management.BusinessConcept;
 import org.w3c.dom.DOMImplementation;
@@ -85,7 +86,7 @@ public abstract class Util {
 
     public static final String DEFAULT_LANGUAGE = "en"; //$NON-NLS-1$
 
-    private static final Logger LOGGER = Logger.getLogger(Util.class);
+    private static final Logger LOGGER = LogManager.getLogger(Util.class);
 
     /*********************************************************************
      * WEB SERVICES

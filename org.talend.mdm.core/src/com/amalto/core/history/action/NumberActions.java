@@ -12,11 +12,12 @@
 package com.amalto.core.history.action;
 
 import com.amalto.core.history.Action;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 public class NumberActions {
 
-    private static final Logger LOGGER = Logger.getLogger(NumberActions.class);
+    private static final Logger LOGGER = LogManager.getLogger(NumberActions.class);
 
     public static Action max(FieldUpdateAction action) {
         String newValueAsString = action.getNewValue();

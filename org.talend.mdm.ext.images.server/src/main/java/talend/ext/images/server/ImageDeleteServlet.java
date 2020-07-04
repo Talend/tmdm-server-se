@@ -22,13 +22,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 public class ImageDeleteServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
-    private static final Logger logger = Logger.getLogger(ImageDeleteServlet.class);
+    private static final Logger logger = LogManager.getLogger(ImageDeleteServlet.class);
 
     private String outputFormat;
 

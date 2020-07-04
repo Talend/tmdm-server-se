@@ -14,7 +14,8 @@ import com.amalto.core.jobox.JobContainer;
 import com.amalto.core.jobox.util.JoboxConfig;
 import com.amalto.core.jobox.util.JoboxException;
 import com.amalto.core.jobox.util.JoboxUtil;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.io.File;
 
@@ -23,7 +24,7 @@ import java.io.File;
  */
 public class JobDeploy {
 
-    private static final Logger LOGGER = Logger.getLogger(JobDeploy.class);
+    private static final Logger LOGGER = LogManager.getLogger(JobDeploy.class);
 
     private final String deployDir;
 

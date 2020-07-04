@@ -13,14 +13,15 @@ import com.amalto.core.objects.DroppedItemPOJO;
 import com.amalto.core.objects.DroppedItemPOJOPK;
 import com.amalto.core.objects.ItemPOJOPK;
 import com.amalto.core.util.XtentisException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import com.amalto.core.server.api.DroppedItem;
 
 import java.util.List;
 
 public class DefaultDroppedItem implements DroppedItem {
 
-    private static final Logger LOGGER = Logger.getLogger(DefaultDroppedItem.class);
+    private static final Logger LOGGER = LogManager.getLogger(DefaultDroppedItem.class);
 
     /**
      * Recover a dropped item

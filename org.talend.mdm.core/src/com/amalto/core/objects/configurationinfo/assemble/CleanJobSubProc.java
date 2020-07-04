@@ -14,11 +14,12 @@ import com.amalto.core.objects.backgroundjob.BackgroundJobPOJO;
 import com.amalto.core.server.api.XmlServer;
 import com.amalto.core.util.Util;
 import com.amalto.core.util.XtentisException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 public class CleanJobSubProc extends AssembleSubProc{
 
-    private final static Logger LOGGER = Logger.getLogger(CleanJobSubProc.class);
+    private final static Logger LOGGER = LogManager.getLogger(CleanJobSubProc.class);
 
     @Override
     public void run() throws Exception {

@@ -23,7 +23,8 @@ import java.util.Stack;
 import java.util.TreeMap;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 
 import com.amalto.core.storage.StorageType;
@@ -89,7 +90,7 @@ public abstract class StorageClassLoader extends ClassLoader {
             }
         } catch (Exception e) {
             // Hibernate tends to hide errors when getResourceAsStream fails.
-            Logger.getLogger(StorageClassLoader.class).error("Error during dynamic creation of configurations", e);
+            LogManager.getLogger(StorageClassLoader.class).error("Error during dynamic creation of configurations", e);
         }
         return super.getResourceAsStream(name);
     }

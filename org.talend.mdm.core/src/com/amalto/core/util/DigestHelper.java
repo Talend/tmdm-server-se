@@ -21,7 +21,8 @@ import com.amalto.core.objects.routing.RoutingRulePOJO;
 import com.amalto.core.objects.storedprocedure.StoredProcedurePOJO;
 import com.amalto.core.objects.transformers.TransformerV2POJO;
 import com.amalto.core.objects.view.ViewPOJO;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 public class DigestHelper {
 
@@ -57,7 +58,7 @@ public class DigestHelper {
 
     private static final String TYPE_MATCH_RULE = "MDM.MatchRule"; //$NON-NLS-1$
 
-    private static final Logger LOGGER = Logger.getLogger(DigestHelper.class);
+    private static final Logger LOGGER = LogManager.getLogger(DigestHelper.class);
 
     private static DigestHelper instance;
 

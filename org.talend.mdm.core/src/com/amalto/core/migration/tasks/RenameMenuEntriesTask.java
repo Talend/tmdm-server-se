@@ -15,11 +15,12 @@ import com.amalto.core.objects.configurationinfo.ConfigurationHelper;
 import com.amalto.core.objects.menu.MenuPOJO;
 import com.amalto.core.server.api.Menu;
 import com.amalto.core.util.Util;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 public class RenameMenuEntriesTask extends AbstractMigrationTask {
 
-    private static final Logger LOGGER = Logger.getLogger(RenameMenuEntriesTask.class);
+    private static final Logger LOGGER = LogManager.getLogger(RenameMenuEntriesTask.class);
 
     @Override
     protected Boolean execute() {

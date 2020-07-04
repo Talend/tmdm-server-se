@@ -13,7 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.util.webapp.XObjectType;
 import org.talend.mdm.commmon.util.webapp.XSystemObjects;
 import org.talend.mdm.webapp.base.client.exception.ServiceException;
@@ -46,7 +47,7 @@ public class Util {
 
     public static final String concept = "Update"; //$NON-NLS-1$
 
-    private static final Logger LOG = Logger.getLogger(Util.class);
+    private static final Logger LOG = LogManager.getLogger(Util.class);
 
     public static List<WSWhereItem> buildWhereItems(JournalSearchCriteria criteria, WebService webService)
             throws ServiceException {

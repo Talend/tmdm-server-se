@@ -18,7 +18,8 @@ import java.util.Stack;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
@@ -53,7 +54,7 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
 
     public static final String SQL_DELETE_CASCADE = "SQL_DELETE_CASCADE"; //$NON-NLS-1$
 
-    private static final Logger LOGGER = Logger.getLogger(MappingGenerator.class);
+    private static final Logger LOGGER = LogManager.getLogger(MappingGenerator.class);
     
     private final Document document;
 

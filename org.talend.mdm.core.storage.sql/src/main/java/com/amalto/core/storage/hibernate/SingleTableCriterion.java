@@ -14,7 +14,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.criterion.CriteriaQuery;
@@ -26,7 +27,7 @@ class SingleTableCriterion extends SQLCriterion {
 
     private static final long serialVersionUID = -1416041576110629822L;
 
-    private static final Logger LOGGER = Logger.getLogger(SingleTableCriterion.class);
+    private static final Logger LOGGER = LogManager.getLogger(SingleTableCriterion.class);
 
     private final Criteria typeCriteria;
 

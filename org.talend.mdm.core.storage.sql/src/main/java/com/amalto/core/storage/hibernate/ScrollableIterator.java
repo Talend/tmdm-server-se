@@ -15,7 +15,8 @@ import com.amalto.core.storage.CloseableIterator;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.record.ObjectDataRecordReader;
 import org.apache.commons.lang.NotImplementedException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.hibernate.HibernateException;
 import org.hibernate.ScrollableResults;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
@@ -28,7 +29,7 @@ import java.util.Set;
 
 class ScrollableIterator implements CloseableIterator<DataRecord> {
 
-    private final static Logger LOGGER = Logger.getLogger(ScrollableIterator.class);
+    private final static Logger LOGGER = LogManager.getLogger(ScrollableIterator.class);
 
     private final static Map<ComplexTypeMetadata, ObjectDataRecordReader> typeToReader = new HashMap<ComplexTypeMetadata, ObjectDataRecordReader>();
 

@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import org.apache.logging.log4j.LogManager;
 
 import com.amalto.core.objects.backgroundjob.BackgroundJobPOJO;
 import com.amalto.core.objects.transformers.TransformerV2POJO;
@@ -91,7 +92,7 @@ public class TransformerGlobalContext extends TransformerContext{
 				String err =
 					"Unable to get the transformer "+this.getTransformerV2POJOPK().getUniqueId()+" from the global Context: "+
 					e.getClass().getName()+": "+e.getMessage();
-				org.apache.log4j.Logger.getLogger(this.getClass()).error("executeNextPlugin() "+err);
+				LogManager.getLogger(this.getClass()).error("executeNextPlugin() "+err);
 				throw new XtentisException(err);
 			}
 			this.put(TRANSFORMER_POJO, transformerPOJO);

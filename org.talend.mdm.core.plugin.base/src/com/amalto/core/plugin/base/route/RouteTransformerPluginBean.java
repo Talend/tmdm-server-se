@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.regex.Pattern;
+import org.apache.logging.log4j.LogManager;
 
 import org.springframework.stereotype.Service;
 
@@ -203,7 +204,7 @@ public class RouteTransformerPluginBean extends Plugin {
 		} catch (Exception e) {
 			String err = "Could not init the Route plugin:"+
 				e.getClass().getName()+": "+e.getLocalizedMessage();
-			org.apache.log4j.Logger.getLogger(this.getClass()).error(err,e);
+			LogManager.getLogger(this.getClass()).error(err,e);
 			throw new XtentisException(e);
 		}
 
@@ -223,7 +224,7 @@ public class RouteTransformerPluginBean extends Plugin {
      */
 	public void execute(TransformerPluginContext context) throws XtentisException {
 
-		org.apache.log4j.Logger.getLogger(this.getClass()).debug("execute() ");
+		LogManager.getLogger(this.getClass()).debug("execute() ");
 
 		try {
 
@@ -233,9 +234,9 @@ public class RouteTransformerPluginBean extends Plugin {
 			//Get the Key
 			ItemPOJOPK pk =  ItemPOJOPK.unmarshal(new String(inputPKTC.getContentBytes(),"UTF8"));
 
-			org.apache.log4j.Logger.getLogger(this.getClass()).debug("execute() PK "+pk);
+			LogManager.getLogger(this.getClass()).debug("execute() PK "+pk);
 
-			org.apache.log4j.Logger.getLogger(this.getClass()).debug("execute() Routing "+pk.getUniqueID());
+			LogManager.getLogger(this.getClass()).debug("execute() Routing "+pk.getUniqueID());
 
 			//now perform updates
 			//getRoutingEngineLocal().routeItemNow(pk);
@@ -252,7 +253,7 @@ public class RouteTransformerPluginBean extends Plugin {
 		} catch (Exception e) {
 			String err = "Could not execute the Route transformer plugin "+
 				e.getClass().getName()+": "+e.getLocalizedMessage();
-			org.apache.log4j.Logger.getLogger(this.getClass()).error(err,e);
+			LogManager.getLogger(this.getClass()).error(err,e);
 			throw new XtentisException(e);
 		}
 	}
@@ -309,7 +310,7 @@ public class RouteTransformerPluginBean extends Plugin {
         } catch (Exception e) {
     	    String err = "Unable to deserialize the configuration of the Route Transformer Plugin"
     	    		+": "+e.getClass().getName()+": "+e.getLocalizedMessage();
-    	    org.apache.log4j.Logger.getLogger(this.getClass()).error(err,e);
+    	    LogManager.getLogger(this.getClass()).error(err,e);
     	    throw new XtentisException(err);
 	    }
     }
@@ -356,7 +357,7 @@ public class RouteTransformerPluginBean extends Plugin {
 	    } catch (Exception e) {
     	    String err = "Unable to serialize the configuration of the Route Transformer Plugin"
     	    		+": "+e.getClass().getName()+": "+e.getLocalizedMessage();
-    	    org.apache.log4j.Logger.getLogger(this.getClass()).error(err,e);
+    	    LogManager.getLogger(this.getClass()).error(err,e);
     	    throw new XtentisException(err);
 	    }
 	}

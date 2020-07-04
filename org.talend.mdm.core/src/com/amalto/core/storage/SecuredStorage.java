@@ -15,7 +15,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
@@ -36,7 +37,7 @@ public class SecuredStorage implements Storage {
 
     private final UserDelegator delegator;
 
-    private static final Logger LOGGER = Logger.getLogger(SecuredStorage.class);
+    private static final Logger LOGGER = LogManager.getLogger(SecuredStorage.class);
 
     /**
      * Interface to handle user visibility rules.

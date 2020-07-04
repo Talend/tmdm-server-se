@@ -19,7 +19,8 @@ import java.util.LinkedHashMap;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.amalto.core.objects.ItemPOJO;
 import com.amalto.core.objects.ItemPOJOPK;
@@ -53,7 +54,7 @@ public class DefaultTransformer implements TransformerPluginCallBack, com.amalto
 
     public static final long serialVersionUID = 1986745965402456L;
 
-    public static final Logger LOGGER = Logger.getLogger(DefaultTransformer.class);
+    public static final Logger LOGGER = LogManager.getLogger(DefaultTransformer.class);
 
     protected final static SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd'T'HH:mm:ss-SSS z");
 
@@ -232,7 +233,7 @@ public class DefaultTransformer implements TransformerPluginCallBack, com.amalto
                 @Override
                 public void contentIsReady(TransformerContext globalContext) throws XtentisException {
                     long counter = ((TransformerGlobalContext) globalContext).getIterationNumber();
-                    org.apache.log4j.Logger.getLogger(this.getClass()).trace("contentIsReady() item " + counter); //$NON-NLS-1$
+                    LogManager.getLogger(this.getClass()).trace("contentIsReady() item " + counter); //$NON-NLS-1$
                     if (counter % 100 == 0) {
                         long time = System.currentTimeMillis() - ((TransformerGlobalContext) globalContext).getStartTime();
                         int processRate = (int) ((double) (counter * 1000) / (double) time);
@@ -250,7 +251,7 @@ public class DefaultTransformer implements TransformerPluginCallBack, com.amalto
 
                 @Override
                 public void done(TransformerContext globalContext) throws XtentisException {
-                    org.apache.log4j.Logger.getLogger(this.getClass()).trace("done() "); //$NON-NLS-1$
+                    LogManager.getLogger(this.getClass()).trace("done() "); //$NON-NLS-1$
                     long counter = ((TransformerGlobalContext) globalContext).getIterationNumber();
                     long time = System.currentTimeMillis() - ((TransformerGlobalContext) globalContext).getStartTime();
                     int processRate = (int) ((double) (counter * 1000) / (double) time);
@@ -267,7 +268,7 @@ public class DefaultTransformer implements TransformerPluginCallBack, com.amalto
                             pksAsLine += pk.getUniqueID();
                         }
                     }
-                    org.apache.log4j.Logger.getLogger(this.getClass()).debug("done() Projected PKs\n" + pksAsLine); //$NON-NLS-1$
+                    LogManager.getLogger(this.getClass()).debug("done() Projected PKs\n" + pksAsLine); //$NON-NLS-1$
 
                     try {
                         globalContext.putInPipeline("records saved in the database", new TypedContent( //$NON-NLS-1$

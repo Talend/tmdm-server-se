@@ -10,7 +10,8 @@
 
 package com.amalto.core.load.io;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,7 +26,7 @@ import java.io.InputStream;
  * </p>
  */
 public class XMLRootInputStream extends InputStream {
-    private static final Logger logger = Logger.getLogger(XMLRootInputStream.class);
+    private static final Logger logger = LogManager.getLogger(XMLRootInputStream.class);
     private final InputStream wrapped;
     private final char[] startXmlElement;
     private final char[] endXmlElement;

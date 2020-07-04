@@ -13,7 +13,8 @@ package com.amalto.core.servlet;
 
 import org.apache.cxf.common.classloader.ClassLoaderUtils;
 import org.apache.cxf.jaxrs.servlet.CXFNonSpringJaxrsServlet;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -23,7 +24,7 @@ public class CXFServlet extends CXFNonSpringJaxrsServlet {
 
     private static final String SERVICE_CLASSES_PARAM = "jaxrs.serviceClasses"; //$NON-NLS-1$
 
-    private static final Logger LOGGER = Logger.getLogger(CXFServlet.class);
+    private static final Logger LOGGER = LogManager.getLogger(CXFServlet.class);
 
     // Similar to CXFNonSpringJaxrsServlet but doesn't fail if a service class isn't available.
     @Override

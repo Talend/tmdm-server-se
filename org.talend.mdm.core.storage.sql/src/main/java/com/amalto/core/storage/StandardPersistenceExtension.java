@@ -21,7 +21,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.compare.Compare;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
 
@@ -39,7 +40,7 @@ import com.amalto.core.storage.prepare.StorageInitializer;
 
 public class StandardPersistenceExtension implements PersistenceExtension {
 
-    private static final Logger LOGGER = Logger.getLogger(StandardPersistenceExtension.class);
+    private static final Logger LOGGER = LogManager.getLogger(StandardPersistenceExtension.class);
 
     private static final String DATAMODEL_CONTAINER_NAME = "amaltoOBJECTSDataModel";//$NON-NLS-1$
 

@@ -36,7 +36,8 @@ import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.util.core.MDMXMLUtils;
 import org.w3c.dom.Attr;
@@ -55,7 +56,7 @@ import com.amalto.core.storage.datasource.RDBMSDataSourceBuilder;
 // Dynamically called! Do not remove!
 public class DefaultStorageClassLoader extends StorageClassLoader {
 
-    private static final Logger LOGGER = Logger.getLogger(DefaultStorageClassLoader.class);
+    private static final Logger LOGGER = LogManager.getLogger(DefaultStorageClassLoader.class);
 
     private static final XPath pathFactory = XPathFactory.newInstance().newXPath();
 

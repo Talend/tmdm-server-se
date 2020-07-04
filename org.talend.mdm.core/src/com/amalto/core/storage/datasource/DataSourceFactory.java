@@ -14,7 +14,8 @@ import com.amalto.core.server.api.DataSourceExtension;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.BeansException;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationContext;
@@ -40,7 +41,7 @@ public class DataSourceFactory implements ApplicationContextAware {
 
     public static final String DB_DATASOURCES = "db.datasources"; //$NON-NLS-1$
 
-    private static final Logger LOGGER = Logger.getLogger(DataSourceFactory.class);
+    private static final Logger LOGGER = LogManager.getLogger(DataSourceFactory.class);
 
     private static final XPath xPath = XPathFactory.newInstance().newXPath();
 

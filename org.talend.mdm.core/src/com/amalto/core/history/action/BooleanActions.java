@@ -12,11 +12,12 @@
 package com.amalto.core.history.action;
 
 import com.amalto.core.history.Action;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 public class BooleanActions {
 
-    private static final Logger LOGGER = Logger.getLogger(BooleanActions.class);
+    private static final Logger LOGGER = LogManager.getLogger(BooleanActions.class);
 
     public static Action preferTrue(FieldUpdateAction action) {
         String newValueAsString = action.getNewValue();

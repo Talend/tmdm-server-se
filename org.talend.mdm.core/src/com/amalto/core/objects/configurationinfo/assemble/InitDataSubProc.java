@@ -10,6 +10,7 @@
 package com.amalto.core.objects.configurationinfo.assemble;
 
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
+import org.apache.logging.log4j.LogManager;
 
 import com.amalto.core.initdb.InitDBUtil;
 
@@ -29,7 +30,7 @@ public class InitDataSubProc extends AssembleSubProc{
 	    	try {
 				InitDBUtil.initDB();
 			} catch (Exception e) {
-				org.apache.log4j.Logger.getLogger(this.getClass()).error("Init db error! ");
+				LogManager.getLogger(this.getClass()).error("Init db error! ");
 				e.printStackTrace();
 			}
 		}

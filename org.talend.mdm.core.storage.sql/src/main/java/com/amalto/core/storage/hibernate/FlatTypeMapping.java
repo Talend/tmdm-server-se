@@ -23,7 +23,8 @@ import java.util.Map;
 
 import com.amalto.core.storage.record.StorageConstants;
 import org.apache.commons.lang.NotImplementedException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.hibernate.Session;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedComplexTypeMetadata;
@@ -43,7 +44,7 @@ import com.amalto.core.util.ValidateException;
 
 class FlatTypeMapping extends TypeMapping {
 
-    private static final Logger LOGGER = Logger.getLogger(FlatTypeMapping.class);
+    private static final Logger LOGGER = LogManager.getLogger(FlatTypeMapping.class);
 
     private Map<String, FieldMetadata> userToDatabase = new HashMap<String, FieldMetadata>();
 

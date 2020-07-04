@@ -16,7 +16,8 @@ import java.util.*;
 
 import com.amalto.core.server.StorageAdmin;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
 import org.talend.mdm.commmon.util.webapp.XObjectType;
 import org.talend.mdm.commmon.util.webapp.XSystemObjects;
@@ -31,7 +32,7 @@ import com.amalto.xmlserver.interfaces.XmlServerException;
 
 public class DispatchWrapper implements IXmlServerSLWrapper {
 
-    private static final Logger LOGGER = Logger.getLogger(DispatchWrapper.class);
+    private static final Logger LOGGER = LogManager.getLogger(DispatchWrapper.class);
 
     private static IXmlServerSLWrapper mdmInternalWrapper;
 

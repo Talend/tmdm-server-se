@@ -34,7 +34,8 @@ import javax.xml.xpath.XPathFactory;
 
 import com.amalto.core.delegator.MockILocalUser;
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -93,7 +94,7 @@ public class DocumentSaveTest extends TestCase {
 
     public static final boolean USE_STORAGE_OPTIMIZATIONS = true;
 
-    private static final Logger LOG = Logger.getLogger(DocumentSaveTest.class);
+    private static final Logger LOG = LogManager.getLogger(DocumentSaveTest.class);
 
     private XPath xPath = XPathFactory.newInstance().newXPath();
 

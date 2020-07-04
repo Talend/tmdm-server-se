@@ -12,10 +12,11 @@
 package com.amalto.core.query.user;
 
 import com.amalto.core.query.user.metadata.*;
-import org.apache.log4j.Level;
-import org.apache.log4j.Priority;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.net.Priority;
 import org.talend.mdm.commmon.metadata.*;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.util.Date;
 import java.util.Iterator;
@@ -37,7 +38,7 @@ public class UserQueryDumpConsole implements Visitor<Void> {
     }
 
     public UserQueryDumpConsole(Logger logger, Level priority) {
-        printer = new LogPrinter(logger, priority);
+        printer = null;//new LogPrinter(logger, priority);
     }
 
     public UserQueryDumpConsole(DumpPrinter printer) {
@@ -774,7 +775,7 @@ public class UserQueryDumpConsole implements Visitor<Void> {
                 indentString.append('\t');
             }
             indentString.append(message);
-            logger.log(priority, indentString.toString());
+            //logger.log(priority, indentString.toString());
         }
 
         @Override

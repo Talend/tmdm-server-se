@@ -17,13 +17,14 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 public class User implements Cloneable {
 
-    private static final Logger LOG = Logger.getLogger(User.class);
+    private static final Logger LOG = LogManager.getLogger(User.class);
 
     String id;
 

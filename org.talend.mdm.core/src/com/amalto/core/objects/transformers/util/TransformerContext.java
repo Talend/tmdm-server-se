@@ -23,7 +23,8 @@ import java.util.TreeSet;
 
 import com.amalto.core.objects.ItemPOJOPK;
 import com.amalto.core.objects.transformers.TransformerV2POJOPK;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 public class TransformerContext implements Serializable {
 
@@ -39,7 +40,7 @@ public class TransformerContext implements Serializable {
 
     private final Object pipelineLock = new Object();
 
-    private final Logger LOGGER = Logger.getLogger(TransformerContext.class);
+    private final Logger LOGGER = LogManager.getLogger(TransformerContext.class);
 
 	/**
 	 * For serialization only

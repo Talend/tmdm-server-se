@@ -22,7 +22,8 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.springframework.stereotype.Service;
@@ -77,7 +78,7 @@ public class TISCallTransformerPluginBean extends Plugin {
 
     private static final String OUTPUT_TEXT = "result";
 
-    private static final Logger LOGGER = Logger.getLogger(TISCallTransformerPluginBean.class);
+    private static final Logger LOGGER = LogManager.getLogger(TISCallTransformerPluginBean.class);
 
     public static final String PLUGIN_NAME = "amalto/local/transformer/plugin/callJob";
 

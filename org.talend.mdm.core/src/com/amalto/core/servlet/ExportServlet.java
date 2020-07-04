@@ -13,7 +13,8 @@ package com.amalto.core.servlet;
 import com.amalto.core.util.Util;
 import com.amalto.core.util.XtentisException;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import com.amalto.core.server.api.XmlServer;
 
 import javax.servlet.ServletConfig;
@@ -32,7 +33,7 @@ public class ExportServlet extends HttpServlet {
 
     private static final String PARAMETER_END = "end";
 
-    private static final Logger LOGGER = Logger.getLogger(ExportServlet.class);
+    private static final Logger LOGGER = LogManager.getLogger(ExportServlet.class);
 
     private static final String PARAMETER_INCLUDE_METADATA = "includeMetadata";
 

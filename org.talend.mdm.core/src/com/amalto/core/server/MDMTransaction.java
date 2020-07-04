@@ -18,7 +18,8 @@ import java.util.Map;
 
 import com.amalto.core.storage.record.StorageConstants;
 import org.apache.commons.lang.NotImplementedException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.transaction.StorageTransaction;
@@ -28,7 +29,7 @@ import com.google.common.collect.Table;
 
 class MDMTransaction implements Transaction {
 
-    private static final Logger LOGGER = Logger.getLogger(MDMTransaction.class);
+    private static final Logger LOGGER = LogManager.getLogger(MDMTransaction.class);
 
     private final Table<Storage, Thread, StorageTransaction> storageTransactions = HashBasedTable.<Storage, Thread, StorageTransaction>create();
 

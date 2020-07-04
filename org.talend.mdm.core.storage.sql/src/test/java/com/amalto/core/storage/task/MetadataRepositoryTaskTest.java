@@ -15,7 +15,8 @@ import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.metadata.compare.Compare.DiffResults;
@@ -52,7 +53,7 @@ import junit.framework.TestCase;
 
 public class MetadataRepositoryTaskTest extends TestCase {
 
-    private static Logger LOG = Logger.getLogger(MetadataRepositoryTaskTest.class);
+    private static Logger LOG = LogManager.getLogger(MetadataRepositoryTaskTest.class);
 
     @Override
     public void tearDown() throws Exception {

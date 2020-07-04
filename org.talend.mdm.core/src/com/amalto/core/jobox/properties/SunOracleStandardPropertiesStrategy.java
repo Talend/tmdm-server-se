@@ -18,7 +18,8 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  * Implementation of {@link StandardPropertiesStrategy} for Sun/Oracle JVM (tested on 1.6)
@@ -31,7 +32,7 @@ class SunOracleStandardPropertiesStrategy implements StandardPropertiesStrategy 
 
     private static final String JAVA_CLASS_PATH = "java.class.path"; //$NON-NLS-1$
 
-    private static final Logger LOGGER = Logger.getLogger(SunOracleStandardPropertiesStrategy.class);
+    private static final Logger LOGGER = LogManager.getLogger(SunOracleStandardPropertiesStrategy.class);
 
     @Override
     public Properties getStandardProperties() {

@@ -13,7 +13,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.restlet.Context;
 import org.restlet.data.Form;
 import org.restlet.data.MediaType;
@@ -35,7 +36,7 @@ import com.amalto.core.util.XtentisException;
  */
 public class CustomTypesSetsResource extends BaseResource {
 
-    private static Logger log = Logger.getLogger(CustomTypesSetResource.class);
+    private static Logger log = LogManager.getLogger(CustomTypesSetResource.class);
 
     DomainObjectsDAO domainObjectsDAO = null;
 

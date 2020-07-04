@@ -10,7 +10,8 @@
 
 package com.amalto.core.save.context;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.amalto.core.history.Action;
 import com.amalto.core.history.MutableDocument;
@@ -19,7 +20,7 @@ import com.amalto.core.save.SaverSession;
 
 class ApplyActions implements DocumentSaver {
 
-    private static final Logger LOGGER = Logger.getLogger(ApplyActions.class);
+    private static final Logger LOGGER = LogManager.getLogger(ApplyActions.class);
 
     private final DocumentSaver next;
 

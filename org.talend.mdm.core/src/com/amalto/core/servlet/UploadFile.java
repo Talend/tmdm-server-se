@@ -26,7 +26,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.amalto.core.jobox.JobContainer;
 import com.amalto.core.util.Util;
@@ -35,7 +36,7 @@ public class UploadFile extends HttpServlet {
 
     private static final long serialVersionUID = 1254957429740848823L;
 
-    private static final Logger LOG = Logger.getLogger(UploadFile.class);
+    private static final Logger LOG = LogManager.getLogger(UploadFile.class);
 
     private static final String PARAMETER_CONTEXT = "contextStr"; //$NON-NLS-1$
 

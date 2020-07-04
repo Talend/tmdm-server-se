@@ -11,7 +11,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.junit.AfterClass;
@@ -36,7 +37,7 @@ import liquibase.change.core.DropNotNullConstraintChange;
 
 public class LiquibaseSchemaAdapterTest {
 
-    private static final Logger LOGGER = Logger.getLogger(StorageAdaptTest.class);
+    private static final Logger LOGGER = LogManager.getLogger(StorageAdaptTest.class);
 
     private static LiquibaseSchemaAdapter adapter;
 

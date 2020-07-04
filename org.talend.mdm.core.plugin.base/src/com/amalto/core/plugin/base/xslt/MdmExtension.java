@@ -9,7 +9,8 @@
  */
 package com.amalto.core.plugin.base.xslt;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.amalto.core.objects.ItemPOJO;
 import com.amalto.core.objects.ItemPOJOPK;
@@ -19,7 +20,7 @@ import com.amalto.core.server.api.Item;
 
 public class MdmExtension {
 
-    private static final Logger LOG = Logger.getLogger(MdmExtension.class);
+    private static final Logger LOG = LogManager.getLogger(MdmExtension.class);
 
     //Signature kept for backward compatibility
     public static String getItemProjection(String unusedParameterForCompatibility, String clusterName, String conceptName,

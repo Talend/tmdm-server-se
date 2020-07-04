@@ -12,7 +12,8 @@ package com.amalto.core.server;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.amalto.core.objects.ObjectPOJO;
 import com.amalto.core.objects.ObjectPOJOPK;
@@ -32,7 +33,7 @@ import com.amalto.xmlserver.interfaces.WhereCondition;
 
 public class DefaultRoutingOrder implements RoutingOrder {
 
-    private final static Logger LOGGER = Logger.getLogger(DefaultRoutingOrder.class);
+    private final static Logger LOGGER = LogManager.getLogger(DefaultRoutingOrder.class);
 
     /**
      * Executes a Routing Order in default DELAY milliseconds

@@ -18,7 +18,8 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.util.webapp.XSystemObjects;
 
 public class RDBMSDataSource implements DataSource {
@@ -73,7 +74,7 @@ public class RDBMSDataSource implements DataSource {
         UPDATE
     }
 
-    private static final Logger LOGGER = Logger.getLogger(RDBMSDataSource.class);
+    private static final Logger LOGGER = LogManager.getLogger(RDBMSDataSource.class);
 
     private static final String CONTAINER_PLACEHOLDER = "${container}"; //$NON-NLS-1$
 

@@ -41,7 +41,8 @@ import javax.xml.parsers.DocumentBuilder;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.util.core.MDMXMLUtils;
@@ -84,7 +85,7 @@ import junit.framework.TestCase;
 @SuppressWarnings("nls")
 public class SystemStorageTest extends TestCase {
 
-    private static Logger LOG = Logger.getLogger(StorageTestCase.class);
+    private static Logger LOG = LogManager.getLogger(StorageTestCase.class);
 
     private static boolean beanDelegatorContainerFlag = false;
 

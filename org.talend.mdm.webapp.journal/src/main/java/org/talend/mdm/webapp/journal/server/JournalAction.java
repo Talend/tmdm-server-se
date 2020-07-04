@@ -19,7 +19,8 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.util.core.ICoreConstants;
 import org.talend.mdm.commmon.util.webapp.XObjectType;
 import org.talend.mdm.commmon.util.webapp.XSystemObjects;
@@ -61,7 +62,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 @SuppressWarnings("serial")
 public class JournalAction extends RemoteServiceServlet implements JournalService {
 
-    private static final Logger LOG = Logger.getLogger(JournalAction.class);
+    private static final Logger LOG = LogManager.getLogger(JournalAction.class);
 
     protected JournalDBService service;
 

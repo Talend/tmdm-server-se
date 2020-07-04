@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.regex.Pattern;
-
+import org.apache.logging.log4j.LogManager;
 
 
 /**
@@ -248,7 +248,7 @@ public class XPathTransformerPluginBean extends Plugin {
 		} catch (Exception e) {
 			String err = "Could not init the xPath plugin:"+
 				e.getClass().getName()+": "+e.getLocalizedMessage();
-			org.apache.log4j.Logger.getLogger(this.getClass()).error(err);
+			LogManager.getLogger(this.getClass()).error(err);
 			throw new XtentisException(e);
 		}
 
@@ -268,7 +268,7 @@ public class XPathTransformerPluginBean extends Plugin {
      */
 	public void execute(TransformerPluginContext context) throws XtentisException {
 
-		org.apache.log4j.Logger.getLogger(this.getClass()).debug("execute() ");
+		LogManager.getLogger(this.getClass()).debug("execute() ");
 		CompiledParameters parameters= (CompiledParameters)context.get( PARAMETERS);
 		TypedContent xmlTC = (TypedContent)context.get(INPUT_XML);
 
@@ -291,7 +291,7 @@ public class XPathTransformerPluginBean extends Plugin {
 				} else {
 					String err = "xPath Plugin: Could not parse the result of the xPath with content type "+parameters.getResultingContentType()
 										+"\n The xpath is "+parameters.getXPath()+".The xml is\n"+xml;
-					org.apache.log4j.Logger.getLogger(this.getClass()).error(err);
+					LogManager.getLogger(this.getClass()).error(err);
 					throw new XtentisException(err);
 				}
 				TypedContent tc = new TypedContent(res.getBytes("UTF-8"),parameters.getResultingContentType()+";charset=utf-8");
@@ -300,14 +300,14 @@ public class XPathTransformerPluginBean extends Plugin {
 				//call the callback content is ready
 				context.getPluginCallBack().contentIsReady(context);
 			}
-			org.apache.log4j.Logger.getLogger(this.getClass()).debug("execute() XPath done");
+			LogManager.getLogger(this.getClass()).debug("execute() XPath done");
 		} catch (XtentisException xe) {
 			throw (xe);
 		} catch (Exception e) {
 			e.printStackTrace();
 			String err = "Could not execute the xPath transformer plugin "+
 				e.getClass().getName()+": "+e.getLocalizedMessage();
-			org.apache.log4j.Logger.getLogger(this.getClass()).error(err);
+			LogManager.getLogger(this.getClass()).error(err);
 			throw new XtentisException(e);
 		}
 	}
@@ -383,7 +383,7 @@ public class XPathTransformerPluginBean extends Plugin {
         } catch (Exception e) {
     	    String err = "Unable to deserialize the configuration of the XPath Transformer Plugin"
     	    		+": "+e.getClass().getName()+": "+e.getLocalizedMessage();
-    	    org.apache.log4j.Logger.getLogger(this.getClass()).error(err);
+    	    LogManager.getLogger(this.getClass()).error(err);
     	    throw new XtentisException(err);
 	    }
     }
@@ -422,7 +422,7 @@ public class XPathTransformerPluginBean extends Plugin {
 			String xPath = Util.getFirstTextNode(params, "xPath");
 			if (xPath==null) {
 				String err = "The xPath Parameter of the xPath Transformer Plugin cannot be empty";
-				org.apache.log4j.Logger.getLogger(this.getClass()).error(err);
+				LogManager.getLogger(this.getClass()).error(err);
 				throw new XtentisException(err);
 			}
     		compiled.setXPath(xPath);
@@ -433,7 +433,7 @@ public class XPathTransformerPluginBean extends Plugin {
 	    } catch (Exception e) {
     	    String err = "Unable to serialize the configuration of the xPath Transformer Plugin"
     	    		+": "+e.getClass().getName()+": "+e.getLocalizedMessage();
-    	    org.apache.log4j.Logger.getLogger(this.getClass()).error(err);
+    	    LogManager.getLogger(this.getClass()).error(err);
     	    throw new XtentisException(err);
 	    }
 	}

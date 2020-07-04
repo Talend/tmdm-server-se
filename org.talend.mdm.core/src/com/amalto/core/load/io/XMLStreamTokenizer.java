@@ -17,7 +17,8 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.util.Enumeration;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  * <p>
@@ -47,7 +48,7 @@ import org.apache.log4j.Logger;
  */
 public class XMLStreamTokenizer implements Enumeration<String> {
 
-    private static final Logger LOG = Logger.getLogger(XMLStreamTokenizer.class);
+    private static final Logger LOG = LogManager.getLogger(XMLStreamTokenizer.class);
 
     private final ResettableStringWriter stringWriter = new ResettableStringWriter();
 

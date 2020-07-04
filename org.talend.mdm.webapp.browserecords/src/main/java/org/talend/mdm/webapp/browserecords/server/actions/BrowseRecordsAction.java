@@ -31,7 +31,8 @@ import javax.xml.parsers.DocumentBuilder;
 
 import com.amalto.core.util.XtentisException;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.dom4j.DocumentHelper;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
@@ -181,7 +182,7 @@ import net.sf.json.JSONObject;
 @SuppressWarnings("nls")
 public class BrowseRecordsAction implements BrowseRecordsService {
 
-    private static final Logger LOG = Logger.getLogger(BrowseRecordsAction.class);
+    private static final Logger LOG = LogManager.getLogger(BrowseRecordsAction.class);
 
     private final Messages BASEMESSAGE = MessagesFactory.getMessages(
             "org.talend.mdm.webapp.base.client.i18n.BaseMessages", this.getClass().getClassLoader()); //$NON-NLS-1$

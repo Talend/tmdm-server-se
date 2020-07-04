@@ -15,7 +15,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.datasource.DataSource;
@@ -23,7 +24,7 @@ import com.amalto.core.storage.datasource.RDBMSDataSource;
 
 class OracleStorageInitializer implements StorageInitializer {
 
-    private static final Logger LOGGER = Logger.getLogger(OracleStorageInitializer.class);
+    private static final Logger LOGGER = LogManager.getLogger(OracleStorageInitializer.class);
 
     @Override
     public boolean supportInitialization(Storage storage) {

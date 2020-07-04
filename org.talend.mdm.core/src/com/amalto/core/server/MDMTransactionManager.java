@@ -22,14 +22,15 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.amalto.core.storage.transaction.Transaction;
 import com.amalto.core.storage.transaction.TransactionManager;
 
 public class MDMTransactionManager implements TransactionManager {
 
-    private static final Logger LOGGER = Logger.getLogger(MDMTransactionManager.class);
+    private static final Logger LOGGER = LogManager.getLogger(MDMTransactionManager.class);
 
     private static final Map<Thread, Stack<Transaction>> currentTransactions = new HashMap<Thread, Stack<Transaction>>();
 

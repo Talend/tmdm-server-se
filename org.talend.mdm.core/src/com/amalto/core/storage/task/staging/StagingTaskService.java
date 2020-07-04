@@ -30,7 +30,8 @@ import javax.ws.rs.core.MediaType;
 import javax.xml.parsers.DocumentBuilder;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.http.HttpStatus;
 import org.talend.mdm.commmon.util.core.MDMXMLUtils;
 import org.w3c.dom.Document;
@@ -49,7 +50,7 @@ import io.swagger.annotations.ApiParam;
 @Api(value = "Staging area management")
 public class StagingTaskService {
 
-    private static final Logger LOGGER = Logger.getLogger(StagingTaskService.class);
+    private static final Logger LOGGER = LogManager.getLogger(StagingTaskService.class);
 
     public static final String TASKS = "/tasks/staging"; //$NON-NLS-1$
 

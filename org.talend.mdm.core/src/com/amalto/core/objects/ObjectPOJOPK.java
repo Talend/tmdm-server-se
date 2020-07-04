@@ -11,11 +11,17 @@ package com.amalto.core.objects;
 
 import java.io.Serializable;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.talend.mdm.commmon.util.core.MDMConfiguration;
+
 import com.amalto.core.util.Util;
 
 public class ObjectPOJOPK implements Serializable {
 
     private static final long serialVersionUID = 8946570431961920706L;
+
+    private static final Logger LOGGER = LogManager.getLogger(ObjectPOJOPK.class);
 
     String[] ids = null;
 

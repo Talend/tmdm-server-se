@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import org.apache.logging.log4j.LogManager;
 
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
 
@@ -51,7 +52,7 @@ public class RoutingEngineV2POJO extends ObjectPOJO{
     		} catch (NumberFormatException e) {
     			String err="ERROR SYSTRACE. Routing Engine: value of number of routing.engine.executors '"+executors+"' incorrect in configuration"+
     							(e.getMessage()!=null ? ": "+e.getMessage() : "")+". Defaulting to "+_NUMBER_OF_EXECUTORS_;
-    			org.apache.log4j.Logger.getLogger(RoutingEngineV2POJO.class).info(err,e);
+    			LogManager.getLogger(RoutingEngineV2POJO.class).info(err,e);
     		}
 		}
 		//Max Execution time
@@ -62,7 +63,7 @@ public class RoutingEngineV2POJO extends ObjectPOJO{
     		} catch (NumberFormatException e) {
     			String err="ERROR SYSTRACE. Routing Engine: value of routing.engine.max.execution.time.millis '"+executionTime+"' incorrect in configuration"+
     							(e.getMessage()!=null ? ": "+e.getMessage() : "")+". Defaulting to "+_MAX_EXECUTION_TIME_MILLIS_+" milliseconds";
-    			org.apache.log4j.Logger.getLogger(RoutingEngineV2POJO.class).info(err,e);
+    			LogManager.getLogger(RoutingEngineV2POJO.class).info(err,e);
     		}
 		}
 		//Run Period
@@ -73,7 +74,7 @@ public class RoutingEngineV2POJO extends ObjectPOJO{
     		} catch (NumberFormatException e) {
     			String err="ERROR SYSTRACE. Routing Engine: value of number of routing.engine.run.period.millis '"+runPeriod+"' incorrect in configuration"+
     							(e.getMessage()!=null ? ": "+e.getMessage() : "")+". Defaulting to "+_MAX_EXECUTION_TIME_MILLIS_+" milliseconds";
-    			org.apache.log4j.Logger.getLogger(RoutingEngineV2POJO.class).info(err,e);
+    			LogManager.getLogger(RoutingEngineV2POJO.class).info(err,e);
     		}
 		}
 

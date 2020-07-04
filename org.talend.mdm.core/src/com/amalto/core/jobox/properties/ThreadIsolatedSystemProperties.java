@@ -10,7 +10,8 @@
 
 package com.amalto.core.jobox.properties;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.io.*;
 import java.util.*;
@@ -31,7 +32,7 @@ public class ThreadIsolatedSystemProperties extends Properties {
 
     private static final Map<ClassLoader, Properties> threadProperties = new HashMap<ClassLoader, Properties>();
 
-    private static final Logger LOGGER = Logger.getLogger(ThreadIsolatedSystemProperties.class);
+    private static final Logger LOGGER = LogManager.getLogger(ThreadIsolatedSystemProperties.class);
 
     private static ThreadIsolatedSystemProperties instance;
 

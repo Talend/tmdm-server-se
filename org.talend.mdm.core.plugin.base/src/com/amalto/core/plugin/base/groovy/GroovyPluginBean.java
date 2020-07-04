@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.regex.Pattern;
+import org.apache.logging.log4j.LogManager;
 /**
  *
  * @author Starkey Shu
@@ -247,7 +248,7 @@ public class GroovyPluginBean extends Plugin {
 			String script = Util.getFirstTextNode(params, "//script");
 			if (script==null) {
 				String err = "The method parameter of the Groovy Transformer Plugin cannot be empty";
-				org.apache.log4j.Logger.getLogger(this.getClass()).error(err);
+				LogManager.getLogger(this.getClass()).error(err);
 				throw new XtentisException(err);
 			}
     		compiled.setScript(script);
@@ -258,7 +259,7 @@ public class GroovyPluginBean extends Plugin {
 			if (autoParseXml!=null&&autoParseXml.length()>0) {
 				if(!autoParseXml.trim().toLowerCase().matches(booleanRegex)){
 					String err = "The format of the autoParseXml parameter of the Groovy Transformer Plugin is unavailable";
-					org.apache.log4j.Logger.getLogger(this.getClass()).error(err);
+					LogManager.getLogger(this.getClass()).error(err);
 					throw new XtentisException(err);
 				}
 				isAutoParseXml=Boolean.parseBoolean(autoParseXml.trim());
@@ -272,7 +273,7 @@ public class GroovyPluginBean extends Plugin {
 	    } catch (Exception e) {
     	    String err = "Unable to serialize the configuration of the groovy Plugin"
     	    		+": "+e.getClass().getName()+": "+e.getLocalizedMessage();
-    	    org.apache.log4j.Logger.getLogger(this.getClass()).error(err,e);
+    	    LogManager.getLogger(this.getClass()).error(err,e);
     	    throw new XtentisException(err);
 	    }
 	}
@@ -297,7 +298,7 @@ public class GroovyPluginBean extends Plugin {
 		}  catch (Exception e) {
 			String err = "Could not init the groovy plugin:"+
 				e.getClass().getName()+": "+e.getLocalizedMessage();
-			org.apache.log4j.Logger.getLogger(this.getClass()).error(err,e);
+			LogManager.getLogger(this.getClass()).error(err,e);
 			throw new XtentisException(e);
 		}
 
@@ -316,7 +317,7 @@ public class GroovyPluginBean extends Plugin {
      */
 	public void execute(TransformerPluginContext context)
 			throws XtentisException {
-		org.apache.log4j.Logger.getLogger(this.getClass()).trace("execute() groovy");
+		LogManager.getLogger(this.getClass()).trace("execute() groovy");
 
 		CompiledParameters parameters= (CompiledParameters)context.get(PARAMETERS);
 		TypedContent textTC = (TypedContent)context.get(VARIABLE_INPUT);
@@ -350,11 +351,11 @@ public class GroovyPluginBean extends Plugin {
 		} catch (Exception e) {
 			String err = "Could not execute the groovy plugin "+
 				e.getClass().getName()+": "+e.getLocalizedMessage();
-			org.apache.log4j.Logger.getLogger(this.getClass()).error(err,e);
+			LogManager.getLogger(this.getClass()).error(err,e);
 			throw new XtentisException(e);
 		}
 
-		org.apache.log4j.Logger.getLogger(this.getClass()).trace("execute() groovy done");
+		LogManager.getLogger(this.getClass()).trace("execute() groovy done");
 
 	}
 

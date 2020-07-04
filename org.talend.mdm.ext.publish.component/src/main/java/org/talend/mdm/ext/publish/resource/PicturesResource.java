@@ -12,7 +12,8 @@ package org.talend.mdm.ext.publish.resource;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.restlet.Context;
 import org.restlet.data.MediaType;
 import org.restlet.data.Request;
@@ -33,7 +34,7 @@ import talend.ext.images.server.util.ImagePathUtil;
  */
 public class PicturesResource extends BaseResource {
 
-    private static final Logger LOGGER = Logger.getLogger(PicturesResource.class);
+    private static final Logger LOGGER = LogManager.getLogger(PicturesResource.class);
 
     private static final String picturesLocation = ImageServerInfo.getInstance().getUploadPath();
 

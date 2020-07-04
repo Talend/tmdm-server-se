@@ -13,7 +13,8 @@ import com.amalto.core.objects.ItemPOJOPK;
 import com.amalto.core.objects.Service;
 import com.amalto.core.util.Util;
 import com.amalto.core.util.XtentisException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.io.ByteArrayInputStream;
 import java.io.ObjectInputStream;
@@ -23,7 +24,7 @@ import java.util.HashMap;
 @org.springframework.stereotype.Service("amalto/local/service/dumptoconsole")
 public class DumpToConsoleBean extends Service {
 
-    private static final Logger LOGGER = Logger.getLogger(DumpToConsoleBean.class);
+    private static final Logger LOGGER = LogManager.getLogger(DumpToConsoleBean.class);
 
     public String getConfiguration(String optionalParameters) {
         return "";

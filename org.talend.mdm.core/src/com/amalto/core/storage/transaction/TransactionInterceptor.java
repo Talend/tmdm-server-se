@@ -20,14 +20,15 @@ import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.phase.AbstractPhaseInterceptor;
 import org.apache.cxf.service.model.MessageInfo;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.w3c.dom.Element;
 
 import com.amalto.core.schema.validation.SkipAttributeDocumentBuilder;
 
 public abstract class TransactionInterceptor extends AbstractPhaseInterceptor<Message> {
 
-    private static final Logger LOGGER = Logger.getLogger(TransactionInterceptor.class);
+    private static final Logger LOGGER = LogManager.getLogger(TransactionInterceptor.class);
 
     private static final String TRANSACTION_ID = "transaction-id"; //$NON-NLS-1$
 

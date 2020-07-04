@@ -19,8 +19,9 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.hibernate.HibernateException;
 import org.hibernate.ObjectNotFoundException;
 import org.hibernate.Session;
@@ -40,7 +41,7 @@ import com.amalto.core.storage.transaction.StorageTransaction;
 
 class HibernateStorageTransaction extends StorageTransaction {
 
-    private static final Logger LOGGER = Logger.getLogger(HibernateStorageTransaction.class);
+    private static final Logger LOGGER = LogManager.getLogger(HibernateStorageTransaction.class);
 
     private static final int TRANSACTION_DUMP_MAX = 10;
 
@@ -208,7 +209,7 @@ class HibernateStorageTransaction extends StorageTransaction {
      */
     private static void dumpTransactionContent(Session session, HibernateStorage storage) {
         Level currentLevel = Level.INFO;
-        if (LOGGER.isEnabledFor(currentLevel)) {
+        if (LOGGER.isEnabled(currentLevel)) {
             Set<EntityKey> failedKeys = new HashSet<>(session.getStatistics().getEntityKeys()); // Copy content to avoid concurrent modification issues.
             int i = 1;
             ObjectDataRecordReader reader = new ObjectDataRecordReader();

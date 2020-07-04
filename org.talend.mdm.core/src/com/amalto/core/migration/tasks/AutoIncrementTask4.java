@@ -12,7 +12,8 @@ package com.amalto.core.migration.tasks;
 import java.io.ByteArrayInputStream;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.util.webapp.XSystemObjects;
 
 import com.amalto.core.objects.ItemPOJO;
@@ -60,7 +61,7 @@ public class AutoIncrementTask4 extends AbstractMigrationTask {
             //delete the original file
             Util.getXmlServerCtrlLocal().deleteDocument(XSystemObjects.DC_CONF.getName(), "Auto_Increment"); //$NON-NLS-1$
         } catch (Exception e) {
-            Logger.getLogger(AutoIncrementTask4.class).error("Autoincrement exception.", e);
+            LogManager.getLogger(AutoIncrementTask4.class).error("Autoincrement exception.", e);
         }
         return true;
     }

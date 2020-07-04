@@ -14,7 +14,8 @@ import com.amalto.core.objects.ObjectPOJOPK;
 import com.amalto.core.objects.menu.MenuPOJO;
 import com.amalto.core.objects.menu.MenuPOJOPK;
 import com.amalto.core.util.XtentisException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import com.amalto.core.server.api.Menu;
 
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ import java.util.Collection;
 
 public class DefaultMenu implements Menu {
 
-    private static final Logger LOGGER = Logger.getLogger(DefaultMenu.class);
+    private static final Logger LOGGER = LogManager.getLogger(DefaultMenu.class);
 
     @Override
     public MenuPOJOPK putMenu(MenuPOJO menu) throws XtentisException {

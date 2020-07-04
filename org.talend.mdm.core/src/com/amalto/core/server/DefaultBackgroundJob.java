@@ -14,7 +14,8 @@ import com.amalto.core.objects.ObjectPOJOPK;
 import com.amalto.core.objects.backgroundjob.BackgroundJobPOJO;
 import com.amalto.core.objects.backgroundjob.BackgroundJobPOJOPK;
 import com.amalto.core.util.XtentisException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import com.amalto.core.server.api.BackgroundJob;
 
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ import java.util.Collection;
 
 public class DefaultBackgroundJob implements BackgroundJob {
 
-    private static final Logger LOGGER = Logger.getLogger(DefaultBackgroundJob.class);
+    private static final Logger LOGGER = LogManager.getLogger(DefaultBackgroundJob.class);
 
     /**
      * Creates or updates a BackgroundJob

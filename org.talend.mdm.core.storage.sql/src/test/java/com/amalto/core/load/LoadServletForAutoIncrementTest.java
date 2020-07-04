@@ -24,7 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -54,7 +55,7 @@ import com.amalto.core.util.XSDKey;
 @SuppressWarnings("nls")
 public class LoadServletForAutoIncrementTest {
 
-    private static final Logger LOG = Logger.getLogger(LoadServletForAutoIncrementTest.class);
+    private static final Logger LOG = LogManager.getLogger(LoadServletForAutoIncrementTest.class);
 
     private static boolean BEAN_DELEGATOR_CONTAINER_FLAG = false;
 

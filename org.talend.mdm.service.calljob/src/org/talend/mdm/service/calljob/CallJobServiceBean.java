@@ -16,7 +16,8 @@ import java.util.*;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.w3c.dom.Element;
@@ -42,7 +43,7 @@ public class CallJobServiceBean extends Service {
 
     private static final String LTJ_PROTOCOL = "ltj";
 
-    private static final Logger LOGGER = Logger.getLogger(CallJobServiceBean.class);
+    private static final Logger LOGGER = LogManager.getLogger(CallJobServiceBean.class);
 
     private static String createExchangeXML(ItemPOJOPK itemPK) throws XtentisException {
         // get item string from itempojopk

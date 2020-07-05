@@ -485,7 +485,7 @@ public class XPathUtils {
 
 
 	public static void main(String[] args) {
-	    BasicConfigurator.configure();
+	    //BasicConfigurator.configure();
 		LogManager.getLogger("com.amalto.commons.core.utils.XPathUtils");
 		testDump();
 		System.out.println("\n\n\n");

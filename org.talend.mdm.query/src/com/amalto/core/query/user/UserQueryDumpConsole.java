@@ -13,7 +13,6 @@ package com.amalto.core.query.user;
 
 import com.amalto.core.query.user.metadata.*;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.net.Priority;
 import org.talend.mdm.commmon.metadata.*;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -37,8 +36,8 @@ public class UserQueryDumpConsole implements Visitor<Void> {
         this(logger, Level.DEBUG);
     }
 
-    public UserQueryDumpConsole(Logger logger, Level priority) {
-        printer = null;//new LogPrinter(logger, priority);
+    public UserQueryDumpConsole(Logger logger, Level level) {
+        printer = new LogPrinter(logger, level);
     }
 
     public UserQueryDumpConsole(DumpPrinter printer) {
@@ -754,13 +753,13 @@ public class UserQueryDumpConsole implements Visitor<Void> {
 
         private final Logger logger;
 
-        private final Priority priority;
+        private final Level level;
 
         private int indent;
 
-        LogPrinter(Logger logger, Priority priority) {
+        LogPrinter(Logger logger, Level level) {
             this.logger = logger;
-            this.priority = priority;
+            this.level = level;
         }
 
         @Override
@@ -775,7 +774,7 @@ public class UserQueryDumpConsole implements Visitor<Void> {
                 indentString.append('\t');
             }
             indentString.append(message);
-            //logger.log(priority, indentString.toString());
+            logger.log(level, indentString.toString());
         }
 
         @Override

@@ -22,6 +22,9 @@
 
         <RollingFile name="rolling-file" fileName="/tmp/hibernate.log" filePattern="../../mdm.log.%d{yyyy-MM-dd}" append="false">
             <PatternLayout pattern="%d [%t] %-5p %l - %m%n" />
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+            </Policies>
         </RollingFile>
     </Appenders>
 

@@ -10,17 +10,23 @@
             <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY" />
         </Console>
 
-        <RollingFile name="FILE" fileName="../../logs/mdm.log" filePattern="../../mdm.log.%d{yyyy-MM-dd}" append="true">
+        <RollingFile name="FILE" fileName="${sys:mdm.root}/logs/mdm.log" filePattern="${sys:mdm.root}/mdm.log.%d{yyyy-MM-dd}" append="true">
             <PatternLayout pattern="%d %-5p [%c] %m%n" />
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+            </Policies>
         </RollingFile>
 
-        <RollingFile name="MATCH_LOG_FILE" fileName="../../logs/mdm-match.log" filePattern="../../mdm.log.%d{yyyy-MM-dd}" append="false">
+        <RollingFile name="MATCH_LOG_FILE" fileName="${sys:mdm.root}/logs/mdm-match.log" filePattern="${sys:mdm.root}/mdm.log.%d{yyyy-MM-dd}" append="false">
             <PatternLayout pattern="%d %-5p %m%n" />
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+            </Policies>
         </RollingFile>
     </Appenders>
 
     <!-- ================ -->
-    <!--    Loggers    -->
+    <!--    Loggers       -->
     <!-- ================ -->
     <Loggers>
         <Logger name="org.talend" level="INFO"/>
@@ -48,10 +54,11 @@
         <Logger name="com.mchange.v2.c3p0.stmt.GooGooStatementCache" level="WARN"/>
 
         <!-- Limit hibernate to WARN as its INFO is verbose -->
-        <Logger name="org.hibernate" level="WARN"/>
+        <Logger name="org.hibernate" level="warn"/>
 
-        <!-- Track Transactions creation stacktrace. To be removed later -->
+        <!-- Track Transactions creation stacktrace. To be removed later 
         <Logger name="com.amalto.core.server.MDMTransaction" level="DEBUG"/>
+        -->
 
         <Root level="INFO">
             <AppenderRef ref="CONSOLE"/>

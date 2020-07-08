@@ -21,6 +21,7 @@ import junit.framework.TestSuite;
 
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit3.PowerMockSuite;
 import org.talend.mdm.webapp.general.model.GroupItem;
@@ -35,6 +36,7 @@ import com.amalto.commons.core.utils.XMLUtils;
 
 @PrepareForTest({ Utils.class, GeneralAction.class })
 @SuppressWarnings("nls")
+@PowerMockIgnore({"org.apache.logging.log4j.*"})
 public class UtilsTest extends TestCase {
 
     @SuppressWarnings("unchecked")

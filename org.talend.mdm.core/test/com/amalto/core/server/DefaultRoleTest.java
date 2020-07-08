@@ -14,6 +14,7 @@ import java.util.Collection;
 
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
@@ -29,6 +30,7 @@ import junit.framework.TestCase;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ com.amalto.core.objects.ObjectPOJO.class })
+@PowerMockIgnore({"org.apache.logging.log4j.*"})
 public class DefaultRoleTest extends TestCase {
 
     static {

@@ -15,6 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.modules.junit3.PowerMockSuite;
 import org.talend.mdm.webapp.base.shared.EntityModel;
 import org.talend.mdm.webapp.browserecordsinstaging.server.service.UploadService4Staging;
@@ -23,6 +24,7 @@ import com.amalto.core.webservice.WSPutItemWithReport;
 
 import junit.framework.TestSuite;
 
+@PowerMockIgnore({"javax.management.*", "javax.xml.parsers.*", "org.xml.sax.*", "org.w3c.dom.*"})
 public class UploadService4StagingTest extends UploadServiceTest {
 
     @SuppressWarnings("unchecked")

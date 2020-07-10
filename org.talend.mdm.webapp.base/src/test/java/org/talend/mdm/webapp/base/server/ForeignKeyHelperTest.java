@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit3.PowerMockSuite;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
@@ -46,6 +47,7 @@ import junit.framework.TestSuite;
 
 @PrepareForTest({ ForeignKeyHelper.class, org.talend.mdm.webapp.base.server.util.CommonUtil.class })
 @SuppressWarnings("nls")
+@PowerMockIgnore({"javax.management.*", "javax.xml.parsers.*", "org.xml.sax.*", "org.w3c.dom.*"})
 public class ForeignKeyHelperTest extends TestCase {
 
     private MetadataRepository repository;

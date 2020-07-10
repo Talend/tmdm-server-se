@@ -31,6 +31,7 @@ import java.util.Set;
 
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit3.PowerMockSuite;
 import org.powermock.reflect.Whitebox;
@@ -115,6 +116,7 @@ import junit.framework.TestSuite;
         com.amalto.webapp.core.util.Util.class, LocalUser.class, ILocalUser.class, BeanDelegatorContainer.class,
         BrowseRecordsAction.class, Configuration.class })
 @SuppressWarnings("nls")
+@PowerMockIgnore({"javax.management.*", "javax.xml.parsers.*", "org.xml.sax.*", "org.w3c.dom.*"})
 public class BrowseRecordsActionTest extends TestCase {
 
     static {

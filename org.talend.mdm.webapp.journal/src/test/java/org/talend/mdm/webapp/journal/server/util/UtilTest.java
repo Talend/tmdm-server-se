@@ -19,6 +19,7 @@ import junit.framework.TestSuite;
 
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit3.PowerMockSuite;
 import org.talend.mdm.webapp.base.server.util.Constants;
@@ -47,6 +48,7 @@ import static org.mockito.Mockito.when;
  */
 @PrepareForTest({ XtentisPort.class, WSDataModelPKArray.class, WSRegexDataModelPKs.class, com.amalto.webapp.core.util.Util.class })
 @SuppressWarnings("nls")
+@PowerMockIgnore({"javax.management.*", "javax.xml.parsers.*", "org.xml.sax.*", "org.w3c.dom.*"})
 public class UtilTest extends TestCase {
 
     private JournalSearchCriteria criteria;

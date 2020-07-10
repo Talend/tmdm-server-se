@@ -29,6 +29,7 @@ import org.apache.logging.log4j.LogManager;
 import org.dom4j.Node;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit3.PowerMockSuite;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
@@ -56,6 +57,7 @@ import com.google.gwt.user.client.rpc.core.java.util.Collections;
 
 @PrepareForTest({ Util.class })
 @SuppressWarnings("nls")
+@PowerMockIgnore({"javax.management.*", "javax.xml.parsers.*", "org.xml.sax.*", "org.w3c.dom.*"})
 public class CommonUtilTest extends TestCase {
 
     static {

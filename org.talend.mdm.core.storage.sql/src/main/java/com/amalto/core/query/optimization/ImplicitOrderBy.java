@@ -22,11 +22,11 @@ import java.util.Set;
 
 public class ImplicitOrderBy implements Optimizer {
 
-    private static final Logger               LOGGER                  = LogManager.getLogger(ImplicitOrderBy.class);
+    private static final Logger LOGGER = LogManager.getLogger(ImplicitOrderBy.class);
 
     private static final AllowImplicitOrderBy ALLOW_IMPLICIT_ORDER_BY = new AllowImplicitOrderBy();
 
-    private final RDBMSDataSource             dataSource;
+    private final RDBMSDataSource dataSource;
 
     public ImplicitOrderBy(RDBMSDataSource dataSource) {
         this.dataSource = dataSource;

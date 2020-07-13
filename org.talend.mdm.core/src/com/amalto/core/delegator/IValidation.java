@@ -30,7 +30,7 @@ import com.amalto.core.util.Util;
 
 public class IValidation {
 
-    private static final Logger LOGGER        = LogManager.getLogger(IValidation.class);
+    private static final Logger LOGGER = LogManager.getLogger(IValidation.class);
 
     private final SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 

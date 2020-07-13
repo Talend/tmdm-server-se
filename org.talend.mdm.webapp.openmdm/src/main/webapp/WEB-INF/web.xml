@@ -19,7 +19,7 @@
     </context-param>
     <context-param>
         <param-name>log4jConfiguration</param-name>
-        <param-value>${sys:mdm.root.url}/conf/log4j.xml</param-value>
+        <param-value>${sys:mdm.root.url}/conf/log4j2.xml</param-value>
     </context-param>
     <context-param>
         <param-name>log4jRefreshInterval</param-name>

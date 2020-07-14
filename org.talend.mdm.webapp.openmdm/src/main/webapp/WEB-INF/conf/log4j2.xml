@@ -54,7 +54,7 @@
         <Logger name="com.mchange.v2.c3p0.stmt.GooGooStatementCache" level="WARN"/>
 
         <!-- Limit hibernate to WARN as its INFO is verbose -->
-        <Logger name="org.hibernate" level="warn"/>
+        <Logger name="org.hibernate" level="WARN"/>
 
         <!-- Track Transactions creation stacktrace. To be removed later 
         <Logger name="com.amalto.core.server.MDMTransaction" level="DEBUG"/>

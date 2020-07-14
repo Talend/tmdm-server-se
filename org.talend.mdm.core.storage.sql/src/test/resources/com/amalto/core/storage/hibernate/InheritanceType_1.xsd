@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:import namespace="http://www.w3.org/2001/XMLSchema" />
+    <xsd:simpleType name="AUTO_INCREMENT">
+        <xsd:restriction base="xsd:string" />
+    </xsd:simpleType>
+    <xsd:complexType name="TypeAdresses">
+        <xsd:all>
+            <xsd:element maxOccurs="1" minOccurs="1" name="LibelleDestinataire" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Label_FR">Libellé du destinataire</xsd:appinfo>
+                    <xsd:appinfo source="X_Description_FR">NOM et PRENOM ou RAISON SOCIALE</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">MDMAdmin</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">TiersAdmin</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:all>
+    </xsd:complexType>
+    <xsd:element name="TieTousTiers" type="TypeTousTiers">
+        <xsd:unique name="TieTousTiers">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="Id" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:complexType name="TypeTousTiers">
+        <xsd:sequence>
+            <xsd:element maxOccurs="1" minOccurs="1" name="Id" type="AUTO_INCREMENT" />
+            <xsd:element maxOccurs="1" minOccurs="0" name="Libelle" type="xsd:string" />
+            <xsd:element maxOccurs="unbounded" minOccurs="0" name="Version" type="xsd:string" />
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:element name="TieComptes" type="TypeComptes">
+        <xsd:unique name="TieComptes">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="Id" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:complexType name="TypeComptes">
+        <xsd:complexContent>
+            <xsd:extension base="TypeTousTiers">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="AdresseCompte" type="TypeAdresses">
+                        <xsd:annotation>
+                            <xsd:appinfo source="X_Visible_Rule">fn:codepoint-equal(/TieComptes/TypeCompte,"Client") or fn:codepoint-equal(/TieComptes/TypeCompte,"Transporteur")</xsd:appinfo>
+                            <xsd:appinfo source="X_Label_FR">Adresse du compte</xsd:appinfo>
+                            <xsd:appinfo source="X_Write">TiersSFACRW</xsd:appinfo>
+                            <xsd:appinfo source="X_Write">TiersSFACR</xsd:appinfo>
+                            <xsd:appinfo source="X_Write">MDMAdmin</xsd:appinfo>
+                            <xsd:appinfo source="X_Write">TiersAdmin</xsd:appinfo>
+                            <xsd:appinfo source="X_AutoExpand">true</xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+</xsd:schema>

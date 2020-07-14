@@ -32,6 +32,7 @@ import com.amalto.core.storage.datasource.RDBMSDataSource;
 
 import liquibase.change.AbstractChange;
 import liquibase.change.core.DropNotNullConstraintChange;
+import liquibase.change.core.DropTableChange;
 
 
 public class LiquibaseSchemaAdapterTest {
@@ -194,6 +195,22 @@ public class LiquibaseSchemaAdapterTest {
         assertEquals("liquibase.change.core.DropForeignKeyConstraintChange", removeChangeList.get(0).getClass().getName());
         assertEquals("liquibase.change.core.DropTableChange", removeChangeList.get(1).getClass().getName());
         assertEquals("liquibase.change.core.DropColumnChange", removeChangeList.get(2).getClass().getName());
+    }
+    
+    @Test
+    public void testAnalyzeRemoveChange_InheritanceType() throws Exception {
+        MetadataRepository original = new MetadataRepository();
+        original.load(LiquibaseSchemaAdapterTest.class.getResourceAsStream("InheritanceType_1.xsd")); //$NON-NLS-1$
+        original = original.copy();
+        MetadataRepository updated = new MetadataRepository();
+        updated.load(LiquibaseSchemaAdapterTest.class.getResourceAsStream("InheritanceType_2.xsd")); //$NON-NLS-1$
+
+        Compare.DiffResults diffResults = Compare.compare(original, updated);
+        assertEquals(2, diffResults.getRemoveChanges().size());
+
+        List<AbstractChange> removeChangeList = adapter.analyzeRemoveChange(diffResults);
+        assertEquals(1, removeChangeList.size());
+        assertEquals("TieTousTiers_x_version", ((DropTableChange)removeChangeList.get(0)).getTableName());      
     }
 
     @Test

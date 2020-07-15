@@ -135,8 +135,12 @@ public class LiquibaseSchemaAdapter extends AbstractLiquibaseSchemaAdapter {
     
     // Table is generated for 0-many simple field like 'entityName_x_fieldName'in database.
     protected String getTableNameForField(FieldMetadata field) {
-        // For inheritance type, use declaringType to generate table name.       
-        String tableName = tableResolver.get((ComplexTypeMetadata) field.getDeclaringType()) + "_" + getColumnName(field);
+        // For inheritance type, use declaringType to generate table name.
+        ComplexTypeMetadata typeMetadata = field.getContainingType();
+        if (field.getDeclaringType() instanceof ComplexTypeMetadata) {
+            typeMetadata = (ComplexTypeMetadata) field.getDeclaringType();
+        } 
+        String tableName = tableResolver.get(typeMetadata) + "_" + getColumnName(field);
         if (dataSource.getDialectName() == DataSourceDialect.POSTGRES) {
             tableName = tableName.toLowerCase();
         }

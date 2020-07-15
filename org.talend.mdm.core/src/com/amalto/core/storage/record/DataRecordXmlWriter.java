@@ -206,10 +206,13 @@ public class DataRecordXmlWriter implements DataRecordWriter {
                 } else {
                     List<DataRecord> recordList = (List<DataRecord>) record.get(containedField);
                     if (recordList != null) {
+                        // "role-specifications" of "role-pOJO"
+                        boolean isRoleSpecifications = "role-pOJO".equals(containedField.getDeclaringType().getName()) //$NON-NLS-1$
+                                && "role-specifications".equals(containedField.getName()); //$NON-NLS-1$
                         for (DataRecord dataRecord : recordList) {
                             if (!dataRecord.isEmpty()) {
-                                // Write embedded XML directly for "role-specifications" of "role-pOJO"
-                                if (isRoleSpecifications(containedField)) {
+                                // Write embedded XML directly
+                                if (isRoleSpecifications) {
                                     out.write(dataRecord.get("value").toString()); //$NON-NLS-1$
                                 } else {
                                     // TODO Limit new field printer instances
@@ -230,11 +233,6 @@ public class DataRecordXmlWriter implements DataRecordWriter {
                 throw new RuntimeException("Could not serialize XML for contained field '" + containedField.getName()
                         + "' of type '" + containedField.getContainingType().getName() + "'.", e);
             }
-        }
-
-        // role-specifications of role-pOJO
-        private boolean isRoleSpecifications(ContainedTypeFieldMetadata containedField) {
-            return "role-pOJO".equals(containedField.getDeclaringType().getName()) && "role-specifications".equals(containedField.getName()); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         private void writeContainedField(ContainedTypeFieldMetadata containedField, DataRecord currentValue) throws IOException {

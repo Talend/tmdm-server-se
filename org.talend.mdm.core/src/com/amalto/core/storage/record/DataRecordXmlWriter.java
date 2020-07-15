@@ -208,14 +208,19 @@ public class DataRecordXmlWriter implements DataRecordWriter {
                     if (recordList != null) {
                         for (DataRecord dataRecord : recordList) {
                             if (!dataRecord.isEmpty()) {
-                                // TODO Limit new field printer instances
-                                DefaultMetadataVisitor<Void> fieldPrinter = new FieldPrinter(dataRecord, out);
-                                Collection<FieldMetadata> fields = dataRecord.getType().getFields();
-                                writeContainedField(containedField, dataRecord);
-                                for (FieldMetadata field : fields) {
-                                    field.accept(fieldPrinter);
+                                // Write embedded XML directly for "role-specifications" of "role-pOJO"
+                                if (isRoleSpecifications(containedField)) {
+                                    out.write(dataRecord.get("value").toString()); //$NON-NLS-1$
+                                } else {
+                                    // TODO Limit new field printer instances
+                                    DefaultMetadataVisitor<Void> fieldPrinter = new FieldPrinter(dataRecord, out);
+                                    Collection<FieldMetadata> fields = dataRecord.getType().getFields();
+                                    writeContainedField(containedField, dataRecord);
+                                    for (FieldMetadata field : fields) {
+                                        field.accept(fieldPrinter);
+                                    }
+                                    out.write("</" + containedField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
                                 }
-                                out.write("</" + containedField.getName() + ">"); //$NON-NLS-1$ //$NON-NLS-2$
                             }
                         }
                     }
@@ -225,6 +230,11 @@ public class DataRecordXmlWriter implements DataRecordWriter {
                 throw new RuntimeException("Could not serialize XML for contained field '" + containedField.getName()
                         + "' of type '" + containedField.getContainingType().getName() + "'.", e);
             }
+        }
+
+        // role-specifications of role-pOJO
+        private boolean isRoleSpecifications(ContainedTypeFieldMetadata containedField) {
+            return "role-pOJO".equals(containedField.getDeclaringType().getName()) && "role-specifications".equals(containedField.getName()); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         private void writeContainedField(ContainedTypeFieldMetadata containedField, DataRecord currentValue) throws IOException {

@@ -179,12 +179,12 @@ public class SaverContextFactory {
             final MetadataRepositoryAdmin admin = server.getMetadataRepositoryAdmin();
             String typeName = userDomDocument.getDocumentElement().getNodeName();
             MetadataRepository repository;
-            if (dataModelName.startsWith("amaltoOBJECTS") || !admin.exist(dataModelName)) {
+            if (dataModelName.startsWith("amaltoOBJECTS") || typeName.equals("role-pOJO") || !admin.exist(dataModelName)) {
                 final Storage systemStorage = server.getStorageAdmin().get(StorageAdmin.SYSTEM_STORAGE, StorageType.SYSTEM);
                 final MetadataRepository systemRepository = systemStorage.getMetadataRepository();
                 if (systemRepository.getComplexType(typeName) != null) {
                     // Record to save is a system object!
-                    return new DirectWriteContext(dataCluster, Util.nodeToString(userDomDocument));
+                    return new DirectWriteContext(typeName.equals("role-pOJO") ? "amaltoOBJECTSRole" : dataCluster, Util.nodeToString(userDomDocument));
                 } else {
                     throw new IllegalArgumentException("Data model '" + dataModelName + "' does not exist."); //$NON-NLS-1$ //$NON-NLS-2$
                 }

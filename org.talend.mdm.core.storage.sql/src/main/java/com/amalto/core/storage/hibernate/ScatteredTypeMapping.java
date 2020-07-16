@@ -21,7 +21,8 @@ import java.util.Map;
 
 import com.amalto.core.storage.record.StorageConstants;
 import org.apache.commons.lang.NotImplementedException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.hibernate.Session;
 import org.hibernate.collection.internal.PersistentList;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
@@ -41,7 +42,7 @@ import com.amalto.core.util.ValidateException;
  */
 class ScatteredTypeMapping extends TypeMapping {
 
-    private static final Logger LOGGER = Logger.getLogger(ScatteredTypeMapping.class);
+    private static final Logger LOGGER = LogManager.getLogger(ScatteredTypeMapping.class);
 
     private Map<FieldMetadata, FieldMetadata> userToDatabase = new HashMap<FieldMetadata, FieldMetadata>();
 

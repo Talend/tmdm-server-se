@@ -19,7 +19,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.util.core.MDMXMLUtils;
@@ -62,7 +63,7 @@ public class SaverContextFactory {
                 Class<DocumentSaverExtension> extension = (Class<DocumentSaverExtension>) Class.forName("com.amalto.core.save.DocumentSaverExtensionImpl"); //$NON-NLS-1$
                 saverExtension = extension.newInstance();
             } catch (ClassNotFoundException e) {
-                Logger.getLogger(UserContext.class).warn("No extension found for save."); //$NON-NLS-1$
+                LogManager.getLogger(UserContext.class).warn("No extension found for save."); //$NON-NLS-1$
                 saverExtension = new DocumentSaverExtension() {
                     public DocumentSaver invokeSaverExtension(DocumentSaver saver) {
                         return saver;

@@ -19,11 +19,12 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 public class PicturesDAOFSImpl implements PicturesDAO {
 
-    private static final Logger LOGGER = Logger.getLogger(PicturesDAOFSImpl.class);
+    private static final Logger LOGGER = LogManager.getLogger(PicturesDAOFSImpl.class);
 
     private String picturesLocation;
 

@@ -13,7 +13,8 @@ import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.amalto.core.objects.marshalling.MarshallingFactory;
 import com.amalto.core.server.api.XmlServer;
@@ -25,7 +26,7 @@ public abstract class AbstractMigrationTask {
 
     public static final String CLUSTER_MIGRATION = "MDMMigration"; //$NON-NLS-1$
 
-    protected static final Logger LOGGER = Logger.getLogger(AbstractMigrationTask.class);
+    protected static final Logger LOGGER = LogManager.getLogger(AbstractMigrationTask.class);
 
     private Map<String, Boolean> handlerMap = null;
 

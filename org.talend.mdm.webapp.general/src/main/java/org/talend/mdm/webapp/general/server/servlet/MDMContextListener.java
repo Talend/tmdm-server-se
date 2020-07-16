@@ -25,13 +25,14 @@ import javax.servlet.ServletContextListener;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.util.ServletContextPropertyUtils;
 
 public class MDMContextListener implements ServletContextListener {
 
-    private static final Logger LOGGER = Logger.getLogger(MDMContextListener.class);
+    private static final Logger LOGGER = LogManager.getLogger(MDMContextListener.class);
 
     @Override
     public void contextInitialized(ServletContextEvent event) {

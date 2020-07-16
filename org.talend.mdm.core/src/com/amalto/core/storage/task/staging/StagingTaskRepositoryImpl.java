@@ -26,7 +26,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 
 import com.amalto.core.query.user.OrderBy;
@@ -38,7 +39,7 @@ import com.amalto.core.storage.record.metadata.UnsupportedDataRecordMetadata;
 
 public class StagingTaskRepositoryImpl implements StagingTaskRepository {
 
-    private static final Logger LOGGER = Logger.getLogger(StagingTaskRepositoryImpl.class);
+    private static final Logger LOGGER = LogManager.getLogger(StagingTaskRepositoryImpl.class);
 
     private final Map<String, String> currentTasksIdCache = new HashMap<String, String>();
 

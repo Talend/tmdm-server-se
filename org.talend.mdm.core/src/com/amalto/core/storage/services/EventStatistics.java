@@ -24,7 +24,8 @@ import javax.ws.rs.core.Response;
 
 import com.amalto.core.query.user.UserQueryBuilder;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONWriter;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
@@ -45,7 +46,7 @@ import io.swagger.annotations.ApiParam;
 @Api(value="Events statistics", tags="Statistics")
 public class EventStatistics {
 
-    private static final Logger LOGGER = Logger.getLogger(EventStatistics.class);
+    private static final Logger LOGGER = LogManager.getLogger(EventStatistics.class);
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)

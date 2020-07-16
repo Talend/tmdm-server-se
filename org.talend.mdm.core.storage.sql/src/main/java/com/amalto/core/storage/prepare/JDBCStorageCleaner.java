@@ -15,11 +15,12 @@ import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.datasource.DataSource;
 import com.amalto.core.storage.datasource.RDBMSDataSource;
 import org.apache.commons.lang.NotImplementedException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 public class JDBCStorageCleaner implements StorageCleaner {
 
-    private static final Logger LOGGER = Logger.getLogger(JDBCStorageCleaner.class);
+    private static final Logger LOGGER = LogManager.getLogger(JDBCStorageCleaner.class);
 
     private StorageCleaner next;
 

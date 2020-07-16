@@ -19,7 +19,8 @@ import java.util.Map;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.util.core.MDMXMLUtils;
 
 import com.amalto.core.load.context.AutoGenStateContext;
@@ -51,7 +52,7 @@ import com.amalto.core.save.generator.AutoIdGenerator;
  */
 public class LoadParser {
 
-    private static final Logger log = Logger.getLogger(LoadParser.class);
+    private static final Logger log = LogManager.getLogger(LoadParser.class);
 
     private LoadParser() {
     }

@@ -11,7 +11,8 @@ package com.amalto.core.objects.configurationinfo.assemble;
 
 import com.amalto.core.jobox.JobContainer;
 import com.amalto.core.jobox.util.JoboxConfig;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -19,7 +20,7 @@ import java.util.Properties;
 
 public class InitJoboxSubProc extends AssembleSubProc {
 
-    protected static final Logger LOGGER = Logger.getLogger(InitJoboxSubProc.class);
+    protected static final Logger LOGGER = LogManager.getLogger(InitJoboxSubProc.class);
 
     @Override
     public void run() throws Exception {

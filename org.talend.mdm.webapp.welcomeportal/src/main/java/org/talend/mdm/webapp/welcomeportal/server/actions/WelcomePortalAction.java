@@ -17,7 +17,8 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
 import org.talend.mdm.webapp.base.client.exception.ServiceException;
 import org.talend.mdm.webapp.base.client.util.MultilanguageMessageParser;
@@ -56,7 +57,7 @@ import com.amalto.webapp.core.util.Webapp;
  */
 public class WelcomePortalAction implements WelcomePortalService {
 
-    private static final Logger LOG = Logger.getLogger(WelcomePortalAction.class);
+    private static final Logger LOG = LogManager.getLogger(WelcomePortalAction.class);
 
     private static final String STANDALONE_PROCESS_PREFIX = "Runnable#"; //$NON-NLS-1$
 

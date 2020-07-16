@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.Base64;
+import org.apache.logging.log4j.LogManager;
 
 @Service(CodecPluginBean.JNDI_NAME)
 public class CodecPluginBean extends Plugin {
@@ -191,11 +192,11 @@ public class CodecPluginBean extends Plugin {
             String method = Util.getFirstTextNode(params, "//method");
             if (method == null) {
                 String err = "The method parameter of the Codec Transformer Plugin cannot be empty";
-                org.apache.log4j.Logger.getLogger(this.getClass()).error(err);
+                LogManager.getLogger(this.getClass()).error(err);
                 throw new XtentisException(err);
             } else if (!method.trim().toUpperCase().matches(METHOD_TYPES)) {
                 String err = "The format of the method parameter of the Codec Transformer Plugin is unavailable";
-                org.apache.log4j.Logger.getLogger(this.getClass()).error(err);
+                LogManager.getLogger(this.getClass()).error(err);
                 throw new XtentisException(err);
             }
             compiled.setMethod(method);
@@ -203,11 +204,11 @@ public class CodecPluginBean extends Plugin {
             String algorithm = Util.getFirstTextNode(params, "//algorithm");
             if (algorithm == null) {
                 String err = "The algorithm parameter of the Codec Transformer Plugin cannot be empty";
-                org.apache.log4j.Logger.getLogger(this.getClass()).error(err);
+                LogManager.getLogger(this.getClass()).error(err);
                 throw new XtentisException(err);
             } else if (!AVAILABLE_ALGORITHMS.contains(algorithm.trim().toUpperCase())) {
                 String err = "This algorithm can not be supported by Codec Transformer Plugin temporarily";
-                org.apache.log4j.Logger.getLogger(this.getClass()).error(err);
+                LogManager.getLogger(this.getClass()).error(err);
                 throw new XtentisException(err);
             }
             compiled.setAlgorithm(algorithm);
@@ -218,7 +219,7 @@ public class CodecPluginBean extends Plugin {
             if (wrap != null && wrap.length() > 0) {
                 if (!wrap.trim().toLowerCase().matches(wrapRegex)) {
                     String err = "The format of the wrap parameter of the Codec Transformer Plugin is unavailable";
-                    org.apache.log4j.Logger.getLogger(this.getClass()).error(err);
+                    LogManager.getLogger(this.getClass()).error(err);
                     throw new XtentisException(err);
                 }
                 isWrap = Boolean.parseBoolean(wrap.trim());
@@ -232,7 +233,7 @@ public class CodecPluginBean extends Plugin {
         } catch (Exception e) {
             String err = "Unable to serialize the configuration of the Codec Plugin" + ": " + e.getClass().getName() + ": "
                     + e.getLocalizedMessage();
-            org.apache.log4j.Logger.getLogger(this.getClass()).error(err, e);
+            LogManager.getLogger(this.getClass()).error(err, e);
             throw new XtentisException(err);
         }
     }
@@ -254,7 +255,7 @@ public class CodecPluginBean extends Plugin {
 
         } catch (Exception e) {
             String err = "Could not init the Codec plugin:" + e.getClass().getName() + ": " + e.getLocalizedMessage();
-            org.apache.log4j.Logger.getLogger(this.getClass()).error(err, e);
+            LogManager.getLogger(this.getClass()).error(err, e);
             throw new XtentisException(e);
         }
 
@@ -272,7 +273,7 @@ public class CodecPluginBean extends Plugin {
      * @ejb.facade-method
      */
     public void execute(TransformerPluginContext context) throws XtentisException {
-        org.apache.log4j.Logger.getLogger(this.getClass()).trace("execute() Codec");
+        LogManager.getLogger(this.getClass()).trace("execute() Codec");
 
         CompiledParameters parameters = (CompiledParameters) context.get(PARAMETERS);
         TypedContent textTC = (TypedContent) context.get(INPUT_TEXT);
@@ -301,8 +302,8 @@ public class CodecPluginBean extends Plugin {
                 }
             }
 
-            org.apache.log4j.Logger.getLogger(this.getClass()).debug("Before codec:" + lawText);
-            org.apache.log4j.Logger.getLogger(this.getClass()).debug("After codec:" + codecText);
+            LogManager.getLogger(this.getClass()).debug("Before codec:" + lawText);
+            LogManager.getLogger(this.getClass()).debug("After codec:" + codecText);
 
             if (parameters.isWrap()) {
                 codecText = "<Codec_Output>" + codecText + "</Codec_Output>";
@@ -316,11 +317,11 @@ public class CodecPluginBean extends Plugin {
             throw (xe);
         } catch (Exception e) {
             String err = "Could not execute the codec plugin " + e.getClass().getName() + ": " + e.getLocalizedMessage();
-            org.apache.log4j.Logger.getLogger(this.getClass()).error(err, e);
+            LogManager.getLogger(this.getClass()).error(err, e);
             throw new XtentisException(e);
         }
 
-        org.apache.log4j.Logger.getLogger(this.getClass()).trace("execute() codec done");
+        LogManager.getLogger(this.getClass()).trace("execute() codec done");
 
     }
 

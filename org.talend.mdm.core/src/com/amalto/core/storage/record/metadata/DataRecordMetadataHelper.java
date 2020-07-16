@@ -16,7 +16,8 @@ import com.amalto.core.query.user.metadata.StagingSource;
 import com.amalto.core.query.user.metadata.StagingStatus;
 import com.amalto.core.storage.record.DataRecordReader;
 import com.amalto.core.storage.record.StorageConstants;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.util.Map;
 
@@ -25,7 +26,7 @@ import java.util.Map;
  */
 public class DataRecordMetadataHelper {
 
-    private static final Logger LOGGER = Logger.getLogger(DataRecordMetadataHelper.class);
+    private static final Logger LOGGER = LogManager.getLogger(DataRecordMetadataHelper.class);
 
     private DataRecordMetadataHelper() {
     }

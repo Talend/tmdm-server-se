@@ -14,7 +14,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ServiceLoader;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.amalto.core.storage.CacheStorage;
 import com.amalto.core.storage.SecuredStorage;
@@ -69,7 +70,7 @@ public class ServerContext {
 
     private static class DefaultServerLifecycle implements ServerLifecycle {
 
-        protected static final Logger LOGGER = Logger.getLogger(DefaultServerLifecycle.class);
+        protected static final Logger LOGGER = LogManager.getLogger(DefaultServerLifecycle.class);
 
         private static Storage defaultWrap(Storage storage) {
             storage = new CacheStorage(new SecuredStorage(storage, SecuredStorage.UNSECURED));

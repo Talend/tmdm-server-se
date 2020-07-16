@@ -20,7 +20,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 
@@ -67,7 +68,7 @@ import com.amalto.xmlserver.interfaces.XmlServerException;
 
 public abstract class IItemCtrlDelegator implements IBeanDelegator, IItemCtrlDelegatorService {
 
-    private static final Logger LOGGER = Logger.getLogger(IItemCtrlDelegator.class);
+    private static final Logger LOGGER = LogManager.getLogger(IItemCtrlDelegator.class);
 
     public ArrayList<String> viewSearch(DataClusterPOJOPK dataClusterPOJOPK, ViewPOJOPK viewPOJOPK, IWhereItem whereItem,
                                         String orderBy, String direction, int start, int limit) throws XtentisException {

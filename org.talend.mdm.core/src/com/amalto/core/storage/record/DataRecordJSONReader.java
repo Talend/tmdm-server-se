@@ -18,7 +18,8 @@ import com.amalto.core.storage.record.metadata.DataRecordMetadataImpl;
 import com.amalto.core.storage.record.metadata.UnsupportedDataRecordMetadata;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.*;
 
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ import com.google.gson.JsonPrimitive;
 
 public class DataRecordJSONReader implements DataRecordReader<JsonElement> {
 
-    private static final Logger LOGGER = Logger.getLogger(DataRecordJSONReader.class);
+    private static final Logger LOGGER = LogManager.getLogger(DataRecordJSONReader.class);
 
     private final String JSON_REF = "$ref"; //$NON-NLS-1$
 

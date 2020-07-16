@@ -16,7 +16,8 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.talend.mdm.webapp.base.server.util.XmlUtil;
@@ -24,7 +25,7 @@ import org.talend.mdm.webapp.base.server.util.XmlUtil;
 @SuppressWarnings("nls")
 public class DownloadUtilTest extends TestCase {
 
-    private static final Logger LOG = Logger.getLogger(DownloadUtilTest.class);
+    private static final Logger LOG = LogManager.getLogger(DownloadUtilTest.class);
 
     public void testAssembleFkMap() throws Exception {
         Map<String, String> colFkMap = new HashMap<String, String>();

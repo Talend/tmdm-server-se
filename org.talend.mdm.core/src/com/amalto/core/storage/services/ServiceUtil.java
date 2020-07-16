@@ -20,7 +20,8 @@ import javax.ws.rs.core.Response;
 import javax.xml.stream.XMLStreamException;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.util.webapp.XObjectType;
@@ -36,7 +37,7 @@ import com.ctc.wstx.exc.WstxUnexpectedCharException;
 
 public class ServiceUtil {
 
-    private static final Logger LOGGER = Logger.getLogger(ServiceUtil.class);
+    private static final Logger LOGGER = LogManager.getLogger(ServiceUtil.class);
 
     public static String getDataModelNameByEntityName(MetadataRepositoryAdmin metadataRepositoryAdmin,
             List<String> dataModelNames, String entityName) {

@@ -16,7 +16,8 @@ import com.amalto.core.objects.transformers.TransformerV2POJO;
 import com.amalto.core.objects.transformers.util.TransformerProcessStep;
 import com.amalto.core.objects.transformers.util.TransformerVariablesMapping;
 import com.amalto.core.util.Util;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import com.amalto.core.server.api.Transformer;
 
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ public class ReplaceEmptyInfoInTransformersTask extends AbstractMigrationTask{
 	@Override
 	protected Boolean execute() {
 		//Update Transformer POJOS
-		org.apache.log4j.Logger.getLogger(ReplaceEmptyInfoInTransformersTask.class).info("Updating Transformers");
+		LogManager.getLogger(ReplaceEmptyInfoInTransformersTask.class).info("Updating Transformers");
 		try {
 
 			String[] ids = ConfigurationHelper.getServer().getAllDocumentsUniqueID(ObjectPOJO.getCluster(TransformerV2POJO.class));
@@ -60,15 +61,15 @@ public class ReplaceEmptyInfoInTransformersTask extends AbstractMigrationTask{
                         }
                     }
                     tCtrl.putTransformer(transformer);
-                    Logger.getLogger(ReplaceEmptyInfoInTransformersTask.class).info("Processed '" + transformer.getName() + "'");
+                    LogManager.getLogger(ReplaceEmptyInfoInTransformersTask.class).info("Processed '" + transformer.getName() + "'");
                 }
 			}
 		} catch (Exception e) {
 			String err = "Unable to Rename Menu Entries.";
-			org.apache.log4j.Logger.getLogger(ReplaceEmptyInfoInTransformersTask.class).error(err, e);
+			LogManager.getLogger(ReplaceEmptyInfoInTransformersTask.class).error(err, e);
 			return false;
 		}
-		org.apache.log4j.Logger.getLogger(ReplaceEmptyInfoInTransformersTask.class).info("Done Updating Transformers");
+		LogManager.getLogger(ReplaceEmptyInfoInTransformersTask.class).info("Done Updating Transformers");
 		return true;
 	}
 

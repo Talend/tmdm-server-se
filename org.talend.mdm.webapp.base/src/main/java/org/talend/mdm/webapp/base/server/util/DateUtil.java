@@ -17,11 +17,12 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 public final class DateUtil {
 
-    private static final Logger log = Logger.getLogger(DateUtil.class);
+    private static final Logger log = LogManager.getLogger(DateUtil.class);
 
     public static String DATE_FORMAT = "yyyy-MM-dd";//$NON-NLS-1$
 

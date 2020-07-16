@@ -22,7 +22,8 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.*;
 
 import java.math.BigDecimal;
@@ -36,7 +37,7 @@ import java.util.*;
  */
 public class StorageMetadataUtils extends MetaDataUtils {
 
-    private static final Logger LOGGER = Logger.getLogger(StorageMetadataUtils.class);
+    private static final Logger LOGGER = LogManager.getLogger(StorageMetadataUtils.class);
 
     private StorageMetadataUtils() {
     }

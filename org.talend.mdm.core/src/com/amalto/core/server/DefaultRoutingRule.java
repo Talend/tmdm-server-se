@@ -16,7 +16,8 @@ import com.amalto.core.objects.routing.RoutingRulePOJO;
 import com.amalto.core.objects.routing.RoutingRulePOJOPK;
 import com.amalto.core.util.XtentisException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.amalto.core.server.api.RoutingRule;
 
@@ -25,7 +26,7 @@ import java.util.Collection;
 
 public class DefaultRoutingRule implements RoutingRule {
 
-    private static final Logger LOGGER = Logger.getLogger(DefaultRoutingRule.class);
+    private static final Logger LOGGER = LogManager.getLogger(DefaultRoutingRule.class);
 
     /**
      * Creates or updates a menu

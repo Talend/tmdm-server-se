@@ -12,8 +12,9 @@ package com.amalto.core.query.optimization;
 import com.amalto.core.query.user.*;
 import com.amalto.core.query.user.metadata.*;
 import com.amalto.core.storage.datasource.RDBMSDataSource;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 
 import java.util.HashSet;
@@ -21,11 +22,11 @@ import java.util.Set;
 
 public class ImplicitOrderBy implements Optimizer {
 
-    private static final Logger               LOGGER                  = Logger.getLogger(ImplicitOrderBy.class);
+    private static final Logger LOGGER = LogManager.getLogger(ImplicitOrderBy.class);
 
     private static final AllowImplicitOrderBy ALLOW_IMPLICIT_ORDER_BY = new AllowImplicitOrderBy();
 
-    private final RDBMSDataSource             dataSource;
+    private final RDBMSDataSource dataSource;
 
     public ImplicitOrderBy(RDBMSDataSource dataSource) {
         this.dataSource = dataSource;

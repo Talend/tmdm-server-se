@@ -18,7 +18,8 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.util.core.MDMXMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -29,7 +30,7 @@ import com.amalto.core.util.Util;
 
 public class IValidation {
 
-    private static final Logger LOGGER        = Logger.getLogger(IValidation.class);
+    private static final Logger LOGGER = LogManager.getLogger(IValidation.class);
 
     private final SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 

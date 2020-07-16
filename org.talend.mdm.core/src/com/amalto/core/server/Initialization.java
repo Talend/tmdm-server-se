@@ -18,7 +18,8 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +59,7 @@ public class Initialization implements ApplicationListener<ContextRefreshedEvent
     @Autowired(required = true)
     private ServerLifecycle serverLifecycle;
 
-    private static final Logger LOGGER = Logger.getLogger(Initialization.class);
+    private static final Logger LOGGER = LogManager.getLogger(Initialization.class);
 
     private static final String AUDIT_CONFIG_FILE_LOCATION = "talend.logging.audit.config";
 

@@ -24,7 +24,8 @@ import java.util.Map;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.events.XMLEvent;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.util.core.ICoreConstants;
 import org.talend.mdm.commmon.util.core.MDMXMLUtils;
 
@@ -88,7 +89,7 @@ public abstract class ObjectPOJO implements Serializable {
             { "Item", ItemPOJO.class } //$NON-NLS-1$
     };
 
-    private static Logger LOG = Logger.getLogger(ObjectPOJO.class);
+    private static Logger LOG = LogManager.getLogger(ObjectPOJO.class);
 
     /**
      * Cache the records to improve performance: this is a <b>READ</b> cache only -> only records read from underlying

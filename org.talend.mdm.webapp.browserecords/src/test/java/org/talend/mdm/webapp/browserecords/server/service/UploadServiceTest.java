@@ -34,6 +34,7 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit3.PowerMockSuite;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
@@ -55,6 +56,7 @@ import junit.framework.TestSuite;
  *
  */
 @PrepareForTest({ Util.class })
+@PowerMockIgnore({"javax.management.*", "javax.xml.parsers.*", "org.xml.sax.*", "org.w3c.dom.*"})
 public class UploadServiceTest extends TestCase {
 
     static {

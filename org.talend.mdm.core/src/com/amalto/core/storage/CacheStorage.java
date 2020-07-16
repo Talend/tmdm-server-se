@@ -18,7 +18,8 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.collections.map.LRUMap;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.metadata.compare.Compare.DiffResults;
@@ -51,7 +52,7 @@ public class CacheStorage implements Storage {
 
     private static final int DEFAULT_MAX_CAPACITY = 30;
 
-    private static final Logger LOGGER = Logger.getLogger(CacheStorage.class);
+    private static final Logger LOGGER = LogManager.getLogger(CacheStorage.class);
 
     private static final int MAX_TOKEN = 10;
 

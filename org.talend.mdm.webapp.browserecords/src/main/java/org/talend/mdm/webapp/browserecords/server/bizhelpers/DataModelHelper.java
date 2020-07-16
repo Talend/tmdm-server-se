@@ -22,7 +22,8 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.util.datamodel.management.ReusableType;
 import org.talend.mdm.webapp.base.server.util.CommonUtil;
 import org.talend.mdm.webapp.base.shared.ComplexTypeModel;
@@ -56,7 +57,7 @@ import com.sun.xml.xsom.util.DomAnnotationParserFactory;
 
 public class DataModelHelper {
 
-    private static final Logger logger = Logger.getLogger(DataModelHelper.class);
+    private static final Logger logger = LogManager.getLogger(DataModelHelper.class);
 
     private static final String SCHEMA_NAMESPACE = "http://www.w3.org/2001/XMLSchema"; //$NON-NLS-1$
 

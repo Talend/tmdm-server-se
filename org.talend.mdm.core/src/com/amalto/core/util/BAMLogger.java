@@ -11,6 +11,7 @@ package com.amalto.core.util;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import org.apache.logging.log4j.LogManager;
 
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
 
@@ -42,9 +43,9 @@ public class BAMLogger {
         line.append("[AUTHORIZED").append(authorized ? " YES" : " NO").append("]");
 
         if ("read".equals(permission))
-            org.apache.log4j.Logger.getLogger(BAMLogger.class).debug(line);
+            LogManager.getLogger(BAMLogger.class).debug(line);
         else
-            org.apache.log4j.Logger.getLogger(BAMLogger.class).info(line);
+            LogManager.getLogger(BAMLogger.class).info(line);
     }
 
 }

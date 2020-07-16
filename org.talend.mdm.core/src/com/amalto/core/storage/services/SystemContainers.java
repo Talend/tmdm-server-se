@@ -18,7 +18,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.amalto.core.objects.datacluster.DataClusterPOJO;
 import com.amalto.core.server.ServerContext;
@@ -35,7 +36,7 @@ import io.swagger.annotations.ApiParam;
 @Api(value="Containers management", tags="Administration")
 public class SystemContainers {
 
-    private static final Logger LOGGER = Logger.getLogger(SystemContainers.class);
+    private static final Logger LOGGER = LogManager.getLogger(SystemContainers.class);
 
     public SystemContainers() {
     }

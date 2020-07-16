@@ -21,7 +21,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import net.coobird.thumbnailator.Thumbnails;
 import net.sf.jmimemagic.Magic;
 import net.sf.jmimemagic.MagicMatch;
@@ -33,7 +34,7 @@ public class ImageLocateServlet extends HttpServlet {
 
     private static final long serialVersionUID = -3012919798771313147L;
 
-    private static final Logger LOGGER = Logger.getLogger(ImageLocateServlet.class);
+    private static final Logger LOGGER = LogManager.getLogger(ImageLocateServlet.class);
 
     private static final String CONTENT_TYPE_HEADER = "Content-Type";
 

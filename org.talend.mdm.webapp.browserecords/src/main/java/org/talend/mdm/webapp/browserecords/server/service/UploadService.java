@@ -23,7 +23,8 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
@@ -61,7 +62,7 @@ import com.amalto.webapp.core.util.XtentisWebappException;
 
 public class UploadService {
 
-    private static final Logger LOG = Logger.getLogger(UploadService.class);
+    private static final Logger LOG = LogManager.getLogger(UploadService.class);
 
     private static final Messages MESSAGES = MessagesFactory.getMessages(
             "org.talend.mdm.webapp.browserecords.client.i18n.BrowseRecordsMessages", UploadService.class.getClassLoader()); //$NON-NLS-1$

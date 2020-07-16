@@ -15,7 +15,8 @@ import com.amalto.core.objects.ObjectPOJO;
 import com.amalto.core.util.ArrayListHolder;
 import com.amalto.xmlserver.interfaces.*;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.*;
 
 import javax.xml.XMLConstants;
@@ -35,7 +36,7 @@ public class ClassRepository extends MetadataRepository {
 
     private static final SimpleTypeMetadata STRING = new SimpleTypeMetadata(XMLConstants.W3C_XML_SCHEMA_NS_URI, Types.STRING);
 
-    private static final Logger LOGGER = Logger.getLogger(ClassRepository.class);
+    private static final Logger LOGGER = LogManager.getLogger(ClassRepository.class);
 
     private static final String GETTER_PREFIX = "get"; //$NON-NLS-1$
 

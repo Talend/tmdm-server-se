@@ -17,7 +17,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.datasource.DataSource;
@@ -25,7 +26,7 @@ import com.amalto.core.storage.datasource.RDBMSDataSource;
 
 class DB2StorageCleaner implements StorageCleaner {
 
-    private static final Logger LOGGER = Logger.getLogger(DB2StorageCleaner.class);
+    private static final Logger LOGGER = LogManager.getLogger(DB2StorageCleaner.class);
 
     private final StorageCleaner next;
 

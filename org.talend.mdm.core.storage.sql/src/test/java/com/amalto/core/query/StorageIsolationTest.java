@@ -23,7 +23,8 @@ import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.record.DataRecordReader;
 import com.amalto.core.storage.record.XmlStringDataRecordReader;
 import junit.framework.TestCase;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import static com.amalto.core.query.user.UserQueryBuilder.contains;
 import static com.amalto.core.query.user.UserQueryBuilder.from;
@@ -31,7 +32,7 @@ import static com.amalto.core.query.user.UserQueryBuilder.from;
 @SuppressWarnings("nls")
 public class StorageIsolationTest extends TestCase {
 
-    private static Logger LOG = Logger.getLogger(StorageIsolationTest.class);
+    private static Logger LOG = LogManager.getLogger(StorageIsolationTest.class);
 
     static {
         LOG.info("Setting up MDM server environment...");

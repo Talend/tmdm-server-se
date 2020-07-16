@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
+import org.apache.logging.log4j.LogManager;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -51,7 +52,7 @@ public class ExportingServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        org.apache.log4j.Logger.getLogger(this.getClass()).info("SERVLET exporting for excel "); //$NON-NLS-1$
+        LogManager.getLogger(this.getClass()).info("SERVLET exporting for excel "); //$NON-NLS-1$
 
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy"); //$NON-NLS-1$
         response.reset();
@@ -68,7 +69,7 @@ public class ExportingServlet extends HttpServlet {
             parametersValues = ""; //$NON-NLS-1$
         }
 
-        org.apache.log4j.Logger.getLogger(this.getClass()).debug("params =" + parametersValues); //$NON-NLS-1$
+        LogManager.getLogger(this.getClass()).debug("params =" + parametersValues); //$NON-NLS-1$
 
         boolean splitEnd = false;
         String tmpSplit = parametersValues;
@@ -100,7 +101,7 @@ public class ExportingServlet extends HttpServlet {
             parameters[i] = paramVector.get(i);
         }
 
-        org.apache.log4j.Logger.getLogger(this.getClass()).debug("nb params =" + parameters.length); //$NON-NLS-1$
+        LogManager.getLogger(this.getClass()).debug("nb params =" + parameters.length); //$NON-NLS-1$
 
         try {
             WSDataClusterPK wsDataClusterPK = new WSDataClusterPK();

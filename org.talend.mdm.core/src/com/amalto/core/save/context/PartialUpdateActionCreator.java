@@ -22,7 +22,8 @@ import java.util.Stack;
 import java.util.StringTokenizer;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
@@ -42,7 +43,7 @@ import com.amalto.core.storage.StorageMetadataUtils;
 
 public class PartialUpdateActionCreator extends UpdateActionCreator {
 
-    private static final Logger LOGGER = Logger.getLogger(PartialUpdateActionCreator.class);
+    private static final Logger LOGGER = LogManager.getLogger(PartialUpdateActionCreator.class);
 
     private final String partialUpdatePivot;
 

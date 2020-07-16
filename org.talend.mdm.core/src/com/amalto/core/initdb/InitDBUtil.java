@@ -22,7 +22,8 @@ import java.util.Map.Entry;
 import javax.xml.parsers.DocumentBuilder;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
 import org.talend.mdm.commmon.util.core.MDMXMLUtils;
 import org.w3c.dom.Document;
@@ -38,7 +39,7 @@ import com.amalto.core.objects.configurationinfo.ConfigurationHelper;
  */
 public class InitDBUtil {
 
-    private static final Logger logger = Logger.getLogger(InitDBUtil.class);
+    private static final Logger logger = LogManager.getLogger(InitDBUtil.class);
 
     private static final Map<String, List<String>> initDB = new LinkedHashMap<String, List<String>>();
 

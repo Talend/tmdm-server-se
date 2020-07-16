@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+
+    <!-- ================ -->
+    <!--    Appenders     -->
+    <!-- ================ -->
+    <Appenders>
+        <Console name="CONSOLE" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{ABSOLUTE} %-5p [%c{1}] (%t:%x) %m%n" />
+            <ThresholdFilter level="DEBUG" onMatch="ACCEPT" onMismatch="DENY" />
+        </Console>
+
+        <RollingFile name="rolling-file" fileName="/tmp/hibernate.log" filePattern="../../mdm.log.%d{yyyy-MM-dd}" append="false">
+            <PatternLayout pattern="%d [%t] %-5p %l - %m%n" />
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+            </Policies>
+        </RollingFile>
+    </Appenders>
+
+    <!-- ================ -->
+    <!--    Loggers    -->
+    <!-- ================ -->
+    <Loggers>
+        <Logger name="org.hibernate" level="ERROR"/>
+
+        <Logger name="com.amalto.core.storage.task" level="DEBUG"/>
+
+        <Logger name="com.amalto.core.storage.hibernate" level="ERROR"/>
+
+        <!-- ======================= -->
+        <!-- Setup the Root logger -->
+        <!-- ======================= -->
+        <Root level="ERROR">
+            <AppenderRef ref="CONSOLE"/>
+        </Root>
+    </Loggers>
+</Configuration>

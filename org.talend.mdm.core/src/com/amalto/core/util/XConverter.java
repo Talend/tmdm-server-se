@@ -21,6 +21,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.regex.Pattern;
+import org.apache.logging.log4j.LogManager;
 
 import com.amalto.core.objects.DroppedItemPOJO;
 import com.amalto.core.objects.DroppedItemPOJOPK;
@@ -984,7 +985,7 @@ public class XConverter {
             return ws;
         } catch (Exception e) {
             String err = "ERROR SYSTRACE: " + e.getMessage();
-            org.apache.log4j.Logger.getLogger(XConverter.class).debug(err, e);
+            LogManager.getLogger(XConverter.class).debug(err, e);
             throw (e);
         }
     }
@@ -1003,7 +1004,7 @@ public class XConverter {
             return pojo;
         } catch (Exception e) {
             String err = "ERROR SYSTRACE: " + e.getMessage();
-            org.apache.log4j.Logger.getLogger(XConverter.class).debug(err, e);
+            LogManager.getLogger(XConverter.class).debug(err, e);
             throw (e);
         }
     }
@@ -1037,7 +1038,7 @@ public class XConverter {
             return ws;
         } catch (Exception e) {
             String err = "ERROR SYSTRACE: " + e.getMessage();
-            org.apache.log4j.Logger.getLogger(XConverter.class).debug(err, e);
+            LogManager.getLogger(XConverter.class).debug(err, e);
             throw (e);
         }
     }

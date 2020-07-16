@@ -24,7 +24,8 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.dom4j.io.DocumentResult;
 import org.dom4j.io.DocumentSource;
 import org.w3c.dom.DOMImplementation;
@@ -45,7 +46,7 @@ import com.sun.org.apache.xpath.internal.objects.XObject;
  */
 public final class XMLUtils {
 
-    private static final Logger logger = Logger.getLogger(XMLUtils.class);
+    private static final Logger logger = LogManager.getLogger(XMLUtils.class);
 
     private static final TransformerFactory transformerFactory = TransformerFactory.newInstance();
 
@@ -102,7 +103,7 @@ public final class XMLUtils {
 			if (!errors.equals("")) {
 				String err = "Document  did not parse against schema: \n" + errors+"\n"
 					+xmlString.substring(0, Math.min(100, xmlString.length()));
-				org.apache.log4j.Logger.getLogger(XMLUtils.class).error(err);
+				LogManager.getLogger(XMLUtils.class).error(err);
 				throw new SAXException(err);
 			}
 		}
@@ -160,7 +161,7 @@ public final class XMLUtils {
 			String err = "Unable to get the text node(s) of "+xPath
 					+": " + e.getClass().getName() + ": "
 					+ e.getLocalizedMessage();
-			org.apache.log4j.Logger.getLogger(XMLUtils.class).error(err,e);
+			LogManager.getLogger(XMLUtils.class).error(err,e);
 			throw new TransformerException(err);
 		}
 		return results;
@@ -301,7 +302,7 @@ public final class XMLUtils {
     public static Document validate(Element element, String schema) throws SAXException, ParserConfigurationException,
             IOException, TransformerException {
 
-        org.apache.log4j.Logger.getLogger(XMLUtils.class).trace("validate() " + element.getLocalName());
+        LogManager.getLogger(XMLUtils.class).trace("validate() " + element.getLocalName());
 
         // parse
         Document d = null;

@@ -36,7 +36,8 @@ import java.util.Set;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.NullPrecedence;
@@ -134,7 +135,7 @@ import com.amalto.core.storage.task.StagingConstants;
 
 class StandardQueryHandler extends AbstractQueryHandler {
 
-    private static final Logger LOGGER = Logger.getLogger(StandardQueryHandler.class);
+    private static final Logger LOGGER = LogManager.getLogger(StandardQueryHandler.class);
 
     private static final StringConstant EMPTY_STRING_CONSTANT = new StringConstant(StringUtils.EMPTY);
 

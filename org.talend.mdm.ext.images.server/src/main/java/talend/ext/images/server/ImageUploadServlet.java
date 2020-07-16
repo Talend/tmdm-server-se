@@ -32,7 +32,8 @@ import org.apache.commons.fileupload.ProgressListener;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import talend.ext.images.server.util.ImagePathUtil;
 import talend.ext.images.server.util.Uuid;
@@ -41,7 +42,7 @@ public class ImageUploadServlet extends HttpServlet {
 
     private static final long serialVersionUID = 5281522568086790496L;
 
-    private Logger logger = Logger.getLogger(this.getClass());
+    private Logger logger = LogManager.getLogger(this.getClass());
 
     private List<String> okFileTypes = null;
 

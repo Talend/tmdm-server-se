@@ -14,7 +14,8 @@ package com.amalto.core.storage.hibernate;
 import com.amalto.core.server.ServerContext;
 import com.amalto.core.storage.transaction.Transaction;
 import com.amalto.core.storage.transaction.TransactionManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -28,7 +29,7 @@ public class MDMTransactionSessionContext implements CurrentSessionContext {
 
     private final static Map<SessionFactory, HibernateStorage> declaredStorages = new HashMap<SessionFactory, HibernateStorage>();
 
-    private static final Logger LOGGER = Logger.getLogger(MDMTransactionSessionContext.class);
+    private static final Logger LOGGER = LogManager.getLogger(MDMTransactionSessionContext.class);
 
     private final SessionFactoryImplementor factory;
 

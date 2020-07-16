@@ -28,7 +28,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.fileupload.DiskFileUpload;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadBase;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.webapp.base.server.util.CommonUtil;
 import org.talend.mdm.webapp.base.shared.EntityModel;
 import org.talend.mdm.webapp.base.shared.FileUtil;
@@ -56,7 +57,7 @@ import com.amalto.core.webservice.WSPutItemWithReportArray;
 @SuppressWarnings("serial")
 public class UploadData extends HttpServlet {
 
-    private static final Logger LOG = Logger.getLogger(UploadData.class);
+    private static final Logger LOG = LogManager.getLogger(UploadData.class);
 
     private static final Messages MESSAGES = MessagesFactory.getMessages(
             "org.talend.mdm.webapp.browserecords.client.i18n.BrowseRecordsMessages", UploadData.class.getClassLoader()); //$NON-NLS-1$

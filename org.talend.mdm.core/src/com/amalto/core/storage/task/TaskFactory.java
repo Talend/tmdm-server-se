@@ -16,7 +16,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 
@@ -26,7 +27,7 @@ import com.amalto.core.storage.Storage;
 
 public class TaskFactory {
 
-    private static final Logger LOGGER = Logger.getLogger(TaskFactory.class);
+    private static final Logger LOGGER = LogManager.getLogger(TaskFactory.class);
 
     public static Task createStagingTask(StagingConfiguration config, StagingTaskExecutionListener listener){
         Storage stagingStorage = config.getOrigin();

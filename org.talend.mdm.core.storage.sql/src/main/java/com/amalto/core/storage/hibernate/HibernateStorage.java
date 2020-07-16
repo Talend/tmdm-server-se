@@ -44,8 +44,9 @@ import javax.xml.XMLConstants;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.Lock;
@@ -178,7 +179,7 @@ public class HibernateStorage implements Storage {
 
     private static final String DELETE_FROM_STR = "delete from "; //$NON-NLS-1$
 
-    private static final Logger LOGGER = Logger.getLogger(HibernateStorage.class);
+    private static final Logger LOGGER = LogManager.getLogger(HibernateStorage.class);
 
     private static final Optimizer[] OPTIMIZERS = new Optimizer[] { new RangeOptimizer(), // Transforms (value > n AND
                                                                                           // value < p) into

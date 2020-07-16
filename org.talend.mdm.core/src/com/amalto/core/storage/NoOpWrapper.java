@@ -15,7 +15,8 @@ import com.amalto.xmlserver.interfaces.IWhereItem;
 import com.amalto.xmlserver.interfaces.IXmlServerSLWrapper;
 import com.amalto.xmlserver.interfaces.ItemPKCriteria;
 import com.amalto.xmlserver.interfaces.XmlServerException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
@@ -25,7 +26,7 @@ import java.util.*;
 
 class NoOpWrapper implements IXmlServerSLWrapper{
 
-    private static final Logger LOGGER = Logger.getLogger(NoOpWrapper.class);
+    private static final Logger LOGGER = LogManager.getLogger(NoOpWrapper.class);
 
     static {
         LOGGER.warn("--- Using No op wrapper! ---"); //$NON-NLS-1$

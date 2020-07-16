@@ -30,13 +30,14 @@ import com.amalto.core.query.user.UnaryLogicOperator;
 import com.amalto.core.query.user.UserQueryHelper;
 import com.amalto.core.query.user.VisitorAdapter;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 public class ContainsOptimizer implements Optimizer {
 
     private static final ContainsOptimization CONTAINS_OPTIMIZATION = new ContainsOptimization();
 
-    private static final Logger LOGGER = Logger.getLogger(ContainsOptimizer.class);
+    private static final Logger LOGGER = LogManager.getLogger(ContainsOptimizer.class);
 
     public void optimize(Select select) {
         synchronized (CONTAINS_OPTIMIZATION) {

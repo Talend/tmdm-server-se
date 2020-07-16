@@ -21,7 +21,8 @@ import com.amalto.core.storage.hibernate.TypeMapping;
 import com.amalto.core.storage.record.DataRecord;
 import org.apache.commons.collections.IteratorUtils;
 import org.apache.commons.lang.NotImplementedException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 
 import java.util.*;
@@ -30,7 +31,7 @@ import static com.amalto.core.query.user.UserQueryBuilder.from;
 
 class InMemoryJoinResults implements StorageResults {
 
-    private static final Logger LOGGER = Logger.getLogger(InMemoryJoinResults.class);
+    private static final Logger LOGGER = LogManager.getLogger(InMemoryJoinResults.class);
 
     private static final int MEMORY_COST_LIMIT = 10 * 1024 * 1024;
 

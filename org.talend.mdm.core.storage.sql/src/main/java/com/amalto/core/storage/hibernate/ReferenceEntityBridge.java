@@ -24,7 +24,8 @@ import java.util.Set;
 
 import com.amalto.core.storage.record.StorageConstants;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
 import org.hibernate.ObjectNotFoundException;
@@ -42,7 +43,7 @@ import com.amalto.core.storage.hibernate.MultiLingualIndexedBridge.MultilingualI
 @SuppressWarnings("nls")
 public class ReferenceEntityBridge implements TwoWayFieldBridge {
 
-    private static final Logger LOGGER = Logger.getLogger(ReferenceEntityBridge.class);
+    private static final Logger LOGGER = LogManager.getLogger(ReferenceEntityBridge.class);
 
     private static final Set<String> processedElementSet = new LinkedHashSet<String>();
 

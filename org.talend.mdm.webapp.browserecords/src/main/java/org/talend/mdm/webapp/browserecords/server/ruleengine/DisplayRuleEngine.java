@@ -16,7 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
@@ -32,7 +33,7 @@ import com.amalto.webapp.core.util.XmlUtil;
 
 public class DisplayRuleEngine {
 
-    private static final Logger LOG = Logger.getLogger(DisplayRuleEngine.class);
+    private static final Logger LOG = LogManager.getLogger(DisplayRuleEngine.class);
 
     private final Namespace namespace = new Namespace("xsi", "http://www.w3.org/2001/XMLSchema-instance"); //$NON-NLS-1$//$NON-NLS-2$
 

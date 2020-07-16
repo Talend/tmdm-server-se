@@ -11,7 +11,8 @@
 package com.amalto.core.query.optimization;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 
 import com.amalto.core.query.user.Alias;
@@ -58,7 +59,7 @@ import com.amalto.core.storage.datasource.RDBMSDataSource;
 
 public class ConfigurableContainsOptimizer implements Optimizer {
 
-    private static final Logger LOGGER = Logger.getLogger(ConfigurableContainsOptimizer.class);
+    private static final Logger LOGGER = LogManager.getLogger(ConfigurableContainsOptimizer.class);
 
     private static final Visitor<Condition> FULL_TEXT_CONTAINS_OPTIMIZATION = new FullTextContainsOptimization();
 

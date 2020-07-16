@@ -16,7 +16,8 @@ import javax.xml.namespace.QName;
 
 import com.amalto.core.schema.validation.SkipAttributeDocumentBuilder;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -33,7 +34,7 @@ import com.amalto.core.util.XtentisException;
  */
 class AttributeAccessor implements DOMAccessor {
 
-    private static final Logger logger = Logger.getLogger(AttributeAccessor.class);
+    private static final Logger logger = LogManager.getLogger(AttributeAccessor.class);
 
     private final DOMAccessor parent;
 

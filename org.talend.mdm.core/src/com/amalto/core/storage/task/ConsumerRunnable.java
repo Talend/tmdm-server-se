@@ -12,7 +12,8 @@
 package com.amalto.core.storage.task;
 
 import com.amalto.core.storage.record.DataRecord;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -21,7 +22,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 class ConsumerRunnable implements Runnable {
 
-    private static final Logger LOGGER = Logger.getLogger(ConsumerRunnable.class);
+    private static final Logger LOGGER = LogManager.getLogger(ConsumerRunnable.class);
 
     private final Closure closure;
 

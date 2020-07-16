@@ -14,7 +14,8 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.security.core.context.SecurityContext;
 
 import com.amalto.core.query.user.Condition;
@@ -25,7 +26,7 @@ import com.amalto.core.storage.Storage;
  */
 public class StagingTask implements Task {
 
-    private static final Logger LOGGER = Logger.getLogger(StagingTask.class);
+    private static final Logger LOGGER = LogManager.getLogger(StagingTask.class);
 
     private final TaskSubmitter taskSubmitter;
 

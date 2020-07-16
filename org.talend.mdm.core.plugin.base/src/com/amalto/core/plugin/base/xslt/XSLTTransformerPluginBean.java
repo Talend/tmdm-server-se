@@ -35,7 +35,8 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.stereotype.Service;
 import org.talend.mdm.commmon.util.core.MDMXMLUtils;
 import org.w3c.dom.Document;
@@ -151,7 +152,7 @@ public class XSLTTransformerPluginBean extends Plugin {
 
     public static final String JNDI_NAME = "amalto/local/transformer/plugin/xslt"; //$NON-NLS-1$
 
-    private static final Logger LOG = Logger.getLogger(XSLTTransformerPluginBean.class);
+    private static final Logger LOG = LogManager.getLogger(XSLTTransformerPluginBean.class);
 
     private static final String OUTPUT_METHOD = "com.amalto.core.plugin.xpath.outputMethod"; //$NON-NLS-1$
 
@@ -501,7 +502,7 @@ public class XSLTTransformerPluginBean extends Plugin {
             String xrefIgnore = xrefElement.getAttribute("xrefIgnore"); //$NON-NLS-1$
             String xrefDefault = xrefElement.getAttribute("xrefDefault"); //$NON-NLS-1$
 
-            Logger.getLogger(XSLTTransformerPluginBean.class).debug(
+            LogManager.getLogger(XSLTTransformerPluginBean.class).debug(
                     "\n xrefIgnore=" + xrefIgnore + "\n xrefDefault=" + xrefDefault); //$NON-NLS-1$ //$NON-NLS-2$
 
             // parse xrefbein dockey1:xrefkey1,dockey2:xrefkey2

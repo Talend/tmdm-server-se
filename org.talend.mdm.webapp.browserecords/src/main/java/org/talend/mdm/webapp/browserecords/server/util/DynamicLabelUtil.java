@@ -16,7 +16,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.jxpath.JXPathContext;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -47,7 +48,7 @@ import com.sun.xml.xsom.XSType;
  */
 public class DynamicLabelUtil {
 
-    private static final Logger LOG = Logger.getLogger(DynamicLabelUtil.class);
+    private static final Logger LOG = LogManager.getLogger(DynamicLabelUtil.class);
 
     /**
      *

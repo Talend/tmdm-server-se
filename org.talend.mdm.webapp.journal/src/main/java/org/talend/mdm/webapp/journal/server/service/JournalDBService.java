@@ -20,7 +20,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.dom4j.Attribute;
 import org.dom4j.io.SAXReader;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
@@ -69,7 +70,7 @@ public class JournalDBService {
 
     private static final String SLASH = "/";
 
-    private static final Logger LOG = Logger.getLogger(JournalDBService.class);
+    private static final Logger LOG = LogManager.getLogger(JournalDBService.class);
 
     private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //$NON-NLS-1$
 

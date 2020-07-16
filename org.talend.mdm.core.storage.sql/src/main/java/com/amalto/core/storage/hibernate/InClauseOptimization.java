@@ -21,7 +21,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.NotImplementedException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.hibernate.Criteria;
 import org.hibernate.EntityMode;
 import org.hibernate.HibernateException;
@@ -46,7 +47,7 @@ import com.amalto.core.storage.record.DataRecord;
 
 public class InClauseOptimization extends StandardQueryHandler {
 
-    private static final Logger LOGGER = Logger.getLogger(InClauseOptimization.class);
+    private static final Logger LOGGER = LogManager.getLogger(InClauseOptimization.class);
 
     private static final int IN_CLAUSE_MAX = 1000;
 

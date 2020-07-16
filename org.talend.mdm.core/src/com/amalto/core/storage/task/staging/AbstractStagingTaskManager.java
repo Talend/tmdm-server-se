@@ -11,7 +11,8 @@ package com.amalto.core.storage.task.staging;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.context.ApplicationListener;
 
 import com.amalto.core.server.MDMInitializationCompletedEvent;
@@ -22,7 +23,7 @@ import com.amalto.core.storage.task.StagingTask;
 
 public abstract class AbstractStagingTaskManager implements StagingTaskManager, ApplicationListener<MDMInitializationCompletedEvent> {
 
-    private static final Logger LOGGER = Logger.getLogger(AbstractStagingTaskManager.class);
+    private static final Logger LOGGER = LogManager.getLogger(AbstractStagingTaskManager.class);
 
     protected StagingTaskRepository repository;
 

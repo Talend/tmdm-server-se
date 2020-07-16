@@ -15,7 +15,8 @@ import java.io.FileInputStream;
 import java.util.Properties;
 
 import com.amalto.core.server.api.XmlServer;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.util.webapp.XSystemObjects;
 
 import com.amalto.core.migration.AbstractMigrationTask;
@@ -45,10 +46,10 @@ public class AutoIncrementTask extends AbstractMigrationTask {
                 //delete the auto_increment.conf
                 boolean delete = file.delete();
                 if(!delete) {
-                    Logger.getLogger(AutoIncrementTask.class).warn("Could not successfully delete '" + file + "'.");
+                    LogManager.getLogger(AutoIncrementTask.class).warn("Could not successfully delete '" + file + "'.");
                 }
             } catch (Exception e) {
-                Logger.getLogger(AutoIncrementTask.class).error("Auto increment task exception.", e);
+                LogManager.getLogger(AutoIncrementTask.class).error("Auto increment task exception.", e);
             }
         }
         return true;

@@ -14,13 +14,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.amalto.core.objects.datacluster.DataClusterPOJOPK;
 
 public class UserManageImpl extends UserManage {
 
-    private static final Logger log = Logger.getLogger(UserManageImpl.class);
+    private static final Logger log = LogManager.getLogger(UserManageImpl.class);
 
     private static List<User> users;
 

@@ -18,11 +18,12 @@ import java.util.Enumeration;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 public class GxtFactory {
 
-    private static final Logger LOG = Logger.getLogger(GxtFactory.class);
+    private static final Logger LOG = LogManager.getLogger(GxtFactory.class);
 
     private static final String GXT_PROPERTIES = "mdm.gxt.properties"; //$NON-NLS-1$
 

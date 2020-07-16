@@ -13,7 +13,8 @@ package com.amalto.core.load.action;
 
 import com.amalto.core.load.LoadParserCallback;
 import com.amalto.core.server.api.XmlServer;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
@@ -22,7 +23,7 @@ import org.xml.sax.XMLReader;
  */
 class ServerParserCallback implements LoadParserCallback {
 
-    private static final Logger log = Logger.getLogger(ServerParserCallback.class);
+    private static final Logger log = LogManager.getLogger(ServerParserCallback.class);
 
     private final XmlServer server;
 

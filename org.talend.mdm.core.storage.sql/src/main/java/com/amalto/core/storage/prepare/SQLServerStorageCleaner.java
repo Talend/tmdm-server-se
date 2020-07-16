@@ -14,7 +14,8 @@ package com.amalto.core.storage.prepare;
 import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.datasource.DataSource;
 import com.amalto.core.storage.datasource.RDBMSDataSource;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -23,7 +24,7 @@ import java.sql.Statement;
 
 class SQLServerStorageCleaner implements StorageCleaner {
 
-    private static final Logger LOGGER = Logger.getLogger(SQLServerStorageCleaner.class);
+    private static final Logger LOGGER = LogManager.getLogger(SQLServerStorageCleaner.class);
 
     private final StorageCleaner next;
 

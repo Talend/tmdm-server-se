@@ -14,7 +14,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ServiceLoader;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.amalto.core.server.MetadataRepositoryAdmin;
 import com.amalto.core.server.PersistenceExtension;
@@ -34,7 +35,7 @@ import com.amalto.core.storage.dispatch.CompositeStorage;
 
 public class TomcatServerLifecycle implements ServerLifecycle {
 
-    private static final Logger LOGGER = Logger.getLogger(TomcatServerLifecycle.class);
+    private static final Logger LOGGER = LogManager.getLogger(TomcatServerLifecycle.class);
 
     private static Storage defaultWrap(Storage storage) {
         storage = new CacheStorage(new SecuredStorage(storage, SecuredStorage.UNSECURED));

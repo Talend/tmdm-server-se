@@ -5,7 +5,8 @@ import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.amalto.core.migration.AbstractMigrationTask;
 import com.amalto.core.objects.transformers.TransformerV2POJO;
@@ -32,7 +33,7 @@ import com.amalto.core.util.Util;
  */
 public class ConsistencyErrorMessageTask extends AbstractMigrationTask {
 
-    private static final Logger LOG = Logger.getLogger(ConsistencyErrorMessageTask.class);
+    private static final Logger LOG = LogManager.getLogger(ConsistencyErrorMessageTask.class);
 
     @Override
     @SuppressWarnings("unchecked")

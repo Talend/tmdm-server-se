@@ -23,7 +23,8 @@ import java.util.regex.Pattern;
 
 import javax.xml.parsers.SAXParser;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -46,7 +47,7 @@ import org.xml.sax.SAXException;
 
 public final class XmlUtil {
 
-    private static final Logger LOGGER = Logger.getLogger(XmlUtil.class);
+    private static final Logger LOGGER = LogManager.getLogger(XmlUtil.class);
 
     public static Document parse(URL url) throws DocumentException {
         SAXReader reader = new SAXReader();

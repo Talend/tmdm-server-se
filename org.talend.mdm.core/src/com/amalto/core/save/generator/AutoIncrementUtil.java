@@ -10,7 +10,8 @@
 package com.amalto.core.save.generator;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -31,7 +32,7 @@ import java.util.Stack;
 
 @SuppressWarnings("nls")
 public class AutoIncrementUtil {
-    private static final Logger LOG = Logger.getLogger(AutoIncrementUtil.class);
+    private static final Logger LOG = LogManager.getLogger(AutoIncrementUtil.class);
 
     public static String getConceptForAutoIncrement(String storageName, String conceptName) {
         String concept = null;

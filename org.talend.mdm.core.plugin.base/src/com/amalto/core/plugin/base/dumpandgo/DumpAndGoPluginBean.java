@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.regex.Pattern;
+import org.apache.logging.log4j.LogManager;
 
 import org.springframework.stereotype.Service;
 /**
@@ -212,7 +213,7 @@ public class DumpAndGoPluginBean extends Plugin {
 		}  catch (Exception e) {
 			String err = "Could not init the DumpAndGo plugin:"+
 				e.getClass().getName()+": "+e.getLocalizedMessage();
-			org.apache.log4j.Logger.getLogger(this.getClass()).error(err,e);
+			LogManager.getLogger(this.getClass()).error(err,e);
 			throw new XtentisException(e);
 		}
 
@@ -232,7 +233,7 @@ public class DumpAndGoPluginBean extends Plugin {
 	@Override
     public void execute(TransformerPluginContext context)
 			throws XtentisException {
-		org.apache.log4j.Logger.getLogger(this.getClass()).trace("execute() DumpAndGo");
+		LogManager.getLogger(this.getClass()).trace("execute() DumpAndGo");
 
 		TypedContent textTC = (TypedContent)context.get(INPUT_TEXT);
 		try {
@@ -241,7 +242,7 @@ public class DumpAndGoPluginBean extends Plugin {
 			String charset = Util.extractCharset(textTC.getContentType());
 			String inText = new String(textTC.getContentBytes(),charset);
 
-			org.apache.log4j.Logger.getLogger(this.getClass()).info("[Dump]:\n"+inText);
+			LogManager.getLogger(this.getClass()).info("[Dump]:\n"+inText);
 
 			String outText=inText;
 
@@ -254,11 +255,11 @@ public class DumpAndGoPluginBean extends Plugin {
 		} catch (Exception e) {
 			String err = "Could not execute the dumpAndGo plugin "+
 				e.getClass().getName()+": "+e.getLocalizedMessage();
-			org.apache.log4j.Logger.getLogger(this.getClass()).error(err,e);
+			LogManager.getLogger(this.getClass()).error(err,e);
 			throw new XtentisException(e);
 		}
 
-		org.apache.log4j.Logger.getLogger(this.getClass()).trace("execute() DumpAndGo done");
+		LogManager.getLogger(this.getClass()).trace("execute() DumpAndGo done");
 
 	}
 

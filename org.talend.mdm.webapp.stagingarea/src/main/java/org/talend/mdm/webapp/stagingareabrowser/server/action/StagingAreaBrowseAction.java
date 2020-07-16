@@ -16,7 +16,8 @@ import com.amalto.webapp.core.bean.Configuration;
 import com.extjs.gxt.ui.client.data.BaseModel;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.webapp.base.client.exception.ServiceException;
@@ -34,7 +35,7 @@ import java.util.Locale;
 
 public class StagingAreaBrowseAction implements StagingAreaBrowseService {
 
-    private static final Logger LOG = Logger.getLogger(StagingAreaBrowseAction.class);
+    private static final Logger LOG = LogManager.getLogger(StagingAreaBrowseAction.class);
 
     @Override
     public List<BaseModel> getConcepts(String language) throws ServiceException {

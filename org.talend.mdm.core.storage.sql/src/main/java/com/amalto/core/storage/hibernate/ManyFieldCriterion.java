@@ -14,7 +14,8 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.criterion.CriteriaQuery;
@@ -36,7 +37,7 @@ class ManyFieldCriterion extends SQLCriterion {
 
     private static final long serialVersionUID = -1416041576110629822L;
 
-    private static final Logger LOGGER = Logger.getLogger(ManyFieldCriterion.class);
+    private static final Logger LOGGER = LogManager.getLogger(ManyFieldCriterion.class);
 
     private final RDBMSDataSource dataSource;
 

@@ -15,7 +15,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.webapp.base.client.exception.ServiceException;
 import org.talend.mdm.webapp.base.client.model.DataTypeConstants;
 import org.talend.mdm.webapp.base.client.model.ItemBasePageLoadResult;
@@ -37,7 +38,7 @@ import com.amalto.core.util.MessagesFactory;
 
 public class BrowseRecordsInStagingAction extends BrowseRecordsAction implements BrowseRecordsInStagingService {
 
-    private final Logger LOG = Logger.getLogger(BrowseRecordsInStagingAction.class);
+    private final Logger LOG = LogManager.getLogger(BrowseRecordsInStagingAction.class);
 
     private final Messages MESSAGES = MessagesFactory
             .getMessages(

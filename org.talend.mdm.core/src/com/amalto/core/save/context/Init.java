@@ -11,7 +11,8 @@
 
 package com.amalto.core.save.context;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.util.webapp.XObjectType;
 import org.talend.mdm.commmon.util.webapp.XSystemObjects;
 
@@ -21,7 +22,7 @@ import com.amalto.core.util.BeforeSavingErrorException;
 
 class Init implements DocumentSaver {
 
-    private static final Logger LOGGER = Logger.getLogger(Init.class);
+    private static final Logger LOGGER = LogManager.getLogger(Init.class);
 
     private final DocumentSaver next;
 

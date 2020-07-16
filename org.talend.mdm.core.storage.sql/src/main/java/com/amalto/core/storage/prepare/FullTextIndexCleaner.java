@@ -15,14 +15,15 @@ import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.datasource.DataSource;
 import com.amalto.core.storage.datasource.RDBMSDataSource;
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.io.File;
 import java.io.IOException;
 
 public class FullTextIndexCleaner implements StorageCleaner, StorageInitializer {
 
-    private static final Logger LOGGER = Logger.getLogger(FullTextIndexCleaner.class);
+    private static final Logger LOGGER = LogManager.getLogger(FullTextIndexCleaner.class);
 
     private StorageInitializer initializer;
 

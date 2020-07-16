@@ -19,7 +19,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.webapp.base.server.util.CommonUtil;
 import org.talend.mdm.webapp.browserecords.server.util.SmartViewUtil;
@@ -35,7 +36,7 @@ public class SmartViewServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
-    private static final Logger LOGGER = Logger.getLogger(SmartViewServlet.class);
+    private static final Logger LOGGER = LogManager.getLogger(SmartViewServlet.class);
 
     public SmartViewServlet() {
         super();
@@ -105,7 +106,7 @@ public class SmartViewServlet extends HttpServlet {
                 dataClusterPK = org.talend.mdm.webapp.browserecords.server.util.CommonUtil.getCurrentDataCluster(isStaging);
             } catch (Exception e) {
                 String err = "Unable to get the cluster";
-                org.apache.log4j.Logger.getLogger(this.getClass()).error(err, e);
+                LogManager.getLogger(this.getClass()).error(err, e);
                 throw new ServletException(err, e);
             }
             try {

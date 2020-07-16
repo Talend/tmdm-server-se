@@ -12,11 +12,12 @@ package org.talend.mdm.webapp.browserecords.server.util;
 import java.io.IOException;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 public class BrowseRecordsConfiguration {
 
-    private static final Logger logger = Logger.getLogger(BrowseRecordsConfiguration.class);
+    private static final Logger logger = LogManager.getLogger(BrowseRecordsConfiguration.class);
 
     private static final String CONFIG_PROPERTIES_PATH = "org/talend/mdm/webapp/browserecords/BrowseRecords.properties"; //$NON-NLS-1$
 

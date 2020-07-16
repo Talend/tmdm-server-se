@@ -11,11 +11,12 @@ package org.talend.mdm.ext.publish.util;
 
 import com.amalto.core.server.api.XmlServer;
 import com.amalto.core.util.Util;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 public class DAOFactory {
 
-    private static final Logger LOGGER = Logger.getLogger(DAOFactory.class);
+    private static final Logger LOGGER = LogManager.getLogger(DAOFactory.class);
 
     /** unique instance */
     private static DAOFactory instance = null;

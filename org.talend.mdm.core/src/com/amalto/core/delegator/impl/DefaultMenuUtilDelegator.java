@@ -13,7 +13,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.util.core.CommonUtil;
 import org.talend.mdm.commmon.util.webapp.XObjectType;
 
@@ -29,7 +30,7 @@ import com.amalto.core.util.WsMenuUtil;
 
 public class DefaultMenuUtilDelegator extends BaseMenu {
 
-    private static final Logger LOGGER = Logger.getLogger(DefaultMenuUtilDelegator.class);
+    private static final Logger LOGGER = LogManager.getLogger(DefaultMenuUtilDelegator.class);
 
     private static class MenuParameters {
         private int position;

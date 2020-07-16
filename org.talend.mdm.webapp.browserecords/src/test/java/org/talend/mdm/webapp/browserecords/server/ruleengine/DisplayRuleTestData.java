@@ -13,7 +13,8 @@ import java.io.InputStream;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.dom4j.Document;
 import org.talend.mdm.webapp.base.client.model.DataTypeConstants;
 import org.talend.mdm.webapp.base.shared.ComplexTypeModel;
@@ -22,7 +23,7 @@ import org.talend.mdm.webapp.base.shared.TypeModel;
 
 public class DisplayRuleTestData {
 
-    private static final Logger LOG = Logger.getLogger(DisplayRuleTestData.class);
+    private static final Logger LOG = LogManager.getLogger(DisplayRuleTestData.class);
 
     public static Document getDocument(String name) {
         Document document = null;

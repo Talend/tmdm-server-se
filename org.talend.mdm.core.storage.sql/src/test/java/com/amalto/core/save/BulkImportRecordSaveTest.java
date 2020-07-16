@@ -25,7 +25,8 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
@@ -70,7 +71,7 @@ public class BulkImportRecordSaveTest extends TestCase {
 
     public static final boolean USE_STORAGE_OPTIMIZATIONS = true;
 
-    private static final Logger LOG = Logger.getLogger(BulkImportRecordSaveTest.class);
+    private static final Logger LOG = LogManager.getLogger(BulkImportRecordSaveTest.class);
 
     private XPath xPath = XPathFactory.newInstance().newXPath();
 

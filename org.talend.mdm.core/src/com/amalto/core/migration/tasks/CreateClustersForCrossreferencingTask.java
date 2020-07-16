@@ -17,12 +17,13 @@ import com.amalto.core.objects.datamodel.DataModelPOJOPK;
 import com.amalto.core.server.api.DataCluster;
 import com.amalto.core.server.api.DataModel;
 import com.amalto.core.util.Util;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.util.core.ICoreConstants;
 
 public class CreateClustersForCrossreferencingTask extends AbstractMigrationTask {
 
-    public static final Logger LOGGER = Logger.getLogger(CreateClustersForCrossreferencingTask.class);
+    public static final Logger LOGGER = LogManager.getLogger(CreateClustersForCrossreferencingTask.class);
 
     @Override
     protected Boolean execute() {

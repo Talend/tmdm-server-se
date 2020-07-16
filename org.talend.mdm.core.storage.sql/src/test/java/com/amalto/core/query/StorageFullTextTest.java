@@ -39,7 +39,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
@@ -82,7 +83,7 @@ import com.amalto.xmlserver.interfaces.WhereCondition;
 @SuppressWarnings("nls")
 public class StorageFullTextTest extends StorageTestCase {
 
-    private static Logger LOG = Logger.getLogger(StorageFullTextTest.class);
+    private static Logger LOG = LogManager.getLogger(StorageFullTextTest.class);
     private static ComplexTypeMetadata a1 = repository.getComplexType("a1");
     private static ComplexTypeMetadata a2 = repository.getComplexType("a2");
     private static ComplexTypeMetadata a3 = repository.getComplexType("a3");

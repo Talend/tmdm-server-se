@@ -12,8 +12,9 @@ package com.amalto.core.query.user;
 import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.StorageResults;
 import com.amalto.core.storage.record.DataRecord;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 
 import java.util.*;
@@ -25,7 +26,7 @@ import java.util.*;
  */
 public class Split {
 
-    private static final Logger LOGGER = Logger.getLogger(Split.class);
+    private static final Logger LOGGER = LogManager.getLogger(Split.class);
 
     /**
      * <p>
@@ -85,7 +86,7 @@ public class Split {
 
     private static class ResultsMerge implements StorageResults {
 
-        private static final Logger LOGGER = Logger.getLogger(ResultsMerge.class);
+        private static final Logger LOGGER = LogManager.getLogger(ResultsMerge.class);
 
         private final Storage storage;
 

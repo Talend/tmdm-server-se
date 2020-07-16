@@ -18,7 +18,8 @@ import javax.servlet.http.HttpSession;
 import javax.xml.parsers.DocumentBuilder;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
@@ -71,7 +72,7 @@ import com.amalto.webapp.core.util.Webapp;
 
 public class GeneralAction implements GeneralService {
 
-    private static final Logger LOG = Logger.getLogger(GeneralAction.class);
+    private static final Logger LOG = LogManager.getLogger(GeneralAction.class);
 
     private static final Messages MESSAGES = MessagesFactory.getMessages(
             "org.talend.mdm.webapp.general.client.i18n.GeneralMessages", GeneralAction.class.getClassLoader()); //$NON-NLS-1$

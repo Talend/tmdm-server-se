@@ -21,7 +21,8 @@ import javax.xml.xpath.XPathFactory;
 
 import junit.framework.TestCase;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -248,7 +249,7 @@ public class UtilTestCase extends TestCase {
                     return "<report><message type=\"error\"/></report> "; //$NON-NLS-1$
                 }
             } catch (Exception e) {
-                Logger.getLogger(Util.class).error(e);
+                LogManager.getLogger(Util.class).error(e);
                 throw e;
             }
         }

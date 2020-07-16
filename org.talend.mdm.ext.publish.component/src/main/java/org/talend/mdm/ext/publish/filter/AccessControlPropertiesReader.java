@@ -12,11 +12,12 @@ package org.talend.mdm.ext.publish.filter;
 import java.io.InputStream;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 public class AccessControlPropertiesReader {
 
-    private static Logger log = Logger.getLogger(AccessControlPropertiesReader.class);
+    private static Logger log = LogManager.getLogger(AccessControlPropertiesReader.class);
 
     private static final String configFileName = "AccessControllerConfig.properties";//$NON-NLS-1$
 

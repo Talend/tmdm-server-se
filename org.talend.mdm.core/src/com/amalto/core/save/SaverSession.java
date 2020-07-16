@@ -16,7 +16,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.util.core.EUUIDCustomType;
@@ -39,7 +40,7 @@ import static com.amalto.core.util.MDMEhCacheUtil.UPDATE_REPORT_EVENT_CACHE;
 import com.amalto.core.util.Util;
 
 public class SaverSession {
-    private static final Logger LOGGER = Logger.getLogger(SaverSession.class);
+    private static final Logger LOGGER = LogManager.getLogger(SaverSession.class);
 
     private static final String AUTO_INCREMENT_TYPE_NAME = "AutoIncrement"; //$NON-NLS-1$
 

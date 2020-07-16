@@ -12,10 +12,15 @@ package com.amalto.core.util;
 import java.io.StringReader;
 import java.io.StringWriter;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 import com.amalto.core.objects.marshalling.MarshallingFactory;
 import com.amalto.xmlserver.interfaces.WhereCondition;
 
 public class RoleWhereCondition {
+    private static final Logger LOG = LogManager.getLogger(SessionContextHolder.class);
+
 	String leftPath;
 	String operator;
 	String rightValueOrPath;
@@ -36,7 +41,7 @@ public class RoleWhereCondition {
 		    MarshallingFactory.getInstance().getMarshaller(this.getClass()).marshal(this, sw);
 		} catch (Exception e) {
 			String err = "toString() ERROR MARSHALLING WhereCondition: "+e.getClass().getName()+": "+e.getLocalizedMessage();
-			org.apache.log4j.Category.getInstance(this.getClass()).error(err);
+			LOG.error(err);
 			throw new RuntimeException(err);
 		}
 		return sw.toString();
@@ -51,7 +56,7 @@ public class RoleWhereCondition {
             rwc = MarshallingFactory.getInstance().getUnmarshaller(RoleWhereCondition.class).unmarshal(new StringReader(marshalledWC));
 		} catch (Exception e) {
 			String err = "parse() ERROR UNMARSHALLING WhereCondition \""+marshalledWC+"\": "+e.getClass().getName()+": "+e.getLocalizedMessage();
-			org.apache.log4j.Category.getInstance(RoleWhereCondition.class).error(err);
+			LOG.error(err);
 			throw new XtentisException(err);
 		}
 		return rwc;

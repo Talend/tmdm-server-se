@@ -14,13 +14,14 @@ package com.amalto.core.storage.prepare;
 import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.datasource.DataSource;
 import com.amalto.core.storage.datasource.RDBMSDataSource;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.sql.*;
 
 class OracleStorageCleaner implements StorageCleaner {
 
-    private static final Logger LOGGER = Logger.getLogger(OracleStorageCleaner.class);
+    private static final Logger LOGGER = LogManager.getLogger(OracleStorageCleaner.class);
 
     private final StorageCleaner next;
 

@@ -17,7 +17,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.util.core.CommonUtil;
 import org.talend.mdm.commmon.util.core.ICoreConstants;
 
@@ -27,7 +28,7 @@ import com.amalto.core.util.Menu;
 
 public class Menu {
 
-    private static final Logger LOGGER = Logger.getLogger(Menu.class);
+    private static final Logger LOGGER = LogManager.getLogger(Menu.class);
 
     static final DecimalFormat TWO_DIGITS = new DecimalFormat("00"); //$NON-NLS-1$
 

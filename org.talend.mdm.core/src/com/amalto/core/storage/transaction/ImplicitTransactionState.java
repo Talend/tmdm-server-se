@@ -10,7 +10,8 @@
 
 package com.amalto.core.storage.transaction;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.amalto.core.server.ServerContext;
 
@@ -18,7 +19,7 @@ public class ImplicitTransactionState implements TransactionState {
 
     public static final TransactionState INSTANCE = new ImplicitTransactionState();
 
-    private static final Logger LOGGER = Logger.getLogger(ImplicitTransactionState.class);
+    private static final Logger LOGGER = LogManager.getLogger(ImplicitTransactionState.class);
 
     private ImplicitTransactionState() {
     }

@@ -26,7 +26,8 @@ import com.amalto.core.query.user.VisitorAdapter;
 import com.amalto.core.query.user.metadata.*;
 import com.amalto.core.storage.CloseableIterator;
 import com.amalto.core.storage.record.StorageConstants;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.StorageResults;
@@ -65,7 +66,7 @@ class IdQueryHandler extends AbstractQueryHandler {
         }
     };
 
-    private static final Logger LOGGER = Logger.getLogger(IdQueryHandler.class);
+    private static final Logger LOGGER = LogManager.getLogger(IdQueryHandler.class);
 
     private Object idValue;
 

@@ -15,11 +15,12 @@ import com.amalto.core.storage.datasource.DataSourceDefinition;
 import com.amalto.core.storage.datasource.DataSourceFactory;
 import com.amalto.core.storage.transaction.TransactionManager;
 import org.apache.commons.lang.NotImplementedException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 class ServerImpl implements Server {
 
-    private static final Logger LOGGER = Logger.getLogger(ServerImpl.class);
+    private static final Logger LOGGER = LogManager.getLogger(ServerImpl.class);
 
     private final DataSourceFactory dataSourceFactory = DataSourceFactory.getInstance();
 

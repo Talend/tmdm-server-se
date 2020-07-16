@@ -12,11 +12,12 @@ package com.amalto.core.util;
 import java.lang.reflect.Constructor;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 public final class UserHelper {
 
-    private static final Logger LOGGER = Logger.getLogger(UserHelper.class);
+    private static final Logger LOGGER = LogManager.getLogger(UserHelper.class);
 
     private static UserHelper instance;
 

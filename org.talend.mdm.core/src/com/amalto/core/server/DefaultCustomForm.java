@@ -16,7 +16,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.util.core.ICoreConstants;
 
 import com.amalto.core.delegator.ILocalUser;
@@ -34,7 +35,7 @@ import com.amalto.core.util.XtentisException;
 
 public class DefaultCustomForm implements CustomForm {
 
-    private static final Logger LOGGER = Logger.getLogger(DefaultCustomForm.class);
+    private static final Logger LOGGER = LogManager.getLogger(DefaultCustomForm.class);
 
     /**
      * Creates or updates a CustomForm

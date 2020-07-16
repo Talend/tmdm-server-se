@@ -22,7 +22,8 @@ import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
@@ -71,7 +72,7 @@ import net.sf.ehcache.CacheManager;
 @SuppressWarnings("nls")
 public class RecordValidationTest extends TestCase {
 
-    private static final Logger LOG = Logger.getLogger(RecordValidationTest.class);
+    private static final Logger LOG = LogManager.getLogger(RecordValidationTest.class);
 
     protected static final Storage systemStorage;
 

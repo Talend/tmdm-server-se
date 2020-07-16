@@ -11,7 +11,8 @@
 
 package com.amalto.core.storage.transaction;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.amalto.core.server.ServerContext;
 import com.amalto.core.storage.Storage;
@@ -23,7 +24,7 @@ import com.amalto.core.storage.Storage;
  */
 public abstract class StorageTransaction {
 
-    private static final Logger LOG = Logger.getLogger(StorageTransaction.class);
+    private static final Logger LOG = LogManager.getLogger(StorageTransaction.class);
 
     private final Object[] lockChange = new Object[0];
 

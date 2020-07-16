@@ -26,7 +26,8 @@ import com.amalto.core.storage.record.StorageConstants;
 import com.amalto.core.util.User;
 import com.amalto.core.util.UserHelper;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
@@ -54,7 +55,7 @@ public class MDMValidationTask extends MetadataRepositoryTask {
 
     private static final int CONSUMER_POOL_SIZE;
 
-    private static final Logger LOGGER = Logger.getLogger(MDMValidationTask.class);
+    private static final Logger LOGGER = LogManager.getLogger(MDMValidationTask.class);
 
     private static final int COMMIT_SIZE;
 

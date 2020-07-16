@@ -11,7 +11,8 @@
 
 package com.amalto.core.servlet;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletResponse;
@@ -24,7 +25,7 @@ import java.io.IOException;
  */
 public class ErrorFilter implements Filter {
 
-    private static final Logger LOG = Logger.getLogger(ErrorFilter.class);
+    private static final Logger LOG = LogManager.getLogger(ErrorFilter.class);
 
     public void init(FilterConfig filterConfig) throws ServletException {
         // Nothing to do.

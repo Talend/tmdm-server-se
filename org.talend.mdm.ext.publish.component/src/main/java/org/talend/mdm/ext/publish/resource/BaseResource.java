@@ -13,7 +13,8 @@ import com.amalto.core.objects.datamodel.DataModelPOJO;
 import com.amalto.core.objects.datamodel.DataModelPOJOPK;
 import com.amalto.core.util.Util;
 import com.amalto.core.util.XtentisException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.restlet.Context;
 import org.restlet.data.*;
 import org.restlet.resource.*;
@@ -34,7 +35,7 @@ import java.util.Map;
  */
 public abstract class BaseResource extends Resource {
 
-    private static Logger log = Logger.getLogger(BaseResource.class);
+    private static Logger log = LogManager.getLogger(BaseResource.class);
 
     public BaseResource(Context context, Request request, Response response) {
         super(context, request, response);

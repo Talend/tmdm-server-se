@@ -31,7 +31,8 @@ import com.amalto.core.storage.record.metadata.DataRecordMetadata;
 import com.amalto.core.util.Util;
 import com.amalto.xmlserver.interfaces.XmlServerException;
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.util.core.MDMXMLUtils;
@@ -60,7 +61,7 @@ import static com.amalto.core.query.user.UserQueryBuilder.from;
 @SuppressWarnings("nls")
 public class DataRecordCreationTest extends StorageTestCase {
 
-    private static final Logger LOGGER = Logger.getLogger(DataRecordCreationTest.class);
+    private static final Logger LOGGER = LogManager.getLogger(DataRecordCreationTest.class);
 
     @Override
     public void tearDown() throws Exception {

@@ -9,7 +9,8 @@
  */
 package com.amalto.webapp.core.dmagent;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.util.datamodel.management.SchemaManager;
 
 import com.amalto.commons.core.datamodel.synchronization.DMUpdateEvent;
@@ -21,7 +22,7 @@ import com.amalto.core.util.XtentisException;
 
 public class DataModelSynchronizer implements DataModelChangeListener {
 
-    private static final Logger LOGGER = Logger.getLogger(DataModelSynchronizer.class);
+    private static final Logger LOGGER = LogManager.getLogger(DataModelSynchronizer.class);
 
     @Override
     public void onChange(DMUpdateEvent dmUpdateEvent) {

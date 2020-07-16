@@ -20,7 +20,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.talend.mdm.webapp.journal.server.service.JournalDBService;
 import org.talend.mdm.webapp.journal.server.service.WebServiceImp;
@@ -35,7 +36,7 @@ public class JournalExportServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
-    private static final Logger LOG = Logger.getLogger(JournalExportServlet.class);
+    private static final Logger LOG = LogManager.getLogger(JournalExportServlet.class);
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

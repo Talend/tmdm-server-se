@@ -15,7 +15,8 @@ import static com.amalto.core.query.user.UserQueryBuilder.from;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 
@@ -44,7 +45,7 @@ import junit.framework.TestCase;
 @SuppressWarnings("nls")
 public class FKConstraintTest extends TestCase {
 
-    private static Logger LOG = Logger.getLogger(FKConstraintTest.class);
+    private static Logger LOG = LogManager.getLogger(FKConstraintTest.class);
 
     private static String ENTITY_A1_EMPTY = "<Entity_A1><A1_Id>A1</A1_Id><A1_Name>A1 Name</A1_Name><B1><B1_Name>B1 Name</B1_Name></B1></Entity_A1>";
 

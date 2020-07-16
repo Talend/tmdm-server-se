@@ -23,7 +23,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.amalto.core.jobox.component.JobAware;
 import com.amalto.core.jobox.component.JobDeploy;
@@ -48,7 +49,7 @@ public class JobContainer {
      */
     private static final JobContainer instance = new JobContainer();
 
-    private static final Logger LOGGER = Logger.getLogger(JobContainer.class);
+    private static final Logger LOGGER = LogManager.getLogger(JobContainer.class);
 
     /**
      * Count how many job executor thread have requested for execution lock.

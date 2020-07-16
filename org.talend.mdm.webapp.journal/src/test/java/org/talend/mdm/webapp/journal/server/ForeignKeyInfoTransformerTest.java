@@ -23,6 +23,7 @@ import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
 
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit3.PowerMockSuite;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
@@ -50,6 +51,7 @@ import junit.framework.TestSuite;
 
 @SuppressWarnings("nls")
 @PrepareForTest({ DefaultItem.class, Util.class })
+@PowerMockIgnore({"javax.management.*", "javax.xml.parsers.*", "org.xml.sax.*", "org.w3c.dom.*"})
 public class ForeignKeyInfoTransformerTest extends TestCase {
 
     static {

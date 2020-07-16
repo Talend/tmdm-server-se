@@ -18,7 +18,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.amalto.core.jobox.JobContainer;
 import com.amalto.core.jobox.JobInfo;
@@ -40,7 +41,7 @@ import com.google.common.base.Joiner;
  */
 public abstract class JobInvoker {
 
-    private static final Logger LOGGER = Logger.getLogger(JobInvoker.class);
+    private static final Logger LOGGER = LogManager.getLogger(JobInvoker.class);
 
     private final JobContainer container = JobContainer.getUniqueInstance();
 

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+
+    <!-- ================ -->
+    <!--    Appenders     -->
+    <!-- ================ -->
+    <Appenders>
+        <Console name="CONSOLE" target="SYSTEM_OUT">
+            <PatternLayout pattern="%-5p [%c] %m%n" />
+        </Console>
+    </Appenders>
+
+    <!-- ================ -->
+    <!--    Loggers    -->
+    <!-- ================ -->
+    <Loggers>
+        <!-- ======================= -->
+        <!-- Setup the Root logger -->
+        <!-- ======================= -->
+        <Root level="WARN">
+            <AppenderRef ref="CONSOLE"/>
+        </Root>
+    </Loggers>
+</Configuration>

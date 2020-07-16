@@ -23,8 +23,12 @@ import junit.framework.TestCase;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 
@@ -39,7 +43,7 @@ import com.amalto.core.storage.datasource.RDBMSDataSource;
 
 public class MappingParsingTest extends TestCase {
 
-    Logger LOGGER = Logger.getLogger(HibernateStorage.class);
+    Logger LOGGER = LogManager.getLogger(HibernateStorage.class);
     private Level previousLevel;
 
     public MappingParsingTest() {
@@ -49,13 +53,22 @@ public class MappingParsingTest extends TestCase {
     @Override
     public void setUp() throws Exception {
         ServerContext.INSTANCE.get(new MockServerLifecycle());
-        previousLevel = LOGGER.getLevel();
-        LOGGER.setLevel(Level.TRACE);
+        
+        LoggerContext ctx = (LoggerContext)LogManager.getContext(false);
+        Configuration conf = ctx.getConfiguration();
+        LoggerConfig loggerConfig = conf.getLoggerConfig(LOGGER.getName());
+        previousLevel = loggerConfig.getLevel();
+        loggerConfig.setLevel(Level.TRACE);
+        ctx.updateLoggers(conf);
     }
 
     @Override
     public void tearDown() throws Exception {
-        LOGGER.setLevel(previousLevel);
+        LoggerContext ctx = (LoggerContext)LogManager.getContext(false);
+        Configuration conf = ctx.getConfiguration();
+        LoggerConfig loggerConfig = conf.getLoggerConfig(LOGGER.getName());
+        loggerConfig.setLevel(previousLevel);
+        ctx.updateLoggers(conf);
     }
 
     public void testInheritanceIndexLength() throws Exception {

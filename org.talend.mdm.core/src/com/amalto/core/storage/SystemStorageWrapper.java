@@ -26,7 +26,8 @@ import java.util.Set;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.DefaultMetadataVisitor;
@@ -70,7 +71,7 @@ public class SystemStorageWrapper extends StorageWrapper {
 
     private static final String BROWSEITEM_PREFIX_INFO = "SearchTemplate.BrowseItem."; //$NON-NLS-1$
 
-    private static final Logger LOGGER = Logger.getLogger(SystemStorageWrapper.class);
+    private static final Logger LOGGER = LogManager.getLogger(SystemStorageWrapper.class);
 
     public SystemStorageWrapper() {
         DOCUMENT_BUILDER_FACTORY.setNamespaceAware(true);

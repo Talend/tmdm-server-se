@@ -16,7 +16,8 @@ import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.util.core.MDMXMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -28,7 +29,7 @@ import com.amalto.core.util.Util;
 
 public class MigrationRepository {
 
-    private static final Logger LOGGER = Logger.getLogger(MigrationRepository.class);
+    private static final Logger LOGGER = LogManager.getLogger(MigrationRepository.class);
 
     private static boolean isExecuted = false;
 

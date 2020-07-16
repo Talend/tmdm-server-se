@@ -20,7 +20,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.util.webapp.XObjectType;
@@ -38,7 +39,7 @@ import com.amalto.core.util.XtentisException;
 
 public class DroppedItemPOJO implements Serializable {
 
-    private static final Logger LOGGER = Logger.getLogger(DroppedItemPOJO.class);
+    private static final Logger LOGGER = LogManager.getLogger(DroppedItemPOJO.class);
 
     private static final String MDM_ITEMS_TRASH = "MDMItemsTrash"; //$NON-NLS-1$
 

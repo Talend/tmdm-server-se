@@ -15,7 +15,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.webapp.base.client.exception.ServiceException;
 import org.talend.mdm.webapp.base.client.model.DataTypeConstants;
 import org.talend.mdm.webapp.base.client.model.ItemBasePageLoadResult;
@@ -35,7 +36,7 @@ import com.amalto.core.util.LocaleUtil;
 
 public class BrowseStagingRecordsAction extends BrowseRecordsAction implements BrowseStagingRecordsService {
 
-    private final Logger LOG = Logger.getLogger(BrowseStagingRecordsAction.class);
+    private final Logger LOG = LogManager.getLogger(BrowseStagingRecordsAction.class);
 
     @Override
     public ViewBean getView(String viewPk, String language) throws ServiceException {

@@ -14,7 +14,8 @@ import com.amalto.core.objects.ObjectPOJOPK;
 import com.amalto.core.objects.view.ViewPOJO;
 import com.amalto.core.objects.view.ViewPOJOPK;
 import com.amalto.core.util.XtentisException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import com.amalto.core.server.api.View;
 
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ import java.util.List;
 
 public class DefaultView implements View {
 
-    public static final Logger LOGGER = Logger.getLogger(DefaultView.class);
+    public static final Logger LOGGER = LogManager.getLogger(DefaultView.class);
 
     /**
      * Creates or updates a View

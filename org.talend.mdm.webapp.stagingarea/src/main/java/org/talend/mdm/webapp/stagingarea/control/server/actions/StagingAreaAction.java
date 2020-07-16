@@ -12,7 +12,8 @@ package org.talend.mdm.webapp.stagingarea.control.server.actions;
 import com.amalto.core.server.MetadataRepositoryAdmin;
 import com.amalto.core.server.ServerContext;
 import com.amalto.webapp.core.bean.Configuration;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.metadata.OutboundReferences;
@@ -27,7 +28,7 @@ import java.util.*;
 
 public class StagingAreaAction implements StagingAreaService {
 
-    private static final Logger LOG                       = Logger.getLogger(StagingAreaAction.class);
+    private static final Logger LOG                       = LogManager.getLogger(StagingAreaAction.class);
 
     private static final String STAGING_AREA_PROPERTIES   = "/stagingarea.properties";                //$NON-NLS-1$
 

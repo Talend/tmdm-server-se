@@ -24,7 +24,8 @@ import java.util.Set;
 import javax.xml.parsers.DocumentBuilder;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Namespace;
 import org.dom4j.QName;
@@ -64,7 +65,7 @@ import com.amalto.webapp.core.util.Util;
  */
 public class CommonUtil {
 
-    private static final Logger LOG = Logger.getLogger(CommonUtil.class);
+    private static final Logger LOG = LogManager.getLogger(CommonUtil.class);
 
     public static final String ORIGINAL_VALUE = "originalValue";
 

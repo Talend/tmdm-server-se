@@ -18,7 +18,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
@@ -54,7 +55,7 @@ public class ForeignKeyInfoTransformer implements DocumentTransformer {
 
     String xpathStr = null;
 
-    private final static Logger LOG = Logger.getLogger(ForeignKeyInfoTransformer.class);
+    private final static Logger LOG = LogManager.getLogger(ForeignKeyInfoTransformer.class);
 
     public ForeignKeyInfoTransformer(TypeMetadata metadata, String dataClusterName) {
         this.metadata = metadata;

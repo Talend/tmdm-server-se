@@ -20,7 +20,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
 import org.talend.mdm.webapp.general.server.util.Utils;
 
@@ -32,7 +33,7 @@ public class ControllerServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
-    private static final Logger LOG = Logger.getLogger(ControllerServlet.class);
+    private static final Logger LOG = LogManager.getLogger(ControllerServlet.class);
 
     private static final Messages MESSAGES = MessagesFactory.getMessages("org.talend.mdm.webapp.general.server.servlet.messages", //$NON-NLS-1$
             ControllerServlet.class.getClassLoader());

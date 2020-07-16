@@ -11,7 +11,8 @@
 package com.amalto.core.jobox.component;
 
 import com.amalto.core.jobox.util.JoboxException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -24,7 +25,7 @@ public class MDMJobInvoker extends JobInvoker {
 
     public static final String EXCHANGE_XML_PARAMETER = "__talend__exchangeXML__"; //$NON-NLS-1$
 
-    private static final Logger LOGGER = Logger.getLogger(MDMJobInvoker.class);
+    private static final Logger LOGGER = LogManager.getLogger(MDMJobInvoker.class);
 
     private static final String SET_MDM_INPUT_MESSAGE_METHOD = "setMDMInputMessage"; //$NON-NLS-1$
 

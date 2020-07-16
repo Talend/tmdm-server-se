@@ -11,11 +11,12 @@ package talend.ext.images.server;
 
 import java.io.File;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 public class ImageServerInfo {
 
-    private static final Logger logger = Logger.getLogger(ImageServerInfo.class);
+    private static final Logger logger = LogManager.getLogger(ImageServerInfo.class);
 
     private static ImageServerInfo instance;
 

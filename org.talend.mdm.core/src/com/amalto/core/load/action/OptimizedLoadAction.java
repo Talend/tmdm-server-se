@@ -25,7 +25,8 @@ import com.amalto.core.util.XtentisException;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.util.core.EUUIDCustomType;
 import org.talend.mdm.commmon.util.webapp.XSystemObjects;
 
@@ -36,7 +37,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class OptimizedLoadAction implements LoadAction {
-    private static final Logger LOG = Logger.getLogger(OptimizedLoadAction.class);
+    private static final Logger LOG = LogManager.getLogger(OptimizedLoadAction.class);
     private static final AutoIdGenerator UUID_ID_GENERATOR = new UUIDIdGenerator();
     private final String dataClusterName;
     private final String typeName;

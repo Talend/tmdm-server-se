@@ -15,11 +15,12 @@ import com.amalto.core.storage.Storage;
 import com.amalto.core.storage.datasource.DataSource;
 import com.amalto.core.storage.datasource.RDBMSDataSource;
 import org.apache.commons.lang.NotImplementedException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 public class JDBCStorageInitializer implements StorageInitializer {
 
-    private static final Logger LOGGER = Logger.getLogger(JDBCStorageInitializer.class);
+    private static final Logger LOGGER = LogManager.getLogger(JDBCStorageInitializer.class);
 
     @Override
     public boolean supportInitialization(Storage storage) {

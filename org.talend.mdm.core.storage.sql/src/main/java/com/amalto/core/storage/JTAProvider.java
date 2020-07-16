@@ -10,7 +10,8 @@
 
 package com.amalto.core.storage;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform;
 import org.hibernate.engine.transaction.jta.platform.spi.JtaPlatform;
 import org.hibernate.engine.transaction.jta.platform.spi.JtaPlatformProvider;
@@ -18,7 +19,7 @@ import org.hibernate.engine.transaction.jta.platform.spi.JtaPlatformProvider;
 // Do not remove, dynamically called by Hibernate (see META-INF/services/).
 public class JTAProvider implements JtaPlatformProvider {
 
-    public static final Logger LOGGER = Logger.getLogger(JTAProvider.class);
+    public static final Logger LOGGER = LogManager.getLogger(JTAProvider.class);
 
     @Override
     public JtaPlatform getProvidedJtaPlatform() {

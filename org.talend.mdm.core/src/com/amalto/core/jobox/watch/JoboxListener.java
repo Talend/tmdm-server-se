@@ -17,7 +17,8 @@ import com.amalto.core.jobox.component.JobDeploy;
 import com.amalto.core.jobox.util.JoboxException;
 import com.amalto.core.jobox.util.JoboxUtil;
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ import java.util.zip.ZipException;
 
 public class JoboxListener implements DirListener {
 
-    private static final Logger LOGGER = Logger.getLogger(JoboxListener.class);
+    private static final Logger LOGGER = LogManager.getLogger(JoboxListener.class);
 
     public void fileChanged(List<String> newFiles, List<String> deleteFiles, List<String> modifyFiles) {
         JobContainer container = JobContainer.getUniqueInstance();

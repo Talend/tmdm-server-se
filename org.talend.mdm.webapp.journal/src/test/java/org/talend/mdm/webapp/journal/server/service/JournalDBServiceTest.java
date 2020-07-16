@@ -23,6 +23,7 @@ import junit.framework.TestSuite;
 import org.dom4j.tree.DefaultElement;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit3.PowerMockSuite;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
@@ -48,6 +49,7 @@ import com.sun.xml.xsom.XSElementDecl;
  */
 @SuppressWarnings("nls")
 @PrepareForTest({ Util.class, XtentisPort.class, WSDataModelPKArray.class, WSRegexDataModelPKs.class})
+@PowerMockIgnore({"javax.management.*", "javax.xml.parsers.*", "org.xml.sax.*", "org.w3c.dom.*"})
 public class JournalDBServiceTest extends TestCase {
 
     static {

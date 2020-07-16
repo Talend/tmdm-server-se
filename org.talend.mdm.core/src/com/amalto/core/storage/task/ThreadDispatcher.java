@@ -12,7 +12,8 @@
 package com.amalto.core.storage.task;
 
 import com.amalto.core.storage.record.DataRecord;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.security.core.context.SecurityContext;
 import org.talend.mdm.commmon.util.core.MDMConfiguration;
 
@@ -22,7 +23,7 @@ import java.util.concurrent.*;
 
 class ThreadDispatcher implements Closure {
 
-    private static final Logger LOGGER = Logger.getLogger(ThreadDispatcher.class);
+    private static final Logger LOGGER = LogManager.getLogger(ThreadDispatcher.class);
 
     private static final int QUEUE_SIZE_THRESHOLD;
 

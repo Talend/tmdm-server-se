@@ -16,9 +16,8 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.amalto.commons.core.utils.xpath.JXPathContext;
 import com.amalto.commons.core.utils.xpath.JXPathException;
@@ -152,7 +151,7 @@ public class XPathUtils {
 		boolean createPivots
 	)  throws JXPathException{
 
-		org.apache.log4j.Logger.getLogger(XMLUtils.class).trace("factor() "+targetPath);
+		LogManager.getLogger(XMLUtils.class).trace("factor() "+targetPath);
 
 	    //Constant, Operation, Path, VariableReference
 		if (targetPath instanceof Constant) {
@@ -195,7 +194,7 @@ public class XPathUtils {
 //				Expression[] lastPredicates = lastStep.getPredicates();
 //				lastStep.setPredicates(null);
 //				pivotsMap.put(name, newPivotPath);
-//				org.apache.log4j.Logger.getLogger(XPathUtils.class).trace(
+//				LogManager.getLogger(XPathUtils.class).trace(
 //					"factor() --> adding pivot '"+name+"': "+newPivotPath.toString()
 //				);
 //
@@ -209,7 +208,7 @@ public class XPathUtils {
 				//Create a pivot from the path
 				LocationPath newPivotPath = ((LocationPath)p).clone(true);
 				pivotsMap.put(name, newPivotPath);
-				org.apache.log4j.Logger.getLogger(XPathUtils.class).trace(
+				LogManager.getLogger(XPathUtils.class).trace(
 					"factor() --> adding pivot '"+name+"': "+newPivotPath.toString()
 				);
 
@@ -282,23 +281,23 @@ public class XPathUtils {
             Step pivotStep = pivotSteps[i];
             remainingStepPredicates = new ArrayList<Expression>();
 
-            org.apache.log4j.Logger.getLogger(XPathUtils.class).trace("factor() --"+(i+1)+"-comparing '"+step+"' with pivot step '"+pivotStep+"'");
+            LogManager.getLogger(XPathUtils.class).trace("factor() --"+(i+1)+"-comparing '"+step+"' with pivot step '"+pivotStep+"'");
 
             if (step.getAxis() ==  pivotStep.getAxis()) {
-            	org.apache.log4j.Logger.getLogger(XPathUtils.class).trace("factor() ------axis identical");
+            	LogManager.getLogger(XPathUtils.class).trace("factor() ------axis identical");
             	if (step.getNodeTest().equals(pivotStep.getNodeTest())) {
-            		org.apache.log4j.Logger.getLogger(XPathUtils.class).trace("factor() ------node step identical");
+            		LogManager.getLogger(XPathUtils.class).trace("factor() ------node step identical");
             		//check if all pivot predicates are included in this step predicates
             		ArrayList<Expression> pivotPredicates = new ArrayList<Expression>(Arrays.asList(pivotStep.getPredicates()));
             		Collection<Expression> stepPredicates = Arrays.asList(step.getPredicates());
             		for (Iterator<Expression> iterator = stepPredicates.iterator(); iterator.hasNext();) {
                         Expression predicate = iterator.next();
-                        org.apache.log4j.Logger.getLogger(XPathUtils.class).trace("factor() --------looking at step predicate ["+predicate+"]");
+                        LogManager.getLogger(XPathUtils.class).trace("factor() --------looking at step predicate ["+predicate+"]");
                         //find in pivot predicates
                         Expression foundPivotPredicate = null;
                         for (Iterator<Expression> iterator2 = pivotPredicates.iterator(); iterator2.hasNext();) {
                             Expression pivotPredicate = iterator2.next();
-                            org.apache.log4j.Logger.getLogger(XPathUtils.class).trace("factor() ----------comparing with pivot predicate ["+pivotPredicate+"]");
+                            LogManager.getLogger(XPathUtils.class).trace("factor() ----------comparing with pivot predicate ["+pivotPredicate+"]");
                             if (predicate.equals(pivotPredicate)) {
                             	foundPivotPredicate = pivotPredicate;
                             	break;
@@ -317,12 +316,12 @@ public class XPathUtils {
             			//then the pivot Step is included in the step
             			if (remainingStepPredicates.size() ==0) {
             				//identical
-            				org.apache.log4j.Logger.getLogger(XPathUtils.class).trace("factor() --------predicates identical");
+            				LogManager.getLogger(XPathUtils.class).trace("factor() --------predicates identical");
             				continue;
             			} else {
             				//as a special case if there are more predicates on the last step, we are happy
             				if (i == pivotSteps.length -1) {
-            					org.apache.log4j.Logger.getLogger(XPathUtils.class).trace("factor() ------predicates identical but with additional predicates");
+            					LogManager.getLogger(XPathUtils.class).trace("factor() ------predicates identical but with additional predicates");
             					continue;
             				}
             				//different
@@ -330,7 +329,7 @@ public class XPathUtils {
             		}
             	}
             }
-            org.apache.log4j.Logger.getLogger(XPathUtils.class).trace("factor() ----different");
+            LogManager.getLogger(XPathUtils.class).trace("factor() ----different");
             break;
 		}
 
@@ -486,8 +485,8 @@ public class XPathUtils {
 
 
 	public static void main(String[] args) {
-		BasicConfigurator.configure();
-		Logger.getLogger("com.amalto.commons.core.utils.XPathUtils").setLevel(Level.ALL);
+	    //BasicConfigurator.configure();
+		LogManager.getLogger("com.amalto.commons.core.utils.XPathUtils");
 		testDump();
 		System.out.println("\n\n\n");
 		testPathFactor();

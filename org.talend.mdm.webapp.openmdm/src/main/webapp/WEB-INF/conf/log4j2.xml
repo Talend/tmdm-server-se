@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (C) 2006-2020 Talend Inc. - www.talend.com
+  ~
+  ~ This source code is available under agreement available at
+  ~ %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
+  ~
+  ~ You should have received a copy of the agreement
+  ~ along with this program; if not, write to Talend SA
+  ~ 9 rue Pages 92150 Suresnes, France
+  -->
+<Configuration>
+
+    <!-- ================ -->
+    <!--    Appenders     -->
+    <!-- ================ -->
+    <Appenders>
+        <Console name="CONSOLE" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{ABSOLUTE} %-5p [%c{1}] %m%n" />
+            <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY" />
+        </Console>
+
+        <RollingFile name="FILE" fileName="${sys:mdm.root}/logs/mdm.log" filePattern="${sys:mdm.root}/mdm.log.%d{yyyy-MM-dd}" append="true">
+            <PatternLayout pattern="%d %-5p [%c] %m%n" />
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+            </Policies>
+        </RollingFile>
+
+        <RollingFile name="MATCH_LOG_FILE" fileName="${sys:mdm.root}/logs/mdm-match.log" filePattern="${sys:mdm.root}/mdm.log.%d{yyyy-MM-dd}" append="false">
+            <PatternLayout pattern="%d %-5p %m%n" />
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+            </Policies>
+        </RollingFile>
+    </Appenders>
+
+    <!-- ================ -->
+    <!--    Loggers       -->
+    <!-- ================ -->
+    <Loggers>
+        <Logger name="org.talend" level="INFO"/>
+
+        <Logger name="talend.ext" level="INFO"/>
+
+        <Logger name="com.amalto" level="INFO"/>
+
+        <Logger name="com.amalto.core.storage.task" level="INFO">
+            <AppenderRef ref="MATCH_LOG_FILE"/>
+        </Logger>
+
+        <Logger name="org.talend.dataquality.matchmerge" level="INFO">
+            <AppenderRef ref="MATCH_LOG_FILE"/>
+        </Logger>
+
+        <!-- Enable MDM Storage debugging
+        <Logger name="com.amalto.core.storage" level="DEBUG">
+        </Logger>
+        -->
+
+        <!-- Limit C3P0 to WARN as its INFO is verbose -->
+        <Logger name="com.mchange.v2.c3p0.impl.AbstractPoolBackedDataSource" level="WARN"/>
+
+        <Logger name="com.mchange.v2.c3p0.stmt.GooGooStatementCache" level="WARN"/>
+
+        <!-- Limit hibernate to WARN as its INFO is verbose -->
+        <Logger name="org.hibernate" level="WARN"/>
+
+        <!-- Track Transactions creation stacktrace. To be removed later 
+        <Logger name="com.amalto.core.server.MDMTransaction" level="DEBUG"/>
+        -->
+
+        <Root level="INFO">
+            <AppenderRef ref="CONSOLE"/>
+            <AppenderRef ref="FILE"/>
+            <!-- uncomment for chainsaw
+            <AppenderRef ref="ChainSawPDS"/>
+            -->
+        </Root>
+    </Loggers>
+</Configuration>

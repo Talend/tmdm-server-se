@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+
+    <!-- ================ -->
+    <!--    Appenders     -->
+    <!-- ================ -->
+    <Appenders>
+        <Console name="CONSOLE" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{ABSOLUTE} %-5p [%c{1}] (%t:%x) %m%n" />
+            <ThresholdFilter level="DEBUG" onMatch="ACCEPT" onMismatch="DENY" />
+        </Console>
+    </Appenders>
+
+    <!-- ================ -->
+    <!--    Loggers    -->
+    <!-- ================ -->
+    <Loggers>
+        <Logger name="org.hibernate" level="ERROR"/>
+
+        <Logger name="com.amalto.core.storage.hibernate" level="ERROR"/>
+
+        <Logger name="com.amalto.core.query" level="ERROR"/>
+
+        <!-- ======================= -->
+        <!-- Setup the Root logger -->
+        <!-- ======================= -->
+        <Root level="ERROR">
+            <AppenderRef ref="CONSOLE"/>
+        </Root>
+    </Loggers>
+</Configuration>

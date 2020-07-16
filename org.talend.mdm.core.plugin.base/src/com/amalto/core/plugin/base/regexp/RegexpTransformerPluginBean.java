@@ -25,7 +25,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+import org.apache.logging.log4j.LogManager;
 
 
 /**
@@ -232,7 +232,7 @@ public class RegexpTransformerPluginBean extends Plugin {
 		} catch (Exception e) {
 			String err = "Could not init the Regexp plugin:"+
 				e.getClass().getName()+": "+e.getLocalizedMessage();
-			org.apache.log4j.Logger.getLogger(this.getClass()).error(err,e);
+			LogManager.getLogger(this.getClass()).error(err,e);
 			throw new XtentisException(e);
 		}
 
@@ -262,7 +262,7 @@ public class RegexpTransformerPluginBean extends Plugin {
 			String charset = Util.extractCharset(textTC.getContentType());
 			String text = new String(textTC.getContentBytes(),charset);
 
-			org.apache.log4j.Logger.getLogger(this.getClass()).trace("execute() Pattern:'"+p.toString()+"' text \n"+text);
+			LogManager.getLogger(this.getClass()).trace("execute() Pattern:'"+p.toString()+"' text \n"+text);
 
 			Matcher m = p.matcher(text);
 			while (m.find()) {
@@ -272,7 +272,7 @@ public class RegexpTransformerPluginBean extends Plugin {
 				while (gm.find()) {
 					int group = Integer.parseInt(gm.group(1));
 					if (group<=m.groupCount())
-						org.apache.log4j.Logger.getLogger(this.getClass()).debug("execute() Group "+group+":\n"+m.group(group));
+						LogManager.getLogger(this.getClass()).debug("execute() Group "+group+":\n"+m.group(group));
 						result = result.replaceAll("\\{"+group+"\\}",	m.group(group)==null ? "" : m.group(group));
 				}
 				String ct = parameters.getResultingContentType()+"; charset=utf-8";
@@ -282,14 +282,14 @@ public class RegexpTransformerPluginBean extends Plugin {
 				//call the callback content is ready
 				context.getPluginCallBack().contentIsReady(context);
 			}
-			org.apache.log4j.Logger.getLogger(this.getClass()).trace("execute() Regexp done");
+			LogManager.getLogger(this.getClass()).trace("execute() Regexp done");
 
 		} catch (XtentisException xe) {
 			throw (xe);
 		} catch (Exception e) {
 			String err = "Could not execute the regexp transformer plugin "+
 				e.getClass().getName()+": "+e.getLocalizedMessage();
-			org.apache.log4j.Logger.getLogger(this.getClass()).error(err,e);
+			LogManager.getLogger(this.getClass()).error(err,e);
 			throw new XtentisException(e);
 		}
 	}
@@ -368,7 +368,7 @@ public class RegexpTransformerPluginBean extends Plugin {
         } catch (Exception e) {
     	    String err = "Unable to deserialize the configuration of the Regexp Transformer Plugin"
     	    		+": "+e.getClass().getName()+": "+e.getLocalizedMessage();
-    	    org.apache.log4j.Logger.getLogger(this.getClass()).error(err,e);
+    	    LogManager.getLogger(this.getClass()).error(err,e);
     	    throw new XtentisException(err);
 	    }
     }
@@ -412,7 +412,7 @@ public class RegexpTransformerPluginBean extends Plugin {
 			String regexp = Util.getFirstTextNode(params, "regexp");
 			if (regexp==null) {
 				String err = "The regexp parameter of the Regexp Transformer Plugin cannot be empty";
-				org.apache.log4j.Logger.getLogger(this.getClass()).error(err);
+				LogManager.getLogger(this.getClass()).error(err);
 				throw new XtentisException(err);
 			}
     		compiled.setRegexp(Pattern.compile(regexp, Pattern.DOTALL));
@@ -423,7 +423,7 @@ public class RegexpTransformerPluginBean extends Plugin {
 	    } catch (Exception e) {
     	    String err = "Unable to serialize the configuration of the Regexp Transformer Plugin"
     	    		+": "+e.getClass().getName()+": "+e.getLocalizedMessage();
-    	    org.apache.log4j.Logger.getLogger(this.getClass()).error(err,e);
+    	    LogManager.getLogger(this.getClass()).error(err,e);
     	    throw new XtentisException(err);
 	    }
 	}

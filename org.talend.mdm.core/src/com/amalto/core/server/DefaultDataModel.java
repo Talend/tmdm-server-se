@@ -27,7 +27,8 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.util.core.MDMXMLUtils;
@@ -47,7 +48,7 @@ import com.amalto.core.util.XtentisException;
 
 public class DefaultDataModel implements DataModel {
 
-    private static final Logger LOGGER = Logger.getLogger(DefaultDataModel.class);
+    private static final Logger LOGGER = LogManager.getLogger(DefaultDataModel.class);
 
     private static final XPath X_PATH = XPathFactory.newInstance().newXPath();
 

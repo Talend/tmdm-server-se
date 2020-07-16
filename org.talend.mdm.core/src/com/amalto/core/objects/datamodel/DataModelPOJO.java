@@ -17,7 +17,8 @@ import com.amalto.commons.core.datamodel.synchronization.DataModelChangeNotifier
 import com.amalto.core.metadata.LongString;
 import com.amalto.core.query.user.Expression;
 import com.amalto.core.storage.StorageType;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.metadata.compare.Change;
 import org.talend.mdm.commmon.metadata.compare.Compare;
@@ -37,7 +38,7 @@ import com.amalto.core.util.XtentisException;
 
 public class DataModelPOJO extends ObjectPOJO{
 
-    private static final Logger LOGGER = Logger.getLogger(DataModelPOJO.class);
+    private static final Logger LOGGER = LogManager.getLogger(DataModelPOJO.class);
 
     private static final Map<String, XSystemObjects> SYSTEM_OBJECTS = XSystemObjects.getXSystemObjects(XObjectType.DATA_MODEL);
 

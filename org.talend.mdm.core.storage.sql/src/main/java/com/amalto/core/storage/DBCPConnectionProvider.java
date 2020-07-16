@@ -21,7 +21,8 @@ import javax.sql.DataSource;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.commons.dbcp2.BasicDataSourceFactory;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.hibernate.HibernateException;
 import org.hibernate.cfg.Environment;
 import org.hibernate.engine.jdbc.connections.spi.ConnectionProvider;
@@ -30,7 +31,7 @@ import org.hibernate.service.spi.Configurable;
 
 public class DBCPConnectionProvider implements ConnectionProvider, Configurable, org.hibernate.service.spi.Stoppable {
 
-    private static final Logger log = Logger.getLogger(DBCPConnectionProvider.class);
+    private static final Logger log = LogManager.getLogger(DBCPConnectionProvider.class);
 
     private static final String PREFIX = "hibernate.dbcp."; //$NON-NLS-1$
 

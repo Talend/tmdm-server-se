@@ -19,7 +19,8 @@ import com.amalto.core.storage.StorageResults;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.record.metadata.UnsupportedDataRecordMetadata;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -44,7 +45,7 @@ class NativeQueryHandler extends AbstractQueryHandler {
 
     private static final String SELECT_KEYWORD = "SELECT"; //$NON-NLS-1$
 
-    private static final Logger LOGGER = Logger.getLogger(NativeQueryHandler.class);
+    private static final Logger LOGGER = LogManager.getLogger(NativeQueryHandler.class);
 
     NativeQueryHandler(Storage storage, StorageClassLoader storageClassLoader, Session session, Set<ResultsCallback> callbacks) {
         super(storage, storageClassLoader, session, null, null, callbacks);
@@ -125,7 +126,7 @@ class NativeQueryHandler extends AbstractQueryHandler {
 
     private static class NativeIterator implements CloseableIterator<DataRecord> {
 
-        private static final Logger LOGGER = Logger.getLogger(NativeIterator.class);
+        private static final Logger LOGGER = LogManager.getLogger(NativeIterator.class);
 
         private final Iterator iterator;
 

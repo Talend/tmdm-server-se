@@ -15,7 +15,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.webapp.base.client.util.MultilanguageMessageParser;
 import org.talend.mdm.webapp.base.server.util.DynamicLabelUtil;
 import org.talend.mdm.webapp.base.shared.EntityModel;
@@ -36,7 +37,7 @@ import com.amalto.core.webservice.WSView;
  */
 public class ViewHelper {
 
-    private static final Logger logger = Logger.getLogger(ViewHelper.class);
+    private static final Logger logger = LogManager.getLogger(ViewHelper.class);
 
     public static final String DEFAULT_VIEW_PREFIX = "Browse_items";//$NON-NLS-1$
 

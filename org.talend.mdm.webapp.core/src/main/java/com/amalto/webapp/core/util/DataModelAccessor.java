@@ -17,7 +17,8 @@ import java.util.Collection;
 import java.util.List;
 
 import com.amalto.core.util.LocalUser;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 
@@ -29,7 +30,7 @@ import com.amalto.core.webservice.WSGetDataModel;
 
 public class DataModelAccessor {
 
-    private static final Logger LOG = Logger.getLogger(DataModelAccessor.class);
+    private static final Logger LOG = LogManager.getLogger(DataModelAccessor.class);
 
     private static DataModelAccessor accessor;
 

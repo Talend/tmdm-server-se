@@ -18,7 +18,8 @@ import java.util.Locale;
 
 import com.amalto.core.server.ServerContext;
 import com.amalto.webapp.core.bean.Configuration;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.webapp.base.client.exception.ServiceException;
 import org.talend.mdm.webapp.base.client.model.BasePagingLoadConfigImpl;
@@ -55,7 +56,7 @@ import com.amalto.webapp.core.util.Webapp;
 
 public class RecycleBinAction implements RecycleBinService {
 
-    private static final Logger LOG = Logger.getLogger(RecycleBinAction.class);
+    private static final Logger LOG = LogManager.getLogger(RecycleBinAction.class);
 
     private static final Messages MESSAGES = MessagesFactory.getMessages(
             "org.talend.mdm.webapp.recyclebin.client.i18n.RecycleBinMessages", RecycleBinAction.class.getClassLoader()); //$NON-NLS-1$

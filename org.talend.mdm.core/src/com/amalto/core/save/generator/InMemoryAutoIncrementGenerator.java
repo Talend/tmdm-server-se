@@ -13,7 +13,8 @@ import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.util.webapp.XSystemObjects;
 
 import com.amalto.core.objects.ItemPOJO;
@@ -25,7 +26,7 @@ import com.amalto.core.util.Util;
 @SuppressWarnings("nls")
 public class InMemoryAutoIncrementGenerator implements AutoIdGenerator {
 
-    private static final Logger LOGGER = Logger.getLogger(InMemoryAutoIncrementGenerator.class);
+    private static final Logger LOGGER = LogManager.getLogger(InMemoryAutoIncrementGenerator.class);
 
     private static final InMemoryAutoIncrementGenerator INSTANCE = new InMemoryAutoIncrementGenerator();
 

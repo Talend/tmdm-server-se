@@ -11,11 +11,12 @@ package org.talend.mdm.ext.publish.util;
 
 import com.amalto.core.server.api.XmlServer;
 import com.amalto.core.util.XtentisException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 public class DomainObjectsDAOImpl implements DomainObjectsDAO {
 
-    private Logger logger = Logger.getLogger(this.getClass());
+    private Logger logger = LogManager.getLogger(this.getClass());
 
     private static final String CLUSTER_NAME = "MDMDomainObjects"; //$NON-NLS-1$
 

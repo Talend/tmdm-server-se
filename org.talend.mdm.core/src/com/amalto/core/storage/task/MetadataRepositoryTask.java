@@ -12,7 +12,8 @@ package com.amalto.core.storage.task;
 import org.springframework.security.core.context.SecurityContext;
 import org.talend.mdm.commmon.metadata.MetadataUtils;
 import com.amalto.core.storage.Storage;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 
@@ -26,7 +27,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 abstract class MetadataRepositoryTask implements Task {
 
-    private static final Logger LOGGER = Logger.getLogger(MetadataRepository.class);
+    private static final Logger LOGGER = LogManager.getLogger(MetadataRepository.class);
 
     private final List<Task> tasks = new LinkedList<Task>();
 

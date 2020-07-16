@@ -20,7 +20,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
@@ -79,7 +80,7 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
 
     private final CtClass listType;
 
-    private static final Logger LOGGER = Logger.getLogger(ClassCreator.class);
+    private static final Logger LOGGER = LogManager.getLogger(ClassCreator.class);
 
     public ClassCreator(StorageClassLoader storageClassLoader) {
         this.storageClassLoader = storageClassLoader;

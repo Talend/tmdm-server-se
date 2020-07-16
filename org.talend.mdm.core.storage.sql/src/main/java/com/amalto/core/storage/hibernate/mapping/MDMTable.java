@@ -23,7 +23,8 @@ import java.util.List;
 import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.hibernate.HibernateException;
 import org.hibernate.dialect.DB2Dialect;
 import org.hibernate.dialect.Dialect;
@@ -51,7 +52,7 @@ public class MDMTable extends Table {
 
     private RDBMSDataSource dataSource;
 
-    private static final Logger LOGGER = Logger.getLogger(MDMTable.class);
+    private static final Logger LOGGER = LogManager.getLogger(MDMTable.class);
 
     @Override
     public String sqlCreateString(Dialect dialect, Mapping p, String defaultCatalog, String defaultSchema) {

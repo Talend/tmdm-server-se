@@ -141,9 +141,11 @@ public class LiquibaseSchemaAdapter extends AbstractLiquibaseSchemaAdapter {
             typeMetadata = (ComplexTypeMetadata) field.getDeclaringType();
         } 
         String tableName = tableResolver.get(typeMetadata) + "_" + getColumnName(field);
-        if (dataSource.getDialectName() == DataSourceDialect.POSTGRES) {
+        if (HibernateStorageUtils.isPostgres(dataSource.getDialectName())) {
             tableName = tableName.toLowerCase();
-        }
+        } else if (HibernateStorageUtils.isOracle(dataSource.getDialectName())) {
+            tableName = tableName.toUpperCase();
+        }     
         return tableName;
     }
 

@@ -1010,7 +1010,14 @@ public class UserQueryBuilder {
         }
         if (leftField instanceof ReferenceFieldMetadata) {
             FieldMetadata leftReferencedField = ((ReferenceFieldMetadata) leftField).getReferencedField();
-            if (!leftReferencedField.equals(rightField)) {
+            if (leftReferencedField instanceof CompoundFieldMetadata &&
+                    rightField instanceof CompoundFieldMetadata) {
+                FieldMetadata[] leftFields = ((CompoundFieldMetadata) leftReferencedField).getFields();
+                FieldMetadata[] rightFields = ((CompoundFieldMetadata) rightField).getFields();
+                if (!isEqualForCompoundField(leftFields, rightFields)) {
+                    throw new IllegalArgumentException("Left field '" + leftReferencedField + "' is a FK, but right field isn't the one left is referring to.");
+                }
+            } else if (!leftReferencedField.equals(rightField)) {
                 throw new IllegalArgumentException("Left field '" + leftReferencedField.getName() + "' is a FK, but right field isn't the one left is referring to.");
             }
         }
@@ -1023,6 +1030,22 @@ public class UserQueryBuilder {
         JoinType joinType = leftField.isMandatory() ? JoinType.INNER : JoinType.LEFT_OUTER;
         expressionAsSelect().addJoin(new Join(leftUserField, rightUserField, joinType));
         return this;
+    }
+
+    private boolean isEqualForCompoundField(FieldMetadata[] leftFields, FieldMetadata[] rightFields) {
+        if (null == leftFields && null == rightFields) {
+            return true;
+        }
+        if (leftFields.length != rightFields.length) {
+            return false;
+        }
+        int len = leftFields.length;
+        for (int i = 0; i < len; i++) {
+            if (!leftFields[i].equals(rightFields[i])) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**

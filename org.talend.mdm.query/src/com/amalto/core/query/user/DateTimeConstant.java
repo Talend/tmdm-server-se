@@ -10,13 +10,13 @@
 
 package com.amalto.core.query.user;
 
-import org.talend.mdm.commmon.metadata.Types;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+
+import org.talend.mdm.commmon.metadata.Types;
 
 public class DateTimeConstant implements ConstantExpression<Date> {
 
@@ -42,6 +42,18 @@ public class DateTimeConstant implements ConstantExpression<Date> {
         assert valueList != null;
         this.valueList = valueList;
         this.value = null;
+    }
+
+    private static final ThreadLocal<SimpleDateFormat> threadLocal = ThreadLocal.<SimpleDateFormat> withInitial(() -> {
+        return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"); //$NON-NLS-1$
+    });
+
+    public static Date parse(String dateStr) throws ParseException {
+        return threadLocal.get().parse(dateStr);
+    }
+
+    public static String format(Date date) {
+        return threadLocal.get().format(date);
     }
 
     public Date getValue() {

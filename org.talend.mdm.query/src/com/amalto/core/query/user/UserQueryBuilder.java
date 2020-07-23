@@ -11,23 +11,36 @@
 
 package com.amalto.core.query.user;
 
-import com.amalto.core.query.user.metadata.MetadataField;
-import com.amalto.core.query.user.metadata.TaskId;
-import com.amalto.core.query.user.metadata.Timestamp;
-import com.amalto.core.storage.record.MetaDataUtils;
-import com.amalto.xmlserver.interfaces.IWhereItem;
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.talend.mdm.commmon.metadata.*;
+import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.ComplexTypeMetadataImpl;
+import org.talend.mdm.commmon.metadata.ContainedComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
+import org.talend.mdm.commmon.metadata.DefaultMetadataVisitor;
+import org.talend.mdm.commmon.metadata.EnumerationFieldMetadata;
+import org.talend.mdm.commmon.metadata.FieldMetadata;
+import org.talend.mdm.commmon.metadata.MetadataUtils;
+import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
+import org.talend.mdm.commmon.metadata.SimpleTypeFieldMetadata;
+import org.talend.mdm.commmon.metadata.Types;
 import org.talend.tql.parser.Tql;
 
-import javax.jws.soap.SOAPBinding;
-import java.math.BigDecimal;
-import java.text.ParseException;
-import java.util.*;
+import com.amalto.core.query.user.metadata.MetadataField;
+import com.amalto.core.query.user.metadata.TaskId;
+import com.amalto.core.query.user.metadata.Timestamp;
+import com.amalto.core.storage.record.MetaDataUtils;
 
 public class UserQueryBuilder {
 
@@ -751,7 +764,7 @@ public class UserQueryBuilder {
         } catch (NumberFormatException e) {
             // Try date format parsing
             try {
-                Date date = DateTimeConstant.DATE_FORMAT.parse(dateTime); // Or maybe a XML date?
+                Date date = DateTimeConstant.parse(dateTime); // Or maybe a XML date?
                 dateTimeAsLong = date.getTime();
             } catch (ParseException e1) {
                 throw new IllegalArgumentException("Date '" + dateTime + "' is neither a long nor a date time that can be parsed.", e1);

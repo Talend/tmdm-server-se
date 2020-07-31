@@ -1014,11 +1014,19 @@ public class UserQueryBuilder {
                     rightField instanceof CompoundFieldMetadata) {
                 FieldMetadata[] leftFields = ((CompoundFieldMetadata) leftReferencedField).getFields();
                 FieldMetadata[] rightFields = ((CompoundFieldMetadata) rightField).getFields();
-                if (!isEqualForCompoundField(leftFields, rightFields)) {
+                if (!isEqualForBothCompoundField(leftFields, rightFields)) {
                     throw new IllegalArgumentException("Left field '" + leftReferencedField + "' is a FK, but right field isn't the one left is referring to.");
                 }
+            } else if (leftReferencedField instanceof CompoundFieldMetadata
+                    && rightField instanceof SimpleTypeFieldMetadata) {
+                FieldMetadata[] leftFields = ((CompoundFieldMetadata) leftReferencedField).getFields();
+                if (!isEqualForLeftCompoundField(leftFields, rightField)) {
+                    throw new IllegalArgumentException("Left field '" + leftReferencedField
+                            + "' is a FK, but right field isn't the one left is referring to.");
+                }
             } else if (!leftReferencedField.equals(rightField)) {
-                throw new IllegalArgumentException("Left field '" + leftReferencedField.getName() + "' is a FK, but right field isn't the one left is referring to.");
+                throw new IllegalArgumentException("Left field '" + leftReferencedField.getName()
+                        + "' is a FK, but right field isn't the one left is referring to.");
             }
         }
         Field leftUserField = new Field(leftField);
@@ -1032,25 +1040,36 @@ public class UserQueryBuilder {
         return this;
     }
 
-    private boolean isEqualForCompoundField(FieldMetadata[] leftFields, FieldMetadata[] rightFields) {
+    private boolean isEqualForBothCompoundField(FieldMetadata[] leftFields, FieldMetadata[] rightFields) {
         if (null == leftFields && null == rightFields) {
             return true;
         }
-        if (leftFields.length != rightFields.length) {
-            return false;
-        }
-        int len = leftFields.length;
-        for (int i = 0; i < len; i++) {
-            if (!leftFields[i].equals(rightFields[i])) {
+        for (int i = 0; i < leftFields.length; i++) {
+            if (!((SimpleTypeFieldMetadata)leftFields[i]).getContainingType().equals(
+                    ((SimpleTypeFieldMetadata)rightFields[i]).getContainingType())) {
                 return false;
             }
         }
         return true;
     }
 
+    private boolean isEqualForLeftCompoundField(FieldMetadata[] leftFields, FieldMetadata rightField) {
+        if (null == leftFields && null == rightField) {
+            return true;
+        }
+        for (int i = 0; i < leftFields.length; i++) {
+            if (((SimpleTypeFieldMetadata) leftFields[i]).getContainingType().equals(
+                    ((SimpleTypeFieldMetadata) rightField).getContainingType())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * <p>
-     * Join a type's field with another. This method expects field to be a {@link ReferenceFieldMetadata} and automatically
+     * Join a type's field with another. This method expects field to be a {@link ReferenceFieldMetadata} and
+     * automatically
      * creates a Join between <code>field</code> parameter and the field(s) it targets.
      * </p>
      *

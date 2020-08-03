@@ -184,7 +184,7 @@ public class SaverContextFactory {
                 final MetadataRepository systemRepository = systemStorage.getMetadataRepository();
                 if (systemRepository.getComplexType(typeName) != null) {
                     // Record to save is a system object!
-                    return new DirectWriteContext(typeName.equals("role-pOJO") ? "amaltoOBJECTSRole" : dataCluster, Util.nodeToString(userDomDocument));
+                    return new DirectWriteContext(typeName.equals("role-pOJO") ? "amaltoOBJECTSRole" : dataCluster, Util.nodeToString(userDomDocument)); //$NON-NLS-1$ //$NON-NLS-2$
                 } else {
                     throw new IllegalArgumentException("Data model '" + dataModelName + "' does not exist."); //$NON-NLS-1$ //$NON-NLS-2$
                 }

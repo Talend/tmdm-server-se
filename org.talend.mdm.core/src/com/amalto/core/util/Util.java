@@ -291,7 +291,8 @@ public class Util extends XmlUtil {
      * @throws TransformerException
      */
     public static String nodeToString(Node n) throws TransformerException {
-        return XMLUtils.nodeToString(n, true, LOGGER.isDebugEnabled()).replaceAll("\r\n", "\n");
+        // role-pOJO(PROVISIONING.Role) on Linux will have invalid attribute (xmlns:admin="") need to remove
+        return XMLUtils.nodeToString(n, true, LOGGER.isDebugEnabled()).replaceAll("\r\n", "\n").replaceAll(" xmlns:admin=\"\"", "");
     }
 
     /**

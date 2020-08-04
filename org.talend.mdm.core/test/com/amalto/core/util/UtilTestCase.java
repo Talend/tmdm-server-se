@@ -15,6 +15,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
@@ -28,6 +29,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import com.amalto.commons.core.utils.XMLUtils;
@@ -38,6 +40,8 @@ import com.amalto.core.objects.datacluster.DataClusterPOJOPK;
 import com.amalto.core.objects.transformers.TransformerV2POJOPK;
 import com.amalto.core.objects.transformers.util.TransformerContext;
 import com.amalto.core.save.SaveException;
+import com.amalto.core.save.context.SaverContextFactory;
+import com.amalto.core.schema.validation.SkipAttributeDocumentBuilder;
 import com.amalto.core.storage.DispatchWrapper;
 import com.amalto.xmlserver.interfaces.IWhereItem;
 import com.amalto.xmlserver.interfaces.WhereAnd;
@@ -430,6 +434,15 @@ public class UtilTestCase extends TestCase {
         assertEquals("/detail/feature/actor[s]", Util.removeBracketWithNumber("/detail/feature/actor[s]"));
 
         assertNull(Util.removeBracketWithNumber(null));
+    }
+
+    public void testNodeToString() throws Exception {
+        InputStream documentStream = UtilTestCase.class.getResourceAsStream("Role.xml");
+        DocumentBuilder documentBuilder = new SkipAttributeDocumentBuilder(SaverContextFactory.DOCUMENT_BUILDER, false);
+        InputSource source = new InputSource(documentStream);
+        Document userDomDocument = documentBuilder.parse(source);
+        String xml = Util.nodeToString(userDomDocument);
+        assertTrue(!xml.contains("xmlns:admin=\"\""));
     }
 
     private class TestClassLoader extends ClassLoader {

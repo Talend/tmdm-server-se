@@ -157,6 +157,14 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
                 CtClass newIdClass = classPool.makeClass(idClassName);
                 newIdClass.setInterfaces(new CtClass[] { serializable });
 
+                // add inheritance tree
+                for (FieldMetadata keyField : keyFields) {
+                    if (existsInSuperTypes(keyField)) {
+                        TypeMetadata typeMetadata = keyField.getContainingType().getSuperTypes().iterator().next();
+                        newIdClass.setSuperclass(classPool.get(getClassName(typeMetadata.getName() + "_ID"))); //$NON-NLS-1$
+                        break;
+                    }
+                }
                 classCreationStack.push(newIdClass);
                 {
                     for (FieldMetadata keyField : keyFields) {

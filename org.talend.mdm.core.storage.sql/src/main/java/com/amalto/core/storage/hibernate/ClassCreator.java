@@ -118,10 +118,10 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
     }
 
     /**
-     * This is a simple Base class {@link CtClassBuilder} class, that lets you construct complex type objects step by
-     * step. it allows you to produce different types and representations of an object using the same construction code.
-     * For example, let’s think about how to create a {@link ComplexTypeMetadata} object. To build a simple instance,
-     * you need to construct its interface, superclass, primary key, hibernate indexes and some general method etc. The
+     * This is a simple Base class {@link CtClassBuilder}, that lets you construct complex type objects step by step. it
+     * allows you to produce different types and representations of an object using the same construction code. For
+     * example, let’s think about how to create a {@link ComplexTypeMetadata} object. To build a simple instance, you
+     * need to construct its interface, superclass, primary key, hibernate indexes and some general method etc. The
      * simplest solution is to extend the base {@link CtClassBuilder} class and create a set of subclasses to cover all
      * combinations of the parameters.
      */

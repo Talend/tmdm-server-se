@@ -145,7 +145,8 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
 
         public CtClassBuilder buildCtClassPart(ComplexTypeMetadata complexType) throws NotFoundException, CannotCompileException {
             String typeName = complexType.getName();
-            if (classPool.getOrNull(getClassName(typeName)) != null) {
+            newClass = classPool.getOrNull(getClassName(typeName));
+            if (newClass != null) {
                 LOGGER.info("Returns a CtClass reference from container of CtClass objects with the given name " + typeName);
                 return this;
             }

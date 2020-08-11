@@ -23,6 +23,7 @@ import com.amalto.core.save.SaverSession;
 import com.amalto.core.save.UserAction;
 import com.amalto.core.server.api.XmlServer;
 import com.amalto.core.util.Util;
+import com.amalto.core.util.XtentisException;
 
 class DirectWriteContext implements DocumentSaverContext {
 
@@ -46,10 +47,17 @@ class DirectWriteContext implements DocumentSaverContext {
 
             @Override
             public void save(SaverSession session, DocumentSaverContext context) {
+                final XmlServer xmlServer = Util.getXmlServerCtrlLocal();
                 try {
-                    final XmlServer xmlServer = Util.getXmlServerCtrlLocal();
+                    xmlServer.start(dataCluster);
                     xmlServer.putDocumentFromString(record, null, dataCluster);
+                    xmlServer.commit(dataCluster);
                 } catch (Exception e) {
+                    try {
+                        xmlServer.rollback(dataCluster);
+                    } catch (XtentisException e1) {
+                        throw new RuntimeException("Error occurred while rolling back a transaction.", e1);
+                    }
                     throw new RuntimeException("Unable to save system record.", e);
                 }
             }

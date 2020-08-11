@@ -1,0 +1,97 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:import namespace="http://www.w3.org/2001/XMLSchema" />
+    <xsd:simpleType name="AUTO_INCREMENT">
+        <xsd:restriction base="xsd:string" />
+    </xsd:simpleType>
+    <xsd:complexType name="AddressType">
+        <xsd:sequence maxOccurs="1" minOccurs="1">
+            <xsd:element maxOccurs="1" minOccurs="1" name="Line1" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Create">Demo_User</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="1" name="Line2" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Create">Demo_User</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="1" name="City" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Create">Demo_User</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="EUAddressType">
+        <xsd:complexContent>
+            <xsd:extension base="AddressType">
+                <xsd:sequence maxOccurs="1" minOccurs="1">
+                    <xsd:element maxOccurs="1" minOccurs="1" name="PostalCode" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element maxOccurs="1" minOccurs="1" name="Country" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="USAddressType">
+        <xsd:complexContent>
+            <xsd:extension base="AddressType">
+                <xsd:sequence maxOccurs="1" minOccurs="1">
+                    <xsd:element maxOccurs="1" minOccurs="1" name="ZipCode" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element maxOccurs="1" minOccurs="1" name="State" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:element name="Address" type="AddressType">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Create">Demo_User</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:unique name="Address">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="Line2" />
+            <xsd:field xpath="Line1" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="EUAddress" type="EUAddressType">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Create">Demo_User</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:unique name="EUAddress">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="Line2" />
+            <xsd:field xpath="Line1" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="USAddress" type="USAddressType">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Create">Demo_User</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:unique name="USAddress">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="Line2" />
+            <xsd:field xpath="Line1" />
+        </xsd:unique>
+    </xsd:element>
+</xsd:schema>

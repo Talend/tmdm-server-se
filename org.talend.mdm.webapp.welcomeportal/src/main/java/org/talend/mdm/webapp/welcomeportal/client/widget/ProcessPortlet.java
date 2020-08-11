@@ -9,7 +9,6 @@
  */
 package org.talend.mdm.webapp.welcomeportal.client.widget;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,7 +22,6 @@ import org.talend.mdm.webapp.welcomeportal.client.resources.icon.Icons;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.HTML;
@@ -31,8 +29,6 @@ import com.google.gwt.user.client.ui.HTML;
 public class ProcessPortlet extends BasePortlet {
 
     private Map<String, String> processMap = new HashMap<String, String>();
-
-    private static final String RUN_PROCESS_COOKIE = "runProcess"; //$NON-NLS-1$
 
     public ProcessPortlet(MainFramePanel portal) {
         super(PortletConstants.PROCESS_NAME, portal);
@@ -79,8 +75,6 @@ public class ProcessPortlet extends BasePortlet {
                             }
                         };
                         t.schedule(600000);
-                        // Expired in 500ms for this request only
-                        Cookies.setCookie(RUN_PROCESS_COOKIE, "1", new Date(System.currentTimeMillis() + 500)); //$NON-NLS-1$
                         service.runProcess(key, new SessionAwareAsyncCallback<String>() {
 
                             @Override

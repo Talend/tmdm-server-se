@@ -150,16 +150,87 @@ public class StoragePrepareTest extends TestCase {
                 switch (id) {
                 case "5"://$NON-NLS-1$
                     assertEquals("3", ((DataRecord) result.get( //$NON-NLS-1$
-                            "cacdo_RegisterCustomsWarehouseDetails/cacdo_RegisterOrganizationDetails/ccdo_OrganizationDetails/csdo_CountryCode")) //$NON-NLS-1$
-                                    .get("Code"));
+                            "cacdo_RegisterCustomsWarehouseDetails/cacdo_RegisterOrganizationDetails/ccdo_OrganizationDetails/csdo_CountryCode")).get("Code")); //$NON-NLS-1$
                     break;
                 case "6"://$NON-NLS-1$
                     assertEquals("4", ((DataRecord) result.get( //$NON-NLS-1$
-                            "cacdo_RegisterCustomsWarehouseDetails/cacdo_RegisterOrganizationDetails/ccdo_OrganizationDetails/csdo_CountryCode")) //$NON-NLS-1$
-                                    .get("Code"));
+                            "cacdo_RegisterCustomsWarehouseDetails/cacdo_RegisterOrganizationDetails/ccdo_OrganizationDetails/csdo_CountryCode")).get("Code")); //$NON-NLS-1$
                     break;
                 default:
                     assertNull(id);
+                }
+            }
+        } finally {
+            results.close();
+        }
+        storage.end();
+        storage.close();
+    }
+
+    // TMDM-14560 Inheritance support composite key not well
+    public void testDataModelWithInheritanceCompositeKey() {
+        Storage storage = new SecuredStorage(new HibernateStorage("AddressCompositeKey", StorageType.MASTER), userSecurity); // $NON-NLS-1$
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(StoragePrepareTest.class.getResourceAsStream("AddressCompositeKey.xsd")); // $NON-NLS-1$
+        MockMetadataRepositoryAdmin.INSTANCE.register("AddressCompositeKey", repository); // $NON-NLS-1$
+
+        storage.init(getDatasource("H2-DS3"));// //$NON-NLS-1$
+        storage.prepare(repository, Collections.<Expression> emptySet(), true, true);
+        ((MockStorageAdmin) ServerContext.INSTANCE.get().getStorageAdmin()).register(storage);
+
+        storage.begin();
+        ComplexTypeMetadata euAddress = repository.getComplexType("EUAddress"); // $NON-NLS-1$
+        ComplexTypeMetadata address = repository.getComplexType("Address"); // $NON-NLS-1$
+        UserQueryBuilder qb = from(euAddress);
+        UserQueryBuilder qb_Address = from(address);
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(0, results.getCount());
+        } finally {
+            results.close();
+        }
+        storage.end();
+
+        List<DataRecord> records = new ArrayList<DataRecord>();
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+        records.add(factory.read(repository, euAddress, "<EUAddress><Line1>11</Line1><Line2>22</Line2><City>Paris</City><PostalCode>IY626</PostalCode><Country>Franch</Country></EUAddress>")); // $NON-NLS-1$
+        records.add(factory.read(repository, euAddress, "<EUAddress><Line1>33</Line1><Line2>44</Line2><City>Munich</City><PostalCode>IY636</PostalCode><Country>Germany</Country></EUAddress>")); // $NON-NLS-1$
+        records.add(factory.read(repository, address, "<Address><Line1>1</Line1><Line2>2</Line2><City>Beijing</City></Address>")); // $NON-NLS-1$
+        records.add(factory.read(repository, address, "<Address><Line1>3</Line1><Line2>4</Line2><City>Shanghai</City></Address>")); // $NON-NLS-1$
+        try {
+            storage.begin();
+            storage.update(records);
+            storage.commit();
+        } finally {
+            storage.end();
+        }
+        storage.begin();
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(2, results.getCount());
+        } finally {
+            results.close();
+        }
+        results = storage.fetch(qb_Address.getSelect());
+        try {
+            assertEquals(4, results.getCount());
+            for (DataRecord result : results) {
+                String id1 = result.get("Line1").toString();
+                switch (id1) {
+                case "1": // $NON-NLS-1$
+                    assertEquals("Beijing", result.get("City").toString()); //$NON-NLS-1$ $NON-NLS-2$
+                    break;
+                case "3": // $NON-NLS-1$
+                    assertEquals("Shanghai", result.get("City").toString()); //$NON-NLS-1$ $NON-NLS-2$
+                    break;
+                case "11": // $NON-NLS-1$
+                    assertEquals("Paris", result.get("City").toString()); //$NON-NLS-1$ $NON-NLS-2$
+                    break;
+                case "33": // $NON-NLS-1$
+                    assertEquals("Munich", result.get("City").toString()); //$NON-NLS-1$ $NON-NLS-2$
+                    break;
+                default:
+                    assertNull(id1);
                 }
             }
         } finally {

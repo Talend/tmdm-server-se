@@ -20,8 +20,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
@@ -117,23 +117,59 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
         return null;
     }
 
-    @Override
-    public Void visit(ComplexTypeMetadata complexType) {
-        // Prevent infinite loop.
-        String typeName = complexType.getName();
-        if (processedTypes.contains(typeName)) {
-            return null;
-        } else {
-            processedTypes.add(typeName);
+    /**
+     * This is a simple Base class {@link CtClassBuilder}, that lets you construct complex type objects step by step. it
+     * allows you to produce different types and representations of an object using the same construction code. For
+     * example, let’s think about how to create a {@link ComplexTypeMetadata} object. To build a simple instance, you
+     * need to construct its interface, superclass, primary key, hibernate indexes and some general method etc. The
+     * simplest solution is to extend the base {@link CtClassBuilder} class and create a set of subclasses to cover all
+     * combinations of the parameters.
+     */
+    private abstract class CtClassBuilder {
+
+        /**
+         * This abstract method {@link CtClassBuilder#buildCtClassPart} defines all of the steps to correctly create a
+         * CtClass references, each step is defines as actual functionality to finish in the concrete subclasses.
+         */
+        public abstract CtClassBuilder buildCtClassPart(ComplexTypeMetadata complexType) throws NotFoundException, CannotCompileException;
+
+        /**
+         * The {@link CtClassBuilder#getCtClass} method is used to return the final product.
+         */
+        public abstract CtClass getCtClass();
+    }
+
+    private class ComplexTypeMetadataCtClassBuilder extends CtClassBuilder {
+
+        private CtClass newClass;
+
+        public CtClassBuilder buildCtClassPart(ComplexTypeMetadata complexType) throws NotFoundException, CannotCompileException {
+            String typeName = complexType.getName();
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Create a CtClass reference with the given name " + typeName);
+            }
+            newClass = classPool.makeClass(getClassName(typeName));
+            ClassFile classFile = newClass.getClassFile();
+            addInterface(typeName);
+            addSuperClass(complexType);
+            buildCompositeKey(complexType);
+            addClassIndexes(classFile);
+            buildSuperClassAccessor(complexType);
+            addGetterAndSetter(complexType);
+            addMDMDefaultMethod(complexType);
+            addGeneralMethod(complexType);
+            registerNewCtClass(complexType);
+            return this;
         }
-        try {
-            CtClass newClass = classPool.makeClass(getClassName(typeName));
+
+        private void addInterface(String typeName) throws NotFoundException {
             CtClass hibernateClassWrapper = classPool.get(Wrapper.class.getName());
             CtClass serializable = classPool.get(Serializable.class.getName());
             newClass.setInterfaces(new CtClass[] { hibernateClassWrapper, serializable });
-            ClassFile classFile = newClass.getClassFile();
             newClass.setModifiers(Modifier.PUBLIC);
+        }
 
+        private void addSuperClass(ComplexTypeMetadata complexType) throws NotFoundException, CannotCompileException {
             // Adds super type
             Collection<TypeMetadata> superTypes = complexType.getSuperTypes();
             if (superTypes.size() > 1) {
@@ -144,23 +180,36 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
             if (superTypesIterator.hasNext()) {
                 TypeMetadata superType = superTypesIterator.next();
                 if (superType instanceof ComplexTypeMetadata) {
-                    superType.accept(this); // TMDM-6079: Ensure super type class exists.
+                    superType.accept(ClassCreator.this); // TMDM-6079: Ensure super type class exists.
                     newClass.setSuperclass(classPool.get(getClassName(superType.getName())));
                 }
             }
+        }
 
+        @SuppressWarnings("unchecked")
+        private void buildCompositeKey(ComplexTypeMetadata complexType) throws NotFoundException, CannotCompileException {
+            String typeName = complexType.getName();
             Collection<FieldMetadata> keyFields = complexType.getKeyFields();
             // Composite id class.
             if (keyFields.size() > 1) {
                 LOGGER.warn("Ignoring indexation for '" + complexType.getName() + "' due to composite key");  //$NON-NLS-1$//$NON-NLS-2$
                 String idClassName = getClassName(typeName) + "_ID"; //$NON-NLS-1$
                 CtClass newIdClass = classPool.makeClass(idClassName);
+                CtClass serializable = classPool.get(Serializable.class.getName());
                 newIdClass.setInterfaces(new CtClass[] { serializable });
 
+                // add inheritance tree
+                for (FieldMetadata keyField : keyFields) {
+                    if (existsInSuperTypes(keyField)) {
+                        TypeMetadata typeMetadata = keyField.getContainingType().getSuperTypes().iterator().next();
+                        newIdClass.setSuperclass(classPool.get(getClassName(typeMetadata.getName() + "_ID"))); //$NON-NLS-1$
+                        break;
+                    }
+                }
                 classCreationStack.push(newIdClass);
                 {
                     for (FieldMetadata keyField : keyFields) {
-                        keyField.accept(this);
+                        keyField.accept(ClassCreator.this);
                     }
                 }
 
@@ -203,26 +252,30 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
 
                 Class<? extends Wrapper> compiledNewClassId = classCreationStack.pop().toClass();
                 storageClassLoader.register(idClassName, compiledNewClassId);
-            } else {
-                // Mark new class as indexed for Hibernate search (full text) extensions.
-                ConstPool cp = classFile.getConstPool();
-                AnnotationsAttribute annotationsAttribute = new AnnotationsAttribute(cp, AnnotationsAttribute.visibleTag);
-                Annotation indexedAnnotation = new Annotation(Indexed.class.getName(), cp);
-                annotationsAttribute.setAnnotation(indexedAnnotation);
-                classFile.addAttribute(annotationsAttribute);
             }
+        }
 
+        private void addClassIndexes(ClassFile classFile) {
+            // Mark new class as indexed for Hibernate search (full text) extensions.
+            ConstPool cp = classFile.getConstPool();
+            AnnotationsAttribute annotationsAttribute = new AnnotationsAttribute(cp, AnnotationsAttribute.visibleTag);
+            Annotation indexedAnnotation = new Annotation(Indexed.class.getName(), cp);
+            annotationsAttribute.setAnnotation(indexedAnnotation);
+            classFile.addAttribute(annotationsAttribute);
+        }
+
+        private void buildSuperClassAccessor(ComplexTypeMetadata complexType) {
             classCreationStack.push(newClass);
-            {
-                super.visit(complexType);
-            }
+            ClassCreator.super.visit(complexType);
+        }
 
+        private void addGetterAndSetter(ComplexTypeMetadata complexType) throws NotFoundException, CannotCompileException {
             // Optimized getter
             StringBuilder getFieldsMethodBody = new StringBuilder();
             getFieldsMethodBody.append("public Object get(String name) {"); //$NON-NLS-1$
             Collection<FieldMetadata> typeFields = complexType.getFields();
             if (typeFields.isEmpty()) {
-                throw new IllegalArgumentException("Type '" + typeName + "' does not contain any field.");
+                throw new IllegalArgumentException("Type '" + complexType.getName() + "' does not contain any field.");
             }
             Iterator<FieldMetadata> fields = typeFields.iterator();
             while (fields.hasNext()) {
@@ -255,8 +308,7 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
                 setFieldsMethodBody.append("if(\"").append(fieldName).append("\".equals(name)) {\n"); //$NON-NLS-1$ //$NON-NLS-2$
                 String setterName = "set" + fieldName; //$NON-NLS-1$
                 CtMethod setterMethod = nameToMethod.get(setterName);
-                setFieldsMethodBody
-                        .append("\t").append(setterName).append("((").append(setterMethod.getParameterTypes()[0].getName()).append(") value);\n"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                setFieldsMethodBody.append("\t").append(setterName).append("((").append(setterMethod.getParameterTypes()[0].getName()).append(") value);\n"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 setFieldsMethodBody.append("}\n"); //$NON-NLS-1$
 
                 if (fields.hasNext()) {
@@ -265,13 +317,11 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
             }
             setFieldsMethodBody.append("}"); //$NON-NLS-1$
             CtMethod setFieldsMethod;
-            try {
-                setFieldsMethod = CtNewMethod.make(setFieldsMethodBody.toString(), newClass);
-            } catch (CannotCompileException e) {
-                throw new RuntimeException(e);
-            }
+            setFieldsMethod = CtNewMethod.make(setFieldsMethodBody.toString(), newClass);
             newClass.addMethod(setFieldsMethod);
+        }
 
+        private void addMDMDefaultMethod(ComplexTypeMetadata complexType) throws CannotCompileException {
             if (complexType.hasField(StorageConstants.METADATA_TIMESTAMP)) {
                 // Get time stamp method
                 CtMethod getTimeStamp = createFixedFieldGetter(newClass, StorageConstants.METADATA_TIMESTAMP, "timestamp"); //$NON-NLS-1$
@@ -318,6 +368,10 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
                 CtMethod setTaskId = CtNewMethod.make(setTaskIdMethodBody.toString(), newClass);
                 newClass.addMethod(setTaskId);
             }
+        }
+
+        private void addGeneralMethod(ComplexTypeMetadata complexType) throws CannotCompileException {
+            Collection<FieldMetadata> keyFields = complexType.getKeyFields();
             // Equals
             StringBuilder equalsMethodBody = new StringBuilder();
             equalsMethodBody.append("public boolean equals(Object o) {"); //$NON-NLS-1$
@@ -338,9 +392,31 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
             equalsMethodBody.append("}"); //$NON-NLS-1$
             CtMethod equalsMethod = CtNewMethod.make(equalsMethodBody.toString(), newClass);
             newClass.addMethod(equalsMethod);
+        }
+
+        @SuppressWarnings("unchecked")
+        private void registerNewCtClass(ComplexTypeMetadata complexType) throws CannotCompileException {
             // Compile class
             Class<? extends Wrapper> compiledNewClass = classCreationStack.pop().toClass();
             storageClassLoader.register(complexType, compiledNewClass);
+        }
+
+        public CtClass getCtClass() {
+            return newClass;
+        }
+    }
+
+    @Override
+    public Void visit(ComplexTypeMetadata complexType) {
+        // Prevent infinite loop.
+        String typeName = complexType.getName();
+        if (processedTypes.contains(typeName)) {
+            return null;
+        } else {
+            processedTypes.add(typeName);
+        }
+        try {
+            new ComplexTypeMetadataCtClassBuilder().buildCtClassPart(complexType);
         } catch (Exception e) {
             throw new RuntimeException("Error during processing of type '" + typeName + "'", e);
         }

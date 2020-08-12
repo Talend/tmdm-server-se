@@ -85,7 +85,7 @@ public class CodecPluginBean extends Plugin {
      */
     public String getDescription(String twoLettersLanguageCode) throws XtentisException {
         String description = "";
-        if (twoLettersLanguageCode.toLowerCase().equals("en")) {
+        if (twoLettersLanguageCode.equalsIgnoreCase("en")) {
             description = "This is a plugin used for encode or decode text";
         } else {
             description = "Unsupported language! ";

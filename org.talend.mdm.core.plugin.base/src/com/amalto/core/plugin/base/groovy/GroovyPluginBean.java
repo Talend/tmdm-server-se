@@ -89,7 +89,7 @@ public class GroovyPluginBean extends Plugin {
 	public String getDescription(String twoLettersLanguageCode)
 			throws XtentisException {
 		String description="";
-		if(twoLettersLanguageCode.toLowerCase().equals("en")){
+		if(twoLettersLanguageCode.equalsIgnoreCase("en")){
 			description="This is a plugin which you can call the groovy script. ";
 		}else{
 			description="Unsupported language! ";

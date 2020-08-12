@@ -271,10 +271,10 @@ public final class XmlUtil {
 
     public static void write(Document document, String filePath, String printMode, String encoding) throws IOException {
         OutputFormat format;
-        if (printMode.toLowerCase().equals("pretty")) { //$NON-NLS-1$
+        if (printMode.equalsIgnoreCase("pretty")) { //$NON-NLS-1$
             // Pretty print the document
             format = OutputFormat.createPrettyPrint();
-        } else if (printMode.toLowerCase().equals("compact")) { //$NON-NLS-1$
+        } else if (printMode.equalsIgnoreCase("compact")) { //$NON-NLS-1$
             // Compact format
             format = OutputFormat.createCompactFormat();
         } else {

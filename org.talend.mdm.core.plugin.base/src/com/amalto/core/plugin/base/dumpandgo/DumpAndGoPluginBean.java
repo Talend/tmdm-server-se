@@ -84,7 +84,7 @@ public class DumpAndGoPluginBean extends Plugin {
     public String getDescription(String twoLettersLanguageCode)
 			throws XtentisException {
 		String description="";
-		if(twoLettersLanguageCode.toLowerCase().equals("en")){
+		if(twoLettersLanguageCode.equalsIgnoreCase("en")){
 			description="This is a plugin used for dump text and pass it. ";
 		}else{
 			description="Unsupported language! ";

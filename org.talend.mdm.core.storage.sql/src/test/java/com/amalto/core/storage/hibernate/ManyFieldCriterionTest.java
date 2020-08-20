@@ -137,6 +137,12 @@ public class ManyFieldCriterionTest extends TestCase {
             // TODO Auto-generated method stub
             return null;
         }
+
+		@Override
+		public String getCollectionTableToDrop(FieldMetadata field) {
+			// TODO Auto-generated method stub
+			return "product_collection";
+		}
     }
 
     private class CriteriaQueryForTest implements CriteriaQuery {

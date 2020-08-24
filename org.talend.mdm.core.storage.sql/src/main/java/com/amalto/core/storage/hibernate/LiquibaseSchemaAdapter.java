@@ -254,7 +254,7 @@ public class LiquibaseSchemaAdapter  {
                 }
                 // Remove the table for 0-many simple field.
                 if (field.isMany()) {
-                	dropTableSet.add(tableResolver.getCollectionTableToDrop(field));
+                    dropTableSet.add(tableResolver.getCollectionTableToDrop(field));
                 } else {
                     List<String> columnList = dropColumnMap.get(tableName);
                     if (columnList == null) {

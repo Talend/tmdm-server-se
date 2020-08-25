@@ -140,7 +140,6 @@ public class ManyFieldCriterionTest extends TestCase {
 
 		@Override
 		public String getCollectionTableToDrop(FieldMetadata field) {
-			// TODO Auto-generated method stub
 			return "product_collection";
 		}
     }

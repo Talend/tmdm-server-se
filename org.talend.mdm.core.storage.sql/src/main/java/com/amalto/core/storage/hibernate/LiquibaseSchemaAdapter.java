@@ -18,8 +18,10 @@ import java.io.Writer;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
@@ -61,6 +63,7 @@ import liquibase.change.core.DropColumnChange;
 import liquibase.change.core.DropForeignKeyConstraintChange;
 import liquibase.change.core.DropIndexChange;
 import liquibase.change.core.DropNotNullConstraintChange;
+import liquibase.change.core.DropTableChange;
 import liquibase.database.DatabaseConnection;
 import liquibase.precondition.core.IndexExistsPrecondition;
 import liquibase.precondition.core.PreconditionContainer;
@@ -216,6 +219,7 @@ public class LiquibaseSchemaAdapter  {
         Map<String, List<String>> dropColumnMap = new HashMap<>();
         Map<String, List<String>> dropFKMap = new HashMap<>();
         Map<String, List<String[]>> dropIndexMap = new HashMap<>();
+        Set<String> dropTableSet = new HashSet<String>();
 
         for (RemoveChange removeAction : diffResults.getRemoveChanges()) {
 
@@ -248,12 +252,17 @@ public class LiquibaseSchemaAdapter  {
                     fkList.add(fkName);
                     dropFKMap.put(tableName, fkList);
                 }
-                List<String> columnList = dropColumnMap.get(tableName);
-                if (columnList == null) {
-                    columnList = new ArrayList<String>();
-                }
-                columnList.add(columnName);
-                dropColumnMap.put(tableName, columnList);
+                // Remove the table for 0-many simple field.
+                if (field.isMany()) {
+                    dropTableSet.add(tableResolver.getCollectionTableToDrop(field));
+                } else {
+                    List<String> columnList = dropColumnMap.get(tableName);
+                    if (columnList == null) {
+                        columnList = new ArrayList<String>();
+                    }
+                    columnList.add(columnName);
+                    dropColumnMap.put(tableName, columnList);
+                }                               
 
                 List<String[]> indexList = dropIndexMap.get(tableName);
                 if (indexList == null) {
@@ -281,6 +290,12 @@ public class LiquibaseSchemaAdapter  {
                 dropFKChange.setConstraintName(fk);
                 changeActionList.add(dropFKChange);
             }
+        }
+        
+        for (String tableName : dropTableSet) {
+            DropTableChange dropTableChange = new DropTableChange();
+            dropTableChange.setTableName(tableName);
+            changeActionList.add(dropTableChange);
         }
 
         for (Map.Entry<String, List<String>> entry : dropColumnMap.entrySet()) {

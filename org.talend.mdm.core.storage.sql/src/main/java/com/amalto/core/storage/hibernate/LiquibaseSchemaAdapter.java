@@ -14,9 +14,11 @@ import java.io.Writer;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-
+import java.util.Set;
+import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.mapping.Column;
@@ -201,7 +203,7 @@ public class LiquibaseSchemaAdapter extends AbstractLiquibaseSchemaAdapter {
         Map<String, List<String>> dropColumnMap = new HashMap<>();
         Map<String, List<String>> dropFKMap = new HashMap<>();
         Map<String, List<String[]>> dropIndexMap = new HashMap<>();
-        List<String> dropTableList = new ArrayList<String>();
+        Set<String> dropTableSet = new HashSet<String>();
 
         for (RemoveChange removeAction : diffResults.getRemoveChanges()) {
 
@@ -236,7 +238,7 @@ public class LiquibaseSchemaAdapter extends AbstractLiquibaseSchemaAdapter {
                 }
                 // Remove the table for 0-many simple field.
                 if (field.isMany()) {
-                    dropTableList.add(tableName + "_" + columnName);
+                    dropTableSet.add(tableResolver.getCollectionTableToDrop(field));
                 } else {
                     List<String> columnList = dropColumnMap.get(tableName);
                     if (columnList == null) {
@@ -274,7 +276,7 @@ public class LiquibaseSchemaAdapter extends AbstractLiquibaseSchemaAdapter {
             }
         }
         
-        for (String tableName : dropTableList) {
+        for (String tableName : dropTableSet) {
             DropTableChange dropTableChange = new DropTableChange();
             dropTableChange.setTableName(tableName);
             changeActionList.add(dropTableChange);

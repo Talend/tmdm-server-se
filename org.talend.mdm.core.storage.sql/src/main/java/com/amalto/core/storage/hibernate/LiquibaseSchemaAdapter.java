@@ -132,22 +132,6 @@ public class LiquibaseSchemaAdapter extends AbstractLiquibaseSchemaAdapter {
         }
         return tableName;
     }
-    
-    // Table is generated for 0-many simple field like 'entityName_x_fieldName'in database.
-    protected String getTableNameForField(FieldMetadata field) {
-        // For inheritance type, use declaringType to generate table name.
-        ComplexTypeMetadata typeMetadata = field.getContainingType();
-        if (field.getDeclaringType() instanceof ComplexTypeMetadata) {
-            typeMetadata = (ComplexTypeMetadata) field.getDeclaringType();
-        } 
-        String tableName = tableResolver.get(typeMetadata) + "_" + getColumnName(field);
-        if (HibernateStorageUtils.isPostgres(dataSource.getDialectName())) {
-            tableName = tableName.toLowerCase();
-        } else if (HibernateStorageUtils.isOracle(dataSource.getDialectName())) {
-            tableName = tableName.toUpperCase();
-        }     
-        return tableName;
-    }
 
     private String getColumnName(FieldMetadata field) {
         String columnName = tableResolver.get(field);
@@ -254,7 +238,7 @@ public class LiquibaseSchemaAdapter extends AbstractLiquibaseSchemaAdapter {
                 }
                 // Remove the table for 0-many simple field.
                 if (field.isMany()) {
-                    dropTableSet.add(getTableNameForField(field));
+                    dropTableSet.add(tableResolver.getCollectionTableToDrop(field));
                 } else {
                     List<String> columnList = dropColumnMap.get(tableName);
                     if (columnList == null) {

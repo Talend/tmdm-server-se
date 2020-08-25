@@ -149,6 +149,11 @@ public class ManyFieldCriterionTest extends TestCase {
         public String get(String name) {
             return null;
         }
+
+		@Override
+		public String getCollectionTableToDrop(FieldMetadata field) {
+			return "product_collection";
+		}
     }
 
     private class CriteriaQueryForTest implements CriteriaQuery {

@@ -72,6 +72,13 @@ public class SerializableListWriter implements MessageBodyWriter<SerializableLis
             }
             bw.write("]}");
             bw.flush();
+        } else if (mediaType.equals(MediaType.APPLICATION_OCTET_STREAM_TYPE)) {
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(outputStream));
+            for (Object string : strings) {
+                bw.write(String.valueOf(string));
+                bw.write(' ');
+            }
+            bw.flush();
         } else {
             throw new IllegalArgumentException("Media type: '" + mediaType.getType() + "' is not supported.");
         }

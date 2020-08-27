@@ -18,6 +18,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.StringTokenizer;
 
@@ -192,7 +193,7 @@ public class DataRecord {
                 int count = 0;
                 for (Map.Entry<FieldMetadata, Object> entry : fieldToValue.entrySet()) {
                     if (field.getName().equals(entry.getKey().getName()) 
-                            && containingType.equals(entry.getKey().getContainingType())) {
+                            && Objects.equals(containingType, entry.getKey().getContainingType())) {
                         keyValue.append('[').append(entry.getValue()).append(']');
                         count++;
                     }

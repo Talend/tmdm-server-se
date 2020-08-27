@@ -191,7 +191,8 @@ public class DataRecord {
                 StringBuilder keyValue = new StringBuilder();
                 int count = 0;
                 for (Map.Entry<FieldMetadata, Object> entry : fieldToValue.entrySet()) {
-                    if (field.getName().equals(entry.getKey().getName())) {
+                    if (field.getName().equals(entry.getKey().getName()) 
+                            && containingType.equals(entry.getKey().getContainingType())) {
                         keyValue.append('[').append(entry.getValue()).append(']');
                         count++;
                     }

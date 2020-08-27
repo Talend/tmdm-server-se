@@ -14,6 +14,8 @@ import com.amalto.core.query.user.TypedExpression;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import org.apache.commons.lang.StringUtils;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 
@@ -39,7 +41,21 @@ class AliasProcessor implements TypedExpressionProcessor {
             } else if (item.has("value")) { //$NON-NLS-1$
                 aliasedExpression = new StringConstant(item.get("value").getAsString()); //$NON-NLS-1$
             } else {
-                aliasedExpression = Deserializer.getTypedExpression(item).process(item, repository);
+                // {"field":"E1/[idA][idB]"} -> {"field":"E1/idA"}
+                // -> {"field":"E1/idB"}
+                String itemStr = item.toString();
+                String[] fkFields = StringUtils.substringsBetween(itemStr, "[", "]");
+                if (fkFields != null && fkFields.length > 0) {
+                    String baseStr = StringUtils.substringBefore(itemStr, "/");
+                    for (String fkField : fkFields) {
+                        String subItemStr = baseStr + "/" + fkField + "\"}";
+                        JsonParser jsonParser = new JsonParser();
+                        JsonObject subItem = (JsonObject) jsonParser.parse(subItemStr);
+                        aliasedExpression = Deserializer.getTypedExpression(subItem).process(subItem, repository);
+                    }
+                } else {
+                    aliasedExpression = Deserializer.getTypedExpression(item).process(item, repository);
+                }
             }
         }
         if (aliasName == null || aliasedExpression == null) {

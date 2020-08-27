@@ -187,7 +187,19 @@ public class DataRecord {
             return null; // Not found.
         } else {
             if (fieldToValue.containsKey(field)) {
-                return fieldToValue.get(field);
+                // for same key, if has multiple values for FK, then combine the values with []
+                StringBuilder keyValue = new StringBuilder();
+                int count = 0;
+                for (Map.Entry<FieldMetadata, Object> entry : fieldToValue.entrySet()) {
+                    if (field.getName().equals(entry.getKey().getName())) {
+                        keyValue.append('[').append(entry.getValue()).append(']');
+                        count++;
+                    }
+                }
+                if (count <= 1) {
+                    return fieldToValue.get(field);
+                }
+                return keyValue.toString();
             } else if (recordMetadata.getRecordProperties().containsKey(field.getName())) { // Try to read from metadata
                 return recordMetadata.getRecordProperties().get(field.getName());
             }

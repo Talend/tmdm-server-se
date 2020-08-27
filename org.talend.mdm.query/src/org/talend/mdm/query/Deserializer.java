@@ -147,6 +147,11 @@ class Deserializer implements JsonDeserializer<Expression> {
                         // to:
                         // {"alias":[{"name":"E2/fk"},{"field":"E1/idA"}]}
                         // {"alias":[{"name":"E2/fk"},{"field":"E1/idB"}]}
+                        // Or convert from:
+                        // {"field":"E1/[idA][idB]"}
+                        // to:
+                        // {"field":"E1/idA"}
+                        // {"field":"E1/idB"}
                         String fieldElementStr = fieldElement.toString();
                         if (fieldElementStr.indexOf("][") > 0) {
                             // fkStr -> [idA][idB]
@@ -155,7 +160,7 @@ class Deserializer implements JsonDeserializer<Expression> {
                             String baseStr = StringUtils.substringBeforeLast(fieldElementStr, "/");
                             String[] fkFields = StringUtils.substringsBetween(fkStr, "[", "]");
                             for (String fkField : fkFields) {
-                                String subItemStr = baseStr + "/" + fkField + "\"}]}";
+                                String subItemStr = baseStr + "/" + fkField + StringUtils.substringAfter(fieldElementStr, fkStr);
                                 JsonParser jsonParser = new JsonParser();
                                 JsonObject subFieldElement = (JsonObject) jsonParser.parse(subItemStr);
                                 TypedExpressionProcessor processor = getTypedExpression(subFieldElement);

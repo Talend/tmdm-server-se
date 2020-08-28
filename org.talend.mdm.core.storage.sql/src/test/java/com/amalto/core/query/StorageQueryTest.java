@@ -3394,11 +3394,11 @@ public class StorageQueryTest extends StorageTestCase {
         };
         Set<String> expectedStrings = new HashSet<String>();
         expectedStrings
-                .add("<result><subelement>aaa</subelement><subelement1>bbb</subelement1><i>[aaa][bbb]</i><i>[aaa][bbb]</i><name>asdf</name></result>");
+                .add("<result><subelement>aaa</subelement><subelement1>bbb</subelement1><i>aaa</i><i>bbb</i><name>asdf</name></result>");
         expectedStrings
-                .add("<result><subelement>ccc</subelement><subelement1>ddd</subelement1><i>[ccc][ddd]</i><i>[ccc][ddd]</i><name>cvcvc</name></result>");
+                .add("<result><subelement>ccc</subelement><subelement1>ddd</subelement1><i>ccc</i><i>ddd</i><name>cvcvc</name></result>");
         expectedStrings
-                .add("<result><subelement>ttt</subelement><subelement1>yyy</subelement1><i>[ttt][yyy]</i><i>[ttt][yyy]</i><name>nhhn</name></result>");
+                .add("<result><subelement>ttt</subelement><subelement1>yyy</subelement1><i>ttt</i><i>yyy</i><name>nhhn</name></result>");
         for (DataRecord result : results) {
             ByteArrayOutputStream output = new ByteArrayOutputStream();
             try {

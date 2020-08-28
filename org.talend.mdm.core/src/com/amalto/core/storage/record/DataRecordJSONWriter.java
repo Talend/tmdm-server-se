@@ -60,7 +60,7 @@ public class DataRecordJSONWriter implements DataRecordWriter {
                             String fieldName = getQualifiedName(field.getName());
                             try {
                                 if (!field.isMany()) {
-                                    writer.key(fieldName).value(StorageMetadataUtils.toString(record.get(field), false));
+                                    writer.key(fieldName).value(StorageMetadataUtils.toString(record.get(field, true), false));
                                 } else {
                                     List<Object> values = (List<Object>) record.get(field);
                                     if (values != null) {

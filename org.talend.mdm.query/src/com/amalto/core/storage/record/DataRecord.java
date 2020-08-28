@@ -119,6 +119,9 @@ public class DataRecord {
         return recordMetadata;
     }
 
+    public Object get(FieldMetadata field) {
+        return get(field, false);
+    }
     /**
      * <p>
      * Get <b>a</b> value for a <code>field</code>. This method the first value to be found, so in case the field is present many
@@ -132,7 +135,7 @@ public class DataRecord {
      * @param field A {@link org.talend.mdm.commmon.metadata.FieldMetadata field} contained in record.
      * @return The value of the field in this record or <code>null</code> if no value is set for field.
      */
-    public Object get(FieldMetadata field) {
+    public Object get(FieldMetadata field, boolean isFKValue) {
         if (field == null) {
             throw new IllegalArgumentException("Field cannot be null.");
         }
@@ -192,13 +195,14 @@ public class DataRecord {
                 StringBuilder keyValue = new StringBuilder();
                 int count = 0;
                 for (Map.Entry<FieldMetadata, Object> entry : fieldToValue.entrySet()) {
-                    if (field.getName().equals(entry.getKey().getName()) 
+                    if (entry.getValue() != null 
+                            && field.getName().equals(entry.getKey().getName()) 
                             && Objects.equals(containingType, entry.getKey().getContainingType())) {
                         keyValue.append('[').append(entry.getValue()).append(']');
                         count++;
                     }
                 }
-                if (count <= 1) {
+                if (count <= 1 || !isFKValue) {
                     return fieldToValue.get(field);
                 }
                 return keyValue.toString();

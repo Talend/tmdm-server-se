@@ -25,6 +25,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
 
@@ -105,12 +106,17 @@ class StorageTableResolver implements TableResolver {
             name = field.getName();
         } else {
             name = prefix + '_' + field.getName();
+        }                
+        name = name.replace('-', '_');
+        if (!StringUtils.startsWithIgnoreCase(name, STANDARD_PREFIX)) {
+        	name = STANDARD_PREFIX + name;
         }
-        String formattedName = formatSQLName(name.replace('-', '_'));
-        if (!formattedName.startsWith(STANDARD_PREFIX) && !formattedName.startsWith(STANDARD_PREFIX.toLowerCase())) {
-            return (STANDARD_PREFIX + formattedName).toLowerCase();
+        if (field instanceof ContainedTypeFieldMetadata) {
+        	name += "_x_talend_id"; //$NON-NLS-1$
+        } else if (field instanceof ReferenceFieldMetadata) {
+        	name += "_" + get(((ReferenceFieldMetadata) field).getReferencedField()); //$NON-NLS-1$
         }
-        return formattedName.toLowerCase();
+        return formatSQLName(name.toLowerCase());
     }
 
     @Override

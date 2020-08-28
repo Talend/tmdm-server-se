@@ -155,20 +155,6 @@ public class LiquibaseSchemaAdapter  {
         return tableName;
     }
 
-    private String getColumnName(FieldMetadata field) {
-        String columnName = tableResolver.get(field);
-        if (field instanceof ContainedTypeFieldMetadata) {
-            columnName += "_x_talend_id"; //$NON-NLS-1$
-        }
-        if (field instanceof ReferenceFieldMetadata) {
-            columnName += "_" + tableResolver.get(((ReferenceFieldMetadata) field).getReferencedField()); //$NON-NLS-1$
-        }
-        if (HibernateStorageUtils.isOracle(dataSource.getDialectName())) {
-            columnName = columnName.toUpperCase();
-        }
-        return columnName;
-    }
-
     protected List<AbstractChange> analyzeModifyChange(DiffResults diffResults) {
         List<AbstractChange> changeActionList = new ArrayList<AbstractChange>();
         for (ModifyChange modifyAction : diffResults.getModifyChanges()) {
@@ -183,7 +169,7 @@ public class LiquibaseSchemaAdapter  {
                         dataSource.getDialectName(), defaultValueRule, StringUtils.EMPTY);
                 String tableName = getTableName(current);
                 String columnDataType = getColumnTypeName(current);
-                String columnName = getColumnName(current);
+                String columnName = tableResolver.get(current);
 
                 if (current.isMandatory() && !previous.isMandatory() && !isModifyMinOccursForRepeatable(previous, current)) {
                     if (storageType == StorageType.MASTER) {
@@ -229,7 +215,7 @@ public class LiquibaseSchemaAdapter  {
                 FieldMetadata field = (FieldMetadata) element;
 
                 String tableName = getTableName(field);
-                String columnName = getColumnName(field);
+                String columnName = tableResolver.get(field);
 
                 // Need remove the FK constraint first before remove a reference field.
                 // FK constraint only exists in master DB.
@@ -238,7 +224,7 @@ public class LiquibaseSchemaAdapter  {
                     String fkName = tableResolver.getFkConstraintName(referenceField);
                     if (fkName.isEmpty()) {
                         List<Column> columns = new ArrayList<>();
-                        columns.add(new Column(columnName.toLowerCase()));
+                        columns.add(new Column(columnName));
                         fkName = Constraint.generateName(new ForeignKey().generatedConstraintNamePrefix(),
                                 new Table(tableResolver.get(field.getContainingType().getEntity())), columns);
                         if (HibernateStorageUtils.isPostgres(dataSource.getDialectName())) {

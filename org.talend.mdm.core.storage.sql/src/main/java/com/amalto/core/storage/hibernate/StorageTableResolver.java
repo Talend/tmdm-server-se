@@ -145,6 +145,11 @@ class StorageTableResolver implements TableResolver {
         if (field.getDeclaringType() instanceof ComplexTypeMetadata) {
             typeMetadata = (ComplexTypeMetadata) field.getDeclaringType();
         }
+        if (field instanceof ReferenceFieldMetadata) {
+            ReferenceFieldMetadata referenceField = (ReferenceFieldMetadata) field;
+            return formatSQLName(referenceField.getContainingType().getName() + "_X_" + referenceField.getName() + '_'
+                    + referenceField.getReferencedType().getName());
+        }
         return formatSQLName(get(typeMetadata) + '_' + get(field));
     }
 

@@ -217,9 +217,13 @@ public class LiquibaseSchemaAdapter  {
                 String tableName = getTableName(field);
                 String columnName = tableResolver.get(field);
 
+                // Remove the table for 0-many field.
+                if (field.isMany()) {
+                    dropTableSet.add(tableResolver.getCollectionTableToDrop(field));
+                } 
                 // Need remove the FK constraint first before remove a reference field.
                 // FK constraint only exists in master DB.
-                if (element instanceof ReferenceFieldMetadata && storageType == StorageType.MASTER) {
+                else if (element instanceof ReferenceFieldMetadata && storageType == StorageType.MASTER) {
                     ReferenceFieldMetadata referenceField = (ReferenceFieldMetadata) element;
                     String fkName = tableResolver.getFkConstraintName(referenceField);
                     if (fkName.isEmpty()) {
@@ -237,10 +241,6 @@ public class LiquibaseSchemaAdapter  {
                     }
                     fkList.add(fkName);
                     dropFKMap.put(tableName, fkList);
-                }
-                // Remove the table for 0-many simple field.
-                if (field.isMany()) {
-                    dropTableSet.add(tableResolver.getCollectionTableToDrop(field));
                 } else {
                     List<String> columnList = dropColumnMap.get(tableName);
                     if (columnList == null) {

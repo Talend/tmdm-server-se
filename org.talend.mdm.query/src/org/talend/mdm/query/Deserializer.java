@@ -183,21 +183,21 @@ class Deserializer implements JsonDeserializer<Expression> {
                         String joinLeft = fieldElement.get("from").getAsString();
                         String joinRight = fieldElement.get("on").getAsString();
                         // E1/[idA][idB] -> E1/idA
-                        //               -> E1/idB
-                    	String[] fkFields = StringUtils.substringsBetween(joinRight, "[", "]");
-                    	if (fkFields != null && fkFields.length > 0) {
-                    		String baseStr = StringUtils.substringBefore(joinRight, "/");
-                    		for (String fkField : fkFields) {
-                    			String subRightStr = baseStr + "/" + fkField;
+                        // -> E1/idB
+                        String[] fkFields = StringUtils.substringsBetween(joinRight, "[", "]");
+                        if (fkFields != null && fkFields.length > 0) {
+                            String baseStr = StringUtils.substringBefore(joinRight, "/");
+                            for (String fkField : fkFields) {
+                                String subRightStr = baseStr + "/" + fkField;
                                 FieldMetadata leftField = getField(repository, joinLeft).getFieldMetadata();
                                 FieldMetadata rightField = getField(repository, subRightStr).getFieldMetadata();
                                 queryBuilder.join(leftField, rightField);
-                    		}
-                    	} else {
+                            }
+                        } else {
                             FieldMetadata leftField = getField(repository, joinLeft).getFieldMetadata();
                             FieldMetadata rightField = getField(repository, joinRight).getFieldMetadata();
                             queryBuilder.join(leftField, rightField);
-                       	}
+                        }
                     }
                 }
             }

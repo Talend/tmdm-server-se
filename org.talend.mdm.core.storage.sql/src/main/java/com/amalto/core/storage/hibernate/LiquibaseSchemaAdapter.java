@@ -217,25 +217,25 @@ public class LiquibaseSchemaAdapter  {
                 // Remove the table for 0-many field.
                 if (field.isMany()) {
                     dropTableSet.add(formatSQLName(tableResolver.getCollectionTableToDrop(field)));
-                } 
-                // Need remove the FK constraint first before remove a reference field.
-                // FK constraint only exists in master DB.
-                else if (element instanceof ReferenceFieldMetadata && storageType == StorageType.MASTER) {
-                    ReferenceFieldMetadata referenceField = (ReferenceFieldMetadata) element;
-                    String fkName = tableResolver.getFkConstraintName(referenceField);
-                    if (fkName.isEmpty()) {
-                        List<Column> columns = new ArrayList<>();
-                        columns.add(new Column(columnName));
-                        fkName = Constraint.generateName(new ForeignKey().generatedConstraintNamePrefix(),
-                                new Table(tableResolver.get(field.getContainingType().getEntity())), columns);
-                    }
-                    List<String> fkList = dropFKMap.get(tableName);
-                    if (fkList == null) {
-                        fkList = new ArrayList<String>();
-                    }
-                    fkList.add(formatSQLName(fkName));
-                    dropFKMap.put(tableName, fkList);
                 } else {
+                	// Need remove the FK constraint first before remove a reference field.
+                    // FK constraint only exists in master DB.
+                	if (element instanceof ReferenceFieldMetadata && storageType == StorageType.MASTER) {                
+	                    ReferenceFieldMetadata referenceField = (ReferenceFieldMetadata) element;
+	                    String fkName = tableResolver.getFkConstraintName(referenceField);
+	                    if (fkName.isEmpty()) {
+	                        List<Column> columns = new ArrayList<>();
+	                        columns.add(new Column(columnName));
+	                        fkName = Constraint.generateName(new ForeignKey().generatedConstraintNamePrefix(),
+	                                new Table(tableResolver.get(field.getContainingType().getEntity())), columns);
+	                    }
+	                    List<String> fkList = dropFKMap.get(tableName);
+	                    if (fkList == null) {
+	                        fkList = new ArrayList<String>();
+	                    }
+	                    fkList.add(formatSQLName(fkName));
+	                    dropFKMap.put(tableName, fkList);
+	                } 
                     List<String> columnList = dropColumnMap.get(tableName);
                     if (columnList == null) {
                         columnList = new ArrayList<String>();

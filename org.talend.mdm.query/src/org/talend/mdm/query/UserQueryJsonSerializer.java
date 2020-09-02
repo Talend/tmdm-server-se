@@ -65,6 +65,7 @@ import com.google.gson.JsonPrimitive;
 import org.apache.commons.lang.NotImplementedException;
 import org.talend.mdm.commmon.metadata.ContainedComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
+import org.talend.mdm.commmon.metadata.CompoundFieldMetadata;
 
 import java.util.Arrays;
 import java.util.stream.Stream;
@@ -346,7 +347,15 @@ public class UserQueryJsonSerializer extends VisitorAdapter<JsonElement> {
         final JsonObject aliasObject = new JsonObject();
         final JsonArray aliasObjectContent = new JsonArray();
         final JsonObject aliasDefinition = new JsonObject();
-        aliasDefinition.add("name", new JsonPrimitive(alias.getAliasName()));
+        String aliasName = alias.getAliasName();
+        String[] aliasNameStr = alias.getAliasName().split("/");
+        // Convert E2/fk/fk -> E2/fk
+        if (aliasNameStr != null && aliasNameStr.length > 2
+                && ((Field) alias.getTypedExpression()).getFieldMetadata() instanceof CompoundFieldMetadata) {
+            aliasName = aliasNameStr[0] + "/" + aliasNameStr[1];
+        }
+
+        aliasDefinition.add("name", new JsonPrimitive(aliasName));
         aliasObjectContent.add(aliasDefinition);
         aliasObjectContent.add(alias.getTypedExpression().accept(this));
 

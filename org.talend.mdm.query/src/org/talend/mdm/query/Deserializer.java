@@ -142,8 +142,34 @@ class Deserializer implements JsonDeserializer<Expression> {
                     JsonElement element = fields.get(i);
                     if (element != null && element.isJsonObject()) {
                         JsonObject fieldElement = element.getAsJsonObject();
-                        TypedExpressionProcessor processor = getTypedExpression(fieldElement);
-                        queryBuilder.select(processor.process(fieldElement, repository));
+                        // Convert from:
+                        // {"alias":[{"name":"E2/fk"},{"field":"E1/[idA][idB]"}]}
+                        // to:
+                        // {"alias":[{"name":"E2/fk"},{"field":"E1/idA"}]}
+                        // {"alias":[{"name":"E2/fk"},{"field":"E1/idB"}]}
+                        // Or convert from:
+                        // {"field":"E1/[idA][idB]"}
+                        // to:
+                        // {"field":"E1/idA"}
+                        // {"field":"E1/idB"}
+                        String fieldElementStr = fieldElement.toString();
+                        if (fieldElementStr.indexOf("][") > 0) {
+                            // fkStr -> [idA][idB]
+                            String fkStr = "[" + StringUtils.substringAfter(fieldElementStr, "/[");
+                            fkStr = StringUtils.substringBefore(fkStr, "]\"") + "]";
+                            String baseStr = StringUtils.substringBeforeLast(fieldElementStr, "/");
+                            String[] fkFields = StringUtils.substringsBetween(fkStr, "[", "]");
+                            for (String fkField : fkFields) {
+                                String subItemStr = baseStr + "/" + fkField + StringUtils.substringAfter(fieldElementStr, fkStr);
+                                JsonParser jsonParser = new JsonParser();
+                                JsonObject subFieldElement = (JsonObject) jsonParser.parse(subItemStr);
+                                TypedExpressionProcessor processor = getTypedExpression(subFieldElement);
+                                queryBuilder.select(processor.process(subFieldElement, repository));
+                            }
+                        } else {
+                            TypedExpressionProcessor processor = getTypedExpression(fieldElement);
+                            queryBuilder.select(processor.process(fieldElement, repository));
+                    	}
                     }
                 }
             }
@@ -156,9 +182,22 @@ class Deserializer implements JsonDeserializer<Expression> {
                         JsonObject fieldElement = element.getAsJsonObject();
                         String joinLeft = fieldElement.get("from").getAsString();
                         String joinRight = fieldElement.get("on").getAsString();
-                        FieldMetadata leftField = getField(repository, joinLeft).getFieldMetadata();
-                        FieldMetadata rightField = getField(repository, joinRight).getFieldMetadata();
-                        queryBuilder.join(leftField, rightField);
+                        // E1/[idA][idB] -> E1/idA
+                        // -> E1/idB
+                        String[] fkFields = StringUtils.substringsBetween(joinRight, "[", "]");
+                        if (fkFields != null && fkFields.length > 0) {
+                            String baseStr = StringUtils.substringBefore(joinRight, "/");
+                            for (String fkField : fkFields) {
+                                String subRightStr = baseStr + "/" + fkField;
+                                FieldMetadata leftField = getField(repository, joinLeft).getFieldMetadata();
+                                FieldMetadata rightField = getField(repository, subRightStr).getFieldMetadata();
+                                queryBuilder.join(leftField, rightField);
+                            }
+                        } else {
+                            FieldMetadata leftField = getField(repository, joinLeft).getFieldMetadata();
+                            FieldMetadata rightField = getField(repository, joinRight).getFieldMetadata();
+                            queryBuilder.join(leftField, rightField);
+                        }
                     }
                 }
             }

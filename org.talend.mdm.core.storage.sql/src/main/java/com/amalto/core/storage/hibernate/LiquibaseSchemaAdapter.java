@@ -149,7 +149,7 @@ public class LiquibaseSchemaAdapter  {
 
     protected String getTableName(FieldMetadata field) {
         String tableName = tableResolver.get(field.getContainingType());
-        return formatSQLName(tableName);
+        return upperOrLowerCase(tableName);
     }
 
     protected List<AbstractChange> analyzeModifyChange(DiffResults diffResults) {
@@ -166,7 +166,7 @@ public class LiquibaseSchemaAdapter  {
                         dataSource.getDialectName(), defaultValueRule, StringUtils.EMPTY);
                 String tableName = getTableName(current);
                 String columnDataType = getColumnTypeName(current);
-                String columnName = formatSQLName(tableResolver.get(current));
+                String columnName = upperOrLowerCase(tableResolver.get(current));
 
                 if (current.isMandatory() && !previous.isMandatory() && !isModifyMinOccursForRepeatable(previous, current)) {
                     if (storageType == StorageType.MASTER) {
@@ -216,10 +216,10 @@ public class LiquibaseSchemaAdapter  {
 
                 // Remove the table for 0-many field.
                 if (field.isMany()) {
-                    dropTableSet.add(formatSQLName(tableResolver.getCollectionTableToDrop(field)));
+                    dropTableSet.add(upperOrLowerCase(tableResolver.getCollectionTableToDrop(field)));
                 } else {
                 	// Need remove the FK constraint first before remove a reference field.
-                    // FK constraint only exists in master DB.
+                	// FK constraint only exists in master DB.
                 	if (element instanceof ReferenceFieldMetadata && storageType == StorageType.MASTER) {                
 	                    ReferenceFieldMetadata referenceField = (ReferenceFieldMetadata) element;
 	                    String fkName = tableResolver.getFkConstraintName(referenceField);
@@ -233,7 +233,7 @@ public class LiquibaseSchemaAdapter  {
 	                    if (fkList == null) {
 	                        fkList = new ArrayList<String>();
 	                    }
-	                    fkList.add(formatSQLName(fkName));
+	                    fkList.add(upperOrLowerCase(fkName));
 	                    dropFKMap.put(tableName, fkList);
 	                } 
                     List<String> columnList = dropColumnMap.get(tableName);
@@ -483,7 +483,7 @@ public class LiquibaseSchemaAdapter  {
         return columnDataType.equals("bit") || columnDataType.equals("boolean"); //$NON-NLS-1$ //$NON-NLS-2$
     }
     
-    protected String formatSQLName(String name) {
+    private String upperOrLowerCase(String name) {
     	if (HibernateStorageUtils.isOracle(dataSource.getDialectName())) {
     		return name.toUpperCase();
     	} else if (HibernateStorageUtils.isPostgres(dataSource.getDialectName())) {

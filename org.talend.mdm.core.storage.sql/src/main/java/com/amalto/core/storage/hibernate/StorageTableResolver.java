@@ -142,12 +142,10 @@ class StorageTableResolver implements TableResolver {
     @Override
     public String getCollectionTableToDrop(FieldMetadata field) {
         ComplexTypeMetadata typeMetadata = field.getContainingType();
-        if (field.getDeclaringType() instanceof ComplexTypeMetadata) {
-            typeMetadata = (ComplexTypeMetadata) field.getDeclaringType();
-        }
         if (field instanceof ReferenceFieldMetadata) {
             ReferenceFieldMetadata referenceField = (ReferenceFieldMetadata) field;
-            return formatSQLName(referenceField.getContainingType().getName() + "_x_" + referenceField.getName() + '_'
+            return formatSQLName(typeMetadata.getName() + "_x_"
+                    + referenceField.getName().replace('-', '_').toLowerCase() + '_'
                     + referenceField.getReferencedType().getName());
         }
         return formatSQLName(get(typeMetadata) + '_' + get(field));

@@ -150,8 +150,7 @@ class StorageTableResolver implements TableResolver {
         }
         if (field instanceof ReferenceFieldMetadata) {
             ReferenceFieldMetadata referenceField = (ReferenceFieldMetadata) field;
-            return formatSQLName(typeMetadata.getName() + "_x_"
-                    + referenceField.getName().replace('-', '_').toLowerCase() + '_'
+            return formatSQLName(typeMetadata.getName() + "_" + convertFieldName(referenceField.getName()) + '_'
                     + referenceField.getReferencedType().getName());
         }
         return formatSQLName(get(typeMetadata) + '_' + get(field));
@@ -164,7 +163,7 @@ class StorageTableResolver implements TableResolver {
         // length but different name.
         if (!referenceFieldNames.add(referenceField.getContainingType().getName().length() + '_' + referenceField.getName())) {
             // TMDM-10993 use the field's XPath to generate fkname
-            String name = getXpath(referenceField, referenceField.getName());
+            String name = getXpath(referenceField, convertFieldName(referenceField.getName()));
             return formatSQLName("FK_" + Math.abs(name.hashCode()));
         } else {
             return StringUtils.EMPTY;
@@ -239,5 +238,12 @@ class StorageTableResolver implements TableResolver {
                     + new String(ArrayUtils.subarray(chars, threshold / 2, chars.length)).hashCode();
             return __shortString(s.toCharArray(), threshold);
         }
+    }
+
+    private String convertFieldName(String fieldName) {
+        if (!fieldName.startsWith("x_")) {
+            return "x_" + fieldName.replace('-', '_').toLowerCase();
+        }
+        return fieldName;
     }
 }

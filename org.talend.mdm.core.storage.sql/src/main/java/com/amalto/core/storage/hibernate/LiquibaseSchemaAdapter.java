@@ -216,9 +216,7 @@ public class LiquibaseSchemaAdapter  {
 
                 // Remove the table for 0-many field.
                 if (field.isMany()) {
-                    if (field.getContainingType().getSuperTypes().isEmpty()) {
-                        dropTableSet.add(upperOrLowerCase(tableResolver.getCollectionTableToDrop(field)));
-                    }
+                    dropTableSet.add(upperOrLowerCase(tableResolver.getCollectionTableToDrop(field)));
                 } else {
                 	// Need remove the FK constraint first before remove a reference field.
                 	// FK constraint only exists in master DB.

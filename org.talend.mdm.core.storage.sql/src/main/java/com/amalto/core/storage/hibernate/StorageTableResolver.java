@@ -28,6 +28,7 @@ import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
+import org.talend.mdm.commmon.metadata.TypeMetadata;
 
 class StorageTableResolver implements TableResolver {
 
@@ -142,6 +143,11 @@ class StorageTableResolver implements TableResolver {
     @Override
     public String getCollectionTableToDrop(FieldMetadata field) {
         ComplexTypeMetadata typeMetadata = field.getContainingType();
+        for (TypeMetadata superType : field.getContainingType().getSuperTypes()) {
+            if (((ComplexTypeMetadata) superType).hasField(field.getName())) {
+                typeMetadata = (ComplexTypeMetadata) superType;
+            }
+        }
         if (field instanceof ReferenceFieldMetadata) {
             ReferenceFieldMetadata referenceField = (ReferenceFieldMetadata) field;
             return formatSQLName(typeMetadata.getName() + "_x_"

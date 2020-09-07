@@ -158,12 +158,13 @@ class StorageTableResolver implements TableResolver {
 
     @Override
     public String getFkConstraintName(ReferenceFieldMetadata referenceField) {
+        // TMDM-10993 use the field's XPath to generate fkname
+        String name = getXpath(referenceField, convertFieldName(referenceField.getName()));
         // TMDM-6896 Uses containing type length since FK collision issues happens when same FK is contained in a type
-        // with same
-        // length but different name.
-        if (!referenceFieldNames.add(referenceField.getContainingType().getName().length() + '_' + referenceField.getName())) {
-            // TMDM-10993 use the field's XPath to generate fkname
-            String name = getXpath(referenceField, convertFieldName(referenceField.getName()));
+        // with same length but different name.
+        if (!referenceFieldNames.add(referenceField.getContainingType().getName().length() + '_' + referenceField.getName())
+                || referenceFieldNames.contains(name)) {
+            referenceFieldNames.add(name);
             return formatSQLName("FK_" + Math.abs(name.hashCode()));
         } else {
             return StringUtils.EMPTY;

@@ -17,7 +17,7 @@
         <activemq.version>5.15.9</activemq.version>
         <woodstox.core.version>6.0.2</woodstox.core.version>
         <joda.time.version>2.10</joda.time.version>
-        <hazelcast.version>3.10.7</hazelcast.version>
+        <hazelcast.version>3.11.7</hazelcast.version>
     </properties>
 
     <build>

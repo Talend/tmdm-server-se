@@ -27,6 +27,7 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.boot.Metadata;
 import org.hibernate.boot.model.naming.Identifier;
+import org.hibernate.boot.model.relational.Namespace;
 import org.hibernate.dialect.DB2Dialect;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.H2Dialect;
@@ -53,6 +54,14 @@ public class MDMTable extends Table {
     private RDBMSDataSource dataSource;
 
     private static final Logger LOGGER = LogManager.getLogger(MDMTable.class);
+
+    public MDMTable() {
+        super();
+    }
+
+    public MDMTable(Namespace namespace, Identifier physicalTableName, String subselect, boolean isAbstract) {
+        super(namespace, physicalTableName, subselect, isAbstract);
+    }
 
 //    @Override
 //    public String sqlCreateString(Dialect dialect, Mapping p, String defaultCatalog, String defaultSchema) {

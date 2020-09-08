@@ -12,14 +12,17 @@
 // ============================================================================
 package com.amalto.core.storage.hibernate.mapping;
 
+import java.util.Iterator;
 import java.util.Set;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.hibernate.boot.Metadata;
 import org.hibernate.boot.model.naming.Identifier;
 import org.hibernate.boot.model.relational.Namespace;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.engine.jdbc.internal.Formatter;
 import org.hibernate.internal.CoreMessageLogger;
+import org.hibernate.mapping.Column;
 import org.hibernate.mapping.Table;
 import org.hibernate.tool.schema.extract.spi.DatabaseInformation;
 import org.hibernate.tool.schema.extract.spi.NameSpaceTablesInformation;
@@ -84,7 +87,11 @@ public class MDMGroupedSchemaMigratorImpl extends GroupedSchemaMigratorImpl {
                     }
                     else if ( tableInformation.isPhysicalTable() ) {
                         tablesInformation.addTableInformation( tableInformation );
-                        migrateTable( table, tableInformation, dialect, metadata, formatter, options, targets );
+                        MDMTable mdmTable = new MDMTable(namespace, table.getNameIdentifier(), table.getSubselect(), table.isAbstract());
+                        for(Iterator iterator = table.getColumnIterator(); iterator.hasNext();) {
+                            mdmTable.addColumn((Column)iterator.next());
+                        }
+                        migrateTable( mdmTable, tableInformation, dialect, metadata, formatter, options, targets );
                     }
                 }
             }

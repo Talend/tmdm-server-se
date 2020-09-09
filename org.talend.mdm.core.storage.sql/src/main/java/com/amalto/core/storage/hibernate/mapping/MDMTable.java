@@ -11,8 +11,6 @@
 package com.amalto.core.storage.hibernate.mapping;
 
 import java.sql.Connection;
-import java.sql.Date;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,12 +18,14 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
+import org.hibernate.boot.Metadata;
+import org.hibernate.boot.model.naming.Identifier;
+import org.hibernate.boot.model.relational.Namespace;
 import org.hibernate.dialect.DB2Dialect;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.H2Dialect;
@@ -33,16 +33,14 @@ import org.hibernate.dialect.MySQLDialect;
 import org.hibernate.dialect.Oracle8iDialect;
 import org.hibernate.dialect.PostgreSQLDialect;
 import org.hibernate.dialect.SQLServerDialect;
-import org.hibernate.engine.spi.Mapping;
 import org.hibernate.mapping.Column;
 import org.hibernate.mapping.Constraint;
 import org.hibernate.mapping.Table;
 import org.hibernate.mapping.UniqueKey;
-import org.hibernate.tool.hbm2ddl.ColumnMetadata;
-import org.hibernate.tool.hbm2ddl.TableMetadata;
+import org.hibernate.tool.schema.extract.spi.ColumnInformation;
+import org.hibernate.tool.schema.extract.spi.TableInformation;
 import org.talend.mdm.commmon.metadata.Types;
 
-import com.amalto.core.storage.datasource.RDBMSDataSource;
 import com.amalto.core.storage.hibernate.OracleCustomDialect;
 
 @SuppressWarnings({ "nls", "rawtypes", "deprecation", "serial", "unchecked" })
@@ -50,113 +48,128 @@ public class MDMTable extends Table {
 
     private static final String LONGTEXT = "longtext";
 
-    private RDBMSDataSource dataSource;
+//    private RDBMSDataSource dataSource;
+
+    private Connection connection;
 
     private static final Logger LOGGER = LogManager.getLogger(MDMTable.class);
 
-    @Override
-    public String sqlCreateString(Dialect dialect, Mapping p, String defaultCatalog, String defaultSchema) {
-        StringBuilder buf = new StringBuilder(hasPrimaryKey() ? dialect.getCreateTableString()
-                : dialect.getCreateMultisetTableString()).append(' ')
-                .append(getQualifiedName(dialect, defaultCatalog, defaultSchema)).append(" (");
-
-        boolean identityColumn = getIdentifierValue() != null
-                && getIdentifierValue().isIdentityColumn(p.getIdentifierGeneratorFactory(), dialect);
-
-        // Try to find out the name of the primary key to create it as identity if the IdentityGenerator is used
-        String pkname = null;
-        if (hasPrimaryKey() && identityColumn) {
-            pkname = getPrimaryKey().getColumnIterator().next().getQuotedName(dialect);
-        }
-
-        Iterator iter = getColumnIterator();
-        while (iter.hasNext()) {
-            Column col = (Column) iter.next();
-
-            buf.append(col.getQuotedName(dialect)).append(' ');
-
-            if (identityColumn && col.getQuotedName(dialect).equals(pkname)) {
-                // to support dialects that have their own identity data type
-                if (dialect.hasDataTypeInIdentityColumn()) {
-                    buf.append(col.getSqlType(dialect, p));
-                }
-                buf.append(' ').append(dialect.getIdentityColumnString(col.getSqlTypeCode(p)));
-            } else {
-                String sqlType = col.getSqlType(dialect, p);
-                buf.append(sqlType);
-
-                String defaultValue = col.getDefaultValue();
-                buf.append(convertDefaultValue(dialect, sqlType, defaultValue));
-
-                if (col.isNullable()) {
-                    buf.append(dialect.getNullColumnString());
-                } else {
-                    buf.append(" not null");
-                }
-
-            }
-
-            // add the UK str
-            buf.append(generateUK(dialect, col));
-
-            if (col.hasCheckConstraint() && dialect.supportsColumnCheck()) {
-                buf.append(" check (").append(col.getCheckConstraint()).append(')');
-            }
-
-            String columnComment = col.getComment();
-            if (columnComment != null) {
-                buf.append(dialect.getColumnComment(columnComment));
-            }
-
-            if (iter.hasNext()) {
-                buf.append(", ");
-            }
-
-        }
-        if (hasPrimaryKey()) {
-            buf.append(", ").append(getPrimaryKey().sqlConstraintString(dialect));
-        }
-
-        buf.append(dialect.getUniqueDelegate().getTableCreationUniqueConstraintsFragment(this));
-
-        if (dialect.supportsTableCheck()) {
-            Iterator chiter = getCheckConstraintsIterator();
-            while (chiter.hasNext()) {
-                buf.append(", check (").append(chiter.next()).append(')');
-            }
-        }
-
-        buf.append(')');
-
-        if (getComment() != null) {
-            buf.append(dialect.getTableComment(getComment()));
-        }
-
-        String createSQL = buf.append(dialect.getTableTypeString()).toString();
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug(createSQL);
-        }
-        return createSQL;
+    public MDMTable(Namespace namespace, Identifier physicalTableName, String subselect, boolean isAbstract) {
+        super(namespace, physicalTableName, subselect, isAbstract);
     }
 
+//    @Override
+//    public String sqlCreateString(Dialect dialect, Mapping p, String defaultCatalog, String defaultSchema) {
+//        StringBuilder buf = new StringBuilder(hasPrimaryKey() ? dialect.getCreateTableString()
+//                : dialect.getCreateMultisetTableString()).append(' ')
+//                .append(getQualifiedName(dialect, defaultCatalog, defaultSchema)).append(" (");
+//
+//        boolean identityColumn = getIdentifierValue() != null
+//                && getIdentifierValue().isIdentityColumn(p.getIdentifierGeneratorFactory(), dialect);
+//
+//        // Try to find out the name of the primary key to create it as identity if the IdentityGenerator is used
+//        String pkname = null;
+//        if (hasPrimaryKey() && identityColumn) {
+//            pkname = getPrimaryKey().getColumnIterator().next().getQuotedName(dialect);
+//        }
+//
+//        Iterator iter = getColumnIterator();
+//        while (iter.hasNext()) {
+//            Column col = (Column) iter.next();
+//
+//            buf.append(col.getQuotedName(dialect)).append(' ');
+//
+//            if (identityColumn && col.getQuotedName(dialect).equals(pkname)) {
+//                // to support dialects that have their own identity data type
+////                if (dialect.hasDataTypeInIdentityColumn()) {
+////                    buf.append(col.getSqlType(dialect, p));
+////                }
+////                buf.append(' ').append(dialect.getIdentityColumnString(col.getSqlTypeCode(p)));
+//            } else {
+//                String sqlType = col.getSqlType(dialect, p);
+//                buf.append(sqlType);
+//
+//                String defaultValue = col.getDefaultValue();
+//                buf.append(convertDefaultValue(dialect, sqlType, defaultValue));
+//
+//                if (col.isNullable()) {
+//                    buf.append(dialect.getNullColumnString());
+//                } else {
+//                    buf.append(" not null");
+//                }
+//
+//            }
+//
+//            // add the UK str
+//            buf.append(generateUK(dialect, col));
+//
+//            if (col.hasCheckConstraint() && dialect.supportsColumnCheck()) {
+//                buf.append(" check (").append(col.getCheckConstraint()).append(')');
+//            }
+//
+//            String columnComment = col.getComment();
+//            if (columnComment != null) {
+//                buf.append(dialect.getColumnComment(columnComment));
+//            }
+//
+//            if (iter.hasNext()) {
+//                buf.append(", ");
+//            }
+//
+//        }
+//        if (hasPrimaryKey()) {
+//            buf.append(", ").append(getPrimaryKey().sqlConstraintString(dialect));
+//        }
+//
+//        buf.append(dialect.getUniqueDelegate().getTableCreationUniqueConstraintsFragment(this));
+//
+//        if (dialect.supportsTableCheck()) {
+//            Iterator chiter = getCheckConstraintsIterator();
+//            while (chiter.hasNext()) {
+//                buf.append(", check (").append(chiter.next()).append(')');
+//            }
+//        }
+//
+//        buf.append(')');
+//
+//        if (getComment() != null) {
+//            buf.append(dialect.getTableComment(getComment()));
+//        }
+//
+//        String createSQL = buf.append(dialect.getTableTypeString()).toString();
+//        if (LOGGER.isDebugEnabled()) {
+//            LOGGER.debug(createSQL);
+//        }
+//        return createSQL;
+//    }
+
     @Override
-    public Iterator sqlAlterStrings(Dialect dialect, Mapping p, TableMetadata tableInfo, String defaultCatalog,
-            String defaultSchema) throws HibernateException {
+    public Iterator sqlAlterStrings(
+            Dialect dialect,
+            Metadata metadata,
+            TableInformation tableInfo,
+            Identifier defaultCatalog,
+            Identifier defaultSchema) throws HibernateException {
 
-        String tableName = getQualifiedName(dialect, defaultCatalog, defaultSchema);
+        // String tableName = getQualifiedName(dialect, defaultCatalog, defaultSchema);
+        String tableName = tableInfo.getName().getTableName().getText();
         StringBuilder root = new StringBuilder("alter table ").append(tableName).append(' ');
-
+        try {
+            executeSQLForSQLServer("select * from " + tableName, new ArrayList());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         Iterator iter = getColumnIterator();
         List results = new ArrayList();
 
         while (iter.hasNext()) {
             Column column = (Column) iter.next();
 
-            ColumnMetadata columnInfo = tableInfo.getColumnMetadata(column.getName());
+            ColumnInformation columnInfo = tableInfo.getColumn(Identifier.toIdentifier(column.getName(), false));
 
-            String sqlType = column.getSqlType(dialect, p);
+            String sqlType = column.getSqlType(dialect, metadata);
             if (column.getSqlTypeCode() == null) {
-                column.setSqlTypeCode(column.getSqlTypeCode(p));
+                column.setSqlTypeCode(column.getSqlTypeCode(metadata));
             }
             String defaultValue = column.getDefaultValue();
             String columnName = column.getQuotedName(dialect);
@@ -348,12 +361,9 @@ public class MDMTable extends Table {
     }
 
     private String executeSQLForSQLServer(String sql, List<String> parameters) throws Exception {
-        Connection connection = null;
         PreparedStatement statement = null;
         String result = StringUtils.EMPTY;
         try {
-            Properties properties = dataSource.getAdvancedPropertiesIncludeUserInfo();
-            connection = DriverManager.getConnection(dataSource.getConnectionURL(), properties);
             statement = connection.prepareStatement(sql);
             for (int i = 0; i < parameters.size(); i++) {
                 statement.setString(i + 1, parameters.get(i));
@@ -367,15 +377,42 @@ public class MDMTable extends Table {
                 if (statement != null) {
                     statement.close();
                 }
-                if (connection != null) {
-                    connection.close();
-                }
             } catch (SQLException e) {
                 LOGGER.error("Unexpected error when closing connection.", e);
             }
         }
         return result;
     }
+//
+//    private String executeSQLForSQLServerqq(String sql, List<String> parameters) throws Exception {
+//        Connection connection = null;
+//        PreparedStatement statement = null;
+//        String result = StringUtils.EMPTY;
+//        try {
+//            Properties properties = dataSource.getAdvancedPropertiesIncludeUserInfo();
+//            connection = DriverManager.getConnection(dataSource.getConnectionURL(), properties);
+//            statement = connection.prepareStatement(sql);
+//            for (int i = 0; i < parameters.size(); i++) {
+//                statement.setString(i + 1, parameters.get(i));
+//            }
+//            ResultSet rs = statement.executeQuery();
+//            while (rs.next()) {
+//                result = rs.getString(1);
+//            }
+//        } finally {
+//            try {
+//                if (statement != null) {
+//                    statement.close();
+//                }
+//                if (connection != null) {
+//                    connection.close();
+//                }
+//            } catch (SQLException e) {
+//                LOGGER.error("Unexpected error when closing connection.", e);
+//            }
+//        }
+//        return result;
+//    }
 
     private String convertDefaultValue(Dialect dialect, String sqlType, String defaultValue) {
         String defaultSQL = StringUtils.EMPTY;
@@ -393,8 +430,11 @@ public class MDMTable extends Table {
         return sqlType.equalsIgnoreCase(Timestamp.class.getSimpleName()) || sqlType.equalsIgnoreCase(Types.DATE)
                 || sqlType.equalsIgnoreCase(Types.DATETIME) || sqlType.equalsIgnoreCase(Types.TIME);
     }
-
-    public void setDataSource(RDBMSDataSource dataSource) {
-        this.dataSource = dataSource;
+    
+    protected void setConnection(Connection connection) {
+        this.connection = connection;
     }
+//    public void setDataSource(RDBMSDataSource dataSource) {
+//        this.dataSource = dataSource;
+//    }
 }

@@ -28,6 +28,7 @@ import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
+import org.talend.mdm.commmon.metadata.TypeMetadata;
 
 class StorageTableResolver implements TableResolver {
 
@@ -142,12 +143,14 @@ class StorageTableResolver implements TableResolver {
     @Override
     public String getCollectionTableToDrop(FieldMetadata field) {
         ComplexTypeMetadata typeMetadata = field.getContainingType();
-        if (field.getDeclaringType() instanceof ComplexTypeMetadata) {
-            typeMetadata = (ComplexTypeMetadata) field.getDeclaringType();
+        for (TypeMetadata superType : field.getContainingType().getSuperTypes()) {
+            if (((ComplexTypeMetadata) superType).hasField(field.getName())) {
+                typeMetadata = (ComplexTypeMetadata) superType;
+            }
         }
         if (field instanceof ReferenceFieldMetadata) {
             ReferenceFieldMetadata referenceField = (ReferenceFieldMetadata) field;
-            return formatSQLName(referenceField.getContainingType().getName() + "_x_" + referenceField.getName() + '_'
+            return formatSQLName(typeMetadata.getName() + "_" + convertFieldName(referenceField.getName()) + '_'
                     + referenceField.getReferencedType().getName());
         }
         return formatSQLName(get(typeMetadata) + '_' + get(field));
@@ -155,12 +158,13 @@ class StorageTableResolver implements TableResolver {
 
     @Override
     public String getFkConstraintName(ReferenceFieldMetadata referenceField) {
+        // TMDM-10993 use the field's XPath to generate fkname
+        String name = getXpath(referenceField, convertFieldName(referenceField.getName()));
         // TMDM-6896 Uses containing type length since FK collision issues happens when same FK is contained in a type
-        // with same
-        // length but different name.
-        if (!referenceFieldNames.add(referenceField.getContainingType().getName().length() + '_' + referenceField.getName())) {
-            // TMDM-10993 use the field's XPath to generate fkname
-            String name = getXpath(referenceField, referenceField.getName());
+        // with same length but different name.
+        if (!referenceFieldNames.add(referenceField.getContainingType().getName().length() + '_' + referenceField.getName())
+                || referenceFieldNames.contains(name)) {
+            referenceFieldNames.add(name);
             return formatSQLName("FK_" + Math.abs(name.hashCode()));
         } else {
             return StringUtils.EMPTY;
@@ -235,5 +239,12 @@ class StorageTableResolver implements TableResolver {
                     + new String(ArrayUtils.subarray(chars, threshold / 2, chars.length)).hashCode();
             return __shortString(s.toCharArray(), threshold);
         }
+    }
+
+    private String convertFieldName(String fieldName) {
+        if (!fieldName.startsWith("x_")) {
+            return "x_" + fieldName.replace('-', '_').toLowerCase();
+        }
+        return fieldName;
     }
 }

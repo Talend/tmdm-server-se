@@ -621,13 +621,13 @@ public class HibernateStorage implements Storage {
                 ClassLoaderService myStorageClassLoader = new StorageClassLoaderServiceImpl(storageClassLoader);
                 BootstrapServiceRegistryBuilder bootBuilder = new BootstrapServiceRegistryBuilder().applyClassLoaderService(myStorageClassLoader);
                 BootstrapServiceRegistry bootService = bootBuilder.build();
-                
+
                 StandardServiceRegistryBuilder serviceRegistryBuilder = new StandardServiceRegistryBuilder(bootService);
                 MDMHibernateSchemaManagementTool service = new MDMHibernateSchemaManagementTool();
                 serviceRegistryBuilder.addService(SchemaManagementTool.class, service);
 
                 serviceRegistryBuilder.configure(StorageClassLoader.HIBERNATE_CONFIG);
-                
+
                 serviceRegistry = (StandardServiceRegistryImpl)serviceRegistryBuilder.build();
                 service.injectServices(serviceRegistry);
 
@@ -1291,7 +1291,7 @@ public class HibernateStorage implements Storage {
             }
             PersistentClass metadata1 = metadata.getEntityBinding(ClassCreator.getClassName(typeName));
 //            PersistentClass metadata = configuration.getClassMapping(ClassCreator.getClassName(typeName));
-            if (metadata != null) {
+            if (metadata1 != null) {
                 tablesToDrop.addAll((Collection<String>) metadata1.accept(visitor));
             } else {
                 LOGGER.warn("Could not find table names for type '" + typeMetadata.getName() + "'."); //$NON-NLS-1$ //$NON-NLS-2$

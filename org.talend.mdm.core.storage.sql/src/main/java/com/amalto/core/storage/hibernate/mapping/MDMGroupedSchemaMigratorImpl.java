@@ -15,7 +15,6 @@ package com.amalto.core.storage.hibernate.mapping;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.hibernate.boot.Metadata;
 import org.hibernate.boot.model.naming.Identifier;
 import org.hibernate.boot.model.relational.Namespace;
@@ -24,11 +23,13 @@ import org.hibernate.engine.jdbc.internal.Formatter;
 import org.hibernate.internal.CoreMessageLogger;
 import org.hibernate.mapping.Column;
 import org.hibernate.mapping.Table;
+import org.hibernate.resource.transaction.spi.DdlTransactionIsolator;
 import org.hibernate.tool.schema.extract.spi.DatabaseInformation;
 import org.hibernate.tool.schema.extract.spi.NameSpaceTablesInformation;
 import org.hibernate.tool.schema.extract.spi.TableInformation;
 import org.hibernate.tool.schema.internal.GroupedSchemaMigratorImpl;
 import org.hibernate.tool.schema.internal.exec.GenerationTarget;
+import org.hibernate.tool.schema.internal.exec.JdbcContext;
 import org.hibernate.tool.schema.spi.ExecutionOptions;
 import org.hibernate.tool.schema.spi.SchemaFilter;
 import org.jboss.logging.Logger;
@@ -62,7 +63,7 @@ public class MDMGroupedSchemaMigratorImpl extends GroupedSchemaMigratorImpl {
             Set<Identifier> exportedCatalogs,
             Namespace namespace, GenerationTarget[] targets) {
         final NameSpaceTablesInformation tablesInformation =
-                new NameSpaceTablesInformation( metadata.getDatabase().getJdbcEnvironment().getIdentifierHelper() );
+                new NameSpaceTablesInformation( metadata.getDatabase().getJdbcEnvironment().getIdentifierHelper());
 
         if ( schemaFilter.includeNamespace( namespace ) ) {
             createSchemaAndCatalog(
@@ -77,23 +78,32 @@ public class MDMGroupedSchemaMigratorImpl extends GroupedSchemaMigratorImpl {
                     targets
             );
             final NameSpaceTablesInformation tables = existingDatabase.getTablesInformation( namespace );
-            for ( Table table : namespace.getTables() ) {
-                if ( schemaFilter.includeTable( table ) && table.isPhysicalTable() ) {
-                    checkExportIdentifier( table, exportIdentifiers );
-                    final TableInformation tableInformation = tables.getTableInformation( table );
-                    if ( tableInformation == null ) {
-                        LOGGER.tableNotFound(table.getName());
-                        createTable( table, dialect, metadata, formatter, options, targets );
-                    }
-                    else if ( tableInformation.isPhysicalTable() ) {
-                        tablesInformation.addTableInformation( tableInformation );
-                        MDMTable mdmTable = new MDMTable(namespace, table.getNameIdentifier(), table.getSubselect(), table.isAbstract());
-                        for (Iterator iterator = table.getColumnIterator(); iterator.hasNext();) {
-                            mdmTable.addColumn((Column) iterator.next());
+
+            final JdbcContext jdbcContext = tool.resolveJdbcContext(options.getConfigurationValues());
+            final DdlTransactionIsolator ddlTransactionIsolator = tool.getDdlTransactionIsolator(jdbcContext);
+            try {
+                for ( Table table : namespace.getTables() ) {
+                    if ( schemaFilter.includeTable( table ) && table.isPhysicalTable() ) {
+                        checkExportIdentifier( table, exportIdentifiers );
+                        final TableInformation tableInformation = tables.getTableInformation( table );
+                        if ( tableInformation == null ) {
+                            LOGGER.tableNotFound(table.getName());
+                            createTable( table, dialect, metadata, formatter, options, targets );
                         }
-                        migrateTable( mdmTable, tableInformation, dialect, metadata, formatter, options, targets );
+                        else if ( tableInformation.isPhysicalTable() ) {
+                            tablesInformation.addTableInformation( tableInformation );
+                            MDMTable mdmTable = new MDMTable(namespace, table.getNameIdentifier(), table.getSubselect(), table.isAbstract());
+                            mdmTable.setConnection(ddlTransactionIsolator.getIsolatedConnection());
+                            for (Iterator iterator = table.getColumnIterator(); iterator.hasNext();) {
+                                mdmTable.addColumn((Column) iterator.next());
+                            }
+                            migrateTable( mdmTable, tableInformation, dialect, metadata, formatter, options, targets );
+                        }
                     }
                 }
+            }
+            finally {
+                ddlTransactionIsolator.release();
             }
 
             for ( Table table : namespace.getTables() ) {

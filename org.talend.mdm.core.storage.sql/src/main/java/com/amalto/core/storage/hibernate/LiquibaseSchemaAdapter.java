@@ -206,19 +206,22 @@ public class LiquibaseSchemaAdapter extends AbstractLiquibaseSchemaAdapter {
                 	// FK constraint only exists in master DB.
                 	if (element instanceof ReferenceFieldMetadata && storageType == StorageType.MASTER) {                
 	                    ReferenceFieldMetadata referenceField = (ReferenceFieldMetadata) element;
-	                    String fkName = tableResolver.getFkConstraintName(referenceField);
-	                    if (fkName.isEmpty()) {
-	                        List<Column> columns = new ArrayList<>();
-	                        columns.add(new Column(columnName));
-	                        fkName = Constraint.generateName(new ForeignKey().generatedConstraintNamePrefix(),
-	                                new Table(tableResolver.get(field.getContainingType().getEntity())), columns);
-	                    }
-	                    List<String> fkList = dropFKMap.get(tableName);
-	                    if (fkList == null) {
-	                        fkList = new ArrayList<String>();
-	                    }
-	                    fkList.add(upperOrLowerCase(fkName));
-	                    dropFKMap.put(tableName, fkList);
+                        if (!(referenceField.getContainingType().equals(referenceField.getReferencedType())
+                                && HibernateStorageUtils.isOracle(dataSource.getDialectName()))) {
+                            String fkName = tableResolver.getFkConstraintName(referenceField);
+                            if (fkName.isEmpty()) {
+                                List<Column> columns = new ArrayList<>();
+                                columns.add(new Column(columnName));
+                                fkName = Constraint.generateName(new ForeignKey().generatedConstraintNamePrefix(),
+                                        new Table(tableResolver.get(field.getContainingType().getEntity())), columns);
+                            }
+                            List<String> fkList = dropFKMap.get(tableName);
+                            if (fkList == null) {
+                                fkList = new ArrayList<String>();
+                            }
+                            fkList.add(upperOrLowerCase(fkName));
+                            dropFKMap.put(tableName, fkList);
+                        }
 	                } 
                     List<String> columnList = dropColumnMap.get(tableName);
                     if (columnList == null) {

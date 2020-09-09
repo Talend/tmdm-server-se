@@ -88,8 +88,8 @@ public class MDMGroupedSchemaMigratorImpl extends GroupedSchemaMigratorImpl {
                     else if ( tableInformation.isPhysicalTable() ) {
                         tablesInformation.addTableInformation( tableInformation );
                         MDMTable mdmTable = new MDMTable(namespace, table.getNameIdentifier(), table.getSubselect(), table.isAbstract());
-                        for(Iterator iterator = table.getColumnIterator(); iterator.hasNext();) {
-                            mdmTable.addColumn((Column)iterator.next());
+                        for (Iterator iterator = table.getColumnIterator(); iterator.hasNext();) {
+                            mdmTable.addColumn((Column) iterator.next());
                         }
                         migrateTable( mdmTable, tableInformation, dialect, metadata, formatter, options, targets );
                     }

@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.boot.Metadata;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.mapping.Column;
 import org.hibernate.mapping.Constraint;
@@ -69,6 +70,8 @@ public class LiquibaseSchemaAdapter extends AbstractLiquibaseSchemaAdapter {
     private Dialect dialect;
 
     private String catalogName;
+
+    private Metadata metadata;
 
     public LiquibaseSchemaAdapter(TableResolver tableResolver, Dialect dialect, RDBMSDataSource dataSource,
             StorageType storageType) {

@@ -127,24 +127,7 @@ public class LiquibaseSchemaAdapter extends AbstractLiquibaseSchemaAdapter {
 
     protected String getTableName(FieldMetadata field) {
         String tableName = tableResolver.get(field.getContainingType());
-        if (dataSource.getDialectName() == DataSourceDialect.POSTGRES) {
-            tableName = tableName.toLowerCase();
-        }
-        return tableName;
-    }
-
-    private String getColumnName(FieldMetadata field) {
-        String columnName = tableResolver.get(field);
-        if (field instanceof ContainedTypeFieldMetadata) {
-            columnName += "_x_talend_id"; //$NON-NLS-1$
-        }
-        if (field instanceof ReferenceFieldMetadata) {
-            columnName += "_" + tableResolver.get(((ReferenceFieldMetadata) field).getReferencedField()); //$NON-NLS-1$
-        }
-        if (HibernateStorageUtils.isOracle(dataSource.getDialectName())) {
-            columnName = columnName.toUpperCase();
-        }
-        return columnName;
+        return upperOrLowerCase(tableName);
     }
 
     protected List<AbstractChange> analyzeModifyChange(DiffResults diffResults) {
@@ -167,7 +150,7 @@ public class LiquibaseSchemaAdapter extends AbstractLiquibaseSchemaAdapter {
                         dataSource.getDialectName(), defaultValue, StringUtils.EMPTY);
                 String tableName = getTableName(current);
                 String columnDataType = getColumnTypeName(current);
-                String columnName = getColumnName(current);
+                String columnName = upperOrLowerCase(tableResolver.get(current));
 
                 if (current.isMandatory() && !previous.isMandatory() && !isModifyMinOccursForRepeatable(previous, current)) {
                     if (storageType == StorageType.MASTER) {
@@ -213,33 +196,33 @@ public class LiquibaseSchemaAdapter extends AbstractLiquibaseSchemaAdapter {
                 FieldMetadata field = (FieldMetadata) element;
 
                 String tableName = getTableName(field);
-                String columnName = getColumnName(field);
+                String columnName = tableResolver.get(field);
 
-                // Need remove the FK constraint first before remove a reference field.
-                // FK constraint only exists in master DB.
-                if (element instanceof ReferenceFieldMetadata && storageType == StorageType.MASTER) {
-                    ReferenceFieldMetadata referenceField = (ReferenceFieldMetadata) element;
-                    String fkName = tableResolver.getFkConstraintName(referenceField);
-                    if (fkName.isEmpty()) {
-                        List<Column> columns = new ArrayList<>();
-                        columns.add(new Column(columnName.toLowerCase()));
-                        fkName = Constraint.generateName(new ForeignKey().generatedConstraintNamePrefix(),
-                                new Table(tableResolver.get(field.getContainingType().getEntity())), columns);
-                        if (HibernateStorageUtils.isPostgres(dataSource.getDialectName())) {
-                            fkName = fkName.toLowerCase();
-                        }
-                    }
-                    List<String> fkList = dropFKMap.get(tableName);
-                    if (fkList == null) {
-                        fkList = new ArrayList<String>();
-                    }
-                    fkList.add(fkName);
-                    dropFKMap.put(tableName, fkList);
-                }
-                // Remove the table for 0-many simple field.
+                // Remove the table for 0-many field.
                 if (field.isMany()) {
-                    dropTableSet.add(tableResolver.getCollectionTableToDrop(field));
+                    dropTableSet.add(upperOrLowerCase(tableResolver.getCollectionTableToDrop(field)));
                 } else {
+                	// Need remove the FK constraint first before remove a reference field.
+                	// FK constraint only exists in master DB.
+                	if (element instanceof ReferenceFieldMetadata && storageType == StorageType.MASTER) {                
+	                    ReferenceFieldMetadata referenceField = (ReferenceFieldMetadata) element;
+                        if (!(referenceField.getContainingType().equals(referenceField.getReferencedType())
+                                && HibernateStorageUtils.isOracle(dataSource.getDialectName()))) {
+                            String fkName = tableResolver.getFkConstraintName(referenceField);
+                            if (fkName.isEmpty()) {
+                                List<Column> columns = new ArrayList<>();
+                                columns.add(new Column(columnName));
+                                fkName = Constraint.generateName(new ForeignKey().generatedConstraintNamePrefix(),
+                                        new Table(tableResolver.get(field.getContainingType().getEntity())), columns);
+                            }
+                            List<String> fkList = dropFKMap.get(tableName);
+                            if (fkList == null) {
+                                fkList = new ArrayList<String>();
+                            }
+                            fkList.add(upperOrLowerCase(fkName));
+                            dropFKMap.put(tableName, fkList);
+                        }
+	                } 
                     List<String> columnList = dropColumnMap.get(tableName);
                     if (columnList == null) {
                         columnList = new ArrayList<String>();
@@ -414,5 +397,14 @@ public class LiquibaseSchemaAdapter extends AbstractLiquibaseSchemaAdapter {
 
     protected boolean isBooleanType(String columnDataType) {
         return columnDataType.equals("bit") || columnDataType.equals("boolean"); //$NON-NLS-1$ //$NON-NLS-2$
+    }
+    
+    private String upperOrLowerCase(String name) {
+    	if (HibernateStorageUtils.isOracle(dataSource.getDialectName())) {
+    		return name.toUpperCase();
+    	} else if (HibernateStorageUtils.isPostgres(dataSource.getDialectName())) {
+    		return name.toLowerCase();
+    	}
+    	return name;
     }
 }

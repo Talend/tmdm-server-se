@@ -70,6 +70,14 @@ interface TableResolver {
      * @return A string that can be used as table name on the database.
      */
     String getCollectionTable(FieldMetadata field);
+    
+    /**
+     * Returns name for a table that can store a collection of values for drop.
+     * 
+     * @param field A many valued field.
+     * @return A string that can be used as table name on the database.
+     */
+    String getCollectionTableToDrop(FieldMetadata field);
 
     /**
      * @param referenceField A foreign key to generate in the database

@@ -18,8 +18,10 @@ import java.io.Writer;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
@@ -61,6 +63,7 @@ import liquibase.change.core.DropColumnChange;
 import liquibase.change.core.DropForeignKeyConstraintChange;
 import liquibase.change.core.DropIndexChange;
 import liquibase.change.core.DropNotNullConstraintChange;
+import liquibase.change.core.DropTableChange;
 import liquibase.database.DatabaseConnection;
 import liquibase.precondition.core.IndexExistsPrecondition;
 import liquibase.precondition.core.PreconditionContainer;
@@ -143,25 +146,8 @@ public class LiquibaseSchemaAdapter  {
     }
 
     private String getTableName(FieldMetadata field) {
-        String tableName = tableResolver.get(field.getContainingType().getEntity());
-        if (dataSource.getDialectName() == DataSourceDialect.POSTGRES) {
-            tableName = tableName.toLowerCase();
-        }
-        return tableName;
-    }
-
-    private String getColumnName(FieldMetadata field) {
-        String columnName = tableResolver.get(field);
-        if (field instanceof ContainedTypeFieldMetadata) {
-            columnName += "_x_talend_id"; //$NON-NLS-1$
-        }
-        if (field instanceof ReferenceFieldMetadata) {
-            columnName += "_" + tableResolver.get(((ReferenceFieldMetadata) field).getReferencedField()); //$NON-NLS-1$
-        }
-        if (dataSource.getDialectName() == DataSourceDialect.ORACLE_10G) {
-            columnName = columnName.toUpperCase();
-        }
-        return columnName;
+        String tableName = tableResolver.get(field.getContainingType());
+        return upperOrLowerCase(tableName);
     }
 
     protected List<AbstractChange> analyzeModifyChange(DiffResults diffResults) {
@@ -177,7 +163,7 @@ public class LiquibaseSchemaAdapter  {
                 defaultValueRule = HibernateStorageUtils.convertedDefaultValue(dataSource.getDialectName(), defaultValueRule, StringUtils.EMPTY);
                 String tableName = getTableName(current);
                 String columnDataType = getColumnTypeName(current);
-                String columnName = getColumnName(current);
+                String columnName = upperOrLowerCase(tableResolver.get(current));
 
                 if (current.isMandatory() && !previous.isMandatory() && !isModifyMinOccursForRepeatable(previous, current)) {
                     if (storageType == StorageType.MASTER) {
@@ -208,6 +194,7 @@ public class LiquibaseSchemaAdapter  {
         Map<String, List<String>> dropColumnMap = new HashMap<>();
         Map<String, List<String>> dropFKMap = new HashMap<>();
         Map<String, List<String[]>> dropIndexMap = new HashMap<>();
+        Set<String> dropTableSet = new HashSet<String>();
 
         for (RemoveChange removeAction : diffResults.getRemoveChanges()) {
 
@@ -217,35 +204,39 @@ public class LiquibaseSchemaAdapter  {
                 FieldMetadata field = (FieldMetadata) element;
 
                 String tableName = getTableName(field);
-                String columnName = getColumnName(field);
+                String columnName = tableResolver.get(field);
 
-                // Need remove the FK constraint first before remove a reference field.
-                // FK constraint only exists in master DB.
-                if (element instanceof ReferenceFieldMetadata && storageType == StorageType.MASTER) {
-                    ReferenceFieldMetadata referenceField = (ReferenceFieldMetadata) element;
-                    String fkName = tableResolver.getFkConstraintName(referenceField);
-                    if (fkName.isEmpty()) {
-                        List<Column> columns = new ArrayList<>();
-                        columns.add(new Column(columnName.toLowerCase()));
-                        fkName = Constraint.generateName(new ForeignKey().generatedConstraintNamePrefix(),
-                                new Table(tableResolver.get(field.getContainingType().getEntity())), columns);
-                        if (dataSource.getDialectName() == DataSourceDialect.POSTGRES) {
-                            fkName = fkName.toLowerCase();
+                if (field.isMany()) {
+                    dropTableSet.add(upperOrLowerCase(tableResolver.getCollectionTableToDrop(field)));
+                } else {
+                	// Need remove the FK constraint first before remove a reference field.
+                	// FK constraint only exists in master DB.
+                	if (element instanceof ReferenceFieldMetadata && storageType == StorageType.MASTER) {                
+	                    ReferenceFieldMetadata referenceField = (ReferenceFieldMetadata) element;
+                        if (!(referenceField.getContainingType().equals(referenceField.getReferencedType())
+                                && HibernateStorageUtils.isOracle(dataSource.getDialectName()))) {
+                            String fkName = tableResolver.getFkConstraintName(referenceField);
+                            if (fkName.isEmpty()) {
+                                List<Column> columns = new ArrayList<>();
+                                columns.add(new Column(columnName));
+                                fkName = Constraint.generateName(new ForeignKey().generatedConstraintNamePrefix(),
+                                        new Table(tableResolver.get(field.getContainingType().getEntity())), columns);
+                            }
+                            List<String> fkList = dropFKMap.get(tableName);
+                            if (fkList == null) {
+                                fkList = new ArrayList<String>();
+                            }
+                            fkList.add(upperOrLowerCase(fkName));
+                            dropFKMap.put(tableName, fkList);
                         }
+	                } 
+                    List<String> columnList = dropColumnMap.get(tableName);
+                    if (columnList == null) {
+                        columnList = new ArrayList<String>();
                     }
-                    List<String> fkList = dropFKMap.get(tableName);
-                    if (fkList == null) {
-                        fkList = new ArrayList<String>();
-                    }
-                    fkList.add(fkName);
-                    dropFKMap.put(tableName, fkList);
-                }
-                List<String> columnList = dropColumnMap.get(tableName);
-                if (columnList == null) {
-                    columnList = new ArrayList<String>();
-                }
-                columnList.add(columnName);
-                dropColumnMap.put(tableName, columnList);
+                    columnList.add(columnName);
+                    dropColumnMap.put(tableName, columnList);
+                }                               
 
                 List<String[]> indexList = dropIndexMap.get(tableName);
                 if (indexList == null) {
@@ -278,6 +269,12 @@ public class LiquibaseSchemaAdapter  {
                 dropFKChange.setConstraintName(fk);
                 changeActionList.add(dropFKChange);
             }
+        }
+        
+        for (String tableName : dropTableSet) {
+            DropTableChange dropTableChange = new DropTableChange();
+            dropTableChange.setTableName(tableName);
+            changeActionList.add(dropTableChange);
         }
 
         for (Map.Entry<String, List<String>> entry : dropColumnMap.entrySet()) {
@@ -475,5 +472,14 @@ public class LiquibaseSchemaAdapter  {
 
     protected boolean isBooleanType(String columnDataType) {
         return columnDataType.equals("bit") || columnDataType.equals("boolean"); //$NON-NLS-1$ //$NON-NLS-2$
+    }
+    
+    private String upperOrLowerCase(String name) {
+    	if (HibernateStorageUtils.isOracle(dataSource.getDialectName())) {
+    		return name.toUpperCase();
+    	} else if (HibernateStorageUtils.isPostgres(dataSource.getDialectName())) {
+    		return name.toLowerCase();
+    	}
+    	return name;
     }
 }

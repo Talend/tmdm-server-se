@@ -264,7 +264,7 @@ public class DefaultStorageClassLoader extends StorageClassLoader {
                 // Default Hibernate configuration for Hibernate forgot some JDBC type mapping.
                 return H2CustomDialect.class.getName();
             case MYSQL:
-                return "org.hibernate.dialect.MySQLDialect"; //$NON-NLS-1$
+                return "org.hibernate.dialect.MySQL57Dialect"; //$NON-NLS-1$
             default:
                 throw new IllegalArgumentException("Not supported database type '" + dialectType + "'");
         }

@@ -70,6 +70,7 @@ import org.hibernate.cfg.Environment;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.exception.ConstraintViolationException;
+import org.hibernate.internal.SessionImpl;
 import org.hibernate.mapping.Any;
 import org.hibernate.mapping.Array;
 import org.hibernate.mapping.Bag;
@@ -1386,14 +1387,15 @@ public class HibernateStorage implements Storage {
 
             Connection connection = null;
             try {
-                SessionFactoryImplementor sessionFactoryImplementor = (SessionFactoryImplementor) this.getCurrentSession()
-                        .getSessionFactory();
-
-                Dialect dialect = sessionFactoryImplementor.getDialect();
+                SessionFactoryImplementor sessionFactoryImplementor = (SessionFactoryImplementor) this.getCurrentSession().getSessionFactory();
+                Dialect dialect = sessionFactoryImplementor.getJdbcServices().getDialect();
 //                connection = sessionFactoryImplementor.getConnectionProvider().getConnection();
-                connection = sessionFactoryImplementor.getJdbcServices().getBootstrapJdbcConnectionAccess().obtainConnection();
+//                connection = sessionFactoryImplementor.getJdbcServices().getBootstrapJdbcConnectionAccess().obtainConnection();
+                connection = ((SessionImpl)this.getCurrentSession()).connection();
+
                 LiquibaseSchemaAdapter liquibaseChange = new LiquibaseSchemaAdapter(tableResolver, dialect,
                         (RDBMSDataSource) this.getDataSource(), this.getType());
+                liquibaseChange.setMetadata(metadata);
                 liquibaseChange.adapt(connection, diffResults);
             } catch (Exception e) {
                 String msg = "Unable to complete database schema update, execute liquibase failed."; //$NON-NLS-1$

@@ -87,6 +87,6 @@ public abstract class MDMTableUtils {
 
     public static boolean isChangedToOptional(Column newColumn, ColumnInformation oldColumnInfo) {
 //        return oldColumnInfo.getNullable().toUpperCase().equals(NO) && newColumn.isNullable();
-        return (TruthValue.toBoolean(oldColumnInfo.getNullable(), false)) && newColumn.isNullable();
+        return (!TruthValue.toBoolean(oldColumnInfo.getNullable(), false)) && newColumn.isNullable();
     }
 }

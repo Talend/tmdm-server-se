@@ -154,11 +154,6 @@ public class MDMTable extends Table {
         // String tableName = getQualifiedName(dialect, defaultCatalog, defaultSchema);
         String tableName = tableInfo.getName().getTableName().getText();
         StringBuilder root = new StringBuilder("alter table ").append(tableName).append(' ');
-        try {
-            executeSQLForSQLServer("select * from " + tableName, new ArrayList());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         Iterator iter = getColumnIterator();
         List results = new ArrayList();
 

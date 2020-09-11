@@ -15,16 +15,23 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.boot.Metadata;
+import org.hibernate.boot.model.relational.Database;
+import org.hibernate.boot.model.relational.Namespace;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.mapping.Column;
 import org.hibernate.mapping.Constraint;
 import org.hibernate.mapping.ForeignKey;
 import org.hibernate.mapping.Table;
+import org.hibernate.tool.schema.extract.spi.NameSpaceTablesInformation;
+import org.hibernate.tool.schema.extract.spi.TableInformation;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
@@ -68,6 +75,8 @@ public class LiquibaseSchemaAdapter extends AbstractLiquibaseSchemaAdapter {
     private Dialect dialect;
 
     private String catalogName;
+
+    private Metadata metadata;
 
     public LiquibaseSchemaAdapter(TableResolver tableResolver, Dialect dialect, RDBMSDataSource dataSource,
             StorageType storageType) {
@@ -210,10 +219,11 @@ public class LiquibaseSchemaAdapter extends AbstractLiquibaseSchemaAdapter {
                                 && HibernateStorageUtils.isOracle(dataSource.getDialectName()))) {
                             String fkName = tableResolver.getFkConstraintName(referenceField);
                             if (fkName.isEmpty()) {
-                                List<Column> columns = new ArrayList<>();
-                                columns.add(new Column(columnName));
-                                fkName = Constraint.generateName(new ForeignKey().generatedConstraintNamePrefix(),
-                                        new Table(tableResolver.get(field.getContainingType().getEntity())), columns);
+//                                List<Column> columns = new ArrayList<>();
+//                                columns.add(new Column(columnName));
+//                                fkName = Constraint.generateName(new ForeignKey().generatedConstraintNamePrefix(),
+//                                        new Table(tableResolver.get(field.getContainingType().getEntity())), columns);
+                                fkName = getFKConstraintName(tableName, columnName);
                             }
                             List<String> fkList = dropFKMap.get(tableName);
                             if (fkList == null) {
@@ -408,5 +418,27 @@ public class LiquibaseSchemaAdapter extends AbstractLiquibaseSchemaAdapter {
     		return name.toLowerCase();
     	}
     	return name;
+    }
+
+    @SuppressWarnings("rawtypes")
+    private String getFKConstraintName(String tableName, String columnName) {
+        final Database database = metadata.getDatabase();
+        for (Namespace namespace : database.getNamespaces()) {
+           Optional<Table> expectedTable = namespace.getTables().stream().filter((Table item) -> item.getName().equalsIgnoreCase(tableName)).findFirst();
+           if (!expectedTable.isPresent()) {
+               return StringUtils.EMPTY;
+           }
+           for (Iterator iterator = expectedTable.get().getForeignKeyIterator(); iterator.hasNext();) {
+               ForeignKey foreignKey = (ForeignKey) iterator.next();
+               if (foreignKey.getColumns().stream().anyMatch((Column col) -> columnName.equalsIgnoreCase(col.getName()))) {
+                   return foreignKey.getName().trim();
+               }
+           }
+        }
+        return StringUtils.EMPTY;
+    }
+
+    public void setMetadata(Metadata metadata) {
+        this.metadata = metadata;
     }
 }

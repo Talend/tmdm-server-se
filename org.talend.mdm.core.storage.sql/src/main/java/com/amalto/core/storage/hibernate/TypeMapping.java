@@ -50,6 +50,8 @@ public abstract class TypeMapping {
     
     public static final String SQL_TYPE_TEXT = "text"; //$NON-NLS-1$
 
+    public static final String SQL_TYPE_BOOLEAN = "boolean"; //$NON-NLS-1$
+
     /**
      * Used to hold how many times a reusable type is reused within data model (may help to decide whether constrains
      * should be generated).

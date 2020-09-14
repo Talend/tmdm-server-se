@@ -17,6 +17,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -342,9 +343,98 @@ public class StoragePrepareTest extends TestCase {
         }
     }
 
+    public void testBooleanDefaultValuePrepare() throws Exception {
+        DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS2", STORAGE_NAME);
+        Storage storage = new HibernateStorage("Test", StorageType.MASTER);
+        storage.init(dataSource);
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(StoragePrepareTest.class.getResourceAsStream("BooleanType.xsd"));
+        storage.prepare(repository, true);
+        // test table had been created
+        String[] tables = { "BooleanType" };
+        String[][] columns = {
+                { "", "X_ID", "X_A1", "X_A2", "X_A3", "X_A4", "X_A5", "X_A6", "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" } };
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+        try {
+            assertDatabaseChange(dataSource, tables, columns, new boolean[] { true });
+        } catch (SQLException e) {
+            assertNull(e);
+        }
+        ComplexTypeMetadata booleanType = repository.getComplexType("BooleanType");//$NON-NLS-1$
+        // test data had been added
+        List<DataRecord> records = new ArrayList<DataRecord>();
+        records.add(factory.read(repository, booleanType, "<BooleanType><Id>123</Id><a2>true</a2><a6>false</a6></BooleanType>")); // $NON-NLS-1$
+        try {
+            storage.begin();
+            storage.update(records);
+            storage.commit();
+        } catch (Exception e) {
+            fail("Faield to insert data");
+        } finally {
+            storage.end();
+        }
+        // test query data
+        UserQueryBuilder qb = from(booleanType);
+        qb.getSelect().getPaging().setLimit(10);
+        storage.begin();
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+            for (DataRecord result : results) {
+                assertEquals("123", result.get("Id"));//$NON-NLS-1$ //$NON-NLS-2$
+                assertEquals(true, result.get("a1"));//$NON-NLS-1$ //$NON-NLS-2$
+                assertEquals(true, result.get("a2"));//$NON-NLS-1$ //$NON-NLS-2$
+                assertEquals(false, result.get("a3"));//$NON-NLS-1$ //$NON-NLS-2$
+                assertEquals(true, result.get("a4"));//$NON-NLS-1$ //$NON-NLS-2$
+                assertEquals(null, result.get("a5"));//$NON-NLS-1$ //$NON-NLS-2$
+                assertEquals(false, result.get("a6"));//$NON-NLS-1$ //$NON-NLS-2$
+            }
+        } finally {
+            results.close();
+        }
+        storage.end();
+        // delte data
+        try {
+            storage.begin();
+            {
+                qb = from(booleanType);
+                storage.delete(qb.getSelect());
+            }
+            storage.commit();
+        } finally {
+            storage.end();
+        }
+    }
+
+    private void assertDatabaseChange(DataSourceDefinition dataSource, String[] tables, String[][] columns, boolean[] exists)
+            throws SQLException {
+        DataSource master = dataSource.getMaster();
+        assertTrue(master instanceof RDBMSDataSource);
+        RDBMSDataSource rdbmsDataSource = (RDBMSDataSource) master;
+        assertEquals(RDBMSDataSource.DataSourceDialect.H2, rdbmsDataSource.getDialectName());
+        Connection connection = DriverManager.getConnection(rdbmsDataSource.getConnectionURL(), rdbmsDataSource.getUserName(),
+                rdbmsDataSource.getPassword());
+        Statement statement = connection.createStatement();
+        try {
+            for (int i = 0; i < tables.length; i++) {
+                ResultSet resultSet = statement.executeQuery("SELECT * FROM " + tables[i]);
+                ResultSetMetaData metaData = resultSet.getMetaData();
+                boolean hasField = false;
+                for (int j = 1; j <= metaData.getColumnCount(); j++) {
+                    hasField |= columns[i][j].equalsIgnoreCase(metaData.getColumnName(j));
+                }
+                assertSame(exists[i], hasField);
+            }
+        } finally {
+            statement.close();
+            connection.close();
+        }
+    }
+
     protected static DataSourceDefinition getDatasource(String dataSourceName) {
         return ServerContext.INSTANCE.get().getDefinition(dataSourceName, "MDM");
     }
+
     protected static class MockUserDelegator implements SecuredStorage.UserDelegator {
 
         boolean isActive = true;
@@ -364,4 +454,3 @@ public class StoragePrepareTest extends TestCase {
         }
     }
 }
-

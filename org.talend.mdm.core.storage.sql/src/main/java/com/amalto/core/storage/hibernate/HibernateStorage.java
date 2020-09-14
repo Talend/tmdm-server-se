@@ -329,8 +329,7 @@ public class HibernateStorage implements Storage {
 
                     if ( table == null ) {
                         table = new MDMTable();
-                        ((MDMTable) table).setDataSource(dataSource);
-                        table.setAbstract(isAbstract);
+                        table.setAbstract( isAbstract );
                         table.setName( name );
                         table.setSchema( schema );
                         table.setCatalog( catalog );
@@ -375,9 +374,6 @@ public class HibernateStorage implements Storage {
                             return indexes.iterator();
                         }
                     };
-                    if (table instanceof MDMTable) {
-                        ((MDMTable) table).setDataSource(dataSource);
-                    }
                     table.setAbstract(isAbstract);
                     table.setName(name);
                     table.setSchema(schema);
@@ -1274,29 +1270,21 @@ public class HibernateStorage implements Storage {
                         "Unable to complete database schema update, have High impact change but not clean impacted tabled."); //$NON-NLS-1$
             }
 
-            Connection connection = null;
             try {
                 SessionFactoryImplementor sessionFactoryImplementor = (SessionFactoryImplementor) this.getCurrentSession()
                         .getSessionFactory();
 
                 Dialect dialect = sessionFactoryImplementor.getDialect();
-                connection = sessionFactoryImplementor.getConnectionProvider().getConnection();
+                Connection connection = sessionFactoryImplementor.getConnectionProvider().getConnection();
 
                 LiquibaseSchemaAdapter liquibaseChange = new LiquibaseSchemaAdapter(tableResolver, dialect,
                         (RDBMSDataSource) this.getDataSource(), this.getType());
                 liquibaseChange.adapt(connection, diffResults);
+                connection.close();
+
             } catch (Exception e) {
-                String msg = "Unable to complete database schema update, execute liquibase failed."; //$NON-NLS-1$
-                LOGGER.error(msg, e);
-                throw new RuntimeException(msg, e);
-            } finally {
-                if (connection != null) {
-                    try {
-                        connection.close();
-                    } catch (SQLException e) {
-                        LOGGER.error("Failed to close connection for liquibase", e);
-                    }
-                }
+                LOGGER.error("execute liquibase update failure", e);
+                throw new RuntimeException("Unable to complete database schema update, execute liquibase failed.", e); //$NON-NLS-1$
             }
         }
 

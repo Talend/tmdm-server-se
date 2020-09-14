@@ -18,20 +18,26 @@ import java.io.Writer;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
+
+import liquibase.Liquibase;
+import liquibase.change.AbstractChange;
+import liquibase.change.ColumnConfig;
+import liquibase.change.core.AddDefaultValueChange;
+import liquibase.change.core.AddNotNullConstraintChange;
+import liquibase.change.core.DropColumnChange;
+import liquibase.change.core.DropNotNullConstraintChange;
+import liquibase.database.DatabaseConnection;
+import liquibase.resource.FileSystemResourceAccessor;
+import liquibase.serializer.core.xml.XMLChangeLogSerializer;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.tools.ant.util.DateUtils;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.mapping.Column;
-import org.hibernate.mapping.Constraint;
-import org.hibernate.mapping.ForeignKey;
-import org.hibernate.mapping.Table;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
@@ -39,13 +45,12 @@ import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.metadata.MetadataUtils;
 import org.talend.mdm.commmon.metadata.MetadataVisitable;
-import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
 import org.talend.mdm.commmon.metadata.SimpleTypeFieldMetadata;
 import org.talend.mdm.commmon.metadata.SimpleTypeMetadata;
 import org.talend.mdm.commmon.metadata.TypeMetadata;
 import org.talend.mdm.commmon.metadata.compare.Compare;
-import org.talend.mdm.commmon.metadata.compare.Compare.DiffResults;
 import org.talend.mdm.commmon.metadata.compare.ModifyChange;
+import org.talend.mdm.commmon.metadata.compare.Compare.DiffResults;
 import org.talend.mdm.commmon.metadata.compare.RemoveChange;
 import org.talend.mdm.commmon.util.core.CommonUtil;
 
@@ -54,29 +59,13 @@ import com.amalto.core.storage.StorageType;
 import com.amalto.core.storage.datasource.RDBMSDataSource;
 import com.amalto.core.storage.datasource.RDBMSDataSource.DataSourceDialect;
 
-import liquibase.Liquibase;
-import liquibase.change.AbstractChange;
-import liquibase.change.ColumnConfig;
-import liquibase.change.core.AddDefaultValueChange;
-import liquibase.change.core.AddNotNullConstraintChange;
-import liquibase.change.core.DropColumnChange;
-import liquibase.change.core.DropForeignKeyConstraintChange;
-import liquibase.change.core.DropIndexChange;
-import liquibase.change.core.DropNotNullConstraintChange;
-import liquibase.change.core.DropTableChange;
-import liquibase.database.DatabaseConnection;
-import liquibase.precondition.core.IndexExistsPrecondition;
-import liquibase.precondition.core.PreconditionContainer;
-import liquibase.resource.FileSystemResourceAccessor;
-import liquibase.serializer.core.xml.XMLChangeLogSerializer;
-
 public class LiquibaseSchemaAdapter  {
 
     private static final String SEPARATOR = "-"; //$NON-NLS-1$
 
-    public static final String DATA_LIQUIBASE_CHANGELOG_PATH = "/data/liquibase-changelog/"; //$NON-NLS-1$
+    public static final String DATA_LIQUIBASE_CHANGELOG_PATH = "/data/liquibase-changelog/";
 
-    public static final String MDM_ROOT = "mdm.root"; //$NON-NLS-1$
+    public static final String MDM_ROOT = "mdm.root";
 
     private static final Logger LOGGER = Logger.getLogger(LiquibaseSchemaAdapter.class);
 
@@ -88,8 +77,6 @@ public class LiquibaseSchemaAdapter  {
     
     private StorageType storageType;
 
-    private String catalogName;
-
     public LiquibaseSchemaAdapter(TableResolver tableResolver, Dialect dialect, RDBMSDataSource dataSource,
             StorageType storageType) {
         this.tableResolver = tableResolver;
@@ -99,8 +86,6 @@ public class LiquibaseSchemaAdapter  {
     }
 
     public void adapt(Connection connection, Compare.DiffResults diffResults) throws Exception {
-
-        catalogName = connection.getCatalog();
 
         List<AbstractChange> changeType = findChangeFiles(diffResults);
 
@@ -146,8 +131,22 @@ public class LiquibaseSchemaAdapter  {
     }
 
     private String getTableName(FieldMetadata field) {
-        String tableName = tableResolver.get(field.getContainingType());
-        return upperOrLowerCase(tableName);
+        String tableName = tableResolver.get(field.getContainingType().getEntity());
+        if (dataSource.getDialectName() == DataSourceDialect.POSTGRES) {
+            tableName = tableName.toLowerCase();
+        }
+        return tableName;
+    }
+
+    private String getColumnName(FieldMetadata field) {
+        String columnName = tableResolver.get(field);
+        if (field instanceof ContainedTypeFieldMetadata) {
+            columnName += "_x_talend_id";
+        }
+        if (dataSource.getDialectName() == DataSourceDialect.ORACLE_10G) {
+            columnName = columnName.toUpperCase();
+        }
+        return columnName;
     }
 
     protected List<AbstractChange> analyzeModifyChange(DiffResults diffResults) {
@@ -159,12 +158,11 @@ public class LiquibaseSchemaAdapter  {
                 FieldMetadata previous = (FieldMetadata) modifyAction.getPrevious();
                 FieldMetadata current = (FieldMetadata) modifyAction.getCurrent();
 
-                String defaultValueRule = current.getData(MetadataRepository.DEFAULT_VALUE_RULE);
-                defaultValueRule = HibernateStorageUtils.convertedDefaultValue(current.getType().getName(),
-                        dataSource.getDialectName(), defaultValueRule, StringUtils.EMPTY);
+                String defaultValueRule = ((FieldMetadata) current).getData(MetadataRepository.DEFAULT_VALUE_RULE);
+                defaultValueRule = HibernateStorageUtils.convertedDefaultValue(dataSource.getDialectName(), defaultValueRule, StringUtils.EMPTY);
                 String tableName = getTableName(current);
                 String columnDataType = getColumnTypeName(current);
-                String columnName = upperOrLowerCase(tableResolver.get(current));
+                String columnName = getColumnName(current);
 
                 if (current.isMandatory() && !previous.isMandatory() && !isModifyMinOccursForRepeatable(previous, current)) {
                     if (storageType == StorageType.MASTER) {
@@ -192,11 +190,7 @@ public class LiquibaseSchemaAdapter  {
     protected List<AbstractChange> analyzeRemoveChange(DiffResults diffResults) {
         List<AbstractChange> changeActionList = new ArrayList<AbstractChange>();
 
-        Map<String, List<String>> dropColumnMap = new HashMap<>();
-        Map<String, List<String>> dropFKMap = new HashMap<>();
-        Map<String, List<String[]>> dropIndexMap = new HashMap<>();
-        Set<String> dropTableSet = new HashSet<String>();
-
+        Map<String, List<String>> dropColumnMap = new HashMap<String, List<String>>();
         for (RemoveChange removeAction : diffResults.getRemoveChanges()) {
 
             MetadataVisitable element = removeAction.getElement();
@@ -205,77 +199,15 @@ public class LiquibaseSchemaAdapter  {
                 FieldMetadata field = (FieldMetadata) element;
 
                 String tableName = getTableName(field);
-                String columnName = tableResolver.get(field);
+                String columnName = getColumnName(field);
 
-                if (field.isMany()) {
-                    dropTableSet.add(upperOrLowerCase(tableResolver.getCollectionTableToDrop(field)));
-                } else {
-                	// Need remove the FK constraint first before remove a reference field.
-                	// FK constraint only exists in master DB.
-                	if (element instanceof ReferenceFieldMetadata && storageType == StorageType.MASTER) {                
-	                    ReferenceFieldMetadata referenceField = (ReferenceFieldMetadata) element;
-                        if (!(referenceField.getContainingType().equals(referenceField.getReferencedType())
-                                && HibernateStorageUtils.isOracle(dataSource.getDialectName()))) {
-                            String fkName = tableResolver.getFkConstraintName(referenceField);
-                            if (fkName.isEmpty()) {
-                                List<Column> columns = new ArrayList<>();
-                                columns.add(new Column(columnName));
-                                fkName = Constraint.generateName(new ForeignKey().generatedConstraintNamePrefix(),
-                                        new Table(tableResolver.get(field.getContainingType().getEntity())), columns);
-                            }
-                            List<String> fkList = dropFKMap.get(tableName);
-                            if (fkList == null) {
-                                fkList = new ArrayList<String>();
-                            }
-                            fkList.add(upperOrLowerCase(fkName));
-                            dropFKMap.put(tableName, fkList);
-                        }
-	                } 
-                    List<String> columnList = dropColumnMap.get(tableName);
-                    if (columnList == null) {
-                        columnList = new ArrayList<String>();
-                    }
-                    columnList.add(columnName);
-                    dropColumnMap.put(tableName, columnList);
-                }                               
-
-                List<String[]> indexList = dropIndexMap.get(tableName);
-                if (indexList == null) {
-                    indexList = new ArrayList<String[]>();
+                List<String> columnList = dropColumnMap.get(tableName);
+                if (columnList == null) {
+                    columnList = new ArrayList<String>();
                 }
-                if (dataSource.getDialectName() == DataSourceDialect.SQL_SERVER && storageType == StorageType.MASTER) {
-                    indexList.add(new String[] { "dbo", tableName, tableResolver.getIndex(columnName, tableName) });
-                    dropIndexMap.put(tableName, indexList);
-                }
+                columnList.add(columnName);
+                dropColumnMap.put(tableName, columnList);
             }
-        }
-
-        for (Map.Entry<String, List<String[]>> entry : dropIndexMap.entrySet()) {
-            List<String[]> dropIndexInfoList = entry.getValue();
-            for (String[] dropIndexInfo : dropIndexInfoList) {
-                DropIndexChange dropIndexChange = new DropIndexChange();
-                dropIndexChange.setSchemaName(dropIndexInfo[0]);
-                dropIndexChange.setCatalogName(catalogName);
-                dropIndexChange.setTableName(dropIndexInfo[1]);
-                dropIndexChange.setIndexName(dropIndexInfo[2]);
-                changeActionList.add(dropIndexChange);
-            }
-        }
-
-        for (Map.Entry<String, List<String>> entry : dropFKMap.entrySet()) {
-            List<String> fks = entry.getValue();
-            for (String fk : fks) {
-                DropForeignKeyConstraintChange dropFKChange = new DropForeignKeyConstraintChange();
-                dropFKChange.setBaseTableName(entry.getKey());
-                dropFKChange.setConstraintName(fk);
-                changeActionList.add(dropFKChange);
-            }
-        }
-        
-        for (String tableName : dropTableSet) {
-            DropTableChange dropTableChange = new DropTableChange();
-            dropTableChange.setTableName(tableName);
-            changeActionList.add(dropTableChange);
         }
 
         for (Map.Entry<String, List<String>> entry : dropColumnMap.entrySet()) {
@@ -336,29 +268,14 @@ public class LiquibaseSchemaAdapter  {
         liquibase.changelog.DatabaseChangeLog databaseChangeLog = new liquibase.changelog.DatabaseChangeLog();
 
         for (AbstractChange change : changeType) {
-
             // create a changeset
             liquibase.changelog.ChangeSet changeSet = new liquibase.changelog.ChangeSet(UUID.randomUUID().toString(),
                     "administrator", false, false, StringUtils.EMPTY, null, null, true, null, databaseChangeLog); //$NON-NLS-1$
+
             changeSet.addChange(change);
 
             // add created changeset to changelog
             databaseChangeLog.addChangeSet(changeSet);
-            if (change instanceof DropIndexChange && dataSource.getDialectName() == DataSourceDialect.SQL_SERVER
-                    && storageType == StorageType.MASTER) {
-                PreconditionContainer preconditionContainer = new PreconditionContainer();
-                preconditionContainer.setOnFail(PreconditionContainer.FailOption.MARK_RAN.toString());
-
-                DropIndexChange dropIndexChange = (DropIndexChange) change;
-                IndexExistsPrecondition indexExistsPrecondition = new IndexExistsPrecondition();
-                indexExistsPrecondition.setSchemaName(dropIndexChange.getSchemaName());
-                indexExistsPrecondition.setCatalogName(dropIndexChange.getCatalogName());
-                indexExistsPrecondition.setTableName(dropIndexChange.getTableName());
-                indexExistsPrecondition.setIndexName(dropIndexChange.getIndexName());
-
-                preconditionContainer.addNestedPrecondition(indexExistsPrecondition);
-                changeSet.setPreconditions(preconditionContainer);
-            }
         }
 
         return generateChangeLogFile(databaseChangeLog);
@@ -473,14 +390,5 @@ public class LiquibaseSchemaAdapter  {
 
     protected boolean isBooleanType(String columnDataType) {
         return columnDataType.equals("bit") || columnDataType.equals("boolean"); //$NON-NLS-1$ //$NON-NLS-2$
-    }
-    
-    private String upperOrLowerCase(String name) {
-    	if (HibernateStorageUtils.isOracle(dataSource.getDialectName())) {
-    		return name.toUpperCase();
-    	} else if (HibernateStorageUtils.isPostgres(dataSource.getDialectName())) {
-    		return name.toLowerCase();
-    	}
-    	return name;
     }
 }

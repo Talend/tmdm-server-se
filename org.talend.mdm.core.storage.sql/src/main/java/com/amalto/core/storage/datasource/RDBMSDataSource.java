@@ -12,7 +12,6 @@ package com.amalto.core.storage.datasource;
 
 import java.net.URI;
 import java.util.Map;
-import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -400,16 +399,6 @@ public class RDBMSDataSource implements DataSource {
 
     public Map<String, String> getAdvancedProperties() {
         return advancedProperties;
-    }
-
-    public Properties getAdvancedPropertiesIncludeUserInfo() {
-        Properties properties = new Properties();
-        for (Map.Entry<String, String> entry : advancedProperties.entrySet()) {
-            properties.setProperty(entry.getKey(), entry.getValue());
-        }
-        properties.setProperty("user", this.getUserName()); // $NON-NLS-1
-        properties.setProperty("password", this.getPassword()); // $NON-NLS-1
-        return properties;
     }
 
     /**

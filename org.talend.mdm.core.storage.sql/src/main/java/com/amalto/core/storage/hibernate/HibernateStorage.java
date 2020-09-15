@@ -39,7 +39,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import javax.persistence.FlushModeType;
 import javax.xml.XMLConstants;
 
 import org.apache.commons.lang.NotImplementedException;
@@ -65,7 +64,6 @@ import org.hibernate.boot.registry.BootstrapServiceRegistryBuilder;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.boot.registry.classloading.spi.ClassLoaderService;
 import org.hibernate.boot.registry.internal.StandardServiceRegistryImpl;
-import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
@@ -1066,6 +1064,10 @@ public class HibernateStorage implements Storage {
     public StorageType getType() {
         return storageType;
     }
+    
+    public Metadata getMetadata() {
+        return metadata;
+    }
 
     @Override
     public ImpactAnalyzer getImpactAnalyzer() {
@@ -1290,10 +1292,10 @@ public class HibernateStorage implements Storage {
             if (!typeMetadata.isInstantiable()) {
                 typeName = "X_" + typeName; //$NON-NLS-1$
             }
-            PersistentClass metadata1 = metadata.getEntityBinding(ClassCreator.getClassName(typeName));
+            PersistentClass tempMetadata = metadata.getEntityBinding(ClassCreator.getClassName(typeName));
 //            PersistentClass metadata = configuration.getClassMapping(ClassCreator.getClassName(typeName));
-            if (metadata1 != null) {
-                tablesToDrop.addAll((Collection<String>) metadata1.accept(visitor));
+            if (tempMetadata != null) {
+                tablesToDrop.addAll((Collection<String>) tempMetadata.accept(visitor));
             } else {
                 LOGGER.warn("Could not find table names for type '" + typeMetadata.getName() + "'."); //$NON-NLS-1$ //$NON-NLS-2$
             }
@@ -1493,6 +1495,7 @@ public class HibernateStorage implements Storage {
     public void delete(Expression userQuery) {
         Session session = this.getCurrentSession();
         try {
+            begin();
             storageClassLoader.bind(Thread.currentThread());
             // Session session = factory.getCurrentSession();
             userQuery = userQuery.normalize(); // First do a normalize for correct optimization detection.
@@ -1501,10 +1504,9 @@ public class HibernateStorage implements Storage {
                 Select select = (Select) userQuery;
                 List<ComplexTypeMetadata> types = select.getTypes();
                 if (types.size() == 1 && select.getCondition() == null) {
-                    FlushModeType previousFlushMode = session.getFlushMode();
+                    FlushMode previousFlushMode = session.getHibernateFlushMode();
                     try {
-                        session.setFlushMode(FlushMode.ALWAYS); // Force Hibernate to actually send SQL query to
-                                                                // database during delete.
+                        session.setHibernateFlushMode(FlushMode.ALWAYS); // Force Hibernate to actually send SQL query to database during delete.
                         ComplexTypeMetadata mainType = types.get(0);
                         TypeMapping mapping = mappingRepository.getMappingFromUser(mainType);
                         // Compute (and eventually sort) types to delete
@@ -1619,14 +1621,14 @@ public class HibernateStorage implements Storage {
                                 }
                             }
                         }
-                        deleteData(mapping.getDatabase(), new HashMap<>(), mapping);
+                        deleteData(session, mapping.getDatabase(), new HashMap<>(), mapping);
                         typesToDelete.forEach(typeToDelete -> {
                             if (recordsToDeleteMap.containsKey(typeToDelete)) {
-                                deleteData(typeToDelete, recordsToDeleteMap.get(typeToDelete), mapping);
+                                deleteData(session, typeToDelete, recordsToDeleteMap.get(typeToDelete), mapping);
                             }
                         });
                     } finally {
-                        session.setFlushMode(previousFlushMode);
+                        session.setHibernateFlushMode(previousFlushMode);
                     }
                     return;
                 }
@@ -1654,6 +1656,7 @@ public class HibernateStorage implements Storage {
                     delete(currentDataRecord);
                 }
             }
+            this.commit();
         } catch (ConstraintViolationException e) {
             throw new com.amalto.core.storage.exception.ConstraintViolationException(e);
         } catch (HibernateException e) {
@@ -1665,9 +1668,8 @@ public class HibernateStorage implements Storage {
     }
 
     @SuppressWarnings("rawtypes")
-    private void deleteData(ComplexTypeMetadata typeToDelete, Map<String, List> condition, TypeMapping mapping) {
+    private void deleteData(Session session, ComplexTypeMetadata typeToDelete, Map<String, List> condition, TypeMapping mapping) {
         try {
-            Session session = this.getCurrentSession();
             for (FieldMetadata field : typeToDelete.getFields()) {
                 if (field.isMany()) {
                     String formattedTableName = tableResolver.getCollectionTable(field);
@@ -1695,8 +1697,6 @@ public class HibernateStorage implements Storage {
         } catch (Exception e) {
             LOGGER.warn("Unable to delete table '" + storageClassLoader.getClassFromType(typeToDelete).getName() + "'."); //$NON-NLS-1$ //$NON-NLS-2$
             throw new RuntimeException(e);
-        } finally {
-            this.releaseSession();
         }
     }
 
@@ -1738,7 +1738,6 @@ public class HibernateStorage implements Storage {
         if (condition.isEmpty()) {
             org.hibernate.Query query = session.createQuery(hql);
             query.executeUpdate();
-
             return;
         }
 
@@ -1837,6 +1836,7 @@ public class HibernateStorage implements Storage {
                 storageClassLoader = null;
             }
             isPrepared = false;
+            metadata = null;
 //            configuration = null;
         }
         // Reset caches
@@ -2055,9 +2055,7 @@ public class HibernateStorage implements Storage {
             // for using "stream resultset" to resolve OOM
             fetchSize = Integer.MIN_VALUE;
         } else {
-//            if (mdmConfigurable.getService().getProperty(Environment.STATEMENT_FETCH_SIZE) != null) {
-//                fetchSize = Integer.parseInt(configuration.getProperty(Environment.STATEMENT_FETCH_SIZE));
-//            }
+            fetchSize = batchSize;
         }
         return fetchSize;
     }

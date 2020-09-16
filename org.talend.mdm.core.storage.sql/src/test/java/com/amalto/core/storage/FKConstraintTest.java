@@ -15,17 +15,14 @@ import static com.amalto.core.query.user.UserQueryBuilder.from;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 
 import com.amalto.core.query.user.UserQueryBuilder;
 import com.amalto.core.server.MockServerLifecycle;
 import com.amalto.core.server.ServerContext;
-import com.amalto.core.storage.Storage;
-import com.amalto.core.storage.StorageType;
-import com.amalto.core.storage.exception.ConstraintViolationException;
 import com.amalto.core.storage.hibernate.HibernateStorage;
 import com.amalto.core.storage.record.DataRecord;
 import com.amalto.core.storage.record.DataRecordReader;
@@ -139,7 +136,7 @@ public class FKConstraintTest extends TestCase {
             storage.begin();
             storage.delete(qb.getSelect());
             storage.commit();
-        } catch (ConstraintViolationException e) {
+        } catch (RuntimeException e) {
             e_a11 = e;
         } finally {
             storage.end();
@@ -203,6 +200,7 @@ public class FKConstraintTest extends TestCase {
         } finally {
             storage.end();
         }
+        storage.commit();
         assertNotNull(e_a12);
 
         // Test insert without FK, Type_B2's usage size=2, won't create FK, so ENTITY_A2_1 will success, ENTITY_A2_2 will success too
@@ -212,6 +210,15 @@ public class FKConstraintTest extends TestCase {
             storage.commit();
         } finally {
             storage.end();
+        }
+
+        storage.begin();
+        UserQueryBuilder qb = from(entityC);
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(4, results.getCount());
+        } finally {
+            results.close();
         }
 
         Exception e_a21 = null;
@@ -232,6 +239,7 @@ public class FKConstraintTest extends TestCase {
             storage.update(factory.read(repository, entityA2, ENTITY_A2_2));
             storage.commit();
         } catch(Exception e){
+            e.printStackTrace();
             e_a22 = e;
         } finally {
             storage.end();

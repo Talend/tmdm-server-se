@@ -652,16 +652,10 @@ class FullTextQueryHandler extends AbstractQueryHandler {
                 || Types.DATETIME.equals(type)
                 || Types.TIME.equals(type)) {
             return SortField.Type.STRING;
-        } else if (Types.UNSIGNED_SHORT.equals(type) || Types.SHORT.equals(type)) {
-//            return SortField.Type.SHORT;
-            return SortField.Type.INT;
         } else if (Types.UNSIGNED_LONG.equals(type) || Types.LONG.equals(type)) {
             return SortField.Type.LONG;
         } else if (Types.FLOAT.equals(type)) {
             return SortField.Type.FLOAT;
-        } else if (Types.BYTE.equals(type) || Types.UNSIGNED_BYTE.equals(type)) {
-//            return SortField.Type.BYTE;
-            return SortField.Type.INT;
         } else {
             throw new UnsupportedOperationException("No support for field typed as '" + type + "'");
         }

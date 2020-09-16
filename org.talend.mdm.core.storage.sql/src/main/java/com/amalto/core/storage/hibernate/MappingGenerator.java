@@ -164,13 +164,17 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
             if (keyFields.size() > 1) {
                 /*
                 <composite-id>
-                            <key-property column="x_enterprise" name="x_enterprise"/>
-                            <key-property column="x_id" name="x_id"/>
-                        </composite-id>
+                    <key-property column="x_enterprise" name="x_enterprise"/>
+                    <key-property column="x_id" name="x_id"/>
+                </composite-id>
                  */
                 compositeId = true;
                 idParentElement = document.createElement("composite-id"); //$NON-NLS-1$
                 classElement.appendChild(idParentElement);
+
+                Attr nameAttribute = document.createAttribute("name");
+                nameAttribute.setValue((complexType.getName() + "_ID").toLowerCase());
+                idParentElement.getAttributes().setNamedItem(nameAttribute);
 
                 Attr classAttribute = document.createAttribute("class"); //$NON-NLS-1$
                 classAttribute.setValue(generatedClassName + "_ID"); //$NON-NLS-1$

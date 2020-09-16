@@ -87,7 +87,7 @@ public class ObjectDataRecordConverter implements DataRecordConverter<Object> {
             boolean needNewInstance = mainInstance == null;
             // Instance does not exist, so create it.
             if (needNewInstance) {
-                mainInstance = (Wrapper) mainInstanceClass.newInstance();
+                mainInstance = (Wrapper) mainInstanceClass.getConstructor().newInstance();
             }
             mapping.setValues(session, dataRecord, mainInstance);
             mainInstance.timestamp(System.currentTimeMillis());

@@ -592,7 +592,12 @@ class StandardQueryHandler extends AbstractQueryHandler {
         boolean fieldContainerInstantiable = fieldMetadata.getContainingType().getEntity().isInstantiable();
         String previousAlias;
         if (fieldContainerInstantiable) {
+            // For regular PK, alias should be: entity
             previousAlias = fieldMetadata.getEntityTypeName();
+            // For composite PK, alias should be: entity.entity_id
+            if (type.getKeyFields().size() > 1 && field.getFieldMetadata().isKey()) {
+                previousAlias += ("." + (type.getName() + "_ID")).toLowerCase();
+            }
         } else {
             previousAlias = type.getName();
         }

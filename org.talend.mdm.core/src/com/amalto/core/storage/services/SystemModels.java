@@ -194,10 +194,10 @@ public class SystemModels {
     }
 
     @DELETE
-    @Path("/")
+    @Path("{model}")
     @ApiOperation("Delete a data model given its name")
     @Consumes({ MediaType.APPLICATION_XML, MediaType.TEXT_XML })
-    public Response deleteDataModel(@ApiParam("Data model name") @QueryParam("name") String modelName) {
+    public Response deleteDataModel(@ApiParam("Model name") @PathParam("model") String modelName) {
         String userName = null;
         try {
             userName = LocalUser.getLocalUser().getUsername();

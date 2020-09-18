@@ -172,10 +172,7 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
                 idParentElement = document.createElement("composite-id"); //$NON-NLS-1$
                 classElement.appendChild(idParentElement);
 
-                TypeMetadata superType = complexType;
-                while (!superType.getSuperTypes().isEmpty()) {
-                    superType = superType.getSuperTypes().iterator().next();
-                }
+                TypeMetadata superType = MetadataUtils.getSuperConcreteType(complexType);
                 Attr nameAttribute = document.createAttribute("name");
                 nameAttribute.setValue((superType.getName() + "_ID").toLowerCase());
                 idParentElement.getAttributes().setNamedItem(nameAttribute);

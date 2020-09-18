@@ -170,10 +170,7 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
                 String typeName = complexType.getName();
                 String idClassName = getClassName(typeName) + "_ID"; //$NON-NLS-1$
 
-                TypeMetadata superType = complexType;
-                while (!superType.getSuperTypes().isEmpty()) {
-                    superType = superType.getSuperTypes().iterator().next();
-                }
+                TypeMetadata superType = MetadataUtils.getSuperConcreteType(complexType);
                 String superTypeName = superType.getName();
                 String superIdFieldName = (superTypeName + "_ID").toLowerCase(); //$NON-NLS-1$
                 CtClass superIdFieldType = classPool.get(getClassName(superTypeName) + "_ID"); //$NON-NLS-1$

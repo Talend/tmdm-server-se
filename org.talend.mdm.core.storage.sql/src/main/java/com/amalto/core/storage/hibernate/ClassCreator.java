@@ -211,8 +211,8 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
                     newClass.addMethod(getFieldsMethod);
                     // Add setFieldName(FieldType fieldName){this.superIdFieldName.setFieldName(fieldName);}
                     StringBuilder setFieldsMethodBody = new StringBuilder();
-                    setFieldsMethodBody.append("public void set" + fieldName + "("+ fieldType + " " + fieldName + ") {\n");
-                    setFieldsMethodBody.append("\tthis." + superIdFieldName + ".set" + fieldName + "("+ fieldName + ");\n")
+                    setFieldsMethodBody.append("public void set" + fieldName + "("+ fieldType + " " + fieldName + ") {\n")
+                                       .append("\tthis." + superIdFieldName + ".set" + fieldName + "("+ fieldName + ");\n")
                                        .append("}");
                     CtMethod setFieldsMethod = CtNewMethod.make(setFieldsMethodBody.toString(), newClass);
                     newClass.addMethod(setFieldsMethod);

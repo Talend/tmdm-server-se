@@ -166,25 +166,31 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
         private void addCompositeKeyField(ComplexTypeMetadata complexType, CtClass newClass) throws NotFoundException, CannotCompileException {
             Collection<FieldMetadata> keyFields = complexType.getKeyFields();
             if (keyFields.size() > 1) {
-                // Add public Entity_ID entity_id;
+                // Add public SupEntity_Id supEntity_id; If supClass exists
                 String typeName = complexType.getName();
                 String idClassName = getClassName(typeName) + "_ID"; //$NON-NLS-1$
-                String idFieldName = (typeName + "_ID").toLowerCase();
-                CtClass idFieldType = classPool.get(idClassName);
-                CtField idField = new CtField(idFieldType, idFieldName, newClass);
+
+                TypeMetadata superType = MetadataUtils.getSuperConcreteType(complexType);
+                String superTypeName = superType.getName();
+                String superIdFieldName = (superTypeName + "_ID").toLowerCase(); //$NON-NLS-1$
+                CtClass superIdFieldType = classPool.get(getClassName(superTypeName) + "_ID"); //$NON-NLS-1$
+                CtField idField = new CtField(superIdFieldType, superIdFieldName, newClass);
+
+                // Add public SupEntity_Id getsupentity_id(){}
+                // Add public void setsupentity_id(SupEntity_Id superEntity_Id){}
                 idField.setModifiers(Modifier.PUBLIC);
-                CtMethod newGetter = CtNewMethod.getter("get" + idFieldName, idField); //$NON-NLS-1$
+                CtMethod newGetter = CtNewMethod.getter("get" + superIdFieldName, idField); //$NON-NLS-1$
                 newGetter.setModifiers(Modifier.PUBLIC);
-                CtMethod newSetter = CtNewMethod.setter("set" + idFieldName, idField); //$NON-NLS-1$
+                CtMethod newSetter = CtNewMethod.setter("set" + superIdFieldName, idField); //$NON-NLS-1$
                 newSetter.setModifiers(Modifier.PUBLIC);
                 newClass.addMethod(newSetter);
                 newClass.addMethod(newGetter);
                 newClass.addField(idField);
 
-                // Add public Entity(){this.entity_id = new Entity_ID();}
+                // Add public Entity(){this.supEntity_id = new Entity_ID();}
                 StringBuilder initConstructorBody = new StringBuilder();
                 initConstructorBody.append(typeName).append("(){")
-                                   .append("this.").append(idFieldName).append("=").append("new ").append(idClassName).append("();")
+                                   .append("this.").append(superIdFieldName).append("=").append("new ").append(idClassName).append("();")
                                    .append("}");
                 CtConstructor initConstructor = CtNewConstructor.make(initConstructorBody.toString(), newClass);
                 initConstructor.setModifiers(Modifier.PUBLIC);
@@ -193,23 +199,22 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
                 for (FieldMetadata keyField : keyFields) {
                     String fieldType = classPool.get(HibernateMetadataUtils.getJavaType(keyField.getType())).getName();
                     String fieldName = keyField.getName();
-                    // Add getFieldName(){return this.idFieldName.getFieldName();}
+                    // Add getFieldName(){return this.superIdFieldName.getFieldName();}
                     StringBuilder getFieldsMethodBody = new StringBuilder();
                     getFieldsMethodBody.append("public " + fieldType + " get" + fieldName + "() {\n")
-                                       .append("\treturn this." + idFieldName + ".get" + fieldName + "();")
+                                       .append("\treturn this." + superIdFieldName + ".get" + fieldName + "();\n")
                                        .append("}");
                     CtMethod getFieldsMethod = CtNewMethod.make(getFieldsMethodBody.toString(), newClass);
                     newClass.addMethod(getFieldsMethod);
-                    // Add setFieldName(FieldType fieldName){this.idFieldName.setFieldName(fieldName);}
+                    // Add setFieldName(FieldType fieldName){this.superIdFieldName.setFieldName(fieldName);}
                     StringBuilder setFieldsMethodBody = new StringBuilder();
                     setFieldsMethodBody.append("public void set" + fieldName + "("+ fieldType + " " + fieldName + ") {\n")
-                                       .append("\tthis." + idFieldName + ".set" + fieldName + "("+ fieldName + ");")
+                                       .append("\tthis." + superIdFieldName + ".set" + fieldName + "("+ fieldName + ");\n")
                                        .append("}");
                     CtMethod setFieldsMethod = CtNewMethod.make(setFieldsMethodBody.toString(), newClass);
                     newClass.addMethod(setFieldsMethod);
                 }
             }
-
         }
 
         private void addInterface(String typeName) throws NotFoundException {

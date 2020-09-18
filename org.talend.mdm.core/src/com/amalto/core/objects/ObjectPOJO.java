@@ -225,13 +225,33 @@ public abstract class ObjectPOJO implements Serializable {
         return value;
     }
 
+    public static boolean isUserAuthorized(ILocalUser user, Class<? extends ObjectPOJO> objectClass, String uniqueId) throws XtentisException {
+        boolean authorized = false;
+        try {
+            if (LocalUser.isAdminUser(user.getUsername())) {
+                authorized = true;
+            } else if (user.isAdmin(objectClass)) {
+                authorized = true;
+            } else if (user.userCanWrite(objectClass, uniqueId)) {
+                authorized = true;
+            }
+            return authorized;
+        } catch (XtentisException e) {
+            throw new XtentisException(e);
+        }
+    }
+
+    public static ObjectPOJOPK remove(Class<? extends ObjectPOJO> objectClass, ObjectPOJOPK objectPOJOPK) throws XtentisException {
+        return remove(objectClass, objectPOJOPK, false);
+    }
+
     /**
      * Remove the item from the DB
      *
      * @return the Primary Key of the object removed
      * @throws XtentisException
      */
-    public static ObjectPOJOPK remove(Class<? extends ObjectPOJO> objectClass, ObjectPOJOPK objectPOJOPK) throws XtentisException {
+    public static ObjectPOJOPK remove(Class<? extends ObjectPOJO> objectClass, ObjectPOJOPK objectPOJOPK, boolean isUserChecked) throws XtentisException {
         if (objectPOJOPK == null) {
             return null;
         }
@@ -241,23 +261,18 @@ public abstract class ObjectPOJO implements Serializable {
         }
 
         try {
-            // for delete we need to be admin, or have a role of admin , or role of write on instance
-            boolean authorized = false;
             ILocalUser user = LocalUser.getLocalUser();
             if (user.getUsername() == null)
                 return null;
-            if (LocalUser.isAdminUser(user.getUsername())) {
-                authorized = true;
-            } else if (user.isAdmin(objectClass)) {
-                authorized = true;
-            } else if (user.userCanWrite(objectClass, uniqueId)) {
-                authorized = true;
-            }
-            if (!authorized) {
-                String err = "Unauthorized access on delete for " + "user " + user.getUsername() + " of object "
-                        + ObjectPOJO.getObjectName(objectClass) + " [" + uniqueId + "] ";
-                LOG.error(err);
-                throw new XtentisException(err);
+            // for delete we need to be admin, or have a role of admin , or role of write on instance
+            if (!isUserChecked) {
+                boolean authorized = isUserAuthorized(user, objectClass, uniqueId);
+                if (!authorized) {
+                    String err = "Unauthorized access on delete for " + "user " + user.getUsername() + " of object "
+                            + ObjectPOJO.getObjectName(objectClass) + " [" + uniqueId + "] ";
+                    LOG.error(err);
+                    throw new XtentisException(err);
+                }
             }
             // get the xml server wrapper
             XmlServer server = Util.getXmlServerCtrlLocal();

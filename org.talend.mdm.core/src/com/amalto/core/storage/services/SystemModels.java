@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
@@ -56,6 +57,8 @@ import org.w3c.dom.Element;
 import com.amalto.commons.core.datamodel.synchronization.DMUpdateEvent;
 import com.amalto.commons.core.datamodel.synchronization.DataModelChangeNotifier;
 import com.amalto.core.audit.MDMAuditLogger;
+import com.amalto.core.objects.ObjectPOJO;
+import com.amalto.core.objects.ObjectPOJOPK;
 import com.amalto.core.objects.datamodel.DataModelPOJO;
 import com.amalto.core.objects.datamodel.DataModelPOJOPK;
 import com.amalto.core.objects.marshalling.MarshallingFactory;
@@ -186,6 +189,41 @@ public class SystemModels {
             String errorMsg = "An error occurred while creating Data Model."; //$NON-NLS-1$
             RuntimeException ex = new RuntimeException(errorMsg, e); // $NON-NLS-1$
             MDMAuditLogger.dataModelCreationFailed(user, modelName, ex);
+            return ServiceUtil.getErrorResponse(ex, errorMsg);
+        }
+    }
+
+    @DELETE
+    @Path("{model}")
+    @ApiOperation("Delete a data model given its name")
+    @Consumes({ MediaType.APPLICATION_XML, MediaType.TEXT_XML })
+    public Response deleteDataModel(@ApiParam("Model name") @PathParam("model") String modelName) {
+        String userName = null;
+        try {
+            userName = LocalUser.getLocalUser().getUsername();
+            String uniqueId = new DataModelPOJOPK(modelName).getUniqueId();
+            boolean authorized = DataModelPOJO.isUserAuthorized(LocalUser.getLocalUser(), DataModelPOJO.class, uniqueId);
+            if (!authorized) {
+                String errorMsg = "Unauthorized access on delete for " + "user " + userName + " of object "
+                        + ObjectPOJO.getObjectName(DataModelPOJO.class) + " [" + uniqueId + "] ";
+                LOGGER.warn(errorMsg);
+                return Response.status(Response.Status.FORBIDDEN).build();
+            }
+            DataModelPOJO oldDataModel = DataModelPOJO.load(DataModelPOJO.class, new DataModelPOJOPK(modelName));
+            if (oldDataModel == null) {
+                String errorMsg = "Could not find data model.";
+                return ServiceUtil.getErrorResponse(new NotFoundException(), errorMsg);
+            }
+            ObjectPOJOPK dataModelObject = DataModelPOJO.remove(DataModelPOJO.class, new DataModelPOJOPK(modelName), true);
+            if (null == dataModelObject) {
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            }
+            MDMAuditLogger.dataModelDeleted(userName, modelName);
+            return Response.status(Response.Status.NO_CONTENT).build();
+        } catch (XtentisException e) {
+            String errorMsg = "An error occurred while deleting Data Model."; //$NON-NLS-1$
+            RuntimeException ex = new RuntimeException(errorMsg, e); // $NON-NLS-1$
+            MDMAuditLogger.dataModelDeletionFailed(userName, modelName, ex);
             return ServiceUtil.getErrorResponse(ex, errorMsg);
         }
     }

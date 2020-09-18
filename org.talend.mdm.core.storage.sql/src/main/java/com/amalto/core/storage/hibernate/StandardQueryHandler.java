@@ -63,8 +63,10 @@ import org.talend.mdm.commmon.metadata.CompoundFieldMetadata;
 import org.talend.mdm.commmon.metadata.DefaultMetadataVisitor;
 import org.talend.mdm.commmon.metadata.EnumerationFieldMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
+import org.talend.mdm.commmon.metadata.MetadataUtils;
 import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
 import org.talend.mdm.commmon.metadata.SimpleTypeFieldMetadata;
+import org.talend.mdm.commmon.metadata.TypeMetadata;
 import org.talend.mdm.commmon.metadata.Types;
 
 import com.amalto.core.query.user.Alias;
@@ -594,9 +596,10 @@ class StandardQueryHandler extends AbstractQueryHandler {
         if (fieldContainerInstantiable) {
             // For regular PK, alias should be: entity
             previousAlias = fieldMetadata.getEntityTypeName();
+            TypeMetadata superType = MetadataUtils.getSuperConcreteType(type);
             // For composite PK, alias should be: entity.entity_id
             if (type.getKeyFields().size() > 1 && field.getFieldMetadata().isKey()) {
-                previousAlias += ("." + (type.getName() + "_ID")).toLowerCase();
+                previousAlias += ("." + (superType.getName() + "_ID")).toLowerCase();
             }
         } else {
             previousAlias = type.getName();

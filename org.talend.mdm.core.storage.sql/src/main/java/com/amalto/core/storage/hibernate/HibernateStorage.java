@@ -1495,7 +1495,6 @@ public class HibernateStorage implements Storage {
     public void delete(Expression userQuery) {
         Session session = this.getCurrentSession();
         try {
-            begin();
             storageClassLoader.bind(Thread.currentThread());
             // Session session = factory.getCurrentSession();
             userQuery = userQuery.normalize(); // First do a normalize for correct optimization detection.
@@ -1656,7 +1655,6 @@ public class HibernateStorage implements Storage {
                     delete(currentDataRecord);
                 }
             }
-            this.commit();
         } catch (ConstraintViolationException e) {
             throw new com.amalto.core.storage.exception.ConstraintViolationException(e);
         } catch (HibernateException e) {

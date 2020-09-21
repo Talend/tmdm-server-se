@@ -39,7 +39,6 @@ import javax.persistence.LockModeType;
 import javax.persistence.Parameter;
 import javax.persistence.TemporalType;
 
-import org.apache.commons.collections.set.ListOrderedSet;
 import org.apache.lucene.search.Explanation;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.Sort;
@@ -391,1084 +390,605 @@ public class EntityFinder {
             }
         }
         
-        /* (non-Javadoc)
-         * @see org.hibernate.search.jpa.FullTextQuery#getResultSize()
-         */
         @Override
         public int getResultSize() {
-            // TODO Auto-generated method stub
-            return 0;
+            return query.getResultSize();
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.search.jpa.FullTextQuery#enableFullTextFilter(java.lang.String)
-         */
         @Override
         public FullTextFilter enableFullTextFilter(String name) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.enableFullTextFilter(name);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.search.jpa.FullTextQuery#disableFullTextFilter(java.lang.String)
-         */
         @Override
         public void disableFullTextFilter(String name) {
-            // TODO Auto-generated method stub
-            
+            query.disableFullTextFilter(name);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.search.jpa.FullTextQuery#getFacetManager()
-         */
         @Override
         public FacetManager getFacetManager() {
-            // TODO Auto-generated method stub
-            return null;
+           return query.getFacetManager();
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.search.jpa.FullTextQuery#explain(int)
-         */
         @Override
         public Explanation explain(int documentId) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.explain(documentId);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.search.jpa.FullTextQuery#hasPartialResults()
-         */
         @Override
         public boolean hasPartialResults() {
-            // TODO Auto-generated method stub
-            return false;
+            return query.hasPartialResults();
         }
 
-        /* (non-Javadoc)
-         * @see javax.persistence.Query#getResultList()
-         */
         @Override
         public List getResultList() {
-            // TODO Auto-generated method stub
-            return null;
+            return query.getResultList();
         }
 
-        /* (non-Javadoc)
-         * @see javax.persistence.Query#getSingleResult()
-         */
         @Override
         public Object getSingleResult() {
-            // TODO Auto-generated method stub
-            return null;
+            return query.getSingleResult();
         }
 
-        /* (non-Javadoc)
-         * @see javax.persistence.Query#executeUpdate()
-         */
         @Override
         public int executeUpdate() {
-            // TODO Auto-generated method stub
-            return 0;
+            return query.executeUpdate();
         }
 
-        /* (non-Javadoc)
-         * @see javax.persistence.Query#getMaxResults()
-         */
         @Override
         public int getMaxResults() {
-            // TODO Auto-generated method stub
-            return 0;
+            return query.getMaxResults();
         }
 
-        /* (non-Javadoc)
-         * @see javax.persistence.Query#getFirstResult()
-         */
         @Override
         public int getFirstResult() {
-            // TODO Auto-generated method stub
-            return 0;
+            return query.getFirstResult();
         }
 
-        /* (non-Javadoc)
-         * @see javax.persistence.Query#getHints()
-         */
         @Override
         public Map<String, Object> getHints() {
-            // TODO Auto-generated method stub
-            return null;
+            return query.getHints();
         }
 
-        /* (non-Javadoc)
-         * @see javax.persistence.Query#getParameters()
-         */
         @Override
         public Set<Parameter<?>> getParameters() {
-            // TODO Auto-generated method stub
-            return null;
+            return query.getParameters();
         }
 
-        /* (non-Javadoc)
-         * @see javax.persistence.Query#getParameter(java.lang.String)
-         */
         @Override
         public Parameter<?> getParameter(String name) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.getParameter(name);
         }
 
-        /* (non-Javadoc)
-         * @see javax.persistence.Query#getParameter(java.lang.String, java.lang.Class)
-         */
         @Override
         public <T> Parameter<T> getParameter(String name, Class<T> type) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.getParameter(name, type);
         }
 
-        /* (non-Javadoc)
-         * @see javax.persistence.Query#getParameter(int)
-         */
         @Override
         public Parameter<?> getParameter(int position) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.getParameter(position);
         }
 
-        /* (non-Javadoc)
-         * @see javax.persistence.Query#getParameter(int, java.lang.Class)
-         */
         @Override
         public <T> Parameter<T> getParameter(int position, Class<T> type) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.getParameter(position, type);
         }
 
-        /* (non-Javadoc)
-         * @see javax.persistence.Query#isBound(javax.persistence.Parameter)
-         */
         @Override
         public boolean isBound(Parameter<?> param) {
-            // TODO Auto-generated method stub
-            return false;
+           return query.isBound(param);
         }
 
-        /* (non-Javadoc)
-         * @see javax.persistence.Query#getParameterValue(javax.persistence.Parameter)
-         */
         @Override
         public <T> T getParameterValue(Parameter<T> param) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.getParameterValue(param);
         }
 
-        /* (non-Javadoc)
-         * @see javax.persistence.Query#getParameterValue(java.lang.String)
-         */
         @Override
         public Object getParameterValue(String name) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.getParameterValue(name);
         }
 
-        /* (non-Javadoc)
-         * @see javax.persistence.Query#getParameterValue(int)
-         */
         @Override
         public Object getParameterValue(int position) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.getParameterValue(position);
         }
 
-        /* (non-Javadoc)
-         * @see javax.persistence.Query#getFlushMode()
-         */
         @Override
         public FlushModeType getFlushMode() {
-            // TODO Auto-generated method stub
-            return null;
+            return query.getFlushMode();
         }
 
-        /* (non-Javadoc)
-         * @see javax.persistence.Query#getLockMode()
-         */
         @Override
         public LockModeType getLockMode() {
-            // TODO Auto-generated method stub
-            return null;
+            return query.getLockMode();
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.spi.QueryImplementor#getProducer()
-         */
         @Override
         public QueryProducerImplementor getProducer() {
-            // TODO Auto-generated method stub
-            return null;
+            return query.getProducer();
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.spi.QueryImplementor#setOptionalId(java.io.Serializable)
-         */
         @Override
         public void setOptionalId(Serializable id) {
-            // TODO Auto-generated method stub
-            
+            query.setOptionalId(id);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.spi.QueryImplementor#setOptionalEntityName(java.lang.String)
-         */
         @Override
         public void setOptionalEntityName(String entityName) {
-            // TODO Auto-generated method stub
-            
+           query.setOptionalEntityName(entityName);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.spi.QueryImplementor#setOptionalObject(java.lang.Object)
-         */
         @Override
         public void setOptionalObject(Object optionalObject) {
-            // TODO Auto-generated method stub
-            
+            query.setOptionalObject(optionalObject);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#uniqueResultOptional()
-         */
         @Override
         public Optional uniqueResultOptional() {
-            // TODO Auto-generated method stub
-            return null;
+            return query.uniqueResultOptional();
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#stream()
-         */
         @Override
         public Stream stream() {
-            // TODO Auto-generated method stub
-            return null;
+            return query.stream();
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#applyGraph(org.hibernate.graph.RootGraph, org.hibernate.graph.GraphSemantic)
-         */
         @Override
         public org.hibernate.query.Query applyGraph(RootGraph graph, GraphSemantic semantic) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.applyGraph(graph, semantic);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#setParameter(javax.persistence.Parameter, java.time.Instant, javax.persistence.TemporalType)
-         */
         @Override
         public org.hibernate.query.Query setParameter(Parameter param, Instant value, TemporalType temporalType) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setParameter(param, value, temporalType);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#setParameter(javax.persistence.Parameter, java.time.LocalDateTime, javax.persistence.TemporalType)
-         */
         @Override
         public org.hibernate.query.Query setParameter(Parameter param, LocalDateTime value, TemporalType temporalType) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setParameter(param, value, temporalType);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#setParameter(javax.persistence.Parameter, java.time.ZonedDateTime, javax.persistence.TemporalType)
-         */
         @Override
         public org.hibernate.query.Query setParameter(Parameter param, ZonedDateTime value, TemporalType temporalType) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setParameter(param, value, temporalType);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#setParameter(javax.persistence.Parameter, java.time.OffsetDateTime, javax.persistence.TemporalType)
-         */
         @Override
         public org.hibernate.query.Query setParameter(Parameter param, OffsetDateTime value, TemporalType temporalType) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setParameter(param, value, temporalType);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#setParameter(java.lang.String, java.time.Instant, javax.persistence.TemporalType)
-         */
         @Override
         public org.hibernate.query.Query setParameter(String name, Instant value, TemporalType temporalType) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setParameter(name, value, temporalType);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#setParameter(java.lang.String, java.time.LocalDateTime, javax.persistence.TemporalType)
-         */
         @Override
         public org.hibernate.query.Query setParameter(String name, LocalDateTime value, TemporalType temporalType) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setParameter(name, value, temporalType);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#setParameter(java.lang.String, java.time.ZonedDateTime, javax.persistence.TemporalType)
-         */
         @Override
         public org.hibernate.query.Query setParameter(String name, ZonedDateTime value, TemporalType temporalType) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setParameter(name, value, temporalType);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#setParameter(java.lang.String, java.time.OffsetDateTime, javax.persistence.TemporalType)
-         */
         @Override
         public org.hibernate.query.Query setParameter(String name, OffsetDateTime value, TemporalType temporalType) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setParameter(name, value, temporalType);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#setParameter(int, java.time.Instant, javax.persistence.TemporalType)
-         */
         @Override
         public org.hibernate.query.Query setParameter(int position, Instant value, TemporalType temporalType) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setParameter(position, value, temporalType);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#setParameter(int, java.time.LocalDateTime, javax.persistence.TemporalType)
-         */
         @Override
         public org.hibernate.query.Query setParameter(int position, LocalDateTime value, TemporalType temporalType) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setParameter(position, value, temporalType);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#setParameter(int, java.time.ZonedDateTime, javax.persistence.TemporalType)
-         */
         @Override
         public org.hibernate.query.Query setParameter(int position, ZonedDateTime value, TemporalType temporalType) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setParameter(position, value, temporalType);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#setParameter(int, java.time.OffsetDateTime, javax.persistence.TemporalType)
-         */
         @Override
         public org.hibernate.query.Query setParameter(int position, OffsetDateTime value, TemporalType temporalType) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setParameter(position, value, temporalType);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#scroll()
-         */
         @Override
         public ScrollableResults scroll() {
-            // TODO Auto-generated method stub
-            return null;
+            return query.scroll();
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#scroll(org.hibernate.ScrollMode)
-         */
         @Override
         public ScrollableResults scroll(ScrollMode scrollMode) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.scroll(scrollMode);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#list()
-         */
         @Override
         public List list() {
-            // TODO Auto-generated method stub
-            return null;
+            return query.list();
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#uniqueResult()
-         */
         @Override
         public Object uniqueResult() {
-            // TODO Auto-generated method stub
-            return null;
+            return query.uniqueResult();
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#getHibernateFlushMode()
-         */
         @Override
         public FlushMode getHibernateFlushMode() {
-            // TODO Auto-generated method stub
-            return null;
+            return query.getHibernateFlushMode();
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#getCacheMode()
-         */
         @Override
         public CacheMode getCacheMode() {
-            // TODO Auto-generated method stub
-            return null;
+            return query.getCacheMode();
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#getCacheRegion()
-         */
         @Override
         public String getCacheRegion() {
-            // TODO Auto-generated method stub
-            return null;
+            return query.getCacheRegion();
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#getFetchSize()
-         */
         @Override
         public Integer getFetchSize() {
-            // TODO Auto-generated method stub
-            return null;
+            return query.getFetchSize();
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#getLockOptions()
-         */
         @Override
         public LockOptions getLockOptions() {
-            // TODO Auto-generated method stub
-            return null;
+            return query.getLockOptions();
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#getComment()
-         */
         @Override
         public String getComment() {
-            // TODO Auto-generated method stub
-            return null;
+            return query.getComment();
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#getQueryString()
-         */
         @Override
         public String getQueryString() {
-            // TODO Auto-generated method stub
-            return null;
+            return query.getQueryString();
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#getParameterMetadata()
-         */
         @Override
         public ParameterMetadata getParameterMetadata() {
-            // TODO Auto-generated method stub
-            return null;
+           return query.getParameterMetadata();
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#setParameter(javax.persistence.Parameter, java.lang.Object)
-         */
         @Override
         public org.hibernate.query.Query setParameter(Parameter param, Object value) {
-            // TODO Auto-generated method stub
-            return null;
+            throw new UnsupportedOperationException( "parameters not supported in fullText queries" );
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#setParameter(javax.persistence.Parameter, java.util.Calendar, javax.persistence.TemporalType)
-         */
         @Override
         public org.hibernate.query.Query setParameter(Parameter param, Calendar value, TemporalType temporalType) {
-            // TODO Auto-generated method stub
-            return null;
+            throw new UnsupportedOperationException( "parameters not supported in fullText queries" );
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#setParameter(javax.persistence.Parameter, java.util.Date, javax.persistence.TemporalType)
-         */
+        @SuppressWarnings("rawtypes")
         @Override
         public org.hibernate.query.Query setParameter(Parameter param, Date value, TemporalType temporalType) {
-            // TODO Auto-generated method stub
-            return null;
+            throw new UnsupportedOperationException( "parameters not supported in fullText queries" );
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#setParameter(java.lang.String, java.lang.Object)
-         */
         @Override
         public org.hibernate.query.Query setParameter(String name, Object value) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setParameter(name, value);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#setParameter(java.lang.String, java.lang.Object, org.hibernate.type.Type)
-         */
         @Override
         public org.hibernate.query.Query setParameter(String name, Object val, Type type) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setParameter(name, val, type);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#setParameter(java.lang.String, java.util.Calendar, javax.persistence.TemporalType)
-         */
         @Override
         public org.hibernate.query.Query setParameter(String name, Calendar value, TemporalType temporalType) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setParameter(name, value, temporalType);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#setParameter(java.lang.String, java.util.Date, javax.persistence.TemporalType)
-         */
         @Override
         public org.hibernate.query.Query setParameter(String name, Date value, TemporalType temporalType) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setParameter(name, value, temporalType);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#setParameter(int, java.lang.Object)
-         */
         @Override
         public org.hibernate.query.Query setParameter(int position, Object value) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setParameter(position, value);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#setParameter(int, java.util.Calendar, javax.persistence.TemporalType)
-         */
         @Override
         public org.hibernate.query.Query setParameter(int position, Calendar value, TemporalType temporalType) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setParameter(position, value, temporalType);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#setParameter(int, java.util.Date, javax.persistence.TemporalType)
-         */
         @Override
         public org.hibernate.query.Query setParameter(int position, Date value, TemporalType temporalType) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setParameter(position, value, temporalType);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#setParameter(org.hibernate.query.QueryParameter, java.lang.Object)
-         */
         @Override
         public org.hibernate.query.Query setParameter(QueryParameter parameter, Object val) {
-            // TODO Auto-generated method stub
-            return null;
+            throw new UnsupportedOperationException( "parameters not supported in fullText queries" );
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#setParameter(int, java.lang.Object, javax.persistence.TemporalType)
-         */
         @Override
         public org.hibernate.query.Query setParameter(int position, Object val, TemporalType temporalType) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setParameter(position, val, temporalType);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#setParameter(org.hibernate.query.QueryParameter, java.lang.Object, org.hibernate.type.Type)
-         */
         @Override
         public org.hibernate.query.Query setParameter(QueryParameter parameter, Object val, Type type) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setParameter(parameter, val, type);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#setParameter(int, java.lang.Object, org.hibernate.type.Type)
-         */
         @Override
         public org.hibernate.query.Query setParameter(int position, Object val, Type type) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setParameter(position, val, type);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#setParameter(org.hibernate.query.QueryParameter, java.lang.Object, javax.persistence.TemporalType)
-         */
         @Override
         public org.hibernate.query.Query setParameter(QueryParameter parameter, Object val, TemporalType temporalType) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setParameter(parameter, val, temporalType);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#setParameter(java.lang.String, java.lang.Object, javax.persistence.TemporalType)
-         */
         @Override
         public org.hibernate.query.Query setParameter(String name, Object val, TemporalType temporalType) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setParameter(name, val, temporalType);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#setLockMode(javax.persistence.LockModeType)
-         */
         @Override
         public org.hibernate.query.Query setLockMode(LockModeType lockMode) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setLockMode(lockMode);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#setReadOnly(boolean)
-         */
         @Override
         public org.hibernate.query.Query setReadOnly(boolean readOnly) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setReadOnly(readOnly);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#setHibernateFlushMode(org.hibernate.FlushMode)
-         */
         @Override
         public org.hibernate.query.Query setHibernateFlushMode(FlushMode flushMode) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setHibernateFlushMode(flushMode);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#setCacheMode(org.hibernate.CacheMode)
-         */
         @Override
         public org.hibernate.query.Query setCacheMode(CacheMode cacheMode) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setCacheMode(cacheMode);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#setCacheable(boolean)
-         */
         @Override
         public org.hibernate.query.Query setCacheable(boolean cacheable) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setCacheable(cacheable);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#setCacheRegion(java.lang.String)
-         */
         @Override
         public org.hibernate.query.Query setCacheRegion(String cacheRegion) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setCacheRegion(cacheRegion);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#setTimeout(int)
-         */
         @Override
         public org.hibernate.query.Query setTimeout(int timeout) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setTimeout(timeout);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#setLockOptions(org.hibernate.LockOptions)
-         */
         @Override
         public org.hibernate.query.Query setLockOptions(LockOptions lockOptions) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setLockOptions(lockOptions);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#setLockMode(java.lang.String, org.hibernate.LockMode)
-         */
         @Override
         public org.hibernate.query.Query setLockMode(String alias, LockMode lockMode) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setLockMode(alias, lockMode);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#setComment(java.lang.String)
-         */
         @Override
         public org.hibernate.query.Query setComment(String comment) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setComment(comment);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#addQueryHint(java.lang.String)
-         */
         @Override
         public org.hibernate.query.Query addQueryHint(String hint) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.addQueryHint(hint);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#setParameterList(org.hibernate.query.QueryParameter, java.util.Collection)
-         */
         @Override
         public org.hibernate.query.Query setParameterList(QueryParameter parameter, Collection values) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setParameterList(parameter, values);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#setParameterList(java.lang.String, java.util.Collection)
-         */
         @Override
         public org.hibernate.query.Query setParameterList(String name, Collection values) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setParameterList(name, values);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#setParameterList(java.lang.String, java.util.Collection, org.hibernate.type.Type)
-         */
         @Override
         public org.hibernate.query.Query setParameterList(String name, Collection values, Type type) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setParameterList(name, values, type);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#setParameterList(java.lang.String, java.lang.Object[], org.hibernate.type.Type)
-         */
         @Override
         public org.hibernate.query.Query setParameterList(String name, Object[] values, Type type) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setParameterList(name, values, type);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#setParameterList(java.lang.String, java.lang.Object[])
-         */
         @Override
         public org.hibernate.query.Query setParameterList(String name, Object[] values) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setParameterList(name, values);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#setProperties(java.lang.Object)
-         */
         @Override
         public org.hibernate.query.Query setProperties(Object bean) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setProperties(bean);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#setProperties(java.util.Map)
-         */
         @Override
         public org.hibernate.query.Query setProperties(Map bean) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setProperties(bean);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#setEntity(int, java.lang.Object)
-         */
         @Override
         public org.hibernate.query.Query setEntity(int position, Object val) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setEntity(position, val);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.query.Query#setEntity(java.lang.String, java.lang.Object)
-         */
         @Override
         public org.hibernate.query.Query setEntity(String name, Object val) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setEntity(name, val);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.Query#getQueryOptions()
-         */
         @Override
         public RowSelection getQueryOptions() {
-            // TODO Auto-generated method stub
-            return null;
+            return query.getQueryOptions();
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.Query#isCacheable()
-         */
         @Override
         public boolean isCacheable() {
-            // TODO Auto-generated method stub
-            return false;
+            return query.isCacheable();
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.Query#getTimeout()
-         */
         @Override
         public Integer getTimeout() {
-            // TODO Auto-generated method stub
-            return null;
+            return query.getTimeout();
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.Query#isReadOnly()
-         */
         @Override
         public boolean isReadOnly() {
-            // TODO Auto-generated method stub
-            return false;
+            return query.isReadOnly();
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.Query#getReturnTypes()
-         */
         @Override
         public Type[] getReturnTypes() {
-            // TODO Auto-generated method stub
-            return null;
+            return query.getReturnTypes();
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.Query#iterate()
-         */
         @Override
         public Iterator iterate() {
-            // TODO Auto-generated method stub
-            return null;
+            return query.iterate();
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.Query#getNamedParameters()
-         */
         @Override
         public String[] getNamedParameters() {
-            // TODO Auto-generated method stub
-            return null;
+            return query.getNamedParameters();
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.Query#setParameterList(int, java.util.Collection)
-         */
         @Override
         public Query setParameterList(int position, Collection values) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setParameterList(position, values);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.Query#setParameterList(int, java.util.Collection, org.hibernate.type.Type)
-         */
         @Override
         public Query setParameterList(int position, Collection values, Type type) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setParameterList(position, values, type);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.Query#setParameterList(int, java.lang.Object[], org.hibernate.type.Type)
-         */
         @Override
         public Query setParameterList(int position, Object[] values, Type type) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setParameterList(position, values);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.Query#setParameterList(int, java.lang.Object[])
-         */
         @Override
         public Query setParameterList(int position, Object[] values) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setParameterList(position, values);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.Query#determineProperBooleanType(int, java.lang.Object, org.hibernate.type.Type)
-         */
         @Override
         public Type determineProperBooleanType(int position, Object value, Type defaultType) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.determineProperBooleanType(position, value, defaultType);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.Query#determineProperBooleanType(java.lang.String, java.lang.Object, org.hibernate.type.Type)
-         */
         @Override
         public Type determineProperBooleanType(String name, Object value, Type defaultType) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.determineProperBooleanType(name, value, defaultType);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.Query#getReturnAliases()
-         */
         @Override
         public String[] getReturnAliases() {
-            // TODO Auto-generated method stub
-            return null;
+            return query.getReturnAliases();
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.search.FullTextQuery#setResultTransformer(org.hibernate.transform.ResultTransformer)
-         */
         @Override
         public FullTextQuery setResultTransformer(ResultTransformer transformer) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setResultTransformer(transformer);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.search.FullTextQuery#unwrap(java.lang.Class)
-         */
         @Override
         public <T> T unwrap(Class<T> type) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.unwrap(type);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.search.FullTextQuery#setSort(org.apache.lucene.search.Sort)
-         */
         @Override
         public FullTextQuery setSort(Sort sort) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setSort(sort);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.search.FullTextQuery#setFilter(org.apache.lucene.search.Filter)
-         */
         @Override
         public FullTextQuery setFilter(Filter filter) {
-            // TODO Auto-generated method stub
-            return null;
+           return query.setFilter(filter);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.search.FullTextQuery#setCriteriaQuery(org.hibernate.Criteria)
-         */
         @Override
         public FullTextQuery setCriteriaQuery(Criteria criteria) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setCriteriaQuery(criteria);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.search.FullTextQuery#setProjection(java.lang.String[])
-         */
         @Override
         public FullTextQuery setProjection(String... fields) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setProjection(fields);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.search.FullTextQuery#setSpatialParameters(double, double, java.lang.String)
-         */
         @Override
         public FullTextQuery setSpatialParameters(double latitude, double longitude, String fieldName) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setSpatialParameters(latitude, longitude, fieldName);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.search.FullTextQuery#setSpatialParameters(org.hibernate.search.spatial.Coordinates, java.lang.String)
-         */
         @Override
         public FullTextQuery setSpatialParameters(Coordinates center, String fieldName) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setSpatialParameters(center, fieldName);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.search.FullTextQuery#setFirstResult(int)
-         */
         @Override
         public FullTextQuery setFirstResult(int firstResult) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setFirstResult(firstResult);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.search.FullTextQuery#setMaxResults(int)
-         */
         @Override
         public FullTextQuery setMaxResults(int maxResults) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setMaxResults(maxResults);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.search.FullTextQuery#setHint(java.lang.String, java.lang.Object)
-         */
         @Override
         public FullTextQuery setHint(String hintName, Object value) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setHint(hintName, value);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.search.FullTextQuery#setFlushMode(javax.persistence.FlushModeType)
-         */
         @Override
         public FullTextQuery setFlushMode(FlushModeType flushMode) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setFlushMode(flushMode);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.search.FullTextQuery#setFetchSize(int)
-         */
         @Override
         public FullTextQuery setFetchSize(int i) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setFetchSize(i);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.search.FullTextQuery#setTimeout(long, java.util.concurrent.TimeUnit)
-         */
         @Override
         public FullTextQuery setTimeout(long timeout, TimeUnit timeUnit) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.setTimeout(timeout, timeUnit);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.search.FullTextQuery#limitExecutionTimeTo(long, java.util.concurrent.TimeUnit)
-         */
         @Override
         public FullTextQuery limitExecutionTimeTo(long timeout, TimeUnit timeUnit) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.limitExecutionTimeTo(timeout, timeUnit);
         }
 
-        /* (non-Javadoc)
-         * @see org.hibernate.search.FullTextQuery#initializeObjectsWith(org.hibernate.search.query.ObjectLookupMethod, org.hibernate.search.query.DatabaseRetrievalMethod)
-         */
         @Override
         public FullTextQuery initializeObjectsWith(ObjectLookupMethod lookupMethod, DatabaseRetrievalMethod retrievalMethod) {
-            // TODO Auto-generated method stub
-            return null;
+            return query.initializeObjectsWith(lookupMethod, retrievalMethod);
         }
 
     }

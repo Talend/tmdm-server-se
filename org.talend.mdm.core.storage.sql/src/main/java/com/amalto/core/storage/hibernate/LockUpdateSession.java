@@ -73,918 +73,716 @@ class LockUpdateSession implements Session {
 
     @Override
     public SharedSessionBuilder sessionWithOptions() {
-        return delegate.sessionWithOptions();
+        return this.delegate.sessionWithOptions();
     }
 
     @Override
     public void flush() throws HibernateException {
-        delegate.flush();
+        this.delegate.flush();
     }
 
     @Override
     public void setFlushMode(FlushMode flushMode) {
-        delegate.setFlushMode(flushMode);
+        this.delegate.setFlushMode(flushMode);
     }
 
     @Override
     public FlushModeType getFlushMode() {
-        return delegate.getFlushMode();
+        return this.delegate.getFlushMode();
     }
 
     @Override
     public void setCacheMode(CacheMode cacheMode) {
-        delegate.setCacheMode(cacheMode);
+        this.delegate.setCacheMode(cacheMode);
     }
 
     @Override
     public CacheMode getCacheMode() {
-        return delegate.getCacheMode();
+        return this.delegate.getCacheMode();
     }
 
     @Override
     public SessionFactory getSessionFactory() {
-        return delegate.getSessionFactory();
+        return this.delegate.getSessionFactory();
     }
-
-//    @Override
-//    public Connection close() throws HibernateException {
-//        return delegate.close();
-//    }
 
     @Override
     public void cancelQuery() throws HibernateException {
-        delegate.cancelQuery();
+        this.delegate.cancelQuery();
     }
 
     @Override
     public boolean isOpen() {
-        return delegate.isOpen();
+        return this.delegate.isOpen();
     }
 
     @Override
     public boolean isConnected() {
-        return delegate.isConnected();
+        return this.delegate.isConnected();
     }
 
     @Override
     public boolean isDirty() throws HibernateException {
-        return delegate.isDirty();
+        return this.delegate.isDirty();
     }
 
     @Override
     public boolean isDefaultReadOnly() {
-        return delegate.isDefaultReadOnly();
+        return this.delegate.isDefaultReadOnly();
     }
 
     @Override
     public void setDefaultReadOnly(boolean readOnly) {
-        delegate.setDefaultReadOnly(readOnly);
+        this.delegate.setDefaultReadOnly(readOnly);
     }
 
     @Override
     public Serializable getIdentifier(Object object) {
-        return delegate.getIdentifier(object);
+        return this.delegate.getIdentifier(object);
     }
 
     @Override
     public boolean contains(Object object) {
-        return delegate.contains(object);
+        return this.delegate.contains(object);
     }
 
     @Override
     public void evict(Object object) {
-        delegate.evict(object);
+        this.delegate.evict(object);
     }
 
     @Override
     @Deprecated
     public Object load(Class theClass, Serializable id, LockMode lockMode) {
-        return delegate.load(theClass, id, mode);
+        return this.delegate.load(theClass, id, mode);
     }
 
     @Override
     public Object load(Class theClass, Serializable id, LockOptions lockOptions) {
-        return delegate.load(theClass, id, options);
+        return this.delegate.load(theClass, id, options);
     }
 
     @Override
     @Deprecated
     public Object load(String entityName, Serializable id, LockMode lockMode) {
-        return delegate.load(entityName, id, mode);
+        return this.delegate.load(entityName, id, mode);
     }
 
     @Override
     public Object load(String entityName, Serializable id, LockOptions lockOptions) {
-        return delegate.load(entityName, id, options);
+        return this.delegate.load(entityName, id, options);
     }
 
     @Override
     public Object load(Class theClass, Serializable id) {
-        return delegate.load(theClass, id, options);
+        return this.delegate.load(theClass, id, options);
     }
 
     @Override
     public Object load(String entityName, Serializable id) {
-        return delegate.load(entityName, id, options);
+        return this.delegate.load(entityName, id, options);
     }
 
     @Override
     public void load(Object object, Serializable id) {
-        delegate.load(object.getClass(), id, options);
+        this.delegate.load(object.getClass(), id, options);
     }
 
     @Override
     public void replicate(Object object, ReplicationMode replicationMode) {
-        delegate.replicate(object, replicationMode);
+        this.delegate.replicate(object, replicationMode);
     }
 
     @Override
     public void replicate(String entityName, Object object, ReplicationMode replicationMode) {
-        delegate.replicate(entityName, object, replicationMode);
+        this.delegate.replicate(entityName, object, replicationMode);
     }
 
     @Override
     public Serializable save(Object object) {
-        return delegate.save(object);
+        return this.delegate.save(object);
     }
 
     @Override
     public Serializable save(String entityName, Object object) {
-        return delegate.save(entityName, object);
+        return this.delegate.save(entityName, object);
     }
 
     @Override
     public void saveOrUpdate(Object object) {
-        delegate.saveOrUpdate(object);
+        this.delegate.saveOrUpdate(object);
     }
 
     @Override
     public void saveOrUpdate(String entityName, Object object) {
-        delegate.saveOrUpdate(entityName, object);
+        this.delegate.saveOrUpdate(entityName, object);
     }
 
     @Override
     public void update(Object object) {
-        delegate.update(object);
+        this.delegate.update(object);
     }
 
     @Override
     public void update(String entityName, Object object) {
-        delegate.update(entityName, object);
+        this.delegate.update(entityName, object);
     }
 
     @Override
     public Object merge(Object object) {
-        return delegate.merge(object);
+        return this.delegate.merge(object);
     }
 
     @Override
     public Object merge(String entityName, Object object) {
-        return delegate.merge(entityName, object);
+        return this.delegate.merge(entityName, object);
     }
 
     @Override
     public void persist(Object object) {
-        delegate.persist(object);
+        this.delegate.persist(object);
     }
 
     @Override
     public void persist(String entityName, Object object) {
-        delegate.persist(entityName, object);
+        this.delegate.persist(entityName, object);
     }
 
     @Override
     public void delete(Object object) {
-        delegate.delete(object);
+        this.delegate.delete(object);
     }
 
     @Override
     public void delete(String entityName, Object object) {
-        delegate.delete(entityName, object);
+        this.delegate.delete(entityName, object);
     }
 
     @Override
     @Deprecated
     public void lock(Object object, LockMode lockMode) {
-        delegate.lock(object, mode);
+        this.delegate.lock(object, mode);
     }
 
     @Override
     @Deprecated
     public void lock(String entityName, Object object, LockMode lockMode) {
-        delegate.lock(entityName, object, mode);
+        this.delegate.lock(entityName, object, mode);
     }
 
     @Override
     public LockRequest buildLockRequest(LockOptions lockOptions) {
-        return delegate.buildLockRequest(lockOptions);
+        return this.delegate.buildLockRequest(lockOptions);
     }
 
     @Override
     public void refresh(Object object) {
-        delegate.refresh(object);
+        this.delegate.refresh(object);
     }
 
     @Override
     public void refresh(String entityName, Object object) {
-        delegate.refresh(entityName, object);
+        this.delegate.refresh(entityName, object);
     }
 
     @Override
     @Deprecated
     public void refresh(Object object, LockMode lockMode) {
-        delegate.refresh(object, mode);
+        this.delegate.refresh(object, mode);
     }
 
     @Override
     public void refresh(Object object, LockOptions lockOptions) {
-        delegate.refresh(object, options);
+        this.delegate.refresh(object, options);
     }
 
     @Override
     public void refresh(String entityName, Object object, LockOptions lockOptions) {
-        delegate.refresh(entityName, object, options);
+        this.delegate.refresh(entityName, object, options);
     }
 
     @Override
     public LockMode getCurrentLockMode(Object object) {
-        return delegate.getCurrentLockMode(object);
+        return this.delegate.getCurrentLockMode(object);
     }
 
     @Override
     public Query createFilter(Object collection, String queryString) {
-        return delegate.createFilter(collection, queryString);
+        return this.delegate.createFilter(collection, queryString);
     }
 
     @Override
     public void clear() {
-        delegate.clear();
+        this.delegate.clear();
     }
 
     @Override
     public Object get(Class clazz, Serializable id) {
-        return delegate.get(clazz, id);
+        return this.delegate.get(clazz, id);
     }
 
     @Override
     @Deprecated
     public Object get(Class clazz, Serializable id, LockMode lockMode) {
-        return delegate.get(clazz, id, mode);
+        return this.delegate.get(clazz, id, mode);
     }
 
     @Override
     public Object get(Class clazz, Serializable id, LockOptions lockOptions) {
-        return delegate.get(clazz, id, options);
+        return this.delegate.get(clazz, id, options);
     }
 
     @Override
     public Object get(String entityName, Serializable id) {
-        return delegate.get(entityName, id, options);
+        return this.delegate.get(entityName, id, options);
     }
 
     @Override
     @Deprecated
     public Object get(String entityName, Serializable id, LockMode lockMode) {
-        return delegate.get(entityName, id, mode);
+        return this.delegate.get(entityName, id, mode);
     }
 
     @Override
     public Object get(String entityName, Serializable id, LockOptions lockOptions) {
-        return delegate.get(entityName, id, options);
+        return this.delegate.get(entityName, id, options);
     }
 
     @Override
     public String getEntityName(Object object) {
-        return delegate.getEntityName(object);
+        return this.delegate.getEntityName(object);
     }
 
     @Override
     public IdentifierLoadAccess byId(String entityName) {
-        return delegate.byId(entityName);
+        return this.delegate.byId(entityName);
     }
 
     @Override
     public IdentifierLoadAccess byId(Class entityClass) {
-        return delegate.byId(entityClass);
+        return this.delegate.byId(entityClass);
     }
 
     @Override
     public NaturalIdLoadAccess byNaturalId(String entityName) {
-        return delegate.byNaturalId(entityName);
+        return this.delegate.byNaturalId(entityName);
     }
 
     @Override
     public NaturalIdLoadAccess byNaturalId(Class entityClass) {
-        return delegate.byNaturalId(entityClass);
+        return this.delegate.byNaturalId(entityClass);
     }
 
     @Override
     public SimpleNaturalIdLoadAccess bySimpleNaturalId(String entityName) {
-        return delegate.bySimpleNaturalId(entityName);
+        return this.delegate.bySimpleNaturalId(entityName);
     }
 
     @Override
     public SimpleNaturalIdLoadAccess bySimpleNaturalId(Class entityClass) {
-        return delegate.bySimpleNaturalId(entityClass);
+        return this.delegate.bySimpleNaturalId(entityClass);
     }
 
     @Override
     public Filter enableFilter(String filterName) {
-        return delegate.enableFilter(filterName);
+        return this.delegate.enableFilter(filterName);
     }
 
     @Override
     public Filter getEnabledFilter(String filterName) {
-        return delegate.getEnabledFilter(filterName);
+        return this.delegate.getEnabledFilter(filterName);
     }
 
     @Override
     public void disableFilter(String filterName) {
-        delegate.disableFilter(filterName);
+        this.delegate.disableFilter(filterName);
     }
 
     @Override
     public SessionStatistics getStatistics() {
-        return delegate.getStatistics();
+        return this.delegate.getStatistics();
     }
 
     @Override
     public boolean isReadOnly(Object entityOrProxy) {
-        return delegate.isReadOnly(entityOrProxy);
+        return this.delegate.isReadOnly(entityOrProxy);
     }
 
     @Override
     public void setReadOnly(Object entityOrProxy, boolean readOnly) {
-        delegate.setReadOnly(entityOrProxy, readOnly);
+        this.delegate.setReadOnly(entityOrProxy, readOnly);
     }
 
     @Override
     public void doWork(Work work) throws HibernateException {
-        delegate.doWork(work);
+        this.delegate.doWork(work);
     }
 
     @Override
     public <T> T doReturningWork(ReturningWork<T> work) throws HibernateException {
-        return delegate.doReturningWork(work);
+        return this.delegate.doReturningWork(work);
     }
 
     @Override
     public Connection disconnect() {
-        return delegate.disconnect();
+        return this.delegate.disconnect();
     }
 
     @Override
     public void reconnect(Connection connection) {
-        delegate.reconnect(connection);
+        this.delegate.reconnect(connection);
     }
 
     @Override
     public boolean isFetchProfileEnabled(String name) throws UnknownProfileException {
-        return delegate.isFetchProfileEnabled(name);
+        return this.delegate.isFetchProfileEnabled(name);
     }
 
     @Override
     public void enableFetchProfile(String name) throws UnknownProfileException {
-        delegate.enableFetchProfile(name);
+        this.delegate.enableFetchProfile(name);
     }
 
     @Override
     public void disableFetchProfile(String name) throws UnknownProfileException {
-        delegate.disableFetchProfile(name);
+        this.delegate.disableFetchProfile(name);
     }
 
     @Override
     public TypeHelper getTypeHelper() {
-        return delegate.getTypeHelper();
+        return this.delegate.getTypeHelper();
     }
 
     @Override
     public LobHelper getLobHelper() {
-        return delegate.getLobHelper();
+        return this.delegate.getLobHelper();
     }
 
     @Override
     public void addEventListeners(SessionEventListener... listeners) {
-        delegate.addEventListeners(listeners);
+        this.delegate.addEventListeners(listeners);
     }
 
     @Override
     public String getTenantIdentifier() {
-        return delegate.getTenantIdentifier();
+        return this.delegate.getTenantIdentifier();
     }
 
     @Override
     public Transaction beginTransaction() {
-        return delegate.beginTransaction();
+        return this.delegate.beginTransaction();
     }
 
     @Override
     public Transaction getTransaction() {
-        return delegate.getTransaction();
+        return this.delegate.getTransaction();
     }
 
     @Override
     public org.hibernate.query.Query getNamedQuery(String queryName) {
-        return delegate.getNamedQuery(queryName);
+        return this.delegate.getNamedQuery(queryName);
     }
 
     @Override
     public org.hibernate.query.Query createQuery(String queryString) {
-        return delegate.createQuery(queryString);
+        return this.delegate.createQuery(queryString);
     }
 
     @Override
     public NativeQuery createSQLQuery(String queryString) {
-        return delegate.createSQLQuery(queryString);
+        return this.delegate.createSQLQuery(queryString);
     }
 
     @Override
     public ProcedureCall getNamedProcedureCall(String name) {
-        return delegate.getNamedProcedureCall(name);
+        return this.delegate.getNamedProcedureCall(name);
     }
 
     @Override
     public ProcedureCall createStoredProcedureCall(String procedureName) {
-        return delegate.createStoredProcedureCall(procedureName);
+        return this.delegate.createStoredProcedureCall(procedureName);
     }
 
     @Override
     public ProcedureCall createStoredProcedureCall(String procedureName, Class... resultClasses) {
-        return delegate.createStoredProcedureCall(procedureName, resultClasses);
+        return this.delegate.createStoredProcedureCall(procedureName, resultClasses);
     }
 
     @Override
     public ProcedureCall createStoredProcedureCall(String procedureName, String... resultSetMappings) {
-        return delegate.createStoredProcedureCall(procedureName, resultSetMappings);
+        return this.delegate.createStoredProcedureCall(procedureName, resultSetMappings);
     }
 
     @Override
     public Criteria createCriteria(Class persistentClass) {
-        Criteria criteria = delegate.createCriteria(persistentClass);
+        Criteria criteria = this.delegate.createCriteria(persistentClass);
         criteria.setLockMode(mode);
         return criteria;
     }
 
     @Override
     public Criteria createCriteria(Class persistentClass, String alias) {
-        Criteria criteria = delegate.createCriteria(persistentClass, alias);
+        Criteria criteria = this.delegate.createCriteria(persistentClass, alias);
         criteria.setLockMode(mode);
         return criteria;
     }
 
     @Override
     public Criteria createCriteria(String entityName) {
-        Criteria criteria = delegate.createCriteria(entityName);
+        Criteria criteria = this.delegate.createCriteria(entityName);
         criteria.setLockMode(mode);
         return criteria;
     }
 
     @Override
     public Criteria createCriteria(String entityName, String alias) {
-        Criteria criteria = delegate.createCriteria(entityName, alias);
+        Criteria criteria = this.delegate.createCriteria(entityName, alias);
         criteria.setLockMode(mode);
         return criteria;
     }
 
-    /* (non-Javadoc)
-     * @see org.hibernate.SharedSessionContract#close()
-     */
     @Override
     public void close() throws HibernateException {
-        // TODO Auto-generated method stub
-        
+        this.delegate.close();
     }
 
-    /* (non-Javadoc)
-     * @see org.hibernate.SharedSessionContract#getJdbcBatchSize()
-     */
     @Override
     public Integer getJdbcBatchSize() {
-        // TODO Auto-generated method stub
-        return null;
+        return this.delegate.getJdbcBatchSize();
     }
 
-    /* (non-Javadoc)
-     * @see org.hibernate.SharedSessionContract#setJdbcBatchSize(java.lang.Integer)
-     */
     @Override
     public void setJdbcBatchSize(Integer jdbcBatchSize) {
-        // TODO Auto-generated method stub
-        
+        this.delegate.setJdbcBatchSize(jdbcBatchSize);      
     }
 
-    /* (non-Javadoc)
-     * @see org.hibernate.query.QueryProducer#createNamedQuery(java.lang.String)
-     */
     @Override
     public org.hibernate.query.Query createNamedQuery(String name) {
-        // TODO Auto-generated method stub
-        return null;
+        return this.delegate.createNamedQuery(name);
     }
 
-    /* (non-Javadoc)
-     * @see org.hibernate.query.QueryProducer#createNativeQuery(java.lang.String)
-     */
     @Override
     public NativeQuery createNativeQuery(String sqlString) {
-        // TODO Auto-generated method stub
-        return null;
+        return this.delegate.createNativeQuery(sqlString);
     }
 
-    /* (non-Javadoc)
-     * @see org.hibernate.query.QueryProducer#createNativeQuery(java.lang.String, java.lang.String)
-     */
     @Override
     public NativeQuery createNativeQuery(String sqlString, String resultSetMapping) {
-        // TODO Auto-generated method stub
-        return null;
+        return this.delegate.createNativeQuery(sqlString, resultSetMapping);
     }
 
-    /* (non-Javadoc)
-     * @see org.hibernate.query.QueryProducer#getNamedNativeQuery(java.lang.String)
-     */
     @Override
     public NativeQuery getNamedNativeQuery(String name) {
-        // TODO Auto-generated method stub
-        return null;
+        return this.delegate.getNamedNativeQuery(name);
     }
 
-    /* (non-Javadoc)
-     * @see javax.persistence.EntityManager#remove(java.lang.Object)
-     */
     @Override
     public void remove(Object entity) {
-        // TODO Auto-generated method stub
-        
+       this.delegate.remove(entity);
     }
 
-    /* (non-Javadoc)
-     * @see javax.persistence.EntityManager#find(java.lang.Class, java.lang.Object)
-     */
     @Override
     public <T> T find(Class<T> entityClass, Object primaryKey) {
-        // TODO Auto-generated method stub
-        return null;
+        return this.delegate.find(entityClass, primaryKey);
     }
 
-    /* (non-Javadoc)
-     * @see javax.persistence.EntityManager#find(java.lang.Class, java.lang.Object, java.util.Map)
-     */
     @Override
     public <T> T find(Class<T> entityClass, Object primaryKey, Map<String, Object> properties) {
-        // TODO Auto-generated method stub
-        return null;
+        return this.delegate.find(entityClass, primaryKey, properties);
     }
 
-    /* (non-Javadoc)
-     * @see javax.persistence.EntityManager#find(java.lang.Class, java.lang.Object, javax.persistence.LockModeType)
-     */
     @Override
     public <T> T find(Class<T> entityClass, Object primaryKey, LockModeType lockMode) {
-        // TODO Auto-generated method stub
-        return null;
+        return this.delegate.find(entityClass, primaryKey, lockMode);
     }
 
-    /* (non-Javadoc)
-     * @see javax.persistence.EntityManager#find(java.lang.Class, java.lang.Object, javax.persistence.LockModeType, java.util.Map)
-     */
     @Override
     public <T> T find(Class<T> entityClass, Object primaryKey, LockModeType lockMode, Map<String, Object> properties) {
-        // TODO Auto-generated method stub
-        return null;
+        return this.delegate.find(entityClass, primaryKey, lockMode, properties);
     }
 
-    /* (non-Javadoc)
-     * @see javax.persistence.EntityManager#getReference(java.lang.Class, java.lang.Object)
-     */
     @Override
     public <T> T getReference(Class<T> entityClass, Object primaryKey) {
-        // TODO Auto-generated method stub
-        return null;
+        return this.delegate.getReference(entityClass, primaryKey);
     }
 
-    /* (non-Javadoc)
-     * @see javax.persistence.EntityManager#setFlushMode(javax.persistence.FlushModeType)
-     */
     @Override
     public void setFlushMode(FlushModeType flushMode) {
-        // TODO Auto-generated method stub
-        
+        this.delegate.setFlushMode(flushMode);
     }
 
-    /* (non-Javadoc)
-     * @see javax.persistence.EntityManager#lock(java.lang.Object, javax.persistence.LockModeType)
-     */
     @Override
     public void lock(Object entity, LockModeType lockMode) {
-        // TODO Auto-generated method stub
-        
+        this.delegate.lock(entity, lockMode);
     }
 
-    /* (non-Javadoc)
-     * @see javax.persistence.EntityManager#lock(java.lang.Object, javax.persistence.LockModeType, java.util.Map)
-     */
     @Override
     public void lock(Object entity, LockModeType lockMode, Map<String, Object> properties) {
-        // TODO Auto-generated method stub
-        
+        this.delegate.lock(entity, lockMode, properties);
     }
 
-    /* (non-Javadoc)
-     * @see javax.persistence.EntityManager#refresh(java.lang.Object, java.util.Map)
-     */
     @Override
     public void refresh(Object entity, Map<String, Object> properties) {
-        // TODO Auto-generated method stub
-        
+        this.delegate.refresh(entity, properties);
     }
 
-    /* (non-Javadoc)
-     * @see javax.persistence.EntityManager#refresh(java.lang.Object, javax.persistence.LockModeType)
-     */
     @Override
     public void refresh(Object entity, LockModeType lockMode) {
-        // TODO Auto-generated method stub
-        
+        this.delegate.refresh(entity, lockMode);
     }
 
-    /* (non-Javadoc)
-     * @see javax.persistence.EntityManager#refresh(java.lang.Object, javax.persistence.LockModeType, java.util.Map)
-     */
     @Override
     public void refresh(Object entity, LockModeType lockMode, Map<String, Object> properties) {
-        // TODO Auto-generated method stub
-        
+        this.delegate.refresh(entity, lockMode, properties);
     }
 
-    /* (non-Javadoc)
-     * @see javax.persistence.EntityManager#detach(java.lang.Object)
-     */
     @Override
     public void detach(Object entity) {
-        // TODO Auto-generated method stub
-        
+        this.delegate.detach(entity);
     }
 
-    /* (non-Javadoc)
-     * @see javax.persistence.EntityManager#getLockMode(java.lang.Object)
-     */
     @Override
     public LockModeType getLockMode(Object entity) {
-        // TODO Auto-generated method stub
-        return null;
+        return this.delegate.getLockMode(entity);
     }
 
-    /* (non-Javadoc)
-     * @see javax.persistence.EntityManager#setProperty(java.lang.String, java.lang.Object)
-     */
     @Override
     public void setProperty(String propertyName, Object value) {
-        // TODO Auto-generated method stub
-        
+        this.delegate.setProperty(propertyName, value);
     }
 
-    /* (non-Javadoc)
-     * @see javax.persistence.EntityManager#getProperties()
-     */
     @Override
     public Map<String, Object> getProperties() {
-        // TODO Auto-generated method stub
-        return null;
+        return this.delegate.getProperties();
     }
 
-
-    /* (non-Javadoc)
-     * @see javax.persistence.EntityManager#createNamedStoredProcedureQuery(java.lang.String)
-     */
     @Override
     public StoredProcedureQuery createNamedStoredProcedureQuery(String name) {
-        // TODO Auto-generated method stub
-        return null;
+        return this.delegate.createNamedStoredProcedureQuery(name);
     }
 
-    /* (non-Javadoc)
-     * @see javax.persistence.EntityManager#createStoredProcedureQuery(java.lang.String)
-     */
     @Override
     public StoredProcedureQuery createStoredProcedureQuery(String procedureName) {
-        // TODO Auto-generated method stub
-        return null;
+        return this.delegate.createStoredProcedureQuery(procedureName);
     }
 
-    /* (non-Javadoc)
-     * @see javax.persistence.EntityManager#createStoredProcedureQuery(java.lang.String, java.lang.Class[])
-     */
     @Override
     public StoredProcedureQuery createStoredProcedureQuery(String procedureName, Class... resultClasses) {
-        // TODO Auto-generated method stub
-        return null;
+        return this.delegate.createStoredProcedureQuery(procedureName, resultClasses);
     }
 
-    /* (non-Javadoc)
-     * @see javax.persistence.EntityManager#createStoredProcedureQuery(java.lang.String, java.lang.String[])
-     */
     @Override
     public StoredProcedureQuery createStoredProcedureQuery(String procedureName, String... resultSetMappings) {
-        // TODO Auto-generated method stub
-        return null;
+        return this.delegate.createStoredProcedureQuery(procedureName, resultSetMappings);
     }
 
-    /* (non-Javadoc)
-     * @see javax.persistence.EntityManager#joinTransaction()
-     */
     @Override
     public void joinTransaction() {
-        // TODO Auto-generated method stub
-        
+        this.delegate.joinTransaction();
     }
 
-    /* (non-Javadoc)
-     * @see javax.persistence.EntityManager#isJoinedToTransaction()
-     */
     @Override
     public boolean isJoinedToTransaction() {
-        // TODO Auto-generated method stub
-        return false;
+        return this.delegate.isJoinedToTransaction();
     }
 
-    /* (non-Javadoc)
-     * @see javax.persistence.EntityManager#unwrap(java.lang.Class)
-     */
     @Override
     public <T> T unwrap(Class<T> cls) {
-        // TODO Auto-generated method stub
-        return null;
+        return this.delegate.unwrap(cls);
     }
 
-    /* (non-Javadoc)
-     * @see javax.persistence.EntityManager#getDelegate()
-     */
     @Override
     public Object getDelegate() {
-        // TODO Auto-generated method stub
-        return null;
+        return this.delegate;
     }
 
-    /* (non-Javadoc)
-     * @see javax.persistence.EntityManager#getEntityManagerFactory()
-     */
     @Override
     public EntityManagerFactory getEntityManagerFactory() {
-        // TODO Auto-generated method stub
-        return null;
+        return this.delegate.getEntityManagerFactory();
     }
 
-    /* (non-Javadoc)
-     * @see javax.persistence.EntityManager#getCriteriaBuilder()
-     */
     @Override
     public CriteriaBuilder getCriteriaBuilder() {
-        // TODO Auto-generated method stub
-        return null;
+        return this.delegate.getCriteriaBuilder();
     }
 
-    /* (non-Javadoc)
-     * @see javax.persistence.EntityManager#getMetamodel()
-     */
     @Override
     public Metamodel getMetamodel() {
-        // TODO Auto-generated method stub
-        return null;
+        return this.delegate.getMetamodel();
     }
 
-    /* (non-Javadoc)
-     * @see org.hibernate.jpa.HibernateEntityManager#getSession()
-     */
     @Override
     public Session getSession() {
-        // TODO Auto-generated method stub
-        return null;
+        return this.delegate;
     }
 
-    /* (non-Javadoc)
-     * @see org.hibernate.Session#setHibernateFlushMode(org.hibernate.FlushMode)
-     */
     @Override
     public void setHibernateFlushMode(FlushMode flushMode) {
-        // TODO Auto-generated method stub
-        
+       this.delegate.setHibernateFlushMode(flushMode);
     }
 
-    /* (non-Javadoc)
-     * @see org.hibernate.Session#getHibernateFlushMode()
-     */
     @Override
     public FlushMode getHibernateFlushMode() {
-        // TODO Auto-generated method stub
-        return null;
+        return this.delegate.getHibernateFlushMode();
     }
 
-    /* (non-Javadoc)
-     * @see org.hibernate.Session#contains(java.lang.String, java.lang.Object)
-     */
     @Override
     public boolean contains(String entityName, Object object) {
-        // TODO Auto-generated method stub
-        return false;
+       return this.delegate.contains(entityName, object);
     }
 
-    /* (non-Javadoc)
-     * @see org.hibernate.Session#byMultipleIds(java.lang.Class)
-     */
     @Override
     public <T> MultiIdentifierLoadAccess<T> byMultipleIds(Class<T> entityClass) {
-        // TODO Auto-generated method stub
-        return null;
+        return this.delegate.byMultipleIds(entityClass);
     }
 
-    /* (non-Javadoc)
-     * @see org.hibernate.Session#byMultipleIds(java.lang.String)
-     */
     @Override
     public MultiIdentifierLoadAccess byMultipleIds(String entityName) {
-        // TODO Auto-generated method stub
-        return null;
+        return this.delegate.byMultipleIds(entityName);
     }
 
-    /* (non-Javadoc)
-     * @see org.hibernate.Session#createEntityGraph(java.lang.Class)
-     */
     @Override
     public <T> RootGraph<T> createEntityGraph(Class<T> rootType) {
-        // TODO Auto-generated method stub
-        return null;
+        return this.createEntityGraph(rootType);
     }
 
-    /* (non-Javadoc)
-     * @see org.hibernate.Session#createEntityGraph(java.lang.String)
-     */
     @Override
     public RootGraph<?> createEntityGraph(String graphName) {
-        // TODO Auto-generated method stub
-        return null;
+        return this.delegate.createEntityGraph(graphName);
     }
 
-    /* (non-Javadoc)
-     * @see org.hibernate.Session#getEntityGraph(java.lang.String)
-     */
     @Override
     public RootGraph<?> getEntityGraph(String graphName) {
-        // TODO Auto-generated method stub
-        return null;
+        return this.delegate.getEntityGraph(graphName);
     }
 
-    /* (non-Javadoc)
-     * @see org.hibernate.Session#createQuery(java.lang.String, java.lang.Class)
-     */
     @Override
     public <T> org.hibernate.query.Query<T> createQuery(String queryString, Class<T> resultType) {
-        // TODO Auto-generated method stub
-        return null;
+        return this.delegate.createQuery(queryString, resultType);
     }
 
-    /* (non-Javadoc)
-     * @see org.hibernate.Session#createQuery(javax.persistence.criteria.CriteriaQuery)
-     */
     @Override
     public <T> org.hibernate.query.Query<T> createQuery(CriteriaQuery<T> criteriaQuery) {
-        // TODO Auto-generated method stub
-        return null;
+        return this.delegate.createQuery(criteriaQuery);
     }
 
-    /* (non-Javadoc)
-     * @see org.hibernate.Session#createQuery(javax.persistence.criteria.CriteriaUpdate)
-     */
     @Override
     public org.hibernate.query.Query createQuery(CriteriaUpdate updateQuery) {
-        // TODO Auto-generated method stub
-        return null;
+        return this.delegate.createQuery(updateQuery);
     }
 
-    /* (non-Javadoc)
-     * @see org.hibernate.Session#createQuery(javax.persistence.criteria.CriteriaDelete)
-     */
     @Override
     public org.hibernate.query.Query createQuery(CriteriaDelete deleteQuery) {
-        // TODO Auto-generated method stub
-        return null;
+        return this.delegate.createQuery(deleteQuery);
     }
 
-    /* (non-Javadoc)
-     * @see org.hibernate.Session#createNamedQuery(java.lang.String, java.lang.Class)
-     */
     @Override
     public <T> org.hibernate.query.Query<T> createNamedQuery(String name, Class<T> resultType) {
-        // TODO Auto-generated method stub
-        return null;
+        return this.delegate.createNamedQuery(name, resultType);
     }
 
-    /* (non-Javadoc)
-     * @see javax.persistence.EntityManager#createNativeQuery(java.lang.String, java.lang.Class)
-     */
     @Override
     public NativeQuery createNativeQuery(String sqlString, Class resultClass) {
-        // TODO Auto-generated method stub
-        return null;
+        return this.delegate.createNativeQuery(sqlString, resultClass);
     }
 }

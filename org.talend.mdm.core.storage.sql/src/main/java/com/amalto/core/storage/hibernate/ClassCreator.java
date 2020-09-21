@@ -28,6 +28,7 @@ import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.ProvidedId;
+import org.hibernate.search.annotations.SortableField;
 import org.hibernate.search.annotations.Store;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedComplexTypeMetadata;
@@ -608,6 +609,9 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
                             annotations = new AnnotationsAttribute(cp, AnnotationsAttribute.visibleTag);
                             field.getFieldInfo().addAttribute(annotations);
                         }
+                        // Adds "SortableField" annotation for Hibernate search
+                        Annotation sortableAnnotation = new Annotation(SortableField.class.getName(), cp);
+                        annotations.addAnnotation(sortableAnnotation);
                         // Adds "DocumentId" annotation for Hibernate search
                         if (metadata.getContainingType().getSuperTypes().isEmpty()) { // Do this if key field is declared in
                                                                                       // containing type (DocumentId annotation

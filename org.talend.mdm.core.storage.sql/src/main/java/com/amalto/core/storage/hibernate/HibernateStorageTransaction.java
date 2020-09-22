@@ -292,7 +292,7 @@ class HibernateStorageTransaction extends StorageTransaction {
                             dumpTransactionContent(session, storage); // Dumps all content in the current transaction.
                         }
                     }
-                    if (transaction.getStatus() != TransactionStatus.ROLLED_BACK) {
+                    if (transaction.getStatus() != TransactionStatus.ROLLED_BACK && hasFailed) {
                         transaction.rollback();
                     } else {
                         LOGGER.warn("Transaction was already rollbacked."); //$NON-NLS-1$

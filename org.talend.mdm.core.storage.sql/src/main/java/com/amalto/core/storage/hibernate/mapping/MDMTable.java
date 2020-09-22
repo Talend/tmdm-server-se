@@ -11,6 +11,7 @@
 package com.amalto.core.storage.hibernate.mapping;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,6 +19,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -41,16 +43,15 @@ import org.hibernate.tool.schema.extract.spi.ColumnInformation;
 import org.hibernate.tool.schema.extract.spi.TableInformation;
 import org.talend.mdm.commmon.metadata.Types;
 
+import com.amalto.core.storage.datasource.RDBMSDataSource;
 import com.amalto.core.storage.hibernate.OracleCustomDialect;
 
-@SuppressWarnings({ "nls", "rawtypes", "deprecation", "serial", "unchecked" })
+@SuppressWarnings({ "rawtypes", "deprecation", "serial", "unchecked" })
 public class MDMTable extends Table {
 
     private static final String LONGTEXT = "longtext";
 
-//    private RDBMSDataSource dataSource;
-
-    private Connection connection;
+    private static RDBMSDataSource dataSource;
 
     private static final Logger LOGGER = LogManager.getLogger(MDMTable.class);
 
@@ -355,37 +356,10 @@ public class MDMTable extends Table {
         return defaultValue.replaceAll("\\(", "").replaceAll("\\)", "");
     }
 
-    private String executeSQLForSQLServer(String sql, List<String> parameters) throws Exception {
-        PreparedStatement statement = null;
-        String result = StringUtils.EMPTY;
-        try {
-            statement = connection.prepareStatement(sql);
-            for (int i = 0; i < parameters.size(); i++) {
-                statement.setString(i + 1, parameters.get(i));
-            }
-            ResultSet rs = statement.executeQuery();
-            while (rs.next()) {
-                result = rs.getString(1);
-            }
-        } finally {
-            try {
-                if (statement != null) {
-                    statement.close();
-                }
-            } catch (SQLException e) {
-                LOGGER.error("Unexpected error when closing connection.", e);
-            }
-        }
-        return result;
-    }
-//
-//    private String executeSQLForSQLServerqq(String sql, List<String> parameters) throws Exception {
-//        Connection connection = null;
+//    private String executeSQLForSQLServer(String sql, List<String> parameters) throws Exception {
 //        PreparedStatement statement = null;
 //        String result = StringUtils.EMPTY;
 //        try {
-//            Properties properties = dataSource.getAdvancedPropertiesIncludeUserInfo();
-//            connection = DriverManager.getConnection(dataSource.getConnectionURL(), properties);
 //            statement = connection.prepareStatement(sql);
 //            for (int i = 0; i < parameters.size(); i++) {
 //                statement.setString(i + 1, parameters.get(i));
@@ -399,15 +373,42 @@ public class MDMTable extends Table {
 //                if (statement != null) {
 //                    statement.close();
 //                }
-//                if (connection != null) {
-//                    connection.close();
-//                }
 //            } catch (SQLException e) {
 //                LOGGER.error("Unexpected error when closing connection.", e);
 //            }
 //        }
 //        return result;
 //    }
+//
+    private String executeSQLForSQLServer(String sql, List<String> parameters) throws Exception {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        String result = StringUtils.EMPTY;
+        try {
+            Properties properties = dataSource.getAdvancedPropertiesIncludeUserInfo();
+            connection = DriverManager.getConnection(dataSource.getConnectionURL(), properties);
+            statement = connection.prepareStatement(sql);
+            for (int i = 0; i < parameters.size(); i++) {
+                statement.setString(i + 1, parameters.get(i));
+            }
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                result = rs.getString(1);
+            }
+        } finally {
+            try {
+                if (statement != null) {
+                    statement.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                LOGGER.error("Unexpected error when closing connection.", e);
+            }
+        }
+        return result;
+    }
 
     private String convertDefaultValue(Dialect dialect, String sqlType, String defaultValue) {
         String defaultSQL = StringUtils.EMPTY;
@@ -426,10 +427,7 @@ public class MDMTable extends Table {
                 || sqlType.equalsIgnoreCase(Types.DATETIME) || sqlType.equalsIgnoreCase(Types.TIME);
     }
     
-    protected void setConnection(Connection connection) {
-        this.connection = connection;
+    public static void setDataSource(RDBMSDataSource dataSource) {
+        MDMTable.dataSource = dataSource;
     }
-//    public void setDataSource(RDBMSDataSource dataSource) {
-//        this.dataSource = dataSource;
-//    }
 }

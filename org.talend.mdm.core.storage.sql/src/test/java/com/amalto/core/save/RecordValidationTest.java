@@ -566,6 +566,7 @@ public class RecordValidationTest extends TestCase {
         createData("Product", false, xmlFamily1);
         validateRecord("Product", false, false, xmlForAutoIncrement);
         createData("Product", false, xmlFamily2);
+        masterStorage.begin();
         StorageResults results = masterStorage.fetch(qb.getSelect());
         try {
             assertEquals(2, results.getSize());
@@ -579,13 +580,17 @@ public class RecordValidationTest extends TestCase {
                 }
             }
             assertTrue((id2 - id1) == 1);
+            masterStorage.commit();
         } finally {
             results.close();
         }
+        masterStorage.end();
+
         // STAGING
         createData("Product", true, xmlFamily1);
         validateRecord("Product", true, false, xmlForAutoIncrement);
         createData("Product", true, xmlFamily2);
+        stagingStorage.begin();
         results = stagingStorage.fetch(qb.getSelect());
         try {
             assertEquals(2, results.getSize());
@@ -599,9 +604,11 @@ public class RecordValidationTest extends TestCase {
                 }
             }
             assertTrue((id2 - id1) == 1);
+            stagingStorage.commit();
         } finally {
             results.close();
         }
+        stagingStorage.end();
     }
 
     // Validate record contains wrong xml node(for existing record)

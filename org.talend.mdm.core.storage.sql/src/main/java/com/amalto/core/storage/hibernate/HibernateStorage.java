@@ -151,6 +151,7 @@ import com.amalto.core.storage.StorageType;
 import com.amalto.core.storage.datasource.DataSource;
 import com.amalto.core.storage.datasource.DataSourceDefinition;
 import com.amalto.core.storage.datasource.RDBMSDataSource;
+import com.amalto.core.storage.hibernate.mapping.MDMTable;
 import com.amalto.core.storage.prepare.FullTextIndexCleaner;
 import com.amalto.core.storage.prepare.JDBCStorageCleaner;
 import com.amalto.core.storage.prepare.JDBCStorageInitializer;
@@ -299,6 +300,7 @@ public class HibernateStorage implements Storage {
                     + "with at least another one other storage type, please review datasource configuration."); //$NON-NLS-1$
         }
         this.dataSource = (RDBMSDataSource) dataSource;
+        MDMTable.setDataSource(this.dataSource);
 //        internalInit();
 //        configuration = new Configuration();
     }

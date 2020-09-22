@@ -79,31 +79,26 @@ public class MDMGroupedSchemaMigratorImpl extends GroupedSchemaMigratorImpl {
             );
             final NameSpaceTablesInformation tables = existingDatabase.getTablesInformation( namespace );
 
-            final JdbcContext jdbcContext = tool.resolveJdbcContext(options.getConfigurationValues());
-            final DdlTransactionIsolator ddlTransactionIsolator = tool.getDdlTransactionIsolator(jdbcContext);
-            try {
-                for ( Table table : namespace.getTables() ) {
-                    if ( schemaFilter.includeTable( table ) && table.isPhysicalTable() ) {
-                        checkExportIdentifier( table, exportIdentifiers );
-                        final TableInformation tableInformation = tables.getTableInformation( table );
-                        if ( tableInformation == null ) {
-                            LOGGER.tableNotFound(table.getName());
-                            createTable( table, dialect, metadata, formatter, options, targets );
+//            final JdbcContext jdbcContext = tool.resolveJdbcContext(options.getConfigurationValues());
+//            final DdlTransactionIsolator ddlTransactionIsolator = tool.getDdlTransactionIsolator(jdbcContext);
+            for ( Table table : namespace.getTables() ) {
+                if ( schemaFilter.includeTable( table ) && table.isPhysicalTable() ) {
+                    checkExportIdentifier( table, exportIdentifiers );
+                    final TableInformation tableInformation = tables.getTableInformation( table );
+                    if ( tableInformation == null ) {
+                        LOGGER.tableNotFound(table.getName());
+                        createTable( table, dialect, metadata, formatter, options, targets );
+                    }
+                    else if ( tableInformation.isPhysicalTable() ) {
+                        tablesInformation.addTableInformation( tableInformation );
+                        MDMTable mdmTable = new MDMTable(namespace, table.getNameIdentifier(), table.getSubselect(), table.isAbstract());
+//                            mdmTable.setConnection(ddlTransactionIsolator.getIsolatedConnection());
+                        for (Iterator iterator = table.getColumnIterator(); iterator.hasNext();) {
+                            mdmTable.addColumn((Column) iterator.next());
                         }
-                        else if ( tableInformation.isPhysicalTable() ) {
-                            tablesInformation.addTableInformation( tableInformation );
-                            MDMTable mdmTable = new MDMTable(namespace, table.getNameIdentifier(), table.getSubselect(), table.isAbstract());
-                            mdmTable.setConnection(ddlTransactionIsolator.getIsolatedConnection());
-                            for (Iterator iterator = table.getColumnIterator(); iterator.hasNext();) {
-                                mdmTable.addColumn((Column) iterator.next());
-                            }
-                            migrateTable( mdmTable, tableInformation, dialect, metadata, formatter, options, targets );
-                        }
+                        migrateTable( mdmTable, tableInformation, dialect, metadata, formatter, options, targets );
                     }
                 }
-            }
-            finally {
-                ddlTransactionIsolator.release();
             }
 
             for ( Table table : namespace.getTables() ) {

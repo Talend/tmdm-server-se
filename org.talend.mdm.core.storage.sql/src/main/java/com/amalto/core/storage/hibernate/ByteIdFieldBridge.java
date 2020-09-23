@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2019 Talend Inc. - www.talend.com
+ * Copyright (C) 2006-2020 Talend Inc. - www.talend.com
  *
  * This source code is available under agreement available at
  * %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -13,15 +13,15 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.lucene.document.Document;
 
-public class IntegerIdFieldBridge extends ToLowerCaseFieldBridge {
-    private static final Logger LOGGER = LogManager.getLogger(IntegerIdFieldBridge.class);
+public class ByteIdFieldBridge extends ToLowerCaseFieldBridge {
+    private static final Logger LOGGER = LogManager.getLogger(ByteIdFieldBridge.class);
 
     @Override
     public Object get(String name, Document document) {
         try {
-            return Integer.valueOf(document.get(name));
+            return Byte.valueOf(document.get(name));
         } catch (NumberFormatException e) {
-            LOGGER.error("Error occured while trying to cast field to Integer"); //$NON-NLS-1$
+            LOGGER.error("Error occured while trying to cast field to Byte"); //$NON-NLS-1$
             return document.get(name);
         }
     }

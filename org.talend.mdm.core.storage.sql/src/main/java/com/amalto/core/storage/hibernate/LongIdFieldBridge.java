@@ -19,7 +19,7 @@ public class LongIdFieldBridge extends ToLowerCaseFieldBridge {
     @Override
     public Object get(String name, Document document) {
         try {
-            return new Long(document.get(name));
+            return Long.valueOf(document.get(name));
         } catch (NumberFormatException e) {
             LOGGER.error("Error occured while trying to cast field to Long"); //$NON-NLS-1$
             return document.get(name);

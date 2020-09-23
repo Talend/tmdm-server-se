@@ -12,6 +12,7 @@
 package com.amalto.core.storage.hibernate;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -27,9 +28,17 @@ import javax.xml.XMLConstants;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
+import org.apache.lucene.index.DocValues;
+import org.apache.lucene.index.LeafReaderContext;
+import org.apache.lucene.index.SortedDocValues;
+import org.apache.lucene.search.FieldComparator;
+import org.apache.lucene.search.FieldComparator.NumericComparator;
+import org.apache.lucene.search.FieldComparatorSource;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.SimpleFieldComparator;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
+import org.apache.lucene.util.Bits;
 import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
@@ -617,14 +626,28 @@ class FullTextQueryHandler extends AbstractQueryHandler {
         TypedExpression field = orderBy.getExpression();
         if (field instanceof Field) {
             FieldMetadata fieldMetadata = ((Field) field).getFieldMetadata();
-            SortField sortField = new SortField(fieldMetadata.getName(),
-                    getSortType(fieldMetadata),
-                    orderBy.getDirection() == OrderBy.Direction.DESC);
+            SortField sortField = getSortField(fieldMetadata, orderBy);
             query.setSort(new Sort(sortField));
             return null;
         } else {
             throw new NotImplementedException("No support for order by for full text search on non-field.");
         }
+    }
+
+    private static SortField getSortField(FieldMetadata fieldMetadata, OrderBy orderBy) {
+        SortField sortField = null;
+        TypeMetadata fieldType = fieldMetadata.getType();
+        String field = fieldMetadata.getName();
+        String type = MetadataUtils.getSuperConcreteType(fieldType).getName();
+        boolean reverse = orderBy.getDirection() == OrderBy.Direction.DESC;
+        if (Types.UNSIGNED_SHORT.equals(type) || Types.SHORT.equals(type)) {
+            sortField = new SortField(field, new ShortComparatorSource(), reverse);
+        } else if (Types.BYTE.equals(type) || Types.UNSIGNED_BYTE.equals(type)) {
+            sortField = new SortField(field, new ByteComparatorSource(), reverse);
+        } else {
+            sortField = new SortField(field, getSortType(fieldMetadata), reverse);
+        }
+        return sortField;
     }
 
     private static SortField.Type getSortType(FieldMetadata fieldMetadata) {
@@ -902,6 +925,206 @@ class FullTextQueryHandler extends AbstractQueryHandler {
                 }
             }
             return complexTypeMetadataSet;
+        }
+    }
+
+    private static class ShortComparator extends SimpleFieldComparator<Short> {
+        private final Short missingValue;
+        private final String field;
+        private Bits docsWithField;
+        private SortedDocValues currentReaderValues;
+        private final short[] values;
+        private short bottom;
+        private short topValue;
+
+        @Override
+        public void doSetNextReader(LeafReaderContext context) throws IOException {
+          currentReaderValues = DocValues.getSorted(context.reader(), field);
+          if (missingValue != null) {
+            docsWithField = DocValues.getDocsWithField(context.reader(), field);
+            // optimization to remove unneeded checks on the bit interface:
+            if (docsWithField instanceof Bits.MatchAllBits) {
+              docsWithField = null;
+            }
+          } else {
+            docsWithField = null;
+          }
+        }
+
+        /**
+         * Creates a new comparator based on {@link Short#compare} for {@code numHits}. When a document has no value for
+         * the field, {@code missingValue} is substituted.
+         */
+        public ShortComparator(int numHits, String field, Short missingValue) {
+            this.field = field;
+            this.missingValue = missingValue;
+            this.values = new short[numHits];
+        }
+
+        @Override
+        public int compare(int slot1, int slot2) {
+            return Short.compare(values[slot1], values[slot2]);
+        }
+
+        @Override
+        public int compareBottom(int doc) {
+            short v2 = getShortValue(currentReaderValues.get(doc).bytes);
+            if (docsWithField != null && v2 == 0 && !docsWithField.get(doc)) {
+                v2 = missingValue;
+            }
+
+            return Short.compare(bottom, v2);
+        }
+
+        @Override
+        public void copy(int slot, int doc) {
+            short v2 = getShortValue(currentReaderValues.get(doc).bytes);
+            if (docsWithField != null && v2 == 0 && !docsWithField.get(doc)) {
+                v2 = missingValue;
+            }
+
+            values[slot] = v2;
+        }
+
+        @Override
+        public void setBottom(final int bottom) {
+            this.bottom = values[bottom];
+        }
+
+        @Override
+        public void setTopValue(Short value) {
+            topValue = value;
+        }
+
+        @Override
+        public Short value(int slot) {
+            return Short.valueOf(values[slot]);
+        }
+
+        @Override
+        public int compareTop(int doc) {
+            short docValue = getShortValue(currentReaderValues.get(doc).bytes);
+            if (docsWithField != null && docValue == 0 && !docsWithField.get(doc)) {
+                docValue = missingValue;
+            }
+            return Short.compare(topValue, docValue);
+        }
+
+        private short getShortValue(byte[] b) {
+            if (b == null || b.length == 0) {
+                return (short) Byte.MIN_VALUE;
+            } else if (b.length == 1) {
+                return (short) (b[0] & 0xff);
+            } else {
+                return (short) ((b[1] << 8) | b[0] & 0xff);
+            }
+        }
+    }
+
+    private static class ByteComparator extends SimpleFieldComparator<Byte> {
+        private final Byte missingValue;
+        private final String field;
+        private Bits docsWithField;
+        private SortedDocValues currentReaderValues;
+        private final byte[] values;
+        private byte bottom;
+        private byte topValue;
+
+        @Override
+        public void doSetNextReader(LeafReaderContext context) throws IOException {
+          currentReaderValues = DocValues.getSorted(context.reader(), field);
+          if (missingValue != null) {
+            docsWithField = DocValues.getDocsWithField(context.reader(), field);
+            // optimization to remove unneeded checks on the bit interface:
+            if (docsWithField instanceof Bits.MatchAllBits) {
+              docsWithField = null;
+            }
+          } else {
+            docsWithField = null;
+          }
+        }
+
+        /**
+         * Creates a new comparator based on {@link Short#compare} for {@code numHits}. When a document has no value for
+         * the field, {@code missingValue} is substituted.
+         */
+        public ByteComparator(int numHits, String field, Byte missingValue) {
+            this.field = field;
+            this.missingValue = missingValue;
+            this.values = new byte[numHits];
+        }
+
+        @Override
+        public int compare(int slot1, int slot2) {
+            return Byte.compare(values[slot1], values[slot2]);
+        }
+
+        @Override
+        public int compareBottom(int doc) {
+            byte v2 = getByteValue(currentReaderValues.get(doc).bytes);
+            if (docsWithField != null && v2 == 0 && !docsWithField.get(doc)) {
+                v2 = missingValue;
+            }
+
+            return Byte.compare(bottom, v2);
+        }
+
+        @Override
+        public void copy(int slot, int doc) {
+            byte v2 = getByteValue(currentReaderValues.get(doc).bytes);
+            if (docsWithField != null && v2 == 0 && !docsWithField.get(doc)) {
+                v2 = missingValue;
+            }
+
+            values[slot] = v2;
+        }
+
+        @Override
+        public void setBottom(final int bottom) {
+            this.bottom = values[bottom];
+        }
+
+        @Override
+        public void setTopValue(Byte value) {
+            topValue = value;
+        }
+
+        @Override
+        public Byte value(int slot) {
+            return Byte.valueOf(values[slot]);
+        }
+
+        @Override
+        public int compareTop(int doc) {
+            byte docValue = getByteValue(currentReaderValues.get(doc).bytes);
+            if (docsWithField != null && docValue == 0 && !docsWithField.get(doc)) {
+                docValue = missingValue;
+            }
+            return Byte.compare(topValue, docValue);
+        }
+
+        private byte getByteValue(byte[] b) {
+            if (b == null || b.length == 0) {
+                return Byte.MIN_VALUE;
+            } else {
+                return b[0];
+            }
+        }
+    }
+
+    private static class ShortComparatorSource extends FieldComparatorSource {
+
+        @Override
+        public FieldComparator<?> newComparator(String fieldname, int numHits, int sortPos, boolean reversed) throws IOException {
+            return new ShortComparator(numHits, fieldname, Short.MIN_VALUE);
+        }
+    }
+
+    private static class ByteComparatorSource extends FieldComparatorSource {
+
+        @Override
+        public FieldComparator<?> newComparator(String fieldname, int numHits, int sortPos, boolean reversed) throws IOException {
+            return new ByteComparator(numHits, fieldname, Byte.MIN_VALUE);
         }
     }
 }

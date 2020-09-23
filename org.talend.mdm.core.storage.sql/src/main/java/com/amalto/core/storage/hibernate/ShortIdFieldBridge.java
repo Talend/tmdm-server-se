@@ -19,7 +19,7 @@ public class ShortIdFieldBridge extends ToLowerCaseFieldBridge {
     @Override
     public Object get(String name, Document document) {
         try {
-            return new Short(document.get(name));
+            return Short.valueOf(document.get(name));
         } catch (NumberFormatException e) {
             LOGGER.error("Error occured while trying to cast field to Short"); //$NON-NLS-1$
             return document.get(name);

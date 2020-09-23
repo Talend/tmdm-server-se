@@ -630,14 +630,13 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
                                     if (!metadata.isMany()) {
                                         if (Types.INTEGERS.contains(type.getName())) {
                                             fieldBridge.addMemberValue("impl", new ClassMemberValue(IntegerIdFieldBridge.class.getName(), cp)); //$NON-NLS-1$
-                                        }
-                                        else if (Types.LONGS.contains(type.getName())) {
+                                        } else if (Types.LONGS.contains(type.getName())) {
                                             fieldBridge.addMemberValue("impl", new ClassMemberValue(LongIdFieldBridge.class.getName(), cp)); //$NON-NLS-1$
-                                        }
-                                        else if (Types.SHORTS.contains(type.getName())) {
+                                        } else if (Types.SHORTS.contains(type.getName())) {
                                             fieldBridge.addMemberValue("impl", new ClassMemberValue(ShortIdFieldBridge.class.getName(), cp)); //$NON-NLS-1$
-                                        }
-                                        else {
+                                        } else if (Types.BYTES.contains(type.getName())) {
+                                            fieldBridge.addMemberValue("impl", new ClassMemberValue(ByteIdFieldBridge.class.getName(), cp)); //$NON-NLS-1$
+                                        } else {
                                             if (!Types.STRING.equals(type.getName())) {
                                                 LOGGER.error("Unexpected error : the id type doesn't match any compatible type"); //$NON-NLS-1$
                                             }

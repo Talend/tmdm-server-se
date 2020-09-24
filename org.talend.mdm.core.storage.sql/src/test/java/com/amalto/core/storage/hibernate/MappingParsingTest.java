@@ -9,23 +9,23 @@
  */
 package com.amalto.core.storage.hibernate;
 
-import static com.amalto.core.query.user.UserQueryBuilder.*;
+import static com.amalto.core.query.user.UserQueryBuilder.isNull;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.nio.channels.FileChannel;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.amalto.core.storage.StorageType;
-import junit.framework.TestCase;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
@@ -38,8 +38,11 @@ import com.amalto.core.query.user.UserQueryBuilder;
 import com.amalto.core.server.MockServerLifecycle;
 import com.amalto.core.server.ServerContext;
 import com.amalto.core.storage.Storage;
+import com.amalto.core.storage.StorageType;
 import com.amalto.core.storage.datasource.DataSourceDefinition;
 import com.amalto.core.storage.datasource.RDBMSDataSource;
+
+import junit.framework.TestCase;
 
 public class MappingParsingTest extends TestCase {
 
@@ -72,6 +75,11 @@ public class MappingParsingTest extends TestCase {
     }
 
     public void testInheritanceIndexLength() throws Exception {
+        // clean previous content if exists
+        String tmpDir = System.getProperty("java.io.tmpdir"); //$NON-NLS-1$
+        String filename = tmpDir + File.separator + "MappingParsingTest_STAGING_H2.ddl"; //$NON-NLS-1$
+        FileChannel.open(Paths.get(filename), StandardOpenOption.WRITE).truncate(0).close();
+
         // Loads data model
         MetadataRepository repository = new MetadataRepository();
         InputStream dataModel = MappingParsingTest.class.getResourceAsStream("MappingParsingTest_1.xsd");//$NON-NLS-1$
@@ -92,16 +100,13 @@ public class MappingParsingTest extends TestCase {
         // Storage preparation created a DDL file in java.io.tmpdir, compares it to expected DDL.
         InputStream expectedDataInputStream = this.getClass().getResourceAsStream("MappingParsingResult.ddl"); //$NON-NLS-1$
         assertNotNull(expectedDataInputStream);
-        String tmpDir = System.getProperty("java.io.tmpdir"); //$NON-NLS-1$
-        String filename = tmpDir + File.separator + "MappingParsingTest_STAGING_H2.ddl"; //$NON-NLS-1$
         InputStream resultDataInputStream = new FileInputStream(new File(filename));
         assertNotNull(resultDataInputStream);
         String[] extectedSQLs = IOUtils.toString(expectedDataInputStream).split("\n"); //$NON-NLS-1$
         String[] resultSQLs = IOUtils.toString(resultDataInputStream).split("\n"); //$NON-NLS-1$
         assertEquals(extectedSQLs.length, resultSQLs.length);
         for (int i = 0; i < extectedSQLs.length; i++) {
-            assertEquals(StringUtils.replace(extectedSQLs[i], "\r", ""), resultSQLs[i]); //$NON-NLS-1$//$NON-NLS-2$
+            assertEquals(StringUtils.replace(extectedSQLs[i], "\r", ""), StringUtils.replace(resultSQLs[i], "\r", "")); //$NON-NLS-1$//$NON-NLS-2$
         }
     }
-
 }

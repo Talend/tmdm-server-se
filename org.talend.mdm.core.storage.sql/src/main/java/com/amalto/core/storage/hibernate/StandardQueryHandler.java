@@ -480,7 +480,7 @@ class StandardQueryHandler extends AbstractQueryHandler {
     @Override
     public StorageResults visit(final Field field) {
         final FieldMetadata userFieldMetadata = field.getFieldMetadata();
-        ComplexTypeMetadata containingType = getContainingType(userFieldMetadata);
+        final ComplexTypeMetadata containingType = getContainingType(userFieldMetadata);
         final Set<String> aliases = getAliases(containingType, field);
         userFieldMetadata.accept(new DefaultMetadataVisitor<Void>() {
 
@@ -497,7 +497,14 @@ class StandardQueryHandler extends AbstractQueryHandler {
             public Void visit(SimpleTypeFieldMetadata simpleField) {
                 if (!simpleField.isMany()) {
                     for (String alias : aliases) {
-                        projectionList.add(Projections.property(alias + '.' + simpleField.getName()));
+                        // As composite key as FK,change to alias.entity_id.key
+                        if (simpleField.isKey()
+                                && simpleField.getContainingType().getKeyFields().size() > 1
+                                && !containingType.getName().equals(simpleField.getContainingType().getName())) {
+                            projectionList.add(Projections.property(alias + '.' + (simpleField.getContainingType().getName() + "_ID.").toLowerCase() + simpleField.getName()));
+                        } else {
+                            projectionList.add(Projections.property(alias + '.' + simpleField.getName()));
+                        }
                     }
                 } else {
                     projectionList.add(new ManyFieldProjection(aliases, simpleField, resolver, (RDBMSDataSource) storage

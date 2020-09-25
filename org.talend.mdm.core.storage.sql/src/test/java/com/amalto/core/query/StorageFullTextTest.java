@@ -186,21 +186,21 @@ public class StorageFullTextTest extends StorageTestCase {
                                 country,
                                 "<Country><id>11</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France10</name></Country>"));
 
-        allRecords.add(factory.read(repository, country,
-                "<Country><id>12</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>Foances</name></Country>"));
+        allRecords.add(factory
+                        .read(repository,
+                                country,
+                                "<Country><id>12</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>Foances</name></Country>"));
 
         allRecords
                 .add(factory
                         .read(repository,
                                 countryLong,
                                 "<CountryLong><id>1</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France1</name></CountryLong>"));
-
         allRecords
                 .add(factory
                         .read(repository,
                                 countryLong,
                                 "<CountryLong><id>2</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France2</name></CountryLong>"));
-
         allRecords
                 .add(factory
                         .read(repository,
@@ -212,23 +212,64 @@ public class StorageFullTextTest extends StorageTestCase {
                         .read(repository,
                                 countryShort,
                                 "<CountryShort><id>1</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France1</name></CountryShort>"));
-
         allRecords
                 .add(factory
                         .read(repository,
                                 countryShort,
                                 "<CountryShort><id>2</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France2</name></CountryShort>"));
-
         allRecords
                 .add(factory
                         .read(repository,
                                 countryShort,
                                 "<CountryShort><id>3</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France3</name></CountryShort>"));
+
         allRecords
                 .add(factory
                         .read(repository,
-                                countryShort,
-                                "<CountryShort><id>4</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France3</name></CountryShort>"));
+                                countryFloat,
+                                "<CountryFloat><id>1.1</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France1</name></CountryFloat>"));
+        allRecords
+                .add(factory
+                        .read(repository,
+                                countryFloat,
+                                "<CountryFloat><id>2.2</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France2</name></CountryFloat>"));
+        allRecords
+                .add(factory
+                        .read(repository,
+                                countryFloat,
+                                "<CountryFloat><id>3.3</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France3</name></CountryFloat>"));
+
+        allRecords
+                .add(factory
+                        .read(repository,
+                                countryDouble,
+                                "<CountryDouble><id>1.1</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France1</name></CountryDouble>"));
+        allRecords
+                .add(factory
+                        .read(repository,
+                                countryDouble,
+                                "<CountryDouble><id>2.2</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France2</name></CountryDouble>"));
+        allRecords
+                .add(factory
+                        .read(repository,
+                                countryDouble,
+                                "<CountryDouble><id>3.3</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France3</name></CountryDouble>"));
+
+        allRecords
+                .add(factory
+                        .read(repository,
+                                countryByte,
+                                "<CountryByte><id>1</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France1</name></CountryByte>"));
+        allRecords
+                .add(factory
+                        .read(repository,
+                                countryByte,
+                                "<CountryByte><id>2</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:02</creationTime><name>France2</name></CountryByte>"));
+        allRecords
+                .add(factory
+                        .read(repository,
+                                countryByte,
+                                "<CountryByte><id>3</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:03</creationTime><name>France3</name></CountryByte>"));
 
         allRecords
                 .add(factory
@@ -637,12 +678,12 @@ public class StorageFullTextTest extends StorageTestCase {
      * 
      * @throws Exception
      */
-    public void testFullSearchCountry() throws Exception {
+    public void testFullSearchCountryInt() throws Exception {
         UserQueryBuilder qb = from(country).select(prepareSelectCountryFields(country)).where(fullText("France"));
         StorageResults results = storage.fetch(qb.getSelect());
         try {
             // debug code for unstable case
-            for(DataRecord dataRecord: results){
+            for (DataRecord dataRecord : results) {
                 assertTrue(String.valueOf(dataRecord.get("name")).startsWith("France"));
             }
             assertEquals(11, results.getCount());
@@ -657,12 +698,14 @@ public class StorageFullTextTest extends StorageTestCase {
      * @throws Exception
      */
     public void testFullSearchCountryLong() throws Exception {
-        UserQueryBuilder qb = from(countryLong).select(prepareSelectCountryLongFields(countryLong)).where(fullText("F"));
-        qb.limit(2);
+        UserQueryBuilder qb = from(countryLong).select(prepareSelectCountryFields(countryLong)).where(fullText("F")).limit(2);
         StorageResults results = storage.fetch(qb.getSelect());
         try {
             assertEquals(3, results.getCount());
             assertEquals(2, results.getSize());
+            // Default order by id ASC, first result is: 1
+            Long id = (Long) results.iterator().next().get(countryLong.getField("id"));
+            assertEquals(1L, id.longValue());
         } finally {
             results.close();
         }
@@ -674,12 +717,62 @@ public class StorageFullTextTest extends StorageTestCase {
      * @throws Exception
      */
     public void testFullSearchCountryShort() throws Exception {
-        UserQueryBuilder qb = from(countryShort).select(prepareSelectCountryShortFields(countryShort)).where(fullText("F"));
-        qb.limit(2);
+        UserQueryBuilder qb = from(countryShort).select(prepareSelectCountryFields(countryShort)).where(fullText("F")).limit(2);
         StorageResults results = storage.fetch(qb.getSelect());
         try {
-            assertEquals(4, results.getCount());
+            assertEquals(3, results.getCount());
             assertEquals(2, results.getSize());
+            // Default order by id ASC, first result is: 1
+            Short id = (Short) results.iterator().next().get(countryShort.getField("id"));
+            assertEquals(1, id.intValue());
+        } finally {
+            results.close();
+        }
+    }
+
+    public void testFullSearchCountryFloat() throws Exception {
+        UserQueryBuilder qb = from(countryFloat).select(prepareSelectCountryFields(countryFloat))
+                .where(fullText("F")).orderBy(countryFloat.getField("id"), OrderBy.Direction.DESC)
+                .limit(2);
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(3, results.getCount());
+            assertEquals(2, results.getSize());
+            // Order by id DESC, first result is: 3.3
+            Float id = (Float) results.iterator().next().get(countryFloat.getField("id"));
+            assertEquals(3.3F, id.floatValue());
+        } finally {
+            results.close();
+        }
+    }
+
+    public void testFullSearchCountryDouble() throws Exception {
+        UserQueryBuilder qb = from(countryDouble).select(prepareSelectCountryFields(countryDouble))
+                .where(fullText("F")).orderBy(countryDouble.getField("id"), OrderBy.Direction.DESC)
+                .limit(2);
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(3, results.getCount());
+            assertEquals(2, results.getSize());
+            // Order by id DESC, first result is: 3.3
+            Double id = (Double) results.iterator().next().get(countryDouble.getField("id"));
+            assertEquals(3.3D, id.doubleValue());
+        } finally {
+            results.close();
+        }
+    }
+
+    public void testFullSearchCountryByte() throws Exception {
+        UserQueryBuilder qb = from(countryByte).select(prepareSelectCountryFields(countryByte))
+                .where(fullText("F")).orderBy(countryByte.getField("id"), OrderBy.Direction.DESC)
+                .limit(2);
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(3, results.getCount());
+            assertEquals(2, results.getSize());
+            // Order by id DESC, first result is: 3
+            Byte id = (Byte) results.iterator().next().get(countryByte.getField("id"));
+            assertEquals(3, id.intValue());
         } finally {
             results.close();
         }
@@ -700,28 +793,6 @@ public class StorageFullTextTest extends StorageTestCase {
         List<FieldMetadata> results = new ArrayList<>();
         results.add(supplier.getField("Id"));
         results.add(supplier.getField("Name"));
-        return results;
-    }
-    
-    private List<FieldMetadata> prepareSelectCountryShortFields(ComplexTypeMetadata countryShort) {
-        List<FieldMetadata> results = new ArrayList<>();
-        results.add(countryShort.getField("id"));
-        results.add(countryShort.getField("creationDate"));
-        results.add(countryShort.getField("creationTime"));
-        results.add(countryShort.getField("name"));
-        results.add(countryShort.getField("notes/note"));
-        results.add(countryShort.getField("notes/comment"));
-        return results;
-    }
-    
-    private List<FieldMetadata> prepareSelectCountryLongFields(ComplexTypeMetadata countryLong) {
-        List<FieldMetadata> results = new ArrayList<>();
-        results.add(countryLong.getField("id"));
-        results.add(countryLong.getField("creationDate"));
-        results.add(countryLong.getField("creationTime"));
-        results.add(countryLong.getField("name"));
-        results.add(countryLong.getField("notes/note"));
-        results.add(countryLong.getField("notes/comment"));
         return results;
     }
     

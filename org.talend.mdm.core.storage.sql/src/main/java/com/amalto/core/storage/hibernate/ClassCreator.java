@@ -27,9 +27,16 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.NumericField;
 import org.hibernate.search.annotations.ProvidedId;
 import org.hibernate.search.annotations.SortableField;
 import org.hibernate.search.annotations.Store;
+import org.hibernate.search.bridge.builtin.ByteBridge;
+import org.hibernate.search.bridge.builtin.DoubleBridge;
+import org.hibernate.search.bridge.builtin.FloatBridge;
+import org.hibernate.search.bridge.builtin.IntegerBridge;
+import org.hibernate.search.bridge.builtin.LongBridge;
+import org.hibernate.search.bridge.builtin.ShortBridge;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
@@ -65,6 +72,7 @@ import javassist.bytecode.annotation.AnnotationMemberValue;
 import javassist.bytecode.annotation.ClassMemberValue;
 import javassist.bytecode.annotation.EnumMemberValue;
 
+@SuppressWarnings("deprecation")
 class ClassCreator extends DefaultMetadataVisitor<Void> {
 
     public static final String PACKAGE_PREFIX = "org.talend.mdm.storage.hibernate."; //$NON-NLS-1$
@@ -624,18 +632,21 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
                                     fieldBridge.addMemberValue("impl", new ClassMemberValue(ToLowerCaseFieldBridge.class.getName(), cp)); //$NON-NLS-1$
     
                                     TypeMetadata type = metadata.getType();
-                                    //checking if the type is an integer, Long or Short
-                                    //if that's the case assigning a specific field bridge
+                                    // Add Bridge for numeric type fields
                                     type = MetadataUtils.getSuperConcreteType(type);
                                     if (!metadata.isMany()) {
                                         if (Types.INTEGERS.contains(type.getName())) {
-                                            fieldBridge.addMemberValue("impl", new ClassMemberValue(IntegerIdFieldBridge.class.getName(), cp)); //$NON-NLS-1$
+                                            fieldBridge.addMemberValue("impl", new ClassMemberValue(IntegerBridge.class.getName(), cp)); //$NON-NLS-1$
                                         } else if (Types.LONGS.contains(type.getName())) {
-                                            fieldBridge.addMemberValue("impl", new ClassMemberValue(LongIdFieldBridge.class.getName(), cp)); //$NON-NLS-1$
+                                            fieldBridge.addMemberValue("impl", new ClassMemberValue(LongBridge.class.getName(), cp)); //$NON-NLS-1$
+                                        } else if (Types.DOUBLES.contains(type.getName())) {
+                                            fieldBridge.addMemberValue("impl", new ClassMemberValue(DoubleBridge.class.getName(), cp)); //$NON-NLS-1$
+                                        } else if (Types.FLOAT.equals(type.getName())) {
+                                            fieldBridge.addMemberValue("impl", new ClassMemberValue(FloatBridge.class.getName(), cp)); //$NON-NLS-1$
                                         } else if (Types.SHORTS.contains(type.getName())) {
-                                            fieldBridge.addMemberValue("impl", new ClassMemberValue(ShortIdFieldBridge.class.getName(), cp)); //$NON-NLS-1$
+                                            fieldBridge.addMemberValue("impl", new ClassMemberValue(ShortBridge.class.getName(), cp)); //$NON-NLS-1$
                                         } else if (Types.BYTES.contains(type.getName())) {
-                                            fieldBridge.addMemberValue("impl", new ClassMemberValue(ByteIdFieldBridge.class.getName(), cp)); //$NON-NLS-1$
+                                            fieldBridge.addMemberValue("impl", new ClassMemberValue(ByteBridge.class.getName(), cp)); //$NON-NLS-1$
                                         } else {
                                             if (!Types.STRING.equals(type.getName())) {
                                                 LOGGER.error("Unexpected error : the id type doesn't match any compatible type"); //$NON-NLS-1$
@@ -773,7 +784,7 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
         @Override
         public void handle(AnnotationsAttribute annotations, ConstPool pool) {
             super.handle(annotations, pool);
-            Annotation numericAnnotation = new Annotation(org.hibernate.search.annotations.NumericField.class.getName(), pool);
+            Annotation numericAnnotation = new Annotation(NumericField.class.getName(), pool);
             annotations.addAnnotation(numericAnnotation);
         }
     }

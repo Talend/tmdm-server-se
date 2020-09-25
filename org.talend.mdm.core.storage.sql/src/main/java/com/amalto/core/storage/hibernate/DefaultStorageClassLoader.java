@@ -212,6 +212,7 @@ public class DefaultStorageClassLoader extends StorageClassLoader {
             addProperty(document, sessionFactoryElement, "hibernate.search.default.sourceBase", indexBase + '/' + storageName); //$NON-NLS-1$
             addProperty(document, sessionFactoryElement, "hibernate.search.default.source", ""); //$NON-NLS-1$ //$NON-NLS-2$
             addProperty(document, sessionFactoryElement, "hibernate.search.default.exclusive_index_use", "false"); //$NON-NLS-1$ //$NON-NLS-2$
+            addProperty(document, sessionFactoryElement, "hibernate.search.index_uninverting_allowed", "true"); //$NON-NLS-1$ //$NON-NLS-2$
             addProperty(document, sessionFactoryElement, "hibernate.search.lucene_version", "LUCENE_CURRENT"); //$NON-NLS-1$ //$NON-NLS-2$
         } else {
             addProperty(document, sessionFactoryElement, "hibernate.search.autoregister_listeners", "false"); //$NON-NLS-1$ //$NON-NLS-2$

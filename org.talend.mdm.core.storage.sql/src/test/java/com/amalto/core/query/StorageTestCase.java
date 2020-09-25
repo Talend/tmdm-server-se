@@ -75,6 +75,12 @@ public class StorageTestCase extends TestCase {
 
     protected static final ComplexTypeMetadata countryShort;
 
+    protected static final ComplexTypeMetadata countryFloat;
+
+    protected static final ComplexTypeMetadata countryDouble;
+
+    protected static final ComplexTypeMetadata countryByte;
+
     protected static final ComplexTypeMetadata a;
 
     protected static final ComplexTypeMetadata b;
@@ -200,6 +206,9 @@ public class StorageTestCase extends TestCase {
         country = repository.getComplexType("Country");
         countryLong = repository.getComplexType("CountryLong");
         countryShort = repository.getComplexType("CountryShort");
+        countryFloat = repository.getComplexType("CountryFloat");
+        countryDouble = repository.getComplexType("CountryDouble");
+        countryByte = repository.getComplexType("CountryByte");
         product = repository.getComplexType("Product");
         productFamily = repository.getComplexType("ProductFamily");
         store = repository.getComplexType("Store");

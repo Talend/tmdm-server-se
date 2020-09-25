@@ -14,7 +14,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
@@ -155,7 +154,7 @@ public class ReferenceEntityBridge implements TwoWayFieldBridge {
                 *    |__C (ComplexField)
                 *       |__D (Reference)
                 * Use '<A><Id>1</Id><B><C><D>[1]</D></C></B></A>' to save, but D(1) doesn't exist.
-                * Generente lucence index for D(1) will fail, so need to set it to null for now.
+                * Generate lucence index for D(1) will fail, so need to set it to null for now.
                 */
                 try {
                     if (value != null && value.toString() != null) {

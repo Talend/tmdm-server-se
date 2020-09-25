@@ -38,13 +38,10 @@ public class ToLowerCaseFieldBridge implements TwoWayFieldBridge {
     @Override
     public void set(String name, Object value, Document document, LuceneOptions luceneOptions) {
         @SuppressWarnings("deprecation")
-//        DocumentFieldMetadata fieldMetadata = new DocumentFieldMetadata.Builder(null, Store.YES, Field.Index.ANALYZED,
-//                Field.TermVector.WITH_POSITIONS_OFFSETS).boost(1F).build();
-        DocumentFieldMetadata fieldMetadata = new DocumentFieldMetadata.Builder(null,null,null,null, Store.YES, Field.Index.ANALYZED,
-                Field.TermVector.WITH_POSITIONS_OFFSETS).boost(1F).build();
+        DocumentFieldMetadata fieldMetadata = new DocumentFieldMetadata.Builder(null, null, null, null, Store.YES,
+                Field.Index.ANALYZED, Field.TermVector.WITH_POSITIONS_OFFSETS).boost(1F).build();
         LuceneOptions luceneIndexOptions = new LuceneOptionsImpl(fieldMetadata, 1f, 1f);
         luceneIndexOptions.addFieldToDocument(name + ID_POSTFIX, String.valueOf(value).toLowerCase(), document);
         luceneOptions.addFieldToDocument(name, String.valueOf(value), document);
     }
-
 }

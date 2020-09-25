@@ -12,7 +12,6 @@
 package com.amalto.core.storage.hibernate;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -28,18 +27,9 @@ import javax.xml.XMLConstants;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
-import org.apache.lucene.index.DocValues;
-import org.apache.lucene.index.LeafReaderContext;
-import org.apache.lucene.index.SortedDocValues;
-import org.apache.lucene.search.FieldComparator;
-import org.apache.lucene.search.FieldComparator.NumericComparator;
-import org.apache.lucene.search.FieldComparatorSource;
-import org.apache.lucene.search.LeafFieldComparator;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.SimpleFieldComparator;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
-import org.apache.lucene.util.Bits;
 import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
 import org.hibernate.Session;

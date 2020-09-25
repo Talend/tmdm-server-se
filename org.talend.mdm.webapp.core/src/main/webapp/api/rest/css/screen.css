@@ -1155,7 +1155,7 @@
   cursor: pointer;
 }
 .swagger-section #header {
-  background: linear-gradient(to right, #005F96 0%, #1C71A1 39.671%, #3B86A9 56.39%, #5599D8 100%);
+  background: linear-gradient(to right, #19426C 20%, #2C1F56 80%)!important; 
   border: 0px;
   height: 40px;
 }

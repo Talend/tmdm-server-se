@@ -120,194 +120,42 @@ public class StorageFullTextTest extends StorageTestCase {
         allRecords.add(factory.read(repository, supplier, "<Supplier><Id>2</Id><SupplierName>Starbucks Talend</SupplierName><Contact><Name>Jean Cafe</Name><Phone>33234567890</Phone><Email>test@testfactory.org</Email></Contact></Supplier>"));
         allRecords.add(factory.read(repository, supplier, "<Supplier><Id>3</Id><SupplierName>Talend</SupplierName><Contact><Name>Jean Paul</Name><Phone>33234567890</Phone><Email>test@talend.com</Email></Contact></Supplier>"));
         allRecords.add(factory.read(repository, supplier, "<Supplier><Id>4</Id><SupplierName>IdSoftware</SupplierName><Contact><Name>John Carmack</Name><Phone>123456789</Phone><Email></Email></Contact></Supplier>"));
-
-        allRecords
-                .add(factory
-                        .read(repository,
-                                country,
-                                "<Country><id>1</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France</name></Country>"));
-        allRecords
-                .add(factory
-                        .read(repository,
-                                country,
-                                "<Country><id>2</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France1</name><notes><note>Country note</note><comment>repeatable comment 1</comment><comment>Repeatable comment 2</comment></notes></Country>"));
-
-        allRecords
-                .add(factory
-                        .read(repository,
-                                country,
-                                "<Country><id>3</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France2</name></Country>"));
-
-        allRecords
-                .add(factory
-                        .read(repository,
-                                country,
-                                "<Country><id>4</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France3</name></Country>"));
-
-        allRecords
-                .add(factory
-                        .read(repository,
-                                country,
-                                "<Country><id>5</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France4</name></Country>"));
-
-        allRecords
-                .add(factory
-                        .read(repository,
-                                country,
-                                "<Country><id>6</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France5</name></Country>"));
-
-        allRecords
-                .add(factory
-                        .read(repository,
-                                country,
-                                "<Country><id>7</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France6</name></Country>"));
-
-        allRecords
-                .add(factory
-                        .read(repository,
-                                country,
-                                "<Country><id>8</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France7</name></Country>"));
-
-        allRecords
-                .add(factory
-                        .read(repository,
-                                country,
-                                "<Country><id>9</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France8</name></Country>"));
-
-        allRecords
-                .add(factory
-                        .read(repository,
-                                country,
-                                "<Country><id>10</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France9</name></Country>"));
-
-        allRecords
-                .add(factory
-                        .read(repository,
-                                country,
-                                "<Country><id>11</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France10</name></Country>"));
-
-        allRecords.add(factory
-                        .read(repository,
-                                country,
-                                "<Country><id>12</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>Foances</name></Country>"));
-
-        allRecords
-                .add(factory
-                        .read(repository,
-                                countryLong,
-                                "<CountryLong><id>1</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France1</name></CountryLong>"));
-        allRecords
-                .add(factory
-                        .read(repository,
-                                countryLong,
-                                "<CountryLong><id>2</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France2</name></CountryLong>"));
-        allRecords
-                .add(factory
-                        .read(repository,
-                                countryLong,
-                                "<CountryLong><id>3</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France3</name></CountryLong>"));
-
-        allRecords
-                .add(factory
-                        .read(repository,
-                                countryShort,
-                                "<CountryShort><id>1</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France1</name></CountryShort>"));
-        allRecords
-                .add(factory
-                        .read(repository,
-                                countryShort,
-                                "<CountryShort><id>2</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France2</name></CountryShort>"));
-        allRecords
-                .add(factory
-                        .read(repository,
-                                countryShort,
-                                "<CountryShort><id>3</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France3</name></CountryShort>"));
-
-        allRecords
-                .add(factory
-                        .read(repository,
-                                countryFloat,
-                                "<CountryFloat><id>1.1</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France1</name></CountryFloat>"));
-        allRecords
-                .add(factory
-                        .read(repository,
-                                countryFloat,
-                                "<CountryFloat><id>2.2</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France2</name></CountryFloat>"));
-        allRecords
-                .add(factory
-                        .read(repository,
-                                countryFloat,
-                                "<CountryFloat><id>3.3</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France3</name></CountryFloat>"));
-
-        allRecords
-                .add(factory
-                        .read(repository,
-                                countryDouble,
-                                "<CountryDouble><id>1.1</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France1</name></CountryDouble>"));
-        allRecords
-                .add(factory
-                        .read(repository,
-                                countryDouble,
-                                "<CountryDouble><id>2.2</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France2</name></CountryDouble>"));
-        allRecords
-                .add(factory
-                        .read(repository,
-                                countryDouble,
-                                "<CountryDouble><id>3.3</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France3</name></CountryDouble>"));
-
-        allRecords
-                .add(factory
-                        .read(repository,
-                                countryByte,
-                                "<CountryByte><id>1</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France1</name></CountryByte>"));
-        allRecords
-                .add(factory
-                        .read(repository,
-                                countryByte,
-                                "<CountryByte><id>2</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:02</creationTime><name>France2</name></CountryByte>"));
-        allRecords
-                .add(factory
-                        .read(repository,
-                                countryByte,
-                                "<CountryByte><id>3</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:03</creationTime><name>France3</name></CountryByte>"));
-
-        allRecords
-                .add(factory
-                        .read(repository,
-                                person,
-                                "<Person><id>1</id><score>130000.00</score><lastname>Dupond</lastname><resume>[EN:my splendid resume, splendid isn't it][FR:mon magnifique resume, n'est ce pas ?]</resume><middlename>John</middlename><firstname>Julien</firstname><addresses></addresses><age>10</age><Status>Employee</Status><Available>true</Available></Person>"));
-        allRecords
-                .add(factory
-                        .read(repository,
-                                person,
-                                "<Person><id>2</id><score>170000.00</score><lastname>Dupont</lastname><middlename>John</middlename><firstname>Robert-Julien</firstname><addresses></addresses><age>20</age><Status>Customer</Status><Available>false</Available></Person>"));
-        allRecords
-                .add(factory
-                        .read(repository,
-                                person,
-                                "<Person><id>3</id><score>200000.00</score><lastname>Leblanc</lastname><middlename>John</middlename><firstname>Juste</firstname><addresses></addresses><age>30</age><Status>Friend</Status></Person>"));
-        allRecords
-                .add(factory
-                        .read(repository,
-                                person,
-                                "<Person><id>4</id><score>200000.00</score><lastname>Leblanc</lastname><middlename>John</middlename><firstname>Julien</firstname><age>30</age><Status>Friend</Status></Person>"));
-        allRecords
-                .add(factory
-                        .read(repository,
-                                person,
-                                "<Person><id>1234</id><firstname>quan</firstname><middlename>kevin</middlename><lastname>cui</lastname><resume>[EN:Hello [World:]][FR:bonjour :le][ZH:ni Hao]</resume><age>22</age><score>100</score><Available></Available><Status>Customer</Status></Person>"));
-
-        allRecords
-                .add(factory
-                        .read(repository,
-                                fullTextSearchEntityA,
-                                "<FullTextSearchEntityA><Id>id1</Id><Name>name1</Name><Address><AddressName>address1</AddressName><City><CityName>city1</CityName></City></Address></FullTextSearchEntityA>"));
-        allRecords.add(factory.read(repository, a2,
-                "<a2><subelement>1</subelement><subelement1>10</subelement1><b3>String b3</b3><b4>String b4</b4></a2>"));
-        allRecords.add(factory.read(repository, a1,
-                "<a1><subelement>1</subelement><subelement1>11</subelement1><b1>String b1</b1><b2>[1][10]</b2></a1>"));
-        allRecords.add(factory.read(repository, a2,
-                "<a2><subelement>1</subelement><subelement1>2</subelement1><b3>String b3</b3><b4>String b4</b4></a2>"));
+        allRecords.add(factory.read(repository, country, "<Country><id>1</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France</name></Country>"));
+        allRecords.add(factory.read(repository, country, "<Country><id>2</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France1</name><notes><note>Country note</note><comment>repeatable comment 1</comment><comment>Repeatable comment 2</comment></notes></Country>"));
+        allRecords.add(factory.read(repository, country, "<Country><id>3</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France2</name></Country>"));
+        allRecords.add(factory.read(repository, country, "<Country><id>4</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France3</name></Country>"));
+        allRecords.add(factory.read(repository, country, "<Country><id>5</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France4</name></Country>"));
+        allRecords.add(factory.read(repository, country, "<Country><id>6</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France5</name></Country>"));
+        allRecords.add(factory.read(repository, country, "<Country><id>7</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France6</name></Country>"));
+        allRecords.add(factory.read(repository, country, "<Country><id>8</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France7</name></Country>"));
+        allRecords.add(factory.read(repository, country, "<Country><id>9</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France8</name></Country>"));
+        allRecords.add(factory.read(repository, country, "<Country><id>10</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France9</name></Country>"));
+        allRecords.add(factory.read(repository, country, "<Country><id>11</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France10</name></Country>"));
+        allRecords.add(factory.read(repository, country, "<Country><id>12</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>Foances</name></Country>"));
+        allRecords.add(factory.read(repository, countryLong, "<CountryLong><id>1</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France1</name></CountryLong>"));
+        allRecords.add(factory.read(repository, countryLong, "<CountryLong><id>2</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France2</name></CountryLong>"));
+        allRecords.add(factory.read(repository, countryLong, "<CountryLong><id>3</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France3</name></CountryLong>"));
+        allRecords.add(factory.read(repository, countryShort, "<CountryShort><id>1</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France1</name></CountryShort>"));
+        allRecords.add(factory.read(repository, countryShort, "<CountryShort><id>2</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France2</name></CountryShort>"));
+        allRecords.add(factory.read(repository, countryShort, "<CountryShort><id>3</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France3</name></CountryShort>"));
+        allRecords.add(factory.read(repository, countryFloat, "<CountryFloat><id>1.1</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France1</name></CountryFloat>"));
+        allRecords.add(factory.read(repository, countryFloat, "<CountryFloat><id>2.2</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France2</name></CountryFloat>"));
+        allRecords.add(factory.read(repository, countryFloat, "<CountryFloat><id>3.3</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France3</name></CountryFloat>"));
+        allRecords.add(factory.read(repository, countryDouble, "<CountryDouble><id>1.1</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France1</name></CountryDouble>"));
+        allRecords.add(factory.read(repository, countryDouble, "<CountryDouble><id>2.2</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France2</name></CountryDouble>"));
+        allRecords.add(factory.read(repository, countryDouble, "<CountryDouble><id>3.3</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France3</name></CountryDouble>"));
+        allRecords.add(factory.read(repository, countryByte, "<CountryByte><id>1</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:01</creationTime><name>France1</name></CountryByte>"));
+        allRecords.add(factory.read(repository, countryByte, "<CountryByte><id>2</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:02</creationTime><name>France2</name></CountryByte>"));
+        allRecords.add(factory.read(repository, countryByte, "<CountryByte><id>3</id><creationDate>2010-10-10</creationDate><creationTime>2010-10-10T00:00:03</creationTime><name>France3</name></CountryByte>"));
+        allRecords.add(factory.read(repository, person, "<Person><id>1</id><score>130000.00</score><lastname>Dupond</lastname><resume>[EN:my splendid resume, splendid isn't it][FR:mon magnifique resume, n'est ce pas ?]</resume><middlename>John</middlename><firstname>Julien</firstname><addresses></addresses><age>10</age><Status>Employee</Status><Available>true</Available></Person>"));
+        allRecords.add(factory.read(repository, person, "<Person><id>2</id><score>170000.00</score><lastname>Dupont</lastname><middlename>John</middlename><firstname>Robert-Julien</firstname><addresses></addresses><age>20</age><Status>Customer</Status><Available>false</Available></Person>"));
+        allRecords.add(factory.read(repository, person, "<Person><id>3</id><score>200000.00</score><lastname>Leblanc</lastname><middlename>John</middlename><firstname>Juste</firstname><addresses></addresses><age>30</age><Status>Friend</Status></Person>"));
+        allRecords.add(factory.read(repository, person, "<Person><id>4</id><score>200000.00</score><lastname>Leblanc</lastname><middlename>John</middlename><firstname>Julien</firstname><age>30</age><Status>Friend</Status></Person>"));
+        allRecords.add(factory.read(repository, person, "<Person><id>1234</id><firstname>quan</firstname><middlename>kevin</middlename><lastname>cui</lastname><resume>[EN:Hello [World:]][FR:bonjour :le][ZH:ni Hao]</resume><age>22</age><score>100</score><Available></Available><Status>Customer</Status></Person>"));
+        allRecords.add(factory.read(repository, fullTextSearchEntityA, "<FullTextSearchEntityA><Id>id1</Id><Name>name1</Name><Address><AddressName>address1</AddressName><City><CityName>city1</CityName></City></Address></FullTextSearchEntityA>"));
+        allRecords.add(factory.read(repository, a2, "<a2><subelement>1</subelement><subelement1>10</subelement1><b3>String b3</b3><b4>String b4</b4></a2>"));
+        allRecords.add(factory.read(repository, a1, "<a1><subelement>1</subelement><subelement1>11</subelement1><b1>String b1</b1><b2>[1][10]</b2></a1>"));
+        allRecords.add(factory.read(repository, a2, "<a2><subelement>1</subelement><subelement1>2</subelement1><b3>String b3</b3><b4>String b4</b4></a2>"));
         allRecords.add(factory.read(repository, a3, "<a3><id>3</id><name>hamdi</name><a2>[1][2]</a2></a3>"));
         allRecords.add(factory.read(repository, store, "<Store><Id>Upper Case Id</Id><Name>name1</Name></Store>"));
         allRecords.add(factory.read(repository, store, "<Store><Id>lower case id</Id><Name>name2</Name></Store>"));
@@ -315,7 +163,6 @@ public class StorageFullTextTest extends StorageTestCase {
         allRecords.add(factory.read(repository, store, "<Store><Id>ab&amp;cd</Id><Name>name4</Name></Store>"));
         allRecords.add(factory.read(repository, store, "<Store><Id>AB&amp;CD</Id><Name>name5</Name></Store>"));
         allRecords.add(factory.read(repository, store, "<Store><Id>One@#$Two%&amp;=Three;,.Four</Id><Name>name6</Name></Store>"));
-
         allRecords.add(factory.read(repository, employee, "<Employee><name>employee 1</name><age>11</age><jobTitle>jobTitle 11</jobTitle></Employee>"));
         allRecords.add(factory.read(repository, employee, "<Employee><name>employee 2</name><age>22</age><jobTitle>jobTitle 22</jobTitle></Employee>"));
         allRecords.add(factory.read(repository, employee, "<Employee><name>employee 3</name><age>33</age><jobTitle>jobTitle 33</jobTitle></Employee>"));
@@ -327,21 +174,15 @@ public class StorageFullTextTest extends StorageTestCase {
         allRecords.add(factory.read(repository, manager, "<Manager><name>manager 3</name><age>33</age><jobTitle>jobTitle 33</jobTitle><dept>dept 3</dept></Manager>"));
         allRecords.add(factory.read(repository, nn, "<NN><Id>pp</Id><name>tyu</name><sub><name>yu67</name><title>67</title></sub></NN>"));
         allRecords.add(factory.read(repository, contract, "<Contract><id>1</id><comment>1</comment><detail xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"ContractDetailType\"></detail><detail xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"ContractDetailType\"><code>1</code></detail><detail xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"ContractDetailType\"><code>1</code></detail><detail xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"ContractDetailSubType\"><code>1</code><features><actor>1</actor><vendor>1</vendor></features></detail><enumEle>pending</enumEle></Contract>"));
-
         allRecords.add(factory.read(repository, myFLIF_RefSourceSystem, "<RefSourceSystem><RefSourceSystemId>11</RefSourceSystemId><Bezeichnung>12</Bezeichnung></RefSourceSystem>"));
         allRecords.add(factory.read(repository, myFLIF_RefSourceSystem, "<RefSourceSystem><RefSourceSystemId>22</RefSourceSystemId><Bezeichnung>23</Bezeichnung></RefSourceSystem>"));
         allRecords.add(factory.read(repository, myFLIF_Partner, "<Partner><PartnerId>2019926111626752d3e2</PartnerId><SourceSystemMap><SourceSystem><SourceSystemId>[11]</SourceSystemId><MandantNummer>1</MandantNummer><SourceKey>2</SourceKey></SourceSystem></SourceSystemMap><Name>world</Name></Partner>"));
         allRecords.add(factory.read(repository, myFLIF_Partner, "<Partner><PartnerId>2019926111652083d5e2</PartnerId><SourceSystemMap><SourceSystem><SourceSystemId>[22]</SourceSystemId><MandantNummer>33</MandantNummer><SourceKey>4</SourceKey></SourceSystem></SourceSystemMap><Name>good</Name></Partner>"));
         allRecords.add(factory.read(repository, myFLIF_Partner, "<Partner><PartnerId>2019926111652084d5e2</PartnerId><SourceSystemMap><SourceSystem><SourceSystemId>[22]</SourceSystemId><MandantNummer>44</MandantNummer><SourceKey>4</SourceKey></SourceSystem></SourceSystemMap><Name>go</Name></Partner>"));
-
-        allRecords.add(factory.read(repository, refPays,
-                "<RefPays><idRefPays>1</idRefPays><codeISO2>FR</codeISO2><codeISO3>FR</codeISO3><libelleFR>FR</libelleFR><libelleEN>FR</libelleEN><libelleES>FR</libelleES></RefPays>"));
-        allRecords.add(factory.read(repository, refPays,
-                "<RefPays><idRefPays>2</idRefPays><codeISO2>BE</codeISO2><codeISO3>BE</codeISO3><libelleFR>BE</libelleFR><libelleEN>BE</libelleEN><libelleES>BE</libelleES></RefPays>"));
-        allRecords.add(factory.read(repository, refRegion,
-                "<RefRegion><codeRegion>BEL_BC</codeRegion><PaysFk>[1]</PaysFk><libelleRegion><codeLangue>fr</codeLangue><libelle>Bruxelles-Capitale</libelle><Con><Add_City>Pairs</Add_City><Add_Country>Franch</Add_Country></Con></libelleRegion><libelleRegion><codeLangue>en</codeLangue><libelle>Bruxees-Capitale</libelle><Con><Add_City>Longdong</Add_City><Add_Country>England</Add_Country></Con></libelleRegion><libelleRegion><codeLangue>es</codeLangue><libelle>Bruxeeserses-Capitale</libelle><Con><Add_City>Longdong</Add_City><Add_Country>England</Add_Country></Con></libelleRegion></RefRegion>"));
-        allRecords.add(factory.read(repository, refRegion,
-                "<RefRegion><codeRegion>CAN_NBR</codeRegion><PaysFk>[2]</PaysFk><libelleRegion><codeLangue>fr</codeLangue><libelle>NOUVENAU-BRUNSWICK</libelle><Con><Add_City>PARISE</Add_City><Add_Country>FRANCH</Add_Country></Con></libelleRegion><libelleRegion><codeLangue>en</codeLangue><libelle>NEW-BRUNSWICK</libelle><Con><Add_City>LONGDONG</Add_City><Add_Country>ENGLAND</Add_Country></Con></libelleRegion><libelleRegion><codeLangue>es</codeLangue><libelle>NUEVO BRUNSWICK</libelle><Con><Add_City>ENGLAND</Add_City><Add_Country>ENGLAND</Add_Country></Con></libelleRegion></RefRegion>"));
+        allRecords.add(factory.read(repository, refPays, "<RefPays><idRefPays>1</idRefPays><codeISO2>FR</codeISO2><codeISO3>FR</codeISO3><libelleFR>FR</libelleFR><libelleEN>FR</libelleEN><libelleES>FR</libelleES></RefPays>"));
+        allRecords.add(factory.read(repository, refPays, "<RefPays><idRefPays>2</idRefPays><codeISO2>BE</codeISO2><codeISO3>BE</codeISO3><libelleFR>BE</libelleFR><libelleEN>BE</libelleEN><libelleES>BE</libelleES></RefPays>"));
+        allRecords.add(factory.read(repository, refRegion, "<RefRegion><codeRegion>BEL_BC</codeRegion><PaysFk>[1]</PaysFk><libelleRegion><codeLangue>fr</codeLangue><libelle>Bruxelles-Capitale</libelle><Con><Add_City>Pairs</Add_City><Add_Country>Franch</Add_Country></Con></libelleRegion><libelleRegion><codeLangue>en</codeLangue><libelle>Bruxees-Capitale</libelle><Con><Add_City>Longdong</Add_City><Add_Country>England</Add_Country></Con></libelleRegion><libelleRegion><codeLangue>es</codeLangue><libelle>Bruxeeserses-Capitale</libelle><Con><Add_City>Longdong</Add_City><Add_Country>England</Add_Country></Con></libelleRegion></RefRegion>"));
+        allRecords.add(factory.read(repository, refRegion, "<RefRegion><codeRegion>CAN_NBR</codeRegion><PaysFk>[2]</PaysFk><libelleRegion><codeLangue>fr</codeLangue><libelle>NOUVENAU-BRUNSWICK</libelle><Con><Add_City>PARISE</Add_City><Add_Country>FRANCH</Add_Country></Con></libelleRegion><libelleRegion><codeLangue>en</codeLangue><libelle>NEW-BRUNSWICK</libelle><Con><Add_City>LONGDONG</Add_City><Add_Country>ENGLAND</Add_Country></Con></libelleRegion><libelleRegion><codeLangue>es</codeLangue><libelle>NUEVO BRUNSWICK</libelle><Con><Add_City>ENGLAND</Add_City><Add_Country>ENGLAND</Add_Country></Con></libelleRegion></RefRegion>"));
 
         try {
             storage.begin();
@@ -378,6 +219,15 @@ public class StorageFullTextTest extends StorageTestCase {
             storage.delete(qb.getSelect());
 
             qb = from(countryShort);
+            storage.delete(qb.getSelect());
+
+            qb = from(countryDouble);
+            storage.delete(qb.getSelect());
+
+            qb = from(countryFloat);
+            storage.delete(qb.getSelect());
+
+            qb = from(countryByte);
             storage.delete(qb.getSelect());
 
             qb = from(person);

@@ -456,8 +456,8 @@ public class FieldComparators {
         }
 
         protected byte[] getFullBytes(byte[] b, int length) {
-            byte[] bytes = new byte[length];
             if (b.length < length) {
+                byte[] bytes = new byte[length];
                 for (int i = 0; i < length; i++) {
                     if (i < b.length) {
                         bytes[i] = b[i];
@@ -465,8 +465,10 @@ public class FieldComparators {
                         bytes[i] = 0;
                     }
                 }
+                return bytes;
+            } else {
+                return b;
             }
-            return bytes;
         }
 
         protected abstract T getNumberValue(byte[] b);

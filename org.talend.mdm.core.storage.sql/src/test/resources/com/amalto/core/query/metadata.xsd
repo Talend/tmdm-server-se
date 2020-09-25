@@ -242,7 +242,7 @@
 			<xsd:field xpath="id" />
 		</xsd:unique>
 	</xsd:element>
-	
+
 	<xsd:element name="CountryLong">
 		<xsd:complexType>
 			<xsd:sequence>
@@ -267,7 +267,57 @@
 			<xsd:field xpath="id" />
 		</xsd:unique>
 	</xsd:element>
-	
+
+	<xsd:element name="CountryFloat">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="id" type="xsd:float" />
+				<xsd:element name="creationDate" type="xsd:date" />
+				<xsd:element name="creationTime" type="xsd:dateTime" />
+				<xsd:element name="name" type="xsd:string" />
+				<xsd:element maxOccurs="unbounded" minOccurs="0" name="notes">
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element minOccurs="1" maxOccurs="1" name="note"
+								type="xsd:string" />
+							<xsd:element minOccurs="0" maxOccurs="unbounded"
+								name="comment" type="xsd:string" />
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+		<xsd:unique name="CountryFloat">
+			<xsd:selector xpath="." />
+			<xsd:field xpath="id" />
+		</xsd:unique>
+	</xsd:element>
+
+	<xsd:element name="CountryDouble">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="id" type="xsd:double" />
+				<xsd:element name="creationDate" type="xsd:date" />
+				<xsd:element name="creationTime" type="xsd:dateTime" />
+				<xsd:element name="name" type="xsd:string" />
+				<xsd:element maxOccurs="unbounded" minOccurs="0" name="notes">
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element minOccurs="1" maxOccurs="1" name="note"
+								type="xsd:string" />
+							<xsd:element minOccurs="0" maxOccurs="unbounded"
+								name="comment" type="xsd:string" />
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+		<xsd:unique name="CountryDouble">
+			<xsd:selector xpath="." />
+			<xsd:field xpath="id" />
+		</xsd:unique>
+	</xsd:element>
+
 	<xsd:element name="CountryShort">
 		<xsd:complexType>
 			<xsd:sequence>
@@ -288,6 +338,31 @@
 			</xsd:sequence>
 		</xsd:complexType>
 		<xsd:unique name="CountryShort">
+			<xsd:selector xpath="." />
+			<xsd:field xpath="id" />
+		</xsd:unique>
+	</xsd:element>
+
+	<xsd:element name="CountryByte">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="id" type="xsd:byte" />
+				<xsd:element name="creationDate" type="xsd:date" />
+				<xsd:element name="creationTime" type="xsd:dateTime" />
+				<xsd:element name="name" type="xsd:string" />
+				<xsd:element maxOccurs="unbounded" minOccurs="0" name="notes">
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element minOccurs="1" maxOccurs="1" name="note"
+								type="xsd:string" />
+							<xsd:element minOccurs="0" maxOccurs="unbounded"
+								name="comment" type="xsd:string" />
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+		<xsd:unique name="CountryByte">
 			<xsd:selector xpath="." />
 			<xsd:field xpath="id" />
 		</xsd:unique>

@@ -186,9 +186,7 @@ public class DefaultTransformer implements TransformerPluginCallBack, com.amalto
             bgPOJO.setPercentage(-1);
             bgPOJO.setSerializedObject(null);
             bgPOJO.setStatus(BackgroundJobPOJO._SCHEDULED_);
-            synchronized (DateTimeConstant.DATE_FORMAT) {
-                bgPOJO.setTimestamp(DateTimeConstant.DATE_FORMAT.format(new Date(System.currentTimeMillis())));
-            }
+            bgPOJO.setTimestamp(DateTimeConstant.format(new Date(System.currentTimeMillis())));
             bgPOJO.store();
             // launch job in background
             JobActionInfo actionInfo = new JobActionInfo(bgPOJO.getId(), context.getTransformerV2POJOPK().getUniqueId(), // action

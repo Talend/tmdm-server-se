@@ -640,7 +640,11 @@ public class HibernateStorage implements Storage {
                 serviceRegistry.configureService(mdmConfigurable);
                 metadata = new MDMMetadataSources(serviceRegistry).buildMetadata();
 
-                batchSize = Integer.parseInt(mdmConfigurable.getService().getProperty(Environment.STATEMENT_BATCH_SIZE));
+                if (mdmConfigurable.getService().getProperty(Environment.STATEMENT_BATCH_SIZE) == null) {
+                    batchSize = DEFAULT_FETCH_SIZE;
+                } else {
+                    batchSize = Integer.parseInt(mdmConfigurable.getService().getProperty(Environment.STATEMENT_BATCH_SIZE));
+                }
 //                batchSize = Integer.parseInt("100");
                 // Sets default schema for Oracle
 //                Properties properties = configuration.getProperties();
@@ -2055,14 +2059,12 @@ public class HibernateStorage implements Storage {
     }
 
     private int generateIdFetchSize() {
-        int fetchSize = DEFAULT_FETCH_SIZE;
         if (dataSource.getDialectName() == RDBMSDataSource.DataSourceDialect.MYSQL) {
             // for using "stream resultset" to resolve OOM
-            fetchSize = Integer.MIN_VALUE;
+            return Integer.MIN_VALUE;
         } else {
-            fetchSize = batchSize;
+            return batchSize == 0 ? DEFAULT_FETCH_SIZE : batchSize;
         }
-        return fetchSize;
     }
 
     private class TableClosureVisitor implements PersistentClassVisitor {

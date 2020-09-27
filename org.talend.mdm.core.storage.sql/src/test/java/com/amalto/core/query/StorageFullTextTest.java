@@ -39,10 +39,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
-import org.hibernate.cfg.Configuration;
-import org.hibernate.cfg.Environment;
+import org.apache.logging.log4j.Logger;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
@@ -1480,8 +1478,6 @@ public class StorageFullTextTest extends StorageTestCase {
         // Test "stream resultset"
         RDBMSDataSource dataSource = new RDBMSDataSource("TestDataSource", "MySQL", "", "", "", 0, 0, "", "", false, "update",
                 false, new HashMap(), "", "", null, "", "", "", false);
-        Configuration configuration = new Configuration();
-        configuration.setProperty(Environment.STATEMENT_FETCH_SIZE, "1000");
         HibernateStorage storage = new HibernateStorage("HibernateStorage");
         storage.init(getDatasource("RDBMS-1-NO-FT"));
         storage.prepare(repository, Collections.<Expression> emptySet(), false, false);
@@ -1491,13 +1487,9 @@ public class StorageFullTextTest extends StorageTestCase {
         dataSourceField.setAccessible(true);
         dataSourceField.set(storage, dataSource);
 
-        Field configurationField = storageClass.getDeclaredField("configuration");
-        configurationField.setAccessible(true);
-        configurationField.set(storage, configuration);
-
-        Method generateIdFetchSizeMethod = storageClass.getDeclaredMethod("generateIdFetchSize", null);
+        Method generateIdFetchSizeMethod = storageClass.getDeclaredMethod("generateIdFetchSize");
         generateIdFetchSizeMethod.setAccessible(true);
-        assertEquals(Integer.MIN_VALUE, generateIdFetchSizeMethod.invoke(storage, null));
+        assertEquals(Integer.MIN_VALUE, generateIdFetchSizeMethod.invoke(storage));
 
         // Test config batch size
         dataSource = new RDBMSDataSource("TestDataSource", "H2", "", "", "", 0, 0, "", "", false, "update", false, new HashMap(),
@@ -1511,17 +1503,14 @@ public class StorageFullTextTest extends StorageTestCase {
         dataSourceField.setAccessible(true);
         dataSourceField.set(storage, dataSource);
 
-        configurationField = storageClass.getDeclaredField("configuration");
-        configurationField.setAccessible(true);
-        configurationField.set(storage, configuration);
-        assertEquals(1000, generateIdFetchSizeMethod.invoke(storage, null));
+        // get actual value 100
+        assertEquals(100, generateIdFetchSizeMethod.invoke(storage));
 
         // Test default batch size
-        configuration = new Configuration();
-        configurationField = storageClass.getDeclaredField("configuration");
-        configurationField.setAccessible(true);
-        configurationField.set(storage, configuration);
-        assertEquals(500, generateIdFetchSizeMethod.invoke(storage, null));
+        Field batchSizeField = storageClass.getDeclaredField("batchSize");
+        batchSizeField.setAccessible(true);
+        batchSizeField.set(storage, 0); //recover to initial value 0.
+        assertEquals(500, generateIdFetchSizeMethod.invoke(storage));
     }
 
     public void testFieldQueryWhenHavingCompositeFK() throws Exception {

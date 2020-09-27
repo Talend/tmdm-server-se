@@ -1770,7 +1770,11 @@ public class HibernateStorage implements Storage {
             TransactionManager transactionManager = ServerContext.INSTANCE.get().getTransactionManager();
             List<String> transactions = transactionManager.list();
             for (String transaction : transactions) {
-                StorageTransaction storageTransaction = transactionManager.get(transaction).exclude(this);
+                com.amalto.core.storage.transaction.Transaction activeTransaction = transactionManager.get(transaction);
+                if (activeTransaction == null) {
+                    throw new IllegalStateException("Transaction [" + transaction + "] should have been removed from current transactions.\n");
+                }
+                StorageTransaction storageTransaction = activeTransaction.exclude(this);
                 if (storageTransaction != null) {
                     storageTransaction.rollback();
                 }
@@ -1778,9 +1782,10 @@ public class HibernateStorage implements Storage {
             // Close Hibernate session
             if (factory != null) {
                 factory.close();
-                factory = null; // SessionFactory#close() documentation advises to remove all references to
-                                // SessionFactory.
+                factory = null; // SessionFactory#close() documentation advises to remove all references to SessionFactory.
             }
+        } catch (HibernateException | NullPointerException e) {
+            throw new RuntimeException("An exception occurred while closing storage '" + storageName + "' (" + storageType + ").\n" + e); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         } finally {
             if (storageClassLoader != null) {
                 storageClassLoader.unbind(Thread.currentThread()); // TMDM-5934: Prevent restoring a closed classloader.

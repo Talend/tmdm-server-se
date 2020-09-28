@@ -55,7 +55,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.LockOptions;
 import org.hibernate.NonUniqueObjectException;
 import org.hibernate.PropertyValueException;
-import org.hibernate.Query;
+import org.hibernate.query.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.Metadata;
@@ -939,8 +939,9 @@ public class HibernateStorage implements Storage {
             storageClassLoader.bind(Thread.currentThread());
             String databaseName = mappingRepository.getMappingFromUser(type).getDatabase().getName();
             String className = storageClassLoader.findClass(databaseName).getSimpleName();
-            String queryString = "update " + className + " set x_talend_staging_hastask=? where x_talend_task_id=?"; //$NON-NLS-1$ //$NON-NLS-2$
-            Query query = session.createQuery(queryString).setBoolean(0, true).setString(1, taskId);
+            String queryString = "update " + className + " set x_talend_staging_hastask = ?0 where x_talend_task_id = ?1"; //$NON-NLS-1$ //$NON-NLS-2$
+            Query query = session.createQuery(queryString).setParameter(0, true).setParameter(1, taskId);
+            LOGGER.info("Calling update task statement : " + queryString);
             query.executeUpdate();
         } catch (Exception e) {
             throw new RuntimeException("Exception occurred during update METADATA_STAGING_HAS_TASK.", e); //$NON-NLS-1$

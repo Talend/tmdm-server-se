@@ -28,38 +28,39 @@ import com.amalto.core.storage.hibernate.mapping.MDMGroupedSchemaMigratorImpl;
 
 
 /**
- * created by hwzhu on Aug 12, 2020
- * Detailled comment
+ * As an adapter class during MDM and Hibernate 5, it derived from standard Hibernate implementation for performing
+ * schema management class {@link HibernateSchemaManagementTool}.<p>
  *
+ * created by hwzhu on Aug 18, 2020
  */
 public class MDMHibernateSchemaManagementTool extends HibernateSchemaManagementTool {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -4966151730006276006L;
 
     @Override
     public SchemaCreator getSchemaCreator(Map options) {
-        return new MDMSchemaCreatorImpl( this, getSchemaFilterProvider( options ).getCreateFilter() );
+        return new MDMSchemaCreatorImpl( this, getSchemaFilterProvider(options).getCreateFilter());
     }
 
     @Override
     public SchemaMigrator getSchemaMigrator(Map options) {
-        if ( determineJdbcMetadaAccessStrategy( options ) == JdbcMetadaAccessStrategy.GROUPED ) {
-            return new MDMGroupedSchemaMigratorImpl( this, getSchemaFilterProvider( options ).getMigrateFilter() );
+        if (determineJdbcMetadaAccessStrategy(options) == JdbcMetadaAccessStrategy.GROUPED) {
+            return new MDMGroupedSchemaMigratorImpl(this, getSchemaFilterProvider(options).getMigrateFilter());
         }
         else {
-            return new IndividuallySchemaMigratorImpl( this, getSchemaFilterProvider( options ).getMigrateFilter() );
+            return new IndividuallySchemaMigratorImpl(this, getSchemaFilterProvider(options).getMigrateFilter());
         }
     }
 
     private JdbcMetadaAccessStrategy determineJdbcMetadaAccessStrategy(Map options) {
-        return JdbcMetadaAccessStrategy.interpretSetting( options );
+        return JdbcMetadaAccessStrategy.interpretSetting(options);
     }
 
     private SchemaFilterProvider getSchemaFilterProvider(Map options) {
         final Object configuredOption = (options == null)
                 ? null
-                : options.get( AvailableSettings.HBM2DDL_FILTER_PROVIDER );
-        return getServiceRegistry().getService( StrategySelector.class ).resolveDefaultableStrategy(
+                : options.get(AvailableSettings.HBM2DDL_FILTER_PROVIDER);
+        return getServiceRegistry().getService(StrategySelector.class).resolveDefaultableStrategy(
                 SchemaFilterProvider.class,
                 configuredOption,
                 DefaultSchemaFilterProvider.INSTANCE

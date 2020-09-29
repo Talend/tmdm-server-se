@@ -14,32 +14,26 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.boot.Metadata;
 import org.hibernate.boot.model.naming.Identifier;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.PostgreSQLDialect;
 import org.hibernate.dialect.SQLServerDialect;
-import org.hibernate.engine.spi.Mapping;
-import org.hibernate.internal.util.collections.JoinedIterator;
 import org.hibernate.mapping.Column;
 import org.hibernate.mapping.Constraint;
 import org.hibernate.mapping.DenormalizedTable;
-import org.hibernate.mapping.ForeignKey;
-import org.hibernate.mapping.Index;
-import org.hibernate.mapping.PrimaryKey;
 import org.hibernate.mapping.Table;
 import org.hibernate.mapping.UniqueKey;
-import org.hibernate.tool.hbm2ddl.ColumnMetadata;
-import org.hibernate.tool.hbm2ddl.TableMetadata;
 import org.hibernate.tool.schema.extract.spi.ColumnInformation;
 import org.hibernate.tool.schema.extract.spi.TableInformation;
 
 @SuppressWarnings("nls")
 public class MDMDenormalizedTable extends DenormalizedTable {
 
+    private static final long serialVersionUID = 2989474981864788563L;
     private static final Logger LOGGER = LogManager.getLogger(MDMDenormalizedTable.class);
 
     public MDMDenormalizedTable(Table includedTable) {
@@ -107,7 +101,7 @@ public class MDMDenormalizedTable extends DenormalizedTable {
                 }
 
                 alter.append(dialect.getAddColumnSuffixString());
-
+                LOGGER.info("Table [" + tableInfo.getName().getTableName().getText() + "] updated: " + alter.toString());
                 results.add(alter.toString());
             } else if (MDMTableUtils.isAlterColumnField(column, columnInfo, dialect)) {
                 StringBuilder alter = new StringBuilder(root.toString());
@@ -125,7 +119,7 @@ public class MDMDenormalizedTable extends DenormalizedTable {
 
                 alter.append(column.getSqlType(dialect, metadata));
 
-                LOGGER.debug(alter.toString());
+                LOGGER.info("Table [" + tableInfo.getName().getTableName().getText() + "] updated: " + alter.toString());
                 results.add(alter.toString());
             }
         }

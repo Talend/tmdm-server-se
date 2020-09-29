@@ -20,7 +20,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.boot.Metadata;
 import org.hibernate.boot.model.naming.Identifier;
 import org.hibernate.dialect.Dialect;
-import org.hibernate.dialect.PostgreSQLDialect;
+import org.hibernate.dialect.PostgreSQL94Dialect;
 import org.hibernate.dialect.SQLServerDialect;
 import org.hibernate.mapping.Column;
 import org.hibernate.mapping.Constraint;
@@ -30,7 +30,6 @@ import org.hibernate.mapping.UniqueKey;
 import org.hibernate.tool.schema.extract.spi.ColumnInformation;
 import org.hibernate.tool.schema.extract.spi.TableInformation;
 
-@SuppressWarnings("nls")
 public class MDMDenormalizedTable extends DenormalizedTable {
 
     private static final long serialVersionUID = 2989474981864788563L;
@@ -106,14 +105,14 @@ public class MDMDenormalizedTable extends DenormalizedTable {
             } else if (MDMTableUtils.isAlterColumnField(column, columnInfo, dialect)) {
                 StringBuilder alter = new StringBuilder(root.toString());
 
-                if (dialect instanceof SQLServerDialect || dialect instanceof PostgreSQLDialect) {
+                if (dialect instanceof SQLServerDialect || dialect instanceof PostgreSQL94Dialect) {
                     alter.append(" ").append("alter COLUMN").append(" ");
                 } else {
                     alter.append(" ").append("modify").append(" ");
                 }
                 alter.append(" ").append(column.getQuotedName(dialect)).append(" ");
 
-                if (dialect instanceof PostgreSQLDialect) {
+                if (dialect instanceof PostgreSQL94Dialect) {
                     alter.append("TYPE").append(" ");
                 }
 

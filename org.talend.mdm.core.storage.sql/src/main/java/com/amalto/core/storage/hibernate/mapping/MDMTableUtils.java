@@ -14,17 +14,14 @@ import java.sql.Types;
 
 import org.hibernate.boot.model.TruthValue;
 import org.hibernate.dialect.Dialect;
-import org.hibernate.dialect.PostgreSQLDialect;
+import org.hibernate.dialect.PostgreSQL94Dialect;
 import org.hibernate.dialect.SQLServerDialect;
 import org.hibernate.mapping.Column;
 import org.hibernate.tool.schema.extract.spi.ColumnInformation;
 
-@SuppressWarnings("nls")
 public abstract class MDMTableUtils {
 
     public static final String NVARCHAR_MAX_TYPE = "nvarchar(max)";
-
-    private static final String NO = "NO";
 
     public static boolean isAlterColumnField(Column newColumn, ColumnInformation oldColumnInfo, Dialect dialect) {
         if (oldColumnInfo == null) {
@@ -38,7 +35,7 @@ public abstract class MDMTableUtils {
         if(!isVarcharField(oldColumnInfo, dialect)){
             return false;
         }
-        if (dialect instanceof PostgreSQLDialect) {
+        if (dialect instanceof PostgreSQL94Dialect) {
             return oldColumnInfo.getTypeName().toLowerCase().startsWith("varchar") && newColumn.getSqlType().equalsIgnoreCase("text");
         }
         if (dialect instanceof SQLServerDialect) {

@@ -33,7 +33,7 @@ import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.H2Dialect;
 import org.hibernate.dialect.MySQLDialect;
 import org.hibernate.dialect.Oracle8iDialect;
-import org.hibernate.dialect.PostgreSQLDialect;
+import org.hibernate.dialect.PostgreSQL94Dialect;
 import org.hibernate.dialect.SQLServerDialect;
 import org.hibernate.mapping.Column;
 import org.hibernate.mapping.Constraint;
@@ -46,7 +46,7 @@ import org.talend.mdm.commmon.metadata.Types;
 import com.amalto.core.storage.datasource.RDBMSDataSource;
 import com.amalto.core.storage.hibernate.OracleCustomDialect;
 
-@SuppressWarnings({ "rawtypes", "deprecation", "serial", "unchecked" })
+@SuppressWarnings({ "rawtypes", "serial", "unchecked" })
 public class MDMTable extends Table {
 
     private static final String LONGTEXT = "longtext";
@@ -114,13 +114,13 @@ public class MDMTable extends Table {
             } else if (MDMTableUtils.isAlterColumnField(column, columnInfo, dialect)) {
                 StringBuilder alter = new StringBuilder(root.toString());
 
-                if (dialect instanceof SQLServerDialect || dialect instanceof PostgreSQLDialect) {
+                if (dialect instanceof SQLServerDialect || dialect instanceof PostgreSQL94Dialect) {
                     alter.append(" ALTER COLUMN ");
                 } else {
                     alter.append(" MODIFY ");
                 }
                 alter.append(' ').append(columnName).append(' ');
-                if (dialect instanceof PostgreSQLDialect) {
+                if (dialect instanceof PostgreSQL94Dialect) {
                     alter.append("TYPE ");
                 }
                 alter.append(sqlType);
@@ -133,7 +133,7 @@ public class MDMTable extends Table {
                         alter.append(dialect.getNullColumnString());
                     }
                 } else {
-                    if (dialect instanceof PostgreSQLDialect) {
+                    if (dialect instanceof PostgreSQL94Dialect) {
                         alter.append(", alter column ").append(columnName).append(" set not null ");
                     } else if (dialect instanceof Oracle8iDialect) {
                         alter.append(" check( ").append(columnName).append(" is not null )");
@@ -188,7 +188,7 @@ public class MDMTable extends Table {
                 }
             } else if (MDMTableUtils.isChangedToOptional(column, columnInfo)) {
                 StringBuilder alter = new StringBuilder(root.toString());
-                if (dialect instanceof PostgreSQLDialect || dialect instanceof DB2Dialect) {
+                if (dialect instanceof PostgreSQL94Dialect || dialect instanceof DB2Dialect) {
                     alter.append(" ALTER COLUMN ").append(columnName).append(" DROP NOT NULL");
                 } else if (dialect instanceof H2Dialect) {
                     alter.append(" ALTER COLUMN ").append(columnName).append(" SET NULL");

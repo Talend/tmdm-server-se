@@ -6,8 +6,9 @@ import org.hibernate.service.ServiceRegistry;
 
 public class MDMMetadataSources extends MetadataSources {
 
-	
-	public MDMMetadataSources() {
+    private static final long serialVersionUID = 3359949654618694093L;
+
+    public MDMMetadataSources() {
 		super();
 	}
 

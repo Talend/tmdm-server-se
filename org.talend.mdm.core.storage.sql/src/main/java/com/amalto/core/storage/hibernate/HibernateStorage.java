@@ -55,7 +55,6 @@ import org.hibernate.HibernateException;
 import org.hibernate.LockOptions;
 import org.hibernate.NonUniqueObjectException;
 import org.hibernate.PropertyValueException;
-import org.hibernate.query.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.Metadata;
@@ -90,6 +89,7 @@ import org.hibernate.mapping.Subclass;
 import org.hibernate.mapping.ToOne;
 import org.hibernate.mapping.UnionSubclass;
 import org.hibernate.mapping.Value;
+import org.hibernate.query.Query;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.MassIndexer;
 import org.hibernate.search.Search;
@@ -217,8 +217,6 @@ public class HibernateStorage implements Storage {
 
     private SessionFactory factory;
 
-//    private Configuration configuration;
-    
     private Metadata metadata;
 
     protected RDBMSDataSource dataSource;
@@ -280,7 +278,7 @@ public class HibernateStorage implements Storage {
     public synchronized StorageTransaction newStorageTransaction() {
         assertPrepared();
         Session session = factory.openSession();
-        session.setFlushMode(FlushMode.MANUAL);
+        session.setHibernateFlushMode(FlushMode.MANUAL);
         return new HibernateStorageTransaction(this, session);
     }
 
@@ -301,97 +299,7 @@ public class HibernateStorage implements Storage {
         }
         this.dataSource = (RDBMSDataSource) dataSource;
         MDMTable.setDataSource(this.dataSource);
-//        internalInit();
-//        configuration = new Configuration();
     }
-
-//    @SuppressWarnings("serial")
-//    protected void internalInit() {
-//        if (!dataSource.supportFullText()) {
-//            LOGGER.warn("Storage '" + storageName + "' (" + storageType + ") is not configured to support full text queries."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-//        }
-//        configuration = new Configuration() {
-//
-//            protected transient Mapping mapping = buildMapping();
-//
-//            @Override
-//            public Mappings createMappings() {
-//                return new MDMMappingsImpl();
-//            }
-//
-//            class MDMMappingsImpl extends MappingsImpl {
-//
-//                @Override
-//                public Table addTable(String schema, String catalog, String name, String subselect, boolean isAbstract) {
-//                    name = getObjectNameNormalizer().normalizeIdentifierQuoting(name);
-//                    schema = getObjectNameNormalizer().normalizeIdentifierQuoting(schema);
-//                    catalog = getObjectNameNormalizer().normalizeIdentifierQuoting(catalog);
-//
-//                    String key = subselect == null ? Table.qualify(catalog, schema, name) : subselect;
-//                    Table table = tables.get(key);
-//
-//                    if (table == null) {
-//                        table = new MDMTable();
-//                        ((MDMTable) table).setDataSource(dataSource);
-//                        table.setAbstract(isAbstract);
-//                        table.setName(name);
-//                        table.setSchema(schema);
-//                        table.setCatalog(catalog);
-//                        table.setSubselect(subselect);
-//                        tables.put(key, table);
-//                    } else if (!isAbstract) {
-//                        table.setAbstract(false);
-//                    }
-//
-//                    return table;
-//                }
-//
-//                @Override
-//                public Table addDenormalizedTable(String schema, String catalog, String name, boolean isAbstract,
-//                        String subSelect, final Table includedTable) throws DuplicateMappingException {
-//                    name = getObjectNameNormalizer().normalizeIdentifierQuoting(name);
-//                    schema = getObjectNameNormalizer().normalizeIdentifierQuoting(schema);
-//                    catalog = getObjectNameNormalizer().normalizeIdentifierQuoting(catalog);
-//                    String key = subSelect == null ? Table.qualify(catalog, schema, name) : subSelect;
-//                    if (tables.containsKey(key)) {
-//                        throw new DuplicateMappingException("Table " + key + " is duplicated.", //$NON-NLS-1$ //$NON-NLS-2$
-//                                DuplicateMappingException.Type.TABLE, name);
-//                    }
-//                    Table table = new MDMDenormalizedTable(includedTable) {
-//
-//                        @SuppressWarnings({ "unchecked" })
-//                        @Override
-//                        public Iterator<Index> getIndexIterator() {
-//                            List<Index> indexes = new ArrayList<>();
-//                            Iterator<Index> IndexIterator = super.getIndexIterator();
-//                            while (IndexIterator.hasNext()) {
-//                                Index parentIndex = IndexIterator.next();
-//                                Index index = new Index();
-//                                index.setName(tableResolver.get(parentIndex.getName()));
-//                                index.setTable(this);
-//                                index.addColumns(parentIndex.getColumnIterator());
-//                                indexes.add(index);
-//                            }
-//                            return indexes.iterator();
-//                        }
-//                    };
-//                    if (table instanceof MDMTable) {
-//                        ((MDMTable) table).setDataSource(dataSource);
-//                    }
-//                    table.setAbstract(isAbstract);
-//                    table.setName(name);
-//                    table.setSchema(schema);
-//                    table.setCatalog(catalog);
-//                    table.setSubselect(subSelect);
-//                    tables.put(key, table);
-//                    return table;
-//                }
-//            }
-//        };
-//        // Setting our own entity resolver allows to ensure the DTD found/used are what we expect (and not potentially
-//        // one provided by the application server).
-//        configuration.setEntityResolver(ENTITY_RESOLVER);
-//    }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
@@ -402,13 +310,11 @@ public class HibernateStorage implements Storage {
         }
         if (isPrepared) {
             close();
-//            internalInit();
         }
         if (dataSource == null) {
             throw new IllegalArgumentException("Datasource is not set."); //$NON-NLS-1$
         }
-        // No support for data models including inheritance AND for g* XSD simple types AND fields that start with
-        // X_TALEND_
+        // No support for data models including inheritance AND for g* XSD simple types AND fields that start with X_TALEND_
         try {
             repository.accept(METADATA_CHECKER);
             userMetadataRepository = repository;
@@ -430,8 +336,7 @@ public class HibernateStorage implements Storage {
             } catch (ClassNotFoundException e) {
                 clazz = (Class<? extends StorageClassLoader>) Class.forName(CLASS_LOADER);
             }
-            Constructor<? extends StorageClassLoader> constructor = clazz.getConstructor(ClassLoader.class, String.class,
-                    StorageType.class);
+            Constructor<? extends StorageClassLoader> constructor = clazz.getConstructor(ClassLoader.class, String.class, StorageType.class);
             storageClassLoader = constructor.newInstance(contextClassLoader, storageName, storageType);
             storageClassLoader.setDataSourceConfiguration(dataSource);
             storageClassLoader.generateHibernateConfig(); // Checks if configuration can be generated.
@@ -609,7 +514,7 @@ public class HibernateStorage implements Storage {
             } catch (Exception e) {
                 throw new RuntimeException("Exception occurred during dynamic classes creation.", e); //$NON-NLS-1$
             }
-            // Last step: configuration of Hibernate
+            // Create registry of hibernate
             StandardServiceRegistryImpl serviceRegistry = null;
             try {
                 // Hibernate needs to have dynamic classes in context class loader during configuration.
@@ -617,16 +522,14 @@ public class HibernateStorage implements Storage {
                 if (ehCacheConfig != null) {
                     CacheManager.create(ehCacheConfig);
                 }
-//                configuration.configure(StorageClassLoader.HIBERNATE_CONFIG);
-
                 ClassLoaderService myStorageClassLoader = new StorageClassLoaderServiceImpl(storageClassLoader);
                 BootstrapServiceRegistryBuilder bootBuilder = new BootstrapServiceRegistryBuilder().applyClassLoaderService(myStorageClassLoader);
                 BootstrapServiceRegistry bootService = bootBuilder.build();
 
+                // Create StandardServiceRegistryBuilder
                 StandardServiceRegistryBuilder serviceRegistryBuilder = new StandardServiceRegistryBuilder(bootService);
                 MDMHibernateSchemaManagementTool service = new MDMHibernateSchemaManagementTool();
                 serviceRegistryBuilder.addService(SchemaManagementTool.class, service);
-
                 serviceRegistryBuilder.configure(StorageClassLoader.HIBERNATE_CONFIG);
 
                 serviceRegistry = (StandardServiceRegistryImpl)serviceRegistryBuilder.build();
@@ -638,6 +541,7 @@ public class HibernateStorage implements Storage {
                         new MDMHibernateConfigurableServiceImpl()
                 );
                 serviceRegistry.configureService(mdmConfigurable);
+                // Create Metadata
                 metadata = new MDMMetadataSources(serviceRegistry).buildMetadata();
 
                 if (mdmConfigurable.getService().getProperty(Environment.STATEMENT_BATCH_SIZE) == null) {
@@ -645,9 +549,7 @@ public class HibernateStorage implements Storage {
                 } else {
                     batchSize = Integer.parseInt(mdmConfigurable.getService().getProperty(Environment.STATEMENT_BATCH_SIZE));
                 }
-//                batchSize = Integer.parseInt("100");
                 // Sets default schema for Oracle
-//                Properties properties = configuration.getProperties();
                 if (dataSource.getDialectName() == RDBMSDataSource.DataSourceDialect.ORACLE_10G) {
                     mdmConfigurable.getService().setProperty(Environment.DEFAULT_SCHEMA, dataSource.getUserName());
                 }
@@ -660,11 +562,9 @@ public class HibernateStorage implements Storage {
                 List exceptions = Collections.emptyList();
                 switch (schemaGeneration) {
                 case CREATE:
-//                    SchemaExport schemaExport = new SchemaExport(configuration);
-//                    schemaExport.create(false, true);
                     SchemaExport schemaExport = new SchemaExport();
                     schemaExport.create(EnumSet.of(TargetType.DATABASE), metadata);
-                    
+
                     // Exception may happen during recreation (hibernate may perform statements on tables that does
                     // not exist): these exceptions are supposed to be harmless (but log them to DEBUG just in case).
                     if (LOGGER.isDebugEnabled()) {
@@ -675,14 +575,10 @@ public class HibernateStorage implements Storage {
                     }
                     break;
                 case VALIDATE:
-//                    SchemaValidator schemaValidator = new SchemaValidator(configuration);
-//                    schemaValidator.validate(); // This is supposed to throw exception on validation issue.
                     SchemaValidator schemaValidator = new SchemaValidator();
                     schemaValidator.validate(metadata); // This is supposed to throw exception on validation issue.
                     break;
                 case UPDATE:
-//                    SchemaUpdate schemaUpdate = new SchemaUpdate(configuration);
-//                    schemaUpdate.execute(false, true);
                     SchemaUpdate schemaUpdate = new SchemaUpdate();
                     schemaUpdate.execute(EnumSet.of(TargetType.DATABASE), metadata);
                     exceptions = schemaUpdate.getExceptions();
@@ -711,16 +607,12 @@ public class HibernateStorage implements Storage {
                     }
                     throw new IllegalStateException(sb.toString());
                 }
-                // Initialize Hibernate
-//                Environment.verifyProperties(properties);
-//                ConfigurationHelper.resolvePlaceHolders(properties);
-//                ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().applySettings(properties).build();
-//                factory = configuration.buildSessionFactory(serviceRegistry);
-                factory = metadata.buildSessionFactory();
 
+                // Create SessionFactory
+                factory = metadata.buildSessionFactory();
                 MDMTransactionSessionContext.declareStorage(this, factory);
             } catch (Exception e) {
-                StandardServiceRegistryBuilder.destroy( serviceRegistry );
+                StandardServiceRegistryBuilder.destroy(serviceRegistry);
                 throw new RuntimeException("Exception occurred during Hibernate initialization.", e); //$NON-NLS-1$
             }
             // All set: set prepared flag to true.
@@ -743,9 +635,6 @@ public class HibernateStorage implements Storage {
 
     private void traceDDL() {
         try {
-//            if (configuration == null) {
-//                throw new IllegalStateException("Expect a Hibernate configuration to be set."); //$NON-NLS-1$
-//            }
             String jbossServerTempDir = System.getProperty("java.io.tmpdir"); //$NON-NLS-1$
             RDBMSDataSource.DataSourceDialect dialectType = dataSource.getDialectName();
             SchemaExport export = new SchemaExport();
@@ -1016,44 +905,6 @@ public class HibernateStorage implements Storage {
 
     @Override
     public Set<String> getFullTextSuggestion(String keyword, FullTextSuggestion mode, int suggestionSize) {
-        // TODO Need Lucene 3.0+ to implement this.
-        /*
-         * FullTextSession fullTextSession = Search.getFullTextSession(factory.getCurrentSession()); SearchFactory
-         * searchFactory = fullTextSession.getSearchFactory();
-         * 
-         * Collection<ComplexTypeMetadata> complexTypes = internalRepository.getUserComplexTypes(); Set<String> fields =
-         * new HashSet<String>(); List<DirectoryProvider> directoryProviders = new LinkedList<DirectoryProvider>(); for
-         * (ComplexTypeMetadata complexType : complexTypes) { for (FieldMetadata fieldMetadata :
-         * complexType.getFields()) { fields.add(fieldMetadata.getName()); } Class<?> generatedClass =
-         * storageClassLoader.getClassFromType(complexType); DirectoryProvider[] providers =
-         * searchFactory.getDirectoryProviders(generatedClass); Collections.addAll(directoryProviders, providers); }
-         * 
-         * DirectoryProvider[] providers = directoryProviders.toArray(new DirectoryProvider[directoryProviders.size()]);
-         * IndexReader reader = searchFactory.getReaderProvider().openReader(providers);
-         * 
-         * try { switch (mode) { case START: try { IndexSearcher searcher = new IndexSearcher(reader);
-         * 
-         * String[] fieldsAsArray = fields.toArray(new String[fields.size()]); MultiFieldQueryParser parser = new
-         * MultiFieldQueryParser(Version.LUCENE_29, fieldsAsArray, new KeywordAnalyzer()); StringBuilder queryBuffer =
-         * new StringBuilder(); Iterator<String> fieldsIterator = fields.iterator(); while (fieldsIterator.hasNext()) {
-         * queryBuffer.append(fieldsIterator.next()).append(':').append(keyword).append("*"); if
-         * (fieldsIterator.hasNext()) { queryBuffer.append(" OR "); } } org.apache.lucene.search.Query query =
-         * parser.parse(queryBuffer.toString());
-         * 
-         * MatchedWordsCollector collector = new MatchedWordsCollector(reader); searcher.search(query, collector);
-         * return collector.getMatchedWords(); } catch (Exception e) { throw new RuntimeException(e); } case ALTERNATE:
-         * try { IndexSearcher searcher = new IndexSearcher(reader);
-         * 
-         * String[] fieldsAsArray = fields.toArray(new String[fields.size()]); BooleanQuery query = new BooleanQuery();
-         * for (String field : fieldsAsArray) { FuzzyQuery fieldQuery = new FuzzyQuery(new Term(field, '~' + keyword));
-         * query.add(fieldQuery, BooleanClause.Occur.SHOULD); }
-         * 
-         * MatchedWordsCollector collector = new MatchedWordsCollector(reader); searcher.search(query, collector);
-         * return collector.getMatchedWords(); } catch (Exception e) { throw new RuntimeException(e); } default: throw
-         * new NotImplementedException("No support for suggestion mode '" + mode + "'"); } } finally { try {
-         * reader.close(); } catch (IOException e) {
-         * LOGGER.error("Exception occurred during full text suggestion searches.", e); } }
-         */
         throw new UnsupportedOperationException("No support due to version of Lucene in use."); //$NON-NLS-1$
     }
 
@@ -1200,21 +1051,6 @@ public class HibernateStorage implements Storage {
                                     }
                                 }
                             }
-                            
-//                            Lock.With lock = new Lock.With(directory.obtainLock(lockName), 5000) {
-//
-//                                @Override
-//                                protected Object doBody() throws IOException {
-//                                    String[] files = directory.listAll();
-//                                    for (String file : files) {
-//                                        if (!file.endsWith(lockName)) { // Don't delete our own lock
-//                                            directory.deleteFile(file);
-//                                        }
-//                                    }
-//                                    return null;
-//                                }
-//                            };
-//                            lock.run();
                             if (LOGGER.isDebugEnabled()) {
                                 LOGGER.debug("Removed full text directory for entity '" + typeMetadata.getName() + "' at '" //$NON-NLS-1$ //$NON-NLS-2$
                                         + directoryFile.getAbsolutePath() + "'"); //$NON-NLS-1$
@@ -1300,7 +1136,6 @@ public class HibernateStorage implements Storage {
                 typeName = "X_" + typeName; //$NON-NLS-1$
             }
             PersistentClass tempMetadata = metadata.getEntityBinding(ClassCreator.getClassName(typeName));
-//            PersistentClass metadata = configuration.getClassMapping(ClassCreator.getClassName(typeName));
             if (tempMetadata != null) {
                 tablesToDrop.addAll((Collection<String>) tempMetadata.accept(visitor));
             } else {
@@ -1398,12 +1233,9 @@ public class HibernateStorage implements Storage {
             try {
                 SessionFactoryImplementor sessionFactoryImplementor = (SessionFactoryImplementor) this.getCurrentSession().getSessionFactory();
                 Dialect dialect = sessionFactoryImplementor.getJdbcServices().getDialect();
-//                connection = sessionFactoryImplementor.getConnectionProvider().getConnection();
-//                connection = sessionFactoryImplementor.getJdbcServices().getBootstrapJdbcConnectionAccess().obtainConnection();
                 connection = ((SessionImpl)this.getCurrentSession()).connection();
 
-                LiquibaseSchemaAdapter liquibaseChange = new LiquibaseSchemaAdapter(tableResolver, dialect,
-                        (RDBMSDataSource) this.getDataSource(), this.getType());
+                LiquibaseSchemaAdapter liquibaseChange = new LiquibaseSchemaAdapter(tableResolver, dialect, (RDBMSDataSource) this.getDataSource(), this.getType());
                 liquibaseChange.setMetadata(metadata);
                 liquibaseChange.adapt(connection, diffResults);
             } catch (Exception e) {
@@ -1423,7 +1255,6 @@ public class HibernateStorage implements Storage {
 
         try {
             close(false);
-//            internalInit();
             prepare(newRepository, false);
             LOGGER.info("Database schema update complete."); //$NON-NLS-1$
         } catch (Exception e) {
@@ -1477,8 +1308,7 @@ public class HibernateStorage implements Storage {
                 }
                 // Find dependent types to delete
                 Set<ComplexTypeMetadata> allDependencies = new HashSet<>(typesToDrop);
-                Set<ComplexTypeMetadata> dependentTypesToDrop = findDependentTypesToDelete(previousRepository, typesToDrop,
-                        allDependencies);
+                Set<ComplexTypeMetadata> dependentTypesToDrop = findDependentTypesToDelete(previousRepository, typesToDrop, allDependencies);
                 typesToDrop.addAll(dependentTypesToDrop);
                 // Sort in dependency order
                 sortedTypesToDrop = new ArrayList<>(typesToDrop);
@@ -1610,8 +1440,7 @@ public class HibernateStorage implements Storage {
                                                     if (fieldsCondition.containsKey(columnName)) {
                                                         List originList = fieldsCondition.get(columnName);
                                                         originList.addAll(list);
-                                                        fieldsCondition
-                                                                .replace(columnName, fieldsCondition.get(columnName), originList);
+                                                        fieldsCondition.replace(columnName, fieldsCondition.get(columnName), originList);
                                                     } else {
                                                         fieldsCondition.put(columnName, list);
                                                     }
@@ -1708,7 +1537,7 @@ public class HibernateStorage implements Storage {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     private void deleteDataWithConditionForRepeatedField(Session session, Map<String, List> condition, String sql) {
         if (condition.isEmpty()) {
-            org.hibernate.Query query = session.createSQLQuery(sql);
+            Query query = session.createSQLQuery(sql);
             query.executeUpdate();
             return;
         }
@@ -1741,7 +1570,7 @@ public class HibernateStorage implements Storage {
 
     private void deleteDataWithCondition(Session session, Map<String, List> condition, String hql) {
         if (condition.isEmpty()) {
-            org.hibernate.Query query = session.createQuery(hql);
+            Query query = session.createQuery(hql);
             query.executeUpdate();
             return;
         }
@@ -1754,7 +1583,7 @@ public class HibernateStorage implements Storage {
             hqlBuilder.append(fieldEntry.getKey()).append(" in (:").append(fieldEntry.getKey()).append(')'); //$NON-NLS-1$//$NON-NLS-2$
         }
         hql = hqlBuilder.toString();
-        org.hibernate.Query query;
+        Query query;
         for (Entry<String, List> fieldEntry : condition.entrySet()) {
             query = session.createQuery(hql);
             List list = fieldEntry.getValue();
@@ -1847,7 +1676,6 @@ public class HibernateStorage implements Storage {
             }
             isPrepared = false;
             metadata = null;
-//            configuration = null;
         }
         // Reset caches
         ListIterator.resetTypeReaders();

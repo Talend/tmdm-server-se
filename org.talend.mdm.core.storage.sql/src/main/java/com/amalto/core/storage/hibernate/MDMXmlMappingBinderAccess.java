@@ -13,13 +13,14 @@ import org.hibernate.service.ServiceRegistry;
 public class MDMXmlMappingBinderAccess extends XmlMappingBinderAccess {
 
 	private final ClassLoaderService classLoaderService;
-	
+
 	public MDMXmlMappingBinderAccess(ServiceRegistry serviceRegistry) {
 		super(serviceRegistry);
-		this.classLoaderService = serviceRegistry.getService( ClassLoaderService.class );
+		this.classLoaderService = serviceRegistry.getService(ClassLoaderService.class);
 	}
 
-	public Binding bind(String resource) {
+	@SuppressWarnings("rawtypes")
+    public Binding bind(String resource) {
 		final InputStream xmlInputStream = classLoaderService.locateResourceStream(resource);
 		final Origin origin = new Origin(SourceType.INPUT_STREAM, null);
 		return new InputStreamXmlSource(origin, xmlInputStream, false).doBind(getMappingBinder());

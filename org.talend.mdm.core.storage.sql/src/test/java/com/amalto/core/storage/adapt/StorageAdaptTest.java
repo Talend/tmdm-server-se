@@ -650,7 +650,6 @@ public class StorageAdaptTest extends TestCase {
         try {
             createRecord(storage, factory, repository1, typeNames, new String[] { input1 });
         } catch (Exception e2) {
-            e2.printStackTrace();
             assertNull(e2);
         }
 

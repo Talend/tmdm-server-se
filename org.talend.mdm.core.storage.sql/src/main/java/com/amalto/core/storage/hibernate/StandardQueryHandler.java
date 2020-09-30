@@ -499,12 +499,12 @@ class StandardQueryHandler extends AbstractQueryHandler {
             @Override
             public Void visit(SimpleTypeFieldMetadata simpleField) {
                 if (!simpleField.isMany()) {
+                    ComplexTypeMetadata type = simpleField.getContainingType();
+                    TypeMetadata superType = MetadataUtils.getSuperConcreteType(type);
                     for (String alias : aliases) {
                         // As composite key as FK,change to alias.entity_id.key
-                        if (simpleField.isKey()
-                                && simpleField.getContainingType().getKeyFields().size() > 1
-                                && !containingType.getName().equals(simpleField.getContainingType().getName())) {
-                            projectionList.add(Projections.property(alias + '.' + (simpleField.getContainingType().getName() + "_ID.").toLowerCase() + simpleField.getName()));
+                        if (simpleField.isKey() && type.getKeyFields().size() > 1 && !alias.startsWith(containingType.getName() + '.')) {
+                            projectionList.add(Projections.property(alias + '.' + (superType.getName() + "_ID").toLowerCase() + '.' + simpleField.getName()));
                         } else {
                             projectionList.add(Projections.property(alias + '.' + simpleField.getName()));
                         }
@@ -1192,10 +1192,11 @@ class StandardQueryHandler extends AbstractQueryHandler {
                         // TMDM-7700: Fix incorrect alias for isNull condition on FK (pick the FK's containing type
                         // iso. the referenced type).
                         FieldMetadata fieldMetadata = ((Field) field).getFieldMetadata();
-                        if (fieldMetadata.getContainingType().isInstantiable()) {
+                        ComplexTypeMetadata containingType = fieldMetadata.getContainingType();
+                        if (containingType.isInstantiable() && (!fieldMetadata.isKey() || containingType.getKeyFields().size() == 1)) {
                             String typeName = fieldMetadata.getEntityTypeName();
                             criterion = Restrictions.isNull(typeName + '.' + fieldMetadata.getName());
-                        } else {
+                        } else { // Field is part of Composite PK, use criterionFieldName directly
                             criterion = Restrictions.isNull(criterionFieldName);
                         }
                     } else {
@@ -1491,6 +1492,7 @@ class StandardQueryHandler extends AbstractQueryHandler {
                 if (condition.getLeft() instanceof Field) {
                     Field leftField = (Field) condition.getLeft();
                     FieldMetadata fieldMetadata = leftField.getFieldMetadata();
+                    // TODO see how to fix this
                     if (!fieldMetadata.getType().equals(fieldMetadata.getType())) {
                         compareValue = StorageMetadataUtils.convert(String.valueOf(compareValue), fieldMetadata);
                     }
@@ -1532,13 +1534,14 @@ class StandardQueryHandler extends AbstractQueryHandler {
                             current = null;
                             for (String alias : aliases) {
                                 FieldMetadata[] fields = ((CompoundFieldMetadata) referencedField).getFields();
+                                TypeMetadata superType = MetadataUtils.getSuperConcreteType(fields[0].getContainingType());
                                 Object[] keyValues = (Object[]) compareValue;
                                 Criterion[] keyValueCriteria = new Criterion[keyValues.length];
                                 int i = 0;
                                 for (FieldMetadata keyField : fields) {
                                     Object keyValue = StorageMetadataUtils.convert(
                                             StorageMetadataUtils.toString(keyValues[i], keyField), keyField);
-                                    keyValueCriteria[i] = eq(alias + '.' + keyField.getName(), keyValue);
+                                    keyValueCriteria[i] = eq(alias + '.' + (superType.getName() + "_ID").toLowerCase() + '.' + keyField.getName(), keyValue);
                                     i++;
                                 }
                                 Criterion newCriterion = makeAnd(keyValueCriteria);
@@ -1840,8 +1843,9 @@ class StandardQueryHandler extends AbstractQueryHandler {
 
     private void addConditionForCompoundField(FieldCondition condition, String alias, FieldMetadata referencedField) {
         FieldMetadata[] fields = ((CompoundFieldMetadata) referencedField).getFields();
+        TypeMetadata superType = MetadataUtils.getSuperConcreteType(fields[0].getContainingType());
         for (FieldMetadata subFieldMetadata : fields) {
-            condition.criterionFieldNames.add(alias + '.' + subFieldMetadata.getName());
+            condition.criterionFieldNames.add(alias + '.' + (superType.getName() + "_ID").toLowerCase() + '.' + subFieldMetadata.getName());
         }
     }
 

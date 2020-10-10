@@ -181,7 +181,6 @@ public abstract class DownloadWriter {
             }
 
             if (cellValue != null) {
-                cellValue = cellValue.trim();
                 cellValue = cellValue.replaceAll("__h", "");
                 cellValue = cellValue.replaceAll("h__", "");
             } else {

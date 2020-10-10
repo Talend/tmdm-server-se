@@ -80,8 +80,8 @@ class SunOracleStandardPropertiesStrategy implements StandardPropertiesStrategy 
             String mdmRootDir = System.getProperty("mdm.root"); //$NON-NLS-1$
             if (mdmRootDir != null) {
                 properties.put("mdm.root", mdmRootDir); //$NON-NLS-1$
-                File joboxLog4jFile = new File(mdmRootDir + File.separator +  "conf" + File.separator + "log4j-jobox.properties"); //$NON-NLS-1$ //$NON-NLS-2$
-                properties.put("log4j.configuration", joboxLog4jFile.toURI().toURL().toExternalForm()); //$NON-NLS-1$
+                File joboxLog4jFile = new File(mdmRootDir + File.separator +  "conf" + File.separator + "log4j-jobox.xml"); //$NON-NLS-1$ //$NON-NLS-2$
+                properties.put("log4j2.configurationFile", joboxLog4jFile.toURI().toURL().toExternalForm()); //$NON-NLS-1$
             } else {
                 LOGGER.error("Jobox Log4J environment not set"); //$NON-NLS-1$
             }

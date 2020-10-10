@@ -106,7 +106,7 @@ public class DownloadWriterTest extends TestCase {
         DownloadUtil.assembleFkMap(colFkMap, fkMap, "<fkColXPath><item>Product/Family,ProductFamily/Id</item></fkColXPath>",
                 "<fkInfo><item>ProductFamily/Name</item></fkInfo>");
         String[] stringArray = { "<totalCount>1</totalCount>",
-                "<result xmlns:metadata=\"http://www.talend.com/mdm/metadata\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><Id>1</Id><Name>2,2\"</Name><Family>[7]</Family><Price>1.00</Price><Availability>true</Availability><Description>1</Description><Features></Features><Sizes></Sizes><Colors></Colors><Size>Small,Medium,Large</Size><Color>White,Light Blue,Light Pink</Color><taskId/></result>" };
+                "<result xmlns:metadata=\"http://www.talend.com/mdm/metadata\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><Id>1</Id><Name>  2,2\"  </Name><Family>[7]</Family><Price>1.00</Price><Availability>true</Availability><Description>1</Description><Features></Features><Sizes></Sizes><Colors></Colors><Size>Small,Medium,Large</Size><Color>White,Light Blue,Light Pink</Color><taskId/></result>" };
         WSStringArray wsStringArray = new WSStringArray(stringArray);
 
         XtentisPort port = PowerMockito.mock(XtentisPort.class);
@@ -124,7 +124,7 @@ public class DownloadWriterTest extends TestCase {
 
         String expectedResult = "Id,Name,Family,Price,Availability,Description,Features,Features/Sizes,Features/Colors,Features/Sizes/Size,Features/Colors/Color"
                 + System.getProperty("line.separator")
-                + "1,2&#44;2&#34;,[7]|F33,1.00,true,1,,,,Small|Medium|Large,White|Light Blue|Light Pink";
+                + "1,  2&#44;2&#34;  ,[7]|F33,1.00,true,1,,,,Small|Medium|Large,White|Light Blue|Light Pink";
         DownloadWriter writer = new CSVWriter(concept, viewPk, idsList, headerArray, xpathArray, criteria, multipleValueSeparator,
                 fkDisplay, fkResovled, colFkMap, fkMap, false, language);
         writer.writeFile();
@@ -156,7 +156,7 @@ public class DownloadWriterTest extends TestCase {
                 continue;
             } else if (rowNumber == 2) {
                 assertEquals("1", row.getCell(0).getRichStringCellValue().getString());
-                assertEquals("2,2\"", row.getCell(1).getRichStringCellValue().getString());
+                assertEquals("  2,2\"  ", row.getCell(1).getRichStringCellValue().getString());
                 assertEquals("[7]|F33", row.getCell(2).getRichStringCellValue().getString());
                 assertEquals("1.00", row.getCell(3).getRichStringCellValue().getString());
                 assertEquals("true", row.getCell(4).getRichStringCellValue().getString());

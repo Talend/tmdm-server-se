@@ -320,6 +320,9 @@ class StandardQueryHandler extends AbstractQueryHandler {
             } else {
                 if (!pathToAlias.containsKey(pathToAliasKey)) {
                     for (String rightTableAlias : rightTableAliases) {
+                        if (aliasToPath.containsKey(rightTableAlias)) {
+                            rightTableAlias = createNewAlias();
+                        }
                         criteria.createAlias(previousAlias + '.' + fieldName, rightTableAlias, joinType);
                         pathToAlias.put(pathToAliasKey, rightTableAlias);
                         aliasToPath.put(rightTableAlias, aliasPathKey);

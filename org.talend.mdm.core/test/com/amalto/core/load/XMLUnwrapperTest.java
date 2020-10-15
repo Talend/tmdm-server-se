@@ -161,4 +161,14 @@ public class XMLUnwrapperTest extends TestCase {
         assertEquals(4, i);
     }
 
+    public void testValueWithSpace() throws Exception {
+        XMLStreamUnwrapper tokenizer = new XMLStreamUnwrapper(new ByteArrayInputStream("<root><test><value1>  value  </value1></test></root>".getBytes()));
+        int i = 0;
+        while (tokenizer.hasMoreElements()) {
+            i++;
+            final String element = tokenizer.nextElement();
+            assertEquals("<test><value1>  value  </value1></test>", element);
+        }
+        assertEquals(1, i);
+    }
 }

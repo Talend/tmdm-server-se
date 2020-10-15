@@ -226,7 +226,7 @@ public class XmlSAXDataRecordReader implements DataRecordReader<XmlSAXDataRecord
 
         @Override
         public void characters(char[] ch, int start, int length) throws SAXException {
-            charactersBuffer.append(new String(ch, start, length).trim());
+            charactersBuffer.append(new String(ch, start, length));
         }
 
         @Override

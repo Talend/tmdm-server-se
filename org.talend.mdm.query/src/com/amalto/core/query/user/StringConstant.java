@@ -13,6 +13,7 @@ package com.amalto.core.query.user;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.talend.mdm.commmon.metadata.Types;
 
 public class StringConstant implements ConstantExpression<String> {
@@ -23,6 +24,10 @@ public class StringConstant implements ConstantExpression<String> {
 
     public StringConstant(String value) {
         assert value != null;
+        if (StringUtils.startsWith(value, "&quot;") &&
+            StringUtils.endsWith(value, "&quot;")) {
+            value = StringUtils.substringBetween(value, "&quot;");
+        }
         this.value = value;
         this.valueList = null;
     }

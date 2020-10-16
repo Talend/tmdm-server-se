@@ -12,6 +12,7 @@ package org.talend.mdm.webapp.browserecords.client.handler;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +22,7 @@ import org.talend.mdm.webapp.base.shared.EntityModel;
 import org.talend.mdm.webapp.base.shared.TypeModel;
 import org.talend.mdm.webapp.browserecords.client.model.ItemBean;
 import org.talend.mdm.webapp.browserecords.client.model.ItemNodeModel;
+import org.talend.mdm.webapp.browserecords.client.util.DateUtil;
 import org.talend.mdm.webapp.browserecords.client.util.FormatUtil;
 import org.talend.mdm.webapp.browserecords.shared.ViewBean;
 
@@ -212,7 +214,14 @@ public class ItemTreeHandler implements IsSerializable {
                         currentNodeModel.setTypeName(((ForeignKeyBean) value).getConceptName());
                     } else {
                         String valueString = value.toString();
-                        if (value instanceof Float || value instanceof Double || value instanceof BigDecimal) {
+                        if (value instanceof Date) {
+                            String typeName = currentTypeModel.getType().getTypeName();
+                            if ("dateTime".equals(typeName)) {
+                                valueString = DateUtil.getDateTime((Date) value);
+                            } else if ("date".equals(typeName)) {
+                                valueString = DateUtil.getDate((Date) value);
+                            }
+                        } else if (value instanceof Float || value instanceof Double || value instanceof BigDecimal) {
                             valueString = new BigDecimal(valueString).toPlainString();
                             if (value instanceof Float || value instanceof Double) {
                                 valueString = FormatUtil.formatFranctionValue(valueString);

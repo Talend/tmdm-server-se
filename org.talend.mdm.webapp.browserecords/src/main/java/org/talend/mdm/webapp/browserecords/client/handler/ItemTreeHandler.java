@@ -214,11 +214,11 @@ public class ItemTreeHandler implements IsSerializable {
                         currentNodeModel.setTypeName(((ForeignKeyBean) value).getConceptName());
                     } else {
                         String valueString = value.toString();
-                        if(value instanceof Date){
+                        if (value instanceof Date) {
                         	String typeName = currentTypeModel.getType().getTypeName();
-                        	if("dateTime".equals(typeName)){
+                        	if ("dateTime".equals(typeName)) {
                         		valueString = DateUtil.getDateTime((Date)value);
-                        	} else if ("date".equals(typeName)){
+                        	} else if ("date".equals(typeName)) {
                         		valueString = DateUtil.getDate((Date)value);
                         	}
                         } else if (value instanceof Float || value instanceof Double || value instanceof BigDecimal) {

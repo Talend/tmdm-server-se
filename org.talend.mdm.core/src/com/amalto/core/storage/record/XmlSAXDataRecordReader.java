@@ -10,7 +10,6 @@
 
 package com.amalto.core.storage.record;
 
-import java.util.List;
 import java.util.Stack;
 
 import javax.xml.XMLConstants;
@@ -227,7 +226,9 @@ public class XmlSAXDataRecordReader implements DataRecordReader<XmlSAXDataRecord
         @Override
         public void characters(char[] ch, int start, int length) throws SAXException {
             String value = new String(ch, start, length);
-            if (!value.startsWith("\n")) {
+            // "  \n  " or "\n  " or "  " between elements
+            boolean isBreaking = value.trim().length() == 0;
+            if (!isBreaking) {
                 charactersBuffer.append(value);
             }
         }

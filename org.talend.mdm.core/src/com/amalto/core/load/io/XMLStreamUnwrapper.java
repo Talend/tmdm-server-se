@@ -168,8 +168,10 @@ public class XMLStreamUnwrapper implements Enumeration<String> {
                         }
                         hasMadeChanges = true;
                     } else if (event.isCharacters()) {
-                        final String text = event.asCharacters().getData().replace("\n", "");
-                        if (!text.isEmpty()) {
+                        final String text = event.asCharacters().getData();
+                        // "  \n  " or "\n  " or "  " between elements
+                        boolean isBreaking = text.trim().length() == 0;
+                        if (!isBreaking) {
                             writer.writeCharacters(text);
                             hasMadeChanges = true;
                         }

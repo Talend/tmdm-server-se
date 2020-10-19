@@ -320,6 +320,9 @@ class StandardQueryHandler extends AbstractQueryHandler {
             } else {
                 if (!pathToAlias.containsKey(pathToAliasKey)) {
                     for (String rightTableAlias : rightTableAliases) {
+                        if (aliasToPath.containsKey(rightTableAlias)) {
+                            rightTableAlias = createNewAlias();
+                        }
                         criteria.createAlias(previousAlias + '.' + fieldName, rightTableAlias, joinType);
                         pathToAlias.put(pathToAliasKey, rightTableAlias);
                         aliasToPath.put(rightTableAlias, aliasPathKey);
@@ -617,7 +620,9 @@ class StandardQueryHandler extends AbstractQueryHandler {
                         // TMDM-4866: Do a left join in case FK is not mandatory (only if there's one path).
                         // TMDM-7636: As soon as a left join is selected all remaining join should remain left outer.
                         if (next.isMandatory() && paths.size() == 1 && joinType != JoinType.LEFT_OUTER_JOIN) {
-                            if(storage != null && storage instanceof HibernateStorage && StorageType.STAGING == storage.getType()){
+                            if (storage != null && storage instanceof HibernateStorage && StorageType.STAGING == storage.getType()) {
+                                joinType = JoinType.LEFT_OUTER_JOIN;
+                            } else if (aliasToPath.containsValue(next.getName())) {
                                 joinType = JoinType.LEFT_OUTER_JOIN;
                             } else {
                                 joinType = JoinType.INNER_JOIN;

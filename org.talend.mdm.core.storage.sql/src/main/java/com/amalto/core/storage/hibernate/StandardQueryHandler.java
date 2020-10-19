@@ -619,6 +619,7 @@ class StandardQueryHandler extends AbstractQueryHandler {
                         pathToAlias.put(previousAlias + "/" + aliasPathKey, alias); //$NON-NLS-1$
                         // TMDM-4866: Do a left join in case FK is not mandatory (only if there's one path).
                         // TMDM-7636: As soon as a left join is selected all remaining join should remain left outer.
+                        // TMDM-14582: If a field existed in previous join, then it will use left join for remaining.
                         if (next.isMandatory() && paths.size() == 1 && joinType != JoinType.LEFT_OUTER_JOIN) {
                             if (storage != null && storage instanceof HibernateStorage && StorageType.STAGING == storage.getType()) {
                                 joinType = JoinType.LEFT_OUTER_JOIN;

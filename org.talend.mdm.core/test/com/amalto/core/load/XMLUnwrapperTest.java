@@ -162,7 +162,7 @@ public class XMLUnwrapperTest extends TestCase {
     }
 
     public void testValueWithSpace() throws Exception {
-        XMLStreamUnwrapper tokenizer = new XMLStreamUnwrapper(new ByteArrayInputStream("<root><test><value1>  value  </value1></test></root>".getBytes()));
+        XMLStreamUnwrapper tokenizer = new XMLStreamUnwrapper(new ByteArrayInputStream("<root>  <test><value1>  value  </value1></test>  </root>".getBytes()));
         int i = 0;
         while (tokenizer.hasMoreElements()) {
             i++;

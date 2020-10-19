@@ -226,8 +226,8 @@ public class XmlSAXDataRecordReader implements DataRecordReader<XmlSAXDataRecord
         @Override
         public void characters(char[] ch, int start, int length) throws SAXException {
             String value = new String(ch, start, length);
-            // "  \n  " or "\n  " or "  " between elements
-            boolean isBreaking = value.trim().length() == 0;
+            // "  \n  " or "\n  " or "  \t  " or "  " between elements
+            boolean isBreaking = value.replace("\t", "").trim().length() == 0;
             if (!isBreaking) {
                 charactersBuffer.append(value);
             }

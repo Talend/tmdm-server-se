@@ -681,4 +681,55 @@ public class DataRecordCreationTest extends StorageTestCase {
         DataRecord result = results.iterator().next();
         assertEquals("[1]", StorageMetadataUtils.toString(result.get("supplier"), result.getType().getField("supplier")));
     }
+
+    // TMDM-14878 tMDMoutput + Extended Output => com.amalto.core.save.MultiRecordsSaveException: Could not set value with class
+    public void testGetAndUpdateBigBatchData() throws Exception {
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(DataRecordCreationTest.class.getResourceAsStream("AnnuaireGroupeExpress.xsd"));
+
+        Storage hibernateStorage = new HibernateStorage("H2-DS1", StorageType.STAGING); //$NON-NLS-1$
+        hibernateStorage.init(ServerContext.INSTANCE.get().getDefinition("H2-DS1", "MDM")); //$NON-NLS-1$//$NON-NLS-2$
+        hibernateStorage.prepare(repository, true);
+        Storage storage = new StagingStorage(hibernateStorage);
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+
+        List<DataRecord> records = new LinkedList<DataRecord>();
+        records.add(factory.read(repository, repository.getComplexType("FormeJuridique"),
+                "<FormeJuridique><IdFormeJuridique>11</IdFormeJuridique><Libelle>alan</Libelle></FormeJuridique>"));
+        records.add(factory.read(repository, repository.getComplexType("FormeJuridique"),
+                "<FormeJuridique><IdFormeJuridique>22</IdFormeJuridique><Libelle>emily</Libelle></FormeJuridique>"));
+        records.add(factory.read(repository, repository.getComplexType("FormeJuridique"),
+                "<FormeJuridique><IdFormeJuridique>33</IdFormeJuridique><Libelle>scott</Libelle></FormeJuridique>"));
+        records.add(factory.read(repository, repository.getComplexType("FormeJuridique"),
+                "<FormeJuridique><IdFormeJuridique>44</IdFormeJuridique><Libelle>yanqui</Libelle></FormeJuridique>"));
+        records.add(factory.read(repository, repository.getComplexType("FormeJuridique"),
+                "<FormeJuridique><IdFormeJuridique>55</IdFormeJuridique><Libelle>yankee</Libelle></FormeJuridique>"));
+
+        int totalRecord = 2000;
+        InputStream testResource = this.getClass().getResourceAsStream("AnnuaireGroupeExpress.xml");
+        DocumentBuilder documentBuilder = MDMXMLUtils.getDocumentBuilder().get();
+        Document inputDoc = documentBuilder.parse(testResource);
+        for (int i = 0; i < totalRecord; i ++) {
+            Document itemDoc = MDMXMLUtils.unwrap(inputDoc, "Societe", i);
+            String content = MDMXMLUtils.transformXMLToString(itemDoc);
+            records.add(factory.read(repository, repository.getComplexType("Societe"), content));
+        }
+
+        storage.begin();
+        storage.update(records);
+        storage.commit();
+
+        // Query saved data
+        storage.begin();
+        ComplexTypeMetadata dateInKey = repository.getComplexType("Societe"); //$NON-NLS-1$
+        UserQueryBuilder qb = from(dateInKey);
+        StorageResults results = storage.fetch(qb.getSelect());
+        assertEquals(totalRecord, results.getCount());
+        for (Iterator<DataRecord> iterator = results.iterator(); iterator.hasNext();) {
+            DataRecord item = iterator.next();
+            assertNotNull(item.get("InformationsIdentite/FormeJuridique"));
+            assertEquals("837 701 259", item.get("InformationsIdentite/IdentifiantLocal1"));
+            assertEquals("AVENUE JOSEPH GASQUET 2 TOULON", item.get("InformationsIdentite/RaisonSociale"));
+        }
+    }
 }

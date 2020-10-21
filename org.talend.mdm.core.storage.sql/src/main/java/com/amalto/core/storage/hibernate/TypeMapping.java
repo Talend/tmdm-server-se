@@ -27,12 +27,16 @@ import java.util.zip.ZipOutputStream;
 import org.apache.commons.codec.binary.Base64InputStream;
 import org.apache.commons.codec.binary.Base64OutputStream;
 import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.collection.internal.PersistentList;
 import org.hibernate.engine.spi.CollectionEntry;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.persister.collection.CollectionPersister;
+import org.hibernate.proxy.HibernateProxy;
+import org.hibernate.proxy.pojo.javassist.SerializableProxy;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
@@ -43,6 +47,8 @@ import com.amalto.core.storage.record.DataRecord;
  * Represents type mapping between data model as specified by the user and data model as used by hibernate storage.
  */
 public abstract class TypeMapping {
+
+    private static final Logger LOGGER = Logger.getLogger(TypeMapping.class);
 
     public static final String SQL_TYPE = "SQL_TYPE"; //$NON-NLS-1$
 
@@ -109,7 +115,7 @@ public abstract class TypeMapping {
     }
 
     public static Object readValue(Wrapper from, FieldMetadata sourceField, FieldMetadata targetField) {
-        Object value = from.get(sourceField.getName());
+        Object value = unproxy(from.get(sourceField.getName()));
         return _deserializeValue(value, sourceField, targetField);
     }
 
@@ -184,6 +190,40 @@ public abstract class TypeMapping {
             }
         }
         return value;
+    }
+
+    /**
+     * If these proxy are not already initialized, convert a Hibernate proxy to a real entity object.
+     * if still failed to initialize, only return previous object, without throwing any exceptions.
+     */
+    protected static Object unproxy(Object maybeProxy) {
+        if (maybeProxy instanceof HibernateProxy) {
+            final HibernateProxy proxy = (HibernateProxy) maybeProxy;
+            // unwrap the object and return
+            try {
+                Object result = proxy.writeReplace();
+                if (!(result instanceof SerializableProxy)) {
+                    if (LOGGER.isDebugEnabled()) {
+                        LOGGER.debug("Hibernate proxy object [" + maybeProxy.getClass() + "] will be initialized by Reflection");
+                    }
+                    return result;
+                }
+                result = proxy.getHibernateLazyInitializer().getImplementation();
+                if (!(result instanceof SerializableProxy)) {
+                    if (LOGGER.isDebugEnabled()) {
+                        LOGGER.debug("Hibernate proxy object [" + maybeProxy.getClass() + "] will be initialized by LazyInitializer");
+                    }
+                    return result;
+                }
+                LOGGER.info("No real entity object available, return directly proxy");
+                return maybeProxy;
+            } catch (HibernateException e) {
+                LOGGER.error("Failed to convert a Hibernate proxy [" + maybeProxy.getClass() + "] to a real entity object,\n Caused by: " + e);
+                return maybeProxy;
+            }
+        } else {
+            return maybeProxy;
+        }
     }
 
     /*

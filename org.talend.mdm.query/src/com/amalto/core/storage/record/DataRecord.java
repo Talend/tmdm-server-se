@@ -299,7 +299,11 @@ public class DataRecord {
             throw new IllegalArgumentException("Field can not be null.");
         }
         if (!field.isMany()) {
-            fieldToValue.put(field, o);
+            if (field.isKey() && o instanceof String) {
+                fieldToValue.put(field, ((String) o).trim());
+            } else {
+                fieldToValue.put(field, o);
+            }
         } else {
             List list = (List) fieldToValue.get(field);
             // fields that may contain data records.

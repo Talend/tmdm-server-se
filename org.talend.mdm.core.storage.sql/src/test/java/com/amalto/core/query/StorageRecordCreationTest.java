@@ -24,7 +24,6 @@ import java.util.List;
 
 import static com.amalto.core.query.user.UserQueryBuilder.eq;
 import static com.amalto.core.query.user.UserQueryBuilder.from;
-import static com.amalto.core.query.user.UserQueryBuilder.lt;
 
 @SuppressWarnings("nls")
 public class StorageRecordCreationTest extends StorageTestCase {

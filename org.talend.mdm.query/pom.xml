@@ -54,4 +54,27 @@
         </dependency>
     </dependencies>
 
+    <profiles>
+        <profile>
+            <id>dev-build</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>deploy-tomcat</id>
+                                <configuration>
+                                    <target>
+                                        <copy tofile="${lib.dest}" file="${jar.lib.src}" />
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

@@ -10,6 +10,35 @@
 
 package com.amalto.core.query;
 
+import static com.amalto.core.query.user.UserQueryBuilder.from;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
+import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.MetadataRepository;
+import org.talend.mdm.commmon.util.core.MDMXMLUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.XMLReader;
+
 import com.amalto.core.load.io.ResettableStringWriter;
 import com.amalto.core.query.user.UserQueryBuilder;
 import com.amalto.core.server.ServerContext;
@@ -30,32 +59,6 @@ import com.amalto.core.storage.record.XmlStringDataRecordReader;
 import com.amalto.core.storage.record.metadata.DataRecordMetadata;
 import com.amalto.core.util.Util;
 import com.amalto.xmlserver.interfaces.XmlServerException;
-import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
-import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
-import org.talend.mdm.commmon.metadata.MetadataRepository;
-import org.talend.mdm.commmon.util.core.MDMXMLUtils;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.xml.sax.XMLReader;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathFactory;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import static com.amalto.core.query.user.UserQueryBuilder.from;
 
 @SuppressWarnings("nls")
 public class DataRecordCreationTest extends StorageTestCase {
@@ -679,5 +682,56 @@ public class DataRecordCreationTest extends StorageTestCase {
         assertEquals(1, results.getCount());
         DataRecord result = results.iterator().next();
         assertEquals("[1]", StorageMetadataUtils.toString(result.get("supplier"), result.getType().getField("supplier")));
+    }
+
+    // TMDM-14878 tMDMoutput + Extended Output => com.amalto.core.save.MultiRecordsSaveException: Could not set value with class
+    public void testGetAndUpdateBigBatchData() throws Exception {
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(DataRecordCreationTest.class.getResourceAsStream("AnnuaireGroupeExpress.xsd"));
+
+        Storage hibernateStorage = new HibernateStorage("H2-DS1", StorageType.STAGING); //$NON-NLS-1$
+        hibernateStorage.init(ServerContext.INSTANCE.get().getDefinition("H2-DS1", "MDM")); //$NON-NLS-1$//$NON-NLS-2$
+        hibernateStorage.prepare(repository, true);
+        Storage storage = new StagingStorage(hibernateStorage);
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+
+        List<DataRecord> records = new LinkedList<DataRecord>();
+        records.add(factory.read(repository, repository.getComplexType("FormeJuridique"),
+                "<FormeJuridique><IdFormeJuridique>11</IdFormeJuridique><Libelle>alan</Libelle></FormeJuridique>"));
+        records.add(factory.read(repository, repository.getComplexType("FormeJuridique"),
+                "<FormeJuridique><IdFormeJuridique>22</IdFormeJuridique><Libelle>emily</Libelle></FormeJuridique>"));
+        records.add(factory.read(repository, repository.getComplexType("FormeJuridique"),
+                "<FormeJuridique><IdFormeJuridique>33</IdFormeJuridique><Libelle>scott</Libelle></FormeJuridique>"));
+        records.add(factory.read(repository, repository.getComplexType("FormeJuridique"),
+                "<FormeJuridique><IdFormeJuridique>44</IdFormeJuridique><Libelle>yanqui</Libelle></FormeJuridique>"));
+        records.add(factory.read(repository, repository.getComplexType("FormeJuridique"),
+                "<FormeJuridique><IdFormeJuridique>55</IdFormeJuridique><Libelle>yankee</Libelle></FormeJuridique>"));
+
+        int totalRecord = 2000;
+        InputStream testResource = this.getClass().getResourceAsStream("AnnuaireGroupeExpress.xml");
+        DocumentBuilder documentBuilder = MDMXMLUtils.getDocumentBuilder().get();
+        Document inputDoc = documentBuilder.parse(testResource);
+        for (int i = 0; i < totalRecord; i ++) {
+            Document itemDoc = MDMXMLUtils.unwrap(inputDoc, "Societe", i);
+            String content = MDMXMLUtils.transformXMLToString(itemDoc);
+            records.add(factory.read(repository, repository.getComplexType("Societe"), content));
+        }
+        
+        storage.begin();
+        storage.update(records);
+        storage.commit();
+
+        // Query saved data
+        storage.begin();
+        ComplexTypeMetadata dateInKey = repository.getComplexType("Societe"); //$NON-NLS-1$
+        UserQueryBuilder qb = from(dateInKey);
+        StorageResults results = storage.fetch(qb.getSelect());
+        assertEquals(totalRecord, results.getCount());
+        for (Iterator<DataRecord> iterator = results.iterator(); iterator.hasNext();) {
+            DataRecord item = iterator.next();
+            assertNotNull(item.get("InformationsIdentite/FormeJuridique"));
+            assertEquals("837 701 259", item.get("InformationsIdentite/IdentifiantLocal1"));
+            assertEquals("AVENUE JOSEPH GASQUET 2 TOULON", item.get("InformationsIdentite/RaisonSociale"));
+        }
     }
 }

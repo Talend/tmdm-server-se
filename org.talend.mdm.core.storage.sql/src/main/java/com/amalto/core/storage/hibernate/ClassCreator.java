@@ -669,6 +669,10 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
                             // Do this if key field is declared in containing type (DocumentId annotation is inherited).
                             if (metadata.getContainingType().getKeyFields().size() == 1) {
                                 if (metadata.isKey()) {
+                                    // Adds "SortableField" annotation for Hibernate search
+                                    Annotation sortableAnnotation = new Annotation(SortableField.class.getName(), cp);
+                                    annotations.addAnnotation(sortableAnnotation);
+
                                     Annotation docIdAnnotation = new Annotation(DocumentId.class.getName(), cp);
                                     annotations.addAnnotation(docIdAnnotation);
                                     Annotation fieldBridge = new Annotation(FieldBridge.class.getName(), cp);

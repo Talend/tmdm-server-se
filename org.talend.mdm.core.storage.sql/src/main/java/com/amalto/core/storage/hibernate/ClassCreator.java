@@ -526,6 +526,9 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
                     continue;
                 }
                 Fields annotationOnFields = (Fields)ctField.getAnnotation(Fields.class);
+                if (annotationOnFields == null) {
+                    continue;
+                }
                 Field[] values = annotationOnFields.value();
                 for (Field fieldValue : values) {
                     if (StringUtils.isNotBlank(fieldValue.name()) && fieldValue.name().equals(fieldMetadata.getName() + FIELD_POSTFIX)) {

@@ -116,7 +116,7 @@ class GenerateActions implements DocumentSaver {
                             }
                         }
                     } else {
-                        idValues.add(context.getUserDocument().createAccessor(key.getPath()).get());
+                        idValues.add(context.getUserDocument().createAccessor(key.getPath()).get().trim());
                     }
                 }
                 // Join ids read from XML document and generated ID values.

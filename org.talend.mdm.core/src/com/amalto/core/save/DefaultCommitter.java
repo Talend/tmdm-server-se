@@ -77,7 +77,7 @@ public class DefaultCommitter implements SaverSession.Committer {
                 if (!keyAccessor.exist()) {
                     throw new RuntimeException("Unexpected state: '"+ type +"' does not have value for key '" + keyFieldName + "'.");  //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
                 }
-                ids.add(keyAccessor.get());
+                ids.add(keyAccessor.get().trim());
             }
             ItemPOJO item = new ItemPOJO(new DataClusterPOJOPK(document.getDataCluster()),
                     type.getName(),

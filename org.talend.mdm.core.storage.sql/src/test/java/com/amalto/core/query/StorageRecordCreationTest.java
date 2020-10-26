@@ -561,4 +561,45 @@ public class StorageRecordCreationTest extends StorageTestCase {
             storage.commit();
         }
     }
+
+    // TMDM-14793
+    public void testPKWithLeadingAndEndingSpace() {
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+        // Create
+        String RR_Record4 = "<RR><Id> R4 </Id><Name>R4 Name</Name></RR>";
+        try {
+            storage.begin();
+            storage.update(factory.read(repository, rr, RR_Record4));
+            storage.commit();
+        } finally {
+            storage.end();
+        }
+        UserQueryBuilder qb = from(rr).where(eq(rr.getField("Name"), "R4 Name"));
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(results.getSize(), 1);
+            DataRecord record = results.iterator().next();
+            assertEquals(record.get("Id"), "R4");
+        } finally {
+            results.close();
+        }
+        // Update
+        String RR_Record4_2 = "<RR><Id> R4 </Id><Name> R4 Change </Name></RR>";
+        try {
+            storage.begin();
+            storage.update(factory.read(repository, rr, RR_Record4_2));
+            storage.commit();
+        } finally {
+            storage.end();
+        }
+        qb = from(rr).where(eq(rr.getField("Id"), "R4"));
+        results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(results.getSize(), 1);
+            DataRecord record = results.iterator().next();
+            assertEquals(record.get("Name"), " R4 Change ");
+        } finally {
+            results.close();
+        }
+    }
 }

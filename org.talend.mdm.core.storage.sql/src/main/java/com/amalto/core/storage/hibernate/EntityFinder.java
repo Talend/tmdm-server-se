@@ -39,6 +39,7 @@ import javax.persistence.LockModeType;
 import javax.persistence.Parameter;
 import javax.persistence.TemporalType;
 
+import org.apache.commons.collections.set.ListOrderedSet;
 import org.apache.lucene.search.Explanation;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.Sort;
@@ -85,6 +86,7 @@ public class EntityFinder {
      * @param session A Hibernate {@link Session}.
      * @return The top level (aka the Wrapper instance that represent a MDM entity).
      */
+    @SuppressWarnings({ "deprecation", "rawtypes" })
     public static Wrapper findEntity(Wrapper wrapper, HibernateStorage storage, Session session) {
         ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
         if (!(contextClassLoader instanceof StorageClassLoader)) {
@@ -146,6 +148,7 @@ public class EntityFinder {
     }
 
     private static class ScrollableResultsWrapper implements ScrollableResults {
+
         private final ScrollableResults scrollableResults;
 
         private final HibernateStorage storage;
@@ -335,7 +338,9 @@ public class EntityFinder {
         }
     }
 
+    @SuppressWarnings("rawtypes")
     private static class IteratorWrapper implements Iterator {
+
         private final Iterator iterator;
 
         private final HibernateStorage storage;
@@ -364,6 +369,7 @@ public class EntityFinder {
         }
     }
 
+    @SuppressWarnings({"rawtypes", "unchecked"})
     private static class QueryWrapper implements FullTextQuery {
 
         private final FullTextQuery query;
@@ -602,17 +608,38 @@ public class EntityFinder {
 
         @Override
         public ScrollableResults scroll() {
-            return query.scroll();
+            ScrollableResults scrollableResults = query.scroll();
+            return new ScrollableResultsWrapper(scrollableResults, storage, session);
         }
 
         @Override
         public ScrollableResults scroll(ScrollMode scrollMode) {
-            return query.scroll(scrollMode);
+            ScrollableResults scrollableResults = query.scroll(scrollMode);
+            return new ScrollableResultsWrapper(scrollableResults, storage, session);
         }
 
         @Override
         public List list() {
-            return query.list();
+            List<Wrapper> list = query.list();
+            Set<Wrapper> newSet = new ListOrderedSet();
+            for (Object item : list) {
+                Wrapper element = EntityFinder.findEntity((Wrapper) item, storage, session);
+                if (element != null) {
+                    if (entityClassName.size() > 0) {
+                        String elementName = element.getClass().getName();
+                        if (this.entityClassName.contains(elementName)) {
+                            newSet.add(element);
+                        } else if (elementName.contains("_$$")) {
+                            if (this.entityClassName.contains(elementName.subSequence(0, elementName.indexOf("_$$")))) {
+                                newSet.add(element);
+                            }
+                        }
+                    } else {
+                        newSet.add(element);
+                    }
+                }
+            }
+            return new ArrayList<Wrapper>(newSet);
         }
 
         @Override
@@ -670,7 +697,6 @@ public class EntityFinder {
             throw new UnsupportedOperationException( "parameters not supported in fullText queries" );
         }
 
-        @SuppressWarnings("rawtypes")
         @Override
         public org.hibernate.query.Query setParameter(Parameter param, Date value, TemporalType temporalType) {
             throw new UnsupportedOperationException( "parameters not supported in fullText queries" );
@@ -832,86 +858,104 @@ public class EntityFinder {
         }
 
         @Override
+        @Deprecated
         public org.hibernate.query.Query setEntity(int position, Object val) {
             return query.setEntity(position, val);
         }
 
         @Override
+        @Deprecated
         public org.hibernate.query.Query setEntity(String name, Object val) {
             return query.setEntity(name, val);
         }
 
         @Override
+        @Deprecated
         public RowSelection getQueryOptions() {
             return query.getQueryOptions();
         }
 
         @Override
+        @Deprecated
         public boolean isCacheable() {
             return query.isCacheable();
         }
 
         @Override
+        @Deprecated
         public Integer getTimeout() {
             return query.getTimeout();
         }
 
         @Override
+        @Deprecated
         public boolean isReadOnly() {
             return query.isReadOnly();
         }
 
         @Override
+        @Deprecated
         public Type[] getReturnTypes() {
             return query.getReturnTypes();
         }
 
         @Override
+        @Deprecated
         public Iterator iterate() {
-            return query.iterate();
+            Iterator iterator = query.iterate();
+            return new IteratorWrapper(iterator, storage, session);
         }
 
         @Override
+        @Deprecated
         public String[] getNamedParameters() {
             return query.getNamedParameters();
         }
 
         @Override
+        @Deprecated
         public Query setParameterList(int position, Collection values) {
             return query.setParameterList(position, values);
         }
 
         @Override
+        @Deprecated
         public Query setParameterList(int position, Collection values, Type type) {
             return query.setParameterList(position, values, type);
         }
 
         @Override
+        @Deprecated
         public Query setParameterList(int position, Object[] values, Type type) {
             return query.setParameterList(position, values);
         }
 
         @Override
+        @Deprecated
         public Query setParameterList(int position, Object[] values) {
             return query.setParameterList(position, values);
         }
 
         @Override
+        @Deprecated
         public Type determineProperBooleanType(int position, Object value, Type defaultType) {
             return query.determineProperBooleanType(position, value, defaultType);
         }
 
         @Override
+        @Deprecated
         public Type determineProperBooleanType(String name, Object value, Type defaultType) {
             return query.determineProperBooleanType(name, value, defaultType);
         }
 
         @Override
+        @Deprecated
         public String[] getReturnAliases() {
             return query.getReturnAliases();
         }
 
         @Override
+        @Deprecated
         public FullTextQuery setResultTransformer(ResultTransformer transformer) {
             return query.setResultTransformer(transformer);
         }
@@ -927,6 +971,7 @@ public class EntityFinder {
         }
 
         @Override
+        @Deprecated
         public FullTextQuery setFilter(Filter filter) {
            return query.setFilter(filter);
         }

@@ -575,13 +575,17 @@ public class StorageRecordCreationTest extends StorageTestCase {
             storage.end();
         }
         UserQueryBuilder qb = from(rr).where(eq(rr.getField("Name"), "R4 Name"));
+        // Begin a transaction to make sure fetch() and getSize() in same transaction, then the resource won't be released during getSize()
+        storage.begin();
         StorageResults results = storage.fetch(qb.getSelect());
         try {
             assertEquals(results.getSize(), 1);
             DataRecord record = results.iterator().next();
             assertEquals(record.get("Id"), "R4");
+            storage.commit();
         } finally {
             results.close();
+            storage.end();
         }
         // Update
         String RR_Record4_2 = "<RR><Id> R4 </Id><Name> R4 Change </Name></RR>";
@@ -592,6 +596,7 @@ public class StorageRecordCreationTest extends StorageTestCase {
         } finally {
             storage.end();
         }
+        // Query by PK no need to begin a transaction, release resource won't loss the data, see IdQueryHandler
         qb = from(rr).where(eq(rr.getField("Id"), "R4"));
         results = storage.fetch(qb.getSelect());
         try {

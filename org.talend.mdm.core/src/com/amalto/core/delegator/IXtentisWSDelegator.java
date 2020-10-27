@@ -1012,6 +1012,7 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
             List<WSItemPK> pks = new LinkedList<WSItemPK>();
             SaverSession session = SaverSession.newSession();
             int itemCounter = 0;
+            int total = items.length;
             for (WSPutItemWithReport item : items) {
                 itemCounter++;
                 WSPutItem wsPutItem = item.getWsPutItem();
@@ -1041,6 +1042,12 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
                     throw new RemoteException("Could not save record.", e); //$NON-NLS-1$
                 }
                 pks.add(new WSItemPK(new WSDataClusterPK(), saver.getSavedConceptName(), saver.getSavedId()));
+                if (LOGGER.isDebugEnabled()) {
+                    if (itemCounter % 50 == 0 || itemCounter == total) {
+                        LOGGER.debug("Thread " + Thread.currentThread().getName() + " has processed ["
+                                + (int) (((float) itemCounter / total) * 100) + "%] of the total records " + total);
+                    }
+                }
             }
             // Cause items being saved to be committed to database.
             session.end();

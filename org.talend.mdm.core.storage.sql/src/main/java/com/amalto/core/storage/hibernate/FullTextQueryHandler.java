@@ -644,7 +644,7 @@ class FullTextQueryHandler extends AbstractQueryHandler {
         } else if (Types.FLOAT.equals(type)) {
             sortField = new SortField(field, new FieldComparators.FloatComparatorSource(), reverse);
         } else {
-            sortField = new SortField(field, getSortType(fieldMetadata), reverse);
+            sortField = new SortField(ClassCreator.getSortableFieldName(fieldMetadata), getSortType(fieldMetadata), reverse);
         }
         return sortField;
     }

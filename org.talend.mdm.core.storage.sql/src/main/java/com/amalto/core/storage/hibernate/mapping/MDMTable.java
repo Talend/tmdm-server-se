@@ -110,7 +110,7 @@ public class MDMTable extends Table {
 
                 alter.append(dialect.getAddColumnSuffixString());
                 results.add(alter.toString());
-                LOGGER.info("ALTER TABLE : " + alter.toString());
+                LOGGER.info("TABLE UPDATE : " + alter.toString());
             } else if (MDMTableUtils.isAlterColumnField(column, columnInfo, dialect)) {
                 StringBuilder alter = new StringBuilder(root.toString());
 
@@ -155,7 +155,7 @@ public class MDMTable extends Table {
                 }
 
                 alter.append(dialect.getAddColumnSuffixString());
-                LOGGER.info("ALTER TABLE : " + alter.toString());
+                LOGGER.info("TABLE UPDATE : " + alter.toString());
                 results.add(alter.toString());
             } else if (StringUtils.isNotBlank(defaultValue) && !isDateType(sqlType)) {
                 StringBuilder alter = new StringBuilder(root.toString());
@@ -183,7 +183,7 @@ public class MDMTable extends Table {
                 }
                 if (needAlterDefaultValue) {
                     alter.append(dialect.getAddColumnSuffixString());
-                    LOGGER.info("ALTER TABLE : " + alter.toString());
+                    LOGGER.info("TABLE UPDATE : " + alter.toString());
                     results.add(alter.toString());
                 }
             } else if (MDMTableUtils.isChangedToOptional(column, columnInfo)) {
@@ -199,7 +199,7 @@ public class MDMTable extends Table {
                 } else if (dialect instanceof OracleCustomDialect) {
                     alter.append(" MODIFY ").append(columnName).append(" NULL");
                 }
-                LOGGER.info("ALTER TABLE : " + alter.toString());
+                LOGGER.info("TABLE UPDATE : " + alter.toString());
                 results.add(alter.toString());
             }
         }

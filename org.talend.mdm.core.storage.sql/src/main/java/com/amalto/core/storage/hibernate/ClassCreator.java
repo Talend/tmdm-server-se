@@ -765,7 +765,7 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
             }
             return new BasicSearchIndexHandler(metadata.getName());
         } else if (!validType) {
-            return new ToStringIndexHandler();
+            return new ToStringIndexHandler(metadata.getName());
         } else { // metadata.isMany() returned true
             if (metadata instanceof ReferenceFieldMetadata) {
                 return new ReferenceEntityIndexHandler();
@@ -914,13 +914,22 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
 
     private static class ToStringIndexHandler implements SearchIndexHandler {
 
+        private String fieldName;
+
+        protected ToStringIndexHandler(String fieldName) {
+            super();
+            this.fieldName = fieldName;
+        }
+
         @Override
         public void handle(AnnotationsAttribute annotations, ConstPool pool) {
             Annotation fieldAnnotation = new Annotation(Field.class.getName(), pool);
+            AnnotationMemberValue fieldMemberValue = new AnnotationMemberValue(fieldAnnotation, pool);
             Annotation fieldBridge = new Annotation(FieldBridge.class.getName(), pool);
             fieldBridge.addMemberValue("impl", new ClassMemberValue(ToStringBridge.class.getName(), pool)); //$NON-NLS-1$
-            annotations.addAnnotation(fieldAnnotation);
+
             annotations.addAnnotation(fieldBridge);
+            addSortableAnnotation(annotations, pool, fieldMemberValue, fieldName);
         }
     }
 

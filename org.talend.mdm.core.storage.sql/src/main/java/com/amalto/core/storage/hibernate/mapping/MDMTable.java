@@ -68,7 +68,7 @@ public class MDMTable extends Table {
             Identifier defaultSchema) throws HibernateException {
 
         String tableName = tableInfo.getName().getTableName().getText();
-        StringBuilder root = new StringBuilder("alter table ").append(tableName).append(' ');
+        StringBuilder root = new StringBuilder("ALTER TABLE ").append(tableName).append(' ');
         Iterator iter = getColumnIterator();
         List results = new ArrayList();
 
@@ -110,7 +110,7 @@ public class MDMTable extends Table {
 
                 alter.append(dialect.getAddColumnSuffixString());
                 results.add(alter.toString());
-                LOGGER.info("Table [" + tableName + "] updated: " + alter.toString());
+                LOGGER.info("TABLE UPDATE : " + alter.toString());
             } else if (MDMTableUtils.isAlterColumnField(column, columnInfo, dialect)) {
                 StringBuilder alter = new StringBuilder(root.toString());
 
@@ -134,7 +134,7 @@ public class MDMTable extends Table {
                     }
                 } else {
                     if (dialect instanceof PostgreSQL94Dialect) {
-                        alter.append(", alter column ").append(columnName).append(" set not null ");
+                        alter.append(", ALTER COLUMN ").append(columnName).append(" set not null ");
                     } else if (dialect instanceof Oracle8iDialect) {
                         alter.append(" check( ").append(columnName).append(" is not null )");
                     } else {
@@ -155,7 +155,7 @@ public class MDMTable extends Table {
                 }
 
                 alter.append(dialect.getAddColumnSuffixString());
-                LOGGER.info("Table [" + tableName + "] updated: " + alter.toString());
+                LOGGER.info("TABLE UPDATE : " + alter.toString());
                 results.add(alter.toString());
             } else if (StringUtils.isNotBlank(defaultValue) && !isDateType(sqlType)) {
                 StringBuilder alter = new StringBuilder(root.toString());
@@ -183,7 +183,7 @@ public class MDMTable extends Table {
                 }
                 if (needAlterDefaultValue) {
                     alter.append(dialect.getAddColumnSuffixString());
-                    LOGGER.info("Table [" + tableName + "] updated: " + alter.toString());
+                    LOGGER.info("TABLE UPDATE : " + alter.toString());
                     results.add(alter.toString());
                 }
             } else if (MDMTableUtils.isChangedToOptional(column, columnInfo)) {
@@ -199,7 +199,7 @@ public class MDMTable extends Table {
                 } else if (dialect instanceof OracleCustomDialect) {
                     alter.append(" MODIFY ").append(columnName).append(" NULL");
                 }
-                LOGGER.info("Table [" + tableName + "] updated: " + alter.toString());
+                LOGGER.info("TABLE UPDATE : " + alter.toString());
                 results.add(alter.toString());
             }
         }

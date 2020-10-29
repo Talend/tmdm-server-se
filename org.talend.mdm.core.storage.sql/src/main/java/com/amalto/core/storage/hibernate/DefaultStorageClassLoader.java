@@ -36,8 +36,8 @@ import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.util.core.MDMXMLUtils;
 import org.w3c.dom.Attr;
@@ -249,9 +249,6 @@ public class DefaultStorageClassLoader extends StorageClassLoader {
         sessionFactoryElement.appendChild(mapping);
 
         if (rdbmsDataSource.supportFullText()) {
-//            addEvent(document, sessionFactoryElement, "post-update", "org.hibernate.search.event.impl.FullTextIndexEventListener"); //$NON-NLS-1$ //$NON-NLS-2$
-//            addEvent(document, sessionFactoryElement, "post-insert", "org.hibernate.search.event.impl.FullTextIndexEventListener"); //$NON-NLS-1$ //$NON-NLS-2$
-//            addEvent(document, sessionFactoryElement, "post-delete", "org.hibernate.search.event.impl.FullTextIndexEventListener"); //$NON-NLS-1$ //$NON-NLS-2$
         } else if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Hibernate configuration does not define full text extensions due to datasource configuration."); //$NON-NLS-1$
         }

@@ -39,7 +39,7 @@ public class MDMHibernateSchemaManagementTool extends HibernateSchemaManagementT
 
     @Override
     public SchemaCreator getSchemaCreator(Map options) {
-        return new MDMSchemaCreatorImpl( this, getSchemaFilterProvider(options).getCreateFilter());
+        return new MDMSchemaCreatorImpl(this, getSchemaFilterProvider(options).getCreateFilter());
     }
 
     @Override

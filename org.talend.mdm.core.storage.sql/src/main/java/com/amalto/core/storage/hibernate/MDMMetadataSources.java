@@ -9,15 +9,15 @@ public class MDMMetadataSources extends MetadataSources {
     private static final long serialVersionUID = 3359949654618694093L;
 
     public MDMMetadataSources() {
-		super();
-	}
+        super();
+    }
 
-	public MDMMetadataSources(ServiceRegistry serviceRegistry) {
-		super(serviceRegistry);
-	}
+    public MDMMetadataSources(ServiceRegistry serviceRegistry) {
+        super(serviceRegistry);
+    }
 
-	@Override
-	public XmlMappingBinderAccess getXmlMappingBinderAccess() {
-		return new MDMXmlMappingBinderAccess(super.getServiceRegistry());
-	}
+    @Override
+    public XmlMappingBinderAccess getXmlMappingBinderAccess() {
+        return new MDMXmlMappingBinderAccess(super.getServiceRegistry());
+    }
 }

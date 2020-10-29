@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.search.annotations.Analyze;
@@ -506,45 +505,6 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
         return PACKAGE_PREFIX + typeName;
     }
 
-    /**
-     * Utility class to use in Hibernate Search 5, adding {@link @SortableField} annotation is required to perform any
-     * kind of sort on a field. we need to confirm the existing of sortable field when initializing Sort object using
-     * SortField constructor.
-     *
-     * @param fieldMetadata : sortable field name
-     * @return
-     */
-    @SuppressWarnings("rawtypes")
-    public static boolean existSortableFieldName(FieldMetadata fieldMetadata) {
-        String className = ClassCreator.getClassName(fieldMetadata.getContainingType().getName());
-        try {
-            ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-            Class clazz = contextClassLoader.loadClass(className);
-            java.lang.reflect.Field[] fields = clazz.getDeclaredFields();
-            for (java.lang.reflect.Field ctField : fields) {
-                if (!fieldMetadata.getName().equalsIgnoreCase(ctField.getName())) {
-                    continue;
-                }
-                Fields annotationOnFields = (Fields)ctField.getAnnotation(Fields.class);
-                if (annotationOnFields == null) {
-                    continue;
-                }
-                Field[] values = annotationOnFields.value();
-                for (Field fieldValue : values) {
-                    if (StringUtils.isNotBlank(fieldValue.name()) && fieldValue.name().equals(fieldMetadata.getName() + FIELD_POSTFIX)) {
-                        if (LOGGER.isDebugEnabled()) {
-                            LOGGER.debug("Field " + fieldMetadata.getName() + " is a SortableField in class " + className);
-                        }
-                        return true;
-                    }
-                }
-            }
-        } catch (ClassNotFoundException e) {
-            LOGGER.error("Could not find class '" + className + "'.", e);
-        }
-        return false;
-    }
-
     public static String getSortableFieldName(FieldMetadata fieldMetadata) {
         if (fieldMetadata.isKey()) {
             return fieldMetadata.getName();
@@ -817,7 +777,7 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
             fieldSortAnnotation.addMemberValue("store", storeValue); //$NON-NLS-1$
             AnnotationMemberValue fieldSortMemberValue = new AnnotationMemberValue(fieldSortAnnotation, pool);
 
-            // @Fields({@Field, @Field(name="fieldAlias",analyzer=Analyze.NO, index = NO, store = Store.NO)})
+            // @Fields({@Field, @Field(name="fieldAlias", analyzer=Analyze.NO, index = NO, store = Store.NO)})
             ArrayMemberValue arrayValue = new ArrayMemberValue(pool);
             arrayValue.setValue(new MemberValue[] { fieldMemberValue, fieldSortMemberValue });
             Annotation parentAnnotation = new Annotation(Fields.class.getName(), pool);

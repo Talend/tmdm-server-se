@@ -68,7 +68,7 @@ public class MDMTable extends Table {
             Identifier defaultSchema) throws HibernateException {
 
         String tableName = tableInfo.getName().getTableName().getText();
-        StringBuilder root = new StringBuilder("alter table ").append(tableName).append(' ');
+        StringBuilder root = new StringBuilder("ALTER TABLE ").append(tableName).append(' ');
         Iterator iter = getColumnIterator();
         List results = new ArrayList();
 
@@ -134,7 +134,7 @@ public class MDMTable extends Table {
                     }
                 } else {
                     if (dialect instanceof PostgreSQL94Dialect) {
-                        alter.append(", alter column ").append(columnName).append(" set not null ");
+                        alter.append(", ALTER COLUMN ").append(columnName).append(" set not null ");
                     } else if (dialect instanceof Oracle8iDialect) {
                         alter.append(" check( ").append(columnName).append(" is not null )");
                     } else {

@@ -187,7 +187,9 @@ public class ForeignKeyHelper {
                     // (Entity/field1/.../fieldN)
                     xpath = config.getSortField();
                     // Set sort language if foreign key info field is multiple lingual.
-                    if (Types.MULTI_LINGUAL.equals(entityModel.getTypeModel(config.getSortField()).getType().getTypeName())) {
+                    if (entityModel.getTypeModel(config.getSortField()) != null && 
+                    		entityModel.getTypeModel(config.getSortField()).getType() != null && 
+                    		Types.MULTI_LINGUAL.equals(entityModel.getTypeModel(config.getSortField()).getType().getTypeName())) {
                         OrderBy.SortLanguage.set(language.toUpperCase());
                     }
                 } else {

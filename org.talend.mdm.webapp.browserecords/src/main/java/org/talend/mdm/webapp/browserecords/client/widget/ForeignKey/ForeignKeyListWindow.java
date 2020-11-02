@@ -377,7 +377,7 @@ public class ForeignKeyListWindow extends Window {
                         Locale.getLanguage(), metaDataType), COLUMN_WIDTH);
                 columns.add(columnConfig);
                 TypeModel fKTypeModel = entityModel.getTypeModel(info);
-                if (fKTypeModel != null && fKTypeModel.getType() != null && fKTypeModel.getType().equals(DataTypeConstants.MLS)) {
+                if (fKTypeModel != null && DataTypeConstants.MLS.equals(fKTypeModel.getType())) {
 
                     columnConfig.setRenderer(new GridCellRenderer<ForeignKeyBean>() {
 
@@ -426,8 +426,7 @@ public class ForeignKeyListWindow extends Window {
                         String propertyName = CommonUtil.getElementFromXpath(property);
                         if (fkBean.get(propertyName) != null && !"".equals(fkBean.get(propertyName))) { //$NON-NLS-1$
                             TypeModel fKTypeModel = entityModel.getTypeModel(fkInfo);
-                            if (fKTypeModel != null && fKTypeModel.getType() != null && 
-                            		fKTypeModel.getType().equals(DataTypeConstants.MLS)) {
+                            if (fKTypeModel != null && DataTypeConstants.MLS.equals(fKTypeModel.getType()) {
                                 MultiLanguageModel multiLanguageModel = new MultiLanguageModel(fkBean.get(propertyName)
                                         .toString());
                                 result = multiLanguageModel.getValueByLanguage(Locale.getLanguage().toUpperCase()) + "-"; //$NON-NLS-1$

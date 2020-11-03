@@ -1927,6 +1927,29 @@ public class DocumentSaveTest extends TestCase {
         assertEquals("sdfsdf", evaluate(committedElement, "/Contract/detail[1]/code"));
     }
 
+    // TMDM-14910 Can't save record after adding occurrence using attached customer's datamodel
+    public void testMultiLevelPolymType() throws Exception {
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(DocumentSaveTest.class.getResourceAsStream("annuaireGroupeExpress_1.xsd"));
+        MockMetadataRepositoryAdmin.INSTANCE.register("Societe", repository);
+
+        SaverSource source = new TestSaverSource(repository, true, "societe_2_original.xml", "annuaireGroupeExpress_1.xsd");
+
+        SaverSession session = SaverSession.newSession(source);
+        InputStream recordXml = DocumentSaveTest.class.getResourceAsStream("societe_2.xml");
+        DocumentSaverContext context = session.getContextFactory().create("MDM", "Societe", "Source", recordXml, false, true, true, false, false);
+        DocumentSaver saver = context.createSaver();
+        saver.save(session, context);
+        MockCommitter committer = new MockCommitter();
+        session.end(committer);
+
+        assertTrue(committer.hasSaved());
+        Element committedElement = committer.getCommittedElement();
+        assertEquals("PersonneMoraleGroupe", evaluate(committedElement, "/Societe/Actionnaires/Actionnaire/TypeMembre/@xsi:type"));
+        assertEquals("myMembreName2", evaluate(committedElement, "/Societe/Actionnaires/Actionnaire/TypeMembre/TypeMembreName"));
+        assertEquals("44", evaluate(committedElement, "/Societe/Actionnaires/Actionnaire/TypeMembre/Groupe"));
+    }
+
     public void testUpdateSecurity() throws Exception {
         // TODO Test for modification of id (this test modifies id but this is intentional).
         MetadataRepository repository = new MetadataRepository();

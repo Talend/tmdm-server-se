@@ -987,7 +987,7 @@ class StandardQueryHandler extends AbstractQueryHandler {
         }
         if (condition != null) {
             for (String fieldName : condition.criterionFieldNames) {
-            	orderByWithNulls(orderBy.getDirection(), fieldName);                
+                orderByWithNulls(orderBy.getDirection(), fieldName);                
             }
         }
         return null;
@@ -995,23 +995,23 @@ class StandardQueryHandler extends AbstractQueryHandler {
     
     // Nulls first when order by with ASC direction, nulls last when order by DESC direction
     private void orderByWithNulls(OrderBy.Direction direction, String field) {
-    	RDBMSDataSource dataSource = (RDBMSDataSource) storage.getDataSource();
+        RDBMSDataSource dataSource = (RDBMSDataSource) storage.getDataSource();
         switch (direction) {
         case ASC:
-        	// Nulls first/last not supported by SQLServer, its default behavior is the same as expected
-        	if (HibernateStorageUtils.isSQLServer(dataSource.getDialectName())) {
-        		criteria.addOrder(Order.asc(field));
-        	} else {
-        		criteria.addOrder(Order.asc(field).nulls(NullPrecedence.FIRST));
-        	}
+            // Nulls first/last not supported by SQLServer, its default behavior is the same as expected
+            if (HibernateStorageUtils.isSQLServer(dataSource.getDialectName())) {
+                criteria.addOrder(Order.asc(field));
+            } else {
+                criteria.addOrder(Order.asc(field).nulls(NullPrecedence.FIRST));
+            }
             break;
         case DESC:
-        	if (HibernateStorageUtils.isSQLServer(dataSource.getDialectName())) {
-        		criteria.addOrder(Order.desc(field));
-        	} else {
-        		criteria.addOrder(Order.desc(field).nulls(NullPrecedence.LAST));
-        	}
-        	break;
+            if (HibernateStorageUtils.isSQLServer(dataSource.getDialectName())) {
+                criteria.addOrder(Order.desc(field));
+            } else {
+                criteria.addOrder(Order.desc(field).nulls(NullPrecedence.LAST));
+            }
+            break;
         }
     }
 
@@ -1592,15 +1592,19 @@ class StandardQueryHandler extends AbstractQueryHandler {
                         value = "%"; //$NON-NLS-1$
                     }
                     Object databaseValue = applyDatabaseType(leftFieldCondition, value); // Converts to CLOB if needed
-                    if (datasource.isCaseSensitiveSearch() || !(databaseValue instanceof String)) { // Can't use ilike
-                                                                                                    // on CLOBs
+                    if (datasource.isCaseSensitiveSearch() || !(databaseValue instanceof String)) { // Can't use ilike on CLOBs
                         Criterion current = null;
                         for (String fieldName : leftFieldCondition.criterionFieldNames) {
                             if(leftFieldCondition.field instanceof Field){
                                 FieldMetadata fieldMetadata = leftFieldCondition.field.getFieldMetadata();
-                                if (fieldMetadata.getContainingType().isInstantiable()
-                                        && !(fieldMetadata instanceof ReferenceFieldMetadata)) {
-                                    fieldName = fieldMetadata.getEntityTypeName() + '.' + fieldMetadata.getName();
+                                ComplexTypeMetadata currentTypeMetadata = fieldMetadata.getContainingType();
+                                TypeMetadata superType = MetadataUtils.getSuperConcreteType(currentTypeMetadata);
+                                if (currentTypeMetadata.isInstantiable() && !(fieldMetadata instanceof ReferenceFieldMetadata)) {
+                                    if (currentTypeMetadata.getKeyFields().size() > 1 && fieldMetadata.isKey()) {
+                                        fieldName = fieldMetadata.getEntityTypeName() + '.' + (superType.getName() + "_ID").toLowerCase() + '.' + fieldMetadata.getName();
+                                    } else {
+                                        fieldName = fieldMetadata.getEntityTypeName() + '.' + fieldMetadata.getName();
+                                    }
                                 }
                             }                          
                             Criterion newCriterion = like(fieldName, databaseValue);

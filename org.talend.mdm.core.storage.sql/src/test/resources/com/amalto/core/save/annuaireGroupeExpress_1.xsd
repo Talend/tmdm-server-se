@@ -1,0 +1,129 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:import namespace="http://www.w3.org/2001/XMLSchema" />
+    <xsd:simpleType name="AUTO_INCREMENT">
+        <xsd:restriction base="xsd:string" />
+    </xsd:simpleType>
+    <xsd:complexType name="PersonneMoraleGroupeEtablissement">
+        <xsd:complexContent>
+            <xsd:extension base="TypeMembre">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="Name" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType abstract="true" name="TypeMembre">
+        <xsd:sequence>
+            <xsd:element maxOccurs="1" minOccurs="0" name="TypeMembreName" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType abstract="false" name="PersonneMoraleGroupe">
+        <xsd:complexContent>
+            <xsd:extension base="TypeMembre">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="Groupe" type="xsd:int">
+                        <xsd:annotation>
+                            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType abstract="false" name="PersonneMoraleHorsGroupe">
+        <xsd:complexContent>
+            <xsd:extension base="TypeMembre">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="Email" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="PersonnePhysique">
+        <xsd:complexContent>
+            <xsd:extension base="TypeMembre">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="Nom" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType abstract="true" name="Membre">
+        <xsd:sequence>
+            <xsd:element maxOccurs="1" minOccurs="1" name="TypeMembre" type="TypeMembre">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType abstract="false" name="Actionnaire">
+        <xsd:complexContent>
+            <xsd:extension base="Membre">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="1" minOccurs="1" name="NbTitres" type="xsd:int">
+                        <xsd:annotation>
+                            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="Actionnaires">
+        <xsd:sequence>
+            <xsd:element maxOccurs="unbounded" minOccurs="0" name="Actionnaire" type="Actionnaire">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_AutoExpand">false</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:element name="Societe">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element maxOccurs="1" minOccurs="1" name="CodeOSMOSE" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
+                        <xsd:appinfo source="X_FKIntegrity_Override">false</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                        <xsd:appinfo source="X_FKIntegrity">true</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="Actionnaires" type="Actionnaires">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="Societe">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="CodeOSMOSE" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:simpleType name="UUID">
+        <xsd:restriction base="xsd:string" />
+    </xsd:simpleType>
+</xsd:schema>

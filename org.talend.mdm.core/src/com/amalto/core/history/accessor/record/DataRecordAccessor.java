@@ -11,6 +11,7 @@
 package com.amalto.core.history.accessor.record;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -195,6 +196,7 @@ public class DataRecordAccessor implements Accessor {
     @Override
     public void create() {
         try {
+            String specifiedType = null;
             StringTokenizer tokenizer = new StringTokenizer(path, "/"); //$NON-NLS-1$
             DataRecord current = dataRecord;
             while (tokenizer.hasMoreElements()) {
@@ -223,16 +225,37 @@ public class DataRecordAccessor implements Accessor {
                         }
                         while (index >= list.size()) {
                             if (field instanceof ContainedTypeFieldMetadata) {
-                                DataRecord record = new DataRecord((ComplexTypeMetadata) field.getType(),
-                                        UnsupportedDataRecordMetadata.INSTANCE);
-                                try {
-                                    list.add(record);
-                                } catch (UnsupportedOperationException e) {
-                                    list = addFieldValueToNewList(current, field, list, record);
-                                }
+                                    DataRecord record;
+                                    // If specified type is not null, means the field changed the type
+                                    // need to get the correct type from subTypes and instantiate a new DataRecord object
+                                    if (specifiedType != null) {
+                                        ComplexTypeMetadata complexTypeMetadata = null;
+                                        if (((ContainedTypeFieldMetadata) field).getContainedType().getName().equals(specifiedType)) {
+                                            complexTypeMetadata = ((ContainedTypeFieldMetadata) field).getContainedType();
+                                        } else {
+                                            ComplexTypeMetadata curContainedType = ((ContainedTypeFieldMetadata) field).getContainedType();
+                                            Collection<ComplexTypeMetadata> complexTypeList = curContainedType.getSubTypes();
+                                            for (ComplexTypeMetadata curItem : complexTypeList) {
+                                                if (curItem.getName().equals(specifiedType)) {
+                                                    complexTypeMetadata = curItem;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        if (complexTypeMetadata == null) {
+                                            complexTypeMetadata = (ComplexTypeMetadata) field.getType();
+                                        }
+                                        record = new DataRecord(complexTypeMetadata, UnsupportedDataRecordMetadata.INSTANCE);
+                                    } else {
+                                        record = new DataRecord((ComplexTypeMetadata) field.getType(), UnsupportedDataRecordMetadata.INSTANCE);
+                                    }
+                                    try {
+                                        list.add(record);
+                                    } catch (UnsupportedOperationException e) {
+                                        list = addFieldValueToNewList(current, field, list, record);
+                                    }
                             } else if (field instanceof ReferenceFieldMetadata) {
-                                DataRecord record = new DataRecord(((ReferenceFieldMetadata) field).getReferencedType(),
-                                        UnsupportedDataRecordMetadata.INSTANCE);
+                                DataRecord record = new DataRecord(((ReferenceFieldMetadata) field).getReferencedType(), UnsupportedDataRecordMetadata.INSTANCE);
                                 try {
                                     if (!record.isEmpty()) {
                                         list.add(record);

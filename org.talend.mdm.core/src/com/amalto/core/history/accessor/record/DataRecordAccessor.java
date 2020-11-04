@@ -11,6 +11,7 @@
 package com.amalto.core.history.accessor.record;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -231,18 +232,25 @@ public class DataRecordAccessor implements Accessor {
                                 // If specified type is not null, means the field changed the type
                                 // need to get the correct type from subTypes and instantiate a new DataRecord object
                                 if (specifiedType != null) {
-                                    ComplexTypeMetadata complexTypeMetadata;
+                                    ComplexTypeMetadata complexTypeMetadata = null;
                                     if (((ContainedTypeFieldMetadata) field).getContainedType().getName().equals(specifiedType)) {
                                         complexTypeMetadata = ((ContainedTypeFieldMetadata) field).getContainedType();
                                     } else {
-                                        complexTypeMetadata = ((ContainedTypeFieldMetadata) field).getContainedType()
-                                                .getSubTypes().stream().filter(item -> item.getName().equals(specifiedType))
-                                                .findFirst().get();
+                                        ComplexTypeMetadata curContainedType = ((ContainedTypeFieldMetadata) field).getContainedType();
+                                        Collection<ComplexTypeMetadata> complexTypeList = curContainedType.getSubTypes();
+                                        for (ComplexTypeMetadata curItem : complexTypeList) {
+                                            if (curItem.getName().equals(specifiedType)) {
+                                                complexTypeMetadata = curItem;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    if (complexTypeMetadata == null) {
+                                        complexTypeMetadata = (ComplexTypeMetadata) field.getType();
                                     }
                                     record = new DataRecord(complexTypeMetadata, UnsupportedDataRecordMetadata.INSTANCE);
                                 } else {
-                                    record = new DataRecord((ComplexTypeMetadata) field.getType(),
-                                            UnsupportedDataRecordMetadata.INSTANCE);
+                                    record = new DataRecord((ComplexTypeMetadata) field.getType(), UnsupportedDataRecordMetadata.INSTANCE);
                                 }
                                 try {
                                     list.add(record);

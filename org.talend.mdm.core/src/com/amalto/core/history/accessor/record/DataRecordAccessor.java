@@ -192,9 +192,12 @@ public class DataRecordAccessor implements Accessor {
         // No need to implement anything for this kind of accessor.
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public void create() {
+        create(null);
+    }
+
+    private void create(String specifiedType) {
         try {
             String specifiedType = null;
             StringTokenizer tokenizer = new StringTokenizer(path, "/"); //$NON-NLS-1$
@@ -353,7 +356,12 @@ public class DataRecordAccessor implements Accessor {
 
     @Override
     public void createAndSet(String value) {
-        create();
+        // If the path contains "@xsi:type", this is a change type action, need to specify the type to create a node
+        if (path.indexOf('@') > 0) {
+            create(value);
+        } else {
+            create(null);
+        }
         pathElements = null;
         initPath();
         set(value);

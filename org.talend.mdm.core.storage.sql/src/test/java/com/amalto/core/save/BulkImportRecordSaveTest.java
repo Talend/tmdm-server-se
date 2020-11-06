@@ -345,7 +345,7 @@ public class BulkImportRecordSaveTest extends TestCase {
         @Override
         public OutputReport invokeBeforeSaving(DocumentSaverContext context, MutableDocument updateReportDocument) {
             String message = "<report><message type=\"info\">change the value successfully!</message></report>";
-            return new OutputReport(message, null);
+            return new OutputReport(message, null, false);
         }
 
         @Override

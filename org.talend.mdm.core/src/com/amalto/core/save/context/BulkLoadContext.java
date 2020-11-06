@@ -138,4 +138,14 @@ class BulkLoadContext implements DocumentSaverContext {
     public boolean isInvokeBeforeSaving() {
         return false; // No support in bulk load
     }
+
+    @Override
+    public boolean withAdminPermissions() {
+        return false;
+    }
+
+    @Override
+    public void setWithAdminPermissions(boolean withAdminPermissions) {
+
+    }
 }

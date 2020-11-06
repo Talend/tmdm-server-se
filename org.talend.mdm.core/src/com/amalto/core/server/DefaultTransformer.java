@@ -344,6 +344,7 @@ public class DefaultTransformer implements TransformerPluginCallBack, com.amalto
             if ((transformerPOJO.getProcessSteps() != null) && (transformerPOJO.getProcessSteps().size() > 0)) {
                 executePlugin(globalContext, 0);
             }
+            globalContext.put("withAdmin", Boolean.valueOf(transformerPOJO.withAdminPermissions()));
             // signal done to the call back
             callBack.done(globalContext);
         } catch (Exception e) {

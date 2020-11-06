@@ -200,4 +200,14 @@ public class RecordValidationContext implements DocumentSaverContext {
         // TODO Auto-generated method stub
         return true;
     }
+
+    @Override
+    public boolean withAdminPermissions() {
+        return false;
+    }
+
+    @Override
+    public void setWithAdminPermissions(boolean withAdminPermissions) {
+
+    }
 }

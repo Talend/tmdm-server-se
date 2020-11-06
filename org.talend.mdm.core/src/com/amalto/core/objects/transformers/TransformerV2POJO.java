@@ -15,19 +15,16 @@ import com.amalto.core.objects.ObjectPOJO;
 import com.amalto.core.objects.ObjectPOJOPK;
 import com.amalto.core.objects.transformers.util.TransformerProcessStep;
 
-
-
 /**
  * @author bgrieder
  *
  */
 public class TransformerV2POJO extends ObjectPOJO{
 
-
     private String name;
     private String description;
+    private boolean withAdminPermissions;
     private ArrayList<TransformerProcessStep> processSteps;
-
 
     /**
      *
@@ -36,9 +33,6 @@ public class TransformerV2POJO extends ObjectPOJO{
         super();
     }
 
-
-
-
 	public TransformerV2POJO(
 			String name,
 			ArrayList<TransformerProcessStep> processSteps
@@ -48,36 +42,27 @@ public class TransformerV2POJO extends ObjectPOJO{
 		this.processSteps = processSteps;
 	}
 
-
-	public TransformerV2POJO(
-			String name,
-			String description,
-			ArrayList<TransformerProcessStep> processSteps
-	) {
-		super();
-		this.name = name;
-		this.description = description;
-		this.processSteps = processSteps;
-	}
-
+    public TransformerV2POJO(String name, String description, boolean withAdminPermissions,
+            ArrayList<TransformerProcessStep> processSteps) {
+        super();
+        this.name = name;
+        this.description = description;
+        this.withAdminPermissions = withAdminPermissions;
+        this.processSteps = processSteps;
+    }
 
 	@Override
 	public ObjectPOJOPK getPK() {
 		return new ObjectPOJOPK(new String[] {name});
 	}
 
-
-
 	public String getName() {
 		return name;
 	}
 
-
-
 	public void setName(String name) {
 		this.name = name;
 	}
-
 
 	/**
 	 * @return Returns the Description.
@@ -93,21 +78,20 @@ public class TransformerV2POJO extends ObjectPOJO{
 		this.description = description;
 	}
 
-
 	public ArrayList<TransformerProcessStep> getProcessSteps() {
 		return processSteps;
 	}
-
-
 
 	public void setProcessSteps(ArrayList<TransformerProcessStep> processSteps) {
 		this.processSteps = processSteps;
 	}
 
+    public boolean withAdminPermissions() {
+        return withAdminPermissions;
+    }
 
-
-
-
-
+    public void setWithAdminPermissions(boolean withAdminPermissions) {
+        this.withAdminPermissions = withAdminPermissions;
+    }
 
 }

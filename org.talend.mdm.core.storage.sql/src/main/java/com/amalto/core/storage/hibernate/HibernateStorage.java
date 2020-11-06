@@ -373,6 +373,9 @@ public class HibernateStorage implements Storage {
                     if (table instanceof MDMTable) {
                         ((MDMTable) table).setDataSource(dataSource);
                     }
+                    if (includedTable instanceof MDMTable) {
+                        ((MDMTable) includedTable).setFlip(true);
+                    }
                     table.setAbstract(isAbstract);
                     table.setName(name);
                     table.setSchema(schema);

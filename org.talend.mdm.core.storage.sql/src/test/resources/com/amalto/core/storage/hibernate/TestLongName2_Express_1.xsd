@@ -1,0 +1,137 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:import namespace="http://www.w3.org/2001/XMLSchema" />
+    <xsd:element name="ProductEntity">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Label_EN">Product</xsd:appinfo>
+            <xsd:appinfo source="X_Label_FR">Produit</xsd:appinfo>
+            <xsd:appinfo source="X_Create">Demo_User</xsd:appinfo>
+            <xsd:appinfo source="X_Lookup_Field">ProductEntity/Name</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:all maxOccurs="1" minOccurs="1">
+                <xsd:element maxOccurs="1" minOccurs="1" name="Id" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Label_EN">Unique Id</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Id unique</xsd:appinfo>
+                        <xsd:appinfo source="X_Create">Demo_User</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="1" name="Name" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_Label_EN">Name</xsd:appinfo>
+                        <xsd:appinfo source="X_Label_FR">Nom</xsd:appinfo>
+                        <xsd:appinfo source="X_Create">Demo_User</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element maxOccurs="1" minOccurs="0" name="supplier" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:appinfo source="X_ForeignKey">Party/code</xsd:appinfo>
+                        <xsd:appinfo source="X_Create">Demo_User</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
+                        <xsd:appinfo source="X_ForeignKeyInfo">Party/name</xsd:appinfo>
+                        <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
+                        <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:unique name="ProductEntity">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="Id" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:simpleType name="AUTO_INCREMENT">
+        <xsd:restriction base="xsd:string" />
+    </xsd:simpleType>
+    <xsd:simpleType name="URL">
+        <xsd:restriction base="xsd:string" />
+    </xsd:simpleType>
+    <xsd:simpleType name="UUID">
+        <xsd:restriction base="xsd:string" />
+    </xsd:simpleType>
+    <xsd:complexType name="PartyType">
+        <xsd:sequence>
+            <xsd:element maxOccurs="1" minOccurs="1" name="code" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Create">Demo_User</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="1" name="name" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="IndividualType">
+        <xsd:complexContent>
+            <xsd:extension base="PartyType">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="1" minOccurs="1" name="firstName" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo source="X_Create">Demo_User</xsd:appinfo>
+                            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+                    <xsd:element maxOccurs="1" minOccurs="1" name="lastName" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo source="X_Create">Demo_User</xsd:appinfo>
+                            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="CompanyType">
+        <xsd:complexContent>
+            <xsd:extension base="PartyType">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="1" minOccurs="1" name="legalname" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo source="X_Create">Demo_User</xsd:appinfo>
+                            <xsd:appinfo source="X_Label_EN">Legal Name</xsd:appinfo>
+                            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:element name="Company" type="CompanyType">
+        <xsd:annotation>
+            <xsd:appinfo source="X_PrimaryKeyInfo">Company/name</xsd:appinfo>
+            <xsd:appinfo source="X_Create">Demo_User</xsd:appinfo>
+            <xsd:appinfo source="X_Label_EN">Corporation</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:unique name="Company">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="code" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="Individual" type="IndividualType">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Create">Demo_User</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:unique name="Individual">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="code" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="Party" type="PartyType">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Create">Demo_User</xsd:appinfo>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:unique name="Party">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="code" />
+        </xsd:unique>
+    </xsd:element>
+</xsd:schema>

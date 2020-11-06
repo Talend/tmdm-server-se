@@ -11,7 +11,6 @@
 package com.amalto.core.storage.hibernate.mapping;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -23,8 +22,8 @@ import java.util.List;
 import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.dialect.DB2Dialect;
 import org.hibernate.dialect.Dialect;
@@ -51,6 +50,8 @@ public class MDMTable extends Table {
     private static final String LONGTEXT = "longtext";
 
     private RDBMSDataSource dataSource;
+
+    private boolean isFlip;
 
     private static final Logger LOGGER = LogManager.getLogger(MDMTable.class);
 
@@ -396,5 +397,25 @@ public class MDMTable extends Table {
 
     public void setDataSource(RDBMSDataSource dataSource) {
         this.dataSource = dataSource;
+    }
+
+    /**
+     * @see MDMTable#hasDenormalizedTables()
+     */
+    public void setFlip(boolean isFlip) {
+        this.isFlip = isFlip;
+    }
+
+    /**
+     * Must overrite the {@link #hasDenormalizedTables()} method to implement FK constraint feature about inheritance
+     * type, Call {@link #setFlip(boolean)} to reset the position to false, because the previous sub-entity call set the
+     * hasDenormalizedTables as true.
+     */
+    @Override
+    public boolean hasDenormalizedTables() {
+        if(isFlip) {
+            return false;
+        }
+        return super.hasDenormalizedTables();
     }
 }

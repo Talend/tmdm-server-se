@@ -190,4 +190,14 @@ class DirectWriteContext implements DocumentSaverContext {
 
     }
 
+    @Override
+    public boolean withAdminPermissions() {
+        return false;
+    }
+
+    @Override
+    public void setWithAdminPermissions(boolean withAdminPermissions) {
+
+    }
+
 }

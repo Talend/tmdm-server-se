@@ -158,4 +158,14 @@ public class ReportDocumentSaverContext implements DocumentSaverContext {
     public DocumentSaverContext getDelegate() {
         return this.delegate;
     }
+
+    @Override
+    public boolean withAdminPermissions() {
+        return delegate.withAdminPermissions();
+    }
+
+    @Override
+    public void setWithAdminPermissions(boolean withAdminPermissions) {
+        delegate.setWithAdminPermissions(withAdminPermissions);
+    }
 }

@@ -45,7 +45,6 @@ import org.talend.mdm.commmon.util.core.CommonUtil;
 import com.amalto.core.storage.HibernateStorageUtils;
 import com.amalto.core.storage.StorageType;
 import com.amalto.core.storage.datasource.RDBMSDataSource;
-import com.amalto.core.storage.datasource.RDBMSDataSource.DataSourceDialect;
 
 import liquibase.Liquibase;
 import liquibase.change.AbstractChange;
@@ -219,7 +218,9 @@ public class LiquibaseSchemaAdapter extends AbstractLiquibaseSchemaAdapter {
                             if (fkList == null) {
                                 fkList = new ArrayList<String>();
                             }
-                            fkList.add(upperOrLowerCase(fkName));
+                            if (existsForeignKeyConstraints(tableName, fkName)) {
+                                fkList.add(upperOrLowerCase(fkName));
+                            }
                             dropFKMap.put(tableName, fkList);
                         }
 	                } 

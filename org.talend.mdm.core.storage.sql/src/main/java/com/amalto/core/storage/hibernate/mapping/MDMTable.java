@@ -51,8 +51,6 @@ public class MDMTable extends Table {
 
     private RDBMSDataSource dataSource;
 
-    private boolean isFlip;
-
     private static final Logger LOGGER = LogManager.getLogger(MDMTable.class);
 
     @Override
@@ -397,25 +395,5 @@ public class MDMTable extends Table {
 
     public void setDataSource(RDBMSDataSource dataSource) {
         this.dataSource = dataSource;
-    }
-
-    /**
-     * @see MDMTable#hasDenormalizedTables()
-     */
-    public void setFlip(boolean isFlip) {
-        this.isFlip = isFlip;
-    }
-
-    /**
-     * Must overrite the {@link #hasDenormalizedTables()} method to implement FK constraint feature about inheritance
-     * type, Call {@link #setFlip(boolean)} to reset the position to false, because the previous sub-entity call set the
-     * hasDenormalizedTables as true.
-     */
-    @Override
-    public boolean hasDenormalizedTables() {
-        if(isFlip) {
-            return false;
-        }
-        return super.hasDenormalizedTables();
     }
 }

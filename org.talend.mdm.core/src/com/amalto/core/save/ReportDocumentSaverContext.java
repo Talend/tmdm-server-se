@@ -77,7 +77,7 @@ public class ReportDocumentSaverContext implements DocumentSaverContext {
 
     @Override
     public boolean isInvokeBeforeSaving() {
-        return delegate.isInvokeBeforeSaving();
+        return delegate.generateTouchActions();
     }
 
     @Override

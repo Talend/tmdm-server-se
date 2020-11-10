@@ -29,6 +29,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.tools.ant.util.DateUtils;
+import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.compare.Compare;
 
 import com.amalto.core.storage.HibernateStorageUtils;
@@ -145,7 +146,17 @@ public abstract class AbstractLiquibaseSchemaAdapter {
         }
     }
 
-    protected boolean existsForeignKeyConstraints(String tableName, String constraintName) {
+    private boolean isInheritanceFKType(ComplexTypeMetadata complexType) {
+        if (complexType.getSubTypes().size() > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    protected boolean existsForeignKeyConstraints(ComplexTypeMetadata complexType, String tableName, String constraintName) {
+        if (!isInheritanceFKType(complexType)) {
+            return true;
+        }
         String result = StringUtils.EMPTY;
         try {
             ExistenceFKCheckingEnum curFKCheckingSource = ExistenceFKCheckingEnum.selectDataSource(((RDBMSDataSource) dataSource).getDialectName());

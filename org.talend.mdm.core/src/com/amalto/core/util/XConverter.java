@@ -698,7 +698,7 @@ public class XConverter {
         TransformerV2POJO pojo = new TransformerV2POJO();
         pojo.setName(wsTransformerV2.getName());
         pojo.setDescription(wsTransformerV2.getDescription());
-        pojo.setWithAdminPermissions(wsTransformerV2.withAdminPermissions());
+        pojo.setWithAdminPermissions(wsTransformerV2.getWithAdminPermissions());
         ArrayList<TransformerProcessStep> steps = new ArrayList<TransformerProcessStep>();
         WSTransformerProcessStep[] wsSteps = wsTransformerV2.getProcessSteps();
         if (wsSteps != null) {

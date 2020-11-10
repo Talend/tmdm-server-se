@@ -298,7 +298,9 @@ public class HibernateStorage implements Storage {
                     + "with at least another one other storage type, please review datasource configuration."); //$NON-NLS-1$
         }
         this.dataSource = (RDBMSDataSource) dataSource;
-        MDMTable.setDataSource(this.dataSource);
+        if (storageType == StorageType.MASTER) {
+            MDMTable.setDataSource(this.dataSource);
+        }
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })

@@ -169,12 +169,10 @@ public class MDMTable extends Table {
                     } else {
                         String alterDropConstraintSQL = generateAlterDefaultValueConstraintSQL(tableName, columnName);
                         if (StringUtils.isNotBlank(alterDropConstraintSQL)) {
+                            LOGGER.info("Running the script [" + alterDropConstraintSQL + "] to drop default value");
                             results.add(alterDropConstraintSQL);
                         }
-                        if (LOGGER.isDebugEnabled()) {
-                            LOGGER.debug(alterDropConstraintSQL);
-                        }
-                        alter.append("  ADD DEFAULT ").append(defaultValue).append(" FOR ").append(columnName);
+                        alter.append(" ADD DEFAULT (").append(defaultValue).append(") FOR ").append(columnName).append(" WITH VALUES");
                     }
                 } else {
                     if (isDefaultValueNeeded(sqlType, dialect)) {
@@ -233,7 +231,7 @@ public class MDMTable extends Table {
             parameters.add(columnName);
             String queryResult = executeSQLForSQLServer(sql, parameters);
             if (StringUtils.isNotBlank(queryResult)) {
-                alterDropConstraintSQL = "alter table " + tableName + " drop constraint " + queryResult;
+                alterDropConstraintSQL = "ALTER TABLE " + tableName + " DROP CONSTRAINT " + queryResult;
             }
         } catch (Exception e) {
             LOGGER.error("Fetching SQLServer default value constraint failed.", e);
@@ -303,7 +301,7 @@ public class MDMTable extends Table {
         return sqlType.equalsIgnoreCase(Timestamp.class.getSimpleName()) || sqlType.equalsIgnoreCase(Types.DATE)
                 || sqlType.equalsIgnoreCase(Types.DATETIME) || sqlType.equalsIgnoreCase(Types.TIME);
     }
-    
+
     public static void setDataSource(RDBMSDataSource dataSource) {
         MDMTable.dataSource = dataSource;
     }

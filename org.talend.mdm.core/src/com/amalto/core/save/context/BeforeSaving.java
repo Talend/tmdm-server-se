@@ -108,7 +108,7 @@ public class BeforeSaving implements DocumentSaver {
                 } else if (TYPE_ERROR.equals(errorCode)) {
                     throw new BeforeSavingErrorException(message);
                 }
-                context.setWithAdminPermissions(outputreport.withAdminPermissions());
+                context.setWithAdminPermissions(outputreport.getWithAdminPermissions());
                 // handle output_item
                 if (outputreport.getItem() != null) {
                     xpath = "//exchange/item"; //$NON-NLS-1$

@@ -48,7 +48,7 @@ public class OutputReport {
         this.item = item;
     }
 
-    public boolean withAdminPermissions() {
+    public boolean getWithAdminPermissions() {
         return withAdminPermissions;
     }
 

@@ -217,6 +217,11 @@ public abstract class AbstractLiquibaseSchemaAdapter {
             protected String getSqlString() {
                 return "SELECT count(*) FROM INFORMATION_SCHEMA.CONSTRAINTS WHERE TABLE_NAME = ? AND CONSTRAINT_NAME = ?"; //$NON-NLS-1$
             }
+
+            @Override
+            protected String getQualityName(String rawName) {
+                return rawName.toUpperCase().trim();
+            }
         },
 
         INNER_MYSQL(DataSourceDialect.MYSQL) {

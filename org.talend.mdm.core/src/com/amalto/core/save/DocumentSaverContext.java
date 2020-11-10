@@ -119,7 +119,7 @@ public interface DocumentSaverContext {
 
     boolean isInvokeBeforeSaving();
 
-    boolean withAdminPermissions();
+    boolean getWithAdminPermissions();
 
     void setWithAdminPermissions(boolean withAdminPermissions);
 }

@@ -222,7 +222,7 @@ public class StorageSaver implements DocumentSaverContext {
     }
 
     @Override
-    public boolean withAdminPermissions() {
+    public boolean getWithAdminPermissions() {
         return withAdminPermissions;
     }
 

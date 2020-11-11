@@ -239,7 +239,6 @@ public class FKConstraintTest extends TestCase {
             storage.update(factory.read(repository, entityA2, ENTITY_A2_2));
             storage.commit();
         } catch(Exception e){
-            e.printStackTrace();
             e_a22 = e;
         } finally {
             storage.end();

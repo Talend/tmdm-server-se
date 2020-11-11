@@ -27,8 +27,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.h2.jdbc.JdbcSQLException;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
@@ -650,7 +650,6 @@ public class StorageAdaptTest extends TestCase {
         try {
             createRecord(storage, factory, repository1, typeNames, new String[] { input1 });
         } catch (Exception e2) {
-            e2.printStackTrace();
             assertNull(e2);
         }
 

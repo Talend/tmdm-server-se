@@ -22,9 +22,11 @@ import java.util.Stack;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
+import org.hibernate.search.annotations.Fields;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.NumericField;
@@ -69,13 +71,18 @@ import javassist.bytecode.ClassFile;
 import javassist.bytecode.ConstPool;
 import javassist.bytecode.annotation.Annotation;
 import javassist.bytecode.annotation.AnnotationMemberValue;
+import javassist.bytecode.annotation.ArrayMemberValue;
 import javassist.bytecode.annotation.ClassMemberValue;
 import javassist.bytecode.annotation.EnumMemberValue;
+import javassist.bytecode.annotation.MemberValue;
+import javassist.bytecode.annotation.StringMemberValue;
 
 @SuppressWarnings("deprecation")
 class ClassCreator extends DefaultMetadataVisitor<Void> {
 
     public static final String PACKAGE_PREFIX = "org.talend.mdm.storage.hibernate."; //$NON-NLS-1$
+
+    public static final String FIELD_POSTFIX = "_for_sort"; //$NON-NLS-1$
 
     private final StorageClassLoader storageClassLoader;
 
@@ -498,6 +505,13 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
         return PACKAGE_PREFIX + typeName;
     }
 
+    public static String getSortableFieldName(FieldMetadata fieldMetadata) {
+        if (fieldMetadata.isKey()) {
+            return fieldMetadata.getName();
+        }
+        return fieldMetadata.getName() + FIELD_POSTFIX;
+    }
+
     private CtMethod createFixedSetter(CtClass newClass, String fieldName, String methodName) throws CannotCompileException {
         StringBuilder setTimeStampMethodBody = new StringBuilder();
         setTimeStampMethodBody.append("public void ").append(methodName).append("(long value) {"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -617,15 +631,15 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
                             annotations = new AnnotationsAttribute(cp, AnnotationsAttribute.visibleTag);
                             field.getFieldInfo().addAttribute(annotations);
                         }
-                        // Adds "SortableField" annotation for Hibernate search
-                        Annotation sortableAnnotation = new Annotation(SortableField.class.getName(), cp);
-                        annotations.addAnnotation(sortableAnnotation);
                         // Adds "DocumentId" annotation for Hibernate search
-                        if (metadata.getContainingType().getSuperTypes().isEmpty()) { // Do this if key field is declared in
-                                                                                      // containing type (DocumentId annotation
-                                                                                      // is inherited).
+                        if (metadata.getContainingType().getSuperTypes().isEmpty()) {
+                            // Do this if key field is declared in containing type (DocumentId annotation is inherited).
                             if (metadata.getContainingType().getKeyFields().size() == 1) {
                                 if (metadata.isKey()) {
+                                    // Adds "SortableField" annotation for Hibernate search
+                                    Annotation sortableAnnotation = new Annotation(SortableField.class.getName(), cp);
+                                    annotations.addAnnotation(sortableAnnotation);
+
                                     Annotation docIdAnnotation = new Annotation(DocumentId.class.getName(), cp);
                                     annotations.addAnnotation(docIdAnnotation);
                                     Annotation fieldBridge = new Annotation(FieldBridge.class.getName(), cp);
@@ -688,7 +702,7 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
         TypeMetadata type = metadata.getType();
         if (type.getData(TypeMapping.SQL_TYPE) != null) {
             // Don't index fields where SQL type was forced.
-            return new NotIndexedHandler();
+            return new NotIndexedHandler(metadata.getName());
         }
         type = MetadataUtils.getSuperConcreteType(type);
         boolean validType = !(Types.DATE.equals(type.getName()) || Types.DATETIME.equals(type.getName())
@@ -698,25 +712,25 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
             for (String numberTypeName : Types.NUMBERS) {
                 if (numberTypeName.equals(type.getName())) {
                     if (metadata.getName().startsWith("x_talend")) {
-                        return new SystemNumericSearchIndexHandler();
+                        return new SystemNumericSearchIndexHandler(metadata.getName());
                     } else {
-                        return new UserNumericSearchIndexHandler();
+                        return new UserNumericSearchIndexHandler(metadata.getName());
                     }
                 }
             }
             if (Types.MULTI_LINGUAL.equals(metadata.getType().getName())) {
-                return new MultiLingualIndexedHandler();
+                return new MultiLingualIndexedHandler(metadata.getName());
             } else if (metadata instanceof ReferenceFieldMetadata) {
-                return new ReferenceEntityIndexHandler();
+                return new ReferenceEntityIndexHandler(metadata.getName());
             }
-            return new BasicSearchIndexHandler();
+            return new BasicSearchIndexHandler(metadata.getName());
         } else if (!validType) {
-            return new ToStringIndexHandler();
+            return new ToStringIndexHandler(metadata.getName());
         } else { // metadata.isMany() returned true
             if (metadata instanceof ReferenceFieldMetadata) {
-                return new ReferenceEntityIndexHandler();
+                return new ReferenceEntityIndexHandler(metadata.getName());
             } else {
-                return new ListFieldIndexHandler();
+                return new ListFieldIndexHandler(metadata.getName());
             }
         }
     }
@@ -740,9 +754,52 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
     private interface SearchIndexHandler {
 
         void handle(AnnotationsAttribute annotations, ConstPool pool);
+
+        default void addSortableAnnotation(AnnotationsAttribute annotations, ConstPool pool, AnnotationMemberValue fieldMemberValue, String fieldName) {
+            // @Field(name = "fieldAlias", analyze = Analyze.NO, index = NO, store = Store.NO)
+            Annotation fieldSortAnnotation = new Annotation(Field.class.getName(), pool);
+            StringMemberValue fieldAlias = new StringMemberValue(fieldName + FIELD_POSTFIX, pool);
+            fieldSortAnnotation.addMemberValue("name", fieldAlias); //$NON-NLS-1$
+            // analyze = Analyze.NO
+            EnumMemberValue analyzeValue = new EnumMemberValue(pool);
+            analyzeValue.setType(Analyze.class.getName());
+            analyzeValue.setValue(Analyze.NO.name());
+            fieldSortAnnotation.addMemberValue("analyze", analyzeValue); //$NON-NLS-1$
+            // index = NO
+            EnumMemberValue indexVal = new EnumMemberValue(pool);
+            indexVal.setType(Index.class.getName());
+            indexVal.setValue(Index.NO.name());
+            fieldSortAnnotation.addMemberValue("index", indexVal); //$NON-NLS-1$
+            // store = Store.NO
+            EnumMemberValue storeValue = new EnumMemberValue(pool);
+            storeValue.setType(Store.class.getName());
+            storeValue.setValue(Store.NO.name());
+            fieldSortAnnotation.addMemberValue("store", storeValue); //$NON-NLS-1$
+            AnnotationMemberValue fieldSortMemberValue = new AnnotationMemberValue(fieldSortAnnotation, pool);
+
+            // @Fields({@Field, @Field(name="fieldAlias", analyzer=Analyze.NO, index = NO, store = Store.NO)})
+            ArrayMemberValue arrayValue = new ArrayMemberValue(pool);
+            arrayValue.setValue(new MemberValue[] { fieldMemberValue, fieldSortMemberValue });
+            Annotation parentAnnotation = new Annotation(Fields.class.getName(), pool);
+            parentAnnotation.addMemberValue("value", arrayValue); //$NON-NLS-1$
+            annotations.addAnnotation(parentAnnotation);
+
+            // @SortableField(forField = "fieldAlias")
+            Annotation sortableAnnotation = new Annotation(SortableField.class.getName(), pool);
+            StringMemberValue indexValue = new StringMemberValue(fieldName + FIELD_POSTFIX, pool);
+            sortableAnnotation.addMemberValue("forField", indexValue); //$NON-NLS-1$
+            annotations.addAnnotation(sortableAnnotation);
+        }
     }
 
     private static class NumericSearchIndexHandler implements SearchIndexHandler {
+
+        private String fieldName;
+
+        protected NumericSearchIndexHandler(String fieldName) {
+            super();
+            this.fieldName = fieldName;
+        }
 
         @Override
         public void handle(AnnotationsAttribute annotations, ConstPool pool) {
@@ -758,28 +815,33 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
             indexValue.setValue(Index.YES.name());
             fieldAnnotation.addMemberValue("index", indexValue); //$NON-NLS-1$
             // Add annotation
-            annotations.addAnnotation(fieldAnnotation);
+            AnnotationMemberValue fieldMemberValue = new AnnotationMemberValue(fieldAnnotation, pool);
+            addSortableAnnotation(annotations, pool, fieldMemberValue, fieldName);
         }
     }
 
     private static class UserNumericSearchIndexHandler extends NumericSearchIndexHandler {
 
+        protected UserNumericSearchIndexHandler(String fieldName) {
+            super(fieldName);
+        }
+
         @Override
         public void handle(AnnotationsAttribute annotations, ConstPool pool) {
             super.handle(annotations, pool);
-            Annotation fieldAnnotation = new Annotation(Field.class.getName(), pool);
             // Bridge allows to store numeric values as string (allow mix of string and int values in a Lucene query).
             // (see TMDM-8216).
             Annotation fieldBridge = new Annotation(FieldBridge.class.getName(), pool);
             fieldBridge.addMemberValue("impl", new ClassMemberValue(ToStringBridge.class.getName(), pool)); //$NON-NLS-1$
-            annotations.addAnnotation(fieldAnnotation);
             annotations.addAnnotation(fieldBridge);
-            // Add annotation
-            annotations.addAnnotation(fieldAnnotation);
         }
     }
 
     private static class SystemNumericSearchIndexHandler extends UserNumericSearchIndexHandler {
+
+        protected SystemNumericSearchIndexHandler(String fieldName) {
+            super(fieldName);
+        }
 
         @Override
         public void handle(AnnotationsAttribute annotations, ConstPool pool) {
@@ -791,71 +853,124 @@ class ClassCreator extends DefaultMetadataVisitor<Void> {
 
     private static class BasicSearchIndexHandler implements SearchIndexHandler {
 
+        private String fieldName;
+
+        protected BasicSearchIndexHandler(String fieldName) {
+            super();
+            this.fieldName = fieldName;
+        }
+
         @Override
         public void handle(AnnotationsAttribute annotations, ConstPool pool) {
+            // @Field
             Annotation fieldAnnotation = new Annotation(Field.class.getName(), pool);
-            annotations.addAnnotation(fieldAnnotation);
+            AnnotationMemberValue fieldMemberValue = new AnnotationMemberValue(fieldAnnotation, pool);
+
+            addSortableAnnotation(annotations, pool, fieldMemberValue, fieldName);
         }
     }
 
     private static class ToStringIndexHandler implements SearchIndexHandler {
 
+        private String fieldName;
+
+        protected ToStringIndexHandler(String fieldName) {
+            super();
+            this.fieldName = fieldName;
+        }
+
         @Override
         public void handle(AnnotationsAttribute annotations, ConstPool pool) {
             Annotation fieldAnnotation = new Annotation(Field.class.getName(), pool);
+            AnnotationMemberValue fieldMemberValue = new AnnotationMemberValue(fieldAnnotation, pool);
             Annotation fieldBridge = new Annotation(FieldBridge.class.getName(), pool);
             fieldBridge.addMemberValue("impl", new ClassMemberValue(ToStringBridge.class.getName(), pool)); //$NON-NLS-1$
-            annotations.addAnnotation(fieldAnnotation);
+
             annotations.addAnnotation(fieldBridge);
+            addSortableAnnotation(annotations, pool, fieldMemberValue, fieldName);
         }
     }
 
     private static class ListFieldIndexHandler implements SearchIndexHandler {
+
+        private String fieldName;
+
+        protected ListFieldIndexHandler(String fieldName) {
+            super();
+            this.fieldName = fieldName;
+        }
 
         @Override
         public void handle(AnnotationsAttribute annotations, ConstPool pool) {
             Annotation fieldAnnotation = new Annotation(Field.class.getName(), pool);
             Annotation fieldBridge = new Annotation(FieldBridge.class.getName(), pool);
             fieldBridge.addMemberValue("impl", new ClassMemberValue(ListBridge.class.getName(), pool)); //$NON-NLS-1$
-            annotations.addAnnotation(fieldAnnotation);
             annotations.addAnnotation(fieldBridge);
+
+            AnnotationMemberValue fieldMemberValue = new AnnotationMemberValue(fieldAnnotation, pool);
+            addSortableAnnotation(annotations, pool, fieldMemberValue, fieldName);
         }
     }
 
     private static class NotIndexedHandler implements SearchIndexHandler {
+
+        private String fieldName;
+
+        protected NotIndexedHandler(String fieldName) {
+            super();
+            this.fieldName = fieldName;
+        }
 
         @Override
         public void handle(AnnotationsAttribute annotations, ConstPool pool) {
             Annotation fieldAnnotation = new Annotation(Field.class.getName(), pool);
             Annotation fieldBridge = new Annotation(FieldBridge.class.getName(), pool);
             fieldBridge.addMemberValue("impl", new ClassMemberValue(NotIndexedBridge.class.getName(), pool)); //$NON-NLS-1$
-            annotations.addAnnotation(fieldAnnotation);
             annotations.addAnnotation(fieldBridge);
+            AnnotationMemberValue fieldMemberValue = new AnnotationMemberValue(fieldAnnotation, pool);
+            addSortableAnnotation(annotations, pool, fieldMemberValue, fieldName);
         }
     }
 
     private static class MultiLingualIndexedHandler implements SearchIndexHandler {
+
+        private String fieldName;
+
+        protected MultiLingualIndexedHandler(String fieldName) {
+            super();
+            this.fieldName = fieldName;
+        }
 
         @Override
         public void handle(AnnotationsAttribute annotations, ConstPool pool) {
             Annotation fieldAnnotation = new Annotation(Field.class.getName(), pool);
             Annotation fieldBridge = new Annotation(FieldBridge.class.getName(), pool);
             fieldBridge.addMemberValue("impl", new ClassMemberValue(MultiLingualIndexedBridge.class.getName(), pool)); //$NON-NLS-1$
-            annotations.addAnnotation(fieldAnnotation);
             annotations.addAnnotation(fieldBridge);
+
+            AnnotationMemberValue fieldMemberValue = new AnnotationMemberValue(fieldAnnotation, pool);
+            addSortableAnnotation(annotations, pool, fieldMemberValue, fieldName);
         }
     }
 
-
     private static class ReferenceEntityIndexHandler implements SearchIndexHandler {
+
+        private String fieldName;
+
+        protected ReferenceEntityIndexHandler(String fieldName) {
+            super();
+            this.fieldName = fieldName;
+        }
 
         @Override
         public void handle(AnnotationsAttribute annotations, ConstPool pool) {
             Annotation fieldAnnotation = new Annotation(Field.class.getName(), pool);
             Annotation fieldBridge = new Annotation(FieldBridge.class.getName(), pool);
             fieldBridge.addMemberValue("impl", new ClassMemberValue(ReferenceEntityBridge.class.getName(), pool)); //$NON-NLS-1$
-            annotations.addAnnotation(fieldAnnotation);
             annotations.addAnnotation(fieldBridge);
+
+            AnnotationMemberValue fieldMemberValue = new AnnotationMemberValue(fieldAnnotation, pool);
+            addSortableAnnotation(annotations, pool, fieldMemberValue, fieldName);
         }
     }
 }

@@ -628,7 +628,7 @@ class FullTextQueryHandler extends AbstractQueryHandler {
     private static SortField getSortField(FieldMetadata fieldMetadata, OrderBy orderBy) {
         SortField sortField = null;
         TypeMetadata fieldType = fieldMetadata.getType();
-        String field = fieldMetadata.getName();
+        String field = ClassCreator.getSortableFieldName(fieldMetadata);
         String type = MetadataUtils.getSuperConcreteType(fieldType).getName();
         boolean reverse = orderBy.getDirection() == OrderBy.Direction.DESC;
         if (Types.INTEGERS.contains(type)) {

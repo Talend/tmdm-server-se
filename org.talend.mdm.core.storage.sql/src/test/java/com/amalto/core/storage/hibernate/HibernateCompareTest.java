@@ -456,9 +456,37 @@ public class HibernateCompareTest {
         assertEquals(0, sort.get(ImpactAnalyzer.Impact.HIGH).size());
         assertEquals(0, sort.get(ImpactAnalyzer.Impact.MEDIUM).size());
         assertEquals(1, sort.get(ImpactAnalyzer.Impact.LOW).size());
-
     }
 
+    // TMDM-14812 Delete a FK points to inheritance type raise an exception
+    @Test
+    public void testChangeInheritanceTypeField() {
+        /*
+         * ProductEntity                                         ProductEntity
+         *   |__id (SimpleField) (1-1)                              |__id (SimpleField) (1-1)
+         *   |__supplier (FK Field) (0-1)
+         */
+        DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS3", STORAGE_NAME);
+        HibernateStorage storage = new HibernateStorage("Test", StorageType.MASTER);
+        storage.init(dataSource);
+        MetadataRepository original = new MetadataRepository();
+        original.load(HibernateCompareTest.class.getResourceAsStream("TestLongName2_Express_1.xsd"));
+        storage.prepare(original, true);
+
+        MetadataRepository updated1 = new MetadataRepository();
+        updated1.load(HibernateCompareTest.class.getResourceAsStream("TestLongName2_Express_2.xsd"));
+
+        Compare.DiffResults diffResults = Compare.compare(original, updated1);
+        assertEquals(0, diffResults.getModifyChanges().size());
+        assertEquals(1, diffResults.getRemoveChanges().size());
+        assertEquals(0, diffResults.getAddChanges().size());
+
+        ImpactAnalyzer analyzer = new HibernateStorageDataAnaylzer(storage);
+        Map<ImpactAnalyzer.Impact, List<Change>> sort = analyzer.analyzeImpacts(diffResults);
+        assertEquals(0, sort.get(ImpactAnalyzer.Impact.HIGH).size());
+        assertEquals(1, sort.get(ImpactAnalyzer.Impact.MEDIUM).size());
+        assertEquals(0, sort.get(ImpactAnalyzer.Impact.LOW).size());
+    }
 
     private void createRecord(Storage storage, DataRecordReader<String> factory, MetadataRepository repository,  String[] typeNames, String[] inputs){
         List<DataRecord> records = new ArrayList<DataRecord>();

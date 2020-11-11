@@ -45,7 +45,6 @@ import org.talend.mdm.commmon.util.core.CommonUtil;
 import com.amalto.core.storage.HibernateStorageUtils;
 import com.amalto.core.storage.StorageType;
 import com.amalto.core.storage.datasource.RDBMSDataSource;
-import com.amalto.core.storage.datasource.RDBMSDataSource.DataSourceDialect;
 
 import liquibase.Liquibase;
 import liquibase.change.AbstractChange;
@@ -206,7 +205,8 @@ public class LiquibaseSchemaAdapter extends AbstractLiquibaseSchemaAdapter {
                 	// FK constraint only exists in master DB.
                 	if (element instanceof ReferenceFieldMetadata && storageType == StorageType.MASTER) {                
 	                    ReferenceFieldMetadata referenceField = (ReferenceFieldMetadata) element;
-                        if (!(referenceField.getContainingType().equals(referenceField.getReferencedType())
+	                    ComplexTypeMetadata referComplexType = referenceField.getReferencedType();
+                        if (!(referenceField.getContainingType().equals(referComplexType)
                                 && HibernateStorageUtils.isOracle(dataSource.getDialectName()))) {
                             String fkName = tableResolver.getFkConstraintName(referenceField);
                             if (fkName.isEmpty()) {
@@ -219,7 +219,9 @@ public class LiquibaseSchemaAdapter extends AbstractLiquibaseSchemaAdapter {
                             if (fkList == null) {
                                 fkList = new ArrayList<String>();
                             }
-                            fkList.add(upperOrLowerCase(fkName));
+                            if (existsForeignKeyConstraints(referComplexType, tableName, fkName)) {
+                                fkList.add(upperOrLowerCase(fkName));
+                            }
                             dropFKMap.put(tableName, fkList);
                         }
 	                } 

@@ -6,17 +6,18 @@ import org.hibernate.service.ServiceRegistry;
 
 public class MDMMetadataSources extends MetadataSources {
 
-	
-	public MDMMetadataSources() {
-		super();
-	}
+    private static final long serialVersionUID = 3359949654618694093L;
 
-	public MDMMetadataSources(ServiceRegistry serviceRegistry) {
-		super(serviceRegistry);
-	}
+    public MDMMetadataSources() {
+        super();
+    }
 
-	@Override
-	public XmlMappingBinderAccess getXmlMappingBinderAccess() {
-		return new MDMXmlMappingBinderAccess(super.getServiceRegistry());
-	}
+    public MDMMetadataSources(ServiceRegistry serviceRegistry) {
+        super(serviceRegistry);
+    }
+
+    @Override
+    public XmlMappingBinderAccess getXmlMappingBinderAccess() {
+        return new MDMXmlMappingBinderAccess(super.getServiceRegistry());
+    }
 }

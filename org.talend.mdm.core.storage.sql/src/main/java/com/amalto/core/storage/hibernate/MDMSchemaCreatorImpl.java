@@ -72,9 +72,7 @@ public class MDMSchemaCreatorImpl extends SchemaCreatorImpl {
             Dialect dialect,
             Formatter formatter,
             GenerationTarget... targets) {
-        System.out.println("Invoking method MDMSchemaCreatorImpl#createFromMetadata");
 //      super.createFromMetadata(metadata, options, dialect, formatter, targets);
-        
 
         boolean tryToCreateCatalogs = false;
         boolean tryToCreateSchemas = false;

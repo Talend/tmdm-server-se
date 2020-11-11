@@ -23,24 +23,26 @@ import org.hibernate.engine.jdbc.internal.Formatter;
 import org.hibernate.internal.CoreMessageLogger;
 import org.hibernate.mapping.Column;
 import org.hibernate.mapping.Table;
-import org.hibernate.resource.transaction.spi.DdlTransactionIsolator;
 import org.hibernate.tool.schema.extract.spi.DatabaseInformation;
 import org.hibernate.tool.schema.extract.spi.NameSpaceTablesInformation;
 import org.hibernate.tool.schema.extract.spi.TableInformation;
 import org.hibernate.tool.schema.internal.GroupedSchemaMigratorImpl;
 import org.hibernate.tool.schema.internal.exec.GenerationTarget;
-import org.hibernate.tool.schema.internal.exec.JdbcContext;
 import org.hibernate.tool.schema.spi.ExecutionOptions;
 import org.hibernate.tool.schema.spi.SchemaFilter;
 import org.jboss.logging.Logger;
 
 import com.amalto.core.storage.hibernate.MDMHibernateSchemaManagementTool;
 
-
 /**
- * created by hwzhu on Aug 19, 2020
- * Detailled comment
- *
+ * As an adapter class during MDM and Hibernate 5, it derived from standard Hibernate implementation for performing
+ * schema management class {@link GroupedSchemaMigratorImpl}.This implementation executes a single
+ * {@link java.sql.DatabaseMetaData#getTables(String, String, String, String[])} call to retrieve all the database table
+ * in order to determine if all the {@link javax.persistence.Entity} have a mapped database tables. If some DDL
+ * statement of {@link javax.persistence.Entity} has the special grammar, {@link MDMTable} will derived from
+ * {@link Table} to gennerate normal one against kinds of DB.
+ * <p>
+ * Created by hwzhu on Aug 19, 2020
  */
 public class MDMGroupedSchemaMigratorImpl extends GroupedSchemaMigratorImpl {
 
@@ -65,7 +67,7 @@ public class MDMGroupedSchemaMigratorImpl extends GroupedSchemaMigratorImpl {
         final NameSpaceTablesInformation tablesInformation =
                 new NameSpaceTablesInformation( metadata.getDatabase().getJdbcEnvironment().getIdentifierHelper());
 
-        if ( schemaFilter.includeNamespace( namespace ) ) {
+        if (schemaFilter.includeNamespace(namespace)) {
             createSchemaAndCatalog(
                     existingDatabase,
                     options,
@@ -77,45 +79,37 @@ public class MDMGroupedSchemaMigratorImpl extends GroupedSchemaMigratorImpl {
                     namespace,
                     targets
             );
-            final NameSpaceTablesInformation tables = existingDatabase.getTablesInformation( namespace );
+            final NameSpaceTablesInformation tables = existingDatabase.getTablesInformation(namespace);
 
-            final JdbcContext jdbcContext = tool.resolveJdbcContext(options.getConfigurationValues());
-            final DdlTransactionIsolator ddlTransactionIsolator = tool.getDdlTransactionIsolator(jdbcContext);
-            try {
-                for ( Table table : namespace.getTables() ) {
-                    if ( schemaFilter.includeTable( table ) && table.isPhysicalTable() ) {
-                        checkExportIdentifier( table, exportIdentifiers );
-                        final TableInformation tableInformation = tables.getTableInformation( table );
-                        if ( tableInformation == null ) {
-                            LOGGER.tableNotFound(table.getName());
-                            createTable( table, dialect, metadata, formatter, options, targets );
+            for (Table table : namespace.getTables()) {
+                if (schemaFilter.includeTable(table) && table.isPhysicalTable()) {
+                    checkExportIdentifier(table, exportIdentifiers);
+                    final TableInformation tableInformation = tables.getTableInformation(table);
+                    if (tableInformation == null) {
+                        LOGGER.tableNotFound(table.getName());
+                        createTable(table, dialect, metadata, formatter, options, targets);
+                    } else if (tableInformation.isPhysicalTable()) {
+                        tablesInformation.addTableInformation(tableInformation);
+                        MDMTable mdmTable = new MDMTable(namespace, table.getNameIdentifier(), table.getSubselect(), table.isAbstract());
+                        for (Iterator iterator = table.getColumnIterator(); iterator.hasNext();) {
+                            mdmTable.addColumn((Column) iterator.next());
                         }
-                        else if ( tableInformation.isPhysicalTable() ) {
-                            tablesInformation.addTableInformation( tableInformation );
-                            MDMTable mdmTable = new MDMTable(namespace, table.getNameIdentifier(), table.getSubselect(), table.isAbstract());
-                            mdmTable.setConnection(ddlTransactionIsolator.getIsolatedConnection());
-                            for (Iterator iterator = table.getColumnIterator(); iterator.hasNext();) {
-                                mdmTable.addColumn((Column) iterator.next());
-                            }
-                            migrateTable( mdmTable, tableInformation, dialect, metadata, formatter, options, targets );
-                        }
+                        migrateTable(mdmTable, tableInformation, dialect, metadata, formatter, options, targets);
                     }
                 }
             }
-            finally {
-                ddlTransactionIsolator.release();
-            }
 
-            for ( Table table : namespace.getTables() ) {
-                if ( schemaFilter.includeTable( table ) && table.isPhysicalTable() ) {
-                    final TableInformation tableInformation = tablesInformation.getTableInformation( table );
-                    if ( tableInformation == null || tableInformation.isPhysicalTable() ) {
-                        applyIndexes( table, tableInformation, dialect, metadata, formatter, options, targets );
-                        applyUniqueKeys( table, tableInformation, dialect, metadata, formatter, options, targets );
+            for (Table table : namespace.getTables()) {
+                if (schemaFilter.includeTable(table) && table.isPhysicalTable()) {
+                    final TableInformation tableInformation = tablesInformation.getTableInformation(table);
+                    if (tableInformation == null || tableInformation.isPhysicalTable()) {
+                        applyIndexes(table, tableInformation, dialect, metadata, formatter, options, targets);
+                        applyUniqueKeys(table, tableInformation, dialect, metadata, formatter, options, targets);
                     }
                 }
             }
         }
+        LOGGER.schemaUpdateComplete();
         return tablesInformation;
     }
 

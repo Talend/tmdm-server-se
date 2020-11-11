@@ -27,11 +27,8 @@ import org.hibernate.boot.model.relational.Database;
 import org.hibernate.boot.model.relational.Namespace;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.mapping.Column;
-import org.hibernate.mapping.Constraint;
 import org.hibernate.mapping.ForeignKey;
 import org.hibernate.mapping.Table;
-import org.hibernate.tool.schema.extract.spi.NameSpaceTablesInformation;
-import org.hibernate.tool.schema.extract.spi.TableInformation;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
@@ -219,10 +216,6 @@ public class LiquibaseSchemaAdapter extends AbstractLiquibaseSchemaAdapter {
                                 && HibernateStorageUtils.isOracle(dataSource.getDialectName()))) {
                             String fkName = tableResolver.getFkConstraintName(referenceField);
                             if (fkName.isEmpty()) {
-//                                List<Column> columns = new ArrayList<>();
-//                                columns.add(new Column(columnName));
-//                                fkName = Constraint.generateName(new ForeignKey().generatedConstraintNamePrefix(),
-//                                        new Table(tableResolver.get(field.getContainingType().getEntity())), columns);
                                 fkName = getFKConstraintName(tableName, columnName);
                             }
                             List<String> fkList = dropFKMap.get(tableName);

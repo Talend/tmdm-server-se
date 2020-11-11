@@ -33,11 +33,10 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.collection.internal.PersistentList;
 import org.hibernate.engine.spi.CollectionEntry;
-import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.persister.collection.CollectionPersister;
+import org.hibernate.proxy.AbstractSerializableProxy;
 import org.hibernate.proxy.HibernateProxy;
-import org.hibernate.proxy.pojo.javassist.SerializableProxy;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
@@ -203,14 +202,14 @@ public abstract class TypeMapping {
             // unwrap the object and return
             try {
                 Object result = proxy.writeReplace();
-                if (!(result instanceof SerializableProxy)) {
+                if (!(AbstractSerializableProxy.class.isInstance(result))) {
                     if (LOGGER.isDebugEnabled()) {
                         LOGGER.debug("Hibernate proxy object [" + maybeProxy.getClass() + "] will be initialized by Reflection");
                     }
                     return result;
                 }
                 result = proxy.getHibernateLazyInitializer().getImplementation();
-                if (!(result instanceof SerializableProxy)) {
+                if (!(AbstractSerializableProxy.class.isInstance(result))) {
                     if (LOGGER.isDebugEnabled()) {
                         LOGGER.debug("Hibernate proxy object [" + maybeProxy.getClass() + "] will be initialized by LazyInitializer");
                     }

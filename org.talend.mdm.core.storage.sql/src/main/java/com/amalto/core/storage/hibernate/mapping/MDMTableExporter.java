@@ -19,6 +19,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.boot.Metadata;
 import org.hibernate.boot.model.naming.Identifier;
 import org.hibernate.boot.model.relational.InitCommand;
@@ -36,11 +38,17 @@ import org.talend.mdm.commmon.metadata.Types;
 
 
 /**
+ * As an adapter class during MDM and Hibernate 5, it defines a contract for exporting of database objects (tables,
+ * sequences, etc) for use in SQL {@code CREATE} and {@code DROP} scripts.This class derived from standard Hibernate
+ * implementation class {@link Exporter}. major override the method {@link MDMTableExporter#getSqlCreateStrings()} to
+ * generate some special SQL statement against kinds of DB. before, the snippet of code is implement in class
+ * {@link MDMTable} in hibernate 4, moving to {@link MDMTableExporter} now.
+ * <p>
  * created by hwzhu on Aug 19, 2020
- * Detailled comment
- *
  */
 public class MDMTableExporter implements Exporter<Table> {
+
+    private static final Logger LOGGER = LogManager.getLogger(MDMTableExporter.class);
 
     private static MDMTableExporter instance;
 
@@ -146,6 +154,9 @@ public class MDMTableExporter implements Exporter<Table> {
 
         applyTableTypeString(buf);
         List<String> sqlStrings = new ArrayList<String>();
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.warn("Creates Executed to database: " + buf.toString());
+        }
         sqlStrings.add(buf.toString());
 
         applyComments(table, tableName, sqlStrings);
@@ -170,6 +181,9 @@ public class MDMTableExporter implements Exporter<Table> {
 
         if (dialect.supportsIfExistsAfterTableName()) {
             buf.append(" if exists");
+        }
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.warn("Drop Executed to database: " + buf.toString());
         }
 
         return new String[] { buf.toString() };

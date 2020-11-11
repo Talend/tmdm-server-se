@@ -9,14 +9,47 @@
  */
 package com.amalto.core.storage.hibernate;
 
-import org.hibernate.*;
+import java.io.Serializable;
+import java.sql.Connection;
+import java.util.Map;
+
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.FlushModeType;
+import javax.persistence.LockModeType;
+import javax.persistence.StoredProcedureQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaDelete;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.CriteriaUpdate;
+import javax.persistence.metamodel.Metamodel;
+
+import org.hibernate.CacheMode;
+import org.hibernate.Criteria;
+import org.hibernate.Filter;
+import org.hibernate.FlushMode;
+import org.hibernate.HibernateException;
+import org.hibernate.IdentifierLoadAccess;
+import org.hibernate.LobHelper;
+import org.hibernate.LockMode;
+import org.hibernate.LockOptions;
+import org.hibernate.MultiIdentifierLoadAccess;
+import org.hibernate.NaturalIdLoadAccess;
+import org.hibernate.Query;
+import org.hibernate.ReplicationMode;
+import org.hibernate.Session;
+import org.hibernate.SessionEventListener;
+import org.hibernate.SessionFactory;
+import org.hibernate.SharedSessionBuilder;
+import org.hibernate.SimpleNaturalIdLoadAccess;
+import org.hibernate.Transaction;
+import org.hibernate.TypeHelper;
+import org.hibernate.UnknownProfileException;
+import org.hibernate.graph.RootGraph;
 import org.hibernate.jdbc.ReturningWork;
 import org.hibernate.jdbc.Work;
 import org.hibernate.procedure.ProcedureCall;
+import org.hibernate.query.NativeQuery;
 import org.hibernate.stat.SessionStatistics;
-
-import java.io.Serializable;
-import java.sql.Connection;
 
 /**
  * A implementation of {@link org.hibernate.Session} that ensures all read operations are performed using pessimistic
@@ -54,7 +87,7 @@ class LockUpdateSession implements Session {
     }
 
     @Override
-    public FlushMode getFlushMode() {
+    public FlushModeType getFlushMode() {
         return delegate.getFlushMode();
     }
 
@@ -73,10 +106,10 @@ class LockUpdateSession implements Session {
         return delegate.getSessionFactory();
     }
 
-    @Override
-    public Connection close() throws HibernateException {
-        return delegate.close();
-    }
+//    @Override
+//    public Connection close() throws HibernateException {
+//        return delegate.close();
+//    }
 
     @Override
     public void cancelQuery() throws HibernateException {
@@ -451,17 +484,17 @@ class LockUpdateSession implements Session {
     }
 
     @Override
-    public Query getNamedQuery(String queryName) {
+    public org.hibernate.query.Query getNamedQuery(String queryName) {
         return delegate.getNamedQuery(queryName);
     }
 
     @Override
-    public Query createQuery(String queryString) {
+    public org.hibernate.query.Query createQuery(String queryString) {
         return delegate.createQuery(queryString);
     }
 
     @Override
-    public SQLQuery createSQLQuery(String queryString) {
+    public NativeQuery createSQLQuery(String queryString) {
         return delegate.createSQLQuery(queryString);
     }
 
@@ -511,5 +544,447 @@ class LockUpdateSession implements Session {
         Criteria criteria = delegate.createCriteria(entityName, alias);
         criteria.setLockMode(mode);
         return criteria;
+    }
+
+    /* (non-Javadoc)
+     * @see org.hibernate.SharedSessionContract#close()
+     */
+    @Override
+    public void close() throws HibernateException {
+        // TODO Auto-generated method stub
+        
+    }
+
+    /* (non-Javadoc)
+     * @see org.hibernate.SharedSessionContract#getJdbcBatchSize()
+     */
+    @Override
+    public Integer getJdbcBatchSize() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see org.hibernate.SharedSessionContract#setJdbcBatchSize(java.lang.Integer)
+     */
+    @Override
+    public void setJdbcBatchSize(Integer jdbcBatchSize) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    /* (non-Javadoc)
+     * @see org.hibernate.query.QueryProducer#createNamedQuery(java.lang.String)
+     */
+    @Override
+    public org.hibernate.query.Query createNamedQuery(String name) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see org.hibernate.query.QueryProducer#createNativeQuery(java.lang.String)
+     */
+    @Override
+    public NativeQuery createNativeQuery(String sqlString) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see org.hibernate.query.QueryProducer#createNativeQuery(java.lang.String, java.lang.String)
+     */
+    @Override
+    public NativeQuery createNativeQuery(String sqlString, String resultSetMapping) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see org.hibernate.query.QueryProducer#getNamedNativeQuery(java.lang.String)
+     */
+    @Override
+    public NativeQuery getNamedNativeQuery(String name) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.persistence.EntityManager#remove(java.lang.Object)
+     */
+    @Override
+    public void remove(Object entity) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    /* (non-Javadoc)
+     * @see javax.persistence.EntityManager#find(java.lang.Class, java.lang.Object)
+     */
+    @Override
+    public <T> T find(Class<T> entityClass, Object primaryKey) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.persistence.EntityManager#find(java.lang.Class, java.lang.Object, java.util.Map)
+     */
+    @Override
+    public <T> T find(Class<T> entityClass, Object primaryKey, Map<String, Object> properties) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.persistence.EntityManager#find(java.lang.Class, java.lang.Object, javax.persistence.LockModeType)
+     */
+    @Override
+    public <T> T find(Class<T> entityClass, Object primaryKey, LockModeType lockMode) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.persistence.EntityManager#find(java.lang.Class, java.lang.Object, javax.persistence.LockModeType, java.util.Map)
+     */
+    @Override
+    public <T> T find(Class<T> entityClass, Object primaryKey, LockModeType lockMode, Map<String, Object> properties) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.persistence.EntityManager#getReference(java.lang.Class, java.lang.Object)
+     */
+    @Override
+    public <T> T getReference(Class<T> entityClass, Object primaryKey) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.persistence.EntityManager#setFlushMode(javax.persistence.FlushModeType)
+     */
+    @Override
+    public void setFlushMode(FlushModeType flushMode) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    /* (non-Javadoc)
+     * @see javax.persistence.EntityManager#lock(java.lang.Object, javax.persistence.LockModeType)
+     */
+    @Override
+    public void lock(Object entity, LockModeType lockMode) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    /* (non-Javadoc)
+     * @see javax.persistence.EntityManager#lock(java.lang.Object, javax.persistence.LockModeType, java.util.Map)
+     */
+    @Override
+    public void lock(Object entity, LockModeType lockMode, Map<String, Object> properties) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    /* (non-Javadoc)
+     * @see javax.persistence.EntityManager#refresh(java.lang.Object, java.util.Map)
+     */
+    @Override
+    public void refresh(Object entity, Map<String, Object> properties) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    /* (non-Javadoc)
+     * @see javax.persistence.EntityManager#refresh(java.lang.Object, javax.persistence.LockModeType)
+     */
+    @Override
+    public void refresh(Object entity, LockModeType lockMode) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    /* (non-Javadoc)
+     * @see javax.persistence.EntityManager#refresh(java.lang.Object, javax.persistence.LockModeType, java.util.Map)
+     */
+    @Override
+    public void refresh(Object entity, LockModeType lockMode, Map<String, Object> properties) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    /* (non-Javadoc)
+     * @see javax.persistence.EntityManager#detach(java.lang.Object)
+     */
+    @Override
+    public void detach(Object entity) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    /* (non-Javadoc)
+     * @see javax.persistence.EntityManager#getLockMode(java.lang.Object)
+     */
+    @Override
+    public LockModeType getLockMode(Object entity) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.persistence.EntityManager#setProperty(java.lang.String, java.lang.Object)
+     */
+    @Override
+    public void setProperty(String propertyName, Object value) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    /* (non-Javadoc)
+     * @see javax.persistence.EntityManager#getProperties()
+     */
+    @Override
+    public Map<String, Object> getProperties() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+
+    /* (non-Javadoc)
+     * @see javax.persistence.EntityManager#createNamedStoredProcedureQuery(java.lang.String)
+     */
+    @Override
+    public StoredProcedureQuery createNamedStoredProcedureQuery(String name) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.persistence.EntityManager#createStoredProcedureQuery(java.lang.String)
+     */
+    @Override
+    public StoredProcedureQuery createStoredProcedureQuery(String procedureName) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.persistence.EntityManager#createStoredProcedureQuery(java.lang.String, java.lang.Class[])
+     */
+    @Override
+    public StoredProcedureQuery createStoredProcedureQuery(String procedureName, Class... resultClasses) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.persistence.EntityManager#createStoredProcedureQuery(java.lang.String, java.lang.String[])
+     */
+    @Override
+    public StoredProcedureQuery createStoredProcedureQuery(String procedureName, String... resultSetMappings) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.persistence.EntityManager#joinTransaction()
+     */
+    @Override
+    public void joinTransaction() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    /* (non-Javadoc)
+     * @see javax.persistence.EntityManager#isJoinedToTransaction()
+     */
+    @Override
+    public boolean isJoinedToTransaction() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.persistence.EntityManager#unwrap(java.lang.Class)
+     */
+    @Override
+    public <T> T unwrap(Class<T> cls) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.persistence.EntityManager#getDelegate()
+     */
+    @Override
+    public Object getDelegate() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.persistence.EntityManager#getEntityManagerFactory()
+     */
+    @Override
+    public EntityManagerFactory getEntityManagerFactory() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.persistence.EntityManager#getCriteriaBuilder()
+     */
+    @Override
+    public CriteriaBuilder getCriteriaBuilder() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.persistence.EntityManager#getMetamodel()
+     */
+    @Override
+    public Metamodel getMetamodel() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see org.hibernate.jpa.HibernateEntityManager#getSession()
+     */
+    @Override
+    public Session getSession() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see org.hibernate.Session#setHibernateFlushMode(org.hibernate.FlushMode)
+     */
+    @Override
+    public void setHibernateFlushMode(FlushMode flushMode) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    /* (non-Javadoc)
+     * @see org.hibernate.Session#getHibernateFlushMode()
+     */
+    @Override
+    public FlushMode getHibernateFlushMode() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see org.hibernate.Session#contains(java.lang.String, java.lang.Object)
+     */
+    @Override
+    public boolean contains(String entityName, Object object) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /* (non-Javadoc)
+     * @see org.hibernate.Session#byMultipleIds(java.lang.Class)
+     */
+    @Override
+    public <T> MultiIdentifierLoadAccess<T> byMultipleIds(Class<T> entityClass) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see org.hibernate.Session#byMultipleIds(java.lang.String)
+     */
+    @Override
+    public MultiIdentifierLoadAccess byMultipleIds(String entityName) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see org.hibernate.Session#createEntityGraph(java.lang.Class)
+     */
+    @Override
+    public <T> RootGraph<T> createEntityGraph(Class<T> rootType) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see org.hibernate.Session#createEntityGraph(java.lang.String)
+     */
+    @Override
+    public RootGraph<?> createEntityGraph(String graphName) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see org.hibernate.Session#getEntityGraph(java.lang.String)
+     */
+    @Override
+    public RootGraph<?> getEntityGraph(String graphName) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see org.hibernate.Session#createQuery(java.lang.String, java.lang.Class)
+     */
+    @Override
+    public <T> org.hibernate.query.Query<T> createQuery(String queryString, Class<T> resultType) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see org.hibernate.Session#createQuery(javax.persistence.criteria.CriteriaQuery)
+     */
+    @Override
+    public <T> org.hibernate.query.Query<T> createQuery(CriteriaQuery<T> criteriaQuery) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see org.hibernate.Session#createQuery(javax.persistence.criteria.CriteriaUpdate)
+     */
+    @Override
+    public org.hibernate.query.Query createQuery(CriteriaUpdate updateQuery) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see org.hibernate.Session#createQuery(javax.persistence.criteria.CriteriaDelete)
+     */
+    @Override
+    public org.hibernate.query.Query createQuery(CriteriaDelete deleteQuery) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see org.hibernate.Session#createNamedQuery(java.lang.String, java.lang.Class)
+     */
+    @Override
+    public <T> org.hibernate.query.Query<T> createNamedQuery(String name, Class<T> resultType) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.persistence.EntityManager#createNativeQuery(java.lang.String, java.lang.Class)
+     */
+    @Override
+    public NativeQuery createNativeQuery(String sqlString, Class resultClass) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

@@ -18,10 +18,15 @@ import org.hibernate.service.Service;
 import org.hibernate.service.spi.Configurable;
 
 /**
- * created by hwzhu on Aug 18, 2020 Detailled comment
+ * As a adapter class, It's the responsibilities that save or fetch the environment variable info in the map collection,
+ * after instances, it will as a Service be registed with StandardServiceRegistryImpl.
+ * <p>
+ * created by hwzhu on Aug 18, 2020
  *
  */
 public class MDMHibernateConfigurableServiceImpl implements Service, Configurable {
+
+    private static final long serialVersionUID = -5403622309682305023L;
 
     // Access to this field requires synchronization on -this-
     private Map configurationValues;
@@ -42,7 +47,7 @@ public class MDMHibernateConfigurableServiceImpl implements Service, Configurabl
         Object o = configurationValues.get(propertyName);
         return o instanceof String ? (String) o : null;
     }
-    
+
     /**
      * Set a property value by name
      *
@@ -51,6 +56,7 @@ public class MDMHibernateConfigurableServiceImpl implements Service, Configurabl
      *
      * @return this for method chaining
      */
+    @SuppressWarnings("unchecked")
     public Configurable setProperty(String propertyName, String value) {
         configurationValues.put(propertyName, value);
         return this;

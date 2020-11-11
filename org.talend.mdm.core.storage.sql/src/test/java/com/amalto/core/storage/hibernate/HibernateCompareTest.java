@@ -116,7 +116,15 @@ public class HibernateCompareTest {
         assertEquals(6, sort.get(ImpactAnalyzer.Impact.LOW).size());
 
         UserQueryBuilder qb = from(original.getComplexType("Person"));
-        storage.delete(qb.getSelect());
+        try {
+            storage.begin();
+            storage.delete(qb.getSelect());
+            storage.commit();
+        } catch (Exception e) {
+            storage.rollback();
+        } finally {
+            storage.close();
+        }
     }
 
     // TMDM-14135 Date/Datetime with default value would fail to deploy with Oracle DB
@@ -137,6 +145,7 @@ public class HibernateCompareTest {
 
         ComplexTypeMetadata objectType = original.getComplexType("EU_PRDMDM_eBomChild");//$NON-NLS-1$
         UserQueryBuilder qb = from(objectType);
+        storage.begin();
         StorageResults results = storage.fetch(qb.getSelect());
         try {
             assertEquals(1, results.getCount());
@@ -147,13 +156,22 @@ public class HibernateCompareTest {
                 assertEquals("2012-11-22 22:23:20.0", result.get("StartDate").toString());
                 assertEquals("2019-11-12 00:00:00.0", result.get("EndDate").toString());
             }
+            storage.commit();
         } finally {
             results.close();
         }
         storage.end();
 
         UserQueryBuilder qb1 = from(original.getComplexType("EU_PRDMDM_eBomChild"));
-        storage.delete(qb1.getSelect());
+        try {
+            storage.begin();
+            storage.delete(qb1.getSelect());
+            storage.commit();
+        } catch (Exception e) {
+            storage.rollback();
+        } finally {
+            storage.close();
+        }
     }
 
     @Test
@@ -173,12 +191,14 @@ public class HibernateCompareTest {
 
         ComplexTypeMetadata objectType = original.getComplexType("Person");//$NON-NLS-1$
         UserQueryBuilder qb = from(objectType);
+        storage.begin();
         StorageResults results = storage.fetch(qb.getSelect());
         try {
             assertEquals(1, results.getCount());
             for (DataRecord result : results) {
                 assertEquals("1", result.get("Id"));
             }
+            storage.commit();
         } finally {
             results.close();
         }
@@ -202,7 +222,15 @@ public class HibernateCompareTest {
         assertEquals(3, sort.get(ImpactAnalyzer.Impact.LOW).size());
 
         qb = from(original.getComplexType("Person"));
-        storage.delete(qb.getSelect());
+        try {
+            storage.begin();
+            storage.delete(qb.getSelect());
+            storage.commit();
+        } catch (Exception e) {
+            storage.rollback();
+        } finally {
+            storage.close();
+        }    
     }
 
     @Test
@@ -223,12 +251,14 @@ public class HibernateCompareTest {
 
         ComplexTypeMetadata objectType = original.getComplexType(typeName);
         UserQueryBuilder qb = from(objectType);
+        storage.begin();
         StorageResults results = storage.fetch(qb.getSelect());
         try {
             assertEquals(1, results.getCount());
             for (DataRecord result : results) {
                 assertEquals("1", result.get("Id"));
             }
+            storage.commit();
         } finally {
             results.close();
         }
@@ -250,7 +280,15 @@ public class HibernateCompareTest {
         assertEquals(1, sort.get(ImpactAnalyzer.Impact.LOW).size());
 
         qb = from(original.getComplexType(typeName));
-        storage.delete(qb.getSelect());
+        try {
+            storage.begin();
+            storage.delete(qb.getSelect());
+            storage.commit();
+        } catch (Exception e) {
+            storage.rollback();
+        } finally {
+            storage.close();
+        }   
     }
 
     @Test
@@ -272,12 +310,14 @@ public class HibernateCompareTest {
 
         ComplexTypeMetadata objectType = original.getComplexType(typeName);
         UserQueryBuilder qb = from(objectType);
+        storage.begin();
         StorageResults results = storage.fetch(qb.getSelect());
         try {
             assertEquals(1, results.getCount());
             for (DataRecord result : results) {
                 assertEquals("1", result.get("Id"));
             }
+            storage.commit();
         } finally {
             results.close();
         }
@@ -299,7 +339,15 @@ public class HibernateCompareTest {
         assertEquals(1, sort.get(ImpactAnalyzer.Impact.LOW).size());
 
         qb = from(original.getComplexType(typeName));
-        storage.delete(qb.getSelect());
+        try {
+            storage.begin();
+            storage.delete(qb.getSelect());
+            storage.commit();
+        } catch (Exception e) {
+            storage.rollback();
+        } finally {
+            storage.close();
+        }   
     }
 
     @Test
@@ -335,12 +383,14 @@ public class HibernateCompareTest {
 
         ComplexTypeMetadata objectType = original.getComplexType(typeName);
         UserQueryBuilder qb = from(objectType);
+        storage.begin();
         StorageResults results = storage.fetch(qb.getSelect());
         try {
             assertEquals(1, results.getCount());
             for (DataRecord result : results) {
                 assertEquals("1", result.get("Id"));
             }
+            storage.commit();
         } finally {
             results.close();
         }
@@ -362,7 +412,15 @@ public class HibernateCompareTest {
         assertEquals(3, sort.get(ImpactAnalyzer.Impact.LOW).size());
 
         qb = from(original.getComplexType(typeName));
-        storage.delete(qb.getSelect());
+        try {
+            storage.begin();
+            storage.delete(qb.getSelect());
+            storage.commit();
+        } catch (Exception e) {
+            storage.rollback();
+        } finally {
+            storage.close();
+        }   
     }
 
     @Test
@@ -398,12 +456,14 @@ public class HibernateCompareTest {
 
         ComplexTypeMetadata objectType = original.getComplexType(typeName);
         UserQueryBuilder qb = from(objectType);
+        storage.begin();
         StorageResults results = storage.fetch(qb.getSelect());
         try {
             assertEquals(1, results.getCount());
             for (DataRecord result : results) {
                 assertEquals("1", result.get("Id"));
             }
+            storage.commit();
         } finally {
             results.close();
         }
@@ -425,7 +485,15 @@ public class HibernateCompareTest {
         assertEquals(0, sort.get(ImpactAnalyzer.Impact.LOW).size());
 
         qb = from(original.getComplexType(typeName));
-        storage.delete(qb.getSelect());
+        try {
+            storage.begin();
+            storage.delete(qb.getSelect());
+            storage.commit();
+        } catch (Exception e) {
+            storage.rollback();
+        } finally {
+            storage.close();
+        }
     }
 
     @Test

@@ -1503,8 +1503,8 @@ public class StorageFullTextTest extends StorageTestCase {
         dataSourceField.setAccessible(true);
         dataSourceField.set(storage, dataSource);
 
-        // get actual value 100
-        assertEquals(100, generateIdFetchSizeMethod.invoke(storage));
+        // get actual value 500
+        assertEquals(500, generateIdFetchSizeMethod.invoke(storage));
 
         // Test default batch size
         Field batchSizeField = storageClass.getDeclaredField("batchSize");

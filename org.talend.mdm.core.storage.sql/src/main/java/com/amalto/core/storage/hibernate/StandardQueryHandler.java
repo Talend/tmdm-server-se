@@ -1492,7 +1492,6 @@ class StandardQueryHandler extends AbstractQueryHandler {
                 if (condition.getLeft() instanceof Field) {
                     Field leftField = (Field) condition.getLeft();
                     FieldMetadata fieldMetadata = leftField.getFieldMetadata();
-                    // TODO see how to fix this
                     if (!fieldMetadata.getType().equals(fieldMetadata.getType())) {
                         compareValue = StorageMetadataUtils.convert(String.valueOf(compareValue), fieldMetadata);
                     }

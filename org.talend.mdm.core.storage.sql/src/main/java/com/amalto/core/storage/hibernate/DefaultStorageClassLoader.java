@@ -249,9 +249,6 @@ public class DefaultStorageClassLoader extends StorageClassLoader {
         sessionFactoryElement.appendChild(mapping);
 
         if (rdbmsDataSource.supportFullText()) {
-//            addEvent(document, sessionFactoryElement, "post-update", "org.hibernate.search.event.impl.FullTextIndexEventListener"); //$NON-NLS-1$ //$NON-NLS-2$
-//            addEvent(document, sessionFactoryElement, "post-insert", "org.hibernate.search.event.impl.FullTextIndexEventListener"); //$NON-NLS-1$ //$NON-NLS-2$
-//            addEvent(document, sessionFactoryElement, "post-delete", "org.hibernate.search.event.impl.FullTextIndexEventListener"); //$NON-NLS-1$ //$NON-NLS-2$
         } else if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Hibernate configuration does not define full text extensions due to datasource configuration."); //$NON-NLS-1$
         }

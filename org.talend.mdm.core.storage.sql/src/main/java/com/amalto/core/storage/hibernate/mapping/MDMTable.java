@@ -169,12 +169,13 @@ public class MDMTable extends Table {
                     } else {
                         String alterDropConstraintSQL = generateAlterDefaultValueConstraintSQL(tableName, columnName);
                         if (StringUtils.isNotBlank(alterDropConstraintSQL)) {
+                            LOGGER.info("Running the script [" + alterDropConstraintSQL + "] to drop default value");
                             results.add(alterDropConstraintSQL);
                         }
                         if (LOGGER.isDebugEnabled()) {
                             LOGGER.debug(alterDropConstraintSQL);
                         }
-                        alter.append("  ADD DEFAULT ").append(defaultValue).append(" FOR ").append(columnName);
+                        alter.append(" ADD DEFAULT (").append(defaultValue).append(") FOR ").append(columnName).append(" WITH VALUES");
                     }
                 } else {
                     if (isDefaultValueNeeded(sqlType, dialect)) {

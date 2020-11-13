@@ -212,6 +212,7 @@ public class DefaultStorageClassLoader extends StorageClassLoader {
             addProperty(document, sessionFactoryElement, "hibernate.search.default.sourceBase", indexBase + '/' + storageName); //$NON-NLS-1$
             addProperty(document, sessionFactoryElement, "hibernate.search.default.source", ""); //$NON-NLS-1$ //$NON-NLS-2$
             addProperty(document, sessionFactoryElement, "hibernate.search.default.exclusive_index_use", "false"); //$NON-NLS-1$ //$NON-NLS-2$
+            addProperty(document, sessionFactoryElement, "hibernate.search.index_uninverting_allowed", "true"); //$NON-NLS-1$ //$NON-NLS-2$
             addProperty(document, sessionFactoryElement, "hibernate.search.lucene_version", "LUCENE_CURRENT"); //$NON-NLS-1$ //$NON-NLS-2$
         } else {
             addProperty(document, sessionFactoryElement, "hibernate.search.autoregister_listeners", "false"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -248,9 +249,6 @@ public class DefaultStorageClassLoader extends StorageClassLoader {
         sessionFactoryElement.appendChild(mapping);
 
         if (rdbmsDataSource.supportFullText()) {
-            addEvent(document, sessionFactoryElement, "post-update", "org.hibernate.search.event.FullTextIndexEventListener"); //$NON-NLS-1$ //$NON-NLS-2$
-            addEvent(document, sessionFactoryElement, "post-insert", "org.hibernate.search.event.FullTextIndexEventListener"); //$NON-NLS-1$ //$NON-NLS-2$
-            addEvent(document, sessionFactoryElement, "post-delete", "org.hibernate.search.event.FullTextIndexEventListener"); //$NON-NLS-1$ //$NON-NLS-2$
         } else if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Hibernate configuration does not define full text extensions due to datasource configuration."); //$NON-NLS-1$
         }
@@ -264,7 +262,7 @@ public class DefaultStorageClassLoader extends StorageClassLoader {
                 // Default Hibernate configuration for Hibernate forgot some JDBC type mapping.
                 return H2CustomDialect.class.getName();
             case MYSQL:
-                return "org.hibernate.dialect.MySQLDialect"; //$NON-NLS-1$
+                return "org.hibernate.dialect.MySQL57Dialect"; //$NON-NLS-1$
             default:
                 throw new IllegalArgumentException("Not supported database type '" + dialectType + "'");
         }

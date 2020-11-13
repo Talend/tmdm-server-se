@@ -164,20 +164,25 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
             if (keyFields.size() > 1) {
                 /*
                 <composite-id>
-                            <key-property column="x_enterprise" name="x_enterprise"/>
-                            <key-property column="x_id" name="x_id"/>
-                        </composite-id>
+                    <key-property column="x_enterprise" name="x_enterprise"/>
+                    <key-property column="x_id" name="x_id"/>
+                </composite-id>
                  */
                 compositeId = true;
                 idParentElement = document.createElement("composite-id"); //$NON-NLS-1$
                 classElement.appendChild(idParentElement);
+
+                TypeMetadata superType = MetadataUtils.getSuperConcreteType(complexType);
+                Attr nameAttribute = document.createAttribute("name");
+                nameAttribute.setValue((superType.getName() + "_ID").toLowerCase());
+                idParentElement.getAttributes().setNamedItem(nameAttribute);
 
                 Attr classAttribute = document.createAttribute("class"); //$NON-NLS-1$
                 classAttribute.setValue(generatedClassName + "_ID"); //$NON-NLS-1$
                 idParentElement.getAttributes().setNamedItem(classAttribute);
 
                 Attr mappedAttribute = document.createAttribute("mapped"); //$NON-NLS-1$
-                mappedAttribute.setValue("true"); //$NON-NLS-1$
+                mappedAttribute.setValue("false"); //$NON-NLS-1$
                 idParentElement.getAttributes().setNamedItem(mappedAttribute);
             }
             for (FieldMetadata keyField : keyFields) {
@@ -385,6 +390,11 @@ public class MappingGenerator extends DefaultMetadataVisitor<Element> {
         Attr joinAttribute = document.createAttribute("fetch"); //$NON-NLS-1$
         joinAttribute.setValue("join"); //$NON-NLS-1$
         propertyElement.getAttributes().setNamedItem(joinAttribute);
+        
+        // embed-xml="false"
+        Attr embedXml = document.createAttribute("embed-xml"); //$NON-NLS-1$
+        embedXml.setValue("false"); //$NON-NLS-1$
+        propertyElement.getAttributes().setNamedItem(embedXml);
         // foreign-key="..."
         String fkConstraintName = resolver.getFkConstraintName(referencedField);
         if (!fkConstraintName.isEmpty()) {

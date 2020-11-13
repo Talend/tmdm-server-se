@@ -617,14 +617,36 @@ class FullTextQueryHandler extends AbstractQueryHandler {
         TypedExpression field = orderBy.getExpression();
         if (field instanceof Field) {
             FieldMetadata fieldMetadata = ((Field) field).getFieldMetadata();
-            SortField sortField = new SortField(fieldMetadata.getName(),
-                    getSortType(fieldMetadata),
-                    orderBy.getDirection() == OrderBy.Direction.DESC);
+            SortField sortField = getSortField(fieldMetadata, orderBy);
             query.setSort(new Sort(sortField));
             return null;
         } else {
             throw new NotImplementedException("No support for order by for full text search on non-field.");
         }
+    }
+
+    private static SortField getSortField(FieldMetadata fieldMetadata, OrderBy orderBy) {
+        SortField sortField = null;
+        TypeMetadata fieldType = fieldMetadata.getType();
+        String field = ClassCreator.getSortableFieldName(fieldMetadata);
+        String type = MetadataUtils.getSuperConcreteType(fieldType).getName();
+        boolean reverse = orderBy.getDirection() == OrderBy.Direction.DESC;
+        if (Types.INTEGERS.contains(type)) {
+            sortField = new SortField(field, new FieldComparators.IntComparatorSource(), reverse);
+        } else if (Types.DOUBLES.contains(type)) {
+            sortField = new SortField(field, new FieldComparators.DoubleComparatorSource(), reverse);
+        } else if (Types.BYTES.contains(type)) {
+            sortField = new SortField(field, new FieldComparators.ByteComparatorSource(), reverse);
+        } else if (Types.LONGS.contains(type)) {
+            sortField = new SortField(field, new FieldComparators.LongComparatorSource(), reverse);
+        } else if (Types.SHORTS.contains(type)) {
+            sortField = new SortField(field, new FieldComparators.ShortComparatorSource(), reverse);
+        } else if (Types.FLOAT.equals(type)) {
+            sortField = new SortField(field, new FieldComparators.FloatComparatorSource(), reverse);
+        } else {
+            sortField = new SortField(field, getSortType(fieldMetadata), reverse);
+        }
+        return sortField;
     }
 
     private static SortField.Type getSortType(FieldMetadata fieldMetadata) {
@@ -638,28 +660,10 @@ class FullTextQueryHandler extends AbstractQueryHandler {
                 || Types.HEX_BINARY.equals(type)
                 || Types.DURATION.equals(type)) {
             return SortField.Type.STRING_VAL; // STRING does not work well for 'long' strings.
-        } else if (Types.INT.equals(type)
-                || Types.INTEGER.equals(type)
-                || Types.POSITIVE_INTEGER.equals(type)
-                || Types.NON_POSITIVE_INTEGER.equals(type)
-                || Types.NON_NEGATIVE_INTEGER.equals(type)
-                || Types.NEGATIVE_INTEGER.equals(type)
-                || Types.UNSIGNED_INT.equals(type)) {
-            return SortField.Type.INT;
-        } else if (Types.DECIMAL.equals(type) || Types.DOUBLE.equals(type)) {
-            return SortField.Type.DOUBLE;
         } else if (Types.DATE.equals(type)
                 || Types.DATETIME.equals(type)
                 || Types.TIME.equals(type)) {
             return SortField.Type.STRING;
-        } else if (Types.UNSIGNED_SHORT.equals(type) || Types.SHORT.equals(type)) {
-            return SortField.Type.SHORT;
-        } else if (Types.UNSIGNED_LONG.equals(type) || Types.LONG.equals(type)) {
-            return SortField.Type.LONG;
-        } else if (Types.FLOAT.equals(type)) {
-            return SortField.Type.FLOAT;
-        } else if (Types.BYTE.equals(type) || Types.UNSIGNED_BYTE.equals(type)) {
-            return SortField.Type.BYTE;
         } else {
             throw new UnsupportedOperationException("No support for field typed as '" + type + "'");
         }

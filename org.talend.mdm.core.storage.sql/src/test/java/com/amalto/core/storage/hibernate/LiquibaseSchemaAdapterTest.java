@@ -73,7 +73,7 @@ public class LiquibaseSchemaAdapterTest {
 
         adapter = new LiquibaseSchemaAdapter(tableResolver, dialect,
                 (RDBMSDataSource) storage.getDataSource(), storage.getType());
-        
+        adapter.setMetadata(storage.getMetadata());
     }
 
     @AfterClass

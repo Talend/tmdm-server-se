@@ -63,8 +63,10 @@ import org.talend.mdm.commmon.metadata.CompoundFieldMetadata;
 import org.talend.mdm.commmon.metadata.DefaultMetadataVisitor;
 import org.talend.mdm.commmon.metadata.EnumerationFieldMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
+import org.talend.mdm.commmon.metadata.MetadataUtils;
 import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
 import org.talend.mdm.commmon.metadata.SimpleTypeFieldMetadata;
+import org.talend.mdm.commmon.metadata.TypeMetadata;
 import org.talend.mdm.commmon.metadata.Types;
 
 import com.amalto.core.query.user.Alias;
@@ -481,7 +483,7 @@ class StandardQueryHandler extends AbstractQueryHandler {
     @Override
     public StorageResults visit(final Field field) {
         final FieldMetadata userFieldMetadata = field.getFieldMetadata();
-        ComplexTypeMetadata containingType = getContainingType(userFieldMetadata);
+        final ComplexTypeMetadata containingType = getContainingType(userFieldMetadata);
         final Set<String> aliases = getAliases(containingType, field);
         userFieldMetadata.accept(new DefaultMetadataVisitor<Void>() {
 
@@ -497,8 +499,15 @@ class StandardQueryHandler extends AbstractQueryHandler {
             @Override
             public Void visit(SimpleTypeFieldMetadata simpleField) {
                 if (!simpleField.isMany()) {
+                    ComplexTypeMetadata type = simpleField.getContainingType();
+                    TypeMetadata superType = MetadataUtils.getSuperConcreteType(type);
                     for (String alias : aliases) {
-                        projectionList.add(Projections.property(alias + '.' + simpleField.getName()));
+                        // As composite key as FK,change to alias.entity_id.key
+                        if (simpleField.isKey() && type.getKeyFields().size() > 1 && !alias.startsWith(containingType.getName() + '.')) {
+                            projectionList.add(Projections.property(alias + '.' + (superType.getName() + "_ID").toLowerCase() + '.' + simpleField.getName()));
+                        } else {
+                            projectionList.add(Projections.property(alias + '.' + simpleField.getName()));
+                        }
                     }
                 } else {
                     projectionList.add(new ManyFieldProjection(aliases, simpleField, resolver, (RDBMSDataSource) storage
@@ -592,7 +601,13 @@ class StandardQueryHandler extends AbstractQueryHandler {
         boolean fieldContainerInstantiable = fieldMetadata.getContainingType().getEntity().isInstantiable();
         String previousAlias;
         if (fieldContainerInstantiable) {
+            // For regular PK, alias should be: entity
             previousAlias = fieldMetadata.getEntityTypeName();
+            TypeMetadata superType = MetadataUtils.getSuperConcreteType(type);
+            // For composite PK, alias should be: entity.entity_id
+            if (type.getKeyFields().size() > 1 && field.getFieldMetadata().isKey()) {
+                previousAlias += ("." + (superType.getName() + "_ID")).toLowerCase();
+            }
         } else {
             previousAlias = type.getName();
         }
@@ -972,7 +987,7 @@ class StandardQueryHandler extends AbstractQueryHandler {
         }
         if (condition != null) {
             for (String fieldName : condition.criterionFieldNames) {
-            	orderByWithNulls(orderBy.getDirection(), fieldName);                
+                orderByWithNulls(orderBy.getDirection(), fieldName);                
             }
         }
         return null;
@@ -980,23 +995,23 @@ class StandardQueryHandler extends AbstractQueryHandler {
     
     // Nulls first when order by with ASC direction, nulls last when order by DESC direction
     private void orderByWithNulls(OrderBy.Direction direction, String field) {
-    	RDBMSDataSource dataSource = (RDBMSDataSource) storage.getDataSource();
+        RDBMSDataSource dataSource = (RDBMSDataSource) storage.getDataSource();
         switch (direction) {
         case ASC:
-        	// Nulls first/last not supported by SQLServer, its default behavior is the same as expected
-        	if (HibernateStorageUtils.isSQLServer(dataSource.getDialectName())) {
-        		criteria.addOrder(Order.asc(field));
-        	} else {
-        		criteria.addOrder(Order.asc(field).nulls(NullPrecedence.FIRST));
-        	}
+            // Nulls first/last not supported by SQLServer, its default behavior is the same as expected
+            if (HibernateStorageUtils.isSQLServer(dataSource.getDialectName())) {
+                criteria.addOrder(Order.asc(field));
+            } else {
+                criteria.addOrder(Order.asc(field).nulls(NullPrecedence.FIRST));
+            }
             break;
         case DESC:
-        	if (HibernateStorageUtils.isSQLServer(dataSource.getDialectName())) {
-        		criteria.addOrder(Order.desc(field));
-        	} else {
-        		criteria.addOrder(Order.desc(field).nulls(NullPrecedence.LAST));
-        	}
-        	break;
+            if (HibernateStorageUtils.isSQLServer(dataSource.getDialectName())) {
+                criteria.addOrder(Order.desc(field));
+            } else {
+                criteria.addOrder(Order.desc(field).nulls(NullPrecedence.LAST));
+            }
+            break;
         }
     }
 
@@ -1177,10 +1192,11 @@ class StandardQueryHandler extends AbstractQueryHandler {
                         // TMDM-7700: Fix incorrect alias for isNull condition on FK (pick the FK's containing type
                         // iso. the referenced type).
                         FieldMetadata fieldMetadata = ((Field) field).getFieldMetadata();
-                        if (fieldMetadata.getContainingType().isInstantiable()) {
+                        ComplexTypeMetadata containingType = fieldMetadata.getContainingType();
+                        if (containingType.isInstantiable() && (!fieldMetadata.isKey() || containingType.getKeyFields().size() == 1)) {
                             String typeName = fieldMetadata.getEntityTypeName();
                             criterion = Restrictions.isNull(typeName + '.' + fieldMetadata.getName());
-                        } else {
+                        } else { // Field is part of Composite PK, use criterionFieldName directly
                             criterion = Restrictions.isNull(criterionFieldName);
                         }
                     } else {
@@ -1517,13 +1533,14 @@ class StandardQueryHandler extends AbstractQueryHandler {
                             current = null;
                             for (String alias : aliases) {
                                 FieldMetadata[] fields = ((CompoundFieldMetadata) referencedField).getFields();
+                                TypeMetadata superType = MetadataUtils.getSuperConcreteType(fields[0].getContainingType());
                                 Object[] keyValues = (Object[]) compareValue;
                                 Criterion[] keyValueCriteria = new Criterion[keyValues.length];
                                 int i = 0;
                                 for (FieldMetadata keyField : fields) {
                                     Object keyValue = StorageMetadataUtils.convert(
                                             StorageMetadataUtils.toString(keyValues[i], keyField), keyField);
-                                    keyValueCriteria[i] = eq(alias + '.' + keyField.getName(), keyValue);
+                                    keyValueCriteria[i] = eq(alias + '.' + (superType.getName() + "_ID").toLowerCase() + '.' + keyField.getName(), keyValue);
                                     i++;
                                 }
                                 Criterion newCriterion = makeAnd(keyValueCriteria);
@@ -1574,15 +1591,19 @@ class StandardQueryHandler extends AbstractQueryHandler {
                         value = "%"; //$NON-NLS-1$
                     }
                     Object databaseValue = applyDatabaseType(leftFieldCondition, value); // Converts to CLOB if needed
-                    if (datasource.isCaseSensitiveSearch() || !(databaseValue instanceof String)) { // Can't use ilike
-                                                                                                    // on CLOBs
+                    if (datasource.isCaseSensitiveSearch() || !(databaseValue instanceof String)) { // Can't use ilike on CLOBs
                         Criterion current = null;
                         for (String fieldName : leftFieldCondition.criterionFieldNames) {
                             if(leftFieldCondition.field instanceof Field){
                                 FieldMetadata fieldMetadata = leftFieldCondition.field.getFieldMetadata();
-                                if (fieldMetadata.getContainingType().isInstantiable()
-                                        && !(fieldMetadata instanceof ReferenceFieldMetadata)) {
-                                    fieldName = fieldMetadata.getEntityTypeName() + '.' + fieldMetadata.getName();
+                                ComplexTypeMetadata currentTypeMetadata = fieldMetadata.getContainingType();
+                                TypeMetadata superType = MetadataUtils.getSuperConcreteType(currentTypeMetadata);
+                                if (currentTypeMetadata.isInstantiable() && !(fieldMetadata instanceof ReferenceFieldMetadata)) {
+                                    if (currentTypeMetadata.getKeyFields().size() > 1 && fieldMetadata.isKey()) {
+                                        fieldName = fieldMetadata.getEntityTypeName() + '.' + (superType.getName() + "_ID").toLowerCase() + '.' + fieldMetadata.getName();
+                                    } else {
+                                        fieldName = fieldMetadata.getEntityTypeName() + '.' + fieldMetadata.getName();
+                                    }
                                 }
                             }                          
                             Criterion newCriterion = like(fieldName, databaseValue);
@@ -1825,8 +1846,9 @@ class StandardQueryHandler extends AbstractQueryHandler {
 
     private void addConditionForCompoundField(FieldCondition condition, String alias, FieldMetadata referencedField) {
         FieldMetadata[] fields = ((CompoundFieldMetadata) referencedField).getFields();
+        TypeMetadata superType = MetadataUtils.getSuperConcreteType(fields[0].getContainingType());
         for (FieldMetadata subFieldMetadata : fields) {
-            condition.criterionFieldNames.add(alias + '.' + subFieldMetadata.getName());
+            condition.criterionFieldNames.add(alias + '.' + (superType.getName() + "_ID").toLowerCase() + '.' + subFieldMetadata.getName());
         }
     }
 

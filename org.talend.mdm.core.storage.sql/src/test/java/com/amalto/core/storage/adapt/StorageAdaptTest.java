@@ -27,8 +27,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.h2.jdbc.JdbcSQLException;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
@@ -907,7 +907,7 @@ public class StorageAdaptTest extends TestCase {
         MetadataRepository repository2 = new MetadataRepository();
         repository2.load(StorageAdaptTest.class.getResourceAsStream("schema11_2.xsd"));
         storage.adapt(repository2, false);
-        
+
         String[] updatedColumns = { "X_ID", "X_NAME", "X_LASTNAME", "X_AGE", "X_WEIGHT", "X_SEX", "X_TALEND_TIMESTAMP", "X_TALEND_TASK_ID" };
         try {
             assertDatabaseChange(dataSource, tables, updatedColumns, new boolean[] { true });
@@ -921,6 +921,7 @@ public class StorageAdaptTest extends TestCase {
 
         objectType = repository2.getComplexType("Person");//$NON-NLS-1$
         qb = from(objectType);
+        storage.begin();
         results = storage.fetch(qb.getSelect());
         try {
             assertEquals(1, results.getCount());
@@ -931,6 +932,7 @@ public class StorageAdaptTest extends TestCase {
                 assertEquals(12.6, result.get("weight"));
                 assertEquals(Boolean.TRUE, result.get("sex"));
             }
+            storage.commit();
         } finally {
             results.close();
         }

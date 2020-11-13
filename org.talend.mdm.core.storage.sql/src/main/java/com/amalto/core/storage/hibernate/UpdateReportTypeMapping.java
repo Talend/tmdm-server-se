@@ -171,7 +171,11 @@ class UpdateReportTypeMapping extends TypeMapping {
 
     @Override
     public String getDatabaseTimestamp() {
-        return "x_time_in_millis"; //$NON-NLS-1$
+        if (databaseUpdateReportType.getKeyFields().size() > 1) {
+            return "x_update_report_id.x_time_in_millis"; //$NON-NLS-1$
+        } else {
+            return "x_time_in_millis"; //$NON-NLS-1$
+        }
     }
 
     @Override

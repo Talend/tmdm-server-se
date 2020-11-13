@@ -20,8 +20,8 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.ObjectNotFoundException;
 import org.hibernate.Session;
@@ -29,6 +29,7 @@ import org.hibernate.StaleStateException;
 import org.hibernate.Transaction;
 import org.hibernate.engine.spi.EntityKey;
 import org.hibernate.internal.SessionImpl;
+import org.hibernate.resource.transaction.spi.TransactionStatus;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 
 import com.amalto.core.load.io.ResettableStringWriter;
@@ -131,8 +132,9 @@ class HibernateStorageTransaction extends StorageTransaction {
                             + session.getStatistics().getEntityCount() + " not-flushed record(s)..."); //$NON-NLS-1$
                 }
                 if (!transaction.isActive()) {// not begun, was committed, was rolled back, failed commit
-                    LOGGER.warn("Transaction is not active, wasCommitted=" + transaction.wasCommitted() + ", wasRolledBack=" + transaction.wasRolledBack()); //$NON-NLS-1$ //$NON-NLS-2$
-                    if (!transaction.wasCommitted()) {
+                    LOGGER.warn("Transaction is not active, wasCommitted=" + (transaction.getStatus() == TransactionStatus.COMMITTED) //$NON-NLS-1$
+                                    + ", wasRolledBack=" + (transaction.getStatus() == TransactionStatus.ROLLED_BACK)); //$NON-NLS-1$
+                    if (transaction.getStatus() != TransactionStatus.COMMITTED) {
                         try {
                             transaction.begin();// not begun or rolled back
                             LOGGER.warn("Transaction is not begun or rolled back unexpectedly, has been restarted."); //$NON-NLS-1$
@@ -142,7 +144,7 @@ class HibernateStorageTransaction extends StorageTransaction {
                     }
                 }
                 try {
-                    if (!transaction.wasCommitted()) {
+                    if (transaction.getStatus() != TransactionStatus.COMMITTED) {
                         session.flush();
                         transaction.commit();
                         if (LOGGER.isDebugEnabled()) {
@@ -290,7 +292,7 @@ class HibernateStorageTransaction extends StorageTransaction {
                             dumpTransactionContent(session, storage); // Dumps all content in the current transaction.
                         }
                     }
-                    if (!transaction.wasRolledBack()) {
+                    if (transaction.getStatus() != TransactionStatus.ROLLED_BACK && hasFailed) {
                         transaction.rollback();
                     } else {
                         LOGGER.warn("Transaction was already rollbacked."); //$NON-NLS-1$

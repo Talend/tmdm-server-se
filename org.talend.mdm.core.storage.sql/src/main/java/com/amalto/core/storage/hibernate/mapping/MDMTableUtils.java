@@ -10,22 +10,20 @@
 
 package com.amalto.core.storage.hibernate.mapping;
 
-import org.hibernate.dialect.Dialect;
-import org.hibernate.dialect.PostgreSQLDialect;
-import org.hibernate.dialect.SQLServerDialect;
-import org.hibernate.mapping.Column;
-import org.hibernate.tool.hbm2ddl.ColumnMetadata;
-
 import java.sql.Types;
 
-@SuppressWarnings("nls")
+import org.hibernate.boot.model.TruthValue;
+import org.hibernate.dialect.Dialect;
+import org.hibernate.dialect.PostgreSQL94Dialect;
+import org.hibernate.dialect.SQLServerDialect;
+import org.hibernate.mapping.Column;
+import org.hibernate.tool.schema.extract.spi.ColumnInformation;
+
 public abstract class MDMTableUtils {
 
     public static final String NVARCHAR_MAX_TYPE = "nvarchar(max)";
 
-    private static final String NO = "NO";
-
-    public static boolean isAlterColumnField(Column newColumn, ColumnMetadata oldColumnInfo, Dialect dialect) {
+    public static boolean isAlterColumnField(Column newColumn, ColumnInformation oldColumnInfo, Dialect dialect) {
         if (oldColumnInfo == null) {
             return Boolean.FALSE;
         }
@@ -33,11 +31,11 @@ public abstract class MDMTableUtils {
                 || isVarcharTypeChanged(newColumn, oldColumnInfo, dialect);
     }
 
-    private static boolean isVarcharTypeChanged(Column newColumn, ColumnMetadata oldColumnInfo, Dialect dialect) {
+    private static boolean isVarcharTypeChanged(Column newColumn, ColumnInformation oldColumnInfo, Dialect dialect) {
         if(!isVarcharField(oldColumnInfo, dialect)){
             return false;
         }
-        if (dialect instanceof PostgreSQLDialect) {
+        if (dialect instanceof PostgreSQL94Dialect) {
             return oldColumnInfo.getTypeName().toLowerCase().startsWith("varchar") && newColumn.getSqlType().equalsIgnoreCase("text");
         }
         if (dialect instanceof SQLServerDialect) {
@@ -65,7 +63,7 @@ public abstract class MDMTableUtils {
     }
 
 
-    private static boolean isVarcharField(ColumnMetadata oldColumnInfo, Dialect dialect) {
+    private static boolean isVarcharField(ColumnInformation oldColumnInfo, Dialect dialect) {
         boolean isVarcharType = oldColumnInfo.getTypeCode() == Types.VARCHAR;
         if (dialect instanceof SQLServerDialect) {
             isVarcharType |= oldColumnInfo.getTypeCode() == Types.NVARCHAR
@@ -74,7 +72,7 @@ public abstract class MDMTableUtils {
         return isVarcharType;
     }
 
-    private static boolean isIncreaseVarcharColumnLength(Column newColumn, ColumnMetadata oldColumnInfo, Dialect dialect) {
+    private static boolean isIncreaseVarcharColumnLength(Column newColumn, ColumnInformation oldColumnInfo, Dialect dialect) {
         if (dialect instanceof SQLServerDialect) {
             return newColumn.getLength() > oldColumnInfo.getColumnSize() && (oldColumnInfo.getTypeCode() == Types.NVARCHAR
                     || oldColumnInfo.getTypeCode() == Types.VARCHAR) && (newColumn.getSqlTypeCode() == Types.NVARCHAR
@@ -84,7 +82,7 @@ public abstract class MDMTableUtils {
                 .getTypeCode());
     }
 
-    public static boolean isChangedToOptional(Column newColumn, ColumnMetadata oldColumnInfo) {
-        return oldColumnInfo.getNullable().toUpperCase().equals(NO) && newColumn.isNullable();
+    public static boolean isChangedToOptional(Column newColumn, ColumnInformation oldColumnInfo) {
+        return (!TruthValue.toBoolean(oldColumnInfo.getNullable(), false)) && newColumn.isNullable();
     }
 }

@@ -39,7 +39,6 @@ public class MemoryStorage extends HibernateStorage {
         builder.connectionPoolMinSize(1).connectionPoolMaxSize(1);
         builder.generateConstraints(false);
         dataSource = builder.build();
-        internalInit();
     }
 
     @Override

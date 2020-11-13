@@ -16,6 +16,10 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Blob;
 import java.sql.Clob;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -24,12 +28,20 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
+
+import javax.persistence.FlushModeType;
+import javax.persistence.LockModeType;
+import javax.persistence.Parameter;
+import javax.persistence.TemporalType;
 
 import org.apache.commons.collections.set.ListOrderedSet;
 import org.apache.lucene.search.Explanation;
+import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.Sort;
 import org.hibernate.CacheMode;
 import org.hibernate.Criteria;
@@ -43,6 +55,12 @@ import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.engine.spi.RowSelection;
+import org.hibernate.graph.GraphSemantic;
+import org.hibernate.graph.RootGraph;
+import org.hibernate.query.ParameterMetadata;
+import org.hibernate.query.QueryParameter;
+import org.hibernate.query.spi.QueryProducerImplementor;
 import org.hibernate.search.FullTextQuery;
 import org.hibernate.search.filter.FullTextFilter;
 import org.hibernate.search.query.DatabaseRetrievalMethod;
@@ -68,6 +86,7 @@ public class EntityFinder {
      * @param session A Hibernate {@link Session}.
      * @return The top level (aka the Wrapper instance that represent a MDM entity).
      */
+    @SuppressWarnings({ "deprecation", "rawtypes" })
     public static Wrapper findEntity(Wrapper wrapper, HibernateStorage storage, Session session) {
         ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
         if (!(contextClassLoader instanceof StorageClassLoader)) {
@@ -129,6 +148,7 @@ public class EntityFinder {
     }
 
     private static class ScrollableResultsWrapper implements ScrollableResults {
+
         private final ScrollableResults scrollableResults;
 
         private final HibernateStorage storage;
@@ -318,7 +338,9 @@ public class EntityFinder {
         }
     }
 
+    @SuppressWarnings("rawtypes")
     private static class IteratorWrapper implements Iterator {
+
         private final Iterator iterator;
 
         private final HibernateStorage storage;
@@ -347,6 +369,7 @@ public class EntityFinder {
         }
     }
 
+    @SuppressWarnings({"rawtypes", "unchecked"})
     private static class QueryWrapper implements FullTextQuery {
 
         private final FullTextQuery query;
@@ -356,7 +379,7 @@ public class EntityFinder {
         private final Session session;
 
         private List<String> entityClassName = new ArrayList<String>();
-
+        
         public QueryWrapper(FullTextQuery query, HibernateStorage storage, Session session, List<ComplexTypeMetadata> types) {
             this.query = query;
             this.storage = storage;
@@ -372,52 +395,231 @@ public class EntityFinder {
                 }
             }
         }
-
+        
         @Override
-        public String getQueryString() {
-            return query.getQueryString();
+        public int getResultSize() {
+            return query.getResultSize();
         }
 
         @Override
-        public Integer getMaxResults() {
+        public FullTextFilter enableFullTextFilter(String name) {
+            return query.enableFullTextFilter(name);
+        }
+
+        @Override
+        public void disableFullTextFilter(String name) {
+            query.disableFullTextFilter(name);
+        }
+
+        @Override
+        public FacetManager getFacetManager() {
+           return query.getFacetManager();
+        }
+
+        @Override
+        public Explanation explain(int documentId) {
+            return query.explain(documentId);
+        }
+
+        @Override
+        public boolean hasPartialResults() {
+            return query.hasPartialResults();
+        }
+
+        @Override
+        public List getResultList() {
+            return query.getResultList();
+        }
+
+        @Override
+        public Object getSingleResult() {
+            return query.getSingleResult();
+        }
+
+        @Override
+        public int executeUpdate() {
+            return query.executeUpdate();
+        }
+
+        @Override
+        public int getMaxResults() {
             return query.getMaxResults();
         }
 
         @Override
-        public Type[] getReturnTypes() throws HibernateException {
-            return query.getReturnTypes();
+        public int getFirstResult() {
+            return query.getFirstResult();
         }
 
         @Override
-        public String[] getReturnAliases() throws HibernateException {
-            return query.getReturnAliases();
+        public Map<String, Object> getHints() {
+            return query.getHints();
         }
 
         @Override
-        public String[] getNamedParameters() throws HibernateException {
-            return query.getNamedParameters();
+        public Set<Parameter<?>> getParameters() {
+            return query.getParameters();
         }
 
         @Override
-        public Iterator iterate() throws HibernateException {
-            Iterator iterator = query.iterate();
-            return new IteratorWrapper(iterator, storage, session);
+        public Parameter<?> getParameter(String name) {
+            return query.getParameter(name);
         }
 
         @Override
-        public ScrollableResults scroll() throws HibernateException {
+        public <T> Parameter<T> getParameter(String name, Class<T> type) {
+            return query.getParameter(name, type);
+        }
+
+        @Override
+        public Parameter<?> getParameter(int position) {
+            return query.getParameter(position);
+        }
+
+        @Override
+        public <T> Parameter<T> getParameter(int position, Class<T> type) {
+            return query.getParameter(position, type);
+        }
+
+        @Override
+        public boolean isBound(Parameter<?> param) {
+           return query.isBound(param);
+        }
+
+        @Override
+        public <T> T getParameterValue(Parameter<T> param) {
+            return query.getParameterValue(param);
+        }
+
+        @Override
+        public Object getParameterValue(String name) {
+            return query.getParameterValue(name);
+        }
+
+        @Override
+        public Object getParameterValue(int position) {
+            return query.getParameterValue(position);
+        }
+
+        @Override
+        public FlushModeType getFlushMode() {
+            return query.getFlushMode();
+        }
+
+        @Override
+        public LockModeType getLockMode() {
+            return query.getLockMode();
+        }
+
+        @Override
+        public QueryProducerImplementor getProducer() {
+            return query.getProducer();
+        }
+
+        @Override
+        public void setOptionalId(Serializable id) {
+            query.setOptionalId(id);
+        }
+
+        @Override
+        public void setOptionalEntityName(String entityName) {
+           query.setOptionalEntityName(entityName);
+        }
+
+        @Override
+        public void setOptionalObject(Object optionalObject) {
+            query.setOptionalObject(optionalObject);
+        }
+
+        @Override
+        public Optional uniqueResultOptional() {
+            return query.uniqueResultOptional();
+        }
+
+        @Override
+        public Stream stream() {
+            return query.stream();
+        }
+
+        @Override
+        public org.hibernate.query.Query applyGraph(RootGraph graph, GraphSemantic semantic) {
+            return query.applyGraph(graph, semantic);
+        }
+
+        @Override
+        public org.hibernate.query.Query setParameter(Parameter param, Instant value, TemporalType temporalType) {
+            return query.setParameter(param, value, temporalType);
+        }
+
+        @Override
+        public org.hibernate.query.Query setParameter(Parameter param, LocalDateTime value, TemporalType temporalType) {
+            return query.setParameter(param, value, temporalType);
+        }
+
+        @Override
+        public org.hibernate.query.Query setParameter(Parameter param, ZonedDateTime value, TemporalType temporalType) {
+            return query.setParameter(param, value, temporalType);
+        }
+
+        @Override
+        public org.hibernate.query.Query setParameter(Parameter param, OffsetDateTime value, TemporalType temporalType) {
+            return query.setParameter(param, value, temporalType);
+        }
+
+        @Override
+        public org.hibernate.query.Query setParameter(String name, Instant value, TemporalType temporalType) {
+            return query.setParameter(name, value, temporalType);
+        }
+
+        @Override
+        public org.hibernate.query.Query setParameter(String name, LocalDateTime value, TemporalType temporalType) {
+            return query.setParameter(name, value, temporalType);
+        }
+
+        @Override
+        public org.hibernate.query.Query setParameter(String name, ZonedDateTime value, TemporalType temporalType) {
+            return query.setParameter(name, value, temporalType);
+        }
+
+        @Override
+        public org.hibernate.query.Query setParameter(String name, OffsetDateTime value, TemporalType temporalType) {
+            return query.setParameter(name, value, temporalType);
+        }
+
+        @Override
+        public org.hibernate.query.Query setParameter(int position, Instant value, TemporalType temporalType) {
+            return query.setParameter(position, value, temporalType);
+        }
+
+        @Override
+        public org.hibernate.query.Query setParameter(int position, LocalDateTime value, TemporalType temporalType) {
+            return query.setParameter(position, value, temporalType);
+        }
+
+        @Override
+        public org.hibernate.query.Query setParameter(int position, ZonedDateTime value, TemporalType temporalType) {
+            return query.setParameter(position, value, temporalType);
+        }
+
+        @Override
+        public org.hibernate.query.Query setParameter(int position, OffsetDateTime value, TemporalType temporalType) {
+            return query.setParameter(position, value, temporalType);
+        }
+
+        @Override
+        public ScrollableResults scroll() {
             ScrollableResults scrollableResults = query.scroll();
             return new ScrollableResultsWrapper(scrollableResults, storage, session);
         }
 
         @Override
-        public ScrollableResults scroll(ScrollMode scrollMode) throws HibernateException {
+        public ScrollableResults scroll(ScrollMode scrollMode) {
             ScrollableResults scrollableResults = query.scroll(scrollMode);
             return new ScrollableResultsWrapper(scrollableResults, storage, session);
         }
 
         @Override
-        public List list() throws HibernateException {
+        public List list() {
             List<Wrapper> list = query.list();
             Set<Wrapper> newSet = new ListOrderedSet();
             for (Object item : list) {
@@ -441,113 +643,13 @@ public class EntityFinder {
         }
 
         @Override
-        public Object uniqueResult() throws HibernateException {
+        public Object uniqueResult() {
             return query.uniqueResult();
         }
 
         @Override
-        public int executeUpdate() throws HibernateException {
-            return query.executeUpdate();
-        }
-
-        @Override
-        public FullTextQuery setMaxResults(int maxResults) {
-            return query.setMaxResults(maxResults);
-        }
-
-        @Override
-        public Integer getFirstResult() {
-            return query.getFirstResult();
-        }
-
-        @Override
-        public FullTextQuery setFirstResult(int firstResult) {
-            return query.setFirstResult(firstResult);
-        }
-
-        @Override
-        public boolean isReadOnly() {
-            return query.isReadOnly();
-        }
-
-        @Override
-        public Query setReadOnly(boolean readOnly) {
-            return query.setReadOnly(readOnly);
-        }
-
-        @Override
-        public LockOptions getLockOptions() {
-            return query.getLockOptions();
-        }
-
-        @Override
-        public Query setCacheable(boolean cacheable) {
-            return query.setCacheable(cacheable);
-        }
-
-        @Override
-        public String getCacheRegion() {
-            return query.getCacheRegion();
-        }
-
-        @Override
-        public Query setCacheRegion(String cacheRegion) {
-            return query.setCacheRegion(cacheRegion);
-        }
-
-        @Override
-        public Integer getTimeout() {
-            return query.getTimeout();
-        }
-
-        @Override
-        public Query setTimeout(int timeout) {
-            return query.setTimeout(timeout);
-        }
-
-        @Override
-        public Integer getFetchSize() {
-            return query.getFetchSize();
-        }
-
-        @Override
-        public FullTextQuery setFetchSize(int fetchSize) {
-            return query.setFetchSize(fetchSize);
-        }
-
-        @Override
-        public Query setLockOptions(LockOptions lockOptions) {
-            return query.setLockOptions(lockOptions);
-        }
-
-        @Override
-        public Query setLockMode(String alias, LockMode lockMode) {
-            return query.setLockMode(alias, lockMode);
-        }
-
-        @Override
-        public String getComment() {
-            return query.getComment();
-        }
-
-        @Override
-        public Query setComment(String comment) {
-            return query.setComment(comment);
-        }
-
-        @Override
-        public Query addQueryHint(String hint) {
-            return query.addQueryHint(hint);
-        }
-
-        @Override
-        public FlushMode getFlushMode() {
-            return query.getFlushMode();
-        }
-
-        @Override
-        public Query setFlushMode(FlushMode flushMode) {
-            return query.setFlushMode(flushMode);
+        public FlushMode getHibernateFlushMode() {
+            return query.getHibernateFlushMode();
         }
 
         @Override
@@ -556,308 +658,311 @@ public class EntityFinder {
         }
 
         @Override
-        public Query setCacheMode(CacheMode cacheMode) {
+        public String getCacheRegion() {
+            return query.getCacheRegion();
+        }
+
+        @Override
+        public Integer getFetchSize() {
+            return query.getFetchSize();
+        }
+
+        @Override
+        public LockOptions getLockOptions() {
+            return query.getLockOptions();
+        }
+
+        @Override
+        public String getComment() {
+            return query.getComment();
+        }
+
+        @Override
+        public String getQueryString() {
+            return query.getQueryString();
+        }
+
+        @Override
+        public ParameterMetadata getParameterMetadata() {
+           return query.getParameterMetadata();
+        }
+
+        @Override
+        public org.hibernate.query.Query setParameter(Parameter param, Object value) {
+            throw new UnsupportedOperationException( "parameters not supported in fullText queries" );
+        }
+
+        @Override
+        public org.hibernate.query.Query setParameter(Parameter param, Calendar value, TemporalType temporalType) {
+            throw new UnsupportedOperationException( "parameters not supported in fullText queries" );
+        }
+
+        @Override
+        public org.hibernate.query.Query setParameter(Parameter param, Date value, TemporalType temporalType) {
+            throw new UnsupportedOperationException( "parameters not supported in fullText queries" );
+        }
+
+        @Override
+        public org.hibernate.query.Query setParameter(String name, Object value) {
+            return query.setParameter(name, value);
+        }
+
+        @Override
+        public org.hibernate.query.Query setParameter(String name, Object val, Type type) {
+            return query.setParameter(name, val, type);
+        }
+
+        @Override
+        public org.hibernate.query.Query setParameter(String name, Calendar value, TemporalType temporalType) {
+            return query.setParameter(name, value, temporalType);
+        }
+
+        @Override
+        public org.hibernate.query.Query setParameter(String name, Date value, TemporalType temporalType) {
+            return query.setParameter(name, value, temporalType);
+        }
+
+        @Override
+        public org.hibernate.query.Query setParameter(int position, Object value) {
+            return query.setParameter(position, value);
+        }
+
+        @Override
+        public org.hibernate.query.Query setParameter(int position, Calendar value, TemporalType temporalType) {
+            return query.setParameter(position, value, temporalType);
+        }
+
+        @Override
+        public org.hibernate.query.Query setParameter(int position, Date value, TemporalType temporalType) {
+            return query.setParameter(position, value, temporalType);
+        }
+
+        @Override
+        public org.hibernate.query.Query setParameter(QueryParameter parameter, Object val) {
+            throw new UnsupportedOperationException( "parameters not supported in fullText queries" );
+        }
+
+        @Override
+        public org.hibernate.query.Query setParameter(int position, Object val, TemporalType temporalType) {
+            return query.setParameter(position, val, temporalType);
+        }
+
+        @Override
+        public org.hibernate.query.Query setParameter(QueryParameter parameter, Object val, Type type) {
+            return query.setParameter(parameter, val, type);
+        }
+
+        @Override
+        public org.hibernate.query.Query setParameter(int position, Object val, Type type) {
+            return query.setParameter(position, val, type);
+        }
+
+        @Override
+        public org.hibernate.query.Query setParameter(QueryParameter parameter, Object val, TemporalType temporalType) {
+            return query.setParameter(parameter, val, temporalType);
+        }
+
+        @Override
+        public org.hibernate.query.Query setParameter(String name, Object val, TemporalType temporalType) {
+            return query.setParameter(name, val, temporalType);
+        }
+
+        @Override
+        public org.hibernate.query.Query setLockMode(LockModeType lockMode) {
+            return query.setLockMode(lockMode);
+        }
+
+        @Override
+        public org.hibernate.query.Query setReadOnly(boolean readOnly) {
+            return query.setReadOnly(readOnly);
+        }
+
+        @Override
+        public org.hibernate.query.Query setHibernateFlushMode(FlushMode flushMode) {
+            return query.setHibernateFlushMode(flushMode);
+        }
+
+        @Override
+        public org.hibernate.query.Query setCacheMode(CacheMode cacheMode) {
             return query.setCacheMode(cacheMode);
         }
 
         @Override
+        public org.hibernate.query.Query setCacheable(boolean cacheable) {
+            return query.setCacheable(cacheable);
+        }
+
+        @Override
+        public org.hibernate.query.Query setCacheRegion(String cacheRegion) {
+            return query.setCacheRegion(cacheRegion);
+        }
+
+        @Override
+        public org.hibernate.query.Query setTimeout(int timeout) {
+            return query.setTimeout(timeout);
+        }
+
+        @Override
+        public org.hibernate.query.Query setLockOptions(LockOptions lockOptions) {
+            return query.setLockOptions(lockOptions);
+        }
+
+        @Override
+        public org.hibernate.query.Query setLockMode(String alias, LockMode lockMode) {
+            return query.setLockMode(alias, lockMode);
+        }
+
+        @Override
+        public org.hibernate.query.Query setComment(String comment) {
+            return query.setComment(comment);
+        }
+
+        @Override
+        public org.hibernate.query.Query addQueryHint(String hint) {
+            return query.addQueryHint(hint);
+        }
+
+        @Override
+        public org.hibernate.query.Query setParameterList(QueryParameter parameter, Collection values) {
+            return query.setParameterList(parameter, values);
+        }
+
+        @Override
+        public org.hibernate.query.Query setParameterList(String name, Collection values) {
+            return query.setParameterList(name, values);
+        }
+
+        @Override
+        public org.hibernate.query.Query setParameterList(String name, Collection values, Type type) {
+            return query.setParameterList(name, values, type);
+        }
+
+        @Override
+        public org.hibernate.query.Query setParameterList(String name, Object[] values, Type type) {
+            return query.setParameterList(name, values, type);
+        }
+
+        @Override
+        public org.hibernate.query.Query setParameterList(String name, Object[] values) {
+            return query.setParameterList(name, values);
+        }
+
+        @Override
+        public org.hibernate.query.Query setProperties(Object bean) {
+            return query.setProperties(bean);
+        }
+
+        @Override
+        public org.hibernate.query.Query setProperties(Map bean) {
+            return query.setProperties(bean);
+        }
+
+        @Override
+        @Deprecated
+        public org.hibernate.query.Query setEntity(int position, Object val) {
+            return query.setEntity(position, val);
+        }
+
+        @Override
+        @Deprecated
+        public org.hibernate.query.Query setEntity(String name, Object val) {
+            return query.setEntity(name, val);
+        }
+
+        @Override
+        @Deprecated
+        public RowSelection getQueryOptions() {
+            return query.getQueryOptions();
+        }
+
+        @Override
+        @Deprecated
         public boolean isCacheable() {
             return query.isCacheable();
         }
 
         @Override
-        public Query setParameter(int position, Object val, Type type) {
-            return query.setParameter(position, val, type);
+        @Deprecated
+        public Integer getTimeout() {
+            return query.getTimeout();
         }
 
         @Override
-        public Query setParameter(String name, Object val, Type type) {
-            return query.setParameter(name, val, type);
+        @Deprecated
+        public boolean isReadOnly() {
+            return query.isReadOnly();
         }
 
         @Override
-        public Query setParameter(int position, Object val) throws HibernateException {
-            return query.setParameter(position, val);
+        @Deprecated
+        public Type[] getReturnTypes() {
+            return query.getReturnTypes();
         }
 
         @Override
-        public Query setParameter(String name, Object val) throws HibernateException {
-            return query.setParameter(name, val);
+        @Deprecated
+        public Iterator iterate() {
+            Iterator iterator = query.iterate();
+            return new IteratorWrapper(iterator, storage, session);
         }
 
         @Override
-        public Query setParameters(Object[] values, Type[] types) throws HibernateException {
-            return query.setParameters(values, types);
+        @Deprecated
+        public String[] getNamedParameters() {
+            return query.getNamedParameters();
         }
 
         @Override
-        public Query setParameterList(String name, Collection vals, Type type) throws HibernateException {
-            return query.setParameterList(name, vals, type);
+        @Deprecated
+        public Query setParameterList(int position, Collection values) {
+            return query.setParameterList(position, values);
         }
 
         @Override
-        public Query setParameterList(String name, Collection vals) throws HibernateException {
-            return query.setParameterList(name, vals);
+        @Deprecated
+        public Query setParameterList(int position, Collection values, Type type) {
+            return query.setParameterList(position, values, type);
         }
 
         @Override
-        public Query setParameterList(String name, Object[] vals, Type type) throws HibernateException {
-            return query.setParameterList(name, vals, type);
+        @Deprecated
+        public Query setParameterList(int position, Object[] values, Type type) {
+            return query.setParameterList(position, values);
         }
 
         @Override
-        public Query setParameterList(String name, Object[] vals) throws HibernateException {
-            return query.setParameterList(name, vals);
+        @Deprecated
+        public Query setParameterList(int position, Object[] values) {
+            return query.setParameterList(position, values);
         }
 
         @Override
-        public Query setProperties(Object bean) throws HibernateException {
-            return query.setProperties(bean);
+        @Deprecated
+        public Type determineProperBooleanType(int position, Object value, Type defaultType) {
+            return query.determineProperBooleanType(position, value, defaultType);
         }
 
         @Override
-        public Query setProperties(Map bean) throws HibernateException {
-            return query.setProperties(bean);
+        @Deprecated
+        public Type determineProperBooleanType(String name, Object value, Type defaultType) {
+            return query.determineProperBooleanType(name, value, defaultType);
         }
 
         @Override
-        public Query setString(int position, String val) {
-            return query.setString(position, val);
+        @Deprecated
+        public String[] getReturnAliases() {
+            return query.getReturnAliases();
         }
 
         @Override
-        public Query setCharacter(int position, char val) {
-            return query.setCharacter(position, val);
-        }
-
-        @Override
-        public Query setBoolean(int position, boolean val) {
-            return query.setBoolean(position, val);
-        }
-
-        @Override
-        public Query setByte(int position, byte val) {
-            return query.setByte(position, val);
-        }
-
-        @Override
-        public Query setShort(int position, short val) {
-            return query.setShort(position, val);
-        }
-
-        @Override
-        public Query setInteger(int position, int val) {
-            return query.setInteger(position, val);
-        }
-
-        @Override
-        public Query setLong(int position, long val) {
-            return query.setLong(position, val);
-        }
-
-        @Override
-        public Query setFloat(int position, float val) {
-            return query.setFloat(position, val);
-        }
-
-        @Override
-        public Query setDouble(int position, double val) {
-            return query.setDouble(position, val);
-        }
-
-        @Override
-        public Query setBinary(int position, byte[] val) {
-            return query.setBinary(position, val);
-        }
-
-        @Override
-        public Query setText(int position, String val) {
-            return query.setText(position, val);
-        }
-
-        @Override
-        public Query setSerializable(int position, Serializable val) {
-            return query.setSerializable(position, val);
-        }
-
-        @Override
-        public Query setLocale(int position, Locale locale) {
-            return query.setLocale(position, locale);
-        }
-
-        @Override
-        public Query setBigDecimal(int position, BigDecimal number) {
-            return query.setBigDecimal(position, number);
-        }
-
-        @Override
-        public Query setBigInteger(int position, BigInteger number) {
-            return query.setBigInteger(position, number);
-        }
-
-        @Override
-        public Query setDate(int position, Date date) {
-            return query.setDate(position, date);
-        }
-
-        @Override
-        public Query setTime(int position, Date date) {
-            return query.setTime(position, date);
-        }
-
-        @Override
-        public Query setTimestamp(int position, Date date) {
-            return query.setTimestamp(position, date);
-        }
-
-        @Override
-        public Query setCalendar(int position, Calendar calendar) {
-            return query.setCalendar(position, calendar);
-        }
-
-        @Override
-        public Query setCalendarDate(int position, Calendar calendar) {
-            return query.setCalendarDate(position, calendar);
-        }
-
-        @Override
-        public Query setString(String name, String val) {
-            return query.setString(name, val);
-        }
-
-        @Override
-        public Query setCharacter(String name, char val) {
-            return query.setCharacter(name, val);
-        }
-
-        @Override
-        public Query setBoolean(String name, boolean val) {
-            return query.setBoolean(name, val);
-        }
-
-        @Override
-        public Query setByte(String name, byte val) {
-            return query.setByte(name, val);
-        }
-
-        @Override
-        public Query setShort(String name, short val) {
-            return query.setShort(name, val);
-        }
-
-        @Override
-        public Query setInteger(String name, int val) {
-            return query.setInteger(name, val);
-        }
-
-        @Override
-        public Query setLong(String name, long val) {
-            return query.setLong(name, val);
-        }
-
-        @Override
-        public Query setFloat(String name, float val) {
-            return query.setFloat(name, val);
-        }
-
-        @Override
-        public Query setDouble(String name, double val) {
-            return query.setDouble(name, val);
-        }
-
-        @Override
-        public Query setBinary(String name, byte[] val) {
-            return query.setBinary(name, val);
-        }
-
-        @Override
-        public Query setText(String name, String val) {
-            return query.setText(name, val);
-        }
-
-        @Override
-        public Query setSerializable(String name, Serializable val) {
-            return query.setSerializable(name, val);
-        }
-
-        @Override
-        public Query setLocale(String name, Locale locale) {
-            return query.setLocale(name, locale);
-        }
-
-        @Override
-        public Query setBigDecimal(String name, BigDecimal number) {
-            return query.setBigDecimal(name, number);
-        }
-
-        @Override
-        public Query setBigInteger(String name, BigInteger number) {
-            return query.setBigInteger(name, number);
-        }
-
-        @Override
-        public Query setDate(String name, Date date) {
-            return query.setDate(name, date);
-        }
-
-        @Override
-        public Query setTime(String name, Date date) {
-            return query.setTime(name, date);
-        }
-
-        @Override
-        public Query setTimestamp(String name, Date date) {
-            return query.setTimestamp(name, date);
-        }
-
-        @Override
-        public Query setCalendar(String name, Calendar calendar) {
-            return query.setCalendar(name, calendar);
-        }
-
-        @Override
-        public Query setCalendarDate(String name, Calendar calendar) {
-            return query.setCalendarDate(name, calendar);
-        }
-
-        @Override
-        public Query setEntity(int position, Object val) {
-            return query.setEntity(position, val);
-        }
-
-        @Override
-        public Query setEntity(String name, Object val) {
-            return query.setEntity(name, val);
-        }
-
-        @Override
+        @Deprecated
         public FullTextQuery setResultTransformer(ResultTransformer transformer) {
             return query.setResultTransformer(transformer);
         }
 
         @Override
-        public <T> T unwrap(Class<T> tClass) {
-            return query.unwrap(tClass);
-        }
-
-        @Override
-        public FullTextQuery setTimeout(long timeout, TimeUnit timeUnit) {
-            return query.setTimeout(timeout, timeUnit);
-        }
-
-        @Override
-        public FullTextQuery limitExecutionTimeTo(long timeout, TimeUnit timeUnit) {
-            return query.limitExecutionTimeTo(timeout, timeUnit);
-        }
-
-        @Override
-        public boolean hasPartialResults() {
-            return query.hasPartialResults();
-        }
-
-        @Override
-        public FullTextQuery initializeObjectsWith(ObjectLookupMethod lookupMethod, DatabaseRetrievalMethod retrievalMethod) {
-            return query.initializeObjectsWith(lookupMethod, retrievalMethod);
+        public <T> T unwrap(Class<T> type) {
+            return query.unwrap(type);
         }
 
         @Override
@@ -866,13 +971,9 @@ public class EntityFinder {
         }
 
         @Override
-        public FullTextQuery setFilter(org.apache.lucene.search.Filter filter) {
-            return query.setFilter(filter);
-        }
-
-        @Override
-        public int getResultSize() {
-            return query.getResultSize();
+        @Deprecated
+        public FullTextQuery setFilter(Filter filter) {
+           return query.setFilter(filter);
         }
 
         @Override
@@ -881,8 +982,8 @@ public class EntityFinder {
         }
 
         @Override
-        public FullTextQuery setProjection(String... strings) {
-            return query.setProjection(strings);
+        public FullTextQuery setProjection(String... fields) {
+            return query.setProjection(fields);
         }
 
         @Override
@@ -896,23 +997,44 @@ public class EntityFinder {
         }
 
         @Override
-        public FullTextFilter enableFullTextFilter(String s) {
-            return query.enableFullTextFilter(s);
+        public FullTextQuery setFirstResult(int firstResult) {
+            return query.setFirstResult(firstResult);
         }
 
         @Override
-        public void disableFullTextFilter(String s) {
-            query.disableFullTextFilter(s);
+        public FullTextQuery setMaxResults(int maxResults) {
+            return query.setMaxResults(maxResults);
         }
 
         @Override
-        public FacetManager getFacetManager() {
-            return query.getFacetManager();
+        public FullTextQuery setHint(String hintName, Object value) {
+            return query.setHint(hintName, value);
         }
 
         @Override
-        public Explanation explain(int i) {
-            return query.explain(i);
+        public FullTextQuery setFlushMode(FlushModeType flushMode) {
+            return query.setFlushMode(flushMode);
         }
+
+        @Override
+        public FullTextQuery setFetchSize(int i) {
+            return query.setFetchSize(i);
+        }
+
+        @Override
+        public FullTextQuery setTimeout(long timeout, TimeUnit timeUnit) {
+            return query.setTimeout(timeout, timeUnit);
+        }
+
+        @Override
+        public FullTextQuery limitExecutionTimeTo(long timeout, TimeUnit timeUnit) {
+            return query.limitExecutionTimeTo(timeout, timeUnit);
+        }
+
+        @Override
+        public FullTextQuery initializeObjectsWith(ObjectLookupMethod lookupMethod, DatabaseRetrievalMethod retrievalMethod) {
+            return query.initializeObjectsWith(lookupMethod, retrievalMethod);
+        }
+
     }
 }

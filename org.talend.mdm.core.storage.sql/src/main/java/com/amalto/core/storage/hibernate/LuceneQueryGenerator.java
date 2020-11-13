@@ -7,9 +7,40 @@
  * You should have received a copy of the agreement along with this program; if not, write to Talend SA 9 rue Pages
  * 92150 Suresnes, France
  */
-
 package com.amalto.core.storage.hibernate;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.StringTokenizer;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang.NotImplementedException;
+import org.apache.commons.lang.StringUtils;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
+import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.NumericRangeQuery;
+import org.apache.lucene.search.PhraseQuery;
+import org.apache.lucene.search.PrefixQuery;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.TermQuery;
+import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.ContainedComplexTypeMetadata;
+import org.talend.mdm.commmon.metadata.DefaultMetadataVisitor;
+import org.talend.mdm.commmon.metadata.EnumerationFieldMetadata;
+import org.talend.mdm.commmon.metadata.FieldMetadata;
+import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
+import org.talend.mdm.commmon.metadata.SimpleTypeFieldMetadata;
+import org.talend.mdm.commmon.util.core.MDMConfiguration;
 
 import com.amalto.core.query.user.Alias;
 import com.amalto.core.query.user.BigDecimalConstant;
@@ -48,38 +79,6 @@ import com.amalto.core.storage.StorageMetadataUtils;
 import com.amalto.core.storage.exception.FullTextQueryCompositeKeyException;
 import com.amalto.core.storage.exception.UnsupportedFullTextQueryException;
 import com.amalto.core.storage.record.StorageConstants;
-import org.apache.commons.lang.NotImplementedException;
-import org.apache.commons.lang.StringUtils;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.index.Term;
-import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
-import org.apache.lucene.search.BooleanClause;
-import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.NumericRangeQuery;
-import org.apache.lucene.search.PhraseQuery;
-import org.apache.lucene.search.PrefixQuery;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.TermQuery;
-import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
-import org.talend.mdm.commmon.metadata.ContainedComplexTypeMetadata;
-import org.talend.mdm.commmon.metadata.DefaultMetadataVisitor;
-import org.talend.mdm.commmon.metadata.EnumerationFieldMetadata;
-import org.talend.mdm.commmon.metadata.FieldMetadata;
-import org.talend.mdm.commmon.metadata.ReferenceFieldMetadata;
-import org.talend.mdm.commmon.metadata.SimpleTypeFieldMetadata;
-import org.talend.mdm.commmon.util.core.MDMConfiguration;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.StringTokenizer;
-import java.util.stream.Collectors;
 
 class LuceneQueryGenerator extends VisitorAdapter<Query> {
 
@@ -111,25 +110,25 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
         if (condition.getPredicate() == Predicate.EQUALS || condition.getPredicate() == Predicate.CONTAINS
                 || condition.getPredicate() == Predicate.STARTS_WITH) {
             String searchValue = String.valueOf(currentValue);
-            BooleanQuery termQuery = new BooleanQuery();
+            org.apache.lucene.search.BooleanQuery.Builder termQueryBuilder = new BooleanQuery.Builder();
             if(searchValue != null && searchValue.startsWith("\'") && searchValue.endsWith("\'")){ //$NON-NLS-1$ //$NON-NLS-2$
-                PhraseQuery query = new PhraseQuery();
+                org.apache.lucene.search.PhraseQuery.Builder queryBuilder = new PhraseQuery.Builder();
                 StringTokenizer tokenizer = new StringTokenizer(searchValue.substring(1, searchValue.length()-1));
                 while (tokenizer.hasMoreTokens()) {
-                    query.add(new Term(currentFieldName, tokenizer.nextToken().toLowerCase()));
+                    queryBuilder.add(new Term(currentFieldName, tokenizer.nextToken().toLowerCase()));
                 }
-                termQuery.add(query, BooleanClause.Occur.SHOULD);
+                termQueryBuilder.add(queryBuilder.build(), BooleanClause.Occur.SHOULD);
             } else {
                 StringTokenizer tokenizer = new StringTokenizer(searchValue);
                 while (tokenizer.hasMoreTokens()) {
                     TermQuery newTermQuery = new TermQuery(new Term(currentFieldName, tokenizer.nextToken().toLowerCase()));
-                    termQuery.add(newTermQuery, isBuildingNot ? BooleanClause.Occur.MUST_NOT : BooleanClause.Occur.MUST);
+                    termQueryBuilder.add(newTermQuery, isBuildingNot ? BooleanClause.Occur.MUST_NOT : BooleanClause.Occur.MUST);
                     if (condition.getPredicate() == Predicate.STARTS_WITH) {
                         break;
                     }
                 }
             }
-            return termQuery;
+            return termQueryBuilder.build();
         } else if (condition.getPredicate() == Predicate.GREATER_THAN
                 || condition.getPredicate() == Predicate.GREATER_THAN_OR_EQUALS
                 || condition.getPredicate() == Predicate.LOWER_THAN || condition.getPredicate() == Predicate.LOWER_THAN_OR_EQUALS) {
@@ -143,22 +142,22 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
     public Query visit(BinaryLogicOperator condition) {
         Query left = condition.getLeft().accept(this);
         Query right = condition.getRight().accept(this);
-        BooleanQuery query = new BooleanQuery();
+        org.apache.lucene.search.BooleanQuery.Builder queryBuilder = new BooleanQuery.Builder();
         if (condition.getPredicate() == Predicate.OR) {
-            query.add(left, BooleanClause.Occur.SHOULD);
-            query.add(right, BooleanClause.Occur.SHOULD);
+            queryBuilder.add(left, BooleanClause.Occur.SHOULD);
+            queryBuilder.add(right, BooleanClause.Occur.SHOULD);
         } else if (condition.getPredicate() == Predicate.AND) {
-            query.add(left, isNotQuery(left) ? BooleanClause.Occur.SHOULD : BooleanClause.Occur.MUST);
-            query.add(right, isNotQuery(right) ? BooleanClause.Occur.SHOULD : BooleanClause.Occur.MUST);
+            queryBuilder.add(left, isNotQuery(left) ? BooleanClause.Occur.SHOULD : BooleanClause.Occur.MUST);
+            queryBuilder.add(right, isNotQuery(right) ? BooleanClause.Occur.SHOULD : BooleanClause.Occur.MUST);
         } else {
             throw new NotImplementedException("No support for '" + condition.getPredicate() + "'."); //$NON-NLS-1$ //$NON-NLS-2$
         }
-        return query;
+        return queryBuilder.build();
     }
 
     private static boolean isNotQuery(Query left) {
         if (left instanceof BooleanQuery) {
-            for (BooleanClause booleanClause : ((BooleanQuery) left).getClauses()) {
+            for (BooleanClause booleanClause : ((BooleanQuery) left).clauses()) {
                 if (booleanClause.getOccur() == BooleanClause.Occur.MUST_NOT) {
                     return true;
                 }
@@ -398,7 +397,7 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
         StringBuilder queryBuffer = new StringBuilder();
         Iterator<Map.Entry<String, Boolean>> fieldsIterator = fieldsMap.entrySet().iterator();
         String fullTextValue = getFullTextValue(fullText);
-        BooleanQuery query = new BooleanQuery();
+        org.apache.lucene.search.BooleanQuery.Builder queryBuilder = new BooleanQuery.Builder();
         Query idQuery = null;
         while (fieldsIterator.hasNext()) {
             Map.Entry<String, Boolean> next = fieldsIterator.next();
@@ -415,26 +414,10 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
 
         String fullTextQuery = queryBuffer.toString();
         if (idQuery != null) {
-            query.add(idQuery, BooleanClause.Occur.SHOULD);
+            queryBuilder.add(idQuery, BooleanClause.Occur.SHOULD);
         }
-        query.add(parseQuery(fieldsAsArray, fullTextQuery, fullText.getValue()), BooleanClause.Occur.SHOULD);
-        return query;
-    }
-
-    /**
-     * Get a full path of field for its directory tree.
-     * <pre>
-     * Person
-     *      |__Stores
-     *              |__Store
-     *                      |__Name
-     *      |__Age                
-     * </pre>
-     * @return: Person.Stores.Store.Name
-     */
-    private String getFullPathName(FieldFullText fieldFullText) {
-        FieldMetadata fieldMetadata = fieldFullText.getField().getFieldMetadata();
-        return getFullPathName(fieldMetadata).toString();
+        queryBuilder.add(parseQuery(fieldsAsArray, fullTextQuery, fullText.getValue()), BooleanClause.Occur.SHOULD);
+        return queryBuilder.build();
     }
 
     private StringBuilder getFullPathName(FieldMetadata fieldMetadata) {
@@ -523,12 +506,12 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
         String fullTextValue = getFullTextValue(fieldFullText);
         String fullTextQuery = fieldName + ':' + fullTextValue;
         if (fieldFullText.getField().getFieldMetadata().isKey()) {
-            BooleanQuery query = new BooleanQuery();
-            query.add(new PrefixQuery(new Term(fieldName, fieldFullText.getValue())), BooleanClause.Occur.SHOULD);
+            org.apache.lucene.search.BooleanQuery.Builder termQueryBuilder = new BooleanQuery.Builder();
+            termQueryBuilder.add(new PrefixQuery(new Term(fieldName, fieldFullText.getValue())), BooleanClause.Occur.SHOULD);
             fieldsAsArray = new String[] { fieldName + ToLowerCaseFieldBridge.ID_POSTFIX };
             fullTextQuery = fieldName + ToLowerCaseFieldBridge.ID_POSTFIX + ":" + fullTextValue; //$NON-NLS-1$
-            query.add(parseQuery(fieldsAsArray, fullTextQuery, fieldFullText.getValue()), BooleanClause.Occur.SHOULD);
-            return query;
+            termQueryBuilder.add(parseQuery(fieldsAsArray, fullTextQuery, fieldFullText.getValue()), BooleanClause.Occur.SHOULD);
+            return termQueryBuilder.build();
         }
         return parseQuery(fieldsAsArray, fullTextQuery, fieldFullText.getValue());
     }

@@ -202,7 +202,7 @@ public class RecordValidationContext implements DocumentSaverContext {
     }
 
     @Override
-    public boolean getWithAdminPermissions() {
+    public boolean isWithAdminPermissions() {
         return false;
     }
 

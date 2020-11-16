@@ -160,8 +160,8 @@ public class ReportDocumentSaverContext implements DocumentSaverContext {
     }
 
     @Override
-    public boolean getWithAdminPermissions() {
-        return delegate.getWithAdminPermissions();
+    public boolean isWithAdminPermissions() {
+        return delegate.isWithAdminPermissions();
     }
 
     @Override

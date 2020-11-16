@@ -140,7 +140,7 @@ class BulkLoadContext implements DocumentSaverContext {
     }
 
     @Override
-    public boolean withAdminPermissions() {
+    public boolean isWithAdminPermissions() {
         return false;
     }
 

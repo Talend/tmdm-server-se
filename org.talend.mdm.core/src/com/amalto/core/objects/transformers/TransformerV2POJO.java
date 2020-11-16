@@ -86,7 +86,7 @@ public class TransformerV2POJO extends ObjectPOJO{
 		this.processSteps = processSteps;
 	}
 
-    public boolean withAdminPermissions() {
+    public boolean isWithAdminPermissions() {
         return withAdminPermissions;
     }
 

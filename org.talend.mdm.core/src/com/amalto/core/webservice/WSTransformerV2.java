@@ -54,7 +54,7 @@ public class WSTransformerV2 {
         this.processSteps = processSteps;
     }
 
-    public java.lang.Boolean withAdminPermissions() {
+    public java.lang.Boolean isWithAdminPermissions() {
         return withAdminPermissions;
     }
 

@@ -9,17 +9,49 @@
  */
 package org.talend.mdm;
 
-import com.amalto.core.query.user.*;
-import com.amalto.core.query.user.Compare;
-import com.amalto.core.query.user.metadata.*;
-import junit.framework.TestCase;
-import org.talend.mdm.commmon.metadata.MetadataRepository;
-import org.talend.mdm.query.QueryParser;
-
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import org.junit.Ignore;
+import org.junit.Test;
+import org.talend.mdm.commmon.metadata.MetadataRepository;
+import org.talend.mdm.query.QueryParser;
+
+import com.amalto.core.query.user.Alias;
+import com.amalto.core.query.user.At;
+import com.amalto.core.query.user.BinaryLogicOperator;
+import com.amalto.core.query.user.Compare;
+import com.amalto.core.query.user.Condition;
+import com.amalto.core.query.user.Count;
+import com.amalto.core.query.user.Distinct;
+import com.amalto.core.query.user.Expression;
+import com.amalto.core.query.user.Field;
+import com.amalto.core.query.user.FieldFullText;
+import com.amalto.core.query.user.FullText;
+import com.amalto.core.query.user.IndexedField;
+import com.amalto.core.query.user.Isa;
+import com.amalto.core.query.user.LongConstant;
+import com.amalto.core.query.user.Max;
+import com.amalto.core.query.user.Min;
+import com.amalto.core.query.user.OrderBy;
+import com.amalto.core.query.user.Predicate;
+import com.amalto.core.query.user.Select;
+import com.amalto.core.query.user.StringConstant;
+import com.amalto.core.query.user.TypedExpression;
+import com.amalto.core.query.user.UnaryLogicOperator;
+import com.amalto.core.query.user.VisitorAdapter;
+import com.amalto.core.query.user.metadata.GroupSize;
+import com.amalto.core.query.user.metadata.MetadataField;
+import com.amalto.core.query.user.metadata.StagingBlockKey;
+import com.amalto.core.query.user.metadata.StagingError;
+import com.amalto.core.query.user.metadata.StagingSource;
+import com.amalto.core.query.user.metadata.StagingStatus;
+import com.amalto.core.query.user.metadata.TaskId;
+import com.amalto.core.query.user.metadata.Timestamp;
+
+import junit.framework.TestCase;
 
 /**
  *
@@ -460,7 +492,8 @@ public class QueryParserTest extends TestCase {
         assertEquals(LongConstant.class, ((Compare) condition).getRight().getClass());
     }
 
-    public void testQuery28() {
+    @Ignore
+    public void ignoreTestQuery28() {
         QueryParser parser = QueryParser.newParser(repository);
         Expression expression = parser.parse(QueryParserTest.class.getResourceAsStream("query28.json")); //$NON-NLS-1$
         assertTrue(expression instanceof Select);

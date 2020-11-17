@@ -118,4 +118,8 @@ public interface DocumentSaverContext {
     boolean generateTouchActions();
 
     boolean isInvokeBeforeSaving();
+
+    boolean isWithAdminPermissions();
+
+    void setWithAdminPermissions(boolean withAdminPermissions);
 }

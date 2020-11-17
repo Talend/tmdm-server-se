@@ -24,9 +24,12 @@ public class OutputReport {
      */
     private String item;
 
-    public OutputReport(String message, String item) {
+    private boolean withAdminPermissions;
+
+    public OutputReport(String message, String item, boolean withAdminPermissions) {
         this.message = message;
         this.item = item;
+        this.withAdminPermissions = withAdminPermissions;
     }
 
     public String getMessage() {
@@ -43,6 +46,14 @@ public class OutputReport {
 
     public void setItem(String item) {
         this.item = item;
+    }
+
+    public boolean isWithAdminPermissions() {
+        return withAdminPermissions;
+    }
+
+    public void setWithAdminPermissions(boolean withAdminPermissions) {
+        this.withAdminPermissions = withAdminPermissions;
     }
 
 }

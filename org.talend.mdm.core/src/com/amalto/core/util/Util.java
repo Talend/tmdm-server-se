@@ -600,7 +600,8 @@ public class Util extends XmlUtil {
                 if (!hasOutputReport) {
                     throw new OutputReportMissingException("Output variable 'output_report' is missing");
                 }
-                return new OutputReport(message, item);
+                boolean withAdmin = ((Boolean) context.get("withAdmin")).booleanValue();
+                return new OutputReport(message, item, withAdmin);
             } catch (Exception e) {
                 LOGGER.error(e);
                 throw e;

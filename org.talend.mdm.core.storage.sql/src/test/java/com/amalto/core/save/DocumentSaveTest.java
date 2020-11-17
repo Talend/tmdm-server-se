@@ -5014,7 +5014,7 @@ public class DocumentSaveTest extends TestCase {
         @Override
         public OutputReport invokeBeforeSaving(DocumentSaverContext context, MutableDocument updateReportDocument) {
             String message = "<report><message type=\"info\">change the value successfully!</message></report>";
-            return new OutputReport(message, null);
+            return new OutputReport(message, null, false);
         }
 
         @Override
@@ -5126,7 +5126,7 @@ public class DocumentSaveTest extends TestCase {
                 message = "<report><message type=\"error\">change the value failed!</message></report>";
             }
             String item = null;
-            OutputReport report = new OutputReport(message, item);
+            OutputReport report = new OutputReport(message, item, false);
 
             if (newOutput) {
                 item = "<exchange><item>"
@@ -5160,7 +5160,7 @@ public class DocumentSaveTest extends TestCase {
                 message = "<report><message type=\"error\">Save the value failed!</message></report>";
             }
             String item = null;
-            OutputReport report = new OutputReport(message, item);
+            OutputReport report = new OutputReport(message, item, false);
 
             if (newOutput) {
                 item = "<exchange><item>"
@@ -5191,7 +5191,7 @@ public class DocumentSaveTest extends TestCase {
                 message = "<report><message type=\"error\">Save the value failed!</message></report>";
             }
             String item = null;
-            OutputReport report = new OutputReport(message, item);
+            OutputReport report = new OutputReport(message, item, false);
 
             if (newOutput) {
                 item = "<exchange><item>"
@@ -5300,7 +5300,7 @@ public class DocumentSaveTest extends TestCase {
                 message = "<report><message type=\"error\">no change update failed!</message></report>";
             }
             String item = null;
-            OutputReport report = new OutputReport(message, item);
+            OutputReport report = new OutputReport(message, item, false);
 
             if (newOutput) {
                 item = "<exchange><item>" + "<Agency>" + "<Id>5258f292-5670-473b-bc01-8b63434682f3</Id>"

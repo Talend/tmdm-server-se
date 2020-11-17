@@ -187,4 +187,13 @@ public class PartialUpdateSaverContext implements DocumentSaverContext {
         return delegate;
     }
 
+    @Override
+    public boolean isWithAdminPermissions() {
+        return delegate.isWithAdminPermissions();
+    }
+
+    @Override
+    public void setWithAdminPermissions(boolean withAdminPermissions) {
+        delegate.setWithAdminPermissions(withAdminPermissions);
+    }
 }

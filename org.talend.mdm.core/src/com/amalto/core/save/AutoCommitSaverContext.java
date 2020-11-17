@@ -150,4 +150,14 @@ public class AutoCommitSaverContext implements DocumentSaverContext {
     public void setId(String[] id) {
         delegate.setId(id);
     }
+
+    @Override
+    public boolean isWithAdminPermissions() {
+        return delegate.isWithAdminPermissions();
+    }
+
+    @Override
+    public void setWithAdminPermissions(boolean withAdminPermissions) {
+        delegate.setWithAdminPermissions(withAdminPermissions);
+    }
 }

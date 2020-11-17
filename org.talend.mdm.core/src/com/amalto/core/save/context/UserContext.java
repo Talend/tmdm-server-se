@@ -189,4 +189,14 @@ class UserContext implements DocumentSaverContext {
     public boolean isInvokeBeforeSaving() {
         return this.invokeBeforeSaving;
     }
+
+    @Override
+    public boolean isWithAdminPermissions() {
+        return false;
+    }
+
+    @Override
+    public void setWithAdminPermissions(boolean withAdminPermissions) {
+
+    }
 }

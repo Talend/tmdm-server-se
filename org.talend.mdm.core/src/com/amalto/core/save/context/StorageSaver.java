@@ -53,6 +53,8 @@ public class StorageSaver implements DocumentSaverContext {
 
     private final boolean preserveOldCollectionValues;
 
+    private boolean withAdminPermissions;
+
     public StorageSaver(Storage storage,
                         String dataModelName,
                         MutableDocument userDocument,
@@ -217,5 +219,15 @@ public class StorageSaver implements DocumentSaverContext {
     @Override
     public boolean isInvokeBeforeSaving() {
         return this.invokeBeforeSaving;
+    }
+
+    @Override
+    public boolean isWithAdminPermissions() {
+        return withAdminPermissions;
+    }
+
+    @Override
+    public void setWithAdminPermissions(boolean withAdminPermissions) {
+        this.withAdminPermissions = withAdminPermissions;
     }
 }

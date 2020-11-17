@@ -469,7 +469,7 @@ public class QueryParserTest extends TestCase {
         assertNotNull(condition);
         assertEquals(At.Swing.BEFORE, condition.getSwing());
         long expected = System.currentTimeMillis() - (24 * 60 * 60 * 1000);
-        assertTrue(expected - condition.getDateTime() < 1000); // Assumes it took less than a second to parse query.
+        assertTrue(expected - condition.getDateTime() < 2000); // Assumes it took less than two second to parse query.
     }
 
     public void testQuery29() {

@@ -50,6 +50,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.Lock;
+import org.hibernate.CacheMode;
 import org.hibernate.FlushMode;
 import org.hibernate.HibernateException;
 import org.hibernate.LockOptions;
@@ -93,6 +94,7 @@ import org.hibernate.query.Query;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.MassIndexer;
 import org.hibernate.search.Search;
+import org.hibernate.search.util.jmx.impl.JMXRegistrar.IndexingProgressMonitor;
 import org.hibernate.service.spi.ServiceBinding;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.hibernate.tool.hbm2ddl.SchemaExport.Action;
@@ -900,16 +902,31 @@ public class HibernateStorage implements Storage {
         LOGGER.info("Re-indexing full-text for " + storageName + "..."); //$NON-NLS-1$ //$NON-NLS-2$
         Session session = this.getCurrentSession();
         try {
-            MassIndexer indexer = Search.getFullTextSession(session).createIndexer();
+            FullTextSession fullTextSession = Search.getFullTextSession(session);
+            MassIndexer indexer = fullTextSession.createIndexer();
             indexer.optimizeOnFinish(true);
             indexer.optimizeAfterPurge(true);
-            indexer.idFetchSize(generateIdFetchSize()).threadsToLoadObjects(1).typesToIndexInParallel(5)
-                    .batchSizeToLoadObjects(batchSize).startAndWait();
+            indexer.idFetchSize(generateIdFetchSize())
+                   .threadsToLoadObjects(1)
+                   .cacheMode(CacheMode.IGNORE)
+                   .typesToIndexInParallel(5)
+                   .batchSizeToLoadObjects(batchSize)
+                   .progressMonitor(new IndexingProgressMonitor()) //a MassIndexerProgressMonitor implementation
+                   .startAndWait();
         } catch (Exception e) {
             throw new RuntimeException("Exception occurred when re-indexing full-text for " + storageName + ".", e); //$NON-NLS-1$ //$NON-NLS-2$
         } finally {
             this.releaseSession();
             LOGGER.info("Re-indexing done."); //$NON-NLS-1$
+        }
+    }
+
+    private int generateIdFetchSize() {
+        if (dataSource.getDialectName() == RDBMSDataSource.DataSourceDialect.MYSQL) {
+            // for using "stream resultset" to resolve OOM
+            return Integer.MIN_VALUE;
+        } else {
+            return fetchSize;
         }
     }
 
@@ -1894,15 +1911,6 @@ public class HibernateStorage implements Storage {
             ComplexTypeMetadata referencedType = referenceField.getReferencedType();
             referencedType.accept(this);
             return types;
-        }
-    }
-
-    private int generateIdFetchSize() {
-        if (dataSource.getDialectName() == RDBMSDataSource.DataSourceDialect.MYSQL) {
-            // for using "stream resultset" to resolve OOM
-            return Integer.MIN_VALUE;
-        } else {
-            return fetchSize;
         }
     }
 

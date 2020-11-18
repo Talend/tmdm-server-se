@@ -374,11 +374,19 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
                         actions.add(new FieldUpdateAction(date, source, userName, path, oldValue == null ? StringUtils.EMPTY
                                 : oldValue, null, comparedField, userAction));
                     }
-                }
-                else if(!comparedField.isMany() && this.newDocument.considerMissingElementsAsEmpty()){
+                } else if(!comparedField.isMany() && this.newDocument.considerMissingElementsAsEmpty()){
                     actions.add(new FieldUpdateAction(date, source, userName, path, oldValue == null ? StringUtils.EMPTY : oldValue, StringUtils.EMPTY, comparedField, userAction));
+                } else if (EUUIDCustomType.AUTO_INCREMENT.getName().equalsIgnoreCase(comparedField.getType().getName())
+                        && isCreateAction == false) {
+                    String conceptName = rootTypeName + "." + comparedField.getPath().replaceAll("/", "."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    String autoIncrementValue = saverSource.nextAutoIncrementId(dataCluster, dataModel, conceptName);
+                    actions.add(new FieldUpdateAction(date, source, userName, path, oldValue == null ? StringUtils.EMPTY : oldValue, autoIncrementValue, comparedField, userAction));
+                } else if (EUUIDCustomType.UUID.getName().equalsIgnoreCase(comparedField.getType().getName())
+                        && isCreateAction == false) {
+                    String uuidValue = UUID.randomUUID().toString();
+                    actions.add(new FieldUpdateAction(date, source, userName, path, oldValue == null ? StringUtils.EMPTY : oldValue, uuidValue, comparedField, userAction));
                 }
-                
+
                 if (isDeletingContainedElement) {
                     // Null values may happen if accessor is targeting an element that contains other elements
                     actions.add(new FieldUpdateAction(date, source, userName, path, oldValue == null ? StringUtils.EMPTY

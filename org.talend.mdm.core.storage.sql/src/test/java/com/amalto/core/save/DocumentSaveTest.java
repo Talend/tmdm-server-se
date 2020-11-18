@@ -870,6 +870,53 @@ public class DocumentSaveTest extends TestCase {
         assertEquals("1", evaluate(committedElement, "/Person/complex/autoIncrement2"));
     }
 
+    /**
+     * TMDM-14583: SOAP API updating records work unexpected when not provide value for non-PK autoincrement fields
+     */
+    public void testNormalFieldAutoIncrementValueNotProvided() throws Exception {
+        final MetadataRepository repository = new MetadataRepository();
+        repository.load(DocumentSaveTest.class.getResourceAsStream("TMDM14583.xsd"));
+        MockMetadataRepositoryAdmin.INSTANCE.register("testAutoIncrement", repository);
+
+        TestSaverSource source = new TestSaverSource(repository, false, "TMDM14583_original.xml", "TMDM14583.xsd");
+
+        SaverSession session = SaverSession.newSession(source);
+        // 1. Entity testAutoIncrement: normal field autoIncrement and complex/autoIncrement2 is AutoIncrement
+        // Create without provided value for AutoIncrement normal field
+        InputStream recordXml = DocumentSaveTest.class.getResourceAsStream("TMDM14583.xml");
+        DocumentSaverContext context = session.getContextFactory().create("MDM", "testAutoIncrement", "Source", recordXml,
+                true, true, true, true, false);
+        DocumentSaver saver = context.createSaver();
+        saver.save(session, context);
+        assertFalse(source.hasSavedAutoIncrement());
+        MockCommitter committer = new MockCommitter();
+        session.end(committer);
+
+        assertTrue(source.hasSavedAutoIncrement());
+        assertTrue(committer.hasSaved());
+        Element committedElement = committer.getCommittedElement();
+        assertEquals("1", evaluate(committedElement, "/testAutoIncrement/autoIncrement"));
+        assertEquals("1", evaluate(committedElement, "/testAutoIncrement/complex/autoIncrement2"));
+
+        // 2. Entity testAutoIncrement: normal field autoIncrement and complex/autoIncrement2 is AutoIncrement
+        // Update without provided value for AutoIncrement normal field
+        session = SaverSession.newSession(source);
+        recordXml = DocumentSaveTest.class.getResourceAsStream("TMDM14583-update.xml");
+        context = session.getContextFactory().create("MDM", "testAutoIncrement", "Source", recordXml, true, true, true,
+                true, false);
+        saver = context.createSaver();
+        saver.save(session, context);
+        assertTrue(source.hasSavedAutoIncrement());
+        committer = new MockCommitter();
+        session.end(committer);
+
+        assertTrue(source.hasSavedAutoIncrement());
+        assertTrue(committer.hasSaved());
+        committedElement = committer.getCommittedElement();
+        assertEquals("2", evaluate(committedElement, "/testAutoIncrement/autoIncrement"));
+        assertEquals("2", evaluate(committedElement, "/testAutoIncrement/complex/autoIncrement2"));
+    }
+
     public void testUpdateWithUUID() throws Exception {
         final MetadataRepository repository = new MetadataRepository();
         repository.load(DocumentSaveTest.class.getResourceAsStream("personWithAddressOfUUID.xsd"));

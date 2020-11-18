@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<ii>
+    <c>testAutoIncrement</c>
+    <n>testAutoIncrement</n>
+    <dmn>testAutoIncrement</dmn>
+    <i>1</i>
+    <t>1</t>
+    <p>
+        <testAutoIncrement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <Id>1</Id>
+            <test1>test1</test1>
+        </testAutoIncrement>
+    </p>
+</ii>

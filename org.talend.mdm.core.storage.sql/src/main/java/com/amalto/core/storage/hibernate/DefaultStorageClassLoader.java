@@ -36,8 +36,8 @@ import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.util.core.MDMXMLUtils;
 import org.w3c.dom.Attr;
@@ -52,7 +52,6 @@ import com.amalto.core.storage.StorageType;
 import com.amalto.core.storage.datasource.RDBMSDataSource;
 import com.amalto.core.storage.datasource.RDBMSDataSourceBuilder;
 
-@SuppressWarnings("UnusedDeclaration")
 // Dynamically called! Do not remove!
 public class DefaultStorageClassLoader extends StorageClassLoader {
 
@@ -248,11 +247,6 @@ public class DefaultStorageClassLoader extends StorageClassLoader {
         mapping.getAttributes().setNamedItem(resource);
         sessionFactoryElement.appendChild(mapping);
 
-        if (rdbmsDataSource.supportFullText()) {
-        } else if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Hibernate configuration does not define full text extensions due to datasource configuration."); //$NON-NLS-1$
-        }
-
         return document;
     }
 
@@ -266,21 +260,6 @@ public class DefaultStorageClassLoader extends StorageClassLoader {
             default:
                 throw new IllegalArgumentException("Not supported database type '" + dialectType + "'");
         }
-    }
-
-    private static void addEvent(Document document, Node sessionFactoryElement, String eventType, String listenerClass) {
-        Element event = document.createElement("event"); //$NON-NLS-1$
-        Attr type = document.createAttribute("type"); //$NON-NLS-1$
-        type.setValue(eventType);
-        event.getAttributes().setNamedItem(type);
-        {
-            Element listener = document.createElement("listener"); //$NON-NLS-1$
-            Attr clazz = document.createAttribute("class"); //$NON-NLS-1$
-            clazz.setValue(listenerClass);
-            listener.getAttributes().setNamedItem(clazz);
-            event.appendChild(listener);
-        }
-        sessionFactoryElement.appendChild(event);
     }
 
     private static void addProperty(Document document, Node sessionFactoryElement, String propertyName, String propertyValue) {

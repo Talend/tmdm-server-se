@@ -199,7 +199,6 @@ public class DataRecordAccessor implements Accessor {
 
     private void create(String specifiedType) {
         try {
-            String specifiedType = null;
             StringTokenizer tokenizer = new StringTokenizer(path, "/"); //$NON-NLS-1$
             DataRecord current = dataRecord;
             while (tokenizer.hasMoreElements()) {

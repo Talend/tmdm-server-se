@@ -193,7 +193,8 @@ class HibernateStorageTransaction extends StorageTransaction {
     }
 
     private static void processCommitException(Exception e) {
-        if (e instanceof org.hibernate.exception.ConstraintViolationException //
+        if (e instanceof org.hibernate.exception.ConstraintViolationException
+                || e.getCause() != null && e.getCause() instanceof org.hibernate.exception.ConstraintViolationException
                 || e instanceof ObjectNotFoundException //
                 || e instanceof StaleStateException) {
             throw new ConstraintViolationException(e);

@@ -9,6 +9,7 @@
  */
 package com.amalto.core.storage;
 
+import static com.amalto.core.query.user.UserQueryBuilder.contains;
 import static com.amalto.core.query.user.UserQueryBuilder.eq;
 import static com.amalto.core.query.user.UserQueryBuilder.from;
 
@@ -1038,6 +1039,60 @@ public class StoragePrepareTest extends TestCase {
         }
         storage.end();
         storage.close();
+    }
+
+    // TMDM-14937 [NEW UI] Unexpected error message when delete a fk record pointing by others
+    public void testReturnValWithDeleteAction() throws Exception {
+        DataSourceDefinition dataSource = ServerContext.INSTANCE.get().getDefinition("H2-DS2", STORAGE_NAME);
+        Storage storage = new HibernateStorage("Test", StorageType.MASTER); //$NON-NLS-1$
+        storage.init(dataSource);
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(StoragePrepareTest.class.getResourceAsStream("Product.xsd")); //$NON-NLS-1$
+        storage.prepare(repository, true);
+        DataRecordReader<String> factory = new XmlStringDataRecordReader();
+        ComplexTypeMetadata product = repository.getComplexType("Product"); //$NON-NLS-1$
+        ComplexTypeMetadata productFamily = repository.getComplexType("ProductFamily"); //$NON-NLS-1$
+        // test data had been added
+        List<DataRecord> records = new ArrayList<DataRecord>();
+        records.add(factory.read(repository, productFamily, "<ProductFamily><Id>1</Id><Name>1</Name><ChangeStatus>Approved</ChangeStatus></ProductFamily>")); // $NON-NLS-1$
+        records.add(factory.read(repository, productFamily, "<ProductFamily><Id>2</Id><Name>1</Name><ChangeStatus>Pending</ChangeStatus></ProductFamily>")); // $NON-NLS-1$
+        records.add(factory.read(repository, product, "<Product><Id>333</Id><Name>333</Name><Description>333</Description><Price>3</Price><Family>[1]</Family></Product>")); // $NON-NLS-1$
+        records.add(factory.read(repository, product, "<Product><Id>444</Id><Name>444</Name><Description>444</Description><Price>4</Price><Family>[2]</Family></Product>")); // $NON-NLS-1$
+        try {
+            storage.begin();
+            storage.update(records);
+            storage.commit();
+        } catch (Exception e) {
+            fail("Faield to insert data");
+        } finally {
+            storage.end();
+        }
+        // test query data
+        UserQueryBuilder qb = from(product).where(contains(product.getField("Id"), "333")); //$NON-NLS-1$ $NON-NLS-2$
+        qb.getSelect().getPaging().setLimit(10);
+        storage.begin();
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());
+            for (DataRecord result : results) {
+                assertEquals("333", result.get("Id")); //$NON-NLS-1$ $NON-NLS-2$
+                assertEquals("333", result.get("Name")); //$NON-NLS-1$ $NON-NLS-2$
+                assertEquals(3, ((BigDecimal)result.get("Price")).intValue()); //$NON-NLS-1$ $NON-NLS-2$
+            }
+        } finally {
+            results.close();
+        }
+        storage.end();
+        try {
+            storage.begin();
+            qb = from(productFamily).where(contains(productFamily.getField("Id"), "2")); //$NON-NLS-1$ $NON-NLS-2$
+            storage.delete(qb.getSelect());
+            storage.commit();
+        } catch (Exception e) {
+            assertTrue(e instanceof com.amalto.core.storage.exception.ConstraintViolationException);
+        } finally {
+            storage.end();
+        }
     }
 
     protected static DataSourceDefinition getDatasource(String dataSourceName) {

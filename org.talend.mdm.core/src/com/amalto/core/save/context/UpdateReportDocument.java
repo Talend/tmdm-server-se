@@ -50,25 +50,41 @@ class UpdateReportDocument extends DOMDocument {
         if (index++ % 2 == 0) {
             currentNewValue = value;
         } else {
-            Element item = updateReportDocument.createElement("Item"); //$NON-NLS-1$
-            {
-                // Path
-                Node pathNode = updateReportDocument.createElement("path"); //$NON-NLS-1$
-                pathNode.appendChild(updateReportDocument.createTextNode(field));
-                item.appendChild(pathNode);
-                // Old value
-                Node oldValueNode = updateReportDocument.createElement("oldValue"); //$NON-NLS-1$
-                if (value != null) {
-                    oldValueNode.appendChild(updateReportDocument.createTextNode(value));
+            boolean isNodePathExist = false;
+            NodeList itemElements = updateReportDocument.getElementsByTagName("Item");
+            NodeList itemChildNodes = null;
+            for (int i = 0; i < itemElements.getLength(); i++) {
+                Node itemElement = itemElements.item(i);
+                itemChildNodes = itemElement.getChildNodes();
+                Node itemChildNode = itemChildNodes.item(0);
+                if ("path".equalsIgnoreCase(itemChildNode.getNodeName()) && 
+                    field.equalsIgnoreCase(itemChildNode.getTextContent())) {
+                    isNodePathExist = true;
+                    break;
                 }
-                item.appendChild(oldValueNode);
-                // New value
-                Node newValueNode = updateReportDocument.createElement("newValue"); //$NON-NLS-1$
-                if (currentNewValue != null) {
-                    newValueNode.appendChild(updateReportDocument.createTextNode(currentNewValue));
-                }
-                item.appendChild(newValueNode);
             }
+            if (isNodePathExist && itemChildNodes != null && currentNewValue != null && itemChildNodes.getLength() > 2) {
+                itemChildNodes.item(2).setTextContent(currentNewValue);
+                currentNewValue = null;
+                return this;
+            }
+            Element item = updateReportDocument.createElement("Item"); //$NON-NLS-1$
+            // Path
+            Node pathNode = updateReportDocument.createElement("path"); //$NON-NLS-1$
+            pathNode.appendChild(updateReportDocument.createTextNode(field));
+            item.appendChild(pathNode);
+            // Old value
+            Node oldValueNode = updateReportDocument.createElement("oldValue"); //$NON-NLS-1$
+            if (value != null) {
+                oldValueNode.appendChild(updateReportDocument.createTextNode(value));
+            }
+            item.appendChild(oldValueNode);
+            // New value
+            Node newValueNode = updateReportDocument.createElement("newValue"); //$NON-NLS-1$
+            if (currentNewValue != null) {
+                newValueNode.appendChild(updateReportDocument.createTextNode(currentNewValue));
+            }
+            item.appendChild(newValueNode);
             updateReportDocument.getDocumentElement().appendChild(item);
             currentNewValue = null;
         }
@@ -125,7 +141,7 @@ class UpdateReportDocument extends DOMDocument {
                 updateReportDocument.getDocumentElement().appendChild(item);
             }
         } else if (operationType.equalsIgnoreCase(UpdateReportPOJO.OPERATION_TYPE_UPDATE)) {
-            if (!isCreated) {
+            if (!isCreated && !item.getTextContent().equalsIgnoreCase(UpdateReportPOJO.OPERATION_TYPE_UPDATE)) {
                 item.appendChild(updateReportDocument.createTextNode(UpdateReportPOJO.OPERATION_TYPE_UPDATE));
                 updateReportDocument.getDocumentElement().appendChild(item);
             }

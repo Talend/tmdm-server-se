@@ -57,7 +57,7 @@ public abstract class TypeModel implements Serializable, IsSerializable {
 
     private boolean nillable = true;
 
-    private boolean retrieveFKinfos = false;
+    private boolean retrieveFKinfos = true;
 
     private String foreignkey;
 

@@ -50,24 +50,22 @@ class UpdateReportDocument extends DOMDocument {
         if (index++ % 2 == 0) {
             currentNewValue = value;
         } else {
-            boolean isNodePathExist = false;
             NodeList itemElements = updateReportDocument.getElementsByTagName("Item");
-            NodeList itemChildNodes = null;
             for (int i = 0; i < itemElements.getLength(); i++) {
                 Node itemElement = itemElements.item(i);
-                itemChildNodes = itemElement.getChildNodes();
+                NodeList itemChildNodes = itemElement.getChildNodes();
                 Node itemChildNode = itemChildNodes.item(0);
-                if ("path".equalsIgnoreCase(itemChildNode.getNodeName()) && 
-                    field.equalsIgnoreCase(itemChildNode.getTextContent())) {
-                    isNodePathExist = true;
-                    break;
+                if ("path".equalsIgnoreCase(itemChildNode.getNodeName())
+                        && field.equalsIgnoreCase(itemChildNode.getTextContent())) {
+                    if (currentNewValue != null && itemChildNodes.getLength() > 2) {
+                        // Change newValue node content
+                        itemChildNodes.item(2).setTextContent(currentNewValue);
+                        currentNewValue = null;
+                        return this;
+                    }
                 }
             }
-            if (isNodePathExist && itemChildNodes != null && currentNewValue != null && itemChildNodes.getLength() > 2) {
-                itemChildNodes.item(2).setTextContent(currentNewValue);
-                currentNewValue = null;
-                return this;
-            }
+
             Element item = updateReportDocument.createElement("Item"); //$NON-NLS-1$
             // Path
             Node pathNode = updateReportDocument.createElement("path"); //$NON-NLS-1$

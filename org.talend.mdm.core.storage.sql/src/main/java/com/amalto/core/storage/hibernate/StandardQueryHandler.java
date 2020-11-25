@@ -1833,7 +1833,7 @@ class StandardQueryHandler extends AbstractQueryHandler {
             addConditionForCompoundField(condition, alias, fieldMetadata);
         } else if (isReferenceField && isSelfReference && !isMany) {
             addConditionForSelfReferenceField(condition, alias, ((ReferenceFieldMetadata) fieldMetadata).getReferencedField());
-        } else if (isReferenceField && isContainedInMain && !isMany) {
+        } else if (isReferenceField && isContainedInMain) {
             condition.criterionFieldNames.add(getFieldName(fieldMetadata, true));
         } else {
             String language = OrderBy.SortLanguage.get();

@@ -1828,11 +1828,12 @@ class StandardQueryHandler extends AbstractQueryHandler {
         boolean isReferenceField = fieldMetadata instanceof ReferenceFieldMetadata;
         boolean isContainedInMain = mainType.equals(fieldMetadata.getContainingType());
         boolean isSelfReference = isSelfReference(fieldMetadata);
+        boolean isMany = fieldMetadata.isMany();
         if (isCompoundField) {
             addConditionForCompoundField(condition, alias, fieldMetadata);
-        } else if (isReferenceField && isSelfReference) {
+        } else if (isReferenceField && isSelfReference && !isMany) {
             addConditionForSelfReferenceField(condition, alias, ((ReferenceFieldMetadata) fieldMetadata).getReferencedField());
-        } else if (isReferenceField && isContainedInMain) {
+        } else if (isReferenceField && isContainedInMain && !isMany) {
             condition.criterionFieldNames.add(getFieldName(fieldMetadata, true));
         } else {
             String language = OrderBy.SortLanguage.get();

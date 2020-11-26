@@ -36,13 +36,12 @@ public class MDMXmlWebApplicationContext extends XmlWebApplicationContext {
     private static final String SPRING_SCHEMA_VALIDATION = "com.talend.mdm.springSchemaValidation";
 
     private static boolean getSpringSchemaValidation() {
-        boolean validating = true; // validate by default
         String validation = System.getProperty(SPRING_SCHEMA_VALIDATION);
         // only set "-Dcom.talend.mdm.springSchemaValidation=false" will disable it
         if (validation != null && validation.equalsIgnoreCase("false")) {
-            validating = false;
+            return false;
         }
-        return validating;
+        return true;
     }
 
     @Override

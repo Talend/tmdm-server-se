@@ -22,13 +22,19 @@ import org.springframework.web.context.support.XmlWebApplicationContext;
 
 
 /**
- * Application Context which disable schema validation, it can speed up server start up, can make start up normally when no network
- * 
+ * Application Context could disable/enable spring schema validation by JVM Parameter
+ * <ul>
+ * <li>Not set -- ENABLED (be default)</li>
+ * <li>-Dcom.talend.mdm.disableSpringSchemaValidation=false  --ENABLED</li>
+ * <li>-Dcom.talend.mdm.disableSpringSchemaValidation=true   --DISABLED</li>
+ * </ul>
  * created by pwlin on Nov 25, 2020
  * 
  */
 public class MDMXmlWebApplicationContext extends XmlWebApplicationContext {
-    
+
+    private static final String DISABLE_SPRING_SCHEMA_VALIDATION = "com.talend.mdm.disableSpringSchemaValidation";
+
     @Override
     protected void loadBeanDefinitions(DefaultListableBeanFactory beanFactory) throws BeansException, IOException {
         // Create a new XmlBeanDefinitionReader for the given BeanFactory.
@@ -36,7 +42,7 @@ public class MDMXmlWebApplicationContext extends XmlWebApplicationContext {
 
         // Configure the bean definition reader with this context's
         // resource loading environment.
-        beanDefinitionReader.setValidating(false);
+        beanDefinitionReader.setValidating(!Boolean.getBoolean(DISABLE_SPRING_SCHEMA_VALIDATION));
         beanDefinitionReader.setEnvironment(getEnvironment());
         beanDefinitionReader.setResourceLoader(this);
         beanDefinitionReader.setEntityResolver(new ResourceEntityResolver(this));

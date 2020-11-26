@@ -25,24 +25,15 @@ import org.springframework.web.context.support.XmlWebApplicationContext;
  * Application Context could disable/enable spring schema validation by JVM Parameter "com.talend.mdm.springSchemaValidation"
  * <ul>
  * <li>Not set -- ENABLED (be default)</li>
- * <li>-Dcom.talend.mdm.springSchemaValidation=true   --ENABLED</li>
- * <li>-Dcom.talend.mdm.springSchemaValidation=false  --DISABLED</li>
+ * <li>-Dcom.talend.mdm.disableSpringSchemaValidation=false  --ENABLED</li>
+ * <li>-Dcom.talend.mdm.disableSpringSchemaValidation=true   --DISABLED</li>
  * </ul>
  * created by pwlin on Nov 25, 2020
  * 
  */
 public class MDMXmlWebApplicationContext extends XmlWebApplicationContext {
-    
-    private static final String SPRING_SCHEMA_VALIDATION = "com.talend.mdm.springSchemaValidation";
 
-    private static boolean getSpringSchemaValidation() {
-        String validation = System.getProperty(SPRING_SCHEMA_VALIDATION);
-        // only set "-Dcom.talend.mdm.springSchemaValidation=false" will disable it
-        if (validation != null && validation.equalsIgnoreCase("false")) {
-            return false;
-        }
-        return true;
-    }
+    private static final String DISABLE_SPRING_SCHEMA_VALIDATION = "com.talend.mdm.disableSpringSchemaValidation";
 
     @Override
     protected void loadBeanDefinitions(DefaultListableBeanFactory beanFactory) throws BeansException, IOException {
@@ -51,7 +42,7 @@ public class MDMXmlWebApplicationContext extends XmlWebApplicationContext {
 
         // Configure the bean definition reader with this context's
         // resource loading environment.
-        beanDefinitionReader.setValidating(getSpringSchemaValidation());
+        beanDefinitionReader.setValidating(!Boolean.getBoolean(DISABLE_SPRING_SCHEMA_VALIDATION));
         beanDefinitionReader.setEnvironment(getEnvironment());
         beanDefinitionReader.setResourceLoader(this);
         beanDefinitionReader.setEntityResolver(new ResourceEntityResolver(this));

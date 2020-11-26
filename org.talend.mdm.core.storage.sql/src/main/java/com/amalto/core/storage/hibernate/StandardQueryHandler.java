@@ -1830,7 +1830,7 @@ class StandardQueryHandler extends AbstractQueryHandler {
         boolean isSelfReference = isSelfReference(fieldMetadata);
         if (isCompoundField) {
             addConditionForCompoundField(condition, alias, fieldMetadata);
-        } else if (isReferenceField && isSelfReference) {
+        } else if (isReferenceField && isSelfReference && !fieldMetadata.isMany()) {
             addConditionForSelfReferenceField(condition, alias, ((ReferenceFieldMetadata) fieldMetadata).getReferencedField());
         } else if (isReferenceField && isContainedInMain) {
             condition.criterionFieldNames.add(getFieldName(fieldMetadata, true));

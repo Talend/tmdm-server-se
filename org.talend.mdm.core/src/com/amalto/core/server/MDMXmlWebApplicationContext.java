@@ -22,7 +22,7 @@ import org.springframework.web.context.support.XmlWebApplicationContext;
 
 
 /**
- * Application Context could disable/enable spring schema validation by JVM Parameter "com.talend.mdm.springSchemaValidation"
+ * Application Context could disable/enable spring schema validation by JVM Parameter
  * <ul>
  * <li>Not set -- ENABLED (be default)</li>
  * <li>-Dcom.talend.mdm.disableSpringSchemaValidation=false  --ENABLED</li>

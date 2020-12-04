@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Ignore;
-import org.junit.Test;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.query.QueryParser;
 
@@ -53,9 +52,7 @@ import com.amalto.core.query.user.metadata.Timestamp;
 
 import junit.framework.TestCase;
 
-/**
- *
- */
+@Ignore
 public class QueryParserTest extends TestCase {
 
     private MetadataRepository repository;

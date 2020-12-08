@@ -142,7 +142,14 @@ public class DynamicLabelUtil {
 
         XSType xsct = null;
         org.dom4j.Element el = pathNodes.get(pos);
-        Attribute attr = el.attribute("xsi:type"); //$NON-NLS-1$
+        Attribute attr = null;
+        List<Attribute> elAttrs = el.attributes();
+        for (Attribute elAttr : elAttrs) {
+            if (elAttr.getQualifiedName().equals("xsi:type")) {
+                attr = elAttr;
+                break;
+            }
+        }
         String xsiType = attr == null ? null : attr.getStringValue();
         if (xsiType != null && !xsiType.equals("")) { //$NON-NLS-1$
             xsct = typeMap.get(xsiType);
@@ -155,7 +162,7 @@ public class DynamicLabelUtil {
             for (XSParticle xs : xsp) {
                 List<XSElementDecl> dels = getElementDecls(xs);
                 for (XSElementDecl del : dels) {
-                    if (del.getName().equals(pathNodes.get(pos + 1).getName())) {
+                    if (del.getName().equals(pathNodes.get(pos + 1).getQualifiedName())) {
                         Object[] fkObj = getForeign(del, pathNodes, pos + 1, typeMap);
                         if (fkObj != null) {
                             return fkObj;

@@ -9,9 +9,14 @@
  */
 package com.amalto.core.storage.inmemory;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.h2.engine.Database;
+import org.h2.engine.Session;
+import org.h2.jdbc.JdbcConnection;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 
 import com.amalto.core.query.user.Expression;
@@ -39,6 +44,23 @@ public class MemoryStorage extends HibernateStorage {
         builder.generateConstraints(false);
         dataSource = builder.build();
         internalInit();
+    }
+
+    @Override
+    public void close() {
+        super.close();
+        try {
+            Class.forName(dataSource.getDriverClassName()).newInstance();
+            Connection connection = DriverManager.getConnection(dataSource.getConnectionURL(), dataSource.getUserName(),
+                    dataSource.getPassword());
+            JdbcConnection h2Connection = (JdbcConnection) connection;
+            Session h2Session = (Session) h2Connection.getSession();
+            Database h2Database = h2Session.getDatabase();
+            h2Database.shutdownImmediately();
+            LOGGER.info("H2 Database: " + h2Database.getName() + " has been shutted down.");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

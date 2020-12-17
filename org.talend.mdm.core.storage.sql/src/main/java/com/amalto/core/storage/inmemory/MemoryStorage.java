@@ -9,10 +9,15 @@
  */
 package com.amalto.core.storage.inmemory;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.util.Set;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.h2.engine.Database;
+import org.h2.engine.Session;
+import org.h2.jdbc.JdbcConnection;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 
 import com.amalto.core.query.user.Expression;
@@ -42,9 +47,30 @@ public class MemoryStorage extends HibernateStorage {
     }
 
     @Override
+    public void close() {
+        super.close();
+        try {
+            Class.forName(dataSource.getDriverClassName()).newInstance();
+            Connection connection = DriverManager.getConnection(dataSource.getConnectionURL(), dataSource.getUserName(),
+                    dataSource.getPassword());
+            JdbcConnection h2Connection = (JdbcConnection) connection;
+            Session h2Session = (Session) h2Connection.getSession();
+            Database h2Database = h2Session.getDatabase();
+            h2Database.shutdownImmediately();
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("In-memory h2 db '" + h2Database.getName() + "' has been shutted down.");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public synchronized void prepare(MetadataRepository repository, boolean dropExistingData) {
         if (dropExistingData) {
-            LOGGER.debug("No need to drop existing data for a in-memory storage.");
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("No need to drop existing data for a in-memory storage.");
+            }
         }
         super.prepare(repository, false);
     }
@@ -53,7 +79,9 @@ public class MemoryStorage extends HibernateStorage {
     public synchronized void prepare(MetadataRepository repository, Set<Expression> optimizedExpressions, boolean force,
             boolean dropExistingData) {
         if (dropExistingData) {
-            LOGGER.debug("No need to drop existing data for a in-memory storage.");
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("No need to drop existing data for a in-memory storage.");
+            }
         }
         super.prepare(repository, optimizedExpressions, force, false);
     }

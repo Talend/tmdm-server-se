@@ -57,7 +57,9 @@ public class MemoryStorage extends HibernateStorage {
             Session h2Session = (Session) h2Connection.getSession();
             Database h2Database = h2Session.getDatabase();
             h2Database.shutdownImmediately();
-            LOGGER.info("H2 Database: " + h2Database.getName() + " has been shutted down.");
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("In-memory h2 db '" + h2Database.getName() + "' has been shutted down.");
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -66,7 +68,9 @@ public class MemoryStorage extends HibernateStorage {
     @Override
     public synchronized void prepare(MetadataRepository repository, boolean dropExistingData) {
         if (dropExistingData) {
-            LOGGER.debug("No need to drop existing data for a in-memory storage.");
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("No need to drop existing data for a in-memory storage.");
+            }
         }
         super.prepare(repository, false);
     }
@@ -75,7 +79,9 @@ public class MemoryStorage extends HibernateStorage {
     public synchronized void prepare(MetadataRepository repository, Set<Expression> optimizedExpressions, boolean force,
             boolean dropExistingData) {
         if (dropExistingData) {
-            LOGGER.debug("No need to drop existing data for a in-memory storage.");
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("No need to drop existing data for a in-memory storage.");
+            }
         }
         super.prepare(repository, optimizedExpressions, force, false);
     }

@@ -323,7 +323,7 @@ public abstract class DownloadWriter {
 
     private List<String> getFKInfo(String fk, List<String> fkInfoList, String fkValue) throws Exception {
         List<String> infoList = new ArrayList<String>();
-        String conceptName = fk.substring(0, fk.indexOf("/"));
+        String conceptName = fk.substring(0, fk.indexOf("/") == -1 ? fk.length() : fk.indexOf("/"));
         String value = LabelUtil.removeBrackets(fkValue);
         String ids[] = { value };
         WSItem wsItem = CommonUtil.getPort()

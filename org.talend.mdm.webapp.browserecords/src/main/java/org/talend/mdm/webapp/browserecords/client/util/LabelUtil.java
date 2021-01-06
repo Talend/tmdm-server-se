@@ -70,4 +70,8 @@ public class LabelUtil {
         }
         return str;
     }
+
+    public static String[] removeAllBrackets(String str) {
+        return removeBrackets(str).split("\\]\\[");
+    }
 }

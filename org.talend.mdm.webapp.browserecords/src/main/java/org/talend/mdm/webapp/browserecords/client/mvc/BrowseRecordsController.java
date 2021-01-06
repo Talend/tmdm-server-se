@@ -60,6 +60,7 @@ import com.extjs.gxt.ui.client.mvc.Controller;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.form.Field;
+import com.google.gwt.user.client.Timer;
 
 /**
  * DOC Administrator class global comment. Detailled comment
@@ -511,6 +512,8 @@ public class BrowseRecordsController extends Controller {
                 @Override public void onSuccess(List<String> result) {
                     event.setData(result);
                     forwardToView(view, event);
+                    Timer timer = event.getData(BrowseRecords.FOREIGN_KEY_TIMER);
+                    timer.run();
                 }
             });
         }

@@ -37,6 +37,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.Timer;
 
 public class ForeignKeyField extends TextField<ForeignKeyBean> {
 
@@ -344,30 +345,42 @@ public class ForeignKeyField extends TextField<ForeignKeyBean> {
                 if (foreignConceptName != null) {
                     String foreignKeyFilter = getOriginForeignKeyFilter();
                     if (foreignKeyFilter.contains(CommonUtil.FN_PREFIX)) {
+                        Timer timer = new Timer() {
+
+                            @Override
+                            public void run() {
+                                getEntityModel();
+                            }
+                        };
                         AppEvent event = new AppEvent(BrowseRecordsEvents.TransformFkFilterItem, foreignKeyFilter);
                         event.setData(BrowseRecords.FOREIGN_KEY_FIELD, _this);
+                        event.setData(BrowseRecords.FOREIGN_KEY_TIMER, timer);
                         Dispatcher.forwardEvent(event);
+                    } else {
+                        getEntityModel();
                     }
-
-                    service.getEntityModel(foreignConceptName, Locale.getLanguage(),
-                            new SessionAwareAsyncCallback<EntityModel>() {
-
-                                @Override
-                                public void onSuccess(EntityModel entityModel) {
-                                    ForeignKeyListWindow foreignKeyListWindow = new ForeignKeyListWindow(foreignKeyPath,
-                                            foreignKeyInfo, getDataCluster(), entityModel, ForeignKeyField.this);
-                                    foreignKeyListWindow.setForeignKeyFilterValue(parseForeignKeyFilter());
-                                    foreignKeyListWindow.setSize(550, 350);
-                                    foreignKeyListWindow.setResizable(true);
-                                    foreignKeyListWindow.setModal(true);
-                                    foreignKeyListWindow.setBlinkModal(true);
-                                    foreignKeyListWindow.setHeading(MessagesFactory.getMessages().fk_RelatedRecord());
-                                    foreignKeyListWindow.show();
-                                }
-                            });
                 }
             }
         });
+    }
+
+    protected void getEntityModel() {
+        service.getEntityModel(foreignConceptName, Locale.getLanguage(),
+                new SessionAwareAsyncCallback<EntityModel>() {
+
+                    @Override
+                    public void onSuccess(EntityModel entityModel) {
+                        ForeignKeyListWindow foreignKeyListWindow = new ForeignKeyListWindow(foreignKeyPath,
+                                foreignKeyInfo, getDataCluster(), entityModel, ForeignKeyField.this);
+                        foreignKeyListWindow.setForeignKeyFilterValue(parseForeignKeyFilter());
+                        foreignKeyListWindow.setSize(550, 350);
+                        foreignKeyListWindow.setResizable(true);
+                        foreignKeyListWindow.setModal(true);
+                        foreignKeyListWindow.setBlinkModal(true);
+                        foreignKeyListWindow.setHeading(MessagesFactory.getMessages().fk_RelatedRecord());
+                        foreignKeyListWindow.show();
+                    }
+                });
     }
 
     @Override

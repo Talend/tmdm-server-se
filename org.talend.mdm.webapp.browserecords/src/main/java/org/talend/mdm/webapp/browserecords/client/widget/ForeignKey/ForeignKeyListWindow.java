@@ -376,31 +376,14 @@ public class ForeignKeyListWindow extends Window {
                 ColumnConfig columnConfig = new ColumnConfig(info, metaDataType == null ? info : ViewUtil.getViewableLabel(
                         Locale.getLanguage(), metaDataType), COLUMN_WIDTH);
                 columns.add(columnConfig);
-                TypeModel fKTypeModel = entityModel.getTypeModel(info);
-                if (fKTypeModel != null && DataTypeConstants.MLS.equals(fKTypeModel.getType())) {
+                columnConfig.setRenderer(new GridCellRenderer<ForeignKeyBean>() {
 
-                    columnConfig.setRenderer(new GridCellRenderer<ForeignKeyBean>() {
-
-                        @Override
-                        public Object render(final ForeignKeyBean fkBean, String property, ColumnData config, int rowIndex,
-                                int colIndex, ListStore<ForeignKeyBean> store, Grid<ForeignKeyBean> grid) {
-                            String multiLanguageString = (String) fkBean.get(property);
-                            MultiLanguageModel multiLanguageModel = new MultiLanguageModel(multiLanguageString);
-                            return Format.htmlEncode(multiLanguageModel.getValueByLanguage(Locale.getLanguage().toUpperCase()));
-                        }
-                    });
-
-                } else {
-                    columnConfig.setRenderer(new GridCellRenderer<ForeignKeyBean>() {
-
-                        @Override
-                        public Object render(final ForeignKeyBean fkBean, String property, ColumnData config, int rowIndex,
-                                int colIndex, ListStore<ForeignKeyBean> store, Grid<ForeignKeyBean> grid) {
-                            String propertyName = CommonUtil.getElementFromXpath(property);
-                            return fkBean.get(propertyName);
-                        }
-                    });
-                }
+                    @Override
+                    public Object render(final ForeignKeyBean fkBean, String property, ColumnData config, int rowIndex,
+                            int colIndex, ListStore<ForeignKeyBean> store, Grid<ForeignKeyBean> grid) {
+                        return fkBean.getForeignKeyInfo().get(property);
+                    }
+                });
             }
             if (columns.size() > 0) {
                 config.setSortField(columns.get(0).getId());

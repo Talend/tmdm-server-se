@@ -240,6 +240,7 @@ amalto.itemsbrowser.SearchEntity.bundle.onReady(function(){
 						columnWidth : ".5",
 						layout : "form",
 						items : [{
+						    id : "keyValue"
 							name : "key",
 							fieldLabel : searchEntityBundle.getMsg("LABEL_KEY"),
 							xtype : "textfield",
@@ -345,15 +346,15 @@ amalto.itemsbrowser.SearchEntity.bundle.onReady(function(){
 	    },
 	    
 	    setSearchCriteria : function(conceptValue,keyValue,keyWordsValue,startDateValue,endDateValue){
-			if(conceptValue != '')DWRUtil.setValue('entity',conceptValue);
-			if(keyValue != '')DWRUtil.setValue('key',keyValue);
+			if(conceptValue != '')DWRUtil.setValue('entityCB',conceptValue);
+			if(keyValue != '')DWRUtil.setValue('keyValue',keyValue);
 			if(keyWordsValue != '')DWRUtil.setValue('keyWords',keyWordsValue);
 			if(startDateValue != '')DWRUtil.setValue('fromDate',startDateValue);
 			if(endDateValue != '')DWRUtil.setValue('toDate',endDateValue);
 	    },
 	    
 	    onResetBtnClick : function(button, event){
-			DWRUtil.setValue('key','');
+			DWRUtil.setValue('keyValue','');
 			DWRUtil.setValue('keyWords','');
 	        DWRUtil.setValue('fromDate','');
 	        DWRUtil.setValue('toDate','');
@@ -362,11 +363,11 @@ amalto.itemsbrowser.SearchEntity.bundle.onReady(function(){
 	    
 	    getRequestParam : function(){
 	    	var requestParam="";
-
-	    	var entity = DWRUtil.getValue('entity');
-			if(entity != "" && entity.indexOf("<input type=\"text\"") < 0)requestParam += ",entity:'" + entity + "'";
-			var key = DWRUtil.getValue('key');
-			if(key != "" && key.indexOf("<input type=\"text\"") < 0)requestParam += ",key:'" + key + "'";
+            DWRUtil.byId('entity')
+	    	var entity = DWRUtil.getValue('entityCB');
+			if(entity != "")requestParam += ",entity:'" + entity + "'";
+			var key = DWRUtil.getValue('keyValue');			
+			if(key != "")requestParam += ",key:'" + key + "'";
 			var keyWords = DWRUtil.getValue('keyWords');
 			if(keyWords != "")requestParam += ",keyWords:'" + keyWords + "'";
 			var fromDate = DWRUtil.getValue('fromDate');

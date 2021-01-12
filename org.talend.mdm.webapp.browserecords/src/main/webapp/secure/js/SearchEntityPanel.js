@@ -364,9 +364,9 @@ amalto.itemsbrowser.SearchEntity.bundle.onReady(function(){
 	    	var requestParam="";
 
 	    	var entity = DWRUtil.getValue('entity');
-			if(entity != "")requestParam += ",entity:'" + entity + "'";
+			if(entity != "" && entity.indexOf("<input type=\"text\"") < 0)requestParam += ",entity:'" + entity + "'";
 			var key = DWRUtil.getValue('key');
-			if(key != "")requestParam += ",key:'" + key + "'";
+			if(key != "" && key.indexOf("<input type=\"text\"") < 0)requestParam += ",key:'" + key + "'";
 			var keyWords = DWRUtil.getValue('keyWords');
 			if(keyWords != "")requestParam += ",keyWords:'" + keyWords + "'";
 			var fromDate = DWRUtil.getValue('fromDate');
@@ -391,6 +391,10 @@ amalto.itemsbrowser.SearchEntity.bundle.onReady(function(){
 			
 			if(dataObject != "") {
 				this.criteria += ",dataObject:'" + dataObject +"'";
+			}
+			
+			if(this.criteria.indexOf("entity:") < 0) {
+			    this.criteria += ",entity:'" + this.lineageEntities[0] +"'"; 
 			}
 			
 			if(this.criteria != ""){

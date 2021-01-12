@@ -363,10 +363,9 @@ amalto.itemsbrowser.SearchEntity.bundle.onReady(function(){
 	    
 	    getRequestParam : function(){
 	    	var requestParam="";
-            DWRUtil.byId('entity')
 	    	var entity = DWRUtil.getValue('entityCB');
 			if(entity != "")requestParam += ",entity:'" + entity + "'";
-			var key = DWRUtil.getValue('keyValue');			
+			var key = DWRUtil.getValue('keyValue');
 			if(key != "")requestParam += ",key:'" + key + "'";
 			var keyWords = DWRUtil.getValue('keyWords');
 			if(keyWords != "")requestParam += ",keyWords:'" + keyWords + "'";
@@ -393,11 +392,7 @@ amalto.itemsbrowser.SearchEntity.bundle.onReady(function(){
 			if(dataObject != "") {
 				this.criteria += ",dataObject:'" + dataObject +"'";
 			}
-			
-			if(this.criteria.indexOf("entity:") < 0) {
-			    this.criteria += ",entity:'" + this.lineageEntities[0] +"'"; 
-			}
-			
+		
 			if(this.criteria != ""){
 				this.criteria = this.criteria.substring(1)
 				this.criteria = "{" + this.criteria + "}";

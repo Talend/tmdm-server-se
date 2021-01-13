@@ -240,7 +240,7 @@ amalto.itemsbrowser.SearchEntity.bundle.onReady(function(){
 						columnWidth : ".5",
 						layout : "form",
 						items : [{
-						    id : "keyValue"
+							id : "keyValue",
 							name : "key",
 							fieldLabel : searchEntityBundle.getMsg("LABEL_KEY"),
 							xtype : "textfield",
@@ -354,16 +354,16 @@ amalto.itemsbrowser.SearchEntity.bundle.onReady(function(){
 	    },
 	    
 	    onResetBtnClick : function(button, event){
-			DWRUtil.setValue('keyValue','');
-			DWRUtil.setValue('keyWords','');
+	        DWRUtil.setValue('keyValue','');
+	        DWRUtil.setValue('keyWords','');
 	        DWRUtil.setValue('fromDate','');
 	        DWRUtil.setValue('toDate','');
 	        this.criteria = "";
 	    },
 	    
 	    getRequestParam : function(){
-	    	var requestParam="";
-	    	var entity = DWRUtil.getValue('entityCB');
+			var requestParam="";
+			var entity = DWRUtil.getValue('entityCB');
 			if(entity != "")requestParam += ",entity:'" + entity + "'";
 			var key = DWRUtil.getValue('keyValue');
 			if(key != "")requestParam += ",key:'" + key + "'";

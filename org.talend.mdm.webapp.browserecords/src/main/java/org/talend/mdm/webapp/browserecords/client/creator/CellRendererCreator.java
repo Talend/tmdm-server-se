@@ -54,6 +54,22 @@ public class CellRendererCreator {
                 }
             };
             return renderer;
+        } else if (dataType.getForeignkey() != null) {
+            GridCellRenderer<ModelData> renderer = new GridCellRenderer<ModelData>() {
+
+                @Override
+                public Object render(ModelData model, String property, ColumnData config, int rowIndex, int colIndex,
+                        ListStore<ModelData> store, Grid<ModelData> grid) {
+                    ItemBean itemBean = (ItemBean) model;
+                    ForeignKeyBean fkBean = itemBean.getForeignkeyDesc((String) model.get(property));
+                    if (fkBean == null || fkBean.getDisplayInfo() == null || "null".equals(fkBean.getDisplayInfo())) { //$NON-NLS-1$
+                        return ""; //$NON-NLS-1$
+                    }
+                    fkBean.setShowInfo(true);
+                    return fkBean.toString();
+                }
+            };
+            return renderer;
         } else if (dataType.isSimpleType() && dataType.isMultiOccurrence()) {
             final boolean isMultiLanguageType = dataType.getType().equals(DataTypeConstants.MLS);
             GridCellRenderer<ModelData> renderer = new GridCellRenderer<ModelData>() {
@@ -90,22 +106,6 @@ public class CellRendererCreator {
                         model.set(property, result.toString());
                     }
                     return result;
-                }
-            };
-            return renderer;
-        } else if (dataType.getForeignkey() != null) {
-            GridCellRenderer<ModelData> renderer = new GridCellRenderer<ModelData>() {
-
-                @Override
-                public Object render(ModelData model, String property, ColumnData config, int rowIndex, int colIndex,
-                        ListStore<ModelData> store, Grid<ModelData> grid) {
-                    ItemBean itemBean = (ItemBean) model;
-                    ForeignKeyBean fkBean = itemBean.getForeignkeyDesc((String) model.get(property));
-                    if (fkBean == null || fkBean.getDisplayInfo() == null || "null".equals(fkBean.getDisplayInfo())) { //$NON-NLS-1$
-                        return ""; //$NON-NLS-1$
-                    }
-                    fkBean.setShowInfo(true);
-                    return fkBean.toString();
                 }
             };
             return renderer;

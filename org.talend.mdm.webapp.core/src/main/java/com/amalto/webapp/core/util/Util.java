@@ -298,6 +298,10 @@ public abstract class Util {
             WSWhereOperator operator = null;
             if (values[1].equals("Contains")) {
                 operator = WSWhereOperator.CONTAINS;
+            } else if (values[1].equals("contains the sentence")) {
+                operator = WSWhereOperator.CONTAINS_SENTENCE;
+            } else if (values[1].equals("whole content contains")) {
+                operator = WSWhereOperator.FULLTEXTSEARCH;
             } else if (values[1].equals("Contains Text Of")) {
                 operator = WSWhereOperator.JOIN;
             } else if (values[1].equals("=")) {

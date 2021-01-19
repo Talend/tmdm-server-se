@@ -68,7 +68,7 @@ public class ForeignKeyRowEditor extends RowEditor<ItemNodeModel> {
                             .fk_edit_failure(), null);
                     return;
                 }
-                String ids = fkBean.getId().replaceAll("\\[", "").replaceAll("\\]", ""); //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$
+                String ids = fkBean.getId().replaceAll("\\]\\[", ".").replaceAll("\\[", "").replaceAll("\\]", ""); //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$
                 ServiceFactory
                         .getInstance()
                         .getService(staging)

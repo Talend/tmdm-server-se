@@ -13,7 +13,7 @@
     <name>org.talend.mdm.core</name>
 
     <properties>
-        <jackson.version>2.10.1</jackson.version>
+        <jackson.version>2.12.1</jackson.version>
         <activemq.version>5.15.9</activemq.version>
         <woodstox.core.version>6.0.2</woodstox.core.version>
         <joda.time.version>2.10</joda.time.version>
@@ -257,6 +257,16 @@
             <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-module-jaxb-annotations</artifactId>
             <version>${jackson.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>jakarta.activation</groupId>
+                    <artifactId>jakarta.activation-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>jakarta.xml.bind</groupId>
+                    <artifactId>jakarta.xml.bind-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -366,6 +376,10 @@
         <dependency>
 	        <groupId>org.bouncycastle</groupId>
 	        <artifactId>bcprov-jdk15on</artifactId>
+        </dependency>
+        <dependency>
+	        <groupId>org.bouncycastle</groupId>
+	        <artifactId>bcpkix-jdk15on</artifactId>
         </dependency>
         <!-- Test dependencies -->
         <dependency>

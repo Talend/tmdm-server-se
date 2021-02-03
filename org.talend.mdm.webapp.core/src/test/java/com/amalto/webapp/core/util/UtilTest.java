@@ -14,7 +14,6 @@ import junit.framework.TestCase;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
-import org.talend.mdm.commmon.util.core.MDMConfiguration;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -24,14 +23,6 @@ import com.amalto.core.webservice.WSWhereOperator;
 
 @SuppressWarnings("nls")
 public class UtilTest extends TestCase {
-
-    static {
-        try {
-            MDMConfiguration.createConfiguration("", true);
-        } catch (IllegalStateException e) {
-            // already configured;
-        }
-    }
 
     private String foreignKeyInfo = "ProductFamily/Name";
 

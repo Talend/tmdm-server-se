@@ -27,7 +27,6 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit3.PowerMockSuite;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
-import org.talend.mdm.commmon.util.core.MDMConfiguration;
 import org.talend.mdm.commmon.util.core.MDMXMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -51,14 +50,6 @@ import junit.framework.TestSuite;
 @SuppressWarnings("nls")
 @PrepareForTest({ DefaultItem.class, Util.class })
 public class ForeignKeyInfoTransformerTest extends TestCase {
-
-    static {
-        try {
-            MDMConfiguration.createConfiguration("", true);
-        } catch (IllegalStateException e) {
-            // already configured;
-        }
-    }
 
     final String clusterName = "TestFKs";
 

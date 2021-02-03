@@ -1045,6 +1045,9 @@ public class UserQueryBuilder {
         }
         Field leftUserField = new Field(leftField);
         Field rightUserField = new Field(rightField);
+        if (!expressionAsSelect().getTypes().contains(leftField.getContainingType())) {
+            expressionAsSelect().addType(leftField.getContainingType());
+        }
         // Implicit select joined type if it isn't already selected
         if (!expressionAsSelect().getTypes().contains(rightField.getContainingType())) {
             expressionAsSelect().addType(rightField.getContainingType());

@@ -79,6 +79,8 @@ import com.amalto.core.query.user.Expression;
 import com.amalto.core.query.user.Field;
 import com.amalto.core.query.user.IntegerConstant;
 import com.amalto.core.query.user.IsNull;
+import com.amalto.core.query.user.Join;
+import com.amalto.core.query.user.JoinType;
 import com.amalto.core.query.user.LongConstant;
 import com.amalto.core.query.user.OrderBy;
 import com.amalto.core.query.user.OrderBy.Direction;
@@ -1617,6 +1619,36 @@ public class StorageQueryTest extends StorageTestCase {
         try {
             assertEquals(2, results.getSize());
             assertEquals(2, results.getCount());
+        } finally {
+            results.close();
+        }
+    }
+
+    // TMDM-15021 Search Filter using "join With" : no result returned while a result should be returned
+    public void testJoinQueryWithoutMainEntityInSearchableList() throws Exception {
+        UserQueryBuilder uqb = UserQueryBuilder.from(address);
+        String fieldName = "Address/Street";
+        IWhereItem item = new WhereCondition(fieldName, WhereCondition.EQUALS, "Street3", WhereCondition.NO_OPERATOR);
+        uqb = uqb.where(UserQueryHelper.buildCondition(uqb, item, repository));
+        Select select = uqb.getSelect();
+        select = (Select) select.normalize();
+        assertEquals(1, select.getTypes().size());
+
+        uqb.join(person.getField("addresses/address"));
+        select = uqb.getSelect();
+        select = (Select) select.normalize();
+        assertTrue(select.getTypes().size() > 1);
+
+        UserQueryBuilder qb = from(person).select(address.getField("id")).select(address.getField("City"))
+                .join(person.getField("addresses/address")).where(eq(address.getField("Street"), "Street3"));
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getSize());
+            assertEquals(1, results.getCount());
+            for (DataRecord result : results) {
+                assertEquals("City", result.get("City"));
+                assertEquals("3", result.get("id"));
+            }
         } finally {
             results.close();
         }

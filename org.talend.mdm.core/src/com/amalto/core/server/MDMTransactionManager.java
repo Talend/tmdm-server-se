@@ -13,7 +13,6 @@ package com.amalto.core.server;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +20,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Stack;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -32,9 +32,9 @@ public class MDMTransactionManager implements TransactionManager {
 
     private static final Logger LOGGER = LogManager.getLogger(MDMTransactionManager.class);
 
-    private static final Map<Thread, Stack<Transaction>> currentTransactions = new HashMap<Thread, Stack<Transaction>>();
+    private static final Map<Thread, Stack<Transaction>> currentTransactions = new ConcurrentHashMap<Thread, Stack<Transaction>>();
 
-    private static final Map<String, Transaction> activeTransactions = new HashMap<String, Transaction>();
+    private static final Map<String, Transaction> activeTransactions = new ConcurrentHashMap<String, Transaction>();
 
     private boolean isInitialized = false;
 
@@ -118,6 +118,9 @@ public class MDMTransactionManager implements TransactionManager {
                     iterator.remove();
                 }
             }
+        }
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Transaction " + transaction.getId() + " removed by thread " + Thread.currentThread().getName());
         }
     }
 

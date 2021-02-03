@@ -509,6 +509,8 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
                 }
                 fieldName = sb.toString();
             }
+        } else if(fieldMetadata instanceof ReferenceFieldMetadata) {
+            fieldName = getFieldNameForFKField((ReferenceFieldMetadata) fieldMetadata);
         }
         return fieldName;
     }

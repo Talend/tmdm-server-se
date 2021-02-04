@@ -448,7 +448,11 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
                 throw new FullTextQueryCompositeKeyException(referenceFieldMetadata.getReferencedType().getName());
             } else if (((ReferenceFieldMetadata) field).getReferencedType().equals(fieldMetadata.getContainingType())) {
                 sb.append(getFullPathName(field));
-                sb.append(fieldMetadata.getName());
+                if (fieldMetadata instanceof ReferenceFieldMetadata) {
+                    sb.append(getFieldNameForFKField((ReferenceFieldMetadata) fieldMetadata));
+                } else {
+                    sb.append(fieldMetadata.getName());
+                }               
             } else {
                 ComplexTypeMetadata subComplexTypeMetadata = ((ReferenceFieldMetadata) field).getReferencedType();
                 if (subComplexTypeMetadata.getFields().stream()
@@ -461,43 +465,49 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
 
     private String getFieldName(FieldMetadata fieldMetadata) {
         String fieldName = fieldMetadata.getName();
-        if (fieldMetadata instanceof ReferenceFieldMetadata) {
-            ReferenceFieldMetadata referenceFieldMetadata = ((ReferenceFieldMetadata) fieldMetadata);
-            if (referenceFieldMetadata.getReferencedType().getKeyFields().size() > 1) {
-                throw new FullTextQueryCompositeKeyException(referenceFieldMetadata.getReferencedType().getName());
-            } else {
-                fieldName = getFullPathName(fieldMetadata) + referenceFieldMetadata.getReferencedField().getName(); //$NON-NLS-1$
-            }
-        }
-        else {
-            ComplexTypeMetadata containingType = fieldMetadata.getContainingType();
-            // TMDM-13918 Query by field of joining type, field name in lucene index should be fkIdField.fieldName
-            if (fieldMetadata instanceof SimpleTypeFieldMetadata && !types.contains(containingType) && !selectedTypes
-                    .contains(containingType)) {
-                FieldMetadata keyField = containingType.getKeyFields().iterator().next();
-                fieldName = keyField.getName() + "." + fieldName; //$NON-NLS-1$
-            } else if ((!selectedTypes.contains(containingType) && types.contains(containingType)) || (
-                    selectedTypes.contains(containingType) && !types.contains(containingType))) {
-                if (containingType.getContainer() != null) {
+        ComplexTypeMetadata containingType = fieldMetadata.getContainingType();
+        // TMDM-13918 Query by field of joining type, field name in lucene index should be fkIdField.fieldName
+        if (fieldMetadata instanceof SimpleTypeFieldMetadata && !types.contains(containingType) && !selectedTypes
+                .contains(containingType)) {
+            FieldMetadata keyField = containingType.getKeyFields().iterator().next();
+            fieldName = keyField.getName() + "." + fieldName; //$NON-NLS-1$
+        } else if ((!selectedTypes.contains(containingType) && types.contains(containingType)) || (
+                selectedTypes.contains(containingType) && !types.contains(containingType))) {
+            if (containingType.getContainer() != null) {
+                if (fieldMetadata instanceof ReferenceFieldMetadata) {
+                    fieldName = getFieldNameForFKField((ReferenceFieldMetadata) fieldMetadata);
+                } else {
                     FieldMetadata field = containingType.getContainer();
                     StringBuilder sb = getFullPathName(field);
-                    sb.append(fieldMetadata.getName());
+                    sb.append(fieldName);
                     fieldName = sb.toString();
-                } else {
-                    StringBuilder sb = new StringBuilder();
-                    for (ComplexTypeMetadata complexTypeMetadata : selectedTypes) {
-                        getFullPathName(complexTypeMetadata, fieldMetadata, sb);
-                        if (!sb.toString().equals(StringUtils.EMPTY)) {
-                            break;
-                        }
+                }                               
+            } else {
+                StringBuilder sb = new StringBuilder();
+                for (ComplexTypeMetadata complexTypeMetadata : selectedTypes) {
+                    getFullPathName(complexTypeMetadata, fieldMetadata, sb);
+                    if (!sb.toString().equals(StringUtils.EMPTY)) {
+                        break;
                     }
-                    fieldName = sb.toString();
                 }
+                fieldName = sb.toString();
             }
+        } else if(fieldMetadata instanceof ReferenceFieldMetadata) {
+            fieldName = getFieldNameForFKField((ReferenceFieldMetadata) fieldMetadata);
         }
         return fieldName;
     }
 
+    private String getFieldNameForFKField(ReferenceFieldMetadata referenceFieldMetadata) {
+        String fieldName;
+        if (referenceFieldMetadata.getReferencedType().getKeyFields().size() > 1) {
+            throw new FullTextQueryCompositeKeyException(referenceFieldMetadata.getReferencedType().getName());
+        } else {
+            fieldName = getFullPathName(referenceFieldMetadata) + referenceFieldMetadata.getReferencedField().getName(); //$NON-NLS-1$
+        }
+        return fieldName;
+    }
+    
     @Override
     public Query visit(FieldFullText fieldFullText) {
         FieldMetadata fieldMetadata = fieldFullText.getField().getFieldMetadata();

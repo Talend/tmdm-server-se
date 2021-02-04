@@ -301,6 +301,10 @@ public class StorageFullTextTest extends StorageTestCase {
         allRecords.add(factory.read(repository, refRegion,
                 "<RefRegion><codeRegion>CAN_NBR</codeRegion><PaysFk>[2]</PaysFk><libelleRegion><codeLangue>fr</codeLangue><libelle>NOUVENAU-BRUNSWICK</libelle><Con><Add_City>PARISE</Add_City><Add_Country>FRANCH</Add_Country></Con></libelleRegion><libelleRegion><codeLangue>en</codeLangue><libelle>NEW-BRUNSWICK</libelle><Con><Add_City>LONGDONG</Add_City><Add_Country>ENGLAND</Add_Country></Con></libelleRegion><libelleRegion><codeLangue>es</codeLangue><libelle>NUEVO BRUNSWICK</libelle><Con><Add_City>ENGLAND</Add_City><Add_Country>ENGLAND</Add_Country></Con></libelleRegion></RefRegion>"));
 
+        allRecords.add(factory.read(repository, cmd_member, "<Member><Participant_ID>m1</Participant_ID><Master_Tier>mt1</Master_Tier></Member>"));
+        allRecords.add(factory.read(repository, cmd_party, "<Party><Party_ID>p1</Party_ID><Participant_ID>[m1]</Participant_ID></Party>"));
+        allRecords.add(factory.read(repository, cmd_xref_party, "<xRef_Party><ID>1</ID><Party_ID>[p1]</Party_ID></xRef_Party>"));
+        
         try {
             storage.begin();
             storage.update(allRecords);
@@ -2116,6 +2120,26 @@ public class StorageFullTextTest extends StorageTestCase {
             assertTrue(results.getSize() == 1);
             for (DataRecord result : results) {
                 assertEquals("4", result.get("Id"));
+            }
+        } finally {
+            results.close();
+        }
+    }
+    
+    //TMDM-15023 Search Filter with Where Condition / Operator=Join With fails with : Field 'xxx' isn't reachable from type 'yyy'
+    public void testFKfieldWithJoinTypeSearch() {
+        UserQueryBuilder qb = from(cmd_xref_party)
+        .selectId(cmd_xref_party).select(cmd_xref_party.getField("Party_ID"))
+        .select(cmd_party.getField("Participant_ID")).select(cmd_member.getField("Participant_ID"))
+        .where(contains(cmd_party.getField("Participant_ID"), "m1"))
+        .join(cmd_xref_party.getField("Party_ID")).join(cmd_party.getField("Participant_ID"));
+        
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertTrue(results.getSize() == 1);
+            for (DataRecord result : results) {
+                assertTrue("p1".equals(((List)result.get("Party/Party_ID")).get(0)));
+                assertTrue("m1".equals(result.get("Member/Participant_ID")));
             }
         } finally {
             results.close();

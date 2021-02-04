@@ -491,14 +491,14 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
         } else if ((!selectedTypes.contains(containingType) && types.contains(containingType)) || (
                 selectedTypes.contains(containingType) && !types.contains(containingType))) {
             if (containingType.getContainer() != null) {
-                FieldMetadata field = containingType.getContainer();
-                StringBuilder sb = getFullPathName(field);
-                //sb.append(fieldMetadata.getName());
                 if (fieldMetadata instanceof ReferenceFieldMetadata) {
                     fieldName = getFieldNameForFKField((ReferenceFieldMetadata) fieldMetadata);
-                }
-                sb.append(fieldName);
-                fieldName = sb.toString();
+                } else {
+                    FieldMetadata field = containingType.getContainer();
+                    StringBuilder sb = getFullPathName(field);
+                    sb.append(fieldName);
+                    fieldName = sb.toString();
+                }                               
             } else {
                 StringBuilder sb = new StringBuilder();
                 for (ComplexTypeMetadata complexTypeMetadata : selectedTypes) {

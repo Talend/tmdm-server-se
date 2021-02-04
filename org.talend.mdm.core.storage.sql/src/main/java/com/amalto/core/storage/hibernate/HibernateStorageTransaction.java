@@ -177,7 +177,18 @@ class HibernateStorageTransaction extends StorageTransaction {
             } else {
                 try {
                     if (session.isDirty()) {
+                        String curThreadName = Thread.currentThread().getName();
+                        if (LOGGER.isDebugEnabled()) {
+                            LOGGER.debug("Before execute session.flush() for threadName " + curThreadName
+                                    + " with the state of objects [" + session.getStatistics().getEntityCount()
+                                    + "] held in memory");
+                        }
                         session.flush();
+                        if (LOGGER.isDebugEnabled()) {
+                            LOGGER.debug("After execute session.flush() for threadName " + curThreadName
+                                    + " with the state of objects [" + session.getStatistics().getEntityCount()
+                                    + "] held in memory");
+                        }
                     }
                 } catch (Exception e) {
                     hasFailed = true; // Mark this storage transaction as "failed".

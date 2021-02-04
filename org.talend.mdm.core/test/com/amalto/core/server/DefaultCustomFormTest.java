@@ -20,7 +20,6 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.talend.mdm.commmon.util.core.ICoreConstants;
-import org.talend.mdm.commmon.util.core.MDMConfiguration;
 
 import com.amalto.core.delegator.ILocalUser;
 import com.amalto.core.objects.ObjectPOJO;
@@ -39,14 +38,6 @@ import junit.framework.TestCase;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ ObjectPOJO.class, LocalUser.class })
 public class DefaultCustomFormTest extends TestCase {
-
-    static {
-        try {
-            MDMConfiguration.createConfiguration("", true);
-        } catch (IllegalStateException e) {
-            // already configured;
-        }
-    }
 
     private static final String DEMO_USER = "Demo_user";
 

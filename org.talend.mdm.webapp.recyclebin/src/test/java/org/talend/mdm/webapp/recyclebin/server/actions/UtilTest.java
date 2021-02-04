@@ -16,7 +16,6 @@ import java.io.InputStream;
 import javax.xml.parsers.DocumentBuilder;
 
 import org.talend.mdm.commmon.metadata.MetadataRepository;
-import org.talend.mdm.commmon.util.core.MDMConfiguration;
 import org.talend.mdm.commmon.util.core.MDMXMLUtils;
 import org.w3c.dom.Document;
 
@@ -24,14 +23,6 @@ import junit.framework.TestCase;
 
 @SuppressWarnings("nls")
 public class UtilTest extends TestCase {
-
-    static {
-        try {
-            MDMConfiguration.createConfiguration("", true);
-        } catch (IllegalStateException e) {
-            // already configured;
-        }
-    }
 
     private String getXSDModel(String filename) throws Exception {
         InputStream is = getClass().getClassLoader().getResourceAsStream(filename);

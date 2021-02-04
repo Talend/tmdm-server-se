@@ -9,8 +9,6 @@
  */
 package com.amalto.core.ejb;
 
-import org.talend.mdm.commmon.util.core.MDMConfiguration;
-
 import com.amalto.core.objects.ItemPOJO;
 import junit.framework.TestCase;
 
@@ -22,14 +20,6 @@ import com.amalto.core.util.XtentisException;
  */
 @SuppressWarnings("nls")
 public class ItemPOJOTestCase extends TestCase {
-
-    static {
-        try {
-            MDMConfiguration.createConfiguration("", true);
-        } catch (IllegalStateException e) {
-            // already configured;
-        }
-    }
 
     /**
      *

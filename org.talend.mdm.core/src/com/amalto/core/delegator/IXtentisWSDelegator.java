@@ -891,7 +891,6 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
     @Override
     public WSItemPK partialPutItem(WSPartialPutItem partialPutItem) throws RemoteException {
         try {
-            Util.beginTransactionLimit();
             SaverSession session = SaverSession.newSession();
             DocumentSaver saver;
             try {
@@ -918,8 +917,6 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
                 throw new RemoteException((cause.getCause() == null ? cause.getLocalizedMessage() : cause.getCause()
                         .getLocalizedMessage()), e);
             }
-        } finally {
-            Util.endTransactionLimit();
         }
     }
 
@@ -931,7 +928,6 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
     @Override
     public WSItemPK putItem(WSPutItem wsPutItem) throws RemoteException {
         try {
-            Util.beginTransactionLimit();
             WSDataClusterPK dataClusterPK = wsPutItem.getWsDataClusterPK();
             WSDataModelPK dataModelPK = wsPutItem.getWsDataModelPK();
             String dataClusterName = dataClusterPK.getPk();
@@ -963,8 +959,6 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
                 throw new RemoteException((cause.getCause() == null ? cause.getLocalizedMessage() : cause.getCause()
                         .getLocalizedMessage()), e);
             }
-        } finally {
-            Util.endTransactionLimit();
         }
     }
 
@@ -977,7 +971,6 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
     public WSItemPKArray putItemArray(WSPutItemArray wsPutItemArray) throws RemoteException {
         WSPutItem[] items = wsPutItemArray.getWsPutItem();
         try {
-            Util.beginTransactionLimit();
             List<WSItemPK> pks = new LinkedList<WSItemPK>();
             SaverSession session = SaverSession.newSession();
             for (WSPutItem item : items) {
@@ -1003,8 +996,6 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
         } catch (Exception e) {
             LOGGER.error("Error during save.", e); //$NON-NLS-1$
             throw new RemoteException((e.getCause() == null ? e.getLocalizedMessage() : e.getCause().getLocalizedMessage()), e);
-        } finally {
-            Util.endTransactionLimit();
         }
     }
 
@@ -1017,7 +1008,6 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
     public WSItemPKArray putItemWithReportArray(com.amalto.core.webservice.WSPutItemWithReportArray wsPutItemWithReportArray)
             throws RemoteException {
         try {
-            Util.beginTransactionLimit();
             WSPutItemWithReport[] items = wsPutItemWithReportArray.getWsPutItem();
             List<WSItemPK> pks = new LinkedList<WSItemPK>();
             SaverSession session = SaverSession.newSession();
@@ -1065,8 +1055,6 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
         } catch (Exception e) {
             LOGGER.error("Error during save.", e); //$NON-NLS-1$
             throw handleException(e, SAVE_EXCEPTION_MESSAGE);
-        } finally {
-            Util.endTransactionLimit();
         }
     }
 
@@ -1078,7 +1066,6 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
     @Override
     public WSItemPK putItemWithReport(com.amalto.core.webservice.WSPutItemWithReport wsPutItemWithReport) throws RemoteException {
         try {
-            Util.beginTransactionLimit();
             WSPutItem wsPutItem = wsPutItemWithReport.getWsPutItem();
             WSDataClusterPK dataClusterPK = wsPutItem.getWsDataClusterPK();
             WSDataModelPK dataModelPK = wsPutItem.getWsDataModelPK();
@@ -1115,8 +1102,6 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
         } catch (Exception e) {
             LOGGER.error("Error during save.", e); //$NON-NLS-1$
             throw handleException(e, SAVE_EXCEPTION_MESSAGE);
-        } finally {
-            Util.endTransactionLimit();
         }
     }
 
@@ -1129,7 +1114,6 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
     public WSItemPK putItemWithCustomReport(com.amalto.core.webservice.WSPutItemWithCustomReport wsPutItemWithCustomReport)
             throws RemoteException {
         try {
-            Util.beginTransactionLimit();
             WSPutItemWithReport wsPutItemWithReport = wsPutItemWithCustomReport.getWsPutItemWithReport();
             WSPutItem wsPutItem = wsPutItemWithReport.getWsPutItem();
             WSDataClusterPK dataClusterPK = wsPutItem.getWsDataClusterPK();
@@ -1162,8 +1146,6 @@ public abstract class IXtentisWSDelegator implements IBeanDelegator, XtentisPort
         } catch (Exception e) {
             LOGGER.error("Error during save.", e); //$NON-NLS-1$
             throw new RemoteException((e.getCause() == null ? e.getLocalizedMessage() : e.getCause().getLocalizedMessage()), e);
-        } finally {
-            Util.endTransactionLimit();
         }
     }
 

@@ -15,6 +15,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 import javax.xml.XMLConstants;
 
@@ -87,15 +92,15 @@ public class ViewSearchResultsWriter implements DataRecordWriter {
         }
         if (Types.DATE.equals(type.getName())) {
             synchronized (DateConstant.DATE_FORMAT) {
-                stringValue = (DateConstant.DATE_FORMAT).format(value);
+                stringValue = formatDateValue(DateConstant.DATE_FORMAT, value);
             }
         } else if (Types.DATETIME.equals(type.getName())) {
             synchronized (DateTimeConstant.DATE_FORMAT) {
-                stringValue = (DateTimeConstant.DATE_FORMAT).format(value);
+                stringValue = formatDateValue(DateConstant.DATE_FORMAT, value);
             }
         } else if (Types.TIME.equals(type.getName())) {
             synchronized (TimeConstant.TIME_FORMAT) {
-                stringValue = (TimeConstant.TIME_FORMAT).format(value);
+                stringValue = formatDateValue(TimeConstant.TIME_FORMAT, value);
             }
         } else if (value instanceof Object[]) {
             StringBuilder valueAsString = new StringBuilder();
@@ -133,4 +138,24 @@ public class ViewSearchResultsWriter implements DataRecordWriter {
         out.append(StringEscapeUtils.escapeXml(stringValue));
     }
 
+    private String formatDateValue(DateFormat dateFormat, Object value) throws IOException {
+        if (String.valueOf(value).contains(",")) {
+            String[] dates = String.valueOf(value).split(",");
+            StringBuffer sb = new StringBuffer();
+            try {
+                for (String date : dates) {
+                    if (sb.length() > 0) {
+                        sb.append(",");
+                    }
+                    sb.append(dateFormat.format(dateFormat.parse(date)));
+                }
+            } catch (ParseException e) {
+                throw new IOException(e);
+            }
+
+            return sb.toString();
+        } else {
+            return dateFormat.format(value);
+        }
+    }
 }

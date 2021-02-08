@@ -17,9 +17,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 import javax.xml.XMLConstants;
 

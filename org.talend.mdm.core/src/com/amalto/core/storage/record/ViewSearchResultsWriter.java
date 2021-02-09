@@ -94,7 +94,7 @@ public class ViewSearchResultsWriter implements DataRecordWriter {
             }
         } else if (Types.DATETIME.equals(type.getName())) {
             synchronized (DateTimeConstant.DATE_FORMAT) {
-                stringValue = formatDateValue(DateConstant.DATE_FORMAT, value);
+                stringValue = formatDateValue(DateTimeConstant.DATE_FORMAT, value);
             }
         } else if (Types.TIME.equals(type.getName())) {
             synchronized (TimeConstant.TIME_FORMAT) {
@@ -150,7 +150,6 @@ public class ViewSearchResultsWriter implements DataRecordWriter {
             } catch (ParseException e) {
                 throw new IOException(e);
             }
-
             return sb.toString();
         } else {
             return dateFormat.format(value);

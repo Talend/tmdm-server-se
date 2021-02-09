@@ -113,7 +113,9 @@ public class MDMTable extends Table {
             } else if (MDMTableUtils.isAlterColumnField(column, columnInfo, dialect)) {
                 StringBuilder alter = new StringBuilder(root.toString());
 
-                if (dialect instanceof SQLServerDialect || dialect instanceof PostgreSQL94Dialect) {
+                if (dialect instanceof H2Dialect 
+                        || dialect instanceof SQLServerDialect 
+                        || dialect instanceof PostgreSQL94Dialect) {
                     alter.append(" ALTER COLUMN ");
                 } else {
                     alter.append(" MODIFY ");

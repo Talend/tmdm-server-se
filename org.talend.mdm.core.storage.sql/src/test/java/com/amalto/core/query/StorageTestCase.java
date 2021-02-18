@@ -184,6 +184,12 @@ public class StorageTestCase extends TestCase {
     protected static final ComplexTypeMetadata orgEntity;
     
     protected static final ComplexTypeMetadata test2Dates;
+    
+    protected static final ComplexTypeMetadata cmd_xref_party;
+    
+    protected static final ComplexTypeMetadata cmd_party;
+    
+    protected static final ComplexTypeMetadata cmd_member;
 
     public static final String DATABASE = "H2";
 
@@ -272,6 +278,10 @@ public class StorageTestCase extends TestCase {
         orgPerson = repository.getComplexType("OrgPerson");
         orgEntity = repository.getComplexType("OrgEntity");
         test2Dates = repository.getComplexType("Test2Dates");
+        
+        cmd_xref_party = repository.getComplexType("xRef_Party");
+        cmd_party = repository.getComplexType("Party");
+        cmd_member = repository.getComplexType("Member");
 
         systemStorage = new SecuredStorage(new HibernateStorage("MDM", StorageType.SYSTEM), userSecurity);
         systemRepository = buildSystemRepository();

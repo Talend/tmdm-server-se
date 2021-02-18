@@ -29,7 +29,9 @@ import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.h2.jdbc.JdbcException;
 import org.h2.jdbc.JdbcSQLException;
+import org.h2.jdbc.JdbcSQLSyntaxErrorException;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
 import org.talend.mdm.commmon.metadata.MetadataUtils;
@@ -136,9 +138,13 @@ public class StorageAdaptTest extends TestCase {
                 statement.executeQuery("SELECT * FROM SUPPLIER");
             } catch (SQLException e) {
                 if (!expectSupplierTable) {
-                    JdbcSQLException h2Exception = (JdbcSQLException) e;
-                    assertEquals(42102, h2Exception.getErrorCode()); // 42102 is "table or view not found" error code
-                                                                     // for H2.
+                    JdbcException h2Exception = null;
+                    if (e instanceof JdbcSQLSyntaxErrorException) {
+                        h2Exception = (JdbcSQLSyntaxErrorException) e;
+                    } else {
+                        h2Exception = (JdbcSQLException) e;
+                    }
+                    assertEquals(42102, h2Exception.getErrorCode()); // 42102 is "table or view not found" error code for H2.
                 } else {
                     fail("Expected statement to succeed (table exist).");
                 }
@@ -2041,7 +2047,7 @@ public class StorageAdaptTest extends TestCase {
         try {
             storage.adapt(repository2, true);
         } catch (Exception e2) {
-            assertNull(e2);
+            assertTrue(RuntimeException.class.isInstance(e2));
         }
     }
 

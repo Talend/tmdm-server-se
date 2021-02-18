@@ -3265,6 +3265,9 @@
             <xsd:field xpath="ID_1" />
         </xsd:unique>
     </xsd:element>
+    
+    <!-- Test2Dates DATA MODEL -->
+    
     <xsd:element name="Test2Dates">
         <xsd:annotation>
             <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -3293,4 +3296,84 @@
             <xsd:field xpath="ID" />
         </xsd:unique>
     </xsd:element>
+    
+    <!-- CMD DATA MODEL -->
+    
+    <xsd:simpleType name="AUTO_INCREMENT"> 
+	    <xsd:restriction base="xsd:string"/> 
+    </xsd:simpleType>  
+    <xsd:element name="Party"> 
+	    <xsd:annotation> 
+	      <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo> 
+	    </xsd:annotation>  
+	    <xsd:complexType> 
+	      <xsd:all> 
+	        <xsd:element maxOccurs="1" minOccurs="1" name="Party_ID" type="AUTO_INCREMENT"> 
+	          <xsd:annotation> 
+	            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo> 
+	          </xsd:annotation> 
+	        </xsd:element>  
+	        <xsd:element maxOccurs="1" minOccurs="0" name="Participant_ID" type="xsd:string"> 
+	          <xsd:annotation> 
+	            <xsd:appinfo source="X_ForeignKey">Member/Participant_ID</xsd:appinfo>  
+	            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
+	            <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>  
+	            <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo> 
+	          </xsd:annotation> 
+	        </xsd:element> 
+	      </xsd:all> 
+	    </xsd:complexType>  
+	    <xsd:unique name="Party"> 
+	      <xsd:selector xpath="."/>  
+	      <xsd:field xpath="Party_ID"/> 
+	    </xsd:unique> 
+    </xsd:element>  
+    <xsd:element name="Member"> 
+	    <xsd:annotation> 
+	      <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo> 
+	    </xsd:annotation>  
+	    <xsd:complexType> 
+	      <xsd:all> 
+	        <xsd:element maxOccurs="1" minOccurs="1" name="Participant_ID" type="xsd:string"> 
+	          <xsd:annotation> 
+	            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo> 
+	          </xsd:annotation> 
+	        </xsd:element>  
+	        <xsd:element maxOccurs="1" minOccurs="0" name="Master_Tier" type="xsd:string"> 
+	          <xsd:annotation> 
+	            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo> 
+	          </xsd:annotation> 
+	        </xsd:element> 
+	      </xsd:all> 
+	    </xsd:complexType>  
+	    <xsd:unique name="Member"> 
+	      <xsd:selector xpath="."/>  
+	      <xsd:field xpath="Participant_ID"/> 
+	    </xsd:unique> 
+    </xsd:element>  
+    <xsd:element name="xRef_Party"> 
+	    <xsd:annotation> 
+	      <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo> 
+	    </xsd:annotation>  
+	    <xsd:complexType> 
+	      <xsd:all> 
+	        <xsd:element maxOccurs="1" minOccurs="1" name="ID" type="AUTO_INCREMENT"> 
+	          <xsd:annotation> 
+	            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo> 
+	          </xsd:annotation> 
+	        </xsd:element>  
+	        <xsd:element maxOccurs="1" minOccurs="1" name="Party_ID" type="xsd:string"> 
+	          <xsd:annotation> 
+	            <xsd:appinfo source="X_ForeignKey">Party/Party_ID</xsd:appinfo>  
+	            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
+	            <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo> 
+	          </xsd:annotation> 
+	        </xsd:element> 
+	      </xsd:all> 
+	    </xsd:complexType>  
+	    <xsd:unique name="xRef_Party"> 
+	      <xsd:selector xpath="."/>  
+	      <xsd:field xpath="ID"/> 
+	    </xsd:unique> 
+    </xsd:element> 
 </xsd:schema>

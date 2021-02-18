@@ -161,8 +161,11 @@ public class DataRecord {
                 if (value != null) { // Support explicit projection type fields
                     return value;
                 }
-                throw new IllegalArgumentException("Field '" + field.getName() + "' isn't reachable from type '" + type.getName()
-                        + "'");
+                path = MetaDataUtils.path(type, field, true).iterator();
+                if (!path.hasNext()) {
+                    throw new IllegalArgumentException("Field '" + field.getName() + "' isn't reachable from type '" + type.getName()
+                            + "'");
+                }
             }
             DataRecord current = this;
             while (path.hasNext()) {

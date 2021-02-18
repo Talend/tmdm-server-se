@@ -49,8 +49,6 @@ public class MDMTableExporter implements Exporter<Table> {
 
     private static final Logger LOGGER = LogManager.getLogger(MDMTableExporter.class);
 
-    private static MDMTableExporter instance;
-
     private final Dialect dialect;
 
     private MDMTableExporter(Dialect dialect) {
@@ -58,14 +56,7 @@ public class MDMTableExporter implements Exporter<Table> {
     }
 
     public static MDMTableExporter getInstance(Dialect dialect) {
-        if (instance == null) {
-            synchronized (MDMTableExporter.class) {
-                if (instance == null) {
-                    instance = new MDMTableExporter(dialect);
-                }
-            }
-        }
-        return instance;
+        return new MDMTableExporter(dialect);
     }
 
     @Override

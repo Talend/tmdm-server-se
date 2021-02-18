@@ -18,6 +18,7 @@ import java.io.Writer;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.List;
 
 import javax.xml.XMLConstants;
 
@@ -137,7 +138,7 @@ public class ViewSearchResultsWriter implements DataRecordWriter {
     }
 
     private String formatDateValue(DateFormat dateFormat, Object value) throws IOException {
-        if (String.valueOf(value).contains(",")) {
+        if (String.valueOf(value).contains(",") || value instanceof List) {
             String[] dates = String.valueOf(value).split(",");
             StringBuffer sb = new StringBuffer();
             try {
@@ -145,7 +146,7 @@ public class ViewSearchResultsWriter implements DataRecordWriter {
                     if (sb.length() > 0) {
                         sb.append(",");
                     }
-                    sb.append(dateFormat.format(dateFormat.parse(date)));
+                    sb.append(dateFormat.format(dateFormat.parse(date.replaceAll("\\[|\\]", ""))));
                 }
             } catch (ParseException e) {
                 throw new IOException(e);

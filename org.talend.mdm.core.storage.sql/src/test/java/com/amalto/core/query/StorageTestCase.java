@@ -182,6 +182,8 @@ public class StorageTestCase extends TestCase {
     protected static final ComplexTypeMetadata orgPerson;
 
     protected static final ComplexTypeMetadata orgEntity;
+    
+    protected static final ComplexTypeMetadata test2Dates;
 
     public static final String DATABASE = "H2";
 
@@ -269,6 +271,7 @@ public class StorageTestCase extends TestCase {
         orgActivity = repository.getComplexType("OrgActivity");
         orgPerson = repository.getComplexType("OrgPerson");
         orgEntity = repository.getComplexType("OrgEntity");
+        test2Dates = repository.getComplexType("Test2Dates");
 
         systemStorage = new SecuredStorage(new HibernateStorage("MDM", StorageType.SYSTEM), userSecurity);
         systemRepository = buildSystemRepository();

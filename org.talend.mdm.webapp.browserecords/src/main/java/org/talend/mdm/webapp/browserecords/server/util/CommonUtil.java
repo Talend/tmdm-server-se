@@ -499,11 +499,26 @@ public class CommonUtil {
                         }
 
                         try {
-                            Date date = sdf.parse(dataText.trim());
-                            originalMap.put(key, date);
                             Calendar calendar = Calendar.getInstance();
-                            calendar.setTime(date);
-                            String formatValue = com.amalto.webapp.core.util.Util.formatDate(value[0], calendar);
+                            String formatValue;
+                            if (tm.getMaxOccurs()>1 && dataText.contains(",")) {
+                                originalMap.put(key, dataText);
+                                String[] dates = dataText.split(",");
+                                StringBuffer sb = new StringBuffer();
+                                for (String dateString : dates) {
+                                    calendar.setTime(sdf.parse(dateString.trim()));
+                                    if (sb.length()>0) {
+                                        sb.append(",");
+                                    }
+                                    sb.append(com.amalto.webapp.core.util.Util.formatDate(value[0], calendar));
+                                }
+                                formatValue = sb.toString();
+                            } else {
+                                Date date = sdf.parse(dataText.trim());
+                                originalMap.put(key, date);                               
+                                calendar.setTime(date);
+                                formatValue = com.amalto.webapp.core.util.Util.formatDate(value[0], calendar);                              
+                            }  
                             formateValueMap.put(key, formatValue);
                             node.setText(formatValue);
                         } catch (Exception e) {

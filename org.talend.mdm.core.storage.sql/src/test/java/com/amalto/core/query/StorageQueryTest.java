@@ -411,7 +411,8 @@ public class StorageQueryTest extends StorageTestCase {
         allRecords.add(factory.read(repository, orgEntity, "<OrgEntity><ID_0>2</ID_0><ID_1>2</ID_1><FieldX>2</FieldX><FieldA><Name>2</Name><FKEntity>[5][5]</FKEntity></FieldA></OrgEntity>"));
         allRecords.add(factory.read(repository, orgEntity, "<OrgEntity><ID_0>3</ID_0><ID_1>3</ID_1><FieldX>3</FieldX><FieldA><Name>3</Name><FKEntity>[2][2]</FKEntity></FieldA></OrgEntity>"));
         allRecords.add(factory.read(repository, orgEntity, "<OrgEntity><ID_0>4</ID_0><ID_1>4</ID_1><FieldX>4</FieldX><FieldA><Name>4</Name><FKEntity>[1][1]</FKEntity></FieldA></OrgEntity>"));
-
+        allRecords.add(factory.read(repository, test2Dates, "<Test2Dates><ID>2</ID><ChangeDate>2021-02-11</ChangeDate><ChangeDate>2021-02-18</ChangeDate></Test2Dates>"));
+        
         try {
             storage.begin();
             storage.update(allRecords);
@@ -2235,6 +2236,24 @@ public class StorageQueryTest extends StorageTestCase {
             results.close();
         }
 
+    }
+    
+    public void testDate2Values() throws Exception {
+        UserQueryBuilder qb = from(test2Dates).where(eq(test2Dates.getField("ID"), "2"));
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getCount());   
+            ViewSearchResultsWriter writer = new ViewSearchResultsWriter();
+            StringWriter resultWriter = new StringWriter();
+            for (DataRecord result : results) {
+                writer.write(result, resultWriter);
+            }
+            assertEquals("<result xmlns:metadata=\"http://www.talend.com/mdm/metadata\" "
+                    + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n" + "\t<ID>2</ID>\n"
+                    + "\t<ChangeDate>2021-02-11,2021-02-18</ChangeDate>\n" + "</result>", resultWriter.toString());
+        } finally {
+            results.close();
+        }   
     }
 
     public void testInterFieldCondition1() throws Exception {

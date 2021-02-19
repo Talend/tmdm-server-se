@@ -532,7 +532,8 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
                 if (!previousType.isEmpty() && !previousType.startsWith(MetadataRepository.ANONYMOUS_PREFIX)) {
                     ComplexTypeMetadata previousTypeMetadata = (ComplexTypeMetadata) repository.getNonInstantiableType(repository.getUserNamespace(), previousType);
                     if (!previousTypeMetadata.getSuperTypes().isEmpty() || !previousTypeMetadata.getSubTypes().isEmpty()) {
-                        if (rightAccessor.exist() && rightAccessor.getActualType().isEmpty()) {
+                        if (rightAccessor.exist() && rightAccessor.getActualType().isEmpty()
+                                && rightAccessor.getClass().getName().equals("com.amalto.core.history.accessor.UnaryFieldAccessor")) {
                             actions.add(new FieldUpdateAction(date, source, userName, getLeftPath(), previousType, null, field, userAction));
                         } else if (!rightAccessor.exist()) {
                             actions.addAll(ChangeTypeAction.create(originalDocument, date, source, userName, getLeftPath(), previousTypeMetadata, null, field, userAction));
@@ -540,26 +541,7 @@ public class UpdateActionCreator extends DefaultMetadataVisitor<List<Action>> {
                     }
                 }
             }
-//            if (leftAccessor.exist() && rightAccessor.exist()) {
-//                String previousType = leftAccessor.getActualType();
-//                String newType = rightAccessor.getActualType();
-//                if (!previousType.isEmpty() && newType.isEmpty() && !previousType.startsWith(MetadataRepository.ANONYMOUS_PREFIX)) {
-//                    ComplexTypeMetadata previousTypeMetadata = (ComplexTypeMetadata) repository.getNonInstantiableType(repository.getUserNamespace(), "AP-AA");
-//                    if (!previousTypeMetadata.getSuperTypes().isEmpty() || !previousTypeMetadata.getSubTypes().isEmpty()) {
-////                        actions.addAll(ChangeTypeAction.create(originalDocument, date, source, userName, getLeftPath(), previousTypeMetadata, null, field, userAction));
-//                        actions.add(new FieldUpdateAction(date, source, userName, getLeftPath(), previousType, null, field, userAction));
-//                    }
-//                }
-//            }
-//            if (leftAccessor.exist() && !rightAccessor.exist()) {
-//                String previousType = leftAccessor.getActualType();
-//                if (!previousType.isEmpty() && !previousType.startsWith(MetadataRepository.ANONYMOUS_PREFIX)) {
-//                    ComplexTypeMetadata previousTypeMetadata = (ComplexTypeMetadata) repository.getNonInstantiableType(repository.getUserNamespace(), "AP-AA");
-//                    if (!previousTypeMetadata.getSuperTypes().isEmpty() || !previousTypeMetadata.getSubTypes().isEmpty()) {
-//                        actions.addAll(ChangeTypeAction.create(originalDocument, date, source, userName, getLeftPath(), previousTypeMetadata, null, field, userAction));
-//                    }
-//                }
-//            }
+
             // Way to detect if there is a change in elements below: check if last action in list changed.
             Action last = actions.isEmpty() ? null : actions.getLast();
             boolean hasActions = last != before;

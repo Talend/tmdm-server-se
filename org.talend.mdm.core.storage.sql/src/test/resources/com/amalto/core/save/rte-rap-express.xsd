@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:import namespace="http://www.w3.org/2001/XMLSchema" />
+    <!-- Objet CONTRAT -->
+    <xsd:element name="Contrat" type="ContratType">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:unique name="Contrat">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="numeroContrat" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:complexType name="ContratType">
+        <xsd:sequence>
+            <xsd:element maxOccurs="1" minOccurs="1" name="numeroContrat" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="1" minOccurs="0" name="detailContrat" type="detailContrat">
+                <xsd:annotation>
+                    <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType abstract="true" name="detailContrat">
+        <xsd:sequence />
+    </xsd:complexType>
+    <xsd:complexType name="AP-AA">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Label_FR">AP-AA</xsd:appinfo>
+            <xsd:appinfo source="X_Order_Value">1</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="detailContrat">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="ap_aa_name" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <!-- Type Contrat AP-RE -->
+    <xsd:complexType name="AP-RE">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Label_FR">AP-RE</xsd:appinfo>
+            <xsd:appinfo source="X_Order_Value">3</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="detailContrat">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="codeDecompte" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <!-- Type Contrat AP-RP -->
+    <xsd:complexType name="AP-RP">
+        <xsd:annotation>
+            <xsd:appinfo source="X_Label_FR">AP-RP</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="detailContrat">
+                <xsd:sequence />
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+</xsd:schema>

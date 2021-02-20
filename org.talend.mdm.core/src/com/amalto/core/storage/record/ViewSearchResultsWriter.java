@@ -142,14 +142,12 @@ public class ViewSearchResultsWriter implements DataRecordWriter {
             if (String.valueOf(value).contains(",") || value instanceof List) {
                 String[] dates = String.valueOf(value).split(",");
                 StringBuffer sb = new StringBuffer();
-
                 for (String date : dates) {
                     if (sb.length() > 0) {
                         sb.append(",");
                     }
                     sb.append(dateFormat.format(dateFormat.parse(date.replaceAll("\\[|\\]", ""))));
-                    }
-
+                }
                 return sb.toString();
             } else if (value instanceof String) {
                 return dateFormat.format(dateFormat.parse(String.valueOf(value)));

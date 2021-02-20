@@ -138,22 +138,26 @@ public class ViewSearchResultsWriter implements DataRecordWriter {
     }
 
     private String formatDateValue(DateFormat dateFormat, Object value) throws IOException {
-        if (String.valueOf(value).contains(",") || value instanceof List) {
-            String[] dates = String.valueOf(value).split(",");
-            StringBuffer sb = new StringBuffer();
-            try {
+        try {
+            if (String.valueOf(value).contains(",") || value instanceof List) {
+                String[] dates = String.valueOf(value).split(",");
+                StringBuffer sb = new StringBuffer();
+
                 for (String date : dates) {
                     if (sb.length() > 0) {
                         sb.append(",");
                     }
                     sb.append(dateFormat.format(dateFormat.parse(date.replaceAll("\\[|\\]", ""))));
-                }
-            } catch (ParseException e) {
-                throw new IOException(e);
+                    }
+
+                return sb.toString();
+            } else if (value instanceof String) {
+                return dateFormat.format(dateFormat.parse(String.valueOf(value)));
+            } else {
+                return dateFormat.format(value);
             }
-            return sb.toString();
-        } else {
-            return dateFormat.format(value);
+        } catch (ParseException e) {
+            throw new IOException(e);
         }
     }
 }

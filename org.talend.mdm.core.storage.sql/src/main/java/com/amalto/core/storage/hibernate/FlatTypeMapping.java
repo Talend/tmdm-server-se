@@ -171,7 +171,7 @@ class FlatTypeMapping extends TypeMapping {
                         } else {
                             to.set(databaseField.getName(), null);
                         }
-					} else {
+                    } else {
                         List<Object> list = (List<Object>) to.get(databaseField.getName());
                         if (list == null) {
                             list = new LinkedList<Object>();

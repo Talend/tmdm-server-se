@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.nio.channels.FileChannel;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.HashSet;
@@ -78,7 +79,9 @@ public class MappingParsingTest extends TestCase {
         // clean previous content if exists
         String tmpDir = System.getProperty("java.io.tmpdir"); //$NON-NLS-1$
         String filename = tmpDir + File.separator + "MappingParsingTest_STAGING_H2.ddl"; //$NON-NLS-1$
-        FileChannel.open(Paths.get(filename), StandardOpenOption.WRITE).truncate(0).close();
+        if (Files.exists(Paths.get(filename))) {
+            FileChannel.open(Paths.get(filename), StandardOpenOption.WRITE).truncate(0).close();
+        }
 
         // Loads data model
         MetadataRepository repository = new MetadataRepository();

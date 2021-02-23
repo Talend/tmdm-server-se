@@ -1997,6 +1997,29 @@ public class DocumentSaveTest extends TestCase {
         assertEquals("44", evaluate(committedElement, "/Societe/Actionnaires/Actionnaire/TypeMembre/Groupe"));
     }
 
+    // TMDM-10143 Can't save complex sub-element to empty value
+    public void testComplexEleToEmpty() throws Exception {
+        MetadataRepository repository = new MetadataRepository();
+        repository.load(DocumentSaveTest.class.getResourceAsStream("rte-rap-express.xsd"));
+        MockMetadataRepositoryAdmin.INSTANCE.register("Contrat", repository);
+
+        SaverSource source = new TestSaverSource(repository, true, "contrat_original_2.xml", "rte-rap-express.xsd");
+
+        SaverSession session = SaverSession.newSession(source);
+        InputStream recordXml = DocumentSaveTest.class.getResourceAsStream("contrat_01.xml");
+        DocumentSaverContext context = session.getContextFactory().create("MDM", "Contrat", "Contrat", recordXml, false, true, true, false, false);
+        DocumentSaver saver = context.createSaver();
+        saver.save(session, context);
+        MockCommitter committer = new MockCommitter();
+        session.end(committer);
+
+        assertTrue(committer.hasSaved());
+        Element committedElement = committer.getCommittedElement();
+        assertEquals("AP-AA", evaluate(committedElement, "/Contrat/detailContrat/@xsi:type"));
+        assertEquals("good", evaluate(committedElement, "/Contrat/detailContrat/ap_aa_name"));
+        assertEquals("003", evaluate(committedElement, "/Contrat/numeroContrat"));
+    }
+
     public void testUpdateSecurity() throws Exception {
         // TODO Test for modification of id (this test modifies id but this is intentional).
         MetadataRepository repository = new MetadataRepository();

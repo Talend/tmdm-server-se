@@ -23,6 +23,7 @@ import java.util.Map;
 
 import com.amalto.core.storage.record.StorageConstants;
 import org.apache.commons.lang.NotImplementedException;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.hibernate.Session;
@@ -157,7 +158,8 @@ class FlatTypeMapping extends TypeMapping {
                 } else if (field instanceof ReferenceFieldMetadata) {
                     StorageClassLoader storageClassLoader = (StorageClassLoader) Thread.currentThread().getContextClassLoader();
                     if (!field.isMany()) {
-                        if (value != null && value instanceof DataRecord) { //$NON-NLS-1$
+                        if (value != null && value instanceof DataRecord && StringUtils.isNotBlank(
+                                "" + ((DataRecord) value).get(((ReferenceFieldMetadata) field).getReferencedField()))) { //$NON-NLS-1$
                             DataRecord dataRecordValue = (DataRecord) value;
                             TypeMetadata referencedType = dataRecordValue.getType();
                             Class<?> referencedClass = storageClassLoader.findClass(referencedType.getName());

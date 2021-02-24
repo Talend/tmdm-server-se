@@ -407,7 +407,7 @@ public class CommonUtilTest extends TestCase {
                 org.talend.mdm.webapp.base.server.util.XmlUtil.getTextValueFromXpath(resultDoc, "personinfo/aa/a_dob"));
         assertEquals("012",
                 org.talend.mdm.webapp.base.server.util.XmlUtil.getTextValueFromXpath(resultDoc, "personinfo/aa/a_age"));
-        assertEquals("14/07/17,17/04/19", org.talend.mdm.webapp.base.server.util.XmlUtil.getTextValueFromXpath(resultDoc, "b_date"));
+        assertEquals("14/07/17", org.talend.mdm.webapp.base.server.util.XmlUtil.getTextValueFromXpath(resultDoc, "b_date"));
         assertEquals("1 World!", org.talend.mdm.webapp.base.server.util.XmlUtil.getTextValueFromXpath(resultDoc, "b_name"));
         assertEquals("001", org.talend.mdm.webapp.base.server.util.XmlUtil.getTextValueFromXpath(resultDoc, "b_age"));
 

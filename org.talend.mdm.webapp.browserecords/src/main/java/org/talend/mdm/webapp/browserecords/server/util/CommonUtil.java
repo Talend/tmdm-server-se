@@ -501,7 +501,7 @@ public class CommonUtil {
                         try {
                             Calendar calendar = Calendar.getInstance();
                             String formatValue;
-                            if (tm.getMaxOccurs()>1 && dataText.contains(",")) {
+                            if (tm.getMaxOccurs() != 1 && dataText.contains(",")) {
                                 originalMap.put(key, dataText);
                                 String[] dates = dataText.split(",");
                                 StringBuffer sb = new StringBuffer();

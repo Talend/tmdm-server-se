@@ -370,7 +370,7 @@ public class CommonUtilTest extends TestCase {
 
         Map<String, String[]> formatMap = CommonUtil.checkDisplayFormat(testModel, language);
         String result = "<result xmlns:metadata=\"http://www.talend.com/mdm/metadata\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><personId>1</personId><name>1</name>"
-                + "<DOB>2017-07-14</DOB><age>1</age><a_name>1</a_name><a_dob>2017-07-06</a_dob><a_age>12</a_age><b_date>2017-07-14</b_date><b_name>1</b_name><b_age>1</b_age><taskId/></result>";
+                + "<DOB>2017-07-14</DOB><age>1</age><a_name>1</a_name><a_dob>2017-07-06</a_dob><a_age>12</a_age><b_date>2017-07-14,2019-04-17</b_date><b_name>1</b_name><b_age>1</b_age><taskId/></result>";
 
         org.dom4j.Document doc2 = org.talend.mdm.webapp.base.server.util.XmlUtil.parseText(result);
         Map<String, Object> returnValue = CommonUtil.formatQuerylValue(formatMap, doc2, testModel, concept);
@@ -384,7 +384,7 @@ public class CommonUtilTest extends TestCase {
         assertEquals("1 World!", org.talend.mdm.webapp.base.server.util.XmlUtil.getTextValueFromXpath(resultDoc, "a_name"));
         assertEquals("06/07/17", org.talend.mdm.webapp.base.server.util.XmlUtil.getTextValueFromXpath(resultDoc, "a_dob"));
         assertEquals("012", org.talend.mdm.webapp.base.server.util.XmlUtil.getTextValueFromXpath(resultDoc, "a_age"));
-        assertEquals("14/07/17", org.talend.mdm.webapp.base.server.util.XmlUtil.getTextValueFromXpath(resultDoc, "b_date"));
+        assertEquals("14/07/17,17/04/19", org.talend.mdm.webapp.base.server.util.XmlUtil.getTextValueFromXpath(resultDoc, "b_date"));
         assertEquals("1 World!", org.talend.mdm.webapp.base.server.util.XmlUtil.getTextValueFromXpath(resultDoc, "b_name"));
         assertEquals("001", org.talend.mdm.webapp.base.server.util.XmlUtil.getTextValueFromXpath(resultDoc, "b_age"));
 

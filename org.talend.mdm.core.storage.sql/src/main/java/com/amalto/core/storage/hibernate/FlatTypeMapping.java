@@ -158,15 +158,19 @@ class FlatTypeMapping extends TypeMapping {
                 } else if (field instanceof ReferenceFieldMetadata) {
                     StorageClassLoader storageClassLoader = (StorageClassLoader) Thread.currentThread().getContextClassLoader();
                     if (!field.isMany()) {
-                        if (value != null && value instanceof DataRecord && StringUtils.isNotBlank(
-                                "" + ((DataRecord) value).get(((ReferenceFieldMetadata) field).getReferencedField()))) { //$NON-NLS-1$
+                        if (value != null && value instanceof DataRecord) { //$NON-NLS-1$
                             DataRecord dataRecordValue = (DataRecord) value;
                             TypeMetadata referencedType = dataRecordValue.getType();
                             Class<?> referencedClass = storageClassLoader.findClass(referencedType.getName());
                             Object referencedObject = createReferencedObject(session, (ComplexTypeMetadata) referencedType, referencedClass, dataRecordValue);
                             Object databaseValue = to.get(databaseField.getName());
                             if (databaseValue == null || !referencedObject.equals(databaseValue)) {
-                                to.set(databaseField.getName(), referencedObject);
+                               	if (StringUtils.isBlank("" + ((DataRecord) value).get(((ReferenceFieldMetadata) field).getReferencedField()))
+                                		&& ((DataRecord) value).getType().getKeyFields().size() == 1) {
+                               		to.set(databaseField.getName(), null);
+                            	} else {
+                            		to.set(databaseField.getName(), referencedObject);
+                            	}
                             }
                         } else {
                             to.set(databaseField.getName(), null);

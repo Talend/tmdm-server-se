@@ -19,16 +19,18 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
+import java.util.TimeZone;
 import java.util.UUID;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.tools.ant.util.DateUtils;
 import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.compare.Compare;
 
@@ -116,12 +118,12 @@ public abstract class AbstractLiquibaseSchemaAdapter {
             if (!changeLogDir.exists()) {
                 changeLogDir.mkdirs();
             }
-            changeLogDir = new File(changeLogDir, DateUtils.format(System.currentTimeMillis(), "yyyyMMdd"));//$NON-NLS-1$
+            changeLogDir = new File(changeLogDir, dateFormat(System.currentTimeMillis(), "yyyyMMdd"));//$NON-NLS-1$
             if (!changeLogDir.exists()) {
                 changeLogDir.mkdir();
             }
 
-            File changeLogFile = new File(changeLogDir, DateUtils.format(System.currentTimeMillis(), "yyyyMMddHHmm") + SEPARATOR //$NON-NLS-1$
+            File changeLogFile = new File(changeLogDir, dateFormat(System.currentTimeMillis(), "yyyyMMddHHmm") + SEPARATOR //$NON-NLS-1$
                     + System.currentTimeMillis() + SEPARATOR + storageType + ".xml"); //$NON-NLS-1$
             if (!changeLogFile.exists()) {
                 changeLogFile.createNewFile();
@@ -146,6 +148,14 @@ public abstract class AbstractLiquibaseSchemaAdapter {
         }
     }
 
+    private static String dateFormat(long date, String pattern) {
+        SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+        TimeZone gmt = TimeZone.getTimeZone("GMT");
+        sdf.setTimeZone(gmt);
+        sdf.setLenient(true);
+        return sdf.format(new Date(date));
+    }
+    
     private boolean isInheritanceFKType(ComplexTypeMetadata complexType) {
         if (complexType.getSubTypes().size() > 0) {
             return true;

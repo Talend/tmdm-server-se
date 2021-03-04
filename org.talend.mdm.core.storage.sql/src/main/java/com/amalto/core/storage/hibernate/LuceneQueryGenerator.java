@@ -71,6 +71,7 @@ import com.amalto.core.query.user.metadata.MetadataField;
 import com.amalto.core.query.user.metadata.StagingBlockKey;
 import com.amalto.core.query.user.metadata.StagingError;
 import com.amalto.core.query.user.metadata.StagingHasTask;
+import com.amalto.core.query.user.metadata.StagingOldGroup;
 import com.amalto.core.query.user.metadata.StagingSource;
 import com.amalto.core.query.user.metadata.StagingStatus;
 import com.amalto.core.query.user.metadata.TaskId;
@@ -240,6 +241,12 @@ class LuceneQueryGenerator extends VisitorAdapter<Query> {
     @Override
     public Query visit(StagingHasTask stagingHasTask) {
         currentFieldName = StorageConstants.METADATA_STAGING_HAS_TASK;
+        return null;
+    }
+
+    @Override
+    public Query visit(StagingOldGroup stagingOldGroup) {
+        currentFieldName = StorageConstants.METADATA_STAGING_OLD_GROUP;
         return null;
     }
 

@@ -241,6 +241,11 @@ public class IncompatibleOperators implements Optimizer {
         }
 
         @Override
+        public Condition visit(StagingOldGroup stagingOldGroup) {
+            return null;
+        }
+
+        @Override
         public Condition visit(StagingBlockKey stagingBlockKey) {
             return null;
         }

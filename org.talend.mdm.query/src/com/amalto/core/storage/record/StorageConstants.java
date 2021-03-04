@@ -37,6 +37,12 @@ public interface StorageConstants {
     public final static String METADATA_STAGING_HAS_TASK = "x_talend_staging_hastask";
 
     /**
+     * Name of the column where MDM old group is stored (for STAGING databases only).
+     * com.amalto.core.storage.task.StagingConstants
+     */
+    public final static String METADATA_STAGING_OLD_GROUP = "x_talend_staging_oldgroup";
+
+    /**
      * Name of the column where MDM source is stored (for STAGING databases only).
      */
     public final static String METADATA_STAGING_SOURCE = "x_talend_staging_source";

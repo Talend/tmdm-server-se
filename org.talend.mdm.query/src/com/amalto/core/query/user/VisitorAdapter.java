@@ -15,6 +15,7 @@ import com.amalto.core.query.user.metadata.GroupSize;
 import com.amalto.core.query.user.metadata.StagingBlockKey;
 import com.amalto.core.query.user.metadata.StagingError;
 import com.amalto.core.query.user.metadata.StagingHasTask;
+import com.amalto.core.query.user.metadata.StagingOldGroup;
 import com.amalto.core.query.user.metadata.StagingSource;
 import com.amalto.core.query.user.metadata.StagingStatus;
 import com.amalto.core.query.user.metadata.TaskId;
@@ -241,6 +242,11 @@ public class VisitorAdapter<T> implements Visitor<T> {
 
     @Override
     public T visit(StagingHasTask stagingHasTask) {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public T visit(StagingOldGroup stagingOldGroup) {
         throw new NotImplementedException();
     }
 }

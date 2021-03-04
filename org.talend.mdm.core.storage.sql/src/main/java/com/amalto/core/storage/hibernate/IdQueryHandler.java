@@ -364,5 +364,13 @@ class IdQueryHandler extends AbstractQueryHandler {
             nextRecord.set(field, o);
             return null;
         }
+
+        @Override
+        public Void visit(StagingOldGroup stagingOldGroup) {
+            FieldMetadata field = createField(stagingOldGroup);
+            Object o = next.getRecordMetadata().getRecordProperties().get(StorageConstants.METADATA_STAGING_OLD_GROUP);
+            nextRecord.set(field, o);
+            return null;
+        }
     }
 }

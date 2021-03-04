@@ -488,6 +488,9 @@ public class HibernateStorage implements Storage {
                     if (database.hasField(StorageConstants.METADATA_STAGING_HAS_TASK)) {
                         databaseIndexedFields.add(database.getField(StorageConstants.METADATA_STAGING_HAS_TASK));
                     }
+                    if (database.hasField(StorageConstants.METADATA_STAGING_OLD_GROUP)) {
+                        databaseIndexedFields.add(database.getField(StorageConstants.METADATA_STAGING_OLD_GROUP));
+                    }
                 }
                 break;
             case SYSTEM: // Nothing to index on SYSTEM
@@ -848,6 +851,30 @@ public class HibernateStorage implements Storage {
             query.executeUpdate();
         } catch (Exception e) {
             throw new RuntimeException("Exception occurred during update METADATA_STAGING_HAS_TASK.", e); //$NON-NLS-1$
+        } finally {
+            this.releaseSession();
+            storageClassLoader.unbind(Thread.currentThread());
+        }
+    }
+
+    /**
+     * Get METADATA_STAGING_OLD_GROUP list by Task ID
+     * 
+     * @param type
+     * @param taskId
+     * @return
+     */
+    public List<String> getOldGroups(ComplexTypeMetadata type, String taskId) {
+        Session session = this.getCurrentSession();
+        try {
+            storageClassLoader.bind(Thread.currentThread());
+            String databaseName = mappingRepository.getMappingFromUser(type).getDatabase().getName();
+            String className = storageClassLoader.findClass(databaseName).getSimpleName();
+            String queryString = "SELECT distinct x_talend_staging_oldgroup FROM " + className + " WHERE x_talend_task_id = ?0"; //$NON-NLS-1$ //$NON-NLS-2$
+            LOGGER.info("Calling query old group statement : " + queryString);
+            return session.createQuery(queryString).setParameter(0, taskId).list();
+        } catch (Exception e) {
+            throw new RuntimeException("Exception occurred during query METADATA_STAGING_OLD_GROUP.", e); //$NON-NLS-1$
         } finally {
             this.releaseSession();
             storageClassLoader.unbind(Thread.currentThread());

@@ -1625,36 +1625,6 @@ public class StorageQueryTest extends StorageTestCase {
         }
     }
 
-    // TMDM-15021 Search Filter using "join With" : no result returned while a result should be returned
-    public void testJoinQueryWithoutMainEntityInSearchableList() throws Exception {
-        UserQueryBuilder uqb = UserQueryBuilder.from(address);
-        String fieldName = "Address/Street";
-        IWhereItem item = new WhereCondition(fieldName, WhereCondition.EQUALS, "Street3", WhereCondition.NO_OPERATOR);
-        uqb = uqb.where(UserQueryHelper.buildCondition(uqb, item, repository));
-        Select select = uqb.getSelect();
-        select = (Select) select.normalize();
-        assertEquals(1, select.getTypes().size());
-
-        uqb.join(person.getField("addresses/address"));
-        select = uqb.getSelect();
-        select = (Select) select.normalize();
-        assertTrue(select.getTypes().size() > 1);
-
-        UserQueryBuilder qb = from(person).select(address.getField("id")).select(address.getField("City"))
-                .join(person.getField("addresses/address")).where(eq(address.getField("Street"), "Street3"));
-        StorageResults results = storage.fetch(qb.getSelect());
-        try {
-            assertEquals(1, results.getSize());
-            assertEquals(1, results.getCount());
-            for (DataRecord result : results) {
-                assertEquals("City", result.get("City"));
-                assertEquals("3", result.get("id"));
-            }
-        } finally {
-            results.close();
-        }
-    }
-
     public void testJoinQueryWithConditionAnd() throws Exception {
         UserQueryBuilder qb = from(person).select(person.getField("firstname")).select(address.getField("Street"))
                 .join(person.getField("addresses/address")).where(eq(person.getField("lastname"), "Dupond"))

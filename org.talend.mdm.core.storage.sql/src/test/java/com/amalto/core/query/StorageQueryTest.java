@@ -164,6 +164,10 @@ public class StorageQueryTest extends StorageTestCase {
 
     private final String COMPTE_Record4 = "<Compte><Level>4</Level><Code>4</Code><Label>2</Label><childOf>[1][1]</childOf></Compte>";
 
+    private final String WRITER_Record1 = "<Writer<WriterId>1</WriterId><FirstName>Angus</FirstName><LastName>Young</LastName></Writer>";
+    
+    private final String Song_Record1 = "<Song><SongName>Shoot To Thrill</SongName><Writers><Writer>[1]</Writer></Writers></Song>";
+    
     private static boolean beanDelegatorContainerFlag = false;
 
     private static void createBeanDelegatorContainer() {
@@ -356,6 +360,8 @@ public class StorageQueryTest extends StorageTestCase {
         allRecords.add(factory.read(repository, compte, COMPTE_Record2));
         allRecords.add(factory.read(repository, compte, COMPTE_Record3));
         allRecords.add(factory.read(repository, compte, COMPTE_Record4));
+        allRecords.add(factory.read(repository, writer, WRITER_Record1));
+        allRecords.add(factory.read(repository, song, Song_Record1));
 
         allRecords.add(factory.read(repository, contexte, "<Contexte><IdContexte>111</IdContexte><name>aaa</name><name>bbb</name></Contexte>"));
         allRecords.add(factory.read(repository, contexte, "<Contexte><IdContexte>222</IdContexte><name>ccc</name></Contexte>"));
@@ -1646,6 +1652,18 @@ public class StorageQueryTest extends StorageTestCase {
         try {
             assertEquals(0, results.getSize());
             assertEquals(0, results.getCount());
+        } finally {
+            results.close();
+        }
+    }
+    
+    public void testJoinQueryWithRepeatFKFields() throws Exception {
+        UserQueryBuilder qb = from(song).select(song.getField("SongName")).select(writer.getField("FirstName"))
+                .join(song.getField("/Writers/Writer"));
+        StorageResults results = storage.fetch(qb.getSelect());
+        try {
+            assertEquals(1, results.getSize());
+            assertEquals(1, results.getCount());
         } finally {
             results.close();
         }

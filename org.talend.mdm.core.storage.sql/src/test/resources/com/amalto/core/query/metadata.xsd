@@ -3444,41 +3444,4 @@
       <xsd:field xpath="WriterId"/> 
     </xsd:unique> 
   </xsd:element>  
-  <xsd:element name="Album"> 
-    <xsd:annotation> 
-      <xsd:appinfo source="X_PrimaryKeyInfo">Album/Name</xsd:appinfo>  
-      <xsd:appinfo source="X_Write">CustomAdmin</xsd:appinfo> 
-    </xsd:annotation>  
-    <xsd:complexType> 
-      <xsd:sequence> 
-        <xsd:element name="AlbumId" type="AUTO_INCREMENT"> 
-          <xsd:annotation> 
-            <xsd:appinfo source="X_Write">CustomAdmin</xsd:appinfo> 
-          </xsd:annotation> 
-        </xsd:element>  
-        <xsd:element maxOccurs="1" minOccurs="1" name="Name" type="xsd:string"> 
-          <xsd:annotation> 
-            <xsd:appinfo source="X_Write">CustomAdmin</xsd:appinfo> 
-          </xsd:annotation> 
-        </xsd:element>  
-        <xsd:element maxOccurs="1" minOccurs="1" name="Year" type="xsd:string"> 
-          <xsd:annotation> 
-            <xsd:appinfo source="X_Write">CustomAdmin</xsd:appinfo> 
-          </xsd:annotation> 
-        </xsd:element>  
-        <xsd:element maxOccurs="unbounded" minOccurs="0" name="Tracks" type="xsd:string"> 
-          <xsd:annotation> 
-            <xsd:appinfo source="X_ForeignKey">Song</xsd:appinfo>  
-            <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>  
-            <xsd:appinfo source="X_Write">CustomAdmin</xsd:appinfo>  
-            <xsd:appinfo source="X_ForeignKeyInfo">Song/SongName</xsd:appinfo> 
-          </xsd:annotation> 
-        </xsd:element> 
-      </xsd:sequence> 
-    </xsd:complexType>  
-    <xsd:unique name="Album"> 
-      <xsd:selector xpath="."/>  
-      <xsd:field xpath="AlbumId"/> 
-    </xsd:unique> 
-  </xsd:element>
 </xsd:schema>

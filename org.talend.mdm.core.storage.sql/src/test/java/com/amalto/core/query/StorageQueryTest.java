@@ -64,6 +64,7 @@ import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
+import org.talend.mdm.query.UserQueryJsonSerializer;
 
 import com.amalto.core.delegator.BeanDelegatorContainer;
 import com.amalto.core.delegator.ILocalUser;
@@ -164,7 +165,7 @@ public class StorageQueryTest extends StorageTestCase {
 
     private final String COMPTE_Record4 = "<Compte><Level>4</Level><Code>4</Code><Label>2</Label><childOf>[1][1]</childOf></Compte>";
 
-    private final String WRITER_Record1 = "<Writer<WriterId>1</WriterId><FirstName>Angus</FirstName><LastName>Young</LastName></Writer>";
+    private final String WRITER_Record1 = "<Writer><WriterId>1</WriterId><FirstName>Angus</FirstName><LastName>Young</LastName></Writer>";
     
     private final String Song_Record1 = "<Song><SongName>Shoot To Thrill</SongName><Writers><Writer>[1]</Writer></Writers></Song>";
     
@@ -1659,9 +1660,11 @@ public class StorageQueryTest extends StorageTestCase {
     
     public void testJoinQueryWithRepeatFKFields() throws Exception {
         UserQueryBuilder qb = from(song).select(song.getField("SongName")).select(writer.getField("FirstName"))
-                .join(song.getField("/Writers/Writer"));
-        StorageResults results = storage.fetch(qb.getSelect());
+                .join(song.getField("Writers/Writer"));
+        StorageResults results = storage.fetch(qb.getSelect());                
         try {
+            // TMDM-15050 Error occurs when calling Rest API PUT /data/{containerName}/query and types contains X_ANONYMOUS.
+            assertFalse(UserQueryJsonSerializer.toJson(qb.getSelect()).contains("X_ANONYMOUS"));
             assertEquals(1, results.getSize());
             assertEquals(1, results.getCount());
         } finally {

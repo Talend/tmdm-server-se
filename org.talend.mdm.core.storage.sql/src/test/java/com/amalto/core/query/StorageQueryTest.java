@@ -64,6 +64,7 @@ import org.talend.mdm.commmon.metadata.ComplexTypeMetadata;
 import org.talend.mdm.commmon.metadata.ContainedTypeFieldMetadata;
 import org.talend.mdm.commmon.metadata.FieldMetadata;
 import org.talend.mdm.commmon.metadata.MetadataRepository;
+import org.talend.mdm.query.UserQueryJsonSerializer;
 
 import com.amalto.core.delegator.BeanDelegatorContainer;
 import com.amalto.core.delegator.ILocalUser;
@@ -164,6 +165,10 @@ public class StorageQueryTest extends StorageTestCase {
 
     private final String COMPTE_Record4 = "<Compte><Level>4</Level><Code>4</Code><Label>2</Label><childOf>[1][1]</childOf></Compte>";
 
+    private final String WRITER_Record1 = "<Writer><WriterId>1</WriterId><FirstName>Angus</FirstName><LastName>Young</LastName></Writer>";
+    
+    private final String Song_Record1 = "<Song><SongName>Shoot To Thrill</SongName><Writers><Writer>[1]</Writer></Writers></Song>";
+    
     private static boolean beanDelegatorContainerFlag = false;
 
     private static void createBeanDelegatorContainer() {
@@ -356,6 +361,8 @@ public class StorageQueryTest extends StorageTestCase {
         allRecords.add(factory.read(repository, compte, COMPTE_Record2));
         allRecords.add(factory.read(repository, compte, COMPTE_Record3));
         allRecords.add(factory.read(repository, compte, COMPTE_Record4));
+        allRecords.add(factory.read(repository, writer, WRITER_Record1));
+        allRecords.add(factory.read(repository, song, Song_Record1));
 
         allRecords.add(factory.read(repository, contexte, "<Contexte><IdContexte>111</IdContexte><name>aaa</name><name>bbb</name></Contexte>"));
         allRecords.add(factory.read(repository, contexte, "<Contexte><IdContexte>222</IdContexte><name>ccc</name></Contexte>"));
@@ -1625,36 +1632,6 @@ public class StorageQueryTest extends StorageTestCase {
         }
     }
 
-    // TMDM-15021 Search Filter using "join With" : no result returned while a result should be returned
-    public void testJoinQueryWithoutMainEntityInSearchableList() throws Exception {
-        UserQueryBuilder uqb = UserQueryBuilder.from(address);
-        String fieldName = "Address/Street";
-        IWhereItem item = new WhereCondition(fieldName, WhereCondition.EQUALS, "Street3", WhereCondition.NO_OPERATOR);
-        uqb = uqb.where(UserQueryHelper.buildCondition(uqb, item, repository));
-        Select select = uqb.getSelect();
-        select = (Select) select.normalize();
-        assertEquals(1, select.getTypes().size());
-
-        uqb.join(person.getField("addresses/address"));
-        select = uqb.getSelect();
-        select = (Select) select.normalize();
-        assertTrue(select.getTypes().size() > 1);
-
-        UserQueryBuilder qb = from(person).select(address.getField("id")).select(address.getField("City"))
-                .join(person.getField("addresses/address")).where(eq(address.getField("Street"), "Street3"));
-        StorageResults results = storage.fetch(qb.getSelect());
-        try {
-            assertEquals(1, results.getSize());
-            assertEquals(1, results.getCount());
-            for (DataRecord result : results) {
-                assertEquals("City", result.get("City"));
-                assertEquals("3", result.get("id"));
-            }
-        } finally {
-            results.close();
-        }
-    }
-
     public void testJoinQueryWithConditionAnd() throws Exception {
         UserQueryBuilder qb = from(person).select(person.getField("firstname")).select(address.getField("Street"))
                 .join(person.getField("addresses/address")).where(eq(person.getField("lastname"), "Dupond"))
@@ -1676,6 +1653,20 @@ public class StorageQueryTest extends StorageTestCase {
         try {
             assertEquals(0, results.getSize());
             assertEquals(0, results.getCount());
+        } finally {
+            results.close();
+        }
+    }
+    
+    public void testJoinQueryWithRepeatFKFields() throws Exception {
+        UserQueryBuilder qb = from(song).select(song.getField("SongName")).select(writer.getField("FirstName"))
+                .join(song.getField("Writers/Writer"));
+        StorageResults results = storage.fetch(qb.getSelect());                
+        try {
+            // TMDM-15050 Error occurs when calling Rest API PUT /data/{containerName}/query and types contains X_ANONYMOUS.
+            assertFalse(UserQueryJsonSerializer.toJson(qb.getSelect()).contains("X_ANONYMOUS"));
+            assertEquals(1, results.getSize());
+            assertEquals(1, results.getCount());
         } finally {
             results.close();
         }

@@ -190,6 +190,10 @@ public class StorageTestCase extends TestCase {
     protected static final ComplexTypeMetadata cmd_party;
     
     protected static final ComplexTypeMetadata cmd_member;
+    
+    protected static final ComplexTypeMetadata writer;
+    
+    protected static final ComplexTypeMetadata song;
 
     public static final String DATABASE = "H2";
 
@@ -260,6 +264,8 @@ public class StorageTestCase extends TestCase {
         checkPointDetails_1 = repository.getComplexType("CheckPointDetails_1");
         checkPointDetails_2 = repository.getComplexType("CheckPointDetails_2");
         fullTextSearchEntityA = repository.getComplexType("FullTextSearchEntityA");
+        song = repository.getComplexType("Song");
+        writer = repository.getComplexType("Writer");
 
         channel = repository.getComplexType("MYLOOKUP_BUSINESS_CHANNEL");
         party = repository.getComplexType("MYPARTY");

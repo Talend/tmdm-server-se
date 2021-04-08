@@ -301,6 +301,12 @@ public class UserQueryDumpConsole implements Visitor<Void> {
     }
 
     @Override
+    public Void visit(StagingOldGroup stagingOldGroup) {
+        print("[Technical field: STAGING_OLD_GROUP]"); //$NON-NLS-1$
+        return null;
+    }
+
+    @Override
     public Void visit(StagingBlockKey stagingBlockKey) {
         print("[Technical field: STAGING_BLOCK_KEY]"); //$NON-NLS-1$
         return null;

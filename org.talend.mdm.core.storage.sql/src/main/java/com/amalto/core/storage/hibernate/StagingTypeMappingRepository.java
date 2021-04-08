@@ -55,6 +55,10 @@ class StagingTypeMappingRepository extends InternalRepository {
             database.addField(new SimpleTypeFieldMetadata(database, false, false, false, StorageConstants.METADATA_STAGING_HAS_TASK,
                     booleanType, Collections.<String> emptyList(), Collections.<String> emptyList(), Collections
                             .<String> emptyList(), StringUtils.EMPTY));
+            // Staging old group
+            database.addField(new SimpleTypeFieldMetadata(database, false, false, false, StorageConstants.METADATA_STAGING_OLD_GROUP,
+                    limitedStringType, Collections.<String> emptyList(), Collections.<String> emptyList(), Collections
+                            .<String> emptyList(), StringUtils.EMPTY));
             // Staging status
             database.addField(new SimpleTypeFieldMetadata(database, false, false, false, StorageConstants.METADATA_STAGING_STATUS,
                     intType, Collections.<String> emptyList(), Collections.<String> emptyList(), Collections.<String> emptyList(), StringUtils.EMPTY));

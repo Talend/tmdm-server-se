@@ -107,6 +107,8 @@ public interface WelcomePortalMessages extends Messages {
     String search_title();
 
     String search_button_text();
+    
+    String save_portal_config_success();
 
     String save_portal_config_failed();
 
@@ -135,4 +137,8 @@ public interface WelcomePortalMessages extends Messages {
     String retrieve_campaign_fail();
 
     String access_tds_fail();
+    
+    String please_wait();   
+    
+    String save_progress_bar_message();
 }

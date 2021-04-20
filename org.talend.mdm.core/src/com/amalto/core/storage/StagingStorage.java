@@ -227,6 +227,11 @@ public class StagingStorage implements Storage {
     }
 
     @Override
+    public List<String> getOldGroups(ComplexTypeMetadata type, String taskId) {
+        return delegate.getOldGroups(type, taskId);
+    }
+
+    @Override
     public String getName() {
         return delegate.getName();
     }

@@ -131,6 +131,11 @@ public class CacheStorage implements Storage {
     }
 
     @Override
+    public List<String> getOldGroups(ComplexTypeMetadata type, String taskId) {
+        return delegate.getOldGroups(type, taskId);
+    }
+
+    @Override
     public void prepare(MetadataRepository repository, Set<Expression> optimizedExpressions, boolean force,
             boolean dropExistingData) {
         delegate.prepare(repository, optimizedExpressions, force, dropExistingData);

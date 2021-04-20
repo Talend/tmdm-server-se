@@ -268,4 +268,9 @@ public class CompositeStorage implements Storage {
     public Set<String> findTablesToDrop(List<ComplexTypeMetadata> sortedTypesToDrop) {
         return new HashSet<String>();
     }
+
+    @Override
+    public List<String> getOldGroups(ComplexTypeMetadata type, String taskId) {
+        return new ArrayList<String>();
+    }
 }

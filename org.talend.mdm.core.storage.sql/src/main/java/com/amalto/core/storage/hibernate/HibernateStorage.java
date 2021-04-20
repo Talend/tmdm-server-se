@@ -864,6 +864,7 @@ public class HibernateStorage implements Storage {
      * @param taskId
      * @return
      */
+    @Override
     public List<String> getOldGroups(ComplexTypeMetadata type, String taskId) {
         Session session = this.getCurrentSession();
         try {

@@ -346,5 +346,10 @@ public class TransactionTest extends TestCase {
         public Set<String> findTablesToDrop(List<ComplexTypeMetadata> sortedTypesToDrop) {
             return null;
         }
+
+        @Override
+        public List<String> getOldGroups(ComplexTypeMetadata type, String taskId) {
+            return null;
+        }
     }
 }

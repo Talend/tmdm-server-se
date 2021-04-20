@@ -254,6 +254,11 @@ public class InMemoryStorage implements Storage {
         return new HashSet<String>();
     }
 
+    @Override
+    public List<String> getOldGroups(ComplexTypeMetadata type, String taskId) {
+        return new ArrayList<String>();
+    }
+
     private static interface ValueBuilder {
 
         Object getValue(DataRecord record);

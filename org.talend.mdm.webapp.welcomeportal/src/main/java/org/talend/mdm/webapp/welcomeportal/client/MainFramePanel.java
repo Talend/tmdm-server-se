@@ -263,8 +263,7 @@ public class MainFramePanel extends Portal {
 
             props.add(PortalProperties.KEY_PORTLET_LOCATIONS, portletToLocations.toString());
             props.add(PortalProperties.KEY_COLUMN_NUM, ((Integer) numColumns).toString());
-            final MessageBox box = MessageBox.wait(null, MessagesFactory.getMessages().please_wait(),
-                    MessagesFactory.getMessages().save_progress_bar_message());
+            final MessageBox box = MessageBox.wait(null, MessagesFactory.getMessages().save_progress_bar_message(), null);
             Timer t = new Timer() {
 
                 @Override
@@ -601,8 +600,7 @@ public class MainFramePanel extends Portal {
         if (portletsToCreate.size() > 0) {
             updateLocations();
         }
-        final MessageBox box = MessageBox.wait(null, MessagesFactory.getMessages().please_wait(),
-                MessagesFactory.getMessages().save_progress_bar_message());
+        final MessageBox box = MessageBox.wait(null, MessagesFactory.getMessages().save_progress_bar_message(), null);
         Timer t = new Timer() {
 
             @Override
@@ -648,7 +646,7 @@ public class MainFramePanel extends Portal {
     private MessageBox statusBox() {
         MessageBox msgBox = new MessageBox();
         msgBox.setTitle(MessagesFactory.getMessages().run_status());
-        msgBox.setMessage(MessagesFactory.getMessages().save_portal_config_success());
+        msgBox.setMessage(MessagesFactory.getMessages().status_msg_success());
         msgBox.setButtons(""); //$NON-NLS-1$
         msgBox.setIcon(MessageBox.INFO);
         msgBox.show();

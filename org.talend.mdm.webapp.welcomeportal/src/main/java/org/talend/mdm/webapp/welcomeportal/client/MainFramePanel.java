@@ -35,6 +35,7 @@ import org.talend.mdm.webapp.welcomeportal.client.widget.RoutingChart;
 import org.talend.mdm.webapp.welcomeportal.client.widget.SearchPortlet;
 import org.talend.mdm.webapp.welcomeportal.client.widget.StartPortlet;
 import org.talend.mdm.webapp.welcomeportal.client.widget.TaskPortlet;
+import org.talend.mdm.webapp.welcomeportal.client.i18n.MessagesFactory;
 
 import com.extjs.gxt.ui.client.Registry;
 import com.extjs.gxt.ui.client.event.ContainerEvent;
@@ -46,6 +47,8 @@ import com.extjs.gxt.ui.client.mvc.Dispatcher;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.custom.Portal;
 import com.extjs.gxt.ui.client.widget.custom.Portlet;
+import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.google.gwt.user.client.Timer;
 
 /**
  * DOC Administrator class global comment. Detailled comment
@@ -260,20 +263,40 @@ public class MainFramePanel extends Portal {
 
             props.add(PortalProperties.KEY_PORTLET_LOCATIONS, portletToLocations.toString());
             props.add(PortalProperties.KEY_COLUMN_NUM, ((Integer) numColumns).toString());
+            final MessageBox box = MessageBox.wait(null, MessagesFactory.getMessages().save_progress_bar_message(), null);
+            Timer t = new Timer() {
 
+                @Override
+                public void run() {
+                    box.close();
+                }
+            };
+            t.schedule(60000);
             service.savePortalConfig(props, new SessionAwareAsyncCallback<Void>() {
 
                 @Override
                 public void onSuccess(Void result) {
                     markPortalConfigsOnUI(getConfigsForUser());
+                    box.close();
+                    final MessageBox msgBox = statusBox();
+                    Timer timer = new Timer() {
+
+                        public void run() {
+                            msgBox.close();
+                        }
+                    };
+                    timer.schedule(700);
                     return;
                 }
 
                 @Override
                 protected void doOnFailure(Throwable caught) {
                     super.doOnFailure(caught);
+                    box.close();
                     AppEvent appEvent = new AppEvent(WelcomePortalEvents.RevertRefreshPortal, portalPropertiesCp);
                     Dispatcher.forwardEvent(appEvent);
+                    MessageBox.alert(MessagesFactory.getMessages().alerts_title(), 
+                            MessagesFactory.getMessages().save_portal_config_failed(), null).setIcon(MessageBox.ERROR);
                 }
             });
 
@@ -577,7 +600,15 @@ public class MainFramePanel extends Portal {
         if (portletsToCreate.size() > 0) {
             updateLocations();
         }
+        final MessageBox box = MessageBox.wait(null, MessagesFactory.getMessages().save_progress_bar_message(), null);
+        Timer t = new Timer() {
 
+            @Override
+            public void run() {
+                box.close();
+            }
+        };
+        t.schedule(60000);
         service.savePortalConfig(PortalProperties.KEY_PORTLET_LOCATIONS, portletToLocations.toString(),
                 new SessionAwareAsyncCallback<Void>() {
 
@@ -585,6 +616,15 @@ public class MainFramePanel extends Portal {
                     public void onSuccess(Void result) {
                         props.add(PortalProperties.KEY_PORTLET_LOCATIONS, portletToLocations.toString());
                         MainFramePanel.this.layout(true);
+                        box.close();                       
+                        final MessageBox msgBox = statusBox();
+                        Timer timer = new Timer() {
+
+                            public void run() {
+                                msgBox.close();
+                            }
+                        };
+                        timer.schedule(700);
                     }
 
                     @Override
@@ -596,8 +636,21 @@ public class MainFramePanel extends Portal {
                         initializePortlets(portletToLocations);
                         MainFramePanel.this.layout(true);
                         markPortalConfigsOnUI(getConfigsForUser());
+                        box.close();
+                        MessageBox.alert(MessagesFactory.getMessages().alerts_title(), 
+                                MessagesFactory.getMessages().save_portal_config_failed(), null).setIcon(MessageBox.ERROR);
                     }
                 });
+    }
+    
+    private MessageBox statusBox() {
+        MessageBox msgBox = new MessageBox();
+        msgBox.setTitle(MessagesFactory.getMessages().run_status());
+        msgBox.setMessage(MessagesFactory.getMessages().status_msg_success());
+        msgBox.setButtons(""); //$NON-NLS-1$
+        msgBox.setIcon(MessageBox.INFO);
+        msgBox.show();
+        return msgBox;
     }
 
     public void refresh() {

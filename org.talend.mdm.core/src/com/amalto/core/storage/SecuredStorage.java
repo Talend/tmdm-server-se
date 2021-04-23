@@ -229,4 +229,9 @@ public class SecuredStorage implements Storage {
     public Set<String> findTablesToDrop(List<ComplexTypeMetadata> sortedTypesToDrop) {
         return delegate.findTablesToDrop(sortedTypesToDrop);
     }
+
+    @Override
+    public List<String> getOldGroups(ComplexTypeMetadata type, String taskId) {
+        return delegate.getOldGroups(type, taskId);
+    }
 }

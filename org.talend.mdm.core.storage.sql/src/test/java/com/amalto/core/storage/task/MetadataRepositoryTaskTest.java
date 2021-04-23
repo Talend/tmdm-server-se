@@ -327,6 +327,10 @@ public class MetadataRepositoryTaskTest extends TestCase {
         public Set<String> findTablesToDrop(List<ComplexTypeMetadata> sortedTypesToDrop) {
             return null;
         }
+
+        public List<String> getOldGroups(ComplexTypeMetadata type, String taskId) {
+            return null;
+        }
     }
 
     private static class MockCommitter implements SaverSession.Committer {

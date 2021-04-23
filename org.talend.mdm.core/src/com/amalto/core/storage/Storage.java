@@ -273,4 +273,12 @@ public interface Storage {
      * @param sortedTypesToDrop
      */
     Set<String> findTablesToDrop(List<ComplexTypeMetadata> sortedTypesToDrop);
+
+    /**
+     * Get METADATA_STAGING_OLD_GROUP list by Task ID
+     *
+     * @param type
+     * @param taskId
+     */
+    List<String> getOldGroups(ComplexTypeMetadata type, String taskId);
 }

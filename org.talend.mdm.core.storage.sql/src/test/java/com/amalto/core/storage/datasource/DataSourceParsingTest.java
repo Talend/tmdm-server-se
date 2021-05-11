@@ -49,21 +49,21 @@ public class DataSourceParsingTest extends TestCase {
 
         RDBMSDataSource rdbmsDataSource = (RDBMSDataSource) dataSource;
         assertTrue(rdbmsDataSource.hasInit());
-        assertEquals("jdbc:mysql://10.42.150.15:3306/Test3", rdbmsDataSource.getConnectionURL());
+        assertEquals("jdbc:mysql://localhost:3306/Test3", rdbmsDataSource.getConnectionURL());
         assertEquals("mdm_dev2", rdbmsDataSource.getDatabaseName());
         assertEquals(RDBMSDataSource.DataSourceDialect.MYSQL, rdbmsDataSource.getDialectName());
         assertEquals("com.mysql.jdbc.Driver", rdbmsDataSource.getDriverClassName());
         assertEquals("/var/lucene/indexes/DS2", rdbmsDataSource.getIndexDirectory());
         assertEquals("/var/cache/DS2", rdbmsDataSource.getCacheDirectory());
         assertEquals("Test-0", rdbmsDataSource.getName());
-        assertEquals("toor", rdbmsDataSource.getPassword());
-        assertEquals("root", rdbmsDataSource.getUserName());
+        assertEquals("*****", rdbmsDataSource.getPassword());
+        assertEquals("*****", rdbmsDataSource.getUserName());
         assertEquals(5, rdbmsDataSource.getConnectionPoolMinSize());
         assertEquals(50, rdbmsDataSource.getConnectionPoolMaxSize());
         assertEquals(RDBMSDataSource.SchemaGeneration.UPDATE, rdbmsDataSource.getSchemaGeneration());
-        assertEquals("jdbc:mysql://10.42.150.15:3306/", rdbmsDataSource.getInitConnectionURL());
-        assertEquals("root", rdbmsDataSource.getInitUserName());
-        assertEquals("toor", rdbmsDataSource.getInitPassword());
+        assertEquals("jdbc:mysql://localhost:3306/", rdbmsDataSource.getInitConnectionURL());
+        assertEquals("*****", rdbmsDataSource.getInitUserName());
+        assertEquals("*****", rdbmsDataSource.getInitPassword());
     }
 
     public void testContainerChange1() throws Exception {
@@ -75,7 +75,7 @@ public class DataSourceParsingTest extends TestCase {
 
         RDBMSDataSource rdbmsDataSource = (RDBMSDataSource) dataSource;
         assertTrue(rdbmsDataSource.hasInit());
-        assertEquals("jdbc:mysql://10.42.150.15:3306/MDM", rdbmsDataSource.getConnectionURL());
+        assertEquals("jdbc:mysql://localhost:3306/MDM", rdbmsDataSource.getConnectionURL());
         assertEquals("MDM", rdbmsDataSource.getDatabaseName());
         assertEquals(0, rdbmsDataSource.getConnectionPoolMinSize());
         assertEquals(50, rdbmsDataSource.getConnectionPoolMaxSize());
@@ -91,7 +91,7 @@ public class DataSourceParsingTest extends TestCase {
 
         RDBMSDataSource rdbmsDataSource = (RDBMSDataSource) dataSource;
         assertTrue(rdbmsDataSource.hasInit());
-        assertEquals("jdbc:mysql://10.42.150.15:3306/mdm_dev2", rdbmsDataSource.getConnectionURL());
+        assertEquals("jdbc:mysql://localhost:3306/mdm_dev2", rdbmsDataSource.getConnectionURL());
         assertEquals("mdm_dev2", rdbmsDataSource.getDatabaseName());
         assertEquals(0, rdbmsDataSource.getConnectionPoolMinSize());
         assertEquals(0, rdbmsDataSource.getConnectionPoolMaxSize());

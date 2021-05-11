@@ -1,0 +1,272 @@
+<!--
+  ~ Copyright (C) 2006-2019 Talend Inc. - www.talend.com
+  ~
+  ~ This source code is available under agreement available at
+  ~ %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
+  ~
+  ~ You should have received a copy of the agreement
+  ~ along with this program; if not, write to Talend SA
+  ~ 9 rue Pages 92150 Suresnes, France
+  -->
+
+<datasources xmlns="http://www.talend.com/mdm/datasources">
+    <datasource name="Test-0">
+        <master>
+            <type>RDBMS</type>
+            <rdbms-configuration>
+                <dialect>MySQL</dialect>
+                <connection-driver-class>com.mysql.jdbc.Driver</connection-driver-class>
+                <connection-url>jdbc:mysql://localhost:3306/Test3</connection-url>
+                <connection-username>*****</connection-username>
+                <connection-password>pwMwS4I+1KS68ssUYD/eZA==,Encrypt</connection-password>
+                <connection-pool-minsize>5</connection-pool-minsize>
+                <connection-pool-maxsize>50</connection-pool-maxsize>
+                <fulltext-index-directory>/var/lucene/indexes/DS2</fulltext-index-directory>
+                <cache-directory>/var/cache/DS2</cache-directory>
+
+                <init>
+                    <connection-url>jdbc:mysql://localhost:3306/</connection-url>
+                    <connection-username>*****</connection-username>
+                    <connection-password>pwMwS4I+1KS68ssUYD/eZA==,Encrypt</connection-password>
+                    <database-name>mdm_dev2</database-name>
+                </init>
+            </rdbms-configuration>
+        </master>
+    </datasource>
+
+    <datasource name="Test-1">
+        <master>
+            <type>RDBMS</type>
+            <rdbms-configuration>
+                <dialect>MySQL</dialect>
+                <connection-driver-class>com.mysql.jdbc.Driver</connection-driver-class>
+                <connection-url>jdbc:mysql://localhost:3306/${container}</connection-url>
+                <connection-username>*****</connection-username>
+                <connection-password>pwMwS4I+1KS68ssUYD/eZA==,Encrypt</connection-password>
+                <connection-pool-minsize></connection-pool-minsize>
+                <connection-pool-maxsize>50</connection-pool-maxsize>
+                <fulltext-index-directory>/var/lucene/indexes/DS1</fulltext-index-directory>
+
+                <init>
+                    <connection-url>jdbc:mysql://localhost:3306/</connection-url>
+                    <connection-username>*****</connection-username>
+                    <connection-password>pwMwS4I+1KS68ssUYD/eZA==,Encrypt</connection-password>
+                    <database-name>${container}</database-name>
+                </init>
+            </rdbms-configuration>
+        </master>
+    </datasource>
+
+    <datasource name="Test-2">
+        <master>
+            <type>RDBMS</type>
+            <rdbms-configuration>
+                <dialect>MySQL</dialect>
+                <connection-driver-class>com.mysql.jdbc.Driver</connection-driver-class>
+                <connection-url>jdbc:mysql://localhost:3306/mdm_dev2</connection-url>
+                <connection-username>*****</connection-username>
+                <connection-password>pwMwS4I+1KS68ssUYD/eZA==,Encrypt</connection-password>
+                <fulltext-index-directory>/var/lucene/indexes/DS2</fulltext-index-directory>
+                <init>
+                    <connection-url>jdbc:mysql://localhost:3306/</connection-url>
+                    <connection-username>*****</connection-username>
+                    <connection-password>pwMwS4I+1KS68ssUYD/eZA==,Encrypt</connection-password>
+                    <database-name>mdm_dev2</database-name>
+                </init>
+            </rdbms-configuration>
+        </master>
+    </datasource>
+
+    <datasource name="Test-3">
+        <master>
+            <type>RDBMS</type>
+            <rdbms-configuration>
+                <dialect>MySQL</dialect>
+                <connection-driver-class>com.mysql.jdbc.Driver</connection-driver-class>
+                <connection-url>jdbc:mysql://localhost:3306/mdm_dev2</connection-url>
+                <connection-username>*****</connection-username>
+                <connection-password>pwMwS4I+1KS68ssUYD/eZA==,Encrypt</connection-password>
+                <fulltext-index-directory>/var/lucene/indexes/DS2</fulltext-index-directory>
+                <schema-generation>validate</schema-generation>
+                <properties>
+                    <property name="property1">value1</property>
+                    <property name="property2">value2</property>
+                    <property name="property3">value3</property>
+                </properties>
+                <init>
+                    <connection-url>jdbc:mysql://localhost:3306/</connection-url>
+                    <connection-username>*****</connection-username>
+                    <connection-password>pwMwS4I+1KS68ssUYD/eZA==,Encrypt</connection-password>
+                    <database-name>mdm_dev2</database-name>
+                </init>
+            </rdbms-configuration>
+        </master>
+    </datasource>
+
+    <datasource name="Test-4">
+        <master>
+            <type>RDBMS</type>
+            <rdbms-configuration>
+                <dialect>MySQL</dialect>
+                <connection-driver-class>com.mysql.jdbc.Driver</connection-driver-class>
+                <connection-url>jdbc:mysql://localhost:3306/mdm_dev2</connection-url>
+                <connection-username>*****</connection-username>
+                <connection-password>pwMwS4I+1KS68ssUYD/eZA==,Encrypt</connection-password>
+                <fulltext-index-directory>/var/lucene/indexes/DS2</fulltext-index-directory>
+                <schema-generation>validate</schema-generation>
+                <case-sensitive-search>false</case-sensitive-search>
+                <init>
+                    <connection-url>jdbc:mysql://localhost:3306/</connection-url>
+                    <connection-username>*****</connection-username>
+                    <connection-password>pwMwS4I+1KS68ssUYD/eZA==,Encrypt</connection-password>
+                    <database-name>mdm_dev2</database-name>
+                </init>
+            </rdbms-configuration>
+        </master>
+    </datasource>
+
+    <datasource name="Test-5">
+        <master>
+            <type>RDBMS</type>
+            <rdbms-configuration>
+                <dialect>Postgres</dialect>
+                <connection-driver-class>com.mysql.jdbc.Driver</connection-driver-class>
+                <connection-url>jdbc:postgresql://localhost:5432/DS2</connection-url>
+                <connection-username>*****</connection-username>
+                <connection-password>pwMwS4I+1KS68ssUYD/eZA==,Encrypt</connection-password>
+                <init>
+                    <connection-url>jdbc:postgresql://localhost:5432/</connection-url>
+                    <connection-username>*****</connection-username>
+                    <connection-password>pwMwS4I+1KS68ssUYD/eZA==,Encrypt</connection-password>
+                    <database-name>DS2</database-name>
+                </init>
+            </rdbms-configuration>
+        </master>
+        <system>
+            <type>RDBMS</type>
+            <rdbms-configuration>
+                <dialect>Postgres</dialect>
+                <connection-driver-class>org.postgresql.Driver</connection-driver-class>
+                <connection-url>jdbc:postgresql://localhost:5432/SYSTEM</connection-url>
+                <connection-username>*****</connection-username>
+                <connection-password>pwMwS4I+1KS68ssUYD/eZA==,Encrypt</connection-password>
+
+                <init>
+                    <connection-url>jdbc:postgresql://localhost:5432/</connection-url>
+                    <connection-username>*****</connection-username>
+                    <connection-password>pwMwS4I+1KS68ssUYD/eZA==,Encrypt</connection-password>
+                    <database-name>SYSTEM</database-name>
+                </init>
+            </rdbms-configuration>
+        </system>
+    </datasource>
+
+    <datasource name="Test-6">
+        <master>
+            <type>RDBMS</type>
+            <rdbms-configuration>
+                <dialect>MySQL</dialect>
+                <connection-driver-class>com.mysql.jdbc.Driver</connection-driver-class>
+                <connection-url>jdbc:mysql://mysql-server-01:3306/${container}</connection-url>
+                <connection-username>*****</connection-username>
+                <connection-password>pwMwS4I+1KS68ssUYD/eZA==,Encrypt</connection-password>
+                <connection-pool-minsize></connection-pool-minsize>
+                <connection-pool-maxsize>50</connection-pool-maxsize>
+                <fulltext-index-directory>/var/lucene/indexes/DS1</fulltext-index-directory>
+
+                <init>
+                    <connection-url>jdbc:mysql://mysql-server-01:3306/</connection-url>
+                    <connection-username>*****</connection-username>
+                    <connection-password>pwMwS4I+1KS68ssUYD/eZA==,Encrypt</connection-password>
+                    <database-name>${container}</database-name>
+                </init>
+            </rdbms-configuration>
+        </master>
+    </datasource>
+
+    <datasource name="Test-7">
+        <master>
+            <type>RDBMS</type>
+            <rdbms-configuration>
+                <dialect>MySQL</dialect>
+                <connection-driver-class>com.mysql.jdbc.Driver</connection-driver-class>
+                <connection-url>jdbc:mysql://mysql-server-01:3306/${container}</connection-url>
+                <connection-username>*****</connection-username>
+                <connection-password>pwMwS4I+1KS68ssUYD/eZA==,Encrypt</connection-password>
+                <connection-pool-minsize></connection-pool-minsize>
+                <connection-pool-maxsize>50</connection-pool-maxsize>
+                <fulltext-index-directory>/var/lucene/indexes/DS1</fulltext-index-directory>
+
+                <init>
+                    <connection-url>jdbc:mysql://mysql-server-01:3306/</connection-url>
+                    <connection-username>*****</connection-username>
+                    <connection-password>pwMwS4I+1KS68ssUYD/eZA==,Encrypt</connection-password>
+                    <database-name>${container}</database-name>
+                </init>
+            </rdbms-configuration>
+        </master>
+        <staging>
+            <type>RDBMS</type>
+            <rdbms-configuration>
+                <dialect>MySQL</dialect>
+                <connection-driver-class>com.mysql.jdbc.Driver</connection-driver-class>
+                <connection-url>jdbc:mysql://mysql-server-01:3306/${container}</connection-url>
+                <connection-username>*****</connection-username>
+                <connection-password>pwMwS4I+1KS68ssUYD/eZA==,Encrypt</connection-password>
+                <connection-pool-minsize></connection-pool-minsize>
+                <connection-pool-maxsize>50</connection-pool-maxsize>
+                <fulltext-index-directory>/var/lucene/indexes/DS1</fulltext-index-directory>
+
+                <init>
+                    <connection-url>jdbc:mysql://mysql-server-01:3306/</connection-url>
+                    <connection-username>*****</connection-username>
+                    <connection-password>pwMwS4I+1KS68ssUYD/eZA==,Encrypt</connection-password>
+                    <database-name>${container}</database-name>
+                </init>
+            </rdbms-configuration>
+        </staging>
+        <system>
+            <type>RDBMS</type>
+            <rdbms-configuration>
+                <dialect>Postgres</dialect>
+                <connection-driver-class>org.postgresql.Driver</connection-driver-class>
+                <connection-url>jdbc:postgresql://localhost:5432/SYSTEM</connection-url>
+                <connection-username>*****</connection-username>
+                <connection-password>pwMwS4I+1KS68ssUYD/eZA==,Encrypt</connection-password>
+
+                <init>
+                    <connection-url>jdbc:postgresql://localhost:5432/</connection-url>
+                    <connection-username>*****</connection-username>
+                    <connection-password>pwMwS4I+1KS68ssUYD/eZA==,Encrypt</connection-password>
+                    <database-name>SYSTEM</database-name>
+                </init>
+            </rdbms-configuration>
+        </system>
+    </datasource>
+
+    <datasource name="Test-8">
+        <master>
+            <type>RDBMS</type>
+            <rdbms-configuration>
+                <dialect>MySQL</dialect>
+                <connection-driver-class>com.mysql.jdbc.Driver</connection-driver-class>
+                <connection-url>jdbc:mysql://localhost:3306/mdm_dev2</connection-url>
+                <connection-username>*****</connection-username>
+                <connection-password>pwMwS4I+1KS68ssUYD/eZA==,Encrypt</connection-password>
+                <fulltext-index-directory>/var/lucene/indexes/DS2</fulltext-index-directory>
+                <schema-generation>validate</schema-generation>
+                <properties>
+                    <property name="property1">value1_${container}</property>
+                    <property name="property2">value2_${container}</property>
+                    <property name="property3">value3_${container}</property>
+                </properties>
+                <init>
+                    <connection-url>jdbc:mysql://localhost:3306/</connection-url>
+                    <connection-username>*****</connection-username>
+                    <connection-password>pwMwS4I+1KS68ssUYD/eZA==,Encrypt</connection-password>
+                    <database-name>mdm_dev2</database-name>
+                </init>
+            </rdbms-configuration>
+        </master>
+    </datasource>
+</datasources>

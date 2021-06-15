@@ -919,22 +919,21 @@ public class Util extends XmlUtil {
                     if (LOGGER.isDebugEnabled()) {
                         LOGGER.debug("Groovy engine evaluating " + userExpression + ".");
                     }
-					Object expressionValue = null;
-					if (isUserContextProperty(userExpression)) {
-						// TMDM-7207: Only create the groovy script engine if needed (huge performance
-						// issues)
-						// TODO Should there be some pool of ScriptEngine instances? (is reusing ok?)
-						ScriptEngine scriptEngine = SCRIPT_FACTORY.getEngineByName("groovy");
-						if (userXML != null && !userXML.isEmpty()) {
-							User user = User.parse(userXML);
-							scriptEngine.put("user_context", user);
-						}
-						expressionValue = scriptEngine.eval(userExpression);
-					} else {
-						if (LOGGER.isDebugEnabled()) {
-							LOGGER.debug("No such property " + userExpression);
-						}
-					}
+                    Object expressionValue = null;
+                    if (isUserContextProperty(userExpression)) {
+                        // TMDM-7207: Only create the groovy script engine if needed (huge performance
+                        // issues)
+                        // TODO Should there be some pool of ScriptEngine instances? (is reusing ok?)
+                        ScriptEngine scriptEngine = SCRIPT_FACTORY.getEngineByName("groovy");
+                        if (userXML != null && !userXML.isEmpty()) {
+                            User user = User.parse(userXML);
+                            scriptEngine.put("user_context", user);
+	                    }
+	                } else {
+                        if (LOGGER.isDebugEnabled()) {
+                            LOGGER.debug("No such property " + userExpression);
+	                    }
+	                }
                     if (expressionValue != null) {
                         String result = String.valueOf(expressionValue);
                         if (!"".equals(result.trim())) {
@@ -1006,17 +1005,17 @@ public class Util extends XmlUtil {
                         if (LOGGER.isDebugEnabled()) {
                             LOGGER.debug("Groovy engine evaluating " + userExpression + ".");
                         }
-						Object expressionValue = null;
-						if (isUserContextProperty(userExpression)) {
-							ScriptEngine scriptEngine = SCRIPT_FACTORY.getEngineByName("groovy");
-							if (userXML != null && !userXML.isEmpty()) {
-								User user = User.parse(userXML);
-								scriptEngine.put("user_context", user);
-							}
-							expressionValue = scriptEngine.eval(userExpression);
-						} else {
-							LOGGER.warn("No such property " + userExpression);
-						}
+                        Object expressionValue = null;
+                        if (isUserContextProperty(userExpression)) {
+                            ScriptEngine scriptEngine = SCRIPT_FACTORY.getEngineByName("groovy");
+                            if (userXML != null && !userXML.isEmpty()) {
+                                User user = User.parse(userXML);
+                                scriptEngine.put("user_context", user);
+	                        }
+                            expressionValue = scriptEngine.eval(userExpression);
+	                    } else {
+                            LOGGER.warn("No such property " + userExpression);
+	                    }
                         if (expressionValue != null) {
                             String result = String.valueOf(expressionValue);
                             if (!"".equals(result.trim())) {

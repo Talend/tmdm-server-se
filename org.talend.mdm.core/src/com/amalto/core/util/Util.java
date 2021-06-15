@@ -1408,7 +1408,6 @@ public class Util extends XmlUtil {
 			userProperties.add("user_context.username");
 			userProperties.add("user_context.familyname");
 			userProperties.add("user_context.language");
-			userProperties.add("user_context.properties['']");
 			userProperties.add("user_context.givenname");
 			boolean isProperties = expression.startsWith("user_context.properties[") && expression.endsWith("]");
 			return isProperties || userProperties.contains(expression);

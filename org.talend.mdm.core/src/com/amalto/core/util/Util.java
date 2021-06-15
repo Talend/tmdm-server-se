@@ -930,6 +930,10 @@ public class Util extends XmlUtil {
 							scriptEngine.put("user_context", user);
 						}
 						expressionValue = scriptEngine.eval(userExpression);
+					} else {
+						if (LOGGER.isDebugEnabled()) {
+							LOGGER.debug("No such property " + userExpression);
+						}
 					}
                     if (expressionValue != null) {
                         String result = String.valueOf(expressionValue);
@@ -1010,6 +1014,8 @@ public class Util extends XmlUtil {
 								scriptEngine.put("user_context", user);
 							}
 							expressionValue = scriptEngine.eval(userExpression);
+						} else {
+							LOGGER.warn("No such property " + userExpression);
 						}
                         if (expressionValue != null) {
                             String result = String.valueOf(expressionValue);
@@ -1402,9 +1408,9 @@ public class Util extends XmlUtil {
 			userProperties.add("user_context.username");
 			userProperties.add("user_context.familyname");
 			userProperties.add("user_context.language");
-			userProperties.add("user_context.properites['']");
+			userProperties.add("user_context.properties['']");
 			userProperties.add("user_context.givenname");
-			boolean isProperties = expression.startsWith("user_context.properties['") && expression.endsWith("']");
+			boolean isProperties = expression.startsWith("user_context.properties[") && expression.endsWith("]");
 			return isProperties || userProperties.contains(expression);
 		}
 		return false;

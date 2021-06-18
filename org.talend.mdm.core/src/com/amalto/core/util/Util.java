@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.MissingResourceException;
 import java.util.Properties;
+import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -908,20 +910,27 @@ public class Util extends XmlUtil {
             WhereCondition condition = (WhereCondition) whereItem;
             if (condition.getRightValueOrPath() != null && condition.getRightValueOrPath().length() > 0
                     && condition.getRightValueOrPath().contains(USER_PROPERTY_PREFIX)) {
-                // TMDM-7207: Only create the groovy script engine if needed (huge performance issues)
-                // TODO Should there be some pool of ScriptEngine instances? (is reusing ok?)
-                ScriptEngine scriptEngine = SCRIPT_FACTORY.getEngineByName("groovy");
-                if (userXML != null && !userXML.isEmpty()) {
-                    User user = User.parse(userXML);
-                    scriptEngine.put("user_context", user);
-                }
                 String rightCondition = condition.getRightValueOrPath();
                 String userExpression = rightCondition.substring(rightCondition.indexOf('{') + 1, rightCondition.indexOf('}'));
                 try {
                     if (LOGGER.isDebugEnabled()) {
                         LOGGER.debug("Groovy engine evaluating " + userExpression + ".");
                     }
-                    Object expressionValue = scriptEngine.eval(userExpression);
+                    Object expressionValue = null;
+                    if (isUserContextProperty(userExpression)) {
+                        // TMDM-7207: Only create the groovy script engine if needed (huge performance
+                        // issues)
+                        // TODO Should there be some pool of ScriptEngine instances? (is reusing ok?)
+                        ScriptEngine scriptEngine = SCRIPT_FACTORY.getEngineByName("groovy");
+                        if (userXML != null && !userXML.isEmpty()) {
+                            User user = User.parse(userXML);
+                            scriptEngine.put("user_context", user);
+	                    }
+	                } else {
+                        if (LOGGER.isDebugEnabled()) {
+                            LOGGER.debug("No such property " + userExpression);
+	                    }
+	                }
                     if (expressionValue != null) {
                         String result = String.valueOf(expressionValue);
                         if (!"".equals(result.trim())) {
@@ -993,10 +1002,17 @@ public class Util extends XmlUtil {
                         if (LOGGER.isDebugEnabled()) {
                             LOGGER.debug("Groovy engine evaluating " + userExpression + ".");
                         }
-                        ScriptEngine scriptEngine = SCRIPT_FACTORY.getEngineByName("groovy");
-                        User user = User.parse(userXML);
-                        scriptEngine.put("user_context", user);
-                        Object expressionValue = scriptEngine.eval(userExpression);
+                        Object expressionValue = null;
+                        if (isUserContextProperty(userExpression)) {
+                            ScriptEngine scriptEngine = SCRIPT_FACTORY.getEngineByName("groovy");
+                            if (userXML != null && !userXML.isEmpty()) {
+                                User user = User.parse(userXML);
+                                scriptEngine.put("user_context", user);
+	                        }
+                            expressionValue = scriptEngine.eval(userExpression);
+	                    } else {
+                            LOGGER.warn("No such property " + userExpression);
+	                    }
                         if (expressionValue != null) {
                             String result = String.valueOf(expressionValue);
                             if (!"".equals(result.trim())) {
@@ -1380,4 +1396,18 @@ public class Util extends XmlUtil {
             TRANSACTION_CURRENT_REQUESTS.decrementAndGet();
         }
     }
+
+	private static boolean isUserContextProperty(String expression) {
+		if (StringUtils.isNotBlank(expression)) {
+			Set<String> userProperties = new HashSet<>();
+			userProperties.add("user_context.id");
+			userProperties.add("user_context.username");
+			userProperties.add("user_context.familyname");
+			userProperties.add("user_context.language");
+			userProperties.add("user_context.givenname");
+			boolean isProperties = expression.startsWith("user_context.properties[\"") && expression.endsWith("\"]");
+			return isProperties || userProperties.contains(expression);
+		}
+		return false;
+	}
 }

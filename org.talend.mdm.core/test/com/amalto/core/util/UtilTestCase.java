@@ -282,9 +282,9 @@ public class UtilTestCase extends TestCase {
     @SuppressWarnings("cast")
     public void testUpdateUserPropertyCondition() throws Exception {
         String userXML = "<User><username>administrator</username><password>200ceb26807d6bf99fd6f4f0d1ca54d4</password><givenname>Default</givenname><familyname>Administrator</familyname><company>Company</company><id>1001</id><realemail>admin@company.com</realemail><viewrealemail>no</viewrealemail><registrationdate>1397444277524</registrationdate><lastvisitdate>0</lastvisitdate><enabled>yes</enabled><homepage>Home</homepage><language>en</language><roles><role>System_Admin</role><role>administration</role></roles><properties><property><name>model</name><value>Product</value></property><property><name>location</name><value>bj</value></property><property><name>cluster</name><value>Product</value></property></properties></User>";//$NON-NLS-1$
-        String conditionDesc1 = "${user_context.properties['location']}";//$NON-NLS-1$
-        String conditionDesc2 = "${user_context.registrationdate}";//$NON-NLS-1$
-        String conditionDesc3 = "${user_context.enabled}";//$NON-NLS-1$
+        String conditionDesc1 = "${user_context.properties[\"location\"]}";//$NON-NLS-1$
+        String conditionDesc2 = "${user_context.id}";//$NON-NLS-1$
+        String conditionDesc3 = "${user_context.username}";//$NON-NLS-1$
         String conditionDesc4 = "${user_context.language}";//$NON-NLS-1$
         String conditionDesc5 = "${user_context.testproperty}";//$NON-NLS-1$
 
@@ -315,11 +315,11 @@ public class UtilTestCase extends TestCase {
         }
         if (conditions.get(1) instanceof WhereCondition) {
             WhereCondition updateCondition = (WhereCondition) conditions.get(1);
-            assertTrue("1397444277524".equals(updateCondition.getRightValueOrPath()));//$NON-NLS-1$
+            assertTrue("1001".equals(updateCondition.getRightValueOrPath()));//$NON-NLS-1$
         }
         if (conditions.get(2) instanceof WhereCondition) {
             WhereCondition updateCondition = (WhereCondition) conditions.get(2);
-            assertTrue("true".equals(updateCondition.getRightValueOrPath()));//$NON-NLS-1$
+            assertTrue("administrator".equals(updateCondition.getRightValueOrPath()));//$NON-NLS-1$
         }
         if (conditions.get(3) instanceof WhereCondition) {
             WhereCondition updateCondition = (WhereCondition) conditions.get(3);
@@ -331,13 +331,13 @@ public class UtilTestCase extends TestCase {
         String userXML = "<User><username>administrator</username><password>200ceb26807d6bf99fd6f4f0d1ca54d4</password><givenname>Default</givenname><familyname>Administrator</familyname><company>Company</company><id>1001</id><realemail>admin@company.com</realemail><viewrealemail></viewrealemail><registrationdate>1397444277524</registrationdate><lastvisitdate>0</lastvisitdate><enabled>yes</enabled><homepage>Home</homepage><language>en</language><roles><role>System_Admin</role><role>administration</role></roles><properties><property><name>model</name><value>Product</value></property><property><name>location</name><value>bj</value></property><property><name>cluster</name><value>Product</value></property></properties></User>";//$NON-NLS-1$
 
         List<IWhereItem> whereItems = new ArrayList<IWhereItem>();
-        IWhereItem whereItem1 = new WhereCondition("Product/Price", "=", "${user_context.registrationdate}", "NONE");
-        IWhereItem whereItem2 = new WhereCondition("Product/Description", "=", "${user_context.enabled}", "NONE");
-        IWhereItem whereItem3 = new WhereCondition("Product/Description", "=", "${user_context.viewrealemail}", "NONE");
+        IWhereItem whereItem1 = new WhereCondition("Product/Price", "=", "${user_context.id}", "NONE");
+        IWhereItem whereItem2 = new WhereCondition("Product/Description", "=", "${user_context.username}", "NONE");
+        IWhereItem whereItem3 = new WhereCondition("Product/Description", "=", "${user_context.givenname}", "NONE");
         IWhereItem whereItem4 = new WhereCondition("Product/Description", "=", "${user_context.nosuchattribute}", "NONE");
-        IWhereItem whereItem5 = new WhereCondition("Product/Description", "=", "${user_context.properties['location']}", "NONE");
-        IWhereItem whereItem6 = new WhereCondition("Product/Description", "=", "${user_context.properties['error']}", "NONE");
-        IWhereItem whereItem7 = new WhereCondition("Product/Description", "=", "${user_context.properties['']}", "NONE");
+        IWhereItem whereItem5 = new WhereCondition("Product/Description", "=", "${user_context.properties[\"location\"]}", "NONE");
+        IWhereItem whereItem6 = new WhereCondition("Product/Description", "=", "${user_context.properties[\"error\"]}", "NONE");
+        IWhereItem whereItem7 = new WhereCondition("Product/Description", "=", "${user_context.properties[\"\"]}", "NONE");
         IWhereItem whereItem8 = new WhereCondition("Product/Family", "Is Empty Or Null", null, "NONE");
 
         whereItems.add(whereItem1);
@@ -363,9 +363,9 @@ public class UtilTestCase extends TestCase {
             WhereCondition condition4 = (WhereCondition) subItems.get(3);
             WhereCondition condition8 = (WhereCondition) subItems.get(4);
 
-            assertTrue("1397444277524".equals(condition1.getRightValueOrPath()));
-            assertTrue("true".equals(condition2.getRightValueOrPath()));
-            assertTrue("false".equals(condition3.getRightValueOrPath()));
+            assertTrue("1001".equals(condition1.getRightValueOrPath()));
+            assertTrue("administrator".equals(condition2.getRightValueOrPath()));
+            assertTrue("Default".equals(condition3.getRightValueOrPath()));
             assertTrue("bj".equals(condition4.getRightValueOrPath()));
             assertTrue("Is Empty Or Null".equals(condition8.getOperator()));
         }

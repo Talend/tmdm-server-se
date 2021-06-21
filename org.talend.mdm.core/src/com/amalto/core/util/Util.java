@@ -926,6 +926,7 @@ public class Util extends XmlUtil {
                             User user = User.parse(userXML);
                             scriptEngine.put("user_context", user);
 	                    }
+                        expressionValue = scriptEngine.eval(userExpression);
 	                } else {
                         if (LOGGER.isDebugEnabled()) {
                             LOGGER.debug("No such property " + userExpression);

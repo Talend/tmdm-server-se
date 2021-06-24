@@ -24,8 +24,6 @@ public interface ServerAccess {
 
     public boolean isEnterpriseVersion();
 
-    public int getWorkflowTasksCount();
-
     public static final ServerAccess INSTANCE = ServerAccessFactory.createAccess();
 
     public static final class ServerAccessFactory {

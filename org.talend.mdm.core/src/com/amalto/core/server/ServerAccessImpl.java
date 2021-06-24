@@ -42,9 +42,4 @@ public class ServerAccessImpl implements ServerAccess {
     public boolean isEnterpriseVersion() {
         return false;
     }
-
-    @Override
-    public int getWorkflowTasksCount() {
-        return 0;
-    }
 }

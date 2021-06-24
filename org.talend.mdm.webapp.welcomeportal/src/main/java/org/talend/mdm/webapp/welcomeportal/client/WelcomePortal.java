@@ -54,10 +54,6 @@ public class WelcomePortal implements EntryPoint {
 
     public final static String JOURNALAPP = "Journal"; //$NON-NLS-1$
 
-    public final static String WORKFLOW_TASKCONTEXT = "workflowtasks"; //$NON-NLS-1$
-
-    public final static String WORKFLOW_TASKAPP = "BonitaWorkflowTasks";//$NON-NLS-1$
-
     public final static String WELCOMEPORTAL_ID = "Welcome"; //$NON-NLS-1$
 
     public static final String SEARCHCONTEXT = "search"; //$NON-NLS-1$

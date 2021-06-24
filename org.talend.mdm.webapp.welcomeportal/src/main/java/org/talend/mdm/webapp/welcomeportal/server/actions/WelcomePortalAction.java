@@ -67,16 +67,6 @@ public class WelcomePortalAction implements WelcomePortalService {
     private PortalProperties portalConfig;
 
     /**
-     * check if is show workflow task link.
-     *
-     * @return
-     */
-    @Override
-    public boolean isHiddenWorkFlowTask() throws ServiceException {
-        return isHiddenMenu(WelcomePortal.WORKFLOW_TASKAPP);
-    }
-
-    /**
      * check if is show dsc task link.
      *
      * @return
@@ -114,16 +104,6 @@ public class WelcomePortalAction implements WelcomePortalService {
             LOG.error(e.getMessage(), e);
             throw new ServiceException(e.getLocalizedMessage());
         }
-    }
-
-    /**
-     * get workflow task informations.
-     *
-     * @return
-     */
-    @Override
-    public int getWorkflowTaskMsg() {
-        return Webapp.INSTANCE.getWorkflowTasksCount();
     }
 
     @Override

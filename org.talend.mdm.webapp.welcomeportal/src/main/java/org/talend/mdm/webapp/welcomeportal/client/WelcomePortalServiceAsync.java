@@ -31,11 +31,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public interface WelcomePortalServiceAsync {
 
-    void isHiddenWorkFlowTask(AsyncCallback<Boolean> callback);
-
     void isHiddenTDSTask(AsyncCallback<Boolean> callback);
-
-    void getWorkflowTaskMsg(AsyncCallback<Integer> callback);
 
     void getStandaloneProcess(String language, AsyncCallback<Map<String, String>> callback);
 

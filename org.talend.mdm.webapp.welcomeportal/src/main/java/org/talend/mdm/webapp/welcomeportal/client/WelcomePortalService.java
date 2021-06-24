@@ -25,11 +25,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 @RemoteServiceRelativePath("WelcomePortalService")
 public interface WelcomePortalService extends RemoteService {
 
-    public boolean isHiddenWorkFlowTask() throws ServiceException;
-
     public boolean isHiddenTDSTask() throws ServiceException;
-
-    public int getWorkflowTaskMsg() throws ServiceException;
 
     public Map<String, String> getStandaloneProcess(String language) throws ServiceException;
 

@@ -15,7 +15,6 @@
     <groupitem id="menugroup.govern">
         <item>stagingarea.Stagingarea</item>
         <item>datastewardship.Datastewardship</item>
-        <item>workflowtasks.BonitaWorkflowTasks</item>
         <item>crossreference.CrossReference</item>
     </groupitem>
     <groupitem id="menugroup.administration">

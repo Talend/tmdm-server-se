@@ -56,11 +56,6 @@ public class WebappImpl implements Webapp {
     }
 
     @Override
-    public int getWorkflowTasksCount() {
-        return serverAccess.getWorkflowTasksCount();
-    }
-
-    @Override
     public boolean isEnterpriseVersion() {
         return serverAccess.isEnterpriseVersion();
     }

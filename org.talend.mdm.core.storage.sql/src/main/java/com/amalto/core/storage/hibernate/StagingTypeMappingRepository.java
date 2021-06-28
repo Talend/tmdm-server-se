@@ -46,7 +46,7 @@ class StagingTypeMappingRepository extends InternalRepository {
             limitedStringType.setData(MetadataRepository.DATA_MAX_LENGTH, UUID.randomUUID().toString().length());
             // Time stamp
             database.addField(new SimpleTypeFieldMetadata(database, false, false, true, StorageConstants.METADATA_TIMESTAMP, longType,
-                    Collections.<String> emptyList(), Collections.<String> emptyList(), Collections.<String> emptyList(), StringUtils.EMPTY));
+                    Collections.<String> emptyList(), Collections.<String> emptyList(), StringUtils.EMPTY));
             // Task id
             database.addField(new SimpleTypeFieldMetadata(database, false, false, false, StorageConstants.METADATA_TASK_ID,
                     limitedStringType, Collections.<String> emptyList(), Collections.<String> emptyList(), StringUtils.EMPTY));

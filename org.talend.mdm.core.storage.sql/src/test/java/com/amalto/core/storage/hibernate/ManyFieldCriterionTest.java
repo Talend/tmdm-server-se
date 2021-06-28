@@ -58,8 +58,8 @@ public class ManyFieldCriterionTest extends TestCase {
                 false,
                 false,
                 false,
-                "Song", null, new SimpleTypeFieldMetadata(null, false, false, false, "Song", new SimpleTypeMetadata("", "x_songname"), null, null, null, ""), null, "", false, false, null, null, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
-                null, null, "", ""); //$NON-NLS-1$ //$NON-NLS-2$
+                "Song", null, new SimpleTypeFieldMetadata(null, false, false, false, "Song", new SimpleTypeMetadata("", "x_songname"), null, null, ""), null, "", false, false, null, null, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+                null, "", ""); //$NON-NLS-1$ //$NON-NLS-2$
         ManyFieldCriterion cirCriterion = new ManyFieldCriterion(dataSource, criteria, tableResolver, field,
                 "Hell Ain't A Bad Place To Be",Predicate.EQUALS, Types.STRING, -1); //$NON-NLS-1$
         assertEquals("(a1.x_id = Hell Ain\\'t A Bad Place To Be)", cirCriterion.toSqlString(criteria, criteriaQuery)); //$NON-NLS-1$

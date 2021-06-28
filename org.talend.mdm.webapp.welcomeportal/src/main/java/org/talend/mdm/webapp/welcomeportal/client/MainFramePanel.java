@@ -74,8 +74,6 @@ public class MainFramePanel extends Portal {
 
     private int interval;
 
-    private boolean hiddenWorkFlowTask;
-
     private boolean hiddenTask;
 
     private List<BasePortlet> portlets;
@@ -719,14 +717,6 @@ public class MainFramePanel extends Portal {
         initUI(context, application);
     }
 
-    public boolean isHiddenWorkFlowTask() {
-        return this.hiddenWorkFlowTask;
-    }
-
-    public void setHiddenWorkFlowTask(boolean hiddenWorkFlowTask) {
-        this.hiddenWorkFlowTask = hiddenWorkFlowTask;
-    }
-
     public boolean isHiddenTask() {
         return this.hiddenTask;
     }
@@ -758,38 +748,28 @@ public class MainFramePanel extends Portal {
     }
 
     private void initTaskPortlet() {
-
-        service.isHiddenWorkFlowTask(new SessionAwareAsyncCallback<Boolean>() {
+        service.isHiddenTDSTask(new SessionAwareAsyncCallback<Boolean>() {
 
             @Override
-            public void onSuccess(Boolean hideMe) {
-                setHiddenWorkFlowTask(hideMe);
+            public void onSuccess(Boolean hideMeToo) {
+                setHiddenTask(hideMeToo);
 
-                service.isHiddenTDSTask(new SessionAwareAsyncCallback<Boolean>() {
-
-                    @Override
-                    public void onSuccess(Boolean hideMeToo) {
-                        setHiddenTask(hideMeToo);
-
-                        if (!isHiddenWorkFlowTask() || !isHiddenTask()) {
-                            BasePortlet portlet = new TaskPortlet(MainFramePanel.this);
-                            portlets.add(portlet);
-                            MainFramePanel.this.add(portlet);
-                        } else {
-                            if (isEnterprise) {
-                                int index = default_index_ordering.indexOf(PortletConstants.TASKS_NAME);
-                                initializePortlet(default_index_ordering.get(index + 1));
-                            } else {
-                                initDatabaseWithPortalSettings();
-                                markPortalConfigsOnUI(getConfigsForUser());
-                            }
-                        }
-
+                if (!isHiddenTask()) {
+                    BasePortlet portlet = new TaskPortlet(MainFramePanel.this);
+                    portlets.add(portlet);
+                    MainFramePanel.this.add(portlet);
+                } else {
+                    if (isEnterprise) {
+                        int index = default_index_ordering.indexOf(PortletConstants.TASKS_NAME);
+                        initializePortlet(default_index_ordering.get(index + 1));
+                    } else {
+                        initDatabaseWithPortalSettings();
+                        markPortalConfigsOnUI(getConfigsForUser());
                     }
-                });
+                }
+
             }
         });
-
     }
 
     // Store portal config values after all portlet initialized

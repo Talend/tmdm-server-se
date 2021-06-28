@@ -155,11 +155,10 @@ public class UtilsTest extends TestCase {
 
         // assert govern
         assertEquals(expectedHeader[2], menuList.get(2).getGroupHeader());
-        assertEquals(4, menuList.get(2).getMenuItems().size());
+        assertEquals(3, menuList.get(2).getMenuItems().size());
         assertEquals("stagingarea.Stagingarea", menuList.get(2).getMenuItems().get(0));
         assertEquals("datastewardship.Datastewardship", menuList.get(2).getMenuItems().get(1));
-        assertEquals("workflowtasks.BonitaWorkflowTasks", menuList.get(2).getMenuItems().get(2));
-        assertEquals("crossreference.CrossReference", menuList.get(2).getMenuItems().get(3));
+        assertEquals("crossreference.CrossReference", menuList.get(2).getMenuItems().get(2));
 
         // assert administration
         assertEquals(expectedHeader[3], menuList.get(3).getGroupHeader());

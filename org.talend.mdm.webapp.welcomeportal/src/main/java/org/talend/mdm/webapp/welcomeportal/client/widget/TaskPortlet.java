@@ -42,19 +42,14 @@ public class TaskPortlet extends BasePortlet {
     private final String TASK_AMOUNT = "amount";
 
     private String tdsServiceBaseUrl = GWT.getHostPageBaseURL() + "services/rest/tds/";
-
-    private static String WORKFLOWTASKS_PREFIX = "<span id=\"workflowtasks\" style=\"padding-right:8px;cursor: pointer;\" class=\"labelStyle\" title=\"" + MessagesFactory.getMessages().tasks_title() + "\">"; //$NON-NLS-1$ //$NON-NLS-2$
-
+    
     private static String DSCTASKS_PREFIX = "<span id=\"dsctasks\" style=\"padding-right:8px;cursor: pointer;\" class=\"labelStyle\" title=\"" + MessagesFactory.getMessages().tasks_title() + "\">"; //$NON-NLS-1$ //$NON-NLS-2$
-
-    private boolean isHiddenWorkFlowTask = true;
 
     private boolean isHiddenTask = true;
 
     private String ACCESS_TDS_FAIL = "access_tds_fail";
 
     private enum TASK_TYPE {
-        WORKFLOW_TYPE,
         TDS_TYPE
     };
 
@@ -62,30 +57,17 @@ public class TaskPortlet extends BasePortlet {
 
     private Integer taskPendingCount;
 
-    private Integer workflowTaskNewCount;
-
-    private ClickHandler workflowClikcHanlder;
-
     private ClickHandler tdsClikcHanlder;
 
     public TaskPortlet(final MainFramePanel portal) {
         super(PortletConstants.TASKS_NAME, portal);
         setIcon(AbstractImagePrototype.create(Icons.INSTANCE.task()));
         setHeading(MessagesFactory.getMessages().tasks_title());
-        isHiddenWorkFlowTask = portal.isHiddenWorkFlowTask();
         isHiddenTask = portal.isHiddenTask();
         initConfigSettings();
         label.setText(MessagesFactory.getMessages().loading_task_msg());
         updateTaskes();
         autoRefresh(configModel.isAutoRefresh());
-
-        workflowClikcHanlder = new ClickHandler() {
-
-            @Override
-            public void onClick(ClickEvent event) {
-                portal.itemClick(WelcomePortal.WORKFLOW_TASKCONTEXT, WelcomePortal.WORKFLOW_TASKAPP);
-            }
-        };
 
         tdsClikcHanlder = new ClickHandler() {
 
@@ -102,22 +84,7 @@ public class TaskPortlet extends BasePortlet {
     }
 
     private void updateTaskes() {
-        if (!isHiddenWorkFlowTask && isHiddenTask) {
-            service.getWorkflowTaskMsg(new SessionAwareAsyncCallback<Integer>() {
-
-                @Override
-                public void onSuccess(Integer workflowTaskCount) {
-                    if (workflowTaskCount != null) {
-                        if (workflowTaskNewCount == null || workflowTaskNewCount != workflowTaskCount) {
-                            workflowTaskNewCount = workflowTaskCount;
-                            updateTaskPanel(workflowTaskNewCount, null, 0, 0);
-                        }
-                    }
-                }
-            });
-        }
-
-        if (!isHiddenTask && isHiddenWorkFlowTask) {
+        if (!isHiddenTask) {
             String url = tdsServiceBaseUrl + TASK_AMOUNT;
             RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
             builder.setHeader("Accept", "application/json");
@@ -132,7 +99,7 @@ public class TaskPortlet extends BasePortlet {
                                 Integer taskCount = Integer.valueOf(response.getText());
                                 if (taskNewCount == null || taskNewCount != taskCount) {
                                     taskNewCount = taskCount;
-                                    updateTaskPanel(0, TASK_TYPE.TDS_TYPE, taskNewCount, 0);
+                                    updateTaskPanel(TASK_TYPE.TDS_TYPE, taskNewCount, 0);
                                 }
                             } catch (NumberFormatException exception) {
                                 errorHTML = buildErrorHTML(BaseMessagesFactory.getMessages().unknown_error());
@@ -159,75 +126,13 @@ public class TaskPortlet extends BasePortlet {
                 handleServiceException(exception);
             }
         }
-
-        if (!isHiddenWorkFlowTask && !isHiddenTask) {
-            service.getWorkflowTaskMsg(new SessionAwareAsyncCallback<Integer>() {
-
-                @Override
-                public void onSuccess(final Integer workflowTaskCount) {
-                    final boolean workflowTaskChanged = workflowTaskCount != null
-                            && (workflowTaskNewCount == null || workflowTaskNewCount != workflowTaskCount);
-                    if (workflowTaskChanged) {
-                        workflowTaskNewCount = workflowTaskCount;
-                    }
-                    String url = tdsServiceBaseUrl + TASK_AMOUNT;
-                    RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
-                    builder.setHeader("Accept", "application/json");
-                    try {
-                        builder.sendRequest("", new RequestCallback() {
-
-                            @Override
-                            public void onResponseReceived(Request request, Response response) {
-                                HTML errorHTML = null;
-                                if (Response.SC_OK == response.getStatusCode()) {
-                                    try {
-                                        Integer taskCount = Integer.valueOf(response.getText());
-                                        boolean taskChanged = taskNewCount == null || taskNewCount != taskCount;
-                                        if (workflowTaskChanged || taskChanged) {
-                                            taskNewCount = taskCount;
-                                            updateTaskPanel(workflowTaskNewCount, TASK_TYPE.TDS_TYPE, taskNewCount, 0);
-                                        }
-                                    } catch (NumberFormatException exception) {
-                                        errorHTML = buildErrorHTML(BaseMessagesFactory.getMessages().unknown_error());
-                                    }
-                                } else {
-                                    errorHTML = buildErrorHTML(getResponseErrorMessage(response));
-                                }
-                                if (errorHTML != null) {
-                                    if (workflowTaskCount > 0) {
-                                        updateTaskPanel(workflowTaskNewCount, TASK_TYPE.TDS_TYPE, 0, 0);
-                                    } else {
-                                        label.setText(MessagesFactory.getMessages().no_tasks());
-                                        fieldSet.removeAll();
-                                    }
-                                    fieldSet.add(errorHTML);
-                                    fieldSet.layout(true);
-                                }
-                            }
-
-                            @Override
-                            public void onError(Request request, Throwable exception) {
-                                handleServiceException(exception);
-                            }
-
-                        });
-                    } catch (RequestException exception) {
-                        handleServiceException(exception);
-                    }
-                }
-            });
-        }
     }
 
     private HTML buildTaskHTML(TASK_TYPE type, Integer count1, Integer count2) {
         HTML taskHtml = new HTML();
         StringBuilder taskStringBuilder;
         String countString;
-        if (type == TASK_TYPE.WORKFLOW_TYPE) {
-            taskStringBuilder = new StringBuilder(WORKFLOWTASKS_PREFIX);
-            countString = buildMessage(String.valueOf(count1), MessagesFactory.getMessages().waiting_workflowtask_suffix());
-            taskHtml.addClickHandler(workflowClikcHanlder);
-        } else if (type == TASK_TYPE.TDS_TYPE) {
+        if (type == TASK_TYPE.TDS_TYPE) {
             taskStringBuilder = new StringBuilder(DSCTASKS_PREFIX);
             countString = buildMessage(MessagesFactory.getMessages().waiting_task(count1), MessagesFactory.getMessages()
                     .waiting_dsctask_suffix());
@@ -253,19 +158,13 @@ public class TaskPortlet extends BasePortlet {
         return message.toString();
     }
 
-    private void updateTaskPanel(int workflowTaskCount, TASK_TYPE taskType, int taskCount1, int taskCount2) {
-        if ((workflowTaskCount + taskCount1 + taskCount2) == 0) {
+    private void updateTaskPanel(TASK_TYPE taskType, int taskCount1, int taskCount2) {
+        if ((taskCount1 + taskCount2) == 0) {
             label.setText(MessagesFactory.getMessages().no_tasks());
             fieldSet.setVisible(false);
         } else {
             fieldSet.removeAll();
-            if (workflowTaskCount > 0) {
-                workflowTaskNewCount = workflowTaskCount;
-                HTML taskHtml = buildTaskHTML(TASK_TYPE.WORKFLOW_TYPE, workflowTaskNewCount, 0);
-                if (taskHtml != null) {
-                    fieldSet.add(taskHtml);
-                }
-            }
+           
             if (taskCount1 + taskCount2 > 0) {
                 taskNewCount = taskCount1;
                 taskPendingCount = taskCount2;

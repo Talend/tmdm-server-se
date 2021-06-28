@@ -675,8 +675,6 @@ amalto.core = function () {
                         	imageIconPart="<span style=\"padding-right:8px;\"><IMG SRC=\"/talendmdm/secure/img/menu/trash.png\"/></span>";
                         }else if(toCheckMenuID=='journal.Journal'){
                         	imageIconPart="<span style=\"padding-right:8px;\"><IMG SRC=\"/talendmdm/secure/img/menu/updatereport.png\"/></span>";
-                        }else if(toCheckMenuID=='workflowtasks.WorkflowTasks'){
-                        	imageIconPart="<span style=\"padding-right:8px;\"><IMG SRC=\"/talendmdm/secure/img/menu/workflowtasks.png\"/></span>";
                         }else if(toCheckMenuID=='datastewardship.Datastewardship'){
                         	imageIconPart="<span style=\"padding-right:8px;\"><IMG SRC=\"/talendmdm/secure/img/menu/stewardship.png\"/></span>";
                         }else{

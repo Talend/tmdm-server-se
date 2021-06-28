@@ -149,8 +149,6 @@ public class AccordionMenus extends ContentPanel {
             icon = "secure/img/menu/trash.png"; //$NON-NLS-1$
         } else if ("journal.Journal".equals(toCheckMenuID)) { //$NON-NLS-1$
             icon = "secure/img/menu/updatereport.png"; //$NON-NLS-1$
-        } else if ("workflowtasks.BonitaWorkflowTasks".equals(toCheckMenuID)) { //$NON-NLS-1$
-            icon = "secure/img/menu/bonita_user_xp.png"; //$NON-NLS-1$
         } else if ("datastewardship.Datastewardship".equals(toCheckMenuID)) { //$NON-NLS-1$
             icon = "secure/img/menu/stewardship.png"; //$NON-NLS-1$
         } else if ("search.Search".equals(toCheckMenuID)) { //$NON-NLS-1$

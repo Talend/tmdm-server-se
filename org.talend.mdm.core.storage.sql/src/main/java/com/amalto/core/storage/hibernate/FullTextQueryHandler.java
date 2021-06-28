@@ -253,7 +253,7 @@ class FullTextQueryHandler extends AbstractQueryHandler {
                             }
                             if (aliasName != null) {
                                 SimpleTypeMetadata fieldType = new SimpleTypeMetadata(XMLConstants.W3C_XML_SCHEMA_NS_URI, fieldMetadata.getType().getName());
-                                fieldMetadata = new SimpleTypeFieldMetadata(explicitProjectionType, false, false, false, aliasName, fieldType, Collections.<String>emptyList(), Collections.<String>emptyList(), Collections.<String>emptyList(), StringUtils.EMPTY);
+                                fieldMetadata = new SimpleTypeFieldMetadata(explicitProjectionType, false, false, false, aliasName, fieldType, Collections.<String>emptyList(), Collections.<String>emptyList(), StringUtils.EMPTY);
                                 explicitProjectionType.addField(fieldMetadata);
                             } else {
                                 explicitProjectionType.addField(fieldMetadata);
@@ -266,7 +266,7 @@ class FullTextQueryHandler extends AbstractQueryHandler {
                         public Void visit(StringConstant constant) {
                             if (aliasName != null) {
                                 SimpleTypeMetadata fieldType = new SimpleTypeMetadata(XMLConstants.W3C_XML_SCHEMA_NS_URI, Types.STRING);
-                                FieldMetadata fieldMetadata = new SimpleTypeFieldMetadata(explicitProjectionType, false, false, false, aliasName, fieldType, Collections.<String>emptyList(), Collections.<String>emptyList(), Collections.<String>emptyList(), StringUtils.EMPTY);
+                                FieldMetadata fieldMetadata = new SimpleTypeFieldMetadata(explicitProjectionType, false, false, false, aliasName, fieldType, Collections.<String>emptyList(), Collections.<String>emptyList(), StringUtils.EMPTY);
                                 explicitProjectionType.addField(fieldMetadata);
                                 nextRecord.set(fieldMetadata, constant.getValue());
                             } else {
@@ -279,7 +279,7 @@ class FullTextQueryHandler extends AbstractQueryHandler {
                         public Void visit(Count count) {
                             if (aliasName != null) {
                                 SimpleTypeMetadata fieldType = new SimpleTypeMetadata(XMLConstants.W3C_XML_SCHEMA_NS_URI, count.getTypeName());
-                                FieldMetadata fieldMetadata = new SimpleTypeFieldMetadata(explicitProjectionType, false, false, false, aliasName, fieldType, Collections.<String>emptyList(), Collections.<String>emptyList(), Collections.<String>emptyList(), StringUtils.EMPTY);
+                                FieldMetadata fieldMetadata = new SimpleTypeFieldMetadata(explicitProjectionType, false, false, false, aliasName, fieldType, Collections.<String>emptyList(), Collections.<String>emptyList(), StringUtils.EMPTY);
                                 explicitProjectionType.addField(fieldMetadata);
                                 nextRecord.set(fieldMetadata, list.size());
                             }
@@ -299,7 +299,7 @@ class FullTextQueryHandler extends AbstractQueryHandler {
                         private Void handleMetadataField(MetadataField field) {
                             SimpleTypeMetadata fieldType = new SimpleTypeMetadata(XMLConstants.W3C_XML_SCHEMA_NS_URI, field.getTypeName());
                             String fieldName = aliasName == null ? field.getFieldName() : aliasName;
-                            SimpleTypeFieldMetadata aliasField = new SimpleTypeFieldMetadata(explicitProjectionType, false, false, false, fieldName, fieldType, Collections.<String>emptyList(), Collections.<String>emptyList(), Collections.<String>emptyList(), StringUtils.EMPTY);
+                            SimpleTypeFieldMetadata aliasField = new SimpleTypeFieldMetadata(explicitProjectionType, false, false, false, fieldName, fieldType, Collections.<String>emptyList(), Collections.<String>emptyList(), StringUtils.EMPTY);
                             explicitProjectionType.addField(aliasField);
                             nextRecord.set(aliasField, field.getReader().readValue(next));
                             return null;
@@ -344,7 +344,7 @@ class FullTextQueryHandler extends AbstractQueryHandler {
                         public Void visit(Type type) {
                             FieldMetadata fieldMetadata = type.getField().getFieldMetadata();
                             SimpleTypeMetadata fieldType = new SimpleTypeMetadata(XMLConstants.W3C_XML_SCHEMA_NS_URI, Types.STRING);
-                            SimpleTypeFieldMetadata aliasField = new SimpleTypeFieldMetadata(explicitProjectionType, false, false, false, aliasName, fieldType, Collections.<String>emptyList(), Collections.<String>emptyList(), Collections.<String>emptyList(), StringUtils.EMPTY);
+                            SimpleTypeFieldMetadata aliasField = new SimpleTypeFieldMetadata(explicitProjectionType, false, false, false, aliasName, fieldType, Collections.<String>emptyList(), Collections.<String>emptyList(), StringUtils.EMPTY);
                             explicitProjectionType.addField(aliasField);
                             nextRecord.set(aliasField, getTypeName(next.get(fieldMetadata.getName())));
                             return null;
@@ -526,7 +526,6 @@ class FullTextQueryHandler extends AbstractQueryHandler {
                                     fieldType,
                                     Collections.<String>emptyList(),
                                     Collections.<String>emptyList(),
-                                    Collections.<String>emptyList(),
                                     StringUtils.EMPTY);
                             explicitProjectionType.addField(newField);
                             TypedExpression typedExpression = alias.getTypedExpression();
@@ -564,7 +563,6 @@ class FullTextQueryHandler extends AbstractQueryHandler {
                                     false,
                                     ((MetadataField) selectedField).getFieldName(),
                                     fieldType,
-                                    Collections.<String>emptyList(),
                                     Collections.<String>emptyList(),
                                     Collections.<String>emptyList(),
                                     StringUtils.EMPTY);

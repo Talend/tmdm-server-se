@@ -75,7 +75,7 @@ public class BusinessConcept {
     private List<String> keyFieldPaths;
 
     // TODO: translate it from technique to business logic
-    // annotations{label,access rules,foreign keys,workflow,schematron,lookup fields...}
+    // annotations{label,access rules,foreign keys,schematron,lookup fields...}
     // restrictions
     // enumeration
 

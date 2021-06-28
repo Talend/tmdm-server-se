@@ -320,7 +320,6 @@ public class JournalSearchPanel extends FormPanel {
         list.add(UpdateReportPOJO.GENERIC_UI_SOURCE);
         list.add(UpdateReportPOJO.RESTORE_UI_SOURCE);
         list.add(UpdateReportPOJO.SERVICE_SOURCE);
-        list.add(UpdateReportPOJO.WORKFLOW_SOURCE);
 
         sourceCombo = new ComboBox<ItemBaseModel>();
         sourceCombo.setId("source");//$NON-NLS-1$

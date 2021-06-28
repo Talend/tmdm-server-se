@@ -65,7 +65,6 @@ class SystemScatteredMappingCreator extends DefaultMetadataVisitor<TypeMapping> 
                 field.getType(),
                 field.getWriteUsers(),
                 field.getHideUsers(),
-                field.getWorkflowAccessRights(),
                 StringUtils.EMPTY);
         TypeMetadata declaringType = field.getDeclaringType();
         if (declaringType != field.getContainingType() && declaringType.isInstantiable()) {
@@ -136,7 +135,6 @@ class SystemScatteredMappingCreator extends DefaultMetadataVisitor<TypeMapping> 
                 new SimpleTypeMetadata(XMLConstants.W3C_XML_SCHEMA_NS_URI, Types.STRING),
                 referenceField.getWriteUsers(),
                 referenceField.getHideUsers(),
-                referenceField.getWorkflowAccessRights(),
                 StringUtils.EMPTY,
                 StringUtils.EMPTY);
         newFlattenField.setData(MetadataRepository.DATA_MAX_LENGTH, UUID_LENGTH); // TODO Not very true...
@@ -170,8 +168,7 @@ class SystemScatteredMappingCreator extends DefaultMetadataVisitor<TypeMapping> 
                     originalContainedType.getSchematron(),
                     originalContainedType.getPrimaryKeyInfo(),
                     originalContainedType.getLookupFields(),
-                    false,
-                    originalContainedType.getWorkflowAccessRights());
+                    false);
             internalRepository.addTypeMetadata(internalContainedType);
             if (superTypeName == null) {
                 // Generate a technical ID only if contained type does not have super type (subclasses will inherit it).
@@ -183,7 +180,6 @@ class SystemScatteredMappingCreator extends DefaultMetadataVisitor<TypeMapping> 
                         new SoftTypeRef(internalRepository, internalRepository.getUserNamespace(), Types.UUID, false),
                         originalContainedType.getWriteUsers(),
                         originalContainedType.getHideUsers(),
-                        originalContainedType.getWorkflowAccessRights(),
                         StringUtils.EMPTY);
                 internalContainedType.addField(fieldMetadata);
                 fieldMetadata.setData(MetadataRepository.DATA_MAX_LENGTH, UUID_LENGTH);
@@ -233,7 +229,6 @@ class SystemScatteredMappingCreator extends DefaultMetadataVisitor<TypeMapping> 
                 new SimpleTypeMetadata(XMLConstants.W3C_XML_SCHEMA_NS_URI, Types.STRING),
                 containedField.getWriteUsers(),
                 containedField.getHideUsers(),
-                containedField.getWorkflowAccessRights(),
                 StringUtils.EMPTY,
                 StringUtils.EMPTY);
         newFlattenField.setData(MetadataRepository.DATA_MAX_LENGTH, UUID_LENGTH);
@@ -280,7 +275,6 @@ class SystemScatteredMappingCreator extends DefaultMetadataVisitor<TypeMapping> 
                         true,
                         GENERATED_ID,
                         type,
-                        Collections.<String>emptyList(),
                         Collections.<String>emptyList(),
                         Collections.<String>emptyList(),
                         StringUtils.EMPTY);

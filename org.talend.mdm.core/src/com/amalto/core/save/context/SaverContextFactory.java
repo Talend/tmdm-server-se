@@ -288,10 +288,7 @@ public class SaverContextFactory {
         if (isReplace) {
             userAction = UserAction.REPLACE;
         }
-        // TMDM-5587: workflow uses 'update' for both 'update' and 'create' (so choose 'auto').
-        if ("workflow".equalsIgnoreCase(changeSource)) { //$NON-NLS-1$
-            userAction = UserAction.AUTO;
-        }
+
         // Choose right context implementation
         DocumentSaverContext context;
         StorageAdmin storageAdmin = server.getStorageAdmin();

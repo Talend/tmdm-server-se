@@ -78,11 +78,11 @@ public class ManyFieldCriterionTest extends TestCase {
         ComplexTypeMetadata complexType = Mockito.mock(ComplexTypeMetadata.class);
         List<FieldMetadata> keyList = new ArrayList<>();
         keyList.add(new SimpleTypeFieldMetadata(complexType, false, false, false, "Song",
-                new SimpleTypeMetadata("", "x_songname"), null, null, null, ""));
+                new SimpleTypeMetadata("", "x_songname"), null, null, ""));
         Mockito.when(complexType.getKeyFields()).thenReturn(keyList);
 
         field = new SimpleTypeFieldMetadata(complexType, false, false, false, "Song", new SimpleTypeMetadata("", "x_songname"), //$NON-NLS-2$
-                null, null, null, "");
+                null, null, "");
         cirCriterion = new ManyFieldCriterion(dataSource, criteria, tableResolver, field, valueList, Predicate.IN, Types.STRING);
         assertEquals(
                 "(SELECT COUNT(1) FROM Product INNER JOIN product_collection ON Product.x_id = product_collection.x_id WHERE product_collection.value in('shirt','talend')  AND Product.x_id = a1.x_id) > 0", //$NON-NLS-1$
@@ -96,12 +96,12 @@ public class ManyFieldCriterionTest extends TestCase {
         CriteriaQuery criteriaQuery = new CriteriaQueryForTest();
         FieldMetadata field = new ReferenceFieldMetadata(
                 null, true, false, true, "x_birthday", null, new SimpleTypeFieldMetadata(null, false, false, false, "Song",
-                        new SimpleTypeMetadata("", "date"), null, null, null, ""),
-                null, "", false, false, null, null, null, null, "", "");
+                        new SimpleTypeMetadata("", "date"), null, null, ""),
+                null, "", false, false, null, null, null, "", "");
 
         ComplexTypeMetadata complexType = Mockito.mock(ComplexTypeMetadata.class);
         List<FieldMetadata> keyList = new ArrayList<>();
-        keyList.add(new SimpleTypeFieldMetadata(complexType, true, false, true, "x_birthday", new SimpleTypeMetadata("", "date"), null, null, null, ""));
+        keyList.add(new SimpleTypeFieldMetadata(complexType, true, false, true, "x_birthday", new SimpleTypeMetadata("", "date"), null, null, ""));
         Mockito.when(complexType.getKeyFields()).thenReturn(keyList);
 
         ManyFieldCriterion cirCriterion = new ManyFieldCriterion(dataSource, criteria, tableResolver, field, "2019-11-25 00:00:00.000", Predicate.EQUALS, Types.DATE);

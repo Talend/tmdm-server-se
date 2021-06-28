@@ -42,8 +42,6 @@ public class DigestHelper {
 
     private static final String TYPE_SYNCHRONIZATION_PLAN = "MDM.SynchronizationPlan"; //$NON-NLS-1$
 
-    private static final String TYPE_WORKFLOW = "MDM.Workflow"; //$NON-NLS-1$
-
     private static final String TYPE_TRANSFORMER = "MDM.TransformerV2"; //$NON-NLS-1$
 
     private static final String TYPE_ROUTING_RULE = "MDM.RoutingRule"; //$NON-NLS-1$

@@ -80,7 +80,6 @@ class ScatteredMappingCreator extends DefaultMetadataVisitor<TypeMapping> {
                 field.getType(),
                 field.getWriteUsers(),
                 field.getHideUsers(),
-                field.getWorkflowAccessRights(),
                 StringUtils.EMPTY);
         TypeMetadata declaringType = field.getDeclaringType();
         if (declaringType != field.getContainingType() && declaringType.isInstantiable()) {
@@ -163,7 +162,6 @@ class ScatteredMappingCreator extends DefaultMetadataVisitor<TypeMapping> {
                 new SimpleTypeMetadata(XMLConstants.W3C_XML_SCHEMA_NS_URI, Types.STRING),
                 referenceField.getWriteUsers(),
                 referenceField.getHideUsers(),
-                referenceField.getWorkflowAccessRights(),
                 StringUtils.EMPTY,
                 StringUtils.EMPTY);
         newFlattenField.setData(MetadataRepository.DATA_MAX_LENGTH, Types.UUID_LENGTH);
@@ -202,8 +200,7 @@ class ScatteredMappingCreator extends DefaultMetadataVisitor<TypeMapping> {
                     originalContainedType.getSchematron(),
                     originalContainedType.getPrimaryKeyInfo(),
                     originalContainedType.getLookupFields(),
-                    false,
-                    originalContainedType.getWorkflowAccessRights());
+                    false);
             internalContainedType.setData(TypeMapping.USAGE_NUMBER, originalContainedType.getUsages().size());
             internalRepository.addTypeMetadata(internalContainedType);
             if (superTypeName == null) {
@@ -216,7 +213,7 @@ class ScatteredMappingCreator extends DefaultMetadataVisitor<TypeMapping> {
                         new SoftTypeRef(internalRepository, internalRepository.getUserNamespace(), Types.UUID, false),
                         originalContainedType.getWriteUsers(),
                         originalContainedType.getHideUsers(),
-                        originalContainedType.getWorkflowAccessRights(), StringUtils.EMPTY);
+                        StringUtils.EMPTY);
                 internalContainedType.addField(fieldMetadata);
                 fieldMetadata.setData(MetadataRepository.DATA_MAX_LENGTH, Types.UUID_LENGTH);
             } else {
@@ -267,7 +264,6 @@ class ScatteredMappingCreator extends DefaultMetadataVisitor<TypeMapping> {
                 new SimpleTypeMetadata(XMLConstants.W3C_XML_SCHEMA_NS_URI, Types.STRING),
                 containedField.getWriteUsers(),
                 containedField.getHideUsers(),
-                containedField.getWorkflowAccessRights(),
                 StringUtils.EMPTY,
                 StringUtils.EMPTY);
         newFlattenField.setData(MetadataRepository.DATA_MAX_LENGTH, Types.UUID_LENGTH);
@@ -321,7 +317,7 @@ class ScatteredMappingCreator extends DefaultMetadataVisitor<TypeMapping> {
                 SoftTypeRef type = new SoftTypeRef(internalRepository, StringUtils.EMPTY, Types.UUID, false);
                 SimpleTypeFieldMetadata fieldMetadata = new SimpleTypeFieldMetadata(database, true, false, true, GENERATED_ID,
                         type, Collections.<String> emptyList(), Collections.<String> emptyList(),
-                        Collections.<String> emptyList(), StringUtils.EMPTY);
+                        StringUtils.EMPTY);
                 database.addField(fieldMetadata);
                 fieldMetadata.setData(MetadataRepository.DATA_MAX_LENGTH, Types.UUID_LENGTH);
             }

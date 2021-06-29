@@ -46,41 +46,36 @@ class StagingTypeMappingRepository extends InternalRepository {
             limitedStringType.setData(MetadataRepository.DATA_MAX_LENGTH, UUID.randomUUID().toString().length());
             // Time stamp
             database.addField(new SimpleTypeFieldMetadata(database, false, false, true, StorageConstants.METADATA_TIMESTAMP, longType,
-                    Collections.<String> emptyList(), Collections.<String> emptyList(), Collections.<String> emptyList(), StringUtils.EMPTY));
+                    Collections.<String> emptyList(), Collections.<String> emptyList(), StringUtils.EMPTY));
             // Task id
             database.addField(new SimpleTypeFieldMetadata(database, false, false, false, StorageConstants.METADATA_TASK_ID,
-                    limitedStringType, Collections.<String> emptyList(), Collections.<String> emptyList(), Collections
-                            .<String> emptyList(), StringUtils.EMPTY));
+                    limitedStringType, Collections.<String> emptyList(), Collections.<String> emptyList(), StringUtils.EMPTY));
             // Staging has task
             database.addField(new SimpleTypeFieldMetadata(database, false, false, false, StorageConstants.METADATA_STAGING_HAS_TASK,
-                    booleanType, Collections.<String> emptyList(), Collections.<String> emptyList(), Collections
-                            .<String> emptyList(), StringUtils.EMPTY));
+                    booleanType, Collections.<String> emptyList(), Collections.<String> emptyList(), StringUtils.EMPTY));
             // Staging old group
             database.addField(new SimpleTypeFieldMetadata(database, false, false, false, StorageConstants.METADATA_STAGING_OLD_GROUP,
-                    limitedStringType, Collections.<String> emptyList(), Collections.<String> emptyList(), Collections
-                            .<String> emptyList(), StringUtils.EMPTY));
+                    limitedStringType, Collections.<String> emptyList(), Collections.<String> emptyList(), StringUtils.EMPTY));
             // Staging status
             database.addField(new SimpleTypeFieldMetadata(database, false, false, false, StorageConstants.METADATA_STAGING_STATUS,
-                    intType, Collections.<String> emptyList(), Collections.<String> emptyList(), Collections.<String> emptyList(), StringUtils.EMPTY));
+                    intType, Collections.<String> emptyList(), Collections.<String> emptyList(), StringUtils.EMPTY));
             // Staging source
             database.addField(new SimpleTypeFieldMetadata(database, false, false, false, StorageConstants.METADATA_STAGING_SOURCE,
-                    limitedStringType, Collections.<String> emptyList(), Collections.<String> emptyList(), Collections
-                            .<String> emptyList(), StringUtils.EMPTY));
+                    limitedStringType, Collections.<String> emptyList(), Collections.<String> emptyList(), StringUtils.EMPTY));
             // Staging block key
             database.addField(new SimpleTypeFieldMetadata(database, false, false, false, StorageConstants.METADATA_STAGING_BLOCK_KEY,
-                    limitedStringType, Collections.<String> emptyList(), Collections.<String> emptyList(), Collections
-                            .<String> emptyList(), StringUtils.EMPTY));
+                    limitedStringType, Collections.<String> emptyList(), Collections.<String> emptyList(), StringUtils.EMPTY));
             // Staging error field
             SimpleTypeFieldMetadata errorField = new SimpleTypeFieldMetadata(database, false, false, false,
                     StorageConstants.METADATA_STAGING_ERROR, stringType, Collections.<String> emptyList(),
-                    Collections.<String> emptyList(), Collections.<String> emptyList(), StringUtils.EMPTY);
+                    Collections.<String> emptyList(), StringUtils.EMPTY);
             errorField.getType().setData(TypeMapping.SQL_TYPE, TypeMapping.SQL_TYPE_TEXT);
             errorField.getType().setData(LongString.PREFER_LONGVARCHAR, true); // ORACLE will use VARCHAR2(4000 CHAR)
             database.addField(errorField);
             // Staging previous values field (useful for rematching)
             SimpleTypeFieldMetadata previousValuesField = new SimpleTypeFieldMetadata(database, false, false, false,
                     StorageConstants.METADATA_STAGING_VALUES, stringType, Collections.<String> emptyList(),
-                    Collections.<String> emptyList(), Collections.<String> emptyList(), StringUtils.EMPTY);
+                    Collections.<String> emptyList(), StringUtils.EMPTY);
             previousValuesField.getType().setData(TypeMapping.SQL_TYPE, TypeMapping.SQL_TYPE_TEXT);
             previousValuesField.getType().setData(LongString.PREFER_LONGVARCHAR, true); // ORACLE will use VARCHAR2(4000 CHAR)
             database.addField(previousValuesField);

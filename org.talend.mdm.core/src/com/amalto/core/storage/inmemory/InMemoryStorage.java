@@ -543,7 +543,7 @@ public class InMemoryStorage implements Storage {
             alias.getTypedExpression().accept(this);
             FieldMetadata aliasField = new SimpleTypeFieldMetadata(explicitProjection, false, lastField.isMany(),
                     lastField.isMandatory(), alias.getAliasName(), lastField.getType(), Collections.<String> emptyList(),
-                    Collections.<String> emptyList(), Collections.<String> emptyList(), StringUtils.EMPTY);
+                    Collections.<String> emptyList(), StringUtils.EMPTY);
             ValueBuilder previousValueBuilder = recordProjection.remove(lastField);
             if (previousValueBuilder == null) {
                 AggregateValueBuilder previous = aggregateProjection.remove(lastField);
@@ -559,7 +559,7 @@ public class InMemoryStorage implements Storage {
             FieldMetadata blockField = new SimpleTypeFieldMetadata(explicitProjection, false, false, false,
                     "blockKey", //$NON-NLS-1$
                     new SimpleTypeMetadata(XMLConstants.W3C_XML_SCHEMA_NS_URI, Types.STRING), Collections.<String> emptyList(),
-                    Collections.<String> emptyList(), Collections.<String> emptyList(), StringUtils.EMPTY);
+                    Collections.<String> emptyList(), StringUtils.EMPTY);
             lastField = blockField;
             recordProjection.put(blockField, new ValueBuilder() {
 

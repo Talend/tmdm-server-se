@@ -63,10 +63,6 @@ public class RoutingConditionTestCase extends TestCase {
         condition = "Noth and (C2 or sort)";
         condition = compileCondition(condition);
         assertEquals("Noth && (C2 || sort)", condition);
-
-        condition = "workflow and andsave and notgood";
-        condition = compileCondition(condition);
-        assertEquals("workflow && andsave && notgood", condition);
     }
 
 }

@@ -237,8 +237,7 @@ class ProjectionIterator implements CloseableIterator<DataRecord> {
         private void createElement(String typeName, String fieldName) {
             SimpleTypeMetadata fieldType = new SimpleTypeMetadata(XMLConstants.W3C_XML_SCHEMA_NS_URI, typeName);
             FieldMetadata field = new SimpleTypeFieldMetadata(explicitProjectionType, false, false, false, fieldName, fieldType,
-                    Collections.<String> emptyList(), Collections.<String> emptyList(), Collections.<String> emptyList(),
-                    StringUtils.EMPTY);
+                    Collections.<String> emptyList(), Collections.<String> emptyList(), StringUtils.EMPTY);
             currentElement = new ProjectionElement();
             currentElement.field = field;
         }
@@ -246,8 +245,7 @@ class ProjectionIterator implements CloseableIterator<DataRecord> {
         private void createElement(String typeName, String fieldName, SimpleTypeFieldMetadata fieldMetadata) {
             SimpleTypeMetadata fieldType = new SimpleTypeMetadata(XMLConstants.W3C_XML_SCHEMA_NS_URI, typeName);
             FieldMetadata field = new SimpleTypeFieldMetadata(fieldMetadata.getContainingType(), false, false, false, fieldName, fieldType,
-                    Collections.<String> emptyList(), Collections.<String> emptyList(), Collections.<String> emptyList(),
-                    StringUtils.EMPTY);
+                    Collections.<String> emptyList(), Collections.<String> emptyList(), StringUtils.EMPTY);
             currentElement = new ProjectionElement();
             currentElement.field = field;
         }
@@ -255,7 +253,7 @@ class ProjectionIterator implements CloseableIterator<DataRecord> {
         private void createElement(String typeName, String aliasName, FieldMetadata aliasedField) {
             SimpleTypeMetadata fieldType = new SimpleTypeMetadata(XMLConstants.W3C_XML_SCHEMA_NS_URI, typeName);
             FieldMetadata field = new AliasedFieldMetadata(explicitProjectionType, false, false, false, aliasName, fieldType,
-                    Collections.<String> emptyList(), Collections.<String> emptyList(), aliasedField);
+            		Collections.<String> emptyList(), Collections.<String> emptyList(), aliasedField);
             currentElement = new ProjectionElement();
             currentElement.field = field;
         }
@@ -265,7 +263,7 @@ class ProjectionIterator implements CloseableIterator<DataRecord> {
                     fieldMetadata.getName(), fieldMetadata.getReferencedType(), fieldMetadata.getReferencedField(),
                     fieldMetadata.getForeignKeyInfoFields(), fieldMetadata.getForeignKeyInfoFormat(), false, false, new SimpleTypeMetadata(
                             XMLConstants.W3C_XML_SCHEMA_NS_URI, Types.STRING), Collections.<String> emptyList(),
-                    Collections.<String> emptyList(), Collections.<String> emptyList(), StringUtils.EMPTY, StringUtils.EMPTY);
+                    Collections.<String> emptyList(), StringUtils.EMPTY, StringUtils.EMPTY);
             currentElement = new ProjectionElement();
             currentElement.field = field;
         }

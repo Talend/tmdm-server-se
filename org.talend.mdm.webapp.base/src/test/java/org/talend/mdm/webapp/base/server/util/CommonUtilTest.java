@@ -414,7 +414,7 @@ public class CommonUtilTest extends TestCase {
         String[] ids;
         MetadataRepository repository = new MetadataRepository();
         FieldMetadata keyField1 = new MockSimpleTypeFieldMetadata(null, true, false, false, "PK1", new SimpleTypeMetadata("", ""),
-                null, null, null, "");
+                null, null, "");
         keyField1.getPath();
         ComplexTypeMetadata testType = new ComplexTypeMetadataImpl("", "TestEntity", true);
         testType.registerKey(keyField1);
@@ -425,7 +425,7 @@ public class CommonUtilTest extends TestCase {
         assertEquals("1.2", ids[0]);
 
         FieldMetadata keyField2 = new MockSimpleTypeFieldMetadata(null, true, false, false, "PK2", new SimpleTypeMetadata("", ""),
-                null, null, null, "");
+                null, null, "");
         testType.registerKey(keyField2);
         ids = CommonUtil.getItemId(repository, "1.2", "TestEntity");
         assertEquals(2, ids.length);
@@ -660,9 +660,8 @@ public class CommonUtilTest extends TestCase {
 
         public MockSimpleTypeFieldMetadata(ComplexTypeMetadata containingType, boolean isKey, boolean isMany, boolean isMandatory,
                 String name, TypeMetadata fieldType, List<String> allowWriteUsers, List<String> hideUsers,
-                List<String> workflowAccessRights, String visibilityRule) {
-            super(containingType, isKey, isMany, isMandatory, name, fieldType, allowWriteUsers, hideUsers, workflowAccessRights,
-                    visibilityRule);
+                String visibilityRule) {
+            super(containingType, isKey, isMany, isMandatory, name, fieldType, allowWriteUsers, hideUsers, visibilityRule);
         }
 
         @Override

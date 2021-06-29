@@ -66,7 +66,6 @@ class FlatTypeMappingCreator extends DefaultMetadataVisitor<TypeMapping> {
                 new SimpleTypeMetadata(XMLConstants.W3C_XML_SCHEMA_NS_URI, Types.STRING),
                 referenceField.getWriteUsers(),
                 referenceField.getHideUsers(),
-                referenceField.getWorkflowAccessRights(),
                 StringUtils.EMPTY,
                 StringUtils.EMPTY);
         if (!referenceField.getContainingType().equals(declaringType)) {
@@ -120,7 +119,6 @@ class FlatTypeMappingCreator extends DefaultMetadataVisitor<TypeMapping> {
                     field.getType(),
                     field.getWriteUsers(),
                     field.getHideUsers(),
-                    field.getWorkflowAccessRights(),
                     StringUtils.EMPTY);
             database.addField(newFlattenField);
         } else {
@@ -138,7 +136,6 @@ class FlatTypeMappingCreator extends DefaultMetadataVisitor<TypeMapping> {
                     field.getType(),
                     field.getWriteUsers(),
                     field.getHideUsers(),
-                    field.getWorkflowAccessRights(),
                     StringUtils.EMPTY);
             newFlattenField.setDeclaringType(internalDeclaringType);
             database.addField(newFlattenField);
@@ -179,7 +176,6 @@ class FlatTypeMappingCreator extends DefaultMetadataVisitor<TypeMapping> {
                     enumField.getType(),
                     enumField.getWriteUsers(),
                     enumField.getHideUsers(),
-                    enumField.getWorkflowAccessRights(),
                     StringUtils.EMPTY);
             database.addField(newFlattenField);
         } else {
@@ -218,7 +214,6 @@ class FlatTypeMappingCreator extends DefaultMetadataVisitor<TypeMapping> {
                     true,
                     ScatteredMappingCreator.GENERATED_ID,
                     type,
-                    Collections.<String>emptyList(),
                     Collections.<String>emptyList(),
                     Collections.<String>emptyList(),
                     StringUtils.EMPTY);

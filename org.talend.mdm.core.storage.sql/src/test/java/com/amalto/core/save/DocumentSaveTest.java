@@ -206,50 +206,6 @@ public class DocumentSaveTest extends TestCase {
         assertEquals("Chicago", evaluate(committedElement, "/Agency/City"));
     }
 
-    public void testCreateEntityByStandaloneProcessCallWorkflow() throws Exception {
-        MetadataRepository repository = new MetadataRepository();
-        repository.load(DocumentSaveTest.class.getResourceAsStream("metadata1.xsd"));
-        MockMetadataRepositoryAdmin.INSTANCE.register("DStar", repository);
-
-        SaverSource source = new TestSaverSource(repository, false, "", "metadata1.xsd");
-
-        SaverSession session = SaverSession.newSession(source);
-        InputStream recordXml = DocumentSaveTest.class.getResourceAsStream("test57.xml");
-        DocumentSaverContext context = session.getContextFactory().create("MDM", "DStar", "workflow", recordXml, false, true,
-                true, true, false);
-        DocumentSaver saver = context.createSaver();
-        saver.save(session, context);
-        MockCommitter committer = new MockCommitter();
-        session.end(committer);
-
-        assertTrue(committer.hasSaved());
-        Element committedElement = committer.getCommittedElement();
-        assertEquals("Chicago", evaluate(committedElement, "/Agency/Name"));
-        assertEquals("Chicago", evaluate(committedElement, "/Agency/City"));
-    }
-
-    public void testUpdateEntityByStandaloneProcessCallWorkflow() throws Exception {
-        MetadataRepository repository = new MetadataRepository();
-        repository.load(DocumentSaveTest.class.getResourceAsStream("metadata1.xsd"));
-        MockMetadataRepositoryAdmin.INSTANCE.register("DStar", repository);
-
-        SaverSource source = new TestSaverSource(repository, true, "test57_original.xml", "metadata1.xsd");
-
-        SaverSession session = SaverSession.newSession(source);
-        InputStream recordXml = DocumentSaveTest.class.getResourceAsStream("test57.xml");
-        DocumentSaverContext context = session.getContextFactory().create("MDM", "DStar", "workflow", recordXml, false, true,
-                true, true, false);
-        DocumentSaver saver = context.createSaver();
-        saver.save(session, context);
-        MockCommitter committer = new MockCommitter();
-        session.end(committer);
-
-        assertTrue(committer.hasSaved());
-        Element committedElement = committer.getCommittedElement();
-        assertEquals("Chicago", evaluate(committedElement, "/Agency/Name"));
-        assertEquals("Chicago", evaluate(committedElement, "/Agency/City"));
-    }
-
     public void testCreateWithInheritanceType() throws Exception {
         final MetadataRepository repository = new MetadataRepository();
         repository.load(DocumentSaveTest.class.getResourceAsStream("metadata3.xsd"));

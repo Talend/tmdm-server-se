@@ -40,8 +40,6 @@ public class UpdateReportPOJO {
 
     public static final String SERVICE_SOURCE = "service"; //$NON-NLS-1$
 
-    public static final String WORKFLOW_SOURCE = "workflow"; //$NON-NLS-1$
-
     private String source;
 
     private long timeInMillis;

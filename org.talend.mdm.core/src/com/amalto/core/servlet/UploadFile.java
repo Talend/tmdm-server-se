@@ -108,8 +108,6 @@ public class UploadFile extends HttpServlet {
                     if (req.getParameter(PARAMETER_DEPLOY_JOB) != null) {
                         String contextStr = req.getParameter(PARAMETER_CONTEXT);
                         file = writeJobFile(item, filename, contextStr);
-                    } else if (filename.endsWith(".bar")) { //$NON-NLS-1$
-                        file = writeWorkflowFile(item, filename);
                     } else {
                         throw new IllegalArgumentException("Unknown deployment for file '" + filename + "'"); //$NON-NLS-1$ //$NON-NLS-2$
                     }
@@ -160,19 +158,6 @@ public class UploadFile extends HttpServlet {
         } else {
             throw new IllegalArgumentException("Unknown job deployment for file '" + filename + "'"); //$NON-NLS-1$//$NON-NLS-2$
         }
-        return file;
-    }
-
-    private File writeWorkflowFile(FileItem item, String filename) throws Exception {
-        String barpath = Util.getBarHomeDir();
-        if (!new File(barpath).exists()) {
-            new File(barpath).mkdir();
-        }
-        File file = new File(barpath + File.separator + filename);
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Writing file '" + file.getAbsolutePath() + "'"); //$NON-NLS-1$//$NON-NLS-2$
-        }
-        item.write(file);
         return file;
     }
 

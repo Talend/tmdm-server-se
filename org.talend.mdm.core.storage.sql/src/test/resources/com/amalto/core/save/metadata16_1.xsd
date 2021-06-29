@@ -5,8 +5,6 @@
 <xsd:element maxOccurs="1" minOccurs="1" name="UG_EOR">
 <xsd:annotation>
 <xsd:appinfo source="X_Label_FR">Unité de gestion</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">moaREF#EOR_1.0#Read-only</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">consultation#EOR_1.0#Writable</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">Unit Code</xsd:appinfo>
 <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
@@ -20,8 +18,6 @@
 <xsd:element maxOccurs="1" minOccurs="1" name="TYP_EOR" type="xsd:int">
 <xsd:annotation>
 <xsd:appinfo source="X_Label_FR">Type de l'entité</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">moaREF#EOR_1.0#Read-only</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">consultation#EOR_1.0#Writable</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">Entity type</xsd:appinfo>
 <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
@@ -29,8 +25,6 @@
 <xsd:element maxOccurs="1" minOccurs="1" name="L_TYP_EOR" type="xsd:string">
 <xsd:annotation>
 <xsd:appinfo source="X_Label_FR">Libellé type EOR</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">moaREF#EOR_1.0#Read-only</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">consultation#EOR_1.0#Writable</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">Label EOR type</xsd:appinfo>
 <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
@@ -38,8 +32,6 @@
 <xsd:element maxOccurs="1" minOccurs="1" name="CAT_TYP_EOR" type="xsd:string">
 <xsd:annotation>
 <xsd:appinfo source="X_Label_FR">Catégorie type EOR</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">moaREF#EOR_1.0#Read-only</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">consultation#EOR_1.0#Writable</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">Label EOR type</xsd:appinfo>
 <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
@@ -47,8 +39,6 @@
 <xsd:element maxOccurs="1" minOccurs="0" name="SIGLE_EOR">
 <xsd:annotation>
 <xsd:appinfo source="X_Label_FR">Sigle de l'entité</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">moaREF#EOR_1.0#Read-only</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">consultation#EOR_1.0#Writable</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">Entity sigle</xsd:appinfo>
 <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
@@ -61,8 +51,6 @@
 <xsd:element maxOccurs="1" minOccurs="0" name="L_EOR">
 <xsd:annotation>
 <xsd:appinfo source="X_Label_FR">Libellé de l'entité</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">moaREF#EOR_1.0#Read-only</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">consultation#EOR_1.0#Writable</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">Entity label</xsd:appinfo>
 <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
@@ -75,8 +63,6 @@
 <xsd:element maxOccurs="1" minOccurs="0" name="LR_EOR">
 <xsd:annotation>
 <xsd:appinfo source="X_Label_FR">Libellé raccourci de l'entité</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">moaREF#EOR_1.0#Read-only</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">consultation#EOR_1.0#Writable</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">Entity short label</xsd:appinfo>
 <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
@@ -89,8 +75,6 @@
 <xsd:element maxOccurs="1" minOccurs="0" name="SERIE_COD_UCA">
 <xsd:annotation>
 <xsd:appinfo source="X_Label_FR">Référence administrative</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">moaREF#EOR_1.0#Read-only</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">consultation#EOR_1.0#Writable</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">AdministrativeReference</xsd:appinfo>
 <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
@@ -103,8 +87,6 @@
 <xsd:element maxOccurs="1" minOccurs="0" name="SERIE_COD_CPTA">
 <xsd:annotation>
 <xsd:appinfo source="X_Label_FR">Référence compatibilité</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">moaREF#EOR_1.0#Read-only</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">consultation#EOR_1.0#Writable</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">Compatibility reference</xsd:appinfo>
 <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
@@ -117,8 +99,6 @@
 <xsd:element maxOccurs="1" minOccurs="0" name="COMT_EOR">
 <xsd:annotation>
 <xsd:appinfo source="X_Label_FR">Commentaire sur l’entité d’organisation</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">moaREF#EOR_1.0#Read-only</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">consultation#EOR_1.0#Writable</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">Comment</xsd:appinfo>
 <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
@@ -132,8 +112,6 @@
 <xsd:annotation>
 <xsd:appinfo source="X_Label_FR">Type RG de l'EOR</xsd:appinfo>
 <xsd:appinfo source="X_ForeignKey">REF_TYPRG/RG</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">moaREF#EOR_1.0#Read-only</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">consultation#EOR_1.0#Writable</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">RG type of the EOR</xsd:appinfo>
 <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
 <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -142,8 +120,6 @@
 <xsd:element maxOccurs="1" minOccurs="1" name="D_DEB_EOR" type="xsd:date">
 <xsd:annotation>
 <xsd:appinfo source="X_Label_FR">Date début de validité</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">moaREF#EOR_1.0#Read-only</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">consultation#EOR_1.0#Writable</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">Start date of validity</xsd:appinfo>
 <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
@@ -151,8 +127,6 @@
 <xsd:element maxOccurs="1" minOccurs="0" name="D_CRE_EOR" type="xsd:string">
 <xsd:annotation>
 <xsd:appinfo source="X_Label_FR">Date de création</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">moaREF#EOR_1.0#Read-only</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">consultation#EOR_1.0#Writable</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">Creation date</xsd:appinfo>
 <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
@@ -160,8 +134,6 @@
 <xsd:element maxOccurs="1" minOccurs="0" name="D_MOD_EOR" type="xsd:string">
 <xsd:annotation>
 <xsd:appinfo source="X_Label_FR">Date de modification</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">moaREF#EOR_1.0#Read-only</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">consultation#EOR_1.0#Writable</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">Modification date</xsd:appinfo>
 <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
@@ -169,8 +141,6 @@
 <xsd:element maxOccurs="1" minOccurs="0" name="D_FIN_EOR" type="xsd:date">
 <xsd:annotation>
 <xsd:appinfo source="X_Label_FR">Date fin de validité</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">moaREF#EOR_1.0#Read-only</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">consultation#EOR_1.0#Writable</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">End of validity</xsd:appinfo>
 <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
@@ -178,8 +148,6 @@
 <xsd:element maxOccurs="1" minOccurs="0" name="UG_EOR_FILLES">
 <xsd:annotation>
 <xsd:appinfo source="X_Label_FR">Entités filles</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">moaREF#EOR_1.0#Read-only</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">consultation#EOR_1.0#Writable</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">Low level</xsd:appinfo>
 <xsd:appinfo source="X_ForeignKey_NotSep">true</xsd:appinfo>
 <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -192,8 +160,6 @@
 <xsd:appinfo source="X_ForeignKeyInfo">EOR/UG_EOR</xsd:appinfo>
 <xsd:appinfo source="X_ForeignKeyInfo">EOR/L_TYP_EOR</xsd:appinfo>
 <xsd:appinfo source="X_ForeignKey">EOR</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">moaREF#EOR_1.0#Read-only</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">consultation#EOR_1.0#Writable</xsd:appinfo>
 <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
 <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
@@ -204,8 +170,6 @@
 <xsd:element maxOccurs="1" minOccurs="0" name="UG_EOR_MERES">
 <xsd:annotation>
 <xsd:appinfo source="X_Label_FR">Entités mères</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">moaREF#EOR_1.0#Read-only</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">consultation#EOR_1.0#Writable</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">Sup entities</xsd:appinfo>
 <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
 <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -218,8 +182,6 @@
 <xsd:appinfo source="X_ForeignKeyInfo">EOR/UG_EOR</xsd:appinfo>
 <xsd:appinfo source="X_ForeignKeyInfo">EOR/L_TYP_EOR</xsd:appinfo>
 <xsd:appinfo source="X_ForeignKey">EOR</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">moaREF#EOR_1.0#Read-only</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">consultation#EOR_1.0#Writable</xsd:appinfo>
 <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
 <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
@@ -230,8 +192,6 @@
 <xsd:element maxOccurs="1" minOccurs="0" name="GARES">
 <xsd:annotation>
 <xsd:appinfo source="X_Label_FR">Gares attachées</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">moaREF#EOR_1.0#Read-only</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">consultation#EOR_1.0#Writable</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">Attached station</xsd:appinfo>
 <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 </xsd:annotation>
@@ -245,8 +205,6 @@
 
 
 <xsd:appinfo source="X_ForeignKey">GARE</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">moaREF#EOR_1.0#Read-only</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">consultation#EOR_1.0#Writable</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">Station</xsd:appinfo>
 <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
 <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -266,8 +224,6 @@
 <xsd:element name="EOR" type="EOR">
 <xsd:annotation>
 <xsd:appinfo source="X_Label_FR">Entité d’organisation</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">moaREF#EOR_1.0#Read-only</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">consultation#EOR_1.0#Writable</xsd:appinfo>
 <xsd:appinfo source="X_Label_EN">Entity of Organisation</xsd:appinfo>
 <xsd:appinfo source="X_Schematron">&lt;pattern name="dateValidation" &gt;
 &lt;rule context="."&gt;&lt;assert test="translate(D_FIN_EOR,&amp;quot; &amp;quot;,&amp;quot;&amp;quot;)=&amp;quot;&amp;quot; or number(translate(D_DEB_EOR,&amp;quot;-&amp;quot;,&amp;quot;&amp;quot;))&amp;lt;=number(translate(D_FIN_EOR,&amp;quot;-&amp;quot;,&amp;quot;&amp;quot;))"&gt;&lt;![CDATA[[FR:Date de fin de validité doit être vide ou supérieure à date de début]]]&gt;&lt;/assert&gt;&lt;/rule&gt;

@@ -557,9 +557,7 @@
     </xsd:restriction> 
   </xsd:simpleType>  
   <xsd:element name="Region"> 
-    <xsd:annotation> 
-      <xsd:appinfo source="X_Workflow">DataOwner_Finance#ValidationRegion_1.0#Writable</xsd:appinfo>  
-      <xsd:appinfo source="X_Workflow">ProcessOwner_Finance#ValidationRegion_1.0#Read-only</xsd:appinfo>  
+    <xsd:annotation>  
       <xsd:appinfo source="X_Write">ModuleSpecialist</xsd:appinfo>  
       <xsd:appinfo source="X_Write">DataOwner_Sales</xsd:appinfo>  
       <xsd:appinfo source="X_Write">ProcessOwner_Sales</xsd:appinfo> 
@@ -567,9 +565,7 @@
     <xsd:complexType> 
       <xsd:all> 
         <xsd:element maxOccurs="1" minOccurs="1" name="Id" type="limitedString_10"> 
-          <xsd:annotation> 
-            <xsd:appinfo source="X_Workflow">DataOwner_Finance#ValidationRegion_1.0#Writable</xsd:appinfo>  
-            <xsd:appinfo source="X_Workflow">ProcessOwner_Finance#ValidationRegion_1.0#Read-only</xsd:appinfo>  
+          <xsd:annotation>   
             <xsd:appinfo source="X_Write">ModuleSpecialist</xsd:appinfo>  
             <xsd:appinfo source="X_Write">DataOwner_Sales</xsd:appinfo>  
             <xsd:appinfo source="X_Write">ProcessOwner_Sales</xsd:appinfo> 
@@ -577,7 +573,6 @@
         </xsd:element>  
         <xsd:element maxOccurs="1" minOccurs="1" name="ShortDesc" type="limitedString_20"> 
           <xsd:annotation> 
-            <xsd:appinfo source="X_Workflow">ProcessOwner_Finance#ValidationRegion_1.0#Read-only</xsd:appinfo>  
             <xsd:appinfo source="X_Write">ModuleSpecialist</xsd:appinfo>  
             <xsd:appinfo source="X_Write">DataOwner_Sales</xsd:appinfo>  
             <xsd:appinfo source="X_Write">ProcessOwner_Sales</xsd:appinfo> 
@@ -585,17 +580,13 @@
         </xsd:element>  
         <xsd:element maxOccurs="1" minOccurs="1" name="LongDesc" type="limitedString_60"> 
           <xsd:annotation> 
-            <xsd:appinfo source="X_Workflow">DataOwner_Finance#ValidationRegion_1.0#Writable</xsd:appinfo>  
-            <xsd:appinfo source="X_Workflow">ProcessOwner_Finance#ValidationRegion_1.0#Read-only</xsd:appinfo>  
             <xsd:appinfo source="X_Write">ModuleSpecialist</xsd:appinfo>  
             <xsd:appinfo source="X_Write">DataOwner_Sales</xsd:appinfo>  
             <xsd:appinfo source="X_Write">ProcessOwner_Sales</xsd:appinfo> 
           </xsd:annotation> 
         </xsd:element>  
         <xsd:element maxOccurs="1" minOccurs="1" name="RecordInformation" type="RecordInformation"> 
-          <xsd:annotation> 
-            <xsd:appinfo source="X_Workflow">DataOwner_Finance#ValidationRegion_1.0#Writable</xsd:appinfo>  
-            <xsd:appinfo source="X_Workflow">ProcessOwner_Finance#ValidationRegion_1.0#Read-only</xsd:appinfo>  
+          <xsd:annotation>  
             <xsd:appinfo source="X_Write">ModuleSpecialist</xsd:appinfo>  
             <xsd:appinfo source="X_Write">DataOwner_Sales</xsd:appinfo>  
             <xsd:appinfo source="X_Write">ProcessOwner_Sales</xsd:appinfo> 

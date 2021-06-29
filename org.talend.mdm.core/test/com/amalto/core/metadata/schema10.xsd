@@ -310,14 +310,7 @@
     </xsd:complexType>
     <xsd:element name="BrandGroup" type="BrandGroupType">
         <xsd:annotation>
-
-
             <xsd:appinfo source="X_Write">OM5_Admin</xsd:appinfo>
-
-
-            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandGroup_1.0#Read-only</xsd:appinfo>
-            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandGroup2_1.0#Read-only</xsd:appinfo>
-            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandName_NameChange_1.0#Read-only</xsd:appinfo>
         </xsd:annotation>
         <xsd:unique name="BrandGroup">
             <xsd:selector xpath="."/>
@@ -333,14 +326,6 @@
 
 
                             <xsd:appinfo source="X_Write">OM5_Admin</xsd:appinfo>
-
-
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandGroup_1.0#Read-only
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandGroup2_1.0#Read-only
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandName_NameChange_1.0#Read-only
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="BrandGroupChange" type="TermNameChangeType">
@@ -348,14 +333,6 @@
 
 
                             <xsd:appinfo source="X_Write">OM5_Admin</xsd:appinfo>
-
-
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandGroup_1.0#Read-only
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandGroup2_1.0#Read-only
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandName_NameChange_1.0#Read-only
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="NarrowTerms" type="BrandNameFKType">
@@ -365,14 +342,6 @@
 
 
                             <xsd:appinfo source="X_Write">OM5_Admin</xsd:appinfo>
-
-
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandGroup_1.0#Read-only
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandGroup2_1.0#Read-only
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandName_NameChange_1.0#Read-only
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="NarrowTermsChange" type="RelationChangeType">
@@ -380,14 +349,6 @@
 
 
                             <xsd:appinfo source="X_Write">OM5_Admin</xsd:appinfo>
-
-
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandGroup_1.0#Read-only
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandGroup2_1.0#Read-only
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandName_NameChange_1.0#Read-only
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                 </xsd:sequence>
@@ -399,9 +360,6 @@
 
 
             <xsd:appinfo source="X_Write">OM5_Admin</xsd:appinfo>
-
-            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandName_NameChange_1.0#Read-only</xsd:appinfo>
-            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandGroup2_1.0#Read-only</xsd:appinfo>
         </xsd:annotation>
         <xsd:unique name="BrandName">
             <xsd:selector xpath="."/>
@@ -417,11 +375,6 @@
 
 
                             <xsd:appinfo source="X_Write">OM5_Admin</xsd:appinfo>
-
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandName_NameChange_1.0#Read-only
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandGroup2_1.0#Read-only
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="BrandNameChange" type="TermNameChangeType">
@@ -429,11 +382,6 @@
 
 
                             <xsd:appinfo source="X_Write">OM5_Admin</xsd:appinfo>
-
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandName_NameChange_1.0#Read-only
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandGroup2_1.0#Read-only
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                 </xsd:sequence>
@@ -775,12 +723,7 @@
                     <xsd:appinfo source="X_Label_EN">New Classification Code</xsd:appinfo>
 
 
-                    <xsd:appinfo source="X_Write">OM5_Admin</xsd:appinfo>
-
-
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandName_NameChange_1.0#Read-only
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandGroup2_1.0#Read-only</xsd:appinfo>
+                    <xsd:appinfo source="X_Write">OM5_Admin</xsd:appinfo>                   
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="1" name="Status" type="StatusApprovalType">
@@ -791,9 +734,6 @@
 
 
                     <xsd:appinfo source="X_Label_EN">New Classification Code Status</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandName_NameChange_1.0#Read-only
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandGroup2_1.0#Writable</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
         </xsd:all>
@@ -818,11 +758,6 @@
 
 
                     <xsd:appinfo source="X_Write">OM5_Admin</xsd:appinfo>
-
-
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandName_NameChange_1.0#Read-only
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandGroup2_1.0#Read-only</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="1" name="Status" type="StatusApprovalType">
@@ -830,11 +765,6 @@
 
 
                     <xsd:appinfo source="X_Write">OM5_Admin</xsd:appinfo>
-
-
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandName_NameChange_1.0#Writable
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandGroup2_1.0#Read-only</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
         </xsd:all>
@@ -897,12 +827,6 @@
 
 
                     <xsd:appinfo source="X_Write">OM5_Admin</xsd:appinfo>
-
-
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandGroup_1.0#Read-only</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandGroup2_1.0#Read-only</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandName_NameChange_1.0#Read-only
-                    </xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
         </xsd:sequence>
@@ -959,11 +883,6 @@
 
 
                     <xsd:appinfo source="X_Write">OM5_Admin</xsd:appinfo>
-
-
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandName_NameChange_1.0#Read-only
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandGroup2_1.0#Read-only</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="1" name="Status" type="StatusApprovalType">
@@ -971,11 +890,6 @@
 
 
                     <xsd:appinfo source="X_Write">OM5_Admin</xsd:appinfo>
-
-
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandName_NameChange_1.0#Read-only
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandGroup2_1.0#Read-only</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
         </xsd:all>
@@ -987,11 +901,6 @@
 
 
                     <xsd:appinfo source="X_Write">OM5_Admin</xsd:appinfo>
-
-
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandName_NameChange_1.0#Read-only
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandGroup2_1.0#Read-only</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="Updated" type="xsd:dateTime">
@@ -999,11 +908,6 @@
 
 
                     <xsd:appinfo source="X_Write">OM5_Admin</xsd:appinfo>
-
-
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandName_NameChange_1.0#Read-only
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandGroup2_1.0#Read-only</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="1" name="Published" type="xsd:boolean">
@@ -1013,11 +917,6 @@
                     <xsd:appinfo source="X_Default_Value_Rule">"false"</xsd:appinfo>
 
                     <xsd:appinfo source="X_Write">OM5_Admin</xsd:appinfo>
-
-
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandName_NameChange_1.0#Read-only
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandGroup2_1.0#Read-only</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="PublishedReleaseNumber" type="xsd:string">
@@ -1032,11 +931,6 @@
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
 
                     <xsd:appinfo source="X_Write">OM5_Admin</xsd:appinfo>
-
-
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandName_NameChange_1.0#Read-only
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandGroup2_1.0#Read-only</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="1" name="UnpublishedAllApproved" type="xsd:boolean">
@@ -1044,11 +938,6 @@
                     <xsd:appinfo source="X_Default_Value_Rule">"false"</xsd:appinfo>
 
                     <xsd:appinfo source="X_Write">OM5_Admin</xsd:appinfo>
-
-
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandName_NameChange_1.0#Read-only
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandGroup2_1.0#Read-only</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
         </xsd:all>
@@ -1106,9 +995,6 @@
 
 
                     <xsd:appinfo source="X_Description_EN">Id</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandName_NameChange_1.0#Read-only
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandGroup2_1.0#Read-only</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="1" name="ZthesId" type="xsd:string">
@@ -1116,11 +1002,6 @@
 
 
                     <xsd:appinfo source="X_Write">OM5_Admin</xsd:appinfo>
-
-
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandName_NameChange_1.0#Read-only
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandGroup2_1.0#Read-only</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="1" name="Release" type="ReleaseType">
@@ -1128,11 +1009,6 @@
 
 
                     <xsd:appinfo source="X_Write">OM5_Admin</xsd:appinfo>
-
-
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandName_NameChange_1.0#Read-only
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandGroup2_1.0#Read-only</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="1" name="Deleted" type="xsd:boolean">
@@ -1142,11 +1018,6 @@
                     <xsd:appinfo source="X_Default_Value_Rule">"false"</xsd:appinfo>
 
                     <xsd:appinfo source="X_Write">OM5_Admin</xsd:appinfo>
-
-
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandName_NameChange_1.0#Read-only
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandGroup2_1.0#Read-only</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="DeletedChange" type="DeletedChangeType">
@@ -1154,11 +1025,6 @@
 
 
                     <xsd:appinfo source="X_Write">OM5_Admin</xsd:appinfo>
-
-
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandName_NameChange_1.0#Read-only
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandGroup2_1.0#Read-only</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="1" name="CrcCode" type="xsd:string">
@@ -1166,11 +1032,6 @@
 
 
                     <xsd:appinfo source="X_Write">OM5_Admin</xsd:appinfo>
-
-
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandName_NameChange_1.0#Read-only
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandGroup2_1.0#Read-only</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="ClassificationCode" type="xsd:string">
@@ -1181,9 +1042,6 @@
 
 
                     <xsd:appinfo source="X_Label_EN">Classification Code</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandName_NameChange_1.0#Read-only
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandGroup2_1.0#Read-only</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="ClassificationCodeChange"
@@ -1192,11 +1050,6 @@
 
 
                     <xsd:appinfo source="X_Write">OM5_Admin</xsd:appinfo>
-
-
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandName_NameChange_1.0#Read-only
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandGroup2_1.0#Read-only</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
         </xsd:sequence>
@@ -1210,11 +1063,6 @@
 
                     <xsd:appinfo source="X_Write">OM5_Admin</xsd:appinfo>
 
-
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandGroup_1.0#Read-only</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandGroup2_1.0#Read-only</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandName_NameChange_1.0#Read-only
-                    </xsd:appinfo>
                 </xsd:annotation>
                 <xsd:complexType>
                     <xsd:all>
@@ -1224,14 +1072,6 @@
 
                                 <xsd:appinfo source="X_Write">OM5_Admin</xsd:appinfo>
 
-
-                                <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandGroup_1.0#Read-only
-                                </xsd:appinfo>
-                                <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandGroup2_1.0#Read-only
-                                </xsd:appinfo>
-                                <xsd:appinfo source="X_Workflow">
-                                    OM5_DataSteward#OM5_DM_BrandName_NameChange_1.0#Read-only
-                                </xsd:appinfo>
                             </xsd:annotation>
                         </xsd:element>
                         <xsd:element maxOccurs="1" minOccurs="1" name="Action" type="xsd:string">
@@ -1240,14 +1080,6 @@
 
                                 <xsd:appinfo source="X_Write">OM5_Admin</xsd:appinfo>
 
-
-                                <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandGroup_1.0#Read-only
-                                </xsd:appinfo>
-                                <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandGroup2_1.0#Read-only
-                                </xsd:appinfo>
-                                <xsd:appinfo source="X_Workflow">
-                                    OM5_DataSteward#OM5_DM_BrandName_NameChange_1.0#Read-only
-                                </xsd:appinfo>
                             </xsd:annotation>
                         </xsd:element>
                         <xsd:element maxOccurs="1" minOccurs="0" name="Preferred" type="xsd:boolean">
@@ -1256,14 +1088,6 @@
 
                                 <xsd:appinfo source="X_Write">OM5_Admin</xsd:appinfo>
 
-
-                                <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandGroup_1.0#Read-only
-                                </xsd:appinfo>
-                                <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandGroup2_1.0#Read-only
-                                </xsd:appinfo>
-                                <xsd:appinfo source="X_Workflow">
-                                    OM5_DataSteward#OM5_DM_BrandName_NameChange_1.0#Read-only
-                                </xsd:appinfo>
                             </xsd:annotation>
                         </xsd:element>
                         <xsd:element maxOccurs="1" minOccurs="1" name="Status" type="StatusApprovalType">
@@ -1272,14 +1096,6 @@
 
                                 <xsd:appinfo source="X_Write">OM5_Admin</xsd:appinfo>
 
-
-                                <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandGroup_1.0#Read-only
-                                </xsd:appinfo>
-                                <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_DM_BrandGroup2_1.0#Read-only
-                                </xsd:appinfo>
-                                <xsd:appinfo source="X_Workflow">
-                                    OM5_DataSteward#OM5_DM_BrandName_NameChange_1.0#Read-only
-                                </xsd:appinfo>
                             </xsd:annotation>
                         </xsd:element>
                     </xsd:all>

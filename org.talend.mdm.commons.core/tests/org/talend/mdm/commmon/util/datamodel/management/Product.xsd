@@ -17,10 +17,6 @@
 
 
 <xsd:appinfo source="X_Lookup_Field">Product/Availability</xsd:appinfo>
-
-
-<xsd:appinfo source="X_Workflow">Demo_User#Product_Product_1.0#Read-only</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">Demo_Manager#Product_Product_1.0#Read-only</xsd:appinfo>
 <xsd:appinfo source="X_PrimaryKeyInfo">Product/Description</xsd:appinfo>
 </xsd:annotation>  
     <xsd:complexType> 
@@ -32,19 +28,12 @@
             <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
             <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
             <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo> 
-          <xsd:appinfo source="X_Workflow">Demo_User#Product_Product_1.0#Read-only</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">Demo_Manager#Product_Product_1.0#Read-only</xsd:appinfo>
 </xsd:annotation> 
         </xsd:element>  
         <xsd:element maxOccurs="1" minOccurs="1" name="Id" type="xsd:string"> 
           <xsd:annotation> 
             <xsd:appinfo source="X_Label_EN">Unique Id</xsd:appinfo>  
             <xsd:appinfo source="X_Label_FR">Id unique</xsd:appinfo>  
-              
-              
-             
-          <xsd:appinfo source="X_Workflow">Demo_User#Product_Product_1.0#Read-only</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">Demo_Manager#Product_Product_1.0#Read-only</xsd:appinfo>
 </xsd:annotation> 
         </xsd:element>  
         <xsd:element maxOccurs="1" minOccurs="1" name="Name" type="xsd:string"> 
@@ -54,8 +43,6 @@
             <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
             <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
             <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo> 
-          <xsd:appinfo source="X_Workflow">Demo_User#Product_Product_1.0#Read-only</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">Demo_Manager#Product_Product_1.0#Read-only</xsd:appinfo>
 <xsd:appinfo source="X_Default_Value_Rule">"test"</xsd:appinfo>
 </xsd:annotation> 
         </xsd:element>  
@@ -63,11 +50,6 @@
           <xsd:annotation> 
             <xsd:appinfo source="X_Label_EN">Description</xsd:appinfo>  
             <xsd:appinfo source="X_Label_FR">Description</xsd:appinfo>  
-              
-              
-             
-          <xsd:appinfo source="X_Workflow">Demo_User#Product_Product_1.0#Read-only</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">Demo_Manager#Product_Product_1.0#Read-only</xsd:appinfo>
 <xsd:appinfo source="X_Default_Value_Rule">/Product/Name</xsd:appinfo>
 <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
 </xsd:annotation> 
@@ -79,8 +61,6 @@
             <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
             <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
             <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo> 
-          <xsd:appinfo source="X_Workflow">Demo_User#Product_Product_1.0#Read-only</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">Demo_Manager#Product_Product_1.0#Read-only</xsd:appinfo>
 </xsd:annotation>  
           <xsd:complexType> 
             <xsd:all> 
@@ -93,8 +73,6 @@
                   <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
                   <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
                   <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo> 
-                <xsd:appinfo source="X_Workflow">Demo_User#Product_Product_1.0#Read-only</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">Demo_Manager#Product_Product_1.0#Read-only</xsd:appinfo>
 </xsd:annotation>  
                 <xsd:complexType> 
                   <xsd:sequence> 
@@ -105,8 +83,6 @@
                         <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
                         <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
                         <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo> 
-                      <xsd:appinfo source="X_Workflow">Demo_User#Product_Product_1.0#Read-only</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">Demo_Manager#Product_Product_1.0#Read-only</xsd:appinfo>
 </xsd:annotation> 
                     </xsd:element> 
                   </xsd:sequence> 
@@ -121,8 +97,6 @@
                   <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
                   <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
                   <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo> 
-                <xsd:appinfo source="X_Workflow">Demo_User#Product_Product_1.0#Read-only</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">Demo_Manager#Product_Product_1.0#Read-only</xsd:appinfo>
 </xsd:annotation>  
                 <xsd:complexType> 
                   <xsd:sequence> 
@@ -133,8 +107,6 @@
                         <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
                         <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
                         <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo> 
-                      <xsd:appinfo source="X_Workflow">Demo_User#Product_Product_1.0#Read-only</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">Demo_Manager#Product_Product_1.0#Read-only</xsd:appinfo>
 </xsd:annotation> 
                     </xsd:element> 
                   </xsd:sequence> 
@@ -150,8 +122,6 @@
             <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
             <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
             <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo> 
-          <xsd:appinfo source="X_Workflow">Demo_User#Product_Product_1.0#Read-only</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">Demo_Manager#Product_Product_1.0#Read-only</xsd:appinfo>
 </xsd:annotation> 
         </xsd:element>  
         <xsd:element maxOccurs="1" minOccurs="1" name="Price" type="xsd:decimal"> 
@@ -165,8 +135,6 @@
              
           <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
 <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">Demo_User#Product_Product_1.0#Writable</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">Demo_Manager#Product_Product_1.0#Writable</xsd:appinfo>
 </xsd:annotation> 
         </xsd:element>  
                 <xsd:element maxOccurs="1" minOccurs="0" name="Family" type="xsd:string"> 
@@ -179,8 +147,6 @@
             <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>  
             <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>  
             <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo> 
-          <xsd:appinfo source="X_Workflow">Demo_User#Product_Product_1.0#Read-only</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">Demo_Manager#Product_Product_1.0#Read-only</xsd:appinfo>
 </xsd:annotation> 
         </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="OnlineStore" type="URL"> 
@@ -190,8 +156,6 @@
              
           <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
 <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">Demo_User#Product_Product_1.0#Read-only</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">Demo_Manager#Product_Product_1.0#Read-only</xsd:appinfo>
 </xsd:annotation> 
         </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="Stores"> 
@@ -204,8 +168,6 @@
           <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
 <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">Demo_User#Product_Product_1.0#Read-only</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">Demo_Manager#Product_Product_1.0#Read-only</xsd:appinfo>
 </xsd:annotation>  
           <xsd:complexType> 
             <xsd:sequence> 
@@ -219,8 +181,6 @@
                 <xsd:appinfo source="X_Write">System_Admin</xsd:appinfo>
 <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 <xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">Demo_User#Product_Product_1.0#Read-only</xsd:appinfo>
-<xsd:appinfo source="X_Workflow">Demo_Manager#Product_Product_1.0#Read-only</xsd:appinfo>
 </xsd:annotation> 
               </xsd:element> 
             </xsd:sequence> 

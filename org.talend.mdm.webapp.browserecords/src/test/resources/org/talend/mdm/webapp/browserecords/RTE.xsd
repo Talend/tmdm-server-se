@@ -783,7 +783,6 @@
           <xsd:appinfo source="X_Label_FR">Code</xsd:appinfo>
           <xsd:appinfo source="X_Description_FR">Règle de codification : cf. Règles MA</xsd:appinfo>
           <xsd:appinfo source="X_Deny_Create">RAP_ReadOnly</xsd:appinfo>
-          <xsd:appinfo source="X_Workflow">RAP_ReadOnly#WorkflowEda_1.0#Writable</xsd:appinfo>
         </xsd:annotation>
       </xsd:element>
       <xsd:element maxOccurs="1" minOccurs="1" name="nomEda" type="texte25">
@@ -866,7 +865,6 @@
           <xsd:appinfo source="X_Default_Value_Rule">&quot;Brouillon&quot;</xsd:appinfo>
           <xsd:appinfo source="X_Label_FR">Statut de l'EDA</xsd:appinfo>
           <xsd:appinfo source="X_Deny_Create">RAP_ReadOnly</xsd:appinfo>
-          <xsd:appinfo source="X_Workflow">RAP_ReadOnly#WorkflowEda_1.0#Hidden</xsd:appinfo>
         </xsd:annotation>
       </xsd:element>
       <xsd:element maxOccurs="1" minOccurs="0" name="demandeValidation" type="xsd:boolean">
@@ -874,7 +872,6 @@
           <xsd:appinfo source="X_Label_FR">Demande de validation</xsd:appinfo>
           <xsd:appinfo source="X_Visible_Rule">../statutEda = &quot;Brouillon&quot;</xsd:appinfo>
           <xsd:appinfo source="X_Default_Value_Rule">false</xsd:appinfo>
-          <xsd:appinfo source="X_Workflow">RAP_ReadOnly#WorkflowEda_1.0#Hidden</xsd:appinfo>
         </xsd:annotation>
       </xsd:element>
       <xsd:element maxOccurs="1" minOccurs="0" name="demandeDiffusion" type="xsd:boolean">
@@ -1011,7 +1008,6 @@
           <xsd:appinfo source="X_Label_FR">Entité à présenter dans Planches et Visu ?</xsd:appinfo>
           <xsd:appinfo source="X_Default_Value_Rule">&quot;Oui&quot;</xsd:appinfo>
           <xsd:appinfo source="X_Deny_Create">RAP_ReadOnly</xsd:appinfo>
-          <xsd:appinfo source="X_Workflow">RAP_ReadOnly#WorkflowEda_1.0#Writable</xsd:appinfo>
         </xsd:annotation>
       </xsd:element>
       <xsd:element maxOccurs="1" minOccurs="0" name="affichageRegionalEda" type="enumBool">
@@ -1025,14 +1021,12 @@
           <xsd:appinfo source="X_Description_FR">Taille max (1000)</xsd:appinfo>
           <xsd:appinfo source="X_Label_FR">Commentaires</xsd:appinfo>
           <xsd:appinfo source="X_Deny_Create">RAP_ReadOnly</xsd:appinfo>
-          <xsd:appinfo source="X_Workflow">RAP_ReadOnly#WorkflowEda_1.0#Writable</xsd:appinfo>
         </xsd:annotation>
       </xsd:element>
       <xsd:element maxOccurs="1" minOccurs="1" name="idEda" type="AUTO_INCREMENT">
         <xsd:annotation>
           <xsd:appinfo source="X_Label_FR">Id</xsd:appinfo>
           <xsd:appinfo source="X_Deny_Create">RAP_ReadOnly</xsd:appinfo>
-          <xsd:appinfo source="X_Workflow">RAP_ReadOnly#WorkflowEda_1.0#Hidden</xsd:appinfo>
         </xsd:annotation>
       </xsd:element>
     </xsd:sequence>
@@ -1793,7 +1787,6 @@
           <xsd:appinfo source="X_Label_FR">Code</xsd:appinfo>
           <xsd:appinfo source="X_Description_FR">Règle de codification : cf. Règles MA</xsd:appinfo>
           <xsd:appinfo source="X_Deny_Create">RAP_ReadOnly</xsd:appinfo>
-          <xsd:appinfo source="X_Workflow">RAP_ReadOnly#WorkflowEdp_1.0#Writable</xsd:appinfo>
         </xsd:annotation>
       </xsd:element>
       <xsd:element maxOccurs="1" minOccurs="1" name="nomEdp" type="texte25">
@@ -1816,7 +1809,6 @@
           <xsd:appinfo source="X_Label_FR">Statut de l'EDP</xsd:appinfo>
           <xsd:appinfo source="X_Default_Value_Rule">&quot;Brouillon&quot;</xsd:appinfo>
           <xsd:appinfo source="X_Deny_Create">RAP_ReadOnly</xsd:appinfo>
-          <xsd:appinfo source="X_Workflow">RAP_ReadOnly#WorkflowEdp_1.0#Hidden</xsd:appinfo>
         </xsd:annotation>
       </xsd:element>
       <xsd:element maxOccurs="1" minOccurs="0" name="demandeValidation" type="xsd:boolean">
@@ -1824,7 +1816,6 @@
           <xsd:appinfo source="X_Label_FR">Demande de validation</xsd:appinfo>
           <xsd:appinfo source="X_Visible_Rule">../statutEdp = &quot;Brouillon&quot;</xsd:appinfo>
           <xsd:appinfo source="X_Default_Value_Rule">false</xsd:appinfo>
-          <xsd:appinfo source="X_Workflow">RAP_ReadOnly#WorkflowEdp_1.0#Hidden</xsd:appinfo>
         </xsd:annotation>
       </xsd:element>
       <xsd:element maxOccurs="1" minOccurs="0" name="demandeDiffusion" type="xsd:boolean">
@@ -1892,7 +1883,6 @@
         <xsd:annotation>
           <xsd:appinfo source="X_Label_FR">Caractéristique</xsd:appinfo>
           <xsd:appinfo source="X_Deny_Create">RAP_ReadOnly</xsd:appinfo>
-          <xsd:appinfo source="X_Workflow">RAP_ReadOnly#WorkflowEdp_1.0#Writable</xsd:appinfo>
           <xsd:appinfo source="X_Retrieve_FKinfos">false</xsd:appinfo>
         </xsd:annotation>
       </xsd:element>
@@ -2066,7 +2056,6 @@
           <xsd:appinfo source="X_Default_Value_Rule">&quot;Oui&quot;</xsd:appinfo>
           <xsd:appinfo source="X_Label_FR">Entité à présenter dans Rapport Journalier ?</xsd:appinfo>
           <xsd:appinfo source="X_Deny_Create">RAP_ReadOnly</xsd:appinfo>
-          <xsd:appinfo source="X_Workflow">RAP_ReadOnly#WorkflowEdp_1.0#Writable</xsd:appinfo>
         </xsd:annotation>
       </xsd:element>
       <xsd:element maxOccurs="1" minOccurs="0" name="presencePlancheVisuEdp" type="enumBool">
@@ -2074,7 +2063,6 @@
           <xsd:appinfo source="X_Label_FR">Entité à présenter dans Planches et Visu ?</xsd:appinfo>
           <xsd:appinfo source="X_Default_Value_Rule">&quot;Oui&quot;</xsd:appinfo>
           <xsd:appinfo source="X_Deny_Create">RAP_ReadOnly</xsd:appinfo>
-          <xsd:appinfo source="X_Workflow">RAP_ReadOnly#WorkflowEdp_1.0#Writable</xsd:appinfo>
         </xsd:annotation>
       </xsd:element>
       <xsd:element maxOccurs="1" minOccurs="0" name="affichageRegionalEdp" type="enumBool">
@@ -2097,7 +2085,6 @@
           <xsd:appinfo source="X_Visible_Rule">../presencePlancheVisuEdp = &quot;Oui&quot;</xsd:appinfo>
           <xsd:appinfo source="X_Description_FR">Uniquement si l'entité est hydraulique</xsd:appinfo>
           <xsd:appinfo source="X_Deny_Create">RAP_ReadOnly</xsd:appinfo>
-          <xsd:appinfo source="X_Workflow">RAP_ReadOnly#WorkflowEdp_1.0#Writable</xsd:appinfo>
         </xsd:annotation>
       </xsd:element>
       <xsd:element maxOccurs="1" minOccurs="0" name="doMinEdp" type="int4">
@@ -2121,14 +2108,12 @@
           <xsd:appinfo source="X_Description_FR">Taille max (1000)</xsd:appinfo>
           <xsd:appinfo source="X_Label_FR">Commentaires</xsd:appinfo>
           <xsd:appinfo source="X_Deny_Create">RAP_ReadOnly</xsd:appinfo>
-          <xsd:appinfo source="X_Workflow">RAP_ReadOnly#WorkflowEdp_1.0#Writable</xsd:appinfo>
         </xsd:annotation>
       </xsd:element>
       <xsd:element maxOccurs="1" minOccurs="1" name="idEdp" type="AUTO_INCREMENT">
         <xsd:annotation>
           <xsd:appinfo source="X_Label_FR">Id</xsd:appinfo>
           <xsd:appinfo source="X_Deny_Create">RAP_ReadOnly</xsd:appinfo>
-          <xsd:appinfo source="X_Workflow">RAP_ReadOnly#WorkflowEdp_1.0#Hidden</xsd:appinfo>
         </xsd:annotation>
       </xsd:element>
     </xsd:sequence>
@@ -2187,7 +2172,6 @@
           <xsd:appinfo source="X_Label_FR">Code</xsd:appinfo>
           <xsd:appinfo source="X_Description_FR">Règle de codification : cf. Règles MA</xsd:appinfo>
           <xsd:appinfo source="X_Deny_Create">RAP_ReadOnly</xsd:appinfo>
-          <xsd:appinfo source="X_Workflow">RAP_ReadOnly#WorkflowEdprev_1.0#Writable</xsd:appinfo>
         </xsd:annotation>
       </xsd:element>
       <xsd:element maxOccurs="1" minOccurs="1" name="nomEdprev" type="texte25">
@@ -2210,7 +2194,6 @@
           <xsd:appinfo source="X_Label_FR">Statut de l'EDPrev</xsd:appinfo>
           <xsd:appinfo source="X_Default_Value_Rule">&quot;Brouillon&quot;</xsd:appinfo>
           <xsd:appinfo source="X_Deny_Create">RAP_ReadOnly</xsd:appinfo>
-          <xsd:appinfo source="X_Workflow">RAP_ReadOnly#WorkflowEdprev_1.0#Hidden</xsd:appinfo>
         </xsd:annotation>
       </xsd:element>
       <xsd:element maxOccurs="1" minOccurs="0" name="demandeValidation" type="xsd:boolean">
@@ -2218,7 +2201,6 @@
           <xsd:appinfo source="X_Label_FR">Demande de validation</xsd:appinfo>
           <xsd:appinfo source="X_Visible_Rule">../statutEdprev = &quot;Brouillon&quot;</xsd:appinfo>
           <xsd:appinfo source="X_Default_Value_Rule">false</xsd:appinfo>
-          <xsd:appinfo source="X_Workflow">RAP_ReadOnly#WorkflowEdprev_1.0#Hidden</xsd:appinfo>
         </xsd:annotation>
       </xsd:element>
       <xsd:element maxOccurs="1" minOccurs="0" name="demandeDiffusion" type="xsd:boolean">
@@ -2285,7 +2267,6 @@
         <xsd:annotation>
           <xsd:appinfo source="X_Label_FR">Caractéristique</xsd:appinfo>
           <xsd:appinfo source="X_Deny_Create">RAP_ReadOnly</xsd:appinfo>
-          <xsd:appinfo source="X_Workflow">RAP_ReadOnly#WorkflowEdprev_1.0#Writable</xsd:appinfo>
         </xsd:annotation>
       </xsd:element>
       <xsd:element maxOccurs="1" minOccurs="0" name="typeValleEDPrev" type="enumTypeVallee">
@@ -2458,7 +2439,6 @@
           <xsd:appinfo source="X_Default_Value_Rule">&quot;Oui&quot;</xsd:appinfo>
           <xsd:appinfo source="X_Label_FR">Entité à présenter dans Rapport Journalier ?</xsd:appinfo>
           <xsd:appinfo source="X_Deny_Create">RAP_ReadOnly</xsd:appinfo>
-          <xsd:appinfo source="X_Workflow">RAP_ReadOnly#WorkflowEdprev_1.0#Writable</xsd:appinfo>
         </xsd:annotation>
       </xsd:element>
       <xsd:element maxOccurs="1" minOccurs="0" name="presencePlancheVisuEdprev" type="enumBool">
@@ -2466,7 +2446,6 @@
           <xsd:appinfo source="X_Label_FR">Entité à présenter dans Planches et Visu ?</xsd:appinfo>
           <xsd:appinfo source="X_Default_Value_Rule">&quot;Oui&quot;</xsd:appinfo>
           <xsd:appinfo source="X_Deny_Create">RAP_ReadOnly</xsd:appinfo>
-          <xsd:appinfo source="X_Workflow">RAP_ReadOnly#WorkflowEdprev_1.0#Writable</xsd:appinfo>
         </xsd:annotation>
       </xsd:element>
       <xsd:element maxOccurs="1" minOccurs="0" name="affichageRegionalEdprev" type="enumBool">
@@ -2489,7 +2468,6 @@
           <xsd:appinfo source="X_Visible_Rule">../presencePlancheVisuEdprev = &quot;Oui&quot;</xsd:appinfo>
           <xsd:appinfo source="X_Description_FR">Uniquement si l'entité est hydraulique</xsd:appinfo>
           <xsd:appinfo source="X_Deny_Create">RAP_ReadOnly</xsd:appinfo>
-          <xsd:appinfo source="X_Workflow">RAP_ReadOnly#WorkflowEdprev_1.0#Writable</xsd:appinfo>
         </xsd:annotation>
       </xsd:element>
       <xsd:element maxOccurs="1" minOccurs="0" name="doMinEdprev" type="int4">
@@ -2513,14 +2491,12 @@
           <xsd:appinfo source="X_Description_FR">Taille max(1000)</xsd:appinfo>
           <xsd:appinfo source="X_Label_FR">Commentaires</xsd:appinfo>
           <xsd:appinfo source="X_Deny_Create">RAP_ReadOnly</xsd:appinfo>
-          <xsd:appinfo source="X_Workflow">RAP_ReadOnly#WorkflowEdprev_1.0#Writable</xsd:appinfo>
         </xsd:annotation>
       </xsd:element>
       <xsd:element maxOccurs="1" minOccurs="1" name="idEdprev" type="AUTO_INCREMENT">
         <xsd:annotation>
           <xsd:appinfo source="X_Label_FR">Id</xsd:appinfo>
           <xsd:appinfo source="X_Deny_Create">RAP_ReadOnly</xsd:appinfo>
-          <xsd:appinfo source="X_Workflow">RAP_ReadOnly#WorkflowEdprev_1.0#Hidden</xsd:appinfo>
         </xsd:annotation>
       </xsd:element>
     </xsd:sequence>
@@ -3946,7 +3922,6 @@
       <xsd:element maxOccurs="1" minOccurs="1" name="id" type="AUTO_INCREMENT">
         <xsd:annotation>
           <xsd:appinfo source="X_Label_FR">Id</xsd:appinfo>
-          <xsd:appinfo source="X_Workflow">RAP_ReadOnly#WorkflowEdaFuture_1.0#Hidden</xsd:appinfo>
         </xsd:annotation>
       </xsd:element>
       <xsd:element maxOccurs="1" minOccurs="1" name="applicationDate" type="xsd:date">
@@ -3960,7 +3935,6 @@
         <xsd:annotation>
           <xsd:appinfo source="X_Default_Value_Rule">&quot;Brouillon&quot;</xsd:appinfo>
           <xsd:appinfo source="X_Label_FR">Statut de prochaine modification</xsd:appinfo>
-          <xsd:appinfo source="X_Workflow">RAP_ReadOnly#WorkflowEdaFuture_1.0#Hidden</xsd:appinfo>
         </xsd:annotation>
       </xsd:element>
       <xsd:element maxOccurs="1" minOccurs="0" name="demandeValidation" type="xsd:boolean">
@@ -3968,7 +3942,6 @@
           <xsd:appinfo source="X_Label_FR">Demande de validation</xsd:appinfo>
           <xsd:appinfo source="X_Visible_Rule">../statut = &quot;Brouillon&quot;</xsd:appinfo>
           <xsd:appinfo source="X_Default_Value_Rule">false</xsd:appinfo>
-          <xsd:appinfo source="X_Workflow">RAP_ReadOnly#WorkflowEdaFuture_1.0#Hidden</xsd:appinfo>
         </xsd:annotation>
       </xsd:element>
       <xsd:element maxOccurs="1" minOccurs="0" name="demandeDiffusion" type="xsd:boolean">
@@ -3989,7 +3962,6 @@
               <xsd:annotation>
                 <xsd:appinfo source="X_Label_FR">Code</xsd:appinfo>
                 <xsd:appinfo source="X_Description_FR">Règle de codification : cf Règles MA</xsd:appinfo>
-                <xsd:appinfo source="X_Workflow">RAP_ReadOnly#WorkflowEdaFuture_1.0#Writable</xsd:appinfo>
               </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="1" name="nomEda" type="texte25">
@@ -4143,7 +4115,6 @@
               <xsd:annotation>
                 <xsd:appinfo source="X_Default_Value_Rule">&quot;Oui&quot;</xsd:appinfo>
                 <xsd:appinfo source="X_Label_FR">Entité à présenter dans Planches et Visu ?</xsd:appinfo>
-                <xsd:appinfo source="X_Workflow">RAP_ReadOnly#WorkflowEdaFuture_1.0#Writable</xsd:appinfo>
               </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="affichageRegionalEda" type="enumBool">
@@ -4155,7 +4126,6 @@
               <xsd:annotation>
                 <xsd:appinfo source="X_Description_FR">Taille max(1000)</xsd:appinfo>
                 <xsd:appinfo source="X_Label_FR">Commentaires</xsd:appinfo>
-                <xsd:appinfo source="X_Workflow">RAP_ReadOnly#WorkflowEdaFuture_1.0#Writable</xsd:appinfo>
               </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="1" name="idEda" type="AUTO_INCREMENT">

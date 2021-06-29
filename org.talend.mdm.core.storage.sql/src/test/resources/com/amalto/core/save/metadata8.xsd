@@ -1125,8 +1125,6 @@
     </xsd:element>
     <xsd:element name="workflowExample">
         <xsd:annotation>
-            <xsd:appinfo source="X_Workflow">JuniorManager#JDE_Type_model_workflowExample_1.0#Read-only</xsd:appinfo>
-            <xsd:appinfo source="X_Workflow">SeniorManager#JDE_Type_model_workflowExample_1.0#Read-only</xsd:appinfo>
             <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
             <xsd:appinfo source="X_Write">User</xsd:appinfo>
         </xsd:annotation>
@@ -1135,10 +1133,6 @@
                 <xsd:element maxOccurs="1" minOccurs="1" name="Id" type="AUTO_INCREMENT">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Label_EN">Entity_Id</xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">JuniorManager#JDE_Type_model_workflowExample_1.0#Read-only
-                        </xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">SeniorManager#JDE_Type_model_workflowExample_1.0#Read-only
-                        </xsd:appinfo>
                         <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Write">User</xsd:appinfo>
                     </xsd:annotation>
@@ -1146,10 +1140,6 @@
                 <xsd:element maxOccurs="1" minOccurs="0" name="Name" type="xsd:string">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Label_EN">Name</xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">JuniorManager#JDE_Type_model_workflowExample_1.0#Read-only
-                        </xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">SeniorManager#JDE_Type_model_workflowExample_1.0#Read-only
-                        </xsd:appinfo>
                         <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Write">User</xsd:appinfo>
                     </xsd:annotation>
@@ -1157,10 +1147,6 @@
                 <xsd:element maxOccurs="1" minOccurs="0" name="CommissionCode" type="ComCodeType">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Label_EN">Commission Code</xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">JuniorManager#JDE_Type_model_workflowExample_1.0#Read-only
-                        </xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">SeniorManager#JDE_Type_model_workflowExample_1.0#Read-only
-                        </xsd:appinfo>
                         <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Write">User</xsd:appinfo>
                     </xsd:annotation>
@@ -1168,10 +1154,6 @@
                 <xsd:element maxOccurs="1" minOccurs="0" name="CommissionCodeChange">
                     <xsd:annotation>
                         <xsd:appinfo source="X_Label_EN">Change Control</xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">JuniorManager#JDE_Type_model_workflowExample_1.0#Read-only
-                        </xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">SeniorManager#JDE_Type_model_workflowExample_1.0#Read-only
-                        </xsd:appinfo>
                         <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Write">User</xsd:appinfo>
                     </xsd:annotation>
@@ -1180,12 +1162,6 @@
                             <xsd:element maxOccurs="1" minOccurs="0" name="ProposedCommissionCode" type="ComCodeType">
                                 <xsd:annotation>
                                     <xsd:appinfo source="X_Label_EN">Proposed Commission Code</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">
-                                        JuniorManager#JDE_Type_model_workflowExample_1.0#Read-only
-                                    </xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">
-                                        SeniorManager#JDE_Type_model_workflowExample_1.0#Read-only
-                                    </xsd:appinfo>
                                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
                                 </xsd:annotation>
@@ -1194,12 +1170,6 @@
                                 <xsd:annotation>
                                     <xsd:appinfo source="X_Default_Value_Rule">'Pending'</xsd:appinfo>
                                     <xsd:appinfo source="X_Label_EN">Change Request Status</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">
-                                        JuniorManager#JDE_Type_model_workflowExample_1.0#Writable
-                                    </xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">
-                                        SeniorManager#JDE_Type_model_workflowExample_1.0#Writable
-                                    </xsd:appinfo>
                                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
                                 </xsd:annotation>
@@ -1514,7 +1484,6 @@
             <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
             <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-            <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:sequence>
@@ -1530,7 +1499,6 @@
                         </xsd:appinfo>
                         <xsd:appinfo source="X_ForeignKeyInfo">Request_Status/Request_Option</xsd:appinfo>
                         <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="1" name="Request_Id_PK" type="AUTO_INCREMENT">
@@ -1541,7 +1509,6 @@
                         <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                         <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="1" name="Requester_Details">
@@ -1549,7 +1516,6 @@
                         <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                         <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                     </xsd:annotation>
                     <xsd:complexType>
                         <xsd:all>
@@ -1559,8 +1525,6 @@
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
-                                    </xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
                             <xsd:element maxOccurs="1" minOccurs="1" name="requester_site" type="xsd:string">
@@ -1569,8 +1533,6 @@
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
-                                    </xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
                             <xsd:element maxOccurs="1" minOccurs="1" name="requester_email" type="xsd:string">
@@ -1579,8 +1541,6 @@
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
-                                    </xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
                             <xsd:element maxOccurs="1" minOccurs="0" name="requester_phone" type="xsd:string">
@@ -1589,8 +1549,6 @@
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
-                                    </xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
                             <xsd:element maxOccurs="1" minOccurs="1" name="request_date" type="xsd:date">
@@ -1599,8 +1557,6 @@
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
-                                    </xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
                         </xsd:all>
@@ -1614,7 +1570,6 @@
                         <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Write">User</xsd:appinfo>
                         <xsd:appinfo source="X_Default_Value_Rule">'bob'</xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="Supplier_Country" type="xsd:string">
@@ -1628,7 +1583,6 @@
                         <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                         <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="Company_RegNbr" type="xsd:string">
@@ -1637,7 +1591,6 @@
                         <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                         <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="Supplier_Details">
@@ -1648,7 +1601,6 @@
                         <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                         <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                     </xsd:annotation>
                     <xsd:complexType>
                         <xsd:all>
@@ -1661,8 +1613,6 @@
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
-                                    </xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
                             <xsd:element maxOccurs="1" minOccurs="0" name="vat_reg_code" type="xsd:string">
@@ -1674,8 +1624,6 @@
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
-                                    </xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
                             <xsd:element maxOccurs="1" minOccurs="1" name="irish_vat" type="xsd:boolean">
@@ -1687,8 +1635,6 @@
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
-                                    </xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
                             <xsd:element maxOccurs="1" minOccurs="1" name="uk_vat" type="xsd:boolean">
@@ -1700,8 +1646,6 @@
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
-                                    </xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
                             <xsd:element maxOccurs="1" minOccurs="1" name="cis_supplier" type="xsd:boolean">
@@ -1714,8 +1658,6 @@
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
-                                    </xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
                             <xsd:element maxOccurs="1" minOccurs="1" name="warehouse_selfbill" type="xsd:boolean">
@@ -1725,8 +1667,6 @@
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
-                                    </xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
                             <xsd:element maxOccurs="1" minOccurs="1" name="haulier_selfbill" type="xsd:boolean">
@@ -1736,8 +1676,6 @@
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
-                                    </xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
                         </xsd:all>
@@ -1748,7 +1686,6 @@
                         <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                         <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                     </xsd:annotation>
                     <xsd:complexType>
                         <xsd:all>
@@ -1758,8 +1695,6 @@
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
-                                    </xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
                             <xsd:element maxOccurs="1" minOccurs="1" name="address_2" type="xsd:string">
@@ -1768,8 +1703,6 @@
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
-                                    </xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
                             <xsd:element maxOccurs="1" minOccurs="0" name="address_3" type="xsd:string">
@@ -1778,8 +1711,6 @@
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
-                                    </xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
                             <xsd:element maxOccurs="1" minOccurs="0" name="address_4" type="xsd:string">
@@ -1788,8 +1719,6 @@
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
-                                    </xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
                             <xsd:element maxOccurs="1" minOccurs="1" name="city" type="xsd:string">
@@ -1798,8 +1727,6 @@
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
-                                    </xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
                             <xsd:element maxOccurs="1" minOccurs="1" name="postal_code" type="xsd:string">
@@ -1808,8 +1735,6 @@
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
-                                    </xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
                             <xsd:element maxOccurs="1" minOccurs="0" name="county" type="xsd:string">
@@ -1820,8 +1745,6 @@
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
-                                    </xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
                         </xsd:all>
@@ -1832,7 +1755,6 @@
                         <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                         <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="Payment_Details">
@@ -1840,7 +1762,6 @@
                         <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                         <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                     </xsd:annotation>
                     <xsd:complexType>
                         <xsd:all>
@@ -1856,8 +1777,6 @@
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
-                                    </xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
                             <xsd:element maxOccurs="1" minOccurs="0" name="nonstd_terms_reason" type="xsd:string">
@@ -1870,8 +1789,6 @@
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
-                                    </xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
                         </xsd:all>
@@ -1882,7 +1799,6 @@
                         <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                         <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                     </xsd:annotation>
                     <xsd:complexType>
                         <xsd:all>
@@ -1891,8 +1807,6 @@
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
-                                    </xsd:appinfo>
                                 </xsd:annotation>
                                 <xsd:simpleType>
                                     <xsd:restriction base="xsd:string">
@@ -1944,8 +1858,6 @@
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
-                                    </xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
                             <xsd:element maxOccurs="1" minOccurs="1" name="purcat_level_3" type="xsd:string">
@@ -1953,8 +1865,6 @@
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
-                                    </xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
                         </xsd:all>
@@ -1965,7 +1875,6 @@
                         <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                         <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element maxOccurs="1" minOccurs="0" name="ABC_information">
@@ -1977,7 +1886,6 @@
                         <xsd:appinfo source="X_Description_EN">The questions in this section must be answered yes or
                             no
                         </xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                     </xsd:annotation>
                     <xsd:complexType>
                         <xsd:all>
@@ -1988,8 +1896,6 @@
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
-                                    </xsd:appinfo>
                                 </xsd:annotation>
                                 <xsd:simpleType>
                                     <xsd:restriction base="xsd:string">
@@ -2007,8 +1913,6 @@
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
-                                    </xsd:appinfo>
                                 </xsd:annotation>
                                 <xsd:simpleType>
                                     <xsd:restriction base="xsd:string">
@@ -2025,8 +1929,6 @@
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
-                                    </xsd:appinfo>
                                 </xsd:annotation>
                                 <xsd:simpleType>
                                     <xsd:restriction base="xsd:string">
@@ -2043,8 +1945,6 @@
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
-                                    </xsd:appinfo>
                                 </xsd:annotation>
                                 <xsd:simpleType>
                                     <xsd:restriction base="xsd:string">
@@ -2061,8 +1961,6 @@
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
-                                    </xsd:appinfo>
                                 </xsd:annotation>
                                 <xsd:simpleType>
                                     <xsd:restriction base="xsd:string">
@@ -2080,8 +1978,6 @@
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
-                                    </xsd:appinfo>
                                 </xsd:annotation>
                                 <xsd:simpleType>
                                     <xsd:restriction base="xsd:string">
@@ -2098,8 +1994,6 @@
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
-                                    </xsd:appinfo>
                                 </xsd:annotation>
                                 <xsd:simpleType>
                                     <xsd:restriction base="xsd:string">
@@ -2119,7 +2013,6 @@
                         <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Write">User</xsd:appinfo>
                         <xsd:appinfo source="X_Label_EN">CIS Information</xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                     </xsd:annotation>
                     <xsd:complexType>
                         <xsd:all>
@@ -2129,8 +2022,6 @@
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
-                                    </xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
                             <xsd:element maxOccurs="1" minOccurs="1" name="CIS_doc_type">
@@ -2139,8 +2030,6 @@
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
-                                    </xsd:appinfo>
                                 </xsd:annotation>
                                 <xsd:simpleType>
                                     <xsd:restriction base="xsd:string">
@@ -2160,8 +2049,6 @@
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
-                                    </xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
                         </xsd:all>
@@ -2172,7 +2059,6 @@
                         <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                         <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                         <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                     </xsd:annotation>
                     <xsd:complexType>
                         <xsd:all>
@@ -2184,8 +2070,6 @@
                                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
-                                    </xsd:appinfo>
                                 </xsd:annotation>
                             </xsd:element>
                         </xsd:all>
@@ -2200,7 +2084,6 @@
                         <xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>
                         <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
                         <xsd:appinfo source="X_Visible_Rule">false</xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
             </xsd:sequence>
@@ -2244,7 +2127,6 @@
                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                 </xsd:annotation>
                 <xsd:simpleType>
                     <xsd:restriction base="xsd:string">
@@ -2260,7 +2142,6 @@
                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                 </xsd:annotation>
                 <xsd:simpleType>
                     <xsd:restriction base="xsd:string">
@@ -2278,7 +2159,6 @@
                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="surname" type="xsd:string">
@@ -2287,7 +2167,6 @@
                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="3" minOccurs="0" name="telephone">
@@ -2297,7 +2176,6 @@
                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                 </xsd:annotation>
                 <xsd:complexType>
                     <xsd:all>
@@ -2308,8 +2186,6 @@
                                 <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                                 <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                 <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
-                                </xsd:appinfo>
                             </xsd:annotation>
                             <xsd:simpleType>
                                 <xsd:restriction base="xsd:string">
@@ -2326,8 +2202,6 @@
                                 <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                                 <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                 <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
-                                </xsd:appinfo>
                             </xsd:annotation>
                         </xsd:element>
                         <xsd:element maxOccurs="1" minOccurs="1" name="local_number" type="xsd:string">
@@ -2337,8 +2211,6 @@
                                 <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                                 <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                 <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
-                                </xsd:appinfo>
                             </xsd:annotation>
                         </xsd:element>
                         <xsd:element maxOccurs="1" minOccurs="0" name="extension" type="xsd:string">
@@ -2347,8 +2219,6 @@
                                 <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                                 <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                                 <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only
-                                </xsd:appinfo>
                             </xsd:annotation>
                         </xsd:element>
                     </xsd:all>
@@ -2360,7 +2230,6 @@
                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
         </xsd:sequence>
@@ -2376,7 +2245,6 @@
                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="sort_code" type="xsd:string">
@@ -2387,7 +2255,6 @@
                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="1" name="account_number" type="xsd:string">
@@ -2396,7 +2263,6 @@
                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="1" name="account_currency" type="xsd:string">
@@ -2405,7 +2271,6 @@
                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="1" name="bank_name" type="xsd:string">
@@ -2414,7 +2279,6 @@
                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="bank_country" type="xsd:string">
@@ -2429,7 +2293,6 @@
                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="swift_code" type="xsd:string">
@@ -2439,7 +2302,6 @@
                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="iban" type="xsd:string">
@@ -2450,7 +2312,6 @@
                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
         </xsd:all>
@@ -2618,8 +2479,6 @@
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
                     <xsd:appinfo source="X_Default_Value_Rule">true</xsd:appinfo>
-
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Read-only</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="ProcurementApproval" type="WF_APPROVAL_TYPE">
@@ -2627,7 +2486,6 @@
                     <xsd:appinfo source="X_Write">MDM_Requester</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#Create_Supplier_WF_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Default_Value_Rule">'Rejected'</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>

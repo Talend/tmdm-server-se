@@ -5,7 +5,6 @@
   </xsd:simpleType>  
   <xsd:element name="TieSocietesSocCom"> 
     <xsd:annotation> 
-      <xsd:appinfo source="X_Workflow">CreateTierRole##Writable</xsd:appinfo>  
       <xsd:appinfo source="X_Write">MDMAdmin</xsd:appinfo>  
       <xsd:appinfo source="X_Write">TiersAdmin</xsd:appinfo> 
     </xsd:annotation>  
@@ -13,7 +12,6 @@
       <xsd:all> 
         <xsd:element maxOccurs="1" minOccurs="1" name="IdSociete_SocieteCom" type="AUTO_INCREMENT"> 
           <xsd:annotation> 
-            <xsd:appinfo source="X_Workflow">CreateTierRole##Writable</xsd:appinfo>  
             <xsd:appinfo source="X_Write">MDMAdmin</xsd:appinfo>  
             <xsd:appinfo source="X_Write">TiersAdmin</xsd:appinfo> 
           </xsd:annotation> 
@@ -26,16 +24,14 @@
     </xsd:unique> 
   </xsd:element>    
   <xsd:element name="TiePays"> 
-    <xsd:annotation> 
-      <xsd:appinfo source="X_Workflow">WSAdmin#Tiers_TiePays_Activate_1.0#Read-only</xsd:appinfo>  
+    <xsd:annotation>  
       <xsd:appinfo source="X_Write">MDMAdmin</xsd:appinfo>  
       <xsd:appinfo source="X_Write">TiersAdmin</xsd:appinfo> 
     </xsd:annotation>  
     <xsd:complexType> 
       <xsd:all> 
         <xsd:element maxOccurs="1" minOccurs="1" name="IdPays" type="xsd:string"> 
-          <xsd:annotation> 
-            <xsd:appinfo source="X_Workflow">WSAdmin#Tiers_TiePays_Activate_1.0#Read-only</xsd:appinfo>  
+          <xsd:annotation>   
             <xsd:appinfo source="X_Write">MDMAdmin</xsd:appinfo>  
             <xsd:appinfo source="X_Write">TiersAdmin</xsd:appinfo> 
           </xsd:annotation> 
